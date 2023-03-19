@@ -1,0 +1,4 @@
+name: GenesisMC
+version: '${project.version}'
+main: me.purplewolfmc.genesismc.GenesisMC
+api-version: 1.19
