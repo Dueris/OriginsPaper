@@ -24,10 +24,10 @@ import static org.bukkit.Material.*;
 public class ShulkerMain implements Listener {
 
   @EventHandler
-  public void onSprint(PlayerMoveEvent e){
+  public void onSprint(PlayerMoveEvent e) {
     Player p = e.getPlayer();
-    if(p.isSprinting()){
-      if(p.getScoreboardTags().contains("shulker")) {
+    if (p.getScoreboardTags().contains("shulker")) {
+      if (p.isSprinting()) {
         Random random = new Random();
         int r = random.nextInt(1000);
         if (r == (int) 998 || r == (int) 132 || r == (int) 989 || r == (int) 929 || r == (int) 459 || r == (int) 29 || r == (int) 812) {
