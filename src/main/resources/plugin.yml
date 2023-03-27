@@ -2,3 +2,25 @@ name: GenesisMC
 version: '${project.version}'
 main: me.purplewolfmc.genesismc.GenesisMC
 api-version: 1.19
+authors: [ PurpleWolfMC ]
+description: Genesis Plugin for SpigotMC
+website: https://twitch.tv/PurpleWolfMC
+commands:
+  origins:
+    description: Main Origins Directory
+  beta:
+    description: genesis beta
+    permission: purplewolf.genesismc.spigotmc.beta
+  shulker:
+    description: shulk main command
+permissions:
+  genesismc.origins.purge:
+    default: op
+  genesismc.origins.reload:
+    default: op
+  genesismc.origins.choose:
+    default: not op
+  genesismc.origins.rechoose:
+    default: not op
+  genesismc.origins.config:
+    default: op
