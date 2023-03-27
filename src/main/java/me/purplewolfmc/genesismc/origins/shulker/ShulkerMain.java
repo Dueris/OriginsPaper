@@ -27,11 +27,13 @@ public class ShulkerMain implements Listener {
   public void onSprint(PlayerMoveEvent e){
     Player p = e.getPlayer();
     if(p.isSprinting()){
-      Random random = new Random();
-      int r = random.nextInt(1000);
-      if (r == (int) 998 || r == (int) 132 || r == (int) 989 || r == (int) 929 || r == (int) 459 || r == (int) 29 || r == (int) 812) {
-        int foodamt = p.getFoodLevel();
-        p.setFoodLevel(foodamt - 1);
+      if(p.getScoreboardTags().contains("shulker")) {
+        Random random = new Random();
+        int r = random.nextInt(1000);
+        if (r == (int) 998 || r == (int) 132 || r == (int) 989 || r == (int) 929 || r == (int) 459 || r == (int) 29 || r == (int) 812) {
+          int foodamt = p.getFoodLevel();
+          p.setFoodLevel(foodamt - 1);
+        }
       }
     }
   }
