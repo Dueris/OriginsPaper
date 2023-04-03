@@ -6,8 +6,10 @@
 
     <groupId>me.purplewolfmc</groupId>
     <artifactId>GenesisMC</artifactId>
-    <version>0.1.4-ALPHA</version>
+    <version>0.1.5-ALPHA</version>
     <packaging>jar</packaging>
+
+    <description>"GenesisMC, bringing the life and fun of the Origins Mod to PaperMC Servers"</description>
 
     <name>GenesisMC</name>
 
@@ -18,6 +20,14 @@
 
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.3.0</version>
+                <configuration>
+                    <outputDirectory>C:\Users\jedim\Desktop\PWSMP\genesismc-plugin-intellij\GenesisMC\libs\latest-dev</outputDirectory>
+                </configuration>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>

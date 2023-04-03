@@ -1,6 +1,40 @@
 --------------------------------------------------------------------------------------------------------------------------
 Next:
-0.1.5-BETA_RELEASE
+0.1.5 - 1.20
+-Work on Climbing abilities for Arachnid
+-Add Anvil compatibility with Water Protection
+-Add option to disable waterprot in enderian
+-add config options to configure name and crafting recepie for orb of origins
+-add disable-orboforigins option
+-change enchantment for disabled origins to curse of vanishing and curse of binding
+-add DisableRunnable
+-Work on sendform for Bedrock players
+-check docs and add all arachnid stuff
+-add origins-expansioned.yml
+-figure out how to add structures. Origin Ruins. REALLY rare, feature turned to false automatically.
+      -adds datapack containing custom structure. primarily above/bellow ground in mountains
+      -contains 1 singular orb of origin. has many traps
+
+-------------------------------------------------------------------------------------------------------------------------
+-add new project dir
+      -CreepMain
+      -CreepSkin
+      -CreepExplode
+-add custom origin name drivables
+-add choosing methods for custom origins
+
+/origins choose
+/origins help(lists what origin you have)
+/origins commands(lists commands)
+/origins reload
+/origins purge
+/origins config(loads config options)
+/origins texture(add tag to player, turn on resource pack. upon player joining with tag of "texture-load", player loads the resource pack. upon leaving it disables it.)
+            (checks if the player already has the tag, if not, add tag and do the text above^. if they do, remove tag and disable texture pack)
+            (add config option to plugin.yml for forcing the texture pack for the players.)
+/shulker open(opens shulker extra inventory. need to fix null bug lol)
+/beta
+
 
 ----------------------
 Human
@@ -41,6 +75,7 @@ Camoflauge: You have green skin, like a creeper. Obviously.
 You got a Friend in Me: Other creepers will not attack you
 Felinephobia: You are scared of cats, and you will take damage when you are close
 Sneaky: You make no sounds at night
+Blast Resistant: You are blast resistant, but take extra damage from other types of attacks
 
 ----------------------
 Phantom
@@ -83,17 +118,14 @@ Hotblooded: Due to your hot body, venom burns up, making you immune to poison
 Opposite Forces: You are much weaker in colder biomes and at high altitudes
 Flames of the Nether: Upon hitting someone, they are set on fire
 
-//Start back here
-
-
 --------------------
 Starborne
 --------------------
 Wanderer of the Stars: You cannot sleep at night
 Shooting Star: You can fling yourself into the air after a 5 second cooldown
 Falling Stars: You can drop stars on your enemy every 30 seconds
-Mysterious Power: When night falls, you have will be granted a special gift from the stars above
--shooting star is stronger, smaller chance of nonviolent, can fly, gets more health.
+Mysterious Power: When night falls, you will be granted a special gift from the stars above
+      -shooting star is stronger, smaller chance of nonviolent, can fly, gets more health.
 Supernova: When you die, you explode into a supernova
 Cold Vacuum: You are used to the coldness of space, so you take double damage from fire
 Stargazer: When exposed to the stars, you gain speed and regeneration
@@ -147,6 +179,7 @@ Elytrian
 -------------------
 Winged: You have Elytra wings without needing to equip any
 Gift of the Winds: Every 60 seconds, you can launch youself into the air
+Aerial Combatant: You deal substantially more damage while in the air
 Claustrophobia: Being somewhere with a low ceiling for too long will weaken you
 Need for Mobility: You cannot wear any heavy armour with prot vaulues higher than chainmail
 Brittle Bones: You take more damage from falling and flying into blocks

@@ -1,6 +1,6 @@
 name: GenesisMC
 version: '${project.version}'
-main: me.purplewolfmc.genesismc.GenesisMC
+main: me.purplewolfmc.genesismc.core.GenesisMC
 api-version: 1.19
 authors: [ PurpleWolfMC ]
 description: Genesis Plugin for SpigotMC
