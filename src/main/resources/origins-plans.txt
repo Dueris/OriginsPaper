@@ -1,7 +1,6 @@
 --------------------------------------------------------------------------------------------------------------------------
 Next:
 0.1.5 - 1.20
--Work on Climbing abilities for Arachnid
 -Add Anvil compatibility with Water Protection
 -Add option to disable waterprot in enderian
 -add config options to configure name and crafting recepie for orb of origins
