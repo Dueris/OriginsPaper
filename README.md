@@ -1,7 +1,7 @@
 # GenesisMC
-### Custom origins for PaperMC
+Custom origins for PaperMC
 
-<div class="markdown-body card"><div><div><div><h1>GenesisMC</h1>
+<div class="markdown-body card"><div><div><div><h1></h1>
 <p>This is the PaperMC origins plugin made my PurpleWolfMC!
 This is a custom rewrite of the origins mod, but in plugin form. Credit to <a href="https://modrinth.com/user/Apace" rel="noopener nofollow ugc">Apace100</a> for the original mod, true legend. Thank you for your hard work. <u>The plugin is for PaperMC servers, but will still load on Bukkit and SpigotMC, but most features WILL break.</u></p>
 <p></p>
