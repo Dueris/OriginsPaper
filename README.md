@@ -1,10 +1,13 @@
-<div class="markdown-body card"><div><div><div><h1>GenesisMC</h1>
-<p>This is the SpigotMC origins plugin made my PurpleWolfMC!
-This is a complete rewrite of the origins mod. Credit to <a href="https://modrinth.com/user/Apace" rel="noopener nofollow ugc">Apace100</a> for the original mod, true legend. Thank you for your hard work. This code is entirely different from the original Origins Mod so it does not include the functionality of custom origins(yet?)</p>
+# GenesisMC
+Custom origins for PaperMC
+
+<div class="markdown-body card"><div><div><div><h1></h1>
+<p>This is the PaperMC origins plugin made my PurpleWolfMC!
+This is a custom rewrite of the origins mod, but in plugin form. Credit to <a href="https://modrinth.com/user/Apace" rel="noopener nofollow ugc">Apace100</a> for the original mod, true legend. Thank you for your hard work. <u>The plugin is for PaperMC servers, but will still load on Bukkit and SpigotMC, but most features WILL break.</u></p>
 <p></p>
-<p><font color="#f00900"><i>WARNING:</i></font> <u>Most features of the plugin do not work because it is still in very early beta. Bugs will be there and some origins will not work.</u></p>
+<p><font color="#f00900"><i>WARNING:</i></font> Most features of the plugin do not work because it is still in very early alpha. Bugs will be there and some origins will not work.</p>
 <hr>
-<p>After the full release, more origins will be added. The plugin is still in early beta, so some functionalities are still not working yet. This plugin is 100% open source for all of its versions. This plugin aims to add plugin support to SpigotMC and all forks of that in an extremely detailed an efficient way. If you are wanting the customization of origins like an easy drop in datapack, this plugin currently does not support that. However, if you do want that, I suggest you check out the Origins-Bukkit plugin. This plugin is only for the purpose of an easy drop in plugin for spigot servers without the need of libraries and other external features. This plugin also plans to be fully compatible with tons of other plugins.</p>
+<p>After the full release, more origins will be added. The plugin is still in early beta, so some functionalities are still not working yet. This plugin is 100% open source for all of its versions. This plugin aims to add plugin support to PaperMC and all forks of that in an extremely detailed an efficient way. If you are wanting the customization of origins like an easy drop in datapack, this plugin currently does not support that. However, if you do want that, I suggest you check out the Origins-Bukkit plugin. This plugin is only for the purpose of an easy drop in plugin for spigot servers without the need of libraries and other external features. This plugin also plans to be fully compatible with tons of other plugins.</p>
 <p>There are currently 18 origins in the main plugin. More origins will be added in the future with the option to disable those specific origins.</p><details><summary>Included Origins (18)</summary>
 <table>
 <tbody>
@@ -458,65 +461,9 @@ Featherweight: You fall as gently to the ground as a feather
 </tr>
 </tbody>
 </table>
-</details><details>
-    <summary>Config Options &amp; Commands</summary>
-    <table>
-        <tbody>
-            <tr><th>Command</th><th>Default Perm</th><th>Description &amp; Syntax</th></tr>
-<tr>
-    <td><code>/origins</code></td>
-    <td><h5><pre>all players</pre></h5></td>
-    <td><h5>Main origins command. Alias is /genesismc</h5></td>
-</tr>
-<tr>
-    <td><code>/origins_choose</code></td>
-    <td><h5><pre>any player that hasn't chosen yet</pre></h5></td>
-    <td><h5>Opens choosing menu for players who have nto chosen yet. Origin can be changed afterward but ONLY by using the Orb of Origins.</h5></td>
-</tr>
-<tr>
-    <td><code>/origins_help</code></td>
-    <td><h5><pre>any player</pre></h5></td>
-    <td><h5>Opens gui that shows your origin abilities and weaknesses.</h5></td>
-</tr>
-<tr>
-    <td><code>/origins_commands</code></td>
-    <td><h5><pre>any player</pre></h5></td>
-    <td><h5>Sends sender a message with all commands in this list</h5></td>
-</tr>
-<tr>
-    <td><code>/origins_reload</code></td>
-    <td><h5><pre>operators only</pre></h5></td>
-    <td><h5>Reloads all config files</h5></td>
-</tr>
-<tr>
-    <td><code>/origins_purge_&lt;player&gt;</code></td>
-    <td><h5><pre>operators only</pre></h5></td>
-    <td><h5>Removes origin of the player selected</h5></td>
-</tr>
-<tr>
-    <td><code>/origins_config</code></td>
-    <td><h5><pre>operators and console only</pre></h5></td>
-    <td><h5>Dumps config data into console. Meant for debug method to find bugs if things are not working. Will include more data soon like server type and other plugins installed.</h5></td>
-</tr>
-<tr>
-    <td><code>/origins_texture</code></td>
-    <td><h5><pre>all players</pre></h5></td>
-    <td><h5>Enables/Disables texture pack for Orb of Origins</h5></td>
-</tr>
-<tr>
-    <td><code>/shulker open</code></td>
-    <td><h5><pre>any player with shulk origin</pre>
-    </h5></td>
-    <td><h5>Opens the extra inventory for the Shulk</h5></td>
-</tr>
-<tr>
-    <td><code>/beta</code></td>
-    <td><h5><pre>operators</pre></h5></td>
-    <td><h5>Main command for beta systems. Must have beta set to true in plugin-config.yml</h5></td>
-</tr>
-        </tbody>
-    </table>
+</summary>
 </details>
+<h3>If you would like more information on the plugin, I recommend you check out the github wiki page </h3>
 <p>This plugin runs on a custom API that is built into the plugin to make things more detailed and efficient. It also has normally quick support and moderation. The updates for the plugin are frequent and the updates are made to the quality of which is completed to the best of my abilities at that time. They will always be updated as I learn more. Bug fixes also come frequently. Its also a big priority of mine to give the most quality and customization to the plugin without everything being too complicated.</p><hr>
 <h3>Disclaimer</h3>
 <p>If you are wanting to make your own origin and use it for your server, this plugin does not offer that. This plugin is only code driven. This will not be able to work with Bukkit!!</p><hr>
@@ -525,25 +472,24 @@ Featherweight: You fall as gently to the ground as a feather
 <tbody><tr><td>CURRENT VERSION</td><td>VERSION SUPPORTED</td>
 <td>PROGRESS</td>
 </tr><tr><td>
-<font color="#f00990"><i>0.1.3</i></font>-BETA_build
+<font color="#f00990"><i>0.1.4</i></font>-ALPHA_build
 </td>
 <td>
-SpigotMC <font color="#f09300"><i>1.19.3</i></font>
+PaperMC <font color="#00ffff"><i>1.19.4</i></font>
 </td>
-<td><font color="#70FF40"><i>Completed</i></font></td>
+<td><font color="#FFA500"><i>100% complete</i></font></td>
 </tr>
 </tbody></table><hr><p></p>
-<h3>PurpleWolfAPI</h3><p></p>
-<p>The PurpleWolfAPI is a built-in API for developers to make it easier to call events. It includes many events from the PaperAPI and the SpigotAPI, along with a bunch of other custom ones for more customization for Bukkit creators. Not open-source ATM but will be open-source soon.</p><hr><h3>Links</h3><p></p><table>
+<h3>Links</h3><p></p><table>
 <thead>
 </thead>
 <tbody>
 <tr>
-<th>Donate!</th>
-<th>Donation link: <a href="https://streamelements.com/PurpleWolfMC/tip" rel="noopener nofollow ugc">DONATE</a></th>
+<td>Donate!</td>
+<td>Donation link: <a href="https://streamelements.com/PurpleWolfMC/tip" rel="noopener nofollow ugc">DONATE</a></td>
 </tr><tr>
 <td>Open-source</td>
-<td>Source link: <a href="https://github.com/PurpleWolf1909/GenesisMC" rel="noopener nofollow ugc">SOURCE-CODE</a></td>
+<td>Source link: <a href="https://github.com/PurpleWolf1909/GenesisMC-Minecraft_Plugin" rel="noopener nofollow ugc">SOURCE-CODE</a></td>
 </tr><tr>
 <td>Discord</td>
 <td>Discord invite link: <a href="https://discord.com/invite/RKmQnU6SRt" rel="noopener nofollow ugc">DISCORD</a></td>
