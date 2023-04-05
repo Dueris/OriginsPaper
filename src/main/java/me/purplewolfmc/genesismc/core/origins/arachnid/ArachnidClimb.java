@@ -38,10 +38,14 @@ public class ArachnidClimb implements Listener {
                     p.getEyeLocation().getBlock().getRelative(BlockFace.SOUTH).getType() != AIR) {
                 Block block = p.getTargetBlock(null, 2);
                 Location bl = block.getLocation();
-                if (block.getType() != AIR && !p.isSneaking()) {
-                    p.addPotionEffect(new PotionEffect(PotionEffectType.LEVITATION, 3, 1, false, false, false));
-                }else if(!p.isSneaking()){
-                    p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_FALLING, 3, 1, false, false, false));
+                if (block.getType() != AIR && p.isSneaking()) {
+                    if (!p.getLocation().getBlock().getRelative(BlockFace.DOWN).getType().toString().contains("STAIRS")){
+                        p.addPotionEffect(new PotionEffect(PotionEffectType.LEVITATION, 4, 1, false, false, false));
+                }
+                }else{
+                    if (!p.getLocation().getBlock().getRelative(BlockFace.DOWN).getType().toString().contains("stair")) {
+                        p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_FALLING, 4, 3, false, false, false));
+                    }
                 }
             }
         }

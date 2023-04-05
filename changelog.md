@@ -24,8 +24,9 @@
 -fixed bug where weaver origin ability would not have lore
 -added night vision to arachnid
 -added climbing abilities to arachnid
-    -must be looking at block and not shifting to climb
-    -shifting will lower you
+    -must be looking at block and shifting to climb
+    -not shifting will lower you
+-fixed arachnid climb always triggering on stairs
 </pre>
 <hr>
 <header>Again, still in early beta. Most features do not work atm.</header>
