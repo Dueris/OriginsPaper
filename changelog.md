@@ -36,7 +36,6 @@
 -fixed orb disable config
 -fixed view on join
 
-
 </pre>
 <hr>
 <header>Again, still in early beta. Most features do not work atm.</header>
