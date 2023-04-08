@@ -16,6 +16,12 @@ public class JoiningHandler implements Listener {
     @EventHandler
     public void onJoinFirst(PlayerJoinEvent e) {
         Player p = e.getPlayer();
+
+        if(!p.getScoreboardTags().contains("chosen")){
+            p.addScoreboardTag("choosing");
+            e.setJoinMessage("");
+        }
+
         if (Bukkit.getServer().getPluginManager().isPluginEnabled("Geyser-Spigot")) {
             FloodgateApi FloodgateAPI = FloodgateApi.getInstance();
             UUID uuid = p.getUniqueId();

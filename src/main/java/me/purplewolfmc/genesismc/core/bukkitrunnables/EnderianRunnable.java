@@ -65,11 +65,6 @@ public class EnderianRunnable extends BukkitRunnable {
                         p.getInventory().getItemInMainHand().setAmount(amt - 1);
                     }
                 }
-                if (p.getScoreboardTags().contains("enderian")) {
-                    if(p.getNearbyEntities(15, 15, 15).equals(EntityType.SPLASH_POTION)){
-                        p.damage(2);
-                    }
-                }
             }
 
         }

@@ -28,9 +28,11 @@ public class BetaWaterProt extends SubCommand {
 
     @Override
     public void perform(Player p, String[] args) {
-        ItemStack enchbook = new ItemStack(Material.ENCHANTED_BOOK);
-        enchbook.addEnchantment(waterProtectionEnchant, 1);
-        enchbook.setLore(Arrays.asList(ChatColor.GRAY + "Water Protection I"));
-        p.getInventory().addItem(enchbook);
+        if (p.hasPermission("genesismc.origins.cmd.beta") && p.hasPermission("genesismc.origins.beta.waterprot")) {
+            ItemStack enchbook = new ItemStack(Material.ENCHANTED_BOOK);
+            enchbook.addEnchantment(waterProtectionEnchant, 1);
+            enchbook.setLore(Arrays.asList(ChatColor.GRAY + "Water Protection I"));
+            p.getInventory().addItem(enchbook);
+        }
     }
 }

@@ -14,7 +14,6 @@ public class GenesisCommandManager implements CommandExecutor {
     public GenesisCommandManager(){
         subCommands.add(new GenesisChoosing());
         subCommands.add(new Purge());
-        subCommands.add(new GenesisHelp());
         subCommands.add(new Reload());
         subCommands.add(new Texture());
         subCommands.add(new CommandListCMD());

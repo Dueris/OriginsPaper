@@ -25,7 +25,7 @@ public class ConfigCMD extends SubCommand {
 
     @Override
     public void perform(Player p, String[] args) {
-        if (p.isOp()) {
+        if (p.hasPermission("genesismc.origins.cmd.config.dump")) {
             getServer().getConsoleSender().sendMessage(ChatColor.LIGHT_PURPLE + "[GenesisMC] DUMPING PLUGIN-API FILES:");
             getServer().getConsoleSender().sendMessage(ChatColor.GRAY + "Loading config file:" +
                     getPluginManager().getPlugin("genesismc").getConfig().getValues(Boolean.parseBoolean("all")) +

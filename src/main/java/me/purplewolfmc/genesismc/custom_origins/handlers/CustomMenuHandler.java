@@ -54,69 +54,71 @@ public class CustomMenuHandler implements Listener {
                                     if(originpack_mainclass.exists()){
                                         YamlConfiguration mainconfig = new YamlConfiguration();
                                         mainconfig = YamlConfiguration.loadConfiguration(originpack_mainclass);
-                                        if (e.getView().getTitle().equalsIgnoreCase(LIGHT_PURPLE + "Origins Menu")){
-                                            if (e.getCurrentItem() != null) {
-                                                if(e.getCurrentItem().getType() == Material.TIPPED_ARROW) {
-                                                    if (custom_folder.listFiles().length <= 21) {
-                                                        Inventory customOriginsMenu = Bukkit.createInventory(p, 27, "Custom Origins");
-                                                        ItemStack bar_wall = new ItemStack(Material.IRON_BARS);
-                                                        ItemStack empty_slot = new ItemStack(AIR);
+                                        if (e.getView().getTitle().equalsIgnoreCase(LIGHT_PURPLE + "Origins Menu")) {
+                                            if (p.hasPermission("genesismc.choosing.custom.canchoose")) {
+                                                if (e.getCurrentItem() != null) {
+                                                    if (e.getCurrentItem().getType() == Material.TIPPED_ARROW) {
+                                                        if (custom_folder.listFiles().length <= 21) {
+                                                            Inventory customOriginsMenu = Bukkit.createInventory(p, 27, "Custom Origins");
+                                                            ItemStack bar_wall = new ItemStack(Material.IRON_BARS);
+                                                            ItemStack empty_slot = new ItemStack(AIR);
 
-                                                        if(custom_folder.listFiles().length > 1){
-
-                                                        }
-                                                        if (originpack_mainclass.exists()) {
-                                                            if (mainconfig.getString("icon").equalsIgnoreCase(null)) {
-                                                                ItemStack custom_slot = new ItemStack(DIRT);
-                                                                custom_slot.setAmount(1);
-                                                                ItemMeta custommeta = custom_slot.getItemMeta();
-                                                                if (!mainconfig.getString("name").equalsIgnoreCase(null)) {
-                                                                    custommeta.setDisplayName(mainconfig.getString("name"));
-                                                                    custom_slot.setItemMeta(custommeta);
-                                                                    ItemStack[] custom_items = {bar_wall, empty_slot, empty_slot, empty_slot, empty_slot, empty_slot, empty_slot, empty_slot, bar_wall, orb, empty_slot, empty_slot, empty_slot, empty_slot, empty_slot, empty_slot, empty_slot, orb, bar_wall, empty_slot, empty_slot, empty_slot, empty_slot, empty_slot, empty_slot, empty_slot, bar_wall};
-                                                                    customOriginsMenu.setContents(custom_items);
-                                                                    customOriginsMenu.addItem(custom_slot);
-                                                                    p.openInventory(customOriginsMenu);
-                                                                }else{
-                                                                    getServer().getConsoleSender().sendMessage(ChatColor.RED + "[GenesisMC] You need to provide a name for custom origin");
-                                                                }
-                                                            } else {
-                                                                ItemStack custom_slot = new ItemStack(Material.valueOf(mainconfig.getString("icon")));
-                                                                custom_slot.setAmount(1);
-                                                                ItemMeta custommeta = custom_slot.getItemMeta();
-                                                                if (!mainconfig.getString("name").equalsIgnoreCase(null)) {
-                                                                    custommeta.setDisplayName(mainconfig.getString("name"));
-                                                                    custom_slot.setItemMeta(custommeta);
-                                                                    customOriginsMenu.addItem(custom_slot);
-                                                                    p.openInventory(customOriginsMenu);
-                                                                    ItemStack[] custom_items = {bar_wall, empty_slot, empty_slot, empty_slot, empty_slot, empty_slot, empty_slot, empty_slot, bar_wall, orb, empty_slot, empty_slot, empty_slot, empty_slot, empty_slot, empty_slot, empty_slot, orb, bar_wall, empty_slot, empty_slot, empty_slot, empty_slot, empty_slot, empty_slot, empty_slot, bar_wall};
-                                                                    customOriginsMenu.setContents(custom_items);
-                                                                    customOriginsMenu.addItem(custom_slot);
-                                                                    p.openInventory(customOriginsMenu);
-                                                                }else{
-                                                                    getServer().getConsoleSender().sendMessage(ChatColor.RED + "[GenesisMC] You need to provide a name for custom origin");
-                                                                }
+                                                            if (custom_folder.listFiles().length > 1) {
 
                                                             }
-
-                                                        }else{
-                                                            ItemStack[] custom_items = {bar_wall, empty_slot, empty_slot, empty_slot, empty_slot, empty_slot, empty_slot, empty_slot, bar_wall, orb, empty_slot, empty_slot, empty_slot, empty_slot, empty_slot, empty_slot, empty_slot, orb, bar_wall, empty_slot, empty_slot, empty_slot, empty_slot, empty_slot, empty_slot, empty_slot, bar_wall};
-                                                            customOriginsMenu.setContents(custom_items);
-                                                            p.openInventory(customOriginsMenu);
-                                                        }
-                                                    }else{
-                                                        if (e.getView().getTitle().equalsIgnoreCase(LIGHT_PURPLE + "Origins Menu")){
-                                                            if (e.getCurrentItem() != null) {
-                                                                if(e.getCurrentItem().getType() == Material.TIPPED_ARROW) {
-                                                                    if (custom_folder.listFiles().length <= 21) {
-                                                                        Inventory customOriginsMenu = Bukkit.createInventory(p, 27, "Custom Origins");
-                                                                        ItemStack bar_wall = new ItemStack(Material.IRON_BARS);
-                                                                        ItemStack empty_slot = new ItemStack(Material.RED_STAINED_GLASS_PANE);
-
-
+                                                            if (originpack_mainclass.exists()) {
+                                                                if (mainconfig.getString("icon").equalsIgnoreCase(null)) {
+                                                                    ItemStack custom_slot = new ItemStack(DIRT);
+                                                                    custom_slot.setAmount(1);
+                                                                    ItemMeta custommeta = custom_slot.getItemMeta();
+                                                                    if (!mainconfig.getString("name").equalsIgnoreCase(null)) {
+                                                                        custommeta.setDisplayName(mainconfig.getString("name"));
+                                                                        custom_slot.setItemMeta(custommeta);
                                                                         ItemStack[] custom_items = {bar_wall, empty_slot, empty_slot, empty_slot, empty_slot, empty_slot, empty_slot, empty_slot, bar_wall, orb, empty_slot, empty_slot, empty_slot, empty_slot, empty_slot, empty_slot, empty_slot, orb, bar_wall, empty_slot, empty_slot, empty_slot, empty_slot, empty_slot, empty_slot, empty_slot, bar_wall};
                                                                         customOriginsMenu.setContents(custom_items);
+                                                                        customOriginsMenu.addItem(custom_slot);
                                                                         p.openInventory(customOriginsMenu);
+                                                                    } else {
+                                                                        getServer().getConsoleSender().sendMessage(ChatColor.RED + "[GenesisMC] You need to provide a name for custom origin");
+                                                                    }
+                                                                } else {
+                                                                    ItemStack custom_slot = new ItemStack(Material.valueOf(mainconfig.getString("icon")));
+                                                                    custom_slot.setAmount(1);
+                                                                    ItemMeta custommeta = custom_slot.getItemMeta();
+                                                                    if (!mainconfig.getString("name").equalsIgnoreCase(null)) {
+                                                                        custommeta.setDisplayName(mainconfig.getString("name"));
+                                                                        custom_slot.setItemMeta(custommeta);
+                                                                        customOriginsMenu.addItem(custom_slot);
+                                                                        p.openInventory(customOriginsMenu);
+                                                                        ItemStack[] custom_items = {bar_wall, empty_slot, empty_slot, empty_slot, empty_slot, empty_slot, empty_slot, empty_slot, bar_wall, orb, empty_slot, empty_slot, empty_slot, empty_slot, empty_slot, empty_slot, empty_slot, orb, bar_wall, empty_slot, empty_slot, empty_slot, empty_slot, empty_slot, empty_slot, empty_slot, bar_wall};
+                                                                        customOriginsMenu.setContents(custom_items);
+                                                                        customOriginsMenu.addItem(custom_slot);
+                                                                        p.openInventory(customOriginsMenu);
+                                                                    } else {
+                                                                        getServer().getConsoleSender().sendMessage(ChatColor.RED + "[GenesisMC] You need to provide a name for custom origin");
+                                                                    }
+
+                                                                }
+
+                                                            } else {
+                                                                ItemStack[] custom_items = {bar_wall, empty_slot, empty_slot, empty_slot, empty_slot, empty_slot, empty_slot, empty_slot, bar_wall, orb, empty_slot, empty_slot, empty_slot, empty_slot, empty_slot, empty_slot, empty_slot, orb, bar_wall, empty_slot, empty_slot, empty_slot, empty_slot, empty_slot, empty_slot, empty_slot, bar_wall};
+                                                                customOriginsMenu.setContents(custom_items);
+                                                                p.openInventory(customOriginsMenu);
+                                                            }
+                                                        } else {
+                                                            if (e.getView().getTitle().equalsIgnoreCase(LIGHT_PURPLE + "Origins Menu")) {
+                                                                if (e.getCurrentItem() != null) {
+                                                                    if (e.getCurrentItem().getType() == Material.TIPPED_ARROW) {
+                                                                        if (custom_folder.listFiles().length <= 21) {
+                                                                            Inventory customOriginsMenu = Bukkit.createInventory(p, 27, "Custom Origins");
+                                                                            ItemStack bar_wall = new ItemStack(Material.IRON_BARS);
+                                                                            ItemStack empty_slot = new ItemStack(Material.RED_STAINED_GLASS_PANE);
+
+
+                                                                            ItemStack[] custom_items = {bar_wall, empty_slot, empty_slot, empty_slot, empty_slot, empty_slot, empty_slot, empty_slot, bar_wall, orb, empty_slot, empty_slot, empty_slot, empty_slot, empty_slot, empty_slot, empty_slot, orb, bar_wall, empty_slot, empty_slot, empty_slot, empty_slot, empty_slot, empty_slot, empty_slot, bar_wall};
+                                                                            customOriginsMenu.setContents(custom_items);
+                                                                            p.openInventory(customOriginsMenu);
+                                                                        }
                                                                     }
                                                                 }
                                                             }
@@ -186,9 +188,9 @@ public class CustomMenuHandler implements Listener {
                                 }
                             }
                         }else{
-                            if (e.getView().getTitle().equalsIgnoreCase(LIGHT_PURPLE + "Origins Menu")){
+                            if (e.getView().getTitle().equalsIgnoreCase(LIGHT_PURPLE + "Origins Menu")) {
                                 if (e.getCurrentItem() != null) {
-                                    if(e.getCurrentItem().getType() == Material.TIPPED_ARROW) {
+                                    if (e.getCurrentItem().getType() == Material.TIPPED_ARROW) {
                                         if (custom_folder.listFiles().length <= 21) {
                                             Inventory customOriginsMenu = Bukkit.createInventory(p, 18, "Custom Origins");
                                             ItemStack bar_wall = new ItemStack(Material.IRON_BARS);

@@ -4,7 +4,7 @@ main: me.purplewolfmc.genesismc.core.GenesisMC
 api-version: 1.19
 authors: [ PurpleWolfMC ]
 description: Genesis Plugin for SpigotMC
-website: https://twitch.tv/PurpleWolfMC
+website: https://genesismc.gitbook.io/genesismc/
 commands:
   origins:
     description: Main Origins Directory
@@ -14,13 +14,65 @@ commands:
   shulker:
     description: shulk main command
 permissions:
-  genesismc.origins.purge:
+  genesismc.origins.cmd.beta:
     default: op
-  genesismc.origins.reload:
+  genesismc.origins.human:
+    default: true
+  genesismc.origins.enderian:
+    default: true
+  genesismc.origins.shulk:
+    default: true
+  genesismc.origins.arachnid:
+    default: true
+  genesismc.origins.creep:
+    default: true
+  genesismc.origins.slimeling:
+    default: true
+  genesismc.origins.phantom:
+    default: true
+  genesismc.origins.vexian:
+    default: true
+  genesismc.origins.blazeborn:
+    default: true
+  genesismc.origins.starborne:
+    default: true
+  genesismc.origins.merling:
+    default: true
+  genesismc.origins.allay:
+    default: true
+  genesismc.origins.rabbit:
+    default: true
+  genesismc.origins.bee:
+    default: true
+  genesismc.origins.elytrian:
+    default: true
+  genesismc.origins.avian:
+    default: true
+  genesismc.origins.piglin:
+    default: true
+  genesismc.origins.dragonborne:
+    default: true
+  genesismc.origins.cmd.main:
+    default: true
+  genesismc.origins.cmd.commandlist:
+    default: true
+  genesismc.origins.cmd.config.dump:
     default: op
-  genesismc.origins.choose:
-    default: not op
-  genesismc.origins.rechoose:
-    default: not op
-  genesismc.origins.config:
+  genesismc.origins.cmd.choose:
+    default: true
+  genesismc.origins.cmd.purge:
     default: op
+  genesismc.origins.cmd.reload:
+    default: op
+  genesismc.origins.cmd.texture:
+    default: true
+  genesismc.origins.beta.orboforigin:
+    default: op
+  genesismc.origins.beta.waterprot:
+    default: op
+  genesismc.choosing.canchoose:
+    default: true
+  genesismc.choosing.custom.canchoose:
+    default: true
+  genesismc.choosing.rechoose:
+    default: true

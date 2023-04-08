@@ -22,7 +22,7 @@ public class Purge extends SubCommand implements Listener {
 
     @Override
     public void perform(Player p, String[] args) {
-        if (p.hasPermission("genesismc.origins.purge")) {
+        if (p.hasPermission("genesismc.origins.cmd.purge")) {
             if (args.length > 1) {
                 Player target = Bukkit.getPlayer(args[1]);
 

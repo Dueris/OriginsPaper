@@ -1,13 +1,9 @@
 package me.purplewolfmc.genesismc.core;
 
-import me.purplewolfmc.genesismc.core.bukkitrunnables.ArachnidRunnable;
-import me.purplewolfmc.genesismc.core.bukkitrunnables.EnderianDamageRunnable;
-import me.purplewolfmc.genesismc.core.bukkitrunnables.EnderianRunnable;
-import me.purplewolfmc.genesismc.core.bukkitrunnables.ShulkRunnable;
+import me.purplewolfmc.genesismc.core.bukkitrunnables.*;
 import me.purplewolfmc.genesismc.core.commands.BetaCommands;
 import me.purplewolfmc.genesismc.core.commands.GenesisCommandManager;
 import me.purplewolfmc.genesismc.core.commands.TabAutoComplete;
-import me.purplewolfmc.genesismc.core.commands.subcommands.GenesisHelp;
 import me.purplewolfmc.genesismc.core.commands.subcommands.Purge;
 import me.purplewolfmc.genesismc.core.commands.subcommands.Reload;
 import me.purplewolfmc.genesismc.custom_origins.CustomOrigins;
@@ -31,7 +27,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.lang.reflect.Field;
 import java.util.*;
-import java.util.logging.Logger;
 
 public final class GenesisMC extends JavaPlugin implements Listener {
     private static GenesisMC plugin;
@@ -135,7 +130,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
             getServer().getConsoleSender().sendMessage(ChatColor.GRAY + "[GenesisMC] Loading OriginsChoosingCommands");
             //method
             dumpCon();
-            getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "[GenesisMC] Successfully loaded version 0.1.5-ALPHA_RELEASE (1.19.4)");
+            getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "[GenesisMC] Successfully loaded version 0.1.5-ALPHA_SNAPSHOT (1.19.4)");
             getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "[GenesisMC] Successfully loaded API version 0.1.1-BETA (1.19.4)");
             getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "[GenesisMC] Successfully loaded CONFIG version 0138` (1.19.4)");
             if (GenesisDataFiles.getPlugCon().getString("use-purplewolfapi").equalsIgnoreCase("false")) {
@@ -143,7 +138,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
                 getServer().getPluginManager().getPlugin("origins-spigotmc").reloadConfig();
             }
         } else {
-            getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "[GenesisMC] Successfully loaded version 0.1.5-ALPHA_RELEASE (1.19.4)");
+            getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "[GenesisMC] Successfully loaded version 0.1.5-ALPHA_SNAPSHOT (1.19.4)");
         }
         if (getServer().getPluginManager().getPlugins().toString().contains("PurpleWolfAPI") || getServer().getPluginManager().isPluginEnabled("PurpleWolfAPI") || getServer().getPluginManager().getPlugin("PurpleWolfAPI") != null) {
             getServer().getConsoleSender().sendMessage(ChatColor.LIGHT_PURPLE + "[GenesisMC - PurpleWolfAPI] Successfully injected PurpleWolfAPI into plugin");
@@ -169,7 +164,6 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         getServer().getPluginManager().registerEvents(new EnderMain(), this);
         getServer().getPluginManager().registerEvents(new Purge(), this);
         getServer().getPluginManager().registerEvents(new Reload(), this);
-        getServer().getPluginManager().registerEvents(new GenesisHelp(), this);
         getServer().getPluginManager().registerEvents(new ShulkerMain(), this);
         getServer().getPluginManager().registerEvents(new JoiningHandler(), this);
         getServer().getPluginManager().registerEvents(new EnchantProtEvent(), this);
@@ -198,6 +192,9 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 //arachnid
         ArachnidRunnable arachnidrun = new ArachnidRunnable();
         arachnidrun.runTaskTimer(this, 0, 15);
+//forcechoose
+        ForceChooseRunnable forcechoose = new ForceChooseRunnable();
+        forcechoose.runTaskTimer(this, 0, 4);
 
 //enchantments
         waterProtectionEnchant = new WaterProtection("waterprot");

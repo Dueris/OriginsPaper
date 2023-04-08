@@ -25,7 +25,9 @@ public class Reload extends SubCommand implements Listener {
 
   @Override
   public void perform(Player p, String[] args) {
-    final Plugin plugin = Bukkit.getServer().getPluginManager().getPlugin("GenesisMC");
-    GenesisDataFiles.reload();
+    if (p.hasPermission("genesismc.origins.cmd.reload")) {
+      final Plugin plugin = Bukkit.getServer().getPluginManager().getPlugin("GenesisMC");
+      GenesisDataFiles.reload();
+    }
   }
 }

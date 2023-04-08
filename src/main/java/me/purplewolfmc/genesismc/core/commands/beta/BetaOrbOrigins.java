@@ -24,7 +24,9 @@ public class BetaOrbOrigins extends SubCommand {
 
     @Override
     public void perform(Player p, String[] args) {
-        p.getInventory().addItem(orb);
-        p.sendMessage("test");
+        if (p.hasPermission("genesismc.origins.cmd.beta") && p.hasPermission("genesismc.origins.beta.orboforigin")) {
+            p.getInventory().addItem(orb);
+            p.sendMessage("test");
+        }
     }
 }

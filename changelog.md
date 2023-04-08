@@ -27,6 +27,14 @@
     -must be looking at block and shifting to climb
     -not shifting will lower you
 -fixed arachnid climb always triggering on stairs
+-added new perms
+-fixed merling bukkit inv name
+-made origins choose open on selection menu
+-fixed force choose
+-put player in spectator upon joining server, sends join message after
+-force choose bugs fixed
+-fixed orb disable config
+-fixed view on join
 
 </pre>
 <hr>

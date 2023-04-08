@@ -1,26 +1,42 @@
 --------------------------------------------------------------------------------------------------------------------------
 Next:
 0.1.5 - 1.20
--Add Anvil compatibility with Water Protection
--Add option to disable waterprot in enderian
--add config options to configure name and crafting recepie for orb of origins
--add disable-orboforigins option
--change enchantment for disabled origins to curse of vanishing and curse of binding
--add DisableRunnable
--Work on sendform for Bedrock players
--check docs and add all arachnid stuff
--add origins-expansioned.yml
--figure out how to add structures. Origin Ruins. REALLY rare, feature turned to false automatically.
-      -adds datapack containing custom structure. primarily above/bellow ground in mountains
-      -contains 1 singular orb of origin. has many traps
+-add persistant data containing to plugin in place of tags 69%
+      -human-id: 0004013, "origin"
+      -enderian-id: 0401065, "origin"
+      -shulk-id: 6503044, "origin"
+      -arachnid-id: 1709012, "origin"
+      -creep-id: 0707068, "origin"
+      -slimeling-id: 2304045, "origin"
+      -phantom-id: 7300041, "origin"
+      -vexian-id: 9602042, "origin"
+      -blazeborn-id: 9811027, "origin"
+      -starborne-id: 7303065, "origin"
+      -merling-id: 1310018, "origin"
+      -allay-id: 1205048, "origin"
+      -rabbit-id: 5308033, "origin"
+      -bee-id: 8906022, "origin"
+      -elytrian-id: 6211006, "origin"
+      -avian-id: 4501011, "origin"
+      -piglin-id: 6211021, "origin"
+      -dragonborne-id: 4307015, "origin"
+      -chosen-id: 1, "chosen"
 
--------------------------------------------------------------------------------------------------------------------------
--add new project dir
-      -CreepMain
-      -CreepSkin
-      -CreepExplode
--add custom origin name drivables
--add choosing methods for custom origins
+-arachnid bug fix 70%
+      -#11 visual bug 71%
+-fix orb config 72%
+-change first veiw on choosing 73%
+-fix water cauldrons 74%
+-add origins-expanded.yml 75%
+-add anvil compatibility 79%
+-add option to disable water prot in enderian.yml 80%
+-add orboforigins yml stuff 81%
+-add advancement to java player when they choose 83%
+-add creep origin 95%
+-fix bugs and add other minor changes 96%, 97%, 98%, 99%
+-finish, update git fully and push to modrinth and discord 100%
+
+
 /origins choose
 /origins help(lists what origin you have)
 /origins commands(lists commands)

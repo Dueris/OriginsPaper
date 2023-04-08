@@ -23,7 +23,6 @@ public class TabAutoComplete implements TabCompleter {
                 arguments.add("choose");
                 arguments.add("texture");
                 arguments.add("commands");
-                arguments.add("help");
                 if (sender.isOp()) {
                     arguments.add("config");
                     arguments.add("reload");

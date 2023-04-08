@@ -69,7 +69,7 @@ public class EnderTeleport implements Listener {
         }else{
             if (e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.LEFT_CLICK_AIR || e.getAction() == Action.LEFT_CLICK_BLOCK || e.getAction() == Action.RIGHT_CLICK_BLOCK) {
                 if (e.getItem() != null) {
-                    if (e.getItem().equals(infinpearl)) {
+                    if (e.getItem().isSimilar(infinpearl)) {
                         e.setCancelled(true);
                         e.getItem().setType(AIR);
                     }
