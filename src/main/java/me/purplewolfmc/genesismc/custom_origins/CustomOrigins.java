@@ -88,8 +88,6 @@ public class CustomOrigins implements Listener {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        }else{
-            getServer().getConsoleSender().sendMessage("[GenesisMC] No custom origins loaded");
         }
 
     }

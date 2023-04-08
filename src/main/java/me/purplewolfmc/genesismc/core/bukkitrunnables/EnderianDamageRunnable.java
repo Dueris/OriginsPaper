@@ -40,7 +40,6 @@ public class EnderianDamageRunnable extends BukkitRunnable {
                                 float prot3 = (float) 0.6;
                                 float prot4 = (float) 0.9;
                                 if (p.getInventory().getHelmet() != null) {
-                                    if (p.getEquipment().getHelmet().getEnchantments().containsKey(waterProtectionEnchant)) {
                                         if (p.getEquipment().getHelmet().getLore().contains(ChatColor.GRAY + "Water Protection I")) {
                                             helemt_modifier = prot1;
                                         } else if (p.getEquipment().getHelmet().getLore().contains(ChatColor.GRAY + "Water Protection II")) {
@@ -49,13 +48,11 @@ public class EnderianDamageRunnable extends BukkitRunnable {
                                             helemt_modifier = prot3;
                                         } else if (p.getEquipment().getHelmet().getLore().contains(ChatColor.GRAY + "Water Protection IV")) {
                                             helemt_modifier = prot4;
-                                        }
-                                    } else {
+                                        } else {
                                         helemt_modifier = 0;
                                     }
                                 }
                                 if (p.getInventory().getChestplate() != null) {
-                                    if (p.getEquipment().getChestplate().getEnchantments().containsKey(waterProtectionEnchant)) {
                                         if (p.getEquipment().getChestplate().getLore().contains(ChatColor.GRAY + "Water Protection I")) {
                                             chestplate_modifier = prot1;
                                         } else if (p.getEquipment().getChestplate().getLore().contains(ChatColor.GRAY + "Water Protection II")) {
@@ -64,13 +61,11 @@ public class EnderianDamageRunnable extends BukkitRunnable {
                                             chestplate_modifier = prot3;
                                         } else if (p.getEquipment().getChestplate().getLore().contains(ChatColor.GRAY + "Water Protection IV")) {
                                             chestplate_modifier = prot4;
-                                        }
-                                    } else {
+                                        } else {
                                         chestplate_modifier = 0;
                                     }
                                 }
                                 if (p.getInventory().getLeggings() != null) {
-                                    if (p.getEquipment().getLeggings().getEnchantments().containsKey(waterProtectionEnchant)) {
                                         if (p.getEquipment().getLeggings().getLore().contains(ChatColor.GRAY + "Water Protection I")) {
                                             leggins_modifier = prot1;
                                         } else if (p.getEquipment().getLeggings().getLore().contains(ChatColor.GRAY + "Water Protection II")) {
@@ -79,13 +74,11 @@ public class EnderianDamageRunnable extends BukkitRunnable {
                                             leggins_modifier = prot3;
                                         } else if (p.getEquipment().getLeggings().getLore().contains(ChatColor.GRAY + "Water Protection IV")) {
                                             leggins_modifier = prot4;
-                                        }
-                                    } else {
+                                        } else {
                                         leggins_modifier = 0;
                                     }
                                 }
                                 if (p.getInventory().getBoots() != null) {
-                                    if (p.getEquipment().getBoots().getEnchantments().containsKey(waterProtectionEnchant)) {
                                         if (p.getEquipment().getBoots().getLore().contains(ChatColor.GRAY + "Water Protection I")) {
                                             boots_modifier = prot1;
                                         } else if (p.getEquipment().getBoots().getLore().contains(ChatColor.GRAY + "Water Protection II")) {
@@ -94,8 +87,7 @@ public class EnderianDamageRunnable extends BukkitRunnable {
                                             boots_modifier = prot3;
                                         } else if (p.getEquipment().getBoots().getLore().contains(ChatColor.GRAY + "Water Protection IV")) {
                                             boots_modifier = prot4;
-                                        }
-                                    } else {
+                                        } else {
                                         boots_modifier = 0;
                                     }
                                 }

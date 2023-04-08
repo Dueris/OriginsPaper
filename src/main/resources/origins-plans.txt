@@ -22,9 +22,6 @@ Next:
       -dragonborne-id: 4307015, "origin"
       -chosen-id: 1, "chosen"
 
--fix water cauldrons 76%
--add anvil compatibility 79%
--add option to disable water prot in enderian.yml 80%
 -add orboforigins yml stuff 81%
 -add advancement to java player when they choose 83%
 -add creep origin 95%

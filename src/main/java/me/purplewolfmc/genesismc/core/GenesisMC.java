@@ -6,6 +6,7 @@ import me.purplewolfmc.genesismc.core.commands.GenesisCommandManager;
 import me.purplewolfmc.genesismc.core.commands.TabAutoComplete;
 import me.purplewolfmc.genesismc.core.commands.subcommands.Purge;
 import me.purplewolfmc.genesismc.core.commands.subcommands.Reload;
+import me.purplewolfmc.genesismc.core.enchantments.WaterProtAnvil;
 import me.purplewolfmc.genesismc.custom_origins.CustomOrigins;
 import me.purplewolfmc.genesismc.custom_origins.handlers.CustomMenuHandler;
 import me.purplewolfmc.genesismc.core.enchantments.EnchantProtEvent;
@@ -171,6 +172,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         getServer().getPluginManager().registerEvents(new ArachnidMain(), this);
         getServer().getPluginManager().registerEvents(new CustomMenuHandler(), this);
         getServer().getPluginManager().registerEvents(new ArachnidClimb(), this);
+        getServer().getPluginManager().registerEvents(new WaterProtAnvil(), this);
         plugin = this;
         getServer().getPluginManager().registerEvents(new DataContainer(), this);
         if (GenesisDataFiles.getBeta().getString("update-beta").equalsIgnoreCase("true")) {
@@ -186,6 +188,8 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         enderrun.runTaskTimer(this, 0, 5);
         EnderianDamageRunnable enderdamagerun = new EnderianDamageRunnable();
         enderdamagerun.runTaskTimer(this, 0, 10);
+        EnchantRunnable enchantRunnable = new EnchantRunnable();
+        enchantRunnable.runTaskTimer(this, 0, 5);
 //shulk
         ShulkRunnable shulkrun = new ShulkRunnable();
         shulkrun.runTaskTimer(this, 0, 5);
@@ -194,7 +198,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         arachnidrun.runTaskTimer(this, 0, 15);
 //forcechoose
         ForceChooseRunnable forcechoose = new ForceChooseRunnable();
-        forcechoose.runTaskTimer(this, 0, 4);
+        forcechoose.runTaskTimer(this, 0, 5);
 
 //enchantments
         waterProtectionEnchant = new WaterProtection("waterprot");

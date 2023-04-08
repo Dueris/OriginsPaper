@@ -41,7 +41,9 @@
 -finished new storage methods
 -fixed bug where shulk would trigger on all entities
 -fixed tons of bugs where things would trigger on random entities upon interacting with them
-
+-added anvil compatibility with water protection
+-fixed bug where enchants would be messed up
+-fixed bug where one type of enchantment would do all things
 </pre>
 <hr>
 <header>Again, still in early beta. Most features do not work atm.</header>
