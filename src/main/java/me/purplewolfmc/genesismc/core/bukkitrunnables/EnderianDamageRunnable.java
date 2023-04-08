@@ -1,9 +1,12 @@
 package me.purplewolfmc.genesismc.core.bukkitrunnables;
 
+import me.purplewolfmc.genesismc.core.GenesisMC;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
+import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.HashMap;
@@ -20,10 +23,12 @@ public class EnderianDamageRunnable extends BukkitRunnable {
     @Override
     public void run() {
         for(Player p : Bukkit.getOnlinePlayers()) {
-            if (p.getScoreboardTags().contains("enderian")) {
+            PersistentDataContainer data = p.getPersistentDataContainer();
+            int originid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER);
+            if (originid == 0401065) {
                 Block b = p.getWorld().getHighestBlockAt(p.getLocation());
                 if(!(p.isInsideVehicle())){
-                    if(p.isInWaterOrRainOrBubbleColumn() || p.getLocation().getBlock().getRelative(BlockFace.UP).getType().equals(Material.WATER_CAULDRON) || p.getLocation().getBlock().getRelative(BlockFace.DOWN).getType().equals(Material.WATER_CAULDRON)) {
+                    if(p.isInWaterOrRainOrBubbleColumn()) {
                         if (p.getGameMode().equals(GameMode.SURVIVAL) || p.getGameMode().equals(GameMode.ADVENTURE)) {
                             float curhealth = (float) p.getHealth();
                                 float helemt_modifier = 0;

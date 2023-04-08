@@ -1,7 +1,9 @@
 package me.purplewolfmc.genesismc.core.origins.arachnid;
 
+import me.purplewolfmc.genesismc.core.GenesisMC;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -9,6 +11,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.persistence.PersistentDataType;
 
 import java.util.EnumSet;
 import java.util.Random;
@@ -24,10 +28,14 @@ public class ArachnidMain implements Listener {
     }
     @EventHandler
     public void onEatArachnid(PlayerInteractEvent e){
-        if(e.getItem() != null) {
+        PersistentDataContainer data = e.getPlayer().getPersistentDataContainer();
+        int originid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER);
+        if (originid == 1709012) {
+            if (e.getItem() != null) {
                 if (!meat.contains(e.getItem().getType()) && excludable.contains(e.getItem())) {
                     e.setCancelled(true);
                 }
+            }
         }
     }
 
@@ -35,7 +43,9 @@ public class ArachnidMain implements Listener {
     public void onAttack(EntityDamageByEntityEvent e) {
         if (e.getDamager() instanceof Player) {
             Player p = (Player) e.getDamager();
-            if (p.getScoreboardTags().contains("arachnid")) {
+            PersistentDataContainer data = p.getPersistentDataContainer();
+            int originid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER);
+            if (originid == 1709012) {
                 Location loc = e.getEntity().getLocation();
                 Block b = loc.getBlock();
                 Random random = new Random();
@@ -49,10 +59,14 @@ public class ArachnidMain implements Listener {
 
     @EventHandler
     public void onDamagePoison(EntityDamageEvent e){
-        if(e.getCause().equals(EntityDamageEvent.DamageCause.POISON)){
-            if(e.getEntity() instanceof Player){
-                e.setCancelled(true);
-                e.setDamage(0);
+        if(e.getCause().equals(EntityDamageEvent.DamageCause.POISON)) {
+            PersistentDataContainer data = e.getEntity().getPersistentDataContainer();
+            int originid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER);
+            if (originid == 1709012) {
+                if (e.getEntity() instanceof Player) {
+                    e.setCancelled(true);
+                    e.setDamage(0);
+                }
             }
         }
     }

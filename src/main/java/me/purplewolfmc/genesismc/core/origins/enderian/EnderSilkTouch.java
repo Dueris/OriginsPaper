@@ -1,8 +1,10 @@
 package me.purplewolfmc.genesismc.core.origins.enderian;
 
 
+import me.purplewolfmc.genesismc.core.GenesisMC;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
 import org.bukkit.block.CreatureSpawner;
 import org.bukkit.block.ShulkerBox;
@@ -11,6 +13,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.persistence.PersistentDataType;
 
 import java.util.EnumSet;
 
@@ -23,7 +27,9 @@ public class EnderSilkTouch implements Listener {
     if (!e.getBlock().getType().equals(Material.AIR)) {
       Player p = e.getPlayer();
       Block b = e.getBlock();
-      if (p.getScoreboardTags().contains("enderian")) {
+      PersistentDataContainer data = p.getPersistentDataContainer();
+      int originid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER);
+      if (originid == 0401065) {
         int ic = 1;
         if (p != null && p.getGameMode().equals(GameMode.SURVIVAL) && p.getEquipment().getItemInMainHand().getType().equals(Material.AIR)) {
           if (!e.getBlock().getType().isItem()) {

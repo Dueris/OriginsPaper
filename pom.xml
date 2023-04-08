@@ -6,7 +6,7 @@
 
     <groupId>me.purplewolfmc</groupId>
     <artifactId>GenesisMC</artifactId>
-    <version>0.1.5-ALPHA</version>
+    <version>0.1.5-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <description>"GenesisMC, bringing the life and fun of the Origins Mod to PaperMC Servers"</description>

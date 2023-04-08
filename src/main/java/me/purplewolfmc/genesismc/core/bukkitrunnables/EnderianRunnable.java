@@ -1,5 +1,6 @@
 package me.purplewolfmc.genesismc.core.bukkitrunnables;
 
+import me.purplewolfmc.genesismc.core.GenesisMC;
 import me.purplewolfmc.genesismc.core.origins.enderian.EnderWater;
 import org.bukkit.*;
 import org.bukkit.block.Block;
@@ -8,6 +9,8 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -20,7 +23,9 @@ public class EnderianRunnable extends BukkitRunnable {
     @Override
     public void run() {
         for(Player p : Bukkit.getOnlinePlayers()) {
-            if (p.getScoreboardTags().contains("enderian")) {
+            PersistentDataContainer data = p.getPersistentDataContainer();
+            int originid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER);
+            if (originid == 0401065) {
                 Block b = p.getWorld().getHighestBlockAt(p.getLocation());
 
                 ItemStack infinpearl = new ItemStack(ENDER_PEARL);
@@ -32,7 +37,7 @@ public class EnderianRunnable extends BukkitRunnable {
                 pearl_meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
                 pearl_meta.setLore(pearl_lore);
                 infinpearl.setItemMeta(pearl_meta);
-                if(p.getScoreboardTags().contains("enderian")){
+                if (originid == 0401065) {
                     p.setCooldown(ENDER_PEARL, 1);
                 }
 

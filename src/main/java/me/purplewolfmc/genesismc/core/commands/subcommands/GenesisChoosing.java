@@ -719,9 +719,11 @@ public class GenesisChoosing extends SubCommand {
                     allmenu.setContents(allmenu_items);
                     p.openInventory(allmenu);
                 }
+            }else {
+                p.sendMessage(ChatColor.RED + "You have already chosen an origin. Ask server operator for origin change, or craft the Orb of Origin to change your origin.");
             }
         } else {
-            p.sendMessage(ChatColor.RED + "You have already chosen an origin. Ask server operator for origin change, or craft the Orb of Origin to change your origin.");
+            p.sendMessage(ChatColor.RED + "You don't have the required permissions to run this command");
         }
     }
 }

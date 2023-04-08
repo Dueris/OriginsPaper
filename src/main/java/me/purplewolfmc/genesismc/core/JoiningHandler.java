@@ -1,10 +1,12 @@
 package me.purplewolfmc.genesismc.core;
 
 import org.bukkit.Bukkit;
+import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.persistence.PersistentDataType;
 import org.geysermc.floodgate.api.FloodgateApi;
 import org.geysermc.geyser.api.GeyserApi;
 import org.geysermc.geyser.api.connection.GeyserConnection;
@@ -20,6 +22,10 @@ public class JoiningHandler implements Listener {
         if(!p.getScoreboardTags().contains("chosen")){
             p.addScoreboardTag("choosing");
             e.setJoinMessage("");
+        }
+
+        if(!p.getPersistentDataContainer().has(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER)){
+            p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER, 0);
         }
 
         if (Bukkit.getServer().getPluginManager().isPluginEnabled("Geyser-Spigot")) {

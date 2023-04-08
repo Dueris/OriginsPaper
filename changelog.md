@@ -35,6 +35,12 @@
 -force choose bugs fixed
 -fixed orb disable config
 -fixed view on join
+-added new storage methods
+-added new originid keys
+-fixed origins bug
+-finished new storage methods
+-fixed bug where shulk would trigger on all entities
+-fixed tons of bugs where things would trigger on random entities upon interacting with them
 
 </pre>
 <hr>

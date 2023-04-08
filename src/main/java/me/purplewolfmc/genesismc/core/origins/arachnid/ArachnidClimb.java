@@ -6,6 +6,7 @@ import it.unimi.dsi.fastutil.ints.AbstractInt2ReferenceFunction;
 import me.purplewolfmc.genesismc.core.GenesisMC;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
@@ -13,6 +14,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
@@ -26,7 +29,9 @@ public class ArachnidClimb implements Listener {
     @EventHandler
     public void climb(PlayerMoveEvent e) {
         Player p = e.getPlayer();
-        if (p.getScoreboardTags().contains("arachnid")){
+        PersistentDataContainer data = p.getPersistentDataContainer();
+        int originid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER);
+        if (originid == 1709012) {
             if (p.getLocation().getBlock().getRelative(BlockFace.EAST).getType() != AIR ||
                     p.getLocation().getBlock().getRelative(BlockFace.WEST).getType() != AIR ||
                     p.getLocation().getBlock().getRelative(BlockFace.NORTH).getType() != AIR ||

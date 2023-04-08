@@ -408,7 +408,6 @@ public class GenesisDataFiles {
 
   public static void setDefaults(){
     //PluginConfig
-    getPlugCon().addDefault("datapack-install", true);
     getPlugCon().addDefault("console-dump-onstartup", false);
     getPlugCon().addDefault("plugin-detection-for-incompatibilities", true);
     getPlugCon().addDefault("use-purplewolfapi", true);
@@ -416,6 +415,7 @@ public class GenesisDataFiles {
     getPlugCon().addDefault("disable-orb_of_origins", false);
     getPlugCon().addDefault("texture-pack_enable", true);
     getPlugCon().addDefault("custom-origins", true);
+    getPlugCon().addDefault("origins-expanded", false);
 
     //BetaConfig
     getBeta().addDefault("update-beta", false);

@@ -15,6 +15,9 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.persistence.PersistentDataType;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -26,6 +29,8 @@ import static org.bukkit.Material.ENDER_PEARL;
 
 public class GenesisChooseListener implements Listener {
     //Orb of Origin Click Event
+
+
     @EventHandler
     public void onOrbClick(PlayerInteractEvent e) {
         Player p = e.getPlayer();
@@ -37,7 +42,8 @@ public class GenesisChooseListener implements Listener {
                             if (e.getItem().getType().equals(Material.MAGMA_CREAM)) {
                                 if (e.getItem().getEnchantments().containsKey(Enchantment.ARROW_INFINITE)) {
                                     if (e.getItem().getItemMeta().getItemFlags().contains(ItemFlag.HIDE_UNBREAKABLE)) {
-                                        p.removeScoreboardTag("chosen");
+                                        p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER, 0);
+                                        p.getScoreboardTags().remove("chosen");
                                     }
                                 }
                             }
@@ -51,6 +57,9 @@ public class GenesisChooseListener implements Listener {
     @EventHandler
     public void onChoosing(InventoryClickEvent e) {
         Player p = (Player) e.getWhoClicked();
+        PersistentDataContainer data = p.getPersistentDataContainer();
+
+        int originid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER);
 
 //Origins Human Menu
         if (e.getView().getTitle().equalsIgnoreCase(BLACK + "Human") || e.getView().getTitle().equalsIgnoreCase(BLACK + "Enderian") || e.getView().getTitle().equalsIgnoreCase(BLACK + "Shulk") || e.getView().getTitle().equalsIgnoreCase(BLACK + "Arachnid") || e.getView().getTitle().equalsIgnoreCase(BLACK + "Creep") || e.getView().getTitle().equalsIgnoreCase(BLACK + "Phantom") || e.getView().getTitle().equalsIgnoreCase(BLACK + "Slimeling") || e.getView().getTitle().equalsIgnoreCase(BLACK + "Vexian") || e.getView().getTitle().equalsIgnoreCase(BLACK + "Blazeborn") || e.getView().getTitle().equalsIgnoreCase(BLACK + "Starborne") || e.getView().getTitle().equalsIgnoreCase(BLACK + "Mermaid") || e.getView().getTitle().equalsIgnoreCase("Allay") || e.getView().getTitle().equalsIgnoreCase(BLACK + "Rabbit") || e.getView().getTitle().equalsIgnoreCase(BLACK + "Bumblebee") || e.getView().getTitle().equalsIgnoreCase(BLACK + "Elytrian") || e.getView().getTitle().equalsIgnoreCase(BLACK + "Avian") || e.getView().getTitle().equalsIgnoreCase(BLACK + "Piglin") || e.getView().getTitle().equalsIgnoreCase(BLACK + "Dragonborne") || e.getView().getTitle().equalsIgnoreCase(BLACK + "Allay")) {
@@ -777,24 +786,7 @@ public class GenesisChooseListener implements Listener {
                     }
 
                     if (e.getCurrentItem().getType() == Material.ENDER_PEARL) {
-                        p.getScoreboardTags().add("enderian");
-                        p.getScoreboardTags().remove("shulker");
-                        p.getScoreboardTags().remove("human");
-                        p.getScoreboardTags().remove("arachnid");
-                        p.getScoreboardTags().remove("creep");
-                        p.getScoreboardTags().remove("phantom");
-                        p.getScoreboardTags().remove("slimeling");
-                        p.getScoreboardTags().remove("vexian");
-                        p.getScoreboardTags().remove("blazeborn");
-                        p.getScoreboardTags().remove("starborne");
-                        p.getScoreboardTags().remove("mermaid");
-                        p.getScoreboardTags().remove("witch");
-                        p.getScoreboardTags().remove("rabbit");
-                        p.getScoreboardTags().remove("bee");
-                        p.getScoreboardTags().remove("elytrian");
-                        p.getScoreboardTags().remove("avian");
-                        p.getScoreboardTags().remove("piglin");
-                        p.getScoreboardTags().remove("dragonborne");
+                        p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER, 0401065);
                         ItemStack infinpearl = new ItemStack(ENDER_PEARL);
 
                         ItemMeta pearl_meta = infinpearl.getItemMeta();
@@ -811,349 +803,71 @@ public class GenesisChooseListener implements Listener {
                         p.getWorld().spawnParticle(Particle.REVERSE_PORTAL, p.getLocation(), 9);
                     }
                     if (e.getCurrentItem().getType() == Material.SHULKER_SHELL) {
-                        p.getScoreboardTags().add("shulker");
-                        p.getScoreboardTags().remove("enderian");
-                        p.getScoreboardTags().remove("human");
-                        p.getScoreboardTags().remove("arachnid");
-                        p.getScoreboardTags().remove("creep");
-                        p.getScoreboardTags().remove("phantom");
-                        p.getScoreboardTags().remove("slimeling");
-                        p.getScoreboardTags().remove("vexian");
-                        p.getScoreboardTags().remove("blazeborn");
-                        p.getScoreboardTags().remove("starborne");
-                        p.getScoreboardTags().remove("mermaid");
-                        p.getScoreboardTags().remove("witch");
-                        p.getScoreboardTags().remove("rabbit");
-                        p.getScoreboardTags().remove("bee");
-                        p.getScoreboardTags().remove("elytrian");
-                        p.getScoreboardTags().remove("avian");
-                        p.getScoreboardTags().remove("piglin");
-                        p.getScoreboardTags().remove("dragonborne");
+                        p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER, 6503044);
                         float walk = 0.185F;
                         p.getAttribute(Attribute.GENERIC_ARMOR).setBaseValue(8);
                         p.setWalkSpeed((float) walk);
                         p.setHealthScale(20);
                     }
                     if (e.getCurrentItem().getType() == Material.PLAYER_HEAD) {
-                        p.getScoreboardTags().add("human");
-                        p.getScoreboardTags().remove("enderian");
-                        p.getScoreboardTags().remove("shulker");
-                        p.getScoreboardTags().remove("arachnid");
-                        p.getScoreboardTags().remove("creep");
-                        p.getScoreboardTags().remove("phantom");
-                        p.getScoreboardTags().remove("slimeling");
-                        p.getScoreboardTags().remove("vexian");
-                        p.getScoreboardTags().remove("blazeborn");
-                        p.getScoreboardTags().remove("starborne");
-                        p.getScoreboardTags().remove("mermaid");
-                        p.getScoreboardTags().remove("witch");
-                        p.getScoreboardTags().remove("rabbit");
-                        p.getScoreboardTags().remove("bee");
-                        p.getScoreboardTags().remove("elytrian");
-                        p.getScoreboardTags().remove("avian");
-                        p.getScoreboardTags().remove("piglin");
-                        p.getScoreboardTags().remove("dragonborne");
+                        p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER, 0004013);
                     }
                     if (e.getCurrentItem().getType() == Material.COBWEB) {
-                        p.getScoreboardTags().add("arachnid");
-                        p.getScoreboardTags().remove("enderian");
-                        p.getScoreboardTags().remove("shulker");
-                        p.getScoreboardTags().remove("human");
-                        p.getScoreboardTags().remove("creep");
-                        p.getScoreboardTags().remove("phantom");
-                        p.getScoreboardTags().remove("slimeling");
-                        p.getScoreboardTags().remove("vexian");
-                        p.getScoreboardTags().remove("blazeborn");
-                        p.getScoreboardTags().remove("starborne");
-                        p.getScoreboardTags().remove("mermaid");
-                        p.getScoreboardTags().remove("witch");
-                        p.getScoreboardTags().remove("rabbit");
-                        p.getScoreboardTags().remove("bee");
-                        p.getScoreboardTags().remove("elytrian");
-                        p.getScoreboardTags().remove("avian");
-                        p.getScoreboardTags().remove("piglin");
-                        p.getScoreboardTags().remove("dragonborne");
+                        p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER, 1709012);
                         p.setHealthScale(14);
                     }
                     if (e.getCurrentItem().getType() == Material.GUNPOWDER) {
-                        p.getScoreboardTags().add("creep");
-                        p.getScoreboardTags().remove("enderian");
-                        p.getScoreboardTags().remove("shulker");
-                        p.getScoreboardTags().remove("arachnid");
-                        p.getScoreboardTags().remove("human");
-                        p.getScoreboardTags().remove("phantom");
-                        p.getScoreboardTags().remove("slimeling");
-                        p.getScoreboardTags().remove("vexian");
-                        p.getScoreboardTags().remove("blazeborn");
-                        p.getScoreboardTags().remove("starborne");
-                        p.getScoreboardTags().remove("mermaid");
-                        p.getScoreboardTags().remove("witch");
-                        p.getScoreboardTags().remove("rabbit");
-                        p.getScoreboardTags().remove("bee");
-                        p.getScoreboardTags().remove("elytrian");
-                        p.getScoreboardTags().remove("avian");
-                        p.getScoreboardTags().remove("piglin");
-                        p.getScoreboardTags().remove("dragonborne");
+                        p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER, 1407068);
                     }
                     if (e.getCurrentItem().getType() == Material.PHANTOM_MEMBRANE) {
-                        p.getScoreboardTags().add("phantom");
-                        p.getScoreboardTags().remove("enderian");
-                        p.getScoreboardTags().remove("shulker");
-                        p.getScoreboardTags().remove("arachnid");
-                        p.getScoreboardTags().remove("creep");
-                        p.getScoreboardTags().remove("human");
-                        p.getScoreboardTags().remove("slimeling");
-                        p.getScoreboardTags().remove("vexian");
-                        p.getScoreboardTags().remove("blazeborn");
-                        p.getScoreboardTags().remove("starborne");
-                        p.getScoreboardTags().remove("mermaid");
-                        p.getScoreboardTags().remove("witch");
-                        p.getScoreboardTags().remove("rabbit");
-                        p.getScoreboardTags().remove("bee");
-                        p.getScoreboardTags().remove("elytrian");
-                        p.getScoreboardTags().remove("avian");
-                        p.getScoreboardTags().remove("piglin");
-                        p.getScoreboardTags().remove("dragonborne");
+                        p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER, 7300041);
                     }
                     if (e.getCurrentItem().getType() == Material.SLIME_BALL) {
-                        p.getScoreboardTags().add("slimeling");
-                        p.getScoreboardTags().remove("enderian");
-                        p.getScoreboardTags().remove("shulker");
-                        p.getScoreboardTags().remove("arachnid");
-                        p.getScoreboardTags().remove("creep");
-                        p.getScoreboardTags().remove("phantom");
-                        p.getScoreboardTags().remove("human");
-                        p.getScoreboardTags().remove("vexian");
-                        p.getScoreboardTags().remove("blazeborn");
-                        p.getScoreboardTags().remove("starborne");
-                        p.getScoreboardTags().remove("mermaid");
-                        p.getScoreboardTags().remove("witch");
-                        p.getScoreboardTags().remove("rabbit");
-                        p.getScoreboardTags().remove("bee");
-                        p.getScoreboardTags().remove("elytrian");
-                        p.getScoreboardTags().remove("avian");
-                        p.getScoreboardTags().remove("piglin");
-                        p.getScoreboardTags().remove("dragonborne");
+                        p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER, 2304045);
                     }
                     if (e.getCurrentItem().getType() == Material.IRON_SWORD) {
-                        p.getScoreboardTags().add("vexian");
-                        p.getScoreboardTags().remove("enderian");
-                        p.getScoreboardTags().remove("shulker");
-                        p.getScoreboardTags().remove("arachnid");
-                        p.getScoreboardTags().remove("creep");
-                        p.getScoreboardTags().remove("phantom");
-                        p.getScoreboardTags().remove("slimeling");
-                        p.getScoreboardTags().remove("human");
-                        p.getScoreboardTags().remove("blazeborn");
-                        p.getScoreboardTags().remove("starborne");
-                        p.getScoreboardTags().remove("mermaid");
-                        p.getScoreboardTags().remove("witch");
-                        p.getScoreboardTags().remove("rabbit");
-                        p.getScoreboardTags().remove("bee");
-                        p.getScoreboardTags().remove("elytrian");
-                        p.getScoreboardTags().remove("avian");
-                        p.getScoreboardTags().remove("piglin");
-                        p.getScoreboardTags().remove("dragonborne");
+                        p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER, 9602042);
+
                     }
                     if (e.getCurrentItem().getType() == Material.BLAZE_POWDER) {
-                        p.getScoreboardTags().add("blazeborn");
-                        p.getScoreboardTags().remove("enderian");
-                        p.getScoreboardTags().remove("shulker");
-                        p.getScoreboardTags().remove("arachnid");
-                        p.getScoreboardTags().remove("creep");
-                        p.getScoreboardTags().remove("phantom");
-                        p.getScoreboardTags().remove("slimeling");
-                        p.getScoreboardTags().remove("vexian");
-                        p.getScoreboardTags().remove("human");
-                        p.getScoreboardTags().remove("starborne");
-                        p.getScoreboardTags().remove("mermaid");
-                        p.getScoreboardTags().remove("witch");
-                        p.getScoreboardTags().remove("rabbit");
-                        p.getScoreboardTags().remove("bee");
-                        p.getScoreboardTags().remove("elytrian");
-                        p.getScoreboardTags().remove("avian");
-                        p.getScoreboardTags().remove("piglin");
-                        p.getScoreboardTags().remove("dragonborne");
+                        p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER, 9811027);
+
                     }
                     if (e.getCurrentItem().getType() == Material.NETHER_STAR) {
-                        p.getScoreboardTags().add("starborne");
-                        p.getScoreboardTags().remove("enderian");
-                        p.getScoreboardTags().remove("shulker");
-                        p.getScoreboardTags().remove("arachnid");
-                        p.getScoreboardTags().remove("creep");
-                        p.getScoreboardTags().remove("phantom");
-                        p.getScoreboardTags().remove("slimeling");
-                        p.getScoreboardTags().remove("vexian");
-                        p.getScoreboardTags().remove("blazeborn");
-                        p.getScoreboardTags().remove("human");
-                        p.getScoreboardTags().remove("mermaid");
-                        p.getScoreboardTags().remove("witch");
-                        p.getScoreboardTags().remove("rabbit");
-                        p.getScoreboardTags().remove("bee");
-                        p.getScoreboardTags().remove("elytrian");
-                        p.getScoreboardTags().remove("avian");
-                        p.getScoreboardTags().remove("piglin");
-                        p.getScoreboardTags().remove("dragonborne");
+                        p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER, 7303065);
+
                     }
                     if (e.getCurrentItem().getType() == Material.COD) {
-                        p.getScoreboardTags().add("mermaid");
-                        p.getScoreboardTags().remove("enderian");
-                        p.getScoreboardTags().remove("shulker");
-                        p.getScoreboardTags().remove("arachnid");
-                        p.getScoreboardTags().remove("creep");
-                        p.getScoreboardTags().remove("phantom");
-                        p.getScoreboardTags().remove("slimeling");
-                        p.getScoreboardTags().remove("vexian");
-                        p.getScoreboardTags().remove("blazeborn");
-                        p.getScoreboardTags().remove("starborne");
-                        p.getScoreboardTags().remove("human");
-                        p.getScoreboardTags().remove("witch");
-                        p.getScoreboardTags().remove("rabbit");
-                        p.getScoreboardTags().remove("bee");
-                        p.getScoreboardTags().remove("elytrian");
-                        p.getScoreboardTags().remove("avian");
-                        p.getScoreboardTags().remove("piglin");
-                        p.getScoreboardTags().remove("dragonborne");
+                        p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER, 1310018);
+
                     }
                     if (e.getCurrentItem().getType() == Material.AMETHYST_SHARD) {
-                        p.getScoreboardTags().add("witch");
-                        p.getScoreboardTags().remove("enderian");
-                        p.getScoreboardTags().remove("shulker");
-                        p.getScoreboardTags().remove("arachnid");
-                        p.getScoreboardTags().remove("creep");
-                        p.getScoreboardTags().remove("phantom");
-                        p.getScoreboardTags().remove("slimeling");
-                        p.getScoreboardTags().remove("vexian");
-                        p.getScoreboardTags().remove("blazeborn");
-                        p.getScoreboardTags().remove("starborne");
-                        p.getScoreboardTags().remove("mermaid");
-                        p.getScoreboardTags().remove("human");
-                        p.getScoreboardTags().remove("rabbit");
-                        p.getScoreboardTags().remove("bee");
-                        p.getScoreboardTags().remove("elytrian");
-                        p.getScoreboardTags().remove("avian");
-                        p.getScoreboardTags().remove("piglin");
-                        p.getScoreboardTags().remove("dragonborne");
+                        p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER, 1205048);
+
                     }
                     if (e.getCurrentItem().getType() == Material.CARROT) {
-                        p.getScoreboardTags().add("rabbit");
-                        p.getScoreboardTags().remove("enderian");
-                        p.getScoreboardTags().remove("shulker");
-                        p.getScoreboardTags().remove("arachnid");
-                        p.getScoreboardTags().remove("creep");
-                        p.getScoreboardTags().remove("phantom");
-                        p.getScoreboardTags().remove("slimeling");
-                        p.getScoreboardTags().remove("vexian");
-                        p.getScoreboardTags().remove("blazeborn");
-                        p.getScoreboardTags().remove("starborne");
-                        p.getScoreboardTags().remove("mermaid");
-                        p.getScoreboardTags().remove("witch");
-                        p.getScoreboardTags().remove("human");
-                        p.getScoreboardTags().remove("bee");
-                        p.getScoreboardTags().remove("elytrian");
-                        p.getScoreboardTags().remove("avian");
-                        p.getScoreboardTags().remove("piglin");
-                        p.getScoreboardTags().remove("dragonborne");
+                        p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER, 5308033);
+
                     }
                     if (e.getCurrentItem().getType() == Material.HONEYCOMB) {
-                        p.getScoreboardTags().add("bee");
-                        p.getScoreboardTags().remove("enderian");
-                        p.getScoreboardTags().remove("shulker");
-                        p.getScoreboardTags().remove("arachnid");
-                        p.getScoreboardTags().remove("creep");
-                        p.getScoreboardTags().remove("phantom");
-                        p.getScoreboardTags().remove("slimeling");
-                        p.getScoreboardTags().remove("vexian");
-                        p.getScoreboardTags().remove("blazeborn");
-                        p.getScoreboardTags().remove("starborne");
-                        p.getScoreboardTags().remove("mermaid");
-                        p.getScoreboardTags().remove("witch");
-                        p.getScoreboardTags().remove("rabbit");
-                        p.getScoreboardTags().remove("human");
-                        p.getScoreboardTags().remove("elytrian");
-                        p.getScoreboardTags().remove("avian");
-                        p.getScoreboardTags().remove("piglin");
-                        p.getScoreboardTags().remove("dragonborne");
+                        p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER, 8906022);
+
                     }
                     if (e.getCurrentItem().getType() == Material.ELYTRA) {
-                        p.getScoreboardTags().add("elytrian");
-                        p.getScoreboardTags().remove("enderian");
-                        p.getScoreboardTags().remove("shulker");
-                        p.getScoreboardTags().remove("arachnid");
-                        p.getScoreboardTags().remove("creep");
-                        p.getScoreboardTags().remove("phantom");
-                        p.getScoreboardTags().remove("slimeling");
-                        p.getScoreboardTags().remove("vexian");
-                        p.getScoreboardTags().remove("blazeborn");
-                        p.getScoreboardTags().remove("starborne");
-                        p.getScoreboardTags().remove("mermaid");
-                        p.getScoreboardTags().remove("witch");
-                        p.getScoreboardTags().remove("rabbit");
-                        p.getScoreboardTags().remove("bee");
-                        p.getScoreboardTags().remove("human");
-                        p.getScoreboardTags().remove("avian");
-                        p.getScoreboardTags().remove("piglin");
-                        p.getScoreboardTags().remove("dragonborne");
+                        p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER, 6211006);
+
                     }
                     if (e.getCurrentItem().getType() == Material.FEATHER) {
-                        p.getScoreboardTags().add("avian");
-                        p.getScoreboardTags().remove("enderian");
-                        p.getScoreboardTags().remove("shulker");
-                        p.getScoreboardTags().remove("arachnid");
-                        p.getScoreboardTags().remove("creep");
-                        p.getScoreboardTags().remove("phantom");
-                        p.getScoreboardTags().remove("slimeling");
-                        p.getScoreboardTags().remove("vexian");
-                        p.getScoreboardTags().remove("blazeborn");
-                        p.getScoreboardTags().remove("starborne");
-                        p.getScoreboardTags().remove("mermaid");
-                        p.getScoreboardTags().remove("witch");
-                        p.getScoreboardTags().remove("rabbit");
-                        p.getScoreboardTags().remove("bee");
-                        p.getScoreboardTags().remove("elytrian");
-                        p.getScoreboardTags().remove("human");
-                        p.getScoreboardTags().remove("piglin");
-                        p.getScoreboardTags().remove("dragonborne");
+                        p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER, 4501011);
+
                     }
                     if (e.getCurrentItem().getType() == Material.GOLD_INGOT) {
-                        p.getScoreboardTags().add("piglin");
-                        p.getScoreboardTags().remove("enderian");
-                        p.getScoreboardTags().remove("shulker");
-                        p.getScoreboardTags().remove("arachnid");
-                        p.getScoreboardTags().remove("creep");
-                        p.getScoreboardTags().remove("phantom");
-                        p.getScoreboardTags().remove("slimeling");
-                        p.getScoreboardTags().remove("vexian");
-                        p.getScoreboardTags().remove("blazeborn");
-                        p.getScoreboardTags().remove("starborne");
-                        p.getScoreboardTags().remove("mermaid");
-                        p.getScoreboardTags().remove("witch");
-                        p.getScoreboardTags().remove("rabbit");
-                        p.getScoreboardTags().remove("bee");
-                        p.getScoreboardTags().remove("elytrian");
-                        p.getScoreboardTags().remove("avian");
-                        p.getScoreboardTags().remove("human");
-                        p.getScoreboardTags().remove("dragonborne");
+                        p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER, 6211021);
+
                     }
                     if (e.getCurrentItem().getType() == Material.DRAGON_BREATH) {
-                        p.getScoreboardTags().add("dragonborne");
-                        p.getScoreboardTags().remove("enderian");
-                        p.getScoreboardTags().remove("shulker");
-                        p.getScoreboardTags().remove("arachnid");
-                        p.getScoreboardTags().remove("creep");
-                        p.getScoreboardTags().remove("phantom");
-                        p.getScoreboardTags().remove("slimeling");
-                        p.getScoreboardTags().remove("vexian");
-                        p.getScoreboardTags().remove("blazeborn");
-                        p.getScoreboardTags().remove("starborne");
-                        p.getScoreboardTags().remove("mermaid");
-                        p.getScoreboardTags().remove("witch");
-                        p.getScoreboardTags().remove("rabbit");
-                        p.getScoreboardTags().remove("bee");
-                        p.getScoreboardTags().remove("elytrian");
-                        p.getScoreboardTags().remove("avian");
-                        p.getScoreboardTags().remove("piglin");
-                        p.getScoreboardTags().remove("human");
+                        p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER, 4307015);
+
                     }
                 }
             }

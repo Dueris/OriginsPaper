@@ -1,5 +1,6 @@
 package me.purplewolfmc.genesismc.core.origins.enderian;
 
+import me.purplewolfmc.genesismc.core.GenesisMC;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -9,6 +10,8 @@ import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.potion.PotionEffectType;
 
 import java.util.HashMap;
@@ -24,7 +27,9 @@ public class EnderMain implements Listener {
     @EventHandler
     public void onMovement(PlayerMoveEvent e) {
         Player p = (Player) e.getPlayer();
-        if (p.getScoreboardTags().contains("enderian")) {
+        PersistentDataContainer data = p.getPersistentDataContainer();
+        int originid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER);
+        if (originid == 0401065) {
 
             Random random = new Random();
 
@@ -39,7 +44,9 @@ public class EnderMain implements Listener {
     @EventHandler
     public void onEvent1(PlayerJoinEvent e) {
         Player p = (Player) e.getPlayer();
-        if (p.getScoreboardTags().contains("enderian")) {
+        PersistentDataContainer data = p.getPersistentDataContainer();
+        int originid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER);
+        if (originid == 0401065) {
             if (!p.getActivePotionEffects().equals(PotionEffectType.INVISIBILITY)) {
                 p.getWorld().spawnParticle(Particle.PORTAL, p.getLocation(), 3);
             } else {
@@ -53,7 +60,9 @@ public class EnderMain implements Listener {
     @EventHandler
     public void onDeathWater(PlayerDeathEvent e){
         Player p = (Player) e.getEntity();
-        if (p.getScoreboardTags().contains("enderian")) {
+        PersistentDataContainer data = p.getPersistentDataContainer();
+        int originid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER);
+        if (originid == 0401065) {
             Random random = new Random();
             int r = random.nextInt(2);
             if (p.isInWaterOrRainOrBubbleColumn()) {
@@ -63,7 +72,7 @@ public class EnderMain implements Listener {
             }
                     p.getLocation().getWorld().dropItem(p.getLocation(), new ItemStack(Material.ENDER_PEARL, r));
             }
-        if (p.getScoreboardTags().contains("enderian")) {
+        if (originid == 0401065) {
             p.playSound(p.getLocation(), Sound.ENTITY_ENDERMAN_DEATH, 10, 5);
         }
         }
@@ -71,7 +80,9 @@ public class EnderMain implements Listener {
     @EventHandler
     public void onEat(PlayerItemConsumeEvent e){
         Player p = (Player) e.getPlayer();
-        if (p.getScoreboardTags().contains("enderian")) {
+        PersistentDataContainer data = p.getPersistentDataContainer();
+        int originid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER);
+        if (originid == 0401065) {
             if(e.getItem().getType().equals(Material.PUMPKIN_PIE)){
                 p.damage(16);
             }

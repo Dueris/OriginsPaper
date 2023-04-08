@@ -6,7 +6,7 @@ Next:
       -enderian-id: 0401065, "origin"
       -shulk-id: 6503044, "origin"
       -arachnid-id: 1709012, "origin"
-      -creep-id: 0707068, "origin"
+      -creep-id: 1407068, "origin"
       -slimeling-id: 2304045, "origin"
       -phantom-id: 7300041, "origin"
       -vexian-id: 9602042, "origin"
@@ -22,12 +22,7 @@ Next:
       -dragonborne-id: 4307015, "origin"
       -chosen-id: 1, "chosen"
 
--arachnid bug fix 70%
-      -#11 visual bug 71%
--fix orb config 72%
--change first veiw on choosing 73%
--fix water cauldrons 74%
--add origins-expanded.yml 75%
+-fix water cauldrons 76%
 -add anvil compatibility 79%
 -add option to disable water prot in enderian.yml 80%
 -add orboforigins yml stuff 81%
