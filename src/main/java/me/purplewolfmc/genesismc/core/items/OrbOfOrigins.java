@@ -29,14 +29,14 @@ public class OrbOfOrigins {
         meta.addItemFlags(ItemFlag.HIDE_ITEM_SPECIFICS);
         meta.addItemFlags(ItemFlag.HIDE_PLACED_ON);
         meta.setCustomModelData(00002);
-        meta.setDisplayName(ChatColor.LIGHT_PURPLE + "Orb of Origins");
+        meta.setDisplayName(GenesisDataFiles.getOrb().getString("name"));
         meta.setUnbreakable(true);
         meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
         item.setItemMeta(meta);
         orb = item;
 
         //Shaped Recipe for ORB_OF_ORIGINS
-        if(GenesisDataFiles.getPlugCon().getString("disable-orb_of_origins").equalsIgnoreCase("false")) {
+        if(GenesisDataFiles.getOrb().getString("disable-orb_of_origins").equalsIgnoreCase("false")) {
             ShapedRecipe sr = new ShapedRecipe(NamespacedKey.minecraft("orboforigins"), item);
             sr.shape("XOX",
                     "OSO",

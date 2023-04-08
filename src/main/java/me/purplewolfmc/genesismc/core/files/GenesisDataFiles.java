@@ -1,6 +1,7 @@
 package me.purplewolfmc.genesismc.core.files;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -422,6 +423,10 @@ public class GenesisDataFiles {
     //MenuConfig
 
     //ItemConfig
+
+    //orboforigins
+    getOrb().addDefault("disable-orb_of_origins", false);
+    getOrb().addDefault("name", ChatColor.LIGHT_PURPLE + "Orb of Origins");
 
     //Enderian
     get().addDefault("enderian-spawn-end", false);
