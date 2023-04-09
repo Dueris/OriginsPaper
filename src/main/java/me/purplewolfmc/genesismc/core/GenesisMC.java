@@ -190,8 +190,6 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         enderrun.runTaskTimer(this, 0, 5);
         EnderianDamageRunnable enderdamagerun = new EnderianDamageRunnable();
         enderdamagerun.runTaskTimer(this, 0, 10);
-        EnchantRunnable enchantRunnable = new EnchantRunnable();
-        enchantRunnable.runTaskTimer(this, 0, 5);
 //shulk
         ShulkRunnable shulkrun = new ShulkRunnable();
         shulkrun.runTaskTimer(this, 0, 5);
@@ -203,7 +201,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         forcechoose.runTaskTimer(this, 0, 5);
 //creep
         CreepRunnable creeprun = new CreepRunnable();
-        creeprun.runTaskTimer(this, 0, 5);
+        creeprun.runTaskTimer(this, 0, 10);
 
 //enchantments
         waterProtectionEnchant = new WaterProtection("waterprot");

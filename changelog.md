@@ -44,6 +44,13 @@
 -added anvil compatibility with water protection
 -fixed bug where enchants would be messed up
 -fixed bug where one type of enchantment would do all things
+-added creep explosion
+-added blast protection modifier to creep explosion
+-added arachnid bane of arthropods
+-fixed bug where the cooldown would be random and would trigger for shulk origin
+-added creeper ignore creep
+-added soundless creep
+-changed camo power charged power
 </pre>
 <hr>
 <header>Again, still in early beta. Most features do not work atm.</header>

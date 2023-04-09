@@ -776,6 +776,8 @@ public class GenesisChooseListener implements Listener {
                     p.setCustomNameVisible(false);
                     p.getScoreboardTags().add("chosen");
                     p.setGameMode(GameMode.SURVIVAL);
+                    double nY = 2;
+                    Location loc = new Location(p.getWorld(), p.getLocation().getX(), p.getLocation().getY() + 1, p.getLocation().getZ());
 
                     if(p.getScoreboardTags().contains("choosing")){
                         Bukkit.broadcastMessage(YELLOW + p.getName().toString() + " joined the game");
@@ -1230,9 +1232,9 @@ public class GenesisChooseListener implements Listener {
                         creep_origin_info1.setItemMeta(creep_origin_info1_meta);
 
                         ItemMeta creep_origin_info2_meta = creep_origin_info2.getItemMeta();
-                        creep_origin_info2_meta.setDisplayName("Camoflauge");
+                        creep_origin_info2_meta.setDisplayName("Charged");
                         ArrayList<String> creep_origin_info2_lore = new ArrayList<>();
-                        creep_origin_info2_lore.add(WHITE + "You have green skin, like a creeper. Obviously.");
+                        creep_origin_info2_lore.add(WHITE + "During thunderstorms, you are significantly stronger");
                         creep_origin_info2_meta.setLore(creep_origin_info2_lore);
                         creep_origin_info2.setItemMeta(creep_origin_info2_meta);
 
