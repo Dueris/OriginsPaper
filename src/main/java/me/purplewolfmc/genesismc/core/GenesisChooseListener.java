@@ -1,5 +1,6 @@
 package me.purplewolfmc.genesismc.core;
 
+import io.papermc.paper.advancement.AdvancementDisplay;
 import me.purplewolfmc.genesismc.core.files.GenesisDataFiles;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
@@ -775,6 +776,7 @@ public class GenesisChooseListener implements Listener {
                     p.setCustomNameVisible(false);
                     p.getScoreboardTags().add("chosen");
                     p.setGameMode(GameMode.SURVIVAL);
+
                     if(p.getScoreboardTags().contains("choosing")){
                         Bukkit.broadcastMessage(YELLOW + p.getName().toString() + " joined the game");
                         p.removeScoreboardTag("choosing");

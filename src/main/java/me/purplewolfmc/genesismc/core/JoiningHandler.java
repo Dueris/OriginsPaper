@@ -24,6 +24,10 @@ public class JoiningHandler implements Listener {
             e.setJoinMessage("");
         }
 
+        if (p.getScoreboardTags().contains("texture_pack")) {
+            p.setTexturePack("https://drive.google.com/uc?export=download&id=1mLpqQ233C7ZbMIjrdY13ZpFI8tcUTBH2");
+        }
+
         if(!p.getPersistentDataContainer().has(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER)){
             p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER, 0);
         }
@@ -38,7 +42,7 @@ public class JoiningHandler implements Listener {
                 }
             } else {
                 if (p.getScoreboardTags().contains("texture_pack")) {
-                    p.setResourcePack("https://drive.google.com/u/0/uc?id=13SyLJBJ5KWgSSbwmSpRYHKUR0r3I0rw7&export=download");
+                    p.setTexturePack("https://drive.google.com/uc?export=download&id=1mLpqQ233C7ZbMIjrdY13ZpFI8tcUTBH2");
                 }
             }
         }

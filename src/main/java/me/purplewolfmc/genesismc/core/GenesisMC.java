@@ -7,6 +7,7 @@ import me.purplewolfmc.genesismc.core.commands.TabAutoComplete;
 import me.purplewolfmc.genesismc.core.commands.subcommands.Purge;
 import me.purplewolfmc.genesismc.core.commands.subcommands.Reload;
 import me.purplewolfmc.genesismc.core.enchantments.WaterProtAnvil;
+import me.purplewolfmc.genesismc.core.origins.creep.CreepMain;
 import me.purplewolfmc.genesismc.custom_origins.CustomOrigins;
 import me.purplewolfmc.genesismc.custom_origins.handlers.CustomMenuHandler;
 import me.purplewolfmc.genesismc.core.enchantments.EnchantProtEvent;
@@ -173,6 +174,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         getServer().getPluginManager().registerEvents(new CustomMenuHandler(), this);
         getServer().getPluginManager().registerEvents(new ArachnidClimb(), this);
         getServer().getPluginManager().registerEvents(new WaterProtAnvil(), this);
+        getServer().getPluginManager().registerEvents(new CreepMain(), this);
         plugin = this;
         getServer().getPluginManager().registerEvents(new DataContainer(), this);
         if (GenesisDataFiles.getBeta().getString("update-beta").equalsIgnoreCase("true")) {
@@ -199,6 +201,9 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 //forcechoose
         ForceChooseRunnable forcechoose = new ForceChooseRunnable();
         forcechoose.runTaskTimer(this, 0, 5);
+//creep
+        CreepRunnable creeprun = new CreepRunnable();
+        creeprun.runTaskTimer(this, 0, 5);
 
 //enchantments
         waterProtectionEnchant = new WaterProtection("waterprot");

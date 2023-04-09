@@ -24,7 +24,7 @@ public class Texture extends SubCommand {
     @Override
     public void perform(Player p, String[] args) {
         if (p.hasPermission("genesismc.origins.cmd.texture")) {
-            p.setResourcePack("https://drive.google.com/u/0/uc?id=13SyLJBJ5KWgSSbwmSpRYHKUR0r3I0rw7&export=download");
+            p.setTexturePack("https://drive.google.com/uc?export=download&id=1mLpqQ233C7ZbMIjrdY13ZpFI8tcUTBH2");
             if (!p.getScoreboardTags().contains("texture_pack")) {
                 p.getScoreboardTags().add("texture_pack");
                 p.sendMessage("Texture pack enabled");
@@ -34,6 +34,9 @@ public class Texture extends SubCommand {
                     if (FloodgateApi.getInstance().isFloodgatePlayer(p.getUniqueId())) {
                         p.sendMessage(ChatColor.RED + "Only java players can execute this command!");
                     }
+                }
+                if (p.getScoreboardTags().contains("texture_pack")) {
+                    p.removeScoreboardTag("texture_pack");
                 }
             }
         }

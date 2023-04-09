@@ -20,7 +20,6 @@ public class TabAutoComplete implements TabCompleter {
         if (command.getName().equalsIgnoreCase("origins")) {
             if (args.length == 1) {
                 List<String> arguments = new ArrayList<>();
-                arguments.add("choose");
                 arguments.add("texture");
                 arguments.add("commands");
                 if (sender.isOp()) {
