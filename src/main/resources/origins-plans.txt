@@ -22,7 +22,6 @@ Next:
       -dragonborne-id: 4307015, "origin"
       -chosen-id: 1, "chosen"
 
--add creep origin 95%
 -fix bugs and add other minor changes 96%, 97%, 98%, 99%
 -finish, update git fully and push to modrinth and discord 100%
 

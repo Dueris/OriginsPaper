@@ -51,6 +51,8 @@
 -added creeper ignore creep
 -added soundless creep
 -changed camo power charged power
+-fixed null error
+-added cauldron detection for enderian
 </pre>
 <hr>
 <header>Again, still in early beta. Most features do not work atm.</header>

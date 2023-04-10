@@ -1,8 +1,8 @@
 name: GenesisMC
 version: '${project.version}'
-main: me.purplewolfmc.genesismc.core.GenesisMC
+main: me.dueris.genesismc.core.GenesisMC
 api-version: 1.19
-authors: [ PurpleWolfMC ]
+authors: [ Dueris ]
 description: Genesis Plugin for SpigotMC
 website: https://genesismc.gitbook.io/genesismc/
 commands:
@@ -10,7 +10,7 @@ commands:
     description: Main Origins Directory
   beta:
     description: genesis beta
-    permission: purplewolf.genesismc.spigotmc.beta
+    permission: genesismc.origins.cmd.beta
   shulker:
     description: shulk main command
 permissions:
