@@ -1,6 +1,6 @@
 name: GenesisMC
 version: '${project.version}'
-main: me.dueris.genesismc.core.GenesisMC
+main: me.lotis.genesismc.core.GenesisMC
 api-version: 1.19
 authors: [ Dueris ]
 description: Genesis Plugin for SpigotMC
