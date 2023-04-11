@@ -8,6 +8,7 @@ import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -19,9 +20,6 @@ public class ArachnidRunnable extends BukkitRunnable {
             PersistentDataContainer data = p.getPersistentDataContainer();
             int originid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER);
             if (originid == 1709012) {
-                p.setMaxHealth(14);
-                p.setHealthScale(14);
-                p.getAttribute(Attribute.GENERIC_ARMOR).setBaseValue(0);
                 p.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, 300, 1, false, false, false));
             }
         }

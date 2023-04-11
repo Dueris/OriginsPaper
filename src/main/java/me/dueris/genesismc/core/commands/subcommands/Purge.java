@@ -26,10 +26,17 @@ public class Purge extends SubCommand implements Listener {
     @Override
     public void perform(Player p, String[] args) {
         if (p.hasPermission("genesismc.origins.cmd.purge")) {
-            if (args.length > 1) {
+            if (args.length == 1) {
                 Player target = Bukkit.getPlayer(args[1]);
 
-                target.sendMessage("[GenesisMC] Removed origin of " + target.getDisplayName());
+                if(args.toString() == null){
+                    p.sendMessage("[GenesisMC] Removed origin of " + p.getName());
+                    target.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER, 0);
+                    target.getScoreboardTags().remove("chosen");
+                    target.sendMessage("Your origin has been removed by an operator");
+                }
+
+                p.sendMessage("[GenesisMC] Removed origin of " + target.getDisplayName());
                 target.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER, 0);
                 target.getScoreboardTags().remove("chosen");
 

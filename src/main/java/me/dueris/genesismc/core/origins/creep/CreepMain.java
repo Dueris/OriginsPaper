@@ -45,8 +45,7 @@ public class CreepMain implements Listener {
         Player p = e.getPlayer();
         PersistentDataContainer data = p.getPersistentDataContainer();
         int originid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER);
-        if (originid == 2356555 && p.getScoreboardTags().contains("can-explode")) {
-            cooldown.put(p.getUniqueId(), System.currentTimeMillis());
+        if (originid == 2356555) {
             new BukkitRunnable() {
                 Material block = e.getPlayer().getLocation().getBlock().getType();
 
@@ -56,7 +55,7 @@ public class CreepMain implements Listener {
                         if (p.isSneaking() && !p.isJumping()) {
 
                                 if (!cooldown.containsKey(p.getUniqueId()) || ((System.currentTimeMillis() - cooldown.get(p.getUniqueId())) > 3500)) {
-                                    if (originid == 2356555 && p.getScoreboardTags().contains("can-explode")) {
+                                    if (originid == 2356555) {
                                         cooldown.put(p.getUniqueId(), System.currentTimeMillis());
                                         p.addScoreboardTag("exploding");
                                         explodecooldown.put(p.getUniqueId(), System.currentTimeMillis());
@@ -177,12 +176,12 @@ public class CreepMain implements Listener {
 
                                                 }
                                             } else if (p.getHealth() <= basedamage && p.getHealth() != 0) {
-                                                if (originid == 2356555 && p.getScoreboardTags().contains("can-explode")) {
+                                                if (originid == 2356555) {
                                                     p.setHealth(curhealth - curhealth);
                                                 }
                                             }
                                         }
-                                    if (originid == 2356555 && p.getScoreboardTags().contains("can-explode")) {
+                                    if (originid == 2356555) {
                                         List<Entity> nearby = p.getNearbyEntities(2, 2, 2);
                                         for (Entity tmp : nearby)
                                             if (tmp instanceof Damageable)
@@ -219,7 +218,7 @@ public class CreepMain implements Listener {
                         } else if (block == Material.FIRE) {
 
                                 if (!cooldown.containsKey(p.getUniqueId()) || ((System.currentTimeMillis() - cooldown.get(p.getUniqueId())) > 3500)) {
-                                    if (originid == 2356555 && p.getScoreboardTags().contains("can-explode")) {
+                                    if (originid == 2356555) {
                                         cooldown.put(p.getUniqueId(), System.currentTimeMillis());
                                         explodecooldown.put(p.getUniqueId(), System.currentTimeMillis());
                                         if (p.getWorld().isThundering()) {
@@ -304,7 +303,7 @@ public class CreepMain implements Listener {
 
 
                                             if (p.getHealth() >= basedamage && p.getHealth() != 0 && p.getHealth() - basedamage != 0) {
-                                                if (originid == 2356555 && p.getScoreboardTags().contains("can-explode")) {
+                                                if (originid == 2356555) {
                                                     p.damage(0.0000001);
                                                     p.setHealth(curhealth - basedamage);
                                                 }
@@ -375,7 +374,6 @@ public class CreepMain implements Listener {
             //do nothing
         }
     }
-
     @EventHandler
     public void onLook(EntityTargetEvent e) {
         //EntityType en = e.getEntityType(); not needed
@@ -398,17 +396,23 @@ public class CreepMain implements Listener {
         int originid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER);
         if (originid == 2356555) {
             Random random = new Random();
-            int r = random.nextInt(10);
-            if (r == (int) 3 || r == (int) 9) {
-                p.getWorld().dropItem(p.getLocation(), new ItemStack(Material.MUSIC_DISC_CAT, 1));
                 if(e.getEntity().getType() == EntityType.CREEPER){
                     Creeper killer = (Creeper) e.getEntity();
                     if(killer.isPowered()){
                         e.getDrops().add(new ItemStack(Material.CREEPER_HEAD));
                     }
+                }else if(e.getEntity().getType() == EntityType.PLAYER){
+                    Player killerp = e.getEntity();
+                    PersistentDataContainer datak = killerp.getPersistentDataContainer();
+                    int originidk = datak.get(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER);
+                    if (originid == 2356555) {
+                        if (p.getWorld().isThundering()) {
+                            e.getDrops().add(new ItemStack(Material.CREEPER_HEAD));
+                        }
+                    }
+
                 }
             }
-        }
     }
 
     @EventHandler

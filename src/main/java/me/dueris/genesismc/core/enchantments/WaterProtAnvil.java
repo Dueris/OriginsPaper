@@ -71,7 +71,7 @@ public class WaterProtAnvil implements Listener {
                     }
                 }
             } else {
-                p.sendMessage("no-enchant");
+
             }
         }
 
@@ -107,7 +107,7 @@ public class WaterProtAnvil implements Listener {
                     }
                 }
             } else {
-                p.sendMessage("no-enchant");
+
             }
         }
 

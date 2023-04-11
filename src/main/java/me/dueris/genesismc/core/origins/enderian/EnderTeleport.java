@@ -16,6 +16,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 import java.util.*;
 
@@ -34,12 +36,13 @@ public class EnderTeleport implements Listener {
         if (originid == 0401065) {
             if (e.getCause() == PlayerTeleportEvent.TeleportCause.ENDER_PEARL) {
                 e.setCancelled(true);
+                p.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 15, 2, false, false, false));
                 p.setNoDamageTicks(1);
                 p.teleport(e.getTo());
                 p.playSound(p.getLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, 10, 9);
             }
-        }else{
-    }
+        } else {
+        }
     }
 
     public static HashMap<UUID, Integer> thrownPearls = new HashMap<UUID, Integer>();
@@ -74,16 +77,6 @@ public class EnderTeleport implements Listener {
                 } else if (e.getItem().equals(null)) {
                 }
             }
-        }else{
-            if (e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.LEFT_CLICK_AIR || e.getAction() == Action.LEFT_CLICK_BLOCK || e.getAction() == Action.RIGHT_CLICK_BLOCK) {
-                if (e.getItem() != null) {
-                    if (e.getItem().isSimilar(infinpearl)) {
-                        e.setCancelled(true);
-                        e.getItem().setType(AIR);
-                    }
-                }
-                    }
-
         }
     }
 
@@ -120,6 +113,29 @@ public class EnderTeleport implements Listener {
     }
 
     @EventHandler
+    public void onDrop(PlayerDropItemEvent e) {
+        ItemStack infinpearl = new ItemStack(ENDER_PEARL);
+
+        ItemMeta pearl_meta = infinpearl.getItemMeta();
+        pearl_meta.setDisplayName(ChatColor.LIGHT_PURPLE + "Teleport");
+        ArrayList<String> pearl_lore = new ArrayList<>();
+        pearl_meta.setUnbreakable(true);
+        pearl_meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
+        pearl_meta.setLore(pearl_lore);
+        infinpearl.setItemMeta(pearl_meta);
+
+        Player p = e.getPlayer();
+        PersistentDataContainer data = p.getPersistentDataContainer();
+        int originid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER);
+        if (originid == 0401065) {
+            if (e.getItemDrop().getItemStack().isSimilar(infinpearl)) {
+                e.getItemDrop().getItemStack().setType(AIR);
+                p.getInventory().addItem(infinpearl);
+            }
+        }
+    }
+
+    @EventHandler
     public void onDeathEnder(PlayerDeathEvent e) {
         Player p = (Player) e.getEntity();
         ItemStack infinpearl = new ItemStack(ENDER_PEARL);
@@ -134,9 +150,11 @@ public class EnderTeleport implements Listener {
         infinpearl.setItemMeta(pearl_meta);
         pearl_meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
         if (originid == 0401065) {
-            e.getDrops().remove(infinpearl);
-            e.getDrops().add(new ItemStack(ENDER_PEARL));
-        }
-    }
 
+                e.getDrops().remove(infinpearl);
+                e.getDrops().add(new ItemStack(ENDER_PEARL));
+
+        }
+
+    }
 }

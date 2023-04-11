@@ -29,9 +29,9 @@ public class EnderWater implements Listener {
             int originid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER);
             if (originid == 0401065) {
                 if (e.getCause().equals(EntityDamageEvent.DamageCause.PROJECTILE)) {
-
+                        e.setDamage(0);
+                        e.setCancelled(true);
                 } else {
-
                     p.getWorld().playSound(p.getLocation(), Sound.ENTITY_ENDERMAN_DEATH, 10.0F, 5.0F);
                 }
 
@@ -45,7 +45,6 @@ public class EnderWater implements Listener {
                     }
                 }
             }
-
         }
     }
 

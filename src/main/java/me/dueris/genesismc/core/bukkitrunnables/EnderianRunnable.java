@@ -3,6 +3,7 @@ package me.dueris.genesismc.core.bukkitrunnables;
 import me.dueris.genesismc.core.GenesisMC;
 import me.dueris.genesismc.core.origins.enderian.EnderWater;
 import org.bukkit.*;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Block;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.EntityType;
@@ -30,6 +31,7 @@ public class EnderianRunnable extends BukkitRunnable {
                 Block b = p.getWorld().getHighestBlockAt(p.getLocation());
                 ItemStack infinpearl = new ItemStack(ENDER_PEARL);
 
+
                 ItemMeta pearl_meta = infinpearl.getItemMeta();
                 pearl_meta.setDisplayName(ChatColor.LIGHT_PURPLE + "Teleport");
                 ArrayList<String> pearl_lore = new ArrayList<>();
@@ -38,7 +40,7 @@ public class EnderianRunnable extends BukkitRunnable {
                 pearl_meta.setLore(pearl_lore);
                 infinpearl.setItemMeta(pearl_meta);
                 pearl_meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
-                if (originid == 0401065) {
+                if (p.getScoreboardTags().contains("enderian")) {
                     p.setCooldown(ENDER_PEARL, 1);
                 }
 
@@ -58,17 +60,15 @@ public class EnderianRunnable extends BukkitRunnable {
                     p.playSound(p.getLocation(), Sound.ENTITY_ENDERMAN_AMBIENT, 10, 9);
                 }
                 p.setMaximumAir(20);
-                p.setHealthScale(24);
                 if(p.getInventory().getItemInMainHand().isSimilar(infinpearl)){
                     if (p.getInventory().getItemInMainHand().getAmount() >= 2) {
                             int amt = p.getInventory().getItemInMainHand().getAmount();
-                            p.getInventory().getItemInMainHand().setAmount(amt - 1);
+                            p.getInventory().getItemInMainHand().setAmount(1);
                     }
-                }
-                if(p.getInventory().getItemInMainHand().getAmount() != 1 && p.getInventory().getItemInMainHand().getAmount() != 0){
+                }else if(p.getInventory().getItemInMainHand().getAmount() != 1 && p.getInventory().getItemInMainHand().getAmount() != 0){
                     int amt = p.getInventory().getItemInMainHand().getAmount();
                     if(p.getEquipment().getItemInMainHand().equals(infinpearl)) {
-                        p.getInventory().getItemInMainHand().setAmount(amt - 1);
+                        p.getInventory().getItemInMainHand().setAmount(1);
                     }
                 }
             }

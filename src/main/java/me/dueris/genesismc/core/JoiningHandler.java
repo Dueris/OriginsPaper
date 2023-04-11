@@ -31,6 +31,12 @@ public class JoiningHandler implements Listener {
         Player p = e.getPlayer();
 
         if(!p.getScoreboardTags().contains("chosen")){
+            if (!p.getPersistentDataContainer().has(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER)) {
+                p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER, 1);
+            }
+            if (!p.getPersistentDataContainer().has(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER)) {
+                p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
+            }
             p.addScoreboardTag("choosing");
             if (GenesisDataFiles.getPlugCon().getString("custom-origins").equalsIgnoreCase("false")) {
                 Inventory allmenu = Bukkit.createInventory(p, 18, LIGHT_PURPLE + "Origins Menu");

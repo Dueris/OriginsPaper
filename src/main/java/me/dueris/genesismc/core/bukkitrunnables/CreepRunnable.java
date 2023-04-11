@@ -32,16 +32,15 @@ public class CreepRunnable extends BukkitRunnable {
             PersistentDataContainer data = p.getPersistentDataContainer();
             int originid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER);
             if (originid == 2356555) {
-                p.addScoreboardTag("can-explode");
-                p.setHealthScale(16);
-                if(p.getWorld().isThundering()){
-                    p.addPotionEffect(new PotionEffect(PotionEffectType.GLOWING, 20, 1, true, false, false));
+
+                    if(p.getWorld().isThundering()){
+                    p.addPotionEffect(new PotionEffect(PotionEffectType.GLOWING, 20, 0, true, false, false));
                     p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 20, 2, true, false, false));
                     p.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 20, 2, true, false, false));
                     p.addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, 20, 1, true, false, false));
 
                 }
-                p.getAttribute(Attribute.GENERIC_ARMOR).setBaseValue(0);
+
                 List<Entity> nearby2 = p.getNearbyEntities(3, 3, 3);
                 for (Entity tmp : nearby2)
                     if (tmp instanceof Cat)

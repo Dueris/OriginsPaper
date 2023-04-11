@@ -35,6 +35,7 @@ public class ArachnidMain implements Listener {
     public void onEatArachnid(PlayerInteractEvent e){
         PersistentDataContainer data = e.getPlayer().getPersistentDataContainer();
         int originid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER);
+        Player p = e.getPlayer();
         if (originid == 1709012) {
             if (e.getItem() != null) {
                 if (!meat.contains(e.getItem().getType()) && excludable.contains(e.getItem())) {

@@ -2,6 +2,7 @@ package me.dueris.genesismc.core;
 
 import io.papermc.paper.advancement.AdvancementDisplay;
 import me.dueris.genesismc.core.files.GenesisDataFiles;
+import me.dueris.genesismc.core.items.OrbOfOrigins;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.enchantments.Enchantment;
@@ -51,7 +52,7 @@ public class GenesisChooseListener implements Listener {
 
                                             ItemStack human = new ItemStack(Material.PLAYER_HEAD);
                                             ItemStack enderian = new ItemStack(Material.ENDER_PEARL);
-                                            ItemStack shulker = new ItemStack(Material.SHULKER_SHELL);
+                                            ItemStack shulk = new ItemStack(Material.SHULKER_SHELL);
                                             ItemStack arachnid = new ItemStack(Material.COBWEB);
                                             ItemStack creep = new ItemStack(Material.GUNPOWDER);
                                             ItemStack phantom = new ItemStack(Material.PHANTOM_MEMBRANE);
@@ -102,21 +103,21 @@ public class GenesisChooseListener implements Listener {
                                                 enderian.setItemMeta(nope_meta);
                                             }
                                             if (GenesisDataFiles.get2().getString("shulk-disable").equalsIgnoreCase("false")) {
-                                                ItemMeta shulker_meta = shulker.getItemMeta();
-                                                shulker_meta.setDisplayName(DARK_PURPLE + "Shulk");
-                                                ArrayList<String> shulker_lore = new ArrayList<>();
-                                                shulker_lore.add(WHITE + "Shulker Origin");
-                                                shulker_meta.setLore(shulker_lore);
-                                                shulker.setItemMeta(shulker_meta);
+                                                ItemMeta shulk_meta = shulk.getItemMeta();
+                                                shulk_meta.setDisplayName(DARK_PURPLE + "Shulk");
+                                                ArrayList<String> shulk_lore = new ArrayList<>();
+                                                shulk_lore.add(WHITE + "shulk Origin");
+                                                shulk_meta.setLore(shulk_lore);
+                                                shulk.setItemMeta(shulk_meta);
                                             } else {
-                                                ItemMeta nope_meta = shulker.getItemMeta();
+                                                ItemMeta nope_meta = shulk.getItemMeta();
                                                 nope_meta.setDisplayName(RED + "Unavailable");
                                                 nope_meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
                                                 nope_meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
                                                 ArrayList<String> nope_lore = new ArrayList<>();
                                                 nope_lore.add(RED + "This origin is locked by the server owner");
                                                 nope_meta.setLore(nope_lore);
-                                                shulker.setItemMeta(nope_meta);
+                                                shulk.setItemMeta(nope_meta);
                                             }
                                             if (GenesisDataFiles.get17().getString("arachnid-disable").equalsIgnoreCase("false")) {
                                                 ItemMeta spider_meta = arachnid.getItemMeta();
@@ -375,7 +376,7 @@ public class GenesisChooseListener implements Listener {
                                                 dragonborne.setItemMeta(nope_meta);
                                             }
 
-                                            ItemStack[] allmenu_items = {human, enderian, shulker, arachnid, creep, phantom, slimeling, vexian, blazeborn, starborne, mermaid, witch, rabbit, bumblebee, elytrian, avian, piglin, dragonborne};
+                                            ItemStack[] allmenu_items = {human, enderian, shulk, arachnid, creep, phantom, slimeling, vexian, blazeborn, starborne, mermaid, witch, rabbit, bumblebee, elytrian, avian, piglin, dragonborne};
                                             allmenu.setContents(allmenu_items);
                                             p.openInventory(allmenu);
                                         } else {
@@ -383,7 +384,7 @@ public class GenesisChooseListener implements Listener {
 
                                             ItemStack human = new ItemStack(Material.PLAYER_HEAD);
                                             ItemStack enderian = new ItemStack(Material.ENDER_PEARL);
-                                            ItemStack shulker = new ItemStack(Material.SHULKER_SHELL);
+                                            ItemStack shulk = new ItemStack(Material.SHULKER_SHELL);
                                             ItemStack arachnid = new ItemStack(Material.COBWEB);
                                             ItemStack creep = new ItemStack(Material.GUNPOWDER);
                                             ItemStack phantom = new ItemStack(Material.PHANTOM_MEMBRANE);
@@ -450,21 +451,21 @@ public class GenesisChooseListener implements Listener {
                                                 enderian.setItemMeta(nope_meta);
                                             }
                                             if (GenesisDataFiles.get2().getString("shulk-disable").equalsIgnoreCase("false")) {
-                                                ItemMeta shulker_meta = shulker.getItemMeta();
-                                                shulker_meta.setDisplayName(DARK_PURPLE + "Shulk");
-                                                ArrayList<String> shulker_lore = new ArrayList<>();
-                                                shulker_lore.add(WHITE + "Shulker Origin");
-                                                shulker_meta.setLore(shulker_lore);
-                                                shulker.setItemMeta(shulker_meta);
+                                                ItemMeta shulk_meta = shulk.getItemMeta();
+                                                shulk_meta.setDisplayName(DARK_PURPLE + "Shulk");
+                                                ArrayList<String> shulk_lore = new ArrayList<>();
+                                                shulk_lore.add(WHITE + "shulk Origin");
+                                                shulk_meta.setLore(shulk_lore);
+                                                shulk.setItemMeta(shulk_meta);
                                             } else {
-                                                ItemMeta nope_meta = shulker.getItemMeta();
+                                                ItemMeta nope_meta = shulk.getItemMeta();
                                                 nope_meta.setDisplayName(RED + "Unavailable");
                                                 nope_meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
                                                 nope_meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
                                                 ArrayList<String> nope_lore = new ArrayList<>();
                                                 nope_lore.add(RED + "This origin is locked by the server owner");
                                                 nope_meta.setLore(nope_lore);
-                                                shulker.setItemMeta(nope_meta);
+                                                shulk.setItemMeta(nope_meta);
                                             }
                                             if (GenesisDataFiles.get17().getString("arachnid-disable").equalsIgnoreCase("false")) {
                                                 ItemMeta spider_meta = arachnid.getItemMeta();
@@ -723,7 +724,7 @@ public class GenesisChooseListener implements Listener {
                                                 dragonborne.setItemMeta(nope_meta);
                                             }
 
-                                            ItemStack[] allmenu_items = {human, enderian, shulker, arachnid, creep, phantom, slimeling, vexian, blazeborn, starborne, mermaid, witch, rabbit, bumblebee, elytrian, avian, piglin, dragonborne, close, air, air, air, custom_originmenu, air, air, air, close};
+                                            ItemStack[] allmenu_items = {human, enderian, shulk, arachnid, creep, phantom, slimeling, vexian, blazeborn, starborne, mermaid, witch, rabbit, bumblebee, elytrian, avian, piglin, dragonborne, close, air, air, air, custom_originmenu, air, air, air, close};
                                             allmenu.setContents(allmenu_items);
                                             p.openInventory(allmenu);
                                         }
@@ -757,7 +758,7 @@ public class GenesisChooseListener implements Listener {
 
                         ItemStack human = new ItemStack(Material.PLAYER_HEAD);
                         ItemStack enderian = new ItemStack(Material.ENDER_PEARL);
-                        ItemStack shulker = new ItemStack(Material.SHULKER_SHELL);
+                        ItemStack shulk = new ItemStack(Material.SHULKER_SHELL);
                         ItemStack arachnid = new ItemStack(Material.COBWEB);
                         ItemStack creep = new ItemStack(Material.GUNPOWDER);
                         ItemStack phantom = new ItemStack(Material.PHANTOM_MEMBRANE);
@@ -808,21 +809,21 @@ public class GenesisChooseListener implements Listener {
                             enderian.setItemMeta(nope_meta);
                         }
                         if (GenesisDataFiles.get2().getString("shulk-disable").equalsIgnoreCase("false")) {
-                            ItemMeta shulker_meta = shulker.getItemMeta();
-                            shulker_meta.setDisplayName(DARK_PURPLE + "Shulk");
-                            ArrayList<String> shulker_lore = new ArrayList<>();
-                            shulker_lore.add(WHITE + "Shulker Origin");
-                            shulker_meta.setLore(shulker_lore);
-                            shulker.setItemMeta(shulker_meta);
+                            ItemMeta shulk_meta = shulk.getItemMeta();
+                            shulk_meta.setDisplayName(DARK_PURPLE + "Shulk");
+                            ArrayList<String> shulk_lore = new ArrayList<>();
+                            shulk_lore.add(WHITE + "shulk Origin");
+                            shulk_meta.setLore(shulk_lore);
+                            shulk.setItemMeta(shulk_meta);
                         } else {
-                            ItemMeta nope_meta = shulker.getItemMeta();
+                            ItemMeta nope_meta = shulk.getItemMeta();
                             nope_meta.setDisplayName(RED + "Unavailable");
                             nope_meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
                             nope_meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
                             ArrayList<String> nope_lore = new ArrayList<>();
                             nope_lore.add(RED + "This origin is locked by the server owner");
                             nope_meta.setLore(nope_lore);
-                            shulker.setItemMeta(nope_meta);
+                            shulk.setItemMeta(nope_meta);
                         }
                         if (GenesisDataFiles.get17().getString("arachnid-disable").equalsIgnoreCase("false")) {
                             ItemMeta spider_meta = arachnid.getItemMeta();
@@ -1081,7 +1082,7 @@ public class GenesisChooseListener implements Listener {
                             dragonborne.setItemMeta(nope_meta);
                         }
 
-                        ItemStack[] allmenu_items = {human, enderian, shulker, arachnid, creep, phantom, slimeling, vexian, blazeborn, starborne, mermaid, witch, rabbit, bumblebee, elytrian, avian, piglin, dragonborne};
+                        ItemStack[] allmenu_items = {human, enderian, shulk, arachnid, creep, phantom, slimeling, vexian, blazeborn, starborne, mermaid, witch, rabbit, bumblebee, elytrian, avian, piglin, dragonborne};
                         allmenu.setContents(allmenu_items);
                         p.openInventory(allmenu);
                     } else {
@@ -1089,7 +1090,7 @@ public class GenesisChooseListener implements Listener {
 
                         ItemStack human = new ItemStack(Material.PLAYER_HEAD);
                         ItemStack enderian = new ItemStack(Material.ENDER_PEARL);
-                        ItemStack shulker = new ItemStack(Material.SHULKER_SHELL);
+                        ItemStack shulk = new ItemStack(Material.SHULKER_SHELL);
                         ItemStack arachnid = new ItemStack(Material.COBWEB);
                         ItemStack creep = new ItemStack(Material.GUNPOWDER);
                         ItemStack phantom = new ItemStack(Material.PHANTOM_MEMBRANE);
@@ -1156,21 +1157,21 @@ public class GenesisChooseListener implements Listener {
                             enderian.setItemMeta(nope_meta);
                         }
                         if (GenesisDataFiles.get2().getString("shulk-disable").equalsIgnoreCase("false")) {
-                            ItemMeta shulker_meta = shulker.getItemMeta();
-                            shulker_meta.setDisplayName(DARK_PURPLE + "Shulk");
-                            ArrayList<String> shulker_lore = new ArrayList<>();
-                            shulker_lore.add(WHITE + "Shulker Origin");
-                            shulker_meta.setLore(shulker_lore);
-                            shulker.setItemMeta(shulker_meta);
+                            ItemMeta shulk_meta = shulk.getItemMeta();
+                            shulk_meta.setDisplayName(DARK_PURPLE + "Shulk");
+                            ArrayList<String> shulk_lore = new ArrayList<>();
+                            shulk_lore.add(WHITE + "shulk Origin");
+                            shulk_meta.setLore(shulk_lore);
+                            shulk.setItemMeta(shulk_meta);
                         } else {
-                            ItemMeta nope_meta = shulker.getItemMeta();
+                            ItemMeta nope_meta = shulk.getItemMeta();
                             nope_meta.setDisplayName(RED + "Unavailable");
                             nope_meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
                             nope_meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
                             ArrayList<String> nope_lore = new ArrayList<>();
                             nope_lore.add(RED + "This origin is locked by the server owner");
                             nope_meta.setLore(nope_lore);
-                            shulker.setItemMeta(nope_meta);
+                            shulk.setItemMeta(nope_meta);
                         }
                         if (GenesisDataFiles.get17().getString("arachnid-disable").equalsIgnoreCase("false")) {
                             ItemMeta spider_meta = arachnid.getItemMeta();
@@ -1429,7 +1430,7 @@ public class GenesisChooseListener implements Listener {
                             dragonborne.setItemMeta(nope_meta);
                         }
 
-                        ItemStack[] allmenu_items = {human, enderian, shulker, arachnid, creep, phantom, slimeling, vexian, blazeborn, starborne, mermaid, witch, rabbit, bumblebee, elytrian, avian, piglin, dragonborne, close, air, air, air, custom_originmenu, air, air, air, close};
+                        ItemStack[] allmenu_items = {human, enderian, shulk, arachnid, creep, phantom, slimeling, vexian, blazeborn, starborne, mermaid, witch, rabbit, bumblebee, elytrian, avian, piglin, dragonborne, close, air, air, air, custom_originmenu, air, air, air, close};
                         allmenu.setContents(allmenu_items);
                         p.openInventory(allmenu);
                     }
@@ -1450,6 +1451,7 @@ public class GenesisChooseListener implements Listener {
 
                 }
 //Choose
+
                 if (e.getCurrentItem().getType() == Material.PLAYER_HEAD || e.getCurrentItem().getType() == Material.ENDER_PEARL || e.getCurrentItem().getType() == Material.SHULKER_SHELL || e.getCurrentItem().getType() == Material.COBWEB || e.getCurrentItem().getType() == Material.GUNPOWDER || e.getCurrentItem().getType() == Material.PHANTOM_MEMBRANE || e.getCurrentItem().getType() == Material.SLIME_BALL || e.getCurrentItem().getType() == Material.IRON_SWORD || e.getCurrentItem().getType() == Material.BLAZE_POWDER || e.getCurrentItem().getType() == Material.NETHER_STAR || e.getCurrentItem().getType() == Material.COD || e.getCurrentItem().getType() == Material.AMETHYST_SHARD || e.getCurrentItem().getType() == Material.CARROT || e.getCurrentItem().getType() == Material.HONEYCOMB || e.getCurrentItem().getType() == Material.ELYTRA || e.getCurrentItem().getType() == Material.FEATHER || e.getCurrentItem().getType() == Material.GOLD_INGOT || e.getCurrentItem().getType() == Material.DRAGON_BREATH) {
                     p.closeInventory();
                     p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_CHIME, 10, 9);
@@ -1459,6 +1461,7 @@ public class GenesisChooseListener implements Listener {
                     p.setCustomNameVisible(false);
                     p.getScoreboardTags().add("chosen");
                     p.setGameMode(GameMode.SURVIVAL);
+                    p.setHealthScaled(false);
                     double nY = 2;
                     Location loc = new Location(p.getWorld(), p.getLocation().getX(), p.getLocation().getY() + 1, p.getLocation().getZ());
 
@@ -1466,93 +1469,116 @@ public class GenesisChooseListener implements Listener {
                         p.removeScoreboardTag("choosing");
                     }
 
-                    if (p.getInventory().getItemInMainHand().isSimilar(orb)) {
+                    if (p.getInventory().getItemInMainHand().isSimilar(OrbOfOrigins.orb)) {
                         int amt = p.getInventory().getItemInMainHand().getAmount();
                         p.getInventory().getItemInMainHand().setAmount(amt - 1);
                     }
 
+
                     if (e.getCurrentItem().getType() == Material.ENDER_PEARL) {
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER, 0401065);
-                        ItemStack infinpearl = new ItemStack(ENDER_PEARL);
-
+                        p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
+                        ItemStack infinpearl = new ItemStack(Material.ENDER_PEARL);
                         ItemMeta pearl_meta = infinpearl.getItemMeta();
-                        pearl_meta.setDisplayName(LIGHT_PURPLE + "Teleport");
-                        ArrayList<String> pearl_lore = new ArrayList<>();
+                        pearl_meta.setDisplayName(ChatColor.LIGHT_PURPLE + "Teleport");
+                        ArrayList<String> pearl_lore = new ArrayList();
                         pearl_meta.setUnbreakable(true);
                         pearl_meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
                         pearl_meta.setLore(pearl_lore);
                         infinpearl.setItemMeta(pearl_meta);
-                        p.getInventory().addItem(infinpearl);
-                        p.getAttribute(Attribute.GENERIC_ARMOR).setBaseValue(0);
+                        p.getInventory().addItem(new ItemStack[]{infinpearl});
+                        p.getAttribute(Attribute.GENERIC_ARMOR).setBaseValue(0.0);
+                        p.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(24);
                         float walk = 0.2F;
-                        p.setWalkSpeed((float) walk);
+                        p.setWalkSpeed(walk);
                         p.getWorld().spawnParticle(Particle.REVERSE_PORTAL, p.getLocation(), 9);
+                        p.setHealthScaled(false);
                     }
                     if (e.getCurrentItem().getType() == Material.SHULKER_SHELL) {
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER, 6503044);
+                        p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
                         float walk = 0.185F;
-                        p.getAttribute(Attribute.GENERIC_ARMOR).setBaseValue(8);
-                        p.setWalkSpeed((float) walk);
-                        p.setHealthScale(20);
+                        p.getAttribute(Attribute.GENERIC_ARMOR).setBaseValue(8.0);
+                        p.setWalkSpeed(walk);
+                        p.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20);
                     }
                     if (e.getCurrentItem().getType() == Material.PLAYER_HEAD) {
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER, 0004013);
+                        p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
                     }
                     if (e.getCurrentItem().getType() == Material.COBWEB) {
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER, 1709012);
-                        p.setHealthScale(14);
+                        p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
+                        p.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(14);
+                        p.getAttribute(Attribute.GENERIC_ARMOR).setBaseValue(0);
                     }
                     if (e.getCurrentItem().getType() == Material.GUNPOWDER) {
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER, 2356555);
+                        p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 2);
+                        p.getAttribute(Attribute.GENERIC_ARMOR).setBaseValue(0);
+                        p.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(18);
                     }
                     if (e.getCurrentItem().getType() == Material.PHANTOM_MEMBRANE) {
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER, 7300041);
+                        p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
                     }
                     if (e.getCurrentItem().getType() == Material.SLIME_BALL) {
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER, 2304045);
+                        p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
                     }
                     if (e.getCurrentItem().getType() == Material.IRON_SWORD) {
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER, 9602042);
+                        p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
 
                     }
                     if (e.getCurrentItem().getType() == Material.BLAZE_POWDER) {
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER, 9811027);
+                        p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
 
                     }
                     if (e.getCurrentItem().getType() == Material.NETHER_STAR) {
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER, 7303065);
+                        p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
 
                     }
                     if (e.getCurrentItem().getType() == Material.COD) {
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER, 1310018);
+                        p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
 
                     }
                     if (e.getCurrentItem().getType() == Material.AMETHYST_SHARD) {
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER, 1205048);
+                        p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
 
                     }
                     if (e.getCurrentItem().getType() == Material.CARROT) {
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER, 5308033);
+                        p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
 
                     }
                     if (e.getCurrentItem().getType() == Material.HONEYCOMB) {
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER, 8906022);
+                        p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
 
                     }
                     if (e.getCurrentItem().getType() == Material.ELYTRA) {
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER, 6211006);
+                        p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
 
                     }
                     if (e.getCurrentItem().getType() == Material.FEATHER) {
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER, 4501011);
+                        p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
 
                     }
                     if (e.getCurrentItem().getType() == Material.GOLD_INGOT) {
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER, 6211021);
+                        p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
 
                     }
                     if (e.getCurrentItem().getType() == Material.DRAGON_BREATH) {
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER, 4307015);
+                        p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
 
                     }
                 }
@@ -1709,7 +1735,7 @@ public class GenesisChooseListener implements Listener {
                         p.openInventory(endergui);
                     }
                 }
-                //shulker
+                //shulk
                 if (e.getCurrentItem().getType() == Material.SHULKER_SHELL && !e.getCurrentItem().getItemMeta().getItemFlags().contains(ItemFlag.HIDE_ENCHANTS)) {
                     e.setCancelled(true);
                     p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 10, 9);
@@ -1740,7 +1766,7 @@ public class GenesisChooseListener implements Listener {
 
                         ItemMeta shulk_origin_info1_meta = shulk_origin_info1.getItemMeta();
                         shulk_origin_info1_meta.setDisplayName("Hoarder");
-                        shulk_origin_info1_meta.setLore(Arrays.asList(WHITE + "You have 9 extra inventory slots(/shulker open).", WHITE + "You keep these items upon death"));
+                        shulk_origin_info1_meta.setLore(Arrays.asList(WHITE + "You have 9 extra inventory slots(/shulk open).", WHITE + "You keep these items upon death"));
                         shulk_origin_info1.setItemMeta(shulk_origin_info1_meta);
 
                         ItemMeta shulk_origin_info2_meta = shulk_origin_info2.getItemMeta();
@@ -1786,7 +1812,7 @@ public class GenesisChooseListener implements Listener {
                         next.setItemMeta(next_meta);
 
                         ItemMeta shulk_meta = shulk.getItemMeta();
-                        shulk_meta.setDisplayName("Shulker");
+                        shulk_meta.setDisplayName("Shulk");
                         ArrayList<String> shulk_lore = new ArrayList<>();
                         shulk_lore.add(LIGHT_PURPLE + "Shulker Origin");
                         shulk_meta.setLore(shulk_lore);

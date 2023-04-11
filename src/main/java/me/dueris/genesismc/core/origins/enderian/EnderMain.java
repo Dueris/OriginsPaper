@@ -32,12 +32,10 @@ public class EnderMain implements Listener {
         if (originid == 0401065) {
 
             Random random = new Random();
-
             int r = random.nextInt(3000);
             if (r == (int) 3 || r == (int) 9 || r == (int) 11 || r == (int) 998 || r == (int) 2279 || r == (int) 989) {
                 p.getWorld().playSound(p.getLocation(), Sound.ENTITY_ENDERMAN_AMBIENT, 10, 9);
             }
-            p.setHealthScale(24);
         }
     }
 
@@ -86,6 +84,7 @@ public class EnderMain implements Listener {
         int originid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER);
         if (originid == 0401065) {
             if(e.getItem().getType().equals(Material.PUMPKIN_PIE)){
+                p.getWorld().createExplosion(p.getLocation(), 0);
                 p.damage(16);
             }
         }

@@ -201,7 +201,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         forcechoose.runTaskTimer(this, 0, 5);
 //creep
         CreepRunnable creeprun = new CreepRunnable();
-        creeprun.runTaskTimer(this, 0, 10);
+        creeprun.runTaskTimer(this, 0, 5);
 
 //enchantments
         waterProtectionEnchant = new WaterProtection("waterprot");

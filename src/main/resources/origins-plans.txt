@@ -1,28 +1,14 @@
 --------------------------------------------------------------------------------------------------------------------------
 Next:
 0.1.5 - 1.20
--add persistant data containing to plugin in place of tags 69%
-      -human-id: 0004013, "origin"
-      -enderian-id: 0401065, "origin"
-      -shulk-id: 6503044, "origin"
-      -arachnid-id: 1709012, "origin"
-      -creep-id: 1407068, "origin"
-      -slimeling-id: 2304045, "origin"
-      -phantom-id: 7300041, "origin"
-      -vexian-id: 9602042, "origin"
-      -blazeborn-id: 9811027, "origin"
-      -starborne-id: 7303065, "origin"
-      -merling-id: 1310018, "origin"
-      -allay-id: 1205048, "origin"
-      -rabbit-id: 5308033, "origin"
-      -bee-id: 8906022, "origin"
-      -elytrian-id: 6211006, "origin"
-      -avian-id: 4501011, "origin"
-      -piglin-id: 6211021, "origin"
-      -dragonborne-id: 4307015, "origin"
-      -chosen-id: 1, "chosen"
 
--fix bugs and add other minor changes 96%, 97%, 98%, 99%
+-finish new storage data
+-rework creep explosion. 2 hearts of damage for creep origin
+    -add new creep namespace. set to true if creep. if not, set false. extra way to recognize if they are creep. if not work, add tag with creep stringid
+-finish fixing bugs and cleaning code
+-release snapshot
+-origins enchant
+-fix bugs and add other minor changes 97%, 98%, 99%
 -finish, update git fully and push to modrinth and discord 100%
 
 

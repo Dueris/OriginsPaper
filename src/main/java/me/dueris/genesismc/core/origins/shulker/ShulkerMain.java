@@ -32,7 +32,7 @@ public class ShulkerMain implements Listener {
     PersistentDataContainer data = p.getPersistentDataContainer();
     int originid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER);
     if (originid == 6503044) {
-      if (p.isSprinting()) {
+      if (p.isSprinting() && !p.getGameMode().equals(GameMode.CREATIVE) && !p.getGameMode().equals(GameMode.SPECTATOR)) {
         Random random = new Random();
         int r = random.nextInt(1000);
         if (r == (int) 998 || r == (int) 132 || r == (int) 989 || r == (int) 929 || r == (int) 459 || r == (int) 29 || r == (int) 812) {
@@ -69,10 +69,8 @@ public class ShulkerMain implements Listener {
     PersistentDataContainer data = p.getPersistentDataContainer();
     int originid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER);
     if (originid == 6503044) {
-      if (!nat_stones.contains(e.getBlock().getType())) {
-        //do nothing
-      } else {
-        if (p != null && p.getGameMode().equals(GameMode.SURVIVAL) && !tool.contains(p.getInventory().getItemInMainHand())) {
+      if (nat_stones.contains(e.getBlock().getType())) {
+        if (p != null && !p.getGameMode().equals(GameMode.CREATIVE)) {
           if (e.getBlock().getType().equals(STONE)) {
             p.getLocation().getWorld().dropItemNaturally(e.getBlock().getLocation(), new ItemStack(COBBLESTONE));
           } else if (e.getBlock().getType().toString().contains("coal") && e.getBlock().getType().toString().contains("ore")) {
@@ -82,8 +80,7 @@ public class ShulkerMain implements Listener {
           } else {
             p.getLocation().getWorld().dropItemNaturally(e.getBlock().getLocation(), i);
           }
-
-        }
+      }
       }
     }
   }
