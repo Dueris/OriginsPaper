@@ -68,8 +68,6 @@ public class CreepExplode implements Listener {
                                 cancel();
                             }
 
-
-
                         }
 
                         p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 5, 2, false, false, false));
