@@ -1,9 +1,9 @@
 name: GenesisMC
-version: '${project.version}'
+version: '${version}'
 main: me.lotis.genesismc.core.GenesisMC
 api-version: 1.19
-authors: [ Dueris ]
-description: Genesis Plugin for SpigotMC
+authors: [ LotisMC ]
+description: Bringing the life and fun of the Origins mod to PaperMC
 website: https://genesismc.gitbook.io/genesismc/
 commands:
   origins:
