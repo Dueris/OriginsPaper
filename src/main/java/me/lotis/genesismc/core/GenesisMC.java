@@ -172,8 +172,8 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         getServer().getPluginManager().registerEvents(new EnchantProtEvent(), this);
         getServer().getPluginManager().registerEvents(new BrethrenOfEnd(), this);
         getServer().getPluginManager().registerEvents(new ArachnidMain(), this);
-        getServer().getPluginManager().registerEvents(new CustomMenuHandler(), this);
         getServer().getPluginManager().registerEvents(new ArachnidClimb(), this);
+        getServer().getPluginManager().registerEvents(new CustomMenuHandler(), this);
         getServer().getPluginManager().registerEvents(new WaterProtAnvil(), this);
         getServer().getPluginManager().registerEvents(new CreepMain(), this);
         getServer().getPluginManager().registerEvents(new CreepExplode(), this);

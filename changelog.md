@@ -54,6 +54,9 @@
 -fixed null error
 -added cauldron detection for enderian
 -fixed enderian cooldown bug
+-fixed another 20 bugs
+-fixed more bugs than i would like to admit
+-fixed arachnid climbing interfering with creep explosion detection
 </pre>
 <hr>
 <header>Again, still in early beta. Most features do not work atm.</header>

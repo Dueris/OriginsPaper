@@ -23,7 +23,9 @@ public class ArachnidClimb implements Listener {
         Player p = e.getPlayer();
         PersistentDataContainer data = p.getPersistentDataContainer();
         int originid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER);
+        p.sendMessage("moving");
         if (originid == 1709012) {
+            p.sendMessage("is arachnid");
             if (p.getLocation().getBlock().getRelative(BlockFace.EAST).getType() != AIR ||
                     p.getLocation().getBlock().getRelative(BlockFace.WEST).getType() != AIR ||
                     p.getLocation().getBlock().getRelative(BlockFace.NORTH).getType() != AIR ||
@@ -33,14 +35,15 @@ public class ArachnidClimb implements Listener {
                     p.getEyeLocation().getBlock().getRelative(BlockFace.WEST).getType() != AIR ||
                     p.getEyeLocation().getBlock().getRelative(BlockFace.NORTH).getType() != AIR ||
                     p.getEyeLocation().getBlock().getRelative(BlockFace.SOUTH).getType() != AIR) {
+                p.sendMessage("can climb");
                 Block block = p.getTargetBlock(null, 2);
                 Location bl = block.getLocation();
                 if (block.getType() != AIR && p.isSneaking()) {
-                    if (!p.getLocation().getBlock().getRelative(BlockFace.DOWN).getType().toString().contains("STAIRS")){
+                        p.sendMessage("climbing");
                         p.addPotionEffect(new PotionEffect(PotionEffectType.LEVITATION, 3, 1, false, false, false));
-                }
                 }else{
                     if (!p.getLocation().getBlock().getRelative(BlockFace.DOWN).getType().toString().contains("stair")) {
+                        p.sendMessage("falling");
                         p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_FALLING, 2, 3, false, false, false));
                     }
                 }

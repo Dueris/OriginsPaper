@@ -104,16 +104,16 @@ public class CreepExplode implements Listener {
                         }
 
 
+                    }else{
+                        this.cancel();
                     }
                 }
 
             }.runTaskTimer(GenesisMC.getPlugin(), 0L, 5L);
         } else {
-                e.setCancelled(true);
             }
 
         } else {
-            e.setCancelled(true);
         }
     }
 
