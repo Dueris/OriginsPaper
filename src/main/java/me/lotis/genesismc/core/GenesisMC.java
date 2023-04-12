@@ -7,6 +7,7 @@ import me.lotis.genesismc.core.commands.TabAutoComplete;
 import me.lotis.genesismc.core.commands.subcommands.Purge;
 import me.lotis.genesismc.core.commands.subcommands.Reload;
 import me.lotis.genesismc.core.enchantments.WaterProtAnvil;
+import me.lotis.genesismc.core.origins.creep.CreepExplode;
 import me.lotis.genesismc.core.origins.creep.CreepMain;
 import me.lotis.genesismc.core.origins.enderian.*;
 import me.lotis.genesismc.custom_origins.CustomOrigins;
@@ -20,8 +21,8 @@ import me.lotis.genesismc.core.items.WaterProtItem;
 import me.lotis.genesismc.core.origins.arachnid.ArachnidClimb;
 import me.lotis.genesismc.core.origins.arachnid.ArachnidMain;
 import me.lotis.genesismc.core.origins.human.HumanMain;
-import me.lotis.genesismc.core.origins.shulker.ShulkInv;
-import me.lotis.genesismc.core.origins.shulker.ShulkerMain;
+import me.lotis.genesismc.core.origins.shulk.ShulkInv;
+import me.lotis.genesismc.core.origins.shulk.ShulkMain;
 import org.bukkit.*;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.event.Listener;
@@ -166,7 +167,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         getServer().getPluginManager().registerEvents(new EnderMain(), this);
         getServer().getPluginManager().registerEvents(new Purge(), this);
         getServer().getPluginManager().registerEvents(new Reload(), this);
-        getServer().getPluginManager().registerEvents(new ShulkerMain(), this);
+        getServer().getPluginManager().registerEvents(new ShulkMain(), this);
         getServer().getPluginManager().registerEvents(new JoiningHandler(), this);
         getServer().getPluginManager().registerEvents(new EnchantProtEvent(), this);
         getServer().getPluginManager().registerEvents(new BrethrenOfEnd(), this);
@@ -175,6 +176,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         getServer().getPluginManager().registerEvents(new ArachnidClimb(), this);
         getServer().getPluginManager().registerEvents(new WaterProtAnvil(), this);
         getServer().getPluginManager().registerEvents(new CreepMain(), this);
+        getServer().getPluginManager().registerEvents(new CreepExplode(), this);
         plugin = this;
         getServer().getPluginManager().registerEvents(new DataContainer(), this);
         if (GenesisDataFiles.getBeta().getString("update-beta").equalsIgnoreCase("true")) {

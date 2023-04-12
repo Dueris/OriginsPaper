@@ -1,4 +1,4 @@
-package me.lotis.genesismc.core.origins.shulker;
+package me.lotis.genesismc.core.origins.shulk;
 
 import me.lotis.genesismc.core.GenesisMC;
 import me.lotis.genesismc.core.commands.subcommands.*;

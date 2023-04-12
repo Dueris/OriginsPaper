@@ -44,8 +44,6 @@ public class CreepRunnable extends BukkitRunnable {
                 for (Entity tmp : nearby2)
                     if (tmp instanceof Cat)
                         ((Damageable) p).damage(2);
-            }else{
-                p.removeScoreboardTag("can-explode");
             }
         }
     }

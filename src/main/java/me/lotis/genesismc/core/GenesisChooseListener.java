@@ -1850,7 +1850,7 @@ public class GenesisChooseListener implements Listener {
                         ItemMeta spider_origin_info1_meta = spider_origin_info1.getItemMeta();
                         spider_origin_info1_meta.setDisplayName("SpiderMan");
                         ArrayList<String> spider_origin_info1_lore = new ArrayList<>();
-                        spider_origin_info1_lore.add(WHITE + "You can climb up walls, but not when raining");
+                        spider_origin_info1_lore.add(WHITE + "You can climb up walls, but not when in the rain");
                         spider_origin_info1_meta.setLore(spider_origin_info1_lore);
                         spider_origin_info1.setItemMeta(spider_origin_info1_meta);
 
