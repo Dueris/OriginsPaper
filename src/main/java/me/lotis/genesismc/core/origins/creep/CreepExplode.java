@@ -37,7 +37,10 @@ public class CreepExplode implements Listener {
         Player p = e.getPlayer();
         PersistentDataContainer data = p.getPersistentDataContainer();
         int originid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER);
+        PersistentDataContainer datacreep = p.getPersistentDataContainer();
+        int creepcanid = datacreep.get(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER);
         if (originid == 2356555) {
+            if(creepcanid == 2){
             cooldown.remove(p.getUniqueId());
             new BukkitRunnable() {
                 Material block = e.getPlayer().getLocation().getBlock().getType();
@@ -46,32 +49,33 @@ public class CreepExplode implements Listener {
                 public void run() {
 
                     if (p.isSneaking()) {
-                        if (!cooldown.containsKey(p.getUniqueId()) || ((System.currentTimeMillis() - cooldown.get(p.getUniqueId())) > 3500)) {
-                            if(p.isSneaking()){
+                        if (!cooldown.containsKey(p.getUniqueId()) || ((System.currentTimeMillis() - cooldown.get(p.getUniqueId())) > 3300)) {
+                            if (p.isSneaking()) {
                                 cooldown.put(p.getUniqueId(), System.currentTimeMillis());
-                                explodecooldown.put(p.getUniqueId(), System.currentTimeMillis());
-                            }
-                            if (originid == 2356555) {
-                                List<Entity> nearby = p.getNearbyEntities(2, 2, 2);
-                                for (Entity tmp : nearby)
-                                    if (tmp instanceof Damageable && tmp != p)
-                                        ((Damageable) tmp).damage(15);
-                                List<Entity> nearby2 = p.getNearbyEntities(3, 3, 3);
-                                for (Entity tmp2 : nearby2)
-                                    if (tmp2 instanceof Damageable && tmp2 != p)
-                                        ((Damageable) tmp2).damage(10);
-                                List<Entity> nearby3 = p.getNearbyEntities(5, 5, 5);
-                                for (Entity tmp3 : nearby3)
-                                    if (tmp3 instanceof Damageable && tmp3 != p)
-                                        ((Damageable) tmp3).damage(5);
-                                e.setCancelled(true);
-                                cancel();
+                            } else {
+                                this.cancel();
                             }
 
                         }
 
                         p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 5, 2, false, false, false));
-                        if(!cooldown.containsKey(p.getUniqueId()) || (System.currentTimeMillis() - cooldown.get(p.getUniqueId()) >= 3400)){
+                        if (!cooldown.containsKey(p.getUniqueId()) || (System.currentTimeMillis() - cooldown.get(p.getUniqueId()) >= 2900)) {
+
+                            List<Entity> nearby = p.getNearbyEntities(2, 2, 2);
+                            for (Entity tmp : nearby)
+                                if (tmp instanceof Damageable && tmp != p)
+                                    ((Damageable) tmp).damage(15);
+                            List<Entity> nearby2 = p.getNearbyEntities(3, 3, 3);
+                            for (Entity tmp2 : nearby2)
+                                if (tmp2 instanceof Damageable && tmp2 != p)
+                                    ((Damageable) tmp2).damage(10);
+                            List<Entity> nearby3 = p.getNearbyEntities(5, 5, 5);
+                            for (Entity tmp3 : nearby3)
+                                if (tmp3 instanceof Damageable && tmp3 != p)
+                                    ((Damageable) tmp3).damage(5);
+                            e.setCancelled(true);
+                            cancel();
+
                             if (p.getWorld().isThundering()) {
                                 p.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 10, 1, true, false, false));
                                 p.getWorld().createExplosion(p.getLocation(), 6);
@@ -82,22 +86,22 @@ public class CreepExplode implements Listener {
                             } else {
                                 p.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 10, 1, true, false, false));
                                 p.getWorld().createExplosion(p.getLocation(), 3);
+                                cooldown.put(p.getUniqueId(), System.currentTimeMillis());
                                 p.teleportAsync(p.getLocation());
                                 p.damage(3);
                                 e.setCancelled(true);
                                 this.cancel();
                             }
 
-                        }else if (!cooldown.containsKey(p.getUniqueId()) || ((System.currentTimeMillis() - cooldown.get(p.getUniqueId())) >= 2800)) {
+                        } else if (!cooldown.containsKey(p.getUniqueId()) || ((System.currentTimeMillis() - cooldown.get(p.getUniqueId())) >= 2300)) {
                             p.sendActionBar(ChatColor.RED + "--");
-                        } else if (!cooldown.containsKey(p.getUniqueId()) || ((System.currentTimeMillis() - cooldown.get(p.getUniqueId())) >= 2100)) {
+                        } else if (!cooldown.containsKey(p.getUniqueId()) || ((System.currentTimeMillis() - cooldown.get(p.getUniqueId())) >= 1700)) {
                             p.sendActionBar(ChatColor.YELLOW + "----");
-                        } else if (!cooldown.containsKey(p.getUniqueId()) || ((System.currentTimeMillis() - cooldown.get(p.getUniqueId())) >= 1400)) {
+                        } else if (!cooldown.containsKey(p.getUniqueId()) || ((System.currentTimeMillis() - cooldown.get(p.getUniqueId())) >= 1100)) {
                             p.sendActionBar(ChatColor.GREEN + "------");
-                        } else if (!cooldown.containsKey(p.getUniqueId()) || ((System.currentTimeMillis() - cooldown.get(p.getUniqueId())) <= 700)) {
+                        } else if (!cooldown.containsKey(p.getUniqueId()) || ((System.currentTimeMillis() - cooldown.get(p.getUniqueId())) <= 500)) {
                             p.sendActionBar(ChatColor.BLUE + "--------");
                         }
-
 
 
                     }
@@ -105,7 +109,11 @@ public class CreepExplode implements Listener {
 
             }.runTaskTimer(GenesisMC.getPlugin(), 0L, 5L);
         } else {
-            //do nothing
+                e.setCancelled(true);
+            }
+
+        } else {
+            e.setCancelled(true);
         }
     }
 
