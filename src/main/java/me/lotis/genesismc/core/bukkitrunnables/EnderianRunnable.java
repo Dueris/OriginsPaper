@@ -37,7 +37,7 @@ public class EnderianRunnable extends BukkitRunnable {
                 pearl_meta.setLore(pearl_lore);
                 infinpearl.setItemMeta(pearl_meta);
                 pearl_meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
-                if (p.getScoreboardTags().contains("enderian")) {
+                if (originid == 0401065) {
                     p.setCooldown(ENDER_PEARL, 1);
                 }
 

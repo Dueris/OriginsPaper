@@ -53,6 +53,7 @@
 -changed camo power charged power
 -fixed null error
 -added cauldron detection for enderian
+-fixed enderian cooldown bug
 </pre>
 <hr>
 <header>Again, still in early beta. Most features do not work atm.</header>
