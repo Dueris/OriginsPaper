@@ -1,9 +1,10 @@
 plugins {
     id 'java'
+    id("io.papermc.paperweight.userdev") version "1.5.4"
 }
 
 group = 'me.lotis'
-version = '0.1.5-ALPHA_SNAPSHOT'
+version = '0.1.5-ALPHA-build+'
 
 repositories {
     mavenCentral()
@@ -22,11 +23,19 @@ repositories {
 }
 
 dependencies {
-
+    paperweight.paperDevBundle("1.19.4-R0.1-SNAPSHOT")
     compileOnly "io.papermc.paper:paper-api:1.19.4-R0.1-SNAPSHOT"
     compileOnly("org.geysermc.api:geyser-api:1.0.1-SNAPSHOT")
     compileOnly("org.geysermc.floodgate:api:2.2.2-SNAPSHOT")
 }
+tasks {
+    // Configure reobfJar to run when invoking the build task
+    assemble {
+        dependsOn(reobfJar)
+    }
+
+}
+
 
 def targetJavaVersion = 17
 java {

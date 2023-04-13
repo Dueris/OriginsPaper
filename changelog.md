@@ -1,5 +1,5 @@
-<h3>0.1.4-BETA_RELEASE<h3>
-<h4><code>Created by PurpleWolfMC</code><h4>
+<h3>0.1.5-ALPHA_RELEASE<h3>
+<h4><code>Created by Dueris</code><h4>
 <hr>
 <h2>THE PLUGIN WILL RUN ON SPIGOT AND BUKKIT, BUT MOST FEATURES WILL NOT WORK. USE AT YOUR OWN RISK</h2>
 <h3>Changelog:</h3>
@@ -57,9 +57,11 @@
 -fixed another 20 bugs
 -fixed more bugs than i would like to admit
 -fixed arachnid climbing interfering with creep explosion detection
+-changed core config version to 151668
+-fixed config-version bug on first startup
 </pre>
 <hr>
-<header>Again, still in early beta. Most features do not work atm.</header>
+<header>Again, still in early alpha. Most features do not work atm.</header>
 <blockquote><a href="https://modrinth.com/plugins/GenesisMC" rel="noopener nofollow ugc">Download link</a>
 
 <a href="https://streamelements.com/purplewolfmc/tip" rel="noopener nofollow ugc">Donate to support the project!</a>

@@ -1,8 +1,8 @@
 name: GenesisMC
 version: '${version}'
-main: me.lotis.genesismc.core.GenesisMC
+main: me.dueris.genesismc.core.GenesisMC
 api-version: 1.19
-authors: [ LotisMC ]
+authors: [ Dueris ]
 description: Bringing the life and fun of the Origins mod to PaperMC
 website: https://genesismc.gitbook.io/genesismc/
 commands:
