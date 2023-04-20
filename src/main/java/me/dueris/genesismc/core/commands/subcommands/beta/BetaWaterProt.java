@@ -1,4 +1,4 @@
-package me.dueris.genesismc.core.commands.beta;
+package me.dueris.genesismc.core.commands.subcommands.beta;
 
 import me.dueris.genesismc.core.commands.subcommands.SubCommand;
 import org.bukkit.ChatColor;
@@ -7,6 +7,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.Arrays;
+import java.util.List;
 
 import static me.dueris.genesismc.core.GenesisMC.waterProtectionEnchant;
 
@@ -34,5 +35,10 @@ public class BetaWaterProt extends SubCommand {
             enchbook.setLore(Arrays.asList(ChatColor.GRAY + "Water Protection I"));
             p.getInventory().addItem(enchbook);
         }
+    }
+
+    @Override
+    public List<String> getSubcommandArguments(Player player, String[] args) {
+        return null;
     }
 }

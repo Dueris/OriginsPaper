@@ -24,28 +24,32 @@ public class ShulkMain implements Listener {
     if (originid == 6503044) {
       if (p.isSprinting() && !p.getGameMode().equals(GameMode.CREATIVE) && !p.getGameMode().equals(GameMode.SPECTATOR)) {
         Random random = new Random();
-        int r = random.nextInt(90);
-        if (r == (int) 8 || r == (int) 32 || r == (int) 89 || r == (int) 29 || r == (int) 59 || r == (int) 79 || r == (int) 12) {
-          int foodamt = p.getFoodLevel();
-          p.setFoodLevel(foodamt - 1);
+        int r = random.nextInt(750);
+        if(!p.isSwimming()) {
+          if (r < 10) {
+            int foodamt = p.getFoodLevel();
+            p.setFoodLevel(foodamt - 1);
+          }
         }
       }
     }
   }
 
   @EventHandler
-  public void onMoveShulk(PlayerMoveEvent e) {
+  public void OnUseShield(PlayerInteractEvent e){
     Player p = e.getPlayer();
-    float walk = 0.185F;
     PersistentDataContainer data = p.getPersistentDataContainer();
     int originid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER);
     if (originid == 6503044) {
-      p.getAttribute(Attribute.GENERIC_ARMOR).setBaseValue(8);
-      p.setWalkSpeed((float) walk);
-      p.setHealthScale(20);
-
+      if(e.getItem() != null){
+        if(e.getItem().getType().equals(SHIELD)){
+          e.setCancelled(true);
+        }
+      }
     }
   }
+
+
 
   public static EnumSet<Material> nat_stones;
   public static EnumSet<Material> tool;
@@ -170,7 +174,7 @@ public class ShulkMain implements Listener {
   }
 
     static {
-      nat_stones = EnumSet.of(COBBLED_DEEPSLATE, TUFF, STONE, ANDESITE, BLACKSTONE, COBBLESTONE, CALCITE, AMETHYST_BLOCK, ANDESITE_SLAB, ANDESITE_STAIRS, ANDESITE_WALL, DIORITE, DIORITE_SLAB, DIORITE_STAIRS, DIORITE_WALL, BLACKSTONE_SLAB, BLACKSTONE_STAIRS, BLACKSTONE_WALL, COAL_ORE, DEEPSLATE, DEEPSLATE_COAL_ORE, NETHERRACK, END_STONE);
+      nat_stones = EnumSet.of(GRANITE, COBBLED_DEEPSLATE, TUFF, STONE, ANDESITE, BLACKSTONE, COBBLESTONE, CALCITE, AMETHYST_BLOCK, ANDESITE_SLAB, ANDESITE_STAIRS, ANDESITE_WALL, DIORITE, DIORITE_SLAB, DIORITE_STAIRS, DIORITE_WALL, BLACKSTONE_SLAB, BLACKSTONE_STAIRS, BLACKSTONE_WALL, COAL_ORE, DEEPSLATE, DEEPSLATE_COAL_ORE, NETHERRACK, END_STONE);
       tool = EnumSet.of(Material.DIAMOND_AXE, Material.DIAMOND_HOE, Material.DIAMOND_PICKAXE, Material.DIAMOND_SHOVEL, Material.DIAMOND_SWORD, Material.GOLDEN_AXE, Material.GOLDEN_HOE, Material.GOLDEN_PICKAXE, Material.GOLDEN_SHOVEL, Material.GOLDEN_SWORD, Material.NETHERITE_AXE, Material.NETHERITE_HOE, Material.NETHERITE_PICKAXE, Material.NETHERITE_SHOVEL, Material.NETHERITE_SWORD, Material.IRON_AXE, Material.IRON_HOE, Material.IRON_PICKAXE, Material.IRON_SHOVEL, Material.IRON_SWORD, Material.WOODEN_AXE, Material.WOODEN_HOE, Material.WOODEN_PICKAXE, Material.WOODEN_SHOVEL, Material.WOODEN_SWORD, Material.SHEARS);
     }
   }

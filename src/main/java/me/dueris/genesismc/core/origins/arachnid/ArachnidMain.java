@@ -1,11 +1,13 @@
 package me.dueris.genesismc.core.origins.arachnid;
 
 import me.dueris.genesismc.core.GenesisMC;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -16,8 +18,12 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.EnumSet;
+import java.util.List;
 import java.util.Random;
 
 import static org.bukkit.Material.*;
@@ -53,9 +59,22 @@ public class ArachnidMain implements Listener {
                 Location loc = e.getEntity().getLocation();
                 Block b = loc.getBlock();
                 Random random = new Random();
-                int r = random.nextInt(5);
+                int r = random.nextInt(10);
                 if (r == 3) {
                     b.setType(COBWEB);
+                    new BukkitRunnable() {
+
+                        @Override
+                        public void run() {
+                            if(b.getType() == AIR || b.getType() == COBWEB){
+                                b.setType(AIR);
+                                this.cancel();
+                            }else{
+                                this.cancel();
+                            }
+                        }
+
+                    }.runTaskTimer(GenesisMC.getPlugin(), 40L, 5L);
                 }
             }
         }

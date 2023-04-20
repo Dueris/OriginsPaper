@@ -2,27 +2,39 @@ package me.dueris.genesismc.core.origins.enderian;
 
 import me.dueris.genesismc.core.GenesisMC;
 import org.bukkit.*;
+import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Endermite;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.potion.PotionEffectType;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
 import java.util.UUID;
+
+import static org.bukkit.Material.ENDER_PEARL;
 
 public class EnderMain implements Listener {
     private final HashMap<UUID, Long> cooldown;
     public EnderMain() {
         this.cooldown = new HashMap<>();
     }
+
+
+
 
     @EventHandler
     public void onMovement(PlayerMoveEvent e) {
@@ -58,6 +70,18 @@ public class EnderMain implements Listener {
     }
 
     @EventHandler
+    public void onDamage(EntityDamageByEntityEvent e){
+        if(e.getEntity() instanceof Player && e.getDamager() instanceof Endermite){
+            Player p = (Player) e.getEntity();
+            PersistentDataContainer data = p.getPersistentDataContainer();
+            int originid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER);
+            if (originid == 0401065) {
+                p.damage(2);
+                e.getDamager().setGlowing(true);
+            }
+        }
+    }
+    @EventHandler
     public void onDeathWater(PlayerDeathEvent e){
         Player p = (Player) e.getEntity();
         PersistentDataContainer data = p.getPersistentDataContainer();
@@ -68,7 +92,6 @@ public class EnderMain implements Listener {
             if (p.isInWaterOrRainOrBubbleColumn()) {
                 p.playSound(p.getLocation(), Sound.ENTITY_ENDERMAN_DEATH, 10, 5);
                 e.setDeathMessage(p.getName() + " melted to death");
-
             }
                     p.getLocation().getWorld().dropItem(p.getLocation(), new ItemStack(Material.ENDER_PEARL, r));
             }
@@ -85,8 +108,12 @@ public class EnderMain implements Listener {
         if (originid == 0401065) {
             if(e.getItem().getType().equals(Material.PUMPKIN_PIE)){
                 p.getWorld().createExplosion(p.getLocation(), 0);
-                p.damage(16);
+                p.setHealth(1);
             }
+            if(e.getItem().getType().equals(Material.POTION)){
+                p.damage(2);
+            }
+
         }
     }
 

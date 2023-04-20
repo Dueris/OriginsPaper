@@ -6,7 +6,7 @@ authors: [ Dueris ]
 description: Bringing the life and fun of the Origins mod to PaperMC
 website: https://genesismc.gitbook.io/genesismc/
 commands:
-  origins:
+  origin:
     description: Main Origins Directory
   beta:
     description: genesis beta
@@ -76,3 +76,5 @@ permissions:
     default: true
   genesismc.choosing.rechoose:
     default: true
+  genesismc.origins.cmd.get:
+    default: op

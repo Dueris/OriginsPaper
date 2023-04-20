@@ -1,16 +1,15 @@
 --------------------------------------------------------------------------------------------------------------------------
 Next:
-0.1.5 - 1.20
+0.1.6 - 1.20
 
--finish new storage data
--rework creep explosion. 2 hearts of damage for creep origin
-    -add new creep namespace. set to true if creep. if not, set false. extra way to recognize if they are creep. if not work, add tag with creep stringid
--finish fixing bugs and cleaning code
--release snapshot
--origins enchant
--fix bugs and add other minor changes 97%, 98%, 99%
--finish, update git fully and push to modrinth and discord 100%
-
+/origins get
+/origins enchant
+fix tab complete
+remove blindness on choosing
+fix sinking in choosing
+fix enderian not taking damage when drinking potions or being splashed by them
+enderian cannot wear pumpkins
+-/origins help orb
 
 /origins choose
 /origins help(lists what origin you have)

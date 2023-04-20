@@ -23,7 +23,7 @@ public class ShulkUtils {
     PersistentDataContainer data = p.getPersistentDataContainer();
 
     if (items.size() == 0){
-      data.set(new NamespacedKey(GenesisMC.getPlugin(), "shulker"), PersistentDataType.STRING, "");
+      data.set(new NamespacedKey(GenesisMC.getPlugin(), "shulker-box"), PersistentDataType.STRING, "");
     }else{
 
       try{
@@ -43,7 +43,7 @@ public class ShulkUtils {
 
         String encodedData = Base64.getEncoder().encodeToString(rawData);
 
-        data.set(new NamespacedKey(GenesisMC.getPlugin(), "shulker"), PersistentDataType.STRING, encodedData);
+        data.set(new NamespacedKey(GenesisMC.getPlugin(), "shulker-box"), PersistentDataType.STRING, encodedData);
 
         os.close();
 
@@ -61,7 +61,7 @@ public class ShulkUtils {
 
     ArrayList<ItemStack> items = new ArrayList<>();
 
-    String encodedItems = data.get(new NamespacedKey(GenesisMC.getPlugin(), "shulker"), PersistentDataType.STRING);
+    String encodedItems = data.get(new NamespacedKey(GenesisMC.getPlugin(), "shulker-box"), PersistentDataType.STRING);
 
     if (!encodedItems.isEmpty()){
 

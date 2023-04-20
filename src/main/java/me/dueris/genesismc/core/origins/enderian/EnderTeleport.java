@@ -10,6 +10,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
+import org.bukkit.event.inventory.PrepareItemCraftEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
@@ -45,8 +46,6 @@ public class EnderTeleport implements Listener {
         }
     }
 
-    public static HashMap<UUID, Integer> thrownPearls = new HashMap<UUID, Integer>();
-
     @EventHandler
     public void onThrow(final PlayerInteractEvent e) {
         ItemStack infinpearl = new ItemStack(ENDER_PEARL);
@@ -66,17 +65,55 @@ public class EnderTeleport implements Listener {
             if (e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.LEFT_CLICK_AIR || e.getAction() == Action.LEFT_CLICK_BLOCK || e.getAction() == Action.RIGHT_CLICK_BLOCK) {
                 if (e.getItem() != null) {
                     if (e.getItem().equals(infinpearl)) {
-                        p.getInventory().addItem(infinpearl);
+                        if(p.getInventory().getItemInOffHand().equals(infinpearl)){
+                            p.getInventory().getItemInOffHand().add(1);
+                        }else{
+                            p.getInventory().addItem(infinpearl);
+                        }
+                        p.setCooldown(ENDER_PEARL, 0);
                     } else if (e.getItem().equals(null)) {
                         //no
                     }
+
+
                 }
             } else if (e.getItem() != null) {
                 if (e.getItem().equals(infinpearl)) {
                     p.getInventory().removeItem(infinpearl);
-                } else if (e.getItem().equals(null)) {
+                    p.setCooldown(ENDER_PEARL, 0);
                 }
             }
+        }else{
+            if(e.getItem() != null) {
+                if (e.getItem().isSimilar(infinpearl)) {
+                    if(e.getClickedBlock() != null){
+                        if(!e.getClickedBlock().getType().isInteractable()){
+                            if(e.getItem().isSimilar(infinpearl)){
+                                e.getItem().setAmount(0);
+                                e.setCancelled(true);
+
+                            }
+                        }
+                    }
+
+                }
+            }
+        }
+    }
+
+    @EventHandler
+    public void oncraftattempt(PrepareItemCraftEvent e){
+        ItemStack infinpearl = new ItemStack(ENDER_PEARL);
+
+        ItemMeta pearl_meta = infinpearl.getItemMeta();
+        pearl_meta.setDisplayName(ChatColor.LIGHT_PURPLE + "Teleport");
+        ArrayList<String> pearl_lore = new ArrayList<>();
+        pearl_meta.setUnbreakable(true);
+        pearl_meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
+        pearl_meta.setLore(pearl_lore);
+        infinpearl.setItemMeta(pearl_meta);
+        if(e.getInventory().contains(infinpearl)){
+            e.getInventory().setResult(null);
         }
     }
 
@@ -127,12 +164,9 @@ public class EnderTeleport implements Listener {
         Player p = e.getPlayer();
         PersistentDataContainer data = p.getPersistentDataContainer();
         int originid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER);
-        if (originid == 0401065) {
             if (e.getItemDrop().getItemStack().isSimilar(infinpearl)) {
-                e.getItemDrop().getItemStack().setType(AIR);
-                p.getInventory().addItem(infinpearl);
+                e.setCancelled(true);
             }
-        }
     }
 
     @EventHandler
@@ -150,10 +184,8 @@ public class EnderTeleport implements Listener {
         infinpearl.setItemMeta(pearl_meta);
         pearl_meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
         if (originid == 0401065) {
-
                 e.getDrops().remove(infinpearl);
                 e.getDrops().add(new ItemStack(ENDER_PEARL));
-
         }
 
     }

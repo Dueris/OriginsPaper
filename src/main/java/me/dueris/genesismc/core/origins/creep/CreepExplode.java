@@ -92,11 +92,15 @@ public class CreepExplode implements Listener {
 
                         } else if (!cooldown.containsKey(p.getUniqueId()) || ((System.currentTimeMillis() - cooldown.get(p.getUniqueId())) >= 2300)) {
                             p.sendActionBar(ChatColor.RED + "--");
+                            p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 6, 4, false, false, false));
                         } else if (!cooldown.containsKey(p.getUniqueId()) || ((System.currentTimeMillis() - cooldown.get(p.getUniqueId())) >= 1700)) {
                             p.sendActionBar(ChatColor.YELLOW + "----");
+                            p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 6, 3, false, false, false));
                         } else if (!cooldown.containsKey(p.getUniqueId()) || ((System.currentTimeMillis() - cooldown.get(p.getUniqueId())) >= 1100)) {
                             p.sendActionBar(ChatColor.GREEN + "------");
+                            p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 6, 2, false, false, false));
                         } else if (!cooldown.containsKey(p.getUniqueId()) || ((System.currentTimeMillis() - cooldown.get(p.getUniqueId())) <= 500)) {
+                            p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 6, 1, false, false, false));
                             p.sendActionBar(ChatColor.BLUE + "--------");
                         }
 

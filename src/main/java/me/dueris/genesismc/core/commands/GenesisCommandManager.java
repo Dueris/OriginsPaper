@@ -1,10 +1,17 @@
 package me.dueris.genesismc.core.commands;
 
-import me.dueris.genesismc.core.commands.subcommands.*;
+import me.dueris.genesismc.core.commands.subcommands.SubCommand;
+import me.dueris.genesismc.core.commands.subcommands.origin.*;
+import me.dueris.genesismc.core.files.GenesisDataFiles;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.command.*;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class GenesisCommandManager implements CommandExecutor {
 
@@ -13,10 +20,9 @@ public class GenesisCommandManager implements CommandExecutor {
     private ArrayList<SubCommand> subCommands = new ArrayList<>();
     public GenesisCommandManager(){
         subCommands.add(new Purge());
-        subCommands.add(new Reload());
         subCommands.add(new Texture());
-        subCommands.add(new CommandListCMD());
-        subCommands.add(new ConfigCMD());
+        subCommands.add(new CommandList());
+        subCommands.add(new Config());
         subCommands.add(new OriginsChoose());
 
     }
@@ -33,6 +39,20 @@ public class GenesisCommandManager implements CommandExecutor {
                     }
 
                 }
+            }
+            if(args.length == 0){
+                p.sendMessage(ChatColor.RED + "You did not provide any args. Here is a list of commands:");
+                p.sendMessage(ChatColor.YELLOW + "-----------------------------------------",
+                        ChatColor.WHITE + "/origins choose",
+                        ChatColor.WHITE + "/origins purge <player_name>",
+                        ChatColor.WHITE + "/origins reload",
+                        ChatColor.WHITE + "/origins commands",
+                        ChatColor.WHITE + "/origins config",
+                        ChatColor.WHITE + "/origins texture",
+                        ChatColor.WHITE + "/shulker open",
+                        ChatColor.WHITE + "/beta <beta-args>",
+                        ChatColor.YELLOW + "-----------------------------------------"
+                );
             }
         }
         return true;

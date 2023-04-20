@@ -43,7 +43,7 @@ public class CreepRunnable extends BukkitRunnable {
                 List<Entity> nearby2 = p.getNearbyEntities(3, 3, 3);
                 for (Entity tmp : nearby2)
                     if (tmp instanceof Cat)
-                        ((Damageable) p).damage(2);
+                        ((Damageable) p).damage(1);
             }
         }
     }

@@ -1,7 +1,7 @@
 package me.dueris.genesismc.core.origins.shulk;
 
 import me.dueris.genesismc.core.GenesisMC;
-import me.dueris.genesismc.core.commands.subcommands.*;
+import me.dueris.genesismc.core.commands.subcommands.SubCommand;
 import me.dueris.genesismc.core.utils.ShulkUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -45,6 +45,16 @@ public class ShulkInv implements CommandExecutor {
           p.openInventory ( vault );
 
         }
+      }else if(args.length == 0){
+        ArrayList<ItemStack> vaultItems = ShulkUtils.getItems ( p );
+
+        Inventory vault = Bukkit.createInventory ( p , 9 , "Shulker Box" );
+
+        vaultItems.stream ( )
+                .forEach ( itemStack -> vault.addItem ( itemStack ) );
+
+        p.openInventory ( vault );
+
       }
     }else{
       p.sendMessage(ChatColor.RED + "You must be a Shulk to access this command");

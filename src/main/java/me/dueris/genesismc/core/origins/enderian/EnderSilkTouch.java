@@ -2,6 +2,7 @@ package me.dueris.genesismc.core.origins.enderian;
 
 
 import me.dueris.genesismc.core.GenesisMC;
+import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -17,6 +18,8 @@ import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
 import java.util.EnumSet;
+
+import static org.bukkit.Bukkit.getServer;
 
 public class EnderSilkTouch implements Listener {
   private static EnumSet<Material> m;
@@ -59,6 +62,8 @@ public class EnderSilkTouch implements Listener {
                   p.getLocation().getWorld().dropItemNaturally(e.getBlock().getLocation(), i);
                 }
               } catch (Exception var6) {
+                getServer().getConsoleSender().sendMessage(ChatColor.RED + "Send to Dueris: Error with Enderian Silk Touch");
+
               }
             }
 
@@ -69,7 +74,7 @@ public class EnderSilkTouch implements Listener {
   }
 
     static {
-      m = EnumSet.of(Material.AIR, Material.REDSTONE_WIRE, Material.REDSTONE_WALL_TORCH, Material.REDSTONE_TORCH, Material.PISTON_HEAD, Material.GRASS, Material.TALL_GRASS, Material.TALL_SEAGRASS, Material.SEA_PICKLE, Material.SEAGRASS, Material.VINE, Material.CHEST, Material.TRAPPED_CHEST, Material.JUKEBOX, Material.FURNACE, Material.HOPPER, Material.DRAGON_HEAD, Material.DRAGON_WALL_HEAD, Material.COMPOSTER, Material.FLETCHING_TABLE, Material.LOOM, Material.BARREL, Material.SMOKER, Material.DROPPER, Material.DISPENSER, Material.SNOW, Material.LECTERN, Material.WHEAT, Material.MELON_STEM, Material.ATTACHED_MELON_STEM, Material.PUMPKIN_STEM, Material.ATTACHED_PUMPKIN_STEM, Material.BEETROOTS, Material.CARROTS, Material.POTATOES, Material.SOUL_TORCH, Material.SOUL_WALL_TORCH, Material.WALL_TORCH, Material.END_PORTAL, Material.NETHER_PORTAL, Material.PLAYER_HEAD, Material.PLAYER_WALL_HEAD, Material.STRING, Material.TRIPWIRE, Material.SWEET_BERRY_BUSH, Material.FIRE, Material.SOUL_FIRE, Material.KELP, Material.KELP_PLANT, Material.DRIED_KELP);
+      m = EnumSet.of(Material.PISTON_HEAD, Material.VINE, Material.WHEAT, Material.MELON_STEM, Material.ATTACHED_MELON_STEM, Material.PUMPKIN_STEM, Material.ATTACHED_PUMPKIN_STEM, Material.BEETROOTS, Material.CARROTS, Material.POTATOES, Material.END_PORTAL, Material.NETHER_PORTAL, Material.FIRE, Material.SOUL_FIRE);
       tools = EnumSet.of(Material.DIAMOND_AXE, Material.DIAMOND_HOE, Material.DIAMOND_PICKAXE, Material.DIAMOND_SHOVEL, Material.DIAMOND_SWORD, Material.GOLDEN_AXE, Material.GOLDEN_HOE, Material.GOLDEN_PICKAXE, Material.GOLDEN_SHOVEL, Material.GOLDEN_SWORD, Material.NETHERITE_AXE, Material.NETHERITE_HOE, Material.NETHERITE_PICKAXE, Material.NETHERITE_SHOVEL, Material.NETHERITE_SWORD, Material.IRON_AXE, Material.IRON_HOE, Material.IRON_PICKAXE, Material.IRON_SHOVEL, Material.IRON_SWORD, Material.WOODEN_AXE, Material.WOODEN_HOE, Material.WOODEN_PICKAXE, Material.WOODEN_SHOVEL, Material.WOODEN_SWORD, Material.SHEARS);
     }
   }

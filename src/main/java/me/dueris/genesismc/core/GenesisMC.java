@@ -5,12 +5,14 @@ import me.dueris.genesismc.core.bukkitrunnables.*;
 import me.dueris.genesismc.core.commands.BetaCommands;
 import me.dueris.genesismc.core.commands.GenesisCommandManager;
 import me.dueris.genesismc.core.commands.TabAutoComplete;
-import me.dueris.genesismc.core.commands.subcommands.Purge;
-import me.dueris.genesismc.core.commands.subcommands.Reload;
+import me.dueris.genesismc.core.commands.subcommands.origin.Purge;
 import me.dueris.genesismc.core.enchantments.WaterProtAnvil;
 import me.dueris.genesismc.core.origins.creep.CreepExplode;
 import me.dueris.genesismc.core.origins.creep.CreepMain;
 import me.dueris.genesismc.core.origins.enderian.*;
+import me.dueris.genesismc.core.origins.phantom.PhantomForm;
+import me.dueris.genesismc.core.origins.phantom.PhantomFormRunnable;
+import me.dueris.genesismc.core.origins.phantom.PhantomMain;
 import me.dueris.genesismc.custom_origins.CustomOrigins;
 import me.dueris.genesismc.custom_origins.handlers.CustomMenuHandler;
 import me.dueris.genesismc.core.enchantments.EnchantProtEvent;
@@ -44,46 +46,20 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 
     @Override
     public void onEnable() {
-// Plugin startup logic
+        // Plugin startup logic
 
         plugin = this;
 
         getServer().getPluginManager().registerEvents(new DataContainer(), this);
 
-        //configs
-
-        this.saveDefaultConfig();
+        //configs + folders
 
         Bukkit.getServer().getPluginManager().registerEvents(this, this);
-        this.getConfig().options().copyDefaults(true);
-        this.saveDefaultConfig();
-
         GenesisDataFiles.setup();
-        GenesisDataFiles.get().options().copyDefaults(true);
-        GenesisDataFiles.get1().options().copyDefaults(true);
-        GenesisDataFiles.get2().options().copyDefaults(true);
-        GenesisDataFiles.get3().options().copyDefaults(true);
-        GenesisDataFiles.get4().options().copyDefaults(true);
-        GenesisDataFiles.get5().options().copyDefaults(true);
-        GenesisDataFiles.get6().options().copyDefaults(true);
-        GenesisDataFiles.get7().options().copyDefaults(true);
-        GenesisDataFiles.get8().options().copyDefaults(true);
-        GenesisDataFiles.get9().options().copyDefaults(true);
-        GenesisDataFiles.get10().options().copyDefaults(true);
-        GenesisDataFiles.get11().options().copyDefaults(true);
-        GenesisDataFiles.get12().options().copyDefaults(true);
-        GenesisDataFiles.get13().options().copyDefaults(true);
-        GenesisDataFiles.get14().options().copyDefaults(true);
-        GenesisDataFiles.get15().options().copyDefaults(true);
-        GenesisDataFiles.get16().options().copyDefaults(true);
-        GenesisDataFiles.get17().options().copyDefaults(true);
-        GenesisDataFiles.getOrb().options().copyDefaults(true);
-        GenesisDataFiles.getBeta().options().copyDefaults(true);
-        GenesisDataFiles.getMenu().options().copyDefaults(true);
         GenesisDataFiles.getPlugCon().options().copyDefaults(true);
+        GenesisDataFiles.getOrbCon().options().copyDefaults(true);
         GenesisDataFiles.setDefaults();
         GenesisDataFiles.save();
-
 
 
         //start
@@ -97,24 +73,24 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         getServer().getConsoleSender().sendMessage(ChatColor.LIGHT_PURPLE + "[GenesisMC] |           |    |  |      | Created by Dueris");
         getServer().getConsoleSender().sendMessage(ChatColor.DARK_PURPLE + "[GenesisMC] |                   |");
         getServer().getConsoleSender().sendMessage(ChatColor.GRAY + "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-        if (!this.getConfig().getString("config-version").equalsIgnoreCase(String.valueOf(151668))) {
+        if (!GenesisDataFiles.getPlugCon().getString("config-version").equalsIgnoreCase("1016788")) {
             getServer().getConsoleSender().sendMessage(ChatColor.RED + "[GenesisMC] WARNING. THIS IS THE WRONG CONFIG VERSION. PLEASE RELOAD THE CONFIG OR DELETE THE CONFIG AND RESTART");
             getServer().getConsoleSender().sendMessage(ChatColor.RED + "[GenesisMC] ATTEMPTING RELOAD OF CONFIG FILE");
-            this.getConfig().set("config-version", 151668);
+            GenesisDataFiles.getPlugCon().set("config-version", "1016788");
             getServer().getPluginManager().getPlugin("genesismc").saveConfig();
-            if (!this.getConfig().getString("config-version").equalsIgnoreCase(String.valueOf(151668))) {
+            if (!GenesisDataFiles.getPlugCon().getString("config-version").equalsIgnoreCase("1016788")) {
                 getServer().getConsoleSender().sendMessage(ChatColor.RED + "[GenesisMC] ERROR RELOADING CONFIG. RETRYING");
-                getServer().getPluginManager().getPlugin("genesismc").getConfig().set("config-version", 151668);
+                getServer().getPluginManager().getPlugin("genesismc").getConfig().set("config-version", 1016788);
                 getServer().getPluginManager().getPlugin("genesismc").saveConfig();
             } else {
                 getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "[GenesisMC] RELOAD SUCCESSFUL.");
             }
             this.getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
                 public void run() {
-                    if (getConfig().getString("config-version") == null || !getConfig().getString("config-version").equalsIgnoreCase(String.valueOf(151668))) {
+                    if (getConfig().getString("config-version") == null || !GenesisDataFiles.getPlugCon().getString("config-version").equalsIgnoreCase("1016788")) {
                         getServer().getConsoleSender().sendMessage(ChatColor.RED + "[GenesisMC] ERROR RELOADING CONFIG. PLEASE DELETE CONFIG FILE AND RESTART");
                         getServer().getConsoleSender().sendMessage(ChatColor.RED + "[GenesisMC] ATTEMPTING RELOAD OF CONFIG FILE");
-                        getServer().getPluginManager().getPlugin("genesismc").getConfig().set("config-version", 151668);
+                        getServer().getPluginManager().getPlugin("genesismc").getConfig().set("config-version", 1016788);
                         getServer().getPluginManager().getPlugin("genesismc").saveConfig();
                     }
                 }
@@ -136,15 +112,11 @@ public final class GenesisMC extends JavaPlugin implements Listener {
             getServer().getConsoleSender().sendMessage(ChatColor.GRAY + "[GenesisMC] Loading OriginsChoosingCommands");
             //method
             dumpCon();
-            getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "[GenesisMC] Successfully loaded version 0.1.5-ALPHA_SNAPSHOT (1.19.4)");
+            getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "[GenesisMC] Successfully loaded version 0.1.6-ALPHA_SNAPSHOT (1.19.4)");
             getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "[GenesisMC] Successfully loaded API version 0.1.1-BETA (1.19.4)");
-            getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "[GenesisMC] Successfully loaded CONFIG version 0138` (1.19.4)");
-            if (GenesisDataFiles.getPlugCon().getString("use-purplewolfapi").equalsIgnoreCase("false")) {
-                getServer().getConsoleSender().sendMessage(ChatColor.RED + "[GenesisMC] WARNGING. PURPLEWOLFAPI IS DISABLED. THINGS WILL BREAK. PLEASE TURN BACK TO TRUE");
-                getServer().getPluginManager().getPlugin("origins-spigotmc").reloadConfig();
-            }
+            getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "[GenesisMC] Successfully loaded CONFIG version 1016788 (1.19.4)");
         } else {
-            getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "[GenesisMC] Successfully loaded version 0.1.5-ALPHA_SNAPSHOT (1.19.4)");
+            getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "[GenesisMC] Successfully loaded version 0.1.6-ALPHA_SNAPSHOT (1.19.4)");
         }
         if (getServer().getPluginManager().getPlugins().toString().contains("PurpleWolfAPI") || getServer().getPluginManager().isPluginEnabled("PurpleWolfAPI") || getServer().getPluginManager().getPlugin("PurpleWolfAPI") != null) {
             getServer().getConsoleSender().sendMessage(ChatColor.LIGHT_PURPLE + "[GenesisMC - PurpleWolfAPI] Successfully injected PurpleWolfAPI into plugin");
@@ -156,8 +128,8 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         getServer().getConsoleSender().sendMessage(ChatColor.GRAY + "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
         getServer().getPluginManager().registerEvents(this, this);
 //Commands
-        getCommand("origins").setExecutor(new GenesisCommandManager());
-        getCommand("origins").setTabCompleter(new TabAutoComplete());
+        getCommand("origin").setExecutor(new GenesisCommandManager());
+        getCommand("origin").setTabCompleter(new TabAutoComplete());
         getCommand("shulker").setTabCompleter(new TabAutoComplete());
         getCommand("beta").setTabCompleter(new TabAutoComplete());
         getCommand("shulker").setExecutor(new ShulkInv());
@@ -169,28 +141,31 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         getServer().getPluginManager().registerEvents(new HumanMain(), this);
         getServer().getPluginManager().registerEvents(new EnderMain(), this);
         getServer().getPluginManager().registerEvents(new Purge(), this);
-        getServer().getPluginManager().registerEvents(new Reload(), this);
         getServer().getPluginManager().registerEvents(new ShulkMain(), this);
         getServer().getPluginManager().registerEvents(new JoiningHandler(), this);
         getServer().getPluginManager().registerEvents(new EnchantProtEvent(), this);
         getServer().getPluginManager().registerEvents(new BrethrenOfEnd(), this);
         getServer().getPluginManager().registerEvents(new ArachnidMain(), this);
-        getServer().getPluginManager().registerEvents(new ArachnidClimb(), this);
         getServer().getPluginManager().registerEvents(new CustomMenuHandler(), this);
         getServer().getPluginManager().registerEvents(new WaterProtAnvil(), this);
         getServer().getPluginManager().registerEvents(new CreepMain(), this);
         getServer().getPluginManager().registerEvents(new CreepExplode(), this);
         getServer().getPluginManager().registerEvents(new HandShakeEvent(), this);
+        getServer().getPluginManager().registerEvents(new PlayerAddScoreboard(), this);
+        getServer().getPluginManager().registerEvents(new PhantomForm(), this);
+        getServer().getPluginManager().registerEvents(new PhantomMain(), this);
         plugin = this;
         getServer().getPluginManager().registerEvents(new DataContainer(), this);
-        if (GenesisDataFiles.getBeta().getString("update-beta").equalsIgnoreCase("true")) {
+        if (GenesisDataFiles.getPlugCon().getString("beta-enabled").equalsIgnoreCase("true")) {
             getCommand("beta").setExecutor(new BetaCommands());
         }
         OrbOfOrigins.init();
         InfinPearl.init();
         WaterProtItem.init();
         //runnables main
-
+//scoreboard
+        ScoreboardRunnable scorebo = new ScoreboardRunnable();
+        scorebo.runTaskTimer(this, 0, 5);
 //enderian
         EnderianRunnable enderrun = new EnderianRunnable();
         enderrun.runTaskTimer(this, 0, 5);
@@ -202,13 +177,21 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 //arachnid
         ArachnidRunnable arachnidrun = new ArachnidRunnable();
         arachnidrun.runTaskTimer(this, 0, 15);
+        ArachnidClimb arachnidrunclimb = new ArachnidClimb();
+        arachnidrunclimb.runTaskTimer(this, 0, 5);
 //forcechoose
-        ForceChooseRunnable forcechoose = new ForceChooseRunnable();
+        ChooseRunnable forcechoose = new ChooseRunnable();
         forcechoose.runTaskTimer(this, 0, 5);
 //creep
         CreepRunnable creeprun = new CreepRunnable();
-        creeprun.runTaskTimer(this, 0, 5);
-
+        creeprun.runTaskTimer(this, 0, 15);
+//phantom
+        PhantomRunnable phantomrun = new PhantomRunnable();
+        phantomrun.runTaskTimer(this, 0, 5);
+        PhantomFormRunnable phantomformrun = new PhantomFormRunnable();
+        phantomformrun.runTaskTimer(this, 0, 3);
+        PhantomMain phantommainrun = new PhantomMain();
+        phantommainrun.runTaskTimer(this, 0, 20);
 //enchantments
         waterProtectionEnchant = new WaterProtection("waterprot");
         custom_enchants.add(waterProtectionEnchant);
@@ -276,28 +259,8 @@ public final class GenesisMC extends JavaPlugin implements Listener {
     public void dumpCon(){
         getServer().getConsoleSender().sendMessage(ChatColor.LIGHT_PURPLE + "[GenesisMC] DUMPING PLUGIN-API FILES:");
         getServer().getConsoleSender().sendMessage(ChatColor.GRAY + "Loading config file:" +
-                this.getConfig().getValues(Boolean.parseBoolean("all")) +
-                GenesisDataFiles.get().getValues(Boolean.parseBoolean("all")) +
-                GenesisDataFiles.get1().getValues(Boolean.parseBoolean("all")) +
-                GenesisDataFiles.get2().getValues(Boolean.parseBoolean("all")) +
-                GenesisDataFiles.get3().getValues(Boolean.parseBoolean("all")) +
-                GenesisDataFiles.get4().getValues(Boolean.parseBoolean("all")) +
-                GenesisDataFiles.get5().getValues(Boolean.parseBoolean("all")) +
-                GenesisDataFiles.get6().getValues(Boolean.parseBoolean("all")) +
-                GenesisDataFiles.get7().getValues(Boolean.parseBoolean("all")) +
-                GenesisDataFiles.get8().getValues(Boolean.parseBoolean("all")) +
-                GenesisDataFiles.get9().getValues(Boolean.parseBoolean("all")) +
-                GenesisDataFiles.get10().getValues(Boolean.parseBoolean("all")) +
-                GenesisDataFiles.get11().getValues(Boolean.parseBoolean("all")) +
-                GenesisDataFiles.get12().getValues(Boolean.parseBoolean("all")) +
-                GenesisDataFiles.get13().getValues(Boolean.parseBoolean("all")) +
-                GenesisDataFiles.get14().getValues(Boolean.parseBoolean("all")) +
-                GenesisDataFiles.get15().getValues(Boolean.parseBoolean("all")) +
-                GenesisDataFiles.get16().getValues(Boolean.parseBoolean("all")) +
-                GenesisDataFiles.get17().getValues(Boolean.parseBoolean("all")) +
-                GenesisDataFiles.getOrb().getValues(Boolean.parseBoolean("all")) +
-                GenesisDataFiles.getBeta().getValues(Boolean.parseBoolean("all")) +
-                GenesisDataFiles.getMenu().getValues(Boolean.parseBoolean("all")) +
+                GenesisDataFiles.getOrbCon().getValues(Boolean.parseBoolean("all")) +
+                ChatColor.GRAY +
                 GenesisDataFiles.getPlugCon().getValues(Boolean.parseBoolean("all"))
 
         );

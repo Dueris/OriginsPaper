@@ -1,10 +1,15 @@
 package me.dueris.genesismc.core.bukkitrunnables;
 
 import me.dueris.genesismc.core.GenesisMC;
+import net.minecraft.world.item.LingeringPotionItem;
+import net.minecraft.world.item.SplashPotionItem;
 import org.bukkit.*;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Block;
+import org.bukkit.craftbukkit.v1_19_R3.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_19_R3.entity.CraftThrownPotion;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -12,10 +17,11 @@ import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.Random;
+import java.util.*;
 
+import static org.bukkit.Material.CARVED_PUMPKIN;
 import static org.bukkit.Material.ENDER_PEARL;
 
 public class EnderianRunnable extends BukkitRunnable {
@@ -25,6 +31,19 @@ public class EnderianRunnable extends BukkitRunnable {
             PersistentDataContainer data = p.getPersistentDataContainer();
             int originid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER);
             if (originid == 0401065) {
+
+
+
+
+
+                List<Entity> nearby2 = p.getNearbyEntities(3, 3, 3);
+                List<Entity> nearby23 = p.getNearbyEntities(3, 3, 3);
+
+                for (Entity tmp : nearby23)
+                    if (tmp instanceof CraftThrownPotion)
+                        p.damage(2);
+
+
                 Block b = p.getWorld().getHighestBlockAt(p.getLocation());
                 ItemStack infinpearl = new ItemStack(ENDER_PEARL);
 
@@ -37,9 +56,6 @@ public class EnderianRunnable extends BukkitRunnable {
                 pearl_meta.setLore(pearl_lore);
                 infinpearl.setItemMeta(pearl_meta);
                 pearl_meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
-                if (originid == 0401065) {
-                    p.setCooldown(ENDER_PEARL, 1);
-                }
 
                 if (!p.getActivePotionEffects().equals(PotionEffectType.INVISIBILITY)) {
                     if(!p.getGameMode().equals(GameMode.SPECTATOR)) {
@@ -56,7 +72,7 @@ public class EnderianRunnable extends BukkitRunnable {
                 if (r == (int) 3 || r == (int) 9 || r == (int) 11 || r == (int) 998 || r == (int) 2279 || r == (int) 989) {
                     p.playSound(p.getLocation(), Sound.ENTITY_ENDERMAN_AMBIENT, 10, 9);
                 }
-                p.setMaximumAir(20);
+
                 if(p.getInventory().getItemInMainHand().isSimilar(infinpearl)){
                     if (p.getInventory().getItemInMainHand().getAmount() >= 2) {
                             int amt = p.getInventory().getItemInMainHand().getAmount();
@@ -69,11 +85,30 @@ public class EnderianRunnable extends BukkitRunnable {
                     }
                 }
             }
+/*
+                for(Player players : Bukkit.getOnlinePlayers()) {
+                    if(originid == 0401065){
+                        Player ep = p;
+                        UUID puuid = players.getUniqueId();
+                        CraftPlayer craftPlayer = (CraftPlayer) ep;
+                        if(players.getEquipment().getHelmet().equals(CARVED_PUMPKIN) && players.getEquipment().getHelmet() != null){
+
+                            players.addScoreboardTag("genesismc:wearing-carved-pumpkin");
+
+
+                            final boolean b = !craftPlayer.canSee(puuid);
+
+                        }else{
+                            craftPlayer.canSee(puuid);
+                        }
+                    }
+
+
+                }
+                */
+
 
         }
-        Bukkit.getOnlinePlayers().stream().forEach(p -> {
-
-        });
     }
 
     }

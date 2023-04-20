@@ -11,12 +11,16 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.scoreboard.Scoreboard;
+import org.bukkit.scoreboard.ScoreboardManager;
+import org.bukkit.scoreboard.Team;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -29,699 +33,702 @@ import static org.bukkit.ChatColor.LIGHT_PURPLE;
 public class GenesisChooseListener implements Listener {
     //Orb of Origin Click Event
 
-
     @EventHandler
     public void onOrbClick(PlayerInteractEvent e) {
         Player p = e.getPlayer();
         if (p.hasPermission("genesismc.choosing.rechoose")) {
-            if (GenesisDataFiles.getPlugCon().getString("disable-orb_of_origins").equalsIgnoreCase("false")) {
+            if (GenesisDataFiles.getPlugCon().getString("orb-of-origins-enabled").equalsIgnoreCase("false")) {
                 if (e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.LEFT_CLICK_AIR || e.getAction() == Action.LEFT_CLICK_BLOCK || e.getAction() == Action.RIGHT_CLICK_BLOCK) {
                     if (p.getOpenInventory().getBottomInventory() != null) {
-                        if (e.getItem() != null) {
-                            if (e.getItem().getType().equals(Material.MAGMA_CREAM)) {
-                                if (e.getItem().getEnchantments().containsKey(Enchantment.ARROW_INFINITE)) {
-                                    if (e.getItem().getItemMeta().getItemFlags().contains(ItemFlag.HIDE_UNBREAKABLE)) {
-                                        if (GenesisDataFiles.getPlugCon().getString("custom-origins").equalsIgnoreCase("false")) {
-                                            Inventory allmenu = Bukkit.createInventory(p, 18, LIGHT_PURPLE + "Origins Menu");
+                        PersistentDataContainer data = p.getPersistentDataContainer();
+                        int originid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER);
+                        int phantomid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER);
+                        if(phantomid >= 2) {
+                            if (e.getItem() != null) {
+                                if (e.getItem().getType().equals(Material.MAGMA_CREAM)) {
+                                    if (e.getItem().getEnchantments().containsKey(Enchantment.ARROW_INFINITE)) {
+                                        if (e.getItem().getItemMeta().getItemFlags().contains(ItemFlag.HIDE_UNBREAKABLE)) {
+                                            if (GenesisDataFiles.getPlugCon().getString("custom-origins").equalsIgnoreCase("false")) {
+                                                Inventory allmenu = Bukkit.createInventory(p, 18, LIGHT_PURPLE + "Origins Menu");
 
-                                            ItemStack human = new ItemStack(Material.PLAYER_HEAD);
-                                            ItemStack enderian = new ItemStack(Material.ENDER_PEARL);
-                                            ItemStack shulk = new ItemStack(Material.SHULKER_SHELL);
-                                            ItemStack arachnid = new ItemStack(Material.COBWEB);
-                                            ItemStack creep = new ItemStack(Material.GUNPOWDER);
-                                            ItemStack phantom = new ItemStack(Material.PHANTOM_MEMBRANE);
-                                            ItemStack slimeling = new ItemStack(Material.SLIME_BALL);
-                                            ItemStack vexian = new ItemStack(Material.IRON_SWORD);
-                                            ItemStack blazeborn = new ItemStack(Material.BLAZE_POWDER);
-                                            ItemStack starborne = new ItemStack(Material.NETHER_STAR);
-                                            ItemStack mermaid = new ItemStack(Material.COD);
-                                            ItemStack witch = new ItemStack(Material.AMETHYST_SHARD);
-                                            ItemStack rabbit = new ItemStack(Material.CARROT);
-                                            ItemStack bumblebee = new ItemStack(Material.HONEYCOMB);
-                                            ItemStack elytrian = new ItemStack(Material.ELYTRA);
-                                            ItemStack avian = new ItemStack(Material.FEATHER);
-                                            ItemStack piglin = new ItemStack(Material.GOLD_INGOT);
-                                            ItemStack dragonborne = new ItemStack(Material.DRAGON_BREATH);
-                                            if (GenesisDataFiles.get1().getString("human-disable").equalsIgnoreCase("false")) {
-                                                ItemMeta human_meta = human.getItemMeta();
-                                                human_meta.setDisplayName(WHITE + "Human");
-                                                ArrayList<String> human_lore = new ArrayList<>();
-                                                human_lore.add(WHITE + "Human Origin");
-                                                human_meta.setLore(human_lore);
-                                                human.setItemMeta(human_meta);
-                                            } else {
-                                                ItemMeta nope_meta = human.getItemMeta();
-                                                nope_meta.setDisplayName(RED + "Unavailable");
-                                                nope_meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
-                                                nope_meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-                                                ArrayList<String> nope_lore = new ArrayList<>();
-                                                nope_lore.add(RED + "This origin is locked by the server owner");
-                                                nope_meta.setLore(nope_lore);
-                                                human.setItemMeta(nope_meta);
-                                            }
-                                            if (GenesisDataFiles.get().getString("enderian-disable").equalsIgnoreCase("false")) {
-                                                ItemMeta ender_meta = enderian.getItemMeta();
-                                                ender_meta.setDisplayName(LIGHT_PURPLE + "Enderian");
-                                                ArrayList<String> ender_lore = new ArrayList<>();
-                                                ender_lore.add(WHITE + "Enderman Origin");
-                                                ender_meta.setLore(ender_lore);
-                                                enderian.setItemMeta(ender_meta);
-                                            } else {
-                                                ItemMeta nope_meta = enderian.getItemMeta();
-                                                nope_meta.setDisplayName(RED + "Unavailable");
-                                                nope_meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
-                                                nope_meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-                                                ArrayList<String> nope_lore = new ArrayList<>();
-                                                nope_lore.add(RED + "This origin is locked by the server owner");
-                                                nope_meta.setLore(nope_lore);
-                                                enderian.setItemMeta(nope_meta);
-                                            }
-                                            if (GenesisDataFiles.get2().getString("shulk-disable").equalsIgnoreCase("false")) {
-                                                ItemMeta shulk_meta = shulk.getItemMeta();
-                                                shulk_meta.setDisplayName(DARK_PURPLE + "Shulk");
-                                                ArrayList<String> shulk_lore = new ArrayList<>();
-                                                shulk_lore.add(WHITE + "shulk Origin");
-                                                shulk_meta.setLore(shulk_lore);
-                                                shulk.setItemMeta(shulk_meta);
-                                            } else {
-                                                ItemMeta nope_meta = shulk.getItemMeta();
-                                                nope_meta.setDisplayName(RED + "Unavailable");
-                                                nope_meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
-                                                nope_meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-                                                ArrayList<String> nope_lore = new ArrayList<>();
-                                                nope_lore.add(RED + "This origin is locked by the server owner");
-                                                nope_meta.setLore(nope_lore);
-                                                shulk.setItemMeta(nope_meta);
-                                            }
-                                            if (GenesisDataFiles.get17().getString("arachnid-disable").equalsIgnoreCase("false")) {
-                                                ItemMeta spider_meta = arachnid.getItemMeta();
-                                                spider_meta.setDisplayName(RED + "Arachnid");
-                                                ArrayList<String> spider_lore = new ArrayList<>();
-                                                spider_lore.add(WHITE + "Spider Origin");
-                                                spider_meta.setLore(spider_lore);
-                                                arachnid.setItemMeta(spider_meta);
-                                            } else {
-                                                ItemMeta nope_meta = arachnid.getItemMeta();
-                                                nope_meta.setDisplayName(RED + "Unavailable");
-                                                nope_meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
-                                                nope_meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-                                                ArrayList<String> nope_lore = new ArrayList<>();
-                                                nope_lore.add(RED + "This origin is locked by the server owner");
-                                                nope_meta.setLore(nope_lore);
-                                                arachnid.setItemMeta(nope_meta);
-                                            }
-                                            if (GenesisDataFiles.get3().getString("creep-disable").equalsIgnoreCase("false")) {
-                                                ItemMeta creep_meta = creep.getItemMeta();
-                                                creep_meta.setDisplayName(GREEN + "Creep");
-                                                ArrayList<String> creep_lore = new ArrayList<>();
-                                                creep_lore.add(WHITE + "Creeper Origin");
-                                                creep_meta.setLore(creep_lore);
-                                                creep.setItemMeta(creep_meta);
-                                            } else {
-                                                ItemMeta nope_meta = creep.getItemMeta();
-                                                nope_meta.setDisplayName(RED + "Unavailable");
-                                                nope_meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
-                                                nope_meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-                                                ArrayList<String> nope_lore = new ArrayList<>();
-                                                nope_lore.add(RED + "This origin is locked by the server owner");
-                                                nope_meta.setLore(nope_lore);
-                                                creep.setItemMeta(nope_meta);
-                                            }
-                                            if (GenesisDataFiles.get4().getString("phantom-disable").equalsIgnoreCase("false")) {
-                                                ItemMeta phantom_meta = phantom.getItemMeta();
-                                                phantom_meta.setDisplayName(BLUE + "Phantom");
-                                                ArrayList<String> phantom_lore = new ArrayList<>();
-                                                phantom_lore.add(WHITE + "Phantom Origin");
-                                                phantom_meta.setLore(phantom_lore);
-                                                phantom.setItemMeta(phantom_meta);
-                                            } else {
-                                                ItemMeta nope_meta = phantom.getItemMeta();
-                                                nope_meta.setDisplayName(RED + "Unavailable");
-                                                nope_meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
-                                                nope_meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-                                                ArrayList<String> nope_lore = new ArrayList<>();
-                                                nope_lore.add(RED + "This origin is locked by the server owner");
-                                                nope_meta.setLore(nope_lore);
-                                                phantom.setItemMeta(nope_meta);
-                                            }
-                                            if (GenesisDataFiles.get5().getString("slimeling-disable").equalsIgnoreCase("false")) {
-                                                ItemMeta slime_meta = slimeling.getItemMeta();
-                                                slime_meta.setDisplayName(GREEN + "Slimeling");
-                                                ArrayList<String> slime_lore = new ArrayList<>();
-                                                slime_lore.add(WHITE + "Slime Origin");
-                                                slime_meta.setLore(slime_lore);
-                                                slimeling.setItemMeta(slime_meta);
-                                            } else {
-                                                ItemMeta nope_meta = slimeling.getItemMeta();
-                                                nope_meta.setDisplayName(RED + "Unavailable");
-                                                nope_meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
-                                                nope_meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-                                                ArrayList<String> nope_lore = new ArrayList<>();
-                                                nope_lore.add(RED + "This origin is locked by the server owner");
-                                                nope_meta.setLore(nope_lore);
-                                                slimeling.setItemMeta(nope_meta);
-                                            }
-                                            if (GenesisDataFiles.get6().getString("vexian-disable").equalsIgnoreCase("false")) {
-                                                ItemMeta vex_meta = vexian.getItemMeta();
-                                                vex_meta.setDisplayName(AQUA + "Vexian");
-                                                ArrayList<String> vex_lore = new ArrayList<>();
-                                                vex_lore.add(WHITE + "Vex Origin");
-                                                vex_meta.getItemFlags().add(ItemFlag.HIDE_ATTRIBUTES);
-                                                vex_meta.setLore(vex_lore);
-                                                vexian.setItemMeta(vex_meta);
-                                            } else {
-                                                ItemMeta nope_meta = vexian.getItemMeta();
-                                                nope_meta.setDisplayName(RED + "Unavailable");
-                                                nope_meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
-                                                nope_meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-                                                ArrayList<String> nope_lore = new ArrayList<>();
-                                                nope_lore.add(RED + "This origin is locked by the server owner");
-                                                nope_meta.setLore(nope_lore);
-                                                vexian.setItemMeta(nope_meta);
-                                            }
-                                            if (GenesisDataFiles.get7().getString("blazeborn-disable").equalsIgnoreCase("false")) {
-                                                ItemMeta blaze_meta = blazeborn.getItemMeta();
-                                                blaze_meta.setDisplayName(GOLD + "Blazeborn");
-                                                ArrayList<String> blaze_lore = new ArrayList<>();
-                                                blaze_lore.add(WHITE + "Blaze Origin");
-                                                blaze_meta.setLore(blaze_lore);
-                                                blazeborn.setItemMeta(blaze_meta);
-                                            } else {
-                                                ItemMeta nope_meta = blazeborn.getItemMeta();
-                                                nope_meta.setDisplayName(RED + "Unavailable");
-                                                nope_meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
-                                                nope_meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-                                                ArrayList<String> nope_lore = new ArrayList<>();
-                                                nope_lore.add(RED + "This origin is locked by the server owner");
-                                                nope_meta.setLore(nope_lore);
-                                                blazeborn.setItemMeta(nope_meta);
-                                            }
-                                            if (GenesisDataFiles.get8().getString("starborne-disable").equalsIgnoreCase("false")) {
-                                                ItemMeta star_meta = starborne.getItemMeta();
-                                                star_meta.setDisplayName(LIGHT_PURPLE + "Starborne");
-                                                ArrayList<String> star_lore = new ArrayList<>();
-                                                star_lore.add(WHITE + "Starborne Origin");
-                                                star_meta.setLore(star_lore);
-                                                starborne.setItemMeta(star_meta);
-                                            } else {
-                                                ItemMeta nope_meta = starborne.getItemMeta();
-                                                nope_meta.setDisplayName(RED + "Unavailable");
-                                                nope_meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
-                                                nope_meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-                                                ArrayList<String> nope_lore = new ArrayList<>();
-                                                nope_lore.add(RED + "This origin is locked by the server owner");
-                                                nope_meta.setLore(nope_lore);
-                                                starborne.setItemMeta(nope_meta);
-                                            }
-                                            if (GenesisDataFiles.get9().getString("merling-disable").equalsIgnoreCase("false")) {
-                                                ItemMeta mer_meta = mermaid.getItemMeta();
-                                                mer_meta.setDisplayName(BLUE + "Mermaid");
-                                                ArrayList<String> mer_lore = new ArrayList<>();
-                                                mer_lore.add(WHITE + "Mermaid Origin");
-                                                mer_meta.setLore(mer_lore);
-                                                mermaid.setItemMeta(mer_meta);
-                                            } else {
-                                                ItemMeta nope_meta = mermaid.getItemMeta();
-                                                nope_meta.setDisplayName(RED + "Unavailable");
-                                                nope_meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
-                                                nope_meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-                                                ArrayList<String> nope_lore = new ArrayList<>();
-                                                nope_lore.add(RED + "This origin is locked by the server owner");
-                                                nope_meta.setLore(nope_lore);
-                                                mermaid.setItemMeta(nope_meta);
-                                            }
-                                            if (GenesisDataFiles.get10().getString("allay-disable").equalsIgnoreCase("false")) {
-                                                ItemMeta witch_meta = witch.getItemMeta();
-                                                witch_meta.setDisplayName(AQUA + "Allay");
-                                                ArrayList<String> witch_lore = new ArrayList<>();
-                                                witch_lore.add(WHITE + "Allay Origin");
-                                                witch_meta.setLore(witch_lore);
-                                                witch.setItemMeta(witch_meta);
-                                            } else {
-                                                ItemMeta nope_meta = witch.getItemMeta();
-                                                nope_meta.setDisplayName(RED + "Unavailable");
-                                                nope_meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
-                                                nope_meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-                                                ArrayList<String> nope_lore = new ArrayList<>();
-                                                nope_lore.add(RED + "This origin is locked by the server owner");
-                                                nope_meta.setLore(nope_lore);
-                                                witch.setItemMeta(nope_meta);
-                                            }
-                                            if (GenesisDataFiles.get11().getString("rabbit-disable").equalsIgnoreCase("false")) {
-                                                ItemMeta rabbit_meta = rabbit.getItemMeta();
-                                                rabbit_meta.setDisplayName(GOLD + "Rabbit");
-                                                ArrayList<String> rabbit_lore = new ArrayList<>();
-                                                rabbit_lore.add(WHITE + "Rabbit Origin");
-                                                rabbit_meta.setLore(rabbit_lore);
-                                                rabbit.setItemMeta(rabbit_meta);
-                                            } else {
-                                                ItemMeta nope_meta = rabbit.getItemMeta();
-                                                nope_meta.setDisplayName(RED + "Unavailable");
-                                                nope_meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
-                                                nope_meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-                                                ArrayList<String> nope_lore = new ArrayList<>();
-                                                nope_lore.add(RED + "This origin is locked by the server owner");
-                                                nope_meta.setLore(nope_lore);
-                                                rabbit.setItemMeta(nope_meta);
-                                            }
-                                            if (GenesisDataFiles.get12().getString("bumblebee-disable").equalsIgnoreCase("false")) {
-                                                ItemMeta bee_meta = bumblebee.getItemMeta();
-                                                bee_meta.setDisplayName(YELLOW + "Bumblebee");
-                                                ArrayList<String> bee_lore = new ArrayList<>();
-                                                bee_lore.add(WHITE + "Bee Origin");
-                                                bee_meta.setLore(bee_lore);
-                                                bumblebee.setItemMeta(bee_meta);
-                                            } else {
-                                                ItemMeta nope_meta = bumblebee.getItemMeta();
-                                                nope_meta.setDisplayName(RED + "Unavailable");
-                                                nope_meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
-                                                nope_meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-                                                ArrayList<String> nope_lore = new ArrayList<>();
-                                                nope_lore.add(RED + "This origin is locked by the server owner");
-                                                nope_meta.setLore(nope_lore);
-                                                bumblebee.setItemMeta(nope_meta);
-                                            }
-                                            if (GenesisDataFiles.get13().getString("elytrian-disable").equalsIgnoreCase("false")) {
-                                                ItemMeta elytra_meta = elytrian.getItemMeta();
-                                                elytra_meta.setDisplayName(GRAY + "Elytrian");
-                                                ArrayList<String> elytra_lore = new ArrayList<>();
-                                                elytra_lore.add(WHITE + "Elytra Origin");
-                                                elytra_meta.setLore(elytra_lore);
-                                                elytrian.setItemMeta(elytra_meta);
-                                            } else {
-                                                ItemMeta nope_meta = elytrian.getItemMeta();
-                                                nope_meta.setDisplayName(RED + "Unavailable");
-                                                nope_meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
-                                                nope_meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-                                                ArrayList<String> nope_lore = new ArrayList<>();
-                                                nope_lore.add(RED + "This origin is locked by the server owner");
-                                                nope_meta.setLore(nope_lore);
-                                                elytrian.setItemMeta(nope_meta);
-                                            }
-                                            if (GenesisDataFiles.get14().getString("avian-disable").equalsIgnoreCase("false")) {
-                                                ItemMeta avian_meta = avian.getItemMeta();
-                                                avian_meta.setDisplayName(DARK_AQUA + "Avian");
-                                                ArrayList<String> avian_lore = new ArrayList<>();
-                                                avian_lore.add(WHITE + "Avian Origin");
-                                                avian_meta.setLore(avian_lore);
-                                                avian.setItemMeta(avian_meta);
-                                            } else {
-                                                ItemMeta nope_meta = avian.getItemMeta();
-                                                nope_meta.setDisplayName(RED + "Unavailable");
-                                                nope_meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
-                                                nope_meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-                                                ArrayList<String> nope_lore = new ArrayList<>();
-                                                nope_lore.add(RED + "This origin is locked by the server owner");
-                                                nope_meta.setLore(nope_lore);
-                                                avian.setItemMeta(nope_meta);
-                                            }
-                                            if (GenesisDataFiles.get15().getString("piglin-disable").equalsIgnoreCase("false")) {
-                                                ItemMeta pig_meta = piglin.getItemMeta();
-                                                pig_meta.setDisplayName(GOLD + "Piglin");
-                                                ArrayList<String> pig_lore = new ArrayList<>();
-                                                pig_lore.add(WHITE + "Piglin Origin");
-                                                pig_meta.setLore(pig_lore);
-                                                piglin.setItemMeta(pig_meta);
-                                            } else {
-                                                ItemMeta nope_meta = piglin.getItemMeta();
-                                                nope_meta.setDisplayName(RED + "Unavailable");
-                                                nope_meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
-                                                nope_meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-                                                ArrayList<String> nope_lore = new ArrayList<>();
-                                                nope_lore.add(RED + "This origin is locked by the server owner");
-                                                nope_meta.setLore(nope_lore);
-                                                piglin.setItemMeta(nope_meta);
-                                            }
-                                            if (GenesisDataFiles.get16().getString("dragonborne-disable").equalsIgnoreCase("false")) {
-                                                ItemMeta dragonborne_meta = dragonborne.getItemMeta();
-                                                dragonborne_meta.setDisplayName(DARK_PURPLE + "Dragonborne");
-                                                ArrayList<String> dragonborne_lore = new ArrayList<>();
-                                                dragonborne_lore.add(WHITE + "Dragon Origin");
-                                                dragonborne_meta.setLore(dragonborne_lore);
-                                                dragonborne.setItemMeta(dragonborne_meta);
-                                            } else {
-                                                ItemMeta nope_meta = dragonborne.getItemMeta();
-                                                nope_meta.setDisplayName(RED + "Unavailable");
-                                                nope_meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
-                                                nope_meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-                                                ArrayList<String> nope_lore = new ArrayList<>();
-                                                nope_lore.add(RED + "This origin is locked by the server owner");
-                                                nope_meta.setLore(nope_lore);
-                                                dragonborne.setItemMeta(nope_meta);
-                                            }
+                                                ItemStack human = new ItemStack(Material.PLAYER_HEAD);
+                                                ItemStack enderian = new ItemStack(Material.ENDER_PEARL);
+                                                ItemStack shulk = new ItemStack(Material.SHULKER_SHELL);
+                                                ItemStack arachnid = new ItemStack(Material.COBWEB);
+                                                ItemStack creep = new ItemStack(Material.GUNPOWDER);
+                                                ItemStack phantom = new ItemStack(Material.PHANTOM_MEMBRANE);
+                                                ItemStack slimeling = new ItemStack(Material.SLIME_BALL);
+                                                ItemStack vexian = new ItemStack(Material.IRON_SWORD);
+                                                ItemStack blazeborn = new ItemStack(Material.BLAZE_POWDER);
+                                                ItemStack starborne = new ItemStack(Material.NETHER_STAR);
+                                                ItemStack mermaid = new ItemStack(Material.COD);
+                                                ItemStack witch = new ItemStack(Material.AMETHYST_SHARD);
+                                                ItemStack rabbit = new ItemStack(Material.CARROT);
+                                                ItemStack bumblebee = new ItemStack(Material.HONEYCOMB);
+                                                ItemStack elytrian = new ItemStack(Material.ELYTRA);
+                                                ItemStack avian = new ItemStack(Material.FEATHER);
+                                                ItemStack piglin = new ItemStack(Material.GOLD_INGOT);
+                                                ItemStack dragonborne = new ItemStack(Material.DRAGON_BREATH);
+                                                if (GenesisDataFiles.getPlugCon().getString("human-disable").equalsIgnoreCase("false")) {
+                                                    ItemMeta human_meta = human.getItemMeta();
+                                                    human_meta.setDisplayName(WHITE + "Human");
+                                                    ArrayList<String> human_lore = new ArrayList<>();
+                                                    human_lore.add(WHITE + "Human Origin");
+                                                    human_meta.setLore(human_lore);
+                                                    human.setItemMeta(human_meta);
+                                                } else {
+                                                    ItemMeta nope_meta = human.getItemMeta();
+                                                    nope_meta.setDisplayName(RED + "Unavailable");
+                                                    nope_meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
+                                                    nope_meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+                                                    ArrayList<String> nope_lore = new ArrayList<>();
+                                                    nope_lore.add(RED + "This origin is locked by the server owner");
+                                                    nope_meta.setLore(nope_lore);
+                                                    human.setItemMeta(nope_meta);
+                                                }
+                                                if (GenesisDataFiles.getPlugCon().getString("enderian-disable").equalsIgnoreCase("false")) {
+                                                    ItemMeta ender_meta = enderian.getItemMeta();
+                                                    ender_meta.setDisplayName(LIGHT_PURPLE + "Enderian");
+                                                    ArrayList<String> ender_lore = new ArrayList<>();
+                                                    ender_lore.add(WHITE + "Enderman Origin");
+                                                    ender_meta.setLore(ender_lore);
+                                                    enderian.setItemMeta(ender_meta);
+                                                } else {
+                                                    ItemMeta nope_meta = enderian.getItemMeta();
+                                                    nope_meta.setDisplayName(RED + "Unavailable");
+                                                    nope_meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
+                                                    nope_meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+                                                    ArrayList<String> nope_lore = new ArrayList<>();
+                                                    nope_lore.add(RED + "This origin is locked by the server owner");
+                                                    nope_meta.setLore(nope_lore);
+                                                    enderian.setItemMeta(nope_meta);
+                                                }
+                                                if (GenesisDataFiles.getPlugCon().getString("shulk-disable").equalsIgnoreCase("false")) {
+                                                    ItemMeta shulk_meta = shulk.getItemMeta();
+                                                    shulk_meta.setDisplayName(DARK_PURPLE + "Shulk");
+                                                    ArrayList<String> shulk_lore = new ArrayList<>();
+                                                    shulk_lore.add(WHITE + "shulk Origin");
+                                                    shulk_meta.setLore(shulk_lore);
+                                                    shulk.setItemMeta(shulk_meta);
+                                                } else {
+                                                    ItemMeta nope_meta = shulk.getItemMeta();
+                                                    nope_meta.setDisplayName(RED + "Unavailable");
+                                                    nope_meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
+                                                    nope_meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+                                                    ArrayList<String> nope_lore = new ArrayList<>();
+                                                    nope_lore.add(RED + "This origin is locked by the server owner");
+                                                    nope_meta.setLore(nope_lore);
+                                                    shulk.setItemMeta(nope_meta);
+                                                }
+                                                if (GenesisDataFiles.getPlugCon().getString("arachnid-disable").equalsIgnoreCase("false")) {
+                                                    ItemMeta spider_meta = arachnid.getItemMeta();
+                                                    spider_meta.setDisplayName(RED + "Arachnid");
+                                                    ArrayList<String> spider_lore = new ArrayList<>();
+                                                    spider_lore.add(WHITE + "Spider Origin");
+                                                    spider_meta.setLore(spider_lore);
+                                                    arachnid.setItemMeta(spider_meta);
+                                                } else {
+                                                    ItemMeta nope_meta = arachnid.getItemMeta();
+                                                    nope_meta.setDisplayName(RED + "Unavailable");
+                                                    nope_meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
+                                                    nope_meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+                                                    ArrayList<String> nope_lore = new ArrayList<>();
+                                                    nope_lore.add(RED + "This origin is locked by the server owner");
+                                                    nope_meta.setLore(nope_lore);
+                                                    arachnid.setItemMeta(nope_meta);
+                                                }
+                                                if (GenesisDataFiles.getPlugCon().getString("creep-disable").equalsIgnoreCase("false")) {
+                                                    ItemMeta creep_meta = creep.getItemMeta();
+                                                    creep_meta.setDisplayName(GREEN + "Creep");
+                                                    ArrayList<String> creep_lore = new ArrayList<>();
+                                                    creep_lore.add(WHITE + "Creeper Origin");
+                                                    creep_meta.setLore(creep_lore);
+                                                    creep.setItemMeta(creep_meta);
+                                                } else {
+                                                    ItemMeta nope_meta = creep.getItemMeta();
+                                                    nope_meta.setDisplayName(RED + "Unavailable");
+                                                    nope_meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
+                                                    nope_meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+                                                    ArrayList<String> nope_lore = new ArrayList<>();
+                                                    nope_lore.add(RED + "This origin is locked by the server owner");
+                                                    nope_meta.setLore(nope_lore);
+                                                    creep.setItemMeta(nope_meta);
+                                                }
+                                                if (GenesisDataFiles.getPlugCon().getString("phantom-disable").equalsIgnoreCase("false")) {
+                                                    ItemMeta phantom_meta = phantom.getItemMeta();
+                                                    phantom_meta.setDisplayName(BLUE + "Phantom");
+                                                    ArrayList<String> phantom_lore = new ArrayList<>();
+                                                    phantom_lore.add(WHITE + "Phantom Origin");
+                                                    phantom_meta.setLore(phantom_lore);
+                                                    phantom.setItemMeta(phantom_meta);
+                                                } else {
+                                                    ItemMeta nope_meta = phantom.getItemMeta();
+                                                    nope_meta.setDisplayName(RED + "Unavailable");
+                                                    nope_meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
+                                                    nope_meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+                                                    ArrayList<String> nope_lore = new ArrayList<>();
+                                                    nope_lore.add(RED + "This origin is locked by the server owner");
+                                                    nope_meta.setLore(nope_lore);
+                                                    phantom.setItemMeta(nope_meta);
+                                                }
+                                                if (GenesisDataFiles.getPlugCon().getString("slimeling-disable").equalsIgnoreCase("false")) {
+                                                    ItemMeta slime_meta = slimeling.getItemMeta();
+                                                    slime_meta.setDisplayName(GREEN + "Slimeling");
+                                                    ArrayList<String> slime_lore = new ArrayList<>();
+                                                    slime_lore.add(WHITE + "Slime Origin");
+                                                    slime_meta.setLore(slime_lore);
+                                                    slimeling.setItemMeta(slime_meta);
+                                                } else {
+                                                    ItemMeta nope_meta = slimeling.getItemMeta();
+                                                    nope_meta.setDisplayName(RED + "Unavailable");
+                                                    nope_meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
+                                                    nope_meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+                                                    ArrayList<String> nope_lore = new ArrayList<>();
+                                                    nope_lore.add(RED + "This origin is locked by the server owner");
+                                                    nope_meta.setLore(nope_lore);
+                                                    slimeling.setItemMeta(nope_meta);
+                                                }
+                                                if (GenesisDataFiles.getPlugCon().getString("vexian-disable").equalsIgnoreCase("false")) {
+                                                    ItemMeta vex_meta = vexian.getItemMeta();
+                                                    vex_meta.setDisplayName(AQUA + "Vexian");
+                                                    ArrayList<String> vex_lore = new ArrayList<>();
+                                                    vex_lore.add(WHITE + "Vex Origin");
+                                                    vex_meta.getItemFlags().add(ItemFlag.HIDE_ATTRIBUTES);
+                                                    vex_meta.setLore(vex_lore);
+                                                    vexian.setItemMeta(vex_meta);
+                                                } else {
+                                                    ItemMeta nope_meta = vexian.getItemMeta();
+                                                    nope_meta.setDisplayName(RED + "Unavailable");
+                                                    nope_meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
+                                                    nope_meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+                                                    ArrayList<String> nope_lore = new ArrayList<>();
+                                                    nope_lore.add(RED + "This origin is locked by the server owner");
+                                                    nope_meta.setLore(nope_lore);
+                                                    vexian.setItemMeta(nope_meta);
+                                                }
+                                                if (GenesisDataFiles.getPlugCon().getString("blazeborn-disable").equalsIgnoreCase("false")) {
+                                                    ItemMeta blaze_meta = blazeborn.getItemMeta();
+                                                    blaze_meta.setDisplayName(GOLD + "Blazeborn");
+                                                    ArrayList<String> blaze_lore = new ArrayList<>();
+                                                    blaze_lore.add(WHITE + "Blaze Origin");
+                                                    blaze_meta.setLore(blaze_lore);
+                                                    blazeborn.setItemMeta(blaze_meta);
+                                                } else {
+                                                    ItemMeta nope_meta = blazeborn.getItemMeta();
+                                                    nope_meta.setDisplayName(RED + "Unavailable");
+                                                    nope_meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
+                                                    nope_meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+                                                    ArrayList<String> nope_lore = new ArrayList<>();
+                                                    nope_lore.add(RED + "This origin is locked by the server owner");
+                                                    nope_meta.setLore(nope_lore);
+                                                    blazeborn.setItemMeta(nope_meta);
+                                                }
+                                                if (GenesisDataFiles.getPlugCon().getString("starborne-disable").equalsIgnoreCase("false")) {
+                                                    ItemMeta star_meta = starborne.getItemMeta();
+                                                    star_meta.setDisplayName(LIGHT_PURPLE + "Starborne");
+                                                    ArrayList<String> star_lore = new ArrayList<>();
+                                                    star_lore.add(WHITE + "Starborne Origin");
+                                                    star_meta.setLore(star_lore);
+                                                    starborne.setItemMeta(star_meta);
+                                                } else {
+                                                    ItemMeta nope_meta = starborne.getItemMeta();
+                                                    nope_meta.setDisplayName(RED + "Unavailable");
+                                                    nope_meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
+                                                    nope_meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+                                                    ArrayList<String> nope_lore = new ArrayList<>();
+                                                    nope_lore.add(RED + "This origin is locked by the server owner");
+                                                    nope_meta.setLore(nope_lore);
+                                                    starborne.setItemMeta(nope_meta);
+                                                }
+                                                if (GenesisDataFiles.getPlugCon().getString("merling-disable").equalsIgnoreCase("false")) {
+                                                    ItemMeta mer_meta = mermaid.getItemMeta();
+                                                    mer_meta.setDisplayName(BLUE + "Merling");
+                                                    ArrayList<String> mer_lore = new ArrayList<>();
+                                                    mer_lore.add(WHITE + "Merling Origin");
+                                                    mer_meta.setLore(mer_lore);
+                                                    mermaid.setItemMeta(mer_meta);
+                                                } else {
+                                                    ItemMeta nope_meta = mermaid.getItemMeta();
+                                                    nope_meta.setDisplayName(RED + "Unavailable");
+                                                    nope_meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
+                                                    nope_meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+                                                    ArrayList<String> nope_lore = new ArrayList<>();
+                                                    nope_lore.add(RED + "This origin is locked by the server owner");
+                                                    nope_meta.setLore(nope_lore);
+                                                    mermaid.setItemMeta(nope_meta);
+                                                }
+                                                if (GenesisDataFiles.getPlugCon().getString("allay-disable").equalsIgnoreCase("false")) {
+                                                    ItemMeta witch_meta = witch.getItemMeta();
+                                                    witch_meta.setDisplayName(AQUA + "Allay");
+                                                    ArrayList<String> witch_lore = new ArrayList<>();
+                                                    witch_lore.add(WHITE + "Allay Origin");
+                                                    witch_meta.setLore(witch_lore);
+                                                    witch.setItemMeta(witch_meta);
+                                                } else {
+                                                    ItemMeta nope_meta = witch.getItemMeta();
+                                                    nope_meta.setDisplayName(RED + "Unavailable");
+                                                    nope_meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
+                                                    nope_meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+                                                    ArrayList<String> nope_lore = new ArrayList<>();
+                                                    nope_lore.add(RED + "This origin is locked by the server owner");
+                                                    nope_meta.setLore(nope_lore);
+                                                    witch.setItemMeta(nope_meta);
+                                                }
+                                                if (GenesisDataFiles.getPlugCon().getString("rabbit-disable").equalsIgnoreCase("false")) {
+                                                    ItemMeta rabbit_meta = rabbit.getItemMeta();
+                                                    rabbit_meta.setDisplayName(GOLD + "Rabbit");
+                                                    ArrayList<String> rabbit_lore = new ArrayList<>();
+                                                    rabbit_lore.add(WHITE + "Rabbit Origin");
+                                                    rabbit_meta.setLore(rabbit_lore);
+                                                    rabbit.setItemMeta(rabbit_meta);
+                                                } else {
+                                                    ItemMeta nope_meta = rabbit.getItemMeta();
+                                                    nope_meta.setDisplayName(RED + "Unavailable");
+                                                    nope_meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
+                                                    nope_meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+                                                    ArrayList<String> nope_lore = new ArrayList<>();
+                                                    nope_lore.add(RED + "This origin is locked by the server owner");
+                                                    nope_meta.setLore(nope_lore);
+                                                    rabbit.setItemMeta(nope_meta);
+                                                }
+                                                if (GenesisDataFiles.getPlugCon().getString("bumblebee-disable").equalsIgnoreCase("false")) {
+                                                    ItemMeta bee_meta = bumblebee.getItemMeta();
+                                                    bee_meta.setDisplayName(YELLOW + "Bumblebee");
+                                                    ArrayList<String> bee_lore = new ArrayList<>();
+                                                    bee_lore.add(WHITE + "Bee Origin");
+                                                    bee_meta.setLore(bee_lore);
+                                                    bumblebee.setItemMeta(bee_meta);
+                                                } else {
+                                                    ItemMeta nope_meta = bumblebee.getItemMeta();
+                                                    nope_meta.setDisplayName(RED + "Unavailable");
+                                                    nope_meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
+                                                    nope_meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+                                                    ArrayList<String> nope_lore = new ArrayList<>();
+                                                    nope_lore.add(RED + "This origin is locked by the server owner");
+                                                    nope_meta.setLore(nope_lore);
+                                                    bumblebee.setItemMeta(nope_meta);
+                                                }
+                                                if (GenesisDataFiles.getPlugCon().getString("elytrian-disable").equalsIgnoreCase("false")) {
+                                                    ItemMeta elytra_meta = elytrian.getItemMeta();
+                                                    elytra_meta.setDisplayName(GRAY + "Elytrian");
+                                                    ArrayList<String> elytra_lore = new ArrayList<>();
+                                                    elytra_lore.add(WHITE + "Elytra Origin");
+                                                    elytra_meta.setLore(elytra_lore);
+                                                    elytrian.setItemMeta(elytra_meta);
+                                                } else {
+                                                    ItemMeta nope_meta = elytrian.getItemMeta();
+                                                    nope_meta.setDisplayName(RED + "Unavailable");
+                                                    nope_meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
+                                                    nope_meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+                                                    ArrayList<String> nope_lore = new ArrayList<>();
+                                                    nope_lore.add(RED + "This origin is locked by the server owner");
+                                                    nope_meta.setLore(nope_lore);
+                                                    elytrian.setItemMeta(nope_meta);
+                                                }
+                                                if (GenesisDataFiles.getPlugCon().getString("avian-disable").equalsIgnoreCase("false")) {
+                                                    ItemMeta avian_meta = avian.getItemMeta();
+                                                    avian_meta.setDisplayName(DARK_AQUA + "Avian");
+                                                    ArrayList<String> avian_lore = new ArrayList<>();
+                                                    avian_lore.add(WHITE + "Avian Origin");
+                                                    avian_meta.setLore(avian_lore);
+                                                    avian.setItemMeta(avian_meta);
+                                                } else {
+                                                    ItemMeta nope_meta = avian.getItemMeta();
+                                                    nope_meta.setDisplayName(RED + "Unavailable");
+                                                    nope_meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
+                                                    nope_meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+                                                    ArrayList<String> nope_lore = new ArrayList<>();
+                                                    nope_lore.add(RED + "This origin is locked by the server owner");
+                                                    nope_meta.setLore(nope_lore);
+                                                    avian.setItemMeta(nope_meta);
+                                                }
+                                                if (GenesisDataFiles.getPlugCon().getString("piglin-disable").equalsIgnoreCase("false")) {
+                                                    ItemMeta pig_meta = piglin.getItemMeta();
+                                                    pig_meta.setDisplayName(GOLD + "Piglin");
+                                                    ArrayList<String> pig_lore = new ArrayList<>();
+                                                    pig_lore.add(WHITE + "Piglin Origin");
+                                                    pig_meta.setLore(pig_lore);
+                                                    piglin.setItemMeta(pig_meta);
+                                                } else {
+                                                    ItemMeta nope_meta = piglin.getItemMeta();
+                                                    nope_meta.setDisplayName(RED + "Unavailable");
+                                                    nope_meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
+                                                    nope_meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+                                                    ArrayList<String> nope_lore = new ArrayList<>();
+                                                    nope_lore.add(RED + "This origin is locked by the server owner");
+                                                    nope_meta.setLore(nope_lore);
+                                                    piglin.setItemMeta(nope_meta);
+                                                }
+                                                if (GenesisDataFiles.getPlugCon().getString("dragonborne-disable").equalsIgnoreCase("false")) {
+                                                    ItemMeta dragonborne_meta = dragonborne.getItemMeta();
+                                                    dragonborne_meta.setDisplayName(DARK_PURPLE + "Dragonborne");
+                                                    ArrayList<String> dragonborne_lore = new ArrayList<>();
+                                                    dragonborne_lore.add(WHITE + "Dragon Origin");
+                                                    dragonborne_meta.setLore(dragonborne_lore);
+                                                    dragonborne.setItemMeta(dragonborne_meta);
+                                                } else {
+                                                    ItemMeta nope_meta = dragonborne.getItemMeta();
+                                                    nope_meta.setDisplayName(RED + "Unavailable");
+                                                    nope_meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
+                                                    nope_meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+                                                    ArrayList<String> nope_lore = new ArrayList<>();
+                                                    nope_lore.add(RED + "This origin is locked by the server owner");
+                                                    nope_meta.setLore(nope_lore);
+                                                    dragonborne.setItemMeta(nope_meta);
+                                                }
 
-                                            ItemStack[] allmenu_items = {human, enderian, shulk, arachnid, creep, phantom, slimeling, vexian, blazeborn, starborne, mermaid, witch, rabbit, bumblebee, elytrian, avian, piglin, dragonborne};
-                                            allmenu.setContents(allmenu_items);
-                                            p.openInventory(allmenu);
-                                        } else {
-                                            Inventory allmenu = Bukkit.createInventory(p, 27, LIGHT_PURPLE + "Origins Menu");
+                                                ItemStack[] allmenu_items = {human, enderian, shulk, arachnid, creep, phantom, slimeling, vexian, blazeborn, starborne, mermaid, witch, rabbit, bumblebee, elytrian, avian, piglin, dragonborne};
+                                                allmenu.setContents(allmenu_items);
+                                                p.openInventory(allmenu);
+                                            } else {
+                                                Inventory allmenu = Bukkit.createInventory(p, 27, LIGHT_PURPLE + "Origins Menu");
 
-                                            ItemStack human = new ItemStack(Material.PLAYER_HEAD);
-                                            ItemStack enderian = new ItemStack(Material.ENDER_PEARL);
-                                            ItemStack shulk = new ItemStack(Material.SHULKER_SHELL);
-                                            ItemStack arachnid = new ItemStack(Material.COBWEB);
-                                            ItemStack creep = new ItemStack(Material.GUNPOWDER);
-                                            ItemStack phantom = new ItemStack(Material.PHANTOM_MEMBRANE);
-                                            ItemStack slimeling = new ItemStack(Material.SLIME_BALL);
-                                            ItemStack vexian = new ItemStack(Material.IRON_SWORD);
-                                            ItemStack blazeborn = new ItemStack(Material.BLAZE_POWDER);
-                                            ItemStack starborne = new ItemStack(Material.NETHER_STAR);
-                                            ItemStack mermaid = new ItemStack(Material.COD);
-                                            ItemStack witch = new ItemStack(Material.AMETHYST_SHARD);
-                                            ItemStack rabbit = new ItemStack(Material.CARROT);
-                                            ItemStack bumblebee = new ItemStack(Material.HONEYCOMB);
-                                            ItemStack elytrian = new ItemStack(Material.ELYTRA);
-                                            ItemStack avian = new ItemStack(Material.FEATHER);
-                                            ItemStack piglin = new ItemStack(Material.GOLD_INGOT);
-                                            ItemStack dragonborne = new ItemStack(Material.DRAGON_BREATH);
-                                            ItemStack air = new ItemStack(Material.AIR);
+                                                ItemStack human = new ItemStack(Material.PLAYER_HEAD);
+                                                ItemStack enderian = new ItemStack(Material.ENDER_PEARL);
+                                                ItemStack shulk = new ItemStack(Material.SHULKER_SHELL);
+                                                ItemStack arachnid = new ItemStack(Material.COBWEB);
+                                                ItemStack creep = new ItemStack(Material.GUNPOWDER);
+                                                ItemStack phantom = new ItemStack(Material.PHANTOM_MEMBRANE);
+                                                ItemStack slimeling = new ItemStack(Material.SLIME_BALL);
+                                                ItemStack vexian = new ItemStack(Material.IRON_SWORD);
+                                                ItemStack blazeborn = new ItemStack(Material.BLAZE_POWDER);
+                                                ItemStack starborne = new ItemStack(Material.NETHER_STAR);
+                                                ItemStack mermaid = new ItemStack(Material.COD);
+                                                ItemStack witch = new ItemStack(Material.AMETHYST_SHARD);
+                                                ItemStack rabbit = new ItemStack(Material.CARROT);
+                                                ItemStack bumblebee = new ItemStack(Material.HONEYCOMB);
+                                                ItemStack elytrian = new ItemStack(Material.ELYTRA);
+                                                ItemStack avian = new ItemStack(Material.FEATHER);
+                                                ItemStack piglin = new ItemStack(Material.GOLD_INGOT);
+                                                ItemStack dragonborne = new ItemStack(Material.DRAGON_BREATH);
+                                                ItemStack air = new ItemStack(Material.AIR);
 
-                                            ItemStack custom_originmenu = new ItemStack(Material.TIPPED_ARROW);
-                                            ItemStack close = new ItemStack(Material.BARRIER);
-                                            ItemMeta close_meta = close.getItemMeta();
-                                            close_meta.setDisplayName(RED + "Close");
-                                            ArrayList<String> close_lore = new ArrayList<>();
-                                            close_lore.add(RED + "Cancel Choosing");
-                                            close_meta.setLore(close_lore);
-                                            close.setItemMeta(close_meta);
+                                                ItemStack custom_originmenu = new ItemStack(Material.TIPPED_ARROW);
+                                                ItemStack close = new ItemStack(Material.BARRIER);
+                                                ItemMeta close_meta = close.getItemMeta();
+                                                close_meta.setDisplayName(RED + "Close");
+                                                ArrayList<String> close_lore = new ArrayList<>();
+                                                close_lore.add(RED + "Cancel Choosing");
+                                                close_meta.setLore(close_lore);
+                                                close.setItemMeta(close_meta);
 
-                                            ItemMeta next_meta = custom_originmenu.getItemMeta();
-                                            next_meta.setDisplayName(BLUE + "Custom Origins");
-                                            custom_originmenu.setItemMeta(next_meta);
+                                                ItemMeta next_meta = custom_originmenu.getItemMeta();
+                                                next_meta.setDisplayName(BLUE + "Custom Origins");
+                                                custom_originmenu.setItemMeta(next_meta);
 
 
-                                            if (GenesisDataFiles.get1().getString("human-disable").equalsIgnoreCase("false")) {
-                                                ItemMeta human_meta = human.getItemMeta();
-                                                human_meta.setDisplayName(WHITE + "Human");
-                                                ArrayList<String> human_lore = new ArrayList<>();
-                                                human_lore.add(WHITE + "Human Origin");
-                                                human_meta.setLore(human_lore);
-                                                human.setItemMeta(human_meta);
-                                            } else {
-                                                ItemMeta nope_meta = human.getItemMeta();
-                                                nope_meta.setDisplayName(RED + "Unavailable");
-                                                nope_meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
-                                                nope_meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-                                                ArrayList<String> nope_lore = new ArrayList<>();
-                                                nope_lore.add(RED + "This origin is locked by the server owner");
-                                                nope_meta.setLore(nope_lore);
-                                                human.setItemMeta(nope_meta);
-                                            }
-                                            if (GenesisDataFiles.get().getString("enderian-disable").equalsIgnoreCase("false")) {
-                                                ItemMeta ender_meta = enderian.getItemMeta();
-                                                ender_meta.setDisplayName(LIGHT_PURPLE + "Enderian");
-                                                ArrayList<String> ender_lore = new ArrayList<>();
-                                                ender_lore.add(WHITE + "Enderman Origin");
-                                                ender_meta.setLore(ender_lore);
-                                                enderian.setItemMeta(ender_meta);
-                                            } else {
-                                                ItemMeta nope_meta = enderian.getItemMeta();
-                                                nope_meta.setDisplayName(RED + "Unavailable");
-                                                nope_meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
-                                                nope_meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-                                                ArrayList<String> nope_lore = new ArrayList<>();
-                                                nope_lore.add(RED + "This origin is locked by the server owner");
-                                                nope_meta.setLore(nope_lore);
-                                                enderian.setItemMeta(nope_meta);
-                                            }
-                                            if (GenesisDataFiles.get2().getString("shulk-disable").equalsIgnoreCase("false")) {
-                                                ItemMeta shulk_meta = shulk.getItemMeta();
-                                                shulk_meta.setDisplayName(DARK_PURPLE + "Shulk");
-                                                ArrayList<String> shulk_lore = new ArrayList<>();
-                                                shulk_lore.add(WHITE + "shulk Origin");
-                                                shulk_meta.setLore(shulk_lore);
-                                                shulk.setItemMeta(shulk_meta);
-                                            } else {
-                                                ItemMeta nope_meta = shulk.getItemMeta();
-                                                nope_meta.setDisplayName(RED + "Unavailable");
-                                                nope_meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
-                                                nope_meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-                                                ArrayList<String> nope_lore = new ArrayList<>();
-                                                nope_lore.add(RED + "This origin is locked by the server owner");
-                                                nope_meta.setLore(nope_lore);
-                                                shulk.setItemMeta(nope_meta);
-                                            }
-                                            if (GenesisDataFiles.get17().getString("arachnid-disable").equalsIgnoreCase("false")) {
-                                                ItemMeta spider_meta = arachnid.getItemMeta();
-                                                spider_meta.setDisplayName(RED + "Arachnid");
-                                                ArrayList<String> spider_lore = new ArrayList<>();
-                                                spider_lore.add(WHITE + "Spider Origin");
-                                                spider_meta.setLore(spider_lore);
-                                                arachnid.setItemMeta(spider_meta);
-                                            } else {
-                                                ItemMeta nope_meta = arachnid.getItemMeta();
-                                                nope_meta.setDisplayName(RED + "Unavailable");
-                                                nope_meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
-                                                nope_meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-                                                ArrayList<String> nope_lore = new ArrayList<>();
-                                                nope_lore.add(RED + "This origin is locked by the server owner");
-                                                nope_meta.setLore(nope_lore);
-                                                arachnid.setItemMeta(nope_meta);
-                                            }
-                                            if (GenesisDataFiles.get3().getString("creep-disable").equalsIgnoreCase("false")) {
-                                                ItemMeta creep_meta = creep.getItemMeta();
-                                                creep_meta.setDisplayName(GREEN + "Creep");
-                                                ArrayList<String> creep_lore = new ArrayList<>();
-                                                creep_lore.add(WHITE + "Creeper Origin");
-                                                creep_meta.setLore(creep_lore);
-                                                creep.setItemMeta(creep_meta);
-                                            } else {
-                                                ItemMeta nope_meta = creep.getItemMeta();
-                                                nope_meta.setDisplayName(RED + "Unavailable");
-                                                nope_meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
-                                                nope_meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-                                                ArrayList<String> nope_lore = new ArrayList<>();
-                                                nope_lore.add(RED + "This origin is locked by the server owner");
-                                                nope_meta.setLore(nope_lore);
-                                                creep.setItemMeta(nope_meta);
-                                            }
-                                            if (GenesisDataFiles.get4().getString("phantom-disable").equalsIgnoreCase("false")) {
-                                                ItemMeta phantom_meta = phantom.getItemMeta();
-                                                phantom_meta.setDisplayName(BLUE + "Phantom");
-                                                ArrayList<String> phantom_lore = new ArrayList<>();
-                                                phantom_lore.add(WHITE + "Phantom Origin");
-                                                phantom_meta.setLore(phantom_lore);
-                                                phantom.setItemMeta(phantom_meta);
-                                            } else {
-                                                ItemMeta nope_meta = phantom.getItemMeta();
-                                                nope_meta.setDisplayName(RED + "Unavailable");
-                                                nope_meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
-                                                nope_meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-                                                ArrayList<String> nope_lore = new ArrayList<>();
-                                                nope_lore.add(RED + "This origin is locked by the server owner");
-                                                nope_meta.setLore(nope_lore);
-                                                phantom.setItemMeta(nope_meta);
-                                            }
-                                            if (GenesisDataFiles.get5().getString("slimeling-disable").equalsIgnoreCase("false")) {
-                                                ItemMeta slime_meta = slimeling.getItemMeta();
-                                                slime_meta.setDisplayName(GREEN + "Slimeling");
-                                                ArrayList<String> slime_lore = new ArrayList<>();
-                                                slime_lore.add(WHITE + "Slime Origin");
-                                                slime_meta.setLore(slime_lore);
-                                                slimeling.setItemMeta(slime_meta);
-                                            } else {
-                                                ItemMeta nope_meta = slimeling.getItemMeta();
-                                                nope_meta.setDisplayName(RED + "Unavailable");
-                                                nope_meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
-                                                nope_meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-                                                ArrayList<String> nope_lore = new ArrayList<>();
-                                                nope_lore.add(RED + "This origin is locked by the server owner");
-                                                nope_meta.setLore(nope_lore);
-                                                slimeling.setItemMeta(nope_meta);
-                                            }
-                                            if (GenesisDataFiles.get6().getString("vexian-disable").equalsIgnoreCase("false")) {
-                                                ItemMeta vex_meta = vexian.getItemMeta();
-                                                vex_meta.setDisplayName(AQUA + "Vexian");
-                                                ArrayList<String> vex_lore = new ArrayList<>();
-                                                vex_lore.add(WHITE + "Vex Origin");
-                                                vex_meta.getItemFlags().add(ItemFlag.HIDE_ATTRIBUTES);
-                                                vex_meta.setLore(vex_lore);
-                                                vexian.setItemMeta(vex_meta);
-                                            } else {
-                                                ItemMeta nope_meta = vexian.getItemMeta();
-                                                nope_meta.setDisplayName(RED + "Unavailable");
-                                                nope_meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
-                                                nope_meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-                                                ArrayList<String> nope_lore = new ArrayList<>();
-                                                nope_lore.add(RED + "This origin is locked by the server owner");
-                                                nope_meta.setLore(nope_lore);
-                                                vexian.setItemMeta(nope_meta);
-                                            }
-                                            if (GenesisDataFiles.get7().getString("blazeborn-disable").equalsIgnoreCase("false")) {
-                                                ItemMeta blaze_meta = blazeborn.getItemMeta();
-                                                blaze_meta.setDisplayName(GOLD + "Blazeborn");
-                                                ArrayList<String> blaze_lore = new ArrayList<>();
-                                                blaze_lore.add(WHITE + "Blaze Origin");
-                                                blaze_meta.setLore(blaze_lore);
-                                                blazeborn.setItemMeta(blaze_meta);
-                                            } else {
-                                                ItemMeta nope_meta = blazeborn.getItemMeta();
-                                                nope_meta.setDisplayName(RED + "Unavailable");
-                                                nope_meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
-                                                nope_meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-                                                ArrayList<String> nope_lore = new ArrayList<>();
-                                                nope_lore.add(RED + "This origin is locked by the server owner");
-                                                nope_meta.setLore(nope_lore);
-                                                blazeborn.setItemMeta(nope_meta);
-                                            }
-                                            if (GenesisDataFiles.get8().getString("starborne-disable").equalsIgnoreCase("false")) {
-                                                ItemMeta star_meta = starborne.getItemMeta();
-                                                star_meta.setDisplayName(LIGHT_PURPLE + "Starborne");
-                                                ArrayList<String> star_lore = new ArrayList<>();
-                                                star_lore.add(WHITE + "Starborne Origin");
-                                                star_meta.setLore(star_lore);
-                                                starborne.setItemMeta(star_meta);
-                                            } else {
-                                                ItemMeta nope_meta = starborne.getItemMeta();
-                                                nope_meta.setDisplayName(RED + "Unavailable");
-                                                nope_meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
-                                                nope_meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-                                                ArrayList<String> nope_lore = new ArrayList<>();
-                                                nope_lore.add(RED + "This origin is locked by the server owner");
-                                                nope_meta.setLore(nope_lore);
-                                                starborne.setItemMeta(nope_meta);
-                                            }
-                                            if (GenesisDataFiles.get9().getString("merling-disable").equalsIgnoreCase("false")) {
-                                                ItemMeta mer_meta = mermaid.getItemMeta();
-                                                mer_meta.setDisplayName(BLUE + "Mermaid");
-                                                ArrayList<String> mer_lore = new ArrayList<>();
-                                                mer_lore.add(WHITE + "Mermaid Origin");
-                                                mer_meta.setLore(mer_lore);
-                                                mermaid.setItemMeta(mer_meta);
-                                            } else {
-                                                ItemMeta nope_meta = mermaid.getItemMeta();
-                                                nope_meta.setDisplayName(RED + "Unavailable");
-                                                nope_meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
-                                                nope_meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-                                                ArrayList<String> nope_lore = new ArrayList<>();
-                                                nope_lore.add(RED + "This origin is locked by the server owner");
-                                                nope_meta.setLore(nope_lore);
-                                                mermaid.setItemMeta(nope_meta);
-                                            }
-                                            if (GenesisDataFiles.get10().getString("allay-disable").equalsIgnoreCase("false")) {
-                                                ItemMeta witch_meta = witch.getItemMeta();
-                                                witch_meta.setDisplayName(AQUA + "Allay");
-                                                ArrayList<String> witch_lore = new ArrayList<>();
-                                                witch_lore.add(WHITE + "Allay Origin");
-                                                witch_meta.setLore(witch_lore);
-                                                witch.setItemMeta(witch_meta);
-                                            } else {
-                                                ItemMeta nope_meta = witch.getItemMeta();
-                                                nope_meta.setDisplayName(RED + "Unavailable");
-                                                nope_meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
-                                                nope_meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-                                                ArrayList<String> nope_lore = new ArrayList<>();
-                                                nope_lore.add(RED + "This origin is locked by the server owner");
-                                                nope_meta.setLore(nope_lore);
-                                                witch.setItemMeta(nope_meta);
-                                            }
-                                            if (GenesisDataFiles.get11().getString("rabbit-disable").equalsIgnoreCase("false")) {
-                                                ItemMeta rabbit_meta = rabbit.getItemMeta();
-                                                rabbit_meta.setDisplayName(GOLD + "Rabbit");
-                                                ArrayList<String> rabbit_lore = new ArrayList<>();
-                                                rabbit_lore.add(WHITE + "Rabbit Origin");
-                                                rabbit_meta.setLore(rabbit_lore);
-                                                rabbit.setItemMeta(rabbit_meta);
-                                            } else {
-                                                ItemMeta nope_meta = rabbit.getItemMeta();
-                                                nope_meta.setDisplayName(RED + "Unavailable");
-                                                nope_meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
-                                                nope_meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-                                                ArrayList<String> nope_lore = new ArrayList<>();
-                                                nope_lore.add(RED + "This origin is locked by the server owner");
-                                                nope_meta.setLore(nope_lore);
-                                                rabbit.setItemMeta(nope_meta);
-                                            }
-                                            if (GenesisDataFiles.get12().getString("bumblebee-disable").equalsIgnoreCase("false")) {
-                                                ItemMeta bee_meta = bumblebee.getItemMeta();
-                                                bee_meta.setDisplayName(YELLOW + "Bumblebee");
-                                                ArrayList<String> bee_lore = new ArrayList<>();
-                                                bee_lore.add(WHITE + "Bee Origin");
-                                                bee_meta.setLore(bee_lore);
-                                                bumblebee.setItemMeta(bee_meta);
-                                            } else {
-                                                ItemMeta nope_meta = bumblebee.getItemMeta();
-                                                nope_meta.setDisplayName(RED + "Unavailable");
-                                                nope_meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
-                                                nope_meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-                                                ArrayList<String> nope_lore = new ArrayList<>();
-                                                nope_lore.add(RED + "This origin is locked by the server owner");
-                                                nope_meta.setLore(nope_lore);
-                                                bumblebee.setItemMeta(nope_meta);
-                                            }
-                                            if (GenesisDataFiles.get13().getString("elytrian-disable").equalsIgnoreCase("false")) {
-                                                ItemMeta elytra_meta = elytrian.getItemMeta();
-                                                elytra_meta.setDisplayName(GRAY + "Elytrian");
-                                                ArrayList<String> elytra_lore = new ArrayList<>();
-                                                elytra_lore.add(WHITE + "Elytra Origin");
-                                                elytra_meta.setLore(elytra_lore);
-                                                elytrian.setItemMeta(elytra_meta);
-                                            } else {
-                                                ItemMeta nope_meta = elytrian.getItemMeta();
-                                                nope_meta.setDisplayName(RED + "Unavailable");
-                                                nope_meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
-                                                nope_meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-                                                ArrayList<String> nope_lore = new ArrayList<>();
-                                                nope_lore.add(RED + "This origin is locked by the server owner");
-                                                nope_meta.setLore(nope_lore);
-                                                elytrian.setItemMeta(nope_meta);
-                                            }
-                                            if (GenesisDataFiles.get14().getString("avian-disable").equalsIgnoreCase("false")) {
-                                                ItemMeta avian_meta = avian.getItemMeta();
-                                                avian_meta.setDisplayName(DARK_AQUA + "Avian");
-                                                ArrayList<String> avian_lore = new ArrayList<>();
-                                                avian_lore.add(WHITE + "Avian Origin");
-                                                avian_meta.setLore(avian_lore);
-                                                avian.setItemMeta(avian_meta);
-                                            } else {
-                                                ItemMeta nope_meta = avian.getItemMeta();
-                                                nope_meta.setDisplayName(RED + "Unavailable");
-                                                nope_meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
-                                                nope_meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-                                                ArrayList<String> nope_lore = new ArrayList<>();
-                                                nope_lore.add(RED + "This origin is locked by the server owner");
-                                                nope_meta.setLore(nope_lore);
-                                                avian.setItemMeta(nope_meta);
-                                            }
-                                            if (GenesisDataFiles.get15().getString("piglin-disable").equalsIgnoreCase("false")) {
-                                                ItemMeta pig_meta = piglin.getItemMeta();
-                                                pig_meta.setDisplayName(GOLD + "Piglin");
-                                                ArrayList<String> pig_lore = new ArrayList<>();
-                                                pig_lore.add(WHITE + "Piglin Origin");
-                                                pig_meta.setLore(pig_lore);
-                                                piglin.setItemMeta(pig_meta);
-                                            } else {
-                                                ItemMeta nope_meta = piglin.getItemMeta();
-                                                nope_meta.setDisplayName(RED + "Unavailable");
-                                                nope_meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
-                                                nope_meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-                                                ArrayList<String> nope_lore = new ArrayList<>();
-                                                nope_lore.add(RED + "This origin is locked by the server owner");
-                                                nope_meta.setLore(nope_lore);
-                                                piglin.setItemMeta(nope_meta);
-                                            }
-                                            if (GenesisDataFiles.get16().getString("dragonborne-disable").equalsIgnoreCase("false")) {
-                                                ItemMeta dragonborne_meta = dragonborne.getItemMeta();
-                                                dragonborne_meta.setDisplayName(DARK_PURPLE + "Dragonborne");
-                                                ArrayList<String> dragonborne_lore = new ArrayList<>();
-                                                dragonborne_lore.add(WHITE + "Dragon Origin");
-                                                dragonborne_meta.setLore(dragonborne_lore);
-                                                dragonborne.setItemMeta(dragonborne_meta);
-                                            } else {
-                                                ItemMeta nope_meta = dragonborne.getItemMeta();
-                                                nope_meta.setDisplayName(RED + "Unavailable");
-                                                nope_meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
-                                                nope_meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-                                                ArrayList<String> nope_lore = new ArrayList<>();
-                                                nope_lore.add(RED + "This origin is locked by the server owner");
-                                                nope_meta.setLore(nope_lore);
-                                                dragonborne.setItemMeta(nope_meta);
-                                            }
+                                                if (GenesisDataFiles.getPlugCon().getString("human-disable").equalsIgnoreCase("false")) {
+                                                    ItemMeta human_meta = human.getItemMeta();
+                                                    human_meta.setDisplayName(WHITE + "Human");
+                                                    ArrayList<String> human_lore = new ArrayList<>();
+                                                    human_lore.add(WHITE + "Human Origin");
+                                                    human_meta.setLore(human_lore);
+                                                    human.setItemMeta(human_meta);
+                                                } else {
+                                                    ItemMeta nope_meta = human.getItemMeta();
+                                                    nope_meta.setDisplayName(RED + "Unavailable");
+                                                    nope_meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
+                                                    nope_meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+                                                    ArrayList<String> nope_lore = new ArrayList<>();
+                                                    nope_lore.add(RED + "This origin is locked by the server owner");
+                                                    nope_meta.setLore(nope_lore);
+                                                    human.setItemMeta(nope_meta);
+                                                }
+                                                if (GenesisDataFiles.getPlugCon().getString("enderian-disable").equalsIgnoreCase("false")) {
+                                                    ItemMeta ender_meta = enderian.getItemMeta();
+                                                    ender_meta.setDisplayName(LIGHT_PURPLE + "Enderian");
+                                                    ArrayList<String> ender_lore = new ArrayList<>();
+                                                    ender_lore.add(WHITE + "Enderman Origin");
+                                                    ender_meta.setLore(ender_lore);
+                                                    enderian.setItemMeta(ender_meta);
+                                                } else {
+                                                    ItemMeta nope_meta = enderian.getItemMeta();
+                                                    nope_meta.setDisplayName(RED + "Unavailable");
+                                                    nope_meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
+                                                    nope_meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+                                                    ArrayList<String> nope_lore = new ArrayList<>();
+                                                    nope_lore.add(RED + "This origin is locked by the server owner");
+                                                    nope_meta.setLore(nope_lore);
+                                                    enderian.setItemMeta(nope_meta);
+                                                }
+                                                if (GenesisDataFiles.getPlugCon().getString("shulk-disable").equalsIgnoreCase("false")) {
+                                                    ItemMeta shulk_meta = shulk.getItemMeta();
+                                                    shulk_meta.setDisplayName(DARK_PURPLE + "Shulk");
+                                                    ArrayList<String> shulk_lore = new ArrayList<>();
+                                                    shulk_lore.add(WHITE + "shulk Origin");
+                                                    shulk_meta.setLore(shulk_lore);
+                                                    shulk.setItemMeta(shulk_meta);
+                                                } else {
+                                                    ItemMeta nope_meta = shulk.getItemMeta();
+                                                    nope_meta.setDisplayName(RED + "Unavailable");
+                                                    nope_meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
+                                                    nope_meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+                                                    ArrayList<String> nope_lore = new ArrayList<>();
+                                                    nope_lore.add(RED + "This origin is locked by the server owner");
+                                                    nope_meta.setLore(nope_lore);
+                                                    shulk.setItemMeta(nope_meta);
+                                                }
+                                                if (GenesisDataFiles.getPlugCon().getString("arachnid-disable").equalsIgnoreCase("false")) {
+                                                    ItemMeta spider_meta = arachnid.getItemMeta();
+                                                    spider_meta.setDisplayName(RED + "Arachnid");
+                                                    ArrayList<String> spider_lore = new ArrayList<>();
+                                                    spider_lore.add(WHITE + "Spider Origin");
+                                                    spider_meta.setLore(spider_lore);
+                                                    arachnid.setItemMeta(spider_meta);
+                                                } else {
+                                                    ItemMeta nope_meta = arachnid.getItemMeta();
+                                                    nope_meta.setDisplayName(RED + "Unavailable");
+                                                    nope_meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
+                                                    nope_meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+                                                    ArrayList<String> nope_lore = new ArrayList<>();
+                                                    nope_lore.add(RED + "This origin is locked by the server owner");
+                                                    nope_meta.setLore(nope_lore);
+                                                    arachnid.setItemMeta(nope_meta);
+                                                }
+                                                if (GenesisDataFiles.getPlugCon().getString("creep-disable").equalsIgnoreCase("false")) {
+                                                    ItemMeta creep_meta = creep.getItemMeta();
+                                                    creep_meta.setDisplayName(GREEN + "Creep");
+                                                    ArrayList<String> creep_lore = new ArrayList<>();
+                                                    creep_lore.add(WHITE + "Creeper Origin");
+                                                    creep_meta.setLore(creep_lore);
+                                                    creep.setItemMeta(creep_meta);
+                                                } else {
+                                                    ItemMeta nope_meta = creep.getItemMeta();
+                                                    nope_meta.setDisplayName(RED + "Unavailable");
+                                                    nope_meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
+                                                    nope_meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+                                                    ArrayList<String> nope_lore = new ArrayList<>();
+                                                    nope_lore.add(RED + "This origin is locked by the server owner");
+                                                    nope_meta.setLore(nope_lore);
+                                                    creep.setItemMeta(nope_meta);
+                                                }
+                                                if (GenesisDataFiles.getPlugCon().getString("phantom-disable").equalsIgnoreCase("false")) {
+                                                    ItemMeta phantom_meta = phantom.getItemMeta();
+                                                    phantom_meta.setDisplayName(BLUE + "Phantom");
+                                                    ArrayList<String> phantom_lore = new ArrayList<>();
+                                                    phantom_lore.add(WHITE + "Phantom Origin");
+                                                    phantom_meta.setLore(phantom_lore);
+                                                    phantom.setItemMeta(phantom_meta);
+                                                } else {
+                                                    ItemMeta nope_meta = phantom.getItemMeta();
+                                                    nope_meta.setDisplayName(RED + "Unavailable");
+                                                    nope_meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
+                                                    nope_meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+                                                    ArrayList<String> nope_lore = new ArrayList<>();
+                                                    nope_lore.add(RED + "This origin is locked by the server owner");
+                                                    nope_meta.setLore(nope_lore);
+                                                    phantom.setItemMeta(nope_meta);
+                                                }
+                                                if (GenesisDataFiles.getPlugCon().getString("slimeling-disable").equalsIgnoreCase("false")) {
+                                                    ItemMeta slime_meta = slimeling.getItemMeta();
+                                                    slime_meta.setDisplayName(GREEN + "Slimeling");
+                                                    ArrayList<String> slime_lore = new ArrayList<>();
+                                                    slime_lore.add(WHITE + "Slime Origin");
+                                                    slime_meta.setLore(slime_lore);
+                                                    slimeling.setItemMeta(slime_meta);
+                                                } else {
+                                                    ItemMeta nope_meta = slimeling.getItemMeta();
+                                                    nope_meta.setDisplayName(RED + "Unavailable");
+                                                    nope_meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
+                                                    nope_meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+                                                    ArrayList<String> nope_lore = new ArrayList<>();
+                                                    nope_lore.add(RED + "This origin is locked by the server owner");
+                                                    nope_meta.setLore(nope_lore);
+                                                    slimeling.setItemMeta(nope_meta);
+                                                }
+                                                if (GenesisDataFiles.getPlugCon().getString("vexian-disable").equalsIgnoreCase("false")) {
+                                                    ItemMeta vex_meta = vexian.getItemMeta();
+                                                    vex_meta.setDisplayName(AQUA + "Vexian");
+                                                    ArrayList<String> vex_lore = new ArrayList<>();
+                                                    vex_lore.add(WHITE + "Vex Origin");
+                                                    vex_meta.getItemFlags().add(ItemFlag.HIDE_ATTRIBUTES);
+                                                    vex_meta.setLore(vex_lore);
+                                                    vexian.setItemMeta(vex_meta);
+                                                } else {
+                                                    ItemMeta nope_meta = vexian.getItemMeta();
+                                                    nope_meta.setDisplayName(RED + "Unavailable");
+                                                    nope_meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
+                                                    nope_meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+                                                    ArrayList<String> nope_lore = new ArrayList<>();
+                                                    nope_lore.add(RED + "This origin is locked by the server owner");
+                                                    nope_meta.setLore(nope_lore);
+                                                    vexian.setItemMeta(nope_meta);
+                                                }
+                                                if (GenesisDataFiles.getPlugCon().getString("blazeborn-disable").equalsIgnoreCase("false")) {
+                                                    ItemMeta blaze_meta = blazeborn.getItemMeta();
+                                                    blaze_meta.setDisplayName(GOLD + "Blazeborn");
+                                                    ArrayList<String> blaze_lore = new ArrayList<>();
+                                                    blaze_lore.add(WHITE + "Blaze Origin");
+                                                    blaze_meta.setLore(blaze_lore);
+                                                    blazeborn.setItemMeta(blaze_meta);
+                                                } else {
+                                                    ItemMeta nope_meta = blazeborn.getItemMeta();
+                                                    nope_meta.setDisplayName(RED + "Unavailable");
+                                                    nope_meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
+                                                    nope_meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+                                                    ArrayList<String> nope_lore = new ArrayList<>();
+                                                    nope_lore.add(RED + "This origin is locked by the server owner");
+                                                    nope_meta.setLore(nope_lore);
+                                                    blazeborn.setItemMeta(nope_meta);
+                                                }
+                                                if (GenesisDataFiles.getPlugCon().getString("starborne-disable").equalsIgnoreCase("false")) {
+                                                    ItemMeta star_meta = starborne.getItemMeta();
+                                                    star_meta.setDisplayName(LIGHT_PURPLE + "Starborne");
+                                                    ArrayList<String> star_lore = new ArrayList<>();
+                                                    star_lore.add(WHITE + "Starborne Origin");
+                                                    star_meta.setLore(star_lore);
+                                                    starborne.setItemMeta(star_meta);
+                                                } else {
+                                                    ItemMeta nope_meta = starborne.getItemMeta();
+                                                    nope_meta.setDisplayName(RED + "Unavailable");
+                                                    nope_meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
+                                                    nope_meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+                                                    ArrayList<String> nope_lore = new ArrayList<>();
+                                                    nope_lore.add(RED + "This origin is locked by the server owner");
+                                                    nope_meta.setLore(nope_lore);
+                                                    starborne.setItemMeta(nope_meta);
+                                                }
+                                                if (GenesisDataFiles.getPlugCon().getString("merling-disable").equalsIgnoreCase("false")) {
+                                                    ItemMeta mer_meta = mermaid.getItemMeta();
+                                                    mer_meta.setDisplayName(BLUE + "Merling");
+                                                    ArrayList<String> mer_lore = new ArrayList<>();
+                                                    mer_lore.add(WHITE + "Merling Origin");
+                                                    mer_meta.setLore(mer_lore);
+                                                    mermaid.setItemMeta(mer_meta);
+                                                } else {
+                                                    ItemMeta nope_meta = mermaid.getItemMeta();
+                                                    nope_meta.setDisplayName(RED + "Unavailable");
+                                                    nope_meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
+                                                    nope_meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+                                                    ArrayList<String> nope_lore = new ArrayList<>();
+                                                    nope_lore.add(RED + "This origin is locked by the server owner");
+                                                    nope_meta.setLore(nope_lore);
+                                                    mermaid.setItemMeta(nope_meta);
+                                                }
+                                                if (GenesisDataFiles.getPlugCon().getString("allay-disable").equalsIgnoreCase("false")) {
+                                                    ItemMeta witch_meta = witch.getItemMeta();
+                                                    witch_meta.setDisplayName(AQUA + "Allay");
+                                                    ArrayList<String> witch_lore = new ArrayList<>();
+                                                    witch_lore.add(WHITE + "Allay Origin");
+                                                    witch_meta.setLore(witch_lore);
+                                                    witch.setItemMeta(witch_meta);
+                                                } else {
+                                                    ItemMeta nope_meta = witch.getItemMeta();
+                                                    nope_meta.setDisplayName(RED + "Unavailable");
+                                                    nope_meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
+                                                    nope_meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+                                                    ArrayList<String> nope_lore = new ArrayList<>();
+                                                    nope_lore.add(RED + "This origin is locked by the server owner");
+                                                    nope_meta.setLore(nope_lore);
+                                                    witch.setItemMeta(nope_meta);
+                                                }
+                                                if (GenesisDataFiles.getPlugCon().getString("rabbit-disable").equalsIgnoreCase("false")) {
+                                                    ItemMeta rabbit_meta = rabbit.getItemMeta();
+                                                    rabbit_meta.setDisplayName(GOLD + "Rabbit");
+                                                    ArrayList<String> rabbit_lore = new ArrayList<>();
+                                                    rabbit_lore.add(WHITE + "Rabbit Origin");
+                                                    rabbit_meta.setLore(rabbit_lore);
+                                                    rabbit.setItemMeta(rabbit_meta);
+                                                } else {
+                                                    ItemMeta nope_meta = rabbit.getItemMeta();
+                                                    nope_meta.setDisplayName(RED + "Unavailable");
+                                                    nope_meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
+                                                    nope_meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+                                                    ArrayList<String> nope_lore = new ArrayList<>();
+                                                    nope_lore.add(RED + "This origin is locked by the server owner");
+                                                    nope_meta.setLore(nope_lore);
+                                                    rabbit.setItemMeta(nope_meta);
+                                                }
+                                                if (GenesisDataFiles.getPlugCon().getString("bumblebee-disable").equalsIgnoreCase("false")) {
+                                                    ItemMeta bee_meta = bumblebee.getItemMeta();
+                                                    bee_meta.setDisplayName(YELLOW + "Bumblebee");
+                                                    ArrayList<String> bee_lore = new ArrayList<>();
+                                                    bee_lore.add(WHITE + "Bee Origin");
+                                                    bee_meta.setLore(bee_lore);
+                                                    bumblebee.setItemMeta(bee_meta);
+                                                } else {
+                                                    ItemMeta nope_meta = bumblebee.getItemMeta();
+                                                    nope_meta.setDisplayName(RED + "Unavailable");
+                                                    nope_meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
+                                                    nope_meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+                                                    ArrayList<String> nope_lore = new ArrayList<>();
+                                                    nope_lore.add(RED + "This origin is locked by the server owner");
+                                                    nope_meta.setLore(nope_lore);
+                                                    bumblebee.setItemMeta(nope_meta);
+                                                }
+                                                if (GenesisDataFiles.getPlugCon().getString("elytrian-disable").equalsIgnoreCase("false")) {
+                                                    ItemMeta elytra_meta = elytrian.getItemMeta();
+                                                    elytra_meta.setDisplayName(GRAY + "Elytrian");
+                                                    ArrayList<String> elytra_lore = new ArrayList<>();
+                                                    elytra_lore.add(WHITE + "Elytra Origin");
+                                                    elytra_meta.setLore(elytra_lore);
+                                                    elytrian.setItemMeta(elytra_meta);
+                                                } else {
+                                                    ItemMeta nope_meta = elytrian.getItemMeta();
+                                                    nope_meta.setDisplayName(RED + "Unavailable");
+                                                    nope_meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
+                                                    nope_meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+                                                    ArrayList<String> nope_lore = new ArrayList<>();
+                                                    nope_lore.add(RED + "This origin is locked by the server owner");
+                                                    nope_meta.setLore(nope_lore);
+                                                    elytrian.setItemMeta(nope_meta);
+                                                }
+                                                if (GenesisDataFiles.getPlugCon().getString("avian-disable").equalsIgnoreCase("false")) {
+                                                    ItemMeta avian_meta = avian.getItemMeta();
+                                                    avian_meta.setDisplayName(DARK_AQUA + "Avian");
+                                                    ArrayList<String> avian_lore = new ArrayList<>();
+                                                    avian_lore.add(WHITE + "Avian Origin");
+                                                    avian_meta.setLore(avian_lore);
+                                                    avian.setItemMeta(avian_meta);
+                                                } else {
+                                                    ItemMeta nope_meta = avian.getItemMeta();
+                                                    nope_meta.setDisplayName(RED + "Unavailable");
+                                                    nope_meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
+                                                    nope_meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+                                                    ArrayList<String> nope_lore = new ArrayList<>();
+                                                    nope_lore.add(RED + "This origin is locked by the server owner");
+                                                    nope_meta.setLore(nope_lore);
+                                                    avian.setItemMeta(nope_meta);
+                                                }
+                                                if (GenesisDataFiles.getPlugCon().getString("piglin-disable").equalsIgnoreCase("false")) {
+                                                    ItemMeta pig_meta = piglin.getItemMeta();
+                                                    pig_meta.setDisplayName(GOLD + "Piglin");
+                                                    ArrayList<String> pig_lore = new ArrayList<>();
+                                                    pig_lore.add(WHITE + "Piglin Origin");
+                                                    pig_meta.setLore(pig_lore);
+                                                    piglin.setItemMeta(pig_meta);
+                                                } else {
+                                                    ItemMeta nope_meta = piglin.getItemMeta();
+                                                    nope_meta.setDisplayName(RED + "Unavailable");
+                                                    nope_meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
+                                                    nope_meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+                                                    ArrayList<String> nope_lore = new ArrayList<>();
+                                                    nope_lore.add(RED + "This origin is locked by the server owner");
+                                                    nope_meta.setLore(nope_lore);
+                                                    piglin.setItemMeta(nope_meta);
+                                                }
+                                                if (GenesisDataFiles.getPlugCon().getString("dragonborne-disable").equalsIgnoreCase("false")) {
+                                                    ItemMeta dragonborne_meta = dragonborne.getItemMeta();
+                                                    dragonborne_meta.setDisplayName(DARK_PURPLE + "Dragonborne");
+                                                    ArrayList<String> dragonborne_lore = new ArrayList<>();
+                                                    dragonborne_lore.add(WHITE + "Dragon Origin");
+                                                    dragonborne_meta.setLore(dragonborne_lore);
+                                                    dragonborne.setItemMeta(dragonborne_meta);
+                                                } else {
+                                                    ItemMeta nope_meta = dragonborne.getItemMeta();
+                                                    nope_meta.setDisplayName(RED + "Unavailable");
+                                                    nope_meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
+                                                    nope_meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+                                                    ArrayList<String> nope_lore = new ArrayList<>();
+                                                    nope_lore.add(RED + "This origin is locked by the server owner");
+                                                    nope_meta.setLore(nope_lore);
+                                                    dragonborne.setItemMeta(nope_meta);
+                                                }
 
-                                            ItemStack[] allmenu_items = {human, enderian, shulk, arachnid, creep, phantom, slimeling, vexian, blazeborn, starborne, mermaid, witch, rabbit, bumblebee, elytrian, avian, piglin, dragonborne, close, air, air, air, custom_originmenu, air, air, air, close};
-                                            allmenu.setContents(allmenu_items);
-                                            p.openInventory(allmenu);
-                                        }
+                                                ItemStack[] allmenu_items = {human, enderian, shulk, arachnid, creep, phantom, slimeling, vexian, blazeborn, starborne, mermaid, witch, rabbit, bumblebee, elytrian, avian, piglin, dragonborne, close, air, air, air, custom_originmenu, air, air, air, close};
+                                                allmenu.setContents(allmenu_items);
+                                                p.openInventory(allmenu);
+                                            }                                        }
                                     }
                                 }
                             }
@@ -732,7 +739,7 @@ public class GenesisChooseListener implements Listener {
         }
     }
 
-    //Menu Click Event Check
+//Menu Click Event Check
     @EventHandler
     public void onChoosing(InventoryClickEvent e) {
         Player p = (Player) e.getWhoClicked();
@@ -740,8 +747,7 @@ public class GenesisChooseListener implements Listener {
 
         int originid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER);
 
-//Origins Human Menu
-        if (e.getView().getTitle().equalsIgnoreCase(BLACK + "Human") || e.getView().getTitle().equalsIgnoreCase(BLACK + "Enderian") || e.getView().getTitle().equalsIgnoreCase(BLACK + "Shulk") || e.getView().getTitle().equalsIgnoreCase(BLACK + "Arachnid") || e.getView().getTitle().equalsIgnoreCase(BLACK + "Creep") || e.getView().getTitle().equalsIgnoreCase(BLACK + "Phantom") || e.getView().getTitle().equalsIgnoreCase(BLACK + "Slimeling") || e.getView().getTitle().equalsIgnoreCase(BLACK + "Vexian") || e.getView().getTitle().equalsIgnoreCase(BLACK + "Blazeborn") || e.getView().getTitle().equalsIgnoreCase(BLACK + "Starborne") || e.getView().getTitle().equalsIgnoreCase(BLACK + "Mermaid") || e.getView().getTitle().equalsIgnoreCase("Allay") || e.getView().getTitle().equalsIgnoreCase(BLACK + "Rabbit") || e.getView().getTitle().equalsIgnoreCase(BLACK + "Bumblebee") || e.getView().getTitle().equalsIgnoreCase(BLACK + "Elytrian") || e.getView().getTitle().equalsIgnoreCase(BLACK + "Avian") || e.getView().getTitle().equalsIgnoreCase(BLACK + "Piglin") || e.getView().getTitle().equalsIgnoreCase(BLACK + "Dragonborne") || e.getView().getTitle().equalsIgnoreCase(BLACK + "Allay")) {
+        if (e.getView().getTitle().equalsIgnoreCase(BLACK + "Human") || e.getView().getTitle().equalsIgnoreCase(BLACK + "Enderian") || e.getView().getTitle().equalsIgnoreCase(BLACK + "Shulk") || e.getView().getTitle().equalsIgnoreCase(BLACK + "Arachnid") || e.getView().getTitle().equalsIgnoreCase(BLACK + "Creep") || e.getView().getTitle().equalsIgnoreCase(BLACK + "Phantom") || e.getView().getTitle().equalsIgnoreCase(BLACK + "Slimeling") || e.getView().getTitle().equalsIgnoreCase(BLACK + "Vexian") || e.getView().getTitle().equalsIgnoreCase(BLACK + "Blazeborn") || e.getView().getTitle().equalsIgnoreCase(BLACK + "Starborne") || e.getView().getTitle().equalsIgnoreCase(BLACK + "Merling") || e.getView().getTitle().equalsIgnoreCase("Allay") || e.getView().getTitle().equalsIgnoreCase(BLACK + "Rabbit") || e.getView().getTitle().equalsIgnoreCase(BLACK + "Bumblebee") || e.getView().getTitle().equalsIgnoreCase(BLACK + "Elytrian") || e.getView().getTitle().equalsIgnoreCase(BLACK + "Avian") || e.getView().getTitle().equalsIgnoreCase(BLACK + "Piglin") || e.getView().getTitle().equalsIgnoreCase(BLACK + "Dragonborne") || e.getView().getTitle().equalsIgnoreCase(BLACK + "Allay")) {
 //All-Menu-Button-Open
 
             if (e.getCurrentItem() != null) {
@@ -768,7 +774,7 @@ public class GenesisChooseListener implements Listener {
                         ItemStack avian = new ItemStack(Material.FEATHER);
                         ItemStack piglin = new ItemStack(Material.GOLD_INGOT);
                         ItemStack dragonborne = new ItemStack(Material.DRAGON_BREATH);
-                        if (GenesisDataFiles.get1().getString("human-disable").equalsIgnoreCase("false")) {
+                        if (GenesisDataFiles.getPlugCon().getString("human-disable").equalsIgnoreCase("false")) {
                             ItemMeta human_meta = human.getItemMeta();
                             human_meta.setDisplayName(WHITE + "Human");
                             ArrayList<String> human_lore = new ArrayList<>();
@@ -785,7 +791,7 @@ public class GenesisChooseListener implements Listener {
                             nope_meta.setLore(nope_lore);
                             human.setItemMeta(nope_meta);
                         }
-                        if (GenesisDataFiles.get().getString("enderian-disable").equalsIgnoreCase("false")) {
+                        if (GenesisDataFiles.getPlugCon().getString("enderian-disable").equalsIgnoreCase("false")) {
                             ItemMeta ender_meta = enderian.getItemMeta();
                             ender_meta.setDisplayName(LIGHT_PURPLE + "Enderian");
                             ArrayList<String> ender_lore = new ArrayList<>();
@@ -802,7 +808,7 @@ public class GenesisChooseListener implements Listener {
                             nope_meta.setLore(nope_lore);
                             enderian.setItemMeta(nope_meta);
                         }
-                        if (GenesisDataFiles.get2().getString("shulk-disable").equalsIgnoreCase("false")) {
+                        if (GenesisDataFiles.getPlugCon().getString("shulk-disable").equalsIgnoreCase("false")) {
                             ItemMeta shulk_meta = shulk.getItemMeta();
                             shulk_meta.setDisplayName(DARK_PURPLE + "Shulk");
                             ArrayList<String> shulk_lore = new ArrayList<>();
@@ -819,7 +825,7 @@ public class GenesisChooseListener implements Listener {
                             nope_meta.setLore(nope_lore);
                             shulk.setItemMeta(nope_meta);
                         }
-                        if (GenesisDataFiles.get17().getString("arachnid-disable").equalsIgnoreCase("false")) {
+                        if (GenesisDataFiles.getPlugCon().getString("arachnid-disable").equalsIgnoreCase("false")) {
                             ItemMeta spider_meta = arachnid.getItemMeta();
                             spider_meta.setDisplayName(RED + "Arachnid");
                             ArrayList<String> spider_lore = new ArrayList<>();
@@ -836,7 +842,7 @@ public class GenesisChooseListener implements Listener {
                             nope_meta.setLore(nope_lore);
                             arachnid.setItemMeta(nope_meta);
                         }
-                        if (GenesisDataFiles.get3().getString("creep-disable").equalsIgnoreCase("false")) {
+                        if (GenesisDataFiles.getPlugCon().getString("creep-disable").equalsIgnoreCase("false")) {
                             ItemMeta creep_meta = creep.getItemMeta();
                             creep_meta.setDisplayName(GREEN + "Creep");
                             ArrayList<String> creep_lore = new ArrayList<>();
@@ -853,7 +859,7 @@ public class GenesisChooseListener implements Listener {
                             nope_meta.setLore(nope_lore);
                             creep.setItemMeta(nope_meta);
                         }
-                        if (GenesisDataFiles.get4().getString("phantom-disable").equalsIgnoreCase("false")) {
+                        if (GenesisDataFiles.getPlugCon().getString("phantom-disable").equalsIgnoreCase("false")) {
                             ItemMeta phantom_meta = phantom.getItemMeta();
                             phantom_meta.setDisplayName(BLUE + "Phantom");
                             ArrayList<String> phantom_lore = new ArrayList<>();
@@ -870,7 +876,7 @@ public class GenesisChooseListener implements Listener {
                             nope_meta.setLore(nope_lore);
                             phantom.setItemMeta(nope_meta);
                         }
-                        if (GenesisDataFiles.get5().getString("slimeling-disable").equalsIgnoreCase("false")) {
+                        if (GenesisDataFiles.getPlugCon().getString("slimeling-disable").equalsIgnoreCase("false")) {
                             ItemMeta slime_meta = slimeling.getItemMeta();
                             slime_meta.setDisplayName(GREEN + "Slimeling");
                             ArrayList<String> slime_lore = new ArrayList<>();
@@ -887,7 +893,7 @@ public class GenesisChooseListener implements Listener {
                             nope_meta.setLore(nope_lore);
                             slimeling.setItemMeta(nope_meta);
                         }
-                        if (GenesisDataFiles.get6().getString("vexian-disable").equalsIgnoreCase("false")) {
+                        if (GenesisDataFiles.getPlugCon().getString("vexian-disable").equalsIgnoreCase("false")) {
                             ItemMeta vex_meta = vexian.getItemMeta();
                             vex_meta.setDisplayName(AQUA + "Vexian");
                             ArrayList<String> vex_lore = new ArrayList<>();
@@ -905,7 +911,7 @@ public class GenesisChooseListener implements Listener {
                             nope_meta.setLore(nope_lore);
                             vexian.setItemMeta(nope_meta);
                         }
-                        if (GenesisDataFiles.get7().getString("blazeborn-disable").equalsIgnoreCase("false")) {
+                        if (GenesisDataFiles.getPlugCon().getString("blazeborn-disable").equalsIgnoreCase("false")) {
                             ItemMeta blaze_meta = blazeborn.getItemMeta();
                             blaze_meta.setDisplayName(GOLD + "Blazeborn");
                             ArrayList<String> blaze_lore = new ArrayList<>();
@@ -922,7 +928,7 @@ public class GenesisChooseListener implements Listener {
                             nope_meta.setLore(nope_lore);
                             blazeborn.setItemMeta(nope_meta);
                         }
-                        if (GenesisDataFiles.get8().getString("starborne-disable").equalsIgnoreCase("false")) {
+                        if (GenesisDataFiles.getPlugCon().getString("starborne-disable").equalsIgnoreCase("false")) {
                             ItemMeta star_meta = starborne.getItemMeta();
                             star_meta.setDisplayName(LIGHT_PURPLE + "Starborne");
                             ArrayList<String> star_lore = new ArrayList<>();
@@ -939,11 +945,11 @@ public class GenesisChooseListener implements Listener {
                             nope_meta.setLore(nope_lore);
                             starborne.setItemMeta(nope_meta);
                         }
-                        if (GenesisDataFiles.get9().getString("merling-disable").equalsIgnoreCase("false")) {
+                        if (GenesisDataFiles.getPlugCon().getString("merling-disable").equalsIgnoreCase("false")) {
                             ItemMeta mer_meta = mermaid.getItemMeta();
-                            mer_meta.setDisplayName(BLUE + "Mermaid");
+                            mer_meta.setDisplayName(BLUE + "Merling");
                             ArrayList<String> mer_lore = new ArrayList<>();
-                            mer_lore.add(WHITE + "Mermaid Origin");
+                            mer_lore.add(WHITE + "Merling Origin");
                             mer_meta.setLore(mer_lore);
                             mermaid.setItemMeta(mer_meta);
                         } else {
@@ -956,7 +962,7 @@ public class GenesisChooseListener implements Listener {
                             nope_meta.setLore(nope_lore);
                             mermaid.setItemMeta(nope_meta);
                         }
-                        if (GenesisDataFiles.get10().getString("allay-disable").equalsIgnoreCase("false")) {
+                        if (GenesisDataFiles.getPlugCon().getString("allay-disable").equalsIgnoreCase("false")) {
                             ItemMeta witch_meta = witch.getItemMeta();
                             witch_meta.setDisplayName(AQUA + "Allay");
                             ArrayList<String> witch_lore = new ArrayList<>();
@@ -973,7 +979,7 @@ public class GenesisChooseListener implements Listener {
                             nope_meta.setLore(nope_lore);
                             witch.setItemMeta(nope_meta);
                         }
-                        if (GenesisDataFiles.get11().getString("rabbit-disable").equalsIgnoreCase("false")) {
+                        if (GenesisDataFiles.getPlugCon().getString("rabbit-disable").equalsIgnoreCase("false")) {
                             ItemMeta rabbit_meta = rabbit.getItemMeta();
                             rabbit_meta.setDisplayName(GOLD + "Rabbit");
                             ArrayList<String> rabbit_lore = new ArrayList<>();
@@ -990,7 +996,7 @@ public class GenesisChooseListener implements Listener {
                             nope_meta.setLore(nope_lore);
                             rabbit.setItemMeta(nope_meta);
                         }
-                        if (GenesisDataFiles.get12().getString("bumblebee-disable").equalsIgnoreCase("false")) {
+                        if (GenesisDataFiles.getPlugCon().getString("bumblebee-disable").equalsIgnoreCase("false")) {
                             ItemMeta bee_meta = bumblebee.getItemMeta();
                             bee_meta.setDisplayName(YELLOW + "Bumblebee");
                             ArrayList<String> bee_lore = new ArrayList<>();
@@ -1007,7 +1013,7 @@ public class GenesisChooseListener implements Listener {
                             nope_meta.setLore(nope_lore);
                             bumblebee.setItemMeta(nope_meta);
                         }
-                        if (GenesisDataFiles.get13().getString("elytrian-disable").equalsIgnoreCase("false")) {
+                        if (GenesisDataFiles.getPlugCon().getString("elytrian-disable").equalsIgnoreCase("false")) {
                             ItemMeta elytra_meta = elytrian.getItemMeta();
                             elytra_meta.setDisplayName(GRAY + "Elytrian");
                             ArrayList<String> elytra_lore = new ArrayList<>();
@@ -1024,7 +1030,7 @@ public class GenesisChooseListener implements Listener {
                             nope_meta.setLore(nope_lore);
                             elytrian.setItemMeta(nope_meta);
                         }
-                        if (GenesisDataFiles.get14().getString("avian-disable").equalsIgnoreCase("false")) {
+                        if (GenesisDataFiles.getPlugCon().getString("avian-disable").equalsIgnoreCase("false")) {
                             ItemMeta avian_meta = avian.getItemMeta();
                             avian_meta.setDisplayName(DARK_AQUA + "Avian");
                             ArrayList<String> avian_lore = new ArrayList<>();
@@ -1041,7 +1047,7 @@ public class GenesisChooseListener implements Listener {
                             nope_meta.setLore(nope_lore);
                             avian.setItemMeta(nope_meta);
                         }
-                        if (GenesisDataFiles.get15().getString("piglin-disable").equalsIgnoreCase("false")) {
+                        if (GenesisDataFiles.getPlugCon().getString("piglin-disable").equalsIgnoreCase("false")) {
                             ItemMeta pig_meta = piglin.getItemMeta();
                             pig_meta.setDisplayName(GOLD + "Piglin");
                             ArrayList<String> pig_lore = new ArrayList<>();
@@ -1058,7 +1064,7 @@ public class GenesisChooseListener implements Listener {
                             nope_meta.setLore(nope_lore);
                             piglin.setItemMeta(nope_meta);
                         }
-                        if (GenesisDataFiles.get16().getString("dragonborne-disable").equalsIgnoreCase("false")) {
+                        if (GenesisDataFiles.getPlugCon().getString("dragonborne-disable").equalsIgnoreCase("false")) {
                             ItemMeta dragonborne_meta = dragonborne.getItemMeta();
                             dragonborne_meta.setDisplayName(DARK_PURPLE + "Dragonborne");
                             ArrayList<String> dragonborne_lore = new ArrayList<>();
@@ -1116,7 +1122,7 @@ public class GenesisChooseListener implements Listener {
                         custom_originmenu.setItemMeta(next_meta);
 
 
-                        if (GenesisDataFiles.get1().getString("human-disable").equalsIgnoreCase("false")) {
+                        if (GenesisDataFiles.getPlugCon().getString("human-disable").equalsIgnoreCase("false")) {
                             ItemMeta human_meta = human.getItemMeta();
                             human_meta.setDisplayName(WHITE + "Human");
                             ArrayList<String> human_lore = new ArrayList<>();
@@ -1133,7 +1139,7 @@ public class GenesisChooseListener implements Listener {
                             nope_meta.setLore(nope_lore);
                             human.setItemMeta(nope_meta);
                         }
-                        if (GenesisDataFiles.get().getString("enderian-disable").equalsIgnoreCase("false")) {
+                        if (GenesisDataFiles.getPlugCon().getString("enderian-disable").equalsIgnoreCase("false")) {
                             ItemMeta ender_meta = enderian.getItemMeta();
                             ender_meta.setDisplayName(LIGHT_PURPLE + "Enderian");
                             ArrayList<String> ender_lore = new ArrayList<>();
@@ -1150,7 +1156,7 @@ public class GenesisChooseListener implements Listener {
                             nope_meta.setLore(nope_lore);
                             enderian.setItemMeta(nope_meta);
                         }
-                        if (GenesisDataFiles.get2().getString("shulk-disable").equalsIgnoreCase("false")) {
+                        if (GenesisDataFiles.getPlugCon().getString("shulk-disable").equalsIgnoreCase("false")) {
                             ItemMeta shulk_meta = shulk.getItemMeta();
                             shulk_meta.setDisplayName(DARK_PURPLE + "Shulk");
                             ArrayList<String> shulk_lore = new ArrayList<>();
@@ -1167,7 +1173,7 @@ public class GenesisChooseListener implements Listener {
                             nope_meta.setLore(nope_lore);
                             shulk.setItemMeta(nope_meta);
                         }
-                        if (GenesisDataFiles.get17().getString("arachnid-disable").equalsIgnoreCase("false")) {
+                        if (GenesisDataFiles.getPlugCon().getString("arachnid-disable").equalsIgnoreCase("false")) {
                             ItemMeta spider_meta = arachnid.getItemMeta();
                             spider_meta.setDisplayName(RED + "Arachnid");
                             ArrayList<String> spider_lore = new ArrayList<>();
@@ -1184,7 +1190,7 @@ public class GenesisChooseListener implements Listener {
                             nope_meta.setLore(nope_lore);
                             arachnid.setItemMeta(nope_meta);
                         }
-                        if (GenesisDataFiles.get3().getString("creep-disable").equalsIgnoreCase("false")) {
+                        if (GenesisDataFiles.getPlugCon().getString("creep-disable").equalsIgnoreCase("false")) {
                             ItemMeta creep_meta = creep.getItemMeta();
                             creep_meta.setDisplayName(GREEN + "Creep");
                             ArrayList<String> creep_lore = new ArrayList<>();
@@ -1201,7 +1207,7 @@ public class GenesisChooseListener implements Listener {
                             nope_meta.setLore(nope_lore);
                             creep.setItemMeta(nope_meta);
                         }
-                        if (GenesisDataFiles.get4().getString("phantom-disable").equalsIgnoreCase("false")) {
+                        if (GenesisDataFiles.getPlugCon().getString("phantom-disable").equalsIgnoreCase("false")) {
                             ItemMeta phantom_meta = phantom.getItemMeta();
                             phantom_meta.setDisplayName(BLUE + "Phantom");
                             ArrayList<String> phantom_lore = new ArrayList<>();
@@ -1218,7 +1224,7 @@ public class GenesisChooseListener implements Listener {
                             nope_meta.setLore(nope_lore);
                             phantom.setItemMeta(nope_meta);
                         }
-                        if (GenesisDataFiles.get5().getString("slimeling-disable").equalsIgnoreCase("false")) {
+                        if (GenesisDataFiles.getPlugCon().getString("slimeling-disable").equalsIgnoreCase("false")) {
                             ItemMeta slime_meta = slimeling.getItemMeta();
                             slime_meta.setDisplayName(GREEN + "Slimeling");
                             ArrayList<String> slime_lore = new ArrayList<>();
@@ -1235,7 +1241,7 @@ public class GenesisChooseListener implements Listener {
                             nope_meta.setLore(nope_lore);
                             slimeling.setItemMeta(nope_meta);
                         }
-                        if (GenesisDataFiles.get6().getString("vexian-disable").equalsIgnoreCase("false")) {
+                        if (GenesisDataFiles.getPlugCon().getString("vexian-disable").equalsIgnoreCase("false")) {
                             ItemMeta vex_meta = vexian.getItemMeta();
                             vex_meta.setDisplayName(AQUA + "Vexian");
                             ArrayList<String> vex_lore = new ArrayList<>();
@@ -1253,7 +1259,7 @@ public class GenesisChooseListener implements Listener {
                             nope_meta.setLore(nope_lore);
                             vexian.setItemMeta(nope_meta);
                         }
-                        if (GenesisDataFiles.get7().getString("blazeborn-disable").equalsIgnoreCase("false")) {
+                        if (GenesisDataFiles.getPlugCon().getString("blazeborn-disable").equalsIgnoreCase("false")) {
                             ItemMeta blaze_meta = blazeborn.getItemMeta();
                             blaze_meta.setDisplayName(GOLD + "Blazeborn");
                             ArrayList<String> blaze_lore = new ArrayList<>();
@@ -1270,7 +1276,7 @@ public class GenesisChooseListener implements Listener {
                             nope_meta.setLore(nope_lore);
                             blazeborn.setItemMeta(nope_meta);
                         }
-                        if (GenesisDataFiles.get8().getString("starborne-disable").equalsIgnoreCase("false")) {
+                        if (GenesisDataFiles.getPlugCon().getString("starborne-disable").equalsIgnoreCase("false")) {
                             ItemMeta star_meta = starborne.getItemMeta();
                             star_meta.setDisplayName(LIGHT_PURPLE + "Starborne");
                             ArrayList<String> star_lore = new ArrayList<>();
@@ -1287,11 +1293,11 @@ public class GenesisChooseListener implements Listener {
                             nope_meta.setLore(nope_lore);
                             starborne.setItemMeta(nope_meta);
                         }
-                        if (GenesisDataFiles.get9().getString("merling-disable").equalsIgnoreCase("false")) {
+                        if (GenesisDataFiles.getPlugCon().getString("merling-disable").equalsIgnoreCase("false")) {
                             ItemMeta mer_meta = mermaid.getItemMeta();
-                            mer_meta.setDisplayName(BLUE + "Mermaid");
+                            mer_meta.setDisplayName(BLUE + "Merling");
                             ArrayList<String> mer_lore = new ArrayList<>();
-                            mer_lore.add(WHITE + "Mermaid Origin");
+                            mer_lore.add(WHITE + "Merling Origin");
                             mer_meta.setLore(mer_lore);
                             mermaid.setItemMeta(mer_meta);
                         } else {
@@ -1304,7 +1310,7 @@ public class GenesisChooseListener implements Listener {
                             nope_meta.setLore(nope_lore);
                             mermaid.setItemMeta(nope_meta);
                         }
-                        if (GenesisDataFiles.get10().getString("allay-disable").equalsIgnoreCase("false")) {
+                        if (GenesisDataFiles.getPlugCon().getString("allay-disable").equalsIgnoreCase("false")) {
                             ItemMeta witch_meta = witch.getItemMeta();
                             witch_meta.setDisplayName(AQUA + "Allay");
                             ArrayList<String> witch_lore = new ArrayList<>();
@@ -1321,7 +1327,7 @@ public class GenesisChooseListener implements Listener {
                             nope_meta.setLore(nope_lore);
                             witch.setItemMeta(nope_meta);
                         }
-                        if (GenesisDataFiles.get11().getString("rabbit-disable").equalsIgnoreCase("false")) {
+                        if (GenesisDataFiles.getPlugCon().getString("rabbit-disable").equalsIgnoreCase("false")) {
                             ItemMeta rabbit_meta = rabbit.getItemMeta();
                             rabbit_meta.setDisplayName(GOLD + "Rabbit");
                             ArrayList<String> rabbit_lore = new ArrayList<>();
@@ -1338,7 +1344,7 @@ public class GenesisChooseListener implements Listener {
                             nope_meta.setLore(nope_lore);
                             rabbit.setItemMeta(nope_meta);
                         }
-                        if (GenesisDataFiles.get12().getString("bumblebee-disable").equalsIgnoreCase("false")) {
+                        if (GenesisDataFiles.getPlugCon().getString("bumblebee-disable").equalsIgnoreCase("false")) {
                             ItemMeta bee_meta = bumblebee.getItemMeta();
                             bee_meta.setDisplayName(YELLOW + "Bumblebee");
                             ArrayList<String> bee_lore = new ArrayList<>();
@@ -1355,7 +1361,7 @@ public class GenesisChooseListener implements Listener {
                             nope_meta.setLore(nope_lore);
                             bumblebee.setItemMeta(nope_meta);
                         }
-                        if (GenesisDataFiles.get13().getString("elytrian-disable").equalsIgnoreCase("false")) {
+                        if (GenesisDataFiles.getPlugCon().getString("elytrian-disable").equalsIgnoreCase("false")) {
                             ItemMeta elytra_meta = elytrian.getItemMeta();
                             elytra_meta.setDisplayName(GRAY + "Elytrian");
                             ArrayList<String> elytra_lore = new ArrayList<>();
@@ -1372,7 +1378,7 @@ public class GenesisChooseListener implements Listener {
                             nope_meta.setLore(nope_lore);
                             elytrian.setItemMeta(nope_meta);
                         }
-                        if (GenesisDataFiles.get14().getString("avian-disable").equalsIgnoreCase("false")) {
+                        if (GenesisDataFiles.getPlugCon().getString("avian-disable").equalsIgnoreCase("false")) {
                             ItemMeta avian_meta = avian.getItemMeta();
                             avian_meta.setDisplayName(DARK_AQUA + "Avian");
                             ArrayList<String> avian_lore = new ArrayList<>();
@@ -1389,7 +1395,7 @@ public class GenesisChooseListener implements Listener {
                             nope_meta.setLore(nope_lore);
                             avian.setItemMeta(nope_meta);
                         }
-                        if (GenesisDataFiles.get15().getString("piglin-disable").equalsIgnoreCase("false")) {
+                        if (GenesisDataFiles.getPlugCon().getString("piglin-disable").equalsIgnoreCase("false")) {
                             ItemMeta pig_meta = piglin.getItemMeta();
                             pig_meta.setDisplayName(GOLD + "Piglin");
                             ArrayList<String> pig_lore = new ArrayList<>();
@@ -1406,7 +1412,7 @@ public class GenesisChooseListener implements Listener {
                             nope_meta.setLore(nope_lore);
                             piglin.setItemMeta(nope_meta);
                         }
-                        if (GenesisDataFiles.get16().getString("dragonborne-disable").equalsIgnoreCase("false")) {
+                        if (GenesisDataFiles.getPlugCon().getString("dragonborne-disable").equalsIgnoreCase("false")) {
                             ItemMeta dragonborne_meta = dragonborne.getItemMeta();
                             dragonborne_meta.setDisplayName(DARK_PURPLE + "Dragonborne");
                             ArrayList<String> dragonborne_lore = new ArrayList<>();
@@ -1437,16 +1443,18 @@ public class GenesisChooseListener implements Listener {
                     p.closeInventory();
                     p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_GUITAR, 10, 9);
                     p.sendMessage(RED + "Choosing canceled!");
+                    p.teleportAsync(p.getEyeLocation());
                     e.setCancelled(true);
                 }
+//Disconnect Button
                 if(e.getCurrentItem().getType() == Material.REDSTONE_BLOCK){
                     e.setCancelled(true);
                     p.kickPlayer("You have disconnected from choosing");
 
                 }
 //Choose
-
                 if (e.getCurrentItem().getType() == Material.PLAYER_HEAD || e.getCurrentItem().getType() == Material.ENDER_PEARL || e.getCurrentItem().getType() == Material.SHULKER_SHELL || e.getCurrentItem().getType() == Material.COBWEB || e.getCurrentItem().getType() == Material.GUNPOWDER || e.getCurrentItem().getType() == Material.PHANTOM_MEMBRANE || e.getCurrentItem().getType() == Material.SLIME_BALL || e.getCurrentItem().getType() == Material.IRON_SWORD || e.getCurrentItem().getType() == Material.BLAZE_POWDER || e.getCurrentItem().getType() == Material.NETHER_STAR || e.getCurrentItem().getType() == Material.COD || e.getCurrentItem().getType() == Material.AMETHYST_SHARD || e.getCurrentItem().getType() == Material.CARROT || e.getCurrentItem().getType() == Material.HONEYCOMB || e.getCurrentItem().getType() == Material.ELYTRA || e.getCurrentItem().getType() == Material.FEATHER || e.getCurrentItem().getType() == Material.GOLD_INGOT || e.getCurrentItem().getType() == Material.DRAGON_BREATH) {
+                    //default stuff
                     p.closeInventory();
                     p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_CHIME, 10, 9);
                     p.sendMessage(AQUA + "You have chosen an origin!");
@@ -1457,7 +1465,8 @@ public class GenesisChooseListener implements Listener {
                     p.setGameMode(GameMode.SURVIVAL);
                     p.setHealthScaled(false);
                     double nY = 2;
-                    Location loc = new Location(p.getWorld(), p.getLocation().getX(), p.getLocation().getY() + 1, p.getLocation().getZ());
+                    Location loc = new Location(p.getWorld(), p.getLocation().getX(), p.getLocation().getY() + 1, p.getLocation().getZ(), p.getLocation().getYaw(), p.getLocation().getPitch());
+                    p.teleportAsync(loc);
 
                     if(p.getScoreboardTags().contains("choosing")){
                         p.removeScoreboardTag("choosing");
@@ -1468,10 +1477,28 @@ public class GenesisChooseListener implements Listener {
                         p.getInventory().getItemInMainHand().setAmount(amt - 1);
                     }
 
+                    if (!p.getPersistentDataContainer().has(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER)) {
+                        p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER, 1);
+                    }
+                    if (!p.getPersistentDataContainer().has(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER)) {
+                        p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
+                    }
+                    if (!p.getPersistentDataContainer().has(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER)) {
+                        p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
+                    }
 
+                    ScoreboardManager manager = Bukkit.getScoreboardManager();
+                    Scoreboard scoreboard = manager.getNewScoreboard();
+                    Team team = scoreboard.registerNewTeam("origin-players");
+                        team.addEntities(p);
+                        team.setCanSeeFriendlyInvisibles(true);
+                        team.setDisplayName("Origin Player");
+                        p.setScoreboard(scoreboard);
+//enderian
                     if (e.getCurrentItem().getType() == Material.ENDER_PEARL) {
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER, 0401065);
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
+                        p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
                         ItemStack infinpearl = new ItemStack(Material.ENDER_PEARL);
                         ItemMeta pearl_meta = infinpearl.getItemMeta();
                         pearl_meta.setDisplayName(ChatColor.LIGHT_PURPLE + "Teleport");
@@ -1482,97 +1509,180 @@ public class GenesisChooseListener implements Listener {
                         infinpearl.setItemMeta(pearl_meta);
                         p.getInventory().addItem(new ItemStack[]{infinpearl});
                         p.getAttribute(Attribute.GENERIC_ARMOR).setBaseValue(0.0);
+                        p.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE).setBaseValue(0.0F);
                         p.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(24);
+                        p.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0.1);
                         float walk = 0.2F;
                         p.setWalkSpeed(walk);
                         p.getWorld().spawnParticle(Particle.REVERSE_PORTAL, p.getLocation(), 9);
                         p.setHealthScaled(false);
                     }
+//shulk
                     if (e.getCurrentItem().getType() == Material.SHULKER_SHELL) {
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER, 6503044);
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
+                        p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
                         float walk = 0.185F;
                         p.getAttribute(Attribute.GENERIC_ARMOR).setBaseValue(8.0);
                         p.setWalkSpeed(walk);
                         p.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20);
+                        p.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE).setBaseValue(0.45F);
                     }
+//human
                     if (e.getCurrentItem().getType() == Material.PLAYER_HEAD) {
+                        p.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0.1);
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER, 0004013);
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
+                        p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
+                        p.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE).setBaseValue(0.0F);
                     }
+//arachnid
                     if (e.getCurrentItem().getType() == Material.COBWEB) {
+                        p.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0.1);
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER, 1709012);
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
+                        p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
                         p.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(14);
                         p.getAttribute(Attribute.GENERIC_ARMOR).setBaseValue(0);
+                        p.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE).setBaseValue(0.0F);
                     }
+//creep
                     if (e.getCurrentItem().getType() == Material.GUNPOWDER) {
+                        p.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0.1);
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER, 2356555);
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 2);
+                        p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
                         p.getAttribute(Attribute.GENERIC_ARMOR).setBaseValue(0);
                         p.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(18);
+                        p.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE).setBaseValue(0.0F);
                     }
+//phantom
                     if (e.getCurrentItem().getType() == Material.PHANTOM_MEMBRANE) {
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER, 7300041);
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
+                        p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
+                        p.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(14);
+                        p.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0.11);
+                        p.getAttribute(Attribute.GENERIC_ARMOR).setBaseValue(0);
+                        ItemStack spectatorswitch = new ItemStack(Material.FEATHER);
+                        ItemMeta switch_meta = spectatorswitch.getItemMeta();
+                        switch_meta.setDisplayName(GRAY + "Phantom Form");
+                        ArrayList<String> pearl_lore = new ArrayList();
+                        switch_meta.setUnbreakable(true);
+                        switch_meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
+                        switch_meta.addItemFlags(ItemFlag.HIDE_ITEM_SPECIFICS);
+                        switch_meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+                        switch_meta.setLore(pearl_lore);
+                        spectatorswitch.setItemMeta(switch_meta);
+                        p.getInventory().addItem(new ItemStack[]{spectatorswitch});
+                        p.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE).setBaseValue(0.0F);
+
                     }
+//slimeling
                     if (e.getCurrentItem().getType() == Material.SLIME_BALL) {
+                        p.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0.1);
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER, 2304045);
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
+                        p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
+                        p.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE).setBaseValue(0.0F);
                     }
+//vexian
                     if (e.getCurrentItem().getType() == Material.IRON_SWORD) {
+                        p.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0.1);
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER, 9602042);
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
+                        p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
+                        p.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE).setBaseValue(0.0F);
 
                     }
+//blazeborn
                     if (e.getCurrentItem().getType() == Material.BLAZE_POWDER) {
+                        p.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0.1);
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER, 9811027);
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
+                        p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
+                        p.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE).setBaseValue(0.0F);
 
                     }
+//starborne
                     if (e.getCurrentItem().getType() == Material.NETHER_STAR) {
+                        p.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0.1);
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER, 7303065);
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
+                        p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
+                        p.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE).setBaseValue(0.0F);
 
                     }
+//merling
                     if (e.getCurrentItem().getType() == Material.COD) {
+                        p.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0.1);
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER, 1310018);
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
+                        p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
+                        p.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE).setBaseValue(0.0F);
 
                     }
+//allay
                     if (e.getCurrentItem().getType() == Material.AMETHYST_SHARD) {
+                        p.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0.1);
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER, 1205048);
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
+                        p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
+                        p.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE).setBaseValue(0.0F);
 
                     }
+//rabbit
                     if (e.getCurrentItem().getType() == Material.CARROT) {
+                        p.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0.1);
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER, 5308033);
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
+                        p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
+                        p.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE).setBaseValue(0.0F);
 
                     }
+//bumblebee
                     if (e.getCurrentItem().getType() == Material.HONEYCOMB) {
+                        p.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0.1);
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER, 8906022);
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
+                        p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
+                        p.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE).setBaseValue(0.0F);
 
                     }
+//elytrian
                     if (e.getCurrentItem().getType() == Material.ELYTRA) {
+                        p.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0.1);
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER, 6211006);
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
+                        p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
+                        p.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE).setBaseValue(0.0F);
 
                     }
+//avian
                     if (e.getCurrentItem().getType() == Material.FEATHER) {
+                        p.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0.1);
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER, 4501011);
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
+                        p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
+                        p.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE).setBaseValue(0.0F);
 
                     }
+//piglin
                     if (e.getCurrentItem().getType() == Material.GOLD_INGOT) {
+                        p.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0.1);
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER, 6211021);
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
+                        p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
+                        p.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE).setBaseValue(0.0F);
 
                     }
+//dragonborne
                     if (e.getCurrentItem().getType() == Material.DRAGON_BREATH) {
+                        p.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0.1);
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER, 4307015);
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
+                        p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
+                        p.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE).setBaseValue(0.0F);
 
                     }
                 }
@@ -2599,9 +2709,9 @@ public class GenesisChooseListener implements Listener {
                         next.setItemMeta(next_meta);
 
                         ItemMeta mermaid_meta = mermaid.getItemMeta();
-                        mermaid_meta.setDisplayName("Mermaid");
+                        mermaid_meta.setDisplayName("Merling");
                         ArrayList<String> mermaid_lore = new ArrayList<>();
-                        mermaid_lore.add(BLUE + "Mermaid Origin");
+                        mermaid_lore.add(BLUE + "Merling Origin");
                         mermaid_meta.setLore(mermaid_lore);
                         mermaid.setItemMeta(mermaid_meta);
 

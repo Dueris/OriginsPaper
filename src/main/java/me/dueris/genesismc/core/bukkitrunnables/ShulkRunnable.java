@@ -5,6 +5,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
@@ -31,6 +32,7 @@ public class ShulkRunnable extends BukkitRunnable {
                     }
                 }
                 p.setCooldown(SHIELD, 100);
+                p.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0.077F);
             }
         }
     }

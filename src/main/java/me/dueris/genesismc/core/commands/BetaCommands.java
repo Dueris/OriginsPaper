@@ -1,8 +1,8 @@
 package me.dueris.genesismc.core.commands;
 
-import me.dueris.genesismc.core.commands.beta.BetaOrbOrigins;
-import me.dueris.genesismc.core.commands.beta.BetaWaterProt;
-import me.dueris.genesismc.core.commands.beta.EnchantCMD;
+import me.dueris.genesismc.core.commands.subcommands.beta.BetaOrbOrigins;
+import me.dueris.genesismc.core.commands.subcommands.beta.BetaWaterProt;
+import me.dueris.genesismc.core.commands.subcommands.beta.EnchantCMD;
 import me.dueris.genesismc.core.commands.subcommands.SubCommand;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;

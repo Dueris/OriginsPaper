@@ -4,7 +4,7 @@ plugins {
 }
 
 group = 'me.lotis'
-version = '0.1.5-ALPHA-build+'
+version = '0.1.6-ALPHA-build+'
 
 repositories {
     mavenCentral()

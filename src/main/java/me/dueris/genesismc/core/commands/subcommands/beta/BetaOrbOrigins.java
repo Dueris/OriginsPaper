@@ -1,8 +1,10 @@
-package me.dueris.genesismc.core.commands.beta;
+package me.dueris.genesismc.core.commands.subcommands.beta;
 
 
 import me.dueris.genesismc.core.commands.subcommands.SubCommand;
 import org.bukkit.entity.Player;
+
+import java.util.List;
 
 import static me.dueris.genesismc.core.items.OrbOfOrigins.orb;
 
@@ -28,5 +30,10 @@ public class BetaOrbOrigins extends SubCommand {
             p.getInventory().addItem(orb);
             p.sendMessage("test");
         }
+    }
+
+    @Override
+    public List<String> getSubcommandArguments(Player player, String[] args) {
+        return null;
     }
 }

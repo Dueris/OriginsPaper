@@ -1,21 +1,27 @@
-package me.dueris.genesismc.core.commands.subcommands;
+package me.dueris.genesismc.core.commands.subcommands.origin;
 
+import me.dueris.genesismc.core.GenesisMC;
+import me.dueris.genesismc.core.commands.subcommands.SubCommand;
 import me.dueris.genesismc.core.files.GenesisDataFiles;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.persistence.PersistentDataType;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static org.bukkit.ChatColor.*;
 import static org.bukkit.ChatColor.RED;
 
-public class OriginsChoose extends SubCommand{
+public class OriginsChoose extends SubCommand {
     @Override
     public String getName() {
         return "choose";
@@ -33,7 +39,11 @@ public class OriginsChoose extends SubCommand{
 
     @Override
     public void perform(Player p, String[] args) {
-        if(!p.getScoreboardTags().contains("chosen")){
+        PersistentDataContainer data = p.getPersistentDataContainer();
+        int originid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER);
+        int phantomid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER);
+        if(!p.getScoreboardTags().contains("chosen") && originid == 0 && phantomid == 1){
+
             if (GenesisDataFiles.getPlugCon().getString("custom-origins").equalsIgnoreCase("false")) {
                 Inventory allmenu = Bukkit.createInventory(p, 18, LIGHT_PURPLE + "Origins Menu");
 
@@ -55,7 +65,7 @@ public class OriginsChoose extends SubCommand{
                 ItemStack avian = new ItemStack(Material.FEATHER);
                 ItemStack piglin = new ItemStack(Material.GOLD_INGOT);
                 ItemStack dragonborne = new ItemStack(Material.DRAGON_BREATH);
-                if (GenesisDataFiles.get1().getString("human-disable").equalsIgnoreCase("false")) {
+                if (GenesisDataFiles.getPlugCon().getString("human-disable").equalsIgnoreCase("false")) {
                     ItemMeta human_meta = human.getItemMeta();
                     human_meta.setDisplayName(WHITE + "Human");
                     ArrayList<String> human_lore = new ArrayList<>();
@@ -72,7 +82,7 @@ public class OriginsChoose extends SubCommand{
                     nope_meta.setLore(nope_lore);
                     human.setItemMeta(nope_meta);
                 }
-                if (GenesisDataFiles.get().getString("enderian-disable").equalsIgnoreCase("false")) {
+                if (GenesisDataFiles.getPlugCon().getString("enderian-disable").equalsIgnoreCase("false")) {
                     ItemMeta ender_meta = enderian.getItemMeta();
                     ender_meta.setDisplayName(LIGHT_PURPLE + "Enderian");
                     ArrayList<String> ender_lore = new ArrayList<>();
@@ -89,7 +99,7 @@ public class OriginsChoose extends SubCommand{
                     nope_meta.setLore(nope_lore);
                     enderian.setItemMeta(nope_meta);
                 }
-                if (GenesisDataFiles.get2().getString("shulk-disable").equalsIgnoreCase("false")) {
+                if (GenesisDataFiles.getPlugCon().getString("shulk-disable").equalsIgnoreCase("false")) {
                     ItemMeta shulker_meta = shulker.getItemMeta();
                     shulker_meta.setDisplayName(DARK_PURPLE + "Shulk");
                     ArrayList<String> shulker_lore = new ArrayList<>();
@@ -106,7 +116,7 @@ public class OriginsChoose extends SubCommand{
                     nope_meta.setLore(nope_lore);
                     shulker.setItemMeta(nope_meta);
                 }
-                if (GenesisDataFiles.get17().getString("arachnid-disable").equalsIgnoreCase("false")) {
+                if (GenesisDataFiles.getPlugCon().getString("arachnid-disable").equalsIgnoreCase("false")) {
                     ItemMeta spider_meta = arachnid.getItemMeta();
                     spider_meta.setDisplayName(RED + "Arachnid");
                     ArrayList<String> spider_lore = new ArrayList<>();
@@ -123,7 +133,7 @@ public class OriginsChoose extends SubCommand{
                     nope_meta.setLore(nope_lore);
                     arachnid.setItemMeta(nope_meta);
                 }
-                if (GenesisDataFiles.get3().getString("creep-disable").equalsIgnoreCase("false")) {
+                if (GenesisDataFiles.getPlugCon().getString("creep-disable").equalsIgnoreCase("false")) {
                     ItemMeta creep_meta = creep.getItemMeta();
                     creep_meta.setDisplayName(GREEN + "Creep");
                     ArrayList<String> creep_lore = new ArrayList<>();
@@ -140,7 +150,7 @@ public class OriginsChoose extends SubCommand{
                     nope_meta.setLore(nope_lore);
                     creep.setItemMeta(nope_meta);
                 }
-                if (GenesisDataFiles.get4().getString("phantom-disable").equalsIgnoreCase("false")) {
+                if (GenesisDataFiles.getPlugCon().getString("phantom-disable").equalsIgnoreCase("false")) {
                     ItemMeta phantom_meta = phantom.getItemMeta();
                     phantom_meta.setDisplayName(BLUE + "Phantom");
                     ArrayList<String> phantom_lore = new ArrayList<>();
@@ -157,7 +167,7 @@ public class OriginsChoose extends SubCommand{
                     nope_meta.setLore(nope_lore);
                     phantom.setItemMeta(nope_meta);
                 }
-                if (GenesisDataFiles.get5().getString("slimeling-disable").equalsIgnoreCase("false")) {
+                if (GenesisDataFiles.getPlugCon().getString("slimeling-disable").equalsIgnoreCase("false")) {
                     ItemMeta slime_meta = slimeling.getItemMeta();
                     slime_meta.setDisplayName(GREEN + "Slimeling");
                     ArrayList<String> slime_lore = new ArrayList<>();
@@ -174,7 +184,7 @@ public class OriginsChoose extends SubCommand{
                     nope_meta.setLore(nope_lore);
                     slimeling.setItemMeta(nope_meta);
                 }
-                if (GenesisDataFiles.get6().getString("vexian-disable").equalsIgnoreCase("false")) {
+                if (GenesisDataFiles.getPlugCon().getString("vexian-disable").equalsIgnoreCase("false")) {
                     ItemMeta vex_meta = vexian.getItemMeta();
                     vex_meta.setDisplayName(AQUA + "Vexian");
                     ArrayList<String> vex_lore = new ArrayList<>();
@@ -192,7 +202,7 @@ public class OriginsChoose extends SubCommand{
                     nope_meta.setLore(nope_lore);
                     vexian.setItemMeta(nope_meta);
                 }
-                if (GenesisDataFiles.get7().getString("blazeborn-disable").equalsIgnoreCase("false")) {
+                if (GenesisDataFiles.getPlugCon().getString("blazeborn-disable").equalsIgnoreCase("false")) {
                     ItemMeta blaze_meta = blazeborn.getItemMeta();
                     blaze_meta.setDisplayName(GOLD + "Blazeborn");
                     ArrayList<String> blaze_lore = new ArrayList<>();
@@ -209,7 +219,7 @@ public class OriginsChoose extends SubCommand{
                     nope_meta.setLore(nope_lore);
                     blazeborn.setItemMeta(nope_meta);
                 }
-                if (GenesisDataFiles.get8().getString("starborne-disable").equalsIgnoreCase("false")) {
+                if (GenesisDataFiles.getPlugCon().getString("starborne-disable").equalsIgnoreCase("false")) {
                     ItemMeta star_meta = starborne.getItemMeta();
                     star_meta.setDisplayName(LIGHT_PURPLE + "Starborne");
                     ArrayList<String> star_lore = new ArrayList<>();
@@ -226,11 +236,11 @@ public class OriginsChoose extends SubCommand{
                     nope_meta.setLore(nope_lore);
                     starborne.setItemMeta(nope_meta);
                 }
-                if (GenesisDataFiles.get9().getString("merling-disable").equalsIgnoreCase("false")) {
+                if (GenesisDataFiles.getPlugCon().getString("merling-disable").equalsIgnoreCase("false")) {
                     ItemMeta mer_meta = mermaid.getItemMeta();
-                    mer_meta.setDisplayName(BLUE + "Mermaid");
+                    mer_meta.setDisplayName(BLUE + "Merling");
                     ArrayList<String> mer_lore = new ArrayList<>();
-                    mer_lore.add(WHITE + "Mermaid Origin");
+                    mer_lore.add(WHITE + "Merling Origin");
                     mer_meta.setLore(mer_lore);
                     mermaid.setItemMeta(mer_meta);
                 } else {
@@ -243,7 +253,7 @@ public class OriginsChoose extends SubCommand{
                     nope_meta.setLore(nope_lore);
                     mermaid.setItemMeta(nope_meta);
                 }
-                if (GenesisDataFiles.get10().getString("allay-disable").equalsIgnoreCase("false")) {
+                if (GenesisDataFiles.getPlugCon().getString("allay-disable").equalsIgnoreCase("false")) {
                     ItemMeta witch_meta = witch.getItemMeta();
                     witch_meta.setDisplayName(AQUA + "Allay");
                     ArrayList<String> witch_lore = new ArrayList<>();
@@ -260,7 +270,7 @@ public class OriginsChoose extends SubCommand{
                     nope_meta.setLore(nope_lore);
                     witch.setItemMeta(nope_meta);
                 }
-                if (GenesisDataFiles.get11().getString("rabbit-disable").equalsIgnoreCase("false")) {
+                if (GenesisDataFiles.getPlugCon().getString("rabbit-disable").equalsIgnoreCase("false")) {
                     ItemMeta rabbit_meta = rabbit.getItemMeta();
                     rabbit_meta.setDisplayName(GOLD + "Rabbit");
                     ArrayList<String> rabbit_lore = new ArrayList<>();
@@ -277,7 +287,7 @@ public class OriginsChoose extends SubCommand{
                     nope_meta.setLore(nope_lore);
                     rabbit.setItemMeta(nope_meta);
                 }
-                if (GenesisDataFiles.get12().getString("bumblebee-disable").equalsIgnoreCase("false")) {
+                if (GenesisDataFiles.getPlugCon().getString("bumblebee-disable").equalsIgnoreCase("false")) {
                     ItemMeta bee_meta = bumblebee.getItemMeta();
                     bee_meta.setDisplayName(YELLOW + "Bumblebee");
                     ArrayList<String> bee_lore = new ArrayList<>();
@@ -294,7 +304,7 @@ public class OriginsChoose extends SubCommand{
                     nope_meta.setLore(nope_lore);
                     bumblebee.setItemMeta(nope_meta);
                 }
-                if (GenesisDataFiles.get13().getString("elytrian-disable").equalsIgnoreCase("false")) {
+                if (GenesisDataFiles.getPlugCon().getString("elytrian-disable").equalsIgnoreCase("false")) {
                     ItemMeta elytra_meta = elytrian.getItemMeta();
                     elytra_meta.setDisplayName(GRAY + "Elytrian");
                     ArrayList<String> elytra_lore = new ArrayList<>();
@@ -311,7 +321,7 @@ public class OriginsChoose extends SubCommand{
                     nope_meta.setLore(nope_lore);
                     elytrian.setItemMeta(nope_meta);
                 }
-                if (GenesisDataFiles.get14().getString("avian-disable").equalsIgnoreCase("false")) {
+                if (GenesisDataFiles.getPlugCon().getString("avian-disable").equalsIgnoreCase("false")) {
                     ItemMeta avian_meta = avian.getItemMeta();
                     avian_meta.setDisplayName(DARK_AQUA + "Avian");
                     ArrayList<String> avian_lore = new ArrayList<>();
@@ -328,7 +338,7 @@ public class OriginsChoose extends SubCommand{
                     nope_meta.setLore(nope_lore);
                     avian.setItemMeta(nope_meta);
                 }
-                if (GenesisDataFiles.get15().getString("piglin-disable").equalsIgnoreCase("false")) {
+                if (GenesisDataFiles.getPlugCon().getString("piglin-disable").equalsIgnoreCase("false")) {
                     ItemMeta pig_meta = piglin.getItemMeta();
                     pig_meta.setDisplayName(GOLD + "Piglin");
                     ArrayList<String> pig_lore = new ArrayList<>();
@@ -345,7 +355,7 @@ public class OriginsChoose extends SubCommand{
                     nope_meta.setLore(nope_lore);
                     piglin.setItemMeta(nope_meta);
                 }
-                if (GenesisDataFiles.get16().getString("dragonborne-disable").equalsIgnoreCase("false")) {
+                if (GenesisDataFiles.getPlugCon().getString("dragonborne-disable").equalsIgnoreCase("false")) {
                     ItemMeta dragonborne_meta = dragonborne.getItemMeta();
                     dragonborne_meta.setDisplayName(DARK_PURPLE + "Dragonborne");
                     ArrayList<String> dragonborne_lore = new ArrayList<>();
@@ -403,7 +413,7 @@ public class OriginsChoose extends SubCommand{
                 custom_originmenu.setItemMeta(next_meta);
 
 
-                if (GenesisDataFiles.get1().getString("human-disable").equalsIgnoreCase("false")) {
+                if (GenesisDataFiles.getPlugCon().getString("human-disable").equalsIgnoreCase("false")) {
                     ItemMeta human_meta = human.getItemMeta();
                     human_meta.setDisplayName(WHITE + "Human");
                     ArrayList<String> human_lore = new ArrayList<>();
@@ -420,7 +430,7 @@ public class OriginsChoose extends SubCommand{
                     nope_meta.setLore(nope_lore);
                     human.setItemMeta(nope_meta);
                 }
-                if (GenesisDataFiles.get().getString("enderian-disable").equalsIgnoreCase("false")) {
+                if (GenesisDataFiles.getPlugCon().getString("enderian-disable").equalsIgnoreCase("false")) {
                     ItemMeta ender_meta = enderian.getItemMeta();
                     ender_meta.setDisplayName(LIGHT_PURPLE + "Enderian");
                     ArrayList<String> ender_lore = new ArrayList<>();
@@ -437,7 +447,7 @@ public class OriginsChoose extends SubCommand{
                     nope_meta.setLore(nope_lore);
                     enderian.setItemMeta(nope_meta);
                 }
-                if (GenesisDataFiles.get2().getString("shulk-disable").equalsIgnoreCase("false")) {
+                if (GenesisDataFiles.getPlugCon().getString("shulk-disable").equalsIgnoreCase("false")) {
                     ItemMeta shulker_meta = shulker.getItemMeta();
                     shulker_meta.setDisplayName(DARK_PURPLE + "Shulk");
                     ArrayList<String> shulker_lore = new ArrayList<>();
@@ -454,7 +464,7 @@ public class OriginsChoose extends SubCommand{
                     nope_meta.setLore(nope_lore);
                     shulker.setItemMeta(nope_meta);
                 }
-                if (GenesisDataFiles.get17().getString("arachnid-disable").equalsIgnoreCase("false")) {
+                if (GenesisDataFiles.getPlugCon().getString("arachnid-disable").equalsIgnoreCase("false")) {
                     ItemMeta spider_meta = arachnid.getItemMeta();
                     spider_meta.setDisplayName(RED + "Arachnid");
                     ArrayList<String> spider_lore = new ArrayList<>();
@@ -471,7 +481,7 @@ public class OriginsChoose extends SubCommand{
                     nope_meta.setLore(nope_lore);
                     arachnid.setItemMeta(nope_meta);
                 }
-                if (GenesisDataFiles.get3().getString("creep-disable").equalsIgnoreCase("false")) {
+                if (GenesisDataFiles.getPlugCon().getString("creep-disable").equalsIgnoreCase("false")) {
                     ItemMeta creep_meta = creep.getItemMeta();
                     creep_meta.setDisplayName(GREEN + "Creep");
                     ArrayList<String> creep_lore = new ArrayList<>();
@@ -488,7 +498,7 @@ public class OriginsChoose extends SubCommand{
                     nope_meta.setLore(nope_lore);
                     creep.setItemMeta(nope_meta);
                 }
-                if (GenesisDataFiles.get4().getString("phantom-disable").equalsIgnoreCase("false")) {
+                if (GenesisDataFiles.getPlugCon().getString("phantom-disable").equalsIgnoreCase("false")) {
                     ItemMeta phantom_meta = phantom.getItemMeta();
                     phantom_meta.setDisplayName(BLUE + "Phantom");
                     ArrayList<String> phantom_lore = new ArrayList<>();
@@ -505,7 +515,7 @@ public class OriginsChoose extends SubCommand{
                     nope_meta.setLore(nope_lore);
                     phantom.setItemMeta(nope_meta);
                 }
-                if (GenesisDataFiles.get5().getString("slimeling-disable").equalsIgnoreCase("false")) {
+                if (GenesisDataFiles.getPlugCon().getString("slimeling-disable").equalsIgnoreCase("false")) {
                     ItemMeta slime_meta = slimeling.getItemMeta();
                     slime_meta.setDisplayName(GREEN + "Slimeling");
                     ArrayList<String> slime_lore = new ArrayList<>();
@@ -522,7 +532,7 @@ public class OriginsChoose extends SubCommand{
                     nope_meta.setLore(nope_lore);
                     slimeling.setItemMeta(nope_meta);
                 }
-                if (GenesisDataFiles.get6().getString("vexian-disable").equalsIgnoreCase("false")) {
+                if (GenesisDataFiles.getPlugCon().getString("vexian-disable").equalsIgnoreCase("false")) {
                     ItemMeta vex_meta = vexian.getItemMeta();
                     vex_meta.setDisplayName(AQUA + "Vexian");
                     ArrayList<String> vex_lore = new ArrayList<>();
@@ -540,7 +550,7 @@ public class OriginsChoose extends SubCommand{
                     nope_meta.setLore(nope_lore);
                     vexian.setItemMeta(nope_meta);
                 }
-                if (GenesisDataFiles.get7().getString("blazeborn-disable").equalsIgnoreCase("false")) {
+                if (GenesisDataFiles.getPlugCon().getString("blazeborn-disable").equalsIgnoreCase("false")) {
                     ItemMeta blaze_meta = blazeborn.getItemMeta();
                     blaze_meta.setDisplayName(GOLD + "Blazeborn");
                     ArrayList<String> blaze_lore = new ArrayList<>();
@@ -557,7 +567,7 @@ public class OriginsChoose extends SubCommand{
                     nope_meta.setLore(nope_lore);
                     blazeborn.setItemMeta(nope_meta);
                 }
-                if (GenesisDataFiles.get8().getString("starborne-disable").equalsIgnoreCase("false")) {
+                if (GenesisDataFiles.getPlugCon().getString("starborne-disable").equalsIgnoreCase("false")) {
                     ItemMeta star_meta = starborne.getItemMeta();
                     star_meta.setDisplayName(LIGHT_PURPLE + "Starborne");
                     ArrayList<String> star_lore = new ArrayList<>();
@@ -574,11 +584,11 @@ public class OriginsChoose extends SubCommand{
                     nope_meta.setLore(nope_lore);
                     starborne.setItemMeta(nope_meta);
                 }
-                if (GenesisDataFiles.get9().getString("merling-disable").equalsIgnoreCase("false")) {
+                if (GenesisDataFiles.getPlugCon().getString("merling-disable").equalsIgnoreCase("false")) {
                     ItemMeta mer_meta = mermaid.getItemMeta();
-                    mer_meta.setDisplayName(BLUE + "Mermaid");
+                    mer_meta.setDisplayName(BLUE + "Merling");
                     ArrayList<String> mer_lore = new ArrayList<>();
-                    mer_lore.add(WHITE + "Mermaid Origin");
+                    mer_lore.add(WHITE + "Merling Origin");
                     mer_meta.setLore(mer_lore);
                     mermaid.setItemMeta(mer_meta);
                 } else {
@@ -591,7 +601,7 @@ public class OriginsChoose extends SubCommand{
                     nope_meta.setLore(nope_lore);
                     mermaid.setItemMeta(nope_meta);
                 }
-                if (GenesisDataFiles.get10().getString("allay-disable").equalsIgnoreCase("false")) {
+                if (GenesisDataFiles.getPlugCon().getString("allay-disable").equalsIgnoreCase("false")) {
                     ItemMeta witch_meta = witch.getItemMeta();
                     witch_meta.setDisplayName(AQUA + "Allay");
                     ArrayList<String> witch_lore = new ArrayList<>();
@@ -608,7 +618,7 @@ public class OriginsChoose extends SubCommand{
                     nope_meta.setLore(nope_lore);
                     witch.setItemMeta(nope_meta);
                 }
-                if (GenesisDataFiles.get11().getString("rabbit-disable").equalsIgnoreCase("false")) {
+                if (GenesisDataFiles.getPlugCon().getString("rabbit-disable").equalsIgnoreCase("false")) {
                     ItemMeta rabbit_meta = rabbit.getItemMeta();
                     rabbit_meta.setDisplayName(GOLD + "Rabbit");
                     ArrayList<String> rabbit_lore = new ArrayList<>();
@@ -625,7 +635,7 @@ public class OriginsChoose extends SubCommand{
                     nope_meta.setLore(nope_lore);
                     rabbit.setItemMeta(nope_meta);
                 }
-                if (GenesisDataFiles.get12().getString("bumblebee-disable").equalsIgnoreCase("false")) {
+                if (GenesisDataFiles.getPlugCon().getString("bumblebee-disable").equalsIgnoreCase("false")) {
                     ItemMeta bee_meta = bumblebee.getItemMeta();
                     bee_meta.setDisplayName(YELLOW + "Bumblebee");
                     ArrayList<String> bee_lore = new ArrayList<>();
@@ -642,7 +652,7 @@ public class OriginsChoose extends SubCommand{
                     nope_meta.setLore(nope_lore);
                     bumblebee.setItemMeta(nope_meta);
                 }
-                if (GenesisDataFiles.get13().getString("elytrian-disable").equalsIgnoreCase("false")) {
+                if (GenesisDataFiles.getPlugCon().getString("elytrian-disable").equalsIgnoreCase("false")) {
                     ItemMeta elytra_meta = elytrian.getItemMeta();
                     elytra_meta.setDisplayName(GRAY + "Elytrian");
                     ArrayList<String> elytra_lore = new ArrayList<>();
@@ -659,7 +669,7 @@ public class OriginsChoose extends SubCommand{
                     nope_meta.setLore(nope_lore);
                     elytrian.setItemMeta(nope_meta);
                 }
-                if (GenesisDataFiles.get14().getString("avian-disable").equalsIgnoreCase("false")) {
+                if (GenesisDataFiles.getPlugCon().getString("avian-disable").equalsIgnoreCase("false")) {
                     ItemMeta avian_meta = avian.getItemMeta();
                     avian_meta.setDisplayName(DARK_AQUA + "Avian");
                     ArrayList<String> avian_lore = new ArrayList<>();
@@ -676,7 +686,7 @@ public class OriginsChoose extends SubCommand{
                     nope_meta.setLore(nope_lore);
                     avian.setItemMeta(nope_meta);
                 }
-                if (GenesisDataFiles.get15().getString("piglin-disable").equalsIgnoreCase("false")) {
+                if (GenesisDataFiles.getPlugCon().getString("piglin-disable").equalsIgnoreCase("false")) {
                     ItemMeta pig_meta = piglin.getItemMeta();
                     pig_meta.setDisplayName(GOLD + "Piglin");
                     ArrayList<String> pig_lore = new ArrayList<>();
@@ -693,7 +703,7 @@ public class OriginsChoose extends SubCommand{
                     nope_meta.setLore(nope_lore);
                     piglin.setItemMeta(nope_meta);
                 }
-                if (GenesisDataFiles.get16().getString("dragonborne-disable").equalsIgnoreCase("false")) {
+                if (GenesisDataFiles.getPlugCon().getString("dragonborne-disable").equalsIgnoreCase("false")) {
                     ItemMeta dragonborne_meta = dragonborne.getItemMeta();
                     dragonborne_meta.setDisplayName(DARK_PURPLE + "Dragonborne");
                     ArrayList<String> dragonborne_lore = new ArrayList<>();
@@ -716,7 +726,15 @@ public class OriginsChoose extends SubCommand{
                 p.openInventory(allmenu);
             }
         }else{
+            if(phantomid == 2){
+                p.sendMessage(RED + "You cannot rechoose your origin while in phantom form.");
+            }
             p.sendMessage(RED + "You have already chosen an origin. Craft the Orb of Origins if you would like to rechoose your origin.");
         }
+    }
+
+    @Override
+    public List<String> getSubcommandArguments(Player player, String[] args) {
+        return null;
     }
 }

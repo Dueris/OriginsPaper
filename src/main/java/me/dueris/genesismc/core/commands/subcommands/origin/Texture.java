@@ -1,9 +1,12 @@
-package me.dueris.genesismc.core.commands.subcommands;
+package me.dueris.genesismc.core.commands.subcommands.origin;
 
+import me.dueris.genesismc.core.commands.subcommands.SubCommand;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.geysermc.floodgate.api.FloodgateApi;
+
+import java.util.List;
 
 public class Texture extends SubCommand {
     @Override
@@ -40,5 +43,10 @@ public class Texture extends SubCommand {
                 }
             }
         }
+    }
+
+    @Override
+    public List<String> getSubcommandArguments(Player player, String[] args) {
+        return null;
     }
 }
