@@ -31,7 +31,7 @@ Teleportaion: You have an infinite ender pearl that deals no damage</li></h5>
 <p></p>
 <h5><li>
 Delicate touch: You have silk touch hands
-</li></h5>
+
 <p></p>
 <h5><li>
 Bearer of Pearls: You drop 0-2 pearls at random upon death
@@ -463,37 +463,3 @@ Featherweight: You fall as gently to the ground as a feather
 </table>
 </summary>
 </details>
-<h3>If you would like more information on the plugin, I recommend you check out the github wiki page </h3>
-<p>This plugin runs on a custom API that is built into the plugin to make things more detailed and efficient. It also has normally quick support and moderation. The updates for the plugin are frequent and the updates are made to the quality of which is completed to the best of my abilities at that time. They will always be updated as I learn more. Bug fixes also come frequently. Its also a big priority of mine to give the most quality and customization to the plugin without everything being too complicated.</p><hr>
-<h3>Disclaimer</h3>
-<p>If you are wanting to make your own origin and use it for your server, this plugin does not offer that. This plugin is only code driven. This will not be able to work with Bukkit!!</p><hr>
-<h3>Supported versions</h3>
-<p></p><table>
-<tbody><tr><td>CURRENT VERSION</td><td>VERSION SUPPORTED</td>
-<td>PROGRESS</td>
-</tr><tr><td>
-<font color="#f00990"><i>0.1.4</i></font>-ALPHA_build
-</td>
-<td>
-PaperMC <font color="#00ffff"><i>1.19.4</i></font>
-</td>
-<td><font color="#FFA500"><i>100% complete</i></font></td>
-</tr>
-</tbody></table><hr><p></p>
-<h3>Links</h3><p></p><table>
-<thead>
-</thead>
-<tbody>
-<tr>
-<td>Donate!</td>
-<td>Donation link: <a href="https://streamelements.com/PurpleWolfMC/tip" rel="noopener nofollow ugc">DONATE</a></td>
-</tr><tr>
-<td>Open-source</td>
-<td>Source link: <a href="https://github.com/PurpleWolf1909/GenesisMC-Minecraft_Plugin" rel="noopener nofollow ugc">SOURCE-CODE</a></td>
-</tr><tr>
-<td>Discord</td>
-<td>Discord invite link: <a href="https://discord.com/invite/RKmQnU6SRt" rel="noopener nofollow ugc">DISCORD</a></td>
-</tr>
-</tbody>
-</table>
-</div></div></div></div>
