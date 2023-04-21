@@ -37,11 +37,10 @@ public class CommandList extends SubCommand {
                     ChatColor.WHITE + "/shulker open",
                     ChatColor.WHITE + "/beta <beta-args>",
                     ChatColor.YELLOW + "-----------------------------------------",
-                    System.out.printf(args[2]).toString()
+                    System.out.printf(args[0]).toString()
             );
         }
     }
-
 
     @Override
     public List<String> getSubcommandArguments(Player player, String[] args) {

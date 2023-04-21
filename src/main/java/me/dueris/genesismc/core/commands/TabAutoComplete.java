@@ -36,13 +36,28 @@ public class TabAutoComplete implements TabCompleter {
                 List<String> nothing = new ArrayList<>();
                 return nothing;
             }else if(args.length == 2){
-                Player[] players = new Player[Bukkit.getServer().getOnlinePlayers().size()];
-                List<String> playernames = new ArrayList<>();
-                Bukkit.getServer().getOnlinePlayers().toArray(players);
-                for (int i = 0; i < players.length; i++) {
-                    playernames.add(players[i].getName());
+                if(args[0].equalsIgnoreCase("purge")){
+                    Player[] players = new Player[Bukkit.getServer().getOnlinePlayers().size()];
+                    List<String> playernames = new ArrayList<>();
+                    Bukkit.getServer().getOnlinePlayers().toArray(players);
+                    for (int i = 0; i < players.length; i++) {
+                        playernames.add(players[i].getName());
+                    }
+                    return playernames;
+                } else if (args[0].equalsIgnoreCase("get")) {
+                    Player[] players = new Player[Bukkit.getServer().getOnlinePlayers().size()];
+                    List<String> playernames = new ArrayList<>();
+                    Bukkit.getServer().getOnlinePlayers().toArray(players);
+                    for (int i = 0; i < players.length; i++) {
+                        playernames.add(players[i].getName());
+                    }
+                    return playernames;
+
+                }else{
+                    List<String> nothing = new ArrayList<>();
+                    return nothing;
                 }
-                return playernames;
+
             }
 
         } else if (command.getName().equalsIgnoreCase("shulker")) {
