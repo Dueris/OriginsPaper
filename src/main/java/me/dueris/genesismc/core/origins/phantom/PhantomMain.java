@@ -36,7 +36,9 @@ public class PhantomMain extends BukkitRunnable implements Listener {
                     if ((p.getLocation().getBlockY() + 1 > p.getWorld().getHighestBlockYAt(p.getLocation()))
                     ){
                         if(p.getGameMode() == GameMode.SURVIVAL || p.getGameMode() == GameMode.ADVENTURE){
-                            p.setFireTicks(25);
+                            if(p.getWorld().isDayTime()){
+                                p.setFireTicks(25);
+                            }
                         }
                     }
                 }
