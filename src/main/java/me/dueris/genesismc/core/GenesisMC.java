@@ -73,38 +73,14 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         getServer().getConsoleSender().sendMessage(ChatColor.LIGHT_PURPLE + "[GenesisMC] |           |    |  |      | Created by Dueris");
         getServer().getConsoleSender().sendMessage(ChatColor.DARK_PURPLE + "[GenesisMC] |                   |");
         getServer().getConsoleSender().sendMessage(ChatColor.GRAY + "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-        if (!GenesisDataFiles.getPlugCon().getString("config-version").equalsIgnoreCase("1016788")) {
-            getServer().getConsoleSender().sendMessage(ChatColor.RED + "[GenesisMC] WARNING. THIS IS THE WRONG CONFIG VERSION. PLEASE RELOAD THE CONFIG OR DELETE THE CONFIG AND RESTART");
-            getServer().getConsoleSender().sendMessage(ChatColor.RED + "[GenesisMC] ATTEMPTING RELOAD OF CONFIG FILE");
-            GenesisDataFiles.getPlugCon().set("config-version", "1016788");
-            getServer().getPluginManager().getPlugin("genesismc").saveConfig();
-            if (!GenesisDataFiles.getPlugCon().getString("config-version").equalsIgnoreCase("1016788")) {
-                getServer().getConsoleSender().sendMessage(ChatColor.RED + "[GenesisMC] ERROR RELOADING CONFIG. RETRYING");
-                getServer().getPluginManager().getPlugin("genesismc").getConfig().set("config-version", 1016788);
-                getServer().getPluginManager().getPlugin("genesismc").saveConfig();
-            } else {
-                getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "[GenesisMC] RELOAD SUCCESSFUL.");
-            }
-            this.getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
-                public void run() {
-                    if (getConfig().getString("config-version") == null || !GenesisDataFiles.getPlugCon().getString("config-version").equalsIgnoreCase("1016788")) {
-                        getServer().getConsoleSender().sendMessage(ChatColor.RED + "[GenesisMC] ERROR RELOADING CONFIG. PLEASE DELETE CONFIG FILE AND RESTART");
-                        getServer().getConsoleSender().sendMessage(ChatColor.RED + "[GenesisMC] ATTEMPTING RELOAD OF CONFIG FILE");
-                        getServer().getPluginManager().getPlugin("genesismc").getConfig().set("config-version", 1016788);
-                        getServer().getPluginManager().getPlugin("genesismc").saveConfig();
-                    }
-                }
-            }, 0, 5);
-        }
-        if (this.getConfig().getString("config-version") == null) {
-            getServer().getConsoleSender().sendMessage(ChatColor.RED + "[GenesisMC] ERROR LOADING CONFIG");
-        }
-
-
         //custom origins loader
         CustomOrigins.onEnableCusotmOrigins();
-
-
+       try {
+                Class.forName("io.papermc.paper.threadedregions.RegionizedServer");
+           getServer().getConsoleSender().sendMessage(ChatColor.RED + "WARNING: FOLIA IS NOT SUPPORTED ON THIS VERSION TYPE. PLEASE USE THE FOLIA BUILD OF THIS VERSION.");
+       } catch (ClassNotFoundException e) {
+           //not folia
+       }
 
         if (GenesisDataFiles.getPlugCon().getString("console-dump-onstartup").equalsIgnoreCase("true")) {
             getServer().getConsoleSender().sendMessage(ChatColor.GRAY + "[GenesisMC] Loading API version 0.1.1");
