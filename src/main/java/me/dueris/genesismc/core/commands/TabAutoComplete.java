@@ -32,7 +32,7 @@ public class TabAutoComplete implements TabCompleter {
                     arguments.add("choose");
                 }
                 if (sender.hasPermission("genesismc.origins.cmd.config.dump")) {
-                    arguments.add("config");
+                    arguments.add("dump");
                 }
                 if (sender.hasPermission("genesismc.origins.cmd.get")) {
                     arguments.add("get");

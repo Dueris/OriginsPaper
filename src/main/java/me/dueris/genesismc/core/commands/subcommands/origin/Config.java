@@ -22,7 +22,7 @@ public class Config extends SubCommand {
 
     @Override
     public String getSyntax() {
-        return "/origins config";
+        return "/origins dump";
     }
 
     @Override
