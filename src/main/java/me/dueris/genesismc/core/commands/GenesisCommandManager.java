@@ -25,6 +25,7 @@ public class GenesisCommandManager implements CommandExecutor {
         subCommands.add(new Config());
         subCommands.add(new OriginsChoose());
         subCommands.add(new Enchant());
+        subCommands.add(new Get());
 
     }
 
