@@ -33,8 +33,18 @@ public class TabAutoComplete implements TabCompleter {
                 }
                 return arguments;
             } else if (args.length >= 3) {
-                List<String> nothing = new ArrayList<>();
-                return nothing;
+                if (args[1].equalsIgnoreCase("genesis:water_protection")) {
+                    List<String> enchantid = new ArrayList<>();
+                    enchantid.add("1");
+                    enchantid.add("2");
+                    enchantid.add("3");
+                    enchantid.add("4");
+                    return enchantid;
+
+                }else{
+                    List<String> nothing = new ArrayList<>();
+                    return nothing;
+                }
             }else if(args.length == 2){
                 if(args[0].equalsIgnoreCase("purge")){
                     Player[] players = new Player[Bukkit.getServer().getOnlinePlayers().size()];
@@ -52,6 +62,11 @@ public class TabAutoComplete implements TabCompleter {
                         playernames.add(players[i].getName());
                     }
                     return playernames;
+
+                } else if (args[0].equalsIgnoreCase("enchant")) {
+                    List<String> enchantid = new ArrayList<>();
+                    enchantid.add("genesis:water_protection");
+                    return enchantid;
 
                 }else{
                     List<String> nothing = new ArrayList<>();
