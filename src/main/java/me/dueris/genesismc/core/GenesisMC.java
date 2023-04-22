@@ -167,7 +167,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         PhantomFormRunnable phantomformrun = new PhantomFormRunnable();
         phantomformrun.runTaskTimer(this, 0, 3);
         PhantomMain phantommainrun = new PhantomMain();
-        phantommainrun.runTaskTimer(this, 0, 20);
+        phantommainrun.runTaskTimer(this, 0, 13);
 //enchantments
         waterProtectionEnchant = new WaterProtection("waterprot");
         custom_enchants.add(waterProtectionEnchant);
