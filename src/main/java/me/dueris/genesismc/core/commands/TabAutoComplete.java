@@ -22,13 +22,25 @@ public class TabAutoComplete implements TabCompleter {
         if (command.getName().equalsIgnoreCase("origin")) {
             if (args.length == 1) {
                 List<String> arguments = new ArrayList<>();
-                arguments.add("texture");
-                arguments.add("commands");
-                arguments.add("choose");
-                if (sender.isOp()) {
+                if (sender.hasPermission("genesismc.origins.cmd.texture")) {
+                    arguments.add("texture");
+                }
+                if (sender.hasPermission("genesismc.origins.cmd.commandlist")) {
+                    arguments.add("commands");
+                }
+                if (sender.hasPermission("genesismc.origins.cmd.choose")) {
+                    arguments.add("choose");
+                }
+                if (sender.hasPermission("genesismc.origins.cmd.config.dump")) {
                     arguments.add("config");
-                    arguments.add("purge");
+                }
+                if (sender.hasPermission("genesismc.origins.cmd.get")) {
                     arguments.add("get");
+                }
+                if (sender.hasPermission("genesismc.origins.cmd.purge")) {
+                    arguments.add("purge");
+                }
+                if (sender.hasPermission("genesismc.origins.cmd.enchant")) {
                     arguments.add("enchant");
                 }
                 return arguments;
