@@ -43,7 +43,7 @@ public class OriginsChoose extends SubCommand {
             PersistentDataContainer data = p.getPersistentDataContainer();
             int originid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER);
             int phantomid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER);
-            if (!p.getScoreboardTags().contains("chosen") && originid == 0 && phantomid == 1) {
+            if (!p.getScoreboardTags().contains("chosen") && originid == 0 && phantomid != 2) {
 
                 if (GenesisDataFiles.getPlugCon().getString("custom-origins").equalsIgnoreCase("false")) {
                     Inventory allmenu = Bukkit.createInventory(p, 18, LIGHT_PURPLE + "Origins Menu");

@@ -7,6 +7,7 @@ import me.dueris.genesismc.core.commands.GenesisCommandManager;
 import me.dueris.genesismc.core.commands.TabAutoComplete;
 import me.dueris.genesismc.core.commands.subcommands.origin.Purge;
 import me.dueris.genesismc.core.enchantments.WaterProtAnvil;
+import me.dueris.genesismc.core.generation.WaterProtBookGen;
 import me.dueris.genesismc.core.origins.creep.CreepExplode;
 import me.dueris.genesismc.core.origins.creep.CreepMain;
 import me.dueris.genesismc.core.origins.enderian.*;
@@ -130,6 +131,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         getServer().getPluginManager().registerEvents(new PlayerAddScoreboard(), this);
         getServer().getPluginManager().registerEvents(new PhantomForm(), this);
         getServer().getPluginManager().registerEvents(new PhantomMain(), this);
+        getServer().getPluginManager().registerEvents(new WaterProtBookGen(), this);
         plugin = this;
         getServer().getPluginManager().registerEvents(new DataContainer(), this);
         if (GenesisDataFiles.getPlugCon().getString("beta-enabled").equalsIgnoreCase("true")) {
