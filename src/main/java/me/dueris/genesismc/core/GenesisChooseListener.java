@@ -37,7 +37,7 @@ public class GenesisChooseListener implements Listener {
     public void onOrbClick(PlayerInteractEvent e) {
         Player p = e.getPlayer();
         if (p.hasPermission("genesismc.choosing.rechoose")) {
-            if (GenesisDataFiles.getPlugCon().getString("orb-of-origins-enabled").equalsIgnoreCase("false")) {
+            if (GenesisDataFiles.getPlugCon().getString("orb-of-origins-enabled").equalsIgnoreCase("true")) {
                 if (e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.LEFT_CLICK_AIR || e.getAction() == Action.LEFT_CLICK_BLOCK || e.getAction() == Action.RIGHT_CLICK_BLOCK) {
                     if (p.getOpenInventory().getBottomInventory() != null) {
                         PersistentDataContainer data = p.getPersistentDataContainer();
