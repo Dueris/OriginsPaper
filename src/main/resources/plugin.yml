@@ -3,6 +3,7 @@ version: '${version}'
 main: me.dueris.genesismc.core.GenesisMC
 api-version: 1.19
 authors: [ Dueris ]
+folia-supported: true
 description: Bringing the life and fun of the Origins mod to PaperMC
 website: https://genesismc.gitbook.io/genesismc/
 commands:
