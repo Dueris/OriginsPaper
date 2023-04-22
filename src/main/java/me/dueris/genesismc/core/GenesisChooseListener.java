@@ -43,7 +43,7 @@ public class GenesisChooseListener implements Listener {
                         PersistentDataContainer data = p.getPersistentDataContainer();
                         int originid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER);
                         int phantomid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER);
-                        if(phantomid >= 2) {
+                        if(phantomid == 1) {
                             if (e.getItem() != null) {
                                 if (e.getItem().getType().equals(Material.MAGMA_CREAM)) {
                                     if (e.getItem().getEnchantments().containsKey(Enchantment.ARROW_INFINITE)) {
