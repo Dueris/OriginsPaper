@@ -88,7 +88,7 @@ public class TabAutoComplete implements TabCompleter {
         } else if (command.getName().equalsIgnoreCase("beta")) {
             if (args.length == 1) {
                 List<String> arguments = new ArrayList<>();
-                if(GenesisDataFiles.getPlugCon().getString("update-beta").equalsIgnoreCase("true")) {
+                if(GenesisDataFiles.getPlugCon().getString("beta-enabled").equalsIgnoreCase("true")) {
                     arguments.add("orboforigin");
                     arguments.add("waterprot");
                 }
