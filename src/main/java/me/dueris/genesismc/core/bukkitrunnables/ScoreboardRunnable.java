@@ -3,6 +3,7 @@ package me.dueris.genesismc.core.bukkitrunnables;
 import me.dueris.genesismc.core.GenesisMC;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
+import org.bukkit.craftbukkit.v1_19_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
@@ -19,18 +20,16 @@ public class ScoreboardRunnable extends BukkitRunnable {
             int phantomid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER);
             ScoreboardManager manager = Bukkit.getScoreboardManager();
             Scoreboard scoreboard = manager.getNewScoreboard();
-            Team team = scoreboard.registerNewTeam("origin-players");
-            team.addEntities(p);
-            team.setCanSeeFriendlyInvisibles(true);
-            team.setDisplayName("Origin Player");
-            Objective objective = scoreboard.registerNewObjective("originid", "id");
-            Score score = objective.getScore(p);
-            score.setScore(originid);
-            if(p.hasPotionEffect(PotionEffectType.INVISIBILITY) && phantomid == 2){
-                p.setScoreboard(manager.getNewScoreboard());
-            }else{
-                p.setScoreboard(team.getScoreboard());
+            Team team = scoreboard.getTeam("origin-players");
+            if(!p.getScoreboard().equals(team) && team != null){
+                team.addPlayer(p);
+                team.setCanSeeFriendlyInvisibles(true);
+                team.setDisplayName("Origin Player");
+                Objective objective = scoreboard.registerNewObjective("originid", "id");
+                Score score = objective.getScore(p);
+                score.setScore(originid);
             }
+            CraftPlayer craftPlayer = (CraftPlayer) p;
 
         }
     }
