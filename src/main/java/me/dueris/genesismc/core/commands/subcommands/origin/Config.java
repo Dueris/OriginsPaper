@@ -12,7 +12,7 @@ import static org.bukkit.Bukkit.getServer;
 public class Config extends SubCommand {
     @Override
     public String getName() {
-        return "config";
+        return "dump";
     }
 
     @Override
