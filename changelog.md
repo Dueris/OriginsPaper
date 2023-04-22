@@ -22,6 +22,17 @@
 -fixed some gamemode bugs
 -finished phantom form and remaining stuff for default phantom
 -updated and redid command and tabcomplete system
+-fixed tab complete
+-added origin enchant command
+-removed config detection, resulting in a new update avalible method
+-fixed custom origins menu opening
+-added folia detection
+-removed config detecion
+-fixed error for spigot servers with orb of origin hide item specs
+-removeed config.yml in favor of origin-server.yml
+-removed stuff for custom origins to start
+-added load support for folia
+-fixed command manager
 </pre>
 <hr>
 <header>Again, still in early alpha. Most features do not work atm.</header>
