@@ -38,6 +38,7 @@
 -adjusted phantom fire tick times
 -fixed phantom form glitch
 -added /origin enchant
+-added water prot book gen
 </pre>
 <hr>
 <header>Again, still in early alpha. Most features do not work atm.</header>
