@@ -79,3 +79,5 @@ permissions:
     default: true
   genesismc.origins.cmd.get:
     default: op
+  genesismc.origins.cmd.enchant:
+    default: op
