@@ -46,7 +46,7 @@ public class AvianMain implements Listener {
     }
 
     @EventHandler
-    public void onItemConsume(PlayerItemConsumeEvent e) {
+    public void onItemConsume(PlayerInteractEvent e) {
         PersistentDataContainer data = e.getPlayer().getPersistentDataContainer();
         int originid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER);
         if (originid == 4501011) {
@@ -83,8 +83,6 @@ public class AvianMain implements Listener {
                     if (e.getAction() == Action.RIGHT_CLICK_BLOCK) {
                         if (block.getY() <= 99) {
                             e.setCancelled(true);
-                        } else {
-                            p.sendMessage("bed");
                         }
                     }
                 }
