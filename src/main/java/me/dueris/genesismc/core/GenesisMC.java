@@ -1,6 +1,5 @@
 package me.dueris.genesismc.core;
 
-import me.dueris.genesismc.connection.handshake.HandShakeEvent;
 import me.dueris.genesismc.core.bukkitrunnables.*;
 import me.dueris.genesismc.core.commands.BetaCommands;
 import me.dueris.genesismc.core.commands.GenesisCommandManager;
@@ -127,7 +126,6 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         getServer().getPluginManager().registerEvents(new WaterProtAnvil(), this);
         getServer().getPluginManager().registerEvents(new CreepMain(), this);
         getServer().getPluginManager().registerEvents(new CreepExplode(), this);
-        getServer().getPluginManager().registerEvents(new HandShakeEvent(), this);
         getServer().getPluginManager().registerEvents(new PlayerAddScoreboard(), this);
         getServer().getPluginManager().registerEvents(new PhantomForm(), this);
         getServer().getPluginManager().registerEvents(new PhantomMain(), this);
