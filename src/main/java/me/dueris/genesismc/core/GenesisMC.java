@@ -50,6 +50,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
     public void onEnable() {
         // Plugin startup logic
 
+
         plugin = this;
 
         getServer().getPluginManager().registerEvents(new DataContainer(), this);
