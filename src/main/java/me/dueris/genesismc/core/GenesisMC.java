@@ -14,6 +14,7 @@ import me.dueris.genesismc.core.origins.enderian.*;
 import me.dueris.genesismc.core.origins.phantom.PhantomForm;
 import me.dueris.genesismc.core.origins.phantom.PhantomFormRunnable;
 import me.dueris.genesismc.core.origins.phantom.PhantomMain;
+import me.dueris.genesismc.core.utils.ParticleHandler;
 import me.dueris.genesismc.custom_origins.CustomOrigins;
 import me.dueris.genesismc.custom_origins.handlers.CustomMenuHandler;
 import me.dueris.genesismc.core.enchantments.EnchantProtEvent;
@@ -132,6 +133,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         getServer().getPluginManager().registerEvents(new PhantomForm(), this);
         getServer().getPluginManager().registerEvents(new PhantomMain(), this);
         getServer().getPluginManager().registerEvents(new WaterProtBookGen(), this);
+        getServer().getPluginManager().registerEvents(new KeybindHandler(), this);
         plugin = this;
         getServer().getPluginManager().registerEvents(new DataContainer(), this);
         if (GenesisDataFiles.getPlugCon().getString("beta-enabled").equalsIgnoreCase("true")) {
@@ -141,6 +143,9 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         InfinPearl.init();
         WaterProtItem.init();
         //runnables main
+//particle handler
+        ParticleHandler handler = new ParticleHandler();
+        handler.runTaskTimer(this, 0, 5);
 //scoreboard
         ScoreboardRunnable scorebo = new ScoreboardRunnable();
         scorebo.runTaskTimer(this, 0, 5);
