@@ -46,7 +46,7 @@ public class CustomMenuHandler implements Listener {
                       if (e.getView().getTitle().equalsIgnoreCase(LIGHT_PURPLE + "Origins Menu")) {
                                                                 if (e.getCurrentItem() != null) {
                                                                     if (e.getCurrentItem().getType() == Material.TIPPED_ARROW) {
-                                                                            Inventory customOriginsMenu = Bukkit.createInventory(p, 27, "Custom Origins");
+                                                                            Inventory customOriginsMenu = Bukkit.createInventory(p, 18, "Custom Origins");
                                                                             ItemStack bar_wall = new ItemStack(Material.IRON_BARS);
                                                                             ItemStack empty_slot = new ItemStack(Material.RED_STAINED_GLASS_PANE);
 
