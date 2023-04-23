@@ -9,12 +9,17 @@ website: https://genesismc.gitbook.io/genesismc/
 commands:
   origin:
     description: Main Origins Directory
+    permission: genesismc.origins.cmd.main
   beta:
     description: genesis beta
     permission: genesismc.origins.cmd.beta
   shulker:
     description: shulk main command
+  power:
+    permission: genesismc.origins.cmd.power
 permissions:
+  genesismc.origins.cmd.power:
+    default: op
   genesismc.origins.cmd.beta:
     default: op
   genesismc.origins.human:
