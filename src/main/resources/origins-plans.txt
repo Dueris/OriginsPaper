@@ -2,15 +2,6 @@
 Next:
 0.1.6 - 1.20
 
-/origins get
-/origins enchant
-fix tab complete
-remove blindness on choosing
-fix sinking in choosing
-fix enderian not taking damage when drinking potions or being splashed by them
-enderian cannot wear pumpkins
--/origins help orb
-
 /origins choose
 /origins help(lists what origin you have)
 /origins commands(lists commands)
