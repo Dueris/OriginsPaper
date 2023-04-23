@@ -237,30 +237,33 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         return plugin;
     }
 
-    public void dumpCon(){
-        getServer().getConsoleSender().sendMessage(ChatColor.LIGHT_PURPLE + "[GenesisMC] DUMPING PLUGIN-API FILES:");
-        getServer().getConsoleSender().sendMessage(ChatColor.GRAY + "Loading config file:" +
+    public static void dumpCon(){
+        Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.LIGHT_PURPLE + "[GenesisMC] DUMPING PLUGIN-API FILES:");
+        Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.GRAY + "Loading config file:" +
                 GenesisDataFiles.getOrbCon().getValues(Boolean.parseBoolean("all")) +
                 ChatColor.GRAY +
                 GenesisDataFiles.getPlugCon().getValues(Boolean.parseBoolean("all"))
 
         );
-        getServer().getConsoleSender().sendMessage(ChatColor.LIGHT_PURPLE + "[GenesisMC] Loading API");
-        getServer().getConsoleSender().sendMessage(ChatColor.GRAY + "[GenesisMC] DUMPING SERVER FILES:" +
-                getServer().getVersion() +
-                getServer().getAllowEnd() +
-                getServer().getAllowNether() +
-                getServer().getPluginManager() +
-                getServer().getMaxPlayers() +
-                getServer().getConnectionThrottle() +
-                getServer().getLogger() +
-                getServer().getName() +
-                getServer().getBukkitVersion() +
-                getServer().getDefaultGameMode() +
-                getServer().getWorldType() +
-                getServer().getResourcePack() +
-                getServer().getHelpMap() +
-                getServer().getPluginManager().getPlugins()
+        Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.LIGHT_PURPLE + "[GenesisMC] Loading API");
+        Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.GRAY + "[GenesisMC] DUMPING SERVER FILES:" +
+                Bukkit.getServer().getVersion() +
+                Bukkit.getServer().getAllowEnd() +
+                Bukkit.getServer().getAllowNether() +
+                Bukkit.getServer().getPluginManager() +
+                Bukkit.getServer().getMaxPlayers() +
+                Bukkit.getServer().getConnectionThrottle() +
+                Bukkit.getServer().getLogger() +
+                Bukkit.getServer().getName() +
+                Bukkit.getServer().getBukkitVersion() +
+                Bukkit.getServer().getDefaultGameMode() +
+                Bukkit.getServer().getWorldType() +
+                Bukkit.getServer().getResourcePack() +
+                Bukkit.getServer().getHelpMap() +
+                Bukkit.getServer().getPluginManager().getPlugins() +
+                Bukkit.getServer().getBukkitVersion() +
+                Bukkit.getServer().getCommandMap()
+
         );
 
     }
