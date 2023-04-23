@@ -29,6 +29,7 @@ public class CreepExplode implements Listener {
         this.cooldown = new HashMap<>();
     }
 
+
     @EventHandler
     public void onShiftCreep(PlayerToggleSneakEvent e) {
         Player p = e.getPlayer();
