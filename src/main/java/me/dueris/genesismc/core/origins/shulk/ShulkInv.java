@@ -10,6 +10,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
@@ -37,7 +38,7 @@ public class ShulkInv implements CommandExecutor {
 
           ArrayList<ItemStack> vaultItems = ShulkUtils.getItems ( p );
 
-          Inventory vault = Bukkit.createInventory ( p , 9 , "Shulker Box" );
+          Inventory vault = Bukkit.createInventory (p, InventoryType.DROPPER, "Shulker Inventory" );
 
           vaultItems.stream ( )
                   .forEach ( itemStack -> vault.addItem ( itemStack ) );
