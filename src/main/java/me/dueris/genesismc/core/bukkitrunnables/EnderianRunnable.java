@@ -33,7 +33,6 @@ public class EnderianRunnable extends BukkitRunnable {
             if (originid == 0401065) {
 
 
-                List<Entity> nearby2 = p.getNearbyEntities(3, 3, 3);
                 List<Entity> nearby23 = p.getNearbyEntities(3, 3, 3);
 
                 for (Entity tmp : nearby23)
@@ -41,7 +40,6 @@ public class EnderianRunnable extends BukkitRunnable {
                         p.damage(2);
 
 
-                Block b = p.getWorld().getHighestBlockAt(p.getLocation());
                 ItemStack infinpearl = new ItemStack(ENDER_PEARL);
 
 
@@ -63,11 +61,9 @@ public class EnderianRunnable extends BukkitRunnable {
 
                 if(p.getInventory().getItemInMainHand().isSimilar(infinpearl)){
                     if (p.getInventory().getItemInMainHand().getAmount() >= 2) {
-                            int amt = p.getInventory().getItemInMainHand().getAmount();
                             p.getInventory().getItemInMainHand().setAmount(1);
                     }
                 }else if(p.getInventory().getItemInMainHand().getAmount() != 1 && p.getInventory().getItemInMainHand().getAmount() != 0){
-                    int amt = p.getInventory().getItemInMainHand().getAmount();
                     if(p.getEquipment().getItemInMainHand().equals(infinpearl)) {
                         p.getInventory().getItemInMainHand().setAmount(1);
                     }

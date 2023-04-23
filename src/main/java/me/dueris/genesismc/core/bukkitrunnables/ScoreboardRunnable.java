@@ -17,7 +17,6 @@ public class ScoreboardRunnable extends BukkitRunnable {
         for (Player p : Bukkit.getOnlinePlayers()) {
             PersistentDataContainer data = p.getPersistentDataContainer();
             int originid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER);
-            int phantomid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER);
             ScoreboardManager manager = Bukkit.getScoreboardManager();
             Scoreboard scoreboard = manager.getNewScoreboard();
             Team team = scoreboard.getTeam("origin-players");
@@ -29,7 +28,6 @@ public class ScoreboardRunnable extends BukkitRunnable {
                 Score score = objective.getScore(p);
                 score.setScore(originid);
             }
-            CraftPlayer craftPlayer = (CraftPlayer) p;
 
         }
     }

@@ -38,7 +38,6 @@ public class PhantomRunnable extends BukkitRunnable {
         for (Player p : Bukkit.getOnlinePlayers()) {
             ScoreboardManager manager = Bukkit.getScoreboardManager();
             Scoreboard scoreboard = manager.getNewScoreboard();
-            PotionEffect effect = p.getPotionEffect(PotionEffectType.INVISIBILITY);
             PersistentDataContainer data = p.getPersistentDataContainer();
             int originid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER);
             if (originid == 7300041) {
@@ -77,7 +76,6 @@ public class PhantomRunnable extends BukkitRunnable {
                             //when walking into a block, put player in spectator and make it so they cant go up and down. rewrite movement engine
                             //upon walk into block, add signal plugin can detect
                             //just loaded origins bukkit and it doesnt have phantom origin??!?!?
-                            Block[] blkrelative = {p.getEyeLocation().getBlock().getRelative(BlockFace.SOUTH), p.getEyeLocation().getBlock().getRelative(BlockFace.NORTH), p.getEyeLocation().getBlock().getRelative(BlockFace.WEST), p.getEyeLocation().getBlock().getRelative(BlockFace.EAST), p.getLocation().getBlock().getRelative(BlockFace.EAST), p.getLocation().getBlock().getRelative(BlockFace.WEST), p.getLocation().getBlock().getRelative(BlockFace.NORTH), p.getLocation().getBlock().getRelative(BlockFace.SOUTH), p.getEyeLocation().add(0, 1, 0).getBlock()};
 
 
 
