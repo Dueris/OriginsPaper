@@ -66,14 +66,12 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 
         //start
 
-        getServer().getConsoleSender().sendMessage(ChatColor.DARK_RED + "[GenesisMC]              ____");
-        getServer().getConsoleSender().sendMessage(ChatColor.RED + "[GenesisMC]  ___        |    |   ___  [*]");
-        getServer().getConsoleSender().sendMessage(ChatColor.YELLOW + "[GenesisMC] |   | | | | |    |  |   |");
-        getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "[GenesisMC] |___| | | | |____|  |___|  |");
-        getServer().getConsoleSender().sendMessage(ChatColor.AQUA + "[GenesisMC] |     | | | |    |  |      |");
-        getServer().getConsoleSender().sendMessage(ChatColor.BLUE + "[GenesisMC] |     |_|_| |    |  |      |");
-        getServer().getConsoleSender().sendMessage(ChatColor.LIGHT_PURPLE + "[GenesisMC] |           |    |  |      | Created by Dueris");
-        getServer().getConsoleSender().sendMessage(ChatColor.DARK_PURPLE + "[GenesisMC] |                   |");
+        getServer().getConsoleSender().sendMessage(ChatColor.RED + "[GenesisMC]    ____                               _         __  __    ____ ");
+        getServer().getConsoleSender().sendMessage(ChatColor.YELLOW + "[GenesisMC]   / ___|   ___   _ __     ___   ___  (_)  ___  |  \\/  |  / ___|");
+        getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "[GenesisMC]  | |  _   / _ \\ | '_ \\   / _ \\ / __| | | / __| | |\\/| | | |    ");
+        getServer().getConsoleSender().sendMessage(ChatColor.AQUA + "[GenesisMC]  | |_| | |  __/ | | | | |  __/ \\__ \\ | | \\__ \\ | |  | | | |___ ");
+        getServer().getConsoleSender().sendMessage(ChatColor.BLUE + "[GenesisMC]   \\____|  \\___| |_| |_|  \\___| |___/ |_| |___/ |_|  |_|  \\____|");
+        getServer().getConsoleSender().sendMessage(ChatColor.LIGHT_PURPLE + "[GenesisMC]   GenesisMC -- Created by Dueris");
         getServer().getConsoleSender().sendMessage(ChatColor.GRAY + "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
         //custom origins loader
         CustomOrigins.onEnableCusotmOrigins();
