@@ -33,9 +33,6 @@ public class EnderianRunnable extends BukkitRunnable {
             if (originid == 0401065) {
 
 
-
-
-
                 List<Entity> nearby2 = p.getNearbyEntities(3, 3, 3);
                 List<Entity> nearby23 = p.getNearbyEntities(3, 3, 3);
 
@@ -57,15 +54,6 @@ public class EnderianRunnable extends BukkitRunnable {
                 infinpearl.setItemMeta(pearl_meta);
                 pearl_meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
 
-                if (!p.getActivePotionEffects().equals(PotionEffectType.INVISIBILITY)) {
-                    if(!p.getGameMode().equals(GameMode.SPECTATOR)) {
-                        p.getWorld().spawnParticle(Particle.PORTAL, p.getLocation(), 3);
-                    }else{
-
-                    }
-                } else {
-                }
-
                 Random random = new Random();
 
                 int r = random.nextInt(3000);
@@ -85,28 +73,6 @@ public class EnderianRunnable extends BukkitRunnable {
                     }
                 }
             }
-/*
-                for(Player players : Bukkit.getOnlinePlayers()) {
-                    if(originid == 0401065){
-                        Player ep = p;
-                        UUID puuid = players.getUniqueId();
-                        CraftPlayer craftPlayer = (CraftPlayer) ep;
-                        if(players.getEquipment().getHelmet().equals(CARVED_PUMPKIN) && players.getEquipment().getHelmet() != null){
-
-                            players.addScoreboardTag("genesismc:wearing-carved-pumpkin");
-
-
-                            final boolean b = !craftPlayer.canSee(puuid);
-
-                        }else{
-                            craftPlayer.canSee(puuid);
-                        }
-                    }
-
-
-                }
-                */
-
 
         }
     }
