@@ -43,7 +43,7 @@ public class DataContainer implements Listener {
 
     Player p = (Player) e.getPlayer();
 
-    if (e.getView().getTitle().equalsIgnoreCase("Shulker box")){
+    if (e.getView().getTitle().equalsIgnoreCase("Shulker Inventory")){
 
       ArrayList<ItemStack> prunedItems = new ArrayList<>();
 
