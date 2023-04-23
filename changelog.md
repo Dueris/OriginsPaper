@@ -39,6 +39,10 @@
 -fixed phantom form glitch
 -added /origin enchant
 -added water prot book gen
+-updated logo
+-added new particle system
+-changed shulker box stuff
+-added keybinds
 </pre>
 <hr>
 <header>Again, still in early alpha. Most features do not work atm.</header>
