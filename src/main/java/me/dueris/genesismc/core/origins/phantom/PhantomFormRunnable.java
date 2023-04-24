@@ -43,6 +43,7 @@ public class PhantomFormRunnable extends BukkitRunnable {
                             p.getEyeLocation().add(-0.55F, 0, 0.55F).getBlock().isSolid()
                     ) {
                             //can form
+                        if(p.isInsideVehicle()) return;
                             p.setCollidable(false);
                             CraftPlayer craftPlayer = (CraftPlayer) p;
                             p.setGameMode(GameMode.SPECTATOR);
@@ -57,14 +58,15 @@ public class PhantomFormRunnable extends BukkitRunnable {
                     CraftPlayer craftPlayer = (CraftPlayer) p;
 
 
-                    p.setInvulnerable(true);
                     p.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0.085);
                     Random random = new Random();
                     int r = random.nextInt(650);
                     if(!p.isSwimming()) {
                         if (r < 10) {
-                            int foodamt = p.getFoodLevel();
-                            p.setFoodLevel(foodamt - 1);
+                            if(p.getFoodLevel() > 1){
+                                int foodamt = p.getFoodLevel();
+                                p.setFoodLevel(foodamt - 1);
+                            }
                         }
                     }
                 }
