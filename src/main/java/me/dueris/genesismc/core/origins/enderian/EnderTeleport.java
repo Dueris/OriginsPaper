@@ -22,7 +22,6 @@ import org.bukkit.potion.PotionEffectType;
 
 import java.util.*;
 
-import static org.bukkit.Material.AIR;
 import static org.bukkit.Material.ENDER_PEARL;
 
 public class EnderTeleport implements Listener {

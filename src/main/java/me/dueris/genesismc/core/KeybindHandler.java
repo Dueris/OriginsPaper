@@ -22,7 +22,6 @@ import org.geysermc.geyser.api.GeyserApi;
 
 import java.util.ArrayList;
 
-import static org.bukkit.Bukkit.getServer;
 import static org.bukkit.ChatColor.DARK_AQUA;
 import static org.bukkit.ChatColor.RED;
 

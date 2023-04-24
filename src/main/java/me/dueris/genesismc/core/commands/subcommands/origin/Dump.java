@@ -2,13 +2,9 @@ package me.dueris.genesismc.core.commands.subcommands.origin;
 
 import me.dueris.genesismc.core.GenesisMC;
 import me.dueris.genesismc.core.commands.subcommands.SubCommand;
-import me.dueris.genesismc.core.files.GenesisDataFiles;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 import java.util.List;
-
-import static org.bukkit.Bukkit.getServer;
 
 public class Dump extends SubCommand {
     @Override

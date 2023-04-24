@@ -1,8 +1,5 @@
 package me.dueris.genesismc.custom_origins;
 
-import me.dueris.genesismc.core.files.GenesisDataFiles;
-import org.bukkit.ChatColor;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.event.Listener;
 
 import java.io.File;
