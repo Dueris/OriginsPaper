@@ -1450,7 +1450,8 @@ public class GenesisChooseListener implements Listener {
                     p.closeInventory();
                     p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_GUITAR, 10, 9);
                     p.sendMessage(RED + "Choosing canceled!");
-                    p.teleportAsync(p.getEyeLocation());
+                    Location loc = new Location(p.getWorld(), p.getLocation().getX(), p.getLocation().getY() + 1, p.getLocation().getZ(), p.getLocation().getYaw(), p.getLocation().getPitch());
+                    p.teleportAsync(loc);
                     e.setCancelled(true);
                 }
 //Disconnect Button
