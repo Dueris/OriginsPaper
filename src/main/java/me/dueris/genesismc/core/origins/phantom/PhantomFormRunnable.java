@@ -63,7 +63,7 @@ public class PhantomFormRunnable extends BukkitRunnable {
                     int r = random.nextInt(650);
                     if(!p.isSwimming()) {
                         if (r < 10) {
-                            if(p.getFoodLevel() != 0){
+                            if(p.getFoodLevel() > 1){
                                 int foodamt = p.getFoodLevel();
                                 p.setFoodLevel(foodamt - 1);
                             }
