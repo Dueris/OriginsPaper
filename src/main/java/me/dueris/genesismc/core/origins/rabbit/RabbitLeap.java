@@ -1,21 +1,94 @@
 package me.dueris.genesismc.core.origins.rabbit;
 
 import me.dueris.genesismc.core.GenesisMC;
+import org.bukkit.ChatColor;
 import org.bukkit.NamespacedKey;
+import org.bukkit.Sound;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.scheduler.BukkitRunnable;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.UUID;
 
 public class RabbitLeap implements Listener {
+
+    private static HashMap<UUID, Long> cooldown = new HashMap<>();
+    private static ArrayList<UUID> inAir = new ArrayList<>();
 
     @EventHandler
     public void onRabbitLeap(PlayerToggleSneakEvent e) {
         PersistentDataContainer data = e.getPlayer().getPersistentDataContainer();
         int originid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER);
         if (originid == 5308033) {
-            ;
+            Player p = e.getPlayer();
+            if (!p.isSneaking()) return;
+            if (!p.isOnGround()) return;
+
+            if (cooldown.containsKey(p.getUniqueId())) return;
+
+            cooldown.put(p.getUniqueId(), System.currentTimeMillis());
+            inAir.add(p.getUniqueId());
+            p.setVelocity(p.getLocation().getDirection().multiply(2));
+
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    if (cooldown.containsKey(p.getUniqueId())) {
+                        if (System.currentTimeMillis() - cooldown.get(p.getUniqueId()) >= 0) {
+                            p.sendActionBar(ChatColor.RED + "--------");
+                        } if (System.currentTimeMillis() - cooldown.get(p.getUniqueId()) >= 2500) {
+                            p.sendActionBar(ChatColor.RED + "------");
+                        } if (System.currentTimeMillis() - cooldown.get(p.getUniqueId()) >= 5000) {
+                            p.sendActionBar(ChatColor.RED + "----");
+                        } if (System.currentTimeMillis() - cooldown.get(p.getUniqueId()) >= 7500) {
+                            p.sendActionBar(ChatColor.RED + "--");
+                        } if (System.currentTimeMillis() - cooldown.get(p.getUniqueId()) >= 10000) {
+                            cooldown.remove(p.getUniqueId());
+                            inAir.remove(p.getUniqueId());
+                            p.sendActionBar(ChatColor.GREEN + "[]");
+                            p.playSound(p.getLocation(), Sound.ENTITY_ARROW_HIT_PLAYER, 1, 2);
+
+                        }
+                    } else {
+                        this.cancel();
+                    }
+                }
+
+            }.runTaskTimer(GenesisMC.getPlugin(), 0L, 10L);
+
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    if (cooldown.containsKey(p.getUniqueId())) {p.playSound(p.getLocation(), Sound.BLOCK_SCAFFOLDING_HIT, 1, 2);}
+                    else {this.cancel();}
+                }
+            } .runTaskTimer(GenesisMC.getPlugin(), 0L, 50L);
+
+        }
+    }
+
+    @EventHandler
+    public void onEntityDamage(EntityDamageEvent e) {
+        if (!(e.getEntity() instanceof Player p)) return;
+
+        PersistentDataContainer data = p.getPersistentDataContainer();
+        int originid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER);
+        if (originid == 5308033) {
+            if (e.getCause() == EntityDamageEvent.DamageCause.FALL) {
+                e.setDamage(e.getDamage() - 4);
+
+                if (inAir.contains(p.getUniqueId())) {
+                    e.setCancelled(true);
+                    inAir.remove(p.getUniqueId());
+                }
+            }
         }
     }
 }
