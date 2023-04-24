@@ -10,6 +10,7 @@ import org.bukkit.craftbukkit.v1_19_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerSwapHandItemsEvent;
 import org.bukkit.inventory.Inventory;
@@ -154,7 +155,7 @@ public class KeybindHandler implements Listener {
 
 
             }
-        }else{
+        }else {
             //geyser not on server
             if (originid == 6503044) {
                 e.setCancelled(true);
@@ -211,7 +212,6 @@ public class KeybindHandler implements Listener {
                 }
             }
         }
-    }
-
+        }
 
 }
