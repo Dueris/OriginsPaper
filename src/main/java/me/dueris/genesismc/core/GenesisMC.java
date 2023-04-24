@@ -15,6 +15,8 @@ import me.dueris.genesismc.core.origins.enderian.*;
 import me.dueris.genesismc.core.origins.phantom.PhantomForm;
 import me.dueris.genesismc.core.origins.phantom.PhantomFormRunnable;
 import me.dueris.genesismc.core.origins.phantom.PhantomMain;
+import me.dueris.genesismc.core.origins.rabbit.RabbitLeap;
+import me.dueris.genesismc.core.origins.rabbit.RabbitMain;
 import me.dueris.genesismc.core.utils.ParticleHandler;
 import me.dueris.genesismc.custom_origins.CustomOrigins;
 import me.dueris.genesismc.custom_origins.handlers.CustomMenuHandler;
@@ -131,6 +133,8 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         getServer().getPluginManager().registerEvents(new PlayerAddScoreboard(), this);
         getServer().getPluginManager().registerEvents(new PhantomForm(), this);
         getServer().getPluginManager().registerEvents(new PhantomMain(), this);
+        getServer().getPluginManager().registerEvents(new RabbitMain(), this);
+        getServer().getPluginManager().registerEvents(new RabbitLeap(), this);
         getServer().getPluginManager().registerEvents(new AvianMain(), this);
         getServer().getPluginManager().registerEvents(new WaterProtBookGen(), this);
         getServer().getPluginManager().registerEvents(new KeybindHandler(), this);
@@ -177,7 +181,8 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         PhantomMain phantommainrun = new PhantomMain();
         phantommainrun.runTaskTimer(this, 0, 13);
 //rabbit
-
+        RabbitRunnable rabbitrun = new RabbitRunnable();
+        rabbitrun.runTaskTimer(this, 0, 5);
 //avian
         AvianRunnable avianrun = new AvianRunnable();
         avianrun.runTaskTimer(this, 0, 5);
