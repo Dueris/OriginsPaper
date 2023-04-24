@@ -43,6 +43,9 @@
 -added new particle system
 -changed shulker box stuff
 -added keybinds
+-updated authors
+-added avian origin
+-added rabbit origin
 </pre>
 <hr>
 <header>Again, still in early alpha. Most features do not work atm.</header>
