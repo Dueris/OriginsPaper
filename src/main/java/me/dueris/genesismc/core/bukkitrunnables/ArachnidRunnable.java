@@ -35,7 +35,6 @@ public class ArachnidRunnable extends BukkitRunnable {
                         p.getEyeLocation().getBlock().getRelative(BlockFace.NORTH).getType() != AIR ||
                         p.getEyeLocation().getBlock().getRelative(BlockFace.SOUTH).getType() != AIR) {
                     Block block = p.getTargetBlock(null, 2);
-                    Location bl = block.getLocation();
 
                     if (block.getType() != AIR && p.isSneaking() && !p.isInRain()) {
                         p.addPotionEffect(new PotionEffect(PotionEffectType.LEVITATION, 5, 1, false, false, false));
