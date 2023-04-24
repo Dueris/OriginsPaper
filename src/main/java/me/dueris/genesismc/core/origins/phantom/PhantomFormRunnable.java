@@ -1,29 +1,16 @@
 package me.dueris.genesismc.core.origins.phantom;
 
 import me.dueris.genesismc.core.GenesisMC;
-import net.kyori.adventure.bossbar.BossBar;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.protocol.game.ClientboundPlayerInfoUpdatePacket;
-import net.minecraft.network.protocol.game.ClientboundSetBorderWarningDelayPacket;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.server.network.ServerPlayerConnection;
-import net.minecraft.world.level.border.WorldBorder;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
-import org.bukkit.block.BlockFace;
-import org.bukkit.block.PistonMoveReaction;
 import org.bukkit.craftbukkit.v1_19_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.lang.reflect.Field;
 import java.util.Random;
 
-import static org.bukkit.Material.*;
 
 public class PhantomFormRunnable extends BukkitRunnable {
     @Override
