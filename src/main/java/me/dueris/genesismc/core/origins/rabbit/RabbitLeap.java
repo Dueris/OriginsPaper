@@ -30,7 +30,6 @@ public class RabbitLeap implements Listener {
             Player p = e.getPlayer();
             if (!p.isSneaking()) return;
             if (!p.isOnGround()) return;
-
             if (cooldown.containsKey(p.getUniqueId())) return;
 
             cooldown.put(p.getUniqueId(), System.currentTimeMillis());
