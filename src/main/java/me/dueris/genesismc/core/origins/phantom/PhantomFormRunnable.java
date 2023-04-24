@@ -58,14 +58,15 @@ public class PhantomFormRunnable extends BukkitRunnable {
                     CraftPlayer craftPlayer = (CraftPlayer) p;
 
 
-                    p.setInvulnerable(true);
                     p.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0.085);
                     Random random = new Random();
                     int r = random.nextInt(650);
                     if(!p.isSwimming()) {
                         if (r < 10) {
-                            int foodamt = p.getFoodLevel();
-                            p.setFoodLevel(foodamt - 1);
+                            if(p.getFoodLevel() != 0){
+                                int foodamt = p.getFoodLevel();
+                                p.setFoodLevel(foodamt - 1);
+                            }
                         }
                     }
                 }
