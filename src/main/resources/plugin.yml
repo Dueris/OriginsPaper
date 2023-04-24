@@ -8,13 +8,20 @@ description: Bringing the life and fun of the Origins mod to PaperMC
 website: https://genesismc.gitbook.io/genesismc/
 commands:
   origin:
-    description: Main Origins Directory
+    description: The main root command for the genesis origin plugin.
     permission: genesismc.origins.cmd.main
+    usage: /<command> <args>
+    aliases:
+      - o
   beta:
-    description: genesis beta
+    description: Beta Commands for genesis origins.
     permission: genesismc.origins.cmd.beta
+    usage: /<command> <args>
   shulker:
-    description: shulk main command
+    description: Opens the shulk inventory.
+    usage: /<command>
+    aliases:
+      - s
   leap:
     description: Toggles leaping ability for rabbit origins.
     usage: /<command>
