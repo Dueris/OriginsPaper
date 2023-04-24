@@ -2,9 +2,12 @@ package me.dueris.genesismc.core.origins.phantom;
 
 import me.dueris.genesismc.core.GenesisMC;
 import net.kyori.adventure.bossbar.BossBar;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.game.ClientboundPlayerInfoUpdatePacket;
+import net.minecraft.network.protocol.game.ClientboundSetBorderWarningDelayPacket;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.ServerPlayerConnection;
+import net.minecraft.world.level.border.WorldBorder;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.block.BlockFace;
@@ -17,6 +20,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.lang.reflect.Field;
 import java.util.Random;
 
 import static org.bukkit.Material.*;
@@ -32,64 +36,40 @@ public class PhantomFormRunnable extends BukkitRunnable {
 
             if (phantomid == 2) {
                 if (originid == 7300041) {
-                    if (p.getLocation().add(0.4F, 0, 0.4F).getBlock().isSolid() ||
-                            p.getLocation().add(0.4F, 0, 0).getBlock().isSolid() ||
-                            p.getLocation().add(0, 0, 0.4F).getBlock().isSolid() ||
-                            p.getLocation().add(-0.4F, 0, -0.4F).getBlock().isSolid() ||
-                            p.getLocation().add(0, 0, -0.4F).getBlock().isSolid() ||
-                            p.getLocation().add(-0.4F, 0, 0).getBlock().isSolid() ||
-                            p.getLocation().add(0.4F, 0, -0.4F).getBlock().isSolid() ||
-                            p.getLocation().add(-0.4F, 0, 0.4F).getBlock().isSolid() ||
+                    if (p.getLocation().add(0.55F, 0, 0.55F).getBlock().isSolid() ||
+                            p.getLocation().add(0.55F, 0, 0).getBlock().isSolid() ||
+                            p.getLocation().add(0, 0, 0.55F).getBlock().isSolid() ||
+                            p.getLocation().add(-0.55F, 0, -0.55F).getBlock().isSolid() ||
+                            p.getLocation().add(0, 0, -0.55F).getBlock().isSolid() ||
+                            p.getLocation().add(-0.55F, 0, 0).getBlock().isSolid() ||
+                            p.getLocation().add(0.55F, 0, -0.55F).getBlock().isSolid() ||
+                            p.getLocation().add(-0.55F, 0, 0.55F).getBlock().isSolid() ||
                             p.getLocation().add(0, 0.5, 0).getBlock().isSolid() ||
 
-                            p.getEyeLocation().add(0.4F, 0, 0.4F).getBlock().isSolid() ||
-                            p.getEyeLocation().add(0.4F, 0, 0).getBlock().isSolid() ||
-                            p.getEyeLocation().add(0, 0, 0.4F).getBlock().isSolid() ||
-                            p.getEyeLocation().add(-0.4F, 0, -0.4F).getBlock().isSolid() ||
-                            p.getEyeLocation().add(0, 0, -0.4F).getBlock().isSolid() ||
-                            p.getEyeLocation().add(-0.4F, 0, 0).getBlock().isSolid() ||
-                            p.getEyeLocation().add(0.4F, 0, -0.4F).getBlock().isSolid() ||
-                            p.getEyeLocation().add(-0.4F, 0, 0.4F).getBlock().isSolid()
+                            p.getEyeLocation().add(0.55F, 0, 0.55F).getBlock().isSolid() ||
+                            p.getEyeLocation().add(0.55F, 0, 0).getBlock().isSolid() ||
+                            p.getEyeLocation().add(0, 0, 0.55F).getBlock().isSolid() ||
+                            p.getEyeLocation().add(-0.55F, 0, -0.55F).getBlock().isSolid() ||
+                            p.getEyeLocation().add(0, 0, -0.55F).getBlock().isSolid() ||
+                            p.getEyeLocation().add(-0.55F, 0, 0).getBlock().isSolid() ||
+                            p.getEyeLocation().add(0.55F, 0, -0.55F).getBlock().isSolid() ||
+                            p.getEyeLocation().add(-0.55F, 0, 0.55F).getBlock().isSolid()
                     ) {
-                        if (p.getLocation().add(0.4F, 0, 0.4F).getBlock().getType().equals(OBSIDIAN) ||
-                                p.getLocation().add(0.4F, 0, 0).getBlock().getType().equals(OBSIDIAN) ||
-                                p.getLocation().add(0, 0, 0.4F).getBlock().getType().equals(OBSIDIAN) ||
-                                p.getLocation().add(-0.4F, 0, -0.4F).getBlock().getType().equals(OBSIDIAN) ||
-                                p.getLocation().add(0, 0, -0.4F).getBlock().getType().equals(OBSIDIAN) ||
-                                p.getLocation().add(-0.4F, 0, 0).getBlock().getType().equals(OBSIDIAN) ||
-                                p.getLocation().add(0.4F, 0, -0.4F).getBlock().getType().equals(OBSIDIAN) ||
-                                p.getLocation().add(-0.4F, 0, 0.4F).getBlock().getType().equals(OBSIDIAN) ||
-                                p.getLocation().add(0, -0.4, 0).getBlock().getType().equals(OBSIDIAN) ||
-
-                                p.getEyeLocation().add(0.4F, 0, 0.4F).getBlock().getType().equals(OBSIDIAN) ||
-                                p.getEyeLocation().add(0.4F, 0, 0).getBlock().getType().equals(OBSIDIAN) ||
-                                p.getEyeLocation().add(0, 0, 0.4F).getBlock().getType().equals(OBSIDIAN) ||
-                                p.getEyeLocation().add(-0.4F, 0, -0.4F).getBlock().getType().equals(OBSIDIAN) ||
-                                p.getEyeLocation().add(0, 0, -0.4F).getBlock().getType().equals(OBSIDIAN) ||
-                                p.getEyeLocation().add(-0.4F, 0, 0).getBlock().getType().equals(OBSIDIAN) ||
-                                p.getEyeLocation().add(0.4F, 0, -0.4F).getBlock().getType().equals(OBSIDIAN) ||
-                                p.getEyeLocation().add(-0.4F, 0, 0.4F).getBlock().getType().equals(OBSIDIAN)
-                        ) {
                             //can form
                             p.setCollidable(false);
                             CraftPlayer craftPlayer = (CraftPlayer) p;
                             p.setGameMode(GameMode.SPECTATOR);
 
-                        }else{
-                            if(p.getGameMode().equals(GameMode.SPECTATOR)){
-                                p.setGameMode(p.getPreviousGameMode());
-                            }
-                        }
-                      }else{
+                    }else{
                         if(p.getGameMode().equals(GameMode.SPECTATOR)){
                             p.setGameMode(p.getPreviousGameMode());
                         }
                     }
 
                     //code for if player is in "Phantom Form"
-                    p.setFreezeTicks(60);
                     CraftPlayer craftPlayer = (CraftPlayer) p;
-                    
+
+
                     p.setInvulnerable(true);
                     p.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0.085);
                     Random random = new Random();
