@@ -43,6 +43,7 @@ public class PhantomFormRunnable extends BukkitRunnable {
                             p.getEyeLocation().add(-0.55F, 0, 0.55F).getBlock().isSolid()
                     ) {
                             //can form
+                        if(p.isInsideVehicle()) return;
                             p.setCollidable(false);
                             CraftPlayer craftPlayer = (CraftPlayer) p;
                             p.setGameMode(GameMode.SPECTATOR);
