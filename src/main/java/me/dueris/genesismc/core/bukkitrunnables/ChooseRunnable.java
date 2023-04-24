@@ -6,7 +6,6 @@ import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import static org.bukkit.Bukkit.createInventory;
 import static org.bukkit.ChatColor.LIGHT_PURPLE;
 
 public class ChooseRunnable extends BukkitRunnable {

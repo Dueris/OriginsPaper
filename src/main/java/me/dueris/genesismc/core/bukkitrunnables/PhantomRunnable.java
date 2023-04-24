@@ -1,15 +1,10 @@
 package me.dueris.genesismc.core.bukkitrunnables;
 
 import me.dueris.genesismc.core.GenesisMC;
-import net.minecraft.network.protocol.game.ClientboundBlockChangedAckPacket;
 import net.minecraft.server.level.ServerPlayer;
 import org.bukkit.*;
-import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
 import org.bukkit.craftbukkit.v1_19_R3.entity.CraftPlayer;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.ArmorStand;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
@@ -22,15 +17,10 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.ScoreboardManager;
 import org.bukkit.scoreboard.Team;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 import static org.bukkit.ChatColor.GRAY;
-import static org.bukkit.Material.AIR;
-import static org.bukkit.Material.BEDROCK;
 
 public class PhantomRunnable extends BukkitRunnable {
     @Override

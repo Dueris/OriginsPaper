@@ -1,11 +1,7 @@
 package me.dueris.genesismc.core;
 
-import com.destroystokyo.paper.ClientOption;
 import me.dueris.genesismc.core.files.GenesisDataFiles;
 import me.dueris.genesismc.core.items.OrbOfOrigins;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.ComponentLike;
-import net.kyori.adventure.text.KeybindComponent;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.enchantments.Enchantment;
@@ -15,7 +11,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
@@ -25,15 +20,11 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.ScoreboardManager;
 import org.bukkit.scoreboard.Team;
-import org.jetbrains.annotations.NotNull;
 
-import java.security.Key;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-
 import static me.dueris.genesismc.core.items.OrbOfOrigins.orb;
-import static net.kyori.adventure.text.Component.*;
 import static org.bukkit.ChatColor.*;
 import static org.bukkit.ChatColor.LIGHT_PURPLE;
 

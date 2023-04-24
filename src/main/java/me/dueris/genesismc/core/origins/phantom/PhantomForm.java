@@ -2,12 +2,8 @@ package me.dueris.genesismc.core.origins.phantom;
 
 import com.destroystokyo.paper.event.player.PlayerStartSpectatingEntityEvent;
 import me.dueris.genesismc.core.GenesisMC;
-import me.dueris.genesismc.core.files.GenesisDataFiles;
-import net.minecraft.advancements.critereon.PlayerInteractTrigger;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
-import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
 import org.bukkit.craftbukkit.v1_19_R3.entity.CraftPlayer;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.*;
@@ -16,28 +12,17 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
-import org.bukkit.event.player.PlayerGameModeChangeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerMoveEvent;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.map.MapView;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
-import org.bukkit.scheduler.BukkitRunnable;
-import org.jetbrains.annotations.NotNull;
 
-import javax.swing.*;
 import java.util.ArrayList;
-import java.util.List;
 
 import static org.bukkit.ChatColor.*;
 import static org.bukkit.ChatColor.RED;
-import static org.bukkit.Material.*;
 
 public class PhantomForm implements Listener {
 

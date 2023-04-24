@@ -1,12 +1,7 @@
 package me.dueris.genesismc.core.bukkitrunnables;
 
 import me.dueris.genesismc.core.GenesisMC;
-import net.minecraft.world.item.LingeringPotionItem;
-import net.minecraft.world.item.SplashPotionItem;
 import org.bukkit.*;
-import org.bukkit.attribute.Attribute;
-import org.bukkit.block.Block;
-import org.bukkit.craftbukkit.v1_19_R3.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_19_R3.entity.CraftThrownPotion;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.*;
@@ -15,9 +10,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
-import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
