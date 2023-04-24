@@ -154,6 +154,9 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 //scoreboard
         ScoreboardRunnable scorebo = new ScoreboardRunnable();
         scorebo.runTaskTimer(this, 0, 5);
+//forcechoose
+        ChooseRunnable forcechoose = new ChooseRunnable();
+        forcechoose.runTaskTimer(this, 0, 5);
 //enderian
         EnderianRunnable enderrun = new EnderianRunnable();
         enderrun.runTaskTimer(this, 0, 5);
@@ -167,9 +170,6 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         arachnidrun.runTaskTimer(this, 0, 15);
         ArachnidClimb arachnidrunclimb = new ArachnidClimb();
         arachnidrunclimb.runTaskTimer(this, 0, 5);
-//forcechoose
-        ChooseRunnable forcechoose = new ChooseRunnable();
-        forcechoose.runTaskTimer(this, 0, 5);
 //creep
         CreepRunnable creeprun = new CreepRunnable();
         creeprun.runTaskTimer(this, 0, 15);
@@ -180,12 +180,43 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         phantomformrun.runTaskTimer(this, 0, 2);
         PhantomMain phantommainrun = new PhantomMain();
         phantommainrun.runTaskTimer(this, 0, 13);
+//slimeling
+        SlimelingRunnable slimelingrun = new SlimelingRunnable();
+        slimelingrun.runTaskTimer(this, 0, 5);
+//vexian
+        VexianRunnable vexianrun = new VexianRunnable();
+        vexianrun.runTaskTimer(this, 0, 5);
+//blazeborn
+        BlazebornRunnable blazebornrun = new BlazebornRunnable();
+        blazebornrun.runTaskTimer(this, 0, 5);
+//starborn
+        StarborneRunnable starbornerun = new StarborneRunnable();
+        starbornerun.runTaskTimer(this, 0, 5);
+//merling
+        MerlingRunnable merlingrun = new MerlingRunnable();
+        merlingrun.runTaskTimer(this, 0, 5);
+//allay
+        AllayRunnable allayrun = new AllayRunnable();
+        allayrun.runTaskTimer(this, 0, 5);
+//bumblebee
+        BumblebeeRunnable bumblebeerun = new BumblebeeRunnable();
+        bumblebeerun.runTaskTimer(this, 0, 5);
 //rabbit
         RabbitRunnable rabbitrun = new RabbitRunnable();
         rabbitrun.runTaskTimer(this, 0, 5);
+//elytrian
+        ElytrainRunnable elytrainrun = new ElytrainRunnable();
+        elytrainrun.runTaskTimer(this, 0, 5);
 //avian
         AvianRunnable avianrun = new AvianRunnable();
         avianrun.runTaskTimer(this, 0, 5);
+//piglin
+        PiglinRunnable piglinrun = new PiglinRunnable();
+        piglinrun.runTaskTimer(this, 0, 5);
+//dragonborn
+        DragonborneRunnable dragonbornerun = new DragonborneRunnable();
+        dragonbornerun.runTaskTimer(this, 0, 5);
+
 //enchantments
         waterProtectionEnchant = new WaterProtection("waterprot");
         custom_enchants.add(waterProtectionEnchant);
