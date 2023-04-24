@@ -91,7 +91,37 @@ public class PhantomForm implements Listener {
 
     }
 
-        //replaced move handler with phantom form runnable
+        //replaced move handler with PhantomFormRunnable.java
+    
+    @EventHandler
+    public void ObsidianBedrockDetectPATCH(PlayerMoveEvent e){
+        Player p = e.getPlayer();
+            PersistentDataContainer data = p.getPersistentDataContainer();
+            int originid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER);
+            int phantomid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER);
+            //begin checks
+            if (originid == 7300041) {
+                if(phantomid == 2) {
+                    //in phantom form.
+                    //bug fix attempt 3 lol
+                    
+                    if (e.getTo().getBlock().getType() == Material.OBSIDIAN || e.getTo().getBlock().getType() == Material.BEDROCK) {
+                    final Location loc = new Location(p.getWorld(), e.getFrom().getX(), e.getFrom().getY(), e.getFrom().getZ(), e.getTo().getYaw(), e.getTo().getPitch());
+                       p.teleportAsync(loc);
+                       e.setCancelled(true);
+                    }
+            final Location eye = new Location(p.getWorld(), e.getTo().add(0, 1, 0).getX(), e.getTo().add(0, 1, 0).getY(), e.getTo().add(0, 1, 0).getZ(), e.getTo().getYaw(), e.getTo().getPitch());
+            final Location eyef = new Location(p.getWorld(), e.getFrom().getX(), e.getFrom().getY(), e.getFrom().getZ(), e.getTo().getYaw(), e.getTo().getPitch());
+            if (eye.getBlock().getType() == Material.OBSIDIAN || eye.getBlock().getType() == Material.BEDROCK) {
+                p.teleportAsync(eyef);
+                e.setCancelled(true);
+            }
+                    
+          }
+
+       }
+    
+    }
 
     @EventHandler
     public void TPPATCH(PlayerTeleportEvent e){
