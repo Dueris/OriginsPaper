@@ -45,11 +45,11 @@ public class PhantomRunnable extends BukkitRunnable {
                 ItemStack spectatorswitch = new ItemStack(Material.FEATHER);
                 ItemMeta switch_meta = spectatorswitch.getItemMeta();
                 switch_meta.setDisplayName(GRAY + "Phantom Form");
-                ArrayList<String> pearl_lore = new ArrayList();
+                ArrayList<String> feather_lore = new ArrayList();
                 switch_meta.setUnbreakable(true);
                 switch_meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
                 switch_meta.addItemFlags(ItemFlag.HIDE_ITEM_SPECIFICS);
-                switch_meta.setLore(pearl_lore);
+                switch_meta.setLore(feather_lore);
                 switch_meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
                 spectatorswitch.setItemMeta(switch_meta);
                 int phantomid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER);
