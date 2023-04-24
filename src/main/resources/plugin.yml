@@ -15,6 +15,11 @@ commands:
     permission: genesismc.origins.cmd.beta
   shulker:
     description: shulk main command
+  leap:
+    description: Toggles leaping ability for rabbit origins.
+    usage: /<command>
+    aliases:
+      - l
   power:
     permission: genesismc.origins.cmd.power
 permissions:
@@ -86,3 +91,5 @@ permissions:
     default: op
   genesismc.origins.cmd.enchant:
     default: op
+  genesismc.origins.cmd.leaptoggle:
+    default: true

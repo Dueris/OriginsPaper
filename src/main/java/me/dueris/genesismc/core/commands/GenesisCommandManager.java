@@ -48,6 +48,7 @@ public class GenesisCommandManager implements CommandExecutor {
                         ChatColor.WHITE + "/origins config",
                         ChatColor.WHITE + "/origins texture",
                         ChatColor.WHITE + "/shulker open",
+                        ChatColor.WHITE + "/leap or /l",
                         ChatColor.WHITE + "/beta <beta-args>",
                         ChatColor.YELLOW + "-----------------------------------------"
                 );
