@@ -78,12 +78,14 @@ public class AvianMain implements Listener {
             Player p = e.getPlayer();
             Block block = e.getClickedBlock();
             for (Material bed : beds) {
+                if(e.getClickedBlock() != null){  //added null check in dev
                 if (block.getType() == bed) {
                     if (e.getAction() == Action.RIGHT_CLICK_BLOCK) {
                         if (block.getY() <= 99) {
                             e.setCancelled(true);
                         }
                     }
+                }
                 }
             }
         }
