@@ -1,9 +1,7 @@
 package me.dueris.genesismc.core;
 
 import me.dueris.genesismc.core.files.GenesisDataFiles;
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
+import org.bukkit.*;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -29,6 +27,14 @@ public class JoiningHandler implements Listener {
     @EventHandler
     public void onJoinFirst(PlayerJoinEvent e) {
         Player p = e.getPlayer();
+        if(p.getClientBrandName() != null && p.getClientBrandName().equalsIgnoreCase("Immersions")){
+            p.setDisplayName(AQUA + p.getName());
+            p.setPlayerListName(AQUA + p.getName());
+
+        }
+
+
+
 
         if(!p.getScoreboardTags().contains("chosen")){
             p.addScoreboardTag("choosing");
