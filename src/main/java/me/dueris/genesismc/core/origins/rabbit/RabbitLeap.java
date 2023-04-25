@@ -79,15 +79,15 @@ public class RabbitLeap implements Listener, CommandExecutor {
                 public void run() {
                     if (p.isSneaking()) {
                         if (cooldownBefore.get(p.getUniqueId()) == 2) {
-                            p.sendActionBar(ChatColor.YELLOW + "|||");
+                            p.sendActionBar(ChatColor.RED + "|||");
                         } else if (cooldownBefore.get(p.getUniqueId()) == 4) {
-                            p.sendActionBar(ChatColor.GREEN + "|||||");
+                            p.sendActionBar(ChatColor.RED + "|||||");
                         } else if (cooldownBefore.get(p.getUniqueId()) == 6) {
-                            p.sendActionBar(ChatColor.YELLOW + "||" + ChatColor.GREEN + "||||| " + ChatColor.YELLOW + "||");
+                            p.sendActionBar(ChatColor.YELLOW + "|||||||");
                         } else if (cooldownBefore.get(p.getUniqueId()) == 8) {
-                            p.sendActionBar(ChatColor.YELLOW + "||||" + ChatColor.GREEN + "|||||" + ChatColor.YELLOW + "||||");
+                            p.sendActionBar(ChatColor.YELLOW + "|||||||||");
                         } else if (cooldownBefore.get(p.getUniqueId()) >= 10) {
-                            p.sendActionBar(ChatColor.RED + "||" + ChatColor.YELLOW + "||||" + ChatColor.GREEN + "|||||" + ChatColor.YELLOW + "||||" + ChatColor.RED + "||");
+                            p.sendActionBar(ChatColor.GREEN + "|||||||||||");
                             cooldownBefore.replace(p.getUniqueId(), 9);
                         }
                         cooldownBefore.replace(p.getUniqueId(), cooldownBefore.get(p.getUniqueId()) + 1);
@@ -96,6 +96,7 @@ public class RabbitLeap implements Listener, CommandExecutor {
                         inAir.add(p.getUniqueId());
                         p.setVelocity(p.getLocation().getDirection().multiply(1.5 + cooldownBefore.get(p.getUniqueId())/10));
                         cooldownBefore.remove(p.getUniqueId());
+                        p.playSound(p.getLocation(), Sound.ENTITY_ARROW_HIT_PLAYER, 1, 2);
                         doLeap(p);
                         this.cancel();
                     }
@@ -111,17 +112,17 @@ public class RabbitLeap implements Listener, CommandExecutor {
             public void run() {
                 if (cooldownAfter.containsKey(p.getUniqueId())) {
                     if (System.currentTimeMillis() - cooldownAfter.get(p.getUniqueId()) >= 0) {
-                        p.sendActionBar(ChatColor.RED + "--------");
+                        p.sendActionBar(ChatColor.RED + "|||||||||");
                     } if (System.currentTimeMillis() - cooldownAfter.get(p.getUniqueId()) >= 2500) {
-                        p.sendActionBar(ChatColor.RED + "------");
+                        p.sendActionBar(ChatColor.RED + "|||||||");
                     } if (System.currentTimeMillis() - cooldownAfter.get(p.getUniqueId()) >= 5000) {
-                        p.sendActionBar(ChatColor.RED + "----");
+                        p.sendActionBar(ChatColor.YELLOW + "|||||");
                     } if (System.currentTimeMillis() - cooldownAfter.get(p.getUniqueId()) >= 7500) {
-                        p.sendActionBar(ChatColor.RED + "--");
+                        p.sendActionBar(ChatColor.YELLOW + "|||");
                     } if (System.currentTimeMillis() - cooldownAfter.get(p.getUniqueId()) >= 10000) {
                         cooldownAfter.remove(p.getUniqueId());
+                        p.sendActionBar(ChatColor.GREEN + "-");
                         inAir.remove(p.getUniqueId());
-                        p.sendActionBar(ChatColor.GREEN + "[]");
                         p.playSound(p.getLocation(), Sound.ENTITY_ARROW_HIT_PLAYER, 1, 2);
 
                     }
