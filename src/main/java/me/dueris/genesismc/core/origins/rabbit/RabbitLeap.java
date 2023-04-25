@@ -16,6 +16,7 @@ import org.bukkit.event.player.PlayerToggleSneakEvent;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitScheduler;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -26,6 +27,7 @@ public class RabbitLeap implements Listener {
 
     private static HashMap<UUID, Integer> cooldownBefore = new HashMap<>();
     private static HashMap<UUID, Long> cooldownAfter = new HashMap<>();
+    private static HashMap<UUID, Boolean> playSound = new HashMap<>();
     private static ArrayList<UUID> inAir = new ArrayList<>();
 
 
@@ -54,6 +56,7 @@ public class RabbitLeap implements Listener {
             if (toggleState == 2) return;
 
             cooldownBefore.put(p.getUniqueId(), 0);
+            playSound.put(p.getUniqueId(), Boolean.TRUE);
 
             new BukkitRunnable() {
                 @Override
@@ -67,11 +70,13 @@ public class RabbitLeap implements Listener {
                             p.sendActionBar(ChatColor.YELLOW + "|||||||");
                         } else if (cooldownBefore.get(p.getUniqueId()) == 8) {
                             p.sendActionBar(ChatColor.YELLOW + "|||||||||");
-                        } else if (cooldownBefore.get(p.getUniqueId()) == 9) {
-                            p.playSound(p.getLocation(), Sound.ENTITY_ARROW_HIT_PLAYER, 1, 2);
                         } else if (cooldownBefore.get(p.getUniqueId()) >= 10) {
                             p.sendActionBar(ChatColor.GREEN + "|||||||||||");
                             cooldownBefore.replace(p.getUniqueId(), 9);
+                            if (playSound.get(p.getUniqueId())) {
+                                p.playSound(p.getLocation(), Sound.ENTITY_ARROW_HIT_PLAYER, 1, 2);
+                                playSound.replace(p.getUniqueId(), Boolean.FALSE);
+                            }
                         }
                         cooldownBefore.replace(p.getUniqueId(), cooldownBefore.get(p.getUniqueId()) + 1);
                     } else {
@@ -79,6 +84,7 @@ public class RabbitLeap implements Listener {
                         inAir.add(p.getUniqueId());
                         p.setVelocity(p.getLocation().getDirection().multiply(1.5 + cooldownBefore.get(p.getUniqueId())/10));
                         cooldownBefore.remove(p.getUniqueId());
+                        playSound.remove(p.getUniqueId());
                         doLeap(p);
                         this.cancel();
                     }
