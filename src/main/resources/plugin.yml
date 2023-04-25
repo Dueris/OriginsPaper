@@ -17,16 +17,18 @@ commands:
     description: Beta Commands for genesis origins.
     permission: genesismc.origins.cmd.beta
     usage: /<command> <args>
+    aliases:
+      - b
   shulker:
     description: Opens the shulk inventory.
     usage: /<command>
     aliases:
       - s
-  leap:
-    description: Toggles leaping ability for rabbit origins.
+  toggle:
+    description: Toggles an ability for your current origin.
     usage: /<command>
     aliases:
-      - l
+      - t
   power:
     permission: genesismc.origins.cmd.power
 permissions:
@@ -99,4 +101,6 @@ permissions:
   genesismc.origins.cmd.enchant:
     default: op
   genesismc.origins.cmd.leaptoggle:
+    default: true
+  genesismc.origins.cmd.toggle:
     default: true
