@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.bukkit.ChatColor.*;
-import static org.bukkit.ChatColor.RED;
 
 public class OriginsChoose extends SubCommand {
     @Override
