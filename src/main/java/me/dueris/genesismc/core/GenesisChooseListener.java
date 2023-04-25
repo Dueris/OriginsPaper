@@ -1490,6 +1490,9 @@ public class GenesisChooseListener implements Listener {
                     if (!p.getPersistentDataContainer().has(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER)) {
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
                     }
+                    if (!p.getPersistentDataContainer().has(new NamespacedKey(GenesisMC.getPlugin(), "toggle"), PersistentDataType.INTEGER)) {
+                        p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "toggle"), PersistentDataType.INTEGER, 1);
+                    }
 
                     ScoreboardManager manager = Bukkit.getScoreboardManager();
                     Scoreboard scoreboard = manager.getNewScoreboard();

@@ -4,6 +4,7 @@ import me.dueris.genesismc.core.bukkitrunnables.*;
 import me.dueris.genesismc.core.commands.BetaCommands;
 import me.dueris.genesismc.core.commands.GenesisCommandManager;
 import me.dueris.genesismc.core.commands.TabAutoComplete;
+import me.dueris.genesismc.core.commands.ToggleCommand;
 import me.dueris.genesismc.core.commands.subcommands.origin.Info;
 import me.dueris.genesismc.core.commands.subcommands.origin.Purge;
 import me.dueris.genesismc.core.enchantments.WaterProtAnvil;
@@ -113,7 +114,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         getCommand("shulker").setTabCompleter(new TabAutoComplete());
         getCommand("beta").setTabCompleter(new TabAutoComplete());
         getCommand("shulker").setExecutor(new ShulkInv());
-        getCommand("leap").setExecutor(new RabbitLeap());
+        getCommand("toggle").setExecutor(new ToggleCommand());
 //Event Handler Register
         getServer().getPluginManager().registerEvents(new GenesisChooseListener(), this);
         getServer().getPluginManager().registerEvents(new EnderSilkTouch(), this);

@@ -22,42 +22,22 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
 
-public class RabbitLeap implements Listener, CommandExecutor {
+public class RabbitLeap implements Listener {
 
     private static HashMap<UUID, Integer> cooldownBefore = new HashMap<>();
     private static HashMap<UUID, Long> cooldownAfter = new HashMap<>();
     private static ArrayList<UUID> inAir = new ArrayList<>();
-    private static ArrayList<UUID> leapToggle = new ArrayList<>();
 
 
-    @Override
-    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        if (sender instanceof Player) {
-            Player p = (Player) sender;
-            PersistentDataContainer data = p.getPersistentDataContainer();
-            int originid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER);
-            if (p.hasPermission("genesismc.origins.cmd.leaptoggle")) {
-                if (originid == 5308033) {
-                    if (leapToggle.contains(p.getUniqueId())) {
-                        leapToggle.remove(p.getUniqueId());
-                        p.sendMessage(ChatColor.GREEN + "Leap enabled.");
-                        p.playSound(p.getLocation(), Sound.ENTITY_ARROW_HIT_PLAYER, 1, 2);
-                    } else {
-                        leapToggle.add(p.getUniqueId());
-                        p.sendMessage(ChatColor.RED + "Leap disabled.");
-                        p.playSound(p.getLocation(), Sound.ENTITY_ARROW_HIT_PLAYER, 1, 2);
-                    }
-                } else {
-                    p.sendMessage(ChatColor.RED + "You need to be the rabbit origin to use this command.");
-                    p.playSound(p.getLocation(), Sound.BLOCK_ANVIL_LAND, 0.3f, 1);
-                }
-            } else {
-                p.sendMessage(ChatColor.RED + "You do not have permission to use this command.");
-                p.playSound(p.getLocation(), Sound.BLOCK_ANVIL_LAND, 0.3f, 1);
-            }
-        } else if (sender instanceof ConsoleCommandSender) {
-            sender.getServer().getConsoleSender().sendMessage(ChatColor.RED + "This is a player only command.");
+    public static boolean leapToggle(Player p) {
+        PersistentDataContainer data = p.getPersistentDataContainer();
+        int toggleState = data.get(new NamespacedKey(GenesisMC.getPlugin(), "toggle"), PersistentDataType.INTEGER);
+        if (toggleState == 1) {
+            p.sendMessage(ChatColor.GREEN + "Leap enabled.");
+        } else {
+            p.sendMessage(ChatColor.RED + "Leap disabled.");
         }
+        p.playSound(p.getLocation(), Sound.ENTITY_ARROW_HIT_PLAYER, 1, 2);
         return true;
     }
 
@@ -67,10 +47,11 @@ public class RabbitLeap implements Listener, CommandExecutor {
         int originid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER);
         if (originid == 5308033) {
             Player p = e.getPlayer();
+            int toggleState = data.get(new NamespacedKey(GenesisMC.getPlugin(), "toggle"), PersistentDataType.INTEGER);
             if (p.isSneaking()) return;
             if (!p.isOnGround()) return;
             if (cooldownAfter.containsKey(p.getUniqueId())) return;
-            if (leapToggle.contains(p.getUniqueId())) return;
+            if (toggleState == 2) return;
 
             cooldownBefore.put(p.getUniqueId(), 0);
 
