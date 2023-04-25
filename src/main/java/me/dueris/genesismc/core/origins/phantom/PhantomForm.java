@@ -94,7 +94,7 @@ public class PhantomForm implements Listener {
 
         //replaced move handler with PhantomFormRunnable.java
     
-    @EventHandler
+  /*  @EventHandler
     public void ObsidianBedrockDetectPATCH(PlayerMoveEvent e){
         Player p = e.getPlayer();
             PersistentDataContainer data = p.getPersistentDataContainer();
@@ -124,6 +124,7 @@ public class PhantomForm implements Listener {
     
     }
 
+*/
     @EventHandler
     public void TPPATCH(PlayerTeleportEvent e){
         if(e.getCause() == PlayerTeleportEvent.TeleportCause.SPECTATE){
