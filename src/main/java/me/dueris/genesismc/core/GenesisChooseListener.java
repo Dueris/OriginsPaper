@@ -2342,9 +2342,9 @@ public class GenesisChooseListener implements Listener {
                         vex_origin_info2.setItemMeta(vex_origin_info2_meta);
 
                         ItemMeta vex_origin_info3_meta = vex_origin_info3.getItemMeta();
-                        vex_origin_info3_meta.setDisplayName(UNDERLINE + "Matterless");
+                        vex_origin_info3_meta.setDisplayName(UNDERLINE + "Friends of the Raiders");
                         ArrayList<String> vex_origin_info3_lore = new ArrayList<>();
-                        vex_origin_info3_lore.add(WHITE + "You can fly through solid blocks");
+                        vex_origin_info3_lore.add(WHITE + "Pillagers will not attack you, but Iron Golems will");
                         vex_origin_info3_meta.setLore(vex_origin_info3_lore);
                         vex_origin_info3.setItemMeta(vex_origin_info3_meta);
 
