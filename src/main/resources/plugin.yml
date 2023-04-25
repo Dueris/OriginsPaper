@@ -100,7 +100,5 @@ permissions:
     default: op
   genesismc.origins.cmd.enchant:
     default: op
-  genesismc.origins.cmd.leaptoggle:
-    default: true
   genesismc.origins.cmd.toggle:
     default: true
