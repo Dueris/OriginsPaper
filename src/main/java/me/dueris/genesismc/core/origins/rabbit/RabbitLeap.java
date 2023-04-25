@@ -86,6 +86,8 @@ public class RabbitLeap implements Listener, CommandExecutor {
                             p.sendActionBar(ChatColor.YELLOW + "|||||||");
                         } else if (cooldownBefore.get(p.getUniqueId()) == 8) {
                             p.sendActionBar(ChatColor.YELLOW + "|||||||||");
+                        } else if (cooldownBefore.get(p.getUniqueId()) == 9) {
+                            p.playSound(p.getLocation(), Sound.ENTITY_ARROW_HIT_PLAYER, 1, 2);
                         } else if (cooldownBefore.get(p.getUniqueId()) >= 10) {
                             p.sendActionBar(ChatColor.GREEN + "|||||||||||");
                             cooldownBefore.replace(p.getUniqueId(), 9);
@@ -96,7 +98,6 @@ public class RabbitLeap implements Listener, CommandExecutor {
                         inAir.add(p.getUniqueId());
                         p.setVelocity(p.getLocation().getDirection().multiply(1.5 + cooldownBefore.get(p.getUniqueId())/10));
                         cooldownBefore.remove(p.getUniqueId());
-                        p.playSound(p.getLocation(), Sound.ENTITY_ARROW_HIT_PLAYER, 1, 2);
                         doLeap(p);
                         this.cancel();
                     }
