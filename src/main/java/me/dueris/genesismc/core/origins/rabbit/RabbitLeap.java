@@ -137,11 +137,13 @@ public class RabbitLeap implements Listener {
         int originid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER);
         if (originid == 5308033) {
             if (e.getCause() == EntityDamageEvent.DamageCause.FALL) {
-                e.setDamage(e.getDamage() - 4);
-
                 if (inAir.contains(p.getUniqueId())) {
                     e.setCancelled(true);
                     inAir.remove(p.getUniqueId());
+                }
+                e.setDamage(e.getDamage() - 4);
+                if (e.getDamage() <= 0) {
+                    e.setCancelled(true);
                 }
             }
         }
