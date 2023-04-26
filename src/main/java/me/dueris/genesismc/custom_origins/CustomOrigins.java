@@ -13,7 +13,7 @@ import static org.bukkit.Bukkit.getServer;
 
 public class CustomOrigins implements Listener {
 
-    public static void onEnableCusotmOrigins() {
+    public static void onEnableCustomOrigins() {
         File custom_folder = new File(getServer().getPluginManager().getPlugin("GenesisMC").getDataFolder(), "custom_origins");
         if(custom_folder.listFiles().length >= 1){
             DirectoryStream.Filter<Path> filter = new DirectoryStream.Filter<Path>() {
