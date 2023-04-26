@@ -100,33 +100,34 @@ public class PhantomForm implements Listener {
 
         Player p = e.getPlayer();
 
-        PersistentDataContainer data = p.getPersistentDataContainer();
+            PersistentDataContainer data = p.getPersistentDataContainer();
 
-        int originid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER);
+            int originid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER);
 
-        int phantomid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER);
+            int phantomid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER);
 
-        //begin checks
+            //begin checks
 
-        if (originid == 7300041) {
+            if (originid == 7300041) {
 
-            if(phantomid == 2) {
+                if(phantomid == 2) {
 
-                //in phantom form.
+                    //in phantom form.
 
-                //bug fix attempt 3 lol
+                    //bug fix attempt 3 lol
 
-                if(e.getTo().getY() <= -60){
+                    if(e.getTo().getY() <= -60){
 
-                    final Location loc = new Location(p.getWorld(), e.getFrom().getX(), e.getFrom().getY(), e.getFrom().getZ(), e.getTo().getYaw(), e.getTo().getPitch());
+                  final Location loc = new Location(p.getWorld(), e.getFrom().getX(), e.getFrom().getY(), e.getFrom().getZ(), e.getTo().getYaw(), e.getTo().getPitch());
 
-                    p.teleportAsync(loc);
+                  p.teleportAsync(loc);
+                       p.sendMessage("You are unable to go bellow Y level -60 while in Phantom Form");
 
-                }
+}              
 
-            }
+          }
 
-        }
+       }
 
    
 
