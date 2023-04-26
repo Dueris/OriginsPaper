@@ -38,6 +38,19 @@ public class OriginsChoose extends SubCommand {
 
     @Override
     public void perform(Player p, String[] args) {
+        if (args.length == 2) {
+            p.sendMessage(args);
+            p.sendMessage(args[0]);
+            p.sendMessage(args[1]);
+            p.sendMessage(String.valueOf(args.length));
+            Player foundPlayer = Bukkit.getPlayer(args[1]);
+            if (foundPlayer == null) {
+                p.sendMessage(RED + "No player with that name can be found.");
+                return;
+            } else {
+                p = foundPlayer;
+            }
+        }
         if (p.hasPermission("genesismc.origins.cmd.choose")) {
             PersistentDataContainer data = p.getPersistentDataContainer();
             int originid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER);
@@ -732,6 +745,7 @@ public class OriginsChoose extends SubCommand {
                 p.sendMessage(RED + "You have already chosen an origin. Craft the Orb of Origins if you would like to rechoose your origin.");
             }
         }
+
     }
 
     @Override
