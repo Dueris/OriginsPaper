@@ -94,6 +94,44 @@ public class PhantomForm implements Listener {
 
         //replaced move handler with PhantomFormRunnable.java
     
+    @EventHandler
+
+    public void YLevelBedrockDetectPATCH(PlayerMoveEvent e){
+
+        Player p = e.getPlayer();
+
+            PersistentDataContainer data = p.getPersistentDataContainer();
+
+            int originid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER);
+
+            int phantomid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER);
+
+            //begin checks
+
+            if (originid == 7300041) {
+
+                if(phantomid == 2) {
+
+                    //in phantom form.
+
+                    //bug fix attempt 3 lol
+
+                    if(e.getTo().getY().equals(-60)){
+
+                  final Location loc = new Location(p.getWorld(), e.getFrom().getX(), e.getFrom().getY(), e.getFrom().getZ(), e.getTo().getYaw(), e.getTo().getPitch());
+
+                  p.teleportAsync(loc);
+
+}              
+
+          }
+
+       }
+
+   
+
+    }
+    
   /*  @EventHandler
     public void ObsidianBedrockDetectPATCH(PlayerMoveEvent e){
         Player p = e.getPlayer();
