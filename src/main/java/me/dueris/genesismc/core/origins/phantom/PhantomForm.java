@@ -108,26 +108,26 @@ public class PhantomForm implements Listener {
 
             //begin checks
 
-            if (originid == 7300041) {
+        if (originid == 7300041) {
 
-                if(phantomid == 2) {
+            if(phantomid == 2) {
 
-                    //in phantom form.
+                //in phantom form.
 
-                    //bug fix attempt 3 lol
+                //bug fix attempt 3 lol
 
-                    if(e.getTo().getY() <= -60){
+                if(e.getTo().getY() <= -60){
 
-                  final Location loc = new Location(p.getWorld(), e.getFrom().getX(), e.getFrom().getY(), e.getFrom().getZ(), e.getTo().getYaw(), e.getTo().getPitch());
+                    final Location loc = new Location(p.getWorld(), e.getFrom().getX(), e.getFrom().getY(), e.getFrom().getZ(), e.getTo().getYaw(), e.getTo().getPitch());
 
-                  p.teleportAsync(loc);
-                       p.sendMessage("You are unable to go bellow Y level -60 while in Phantom Form");
+                    p.teleportAsync(loc);
+                    p.sendMessage("You are unable to go bellow Y level -60 while in Phantom Form");
 
-}              
+                }
 
-          }
+            }
 
-       }
+        }
 
    
 
