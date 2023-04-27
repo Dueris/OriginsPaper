@@ -25,7 +25,7 @@ public class WaterProtBookGen implements Listener {
             Random random = new Random();
             int r = random.nextInt(1000);
             if (r <= 20) {
-                e.getLoot().add(new ItemStack(Material.DRAGON_BREATH));
+                
                 int l = random.nextInt(4);
                 if(l == 1){
                     ItemStack enchbook = new ItemStack(Material.ENCHANTED_BOOK);
