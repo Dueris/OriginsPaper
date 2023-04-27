@@ -142,7 +142,7 @@ public class GenesisDataFiles {
     getPlugCon().addDefault("choose-onjoin", true);
     getPlugCon().addDefault("(", "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
     getPlugCon().addDefault("Support Discord", "https://discord.gg/RKmQnU6SRt");
-    getPlugCon().addDefault("Donation Link", "https://streamelements.com/purplewolfmc/tip");
+    getPlugCon().addDefault("Donation Link", "https://streamelements.com/duerismc/tip");
     getPlugCon().addDefault("Open Source", "https://github.com/Dueris/GenesisMC-Minecraft_Plugin");
     getPlugCon().addDefault("Issues", "https://github.com/Dueris/GenesisMC-Minecraft_Plugin/issues");
     getPlugCon().addDefault(")", "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
