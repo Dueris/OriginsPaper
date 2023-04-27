@@ -1,15 +1,24 @@
 package me.dueris.genesismc.core.files;
 
+import it.unimi.dsi.fastutil.Hash;
+import me.dueris.genesismc.custom_origins.CustomOrigins;
+import net.kyori.adventure.text.ComponentLike;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.nio.file.DirectoryStream;
-import java.util.ArrayList;
-import java.util.Collections;
+import java.util.*;
 
 public class GenesisDataFiles {
 
@@ -35,9 +44,9 @@ public class GenesisDataFiles {
     }
 
 
-    pluginconyml.delete();
+    customOriginYml.delete();
     try {
-      pluginconyml.createNewFile();
+      customOriginYml.createNewFile();
     }catch (IOException e){
       //my hands don't hurt
       Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.RED + "Unable to CustomOriginIdentifiers.yml. Please reload or restart server. If that doesn't work, contact Dueris on her Discord server");
@@ -142,27 +151,49 @@ public class GenesisDataFiles {
     getOrbCon().addDefault("orb-of-origins-enabled", true);
 
     getCustomOriginConfig().options().setHeader(Collections.singletonList("DO NOT TOUCH, YOU HAVE BEEN WARNED. YOU CAN DELETE BUT NO TOUCH!"));
-    // path to custom origin, origin id
-    getCustomOriginConfig().addDefault("path?", true);
-    readCustomOrigins();
-
+    readCustomOriginsDatapacks();
   }
 
-  public static void readCustomOrigins() {
+  public static void readCustomOriginsDatapacks() {
     File originDatapackDir = new File(Bukkit.getServer().getPluginManager().getPlugin("GenesisMC").getDataFolder(), "custom_origins");
     File[] originDatapacks = originDatapackDir.listFiles();
 
     if (originDatapacks == null) return;
 
-
+    int i = 100;
     for (File originDatapack : originDatapacks) {
       if (originDatapack.isFile()) continue;
       File origin_layers = new File(originDatapack.getAbsolutePath() + "/data/origins/origin_layers/origin.json");
       if (!origin_layers.exists()) Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.RED + "Couldn't locate \"/data/origins/origin_layers/origin.json\" for the \"" + originDatapack.getName() + "\" Origin file!");
 
-    }
+      try {
+        JSONObject parser = (JSONObject) new JSONParser().parse(new FileReader(originDatapack+"/data/origins/origin_layers/origin.json"));
+        JSONArray origins = ((JSONArray)parser.get("origins"));
 
-    //return null;
+        for (Object o : origins) {
+          String value = (String) o;
+          String[] valueSplit = value.split(":");
+          String originFolder = valueSplit[0];
+          String originFileName = valueSplit[1];
+          getCustomOriginConfig().addDefault("Origins." + i, originDatapack.getName() + ":" + originFolder + ":" + originFileName);
+          i++;
+        }
+
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
+    }
   }
 
+  public static HashMap<Integer, String> getCustomOrigins() {
+    HashMap<Integer, String> customOrigins = new HashMap<>();
+    if (!GenesisDataFiles.getCustomOriginConfig().contains("Origins")) return customOrigins;
+    for (String key : GenesisDataFiles.getCustomOriginConfig().getConfigurationSection("Origins").getKeys(true)) {
+      customOrigins.put(Integer.valueOf(key), GenesisDataFiles.getCustomOriginConfig().getString("Origins."+key));
+    }
+    return customOrigins;
+    //returns the identifier GenesisDataFiles.getCustomOrigins().values();
+    //returns the origin id GenesisDataFiles.getCustomOrigins().keySet();
+    //return the entire hash map GenesisDataFiles.getCustomOrigins();
+  }
 }
