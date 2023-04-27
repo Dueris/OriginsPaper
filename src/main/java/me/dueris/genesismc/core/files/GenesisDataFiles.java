@@ -230,7 +230,7 @@ public class GenesisDataFiles {
     originName = (String) parser.get("name");
     } catch (Exception e) {
       //e.printStackTrace();
-      Bukkit.getServer().getConsoleSender().sendMessage("Failed to parse the data/"+values[1]+"/origins/"+values[2]+".json file for " + values[1] + ". Is it a valid origin file?");
+      Bukkit.getServer().getConsoleSender().sendMessage("Failed to parse the \"name\" in data/"+values[1]+"/origins/"+values[2]+".json file for " + values[1] + ". Is it a valid origin file?");
     }
     return originName;
   }
@@ -248,8 +248,64 @@ public class GenesisDataFiles {
       originIcon = (String) parser.get("icon");
     } catch (Exception e) {
       //e.printStackTrace();
-      Bukkit.getServer().getConsoleSender().sendMessage("Failed to parse the data/"+values[1]+"/origins/"+values[2]+".json file for " + values[1] + ". Is it a valid origin file?");
+      Bukkit.getServer().getConsoleSender().sendMessage("Failed to parse the  \"icon\" in data/"+values[1]+"/origins/"+values[2]+".json file for " + values[1] + ". Is it a valid origin file?");
     }
     return originIcon;
+  }
+
+  public static Long getCustomOriginImpact(int originId) {
+    Long originImpact = null;
+
+    String value = getCustomOriginConfig().getString("Origins."+originId);
+    if (value == null) return null;
+
+    String[] values = value.split(":");
+    File originDetails = new File(Bukkit.getServer().getPluginManager().getPlugin("GenesisMC").getDataFolder() +"/custom_origins/"+values[0]+"/data/"+values[1]+"/origins/"+values[2]+".json");
+    try {
+      JSONObject parser = (JSONObject) new JSONParser().parse(new FileReader(originDetails.getAbsolutePath()));
+      originImpact = (Long) parser.get("impact");
+    } catch (Exception e) {
+      //e.printStackTrace();
+      Bukkit.getServer().getConsoleSender().sendMessage("Failed to parse the \"impact\" in data/"+values[1]+"/origins/"+values[2]+".json file for " + values[1] + ". Is it a valid origin file?");
+    }
+    return originImpact;
+  }
+
+  public static String getCustomOriginDescription(int originId) {
+    String originDescription = null;
+
+    String value = getCustomOriginConfig().getString("Origins."+originId);
+    if (value == null) return null;
+
+    String[] values = value.split(":");
+    File originDetails = new File(Bukkit.getServer().getPluginManager().getPlugin("GenesisMC").getDataFolder() +"/custom_origins/"+values[0]+"/data/"+values[1]+"/origins/"+values[2]+".json");
+    try {
+      JSONObject parser = (JSONObject) new JSONParser().parse(new FileReader(originDetails.getAbsolutePath()));
+      originDescription = (String) parser.get("description");
+    } catch (Exception e) {
+      //e.printStackTrace();
+      Bukkit.getServer().getConsoleSender().sendMessage("Failed to parse the \"description\" in data/"+values[1]+"/origins/"+values[2]+".json file for " + values[1] + ". Is it a valid origin file?");
+    }
+    return originDescription;
+  }
+
+  public static ArrayList<String> getCustomOriginPowers(int originId) {
+    ArrayList<String> originPowers = new ArrayList<String>();
+
+    String value = getCustomOriginConfig().getString("Origins."+originId);
+    if (value == null) return null;
+
+    String[] values = value.split(":");
+    File originDetails = new File(Bukkit.getServer().getPluginManager().getPlugin("GenesisMC").getDataFolder() +"/custom_origins/"+values[0]+"/data/"+values[1]+"/origins/"+values[2]+".json");
+    try {
+      JSONObject parser = (JSONObject) new JSONParser().parse(new FileReader(originDetails.getAbsolutePath()));
+      JSONArray powers = ((JSONArray)parser.get("powers"));
+      for (Object power : powers) originPowers.add((String) power);
+    } catch (Exception e) {
+      //e.printStackTrace();
+      Bukkit.getServer().getConsoleSender().sendMessage("Failed to parse the \"powers\" in data/"+values[1]+"/origins/"+values[2]+".json file for " + values[1] + ". Is it a valid origin file?");
+    }
+
+    return originPowers;
   }
 }
