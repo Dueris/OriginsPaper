@@ -217,8 +217,8 @@ public class GenesisDataFiles {
     return originIdentifiers;
   }
 
-  public static String getCustomOriginName(int originId) {
-    String originName = null;
+  public static Object getCustomOriginDetails(int originId, String valueToParse) {
+    Object originDetail = null;
 
     String value = getCustomOriginConfig().getString("Origins."+originId);
     if (value == null) return null;
@@ -226,107 +226,67 @@ public class GenesisDataFiles {
     String[] values = value.split(":");
     File originDetails = new File(Bukkit.getServer().getPluginManager().getPlugin("GenesisMC").getDataFolder() +"/custom_origins/"+values[0]+"/data/"+values[1]+"/origins/"+values[2]+".json");
     try {
-    JSONObject parser = (JSONObject) new JSONParser().parse(new FileReader(originDetails.getAbsolutePath()));
-    originName = (String) parser.get("name");
+      JSONObject parser = (JSONObject) new JSONParser().parse(new FileReader(originDetails.getAbsolutePath()));
+      originDetail = parser.get(valueToParse);
     } catch (Exception e) {
       //e.printStackTrace();
-      Bukkit.getServer().getConsoleSender().sendMessage("Failed to parse \"name\" in data/"+values[1]+"/origins/"+values[2]+".json file for " + values[1] + ". Is it a valid origin file?");
+      //Bukkit.getServer().getConsoleSender().sendMessage("Failed to parse "+valueToParse+" in data/"+values[1]+"/origins/"+values[2]+".json file for " + values[1] + ". Is it a valid origin file?");
     }
-    return originName;
+    return originDetail;
+  }
+
+  public static boolean customOriginExistsCheck(int originId) {
+    String value = getCustomOriginConfig().getString("Origins."+originId);
+    if (value == null) return false;
+    String[] values = value.split(":");
+    return new File(Bukkit.getServer().getPluginManager().getPlugin("GenesisMC").getDataFolder() + "/custom_origins/" + values[0] + "/data/" + values[1] + "/origins/" + values[2] + ".json").exists();
+  }
+
+  public static void customOriginDisable(int originId) {
+    String value = getCustomOriginConfig().getString("Origins."+originId);
+
+    String[] values = value.split(":");
+    File originDetails = new File(Bukkit.getServer().getPluginManager().getPlugin("GenesisMC").getDataFolder() +"/custom_origins/"+values[0]+"/data/"+values[1]+"/origins/"+values[2]+".json");
+    try {
+      JSONObject parser = (JSONObject) new JSONParser().parse(new FileReader(originDetails.getAbsolutePath()));
+      parser.remove("Origins."+originId);
+    } catch (Exception e) {
+      Bukkit.getServer().getConsoleSender().sendMessage("Failed to disable "+values[0]+":"+values[2]);
+    }
+  }
+
+  public static String getCustomOriginName(int originId) {
+    Object value = getCustomOriginDetails(originId, "name");
+    if (value == null) return "NoName";
+    return (String) value;
   }
 
   public static String getCustomOriginIcon(int originId) {
-    String originIcon = null;
-
-    String value = getCustomOriginConfig().getString("Origins."+originId);
-    if (value == null) return null;
-
-    String[] values = value.split(":");
-    File originDetails = new File(Bukkit.getServer().getPluginManager().getPlugin("GenesisMC").getDataFolder() +"/custom_origins/"+values[0]+"/data/"+values[1]+"/origins/"+values[2]+".json");
-    try {
-      JSONObject parser = (JSONObject) new JSONParser().parse(new FileReader(originDetails.getAbsolutePath()));
-      originIcon = (String) parser.get("icon");
-    } catch (Exception e) {
-      //e.printStackTrace();
-      Bukkit.getServer().getConsoleSender().sendMessage("Failed to parse \"icon\" in data/"+values[1]+"/origins/"+values[2]+".json file for " + values[1] + ". Is it a valid origin file?");
-    }
-    return originIcon;
+    Object value = getCustomOriginDetails(originId, "icon");
+    if (value == null) return "minecraft:player_head";
+    return (String) value;
   }
 
   public static Long getCustomOriginImpact(int originId) {
-    Long originImpact = null;
-
-    String value = getCustomOriginConfig().getString("Origins."+originId);
-    if (value == null) return null;
-
-    String[] values = value.split(":");
-    File originDetails = new File(Bukkit.getServer().getPluginManager().getPlugin("GenesisMC").getDataFolder() +"/custom_origins/"+values[0]+"/data/"+values[1]+"/origins/"+values[2]+".json");
-    try {
-      JSONObject parser = (JSONObject) new JSONParser().parse(new FileReader(originDetails.getAbsolutePath()));
-      originImpact = (Long) parser.get("impact");
-    } catch (Exception e) {
-      //e.printStackTrace();
-      Bukkit.getServer().getConsoleSender().sendMessage("Failed to parse \"impact\" in data/"+values[1]+"/origins/"+values[2]+".json file for " + values[1] + ". Is it a valid origin file?");
-    }
-    return originImpact;
+    Object value = getCustomOriginDetails(originId, "impact");
+    if (value == null) return 1L;
+    return (Long) value;
   }
 
   public static String getCustomOriginDescription(int originId) {
-    String originDescription = null;
-
-    String value = getCustomOriginConfig().getString("Origins."+originId);
-    if (value == null) return null;
-
-    String[] values = value.split(":");
-    File originDetails = new File(Bukkit.getServer().getPluginManager().getPlugin("GenesisMC").getDataFolder() +"/custom_origins/"+values[0]+"/data/"+values[1]+"/origins/"+values[2]+".json");
-    try {
-      JSONObject parser = (JSONObject) new JSONParser().parse(new FileReader(originDetails.getAbsolutePath()));
-      originDescription = (String) parser.get("description");
-    } catch (Exception e) {
-      //e.printStackTrace();
-      Bukkit.getServer().getConsoleSender().sendMessage("Failed to parse \"description\" in data/"+values[1]+"/origins/"+values[2]+".json file for " + values[1] + ". Is it a valid origin file?");
-    }
-    return originDescription;
+    Object value = getCustomOriginDetails(originId, "description");
+    if (value == null) return "No Description";
+    return (String) value;
   }
 
   public static ArrayList<String> getCustomOriginPowers(int originId) {
-    ArrayList<String> originPowers = new ArrayList<String>();
-
-    String value = getCustomOriginConfig().getString("Origins."+originId);
-    if (value == null) return null;
-
-    String[] values = value.split(":");
-    File originDetails = new File(Bukkit.getServer().getPluginManager().getPlugin("GenesisMC").getDataFolder() +"/custom_origins/"+values[0]+"/data/"+values[1]+"/origins/"+values[2]+".json");
-    try {
-      JSONObject parser = (JSONObject) new JSONParser().parse(new FileReader(originDetails.getAbsolutePath()));
-      JSONArray powers = ((JSONArray)parser.get("powers"));
-      for (Object power : powers) originPowers.add((String) power);
-    } catch (Exception e) {
-      //e.printStackTrace();
-      Bukkit.getServer().getConsoleSender().sendMessage("Failed to parse \"powers\" in data/"+values[1]+"/origins/"+values[2]+".json file for " + values[1] + ". Is it a valid origin file?");
-    }
-
-    return originPowers;
+    Object value = getCustomOriginDetails(originId, "powers");
+    if (value == null) return new ArrayList<String>(Arrays.asList("origins:nopowers"));
+    return (ArrayList<String>) value;
   }
 
-  public static boolean getCustomOriginHidden(int originId) {
-    boolean originHidden = false;
-
-    String value = getCustomOriginConfig().getString("Origins."+originId);
-    if (value == null) return false;
-
-    String[] values = value.split(":");
-    File originDetails = new File(Bukkit.getServer().getPluginManager().getPlugin("GenesisMC").getDataFolder() +"/custom_origins/"+values[0]+"/data/"+values[1]+"/origins/"+values[2]+".json");
-    try {
-      JSONObject parser = (JSONObject) new JSONParser().parse(new FileReader(originDetails.getAbsolutePath()));
-      if (parser.containsKey("hidden")) {
-        originHidden = (boolean) parser.get("hidden");
-      }
-    } catch (Exception e) {
-      //e.printStackTrace();
-      Bukkit.getServer().getConsoleSender().sendMessage("Failed to parse \"hidden\" in data/"+values[1]+"/origins/"+values[2]+".json file for " + values[1] + ". Is it a valid origin file?");
-    }
-    return originHidden;
+  public static boolean getCustomOriginUnChoosable(int originId) {
+    return getCustomOriginDetails(originId, "unchoosable") != null;
   }
 
 }
