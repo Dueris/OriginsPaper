@@ -152,10 +152,10 @@ public class GenesisDataFiles {
     getOrbCon().addDefault("orb-of-origins-enabled", true);
 
     getCustomOriginConfig().options().setHeader(Collections.singletonList("DO NOT TOUCH, YOU HAVE BEEN WARNED. YOU CAN DELETE BUT NO TOUCH!"));
-    readCustomOriginsDatapacks();
+    readCustomOriginDatapacks();
   }
 
-  public static void readCustomOriginsDatapacks() {
+  public static void readCustomOriginDatapacks() {
     File originDatapackDir = new File(Bukkit.getServer().getPluginManager().getPlugin("GenesisMC").getDataFolder(), "custom_origins");
     File[] originDatapacks = originDatapackDir.listFiles();
 
@@ -181,16 +181,17 @@ public class GenesisDataFiles {
         }
 
       } catch (Exception e) {
-        e.printStackTrace();
+        //e.printStackTrace();
+        Bukkit.getServer().getConsoleSender().sendMessage("Failed to parse the \"/data/origins/origin_layers/origin.json\" file for " + originDatapack.getName() + ". Is it a valid origin file?");
       }
     }
   }
 
   public static HashMap<Integer, String> getCustomOrigins_OriginID_Identifier() {
     HashMap<Integer, String> customOrigins = new HashMap<>();
-    if (!GenesisDataFiles.getCustomOriginConfig().contains("Origins")) return null;
-    for (String key : GenesisDataFiles.getCustomOriginConfig().getConfigurationSection("Origins").getKeys(true)) {
-      customOrigins.put(Integer.valueOf(key), GenesisDataFiles.getCustomOriginConfig().getString("Origins."+key));
+    if (!getCustomOriginConfig().contains("Origins")) return null;
+    for (String key : getCustomOriginConfig().getConfigurationSection("Origins").getKeys(true)) {
+      customOrigins.put(Integer.valueOf(key), getCustomOriginConfig().getString("Origins."+key));
     }
     return customOrigins;
     //returns the identifier GenesisDataFiles.getCustomOrigins().values();
@@ -200,8 +201,8 @@ public class GenesisDataFiles {
 
   public static ArrayList<Integer> getCustomOriginIds() {
     ArrayList<Integer> originIds = new ArrayList<Integer>();
-    if (!GenesisDataFiles.getCustomOriginConfig().contains("Origins")) return null;
-    for (String key : GenesisDataFiles.getCustomOriginConfig().getConfigurationSection("Origins").getKeys(true)) {
+    if (!getCustomOriginConfig().contains("Origins")) return null;
+    for (String key : getCustomOriginConfig().getConfigurationSection("Origins").getKeys(true)) {
       originIds.add(Integer.valueOf(key));
     }
     return originIds;
@@ -209,10 +210,46 @@ public class GenesisDataFiles {
 
   public static ArrayList<String> getCustomOriginIdentifier() {
     ArrayList<String> originIdentifiers = new ArrayList<String>();
-    if (!GenesisDataFiles.getCustomOriginConfig().contains("Origins")) return null;
-    for (String key : GenesisDataFiles.getCustomOriginConfig().getConfigurationSection("Origins").getKeys(true)) {
-      originIdentifiers.add(GenesisDataFiles.getCustomOriginConfig().getString("Origins."+key));
+    if (!getCustomOriginConfig().contains("Origins")) return null;
+    for (String key : getCustomOriginConfig().getConfigurationSection("Origins").getKeys(true)) {
+      originIdentifiers.add(getCustomOriginConfig().getString("Origins."+key));
     }
     return originIdentifiers;
+  }
+
+  public static String getCustomOriginName(int originId) {
+    String originName = null;
+
+    String value = getCustomOriginConfig().getString("Origins."+originId);
+    if (value == null) return null;
+
+    String[] values = value.split(":");
+    File originDetails = new File(Bukkit.getServer().getPluginManager().getPlugin("GenesisMC").getDataFolder() +"/custom_origins/"+values[0]+"/data/"+values[1]+"/origins/"+values[2]+".json");
+    try {
+    JSONObject parser = (JSONObject) new JSONParser().parse(new FileReader(originDetails.getAbsolutePath()));
+    originName = (String) parser.get("name");
+    } catch (Exception e) {
+      //e.printStackTrace();
+      Bukkit.getServer().getConsoleSender().sendMessage("Failed to parse the data/"+values[1]+"/origins/"+values[2]+".json file for " + values[1] + ". Is it a valid origin file?");
+    }
+    return originName;
+  }
+
+  public static String getCustomOriginIcon(int originId) {
+    String originIcon = null;
+
+    String value = getCustomOriginConfig().getString("Origins."+originId);
+    if (value == null) return null;
+
+    String[] values = value.split(":");
+    File originDetails = new File(Bukkit.getServer().getPluginManager().getPlugin("GenesisMC").getDataFolder() +"/custom_origins/"+values[0]+"/data/"+values[1]+"/origins/"+values[2]+".json");
+    try {
+      JSONObject parser = (JSONObject) new JSONParser().parse(new FileReader(originDetails.getAbsolutePath()));
+      originIcon = (String) parser.get("icon");
+    } catch (Exception e) {
+      //e.printStackTrace();
+      Bukkit.getServer().getConsoleSender().sendMessage("Failed to parse the data/"+values[1]+"/origins/"+values[2]+".json file for " + values[1] + ". Is it a valid origin file?");
+    }
+    return originIcon;
   }
 }
