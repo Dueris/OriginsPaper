@@ -1,6 +1,10 @@
 package me.dueris.genesismc.core;
 
 import me.dueris.genesismc.core.bukkitrunnables.*;
+import me.dueris.genesismc.core.choosing.ChoosingMenuCORE;
+import me.dueris.genesismc.core.choosing.ChoosingMenuEXP;
+import me.dueris.genesismc.core.choosing.ChoosingOpener;
+import me.dueris.genesismc.core.choosing.CustomOriginsMenu;
 import me.dueris.genesismc.core.commands.BetaCommands;
 import me.dueris.genesismc.core.commands.GenesisCommandManager;
 import me.dueris.genesismc.core.commands.TabAutoComplete;
@@ -142,6 +146,10 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         getServer().getPluginManager().registerEvents(new WaterProtBookGen(), this);
         getServer().getPluginManager().registerEvents(new KeybindHandler(), this);
         getServer().getPluginManager().registerEvents(new Info(), this);
+        getServer().getPluginManager().registerEvents(new ChoosingOpener(), this);
+        getServer().getPluginManager().registerEvents(new ChoosingMenuCORE(), this);
+        getServer().getPluginManager().registerEvents(new ChoosingMenuEXP(), this);
+        getServer().getPluginManager().registerEvents(new CustomOriginsMenu(), this);
         plugin = this;
         getServer().getPluginManager().registerEvents(new DataContainer(), this);
         if (GenesisDataFiles.getPlugCon().getString("beta-enabled").equalsIgnoreCase("true")) {
