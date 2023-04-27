@@ -12,6 +12,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+import javax.lang.model.util.Elements;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -185,9 +186,9 @@ public class GenesisDataFiles {
     }
   }
 
-  public static HashMap<Integer, String> getCustomOrigins() {
+  public static HashMap<Integer, String> getCustomOrigins_OriginID_Identifier() {
     HashMap<Integer, String> customOrigins = new HashMap<>();
-    if (!GenesisDataFiles.getCustomOriginConfig().contains("Origins")) return customOrigins;
+    if (!GenesisDataFiles.getCustomOriginConfig().contains("Origins")) return null;
     for (String key : GenesisDataFiles.getCustomOriginConfig().getConfigurationSection("Origins").getKeys(true)) {
       customOrigins.put(Integer.valueOf(key), GenesisDataFiles.getCustomOriginConfig().getString("Origins."+key));
     }
@@ -195,5 +196,23 @@ public class GenesisDataFiles {
     //returns the identifier GenesisDataFiles.getCustomOrigins().values();
     //returns the origin id GenesisDataFiles.getCustomOrigins().keySet();
     //return the entire hash map GenesisDataFiles.getCustomOrigins();
+  }
+
+  public static ArrayList<Integer> getCustomOriginIds() {
+    ArrayList<Integer> originIds = new ArrayList<Integer>();
+    if (!GenesisDataFiles.getCustomOriginConfig().contains("Origins")) return null;
+    for (String key : GenesisDataFiles.getCustomOriginConfig().getConfigurationSection("Origins").getKeys(true)) {
+      originIds.add(Integer.valueOf(key));
+    }
+    return originIds;
+  }
+
+  public static ArrayList<String> getCustomOriginIdentifier() {
+    ArrayList<String> originIdentifiers = new ArrayList<String>();
+    if (!GenesisDataFiles.getCustomOriginConfig().contains("Origins")) return null;
+    for (String key : GenesisDataFiles.getCustomOriginConfig().getConfigurationSection("Origins").getKeys(true)) {
+      originIdentifiers.add(GenesisDataFiles.getCustomOriginConfig().getString("Origins."+key));
+    }
+    return originIdentifiers;
   }
 }
