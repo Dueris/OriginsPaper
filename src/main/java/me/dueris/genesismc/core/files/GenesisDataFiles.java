@@ -230,7 +230,7 @@ public class GenesisDataFiles {
     originName = (String) parser.get("name");
     } catch (Exception e) {
       //e.printStackTrace();
-      Bukkit.getServer().getConsoleSender().sendMessage("Failed to parse the \"name\" in data/"+values[1]+"/origins/"+values[2]+".json file for " + values[1] + ". Is it a valid origin file?");
+      Bukkit.getServer().getConsoleSender().sendMessage("Failed to parse \"name\" in data/"+values[1]+"/origins/"+values[2]+".json file for " + values[1] + ". Is it a valid origin file?");
     }
     return originName;
   }
@@ -248,7 +248,7 @@ public class GenesisDataFiles {
       originIcon = (String) parser.get("icon");
     } catch (Exception e) {
       //e.printStackTrace();
-      Bukkit.getServer().getConsoleSender().sendMessage("Failed to parse the  \"icon\" in data/"+values[1]+"/origins/"+values[2]+".json file for " + values[1] + ". Is it a valid origin file?");
+      Bukkit.getServer().getConsoleSender().sendMessage("Failed to parse \"icon\" in data/"+values[1]+"/origins/"+values[2]+".json file for " + values[1] + ". Is it a valid origin file?");
     }
     return originIcon;
   }
@@ -266,7 +266,7 @@ public class GenesisDataFiles {
       originImpact = (Long) parser.get("impact");
     } catch (Exception e) {
       //e.printStackTrace();
-      Bukkit.getServer().getConsoleSender().sendMessage("Failed to parse the \"impact\" in data/"+values[1]+"/origins/"+values[2]+".json file for " + values[1] + ". Is it a valid origin file?");
+      Bukkit.getServer().getConsoleSender().sendMessage("Failed to parse \"impact\" in data/"+values[1]+"/origins/"+values[2]+".json file for " + values[1] + ". Is it a valid origin file?");
     }
     return originImpact;
   }
@@ -284,7 +284,7 @@ public class GenesisDataFiles {
       originDescription = (String) parser.get("description");
     } catch (Exception e) {
       //e.printStackTrace();
-      Bukkit.getServer().getConsoleSender().sendMessage("Failed to parse the \"description\" in data/"+values[1]+"/origins/"+values[2]+".json file for " + values[1] + ". Is it a valid origin file?");
+      Bukkit.getServer().getConsoleSender().sendMessage("Failed to parse \"description\" in data/"+values[1]+"/origins/"+values[2]+".json file for " + values[1] + ". Is it a valid origin file?");
     }
     return originDescription;
   }
@@ -303,7 +303,7 @@ public class GenesisDataFiles {
       for (Object power : powers) originPowers.add((String) power);
     } catch (Exception e) {
       //e.printStackTrace();
-      Bukkit.getServer().getConsoleSender().sendMessage("Failed to parse the \"powers\" in data/"+values[1]+"/origins/"+values[2]+".json file for " + values[1] + ". Is it a valid origin file?");
+      Bukkit.getServer().getConsoleSender().sendMessage("Failed to parse \"powers\" in data/"+values[1]+"/origins/"+values[2]+".json file for " + values[1] + ". Is it a valid origin file?");
     }
 
     return originPowers;
@@ -324,7 +324,7 @@ public class GenesisDataFiles {
       }
     } catch (Exception e) {
       //e.printStackTrace();
-      Bukkit.getServer().getConsoleSender().sendMessage("Failed to parse the \"hidden\" in data/"+values[1]+"/origins/"+values[2]+".json file for " + values[1] + ". Is it a valid origin file?");
+      Bukkit.getServer().getConsoleSender().sendMessage("Failed to parse \"hidden\" in data/"+values[1]+"/origins/"+values[2]+".json file for " + values[1] + ". Is it a valid origin file?");
     }
     return originHidden;
   }
