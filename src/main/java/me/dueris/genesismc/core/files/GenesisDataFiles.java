@@ -308,4 +308,25 @@ public class GenesisDataFiles {
 
     return originPowers;
   }
+
+  public static boolean getCustomOriginHidden(int originId) {
+    boolean originHidden = false;
+
+    String value = getCustomOriginConfig().getString("Origins."+originId);
+    if (value == null) return false;
+
+    String[] values = value.split(":");
+    File originDetails = new File(Bukkit.getServer().getPluginManager().getPlugin("GenesisMC").getDataFolder() +"/custom_origins/"+values[0]+"/data/"+values[1]+"/origins/"+values[2]+".json");
+    try {
+      JSONObject parser = (JSONObject) new JSONParser().parse(new FileReader(originDetails.getAbsolutePath()));
+      if (parser.containsKey("hidden")) {
+        originHidden = (boolean) parser.get("hidden");
+      }
+    } catch (Exception e) {
+      //e.printStackTrace();
+      Bukkit.getServer().getConsoleSender().sendMessage("Failed to parse the \"hidden\" in data/"+values[1]+"/origins/"+values[2]+".json file for " + values[1] + ". Is it a valid origin file?");
+    }
+    return originHidden;
+  }
+
 }
