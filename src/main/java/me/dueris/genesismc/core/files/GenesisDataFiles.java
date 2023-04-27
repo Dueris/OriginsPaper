@@ -7,15 +7,19 @@ import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.DirectoryStream;
+import java.util.ArrayList;
+import java.util.Collections;
 
 public class GenesisDataFiles {
 
   private static File pluginconyml;
   private static File orbconyml;
+  private static File customOriginYml;
 
   private static FileConfiguration pluginConfig;
   private static FileConfiguration orbConfig;
-
+  private static FileConfiguration customOriginConfig;
 
   //setup config file
   public static void setup(){
@@ -24,9 +28,19 @@ public class GenesisDataFiles {
 
     orbconyml = new File(Bukkit.getServer().getPluginManager().getPlugin("GenesisMC").getDataFolder(), "orboforigins.yml");
     pluginconyml = new File(Bukkit.getServer().getPluginManager().getPlugin("GenesisMC").getDataFolder(), "origin-server.yml");
+    customOriginYml = new File(Bukkit.getServer().getPluginManager().getPlugin("GenesisMC").getDataFolder(), "custom_origins/CustomOriginIdentifiers.yml");
 
     if(!custom_folder.exists()){
       custom_folder.mkdirs();
+    }
+
+
+    pluginconyml.delete();
+    try {
+      pluginconyml.createNewFile();
+    }catch (IOException e){
+      //my hands don't hurt
+      Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.RED + "Unable to CustomOriginIdentifiers.yml. Please reload or restart server. If that doesn't work, contact Dueris on her Discord server");
     }
 
     if(!pluginconyml.exists()){
@@ -34,7 +48,7 @@ public class GenesisDataFiles {
         pluginconyml.createNewFile();
       }catch (IOException e){
         //my hands hurt
-        System.out.println("Unable to create origin-server.yml. Please reload or restart server. If that doesnt work, contact Dueris on her Discord server");
+        Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.RED + "Unable to create origin-server.yml. Please reload or restart server. If that doesn't work, contact Dueris on her Discord server");
       }
     }
 
@@ -43,12 +57,13 @@ public class GenesisDataFiles {
         orbconyml.createNewFile();
       }catch (IOException e){
         //my hands hurt
-        System.out.println("Unable to create orboforigins.yml. Please reload or restart server. If that doesnt work, contact Dueris on her Discord server");
+        Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.RED + "Unable to create orboforigins.yml. Please reload or restart server. If that doesn't work, contact Dueris on her Discord server");
       }
     }
 
     pluginConfig = YamlConfiguration.loadConfiguration(pluginconyml);
     orbConfig = YamlConfiguration.loadConfiguration(orbconyml);
+    customOriginConfig = YamlConfiguration.loadConfiguration(customOriginYml);
 
   }
   public static FileConfiguration getPlugCon(){
@@ -57,23 +72,31 @@ public class GenesisDataFiles {
   public static FileConfiguration getOrbCon(){
     return orbConfig;
   }
-
+  public static FileConfiguration getCustomOriginConfig(){
+    return customOriginConfig;
+  }
   public static void save(){
     try{
       pluginConfig.save(pluginconyml);
     }catch (IOException e){
-      System.out.println("Couldn't save yml file. Please try again");
+      Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.RED + "Couldn't save yml file. Please try again");
     }
     try{
       orbConfig.save(orbconyml);
     }catch (IOException e){
-      System.out.println("Couldn't save yml file. Please try again");
+      Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.RED + "Couldn't save yml file. Please try again");
+    }
+    try {
+      customOriginConfig.save(customOriginYml);
+    } catch (IOException e) {
+      Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.RED + "Couldn't save yml file. Please try again");
     }
   }
 
   public static void reload(){
     pluginConfig = YamlConfiguration.loadConfiguration(pluginconyml);
     orbConfig = YamlConfiguration.loadConfiguration(orbconyml);
+    customOriginConfig = YamlConfiguration.loadConfiguration(customOriginYml);
   }
 
 
@@ -118,6 +141,28 @@ public class GenesisDataFiles {
     getOrbCon().addDefault("name", ChatColor.LIGHT_PURPLE + "Orb of Origins");
     getOrbCon().addDefault("orb-of-origins-enabled", true);
 
+    getCustomOriginConfig().options().setHeader(Collections.singletonList("DO NOT TOUCH, YOU HAVE BEEN WARNED. YOU CAN DELETE BUT NO TOUCH!"));
+    // path to custom origin, origin id
+    getCustomOriginConfig().addDefault("path?", true);
+    readCustomOrigins();
+
+  }
+
+  public static void readCustomOrigins() {
+    File originDatapackDir = new File(Bukkit.getServer().getPluginManager().getPlugin("GenesisMC").getDataFolder(), "custom_origins");
+    File[] originDatapacks = originDatapackDir.listFiles();
+
+    if (originDatapacks == null) return;
+
+
+    for (File originDatapack : originDatapacks) {
+      if (originDatapack.isFile()) continue;
+      File origin_layers = new File(originDatapack.getAbsolutePath() + "/data/origins/origin_layers/origin.json");
+      if (!origin_layers.exists()) Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.RED + "Couldn't locate \"/data/origins/origin_layers/origin.json\" for the \"" + originDatapack.getName() + "\" Origin file!");
+
+    }
+
+    //return null;
   }
 
 }

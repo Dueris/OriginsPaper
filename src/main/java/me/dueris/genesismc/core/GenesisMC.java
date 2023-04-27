@@ -65,6 +65,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         GenesisDataFiles.setup();
         GenesisDataFiles.getPlugCon().options().copyDefaults(true);
         GenesisDataFiles.getOrbCon().options().copyDefaults(true);
+        GenesisDataFiles.getCustomOriginConfig().options().copyDefaults(true);
         GenesisDataFiles.setDefaults();
         GenesisDataFiles.save();
 
