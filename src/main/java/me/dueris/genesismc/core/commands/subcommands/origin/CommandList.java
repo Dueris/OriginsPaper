@@ -37,8 +37,7 @@ public class CommandList extends SubCommand {
                     ChatColor.WHITE + "/shulker open",
                     ChatColor.WHITE + "/leap or /l",
                     ChatColor.WHITE + "/beta <beta-args>",
-                    ChatColor.YELLOW + "-----------------------------------------",
-                    System.out.printf(args[0]).toString()
+                    ChatColor.YELLOW + "-----------------------------------------"
             );
         }
     }
