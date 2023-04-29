@@ -35,9 +35,9 @@ public class CommandList extends SubCommand {
                     ChatColor.WHITE + "/origin get <player_name>",
                     ChatColor.WHITE + "/origin enchant <enchantment-id> <level>",
                     ChatColor.WHITE + "/shulker open",
+                    ChatColor.WHITE + "/leap or /l",
                     ChatColor.WHITE + "/beta <beta-args>",
-                    ChatColor.YELLOW + "-----------------------------------------",
-                    System.out.printf(args[0]).toString()
+                    ChatColor.YELLOW + "-----------------------------------------"
             );
         }
     }

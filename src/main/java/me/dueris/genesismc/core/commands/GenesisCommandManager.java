@@ -2,16 +2,11 @@ package me.dueris.genesismc.core.commands;
 
 import me.dueris.genesismc.core.commands.subcommands.SubCommand;
 import me.dueris.genesismc.core.commands.subcommands.origin.*;
-import me.dueris.genesismc.core.files.GenesisDataFiles;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.*;
 import org.bukkit.entity.Player;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class GenesisCommandManager implements CommandExecutor {
 
@@ -22,8 +17,11 @@ public class GenesisCommandManager implements CommandExecutor {
         subCommands.add(new Purge());
         subCommands.add(new Texture());
         subCommands.add(new CommandList());
-        subCommands.add(new Config());
+        subCommands.add(new Dump());
         subCommands.add(new OriginsChoose());
+        subCommands.add(new Enchant());
+        subCommands.add(new Get());
+        subCommands.add(new Info());
 
     }
 
@@ -50,6 +48,7 @@ public class GenesisCommandManager implements CommandExecutor {
                         ChatColor.WHITE + "/origins config",
                         ChatColor.WHITE + "/origins texture",
                         ChatColor.WHITE + "/shulker open",
+                        ChatColor.WHITE + "/leap or /l",
                         ChatColor.WHITE + "/beta <beta-args>",
                         ChatColor.YELLOW + "-----------------------------------------"
                 );

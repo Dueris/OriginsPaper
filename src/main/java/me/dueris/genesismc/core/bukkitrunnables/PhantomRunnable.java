@@ -1,15 +1,10 @@
 package me.dueris.genesismc.core.bukkitrunnables;
 
 import me.dueris.genesismc.core.GenesisMC;
-import net.minecraft.network.protocol.game.ClientboundBlockChangedAckPacket;
 import net.minecraft.server.level.ServerPlayer;
 import org.bukkit.*;
-import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
 import org.bukkit.craftbukkit.v1_19_R3.entity.CraftPlayer;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.ArmorStand;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
@@ -22,15 +17,10 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.ScoreboardManager;
 import org.bukkit.scoreboard.Team;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 import static org.bukkit.ChatColor.GRAY;
-import static org.bukkit.Material.AIR;
-import static org.bukkit.Material.BEDROCK;
 
 public class PhantomRunnable extends BukkitRunnable {
     @Override
@@ -38,7 +28,6 @@ public class PhantomRunnable extends BukkitRunnable {
         for (Player p : Bukkit.getOnlinePlayers()) {
             ScoreboardManager manager = Bukkit.getScoreboardManager();
             Scoreboard scoreboard = manager.getNewScoreboard();
-            PotionEffect effect = p.getPotionEffect(PotionEffectType.INVISIBILITY);
             PersistentDataContainer data = p.getPersistentDataContainer();
             int originid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER);
             if (originid == 7300041) {
@@ -56,11 +45,11 @@ public class PhantomRunnable extends BukkitRunnable {
                 ItemStack spectatorswitch = new ItemStack(Material.FEATHER);
                 ItemMeta switch_meta = spectatorswitch.getItemMeta();
                 switch_meta.setDisplayName(GRAY + "Phantom Form");
-                ArrayList<String> pearl_lore = new ArrayList();
+                ArrayList<String> feather_lore = new ArrayList();
                 switch_meta.setUnbreakable(true);
                 switch_meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
                 switch_meta.addItemFlags(ItemFlag.HIDE_ITEM_SPECIFICS);
-                switch_meta.setLore(pearl_lore);
+                switch_meta.setLore(feather_lore);
                 switch_meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
                 spectatorswitch.setItemMeta(switch_meta);
                 int phantomid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER);
@@ -77,7 +66,6 @@ public class PhantomRunnable extends BukkitRunnable {
                             //when walking into a block, put player in spectator and make it so they cant go up and down. rewrite movement engine
                             //upon walk into block, add signal plugin can detect
                             //just loaded origins bukkit and it doesnt have phantom origin??!?!?
-                            Block[] blkrelative = {p.getEyeLocation().getBlock().getRelative(BlockFace.SOUTH), p.getEyeLocation().getBlock().getRelative(BlockFace.NORTH), p.getEyeLocation().getBlock().getRelative(BlockFace.WEST), p.getEyeLocation().getBlock().getRelative(BlockFace.EAST), p.getLocation().getBlock().getRelative(BlockFace.EAST), p.getLocation().getBlock().getRelative(BlockFace.WEST), p.getLocation().getBlock().getRelative(BlockFace.NORTH), p.getLocation().getBlock().getRelative(BlockFace.SOUTH), p.getEyeLocation().add(0, 1, 0).getBlock()};
 
 
 

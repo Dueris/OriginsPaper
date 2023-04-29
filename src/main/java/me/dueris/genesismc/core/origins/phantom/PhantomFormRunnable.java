@@ -1,26 +1,16 @@
 package me.dueris.genesismc.core.origins.phantom;
 
 import me.dueris.genesismc.core.GenesisMC;
-import net.kyori.adventure.bossbar.BossBar;
-import net.minecraft.network.protocol.game.ClientboundPlayerInfoUpdatePacket;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.server.network.ServerPlayerConnection;
-import org.bukkit.Bukkit;
-import org.bukkit.GameMode;
-import org.bukkit.NamespacedKey;
+import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
-import org.bukkit.block.BlockFace;
 import org.bukkit.craftbukkit.v1_19_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.Random;
 
-import static org.bukkit.Material.*;
 
 public class PhantomFormRunnable extends BukkitRunnable {
     @Override
@@ -33,141 +23,54 @@ public class PhantomFormRunnable extends BukkitRunnable {
 
             if (phantomid == 2) {
                 if (originid == 7300041) {
-                    if (p.getLocation().add(0.6F, 0, 0.6F).getBlock().getType().isSolid() ||
-                            p.getLocation().add(0.6F, 0, 0).getBlock().getType().isSolid() ||
-                            p.getLocation().add(0, 0, 0.6F).getBlock().getType().isSolid() ||
-                            p.getLocation().add(-0.6F, 0, -0.6F).getBlock().getType().isSolid() ||
-                            p.getLocation().add(0, 0, -0.6F).getBlock().getType().isSolid() ||
-                            p.getLocation().add(-0.6F, 0, 0).getBlock().getType().isSolid() ||
-                            p.getLocation().add(0.6F, 0, -0.6F).getBlock().getType().isSolid() ||
-                            p.getLocation().add(-0.6F, 0, 0.6F).getBlock().getType().isSolid() ||
-                            p.getLocation().add(0, 0.5, 0).getBlock().getType().isSolid() ||
+                    if (p.getLocation().add(0.55F, 0, 0.55F).getBlock().isSolid() ||
+                            p.getLocation().add(0.55F, 0, 0).getBlock().isSolid() ||
+                            p.getLocation().add(0, 0, 0.55F).getBlock().isSolid() ||
+                            p.getLocation().add(-0.55F, 0, -0.55F).getBlock().isSolid() ||
+                            p.getLocation().add(0, 0, -0.55F).getBlock().isSolid() ||
+                            p.getLocation().add(-0.55F, 0, 0).getBlock().isSolid() ||
+                            p.getLocation().add(0.55F, 0, -0.55F).getBlock().isSolid() ||
+                            p.getLocation().add(-0.55F, 0, 0.55F).getBlock().isSolid() ||
+                            p.getLocation().add(0, 0.5, 0).getBlock().isSolid() ||
 
-                            p.getEyeLocation().add(0.6F, 0, 0.6F).getBlock().getType().isSolid() ||
-                            p.getEyeLocation().add(0.6F, 0, 0).getBlock().getType().isSolid() ||
-                            p.getEyeLocation().add(0, 0, 0.6F).getBlock().getType().isSolid() ||
-                            p.getEyeLocation().add(-0.6F, 0, -0.6F).getBlock().getType().isSolid() ||
-                            p.getEyeLocation().add(0, 0, -0.6F).getBlock().getType().isSolid() ||
-                            p.getEyeLocation().add(-0.6F, 0, 0).getBlock().getType().isSolid() ||
-                            p.getEyeLocation().add(0.6F, 0, -0.6F).getBlock().getType().isSolid() ||
-                            p.getEyeLocation().add(-0.6F, 0, 0.6F).getBlock().getType().isSolid()
-
-
+                            p.getEyeLocation().add(0.55F, 0, 0.55F).getBlock().isSolid() ||
+                            p.getEyeLocation().add(0.55F, 0, 0).getBlock().isSolid() ||
+                            p.getEyeLocation().add(0, 0, 0.55F).getBlock().isSolid() ||
+                            p.getEyeLocation().add(-0.55F, 0, -0.55F).getBlock().isSolid() ||
+                            p.getEyeLocation().add(0, 0, -0.55F).getBlock().isSolid() ||
+                            p.getEyeLocation().add(-0.55F, 0, 0).getBlock().isSolid() ||
+                            p.getEyeLocation().add(0.55F, 0, -0.55F).getBlock().isSolid() ||
+                            p.getEyeLocation().add(-0.55F, 0, 0.55F).getBlock().isSolid()
                     ) {
-                        if (!p.getLocation().add(0.6F, 0, 0.6F).getBlock().getType().toString().contains("OBSIDIAN") ||
-                                !p.getLocation().add(0.6F, 0, 0).getBlock().getType().toString().contains("OBSIDIAN") ||
-                                !p.getLocation().add(0, 0, 0.6F).getBlock().getType().toString().contains("OBSIDIAN") ||
-                                !p.getLocation().add(-0.6F, 0, -0.6F).getBlock().getType().toString().contains("OBSIDIAN") ||
-                                !p.getLocation().add(0, 0, -0.6F).getBlock().getType().toString().contains("OBSIDIAN") ||
-                                !p.getLocation().add(-0.6F, 0, 0).getBlock().getType().toString().contains("OBSIDIAN") ||
-                                !p.getLocation().add(0.6F, 0, -0.6F).getBlock().getType().toString().contains("OBSIDIAN") ||
-                                !p.getLocation().add(-0.6F, 0, 0.6F).getBlock().getType().toString().contains("OBSIDIAN") ||
+                            //can form
+                        if(p.isInsideVehicle()) return;
+                            p.setCollidable(false);
+                            CraftPlayer craftPlayer = (CraftPlayer) p;
+                            p.setGameMode(GameMode.SPECTATOR);
+                            p.setFlying(true);
 
-                                !p.getEyeLocation().add(0.6F, 0, 0.6F).getBlock().getType().toString().contains("OBSIDIAN") ||
-                                !p.getEyeLocation().add(0.6F, 0, 0).getBlock().getType().toString().contains("OBSIDIAN") ||
-                                !p.getEyeLocation().add(0, 0, 0.6F).getBlock().getType().toString().contains("OBSIDIAN") ||
-                                !p.getEyeLocation().add(-0.6F, 0, -0.6F).getBlock().getType().toString().contains("OBSIDIAN") ||
-                                !p.getEyeLocation().add(0, 0, -0.6F).getBlock().getType().toString().contains("OBSIDIAN") ||
-                                !p.getEyeLocation().add(-0.6F, 0, 0).getBlock().getType().toString().contains("OBSIDIAN") ||
-                                !p.getEyeLocation().add(0.6F, 0, -0.6F).getBlock().getType().toString().contains("OBSIDIAN") ||
-                                !p.getEyeLocation().add(-0.6F, 0, 0.6F).getBlock().getType().toString().contains("OBSIDIAN")
-
-
-                        ) {
-                            if (!p.getLocation().add(0.6F, 0, 0.6F).getBlock().getType().toString().contains("BED") ||
-                                    !p.getLocation().add(0.6F, 0, 0).getBlock().getType().toString().contains("BED") ||
-                                    !p.getLocation().add(0, 0, 0.6F).getBlock().getType().toString().contains("BED") ||
-                                    !p.getLocation().add(-0.6F, 0, -0.6F).getBlock().getType().toString().contains("BED") ||
-                                    !p.getLocation().add(0, 0, -0.6F).getBlock().getType().toString().contains("BED") ||
-                                    !p.getLocation().add(-0.6F, 0, 0).getBlock().getType().toString().contains("BED") ||
-                                    !p.getLocation().add(0.6F, 0, -0.6F).getBlock().getType().toString().contains("BED") ||
-                                    !p.getLocation().add(-0.6F, 0, 0.6F).getBlock().getType().toString().contains("BED") ||
-
-                                    !p.getEyeLocation().add(0.6F, 0, 0.6F).getBlock().getType().toString().contains("BED") ||
-                                    !p.getEyeLocation().add(0.6F, 0, 0).getBlock().getType().toString().contains("BED") ||
-                                    !p.getEyeLocation().add(0, 0, 0.6F).getBlock().getType().toString().contains("BED") ||
-                                    !p.getEyeLocation().add(-0.6F, 0, -0.6F).getBlock().getType().toString().contains("BED") ||
-                                    !p.getEyeLocation().add(0, 0, -0.6F).getBlock().getType().toString().contains("BED") ||
-                                    !p.getEyeLocation().add(-0.6F, 0, 0).getBlock().getType().toString().contains("BED") ||
-                                    !p.getEyeLocation().add(0.6F, 0, -0.6F).getBlock().getType().toString().contains("BED") ||
-                                    !p.getEyeLocation().add(-0.6F, 0, 0.6F).getBlock().getType().toString().contains("BED")
-
-                            ) {
-
-                                if((
-                                        (!p.getLocation().add(0.6F, 0, 0.6F).getBlock().getType().toString().contains("CHEST") ||
-                                                !p.getLocation().add(0.6F, 0, 0).getBlock().getType().toString().contains("CHEST") ||
-                                                !p.getLocation().add(0, 0, 0.6F).getBlock().getType().toString().contains("CHEST") ||
-                                                !p.getLocation().add(-0.6F, 0, -0.6F).getBlock().getType().toString().contains("CHEST") ||
-                                                !p.getLocation().add(0, 0, -0.6F).getBlock().getType().toString().contains("CHEST") ||
-                                                !p.getLocation().add(-0.6F, 0, 0).getBlock().getType().toString().contains("CHEST") ||
-                                                !p.getLocation().add(0.6F, 0, -0.6F).getBlock().getType().toString().contains("CHEST") ||
-                                                !p.getLocation().add(-0.6F, 0, 0.6F).getBlock().getType().toString().contains("CHEST") ||
-
-                                                !p.getEyeLocation().add(0.6F, 0, 0.6F).getBlock().getType().toString().contains("CHEST") ||
-                                                !p.getEyeLocation().add(0.6F, 0, 0).getBlock().getType().toString().contains("CHEST") ||
-                                                !p.getEyeLocation().add(0, 0, 0.6F).getBlock().getType().toString().contains("CHEST") ||
-                                                !p.getEyeLocation().add(-0.6F, 0, -0.6F).getBlock().getType().toString().contains("CHEST") ||
-                                                !p.getEyeLocation().add(0, 0, -0.6F).getBlock().getType().toString().contains("CHEST") ||
-                                                !p.getEyeLocation().add(-0.6F, 0, 0).getBlock().getType().toString().contains("CHEST") ||
-                                                !p.getEyeLocation().add(0.6F, 0, -0.6F).getBlock().getType().toString().contains("CHEST") ||
-                                                !p.getEyeLocation().add(-0.6F, 0, 0.6F).getBlock().getType().toString().contains("CHEST")))
-
-                                ){
-                                    //can form
-                                    p.setGameMode(GameMode.SPECTATOR);
-                                    p.addPotionEffect(new PotionEffect(PotionEffectType.DARKNESS, 7, 255, false, false, false));
-                                    CraftPlayer player = (CraftPlayer) p;
-                                    ServerPlayer serverPlayer = player.getHandle();
-
-                                } else {
-                                    if (p.getGameMode().equals(GameMode.SPECTATOR)) {
-                                        p.setGameMode(p.getPreviousGameMode());
-                                        p.setInvulnerable(false);
-                                    }
-
-                                }
-
-
-                            } else {
-                                if (p.getGameMode().equals(GameMode.SPECTATOR)) {
-                                    p.setGameMode(p.getPreviousGameMode());
-                                    p.setInvulnerable(false);
-                                }
-
-                            }
-
-
-                        } else {
-                            if (p.getGameMode().equals(GameMode.SPECTATOR)) {
-                                p.setGameMode(p.getPreviousGameMode());
-                                p.setInvulnerable(false);
-                            }
-                        }
-
-                    } else {
-                        if (p.getGameMode().equals(GameMode.SPECTATOR)) {
+                    }else{
+                        if(p.getGameMode().equals(GameMode.SPECTATOR)){
                             p.setGameMode(p.getPreviousGameMode());
-                            p.setInvulnerable(false);
+                            p.setFlying(false);
                         }
                     }
 
                     //code for if player is in "Phantom Form"
-                    p.setFreezeTicks(60);
                     CraftPlayer craftPlayer = (CraftPlayer) p;
-                    p.setInvulnerable(true);
+
+
                     p.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0.085);
                     Random random = new Random();
                     int r = random.nextInt(650);
                     if(!p.isSwimming()) {
                         if (r < 10) {
-                            int foodamt = p.getFoodLevel();
-                            p.setFoodLevel(foodamt - 1);
+                            if(p.getFoodLevel() > 1){
+                                int foodamt = p.getFoodLevel();
+                                p.setFoodLevel(foodamt - 1);
+                            }
                         }
                     }
-                } else {
-                    p.setGameMode(p.getGameMode());
-                    p.setInvulnerable(false);
                 }
             }
         }

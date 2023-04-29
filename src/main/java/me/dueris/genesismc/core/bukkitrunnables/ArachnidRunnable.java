@@ -2,7 +2,6 @@ package me.dueris.genesismc.core.bukkitrunnables;
 
 import me.dueris.genesismc.core.GenesisMC;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -35,7 +34,6 @@ public class ArachnidRunnable extends BukkitRunnable {
                         p.getEyeLocation().getBlock().getRelative(BlockFace.NORTH).getType() != AIR ||
                         p.getEyeLocation().getBlock().getRelative(BlockFace.SOUTH).getType() != AIR) {
                     Block block = p.getTargetBlock(null, 2);
-                    Location bl = block.getLocation();
 
                     if (block.getType() != AIR && p.isSneaking() && !p.isInRain()) {
                         p.addPotionEffect(new PotionEffect(PotionEffectType.LEVITATION, 5, 1, false, false, false));

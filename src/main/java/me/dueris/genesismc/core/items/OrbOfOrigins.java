@@ -25,7 +25,6 @@ public class OrbOfOrigins {
         meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
         meta.addItemFlags(ItemFlag.HIDE_DESTROYS);
         meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-        meta.addItemFlags(ItemFlag.HIDE_ITEM_SPECIFICS);
         meta.addItemFlags(ItemFlag.HIDE_PLACED_ON);
         meta.setCustomModelData(00002);
         meta.setDisplayName(GenesisDataFiles.getOrbCon().getString("name"));

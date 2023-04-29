@@ -1,5 +1,6 @@
 package me.dueris.genesismc.core;
 
+import me.dueris.genesismc.core.commands.ToggleCommand;
 import me.dueris.genesismc.core.utils.ShulkUtils;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
@@ -27,13 +28,16 @@ public class DataContainer implements Listener {
       data.set(new NamespacedKey(GenesisMC.getPlugin(), "shulker-box"), PersistentDataType.STRING, "");
     }
     if (!p.getPersistentDataContainer().has(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER)) {
-      p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER, 1);
+      p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER, 0);
     }
     if (!p.getPersistentDataContainer().has(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER)) {
       p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
     }
     if (!p.getPersistentDataContainer().has(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER)) {
       p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
+    }
+    if (!p.getPersistentDataContainer().has(new NamespacedKey(GenesisMC.getPlugin(), "toggle"), PersistentDataType.INTEGER)) {
+      p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "toggle"), PersistentDataType.INTEGER, 1);
     }
 
   }
@@ -43,7 +47,7 @@ public class DataContainer implements Listener {
 
     Player p = (Player) e.getPlayer();
 
-    if (e.getView().getTitle().equalsIgnoreCase("Shulker box")){
+    if (e.getView().getTitle().equalsIgnoreCase("Shulker Inventory")){
 
       ArrayList<ItemStack> prunedItems = new ArrayList<>();
 

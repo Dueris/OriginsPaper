@@ -2,15 +2,6 @@
 Next:
 0.1.6 - 1.20
 
-/origins get
-/origins enchant
-fix tab complete
-remove blindness on choosing
-fix sinking in choosing
-fix enderian not taking damage when drinking potions or being splashed by them
-enderian cannot wear pumpkins
--/origins help orb
-
 /origins choose
 /origins help(lists what origin you have)
 /origins commands(lists commands)
@@ -90,7 +81,7 @@ Vexian
 ---------------------
 Weightless Soul: You can fly. Really fast..
 Raging Vex: You gain strength 2 and speed 3 upon being hit for 2 seconds
-Matterless: You can fly through solid blocks
+Friends of the Raiders: Pillagers will not attack you
 Unholy Creature: You cannot wear armour made of iron, gold, or chainmail
 Bloodlust: You can only eat raw meat
 Little Demon: You are slower and MUCH weaker when in water

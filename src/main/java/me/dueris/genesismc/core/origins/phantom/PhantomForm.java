@@ -2,12 +2,8 @@ package me.dueris.genesismc.core.origins.phantom;
 
 import com.destroystokyo.paper.event.player.PlayerStartSpectatingEntityEvent;
 import me.dueris.genesismc.core.GenesisMC;
-import me.dueris.genesismc.core.files.GenesisDataFiles;
-import net.minecraft.advancements.critereon.PlayerInteractTrigger;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
-import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
 import org.bukkit.craftbukkit.v1_19_R3.entity.CraftPlayer;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.*;
@@ -16,28 +12,20 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
-import org.bukkit.event.player.PlayerGameModeChangeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
-import org.bukkit.inventory.Inventory;
+import org.bukkit.event.player.PlayerTeleportEvent;
+import org.bukkit.event.world.ChunkUnloadEvent;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.map.MapView;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
-import org.bukkit.scheduler.BukkitRunnable;
-import org.jetbrains.annotations.NotNull;
 
-import javax.swing.*;
 import java.util.ArrayList;
-import java.util.List;
 
 import static org.bukkit.ChatColor.*;
 import static org.bukkit.ChatColor.RED;
-import static org.bukkit.Material.*;
 
 public class PhantomForm implements Listener {
 
@@ -105,7 +93,90 @@ public class PhantomForm implements Listener {
 
     }
 
-        //replaced move handler with phantom form runnable
+        //replaced move handler with PhantomFormRunnable.java
+
+    @EventHandler
+
+    public void YLevelBedrockDetectPATCH(PlayerMoveEvent e){
+
+        Player p = e.getPlayer();
+
+            PersistentDataContainer data = p.getPersistentDataContainer();
+
+            int originid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER);
+
+            int phantomid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER);
+
+            //begin checks
+
+        if (originid == 7300041) {
+
+            if(phantomid == 2) {
+
+                //in phantom form.
+
+                //bug fix attempt 3 lol
+
+                if(e.getTo().getY() <= -63.5){
+                    final Location loc = new Location(p.getWorld(), e.getFrom().getX(), -63, e.getFrom().getZ(), e.getTo().getYaw(), e.getTo().getPitch());
+                    p.teleportAsync(loc);
+                    p.sendMessage("You are unable to go bellow Y level -64 while in Phantom Form");
+                }
+
+            }
+
+        }
+
+   
+
+    }
+    
+  /*  @EventHandler
+    public void ObsidianBedrockDetectPATCH(PlayerMoveEvent e){
+        Player p = e.getPlayer();
+            PersistentDataContainer data = p.getPersistentDataContainer();
+            int originid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER);
+            int phantomid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER);
+            //begin checks
+            if (originid == 7300041) {
+                if(phantomid == 2) {
+                    //in phantom form.
+                    //bug fix attempt 3 lol
+                    
+                    if (e.getTo().getBlock().getType() == Material.OBSIDIAN || e.getTo().getBlock().getType() == Material.BEDROCK) {
+                    final Location loc = new Location(p.getWorld(), e.getFrom().getX(), e.getFrom().getY(), e.getFrom().getZ(), e.getTo().getYaw(), e.getTo().getPitch());
+                       p.teleportAsync(loc);
+                       e.setCancelled(true);
+                    }
+            final Location eye = new Location(p.getWorld(), e.getTo().add(0, 1, 0).getX(), e.getTo().add(0, 1, 0).getY(), e.getTo().add(0, 1, 0).getZ(), e.getTo().getYaw(), e.getTo().getPitch());
+            final Location eyef = new Location(p.getWorld(), e.getFrom().getX(), e.getFrom().getY(), e.getFrom().getZ(), e.getTo().getYaw(), e.getTo().getPitch());
+            if (eye.getBlock().getType() == Material.OBSIDIAN || eye.getBlock().getType() == Material.BEDROCK) {
+                p.teleportAsync(eyef);
+                e.setCancelled(true);
+            }
+                    
+          }
+
+       }
+    
+    }
+
+*/
+    @EventHandler
+    public void TPPATCH(PlayerTeleportEvent e){
+        if(e.getCause() == PlayerTeleportEvent.TeleportCause.SPECTATE){
+            Player p = e.getPlayer();
+            PersistentDataContainer data = p.getPersistentDataContainer();
+            int originid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER);
+            int phantomid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER);
+            if (originid == 7300041) {
+                if(phantomid == 2) {
+                    e.setCancelled(true);
+                }
+
+            }
+        }
+    }
 
 
     @EventHandler

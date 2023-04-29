@@ -22,10 +22,34 @@
 -fixed some gamemode bugs
 -finished phantom form and remaining stuff for default phantom
 -updated and redid command and tabcomplete system
+-fixed tab complete
+-added origin enchant command
+-removed config detection, resulting in a new update avalible method
+-fixed custom origins menu opening
+-added folia detection
+-removed config detecion
+-fixed error for spigot servers with orb of origin hide item specs
+-removeed config.yml in favor of origin-server.yml
+-removed stuff for custom origins to start
+-added load support for folia
+-fixed command manager
+-fixed bug where beta auto complete would check for an unregistered config line
+-fixed daytime detect
+-adjusted phantom fire tick times
+-fixed phantom form glitch
+-added /origin enchant
+-added water prot book gen
+-updated logo
+-added new particle system
+-changed shulker box stuff
+-added keybinds
+-updated authors
+-added avian origin
+-added rabbit origin
 </pre>
 <hr>
 <header>Again, still in early alpha. Most features do not work atm.</header>
 <blockquote><a href="https://modrinth.com/plugins/GenesisMC" rel="noopener nofollow ugc">Download link</a>
 
-<a href="https://streamelements.com/purplewolfmc/tip" rel="noopener nofollow ugc">Donate to support the project!</a>
+<a href="https://streamelements.com/duerismc/tip" rel="noopener nofollow ugc">Donate to support the project!</a>
 </blockquote>

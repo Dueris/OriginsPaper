@@ -2,7 +2,6 @@ package me.dueris.genesismc.core.origins.shulk;
 
 import me.dueris.genesismc.core.GenesisMC;
 import org.bukkit.*;
-import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;

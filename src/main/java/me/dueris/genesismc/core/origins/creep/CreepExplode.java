@@ -29,6 +29,7 @@ public class CreepExplode implements Listener {
         this.cooldown = new HashMap<>();
     }
 
+
     @EventHandler
     public void onShiftCreep(PlayerToggleSneakEvent e) {
         Player p = e.getPlayer();
@@ -91,7 +92,7 @@ public class CreepExplode implements Listener {
                             }
 
                         } else if (!cooldown.containsKey(p.getUniqueId()) || ((System.currentTimeMillis() - cooldown.get(p.getUniqueId())) >= 2300)) {
-                            p.sendActionBar(ChatColor.RED + "--");
+                            p.sendActionBar(ChatColor.RED + "[]");
                             p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 6, 4, false, false, false));
                         } else if (!cooldown.containsKey(p.getUniqueId()) || ((System.currentTimeMillis() - cooldown.get(p.getUniqueId())) >= 1700)) {
                             p.sendActionBar(ChatColor.YELLOW + "----");

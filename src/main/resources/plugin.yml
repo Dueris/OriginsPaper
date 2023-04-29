@@ -2,18 +2,38 @@ name: GenesisMC
 version: '${version}'
 main: me.dueris.genesismc.core.GenesisMC
 api-version: 1.19
-authors: [ Dueris ]
+authors: [ Dueris, GenesisMC Team ]
+folia-supported: true
 description: Bringing the life and fun of the Origins mod to PaperMC
 website: https://genesismc.gitbook.io/genesismc/
 commands:
   origin:
-    description: Main Origins Directory
+    description: The main root command for the genesis origin plugin.
+    permission: genesismc.origins.cmd.main
+    usage: /<command> <args>
+    aliases:
+      - o
   beta:
-    description: genesis beta
+    description: Beta Commands for genesis origins.
     permission: genesismc.origins.cmd.beta
+    usage: /<command> <args>
+    aliases:
+      - b
   shulker:
-    description: shulk main command
+    description: Opens the shulk inventory.
+    usage: /<command>
+    aliases:
+      - s
+  toggle:
+    description: Toggles an ability for your current origin.
+    usage: /<command>
+    aliases:
+      - t
+  power:
+    permission: genesismc.origins.cmd.power
 permissions:
+  genesismc.origins.cmd.power:
+    default: op
   genesismc.origins.cmd.beta:
     default: op
   genesismc.origins.human:
@@ -78,3 +98,7 @@ permissions:
     default: true
   genesismc.origins.cmd.get:
     default: op
+  genesismc.origins.cmd.enchant:
+    default: op
+  genesismc.origins.cmd.toggle:
+    default: true

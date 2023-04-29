@@ -10,7 +10,6 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
@@ -36,7 +35,9 @@ public class PhantomMain extends BukkitRunnable implements Listener {
                     if ((p.getLocation().getBlockY() + 1 > p.getWorld().getHighestBlockYAt(p.getLocation()))
                     ){
                         if(p.getGameMode() == GameMode.SURVIVAL || p.getGameMode() == GameMode.ADVENTURE){
-                            p.setFireTicks(25);
+                            if(p.getWorld().isDayTime() && !p.isInWaterOrRainOrBubbleColumn()){
+                                p.setFireTicks(100);
+                            }
                         }
                     }
                 }
