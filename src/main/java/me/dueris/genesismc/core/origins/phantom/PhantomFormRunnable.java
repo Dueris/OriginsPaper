@@ -47,10 +47,12 @@ public class PhantomFormRunnable extends BukkitRunnable {
                             p.setCollidable(false);
                             CraftPlayer craftPlayer = (CraftPlayer) p;
                             p.setGameMode(GameMode.SPECTATOR);
+                            p.setFlying(true);
 
                     }else{
                         if(p.getGameMode().equals(GameMode.SPECTATOR)){
                             p.setGameMode(p.getPreviousGameMode());
+                            p.setFlying(false);
                         }
                     }
 
