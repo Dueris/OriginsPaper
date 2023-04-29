@@ -105,7 +105,8 @@ public class KeybindHandler implements Listener {
 
                             p.openInventory(vault);
 
-                        } else if (originid == 7300041) {
+                        }
+                        if (originid == 7300041) {
                             int phantomid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER);
                             if (phantomid == 1) {
                                 if(p.getGameMode() != GameMode.SPECTATOR) {
@@ -122,8 +123,6 @@ public class KeybindHandler implements Listener {
                                     }else{
                                         p.sendMessage(RED + "You must be able to sprint to switch forms");
                                     }
-
-                                    CraftPlayer craftPlayer = (CraftPlayer) p;
 
                                 }else{p.sendMessage(ChatColor.RED + "You are unable to switch forms while inside a block or in spectator mode.");}
                             } else if (phantomid == 2) {
