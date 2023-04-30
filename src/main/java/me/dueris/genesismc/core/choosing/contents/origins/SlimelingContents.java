@@ -1,4 +1,4 @@
-package me.dueris.genesismc.api.events.choose.contents.core.origins;
+package me.dueris.genesismc.core.choosing.contents.origins;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -100,6 +100,7 @@ public class SlimelingContents {
         slime_meta.setDisplayName("Slimeling");
         ArrayList<String> slime_lore = new ArrayList<>();
         slime_lore.add(GREEN + "Slime Origin");
+        slime_meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
         slime_meta.setLore(slime_lore);
         slime.setItemMeta(slime_meta);
 

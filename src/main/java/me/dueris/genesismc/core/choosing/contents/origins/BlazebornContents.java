@@ -1,4 +1,4 @@
-package me.dueris.genesismc.api.events.choose.contents.core.origins;
+package me.dueris.genesismc.core.choosing.contents.origins;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -108,6 +108,7 @@ public class BlazebornContents {
         ArrayList<String> blaze_lore = new ArrayList<>();
         blaze_lore.add(GOLD + "Blaze Origin");
         blaze_meta.setLore(blaze_lore);
+        blaze_meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
         blaze.setItemMeta(blaze_meta);
 
 

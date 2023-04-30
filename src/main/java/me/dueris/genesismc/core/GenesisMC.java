@@ -124,7 +124,6 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         getCommand("shulker").setExecutor(new ShulkInv());
         getCommand("toggle").setExecutor(new ToggleCommand());
 //Event Handler Register
-        getServer().getPluginManager().registerEvents(new GenesisChooseListener(), this);
         getServer().getPluginManager().registerEvents(new EnderSilkTouch(), this);
         getServer().getPluginManager().registerEvents(new EnderTeleport(), this);
         getServer().getPluginManager().registerEvents(new EnderWater(), this);
@@ -149,11 +148,9 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         getServer().getPluginManager().registerEvents(new WaterProtBookGen(), this);
         getServer().getPluginManager().registerEvents(new KeybindHandler(), this);
         getServer().getPluginManager().registerEvents(new Info(), this);
-        getServer().getPluginManager().registerEvents(new ChoosingOpener(), this);
-        getServer().getPluginManager().registerEvents(new ChoosingMenuCORE(), this);
-        getServer().getPluginManager().registerEvents(new ChoosingMenuEXP(), this);
-        getServer().getPluginManager().registerEvents(new CustomOriginsMenu(), this);
-        getServer().getPluginManager().registerEvents(new ChoosingHandler(), this);
+        getServer().getPluginManager().registerEvents(new ChoosingCORE(), this);
+        getServer().getPluginManager().registerEvents(new ChoosingCUSTOM(), this);
+        getServer().getPluginManager().registerEvents(new ChoosingEXP(), this);
         plugin = this;
         getServer().getPluginManager().registerEvents(new DataContainer(), this);
         if (GenesisDataFiles.getPlugCon().getString("beta-enabled").equalsIgnoreCase("true")) {

@@ -1,4 +1,4 @@
-package me.dueris.genesismc.api.events.choose;
+package me.dueris.api.genesis.origin;
 
 import java.util.Random;
 

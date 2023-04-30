@@ -1,4 +1,4 @@
-package me.dueris.genesismc.api.events.choose.contents.core.origins;
+package me.dueris.genesismc.core.choosing.contents.origins;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -84,6 +84,7 @@ public class ArachnidContents {
         spider_meta.setDisplayName("Arachnid");
         ArrayList<String> spider_lore = new ArrayList<>();
         spider_lore.add(RED + "Spider Origin");
+        spider_meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
         spider_meta.setLore(spider_lore);
         spider.setItemMeta(spider_meta);
 

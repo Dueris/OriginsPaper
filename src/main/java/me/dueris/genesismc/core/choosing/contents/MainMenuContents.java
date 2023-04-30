@@ -1,4 +1,4 @@
-package me.dueris.genesismc.api.events.choose.contents;
+package me.dueris.genesismc.core.choosing.contents;
 
 import me.dueris.genesismc.core.files.GenesisDataFiles;
 import me.dueris.genesismc.core.items.OrbOfOrigins;
@@ -37,13 +37,25 @@ public class MainMenuContents {
         ItemStack elytrian = new ItemStack(Material.ELYTRA);
         ItemStack avian = new ItemStack(Material.FEATHER);
         ItemStack piglin = new ItemStack(Material.GOLD_INGOT);
-        ItemStack dragonborne = new ItemStack(Material.DRAGON_BREATH);
+        ItemStack sculkling = new ItemStack(Material.ECHO_SHARD);
         ItemStack blank = new ItemStack(Material.AIR);
         ItemStack custom_originmenu = new ItemStack(Material.TIPPED_ARROW);
         ItemStack expanded = new ItemStack(Material.MUSIC_DISC_OTHERSIDE);
         ItemStack description = new ItemStack(Material.MAP);
         ItemStack bars = new ItemStack(Material.IRON_BARS);
-        ItemStack random = OrbOfOrigins.orb;
+        ItemStack random = new ItemStack(Material.MAGMA_CREAM);
+
+        ItemMeta meta = random.getItemMeta();
+        meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
+        meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
+        meta.addItemFlags(ItemFlag.HIDE_DESTROYS);
+        meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+        meta.addItemFlags(ItemFlag.HIDE_PLACED_ON);
+        meta.setCustomModelData(00002);
+        meta.setDisplayName(org.bukkit.ChatColor.LIGHT_PURPLE + "Random Origin");
+        meta.setUnbreakable(true);
+        meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
+        random.setItemMeta(meta);
 
         if (GenesisDataFiles.getPlugCon().getString("human-disable").equalsIgnoreCase("false")) {
             ItemMeta human_meta = human.getItemMeta();
@@ -335,22 +347,22 @@ public class MainMenuContents {
             nope_meta.setLore(nope_lore);
             piglin.setItemMeta(nope_meta);
         }
-        if (GenesisDataFiles.getPlugCon().getString("dragonborne-disable").equalsIgnoreCase("false")) {
-            ItemMeta dragonborne_meta = dragonborne.getItemMeta();
-            dragonborne_meta.setDisplayName(DARK_PURPLE + "Dragonborne");
-            ArrayList<String> dragonborne_lore = new ArrayList<>();
-            dragonborne_lore.add(WHITE + "Dragon Origin");
-            dragonborne_meta.setLore(dragonborne_lore);
-            dragonborne.setItemMeta(dragonborne_meta);
+        if (GenesisDataFiles.getPlugCon().getString("sculkling-disable").equalsIgnoreCase("false")) {
+            ItemMeta sculkling_meta = sculkling.getItemMeta();
+            sculkling_meta.setDisplayName(BLUE + "Sculkling");
+            ArrayList<String> sculkling_lore = new ArrayList<>();
+            sculkling_lore.add(WHITE + "Sculkling Origin");
+            sculkling_meta.setLore(sculkling_lore);
+            sculkling.setItemMeta(sculkling_meta);
         } else {
-            ItemMeta nope_meta = dragonborne.getItemMeta();
+            ItemMeta nope_meta = sculkling.getItemMeta();
             nope_meta.setDisplayName(RED + "Unavailable");
             nope_meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
             nope_meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
             ArrayList<String> nope_lore = new ArrayList<>();
             nope_lore.add(RED + "This origin is locked by the server owner");
             nope_meta.setLore(nope_lore);
-            dragonborne.setItemMeta(nope_meta);
+            sculkling.setItemMeta(nope_meta);
         }
 
         ItemMeta ranmeta = random.getItemMeta();
@@ -385,7 +397,7 @@ public class MainMenuContents {
         ItemStack[] mainmenucontents = {human, enderian, shulk, arachnid, creep, phantom, slimeling, vexian, blazeborn,
                 description, description, description, description, description, description, description, description, description,
                 bars, bars, bars, bars, bars, bars, bars, bars, bars,
-                starborne, merling, allay, rabbit, bumblebee, elytrian, avian, piglin, dragonborne,
+                starborne, merling, allay, rabbit, bumblebee, elytrian, avian, piglin, sculkling,
                 description, description, description, description, description, description, description, description, description,
                 blank, blank, blank, expanded, random, custom_originmenu, blank, blank, blank};
 

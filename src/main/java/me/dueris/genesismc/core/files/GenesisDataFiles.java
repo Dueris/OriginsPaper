@@ -135,7 +135,7 @@ public class GenesisDataFiles {
     getPlugCon().addDefault("elytrian-disable", false);
     getPlugCon().addDefault("avian-disable", false);
     getPlugCon().addDefault("piglin-disable", false);
-    getPlugCon().addDefault("dragonborne-disable", false);
+    getPlugCon().addDefault("sculkling-disable", false);
     getPlugCon().addDefault("custom-origins", true);
     getPlugCon().addDefault("orb-of-origins-enabled", true);
     getPlugCon().addDefault("water-prot-enabled", true);

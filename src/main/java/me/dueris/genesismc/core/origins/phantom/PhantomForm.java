@@ -31,7 +31,7 @@ public class PhantomForm implements Listener {
 
     @EventHandler
     public void onKey(PlayerInteractEvent e) {
-        ItemStack spectatorswitch = new ItemStack(Material.FEATHER);
+        ItemStack spectatorswitch = new ItemStack(Material.PHANTOM_MEMBRANE);
         ItemMeta switch_meta = spectatorswitch.getItemMeta();
         switch_meta.setDisplayName(GRAY + "Phantom Form");
         ArrayList<String> pearl_lore = new ArrayList();
@@ -195,7 +195,7 @@ public class PhantomForm implements Listener {
 
     @EventHandler
     public void onDrop(PlayerDropItemEvent e){
-        ItemStack spectatorswitch = new ItemStack(Material.FEATHER);
+        ItemStack spectatorswitch = new ItemStack(Material.PHANTOM_MEMBRANE);
         ItemMeta switch_meta = spectatorswitch.getItemMeta();
         switch_meta.setDisplayName(GRAY + "Phantom Form");
         ArrayList<String> pearl_lore = new ArrayList();
@@ -218,7 +218,7 @@ public class PhantomForm implements Listener {
 
     @EventHandler
     public void onDeath(PlayerDeathEvent e){
-        ItemStack spectatorswitch = new ItemStack(Material.FEATHER);
+        ItemStack spectatorswitch = new ItemStack(Material.PHANTOM_MEMBRANE);
         ItemMeta switch_meta = spectatorswitch.getItemMeta();
         switch_meta.setDisplayName(GRAY + "Phantom Form");
         ArrayList<String> pearl_lore = new ArrayList();

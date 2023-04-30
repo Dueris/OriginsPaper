@@ -1,4 +1,4 @@
-package me.dueris.genesismc.api.events.choose.contents.core.origins;
+package me.dueris.genesismc.core.choosing.contents.origins;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -17,7 +17,7 @@ import static org.bukkit.ChatColor.*;
 public class StarborneContents {
     public static @Nullable ItemStack @NotNull [] StarborneContents(){
         ItemStack close = new ItemStack(Material.BARRIER);
-        ItemStack menu = new ItemStack(Material.ARROW);
+        ItemStack menu = new ItemStack(Material.SPECTRAL_ARROW);
         ItemStack star = new ItemStack(Material.NETHER_STAR);
         ItemStack air = new ItemStack(Material.AIR);
         ItemStack blank = new ItemStack(Material.PAPER);
@@ -125,6 +125,7 @@ public class StarborneContents {
         ArrayList<String> star_lore = new ArrayList<>();
         star_lore.add(LIGHT_PURPLE + "Starborne Origin");
         star_meta.setLore(star_lore);
+        star_meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
         star.setItemMeta(star_meta);
 
 

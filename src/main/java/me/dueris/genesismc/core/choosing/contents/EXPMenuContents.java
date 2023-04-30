@@ -1,4 +1,4 @@
-package me.dueris.genesismc.api.events.choose.contents;
+package me.dueris.genesismc.core.choosing.contents;
 
 import me.dueris.genesismc.core.items.OrbOfOrigins;
 import org.bukkit.ChatColor;

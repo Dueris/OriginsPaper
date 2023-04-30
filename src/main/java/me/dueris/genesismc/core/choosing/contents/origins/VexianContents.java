@@ -1,4 +1,4 @@
-package me.dueris.genesismc.api.events.choose.contents.core.origins;
+package me.dueris.genesismc.core.choosing.contents.origins;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -107,6 +107,7 @@ public class VexianContents {
         ItemMeta vex_meta = vex.getItemMeta();
         vex_meta.setDisplayName("Vexian");
         ArrayList<String> vex_lore = new ArrayList<>();
+        vex_meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
         vex_lore.add(AQUA + "Vex Origin");
         vex_meta.setLore(vex_lore);
         vex.setItemMeta(vex_meta);

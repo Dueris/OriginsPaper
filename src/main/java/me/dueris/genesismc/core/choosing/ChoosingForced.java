@@ -11,7 +11,7 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 
-import static me.dueris.genesismc.api.events.choose.contents.MainMenuContents.GenesisMainMenuContents;
+import static me.dueris.genesismc.core.choosing.contents.MainMenuContents.GenesisMainMenuContents;
 
 public class ChoosingForced extends BukkitRunnable {
     @Override

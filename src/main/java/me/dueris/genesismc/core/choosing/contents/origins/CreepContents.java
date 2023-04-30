@@ -1,4 +1,4 @@
-package me.dueris.genesismc.api.events.choose.contents.core.origins;
+package me.dueris.genesismc.core.choosing.contents.origins;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -80,6 +80,7 @@ public class CreepContents {
         ItemMeta creep_meta = creep.getItemMeta();
         creep_meta.setDisplayName("Creep");
         ArrayList<String> creep_lore = new ArrayList<>();
+        creep_meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
         creep_lore.add(GREEN + "Creeper Origin");
         creep_meta.setLore(creep_lore);
         creep.setItemMeta(creep_meta);

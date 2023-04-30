@@ -14,37 +14,12 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
-import org.checkerframework.checker.units.qual.N;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Random;
 
-import static me.dueris.genesismc.api.events.choose.RandomOriginID.RandomOrigin;
-
-public class CustomOriginsMenu implements Listener {
-
-    @EventHandler
-    public static void RANDOM_ORIGIN(InventoryClickEvent e){
-        if(e.getCurrentItem() != null){
-            if(e.getView().getTitle().equalsIgnoreCase("Choosing Menu")){
-                PersistentDataContainer data = e.getWhoClicked().getPersistentDataContainer();
-                int originid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER);
-                if(e.getCurrentItem().getItemMeta().getDisplayName().equalsIgnoreCase(ChatColor.LIGHT_PURPLE + "Random Origin")){
-                    data.set(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER, RandomOrigin());
-                    e.getWhoClicked().getScoreboardTags().remove("choosing");
-                    e.getWhoClicked().addScoreboardTag("chosen");
-                    e.getWhoClicked().closeInventory();
-
-                }
-            }
-        }
-
-
-    }
-
-
-    //custom origins menu
+public class ChoosingCUSTOM implements Listener {
 
     @EventHandler(priority = EventPriority.HIGH)
     public void CUSOTMCHOOSE_MENU(InventoryClickEvent e){
@@ -55,6 +30,8 @@ public class CustomOriginsMenu implements Listener {
                 Random random = new Random();
                 @NotNull Inventory custommenu = Bukkit.createInventory(e.getWhoClicked(), 54, "Custom Origins");
                 if (e.getCurrentItem().getType().equals(Material.TIPPED_ARROW)) {
+                    Player p = (Player) e.getWhoClicked();
+                    p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 10, 9);
 
                     ItemStack empty = new ItemStack(Material.AIR);
                     ItemStack orb = OrbOfOrigins.orb;
@@ -105,6 +82,5 @@ public class CustomOriginsMenu implements Listener {
             }
         }
     }
-
 
 }

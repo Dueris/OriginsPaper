@@ -70,7 +70,7 @@ permissions:
     default: true
   genesismc.origins.piglin:
     default: true
-  genesismc.origins.dragonborne:
+  genesismc.origins.sculkling:
     default: true
   genesismc.origins.cmd.main:
     default: true
