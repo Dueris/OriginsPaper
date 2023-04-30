@@ -1,10 +1,7 @@
 package me.dueris.genesismc.core;
 
 import me.dueris.genesismc.core.bukkitrunnables.*;
-import me.dueris.genesismc.core.choosing.ChoosingMenuCORE;
-import me.dueris.genesismc.core.choosing.ChoosingMenuEXP;
-import me.dueris.genesismc.core.choosing.ChoosingOpener;
-import me.dueris.genesismc.core.choosing.CustomOriginsMenu;
+import me.dueris.genesismc.core.choosing.*;
 import me.dueris.genesismc.core.commands.BetaCommands;
 import me.dueris.genesismc.core.commands.GenesisCommandManager;
 import me.dueris.genesismc.core.commands.TabAutoComplete;
@@ -91,6 +88,11 @@ public final class GenesisMC extends JavaPlugin implements Listener {
        } catch (ClassNotFoundException e) {
            //not folia
        }
+       if(Bukkit.getServer().getPluginManager().isPluginEnabled("Origins-Bukkit")){
+           getServer().getConsoleSender().sendMessage(ChatColor.RED + "[GenesisMC] Unable to start plugin due to Origins Bukkit being present. Using both will cause errors.");
+           getServer().getConsoleSender().sendMessage(ChatColor.GRAY + "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+           Bukkit.getServer().getPluginManager().disablePlugin(this);
+       }
 
         if (GenesisDataFiles.getPlugCon().getString("console-dump-onstartup").equalsIgnoreCase("true")) {
             getServer().getConsoleSender().sendMessage(ChatColor.GRAY + "[GenesisMC] Loading API version 0.1.1");
@@ -121,7 +123,6 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         getCommand("shulker").setExecutor(new ShulkInv());
         getCommand("toggle").setExecutor(new ToggleCommand());
 //Event Handler Register
-        getServer().getPluginManager().registerEvents(new GenesisChooseListener(), this);
         getServer().getPluginManager().registerEvents(new EnderSilkTouch(), this);
         getServer().getPluginManager().registerEvents(new EnderTeleport(), this);
         getServer().getPluginManager().registerEvents(new EnderWater(), this);
@@ -146,10 +147,9 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         getServer().getPluginManager().registerEvents(new WaterProtBookGen(), this);
         getServer().getPluginManager().registerEvents(new KeybindHandler(), this);
         getServer().getPluginManager().registerEvents(new Info(), this);
-        getServer().getPluginManager().registerEvents(new ChoosingOpener(), this);
-        getServer().getPluginManager().registerEvents(new ChoosingMenuCORE(), this);
-        getServer().getPluginManager().registerEvents(new ChoosingMenuEXP(), this);
-        getServer().getPluginManager().registerEvents(new CustomOriginsMenu(), this);
+        getServer().getPluginManager().registerEvents(new ChoosingCORE(), this);
+        getServer().getPluginManager().registerEvents(new ChoosingCUSTOM(), this);
+        getServer().getPluginManager().registerEvents(new ChoosingEXP(), this);
         plugin = this;
         getServer().getPluginManager().registerEvents(new DataContainer(), this);
         if (GenesisDataFiles.getPlugCon().getString("beta-enabled").equalsIgnoreCase("true")) {
@@ -159,15 +159,14 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         InfinPearl.init();
         WaterProtItem.init();
         //runnables main
+        ChoosingForced forced = new ChoosingForced();
+        forced.runTaskTimer(this, 0, 5);
 //particle handler
         ParticleHandler handler = new ParticleHandler();
         handler.runTaskTimer(this, 0, 5);
 //scoreboard
         ScoreboardRunnable scorebo = new ScoreboardRunnable();
         scorebo.runTaskTimer(this, 0, 5);
-//forcechoose
-        ChooseRunnable forcechoose = new ChooseRunnable();
-        forcechoose.runTaskTimer(this, 0, 5);
 //enderian
         EnderianRunnable enderrun = new EnderianRunnable();
         enderrun.runTaskTimer(this, 0, 5);
@@ -242,6 +241,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 
     @Override
     public void onDisable() {
+        getServer().getConsoleSender().sendMessage(ChatColor.RED + "[GenesisMC] Disabling GenesisMC Origins..");
         // Disable enchantments
         try {
             Field keyField = Enchantment.class.getDeclaredField("byKey");

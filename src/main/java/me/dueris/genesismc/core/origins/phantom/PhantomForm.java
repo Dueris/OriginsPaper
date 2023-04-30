@@ -31,7 +31,7 @@ public class PhantomForm implements Listener {
 
     @EventHandler
     public void onKey(PlayerInteractEvent e) {
-        ItemStack spectatorswitch = new ItemStack(Material.FEATHER);
+        ItemStack spectatorswitch = new ItemStack(Material.PHANTOM_MEMBRANE);
         ItemMeta switch_meta = spectatorswitch.getItemMeta();
         switch_meta.setDisplayName(GRAY + "Phantom Form");
         ArrayList<String> pearl_lore = new ArrayList();
@@ -117,7 +117,7 @@ public class PhantomForm implements Listener {
 
                 //bug fix attempt 3 lol
 
-                if(e.getTo().getY() <= -63.5){
+                if(e.getTo().getY() <= -63.5 && !p.getWorld().hasSkyLight()){
                     final Location loc = new Location(p.getWorld(), e.getFrom().getX(), -63, e.getFrom().getZ(), e.getTo().getYaw(), e.getTo().getPitch());
                     p.teleportAsync(loc);
                     p.sendMessage("You are unable to go bellow Y level -64 while in Phantom Form");
@@ -195,7 +195,7 @@ public class PhantomForm implements Listener {
 
     @EventHandler
     public void onDrop(PlayerDropItemEvent e){
-        ItemStack spectatorswitch = new ItemStack(Material.FEATHER);
+        ItemStack spectatorswitch = new ItemStack(Material.PHANTOM_MEMBRANE);
         ItemMeta switch_meta = spectatorswitch.getItemMeta();
         switch_meta.setDisplayName(GRAY + "Phantom Form");
         ArrayList<String> pearl_lore = new ArrayList();
@@ -218,7 +218,7 @@ public class PhantomForm implements Listener {
 
     @EventHandler
     public void onDeath(PlayerDeathEvent e){
-        ItemStack spectatorswitch = new ItemStack(Material.FEATHER);
+        ItemStack spectatorswitch = new ItemStack(Material.PHANTOM_MEMBRANE);
         ItemMeta switch_meta = spectatorswitch.getItemMeta();
         switch_meta.setDisplayName(GRAY + "Phantom Form");
         ArrayList<String> pearl_lore = new ArrayList();
