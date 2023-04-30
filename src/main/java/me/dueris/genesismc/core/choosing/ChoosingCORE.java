@@ -68,41 +68,6 @@ public class ChoosingCORE implements Listener {
     }
 
     @EventHandler
-    public static void RANDOM_ORIGIN(InventoryClickEvent e) {
-        if (GenesisDataFiles.getPlugCon().getString("orb-of-origins-enabled").equalsIgnoreCase("true")) {
-
-            ItemStack random = new ItemStack(Material.MAGMA_CREAM);
-
-            ItemMeta meta = random.getItemMeta();
-            meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
-            meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
-            meta.addItemFlags(ItemFlag.HIDE_DESTROYS);
-            meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-            meta.addItemFlags(ItemFlag.HIDE_PLACED_ON);
-            meta.setCustomModelData(00002);
-            meta.setDisplayName(ChatColor.LIGHT_PURPLE + "Random Origin");
-            meta.setUnbreakable(true);
-            meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
-            random.setItemMeta(meta);
-            if (e.getView().getTitle().equalsIgnoreCase("Choosing Menu")) {
-                PersistentDataContainer data = e.getWhoClicked().getPersistentDataContainer();
-                if(e.getCurrentItem() == null) return;
-                if (e.getCurrentItem().equals(random)) {
-                    data.set(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER, RandomOrigin());
-                    e.getWhoClicked().getScoreboardTags().remove("choosing");
-                    e.getWhoClicked().addScoreboardTag("chosen");
-                    e.getWhoClicked().closeInventory();
-                    Player p = (Player) e.getWhoClicked();
-                    p.setGameMode(p.getPreviousGameMode());
-                    DefaultChoose.DefaultChoose();
-
-                }
-            }
-        }
-    }
-
-
-    @EventHandler
     public void OnInteractCancel(InventoryClickEvent e){
 
         if(e.getCurrentItem() != null){
