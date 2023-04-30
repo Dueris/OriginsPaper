@@ -117,7 +117,7 @@ public class PhantomForm implements Listener {
 
                 //bug fix attempt 3 lol
 
-                if(e.getTo().getY() <= -63.5){
+                if(e.getTo().getY() <= -63.5 && !p.getWorld().hasSkyLight()){
                     final Location loc = new Location(p.getWorld(), e.getFrom().getX(), -63, e.getFrom().getZ(), e.getTo().getYaw(), e.getTo().getPitch());
                     p.teleportAsync(loc);
                     p.sendMessage("You are unable to go bellow Y level -64 while in Phantom Form");

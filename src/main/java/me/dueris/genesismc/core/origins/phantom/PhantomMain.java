@@ -49,7 +49,7 @@ public class PhantomMain extends BukkitRunnable implements Listener {
 
     @EventHandler
     public void onRespawn(PlayerRespawnEvent e){
-        ItemStack spectatorswitch = new ItemStack(Material.FEATHER);
+        ItemStack spectatorswitch = new ItemStack(Material.PHANTOM_MEMBRANE);
         ItemMeta switch_meta = spectatorswitch.getItemMeta();
         switch_meta.setDisplayName(GRAY + "Phantom Form");
         ArrayList<String> pearl_lore = new ArrayList();
