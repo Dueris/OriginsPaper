@@ -88,7 +88,6 @@ public final class GenesisMC extends JavaPlugin implements Listener {
        } catch (ClassNotFoundException e) {
            //not folia
        }
-
        if(Bukkit.getServer().getPluginManager().isPluginEnabled("Origins-Bukkit")){
            getServer().getConsoleSender().sendMessage(ChatColor.RED + "[GenesisMC] Unable to start plugin due to Origins Bukkit being present. Using both will cause errors.");
            getServer().getConsoleSender().sendMessage(ChatColor.GRAY + "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
