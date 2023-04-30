@@ -42,7 +42,7 @@ public class PhantomRunnable extends BukkitRunnable {
                         scoreboard.registerNewTeam("origin-players");
                     }
                 }
-                ItemStack spectatorswitch = new ItemStack(Material.FEATHER);
+                ItemStack spectatorswitch = new ItemStack(Material.PHANTOM_MEMBRANE);
                 ItemMeta switch_meta = spectatorswitch.getItemMeta();
                 switch_meta.setDisplayName(GRAY + "Phantom Form");
                 ArrayList<String> feather_lore = new ArrayList();

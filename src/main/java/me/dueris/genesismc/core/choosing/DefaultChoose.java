@@ -1,4 +1,4 @@
-package me.dueris.api.genesis;
+package me.dueris.genesismc.core.choosing;
 
 import me.dueris.genesismc.core.GenesisMC;
 import me.dueris.genesismc.core.items.OrbOfOrigins;

@@ -1,10 +1,8 @@
 package me.dueris.genesismc.core.choosing;
 
-import me.dueris.api.genesis.DefaultChoose;
 import me.dueris.genesismc.core.GenesisMC;
 import me.dueris.genesismc.core.choosing.contents.origins.*;
 import me.dueris.genesismc.core.files.GenesisDataFiles;
-import me.dueris.genesismc.core.items.OrbOfOrigins;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.enchantments.Enchantment;
@@ -25,9 +23,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
-import static me.dueris.api.genesis.origin.RandomOriginID.RandomOrigin;
+import static me.dueris.api.origin.RandomOriginID.RandomOrigin;
 import static me.dueris.genesismc.core.choosing.contents.MainMenuContents.GenesisMainMenuContents;
-import static me.dueris.genesismc.core.items.OrbOfOrigins.orb;
 import static org.bukkit.ChatColor.*;
 
 public class ChoosingCORE implements Listener {
@@ -69,41 +66,6 @@ public class ChoosingCORE implements Listener {
             }
         }
     }
-
-    @EventHandler
-    public static void RANDOM_ORIGIN(InventoryClickEvent e) {
-        if (GenesisDataFiles.getPlugCon().getString("orb-of-origins-enabled").equalsIgnoreCase("true")) {
-
-            ItemStack random = new ItemStack(Material.MAGMA_CREAM);
-
-            ItemMeta meta = random.getItemMeta();
-            meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
-            meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
-            meta.addItemFlags(ItemFlag.HIDE_DESTROYS);
-            meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-            meta.addItemFlags(ItemFlag.HIDE_PLACED_ON);
-            meta.setCustomModelData(00002);
-            meta.setDisplayName(ChatColor.LIGHT_PURPLE + "Random Origin");
-            meta.setUnbreakable(true);
-            meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
-            random.setItemMeta(meta);
-            if (e.getView().getTitle().equalsIgnoreCase("Choosing Menu")) {
-                PersistentDataContainer data = e.getWhoClicked().getPersistentDataContainer();
-                if(e.getCurrentItem() == null) return;
-                if (e.getCurrentItem().equals(random)) {
-                    data.set(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER, RandomOrigin());
-                    e.getWhoClicked().getScoreboardTags().remove("choosing");
-                    e.getWhoClicked().addScoreboardTag("chosen");
-                    e.getWhoClicked().closeInventory();
-                    Player p = (Player) e.getWhoClicked();
-                    p.setGameMode(p.getPreviousGameMode());
-                    DefaultChoose.DefaultChoose();
-
-                }
-            }
-        }
-    }
-
 
     @EventHandler
     public void OnInteractCancel(InventoryClickEvent e){

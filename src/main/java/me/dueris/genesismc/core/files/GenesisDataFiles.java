@@ -109,6 +109,7 @@ public class GenesisDataFiles {
     getPlugCon().addDefault("beta-enabled", false);
     getPlugCon().addDefault("origins-expanded", false);
     getPlugCon().addDefault("use-plugin-detection", true);
+    getPlugCon().addDefault("use-builtin-api", true);
     getPlugCon().addDefault("config-version", "1016788");
     getPlugCon().addDefault("console-dump-onstartup", false);
     getPlugCon().addDefault("human-disable", false);
