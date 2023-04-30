@@ -103,8 +103,6 @@ public class Info extends SubCommand implements Listener {
                     }
                     if(originidp == 4307015){
                         p.sendMessage(p.getName() + " has the Dragonborne origin");
-                    }else{
-                        p.sendMessage(p.getName() + " has an unknown origin, or custom origin");
                     }
                 }
                 if(args[2].equalsIgnoreCase("keybind")){
