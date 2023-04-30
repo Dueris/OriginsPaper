@@ -26,7 +26,6 @@ public class CustomOriginsMenu implements Listener {
 
     @EventHandler
     public static void RANDOM_ORIGIN(InventoryClickEvent e){
-
         if(e.getCurrentItem() != null){
             if(e.getView().getTitle().equalsIgnoreCase("Choosing Menu")){
                 PersistentDataContainer data = e.getWhoClicked().getPersistentDataContainer();
