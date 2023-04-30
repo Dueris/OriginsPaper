@@ -1,6 +1,5 @@
 package me.dueris.genesismc.core.choosing;
 
-import me.dueris.api.DefaultChoose;
 import me.dueris.genesismc.core.GenesisMC;
 import me.dueris.genesismc.core.choosing.contents.origins.*;
 import me.dueris.genesismc.core.files.GenesisDataFiles;
