@@ -1,7 +1,7 @@
-package me.dueris.genesismc.api.choose.contents;
+package me.dueris.genesismc.api.events.choose.contents;
 
 import me.dueris.genesismc.core.items.OrbOfOrigins;
-import org.bukkit.Color;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
@@ -28,7 +28,7 @@ public class EXPMenuContents {
         bars.setItemMeta(barmeta);
 
         ItemMeta menumeta = menu.getItemMeta();
-        menumeta.setDisplayName(Color.AQUA + "Return");
+        menumeta.setDisplayName(ChatColor.AQUA + "Return");
         menumeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
         ArrayList<String> menulore = new ArrayList<>();
         menumeta.setLore(menulore);

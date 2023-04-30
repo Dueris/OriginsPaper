@@ -1,4 +1,4 @@
-package me.dueris.genesismc.api.choose.contents;
+package me.dueris.genesismc.api.events.choose.contents;
 
 import me.dueris.genesismc.core.files.GenesisDataFiles;
 import me.dueris.genesismc.core.items.OrbOfOrigins;

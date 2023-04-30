@@ -1,8 +1,4 @@
-package me.dueris.genesismc.api.choose;
-
-import me.dueris.genesismc.core.GenesisMC;
-import org.bukkit.NamespacedKey;
-import org.bukkit.persistence.PersistentDataType;
+package me.dueris.genesismc.api.events.choose;
 
 import java.util.Random;
 

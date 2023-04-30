@@ -153,6 +153,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         getServer().getPluginManager().registerEvents(new ChoosingMenuCORE(), this);
         getServer().getPluginManager().registerEvents(new ChoosingMenuEXP(), this);
         getServer().getPluginManager().registerEvents(new CustomOriginsMenu(), this);
+        getServer().getPluginManager().registerEvents(new ChoosingHandler(), this);
         plugin = this;
         getServer().getPluginManager().registerEvents(new DataContainer(), this);
         if (GenesisDataFiles.getPlugCon().getString("beta-enabled").equalsIgnoreCase("true")) {

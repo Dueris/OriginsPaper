@@ -1,10 +1,8 @@
 package me.dueris.genesismc.core.choosing;
 
-import me.dueris.genesismc.api.choose.RandomOriginID;
 import me.dueris.genesismc.core.GenesisMC;
 import me.dueris.genesismc.core.items.OrbOfOrigins;
 import org.bukkit.*;
-import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -16,12 +14,13 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
+import org.checkerframework.checker.units.qual.N;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Random;
 
-import static me.dueris.genesismc.api.choose.RandomOriginID.RandomOrigin;
+import static me.dueris.genesismc.api.events.choose.RandomOriginID.RandomOrigin;
 
 public class CustomOriginsMenu implements Listener {
 
@@ -32,24 +31,22 @@ public class CustomOriginsMenu implements Listener {
             if(e.getView().getTitle().equalsIgnoreCase("Choosing Menu")){
                 PersistentDataContainer data = e.getWhoClicked().getPersistentDataContainer();
                 int originid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER);
-                if(e.getCurrentItem().getType() == Material.MAGMA_CREAM && e.getCurrentItem().getItemMeta().getDisplayName().equalsIgnoreCase(ChatColor.LIGHT_PURPLE + "Random Origin")) {
+                if(e.getCurrentItem().getItemMeta().getDisplayName().equalsIgnoreCase(ChatColor.LIGHT_PURPLE + "Random Origin")){
 
-                    e.getWhoClicked().getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER, RandomOrigin());
-                    e.getWhoClicked().closeInventory();
+                    data.set(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER, RandomOrigin());
                     e.getWhoClicked().getScoreboardTags().remove("choosing");
-                    e.getWhoClicked().removeScoreboardTag("choosing");
                     e.getWhoClicked().addScoreboardTag("chosen");
-                    Player p = (Player) e.getWhoClicked();
-                    p.isSneaking();
-                }else{
-                    e.setCancelled(true);
-                }
+                    e.getWhoClicked().closeInventory();
 
+                }
             }
         }
-        
-        
+
+
     }
+
+
+    //custom origins menu
 
     @EventHandler(priority = EventPriority.HIGH)
     public void CUSOTMCHOOSE_MENU(InventoryClickEvent e){
@@ -77,7 +74,7 @@ public class CustomOriginsMenu implements Listener {
                     bars.setItemMeta(barmeta);
 
                     ItemMeta menumeta = menu.getItemMeta();
-                    menumeta.setDisplayName(Color.AQUA + "Return");
+                    menumeta.setDisplayName(ChatColor.AQUA + "Return");
                     menumeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
                     ArrayList<String> menulore = new ArrayList<>();
                     menumeta.setLore(menulore);

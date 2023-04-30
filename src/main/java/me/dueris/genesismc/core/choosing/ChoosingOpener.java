@@ -14,7 +14,7 @@ import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 
-import static me.dueris.genesismc.api.choose.contents.MainMenuContents.GenesisMainMenuContents;
+import static me.dueris.genesismc.api.events.choose.contents.MainMenuContents.GenesisMainMenuContents;
 
 public class ChoosingOpener implements Listener {
 
@@ -36,17 +36,20 @@ public class ChoosingOpener implements Listener {
 
         if(e.getCurrentItem() != null){
             if(e.getView().getTitle().equalsIgnoreCase("Choosing Menu")){
+                if(e.getCurrentItem().getType().equals(Material.SPECTRAL_ARROW)) {
+                    e.getClickedInventory().setContents(GenesisMainMenuContents());
+                    e.setCancelled(true);
+                }else{e.setCancelled(true);}
 
-                e.setCancelled(true);
 
             }else{
                 if(e.getView().getTitle().equalsIgnoreCase("Custom Origins") || e.getView().getTitle().equalsIgnoreCase("Expanded Origins")){
-                    e.setCancelled(true);
                     if(e.getCurrentItem().getType().equals(Material.SPECTRAL_ARROW)){
                         @NotNull Inventory mainmenu = Bukkit.createInventory(e.getWhoClicked(), 54, "Choosing Menu");
                             mainmenu.setContents(GenesisMainMenuContents());
                             e.getWhoClicked().openInventory(mainmenu);
                     }
+                    e.setCancelled(true);
                 }
             }
         }

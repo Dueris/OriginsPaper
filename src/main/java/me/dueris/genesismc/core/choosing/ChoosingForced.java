@@ -11,7 +11,7 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 
-import static me.dueris.genesismc.api.choose.contents.MainMenuContents.GenesisMainMenuContents;
+import static me.dueris.genesismc.api.events.choose.contents.MainMenuContents.GenesisMainMenuContents;
 
 public class ChoosingForced extends BukkitRunnable {
     @Override
@@ -37,6 +37,7 @@ public class ChoosingForced extends BukkitRunnable {
                 } else {
                     if (p.getGameMode().equals(GameMode.SPECTATOR)) {
                         p.setGameMode(p.getPreviousGameMode());
+
                     } else {
                         p.setGameMode(p.getGameMode());
                     }
