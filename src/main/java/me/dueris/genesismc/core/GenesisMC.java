@@ -70,7 +70,6 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         GenesisDataFiles.setDefaults();
         GenesisDataFiles.save();
 
-
         //start
 
         getServer().getConsoleSender().sendMessage(ChatColor.RED + "[GenesisMC]    ____                               _         __  __    ____ ");
@@ -111,6 +110,12 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         } else {
             //PurpleWolfAPI not avalible, inject built-in
             getServer().getConsoleSender().sendMessage(ChatColor.LIGHT_PURPLE + "[GenesisMC] PurpleWolfAPI not detected. Injecting built-in API");
+        }
+
+        //Custom origins loaded
+        getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "[GenesisMC] Loading custom origins");
+        for (int originid : GenesisDataFiles.getCustomOriginIds()) {
+            getServer().getConsoleSender().sendMessage("[GenesisMC] Loaded \""+GenesisDataFiles.getCustomOriginName(originid));
         }
 
         getServer().getConsoleSender().sendMessage(ChatColor.GRAY + "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
