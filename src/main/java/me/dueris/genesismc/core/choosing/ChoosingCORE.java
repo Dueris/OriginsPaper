@@ -1,10 +1,9 @@
 package me.dueris.genesismc.core.choosing;
 
-import me.dueris.api.genesis.DefaultChoose;
+import me.dueris.api.DefaultChoose;
 import me.dueris.genesismc.core.GenesisMC;
 import me.dueris.genesismc.core.choosing.contents.origins.*;
 import me.dueris.genesismc.core.files.GenesisDataFiles;
-import me.dueris.genesismc.core.items.OrbOfOrigins;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.enchantments.Enchantment;
@@ -25,9 +24,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
-import static me.dueris.api.genesis.origin.RandomOriginID.RandomOrigin;
+import static me.dueris.api.origin.RandomOriginID.RandomOrigin;
 import static me.dueris.genesismc.core.choosing.contents.MainMenuContents.GenesisMainMenuContents;
-import static me.dueris.genesismc.core.items.OrbOfOrigins.orb;
 import static org.bukkit.ChatColor.*;
 
 public class ChoosingCORE implements Listener {

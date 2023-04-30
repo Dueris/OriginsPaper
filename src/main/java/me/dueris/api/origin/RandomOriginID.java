@@ -1,4 +1,4 @@
-package me.dueris.api.genesis.origin;
+package me.dueris.api.origin;
 
 import java.util.Random;
 
