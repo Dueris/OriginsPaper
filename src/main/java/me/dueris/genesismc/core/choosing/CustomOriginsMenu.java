@@ -38,6 +38,7 @@ public class CustomOriginsMenu implements Listener {
                     e.getWhoClicked().addScoreboardTag("chosen");
                     e.getWhoClicked().closeInventory();
 
+
                 }
             }
         }
