@@ -31,7 +31,6 @@ public class CustomOriginsMenu implements Listener {
                 PersistentDataContainer data = e.getWhoClicked().getPersistentDataContainer();
                 int originid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER);
                 if(e.getCurrentItem().getItemMeta().getDisplayName().equalsIgnoreCase(ChatColor.LIGHT_PURPLE + "Random Origin")){
-
                     data.set(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER, RandomOrigin());
                     e.getWhoClicked().getScoreboardTags().remove("choosing");
                     e.getWhoClicked().addScoreboardTag("chosen");
