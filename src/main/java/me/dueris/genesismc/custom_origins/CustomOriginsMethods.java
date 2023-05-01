@@ -103,7 +103,7 @@ public class CustomOriginsMethods {
 
     public static boolean getCustomOriginUnChoosable(String originTag) {
         Object value = getCustomOriginDetail(originTag, "unchoosable");
-        if (value == null) return true;
+        if (value == null) return false;
         return (Boolean) value;
     }
 
