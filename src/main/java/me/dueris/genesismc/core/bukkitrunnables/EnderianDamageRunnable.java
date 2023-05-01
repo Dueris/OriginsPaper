@@ -2,7 +2,6 @@ package me.dueris.genesismc.core.bukkitrunnables;
 
 import me.dueris.genesismc.core.GenesisMC;
 import org.bukkit.*;
-import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.persistence.PersistentDataContainer;

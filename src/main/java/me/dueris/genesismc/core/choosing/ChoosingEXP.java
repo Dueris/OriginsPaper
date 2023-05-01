@@ -17,8 +17,6 @@ import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Random;
-
 public class ChoosingEXP implements Listener {
 
     @EventHandler(priority = EventPriority.HIGH)

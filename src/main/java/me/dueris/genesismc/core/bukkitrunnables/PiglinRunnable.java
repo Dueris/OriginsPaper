@@ -3,8 +3,6 @@ package me.dueris.genesismc.core.bukkitrunnables;
 import me.dueris.genesismc.core.GenesisMC;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
