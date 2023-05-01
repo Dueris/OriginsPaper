@@ -36,9 +36,9 @@ public class ChoosingCORE implements Listener {
             if (GenesisDataFiles.getPlugCon().getString("orb-of-origins-enabled").equalsIgnoreCase("true")) {
                 if (e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.LEFT_CLICK_AIR || e.getAction() == Action.LEFT_CLICK_BLOCK || e.getAction() == Action.RIGHT_CLICK_BLOCK) {
                     if (p.getOpenInventory().getBottomInventory() != null) ;
-                    ItemStack random = new ItemStack(Material.MAGMA_CREAM);
+                    ItemStack orb = new ItemStack(Material.MAGMA_CREAM);
 
-                    ItemMeta meta = random.getItemMeta();
+                    ItemMeta meta = orb.getItemMeta();
                     meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
                     meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
                     meta.addItemFlags(ItemFlag.HIDE_DESTROYS);
@@ -48,13 +48,13 @@ public class ChoosingCORE implements Listener {
                     meta.setDisplayName(GenesisDataFiles.getOrbCon().getString("name"));
                     meta.setUnbreakable(true);
                     meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
-                    random.setItemMeta(meta);
+                    orb.setItemMeta(meta);
                     PersistentDataContainer data = p.getPersistentDataContainer();
                     @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
                     int phantomid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER);
                     if (phantomid == 1) ;
                     if (e.getItem() != null && e.getItem().getType() != null) {
-                        if (e.getItem().equals(random)) {
+                        if (e.getItem().isSimilar(orb)) {
 
                             @NotNull Inventory mainmenu = Bukkit.createInventory(e.getPlayer(), 54, "Choosing Menu");
                             mainmenu.setContents(GenesisMainMenuContents());
