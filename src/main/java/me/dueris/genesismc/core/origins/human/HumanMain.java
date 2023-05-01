@@ -18,7 +18,7 @@ public class HumanMain implements Listener {
 
         PersistentDataContainer data = p.getPersistentDataContainer();
         @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
-        if (originid == 0004013 || originid == 0) {
+        if (origintag.equalsIgnoreCase("genesis:origin-human") || origintag.equalsIgnoreCase("genesis:origin-null")) {
                 p.getAttribute(Attribute.GENERIC_ARMOR).setBaseValue(0);
                 p.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20);
                 p.setInvisible(false);

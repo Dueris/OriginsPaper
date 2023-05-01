@@ -30,9 +30,8 @@ public class PhantomMain extends BukkitRunnable implements Listener {
             PersistentDataContainer data = p.getPersistentDataContainer();
             @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
             int phantomid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER);
-            if (originid == 7300041) {
+            if (origintag.equalsIgnoreCase("genesis:origin-phantom")) {
                 if (phantomid != 2) {
-                    Block b = p.getWorld().getHighestBlockAt(p.getLocation());
                     if ((p.getLocation().getBlockY() + 1 > p.getWorld().getHighestBlockYAt(p.getLocation()))
                     ){
                         if(p.getGameMode() == GameMode.SURVIVAL || p.getGameMode() == GameMode.ADVENTURE){
@@ -64,7 +63,7 @@ public class PhantomMain extends BukkitRunnable implements Listener {
         Player p = e.getPlayer();
         PersistentDataContainer data = p.getPersistentDataContainer();
         @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
-        if (originid == 7300041) {
+        if (origintag.equalsIgnoreCase("genesis:origin-phantom")) {
             e.getPlayer().getInventory().addItem(spectatorswitch);
         }
     }

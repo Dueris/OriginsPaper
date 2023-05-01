@@ -48,7 +48,7 @@ public class RabbitLeap implements Listener {
     public void onRabbitLeap(PlayerToggleSneakEvent e) {
         PersistentDataContainer data = e.getPlayer().getPersistentDataContainer();
         @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
-        if (originid == 5308033) {
+        if (origintag.equalsIgnoreCase("genesis:origin-rabbit")) {
             Player p = e.getPlayer();
             int toggleState = data.get(new NamespacedKey(GenesisMC.getPlugin(), "toggle"), PersistentDataType.INTEGER);
             if (p.isSneaking()) return;
@@ -136,7 +136,7 @@ public class RabbitLeap implements Listener {
 
         PersistentDataContainer data = p.getPersistentDataContainer();
         @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
-        if (originid == 5308033) {
+        if (origintag.equalsIgnoreCase("genesis:origin-rabbit")) {
             if (e.getCause() == EntityDamageEvent.DamageCause.FALL) {
                 if (inAir.contains(p.getUniqueId())) {
                     e.setCancelled(true);

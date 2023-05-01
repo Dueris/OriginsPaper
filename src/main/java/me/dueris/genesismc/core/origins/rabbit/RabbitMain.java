@@ -25,7 +25,7 @@ public class RabbitMain implements Listener {
 
         PersistentDataContainer data = p.getPersistentDataContainer();
         @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
-        if (originid == 5308033) {
+        if (origintag.equalsIgnoreCase("genesis:origin-rabbit")) {
             Random random = new Random();
             int randInt = random.nextInt(9);
             p.sendMessage(String.valueOf(randInt));
@@ -39,7 +39,7 @@ public class RabbitMain implements Listener {
     public void onItemConsume(PlayerInteractEvent e) {
         PersistentDataContainer data = e.getPlayer().getPersistentDataContainer();
         @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
-        if (originid == 5308033) {
+        if (origintag.equalsIgnoreCase("genesis:origin-rabbit")) {
             @NotNull ItemStack item = e.getItem();
 
             if (item == null) return;;

@@ -22,7 +22,7 @@ public class ShulkMain implements Listener {
     Player p = e.getPlayer();
     PersistentDataContainer data = p.getPersistentDataContainer();
     @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
-    if (originid == 6503044) {
+    if (origintag.equalsIgnoreCase("genesis:origin-shulk")) {
       if (p.isSprinting() && !p.getGameMode().equals(GameMode.CREATIVE) && !p.getGameMode().equals(GameMode.SPECTATOR)) {
         Random random = new Random();
         int r = random.nextInt(750);
@@ -41,7 +41,7 @@ public class ShulkMain implements Listener {
     Player p = e.getPlayer();
     PersistentDataContainer data = p.getPersistentDataContainer();
     @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
-    if (originid == 6503044) {
+    if (origintag.equalsIgnoreCase("genesis:origin-shulk")) {
       if(e.getItem() != null){
         if(e.getItem().getType().equals(SHIELD)){
           e.setCancelled(true);
@@ -57,13 +57,11 @@ public class ShulkMain implements Listener {
 
   @EventHandler
   public void onBreakShulk(BlockBreakEvent e) {
-    Collection<ItemStack> drops = e.getBlock().getDrops();
-    Collection drope = e.getBlock().getDrops();
     Player p = e.getPlayer();
     ItemStack i = new ItemStack(e.getBlock().getType(), 1);
     PersistentDataContainer data = p.getPersistentDataContainer();
     @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
-    if (originid == 6503044) {
+    if (origintag.equalsIgnoreCase("genesis:origin-shulk")) {
       if (nat_stones.contains(e.getBlock().getType())) {
         if (!p.getGameMode().equals(GameMode.CREATIVE)) {
           if (e.getBlock().getType().equals(STONE)) {
@@ -85,7 +83,7 @@ public class ShulkMain implements Listener {
     if (e.getEntity() instanceof Player || e.getEntity() instanceof HumanEntity) {
       PersistentDataContainer data = e.getEntity().getPersistentDataContainer();
       @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
-      if (originid == 6503044) {
+      if (origintag.equalsIgnoreCase("genesis:origin-shulk")) {
         Player p = (Player) e.getEntity();
         Random random = new Random();
 
@@ -130,7 +128,7 @@ public class ShulkMain implements Listener {
     if (e.getEntity() instanceof Player || e.getEntity() instanceof HumanEntity) {
     PersistentDataContainer data = e.getEntity().getPersistentDataContainer();
       @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
-      if (originid == 6503044) {
+      if (origintag.equalsIgnoreCase("genesis:origin-shulk")) {
         e.getEntity().getWorld().playSound(e.getEntity().getLocation(), Sound.ENTITY_SHULKER_HURT, 10.0F, 5.0F);
         Random random = new Random();
 
@@ -148,7 +146,7 @@ public class ShulkMain implements Listener {
     if (e.getEntity() instanceof Player || e.getEntity() instanceof HumanEntity) {
       PersistentDataContainer data = e.getEntity().getPersistentDataContainer();
       @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
-      if (originid == 6503044) {
+      if (origintag.equalsIgnoreCase("genesis:origin-shulk")) {
         e.getEntity().getWorld().playSound(e.getEntity().getLocation(), Sound.ENTITY_SHULKER_DEATH, 10.0F, 5.0F);
         Random random = new Random();
         int r = random.nextInt(100);
@@ -165,9 +163,8 @@ public class ShulkMain implements Listener {
     if(e.getEntity() instanceof ShulkerBullet){
       PersistentDataContainer data = e.getTarget().getPersistentDataContainer();
       @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
-      if (originid == 6503044) {
+      if (origintag.equalsIgnoreCase("genesis:origin-shulk")) {
         if(e.getTarget() instanceof Player){
-          Player p = (Player) e.getTarget();
           e.setCancelled(true);
         }
       }

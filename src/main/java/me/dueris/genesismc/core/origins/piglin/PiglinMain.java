@@ -26,7 +26,7 @@ public class PiglinMain implements Listener {
         Player p = (Player) e.getTarget();
         PersistentDataContainer data = p.getPersistentDataContainer();
         @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
-        if (originid == 6211021) {
+        if (origintag.equalsIgnoreCase("genesis:origin-phantom")) {
             if (e.getEntity().getType() == EntityType.PIGLIN) {
                 if (!piglinsHit.contains(e.getEntity().getEntityId())) {
                     e.setCancelled(true);
@@ -43,7 +43,7 @@ public class PiglinMain implements Listener {
         LivingEntity entity = (LivingEntity) e;
         PersistentDataContainer data = p.getPersistentDataContainer();
         @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
-        if (originid == 6211021) {
+        if (origintag.equalsIgnoreCase("genesis:origin-phantom")) {
             if (e.getEntity().getType() == EntityType.PIGLIN) {
                 if (piglinsHit.contains(e.getEntity().getEntityId())) return;
                 if (entity.getHealth() - e.getFinalDamage() <= 0) return;

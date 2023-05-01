@@ -33,7 +33,7 @@ public class ShulkInv implements CommandExecutor {
       Player p = (Player) sender;
       PersistentDataContainer data = p.getPersistentDataContainer();
       @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
-      if (originid == 6503044) {
+      if (origintag.equalsIgnoreCase("genesis:origin-shulk")) {
       if (args.length > 0) {
         if (args[0].equalsIgnoreCase ( "open" )) {
 

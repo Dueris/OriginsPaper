@@ -32,7 +32,7 @@ public class EnderSilkTouch implements Listener {
       Player p = e.getPlayer();
       PersistentDataContainer data = p.getPersistentDataContainer();
       @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
-      if (originid == 0401065) {
+      if (origintag.equalsIgnoreCase("genesis:origin-enderian")) {
         int ic = 1;
         if (p != null && p.getGameMode().equals(GameMode.SURVIVAL) && p.getEquipment().getItemInMainHand().getType().equals(Material.AIR)) {
           if (!e.getBlock().getType().isItem()) {

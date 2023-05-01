@@ -21,13 +21,12 @@ public class CreepMain implements Listener {
 
     @EventHandler
     public void onLook(EntityTargetEvent e) {
-        //EntityType en = e.getEntityType(); not needed
         if (e.getEntity() instanceof Creeper && (e.getTarget() instanceof Player)) {
 
             Player p = (Player) e.getTarget();
             PersistentDataContainer data = p.getPersistentDataContainer();
             @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
-            if (originid == 2356555) {
+            if (origintag.equalsIgnoreCase("genesis:origin-creep")) {
                 e.setCancelled(true);
             }
         }
@@ -36,11 +35,10 @@ public class CreepMain implements Listener {
 
     @EventHandler
     public void onCreepDeath(PlayerDeathEvent e) {
-        Player p = (Player) e.getPlayer();
+        Player p = e.getPlayer();
         PersistentDataContainer data = p.getPersistentDataContainer();
         @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
-        if (originid == 2356555) {
-            Random random = new Random();
+        if (origintag.equalsIgnoreCase("genesis:origin-creep")) {
                 if(e.getEntity().getType() == EntityType.CREEPER){
                     Creeper killer = (Creeper) e.getEntity();
                     if(killer.isPowered()){
@@ -50,11 +48,11 @@ public class CreepMain implements Listener {
                     Player killerp = e.getEntity();
                     PersistentDataContainer datak = killerp.getPersistentDataContainer();
                     @Nullable String origintagk = datak.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
-                    if (originid == 2356555) {
+                    if (origintag.equalsIgnoreCase("genesis:origin-creep")) {
                         if (p.getWorld().isThundering() && e.getEntity().getPersistentDataContainer().has(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER)) {
                             PersistentDataContainer edata = e.getEntity().getPersistentDataContainer();
-                            int originide = edata.get(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER);
-                            if(originide == 2356555){
+                            @Nullable String origintage = edata.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
+                            if(origintage.equalsIgnoreCase("genesis:origin-creep")){
                                 e.getDrops().add(new ItemStack(Material.CREEPER_HEAD));
                             }
 
@@ -72,7 +70,7 @@ public class CreepMain implements Listener {
             Player p = (Player) e.getEntity();
             PersistentDataContainer data = p.getPersistentDataContainer();
             @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
-            if (originid == 2356555) {
+            if (origintag.equalsIgnoreCase("genesis:origin-creep")) {
                 if(e.getCause() == EntityDamageEvent.DamageCause.BLOCK_EXPLOSION || e.getCause() == EntityDamageEvent.DamageCause.ENTITY_EXPLOSION){
                     e.setDamage(e.getFinalDamage() - 7);
                 }else{
@@ -89,7 +87,7 @@ public class CreepMain implements Listener {
         Player p = e.getPlayer();
         PersistentDataContainer data = p.getPersistentDataContainer();
         @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
-        if (originid == 2356555) {
+        if (origintag.equalsIgnoreCase("genesis:origin-creep")) {
             if (e.getItem() != null) {
                 if (e.getItem().getType().equals(Material.BOW)) {
                     e.setCancelled(true);

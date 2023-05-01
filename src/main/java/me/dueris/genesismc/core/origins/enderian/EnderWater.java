@@ -26,7 +26,7 @@ public class EnderWater implements Listener {
             Player p = (Player) e.getEntity();
             PersistentDataContainer data = p.getPersistentDataContainer();
             @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
-            if (originid == 0401065) {
+            if (origintag.equalsIgnoreCase("genesis:origin-enderian")) {
                 if (e.getCause().equals(EntityDamageEvent.DamageCause.PROJECTILE)) {
                         e.setDamage(0);
                         e.setCancelled(true);
@@ -36,7 +36,7 @@ public class EnderWater implements Listener {
 
             }
             if (e.getEntity().getType().equals(EntityType.PLAYER)) {
-                if (originid == 0401065) {
+                if (origintag.equalsIgnoreCase("genesis:origin-enderian")) {
                     if (e.getCause().equals(EntityDamageEvent.DamageCause.PROJECTILE)) {
                         int dmg = (int) e.getDamage();
                         e.setDamage(0);
@@ -52,7 +52,7 @@ public class EnderWater implements Listener {
             Player p = e.getPlayer();
         PersistentDataContainer data = p.getPersistentDataContainer();
         @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
-        if (originid == 0401065) {
+        if (origintag.equalsIgnoreCase("genesis:origin-enderian")) {
                 if(e.getItem().equals(Material.POTION)){
                     p.damage(2);
                 }

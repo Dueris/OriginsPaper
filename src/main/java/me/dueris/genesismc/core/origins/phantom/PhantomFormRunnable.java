@@ -23,7 +23,7 @@ public class PhantomFormRunnable extends BukkitRunnable {
             int phantomid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER);
 
             if (phantomid == 2) {
-                if (originid == 7300041) {
+                if (origintag.equalsIgnoreCase("genesis:origin-phantom")) {
                     if (p.getLocation().add(0.55F, 0, 0.55F).getBlock().isSolid() ||
                             p.getLocation().add(0.55F, 0, 0).getBlock().isSolid() ||
                             p.getLocation().add(0, 0, 0.55F).getBlock().isSolid() ||
@@ -46,7 +46,6 @@ public class PhantomFormRunnable extends BukkitRunnable {
                         //can form
                         if(p.isInsideVehicle()) return;
                         p.setCollidable(false);
-                        CraftPlayer craftPlayer = (CraftPlayer) p;
                         p.setGameMode(GameMode.SPECTATOR);
                         p.setFlying(true);
 

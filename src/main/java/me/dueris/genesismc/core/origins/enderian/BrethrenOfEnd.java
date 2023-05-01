@@ -20,7 +20,7 @@ public class BrethrenOfEnd implements Listener {
             Player p = (Player) e.getTarget();
             PersistentDataContainer data = p.getPersistentDataContainer();
             @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
-            if (originid == 0401065) {
+            if (origintag.equalsIgnoreCase("genesis:origin-enderian")) {
                 e.setCancelled(true);
             }
         }

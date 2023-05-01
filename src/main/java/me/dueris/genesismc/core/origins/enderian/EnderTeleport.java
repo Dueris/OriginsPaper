@@ -30,11 +30,11 @@ public class EnderTeleport implements Listener {
     @EventHandler
 
     public void teleportDamgeOff(PlayerTeleportEvent e) {
-        Player p = (Player) e.getPlayer();
+        Player p = e.getPlayer();
         PersistentDataContainer data = p.getPersistentDataContainer();
         @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
 
-        if (originid == 0401065) {
+        if (origintag.equalsIgnoreCase("genesis:origin-enderian")) {
             if (e.getCause() == PlayerTeleportEvent.TeleportCause.ENDER_PEARL) {
                 e.setCancelled(true);
                 p.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 15, 2, false, false, false));
@@ -60,7 +60,7 @@ public class EnderTeleport implements Listener {
         Player p = e.getPlayer();
         PersistentDataContainer data = p.getPersistentDataContainer();
         @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
-        if (originid == 0401065) {
+        if (origintag.equalsIgnoreCase("genesis:origin-enderian")) {
             if (e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.LEFT_CLICK_AIR || e.getAction() == Action.LEFT_CLICK_BLOCK || e.getAction() == Action.RIGHT_CLICK_BLOCK) {
                 if (e.getItem() != null) {
                     if (e.getItem().equals(infinpearl)) {
@@ -128,7 +128,7 @@ public class EnderTeleport implements Listener {
         pearl_meta.setLore(pearl_lore);
         infinpearl.setItemMeta(pearl_meta);
         pearl_meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
-        if (originid == 0401065) {
+        if (origintag.equalsIgnoreCase("genesis:origin-enderian")) {
             if (!p.getInventory().contains(infinpearl)) {
                 p.getInventory().addItem(infinpearl);
             }
@@ -178,7 +178,7 @@ public class EnderTeleport implements Listener {
         pearl_meta.setLore(pearl_lore);
         infinpearl.setItemMeta(pearl_meta);
         pearl_meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
-        if (originid == 0401065) {
+        if (origintag.equalsIgnoreCase("genesis:origin-enderian")) {
                 e.getDrops().remove(infinpearl);
                 e.getDrops().add(new ItemStack(ENDER_PEARL));
         }

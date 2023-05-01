@@ -36,7 +36,7 @@ public class EnderMain implements Listener {
         Player p = e.getPlayer();
         PersistentDataContainer data = p.getPersistentDataContainer();
         @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
-        if (originid == 0401065) {
+        if (origintag.equalsIgnoreCase("genesis:origin-enderian")) {
 
             Random random = new Random();
             int r = random.nextInt(3000);
@@ -48,11 +48,11 @@ public class EnderMain implements Listener {
 
     @EventHandler
     public void onEvent1(PlayerJoinEvent e) {
-        Player p = (Player) e.getPlayer();
+        Player p = e.getPlayer();
         PersistentDataContainer data = p.getPersistentDataContainer();
         if (p.getPersistentDataContainer().has(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER)) {
             @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
-            if (originid == 0401065) {
+            if (origintag.equalsIgnoreCase("genesis:origin-enderian")) {
                 if (!p.getActivePotionEffects().equals(PotionEffectType.INVISIBILITY)) {
                     p.getWorld().spawnParticle(Particle.PORTAL, p.getLocation(), 3);
                 }
@@ -68,7 +68,7 @@ public class EnderMain implements Listener {
             Player p = (Player) e.getEntity();
             PersistentDataContainer data = p.getPersistentDataContainer();
             @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
-            if (originid == 0401065) {
+            if (origintag.equalsIgnoreCase("genesis:origin-enderian")) {
                 p.damage(2);
                 e.getDamager().setGlowing(true);
             }
@@ -76,10 +76,10 @@ public class EnderMain implements Listener {
     }
     @EventHandler
     public void onDeathWater(PlayerDeathEvent e){
-        Player p = (Player) e.getEntity();
+        Player p = e.getEntity();
         PersistentDataContainer data = p.getPersistentDataContainer();
         @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
-        if (originid == 0401065) {
+        if (origintag.equalsIgnoreCase("genesis:origin-enderian")) {
             Random random = new Random();
             int r = random.nextInt(2);
             if (p.isInWaterOrRainOrBubbleColumn()) {
@@ -88,17 +88,17 @@ public class EnderMain implements Listener {
             }
                     p.getLocation().getWorld().dropItem(p.getLocation(), new ItemStack(Material.ENDER_PEARL, r));
             }
-        if (originid == 0401065) {
+        if (origintag.equalsIgnoreCase("genesis:origin-enderian")) {
             p.playSound(p.getLocation(), Sound.ENTITY_ENDERMAN_DEATH, 10, 5);
         }
         }
 
     @EventHandler
     public void onEat(PlayerItemConsumeEvent e){
-        Player p = (Player) e.getPlayer();
+        Player p = e.getPlayer();
         PersistentDataContainer data = p.getPersistentDataContainer();
         @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
-        if (originid == 0401065) {
+        if (origintag.equalsIgnoreCase("genesis:origin-enderian")) {
             if(e.getItem().getType().equals(Material.PUMPKIN_PIE)){
                 p.getWorld().createExplosion(p.getLocation(), 0);
                 p.setHealth(1);
