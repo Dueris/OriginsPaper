@@ -9,14 +9,15 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
+import org.jetbrains.annotations.Nullable;
 
 public class HumanMain implements Listener {
     @EventHandler
     public void onSpawn(PlayerMoveEvent e) {
-        Player p = (Player) e.getPlayer();
+        Player p = e.getPlayer();
 
         PersistentDataContainer data = p.getPersistentDataContainer();
-        int originid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER);
+        @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
         if (originid == 0004013 || originid == 0) {
                 p.getAttribute(Attribute.GENERIC_ARMOR).setBaseValue(0);
                 p.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20);

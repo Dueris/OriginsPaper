@@ -11,6 +11,7 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityTargetLivingEntityEvent;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 
@@ -24,7 +25,7 @@ public class PiglinMain implements Listener {
         if (!(e.getTarget() instanceof Player)) return;
         Player p = (Player) e.getTarget();
         PersistentDataContainer data = p.getPersistentDataContainer();
-        int originid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER);
+        @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
         if (originid == 6211021) {
             if (e.getEntity().getType() == EntityType.PIGLIN) {
                 if (!piglinsHit.contains(e.getEntity().getEntityId())) {
@@ -41,7 +42,7 @@ public class PiglinMain implements Listener {
         Player p = (Player) e.getDamager();
         LivingEntity entity = (LivingEntity) e;
         PersistentDataContainer data = p.getPersistentDataContainer();
-        int originid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER);
+        @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
         if (originid == 6211021) {
             if (e.getEntity().getType() == EntityType.PIGLIN) {
                 if (piglinsHit.contains(e.getEntity().getEntityId())) return;

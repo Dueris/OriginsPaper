@@ -22,6 +22,7 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.EnumSet;
 import java.util.List;
@@ -41,9 +42,8 @@ public class ArachnidMain implements Listener {
     @EventHandler
     public void onEatArachnid(PlayerInteractEvent e){
         PersistentDataContainer data = e.getPlayer().getPersistentDataContainer();
-        int originid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER);
-        Player p = e.getPlayer();
-        if (originid == 1709012) {
+        @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
+        if (origintag.equalsIgnoreCase("genesis:origin-arachnid")) {
             if(e.getItem() != null){
             if(!meat.contains(e.getItem().getType()) && !excludable.contains(e.getItem().getType()) && e.getItem().getType().isEdible()) {
                 if (e.getAction().isRightClick()) {
@@ -59,8 +59,8 @@ public class ArachnidMain implements Listener {
         if (e.getDamager() instanceof Player) {
             Player p = (Player) e.getDamager();
             PersistentDataContainer data = p.getPersistentDataContainer();
-            int originid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER);
-            if (originid == 1709012) {
+            @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
+            if (origintag.equalsIgnoreCase("genesis:origin-arachnid")) {
                 Location loc = e.getEntity().getLocation();
                 Block b = loc.getBlock();
                 Random random = new Random();
@@ -86,8 +86,8 @@ public class ArachnidMain implements Listener {
         if(e.getEntity() instanceof Player){
             Player p = (Player) e.getEntity();
             PersistentDataContainer data = p.getPersistentDataContainer();
-            int originid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER);
-            if (originid == 1709012) {
+            @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
+            if (origintag.equalsIgnoreCase("genesis:origin-arachnid")) {
                 if(e.getDamager() != null){
                     Entity damager = e.getDamager();
                     if(damager.getType() == EntityType.PLAYER){
@@ -119,16 +119,16 @@ public class ArachnidMain implements Listener {
             Player p = (Player) e.getEntity();
 
             PersistentDataContainer data = p.getPersistentDataContainer();
-            int originid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER);
+            @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
             if (e.getCause().equals(EntityDamageEvent.DamageCause.POISON)) {
-                if (originid == 1709012) {
+                if (origintag.equalsIgnoreCase("genesis:origin-arachnid")) {
                     if (e.getEntity() instanceof Player) {
                         e.setCancelled(true);
                         e.setDamage(0);
                     }
                 }
             } else if (e.getCause().equals(EntityDamageEvent.DamageCause.FIRE) || e.getCause().equals(EntityDamageEvent.DamageCause.FIRE_TICK)) {
-                if (originid == 1709012) {
+                if (origintag.equalsIgnoreCase("genesis:origin-arachnid")) {
                     if (e.getEntity() instanceof Player) {
                         e.setDamage(e.getDamage() + 2);
                     }

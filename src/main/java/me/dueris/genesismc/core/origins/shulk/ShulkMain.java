@@ -11,6 +11,8 @@ import org.bukkit.event.player.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
+import org.jetbrains.annotations.Nullable;
+
 import java.util.*;
 import static org.bukkit.Material.*;
 public class ShulkMain implements Listener {
@@ -19,7 +21,7 @@ public class ShulkMain implements Listener {
   public void onSprint(PlayerMoveEvent e) {
     Player p = e.getPlayer();
     PersistentDataContainer data = p.getPersistentDataContainer();
-    int originid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER);
+    @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
     if (originid == 6503044) {
       if (p.isSprinting() && !p.getGameMode().equals(GameMode.CREATIVE) && !p.getGameMode().equals(GameMode.SPECTATOR)) {
         Random random = new Random();
@@ -38,7 +40,7 @@ public class ShulkMain implements Listener {
   public void OnUseShield(PlayerInteractEvent e){
     Player p = e.getPlayer();
     PersistentDataContainer data = p.getPersistentDataContainer();
-    int originid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER);
+    @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
     if (originid == 6503044) {
       if(e.getItem() != null){
         if(e.getItem().getType().equals(SHIELD)){
@@ -60,7 +62,7 @@ public class ShulkMain implements Listener {
     Player p = e.getPlayer();
     ItemStack i = new ItemStack(e.getBlock().getType(), 1);
     PersistentDataContainer data = p.getPersistentDataContainer();
-    int originid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER);
+    @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
     if (originid == 6503044) {
       if (nat_stones.contains(e.getBlock().getType())) {
         if (!p.getGameMode().equals(GameMode.CREATIVE)) {
@@ -82,7 +84,7 @@ public class ShulkMain implements Listener {
   public void onhitshulkEntity(EntityDamageByEntityEvent e){
     if (e.getEntity() instanceof Player || e.getEntity() instanceof HumanEntity) {
       PersistentDataContainer data = e.getEntity().getPersistentDataContainer();
-      int originid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER);
+      @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
       if (originid == 6503044) {
         Player p = (Player) e.getEntity();
         Random random = new Random();
@@ -127,7 +129,7 @@ public class ShulkMain implements Listener {
   public void onhitShulk(EntityDamageEvent e) {
     if (e.getEntity() instanceof Player || e.getEntity() instanceof HumanEntity) {
     PersistentDataContainer data = e.getEntity().getPersistentDataContainer();
-      int originid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER);
+      @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
       if (originid == 6503044) {
         e.getEntity().getWorld().playSound(e.getEntity().getLocation(), Sound.ENTITY_SHULKER_HURT, 10.0F, 5.0F);
         Random random = new Random();
@@ -145,7 +147,7 @@ public class ShulkMain implements Listener {
   public void onDeathShulk(EntityDeathEvent e) {
     if (e.getEntity() instanceof Player || e.getEntity() instanceof HumanEntity) {
       PersistentDataContainer data = e.getEntity().getPersistentDataContainer();
-      int originid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER);
+      @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
       if (originid == 6503044) {
         e.getEntity().getWorld().playSound(e.getEntity().getLocation(), Sound.ENTITY_SHULKER_DEATH, 10.0F, 5.0F);
         Random random = new Random();
@@ -162,7 +164,7 @@ public class ShulkMain implements Listener {
   public void onTargetShulk(EntityTargetEvent e){
     if(e.getEntity() instanceof ShulkerBullet){
       PersistentDataContainer data = e.getTarget().getPersistentDataContainer();
-      int originid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER);
+      @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
       if (originid == 6503044) {
         if(e.getTarget() instanceof Player){
           Player p = (Player) e.getTarget();

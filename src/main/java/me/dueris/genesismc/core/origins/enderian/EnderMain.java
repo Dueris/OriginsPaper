@@ -15,6 +15,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.potion.PotionEffectType;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Random;
@@ -32,14 +33,14 @@ public class EnderMain implements Listener {
 
     @EventHandler
     public void onMovement(PlayerMoveEvent e) {
-        Player p = (Player) e.getPlayer();
+        Player p = e.getPlayer();
         PersistentDataContainer data = p.getPersistentDataContainer();
-        int originid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER);
+        @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
         if (originid == 0401065) {
 
             Random random = new Random();
             int r = random.nextInt(3000);
-            if (r == (int) 3 || r == (int) 9 || r == (int) 11 || r == (int) 998 || r == (int) 2279 || r == (int) 989) {
+            if (r == 3 || r == 9 || r == 11 || r == 998 || r == 2279 || r == 989) {
                 p.getWorld().playSound(p.getLocation(), Sound.ENTITY_ENDERMAN_AMBIENT, 10, 9);
             }
         }
@@ -50,12 +51,10 @@ public class EnderMain implements Listener {
         Player p = (Player) e.getPlayer();
         PersistentDataContainer data = p.getPersistentDataContainer();
         if (p.getPersistentDataContainer().has(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER)) {
-            int originid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER);
+            @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
             if (originid == 0401065) {
                 if (!p.getActivePotionEffects().equals(PotionEffectType.INVISIBILITY)) {
                     p.getWorld().spawnParticle(Particle.PORTAL, p.getLocation(), 3);
-                } else {
-                    //do nothing
                 }
                 p.playSound(p.getLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, 10, 9);
                 p.setHealthScale(24);
@@ -68,7 +67,7 @@ public class EnderMain implements Listener {
         if(e.getEntity() instanceof Player && e.getDamager() instanceof Endermite){
             Player p = (Player) e.getEntity();
             PersistentDataContainer data = p.getPersistentDataContainer();
-            int originid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER);
+            @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
             if (originid == 0401065) {
                 p.damage(2);
                 e.getDamager().setGlowing(true);
@@ -79,7 +78,7 @@ public class EnderMain implements Listener {
     public void onDeathWater(PlayerDeathEvent e){
         Player p = (Player) e.getEntity();
         PersistentDataContainer data = p.getPersistentDataContainer();
-        int originid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER);
+        @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
         if (originid == 0401065) {
             Random random = new Random();
             int r = random.nextInt(2);
@@ -98,7 +97,7 @@ public class EnderMain implements Listener {
     public void onEat(PlayerItemConsumeEvent e){
         Player p = (Player) e.getPlayer();
         PersistentDataContainer data = p.getPersistentDataContainer();
-        int originid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER);
+        @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
         if (originid == 0401065) {
             if(e.getItem().getType().equals(Material.PUMPKIN_PIE)){
                 p.getWorld().createExplosion(p.getLocation(), 0);

@@ -55,7 +55,7 @@ public class TabAutoComplete implements TabCompleter {
                 } if(args[1].equalsIgnoreCase("get")) {
                     List<String> arguments = new ArrayList<>();
                     arguments.add("origin");
-                    arguments.add("originid");
+                    arguments.add("origintag");
                     arguments.add("help");
                     arguments.add("keybind");
                     return arguments;

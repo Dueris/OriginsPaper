@@ -12,6 +12,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Random;
 
@@ -25,7 +26,7 @@ public class CreepMain implements Listener {
 
             Player p = (Player) e.getTarget();
             PersistentDataContainer data = p.getPersistentDataContainer();
-            int originid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER);
+            @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
             if (originid == 2356555) {
                 e.setCancelled(true);
             }
@@ -37,7 +38,7 @@ public class CreepMain implements Listener {
     public void onCreepDeath(PlayerDeathEvent e) {
         Player p = (Player) e.getPlayer();
         PersistentDataContainer data = p.getPersistentDataContainer();
-        int originid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER);
+        @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
         if (originid == 2356555) {
             Random random = new Random();
                 if(e.getEntity().getType() == EntityType.CREEPER){
@@ -48,7 +49,7 @@ public class CreepMain implements Listener {
                 }else if(e.getEntity().getType() == EntityType.PLAYER){
                     Player killerp = e.getEntity();
                     PersistentDataContainer datak = killerp.getPersistentDataContainer();
-                    int originidk = datak.get(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER);
+                    @Nullable String origintagk = datak.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
                     if (originid == 2356555) {
                         if (p.getWorld().isThundering() && e.getEntity().getPersistentDataContainer().has(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER)) {
                             PersistentDataContainer edata = e.getEntity().getPersistentDataContainer();
@@ -70,7 +71,7 @@ public class CreepMain implements Listener {
         if (e.getEntity() instanceof Player) {
             Player p = (Player) e.getEntity();
             PersistentDataContainer data = p.getPersistentDataContainer();
-            int originid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER);
+            @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
             if (originid == 2356555) {
                 if(e.getCause() == EntityDamageEvent.DamageCause.BLOCK_EXPLOSION || e.getCause() == EntityDamageEvent.DamageCause.ENTITY_EXPLOSION){
                     e.setDamage(e.getFinalDamage() - 7);
@@ -87,7 +88,7 @@ public class CreepMain implements Listener {
     public void onUseBow(PlayerInteractEvent e) {
         Player p = e.getPlayer();
         PersistentDataContainer data = p.getPersistentDataContainer();
-        int originid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER);
+        @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
         if (originid == 2356555) {
             if (e.getItem() != null) {
                 if (e.getItem().getType().equals(Material.BOW)) {

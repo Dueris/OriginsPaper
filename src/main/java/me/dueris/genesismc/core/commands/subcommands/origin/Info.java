@@ -20,6 +20,7 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -46,70 +47,70 @@ public class Info extends SubCommand implements Listener {
 
     @Override
     public void perform(Player p, String[] args) {
-        int originidp = p.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER);
+        @Nullable String origintag = p.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
         if(args[1].equalsIgnoreCase("get")){
             if(args.length >= 2){
                 if(args[2].equalsIgnoreCase("origin")){
-                    if(originidp == 0401065){
+                    if(origintag.equalsIgnoreCase("genesis:origin-enderian")){
                         p.sendMessage(p.getName() + " has the Enderian origin");
                     }
-                    if(originidp == 6503044){
+                    if(origintag.equalsIgnoreCase("genesis:origin-shulk")){
                         p.sendMessage(p.getName() + " has the Shulk origin");
                     }
-                    if(originidp == 0004013 || originidp == 1 || originidp == 0){
+                    if(origintag.equalsIgnoreCase("genesis:origin-human") || origintag.equalsIgnoreCase("genesis:origin-null")){
                         p.sendMessage(p.getName() + " has the Human origin");
                     }
-                    if(originidp == 1709012){
+                    if(origintag.equalsIgnoreCase("genesis:origin-arachnid")){
                         p.sendMessage(p.getName() + " has the Arachnid origin");
                     }
-                    if(originidp == 2356555){
+                    if(origintag.equalsIgnoreCase("genesis:origin-creep")){
                         p.sendMessage(p.getName() + " has the Creep origin");
                     }
-                    if(originidp == 7300041){
+                    if(origintag.equalsIgnoreCase("genesis:origin-phantom")){
                         p.sendMessage(p.getName() + " has the Phantom origin");
                     }
-                    if(originidp == 2304045){
+                    if(origintag.equalsIgnoreCase("genesis:origin-slimeling")){
                         p.sendMessage(p.getName() + " has the Slimeling origin");
                     }
-                    if(originidp == 9602042){
+                    if(origintag.equalsIgnoreCase("genesis:origin-vexian")){
                         p.sendMessage(p.getName() + " has the Vexian origin");
                     }
-                    if(originidp == 9811027){
+                    if(origintag.equalsIgnoreCase("genesis:origin-blazeborn")){
                         p.sendMessage(p.getName() + " has the Blazeborn origin");
                     }
-                    if(originidp == 7303065){
+                    if(origintag.equalsIgnoreCase("genesis:origin-starborn")){
                         p.sendMessage(p.getName() + " has the Starborne origin");
                     }
-                    if(originidp == 1310018){
+                    if(origintag.equalsIgnoreCase("genesis:origin-merling")){
                         p.sendMessage(p.getName() + " has the Merling origin");
                     }
-                    if(originidp == 1205048){
+                    if(origintag.equalsIgnoreCase("genesis:origin-allay")){
                         p.sendMessage(p.getName() + " has the Allay origin");
                     }
-                    if(originidp == 5308033){
+                    if(origintag.equalsIgnoreCase("genesis:origin-rabbit")){
                         p.sendMessage(p.getName() + " has the Rabbit origin");
                     }
-                    if(originidp == 8906022){
+                    if(origintag.equalsIgnoreCase("genesis:origin-bee")){
                         p.sendMessage(p.getName() + " has the Bumblebee origin");
                     }
-                    if(originidp == 6211006){
+                    if(origintag.equalsIgnoreCase("genesis:origin-elytrian")){
                         p.sendMessage(p.getName() + " has the Elytrian origin");
                     }
-                    if(originidp == 4501011){
+                    if(origintag.equalsIgnoreCase("genesis:origin-avian")){
                         p.sendMessage(p.getName() + " has the Avian origin");
                     }
-                    if(originidp == 6211021){
+                    if(origintag.equalsIgnoreCase("genesis:origin-piglin")){
                         p.sendMessage(p.getName() + " has the Piglin origin");
                     }
-                    if(originidp == 4307015){
-                        p.sendMessage(p.getName() + " has the Dragonborne origin");
+                    if(origintag.equalsIgnoreCase("genesis:origin-sculkling")){
+                        p.sendMessage(p.getName() + " has the Sculking origin");
                     }
                 }
                 if(args[2].equalsIgnoreCase("keybind")){
                     p.sendMessage("[GenesisMC] Unable to get keybind at this time. Please use your SWAP_HANDS key. Default: F");
                 }
                 if(args[2].equalsIgnoreCase("help")){
-                    if(originidp == 0401065){
+                    if(origintag.equalsIgnoreCase("genesis:origin-enderian")){
                         Inventory endergui = Bukkit.createInventory(p, 54, BLACK + "Help Screen");
 
                         ItemStack disconnect = new ItemStack(Material.REDSTONE_BLOCK);
@@ -190,7 +191,7 @@ public class Info extends SubCommand implements Listener {
                         endergui.setContents(endergui_items);
                         p.openInventory(endergui);
                     }
-                    if(originidp == 6503044){
+                    if(origintag.equalsIgnoreCase("genesis:origin-shulk")){
                         Inventory shulkgui = Bukkit.createInventory(p, 54, BLACK + "Help Screen");
 
                         ItemStack close = new ItemStack(Material.BARRIER);
@@ -274,7 +275,7 @@ public class Info extends SubCommand implements Listener {
                         shulkgui.setContents(shulkgui_items);
                         p.openInventory(shulkgui);
                     }
-                    if(originidp == 0004013 || originidp == 1 || originidp == 0){
+                    if(origintag.equalsIgnoreCase("genesis:origin-human") || origintag.equalsIgnoreCase("genesis:origin-null")){
                         Inventory humangui = Bukkit.createInventory(p, 54, BLACK + "Help Screen");
                         ItemStack disconnect = new ItemStack(Material.REDSTONE_BLOCK);
 
@@ -328,7 +329,7 @@ public class Info extends SubCommand implements Listener {
                         humangui.setContents(humangui_items);
                         p.openInventory(humangui);
                     }
-                    if(originidp == 1709012){
+                    if(origintag.equalsIgnoreCase("genesis:origin-arachnid")){
                         Inventory spidergui = Bukkit.createInventory(p, 54, BLACK + "Help Screen");
                         ItemStack disconnect = new ItemStack(Material.REDSTONE_BLOCK);
 
@@ -350,7 +351,6 @@ public class Info extends SubCommand implements Listener {
                         ItemStack spider_origin_info2 = new ItemStack(Material.FILLED_MAP);
                         ItemStack spider_origin_info3 = new ItemStack(Material.FILLED_MAP);
                         ItemStack spider_origin_info4 = new ItemStack(Material.FILLED_MAP);
-                        ItemStack spider_origin_info5 = new ItemStack(Material.FILLED_MAP);
 
 
                         ItemMeta spider_origin_info1_meta = spider_origin_info1.getItemMeta();
@@ -405,7 +405,7 @@ public class Info extends SubCommand implements Listener {
                         spidergui.setContents(spidergui_items);
                         p.openInventory(spidergui);
                     }
-                    if(originidp == 2356555){
+                    if(origintag.equalsIgnoreCase("genesis:origin-creep")){
                         Inventory creepgui = Bukkit.createInventory(p, 54, BLACK + "Help Screen");
                         ItemStack disconnect = new ItemStack(Material.REDSTONE_BLOCK);
 
@@ -479,7 +479,7 @@ public class Info extends SubCommand implements Listener {
                         creepgui.setContents(creepgui_items);
                         p.openInventory(creepgui);
                     }
-                    if(originidp == 7300041){
+                    if(origintag.equalsIgnoreCase("genesis:origin-phantom")){
                         Inventory phantomgui = Bukkit.createInventory(p, 54, BLACK + "Help Screen");
 
                         ItemStack close = new ItemStack(Material.BARRIER);
@@ -573,7 +573,7 @@ public class Info extends SubCommand implements Listener {
                         phantomgui.setContents(phantomgui_items);
                         p.openInventory(phantomgui);
                     }
-                    if(originidp == 2304045){
+                    if(origintag.equalsIgnoreCase("genesis:origin-slimeling")){
                         Inventory slimegui = Bukkit.createInventory(p, 54, BLACK + "Help Screen");
 
                         ItemStack close = new ItemStack(Material.BARRIER);
@@ -667,7 +667,7 @@ public class Info extends SubCommand implements Listener {
                         slimegui.setContents(slimegui_items);
                         p.openInventory(slimegui);
                     }
-                    if(originidp == 9602042){
+                    if(origintag.equalsIgnoreCase("genesis:origin-vexian")){
                         Inventory vexgui = Bukkit.createInventory(p, 54, BLACK + "Help Screen");
                         ItemStack disconnect = new ItemStack(Material.REDSTONE_BLOCK);
 
@@ -769,7 +769,7 @@ public class Info extends SubCommand implements Listener {
                         vexgui.setContents(vexgui_items);
                         p.openInventory(vexgui);
                     }
-                    if(originidp == 9811027){
+                    if(origintag.equalsIgnoreCase("genesis:origin-blazeborn")){
                         Inventory blazegui = Bukkit.createInventory(p, 54, BLACK + "Help Screen");
 
                         ItemStack close = new ItemStack(Material.BARRIER);
@@ -871,7 +871,7 @@ public class Info extends SubCommand implements Listener {
                         blazegui.setContents(blazegui_items);
                         p.openInventory(blazegui);
                     }
-                    if(originidp == 7303065){
+                    if(origintag.equalsIgnoreCase("genesis:origin-starborn")){
                         Inventory stargui = Bukkit.createInventory(p, 54, BLACK + "Help Screen");
 
                         ItemStack close = new ItemStack(Material.BARRIER);
@@ -898,7 +898,6 @@ public class Info extends SubCommand implements Listener {
                         ItemStack star_origin_info7 = new ItemStack(Material.FILLED_MAP);
                         ItemStack star_origin_info8 = new ItemStack(Material.FILLED_MAP);
                         ItemStack star_origin_info9 = new ItemStack(Material.FILLED_MAP);
-                        ItemStack star_origin_info10 = new ItemStack(Material.FILLED_MAP);
 
 
                         ItemMeta star_origin_info1_meta = star_origin_info1.getItemMeta();
@@ -990,7 +989,7 @@ public class Info extends SubCommand implements Listener {
                         stargui.setContents(stargui_items);
                         p.openInventory(stargui);
                     }
-                    if(originidp == 1310018){
+                    if(origintag.equalsIgnoreCase("genesis:origin-merling")){
                         Inventory mermaidgui = Bukkit.createInventory(p, 54, BLACK + "Help Screen");
                         ItemStack disconnect = new ItemStack(Material.REDSTONE_BLOCK);
 
@@ -1084,7 +1083,7 @@ public class Info extends SubCommand implements Listener {
                         mermaidgui.setContents(mermaidgui_items);
                         p.openInventory(mermaidgui);
                     }
-                    if(originidp == 1205048){
+                    if(origintag.equalsIgnoreCase("genesis:origin-allay")){
                         Inventory allaygui = Bukkit.createInventory(p, 54, BLACK + "Help Screen");
 
                         ItemStack close = new ItemStack(Material.BARRIER);
@@ -1187,7 +1186,7 @@ public class Info extends SubCommand implements Listener {
                         allaygui.setContents(allaygui_items);
                         p.openInventory(allaygui);
                     }
-                    if(originidp == 5308033){
+                    if(origintag.equalsIgnoreCase("genesis:origin-rabbit")){
                         Inventory rabbitgui = Bukkit.createInventory(p, 54, BLACK + "Help Screen");
 
                         ItemStack close = new ItemStack(Material.BARRIER);
@@ -1281,7 +1280,7 @@ public class Info extends SubCommand implements Listener {
                         rabbitgui.setContents(rabbitgui_items);
                         p.openInventory(rabbitgui);
                     }
-                    if(originidp == 8906022){
+                    if(origintag.equalsIgnoreCase("genesis:origin-bee")){
                         Inventory beegui = Bukkit.createInventory(p, 54, BLACK + "Help Screen");
 
                         ItemStack close = new ItemStack(Material.BARRIER);
@@ -1383,7 +1382,7 @@ public class Info extends SubCommand implements Listener {
                         beegui.setContents(beegui_items);
                         p.openInventory(beegui);
                     }
-                    if(originidp == 6211006){
+                    if(origintag.equalsIgnoreCase("genesis:origin-elytrian")){
                         Inventory elyrtiangui = Bukkit.createInventory(p, 54, BLACK + "Help Screen");
 
                         ItemStack close = new ItemStack(Material.BARRIER);
@@ -1469,7 +1468,7 @@ public class Info extends SubCommand implements Listener {
                         elyrtiangui.setContents(elyrtiangui_items);
                         p.openInventory(elyrtiangui);
                     }
-                    if(originidp == 4501011){
+                    if(origintag.equalsIgnoreCase("genesis:origin-avian")){
                         Inventory aviangui = Bukkit.createInventory(p, 54, BLACK + "Help Screen");
 
                         ItemStack close = new ItemStack(Material.BARRIER);
@@ -1555,7 +1554,7 @@ public class Info extends SubCommand implements Listener {
                         aviangui.setContents(aviangui_items);
                         p.openInventory(aviangui);
                     }
-                    if(originidp == 6211021){
+                    if(origintag.equalsIgnoreCase("genesis:origin-piglin")){
                         Inventory piglingui = Bukkit.createInventory(p, 54, BLACK + "Help Screen");
                         ItemStack disconnect = new ItemStack(Material.REDSTONE_BLOCK);
 
@@ -1641,7 +1640,7 @@ public class Info extends SubCommand implements Listener {
                         piglingui.setContents(piglingui_items);
                         p.openInventory(piglingui);
                     }
-                    if(originidp == 4307015){
+                    if(origintag.equalsIgnoreCase("genesis:origin-dragonborn")){
                         Inventory dragongui = Bukkit.createInventory(p, 54, BLACK + "Help Screen");
                         ItemStack disconnect = new ItemStack(Material.REDSTONE_BLOCK);
 
@@ -1736,8 +1735,8 @@ public class Info extends SubCommand implements Listener {
                         p.openInventory(dragongui);
                     }
                 }
-                if(args[2].equalsIgnoreCase("originid")){
-                    p.sendMessage(p.getName() + "'s OriginID is " + originidp);
+                if(args[2].equalsIgnoreCase("origintag")){
+                    p.sendMessage(p.getName() + "'s OriginID is " + origintag);
                 }
 
             }

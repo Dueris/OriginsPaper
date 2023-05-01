@@ -16,6 +16,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.EnumSet;
 
@@ -29,9 +30,8 @@ public class EnderSilkTouch implements Listener {
   public void onBlockBreak(BlockBreakEvent e) {
     if (!e.getBlock().getType().equals(Material.AIR)) {
       Player p = e.getPlayer();
-      Block b = e.getBlock();
       PersistentDataContainer data = p.getPersistentDataContainer();
-      int originid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER);
+      @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
       if (originid == 0401065) {
         int ic = 1;
         if (p != null && p.getGameMode().equals(GameMode.SURVIVAL) && p.getEquipment().getItemInMainHand().getType().equals(Material.AIR)) {

@@ -9,17 +9,17 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityTargetEvent;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
+import org.jetbrains.annotations.Nullable;
 
 public class BrethrenOfEnd implements Listener {
 
     @EventHandler
     public void onLook(EntityTargetEvent e) {
-        //EntityType en = e.getEntityType(); not needed
         if (e.getEntity() instanceof Enderman && (e.getTarget() instanceof Player)) {
 
             Player p = (Player) e.getTarget();
             PersistentDataContainer data = p.getPersistentDataContainer();
-            int originid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER);
+            @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
             if (originid == 0401065) {
                 e.setCancelled(true);
             }
