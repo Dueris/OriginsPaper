@@ -196,7 +196,7 @@ public class GenesisDataFiles {
 
   public static ArrayList<Integer> getCustomOriginIds() {
     ArrayList<Integer> originIds = new ArrayList<Integer>();
-    if (!getCustomOriginConfig().contains("origins")) return null;
+    if (!getCustomOriginConfig().contains("origins")) return originIds;
     for (String key : getCustomOriginConfig().getConfigurationSection("origins").getKeys(true)) {
       originIds.add(Integer.valueOf(key));
     }
@@ -205,7 +205,7 @@ public class GenesisDataFiles {
 
   public static ArrayList<String> getCustomOriginIdentifier() {
     ArrayList<String> originIdentifiers = new ArrayList<String>();
-    if (!getCustomOriginConfig().contains("origins")) return null;
+    if (!getCustomOriginConfig().contains("origins")) return originIdentifiers;
     for (String key : getCustomOriginConfig().getConfigurationSection("origins").getKeys(true)) {
       originIdentifiers.add(getCustomOriginConfig().getString("origins."+key));
     }
