@@ -22,6 +22,7 @@ import me.dueris.genesismc.core.origins.rabbit.RabbitLeap;
 import me.dueris.genesismc.core.origins.rabbit.RabbitMain;
 import me.dueris.genesismc.core.utils.ParticleHandler;
 import me.dueris.genesismc.custom_origins.CustomOrigins;
+import me.dueris.genesismc.custom_origins.CustomOriginsMethods;
 import me.dueris.genesismc.custom_origins.handlers.CustomMenuHandler;
 import me.dueris.genesismc.core.enchantments.EnchantProtEvent;
 import me.dueris.genesismc.core.enchantments.WaterProtection;
@@ -67,7 +68,6 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         GenesisDataFiles.setup();
         GenesisDataFiles.getPlugCon().options().copyDefaults(true);
         GenesisDataFiles.getOrbCon().options().copyDefaults(true);
-        GenesisDataFiles.getCustomOriginConfig().options().copyDefaults(true);
         GenesisDataFiles.setDefaults();
         GenesisDataFiles.save();
 
@@ -119,8 +119,9 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 
         //Custom origins loaded
         getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "[GenesisMC] Loading custom origins");
-        for (int originid : GenesisDataFiles.getCustomOriginIds()) {
-            getServer().getConsoleSender().sendMessage("[GenesisMC] Loaded \""+GenesisDataFiles.getCustomOriginName(originid));
+        CustomOriginsMethods.loadCustomOriginDatapacks();
+        for (String originTag : CustomOriginsMethods.getCustomOriginTags()) {
+            getServer().getConsoleSender().sendMessage("[GenesisMC] Loaded \""+CustomOriginsMethods.getCustomOriginName(originTag)+"\"");
         }
 
         getServer().getConsoleSender().sendMessage(ChatColor.GRAY + "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
