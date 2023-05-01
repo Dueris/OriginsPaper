@@ -39,7 +39,7 @@ public class AvianMain implements Listener {
             long time = Bukkit.getServer().getWorld(p.getWorld().getName()).getTime();
 
             if (time == 0) {
-                p.getWorld().dropItemNaturally(p.getLocation(), new ItemStack(Material.EGG));
+                p.getWorld().dropItemNaturally(p.getLocation(), new ItemStack(EGG));
             }
         }
     }
