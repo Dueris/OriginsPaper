@@ -24,7 +24,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 
-import static me.dueris.api.origin.RandomOriginID.RandomOrigin;
 import static me.dueris.genesismc.core.choosing.contents.MainMenuContents.GenesisMainMenuContents;
 import static org.bukkit.ChatColor.*;
 

@@ -15,7 +15,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
-import static org.bukkit.Material.CARVED_PUMPKIN;
 import static org.bukkit.Material.ENDER_PEARL;
 
 public class EnderianRunnable extends BukkitRunnable {

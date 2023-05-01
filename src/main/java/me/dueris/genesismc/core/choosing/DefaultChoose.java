@@ -1,10 +1,8 @@
 package me.dueris.genesismc.core.choosing;
 
-import me.dueris.genesismc.core.GenesisMC;
 import me.dueris.genesismc.core.items.OrbOfOrigins;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
-import org.bukkit.persistence.PersistentDataType;
 
 import static me.dueris.genesismc.core.items.OrbOfOrigins.orb;
 import static org.bukkit.ChatColor.AQUA;
