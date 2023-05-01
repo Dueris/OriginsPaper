@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Random;
@@ -22,8 +23,8 @@ public class EnderianDamageRunnable extends BukkitRunnable {
     public void run() {
         for(Player p : Bukkit.getOnlinePlayers()) {
             PersistentDataContainer data = p.getPersistentDataContainer();
-            int originid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER);
-            if (originid == 0401065) {
+            @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
+            if (origintag.equalsIgnoreCase("genesis:origin-enderian")) {
                 Block b = p.getWorld().getHighestBlockAt(p.getLocation());
                 if(!(p.isInsideVehicle())){
                     if(p.isInWaterOrRainOrBubbleColumn() || p.getLocation().getBlock().getType() == Material.WATER_CAULDRON || p.getLocation().getBlock().getRelative(BlockFace.DOWN).getType() == Material.WATER_CAULDRON) {
