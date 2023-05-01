@@ -15,6 +15,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Random;
 
@@ -25,8 +26,7 @@ public class ChoosingEXP implements Listener {
         if(e.getCurrentItem() != null){
             if(e.getView().getTitle().equalsIgnoreCase("Choosing Menu")) {
                 PersistentDataContainer data = e.getWhoClicked().getPersistentDataContainer();
-                int originid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER);
-                Random random = new Random();
+                @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
                 @NotNull Inventory expmenu = Bukkit.createInventory(e.getWhoClicked(), 54, "Expanded Origins");
                 if (e.getCurrentItem().getType().equals(Material.MUSIC_DISC_OTHERSIDE)) {
                     Player p = (Player) e.getWhoClicked();

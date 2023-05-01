@@ -25,7 +25,6 @@ public class EnderianDamageRunnable extends BukkitRunnable {
             PersistentDataContainer data = p.getPersistentDataContainer();
             @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
             if (origintag.equalsIgnoreCase("genesis:origin-enderian")) {
-                Block b = p.getWorld().getHighestBlockAt(p.getLocation());
                 if(!(p.isInsideVehicle())){
                     if(p.isInWaterOrRainOrBubbleColumn() || p.getLocation().getBlock().getType() == Material.WATER_CAULDRON || p.getLocation().getBlock().getRelative(BlockFace.DOWN).getType() == Material.WATER_CAULDRON) {
                         if (p.getGameMode().equals(GameMode.SURVIVAL) || p.getGameMode().equals(GameMode.ADVENTURE)) {

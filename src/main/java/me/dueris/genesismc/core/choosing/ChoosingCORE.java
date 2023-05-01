@@ -51,7 +51,7 @@ public class ChoosingCORE implements Listener {
                     meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
                     random.setItemMeta(meta);
                     PersistentDataContainer data = p.getPersistentDataContainer();
-                    int originid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER);
+                    @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
                     int phantomid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER);
                     if (phantomid == 1) ;
                     if (e.getItem() != null && e.getItem().getType() != null) {
