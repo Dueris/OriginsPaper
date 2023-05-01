@@ -111,7 +111,7 @@ public class ChoosingCORE implements Listener {
             human_meta.setDisplayName("Human");
             ArrayList<String> human_lore = new ArrayList<>();
             human_lore.add(WHITE + "Human Origin");
-            human_meta.addEnchant(Enchantment.ARROW_INFINITE, 0, true);
+            human_meta.addEnchant(Enchantment.ARROW_INFINITE, 1,true);
             human_meta.setLore(human_lore);
             human.setItemMeta(human_meta);
 
@@ -120,7 +120,7 @@ public class ChoosingCORE implements Listener {
             ender_meta.setDisplayName("Enderian");
             ArrayList<String> ender_lore = new ArrayList<>();
             ender_lore.add(LIGHT_PURPLE + "Enderman Origin");
-            human_meta.addEnchant(Enchantment.ARROW_INFINITE, 0, true);
+            ender_meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
             ender_meta.setLore(ender_lore);
             ender.setItemMeta(ender_meta);
 
@@ -277,6 +277,7 @@ public class ChoosingCORE implements Listener {
                     p.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE).setBaseValue(0.0F);
                     p.getAttribute(Attribute.GENERIC_ARMOR_TOUGHNESS).setBaseValue(0);
                     DefaultChoose.DefaultChoose();
+                    p.closeInventory();
                 }
                 if(e.getCurrentItem().equals(ender)){
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, "genesis:origin-enderian");
@@ -301,6 +302,7 @@ public class ChoosingCORE implements Listener {
                     p.setHealthScaled(false);
                     p.getAttribute(Attribute.GENERIC_ARMOR_TOUGHNESS).setBaseValue(0);
                     DefaultChoose.DefaultChoose();
+                    p.closeInventory();
                 }
                 if(e.getCurrentItem().equals(shulk)){
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, "genesis:origin-shulk");

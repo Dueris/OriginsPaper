@@ -48,7 +48,7 @@ public class Info extends SubCommand implements Listener {
     @Override
     public void perform(Player p, String[] args) {
         @Nullable String origintag = p.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
-        if(args[1].equalsIgnoreCase("get")){
+        if(args[1] != null && args[1].equalsIgnoreCase("get")){
             if(args.length >= 2){
                 if(args[2].equalsIgnoreCase("origin")){
                     if(origintag.equalsIgnoreCase("genesis:origin-enderian")){

@@ -40,7 +40,7 @@ public class PiglinMain implements Listener {
         if (!(e.getDamager() instanceof Player)) return;
         if (!(e.getEntity() instanceof LivingEntity)) return;
         Player p = (Player) e.getDamager();
-        LivingEntity entity = (LivingEntity) e;
+        LivingEntity entity = (LivingEntity) e.getEntity();
         PersistentDataContainer data = p.getPersistentDataContainer();
         @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
         if (origintag.equalsIgnoreCase("genesis:origin-phantom")) {
