@@ -181,21 +181,15 @@ public class GenesisDataFiles {
           String originFolder = valueSplit[0];
           String originFileName = valueSplit[1];
 
-          //System.out.println(getCustomOriginConfig().getConfigurationSection("origins").getValues(false).containsValue(originDatapack.getName() + ":" + originFolder + ":" + originFileName));
-          //System.out.println(originDatapack.getName() + ":" + originFolder + ":" + originFileName);
-
           if (getCustomOriginConfig().getConfigurationSection("origins") == null || !getCustomOriginConfig().getConfigurationSection("origins").getValues(false).containsValue(originDatapack.getName() + ":" + originFolder + ":" + originFileName)) {
             getCustomOriginConfig().addDefault("origins." + i, originDatapack.getName() + ":" + originFolder + ":" + originFileName);
-            Bukkit.getServer().getConsoleSender().sendMessage("Not In File: "+originDatapack.getName());
             i++;
-          } else {
-            Bukkit.getServer().getConsoleSender().sendMessage("In File: "+originDatapack.getName());
           }
         }
 
       } catch (Exception e) {
-        e.printStackTrace();
-        //Bukkit.getServer().getConsoleSender().sendMessage("Failed to parse the \"/data/origins/origin_layers/origin.json\" file for " + originDatapack.getName() + ". Is it a valid origin file?");
+        //e.printStackTrace();
+        Bukkit.getServer().getConsoleSender().sendMessage("Failed to parse the \"/data/origins/origin_layers/origin.json\" file for " + originDatapack.getName() + ". Is it a valid origin file?");
       }
     }
   }
