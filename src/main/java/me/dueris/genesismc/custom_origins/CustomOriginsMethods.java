@@ -39,6 +39,10 @@ public class CustomOriginsMethods {
 
                     if (!customOrigins.containsKey(originFolder+":"+originFileName)) {
                         customOrigins.put(originFolder+":"+originFileName, originDatapack.getName());
+                    } else {
+                        Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.RED+"[GenesisMC] Duplicate origin detected!");
+                        Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.RED+"[GenesisMC] \""+originFolder+":"+originFileName+"\" in \""+originDatapack.getName()+"\" (This one won't load).");
+                        Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.RED+"[GenesisMC] \""+originFolder+":"+originFileName+"\" in \""+customOrigins.get(originFolder+":"+originFileName)+"\" (This one will still load).");
                     }
                 }
 
