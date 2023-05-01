@@ -232,9 +232,9 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 //piglin
         PiglinRunnable piglinrun = new PiglinRunnable();
         piglinrun.runTaskTimer(this, 0, 5);
-//dragonborn
-        DragonborneRunnable dragonbornerun = new DragonborneRunnable();
-        dragonbornerun.runTaskTimer(this, 0, 5);
+//sculk
+        SculkRunnable sculkrun = new SculkRunnable();
+        sculkrun.runTaskTimer(this, 0, 5);
 
 //enchantments
         waterProtectionEnchant = new WaterProtection("waterprot");
