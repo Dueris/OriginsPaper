@@ -17,6 +17,7 @@ import me.dueris.genesismc.core.origins.enderian.*;
 import me.dueris.genesismc.core.origins.phantom.PhantomForm;
 import me.dueris.genesismc.core.origins.phantom.PhantomFormRunnable;
 import me.dueris.genesismc.core.origins.phantom.PhantomMain;
+import me.dueris.genesismc.core.origins.piglin.PiglinMain;
 import me.dueris.genesismc.core.origins.rabbit.RabbitLeap;
 import me.dueris.genesismc.core.origins.rabbit.RabbitMain;
 import me.dueris.genesismc.core.utils.ParticleHandler;
@@ -153,6 +154,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         getServer().getPluginManager().registerEvents(new RabbitMain(), this);
         getServer().getPluginManager().registerEvents(new RabbitLeap(), this);
         getServer().getPluginManager().registerEvents(new AvianMain(), this);
+        getServer().getPluginManager().registerEvents(new PiglinMain(), this);
         getServer().getPluginManager().registerEvents(new WaterProtBookGen(), this);
         getServer().getPluginManager().registerEvents(new KeybindHandler(), this);
         getServer().getPluginManager().registerEvents(new Info(), this);
