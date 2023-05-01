@@ -27,16 +27,17 @@ public class ChoosingCUSTOM implements Listener {
                     Player p = (Player) e.getWhoClicked();
                     p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 10, 9);
 
+                    ItemStack bars = new ItemStack(Material.IRON_BARS);
                     ItemStack back = new ItemStack(Material.ARROW);
                     ItemStack next = new ItemStack(Material.ARROW);
                     ItemStack menu = new ItemStack(Material.SPECTRAL_ARROW);
 
-//                    ItemMeta barmeta = bars.getItemMeta();
-//                    barmeta.setDisplayName("");
-//                    barmeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-//                    ArrayList<String> barlore = new ArrayList<>();
-//                    barmeta.setLore(barlore);
-//                    bars.setItemMeta(barmeta);
+                    ItemMeta barmeta = bars.getItemMeta();
+                    barmeta.setDisplayName("");
+                    barmeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+                    ArrayList<String> barlore = new ArrayList<>();
+                    barmeta.setLore(barlore);
+                    bars.setItemMeta(barmeta);
 
                     ItemMeta menumeta = menu.getItemMeta();
                     menumeta.setDisplayName(ChatColor.AQUA + "Return");
@@ -64,7 +65,7 @@ public class ChoosingCUSTOM implements Listener {
 
                     for (int i = 0; i <= 53; i++) {
                         if (i % 9 == 0 || (i + 1) % 9 == 0) {
-                            contents.add(new ItemStack(Material.IRON_BARS));
+                            contents.add(bars);
                         } else if (i == 46) {
                             contents.add(back);
                         } else if (i == 49) {
