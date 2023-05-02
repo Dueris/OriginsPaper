@@ -57,14 +57,14 @@ public class PhantomFormRunnable extends BukkitRunnable {
 
                     }else{
                         if(p.getGameMode().equals(GameMode.SPECTATOR)){
-                            if(p.getPreviousGamemode().equals(GameMode.CREATIVE){
-                               p.setGameMode(p.getPreviousGameMode());
-                                p.setFlying(true)
+                            if (p.getPreviousGameMode().equals(GameMode.CREATIVE)) {
+                                p.setGameMode(p.getPreviousGameMode());
+                                p.setFlying(true);
                             }else{
-                            p.setGameMode(p.getPreviousGameMode());
-                            p.setFlying(false);
+                                p.setGameMode(p.getPreviousGameMode());
+                                p.setFlying(false);
                             }
-                             
+
                         }
                     }
 
