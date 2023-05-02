@@ -50,7 +50,7 @@ public class ShulkInv implements CommandExecutor {
       }else if(args.length == 0){
         ArrayList<ItemStack> vaultItems = ShulkUtils.getItems ( p );
 
-        Inventory vault = Bukkit.createInventory ( p , 9 , "Shulker Inventory" );
+        Inventory vault = Bukkit.createInventory ( p , InventoryType.DROPPER , "Shulker Inventory" );
 
         vaultItems.stream ( )
                 .forEach ( itemStack -> vault.addItem ( itemStack ) );
