@@ -287,6 +287,7 @@ public class ChoosingCORE implements Listener {
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
                     p.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE).setBaseValue(0.0F);
                     p.getAttribute(Attribute.GENERIC_ARMOR_TOUGHNESS).setBaseValue(0);
+                    p.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20);
                     DefaultChoose.DefaultChoose();
                     p.closeInventory();
                 }
@@ -378,6 +379,7 @@ public class ChoosingCORE implements Listener {
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
                     p.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE).setBaseValue(0.0F);
+                    p.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20);
                     DefaultChoose.DefaultChoose();
                 }
                 if(e.getCurrentItem().equals(vex)){
@@ -387,6 +389,7 @@ public class ChoosingCORE implements Listener {
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
                     p.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE).setBaseValue(0.0F);
+                    p.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20);
                     DefaultChoose.DefaultChoose();
                 }
                 if(e.getCurrentItem().equals(blaze)){
@@ -396,6 +399,7 @@ public class ChoosingCORE implements Listener {
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
                     p.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE).setBaseValue(0.0F);
+                    p.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20);
                     DefaultChoose.DefaultChoose();
                 }
                 if(e.getCurrentItem().equals(star)){
@@ -405,6 +409,7 @@ public class ChoosingCORE implements Listener {
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
                     p.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE).setBaseValue(0.0F);
+                    p.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20);
                     DefaultChoose.DefaultChoose();
                 }
                 if(e.getCurrentItem().equals(mermaid)){
@@ -414,6 +419,7 @@ public class ChoosingCORE implements Listener {
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
                     p.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE).setBaseValue(0.0F);
+                    p.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20);
                     DefaultChoose.DefaultChoose();
                 }
                 if(e.getCurrentItem().equals(allay)){
@@ -423,6 +429,7 @@ public class ChoosingCORE implements Listener {
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
                     p.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE).setBaseValue(0.0F);
+                    p.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20);
                     DefaultChoose.DefaultChoose();
                 }
                 if(e.getCurrentItem().equals(rabbit)){
@@ -442,6 +449,7 @@ public class ChoosingCORE implements Listener {
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
                     p.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE).setBaseValue(0.0F);
+                    p.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20);
                     DefaultChoose.DefaultChoose();
                 }
                 if(e.getCurrentItem().equals(elyrtian)){
@@ -451,6 +459,7 @@ public class ChoosingCORE implements Listener {
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
                     p.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE).setBaseValue(0.0F);
+                    p.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20);
                     DefaultChoose.DefaultChoose();
                 }
                 if(e.getCurrentItem().equals(avian)){
@@ -470,6 +479,7 @@ public class ChoosingCORE implements Listener {
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
                     p.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE).setBaseValue(0.0F);
+                    p.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20);
                     DefaultChoose.DefaultChoose();
                 }
                 if(e.getCurrentItem().equals(sculk)){
@@ -479,6 +489,7 @@ public class ChoosingCORE implements Listener {
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
                     p.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE).setBaseValue(0.0F);
+                    p.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20);
                     DefaultChoose.DefaultChoose();
                 }
 
