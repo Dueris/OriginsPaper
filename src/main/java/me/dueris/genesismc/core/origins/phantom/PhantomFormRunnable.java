@@ -17,6 +17,12 @@ public class PhantomFormRunnable extends BukkitRunnable {
     @Override
     public void run() {
         for (Player p : Bukkit.getOnlinePlayers()) {
+            
+            if(p.getGameMode().equals(GameMode.CREATIVE) || p.getGameMode().equals(GameMode.SPECTATOR)){
+            p.setFlying(true);
+            }else{
+            p.setFlying(false);
+            }
 
             PersistentDataContainer data = p.getPersistentDataContainer();
             @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
@@ -51,8 +57,14 @@ public class PhantomFormRunnable extends BukkitRunnable {
 
                     }else{
                         if(p.getGameMode().equals(GameMode.SPECTATOR)){
+                            if(p.getPreviousGamemode().equals(GameMode.CREATIVE){
+                               p.setGameMode(p.getPreviousGameMode());
+                                p.setFlying(true)
+                            }else{
                             p.setGameMode(p.getPreviousGameMode());
                             p.setFlying(false);
+                            }
+                             
                         }
                     }
 
