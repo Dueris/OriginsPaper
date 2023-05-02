@@ -82,10 +82,6 @@ public class JoiningHandler implements Listener {
             p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, "genesis:origin-sculk");
         }
 
-
-
-
-
         if(p.getClientBrandName() != null && p.getClientBrandName().equalsIgnoreCase("Immersions")){
             p.setDisplayName(AQUA + p.getName());
             p.setPlayerListName(AQUA + p.getName());
