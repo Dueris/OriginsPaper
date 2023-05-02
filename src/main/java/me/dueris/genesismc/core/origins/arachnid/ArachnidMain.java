@@ -127,11 +127,19 @@ public class ArachnidMain implements Listener {
                         e.setDamage(0);
                     }
                 }
-            } else if (e.getCause().equals(EntityDamageEvent.DamageCause.FIRE) || e.getCause().equals(EntityDamageEvent.DamageCause.FIRE_TICK)) {
-                if (origintag.equalsIgnoreCase("genesis:origin-arachnid")) {
-                    if (e.getEntity() instanceof Player) {
-                        e.setDamage(e.getDamage() + 2);
-                    }
+            }
+        }
+    }
+
+    @EventHandler
+    public void onFireDamage(EntityDamageEvent e) {
+        if (e.getEntity() instanceof Player) {
+            Player p = (Player) e.getEntity();
+            PersistentDataContainer data = p.getPersistentDataContainer();
+            @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
+            if (origintag.equalsIgnoreCase("genesis:origin-arachnid")) {
+                if (e.getCause().equals(EntityDamageEvent.DamageCause.FIRE) || e.getCause().equals(EntityDamageEvent.DamageCause.FIRE_TICK)) {
+                    e.setDamage(e.getDamage() * 1.25);
                 }
             }
         }
