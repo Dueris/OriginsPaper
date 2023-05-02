@@ -36,22 +36,6 @@ public class ShulkMain implements Listener {
     }
   }
 
-  @EventHandler
-  public void OnUseShield(PlayerInteractEvent e){
-    Player p = e.getPlayer();
-    PersistentDataContainer data = p.getPersistentDataContainer();
-    @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
-    if (origintag.equalsIgnoreCase("genesis:origin-shulk")) {
-      if(e.getItem() != null){
-        if(e.getItem().getType().equals(SHIELD)){
-          e.setCancelled(true);
-        }
-      }
-    }
-  }
-
-
-
   public static EnumSet<Material> nat_stones;
   public static EnumSet<Material> tool;
 
