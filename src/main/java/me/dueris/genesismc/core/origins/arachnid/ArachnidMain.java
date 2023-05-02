@@ -137,16 +137,4 @@ public class ArachnidMain implements Listener {
         }
     }
 
-    @EventHandler
-    public void onFireDamage(EntityDamageEvent e) {
-        if (e.getEntity() instanceof Player) {
-            Player p = (Player) e.getEntity();
-            PersistentDataContainer data = p.getPersistentDataContainer();
-            @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
-            if (e.getCause().equals(EntityDamageEvent.DamageCause.FIRE) || e.getCause().equals(EntityDamageEvent.DamageCause.FIRE_TICK)) {
-                e.setDamage(e.getDamage()*1.25);
-            }
-        }
-    }
-
 }
