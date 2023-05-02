@@ -1,5 +1,6 @@
 package me.dueris.genesismc.core.origins.enderian;
 
+import com.destroystokyo.paper.event.player.PlayerArmorChangeEvent;
 import me.dueris.genesismc.core.GenesisMC;
 import org.bukkit.*;
 import org.bukkit.entity.Endermite;
@@ -108,6 +109,20 @@ public class EnderMain implements Listener {
                 p.damage(2);
             }
 
+        }
+    }
+
+    @EventHandler
+    public void onArmorChange(PlayerArmorChangeEvent e) {
+        Player p = e.getPlayer();
+        PersistentDataContainer data = p.getPersistentDataContainer();
+        @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
+        if (origintag.equalsIgnoreCase("genesis:origin-enderian")) {
+            if (e.getNewItem() == null) return;
+            if (e.getNewItem().getType() == Material.CARVED_PUMPKIN) {
+                p.getInventory().setHelmet(new ItemStack(Material.AIR));
+                p.getWorld().dropItemNaturally(p.getLocation(), new ItemStack(Material.CARVED_PUMPKIN));
+            }
         }
     }
 
