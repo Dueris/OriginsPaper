@@ -62,6 +62,7 @@ public class PhantomFormRunnable extends BukkitRunnable {
                                 p.setFlying(true);
                             }else{
                                 p.setGameMode(p.getPreviousGameMode());
+                                if(p.isOnGround());
                                 p.setFlying(false);
                             }
 
