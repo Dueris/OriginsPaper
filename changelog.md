@@ -57,6 +57,7 @@
 -pls donate to support the project
 -changed pumpkin pies to no longer give Enderians food
 -added Enderians no longer able to wear carved pumpkins
+-added 1.25x fire damage to arachnid
 </pre>
 <hr>
 <header>Again, still in early alpha. Most features do not work atm.</header>
