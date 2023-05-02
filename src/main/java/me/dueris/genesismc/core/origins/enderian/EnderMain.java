@@ -102,6 +102,7 @@ public class EnderMain implements Listener {
             if(e.getItem().getType().equals(Material.PUMPKIN_PIE)){
                 p.getWorld().createExplosion(p.getLocation(), 0);
                 p.setHealth(1);
+                p.setFoodLevel(p.getFoodLevel()-8);
             }
             if(e.getItem().getType().equals(Material.POTION)){
                 p.damage(2);
