@@ -92,6 +92,17 @@ public class ChoosingCORE implements Listener {
     }
 
     @EventHandler
+    public void onCustomOriginClose(InventoryClickEvent e) {
+        if (e.getCurrentItem() != null) {
+            if (e.getView().getTitle().equalsIgnoreCase("Choosing Menu")) { //Dueris change the menu to the correct one cos idk what the right one is
+                if (e.getCurrentItem().getType().equals(Material.BARRIER)) {
+                    e.getWhoClicked().closeInventory();
+                }else{e.setCancelled(true);}
+            }
+        }
+    }
+
+    @EventHandler
     public static void ChooserJoin(PlayerJoinEvent e) {
         PersistentDataContainer data = e.getPlayer().getPersistentDataContainer();
         @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
