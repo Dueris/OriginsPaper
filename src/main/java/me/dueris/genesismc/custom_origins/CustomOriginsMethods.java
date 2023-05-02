@@ -11,6 +11,7 @@ import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 public class CustomOriginsMethods {
 
@@ -77,7 +78,7 @@ public class CustomOriginsMethods {
 
     public static String getCustomOriginName(String originTag) {
         Object value = getCustomOriginDetail(originTag, "name");
-        if (value == null) return "NoName";
+        if (value == null) return "No Name";
         return (String) value;
     }
 
@@ -111,4 +112,42 @@ public class CustomOriginsMethods {
         return (Boolean) value;
     }
 
+    public static Object getOriginPowerDetial(String originTag, String powerTag, String valueToParse) {
+        String[] values = powerTag.split(":");
+
+        if (Objects.equals(values[0], "origins")) {
+            return null;
+            //temporary way of dealing with build in origin powers
+        }
+
+        String dirName = customOrigins.get(originTag);
+        File originDetails = new File(Bukkit.getServer().getPluginManager().getPlugin("GenesisMC").getDataFolder() +"/custom_origins/"+dirName+"/data/"+values[0]+"/powers/"+values[1]+".json");
+        try {
+            JSONObject parser = (JSONObject) new JSONParser().parse(new FileReader(originDetails.getAbsolutePath()));
+            return parser.get(valueToParse);
+        } catch (Exception e) {
+            //e.printStackTrace();
+            Bukkit.getServer().getConsoleSender().sendMessage("[GenesisMC] Using power defaults for "+powerTag+" - \""+e.getMessage()+"\"");
+
+            return null;
+        }
+    }
+
+    public static String getCustomOriginPowerName(String originTag, String powerTag) {
+        Object value = getOriginPowerDetial(originTag, powerTag, "name");
+        if (value == null) return "No Name";
+        return (String) value;
+    }
+
+    public static String getCustomOriginPowerDescription(String originTag, String powerTag) {
+        Object value = getOriginPowerDetial(originTag, powerTag, "description");
+        if (value == null) return "No Description";
+        return (String) value;
+    }
+
+    public static boolean getCustomOriginPowerHidden(String originTag, String powerTag) {
+        Object value = getOriginPowerDetial(originTag, powerTag, "hidden");
+        if (value == null) return false;
+        return (Boolean) value;
+    }
 }
