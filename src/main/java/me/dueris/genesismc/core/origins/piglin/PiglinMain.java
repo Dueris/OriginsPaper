@@ -16,6 +16,7 @@ import org.bukkit.event.entity.EntityTargetLivingEntityEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryInteractEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
@@ -28,12 +29,35 @@ import static org.bukkit.Material.*;
 
 public class PiglinMain implements Listener {
 
-    //I like to be SHINY: Golden tools deal extra damage and gold armour has more protection
-
+    ArrayList<Integer> piglinsHit;
     public static EnumSet<Material> goldenTools;
+    public static EnumSet<Material> edibleFoodPiglin;
     static {
         goldenTools = EnumSet.of(GOLDEN_AXE, GOLDEN_HOE, GOLDEN_PICKAXE, GOLDEN_SWORD, GOLDEN_SHOVEL);
+        edibleFoodPiglin = EnumSet.of(
+                COOKED_BEEF, COOKED_CHICKEN, COOKED_MUTTON, COOKED_COD, COOKED_PORKCHOP, COOKED_RABBIT, COOKED_SALMON,
+                BEEF, CHICKEN, MUTTON, COD, PORKCHOP, RABBIT, SALMON,
+                TROPICAL_FISH, PUFFERFISH, RABBIT_STEW, ROTTEN_FLESH, SPIDER_EYE);
     }
+
+    @EventHandler
+    public void onItemConsume(PlayerInteractEvent e) {
+        PersistentDataContainer data = e.getPlayer().getPersistentDataContainer();
+        @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
+        if (origintag.equalsIgnoreCase("genesis:origin-piglin")) {
+            ItemStack item = e.getItem();
+            if (item == null) return;
+            if (!item.getType().isEdible()) return;
+            for (Material food : edibleFoodPiglin) {
+                if (item.getType() == food) {
+                    return;
+                }
+            }
+            e.setCancelled(true);
+        }
+    }
+
+    //I like to be SHINY: Golden tools deal extra damage and gold armour has more protection
     @EventHandler
     public void onEntityDamage(EntityDamageByEntityEvent e) {
         if (!(e.getDamager() instanceof Player)) return;
@@ -68,7 +92,6 @@ public class PiglinMain implements Listener {
 
 
     //Friendly Frenemies: Piglins won't attack you unless provoked
-    ArrayList<Integer> piglinsHit;
 
     @EventHandler
     public void onEntityTarget(EntityTargetLivingEntityEvent e) {
