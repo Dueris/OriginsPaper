@@ -57,10 +57,10 @@ public class PiglinMain implements Listener {
             for (ItemStack armour : p.getInventory().getArmorContents()) {
                 if (armour == null) continue;
                 if (armour.getType() == GOLDEN_HELMET || armour.getType() == GOLDEN_BOOTS) {
-                    p.getAttribute(Attribute.GENERIC_ARMOR).setBaseValue(p.getAttribute(Attribute.GENERIC_ARMOR).getValue() + 1);
+                    p.getAttribute(Attribute.GENERIC_ARMOR).setBaseValue(p.getAttribute(Attribute.GENERIC_ARMOR).getBaseValue() + 1);
                 }
                 if (armour.getType() == GOLDEN_CHESTPLATE || armour.getType() == GOLDEN_LEGGINGS) {
-                    p.getAttribute(Attribute.GENERIC_ARMOR).setBaseValue(p.getAttribute(Attribute.GENERIC_ARMOR).getValue() + 2);
+                    p.getAttribute(Attribute.GENERIC_ARMOR).setBaseValue(p.getAttribute(Attribute.GENERIC_ARMOR).getBaseValue() + 2);
                 }
             }
         }
