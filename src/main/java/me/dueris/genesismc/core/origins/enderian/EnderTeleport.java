@@ -97,23 +97,6 @@ public class EnderTeleport implements Listener {
     }
 
     @EventHandler
-    public void oncraftattempt(PrepareItemCraftEvent e){
-        ItemStack infinpearl = new ItemStack(ENDER_PEARL);
-
-        ItemMeta pearl_meta = infinpearl.getItemMeta();
-        pearl_meta.setDisplayName(ChatColor.LIGHT_PURPLE + "Teleport");
-        ArrayList<String> pearl_lore = new ArrayList<>();
-        pearl_meta.setUnbreakable(true);
-        pearl_meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
-        pearl_meta.setLore(pearl_lore);
-        infinpearl.setItemMeta(pearl_meta);
-        if(e.getInventory().contains(infinpearl)){
-            e.getInventory().setResult(null);
-        }
-    }
-
-
-    @EventHandler
     public void onRespawn(PlayerRespawnEvent e) {
         Player p = e.getPlayer();
         PersistentDataContainer data = p.getPersistentDataContainer();
