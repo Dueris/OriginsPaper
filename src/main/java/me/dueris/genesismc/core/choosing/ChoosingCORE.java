@@ -207,14 +207,14 @@ public class ChoosingCORE implements Listener {
             star_meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
             star.setItemMeta(star_meta);
 
-            ItemStack mermaid = new ItemStack(Material.COD);
-            ItemMeta mermaid_meta = mermaid.getItemMeta();
-            mermaid_meta.setDisplayName("Merling");
-            ArrayList<String> mermaid_lore = new ArrayList<>();
-            mermaid_lore.add(BLUE + "Merling Origin");
-            mermaid_meta.setLore(mermaid_lore);
-            mermaid_meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
-            mermaid.setItemMeta(mermaid_meta);
+            ItemStack merling = new ItemStack(Material.COD);
+            ItemMeta merling_meta = merling.getItemMeta();
+            merling_meta.setDisplayName("Merling");
+            ArrayList<String> merling_lore = new ArrayList<>();
+            merling_lore.add(BLUE + "Merling Origin");
+            merling_meta.setLore(merling_lore);
+            merling_meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
+            merling.setItemMeta(merling_meta);
 
             ItemStack allay = new ItemStack(Material.AMETHYST_SHARD);
             ItemMeta allay_meta = allay.getItemMeta();
@@ -377,7 +377,7 @@ public class ChoosingCORE implements Listener {
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
                     DefaultChoose.DefaultChoose();
                 }
-                if(e.getCurrentItem().equals(mermaid)){
+                if(e.getCurrentItem().equals(merling)){
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, "genesis:origin-merling");
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
