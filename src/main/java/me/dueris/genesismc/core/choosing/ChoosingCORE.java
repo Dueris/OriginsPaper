@@ -440,6 +440,7 @@ public class ChoosingCORE implements Listener {
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
                     p.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE).setBaseValue(0.0F);
                     p.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(14);
+                    p.getAttribute(Attribute.GENERIC_ARMOR).setBaseValue(0);
                     DefaultChoose.DefaultChoose();
                 }
                 if(e.getCurrentItem().equals(bee)){
@@ -470,6 +471,7 @@ public class ChoosingCORE implements Listener {
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
                     p.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE).setBaseValue(0.0F);
                     p.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20);
+                    p.getAttribute(Attribute.GENERIC_ARMOR).setBaseValue(0);
                     DefaultChoose.DefaultChoose();
                 }
                 if(e.getCurrentItem().equals(piglin)){
