@@ -3,9 +3,12 @@ package me.dueris.genesismc.core.bukkitrunnables;
 import me.dueris.genesismc.core.GenesisMC;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.Nullable;
 
@@ -16,7 +19,10 @@ public class PiglinRunnable extends BukkitRunnable {
             PersistentDataContainer data = p.getPersistentDataContainer();
             @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
             if (origintag.equalsIgnoreCase("genesis:origin-piglin")) {
-                ;
+                if (p.getWorld().getEnvironment() != World.Environment.NETHER) {
+                    p.addPotionEffect(new PotionEffect(PotionEffectType.FIRE_RESISTANCE, 10, 0, false, false, false));
+                    p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 10, 0, false, false, false));
+                }
             }
         }
     }
