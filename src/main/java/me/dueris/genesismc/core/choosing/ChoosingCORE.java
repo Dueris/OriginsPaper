@@ -1,10 +1,8 @@
 package me.dueris.genesismc.core.choosing;
 
-import me.dueris.api.genesis.DefaultChoose;
 import me.dueris.genesismc.core.GenesisMC;
 import me.dueris.genesismc.core.choosing.contents.origins.*;
 import me.dueris.genesismc.core.files.GenesisDataFiles;
-import me.dueris.genesismc.core.items.OrbOfOrigins;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.enchantments.Enchantment;
@@ -22,12 +20,11 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 
-import static me.dueris.api.genesis.origin.RandomOriginID.RandomOrigin;
 import static me.dueris.genesismc.core.choosing.contents.MainMenuContents.GenesisMainMenuContents;
-import static me.dueris.genesismc.core.items.OrbOfOrigins.orb;
 import static org.bukkit.ChatColor.*;
 
 public class ChoosingCORE implements Listener {
@@ -39,9 +36,9 @@ public class ChoosingCORE implements Listener {
             if (GenesisDataFiles.getPlugCon().getString("orb-of-origins-enabled").equalsIgnoreCase("true")) {
                 if (e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.LEFT_CLICK_AIR || e.getAction() == Action.LEFT_CLICK_BLOCK || e.getAction() == Action.RIGHT_CLICK_BLOCK) {
                     if (p.getOpenInventory().getBottomInventory() != null) ;
-                    ItemStack random = new ItemStack(Material.MAGMA_CREAM);
+                    ItemStack orb = new ItemStack(Material.MAGMA_CREAM);
 
-                    ItemMeta meta = random.getItemMeta();
+                    ItemMeta meta = orb.getItemMeta();
                     meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
                     meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
                     meta.addItemFlags(ItemFlag.HIDE_DESTROYS);
@@ -51,13 +48,13 @@ public class ChoosingCORE implements Listener {
                     meta.setDisplayName(GenesisDataFiles.getOrbCon().getString("name"));
                     meta.setUnbreakable(true);
                     meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
-                    random.setItemMeta(meta);
+                    orb.setItemMeta(meta);
                     PersistentDataContainer data = p.getPersistentDataContainer();
-                    int originid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER);
+                    @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
                     int phantomid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER);
                     if (phantomid == 1) ;
                     if (e.getItem() != null && e.getItem().getType() != null) {
-                        if (e.getItem().equals(random)) {
+                        if (e.getItem().isSimilar(orb)) {
 
                             @NotNull Inventory mainmenu = Bukkit.createInventory(e.getPlayer(), 54, "Choosing Menu");
                             mainmenu.setContents(GenesisMainMenuContents());
@@ -69,41 +66,6 @@ public class ChoosingCORE implements Listener {
             }
         }
     }
-
-    @EventHandler
-    public static void RANDOM_ORIGIN(InventoryClickEvent e) {
-        if (GenesisDataFiles.getPlugCon().getString("orb-of-origins-enabled").equalsIgnoreCase("true")) {
-
-            ItemStack random = new ItemStack(Material.MAGMA_CREAM);
-
-            ItemMeta meta = random.getItemMeta();
-            meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
-            meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
-            meta.addItemFlags(ItemFlag.HIDE_DESTROYS);
-            meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-            meta.addItemFlags(ItemFlag.HIDE_PLACED_ON);
-            meta.setCustomModelData(00002);
-            meta.setDisplayName(ChatColor.LIGHT_PURPLE + "Random Origin");
-            meta.setUnbreakable(true);
-            meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
-            random.setItemMeta(meta);
-            if (e.getView().getTitle().equalsIgnoreCase("Choosing Menu")) {
-                PersistentDataContainer data = e.getWhoClicked().getPersistentDataContainer();
-                if(e.getCurrentItem() == null) return;
-                if (e.getCurrentItem().equals(random)) {
-                    data.set(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER, RandomOrigin());
-                    e.getWhoClicked().getScoreboardTags().remove("choosing");
-                    e.getWhoClicked().addScoreboardTag("chosen");
-                    e.getWhoClicked().closeInventory();
-                    Player p = (Player) e.getWhoClicked();
-                    p.setGameMode(p.getPreviousGameMode());
-                    DefaultChoose.DefaultChoose();
-
-                }
-            }
-        }
-    }
-
 
     @EventHandler
     public void OnInteractCancel(InventoryClickEvent e){
@@ -130,11 +92,22 @@ public class ChoosingCORE implements Listener {
     }
 
     @EventHandler
+    public void onCustomOriginClose(InventoryClickEvent e) {
+        if (e.getCurrentItem() != null) {
+            if (e.getView().getTitle().equalsIgnoreCase("Choosing Menu")) { //Dueris change the menu to the correct one cos idk what the right one is
+                if (e.getCurrentItem().getType().equals(Material.BARRIER)) {
+                    e.getWhoClicked().closeInventory();
+                }else{e.setCancelled(true);}
+            }
+        }
+    }
+
+    @EventHandler
     public static void ChooserJoin(PlayerJoinEvent e) {
         PersistentDataContainer data = e.getPlayer().getPersistentDataContainer();
-        int originid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER);
+        @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
         @NotNull Inventory mainmenu = Bukkit.createInventory(e.getPlayer(), 54, "Choosing Menu");
-        if (originid == 0) {
+        if (origintag == "genesis:origin-null") {
             mainmenu.setContents(GenesisMainMenuContents());
             e.getPlayer().openInventory(mainmenu);
         }
@@ -149,7 +122,7 @@ public class ChoosingCORE implements Listener {
             human_meta.setDisplayName("Human");
             ArrayList<String> human_lore = new ArrayList<>();
             human_lore.add(WHITE + "Human Origin");
-            human_meta.addEnchant(Enchantment.ARROW_INFINITE, 0, true);
+            human_meta.addEnchant(Enchantment.ARROW_INFINITE, 1,true);
             human_meta.setLore(human_lore);
             human.setItemMeta(human_meta);
 
@@ -158,7 +131,7 @@ public class ChoosingCORE implements Listener {
             ender_meta.setDisplayName("Enderian");
             ArrayList<String> ender_lore = new ArrayList<>();
             ender_lore.add(LIGHT_PURPLE + "Enderman Origin");
-            human_meta.addEnchant(Enchantment.ARROW_INFINITE, 0, true);
+            ender_meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
             ender_meta.setLore(ender_lore);
             ender.setItemMeta(ender_meta);
 
@@ -234,14 +207,14 @@ public class ChoosingCORE implements Listener {
             star_meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
             star.setItemMeta(star_meta);
 
-            ItemStack mermaid = new ItemStack(Material.COD);
-            ItemMeta mermaid_meta = mermaid.getItemMeta();
-            mermaid_meta.setDisplayName("Merling");
-            ArrayList<String> mermaid_lore = new ArrayList<>();
-            mermaid_lore.add(BLUE + "Merling Origin");
-            mermaid_meta.setLore(mermaid_lore);
-            mermaid_meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
-            mermaid.setItemMeta(mermaid_meta);
+            ItemStack merling = new ItemStack(Material.COD);
+            ItemMeta merling_meta = merling.getItemMeta();
+            merling_meta.setDisplayName("Merling");
+            ArrayList<String> merling_lore = new ArrayList<>();
+            merling_lore.add(BLUE + "Merling Origin");
+            merling_meta.setLore(merling_lore);
+            merling_meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
+            merling.setItemMeta(merling_meta);
 
             ItemStack allay = new ItemStack(Material.AMETHYST_SHARD);
             ItemMeta allay_meta = allay.getItemMeta();
@@ -307,17 +280,17 @@ public class ChoosingCORE implements Listener {
             sculk.setItemMeta(sculk_meta);
             Player p = (Player) e.getWhoClicked();
             if (e.getCurrentItem() != null && e.getCurrentItem().containsEnchantment(Enchantment.ARROW_INFINITE)) {
+                setAtributesToDefualt(p);
                 if(e.getCurrentItem().equals(human)){
-                    p.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0.1);
-                    p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER, 0004013);
+                    p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, "genesis:origin-human");
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
-                    p.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE).setBaseValue(0.0F);
-                    p.getAttribute(Attribute.GENERIC_ARMOR_TOUGHNESS).setBaseValue(0);
                     DefaultChoose.DefaultChoose();
+                    p.closeInventory();
                 }
                 if(e.getCurrentItem().equals(ender)){
-                    p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER, 0401065);
+                    p.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(24);
+                    p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, "genesis:origin-enderian");
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
                     ItemStack infinpearl = new ItemStack(Material.ENDER_PEARL);
@@ -329,59 +302,44 @@ public class ChoosingCORE implements Listener {
                     pearl_meta.setLore(pearl_lore);
                     infinpearl.setItemMeta(pearl_meta);
                     p.getInventory().addItem(infinpearl);
-                    p.getAttribute(Attribute.GENERIC_ARMOR).setBaseValue(0.0);
-                    p.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE).setBaseValue(0.0F);
-                    p.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(24);
-                    p.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0.1);
                     float walk = 0.2F;
                     p.setWalkSpeed(walk);
                     p.getWorld().spawnParticle(Particle.REVERSE_PORTAL, p.getLocation(), 9);
                     p.setHealthScaled(false);
-                    p.getAttribute(Attribute.GENERIC_ARMOR_TOUGHNESS).setBaseValue(0);
                     DefaultChoose.DefaultChoose();
+                    p.closeInventory();
                 }
                 if(e.getCurrentItem().equals(shulk)){
-                    p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER, 6503044);
-                    p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
-                    p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
                     float walk = 0.185F;
                     p.getAttribute(Attribute.GENERIC_ARMOR).setBaseValue(8.0);
                     p.setWalkSpeed(walk);
-                    p.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20);
                     p.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE).setBaseValue(0.45F);
                     p.getAttribute(Attribute.GENERIC_ARMOR_TOUGHNESS).setBaseValue(2);
+                    p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, "genesis:origin-shulk");
+                    p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
+                    p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
                     DefaultChoose.DefaultChoose();
                 }
                 if(e.getCurrentItem().equals(spider)){
-                    p.getAttribute(Attribute.GENERIC_ARMOR_TOUGHNESS).setBaseValue(0);
-                    p.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0.1);
-                    p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER, 1709012);
+                    p.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(14);
+                    p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, "genesis:origin-arachnid");
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
-                    p.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(14);
-                    p.getAttribute(Attribute.GENERIC_ARMOR).setBaseValue(0);
-                    p.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE).setBaseValue(0.0F);
                     DefaultChoose.DefaultChoose();
                 }
                 if(e.getCurrentItem().equals(creep)){
-                    p.getAttribute(Attribute.GENERIC_ARMOR_TOUGHNESS).setBaseValue(0);
-                    p.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0.1);
-                    p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER, 2356555);
+                    p.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(18);
+                    p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, "genesis:origin-creep");
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 2);
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
-                    p.getAttribute(Attribute.GENERIC_ARMOR).setBaseValue(0);
-                    p.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(18);
-                    p.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE).setBaseValue(0.0F);
                     DefaultChoose.DefaultChoose();
                 }
                 if(e.getCurrentItem().equals(phantom)){
-                    p.getAttribute(Attribute.GENERIC_ARMOR_TOUGHNESS).setBaseValue(0);
-                    p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER, 7300041);
-                    p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
-                    p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
                     p.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(14);
                     p.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0.11);
-                    p.getAttribute(Attribute.GENERIC_ARMOR).setBaseValue(0);
+                    p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, "genesis:origin-phantom");
+                    p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
+                    p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
                     ItemStack spectatorswitch = new ItemStack(Material.PHANTOM_MEMBRANE);
                     ItemMeta switch_meta = spectatorswitch.getItemMeta();
                     switch_meta.setDisplayName(GRAY + "Phantom Form");
@@ -393,117 +351,80 @@ public class ChoosingCORE implements Listener {
                     switch_meta.setLore(pearl_lore);
                     spectatorswitch.setItemMeta(switch_meta);
                     p.getInventory().addItem(spectatorswitch);
-                    p.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE).setBaseValue(0.0F);
                     DefaultChoose.DefaultChoose();
                 }
                 if(e.getCurrentItem().equals(slime)){
-                    p.getAttribute(Attribute.GENERIC_ARMOR_TOUGHNESS).setBaseValue(0);
-                    p.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0.1);
-                    p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER, 2304045);
+                    p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, "genesis:origin-slimeling");
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
-                    p.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE).setBaseValue(0.0F);
                     DefaultChoose.DefaultChoose();
                 }
                 if(e.getCurrentItem().equals(vex)){
-                    p.getAttribute(Attribute.GENERIC_ARMOR_TOUGHNESS).setBaseValue(0);
-                    p.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0.1);
-                    p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER, 9602042);
+                    p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, "genesis:origin-vexian");
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
-                    p.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE).setBaseValue(0.0F);
                     DefaultChoose.DefaultChoose();
                 }
                 if(e.getCurrentItem().equals(blaze)){
-                    p.getAttribute(Attribute.GENERIC_ARMOR_TOUGHNESS).setBaseValue(0);
-                    p.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0.1);
-                    p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER, 9811027);
+                    p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, "genesis:origin-blazeborn");
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
-                    p.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE).setBaseValue(0.0F);
                     DefaultChoose.DefaultChoose();
                 }
                 if(e.getCurrentItem().equals(star)){
-                    p.getAttribute(Attribute.GENERIC_ARMOR_TOUGHNESS).setBaseValue(0);
-                    p.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0.1);
-                    p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER, 7303065);
+                    p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, "genesis:origin-starborne");
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
-                    p.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE).setBaseValue(0.0F);
                     DefaultChoose.DefaultChoose();
                 }
-                if(e.getCurrentItem().equals(mermaid)){
-                    p.getAttribute(Attribute.GENERIC_ARMOR_TOUGHNESS).setBaseValue(0);
-                    p.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0.1);
-                    p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER, 1310018);
+                if(e.getCurrentItem().equals(merling)){
+                    p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, "genesis:origin-merling");
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
-                    p.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE).setBaseValue(0.0F);
                     DefaultChoose.DefaultChoose();
                 }
                 if(e.getCurrentItem().equals(allay)){
-                    p.getAttribute(Attribute.GENERIC_ARMOR_TOUGHNESS).setBaseValue(0);
-                    p.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0.1);
-                    p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER, 1205048);
+                    p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, "genesis:origin-allay");
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
-                    p.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE).setBaseValue(0.0F);
                     DefaultChoose.DefaultChoose();
                 }
                 if(e.getCurrentItem().equals(rabbit)){
-                    p.getAttribute(Attribute.GENERIC_ARMOR_TOUGHNESS).setBaseValue(0);
-                    p.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0.1);
-                    p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER, 5308033);
+                    p.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(14);
+                    p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, "genesis:origin-rabbit");
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
-                    p.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE).setBaseValue(0.0F);
-                    p.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(14);
                     DefaultChoose.DefaultChoose();
                 }
                 if(e.getCurrentItem().equals(bee)){
-                    p.getAttribute(Attribute.GENERIC_ARMOR_TOUGHNESS).setBaseValue(0);
-                    p.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0.1);
-                    p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER, 8906022);
+                    p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, "genesis:origin-bee");
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
-                    p.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE).setBaseValue(0.0F);
                     DefaultChoose.DefaultChoose();
                 }
                 if(e.getCurrentItem().equals(elyrtian)){
-                    p.getAttribute(Attribute.GENERIC_ARMOR_TOUGHNESS).setBaseValue(0);
-                    p.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0.1);
-                    p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER, 6211006);
+                    p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, "genesis:origin-elytrian");
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
-                    p.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE).setBaseValue(0.0F);
                     DefaultChoose.DefaultChoose();
                 }
                 if(e.getCurrentItem().equals(avian)){
-                    p.getAttribute(Attribute.GENERIC_ARMOR_TOUGHNESS).setBaseValue(0);
                     p.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0.13);
-                    p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER, 4501011);
+                    p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, "genesis:origin-avian");
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
-                    p.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE).setBaseValue(0.0F);
-                    p.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20);
                     DefaultChoose.DefaultChoose();
                 }
                 if(e.getCurrentItem().equals(piglin)){
-                    p.getAttribute(Attribute.GENERIC_ARMOR_TOUGHNESS).setBaseValue(0);
-                    p.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0.1);
-                    p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER, 6211021);
+                    p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, "genesis:origin-piglin");
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
-                    p.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE).setBaseValue(0.0F);
                     DefaultChoose.DefaultChoose();
                 }
                 if(e.getCurrentItem().equals(sculk)){
-                    p.getAttribute(Attribute.GENERIC_ARMOR_TOUGHNESS).setBaseValue(0);
-                    p.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0.1);
-                    p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER, 4307015);
+                    p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, "genesis:origin-sculkling");
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
-                    p.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE).setBaseValue(0.0F);
                     DefaultChoose.DefaultChoose();
                 }
 
@@ -634,6 +555,17 @@ public class ChoosingCORE implements Listener {
             }
 
         }
+    }
+
+    public void setAtributesToDefualt(Player p) {
+        p.getAttribute(Attribute.GENERIC_ARMOR).setBaseValue(0);
+        p.getAttribute(Attribute.GENERIC_ARMOR_TOUGHNESS).setBaseValue(0);
+        p.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).setBaseValue(1);
+        p.getAttribute(Attribute.GENERIC_ATTACK_SPEED).setBaseValue(4);
+        p.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE).setBaseValue(0);
+        p.getAttribute(Attribute.GENERIC_LUCK).setBaseValue(0);
+        p.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20);
+        p.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0.10000000149011612F);
     }
 
 }

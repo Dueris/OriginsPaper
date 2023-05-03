@@ -15,6 +15,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
@@ -31,8 +32,8 @@ public class ShulkInv implements CommandExecutor {
 
       Player p = (Player) sender;
       PersistentDataContainer data = p.getPersistentDataContainer();
-      int originid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER);
-      if (originid == 6503044) {
+      @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
+      if (origintag.equalsIgnoreCase("genesis:origin-shulk")) {
       if (args.length > 0) {
         if (args[0].equalsIgnoreCase ( "open" )) {
 
@@ -49,7 +50,7 @@ public class ShulkInv implements CommandExecutor {
       }else if(args.length == 0){
         ArrayList<ItemStack> vaultItems = ShulkUtils.getItems ( p );
 
-        Inventory vault = Bukkit.createInventory ( p , 9 , "Shulker Box" );
+        Inventory vault = Bukkit.createInventory ( p , InventoryType.DROPPER , "Shulker Inventory" );
 
         vaultItems.stream ( )
                 .forEach ( itemStack -> vault.addItem ( itemStack ) );

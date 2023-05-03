@@ -11,6 +11,7 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.jetbrains.annotations.Nullable;
 
 import static org.bukkit.Material.AIR;
 
@@ -19,11 +20,11 @@ public class ArachnidRunnable extends BukkitRunnable {
     public void run() {
         for(Player p : Bukkit.getOnlinePlayers()) {
             PersistentDataContainer data = p.getPersistentDataContainer();
-            int originid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER);
-            if (originid == 1709012) {
+            @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
+            if (origintag == "genesis:origin-arachnid") {
                 p.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, 300, 1, false, false, false));
             }
-            if (originid == 1709012) {
+            if (origintag == "genesis:origin-arachnid") {
                 if (p.getLocation().getBlock().getRelative(BlockFace.EAST).getType() != AIR ||
                         p.getLocation().getBlock().getRelative(BlockFace.WEST).getType() != AIR ||
                         p.getLocation().getBlock().getRelative(BlockFace.NORTH).getType() != AIR ||

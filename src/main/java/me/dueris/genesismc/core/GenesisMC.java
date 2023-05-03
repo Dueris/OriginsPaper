@@ -17,10 +17,12 @@ import me.dueris.genesismc.core.origins.enderian.*;
 import me.dueris.genesismc.core.origins.phantom.PhantomForm;
 import me.dueris.genesismc.core.origins.phantom.PhantomFormRunnable;
 import me.dueris.genesismc.core.origins.phantom.PhantomMain;
+import me.dueris.genesismc.core.origins.piglin.PiglinMain;
 import me.dueris.genesismc.core.origins.rabbit.RabbitLeap;
 import me.dueris.genesismc.core.origins.rabbit.RabbitMain;
 import me.dueris.genesismc.core.utils.ParticleHandler;
 import me.dueris.genesismc.custom_origins.CustomOrigins;
+import me.dueris.genesismc.custom_origins.CustomOriginsMethods;
 import me.dueris.genesismc.custom_origins.handlers.CustomMenuHandler;
 import me.dueris.genesismc.core.enchantments.EnchantProtEvent;
 import me.dueris.genesismc.core.enchantments.WaterProtection;
@@ -66,10 +68,8 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         GenesisDataFiles.setup();
         GenesisDataFiles.getPlugCon().options().copyDefaults(true);
         GenesisDataFiles.getOrbCon().options().copyDefaults(true);
-        GenesisDataFiles.getCustomOriginConfig().options().copyDefaults(true);
         GenesisDataFiles.setDefaults();
         GenesisDataFiles.save();
-
 
         //start
 
@@ -87,6 +87,10 @@ public final class GenesisMC extends JavaPlugin implements Listener {
            getServer().getConsoleSender().sendMessage(ChatColor.RED + "WARNING: FOLIA IS NOT SUPPORTED ON THIS VERSION TYPE. PLEASE USE THE FOLIA BUILD OF THIS VERSION.");
        } catch (ClassNotFoundException e) {
            //not folia
+       }
+       if(GenesisDataFiles.getPlugCon().getString("use-builtin-api").equalsIgnoreCase("false")){
+           getServer().getConsoleSender().sendMessage(ChatColor.RED + "[GenesisMC] OriginsAPI disabled!! This will cause errors if you do not use the OriginAPI that is built in, or external.");
+
        }
        if(Bukkit.getServer().getPluginManager().isPluginEnabled("Origins-Bukkit")){
            getServer().getConsoleSender().sendMessage(ChatColor.RED + "[GenesisMC] Unable to start plugin due to Origins Bukkit being present. Using both will cause errors.");
@@ -111,6 +115,13 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         } else {
             //PurpleWolfAPI not avalible, inject built-in
             getServer().getConsoleSender().sendMessage(ChatColor.LIGHT_PURPLE + "[GenesisMC] PurpleWolfAPI not detected. Injecting built-in API");
+        }
+
+        //Custom origins loaded
+        getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "[GenesisMC] Loading custom origins");
+        CustomOriginsMethods.loadCustomOriginDatapacks();
+        for (String originTag : CustomOriginsMethods.getCustomOriginTags()) {
+            getServer().getConsoleSender().sendMessage("[GenesisMC] Loaded \""+CustomOriginsMethods.getCustomOriginName(originTag)+"\"");
         }
 
         getServer().getConsoleSender().sendMessage(ChatColor.GRAY + "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
@@ -144,6 +155,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         getServer().getPluginManager().registerEvents(new RabbitMain(), this);
         getServer().getPluginManager().registerEvents(new RabbitLeap(), this);
         getServer().getPluginManager().registerEvents(new AvianMain(), this);
+        getServer().getPluginManager().registerEvents(new PiglinMain(), this);
         getServer().getPluginManager().registerEvents(new WaterProtBookGen(), this);
         getServer().getPluginManager().registerEvents(new KeybindHandler(), this);
         getServer().getPluginManager().registerEvents(new Info(), this);
@@ -223,9 +235,9 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 //piglin
         PiglinRunnable piglinrun = new PiglinRunnable();
         piglinrun.runTaskTimer(this, 0, 5);
-//dragonborn
-        DragonborneRunnable dragonbornerun = new DragonborneRunnable();
-        dragonbornerun.runTaskTimer(this, 0, 5);
+//sculk
+        SculkRunnable sculkrun = new SculkRunnable();
+        sculkrun.runTaskTimer(this, 0, 5);
 
 //enchantments
         waterProtectionEnchant = new WaterProtection("waterprot");

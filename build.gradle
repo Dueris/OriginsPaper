@@ -3,7 +3,7 @@ plugins {
     id("io.papermc.paperweight.userdev") version "1.5.4"
 }
 
-group = 'me.lotis'
+group = 'me.dueris'
 version = '0.1.6-ALPHA-build+'
 
 repositories {

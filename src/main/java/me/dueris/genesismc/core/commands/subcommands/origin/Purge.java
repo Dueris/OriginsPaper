@@ -35,7 +35,7 @@ public class Purge extends SubCommand implements Listener {
                 Player target = Bukkit.getPlayer(args[1]);
 
                 p.sendMessage("[GenesisMC] Removed origin of " + target.getDisplayName());
-                target.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER, 0);
+                target.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, "genesis:origin-null");
                 target.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "phantomid"), PersistentDataType.INTEGER, 1);
                 target.getScoreboardTags().remove("chosen");
                 target.removeScoreboardTag("chosen");
@@ -43,7 +43,7 @@ public class Purge extends SubCommand implements Listener {
             }else{
                 p.removeScoreboardTag("chosen");
                 p.sendMessage("Your origin has been removed by an operator");
-                p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER, 0);
+                p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, "genesis:origin-null");
                 p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "phantomid"), PersistentDataType.INTEGER, 1);
             }
         }

@@ -1,5 +1,6 @@
 package me.dueris.genesismc.core.origins.enderian;
 
+import com.destroystokyo.paper.event.player.PlayerArmorChangeEvent;
 import me.dueris.genesismc.core.GenesisMC;
 import org.bukkit.*;
 import org.bukkit.entity.Endermite;
@@ -15,6 +16,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.potion.PotionEffectType;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Random;
@@ -32,14 +34,14 @@ public class EnderMain implements Listener {
 
     @EventHandler
     public void onMovement(PlayerMoveEvent e) {
-        Player p = (Player) e.getPlayer();
+        Player p = e.getPlayer();
         PersistentDataContainer data = p.getPersistentDataContainer();
-        int originid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER);
-        if (originid == 0401065) {
+        @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
+        if (origintag.equalsIgnoreCase("genesis:origin-enderian")) {
 
             Random random = new Random();
             int r = random.nextInt(3000);
-            if (r == (int) 3 || r == (int) 9 || r == (int) 11 || r == (int) 998 || r == (int) 2279 || r == (int) 989) {
+            if (r == 3 || r == 9 || r == 11 || r == 998 || r == 2279 || r == 989) {
                 p.getWorld().playSound(p.getLocation(), Sound.ENTITY_ENDERMAN_AMBIENT, 10, 9);
             }
         }
@@ -47,15 +49,13 @@ public class EnderMain implements Listener {
 
     @EventHandler
     public void onEvent1(PlayerJoinEvent e) {
-        Player p = (Player) e.getPlayer();
+        Player p = e.getPlayer();
         PersistentDataContainer data = p.getPersistentDataContainer();
         if (p.getPersistentDataContainer().has(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER)) {
-            int originid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER);
-            if (originid == 0401065) {
+            @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
+            if (origintag.equalsIgnoreCase("genesis:origin-enderian")) {
                 if (!p.getActivePotionEffects().equals(PotionEffectType.INVISIBILITY)) {
                     p.getWorld().spawnParticle(Particle.PORTAL, p.getLocation(), 3);
-                } else {
-                    //do nothing
                 }
                 p.playSound(p.getLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, 10, 9);
                 p.setHealthScale(24);
@@ -68,8 +68,8 @@ public class EnderMain implements Listener {
         if(e.getEntity() instanceof Player && e.getDamager() instanceof Endermite){
             Player p = (Player) e.getEntity();
             PersistentDataContainer data = p.getPersistentDataContainer();
-            int originid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER);
-            if (originid == 0401065) {
+            @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
+            if (origintag.equalsIgnoreCase("genesis:origin-enderian")) {
                 p.damage(2);
                 e.getDamager().setGlowing(true);
             }
@@ -77,10 +77,10 @@ public class EnderMain implements Listener {
     }
     @EventHandler
     public void onDeathWater(PlayerDeathEvent e){
-        Player p = (Player) e.getEntity();
+        Player p = e.getEntity();
         PersistentDataContainer data = p.getPersistentDataContainer();
-        int originid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER);
-        if (originid == 0401065) {
+        @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
+        if (origintag.equalsIgnoreCase("genesis:origin-enderian")) {
             Random random = new Random();
             int r = random.nextInt(2);
             if (p.isInWaterOrRainOrBubbleColumn()) {
@@ -89,20 +89,21 @@ public class EnderMain implements Listener {
             }
                     p.getLocation().getWorld().dropItem(p.getLocation(), new ItemStack(Material.ENDER_PEARL, r));
             }
-        if (originid == 0401065) {
+        if (origintag.equalsIgnoreCase("genesis:origin-enderian")) {
             p.playSound(p.getLocation(), Sound.ENTITY_ENDERMAN_DEATH, 10, 5);
         }
         }
 
     @EventHandler
     public void onEat(PlayerItemConsumeEvent e){
-        Player p = (Player) e.getPlayer();
+        Player p = e.getPlayer();
         PersistentDataContainer data = p.getPersistentDataContainer();
-        int originid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER);
-        if (originid == 0401065) {
+        @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
+        if (origintag.equalsIgnoreCase("genesis:origin-enderian")) {
             if(e.getItem().getType().equals(Material.PUMPKIN_PIE)){
                 p.getWorld().createExplosion(p.getLocation(), 0);
                 p.setHealth(1);
+                p.setFoodLevel(p.getFoodLevel()-8);
             }
             if(e.getItem().getType().equals(Material.POTION)){
                 p.damage(2);
@@ -111,6 +112,19 @@ public class EnderMain implements Listener {
         }
     }
 
+    @EventHandler
+    public void onArmorChange(PlayerArmorChangeEvent e) {
+        Player p = e.getPlayer();
+        PersistentDataContainer data = p.getPersistentDataContainer();
+        @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
+        if (origintag.equalsIgnoreCase("genesis:origin-enderian")) {
+            if (e.getNewItem() == null) return;
+            if (e.getNewItem().getType() == Material.CARVED_PUMPKIN) {
+                p.getInventory().setHelmet(new ItemStack(Material.AIR));
+                p.getWorld().dropItemNaturally(p.getLocation(), new ItemStack(Material.CARVED_PUMPKIN));
+            }
+        }
+    }
 
 }
 

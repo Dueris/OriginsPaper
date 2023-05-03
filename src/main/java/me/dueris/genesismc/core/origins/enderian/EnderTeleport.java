@@ -19,6 +19,7 @@ import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
@@ -29,11 +30,11 @@ public class EnderTeleport implements Listener {
     @EventHandler
 
     public void teleportDamgeOff(PlayerTeleportEvent e) {
-        Player p = (Player) e.getPlayer();
+        Player p = e.getPlayer();
         PersistentDataContainer data = p.getPersistentDataContainer();
-        int originid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER);
+        @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
 
-        if (originid == 0401065) {
+        if (origintag.equalsIgnoreCase("genesis:origin-enderian")) {
             if (e.getCause() == PlayerTeleportEvent.TeleportCause.ENDER_PEARL) {
                 e.setCancelled(true);
                 p.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 15, 2, false, false, false));
@@ -41,7 +42,6 @@ public class EnderTeleport implements Listener {
                 p.teleport(e.getTo());
                 p.playSound(p.getLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, 10, 9);
             }
-        } else {
         }
     }
 
@@ -57,10 +57,10 @@ public class EnderTeleport implements Listener {
         pearl_meta.setLore(pearl_lore);
         infinpearl.setItemMeta(pearl_meta);
 
-        Player p = (Player) e.getPlayer();
+        Player p = e.getPlayer();
         PersistentDataContainer data = p.getPersistentDataContainer();
-        int originid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER);
-        if (originid == 0401065) {
+        @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
+        if (origintag.equalsIgnoreCase("genesis:origin-enderian")) {
             if (e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.LEFT_CLICK_AIR || e.getAction() == Action.LEFT_CLICK_BLOCK || e.getAction() == Action.RIGHT_CLICK_BLOCK) {
                 if (e.getItem() != null) {
                     if (e.getItem().equals(infinpearl)) {
@@ -70,11 +70,7 @@ public class EnderTeleport implements Listener {
                             p.getInventory().addItem(infinpearl);
                         }
                         p.setCooldown(ENDER_PEARL, 0);
-                    } else if (e.getItem().equals(null)) {
-                        //no
                     }
-
-
                 }
             } else if (e.getItem() != null) {
                 if (e.getItem().equals(infinpearl)) {
@@ -101,27 +97,10 @@ public class EnderTeleport implements Listener {
     }
 
     @EventHandler
-    public void oncraftattempt(PrepareItemCraftEvent e){
-        ItemStack infinpearl = new ItemStack(ENDER_PEARL);
-
-        ItemMeta pearl_meta = infinpearl.getItemMeta();
-        pearl_meta.setDisplayName(ChatColor.LIGHT_PURPLE + "Teleport");
-        ArrayList<String> pearl_lore = new ArrayList<>();
-        pearl_meta.setUnbreakable(true);
-        pearl_meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
-        pearl_meta.setLore(pearl_lore);
-        infinpearl.setItemMeta(pearl_meta);
-        if(e.getInventory().contains(infinpearl)){
-            e.getInventory().setResult(null);
-        }
-    }
-
-
-    @EventHandler
     public void onRespawn(PlayerRespawnEvent e) {
-        Player p = (Player) e.getPlayer();
+        Player p = e.getPlayer();
         PersistentDataContainer data = p.getPersistentDataContainer();
-        int originid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER);
+        @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
         ItemStack infinpearl = new ItemStack(ENDER_PEARL);
 
         ItemMeta pearl_meta = infinpearl.getItemMeta();
@@ -132,7 +111,7 @@ public class EnderTeleport implements Listener {
         pearl_meta.setLore(pearl_lore);
         infinpearl.setItemMeta(pearl_meta);
         pearl_meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
-        if (originid == 0401065) {
+        if (origintag.equalsIgnoreCase("genesis:origin-enderian")) {
             if (!p.getInventory().contains(infinpearl)) {
                 p.getInventory().addItem(infinpearl);
             }
@@ -162,7 +141,7 @@ public class EnderTeleport implements Listener {
 
         Player p = e.getPlayer();
         PersistentDataContainer data = p.getPersistentDataContainer();
-        int originid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER);
+        @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
             if (e.getItemDrop().getItemStack().isSimilar(infinpearl)) {
                 e.setCancelled(true);
             }
@@ -170,10 +149,10 @@ public class EnderTeleport implements Listener {
 
     @EventHandler
     public void onDeathEnder(PlayerDeathEvent e) {
-        Player p = (Player) e.getEntity();
+        Player p = e.getEntity();
         ItemStack infinpearl = new ItemStack(ENDER_PEARL);
         PersistentDataContainer data = p.getPersistentDataContainer();
-        int originid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER);
+        @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
         ItemMeta pearl_meta = infinpearl.getItemMeta();
         pearl_meta.setDisplayName(ChatColor.LIGHT_PURPLE + "Teleport");
         ArrayList<String> pearl_lore = new ArrayList<>();
@@ -182,7 +161,7 @@ public class EnderTeleport implements Listener {
         pearl_meta.setLore(pearl_lore);
         infinpearl.setItemMeta(pearl_meta);
         pearl_meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
-        if (originid == 0401065) {
+        if (origintag.equalsIgnoreCase("genesis:origin-enderian")) {
                 e.getDrops().remove(infinpearl);
                 e.getDrops().add(new ItemStack(ENDER_PEARL));
         }

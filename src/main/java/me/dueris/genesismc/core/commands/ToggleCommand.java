@@ -12,6 +12,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import static me.dueris.genesismc.core.origins.rabbit.RabbitLeap.*;
 
@@ -21,14 +22,14 @@ public class ToggleCommand implements CommandExecutor {
         if (sender instanceof Player) {
             Player p = (Player) sender;
             PersistentDataContainer data = p.getPersistentDataContainer();
-            int originid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER);
+            @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
             if (p.hasPermission("genesismc.origins.cmd.toggle")) {
 
                 int toggleState = data.get(new NamespacedKey(GenesisMC.getPlugin(), "toggle"), PersistentDataType.INTEGER);
                 if (toggleState == 1) data.set(new NamespacedKey(GenesisMC.getPlugin(), "toggle"), PersistentDataType.INTEGER, 2);
                 else data.set(new NamespacedKey(GenesisMC.getPlugin(), "toggle"), PersistentDataType.INTEGER, 1);
 
-                if (originid == 5308033) {
+                if (origintag.equalsIgnoreCase("genesis:origin-rabbit")) {
                     leapToggle(p);
                 } else if (false) {
                     ; //add other origin toggles here like this

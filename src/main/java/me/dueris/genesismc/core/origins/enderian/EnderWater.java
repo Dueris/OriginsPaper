@@ -13,12 +13,11 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
+import org.jetbrains.annotations.Nullable;
 
 public class EnderWater implements Listener {
     public EnderWater() {
     }
-    public static int baseTemperature = 0;
-
 
 
     @EventHandler
@@ -26,8 +25,8 @@ public class EnderWater implements Listener {
         if (e.getEntity() instanceof Player || e.getEntity() instanceof HumanEntity) {
             Player p = (Player) e.getEntity();
             PersistentDataContainer data = p.getPersistentDataContainer();
-            int originid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER);
-            if (originid == 0401065) {
+            @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
+            if (origintag.equalsIgnoreCase("genesis:origin-enderian")) {
                 if (e.getCause().equals(EntityDamageEvent.DamageCause.PROJECTILE)) {
                         e.setDamage(0);
                         e.setCancelled(true);
@@ -37,7 +36,7 @@ public class EnderWater implements Listener {
 
             }
             if (e.getEntity().getType().equals(EntityType.PLAYER)) {
-                if (originid == 0401065) {
+                if (origintag.equalsIgnoreCase("genesis:origin-enderian")) {
                     if (e.getCause().equals(EntityDamageEvent.DamageCause.PROJECTILE)) {
                         int dmg = (int) e.getDamage();
                         e.setDamage(0);
@@ -52,8 +51,8 @@ public class EnderWater implements Listener {
     public void onDrink(PlayerItemConsumeEvent e){
             Player p = e.getPlayer();
         PersistentDataContainer data = p.getPersistentDataContainer();
-        int originid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER);
-        if (originid == 0401065) {
+        @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
+        if (origintag.equalsIgnoreCase("genesis:origin-enderian")) {
                 if(e.getItem().equals(Material.POTION)){
                     p.damage(2);
                 }

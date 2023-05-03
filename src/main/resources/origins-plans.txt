@@ -182,17 +182,13 @@ Colder Realms: When outside of the Nether, you zombify and become immune to fire
 BLUE FIRE SPOOKY: You are afraid of soul fire, becoming weaker when near it
 
 -------------------
-Dragonborne
+Sculk
 -------------------
-Mighty Wings: You spawn with a permanent Elytra that often breaks when hit. Can be repaired with a phantom membrane
-Heart of a Dragon: You have 6 more hearts and can only eat meat
-Breath of Fire: You can shoot a dragon fireball upon shift-clicking
-Resistance: You take no knockback and have extremly tough skin
-Scary : Villagers are scared of you and will not trade with you
-Hot Touch: You can light furnaces with your dragon fireball
-Sharp Tips: You take more damage from arrows.
-
-elytra breaks randomly upon being hit. More chance if attacked from behind
-
-elytra name: ChatColor.LIGHT_PURPLE + "Draconic Wings"
-broken name: ChatColor.RED + "Damaged Wings"
+One of them: You spawn in the Deep Dark
+Amongst your People: You get buffs while near sculk blocks
+Best Friends Forever: The warden won't attack you, and you don't trigger Sculk shriekers
+Afraid of the light: you are weaker while in sunlight
+It Grows: Upon dying, a small patch of sculk will grow around, you gain some saturation
+Echo Pulse: You can see all entities around you within 15 blocks
+Decaying Essence: All armour you wear will slowly deteriorate
+Carrier of Echos: You emmit a sonic boom upon Shift-Clicking your boom Keybind, or your Boom item(30 second cooldown)

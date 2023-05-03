@@ -366,7 +366,7 @@ public class MainMenuContents {
         }
 
         ItemMeta ranmeta = random.getItemMeta();
-        ranmeta.setDisplayName(ChatColor.LIGHT_PURPLE + "Random Origin");
+        ranmeta.setDisplayName(ChatColor.LIGHT_PURPLE + "Orb of Origins");
         ranmeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
         ArrayList<String> ranlore = new ArrayList<>();
         ranmeta.setLore(ranlore);

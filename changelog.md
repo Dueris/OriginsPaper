@@ -46,6 +46,17 @@
 -updated authors
 -added avian origin
 -added rabbit origin
+-updated folia branch for snapshot testing
+-fixed tab complete
+-rewrote command system
+-implemented OriginTAG system
+-added Phantom origin
+-fixed lots of bugs
+-rewrote choosing engine
+-added custom origin loading
+-pls donate to support the project
+-changed pumpkin pies to no longer give Enderians food
+-added Enderians no longer able to wear carved pumpkins
 </pre>
 <hr>
 <header>Again, still in early alpha. Most features do not work atm.</header>

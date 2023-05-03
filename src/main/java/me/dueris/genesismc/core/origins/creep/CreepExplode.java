@@ -15,6 +15,7 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.List;
@@ -34,10 +35,10 @@ public class CreepExplode implements Listener {
     public void onShiftCreep(PlayerToggleSneakEvent e) {
         Player p = e.getPlayer();
         PersistentDataContainer data = p.getPersistentDataContainer();
-        int originid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER);
+        @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
         PersistentDataContainer datacreep = p.getPersistentDataContainer();
         int creepcanid = datacreep.get(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER);
-        if (originid == 2356555) {
+        if (origintag.equalsIgnoreCase("genesis:origin-creep")) {
             if(creepcanid == 2){
             cooldown.remove(p.getUniqueId());
             new BukkitRunnable() {

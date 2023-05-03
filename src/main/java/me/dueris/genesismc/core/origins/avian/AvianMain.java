@@ -14,6 +14,7 @@ import org.bukkit.event.player.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.EnumSet;
 
@@ -33,13 +34,13 @@ public class AvianMain implements Listener {
     @EventHandler
     public void onBedLeave(PlayerBedLeaveEvent e) {
         PersistentDataContainer data = e.getPlayer().getPersistentDataContainer();
-        int originid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER);
-        if (originid == 4501011) {
+        @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
+        if (origintag.equalsIgnoreCase("genesis:origin-avian")) {
             Player p = e.getPlayer();
             long time = Bukkit.getServer().getWorld(p.getWorld().getName()).getTime();
 
             if (time == 0) {
-                p.getWorld().dropItemNaturally(p.getLocation(), new ItemStack(Material.EGG));
+                p.getWorld().dropItemNaturally(p.getLocation(), new ItemStack(EGG));
             }
         }
     }
@@ -47,8 +48,8 @@ public class AvianMain implements Listener {
     @EventHandler
     public void onItemConsume(PlayerInteractEvent e) {
         PersistentDataContainer data = e.getPlayer().getPersistentDataContainer();
-        int originid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER);
-        if (originid == 4501011) {
+        @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
+        if (origintag.equalsIgnoreCase("genesis:origin-avian")) {
             ItemStack item = e.getItem();
             if (item == null) return;
             for (Material food : inedibleFoodAvian) {
@@ -62,8 +63,8 @@ public class AvianMain implements Listener {
     @EventHandler
     public void onBedEnter(PlayerBedEnterEvent e) {
         PersistentDataContainer data = e.getPlayer().getPersistentDataContainer();
-        int originid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER);
-        if (originid == 4501011) {
+        @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
+        if (origintag.equalsIgnoreCase("genesis:origin-avian")) {
             if (e.getPlayer().getWorld().getEnvironment() == World.Environment.NORMAL) {
                 if (e.getBed().getY() <= 99) {
                     e.setCancelled(true);
@@ -75,8 +76,8 @@ public class AvianMain implements Listener {
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent e) {
         PersistentDataContainer data = e.getPlayer().getPersistentDataContainer();
-        int originid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER);
-        if (originid == 4501011) {
+        @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
+        if (origintag.equalsIgnoreCase("genesis:origin-avian")) {
             Player p = e.getPlayer();
             if (p.getWorld().getEnvironment() == World.Environment.NORMAL) {
                 Block block = e.getClickedBlock();

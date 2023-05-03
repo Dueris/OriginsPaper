@@ -7,14 +7,15 @@ import org.bukkit.entity.Player;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.jetbrains.annotations.Nullable;
 
 public class ElytrainRunnable extends BukkitRunnable {
     @Override
     public void run() {
         for (Player p : Bukkit.getOnlinePlayers()) {
             PersistentDataContainer data = p.getPersistentDataContainer();
-            int originid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER);
-            if (originid == 6211006) {
+            @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
+            if (origintag.equalsIgnoreCase("genesis:origin-elytrain")) {
                 ; //Claustrophobia: Being somewhere with a low ceiling for too long will weaken you
             }
         }

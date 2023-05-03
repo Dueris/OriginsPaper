@@ -12,21 +12,29 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.EnumSet;
 
-import static org.bukkit.Material.AIR;
-import static org.bukkit.Material.SHIELD;
+import static org.bukkit.Material.*;
 
 public class ShulkRunnable extends BukkitRunnable {
-    public static EnumSet<Material> tool;
+    public static EnumSet<Material> tools;
+    static {
+        tools = EnumSet.of(
+                WOODEN_PICKAXE, STONE_PICKAXE, GOLDEN_PICKAXE, IRON_PICKAXE, DIAMOND_PICKAXE, NETHERITE_PICKAXE,
+                WOODEN_AXE, STONE_AXE, GOLDEN_AXE, IRON_AXE, DIAMOND_AXE, NETHERITE_AXE,
+                WOODEN_SHOVEL, STONE_SHOVEL, GOLDEN_SHOVEL, IRON_SHOVEL, DIAMOND_SHOVEL, NETHERITE_SHOVEL,
+                SHEARS);
+    }
+
     @Override
     public void run() {
         for (Player p : Bukkit.getOnlinePlayers()) {
             PersistentDataContainer data = p.getPersistentDataContainer();
-            int originid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER);
-            if (originid == 6503044) {
-                if(p.getGameMode().equals(GameMode.SURVIVAL) && p.getEquipment().getItemInMainHand().getType().equals(AIR)) {
+            @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
+            if (origintag.equalsIgnoreCase("genesis:origin-shulk")) {
+                if(p.getGameMode().equals(GameMode.SURVIVAL) && !tools.contains(p.getEquipment().getItemInMainHand().getType())) {
                     if (!p.getActivePotionEffects().contains(PotionEffectType.FAST_DIGGING)) {
                         p.addPotionEffect(new PotionEffect(PotionEffectType.FAST_DIGGING, 20, 3, true, false, false));
                     }
@@ -35,9 +43,6 @@ public class ShulkRunnable extends BukkitRunnable {
                 p.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0.077F);
             }
         }
-    }
-    static {
-        tool = EnumSet.of(Material.DIAMOND_AXE, Material.DIAMOND_HOE, Material.DIAMOND_PICKAXE, Material.DIAMOND_SHOVEL, Material.DIAMOND_SWORD, Material.GOLDEN_AXE, Material.GOLDEN_HOE, Material.GOLDEN_PICKAXE, Material.GOLDEN_SHOVEL, Material.GOLDEN_SWORD, Material.NETHERITE_AXE, Material.NETHERITE_HOE, Material.NETHERITE_PICKAXE, Material.NETHERITE_SHOVEL, Material.NETHERITE_SWORD, Material.IRON_AXE, Material.IRON_HOE, Material.IRON_PICKAXE, Material.IRON_SHOVEL, Material.IRON_SWORD, Material.WOODEN_AXE, Material.WOODEN_HOE, Material.WOODEN_PICKAXE, Material.WOODEN_SHOVEL, Material.WOODEN_SWORD, Material.SHEARS);
     }
 }
 

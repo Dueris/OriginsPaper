@@ -11,10 +11,10 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
-import static org.bukkit.Material.CARVED_PUMPKIN;
 import static org.bukkit.Material.ENDER_PEARL;
 
 public class EnderianRunnable extends BukkitRunnable {
@@ -22,8 +22,8 @@ public class EnderianRunnable extends BukkitRunnable {
     public void run() {
         for(Player p : Bukkit.getOnlinePlayers()) {
             PersistentDataContainer data = p.getPersistentDataContainer();
-            int originid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER);
-            if (originid == 0401065) {
+            @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
+            if (origintag.equalsIgnoreCase("genesis:origin-enderian")) {
 
 
                 List<Entity> nearby23 = p.getNearbyEntities(3, 3, 3);
