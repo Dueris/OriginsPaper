@@ -1,5 +1,6 @@
 package me.dueris.genesismc.core.origins.avian;
 
+import me.dueris.api.entity.OriginPlayer;
 import me.dueris.genesismc.core.GenesisMC;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -41,6 +42,8 @@ public class AvianMain implements Listener {
 
             if (time == 0) {
                 p.getWorld().dropItemNaturally(p.getLocation(), new ItemStack(EGG));
+                OriginPlayer pls = (OriginPlayer) e.getPlayer();
+
             }
         }
     }

@@ -51,7 +51,7 @@ public class EnderMain implements Listener {
     public void onEvent1(PlayerJoinEvent e) {
         Player p = e.getPlayer();
         PersistentDataContainer data = p.getPersistentDataContainer();
-        if (p.getPersistentDataContainer().has(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER)) {
+        if (p.getPersistentDataContainer().has(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.INTEGER)) {
             @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
             if (origintag.equalsIgnoreCase("genesis:origin-enderian")) {
                 if (!p.getActivePotionEffects().equals(PotionEffectType.INVISIBILITY)) {

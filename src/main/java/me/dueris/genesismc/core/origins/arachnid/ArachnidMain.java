@@ -1,5 +1,6 @@
 package me.dueris.genesismc.core.origins.arachnid;
 
+import me.dueris.api.entity.OriginPlayer;
 import me.dueris.genesismc.core.GenesisMC;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -24,6 +25,7 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.Nullable;
 
+import javax.lang.model.util.Elements;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Random;

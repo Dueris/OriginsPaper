@@ -1,6 +1,8 @@
 package me.dueris.genesismc.core.origins.arachnid;
 
 import com.destroystokyo.paper.event.player.PlayerJumpEvent;
+import me.dueris.api.entity.OriginPlayer;
+import me.dueris.api.enums.OriginType;
 import me.dueris.genesismc.core.GenesisMC;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
