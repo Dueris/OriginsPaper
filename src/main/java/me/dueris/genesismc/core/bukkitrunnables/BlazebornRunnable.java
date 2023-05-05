@@ -16,7 +16,7 @@ public class BlazebornRunnable extends BukkitRunnable {
             PersistentDataContainer data = p.getPersistentDataContainer();
             @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
             if (origintag.equalsIgnoreCase("genesis:origin-blazeborn")) {
-                ;
+
             }
         }
     }

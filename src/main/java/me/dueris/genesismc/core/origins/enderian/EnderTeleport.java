@@ -142,6 +142,7 @@ public class EnderTeleport implements Listener {
         Player p = e.getPlayer();
         PersistentDataContainer data = p.getPersistentDataContainer();
         @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
+        if(origintag.equalsIgnoreCase("genesis:origin-enderian"))
             if (e.getItemDrop().getItemStack().isSimilar(infinpearl)) {
                 e.setCancelled(true);
             }

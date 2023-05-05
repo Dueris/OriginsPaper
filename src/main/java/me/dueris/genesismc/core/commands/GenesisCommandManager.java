@@ -22,7 +22,6 @@ public class GenesisCommandManager implements CommandExecutor {
         subCommands.add(new Enchant());
         subCommands.add(new Get());
         subCommands.add(new Info());
-
     }
 
 

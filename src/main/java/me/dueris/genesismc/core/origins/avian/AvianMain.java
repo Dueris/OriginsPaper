@@ -41,6 +41,7 @@ public class AvianMain implements Listener {
 
             if (time == 0) {
                 p.getWorld().dropItemNaturally(p.getLocation(), new ItemStack(EGG));
+
             }
         }
     }
