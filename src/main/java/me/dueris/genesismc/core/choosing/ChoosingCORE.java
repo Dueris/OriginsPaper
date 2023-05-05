@@ -126,6 +126,8 @@ public class ChoosingCORE implements Listener {
             human_meta.setLore(human_lore);
             human.setItemMeta(human_meta);
 
+            //ItemStack human = itemProperties(new ItemStack(Material.PLAYER_HEAD), "Human", null, Enchantment.ARROW_INFINITE, WHITE + "Human Origin");
+
             ItemStack ender = new ItemStack(Material.ENDER_PEARL);
             ItemMeta ender_meta = ender.getItemMeta();
             ender_meta.setDisplayName("Enderian");
@@ -495,8 +497,7 @@ public class ChoosingCORE implements Listener {
                         if (p.hasPermission("genesismc.origins.blazeborn")) {
                             e.getClickedInventory().setContents(BlazebornContents.BlazebornContents());
                         }
-                    }else
-                    if (e.getCurrentItem().getType() == Material.NETHER_STAR && !e.getCurrentItem().getItemMeta().getItemFlags().contains(ItemFlag.HIDE_ENCHANTS)) {
+                    }else if (e.getCurrentItem().getType() == Material.NETHER_STAR && !e.getCurrentItem().getItemMeta().getItemFlags().contains(ItemFlag.HIDE_ENCHANTS)) {
                         e.setCancelled(true);
                         p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 10, 9);
                         if (p.hasPermission("genesismc.origins.starborne")) {
