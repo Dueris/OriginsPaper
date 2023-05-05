@@ -26,14 +26,15 @@ public class DefaultChoose {
             p.getScoreboardTags().add("chosen");
             p.setGameMode(GameMode.SURVIVAL);
             p.setHealthScaled(false);
-            double nY = 2;
+
             Location loc = new Location(p.getWorld(), p.getLocation().getX(), p.getLocation().getY() + 1, p.getLocation().getZ(), p.getLocation().getYaw(), p.getLocation().getPitch());
             p.teleportAsync(loc);
 
             if (p.getScoreboardTags().contains("choosing")) {
                 p.removeScoreboardTag("choosing");
             }
-            Bukkit.getServer().getPluginManager().callEvent(new OriginChooseEvent(p));
+            // DO NOT UNCOMMENT, DUERIS SAID SHE FIX IT WHEN SHE'S LESS TIRED AND THIS ERROR TOOK AN HOUR TO FIND
+            //Bukkit.getServer().getPluginManager().callEvent(new OriginChooseEvent(p));
 
             if (p.getInventory().getItemInMainHand().isSimilar(OrbOfOrigins.orb)) {
                 int amt = p.getInventory().getItemInMainHand().getAmount();
