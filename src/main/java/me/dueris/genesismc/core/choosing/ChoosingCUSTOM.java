@@ -1,9 +1,7 @@
 package me.dueris.genesismc.core.choosing;
 
-import me.dueris.genesismc.core.choosing.contents.origins.AllayContents;
 import me.dueris.genesismc.custom_origins.CustomOriginsMethods;
 import org.bukkit.*;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -13,7 +11,6 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.checkerframework.checker.units.qual.A;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
