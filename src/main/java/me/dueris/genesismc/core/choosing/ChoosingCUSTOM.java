@@ -16,6 +16,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import static me.dueris.genesismc.core.choosing.ChoosingCORE.itemProperties;
 import static me.dueris.genesismc.core.choosing.contents.MainMenuContents.GenesisMainMenuContents;
 import static org.bukkit.ChatColor.RED;
 import static org.bukkit.ChatColor.WHITE;
@@ -39,33 +40,10 @@ public class ChoosingCUSTOM implements Listener {
                     ItemStack next = new ItemStack(Material.ARROW);
                     ItemStack menu = new ItemStack(Material.SPECTRAL_ARROW);
 
-                    ItemMeta barmeta = bars.getItemMeta();
-                    barmeta.setDisplayName("");
-                    barmeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-                    ArrayList<String> barlore = new ArrayList<>();
-                    barmeta.setLore(barlore);
-                    bars.setItemMeta(barmeta);
-
-                    ItemMeta menumeta = menu.getItemMeta();
-                    menumeta.setDisplayName(ChatColor.AQUA + "Return");
-                    menumeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-                    ArrayList<String> menulore = new ArrayList<>();
-                    menumeta.setLore(menulore);
-                    menu.setItemMeta(menumeta);
-
-                    ItemMeta backmeta = back.getItemMeta();
-                    backmeta.setDisplayName("Back");
-                    backmeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-                    ArrayList<String> backlore = new ArrayList<>();
-                    backmeta.setLore(backlore);
-                    back.setItemMeta(backmeta);
-
-                    ItemMeta nextmeta = next.getItemMeta();
-                    nextmeta.setDisplayName("Next");
-                    nextmeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-                    ArrayList<String> nextlore = new ArrayList<>();
-                    nextmeta.setLore(nextlore);
-                    next.setItemMeta(nextmeta);
+                    bars = itemProperties(bars, "", ItemFlag.HIDE_ENCHANTS, null, null);
+                    menu = itemProperties(menu, ChatColor.AQUA + "Return", ItemFlag.HIDE_ENCHANTS, null, null);
+                    back = itemProperties(back, "Back", ItemFlag.HIDE_ENCHANTS, null, null);
+                    next = itemProperties(next, "Next", ItemFlag.HIDE_ENCHANTS, null, null);
 
                     ArrayList<ItemStack> contents = new ArrayList<>();
                     ArrayList<String> customOriginTags = CustomOriginsMethods.getCustomOriginTags();
@@ -92,13 +70,7 @@ public class ChoosingCUSTOM implements Listener {
                                 String item = minecraftItem.split(":")[1];
                                 ItemStack originIcon = new ItemStack(Material.valueOf(item.toUpperCase()));
 
-                                ItemMeta meta = originIcon.getItemMeta();
-                                meta.setDisplayName(CustomOriginsMethods.getCustomOriginName(origintag));
-                                meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-                                ArrayList<String> lore = new ArrayList<>();
-                                lore.add(CustomOriginsMethods.getCustomOriginDescription(origintag));
-                                meta.setLore(lore);
-                                originIcon.setItemMeta(meta);
+                                originIcon = itemProperties(originIcon, CustomOriginsMethods.getCustomOriginName(origintag), ItemFlag.HIDE_ENCHANTS, null, CustomOriginsMethods.getCustomOriginDescription(origintag));
 
                                 originIdentifier.put(originIcon, origintag);
                                 contents.add(originIcon);
@@ -128,7 +100,6 @@ public class ChoosingCUSTOM implements Listener {
                 ArrayList<String> originPowerNames = new ArrayList<>();
                 ArrayList<String> originPowerDescriptions = new ArrayList<>();
 
-                //e.getClickedInventory().setContents(AllayContents.AllayContents());
                 for (String powerTag : CustomOriginsMethods.getCustomOriginPowers(origintag)) {
                     if (!CustomOriginsMethods.getCustomOriginPowerHidden(origintag, powerTag)) {
                         originPowerNames.add(CustomOriginsMethods.getCustomOriginPowerName(origintag, powerTag));
@@ -138,32 +109,13 @@ public class ChoosingCUSTOM implements Listener {
 
                 ItemStack close = new ItemStack(Material.BARRIER);
                 ItemStack back = new ItemStack(Material.SPECTRAL_ARROW);
-                ItemStack human_origin_info = new ItemStack(Material.FILLED_MAP);
 
                 String minecraftItem = CustomOriginsMethods.getCustomOriginIcon(origintag);
                 String item = minecraftItem.split(":")[1];
                 ItemStack originIcon = new ItemStack(Material.valueOf(item.toUpperCase()));
 
-                ItemMeta human_origin_info_meta = human_origin_info.getItemMeta();
-                human_origin_info_meta.setDisplayName("Nothing");
-                ArrayList<String> human_origin_info_lore = new ArrayList<>();
-                human_origin_info_lore.add(WHITE + "Enough said.");
-                human_origin_info_meta.setLore(human_origin_info_lore);
-                human_origin_info.setItemMeta(human_origin_info_meta);
-
-                ItemMeta close_meta = close.getItemMeta();
-                close_meta.setDisplayName(RED + "Close");
-                ArrayList<String> close_lore = new ArrayList<>();
-                close_lore.add(RED + "Cancel Choosing");
-                close_meta.setLore(close_lore);
-                close.setItemMeta(close_meta);
-
-                ItemMeta backmeta = back.getItemMeta();
-                backmeta.setDisplayName(ChatColor.AQUA + "Return");
-                backmeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-                ArrayList<String> backlore = new ArrayList<>();
-                backmeta.setLore(backlore);
-                back.setItemMeta(backmeta);
+                close = itemProperties(close, RED + "Close", null, null, RED + "Cancel Choosing");
+                back = itemProperties(back, ChatColor.AQUA + "Return", ItemFlag.HIDE_ENCHANTS, null, null);
 
                 ItemMeta originIconmeta = originIcon.getItemMeta();
                 originIconmeta.setDisplayName(CustomOriginsMethods.getCustomOriginName(origintag));
@@ -172,6 +124,7 @@ public class ChoosingCUSTOM implements Listener {
                 originIconlore.add(CustomOriginsMethods.getCustomOriginDescription(origintag));
                 originIconmeta.setLore(originIconlore);
                 originIcon.setItemMeta(originIconmeta);
+                originIcon = itemProperties(originIcon, CustomOriginsMethods.getCustomOriginName(origintag), ItemFlag.HIDE_ENCHANTS, null, CustomOriginsMethods.getCustomOriginDescription(origintag));
 
 
                 ArrayList<ItemStack> contents = new ArrayList<>();
