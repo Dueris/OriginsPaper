@@ -10,8 +10,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class OriginChooseEvent extends OriginEvent {
-    public OriginChooseEvent(@NotNull Player who) {
-        super(who);
+    public OriginChooseEvent() {
     }
 
     @Override
