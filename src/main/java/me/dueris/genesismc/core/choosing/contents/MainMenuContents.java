@@ -14,6 +14,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 
+import static me.dueris.genesismc.core.choosing.ChoosingCORE.itemProperties;
 import static org.bukkit.ChatColor.*;
 import static org.bukkit.ChatColor.RED;
 
@@ -169,20 +170,6 @@ public class MainMenuContents {
 
         return mainmenucontents;
 
-    }
-
-    private static ItemStack itemProperties(ItemStack item, String displayName, ItemFlag itemFlag, Enchantment enchantment, String lore) {
-        ItemMeta itemMeta = item.getItemMeta();
-        itemMeta.setDisplayName(displayName);
-        if (itemFlag != null) itemMeta.addItemFlags(itemFlag);
-        if (enchantment != null) itemMeta.addEnchant(enchantment, 1, true);
-        if (lore != null) {
-            ArrayList<String> itemLore = new ArrayList<>();
-            itemLore.add(lore);
-            itemMeta.setLore(itemLore);
-        }
-        item.setItemMeta(itemMeta);
-        return item;
     }
 
 }
