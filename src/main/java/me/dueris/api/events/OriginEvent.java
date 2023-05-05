@@ -6,8 +6,8 @@ import org.bukkit.event.player.PlayerEvent;
 import org.jetbrains.annotations.NotNull;
 
 public class OriginEvent extends PlayerEvent {
-    public OriginEvent(@NotNull Player who) {
-        super(who);
+    public OriginEvent() {
+        
     }
 
     @Override
