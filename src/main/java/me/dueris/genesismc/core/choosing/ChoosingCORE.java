@@ -116,6 +116,7 @@ public class ChoosingCORE implements Listener {
     @EventHandler
     public void OnChoose(InventoryClickEvent e){
         if (e.getView().getTitle().equalsIgnoreCase("Choosing Menu")) {
+        if(e.getCurrentItem() != null){
             //Human
             ItemStack human = new ItemStack(Material.PLAYER_HEAD);
             ItemMeta human_meta = human.getItemMeta();
@@ -428,6 +429,7 @@ public class ChoosingCORE implements Listener {
                     DefaultChoose.DefaultChoose();
                 }
 
+            }
             }
         }
 
