@@ -1,20 +1,11 @@
 package me.dueris.genesismc.core.origins.arachnid;
 
-import com.destroystokyo.paper.event.player.PlayerJumpEvent;
-import me.dueris.api.entity.OriginPlayer;
-import me.dueris.api.enums.OriginType;
 import me.dueris.genesismc.core.GenesisMC;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.craftbukkit.v1_19_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerAnimationEvent;
-import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.potion.PotionEffect;

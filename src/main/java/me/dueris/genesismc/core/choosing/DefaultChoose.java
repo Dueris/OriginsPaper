@@ -1,5 +1,7 @@
 package me.dueris.genesismc.core.choosing;
 
+import me.dueris.api.events.OriginChooseEvent;
+import me.dueris.api.events.OriginEvent;
 import me.dueris.genesismc.core.items.OrbOfOrigins;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
@@ -31,6 +33,7 @@ public class DefaultChoose {
             if (p.getScoreboardTags().contains("choosing")) {
                 p.removeScoreboardTag("choosing");
             }
+            Bukkit.getServer().getPluginManager().callEvent(new OriginChooseEvent(p));
 
             if (p.getInventory().getItemInMainHand().isSimilar(OrbOfOrigins.orb)) {
                 int amt = p.getInventory().getItemInMainHand().getAmount();
