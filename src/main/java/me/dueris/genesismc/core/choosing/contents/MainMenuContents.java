@@ -1,18 +1,14 @@
 package me.dueris.genesismc.core.choosing.contents;
 
 import me.dueris.genesismc.core.files.GenesisDataFiles;
-import me.dueris.genesismc.core.items.OrbOfOrigins;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.Item;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.ArrayList;
 
 import static me.dueris.genesismc.core.choosing.ChoosingCORE.itemProperties;
 import static org.bukkit.ChatColor.*;
@@ -153,7 +149,7 @@ public class MainMenuContents {
         custom_originmenu = itemProperties(custom_originmenu, ChatColor.YELLOW + "Custom Origins", ItemFlag.HIDE_ENCHANTS, null, null);
         bars = itemProperties(bars, "", ItemFlag.HIDE_ENCHANTS, null, null);
 
-        //        ItemMeta exmeta = expanded.getItemMeta();
+//        ItemMeta exmeta = expanded.getItemMeta();
 //        exmeta.setDisplayName(ChatColor.BLUE + "Origins Expanded");
 //        exmeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
 //        ArrayList<String> explore = new ArrayList<>();
