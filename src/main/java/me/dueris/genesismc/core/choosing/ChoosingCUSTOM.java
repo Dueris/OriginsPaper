@@ -19,7 +19,6 @@ import java.util.HashMap;
 import static me.dueris.genesismc.core.choosing.ChoosingCORE.itemProperties;
 import static me.dueris.genesismc.core.choosing.contents.MainMenuContents.GenesisMainMenuContents;
 import static org.bukkit.ChatColor.RED;
-import static org.bukkit.ChatColor.WHITE;
 import static me.dueris.genesismc.core.items.OrbOfOrigins.orb;
 
 public class ChoosingCUSTOM implements Listener {
