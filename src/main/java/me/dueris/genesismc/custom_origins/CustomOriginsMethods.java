@@ -1,22 +1,80 @@
 package me.dueris.genesismc.custom_origins;
 
+import org.apache.commons.io.FilenameUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileReader;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Objects;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.*;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
+import java.util.zip.ZipInputStream;
 
 public class CustomOriginsMethods {
 
     public static HashMap<String, String> customOrigins = new HashMap<>();
 
+    static byte[] trim(byte[] bytes) {
+        int i = bytes.length -1;
+        while (i >= 0 && bytes[i] == 0) {
+            --i;
+        }
+        return Arrays.copyOf(bytes, i + 1);
+    }
+
+    public static void unzipCustomOriginDatapacks() {
+        File originDatapackDir = new File(Bukkit.getServer().getPluginManager().getPlugin("GenesisMC").getDataFolder(), "custom_origins");
+        File[] originDatapacks = originDatapackDir.listFiles();
+        if (originDatapacks == null) return;
+
+        for (File file : originDatapacks) {
+            if (!FilenameUtils.getExtension(file.getName()).equals("zip")) continue;
+
+            try {
+                File unzippedDestinationFile = new File(file.getAbsolutePath());
+                Path destination = Path.of(FilenameUtils.removeExtension(unzippedDestinationFile.getPath()) + "_Unzipped");
+                if (!Files.exists(destination)) Files.createDirectory(destination);
+                else continue;
+
+                FileInputStream fileInputStream = new FileInputStream(file);
+                ZipInputStream zipInputStream = new ZipInputStream(fileInputStream);
+                ZipEntry zipEntry = zipInputStream.getNextEntry();
+                while (zipEntry != null) {
+
+                    Path path = destination.resolve(zipEntry.getName()).normalize();
+                    if (!path.startsWith(destination)) Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.RED+"[GenesisMC] Something went wrong ¯\\_(ツ)_/¯");
+
+                    if (zipEntry.isDirectory()) Files.createDirectory(path);
+                    else {
+                        BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(Files.newOutputStream(path));
+                        byte[] bytes = new byte[8192];
+                        while (zipInputStream.read(bytes) >= 0) {
+                            //fix data getting written to same file until buffer runs out
+                            //maybe remove the null bytes after writing the file?
+                            //also setting the bytes to lager than the file works :) (not practice)
+                            byte[] trimmedBytes = trim(bytes);
+                            bufferedOutputStream.write(trimmedBytes, 0, trimmedBytes.length);
+                        }
+                        bufferedOutputStream.close();
+                    }
+                    zipEntry = zipInputStream.getNextEntry();
+                }
+                zipInputStream.close();
+                zipInputStream.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
     public static void loadCustomOriginDatapacks() {
         File originDatapackDir = new File(Bukkit.getServer().getPluginManager().getPlugin("GenesisMC").getDataFolder(), "custom_origins");
