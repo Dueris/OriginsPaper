@@ -1,5 +1,6 @@
 package me.dueris.genesismc.core.choosing;
 
+import me.dueris.api.events.OriginChooseEvent;
 import me.dueris.genesismc.core.GenesisMC;
 import me.dueris.genesismc.core.files.GenesisDataFiles;
 import org.bukkit.*;
@@ -292,6 +293,7 @@ public class ChoosingCORE implements Listener {
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
                     DefaultChoose.DefaultChoose(p);
+                    setAtributesToDefualt(p);
                     p.closeInventory();
                 }
                 if(e.getCurrentItem().isSimilar(ender)){
