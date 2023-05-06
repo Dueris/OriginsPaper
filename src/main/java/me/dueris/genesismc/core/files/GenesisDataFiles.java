@@ -98,7 +98,7 @@ public class GenesisDataFiles {
     getPlugCon().addDefault("creep-disable", false);
     getPlugCon().addDefault("phantom-disable", false);
     getPlugCon().addDefault("slimeling-disable", false);
-    getPlugCon().addDefault("vexian-disable", false);
+    getPlugCon().addDefault("feline-disable", false);
     getPlugCon().addDefault("blazeborn-disable", false);
     getPlugCon().addDefault("starborne-disable", false);
     getPlugCon().addDefault("merling-disable", false);
