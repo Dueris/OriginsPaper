@@ -270,7 +270,7 @@ public class OriginalOriginContent {
     public static @Nullable ItemStack @NotNull [] FelineContents(){
         ItemStack close = new ItemStack(Material.BARRIER);
         ItemStack menu = new ItemStack(Material.SPECTRAL_ARROW);
-        ItemStack feline = new ItemStack(Material.IRON_SWORD);
+        ItemStack feline = new ItemStack(Material.ORANGE_WOOL);
         ItemStack air = new ItemStack(Material.AIR);
         ItemStack blank = new ItemStack(Material.PAPER);
 
