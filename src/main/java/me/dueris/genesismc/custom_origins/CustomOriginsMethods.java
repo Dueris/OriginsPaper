@@ -50,20 +50,14 @@ public class CustomOriginsMethods {
                 ZipEntry zipEntry = zipInputStream.getNextEntry();
                 while (zipEntry != null) {
 
-                    Path path = destination.resolve(zipEntry.getName()).normalize();
+                    Path path = destination.resolve(zipEntry.getName());
                     if (!path.startsWith(destination)) Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.RED+"[GenesisMC] Something went wrong ¯\\_(ツ)_/¯");
 
-                    if (zipEntry.isDirectory()) Files.createDirectory(path);
+                    if (zipEntry.isDirectory()) Files.createDirectories(path);
                     else {
                         BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(Files.newOutputStream(path));
-                        byte[] bytes = new byte[8192];
-                        while (zipInputStream.read(bytes) >= 0) {
-                            //fix data getting written to same file until buffer runs out
-                            //maybe remove the null bytes after writing the file?
-                            //also setting the bytes to lager than the file works :) (not practice)
-                            byte[] trimmedBytes = trim(bytes);
-                            bufferedOutputStream.write(trimmedBytes, 0, trimmedBytes.length);
-                        }
+                        byte[] bytes = zipInputStream.readAllBytes();
+                        bufferedOutputStream.write(bytes, 0, bytes.length);
                         bufferedOutputStream.close();
                     }
                     zipEntry = zipInputStream.getNextEntry();
