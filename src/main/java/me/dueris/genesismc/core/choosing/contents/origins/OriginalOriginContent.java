@@ -51,7 +51,7 @@ public class OriginalOriginContent {
 
         avian_origin_info1 = itemProperties(avian_origin_info1, UNDERLINE + "Featherweight", null, null, WHITE + "You fall as gently to the ground as a feather would, unless you shift");
         avian_origin_info2 = itemProperties(avian_origin_info2, UNDERLINE + "Tailwind", null, null, WHITE + "You are a little quicker on foot than others");
-        avian_origin_info2 = itemProperties(avian_origin_info2, UNDERLINE + "Oviparous", null, null, WHITE + "Whenever you wake up in the morning, you lay an egg");
+        avian_origin_info3 = itemProperties(avian_origin_info3, UNDERLINE + "Oviparous", null, null, WHITE + "Whenever you wake up in the morning, you lay an egg");
         avian_origin_info4 = itemProperties(avian_origin_info4, UNDERLINE + "Vegetarian", null, null, WHITE + "You can't digest any meat");
         avian_origin_info5 = itemProperties(avian_origin_info5, UNDERLINE + "Fresh Air", null, null, WHITE + "When sleeping, your bed needs to be at an altitude of at least 100 blocks");
 
@@ -253,7 +253,7 @@ public class OriginalOriginContent {
 
         phantom_origin_info1 = itemProperties(phantom_origin_info1, UNDERLINE + "Translucent", null, null, WHITE + "You are slightly translucent, and at night you become more solid");
         phantom_origin_info2 = itemProperties(phantom_origin_info2, UNDERLINE + "Not Really a Vampire", null, null, WHITE + "You take damage from sunlight");
-        phantom_origin_info3 = itemProperties(phantom_origin_info3, UNDERLINE + "Phasing" + DARK_GRAY + "Press F to activate, or use item", null, null, WHITE + "You can turn into your \"Phantom Form\", allowing you to walk through walls");
+        phantom_origin_info3 = itemProperties(phantom_origin_info3, UNDERLINE + "Phasing" + DARK_GRAY + " Press F to activate, or use item", null, null, WHITE + "You can turn into your \"Phantom Form\", allowing you to walk through walls");
         phantom_origin_info4 = itemProperties(phantom_origin_info4, UNDERLINE + "Fast Metabolism", null, null, WHITE + "While in Phantom Form, you loose twice as much hunger");
         phantom_origin_info5 = itemProperties(phantom_origin_info5, UNDERLINE + "Fragile Creature", null, null, WHITE + "You have 3 less hearts");
         phantom_origin_info6 = itemProperties(phantom_origin_info6, UNDERLINE + "Invisibility", null, null, WHITE + "While phantomized, you become fully invisible.");

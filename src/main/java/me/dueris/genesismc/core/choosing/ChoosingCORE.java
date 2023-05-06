@@ -449,6 +449,7 @@ public class ChoosingCORE implements Listener {
                 //Human
                 if (e.getCurrentItem() != null && !e.getCurrentItem().containsEnchantment(Enchantment.ARROW_INFINITE)) {
                     if (e.getCurrentItem().getType() == Material.PLAYER_HEAD && !e.getCurrentItem().getItemMeta().getItemFlags().contains(ItemFlag.HIDE_ENCHANTS)) {
+                        e.setCancelled(true);
                         p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 10, 9);
                         if (p.hasPermission("genesismc.origins.human")) {
                             e.getClickedInventory().setContents(HumanContents());
