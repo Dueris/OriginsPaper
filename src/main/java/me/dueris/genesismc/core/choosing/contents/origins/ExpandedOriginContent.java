@@ -264,36 +264,4 @@ public class ExpandedOriginContent {
 
         return slimegui_items;
     }
-
-    public static @Nullable ItemStack @NotNull [] VexianContents(){
-        ItemStack close = new ItemStack(Material.BARRIER);
-        ItemStack menu = new ItemStack(Material.SPECTRAL_ARROW);
-        ItemStack vex = new ItemStack(Material.IRON_SWORD);
-        ItemStack air = new ItemStack(Material.AIR);
-        ItemStack blank = new ItemStack(Material.PAPER);
-
-        ItemStack vex_origin_info1 = new ItemStack(Material.FILLED_MAP);
-        ItemStack vex_origin_info2 = new ItemStack(Material.FILLED_MAP);
-        ItemStack vex_origin_info3 = new ItemStack(Material.FILLED_MAP);
-        ItemStack vex_origin_info4 = new ItemStack(Material.FILLED_MAP);
-        ItemStack vex_origin_info5 = new ItemStack(Material.FILLED_MAP);
-        ItemStack vex_origin_info6 = new ItemStack(Material.FILLED_MAP);
-        ItemStack vex_origin_info7 = new ItemStack(Material.FILLED_MAP);
-
-        vex_origin_info1 = itemProperties(vex_origin_info1, UNDERLINE + "Weightless Soul", null, null, WHITE + "You can fly. Really fast..");
-        vex_origin_info2 = itemProperties(vex_origin_info2, UNDERLINE + "Raging Vex", null, null, WHITE + "You gain strength 2 and speed 3 upon being hit for 2 seconds");
-        vex_origin_info3 = itemProperties(vex_origin_info3, UNDERLINE + "Friends of the Raiders", null, null, WHITE + "Pillagers will not attack you, but Iron Golems will");
-        vex_origin_info4 = itemProperties(vex_origin_info4, UNDERLINE + "Feared Spirit", null, null, WHITE + "Villagers will not trade with you");
-        vex_origin_info5 = itemProperties(vex_origin_info5, UNDERLINE + "Unholy Creature", null, null, WHITE + "You cannot wear armour made of iron, gold, or chainmail");
-        vex_origin_info6 = itemProperties(vex_origin_info6, UNDERLINE + "Bloodlust", null, null, WHITE + "You can only eat raw meat");
-        vex_origin_info7 = itemProperties(vex_origin_info7, UNDERLINE + "Little Demon", null, null, WHITE + "You are slower and MUCH weaker when in water");
-
-        close = itemProperties(close, RED + "Close", null, null, RED + "Cancel Choosing");
-        menu = itemProperties(menu, ChatColor.AQUA + "Return", ItemFlag.HIDE_ENCHANTS, null, null);
-        vex = itemProperties(vex, "Vexian", null, Enchantment.ARROW_INFINITE, AQUA + "Vex Origin");
-
-        ItemStack[] vexgui_items = {close, air, air, air, orb, air, air, air, close, air, air, air, air, vex, air, air, air, air, air, air, vex_origin_info1, vex_origin_info2, vex_origin_info3, vex_origin_info4, vex_origin_info5, air, air, air, air, vex_origin_info6, vex_origin_info7, blank, blank, blank, air, air, air, air, air, air, air, air, air, air, air, air, air, air, air, menu, air, air, air, air};
-
-        return vexgui_items;
-    }
 }

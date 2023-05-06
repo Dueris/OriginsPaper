@@ -25,7 +25,7 @@ public class MainMenuContents {
         ItemStack creep = new ItemStack(Material.GUNPOWDER);
         ItemStack phantom = new ItemStack(Material.PHANTOM_MEMBRANE);
         ItemStack slimeling = new ItemStack(Material.SLIME_BALL);
-        ItemStack vexian = new ItemStack(Material.IRON_SWORD);
+        ItemStack feline = new ItemStack(Material.ORANGE_WOOL);
         ItemStack blazeborn = new ItemStack(Material.BLAZE_POWDER);
         ItemStack starborne = new ItemStack(Material.NETHER_STAR);
         ItemStack merling = new ItemStack(Material.COD);
@@ -89,10 +89,10 @@ public class MainMenuContents {
         } else {
             slimeling = itemProperties(slimeling, RED + "Unavailable", ItemFlag.HIDE_ENCHANTS, Enchantment.ARROW_INFINITE, RED + "This origin is locked by the server owner");
         }
-        if (GenesisDataFiles.getPlugCon().getString("vexian-disable").equalsIgnoreCase("false")) {
-            vexian = itemProperties(vexian, AQUA + "Vexian", ItemFlag.HIDE_ATTRIBUTES, null, WHITE + "Vex Origin");
+        if (GenesisDataFiles.getPlugCon().getString("feline-disable").equalsIgnoreCase("false")) {
+            feline = itemProperties(feline, AQUA + "Feline", ItemFlag.HIDE_ATTRIBUTES, null, WHITE + "Feline Origin");
         } else {
-            vexian = itemProperties(vexian, RED + "Unavailable", ItemFlag.HIDE_ENCHANTS, Enchantment.ARROW_INFINITE, RED + "This origin is locked by the server owner");
+            feline = itemProperties(feline, RED + "Unavailable", ItemFlag.HIDE_ENCHANTS, Enchantment.ARROW_INFINITE, RED + "This origin is locked by the server owner");
         }
         if (GenesisDataFiles.getPlugCon().getString("blazeborn-disable").equalsIgnoreCase("false")) {
             blazeborn = itemProperties(blazeborn, GOLD + "Blazeborn", null, null, WHITE + "Blaze Origin");
@@ -157,10 +157,10 @@ public class MainMenuContents {
 //        expanded.setItemMeta(exmeta);
 
         //The description on the top row will be replaced with feline when it is implemented
-        ItemStack[] mainmenucontents = {avian, arachnid, elytrian, shulk, description, enderian, merling, blazeborn, phantom,
-                description, description, description, description, human, description, description, description, description,
+        ItemStack[] mainmenucontents = {avian, arachnid, elytrian, shulk, feline, enderian, merling, blazeborn, phantom,
+                description, description, description, description, description, description, description, description, description,
                 bars, bars, bars, bars, bars, bars, bars, bars, bars,
-                starborne, allay, rabbit, bumblebee, piglin, sculkling, creep, slimeling, vexian,
+                starborne, allay, rabbit, bumblebee, human , sculkling, creep, slimeling, piglin,
                 description, description, description, description, description, description, description, description, description,
                 blank, blank, blank, random, blank, custom_originmenu, blank, blank, blank};
 

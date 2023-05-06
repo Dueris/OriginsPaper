@@ -496,11 +496,11 @@ public class ChoosingCORE implements Listener {
                             if (p.hasPermission("genesismc.origins.slimeling")) {
                                 e.getClickedInventory().setContents(SlimelingContents());
                             }
-                        }else if (e.getCurrentItem().getType().equals(Material.IRON_SWORD) && !e.getCurrentItem().getItemMeta().getItemFlags().contains(ItemFlag.HIDE_ENCHANTS)) {
+                        }else if (e.getCurrentItem().getType().equals(Material.ORANGE_WOOL) && !e.getCurrentItem().getItemMeta().getItemFlags().contains(ItemFlag.HIDE_ENCHANTS)) {
                             e.setCancelled(true);
                             p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 10, 9);
-                            if (p.hasPermission("genesismc.origins.vexian")) {
-                                e.getClickedInventory().setContents(VexianContents());
+                            if (p.hasPermission("genesismc.origins.feline")) {
+                                e.getClickedInventory().setContents(FelineContents());
                             }
                         }else if (e.getCurrentItem().getType().equals(Material.BLAZE_POWDER) && !e.getCurrentItem().getItemMeta().getItemFlags().contains(ItemFlag.HIDE_ENCHANTS)) {
                             e.setCancelled(true);

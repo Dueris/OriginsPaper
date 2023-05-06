@@ -266,4 +266,36 @@ public class OriginalOriginContent {
 
         return phantomgui_items;
     }
+
+    public static @Nullable ItemStack @NotNull [] FelineContents(){
+        ItemStack close = new ItemStack(Material.BARRIER);
+        ItemStack menu = new ItemStack(Material.SPECTRAL_ARROW);
+        ItemStack feline = new ItemStack(Material.IRON_SWORD);
+        ItemStack air = new ItemStack(Material.AIR);
+        ItemStack blank = new ItemStack(Material.PAPER);
+
+        ItemStack feline_origin_info1 = new ItemStack(Material.FILLED_MAP);
+        ItemStack feline_origin_info2 = new ItemStack(Material.FILLED_MAP);
+        ItemStack feline_origin_info3 = new ItemStack(Material.FILLED_MAP);
+        ItemStack feline_origin_info4 = new ItemStack(Material.FILLED_MAP);
+        ItemStack feline_origin_info5 = new ItemStack(Material.FILLED_MAP);
+        ItemStack feline_origin_info6 = new ItemStack(Material.FILLED_MAP);
+        ItemStack feline_origin_info7 = new ItemStack(Material.FILLED_MAP);
+
+        feline_origin_info1 = itemProperties(feline_origin_info1, UNDERLINE + "9 Lives", null, null, WHITE + "You have 9 hearts of health");
+        feline_origin_info2 = itemProperties(feline_origin_info2, UNDERLINE + "Good Jumper", null, null, WHITE + "You can jump higher while sprinting");
+        feline_origin_info3 = itemProperties(feline_origin_info3, UNDERLINE + "Nocturnal", null, null, WHITE + "You have natural night vision");
+        feline_origin_info4 = itemProperties(feline_origin_info4, UNDERLINE + "Catlike Appearance", null, null, WHITE + "Creepers are scared of you");
+        feline_origin_info5 = itemProperties(feline_origin_info5, UNDERLINE + "Velvet Paws", null, null, WHITE + "Your footsteps don't cause any vibrations");
+        feline_origin_info6 = itemProperties(feline_origin_info6, UNDERLINE + "Acrobatics", null, null, WHITE + "You never take fall damage, no matter from which height you fall.");
+        feline_origin_info7 = itemProperties(feline_origin_info7, UNDERLINE + "Strong Ankles", null, null, WHITE + "You are able to jump higher by jumping while sprinting.");
+
+        close = itemProperties(close, RED + "Close", null, null, RED + "Cancel Choosing");
+        menu = itemProperties(menu, ChatColor.AQUA + "Return", ItemFlag.HIDE_ENCHANTS, null, null);
+        feline = itemProperties(feline, "Feline", null, Enchantment.ARROW_INFINITE,  GOLD + "Feline Origin");
+
+        ItemStack[] felinegui_items = {close, air, air, air, orb, air, air, air, close, air, air, air, air, feline, air, air, air, air, air, air, feline_origin_info1, feline_origin_info2, feline_origin_info3, feline_origin_info4, feline_origin_info5, air, air, air, air, feline_origin_info6, feline_origin_info7, blank, blank, blank, air, air, air, air, air, air, air, air, air, air, air, air, air, air, air, menu, air, air, air, air};
+
+        return felinegui_items;
+    }
 }

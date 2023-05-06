@@ -54,8 +54,8 @@ public class Get extends SubCommand {
                 if(origintag.equalsIgnoreCase("genesis:origin-slimeling")){
                     p.sendMessage(target.getName() + " has the Slimeling origin");
                 }
-                if(origintag.equalsIgnoreCase("genesis:origin-vexian")){
-                    p.sendMessage(target.getName() + " has the Vexian origin");
+                if(origintag.equalsIgnoreCase("genesis:origin-feline")){
+                    p.sendMessage(target.getName() + " has the Feline origin");
                 }
                 if(origintag.equalsIgnoreCase("genesis:origin-blazeborn")){
                     p.sendMessage(target.getName() + " has the Blazeborn origin");
@@ -111,8 +111,8 @@ public class Get extends SubCommand {
                 if(origintag.equalsIgnoreCase("genesis:origin-slimeling")){
                     p.sendMessage(p.getName() + " has the Slimeling origin");
                 }
-                if(origintag.equalsIgnoreCase("genesis:origin-vexian")){
-                    p.sendMessage(p.getName() + " has the Vexian origin");
+                if(origintag.equalsIgnoreCase("genesis:origin-feline")){
+                    p.sendMessage(p.getName() + " has the Feline origin");
                 }
                 if(origintag.equalsIgnoreCase("genesis:origin-blazeborn")){
                     p.sendMessage(p.getName() + " has the Blazeborn origin");

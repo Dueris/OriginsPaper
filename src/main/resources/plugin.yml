@@ -50,7 +50,7 @@ permissions:
     default: true
   genesismc.origins.phantom:
     default: true
-  genesismc.origins.vexian:
+  genesismc.origins.feline:
     default: true
   genesismc.origins.blazeborn:
     default: true
