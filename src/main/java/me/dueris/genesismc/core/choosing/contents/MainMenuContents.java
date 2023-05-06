@@ -157,7 +157,7 @@ public class MainMenuContents {
 //        expanded.setItemMeta(exmeta);
 
         //The description on the top row will be replaced with feline when it is implemented
-        ItemStack[] mainmenucontents = {avian, arachnid, elytrian, shulk, feline, enderian, merling, blazeborn, phantom,
+        ItemStack[] mainmenucontents = {enderian, merling, phantom, elytrian, blazeborn, avian, arachnid, shulk, feline,
                 description, description, description, description, description, description, description, description, description,
                 bars, bars, bars, bars, bars, bars, bars, bars, bars,
                 starborne, allay, rabbit, bumblebee, human , sculkling, creep, slimeling, piglin,
