@@ -25,10 +25,50 @@ public class EnchantProtEvent implements Listener {
     public void onEnchantItem(EnchantItemEvent e) {
         Random random = new Random();
         int r10 = random.nextInt(10);
-        int r4 = random.nextInt(43);
+        int r4 = random.nextInt(50);
+        int r5 = random.nextInt(43);
         int beta = random.nextInt(2);
         if (wearable.contains(e.getItem().getType())) {
             if (r10 == (int) 1 || r10 == (int) 2 || r10 == (int) 3 || r10 == (int) 4 || r10 == (int) 5 || r10 == (int) 6 || r10 == (int) 7 || r10 == (int) 8 || r10 == (int) 9 || r10 == (int) 10) {
+
+                if(r4 >= 45){
+                    e.getEnchantsToAdd().remove(e.getEnchantsToAdd());
+                    if (r5 == 1 || r5 == 14 || r5 == 15 || r5 == 5 || r5 == 6 || r5 == 17 || r5 == 18 || r5 == 19 || r5 == 20 || r5 == 21 || r5 == 22 || r5 == 23 || r5 == 24 || r5 == 25 || r5 == 26 || r5 == 27 || r5 == 28 || r5 == 29 || r5 == 30) {
+                        String level = "I";
+                        ItemMeta meta = e.getItem().getItemMeta();
+                        meta.setCustomModelData(1);
+                        e.getItem().setLore(Arrays.asList(ChatColor.GRAY + "Water Protection " + level));
+                        e.getItem().addUnsafeEnchantment(waterProtectionEnchant, 1);
+                        int basexp = e.getExpLevelCost();
+                        e.setExpLevelCost(basexp + 2);
+
+                    } else if (r5 == 2 || r5 == 8 || r5 == 9 || r5 == 11 || r5 == 13 || r5 == 7 || r5 == 31 || r5 == 32 || r5 == 33 || r5 == 34 || r5 == 35) {
+                        String level = "II";
+                        ItemMeta meta = e.getItem().getItemMeta();
+                        meta.setCustomModelData(2);
+                        e.getItem().setLore(Arrays.asList(ChatColor.GRAY + "Water Protection " + level));
+                        e.getItem().addUnsafeEnchantment(waterProtectionEnchant, 2);
+                        int basexp = e.getExpLevelCost();
+                        e.setExpLevelCost(basexp + 3);
+                    } else if (r5 == 3 || r5 == 10 || r5 == 12 || r5 == 36 || r5 == 37 || r5 == 38 || r5 == 39 || r5 == 40) {
+                        String level = "III";
+                        ItemMeta meta = e.getItem().getItemMeta();
+                        meta.setCustomModelData(3);
+                        e.getItem().setLore(Arrays.asList(ChatColor.GRAY + "Water Protection " + level));
+                        e.getItem().addUnsafeEnchantment(waterProtectionEnchant, 3);
+                        int basexp = e.getExpLevelCost();
+                        e.setExpLevelCost(basexp + 4);
+                    } else if (r5 == 4 || r5 == 16 || r5 == 41 || r5 == 42) {
+                        String level = "IV";
+                        ItemMeta meta = e.getItem().getItemMeta();
+                        meta.setCustomModelData(4);
+                        e.getItem().setLore(Arrays.asList(ChatColor.GRAY + "Water Protection " + level));
+                        e.getItem().addUnsafeEnchantment(waterProtectionEnchant, 4);
+                        int basexp = e.getExpLevelCost();
+                        e.setExpLevelCost(basexp + 6);
+                    }
+                }
+
 
                 if (r4 == 1 || r4 == 14 || r4 == 15 || r4 == 5 || r4 == 6 || r4 == 17 || r4 == 18 || r4 == 19 || r4 == 20 || r4 == 21 || r4 == 22 || r4 == 23 || r4 == 24 || r4 == 25 || r4 == 26 || r4 == 27 || r4 == 28 || r4 == 29 || r4 == 30) {
                     String level = "I";
