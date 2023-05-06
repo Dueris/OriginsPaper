@@ -286,14 +286,14 @@ public class ChoosingCORE implements Listener {
             Player p = (Player) e.getWhoClicked();
             if (e.getCurrentItem() != null && e.getCurrentItem().containsEnchantment(Enchantment.ARROW_INFINITE)) {
                 setAtributesToDefualt(p);
-                if(e.getCurrentItem().equals(human)){
+                if(e.getCurrentItem().isSimilar(human)){
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, "genesis:origin-human");
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
                     DefaultChoose.DefaultChoose(p);
                     p.closeInventory();
                 }
-                if(e.getCurrentItem().equals(ender)){
+                if(e.getCurrentItem().isSimilar(ender)){
                     p.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(24);
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, "genesis:origin-enderian");
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
@@ -314,7 +314,7 @@ public class ChoosingCORE implements Listener {
                     DefaultChoose.DefaultChoose(p);
                     p.closeInventory();
                 }
-                if(e.getCurrentItem().equals(shulk)){
+                if(e.getCurrentItem().isSimilar(shulk)){
                     float walk = 0.185F;
                     p.getAttribute(Attribute.GENERIC_ARMOR).setBaseValue(8.0);
                     p.setWalkSpeed(walk);
@@ -325,21 +325,21 @@ public class ChoosingCORE implements Listener {
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
                     DefaultChoose.DefaultChoose(p);
                 }
-                if(e.getCurrentItem().equals(spider)){
+                if(e.getCurrentItem().isSimilar(spider)){
                     p.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(14);
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, "genesis:origin-arachnid");
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
                     DefaultChoose.DefaultChoose(p);
                 }
-                if(e.getCurrentItem().equals(creep)){
+                if(e.getCurrentItem().isSimilar(creep)){
                     p.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(18);
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, "genesis:origin-creep");
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 2);
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
                     DefaultChoose.DefaultChoose(p);
                 }
-                if(e.getCurrentItem().equals(phantom)){
+                if(e.getCurrentItem().isSimilar(phantom)){
                     p.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(14);
                     p.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0.11);
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, "genesis:origin-phantom");
@@ -358,75 +358,75 @@ public class ChoosingCORE implements Listener {
                     p.getInventory().addItem(spectatorswitch);
                     DefaultChoose.DefaultChoose(p);
                 }
-                if(e.getCurrentItem().equals(slime)){
+                if(e.getCurrentItem().isSimilar(slime)){
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, "genesis:origin-slimeling");
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
                     DefaultChoose.DefaultChoose(p);
                 }
-                if(e.getCurrentItem().equals(vex)){
+                if(e.getCurrentItem().isSimilar(vex)){
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, "genesis:origin-vexian");
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
                     DefaultChoose.DefaultChoose(p);
                 }
-                if(e.getCurrentItem().equals(blaze)){
+                if(e.getCurrentItem().isSimilar(blaze)){
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, "genesis:origin-blazeborn");
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
                     DefaultChoose.DefaultChoose(p);
                 }
-                if(e.getCurrentItem().equals(star)){
+                if(e.getCurrentItem().isSimilar(star)){
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, "genesis:origin-starborne");
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
                     DefaultChoose.DefaultChoose(p);
                 }
-                if(e.getCurrentItem().equals(merling)){
+                if(e.getCurrentItem().isSimilar(merling)){
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, "genesis:origin-merling");
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
                     DefaultChoose.DefaultChoose(p);
                 }
-                if(e.getCurrentItem().equals(allay)){
+                if(e.getCurrentItem().isSimilar(allay)){
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, "genesis:origin-allay");
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
                     DefaultChoose.DefaultChoose(p);
                 }
-                if(e.getCurrentItem().equals(rabbit)){
+                if(e.getCurrentItem().isSimilar(rabbit)){
                     p.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(14);
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, "genesis:origin-rabbit");
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
                     DefaultChoose.DefaultChoose(p);
                 }
-                if(e.getCurrentItem().equals(bee)){
+                if(e.getCurrentItem().isSimilar(bee)){
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, "genesis:origin-bee");
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
                     DefaultChoose.DefaultChoose(p);
                 }
-                if(e.getCurrentItem().equals(elyrtian)){
+                if(e.getCurrentItem().isSimilar(elyrtian)){
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, "genesis:origin-elytrian");
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
                     DefaultChoose.DefaultChoose(p);
                 }
-                if(e.getCurrentItem().equals(avian)){
+                if(e.getCurrentItem().isSimilar(avian)){
                     p.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0.13);
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, "genesis:origin-avian");
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
                     DefaultChoose.DefaultChoose(p);
                 }
-                if(e.getCurrentItem().equals(piglin)){
+                if(e.getCurrentItem().isSimilar(piglin)){
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, "genesis:origin-piglin");
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
                     DefaultChoose.DefaultChoose(p);
                 }
-                if(e.getCurrentItem().equals(sculk)){
+                if(e.getCurrentItem().isSimilar(sculk)){
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, "genesis:origin-sculkling");
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
@@ -448,109 +448,109 @@ public class ChoosingCORE implements Listener {
             if (e.getCurrentItem() != null) {
                 //Human
                 if (e.getCurrentItem() != null && !e.getCurrentItem().containsEnchantment(Enchantment.ARROW_INFINITE)) {
-                    if (e.getCurrentItem().getType() == Material.PLAYER_HEAD && !e.getCurrentItem().getItemMeta().getItemFlags().contains(ItemFlag.HIDE_ENCHANTS)) {
+                    if (e.getCurrentItem().getType().isSimilar(Material.PLAYER_HEAD) && !e.getCurrentItem().getItemMeta().getItemFlags().contains(ItemFlag.HIDE_ENCHANTS)) {
                         e.setCancelled(true);
                         p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 10, 9);
                         if (p.hasPermission("genesismc.origins.human")) {
                             e.getClickedInventory().setContents(HumanContents());
                         }
-                    }else if (e.getCurrentItem().getType() == Material.ENDER_PEARL && !e.getCurrentItem().getItemMeta().getItemFlags().contains(ItemFlag.HIDE_ENCHANTS)) {
+                    }else if (e.getCurrentItem().getType().isSimilar(Material.ENDER_PEARL) && !e.getCurrentItem().getItemMeta().getItemFlags().contains(ItemFlag.HIDE_ENCHANTS)) {
                         e.setCancelled(true);
                         p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 10, 9);
                         if (p.hasPermission("genesismc.origins.enderian")) {
                             e.getClickedInventory().setContents(EnderianContents());
                         }
-                    }else if (e.getCurrentItem().getType() == Material.SHULKER_SHELL && !e.getCurrentItem().getItemMeta().getItemFlags().contains(ItemFlag.HIDE_ENCHANTS)) {
+                    }else if (e.getCurrentItem().getType().isSimilar(Material.SHULKER_SHELL) && !e.getCurrentItem().getItemMeta().getItemFlags().contains(ItemFlag.HIDE_ENCHANTS)) {
                         e.setCancelled(true);
                         p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 10, 9);
                         if (p.hasPermission("genesismc.origins.shulk")) {
                             e.getClickedInventory().setContents(ShulkContents());
                         }
-                    }else if (e.getCurrentItem().getType() == Material.COBWEB && !e.getCurrentItem().getItemMeta().getItemFlags().contains(ItemFlag.HIDE_ENCHANTS)) {
+                    }else if (e.getCurrentItem().getType().isSimilar(Material.COBWEB) && !e.getCurrentItem().getItemMeta().getItemFlags().contains(ItemFlag.HIDE_ENCHANTS)) {
                         e.setCancelled(true);
                         p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 10, 9);
                         if (p.hasPermission("genesismc.origins.arachnid")) {
                             e.getClickedInventory().setContents(ArachnidContents());
                         }
-                    }else if (e.getCurrentItem().getType() == Material.GUNPOWDER && !e.getCurrentItem().getItemMeta().getItemFlags().contains(ItemFlag.HIDE_ENCHANTS)) {
+                    }else if (e.getCurrentItem().getType().isSimilar(Material.GUNPOWDER) && !e.getCurrentItem().getItemMeta().getItemFlags().contains(ItemFlag.HIDE_ENCHANTS)) {
                         e.setCancelled(true);
                         p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 10, 9);
                         if (p.hasPermission("genesismc.origins.creep")) {
                             e.getClickedInventory().setContents(CreepContents());
                         }
-                    }else if (e.getCurrentItem().getType() == Material.PHANTOM_MEMBRANE && !e.getCurrentItem().getItemMeta().getItemFlags().contains(ItemFlag.HIDE_ENCHANTS)) {
+                    }else if (e.getCurrentItem().getType().isSimilar(Material.PHANTOM_MEMBRANE) && !e.getCurrentItem().getItemMeta().getItemFlags().contains(ItemFlag.HIDE_ENCHANTS)) {
                         e.setCancelled(true);
                         p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 10, 9);
                         if (p.hasPermission("genesismc.origins.phantom")) {
                             e.getClickedInventory().setContents(PhantomContents());
                         }
-                    }else if (e.getCurrentItem().getType() == Material.SLIME_BALL && !e.getCurrentItem().getItemMeta().getItemFlags().contains(ItemFlag.HIDE_ENCHANTS)) {
+                    }else if (e.getCurrentItem().getType().isSimilar(Material.SLIME_BALL) && !e.getCurrentItem().getItemMeta().getItemFlags().contains(ItemFlag.HIDE_ENCHANTS)) {
                         e.setCancelled(true);
                         p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 10, 9);
                         if (p.hasPermission("genesismc.origins.slimeling")) {
                             e.getClickedInventory().setContents(SlimelingContents());
                         }
-                    }else if (e.getCurrentItem().getType() == Material.IRON_SWORD && !e.getCurrentItem().getItemMeta().getItemFlags().contains(ItemFlag.HIDE_ENCHANTS)) {
+                    }else if (e.getCurrentItem().getType().isSimilar(Material.IRON_SWORD) && !e.getCurrentItem().getItemMeta().getItemFlags().contains(ItemFlag.HIDE_ENCHANTS)) {
                         e.setCancelled(true);
                         p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 10, 9);
                         if (p.hasPermission("genesismc.origins.vexian")) {
                             e.getClickedInventory().setContents(VexianContents());
                         }
-                    }else if (e.getCurrentItem().getType() == Material.BLAZE_POWDER && !e.getCurrentItem().getItemMeta().getItemFlags().contains(ItemFlag.HIDE_ENCHANTS)) {
+                    }else if (e.getCurrentItem().getType().isSimilar(Material.BLAZE_POWDER) && !e.getCurrentItem().getItemMeta().getItemFlags().contains(ItemFlag.HIDE_ENCHANTS)) {
                         e.setCancelled(true);
                         p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 10, 9);
                         if (p.hasPermission("genesismc.origins.blazeborn")) {
                             e.getClickedInventory().setContents(BlazebornContents());
                         }
-                    }else if (e.getCurrentItem().getType() == Material.NETHER_STAR && !e.getCurrentItem().getItemMeta().getItemFlags().contains(ItemFlag.HIDE_ENCHANTS)) {
+                    }else if (e.getCurrentItem().getType().isSimilar(Material.NETHER_STAR) && !e.getCurrentItem().getItemMeta().getItemFlags().contains(ItemFlag.HIDE_ENCHANTS)) {
                         e.setCancelled(true);
                         p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 10, 9);
                         if (p.hasPermission("genesismc.origins.starborne")) {
                             e.getClickedInventory().setContents(StarborneContents());
                         }
-                    }else if (e.getCurrentItem().getType() == Material.COD && !e.getCurrentItem().getItemMeta().getItemFlags().contains(ItemFlag.HIDE_ENCHANTS)) {
+                    }else if (e.getCurrentItem().getType().isSimilar(Material.COD) && !e.getCurrentItem().getItemMeta().getItemFlags().contains(ItemFlag.HIDE_ENCHANTS)) {
                         e.setCancelled(true);
                         p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 10, 9);
                         if (p.hasPermission("genesismc.origins.merling")) {
                             e.getClickedInventory().setContents(MerlingContents());
                         }
-                    }else if (e.getCurrentItem().getType() == Material.AMETHYST_SHARD && !e.getCurrentItem().getItemMeta().getItemFlags().contains(ItemFlag.HIDE_ENCHANTS)) {
+                    }else if (e.getCurrentItem().getType().isSimilar(Material.AMETHYST_SHARD) && !e.getCurrentItem().getItemMeta().getItemFlags().contains(ItemFlag.HIDE_ENCHANTS)) {
                         e.setCancelled(true);
                         p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 10, 9);
                         if (p.hasPermission("genesismc.origins.allay")) {
                             e.getClickedInventory().setContents(AllayContents());
                         }
-                    }else if (e.getCurrentItem().getType() == Material.CARROT && !e.getCurrentItem().getItemMeta().getItemFlags().contains(ItemFlag.HIDE_ENCHANTS)) {
+                    }else if (e.getCurrentItem().getType().isSimilar(Material.CARROT) && !e.getCurrentItem().getItemMeta().getItemFlags().contains(ItemFlag.HIDE_ENCHANTS)) {
                         e.setCancelled(true);
                         p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 10, 9);
                         if (p.hasPermission("genesismc.origins.rabbit")) {
                             e.getClickedInventory().setContents(RabbitContents());
                         }
-                    }else if (e.getCurrentItem().getType() == Material.HONEYCOMB && !e.getCurrentItem().getItemMeta().getItemFlags().contains(ItemFlag.HIDE_ENCHANTS)) {
+                    }else if (e.getCurrentItem().getType().isSimilar(Material.HONEYCOMB) && !e.getCurrentItem().getItemMeta().getItemFlags().contains(ItemFlag.HIDE_ENCHANTS)) {
                         e.setCancelled(true);
                         p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 10, 9);
                         if (p.hasPermission("genesismc.origins.bee")) {
                             e.getClickedInventory().setContents(BeeContents());
                         }
-                    }else if (e.getCurrentItem().getType() == Material.ELYTRA && !e.getCurrentItem().getItemMeta().getItemFlags().contains(ItemFlag.HIDE_ENCHANTS)) {
+                    }else if (e.getCurrentItem().getType().isSimilar(Material.ELYTRA) && !e.getCurrentItem().getItemMeta().getItemFlags().contains(ItemFlag.HIDE_ENCHANTS)) {
                         e.setCancelled(true);
                         p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 10, 9);
                         if (p.hasPermission("genesismc.origins.elytrian")) {
                             e.getClickedInventory().setContents(ElytrianContents());
                         }
-                    }else if (e.getCurrentItem().getType() == Material.FEATHER && !e.getCurrentItem().getItemMeta().getItemFlags().contains(ItemFlag.HIDE_ENCHANTS)) {
+                    }else if (e.getCurrentItem().getType().isSimilar(Material.FEATHER) && !e.getCurrentItem().getItemMeta().getItemFlags().contains(ItemFlag.HIDE_ENCHANTS)) {
                         e.setCancelled(true);
                         p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 10, 9);
                         if (p.hasPermission("genesismc.origins.avian")) {
                             e.getClickedInventory().setContents(AvianContents());
                         }
-                    }else if (e.getCurrentItem().getType() == Material.GOLD_INGOT && !e.getCurrentItem().getItemMeta().getItemFlags().contains(ItemFlag.HIDE_ENCHANTS)) {
+                    }else if (e.getCurrentItem().getType().isSimilar(Material.GOLD_INGOT) && !e.getCurrentItem().getItemMeta().getItemFlags().contains(ItemFlag.HIDE_ENCHANTS)) {
                         e.setCancelled(true);
                         p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 10, 9);
                         if (p.hasPermission("genesismc.origins.piglin")) {
                             e.getClickedInventory().setContents(PiglinContents());
                         }
-                    }else if (e.getCurrentItem().getType() == Material.ECHO_SHARD && !e.getCurrentItem().getItemMeta().getItemFlags().contains(ItemFlag.HIDE_ENCHANTS)) {
+                    }else if (e.getCurrentItem().getType().isSimilar(Material.ECHO_SHARD) && !e.getCurrentItem().getItemMeta().getItemFlags().contains(ItemFlag.HIDE_ENCHANTS)) {
                         e.setCancelled(true);
                         p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 10, 9);
                         if (p.hasPermission("genesismc.origins.sculkling")) {
