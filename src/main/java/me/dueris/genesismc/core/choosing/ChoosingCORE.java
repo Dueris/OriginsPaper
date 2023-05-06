@@ -448,109 +448,109 @@ public class ChoosingCORE implements Listener {
             if (e.getCurrentItem() != null) {
                 //Human
                 if (e.getCurrentItem() != null && !e.getCurrentItem().containsEnchantment(Enchantment.ARROW_INFINITE)) {
-                    if (e.getCurrentItem().getType().isSimilar(Material.PLAYER_HEAD) && !e.getCurrentItem().getItemMeta().getItemFlags().contains(ItemFlag.HIDE_ENCHANTS)) {
+                    if (e.getCurrentItem().getType().equals(Material.PLAYER_HEAD) && !e.getCurrentItem().getItemMeta().getItemFlags().contains(ItemFlag.HIDE_ENCHANTS)) {
                         e.setCancelled(true);
                         p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 10, 9);
                         if (p.hasPermission("genesismc.origins.human")) {
                             e.getClickedInventory().setContents(HumanContents());
                         }
-                    }else if (e.getCurrentItem().getType().isSimilar(Material.ENDER_PEARL) && !e.getCurrentItem().getItemMeta().getItemFlags().contains(ItemFlag.HIDE_ENCHANTS)) {
+                    }else if (e.getCurrentItem().getType().equals(Material.ENDER_PEARL) && !e.getCurrentItem().getItemMeta().getItemFlags().contains(ItemFlag.HIDE_ENCHANTS)) {
                         e.setCancelled(true);
                         p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 10, 9);
                         if (p.hasPermission("genesismc.origins.enderian")) {
                             e.getClickedInventory().setContents(EnderianContents());
                         }
-                    }else if (e.getCurrentItem().getType().isSimilar(Material.SHULKER_SHELL) && !e.getCurrentItem().getItemMeta().getItemFlags().contains(ItemFlag.HIDE_ENCHANTS)) {
+                    }else if (e.getCurrentItem().getType().equals(Material.SHULKER_SHELL) && !e.getCurrentItem().getItemMeta().getItemFlags().contains(ItemFlag.HIDE_ENCHANTS)) {
                         e.setCancelled(true);
                         p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 10, 9);
                         if (p.hasPermission("genesismc.origins.shulk")) {
                             e.getClickedInventory().setContents(ShulkContents());
                         }
-                    }else if (e.getCurrentItem().getType().isSimilar(Material.COBWEB) && !e.getCurrentItem().getItemMeta().getItemFlags().contains(ItemFlag.HIDE_ENCHANTS)) {
+                    }else if (e.getCurrentItem().getType().equals(Material.COBWEB) && !e.getCurrentItem().getItemMeta().getItemFlags().contains(ItemFlag.HIDE_ENCHANTS)) {
                         e.setCancelled(true);
                         p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 10, 9);
                         if (p.hasPermission("genesismc.origins.arachnid")) {
                             e.getClickedInventory().setContents(ArachnidContents());
                         }
-                    }else if (e.getCurrentItem().getType().isSimilar(Material.GUNPOWDER) && !e.getCurrentItem().getItemMeta().getItemFlags().contains(ItemFlag.HIDE_ENCHANTS)) {
+                    }else if (e.getCurrentItem().getType().equals(Material.GUNPOWDER) && !e.getCurrentItem().getItemMeta().getItemFlags().contains(ItemFlag.HIDE_ENCHANTS)) {
                         e.setCancelled(true);
                         p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 10, 9);
                         if (p.hasPermission("genesismc.origins.creep")) {
                             e.getClickedInventory().setContents(CreepContents());
                         }
-                    }else if (e.getCurrentItem().getType().isSimilar(Material.PHANTOM_MEMBRANE) && !e.getCurrentItem().getItemMeta().getItemFlags().contains(ItemFlag.HIDE_ENCHANTS)) {
+                    }else if (e.getCurrentItem().getType().equals(Material.PHANTOM_MEMBRANE) && !e.getCurrentItem().getItemMeta().getItemFlags().contains(ItemFlag.HIDE_ENCHANTS)) {
                         e.setCancelled(true);
                         p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 10, 9);
                         if (p.hasPermission("genesismc.origins.phantom")) {
                             e.getClickedInventory().setContents(PhantomContents());
                         }
-                    }else if (e.getCurrentItem().getType().isSimilar(Material.SLIME_BALL) && !e.getCurrentItem().getItemMeta().getItemFlags().contains(ItemFlag.HIDE_ENCHANTS)) {
+                    }else if (e.getCurrentItem().getType().equals(Material.SLIME_BALL) && !e.getCurrentItem().getItemMeta().getItemFlags().contains(ItemFlag.HIDE_ENCHANTS)) {
                         e.setCancelled(true);
                         p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 10, 9);
                         if (p.hasPermission("genesismc.origins.slimeling")) {
                             e.getClickedInventory().setContents(SlimelingContents());
                         }
-                    }else if (e.getCurrentItem().getType().isSimilar(Material.IRON_SWORD) && !e.getCurrentItem().getItemMeta().getItemFlags().contains(ItemFlag.HIDE_ENCHANTS)) {
+                    }else if (e.getCurrentItem().getType().equals(Material.IRON_SWORD) && !e.getCurrentItem().getItemMeta().getItemFlags().contains(ItemFlag.HIDE_ENCHANTS)) {
                         e.setCancelled(true);
                         p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 10, 9);
                         if (p.hasPermission("genesismc.origins.vexian")) {
                             e.getClickedInventory().setContents(VexianContents());
                         }
-                    }else if (e.getCurrentItem().getType().isSimilar(Material.BLAZE_POWDER) && !e.getCurrentItem().getItemMeta().getItemFlags().contains(ItemFlag.HIDE_ENCHANTS)) {
+                    }else if (e.getCurrentItem().getType().equals(Material.BLAZE_POWDER) && !e.getCurrentItem().getItemMeta().getItemFlags().contains(ItemFlag.HIDE_ENCHANTS)) {
                         e.setCancelled(true);
                         p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 10, 9);
                         if (p.hasPermission("genesismc.origins.blazeborn")) {
                             e.getClickedInventory().setContents(BlazebornContents());
                         }
-                    }else if (e.getCurrentItem().getType().isSimilar(Material.NETHER_STAR) && !e.getCurrentItem().getItemMeta().getItemFlags().contains(ItemFlag.HIDE_ENCHANTS)) {
+                    }else if (e.getCurrentItem().getType().equals(Material.NETHER_STAR) && !e.getCurrentItem().getItemMeta().getItemFlags().contains(ItemFlag.HIDE_ENCHANTS)) {
                         e.setCancelled(true);
                         p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 10, 9);
                         if (p.hasPermission("genesismc.origins.starborne")) {
                             e.getClickedInventory().setContents(StarborneContents());
                         }
-                    }else if (e.getCurrentItem().getType().isSimilar(Material.COD) && !e.getCurrentItem().getItemMeta().getItemFlags().contains(ItemFlag.HIDE_ENCHANTS)) {
+                    }else if (e.getCurrentItem().getType().equals(Material.COD) && !e.getCurrentItem().getItemMeta().getItemFlags().contains(ItemFlag.HIDE_ENCHANTS)) {
                         e.setCancelled(true);
                         p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 10, 9);
                         if (p.hasPermission("genesismc.origins.merling")) {
                             e.getClickedInventory().setContents(MerlingContents());
                         }
-                    }else if (e.getCurrentItem().getType().isSimilar(Material.AMETHYST_SHARD) && !e.getCurrentItem().getItemMeta().getItemFlags().contains(ItemFlag.HIDE_ENCHANTS)) {
+                    }else if (e.getCurrentItem().getType().equals(Material.AMETHYST_SHARD) && !e.getCurrentItem().getItemMeta().getItemFlags().contains(ItemFlag.HIDE_ENCHANTS)) {
                         e.setCancelled(true);
                         p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 10, 9);
                         if (p.hasPermission("genesismc.origins.allay")) {
                             e.getClickedInventory().setContents(AllayContents());
                         }
-                    }else if (e.getCurrentItem().getType().isSimilar(Material.CARROT) && !e.getCurrentItem().getItemMeta().getItemFlags().contains(ItemFlag.HIDE_ENCHANTS)) {
+                    }else if (e.getCurrentItem().getType().equals(Material.CARROT) && !e.getCurrentItem().getItemMeta().getItemFlags().contains(ItemFlag.HIDE_ENCHANTS)) {
                         e.setCancelled(true);
                         p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 10, 9);
                         if (p.hasPermission("genesismc.origins.rabbit")) {
                             e.getClickedInventory().setContents(RabbitContents());
                         }
-                    }else if (e.getCurrentItem().getType().isSimilar(Material.HONEYCOMB) && !e.getCurrentItem().getItemMeta().getItemFlags().contains(ItemFlag.HIDE_ENCHANTS)) {
+                    }else if (e.getCurrentItem().getType().equals(Material.HONEYCOMB) && !e.getCurrentItem().getItemMeta().getItemFlags().contains(ItemFlag.HIDE_ENCHANTS)) {
                         e.setCancelled(true);
                         p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 10, 9);
                         if (p.hasPermission("genesismc.origins.bee")) {
                             e.getClickedInventory().setContents(BeeContents());
                         }
-                    }else if (e.getCurrentItem().getType().isSimilar(Material.ELYTRA) && !e.getCurrentItem().getItemMeta().getItemFlags().contains(ItemFlag.HIDE_ENCHANTS)) {
+                    }else if (e.getCurrentItem().getType().equals(Material.ELYTRA) && !e.getCurrentItem().getItemMeta().getItemFlags().contains(ItemFlag.HIDE_ENCHANTS)) {
                         e.setCancelled(true);
                         p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 10, 9);
                         if (p.hasPermission("genesismc.origins.elytrian")) {
                             e.getClickedInventory().setContents(ElytrianContents());
                         }
-                    }else if (e.getCurrentItem().getType().isSimilar(Material.FEATHER) && !e.getCurrentItem().getItemMeta().getItemFlags().contains(ItemFlag.HIDE_ENCHANTS)) {
+                    }else if (e.getCurrentItem().getType().equals(Material.FEATHER) && !e.getCurrentItem().getItemMeta().getItemFlags().contains(ItemFlag.HIDE_ENCHANTS)) {
                         e.setCancelled(true);
                         p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 10, 9);
                         if (p.hasPermission("genesismc.origins.avian")) {
                             e.getClickedInventory().setContents(AvianContents());
                         }
-                    }else if (e.getCurrentItem().getType().isSimilar(Material.GOLD_INGOT) && !e.getCurrentItem().getItemMeta().getItemFlags().contains(ItemFlag.HIDE_ENCHANTS)) {
+                    }else if (e.getCurrentItem().getType().equals(Material.GOLD_INGOT) && !e.getCurrentItem().getItemMeta().getItemFlags().contains(ItemFlag.HIDE_ENCHANTS)) {
                         e.setCancelled(true);
                         p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 10, 9);
                         if (p.hasPermission("genesismc.origins.piglin")) {
                             e.getClickedInventory().setContents(PiglinContents());
                         }
-                    }else if (e.getCurrentItem().getType().isSimilar(Material.ECHO_SHARD) && !e.getCurrentItem().getItemMeta().getItemFlags().contains(ItemFlag.HIDE_ENCHANTS)) {
+                    }else if (e.getCurrentItem().getType().equals(Material.ECHO_SHARD) && !e.getCurrentItem().getItemMeta().getItemFlags().contains(ItemFlag.HIDE_ENCHANTS)) {
                         e.setCancelled(true);
                         p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 10, 9);
                         if (p.hasPermission("genesismc.origins.sculkling")) {
