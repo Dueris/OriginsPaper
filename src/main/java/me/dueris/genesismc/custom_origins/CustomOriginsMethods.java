@@ -1,17 +1,22 @@
 package me.dueris.genesismc.custom_origins;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang.SystemUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+import oshi.util.FileSystemUtil;
+import oshi.util.FileUtil;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileReader;
 import java.nio.file.Files;
+import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
@@ -23,12 +28,20 @@ public class CustomOriginsMethods {
 
     public static HashMap<String, String> customOrigins = new HashMap<>();
 
-    static byte[] trim(byte[] bytes) {
-        int i = bytes.length -1;
-        while (i >= 0 && bytes[i] == 0) {
-            --i;
+    public static void removeUnzippedOriginDatapacks() {
+        File originDatapackDir = new File(Bukkit.getServer().getPluginManager().getPlugin("GenesisMC").getDataFolder(), "custom_origins");
+        File[] originDatapacks = originDatapackDir.listFiles();
+        if (originDatapacks == null) return;
+
+        for (File file : originDatapacks) {
+            try {
+                if (file.getName().startsWith(".")) FileUtils.deleteDirectory(new File(Path.of(file.getPath()).toUri())); //Linux
+                if (Boolean.parseBoolean(Files.getAttribute(Path.of(file.getAbsolutePath()), "dos:hidden", LinkOption.NOFOLLOW_LINKS).toString())) FileUtils.deleteDirectory(new File(Path.of(file.getPath()).toUri())); //Windows
+            } catch (Exception e) {
+                e.printStackTrace();
+                Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.RED+"[GenesisMC] Error trying to remove old custom origin \""+file.getName()+"\" - This file was automatically unzipped by Genesis.");
+            }
         }
-        return Arrays.copyOf(bytes, i + 1);
     }
 
     public static void unzipCustomOriginDatapacks() {
@@ -41,7 +54,13 @@ public class CustomOriginsMethods {
 
             try {
                 File unzippedDestinationFile = new File(file.getAbsolutePath());
-                Path destination = Path.of(FilenameUtils.removeExtension(unzippedDestinationFile.getPath()) + "_Unzipped");
+                Path destination;
+                if (SystemUtils.IS_OS_WINDOWS) {
+                    destination = Path.of(FilenameUtils.removeExtension(unzippedDestinationFile.getPath()) + "_UnzippedByGenesis");
+                    Files.setAttribute(destination, "dos:hidden", true, LinkOption.NOFOLLOW_LINKS);
+                }
+                else destination = Path.of(FilenameUtils.removeExtension(unzippedDestinationFile.getParent()+"/."+unzippedDestinationFile.getName())+"_UnzippedByGenesis");
+
                 if (!Files.exists(destination)) Files.createDirectory(destination);
                 else continue;
 

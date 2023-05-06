@@ -119,6 +119,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 
         //Custom origins loading
         getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "[GenesisMC] Loading custom origins");
+        //CustomOriginsMethods.removeUnzippedOriginDatapacks();
         CustomOriginsMethods.unzipCustomOriginDatapacks();
         CustomOriginsMethods.loadCustomOriginDatapacks();
         for (String originTag : CustomOriginsMethods.getCustomOriginTags()) {
@@ -254,7 +255,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 
     @Override
     public void onDisable() {
-        getServer().getConsoleSender().sendMessage(ChatColor.RED + "[GenesisMC] Disabling GenesisMC Origins..");
+        getServer().getConsoleSender().sendMessage(ChatColor.RED + "[GenesisMC] Disabling GenesisMC Origins.");
         // Disable enchantments
         try {
             Field keyField = Enchantment.class.getDeclaredField("byKey");
@@ -281,6 +282,9 @@ public final class GenesisMC extends JavaPlugin implements Listener {
                 }
             }
         } catch (Exception ignored) { }
+
+        //deletes origin files unzipped by Genesis
+        //CustomOriginsMethods.removeUnzippedOriginDatapacks();
     }
 
     //Load custom enchantments
