@@ -13,7 +13,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class HumanMain implements Listener {
     @EventHandler
-    public void onSpawn(PlayerMoveEvent e) {
+    public void onMove(PlayerMoveEvent e) {
         Player p = e.getPlayer();
 
         PersistentDataContainer data = p.getPersistentDataContainer();
