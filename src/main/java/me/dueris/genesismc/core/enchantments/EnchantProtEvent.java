@@ -1,11 +1,13 @@
 package me.dueris.genesismc.core.enchantments;
 
+import com.destroystokyo.paper.event.inventory.PrepareResultEvent;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.enchantment.EnchantItemEvent;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.inventory.PrepareGrindstoneEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -107,8 +109,9 @@ public class EnchantProtEvent implements Listener {
     }
 
     @EventHandler
-    public void onGrind(PrepareGrindstoneEvent e){
+    public void onGrind(PrepareResultEvent e){
         if(e.getResult() != null){
+            if(e.getInventory().getType().equals(InventoryType.GRINDSTONE));
             if(e.getResult().getLore() != null) {
                 if (e.getResult().getLore().contains(ChatColor.GRAY + waterProtectionEnchant.getName() + " I") || e.getResult().getLore().contains(ChatColor.GRAY + waterProtectionEnchant.getName() + " II") || e.getResult().getLore().contains(ChatColor.GRAY + waterProtectionEnchant.getName() + " III") || e.getResult().getLore().contains(ChatColor.GRAY + waterProtectionEnchant.getName() + " IV") || e.getResult().getLore().contains(ChatColor.GRAY + waterProtectionEnchant.getName())) {
                     e.getResult().setLore(null);
