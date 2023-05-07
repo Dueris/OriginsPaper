@@ -2,6 +2,7 @@ package me.dueris.genesismc.core.choosing;
 
 import me.dueris.genesismc.core.GenesisMC;
 import me.dueris.genesismc.core.files.GenesisDataFiles;
+import me.dueris.genesismc.custom_origins.powers.WorldSpawnHandler;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.enchantments.Enchantment;
@@ -391,7 +392,8 @@ public class ChoosingCORE implements Listener {
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
                     DefaultChoose.DefaultChoose(p);
-                    NetherSpawn();
+                    Location location = WorldSpawnHandler.NetherSpawn();
+                    e.getWhoClicked().teleportAsync(location);
                     removeItemPhantom(p);
                     removeItemEnder(p);
                 }
@@ -458,7 +460,8 @@ public class ChoosingCORE implements Listener {
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
                     DefaultChoose.DefaultChoose(p);
-                    NetherSpawn();
+                    Location location = WorldSpawnHandler.NetherSpawn();
+                    e.getWhoClicked().teleportAsync(location);
                     removeItemPhantom(p);
                     removeItemEnder(p);
                 }
