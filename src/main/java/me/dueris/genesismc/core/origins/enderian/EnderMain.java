@@ -4,10 +4,13 @@ import com.destroystokyo.paper.event.player.PlayerArmorChangeEvent;
 import me.dueris.genesismc.core.GenesisMC;
 import org.bukkit.*;
 import org.bukkit.entity.Endermite;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -30,7 +33,50 @@ public class EnderMain implements Listener {
     }
 
 
+    @EventHandler
+    public void onDamage(EntityDamageEvent e) {
+        if (e.getEntity() instanceof Player || e.getEntity() instanceof HumanEntity) {
+            Player p = (Player) e.getEntity();
+            PersistentDataContainer data = p.getPersistentDataContainer();
+            @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
+            if (origintag.equalsIgnoreCase("genesis:origin-enderian")) {
+                if (e.getCause().equals(EntityDamageEvent.DamageCause.PROJECTILE)) {
+                    e.setDamage(0);
+                    e.setCancelled(true);
+                } else {
+                    p.getWorld().playSound(p.getLocation(), Sound.ENTITY_ENDERMAN_DEATH, 10.0F, 5.0F);
+                }
 
+            }
+            if (e.getEntity().getType().equals(EntityType.PLAYER)) {
+                if (origintag.equalsIgnoreCase("genesis:origin-enderian")) {
+                    if (e.getCause().equals(EntityDamageEvent.DamageCause.PROJECTILE)) {
+                        int dmg = (int) e.getDamage();
+                        e.setDamage(0);
+                        e.setCancelled(true);
+                    }
+                }
+            }
+        }
+    }
+
+    @EventHandler
+    public void onDrink(PlayerItemConsumeEvent e){
+        Player p = e.getPlayer();
+        PersistentDataContainer data = p.getPersistentDataContainer();
+        @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
+        if (origintag.equalsIgnoreCase("genesis:origin-enderian")) {
+            if(e.getItem().getType().equals(Material.PUMPKIN_PIE)){
+                p.getWorld().createExplosion(p.getLocation(), 0);
+                p.setHealth(1);
+                p.setFoodLevel(p.getFoodLevel()-8);
+            }
+            if(e.getItem().getType().equals(Material.POTION)){
+                p.damage(2);
+            }
+        }
+
+    }
 
     @EventHandler
     public void onMovement(PlayerMoveEvent e) {
@@ -93,24 +139,6 @@ public class EnderMain implements Listener {
             p.playSound(p.getLocation(), Sound.ENTITY_ENDERMAN_DEATH, 10, 5);
         }
         }
-
-    @EventHandler
-    public void onEat(PlayerItemConsumeEvent e){
-        Player p = e.getPlayer();
-        PersistentDataContainer data = p.getPersistentDataContainer();
-        @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
-        if (origintag.equalsIgnoreCase("genesis:origin-enderian")) {
-            if(e.getItem().getType().equals(Material.PUMPKIN_PIE)){
-                p.getWorld().createExplosion(p.getLocation(), 0);
-                p.setHealth(1);
-                p.setFoodLevel(p.getFoodLevel()-8);
-            }
-            if(e.getItem().getType().equals(Material.POTION)){
-                p.damage(2);
-            }
-
-        }
-    }
 
     @EventHandler
     public void onArmorChange(PlayerArmorChangeEvent e) {
