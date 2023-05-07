@@ -9,7 +9,7 @@ import java.util.Random;
 
 import static org.bukkit.Material.*;
 
-public class AlternateSpawns {
+public class WorldSpawnHandler {
 
     public static Location NetherSpawn() {
         for (World world : Bukkit.getWorlds()) {
