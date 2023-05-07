@@ -55,7 +55,7 @@ public class OriginsChoose extends SubCommand {
 
                 @NotNull Inventory mainmenu = Bukkit.createInventory(p, 54, "Choosing Menu");
                 if (origintag == "genesis:origin-null") {
-                    mainmenu.setContents(GenesisMainMenuContents());
+                    mainmenu.setContents(GenesisMainMenuContents(p));
                     p.openInventory(mainmenu);
                 }
 

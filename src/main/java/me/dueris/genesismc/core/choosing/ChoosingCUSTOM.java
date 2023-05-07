@@ -1,6 +1,6 @@
 package me.dueris.genesismc.core.choosing;
 
-import me.dueris.genesismc.custom_origins.CustomOriginsMethods;
+import me.dueris.genesismc.custom_origins.api.CustomOriginsMethods;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
