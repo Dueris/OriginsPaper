@@ -57,11 +57,8 @@ public class PhantomForm implements Listener {
                             if(p.getFoodLevel() > 6){
                                 p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 2);
                                 p.sendActionBar(DARK_AQUA + "Activated Phantom Form");
-                                p.setInvisible(true);
                                 p.setSilent(true);
                                 p.setCollidable(false);
-                                p.setInvulnerable(false);
-                                p.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0.8);
 
                             }else{
                                 p.sendMessage(RED + "You must be able to sprint to switch forms");
@@ -73,11 +70,8 @@ public class PhantomForm implements Listener {
 
                             p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
                             p.sendActionBar(DARK_AQUA + "Deactivated Phantom Form");
-                            p.setInvisible(false);
                             p.setSilent(false);
                             p.setCollidable(true);
-                            p.setInvulnerable(false);
-                            p.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0.11);
 
                         }else{p.sendMessage(ChatColor.RED + "You are unable to switch forms while inside a block or in spectator mode.");}
                     } else {
@@ -106,17 +100,12 @@ public class PhantomForm implements Listener {
             int phantomid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER);
 
             //begin checks
-
         if (origintag.equalsIgnoreCase("genesis:origin-phantom")) {
-
             if(phantomid == 2) {
-
                 //in phantom form.
-
                 //bug fix attempt 3 lol
-
-                if(e.getTo().getY() <= -63.5 && !p.getWorld().hasSkyLight()){
-                    final Location loc = new Location(p.getWorld(), e.getFrom().getX(), -63, e.getFrom().getZ(), e.getTo().getYaw(), e.getTo().getPitch());
+                if(e.getTo().getY() <= -63.5){
+                    final Location loc = new Location(p.getWorld(), e.getFrom().getX(), e.getFrom().getY(), e.getFrom().getZ(), e.getTo().getYaw(), e.getTo().getPitch());
                     p.teleportAsync(loc);
                     p.sendMessage("You are unable to go bellow Y level -64 while in Phantom Form");
                 }

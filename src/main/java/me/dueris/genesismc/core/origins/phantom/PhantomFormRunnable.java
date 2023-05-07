@@ -30,7 +30,7 @@ public class PhantomFormRunnable extends BukkitRunnable {
 
             if (phantomid == 2) {
                 if (origintag.equalsIgnoreCase("genesis:origin-phantom")) {
-                    if (p.getLocation().add(0.55F, 0, 0.55F).getBlock().isSolid() ||
+                    if ((p.getLocation().add(0.55F, 0, 0.55F).getBlock().isSolid() ||
                             p.getLocation().add(0.55F, 0, 0).getBlock().isSolid() ||
                             p.getLocation().add(0, 0, 0.55F).getBlock().isSolid() ||
                             p.getLocation().add(-0.55F, 0, -0.55F).getBlock().isSolid() ||
@@ -47,7 +47,7 @@ public class PhantomFormRunnable extends BukkitRunnable {
                             p.getEyeLocation().add(0, 0, -0.55F).getBlock().isSolid() ||
                             p.getEyeLocation().add(-0.55F, 0, 0).getBlock().isSolid() ||
                             p.getEyeLocation().add(0.55F, 0, -0.55F).getBlock().isSolid() ||
-                            p.getEyeLocation().add(-0.55F, 0, 0.55F).getBlock().isSolid()
+                            p.getEyeLocation().add(-0.55F, 0, 0.55F).getBlock().isSolid())
                     ) {
                         //can form
                         if(p.isInsideVehicle()) return;
