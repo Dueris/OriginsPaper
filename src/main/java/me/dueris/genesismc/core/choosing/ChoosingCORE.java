@@ -302,7 +302,6 @@ public class ChoosingCORE implements Listener {
                 if(e.getCurrentItem().isSimilar(ender)){
                     setAtributesToDefualt(p);
                     Bukkit.getScheduler().runTaskLater(GenesisMC.getPlugin(),()->{
-                        p.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(24);
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, "genesis:origin-enderian");
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
