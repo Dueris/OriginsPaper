@@ -23,7 +23,7 @@ import me.dueris.genesismc.core.origins.rabbit.RabbitLeap;
 import me.dueris.genesismc.core.origins.rabbit.RabbitMain;
 import me.dueris.genesismc.core.utils.ParticleHandler;
 import me.dueris.genesismc.custom_origins.CustomOrigins;
-import me.dueris.genesismc.custom_origins.CustomOriginsMethods;
+import me.dueris.genesismc.custom_origins.api.CustomOriginsMethods;
 import me.dueris.genesismc.custom_origins.handlers.CustomMenuHandler;
 import me.dueris.genesismc.core.enchantments.EnchantProtEvent;
 import me.dueris.genesismc.core.enchantments.WaterProtection;
@@ -42,7 +42,6 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.server.ServerLoadEvent;
 import org.bukkit.persistence.PersistentDataContainer;
@@ -111,29 +110,32 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         if (GenesisDataFiles.getPlugCon().getString("console-dump-onstartup").equalsIgnoreCase("true")) {
             getServer().getConsoleSender().sendMessage(ChatColor.GRAY + "[GenesisMC] Loading API version 0.1.1");
             getServer().getConsoleSender().sendMessage(ChatColor.GRAY + "[GenesisMC] Loading Subcommands");
-            getServer().getConsoleSender().sendMessage(ChatColor.GRAY + "[GenesisMC] Loading OriginsChoosingCommands");
+            getServer().getConsoleSender().sendMessage(ChatColor.GRAY + "[GenesisMC] Loading OriginCommands");
             //method
             dumpCon();
             getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "[GenesisMC] Successfully loaded version 0.1.6-ALPHA_SNAPSHOT (1.19.4)");
             getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "[GenesisMC] Successfully loaded API version 0.1.1-BETA (1.19.4)");
-            getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "[GenesisMC] Successfully loaded CONFIG version 1016788 (1.19.4)");
+            getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "[GenesisMC] Successfully loaded CONFIG version (1.19.4)");
         } else {
             getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "[GenesisMC] Successfully loaded version 0.1.6-ALPHA_SNAPSHOT (1.19.4)");
         }
         if (getServer().getPluginManager().getPlugins().toString().contains("PurpleWolfAPI") || getServer().getPluginManager().isPluginEnabled("OriginsAPI") || getServer().getPluginManager().getPlugin("PurpleWolfAPI") != null) {
-            getServer().getConsoleSender().sendMessage(ChatColor.LIGHT_PURPLE + "[GenesisMC - OriginsAPI] Successfully injected OriginsAPI into plugin");
+            getServer().getConsoleSender().sendMessage(ChatColor.LIGHT_PURPLE + "[GenesisMC - OriginsAPI] Successfully injected OriginsAPI plugin");
         } else {
             //PurpleWolfAPI not avalible, inject built-in
             getServer().getConsoleSender().sendMessage(ChatColor.LIGHT_PURPLE + "[GenesisMC] OriginsAPI not detected. Injecting built-in API");
         }
 
-        //Custom origins loading
-        getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "[GenesisMC] Loading custom origins");
         //CustomOriginsMethods.removeUnzippedOriginDatapacks();
         CustomOriginsMethods.unzipCustomOriginDatapacks();
         CustomOriginsMethods.loadCustomOriginDatapacks();
         for (String originTag : CustomOriginsMethods.getCustomOriginTags()) {
-            getServer().getConsoleSender().sendMessage("[GenesisMC] Loaded \""+CustomOriginsMethods.getCustomOriginName(originTag)+"\"");
+            if (GenesisDataFiles.getPlugCon().getString("console-dump-onstartup").equalsIgnoreCase("true")) {
+                getServer().getConsoleSender().sendMessage("[GenesisMC] Loaded \"" + CustomOriginsMethods.getCustomOriginName(originTag) + "\"");
+            }
+        }
+        if(CustomOriginsMethods.customOrigins.size() > 0){
+            getServer().getConsoleSender().sendMessage("[GenesisMC] Loaded (" + CustomOriginsMethods.customOrigins.size() + ") Custom Origins");
         }
 
         getServer().getConsoleSender().sendMessage(ChatColor.GRAY + "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
