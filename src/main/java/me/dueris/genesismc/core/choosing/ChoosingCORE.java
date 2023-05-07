@@ -27,6 +27,7 @@ import java.util.List;
 import static me.dueris.genesismc.core.choosing.contents.MainMenuContents.GenesisMainMenuContents;
 import static me.dueris.genesismc.core.choosing.contents.origins.ExpandedOriginContent.*;
 import static me.dueris.genesismc.core.choosing.contents.origins.OriginalOriginContent.*;
+import static me.dueris.genesismc.custom_origins.powers.WorldSpawnHandler.NetherSpawn;
 import static org.bukkit.ChatColor.*;
 
 public class ChoosingCORE implements Listener {
@@ -390,6 +391,7 @@ public class ChoosingCORE implements Listener {
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
                     DefaultChoose.DefaultChoose(p);
+                    NetherSpawn();
                     removeItemPhantom(p);
                     removeItemEnder(p);
                 }
@@ -456,6 +458,7 @@ public class ChoosingCORE implements Listener {
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
                     DefaultChoose.DefaultChoose(p);
+                    NetherSpawn();
                     removeItemPhantom(p);
                     removeItemEnder(p);
                 }
