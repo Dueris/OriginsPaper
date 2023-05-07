@@ -36,7 +36,9 @@ public class CustomOriginsMethods {
         for (File file : originDatapacks) {
             try {
                 if (file.getName().startsWith(".")) FileUtils.deleteDirectory(new File(Path.of(file.getPath()).toUri())); //Linux
+                if (SystemUtils.IS_OS_WINDOWS) {
                 if (Boolean.parseBoolean(Files.getAttribute(Path.of(file.getAbsolutePath()), "dos:hidden", LinkOption.NOFOLLOW_LINKS).toString())) FileUtils.deleteDirectory(new File(Path.of(file.getPath()).toUri())); //Windows
+                }
             } catch (Exception e) {
                 e.printStackTrace();
                 Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.RED+"[GenesisMC] Error trying to remove old custom origin \""+file.getName()+"\" - This file was automatically unzipped by Genesis.");
