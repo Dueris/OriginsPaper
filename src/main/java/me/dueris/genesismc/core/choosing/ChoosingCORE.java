@@ -288,6 +288,7 @@ public class ChoosingCORE implements Listener {
             Player p = (Player) e.getWhoClicked();
             if (e.getCurrentItem() != null && e.getCurrentItem().containsEnchantment(Enchantment.ARROW_INFINITE)) {
                 setAtributesToDefualt(p);
+                p.setHealthScaled(false);
                 if(e.getCurrentItem().isSimilar(human)){
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, "genesis:origin-human");
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
@@ -299,179 +300,230 @@ public class ChoosingCORE implements Listener {
                     removeItemEnder(p);
                 }
                 if(e.getCurrentItem().isSimilar(ender)){
-                    p.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(24);
-                    p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, "genesis:origin-enderian");
-                    p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
-                    p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
-                    ItemStack infinpearl = new ItemStack(Material.ENDER_PEARL);
-                    ItemMeta pearl_meta = infinpearl.getItemMeta();
-                    pearl_meta.setDisplayName(ChatColor.LIGHT_PURPLE + "Teleport");
-                    ArrayList<String> pearl_lore = new ArrayList();
-                    pearl_meta.setUnbreakable(true);
-                    pearl_meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
-                    pearl_meta.setLore(pearl_lore);
-                    infinpearl.setItemMeta(pearl_meta);
-                    p.getInventory().addItem(infinpearl);
-                    float walk = 0.2F;
-                    p.setWalkSpeed(walk);
-                    p.getWorld().spawnParticle(Particle.REVERSE_PORTAL, p.getLocation(), 9);
-                    p.setHealthScaled(false);
-                    DefaultChoose.DefaultChoose(p);
-                    p.closeInventory();
-                    removeItemPhantom(p);
+                    setAtributesToDefualt(p);
+                    Bukkit.getScheduler().runTaskLater(GenesisMC.getPlugin(),()->{
+                        p.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(24);
+                        p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, "genesis:origin-enderian");
+                        p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
+                        p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
+                        ItemStack infinpearl = new ItemStack(Material.ENDER_PEARL);
+                        ItemMeta pearl_meta = infinpearl.getItemMeta();
+                        pearl_meta.setDisplayName(ChatColor.LIGHT_PURPLE + "Teleport");
+                        ArrayList<String> pearl_lore = new ArrayList();
+                        pearl_meta.setUnbreakable(true);
+                        pearl_meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
+                        pearl_meta.setLore(pearl_lore);
+                        infinpearl.setItemMeta(pearl_meta);
+                        p.getInventory().addItem(infinpearl);
+                        DefaultChoose.DefaultChoose(p);
+                        p.closeInventory();
+                        removeItemPhantom(p);
+                    },1);
+
                 }
                 if(e.getCurrentItem().isSimilar(shulk)){
                     float walk = 0.185F;
-                    p.getAttribute(Attribute.GENERIC_ARMOR).setBaseValue(8.0);
-                    p.setWalkSpeed(walk);
-                    p.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE).setBaseValue(0.45F);
-                    p.getAttribute(Attribute.GENERIC_ARMOR_TOUGHNESS).setBaseValue(2);
-                    p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, "genesis:origin-shulk");
-                    p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
-                    p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
-                    DefaultChoose.DefaultChoose(p);
-                    removeItemPhantom(p);
-                    removeItemEnder(p);
+                    setAtributesToDefualt(p);
+                    Bukkit.getScheduler().runTaskLater(GenesisMC.getPlugin(),()->{
+                        p.getAttribute(Attribute.GENERIC_ARMOR).setBaseValue(8.0);
+                        p.setWalkSpeed(walk);
+                        p.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE).setBaseValue(0.45F);
+                        p.getAttribute(Attribute.GENERIC_ARMOR_TOUGHNESS).setBaseValue(2);
+                        p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, "genesis:origin-shulk");
+                        p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
+                        p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
+                        DefaultChoose.DefaultChoose(p);
+                        removeItemPhantom(p);
+                        removeItemEnder(p);
+                    },1);
                 }
                 if(e.getCurrentItem().isSimilar(spider)){
-                    p.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(14);
-                    p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, "genesis:origin-arachnid");
-                    p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
-                    p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
-                    DefaultChoose.DefaultChoose(p);
-                    removeItemPhantom(p);
-                    removeItemEnder(p);
+                    setAtributesToDefualt(p);
+                    Bukkit.getScheduler().runTaskLater(GenesisMC.getPlugin(),()->{
+                        p.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(14);
+                        p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, "genesis:origin-arachnid");
+                        p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
+                        p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
+                        DefaultChoose.DefaultChoose(p);
+                        removeItemPhantom(p);
+                        removeItemEnder(p);
+                    },1);
                 }
                 if(e.getCurrentItem().isSimilar(creep)){
-                    p.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(18);
-                    p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, "genesis:origin-creep");
-                    p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 2);
-                    p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
-                    DefaultChoose.DefaultChoose(p);
-                    removeItemPhantom(p);
-                    removeItemEnder(p);
+                    setAtributesToDefualt(p);
+                    Bukkit.getScheduler().runTaskLater(GenesisMC.getPlugin(),()->{
+                        p.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(18);
+                        p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, "genesis:origin-creep");
+                        p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 2);
+                        p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
+                        DefaultChoose.DefaultChoose(p);
+                        removeItemPhantom(p);
+                        removeItemEnder(p);
+                    },1);
                 }
                 if(e.getCurrentItem().isSimilar(phantom)){
-                    p.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(14);
-                    p.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0.11);
-                    p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, "genesis:origin-phantom");
-                    p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
-                    p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
-                    ItemStack spectatorswitch = new ItemStack(Material.PHANTOM_MEMBRANE);
-                    ItemMeta switch_meta = spectatorswitch.getItemMeta();
-                    switch_meta.setDisplayName(GRAY + "Phantom Form");
-                    ArrayList<String> pearl_lore = new ArrayList();
-                    switch_meta.setUnbreakable(true);
-                    switch_meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
-                    switch_meta.addItemFlags(ItemFlag.HIDE_ITEM_SPECIFICS);
-                    switch_meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-                    switch_meta.setLore(pearl_lore);
-                    spectatorswitch.setItemMeta(switch_meta);
-                    p.getInventory().addItem(spectatorswitch);
-                    DefaultChoose.DefaultChoose(p);
-                    removeItemEnder(p);
+                    setAtributesToDefualt(p);
+                    Bukkit.getScheduler().runTaskLater(GenesisMC.getPlugin(),()->{
+                        p.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(14);
+                        p.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0.11);
+                        p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, "genesis:origin-phantom");
+                        p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
+                        p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
+                        ItemStack spectatorswitch = new ItemStack(Material.PHANTOM_MEMBRANE);
+                        ItemMeta switch_meta = spectatorswitch.getItemMeta();
+                        switch_meta.setDisplayName(GRAY + "Phantom Form");
+                        ArrayList<String> pearl_lore = new ArrayList();
+                        switch_meta.setUnbreakable(true);
+                        switch_meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
+                        switch_meta.addItemFlags(ItemFlag.HIDE_ITEM_SPECIFICS);
+                        switch_meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+                        switch_meta.setLore(pearl_lore);
+                        spectatorswitch.setItemMeta(switch_meta);
+                        p.getInventory().addItem(spectatorswitch);
+                        DefaultChoose.DefaultChoose(p);
+                        removeItemEnder(p);
+                    },1);
                 }
                 if(e.getCurrentItem().isSimilar(slime)){
-                    p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, "genesis:origin-slimeling");
-                    p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
-                    p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
-                    DefaultChoose.DefaultChoose(p);
-                    removeItemPhantom(p);
-                    removeItemEnder(p);
+                    setAtributesToDefualt(p);
+                    Bukkit.getScheduler().runTaskLater(GenesisMC.getPlugin(),()->{
+                        p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, "genesis:origin-slimeling");
+                        p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
+                        p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
+                        DefaultChoose.DefaultChoose(p);
+                        removeItemPhantom(p);
+                        removeItemEnder(p);
+                    },1);
                 }
                 if(e.getCurrentItem().isSimilar(vex)){
-                    p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, "genesis:origin-vexian");
-                    p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
-                    p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
-                    DefaultChoose.DefaultChoose(p);
-                    removeItemPhantom(p);
-                    removeItemEnder(p);
+                    setAtributesToDefualt(p);
+                    Bukkit.getScheduler().runTaskLater(GenesisMC.getPlugin(),()->{
+                        p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, "genesis:origin-vexian");
+                        p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
+                        p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
+                        DefaultChoose.DefaultChoose(p);
+                        removeItemPhantom(p);
+                        removeItemEnder(p);
+                    },1);
                 }
                 if(e.getCurrentItem().isSimilar(blaze)){
-                    p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, "genesis:origin-blazeborn");
-                    p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
-                    p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
-                    DefaultChoose.DefaultChoose(p);
-                    Location location = WorldSpawnHandler.NetherSpawn();
-                    e.getWhoClicked().teleportAsync(location);
-                    removeItemPhantom(p);
-                    removeItemEnder(p);
+                    setAtributesToDefualt(p);
+                    Bukkit.getScheduler().runTaskLater(GenesisMC.getPlugin(),()->{
+                        p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, "genesis:origin-blazeborn");
+                        p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
+                        p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
+                        DefaultChoose.DefaultChoose(p);
+                        Location location = WorldSpawnHandler.NetherSpawn();
+                        e.getWhoClicked().teleportAsync(location);
+                        removeItemPhantom(p);
+                        removeItemEnder(p);
+                    },1);
                 }
                 if(e.getCurrentItem().isSimilar(star)){
-                    p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, "genesis:origin-starborne");
-                    p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
-                    p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
-                    DefaultChoose.DefaultChoose(p);
-                    removeItemPhantom(p);
-                    removeItemEnder(p);
+                    setAtributesToDefualt(p);
+                    Bukkit.getScheduler().runTaskLater(GenesisMC.getPlugin(),()->{
+                        p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, "genesis:origin-starborne");
+                        p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
+                        p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
+                        DefaultChoose.DefaultChoose(p);
+                        removeItemPhantom(p);
+                        removeItemEnder(p);
+                    },1);
                 }
                 if(e.getCurrentItem().isSimilar(merling)){
-                    p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, "genesis:origin-merling");
-                    p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
-                    p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
-                    DefaultChoose.DefaultChoose(p);
-                    removeItemPhantom(p);
-                    removeItemEnder(p);
+                    setAtributesToDefualt(p);
+                    Bukkit.getScheduler().runTaskLater(GenesisMC.getPlugin(),()->{
+                        p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, "genesis:origin-merling");
+                        p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
+                        p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
+                        DefaultChoose.DefaultChoose(p);
+                        removeItemPhantom(p);
+                        removeItemEnder(p);
+                    },1);
                 }
                 if(e.getCurrentItem().isSimilar(allay)){
-                    p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, "genesis:origin-allay");
-                    p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
-                    p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
-                    DefaultChoose.DefaultChoose(p);
-                    removeItemPhantom(p);
-                    removeItemEnder(p);
+                    setAtributesToDefualt(p);
+                    Bukkit.getScheduler().runTaskLater(GenesisMC.getPlugin(),()->{
+                        p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, "genesis:origin-allay");
+                        p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
+                        p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
+                        DefaultChoose.DefaultChoose(p);
+                        removeItemPhantom(p);
+                        removeItemEnder(p);
+                    },1);
                 }
                 if(e.getCurrentItem().isSimilar(rabbit)){
-                    p.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(14);
-                    p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, "genesis:origin-rabbit");
-                    p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
-                    p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
-                    DefaultChoose.DefaultChoose(p);
-                    removeItemPhantom(p);
-                    removeItemEnder(p);
+                    setAtributesToDefualt(p);
+                    Bukkit.getScheduler().runTaskLater(GenesisMC.getPlugin(),()->{
+                        p.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(14);
+                        p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, "genesis:origin-rabbit");
+                        p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
+                        p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
+                        DefaultChoose.DefaultChoose(p);
+                        removeItemPhantom(p);
+                        removeItemEnder(p);
+                    },1);
                 }
                 if(e.getCurrentItem().isSimilar(bee)){
-                    p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, "genesis:origin-bee");
-                    p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
-                    p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
-                    DefaultChoose.DefaultChoose(p);
-                    removeItemPhantom(p);
-                    removeItemEnder(p);
+                    setAtributesToDefualt(p);
+                    Bukkit.getScheduler().runTaskLater(GenesisMC.getPlugin(),()->{
+                        p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, "genesis:origin-bee");
+                        p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
+                        p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
+                        DefaultChoose.DefaultChoose(p);
+                        removeItemPhantom(p);
+                        removeItemEnder(p);
+                    },1);
                 }
                 if(e.getCurrentItem().isSimilar(elyrtian)){
-                    p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, "genesis:origin-elytrian");
-                    p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
-                    p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
-                    DefaultChoose.DefaultChoose(p);
-                    removeItemPhantom(p);
-                    removeItemEnder(p);
+                    setAtributesToDefualt(p);
+                    Bukkit.getScheduler().runTaskLater(GenesisMC.getPlugin(),()->{
+
+                    },1);
+                    Bukkit.getScheduler().runTaskLater(GenesisMC.getPlugin(),()->{
+                        p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, "genesis:origin-elytrian");
+                        p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
+                        p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
+                        DefaultChoose.DefaultChoose(p);
+                        removeItemPhantom(p);
+                        removeItemEnder(p);
+                    },1);
                 }
                 if(e.getCurrentItem().isSimilar(avian)){
-                    p.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0.13);
-                    p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, "genesis:origin-avian");
-                    p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
-                    p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
-                    DefaultChoose.DefaultChoose(p);
-                    removeItemPhantom(p);
-                    removeItemEnder(p);
+                    setAtributesToDefualt(p);
+                    Bukkit.getScheduler().runTaskLater(GenesisMC.getPlugin(),()->{
+                        p.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0.13);
+                        p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, "genesis:origin-avian");
+                        p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
+                        p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
+                        DefaultChoose.DefaultChoose(p);
+                        removeItemPhantom(p);
+                        removeItemEnder(p);
+                    },1);
                 }
                 if(e.getCurrentItem().isSimilar(piglin)){
-                    p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, "genesis:origin-piglin");
-                    p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
-                    p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
-                    DefaultChoose.DefaultChoose(p);
-                    Location location = WorldSpawnHandler.NetherSpawn();
-                    e.getWhoClicked().teleportAsync(location);
-                    removeItemPhantom(p);
-                    removeItemEnder(p);
+                    setAtributesToDefualt(p);
+                    Bukkit.getScheduler().runTaskLater(GenesisMC.getPlugin(),()->{
+                        p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, "genesis:origin-piglin");
+                        p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
+                        p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
+                        DefaultChoose.DefaultChoose(p);
+                        Location location = WorldSpawnHandler.NetherSpawn();
+                        e.getWhoClicked().teleportAsync(location);
+                        removeItemPhantom(p);
+                        removeItemEnder(p);
+                    },1);
                 }
                 if(e.getCurrentItem().isSimilar(sculk)){
-                    p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, "genesis:origin-sculkling");
-                    p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
-                    p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
-                    DefaultChoose.DefaultChoose(p);
-                    removeItemPhantom(p);
-                    removeItemEnder(p);
+                    setAtributesToDefualt(p);
+                    Bukkit.getScheduler().runTaskLater(GenesisMC.getPlugin(),()->{
+                        p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, "genesis:origin-sculkling");
+                        p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
+                        p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
+                        DefaultChoose.DefaultChoose(p);
+                        removeItemPhantom(p);
+                        removeItemEnder(p);
+                    },1);
                 }
 
             }
@@ -496,7 +548,7 @@ public class ChoosingCORE implements Listener {
                             e.setCancelled(true);
                             p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 10, 9);
                             if (p.hasPermission("genesismc.origins.human")) {
-                                e.getClickedInventory().setContents(HumanContents());
+                                e.getClickedInventory().setContents(HumanContents(p));
                             }
                         }else if (e.getCurrentItem().getType().equals(Material.ENDER_PEARL) && !e.getCurrentItem().getItemMeta().getItemFlags().contains(ItemFlag.HIDE_ENCHANTS)) {
                             e.setCancelled(true);

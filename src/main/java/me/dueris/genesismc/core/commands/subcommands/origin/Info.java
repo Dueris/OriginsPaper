@@ -122,7 +122,7 @@ public class Info extends SubCommand implements Listener {
                         p.openInventory(helpgui);
                     }
                     if(origintag.equalsIgnoreCase("genesis:origin-human") || origintag.equalsIgnoreCase("genesis:origin-null")){
-                        helpgui.setContents(OriginalOriginContent.HumanContents());
+                        helpgui.setContents(OriginalOriginContent.HumanContents(p));
                         p.openInventory(helpgui);
                     }
                     if(origintag.equalsIgnoreCase("genesis:origin-arachnid")){
