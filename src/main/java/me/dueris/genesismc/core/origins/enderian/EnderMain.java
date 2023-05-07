@@ -139,7 +139,7 @@ public class EnderMain implements Listener {
             int r = random.nextInt(2);
             if (p.isInWaterOrRainOrBubbleColumn()) {
                 p.playSound(p.getLocation(), Sound.ENTITY_ENDERMAN_DEATH, 10, 5);
-                e.setDeathMessage(p.getName() + " melted to death");
+                e.setDeathMessage(p.getName() + " took a bath for too long");
             }
                     p.getLocation().getWorld().dropItem(p.getLocation(), new ItemStack(Material.ENDER_PEARL, r));
             }
