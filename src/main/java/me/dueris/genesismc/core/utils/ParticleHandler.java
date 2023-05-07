@@ -22,11 +22,12 @@ public class ParticleHandler extends BukkitRunnable {
                 }
                 //origintag.equalsIgnoreCase("genesis:origin-")
                 if (origintag == "genesis:origin-starborne") {
-                    p.getWorld().spawnParticle(Particle.GLOW, p.getLocation(), 1, 0.15F, -0.5, 0.15F);
+                    Location eyelocation = new Location(p.getWorld(), p.getEyeLocation().getX(), p.getEyeLocation().getY() - 0.3, p.getEyeLocation().getZ());
+                    p.getWorld().spawnParticle(Particle.GLOW, p.getLocation(), 1, 0.25F, -0.5, 0.25F);
                     Particle.DustTransition dustColorTransition = new Particle.DustTransition(Color.fromRGB(151, 0, 227), Color.fromRGB(53, 0, 212), 1F);
-                    p.getWorld().spawnParticle(Particle.DUST_COLOR_TRANSITION, p.getLocation(), 2, 0.15F, -0.5, 0.15F, dustColorTransition);
-                    p.getWorld().spawnParticle(Particle.GLOW, p.getEyeLocation(), 1, 0.15F, -0.5, 0.15F);
-                    p.getWorld().spawnParticle(Particle.DUST_COLOR_TRANSITION, p.getEyeLocation(), 2, 0.15F, -0.5, 0.15F, dustColorTransition);
+                    p.getWorld().spawnParticle(Particle.DUST_COLOR_TRANSITION, p.getLocation(), 2, 0.25F, -0.5, 0.25F, dustColorTransition);
+                    p.getWorld().spawnParticle(Particle.GLOW, p.getEyeLocation(), 1, 0.25F, -0.5, 0.25F);
+                    p.getWorld().spawnParticle(Particle.DUST_COLOR_TRANSITION, eyelocation, 2, 0.25F, -0.5, 0.25F, dustColorTransition);
 
                 }
                 //origintag.equalsIgnoreCase("genesis:origin-")
