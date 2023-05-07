@@ -472,6 +472,7 @@ public class ChoosingCORE implements Listener {
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
                         DefaultChoose.DefaultChoose(p);
+                        p.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(14);
                         removeItemPhantom(p);
                         removeItemEnder(p);
                     },1);
@@ -522,11 +523,11 @@ public class ChoosingCORE implements Listener {
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
                         DefaultChoose.DefaultChoose(p);
+                        p.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(24);
                         removeItemPhantom(p);
                         removeItemEnder(p);
                     },1);
                 }
-
             }
             }
         }
