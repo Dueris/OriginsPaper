@@ -42,7 +42,9 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.event.server.ServerLoadEvent;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -276,6 +278,18 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         }
     }
 
+    @EventHandler
+    public void StartupCause(ServerLoadEvent e){
+
+        if(e.getType().equals(ServerLoadEvent.LoadType.RELOAD)){
+            for(Player p : Bukkit.getOnlinePlayers()){
+                if(p.isOp()){
+                    p.sendMessage(ChatColor.BLUE + "Origins Reloaded");
+                }
+            }
+        }
+
+    }
 
     @Override
     public void onDisable() {
