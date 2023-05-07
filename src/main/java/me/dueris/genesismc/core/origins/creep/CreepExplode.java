@@ -23,10 +23,7 @@ import java.util.UUID;
 
 public class CreepExplode implements Listener {
     private final HashMap<UUID, Long> cooldown;
-    private final HashMap<UUID, Long> explodecooldown;
-
     public CreepExplode() {
-        this.explodecooldown = new HashMap<>();
         this.cooldown = new HashMap<>();
     }
 
