@@ -10,6 +10,7 @@ import me.dueris.genesismc.core.commands.subcommands.origin.Info;
 import me.dueris.genesismc.core.commands.subcommands.origin.Purge;
 import me.dueris.genesismc.core.enchantments.WaterProtAnvil;
 import me.dueris.genesismc.core.generation.WaterProtBookGen;
+import me.dueris.genesismc.core.items.Items;
 import me.dueris.genesismc.core.origins.avian.AvianMain;
 import me.dueris.genesismc.core.origins.creep.CreepExplode;
 import me.dueris.genesismc.core.origins.creep.CreepMain;
@@ -35,10 +36,17 @@ import me.dueris.genesismc.core.origins.arachnid.ArachnidMain;
 import me.dueris.genesismc.core.origins.human.HumanMain;
 import me.dueris.genesismc.core.origins.shulk.ShulkInv;
 import me.dueris.genesismc.core.origins.shulk.ShulkMain;
+import me.dueris.genesismc.custom_origins.powers.WorldSpawnHandler;
 import org.bukkit.*;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Field;
 import java.util.*;
@@ -175,6 +183,8 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         //runnables main
         ChoosingForced forced = new ChoosingForced();
         forced.runTaskTimer(this, 0, 5);
+        Items items = new Items();
+        items.runTaskTimer(this, 0, 5);
 //particle handler
         ParticleHandler handler = new ParticleHandler();
         handler.runTaskTimer(this, 0, 5);
@@ -250,6 +260,21 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 
     static {
         tool = EnumSet.of(Material.DIAMOND_AXE, Material.DIAMOND_HOE, Material.DIAMOND_PICKAXE, Material.DIAMOND_SHOVEL, Material.DIAMOND_SWORD, Material.GOLDEN_AXE, Material.GOLDEN_HOE, Material.GOLDEN_PICKAXE, Material.GOLDEN_SHOVEL, Material.GOLDEN_SWORD, Material.NETHERITE_AXE, Material.NETHERITE_HOE, Material.NETHERITE_PICKAXE, Material.NETHERITE_SHOVEL, Material.NETHERITE_SWORD, Material.IRON_AXE, Material.IRON_HOE, Material.IRON_PICKAXE, Material.IRON_SHOVEL, Material.IRON_SWORD, Material.WOODEN_AXE, Material.WOODEN_HOE, Material.WOODEN_PICKAXE, Material.WOODEN_SHOVEL, Material.WOODEN_SWORD, Material.SHEARS);
+    }
+
+    @EventHandler
+    public void NetherOriginRespawn(PlayerRespawnEvent e) {
+        Player p = e.getPlayer();
+        PersistentDataContainer data = p.getPersistentDataContainer();
+        @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
+        if (origintag.equalsIgnoreCase("genesis:origin-piglin") || origintag.equalsIgnoreCase("genesismc:origin-blazeborn")) {
+            if (!(e.isBedSpawn() || e.isAnchorSpawn())) {
+                Location location = WorldSpawnHandler.NetherSpawn();
+                if (location == null) return;
+                e.setRespawnLocation(location);
+            }
+
+        }
     }
 
 
