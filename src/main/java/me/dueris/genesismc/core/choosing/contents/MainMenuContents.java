@@ -4,9 +4,11 @@ import me.dueris.genesismc.core.files.GenesisDataFiles;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.SkullMeta;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -16,7 +18,7 @@ import static org.bukkit.ChatColor.RED;
 
 public class MainMenuContents {
 
-    public static @Nullable ItemStack @NotNull [] GenesisMainMenuContents(){
+    public static @Nullable ItemStack @NotNull [] GenesisMainMenuContents(Player p){
 
         ItemStack human = new ItemStack(Material.PLAYER_HEAD);
         ItemStack enderian = new ItemStack(Material.ENDER_PEARL);
@@ -55,6 +57,12 @@ public class MainMenuContents {
         random.setItemMeta(meta);
 
         if (GenesisDataFiles.getPlugCon().getString("human-disable").equalsIgnoreCase("false")) {
+            SkullMeta skull_p = (SkullMeta) human.getItemMeta();
+            skull_p.setOwningPlayer(p);
+            skull_p.setOwner(p.getName());
+            skull_p.setPlayerProfile(p.getPlayerProfile());
+            skull_p.setOwnerProfile(p.getPlayerProfile());
+            human.setItemMeta(skull_p);
             human = itemProperties(human, WHITE + "Human", null, null, WHITE + "Human Origin");
         } else {
             human = itemProperties(human, RED + "Unavailable", ItemFlag.HIDE_ENCHANTS, Enchantment.ARROW_INFINITE, RED + "This origin is locked by the server owner");

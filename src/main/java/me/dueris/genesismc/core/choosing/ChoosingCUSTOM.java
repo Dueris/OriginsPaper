@@ -180,8 +180,9 @@ public class ChoosingCUSTOM implements Listener {
         if (e.getCurrentItem() != null) {
             if (e.getView().getTitle().equalsIgnoreCase("Custom Origin")) {
                 if (e.getCurrentItem().getType().equals(Material.SPECTRAL_ARROW)) {
+                    Player p = (Player) e.getWhoClicked();
                     @NotNull Inventory mainmenu = Bukkit.createInventory(e.getWhoClicked(), 54, "Choosing Menu");
-                    mainmenu.setContents(GenesisMainMenuContents()); //change it to choose menu later (when i'm not almost falling asleep)
+                    mainmenu.setContents(GenesisMainMenuContents(p)); //change it to choose menu later (when i'm not almost falling asleep)
                     e.getWhoClicked().openInventory(mainmenu);
                 }else{e.setCancelled(true);}
             }

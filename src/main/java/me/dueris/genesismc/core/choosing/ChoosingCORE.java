@@ -5,6 +5,7 @@ import me.dueris.genesismc.core.files.GenesisDataFiles;
 import me.dueris.genesismc.custom_origins.powers.WorldSpawnHandler;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
+import org.bukkit.block.Skull;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -17,6 +18,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
@@ -187,14 +189,14 @@ public class ChoosingCORE implements Listener {
             slime_meta.setLore(slime_lore);
             slime.setItemMeta(slime_meta);
 
-            ItemStack vex = new ItemStack(Material.IRON_SWORD);
-            ItemMeta vex_meta = vex.getItemMeta();
-            vex_meta.setDisplayName("Vexian");
-            ArrayList<String> vex_lore = new ArrayList<>();
-            vex_meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
-            vex_lore.add(AQUA + "Vex Origin");
-            vex_meta.setLore(vex_lore);
-            vex.setItemMeta(vex_meta);
+            ItemStack feline = new ItemStack(Material.ORANGE_WOOL);
+            ItemMeta feline_meta = feline.getItemMeta();
+            feline_meta.setDisplayName("Feline");
+            ArrayList<String> feline_lore = new ArrayList<>();
+            feline_meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
+            feline_lore.add(GOLD + "Feline Origin");
+            feline_meta.setLore(feline_lore);
+            feline.setItemMeta(feline_meta);
 
             ItemStack blaze = new ItemStack(Material.BLAZE_POWDER);
             ItemMeta blaze_meta = blaze.getItemMeta();
@@ -327,7 +329,7 @@ public class ChoosingCORE implements Listener {
                         p.getAttribute(Attribute.GENERIC_ARMOR).setBaseValue(8.0);
                         p.setWalkSpeed(walk);
                         p.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE).setBaseValue(0.45F);
-                        p.getAttribute(Attribute.GENERIC_ARMOR_TOUGHNESS).setBaseValue(2);
+                        p.getAttribute(Attribute.GENERIC_ARMOR_TOUGHNESS).setBaseValue(2.2);
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, "genesis:origin-shulk");
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
@@ -394,13 +396,14 @@ public class ChoosingCORE implements Listener {
                         removeItemEnder(p);
                     },1);
                 }
-                if(e.getCurrentItem().isSimilar(vex)){
+                if(e.getCurrentItem().isSimilar(feline)){
                     setAtributesToDefualt(p);
                     Bukkit.getScheduler().runTaskLater(GenesisMC.getPlugin(),()->{
-                        p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, "genesis:origin-vexian");
+                        p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, "genesis:origin-feline");
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
                         DefaultChoose.DefaultChoose(p);
+                        p.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(18);
                         removeItemPhantom(p);
                         removeItemEnder(p);
                     },1);
@@ -491,7 +494,7 @@ public class ChoosingCORE implements Listener {
                 if(e.getCurrentItem().isSimilar(avian)){
                     setAtributesToDefualt(p);
                     Bukkit.getScheduler().runTaskLater(GenesisMC.getPlugin(),()->{
-                        p.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0.13);
+                        p.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0.17);
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, "genesis:origin-avian");
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);

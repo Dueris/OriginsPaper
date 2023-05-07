@@ -2,12 +2,10 @@ package me.dueris.genesismc.core.choosing.contents.origins;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.SkullType;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -29,6 +27,16 @@ public class OriginalOriginContent {
         ItemStack human_origin_info = new ItemStack(Material.FILLED_MAP);
         ItemStack blank = new ItemStack(Material.PAPER);
         ItemStack impact = new ItemStack(Material.GRAY_STAINED_GLASS_PANE);
+
+        //skull code, dont remove
+        SkullMeta skull_p = (SkullMeta) human.getItemMeta();
+        skull_p.setOwningPlayer(p);
+        skull_p.setOwner(p.getName());
+        skull_p.setPlayerProfile(p.getPlayerProfile());
+        skull_p.setOwnerProfile(p.getPlayerProfile());
+        human.setItemMeta(skull_p);
+
+        //skull code end
 
         impact = itemProperties(impact, WHITE + "Impact:" + GRAY + " None", null, null, null);
 
