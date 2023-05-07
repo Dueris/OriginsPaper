@@ -63,7 +63,7 @@ public class ChoosingCORE implements Listener {
                         if (e.getItem().isSimilar(orb)) {
 
                             @NotNull Inventory mainmenu = Bukkit.createInventory(e.getPlayer(), 54, "Choosing Menu");
-                            mainmenu.setContents(GenesisMainMenuContents());
+                            mainmenu.setContents(GenesisMainMenuContents(e.getPlayer()));
                             e.getPlayer().openInventory(mainmenu);
 
                         }
@@ -79,7 +79,7 @@ public class ChoosingCORE implements Listener {
         if(e.getCurrentItem() != null){
             if(e.getView().getTitle().equalsIgnoreCase("Choosing Menu")){
                 if(e.getCurrentItem().getType().equals(Material.SPECTRAL_ARROW)) {
-                    e.getClickedInventory().setContents(GenesisMainMenuContents());
+                    e.getClickedInventory().setContents(GenesisMainMenuContents((Player) e.getWhoClicked()));
                     e.setCancelled(true);
                 }else{e.setCancelled(true);}
 
@@ -88,7 +88,7 @@ public class ChoosingCORE implements Listener {
                 if(e.getView().getTitle().equalsIgnoreCase("Custom Origins") || e.getView().getTitle().equalsIgnoreCase("Expanded Origins")){
                     if(e.getCurrentItem().getType().equals(Material.SPECTRAL_ARROW)){
                         @NotNull Inventory mainmenu = Bukkit.createInventory(e.getWhoClicked(), 54, "Choosing Menu");
-                        mainmenu.setContents(GenesisMainMenuContents());
+                        mainmenu.setContents(GenesisMainMenuContents((Player) e.getWhoClicked()));
                         e.getWhoClicked().openInventory(mainmenu);
                     }
                     e.setCancelled(true);
@@ -114,7 +114,7 @@ public class ChoosingCORE implements Listener {
         @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
         @NotNull Inventory mainmenu = Bukkit.createInventory(e.getPlayer(), 54, "Choosing Menu");
         if (origintag == "genesis:origin-null") {
-            mainmenu.setContents(GenesisMainMenuContents());
+            mainmenu.setContents(GenesisMainMenuContents(e.getPlayer()));
             e.getPlayer().openInventory(mainmenu);
         }
     }
