@@ -69,6 +69,7 @@ public class AvianMain implements Listener {
             if (e.getPlayer().getWorld().getEnvironment() == World.Environment.NORMAL) {
                 if (e.getBed().getY() <= 99) {
                     e.setCancelled(true);
+                    e.getPlayer().sendActionBar("You need fresh air to sleep");
                 }
             }
         }
