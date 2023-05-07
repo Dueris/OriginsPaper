@@ -2,6 +2,7 @@ package me.dueris.genesismc.core.choosing.contents.origins;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.SkullType;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
@@ -37,15 +38,6 @@ public class OriginalOriginContent {
         menu = itemProperties(menu, ChatColor.AQUA + "Return", ItemFlag.HIDE_ENCHANTS, null, null);
         human = itemProperties(human, "Human", null, Enchantment.ARROW_INFINITE, WHITE + "Human Origin");
 
-        //player head code, dont remove or change
-
-        SkullMeta skullMeta = (SkullMeta) human.getItemMeta();
-
-        skullMeta.setPlayerProfile(p.getPlayerProfile());
-        skullMeta.setOwnerProfile(p.getPlayerProfile());
-
-        //end of head code
-
         ItemStack[] humangui_items = {close, air, air, air, orb, impact, impact, impact, close, air, air, air, air, human, air, air, air, air, air, air, blank, blank, human_origin_info, blank, blank, air, air, air, air, blank, blank, blank, blank, blank, air, air, air, air, air, air, air, air, air, air, air, air, air, air, air, menu, air, air, air, air};
 
         return humangui_items;
@@ -58,7 +50,7 @@ public class OriginalOriginContent {
         ItemStack air = new ItemStack(Material.AIR);
         ItemStack blank = new ItemStack(Material.PAPER);
 
-        ItemStack impact = new ItemStack(Material.GRAY_STAINED_GLASS_PANE);
+        ItemStack impact = new ItemStack(Material.GREEN_STAINED_GLASS_PANE);
 
         impact = itemProperties(impact, WHITE + "Impact:" + GREEN + " Low", null, null, null);
 
@@ -90,7 +82,7 @@ public class OriginalOriginContent {
         ItemStack air = new ItemStack(Material.AIR);
         ItemStack blank = new ItemStack(Material.PAPER);
 
-        ItemStack impact = new ItemStack(Material.GRAY_STAINED_GLASS_PANE);
+        ItemStack impact = new ItemStack(Material.GREEN_STAINED_GLASS_PANE);
 
         impact = itemProperties(impact, WHITE + "Impact:" + GREEN + " Low", null, null, null);
 
@@ -120,7 +112,7 @@ public class OriginalOriginContent {
         ItemStack air = new ItemStack(Material.AIR);
         ItemStack blank = new ItemStack(Material.PAPER);
 
-        ItemStack impact = new ItemStack(Material.GRAY_STAINED_GLASS_PANE);
+        ItemStack impact = new ItemStack(Material.GREEN_STAINED_GLASS_PANE);
 
         impact = itemProperties(impact, WHITE + "Impact:" + GREEN + " Low", null, null, null);
 
@@ -152,7 +144,7 @@ public class OriginalOriginContent {
         ItemStack air = new ItemStack(Material.AIR);
         ItemStack blank = new ItemStack(Material.PAPER);
 
-        ItemStack impact = new ItemStack(Material.GRAY_STAINED_GLASS_PANE);
+        ItemStack impact = new ItemStack(Material.GREEN_STAINED_GLASS_PANE);
 
         impact = itemProperties(impact, WHITE + "Impact:" + GREEN + " Low", null, null, null);
 
@@ -187,7 +179,7 @@ public class OriginalOriginContent {
         ItemStack ender_origin_info1 = new ItemStack(Material.FILLED_MAP);
         ItemStack blank = new ItemStack(Material.PAPER);
 
-        ItemStack impact = new ItemStack(Material.GRAY_STAINED_GLASS_PANE);
+        ItemStack impact = new ItemStack(Material.YELLOW_STAINED_GLASS_PANE);
 
         impact = itemProperties(impact, WHITE + "Impact:" + YELLOW + " Medium", null, null, null);
 
@@ -217,7 +209,7 @@ public class OriginalOriginContent {
         ItemStack air = new ItemStack(Material.AIR);
         ItemStack blank = new ItemStack(Material.PAPER);
 
-        ItemStack impact = new ItemStack(Material.GRAY_STAINED_GLASS_PANE);
+        ItemStack impact = new ItemStack(Material.RED_STAINED_GLASS_PANE);
 
         impact = itemProperties(impact, WHITE + "Impact:" + RED + " High", null, null, null);
 
@@ -251,7 +243,7 @@ public class OriginalOriginContent {
         ItemStack air = new ItemStack(Material.AIR);
         ItemStack blank = new ItemStack(Material.PAPER);
 
-        ItemStack impact = new ItemStack(Material.GRAY_STAINED_GLASS_PANE);
+        ItemStack impact = new ItemStack(Material.RED_STAINED_GLASS_PANE);
 
         impact = itemProperties(impact, WHITE + "Impact:" + RED + " High", null, null, null);
 
@@ -287,7 +279,7 @@ public class OriginalOriginContent {
         ItemStack air = new ItemStack(Material.AIR);
         ItemStack blank = new ItemStack(Material.PAPER);
 
-        ItemStack impact = new ItemStack(Material.GRAY_STAINED_GLASS_PANE);
+        ItemStack impact = new ItemStack(Material.RED_STAINED_GLASS_PANE);
 
         impact = itemProperties(impact, WHITE + "Impact:" + RED + " High", null, null, null);
 
@@ -321,7 +313,7 @@ public class OriginalOriginContent {
         ItemStack air = new ItemStack(Material.AIR);
         ItemStack blank = new ItemStack(Material.PAPER);
 
-        ItemStack impact = new ItemStack(Material.GRAY_STAINED_GLASS_PANE);
+        ItemStack impact = new ItemStack(Material.YELLOW_STAINED_GLASS_PANE);
 
         impact = itemProperties(impact, WHITE + "Impact:" + YELLOW + " Medium", null, null, null);
 
