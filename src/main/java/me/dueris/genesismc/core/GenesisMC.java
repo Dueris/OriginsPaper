@@ -146,7 +146,6 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 //Event Handler Register
         getServer().getPluginManager().registerEvents(new EnderSilkTouch(), this);
         getServer().getPluginManager().registerEvents(new EnderTeleport(), this);
-        getServer().getPluginManager().registerEvents(new EnderWater(), this);
         getServer().getPluginManager().registerEvents(new HumanMain(), this);
         getServer().getPluginManager().registerEvents(new EnderMain(), this);
         getServer().getPluginManager().registerEvents(new Purge(), this);
