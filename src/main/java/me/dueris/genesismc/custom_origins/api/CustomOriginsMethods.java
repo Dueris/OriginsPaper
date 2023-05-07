@@ -1,4 +1,4 @@
-package me.dueris.genesismc.custom_origins;
+package me.dueris.genesismc.custom_origins.api;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
