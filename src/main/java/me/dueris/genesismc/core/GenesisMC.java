@@ -196,7 +196,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         EnderianRunnable enderrun = new EnderianRunnable();
         enderrun.runTaskTimer(this, 0, 5);
         EnderianDamageRunnable enderdamagerun = new EnderianDamageRunnable();
-        enderdamagerun.runTaskTimer(this, 0, 23);
+        enderdamagerun.runTaskTimer(this, 0, 20);
 //shulk
         ShulkRunnable shulkrun = new ShulkRunnable();
         shulkrun.runTaskTimer(this, 0, 5);
