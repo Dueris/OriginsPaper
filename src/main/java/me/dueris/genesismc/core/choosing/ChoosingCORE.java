@@ -123,17 +123,17 @@ public class ChoosingCORE implements Listener {
     public void OnChoose(InventoryClickEvent e){
         if (e.getView().getTitle().equalsIgnoreCase("Choosing Menu")) {
         if(e.getCurrentItem() != null){
+            Player p = (Player) e.getWhoClicked();
             //Human
             ItemStack human = new ItemStack(Material.PLAYER_HEAD);
-            ItemMeta human_meta = human.getItemMeta();
-            human_meta.setDisplayName("Human");
-            ArrayList<String> human_lore = new ArrayList<>();
-            human_lore.add(WHITE + "Human Origin");
-            human_meta.addEnchant(Enchantment.ARROW_INFINITE, 1,true);
-            human_meta.setLore(human_lore);
-            human.setItemMeta(human_meta);
 
-            //ItemStack human = itemProperties(new ItemStack(Material.PLAYER_HEAD), "Human", null, Enchantment.ARROW_INFINITE, WHITE + "Human Origin");
+            SkullMeta skull_p = (SkullMeta) human.getItemMeta();
+            skull_p.setOwningPlayer(p);
+            skull_p.setOwner(p.getName());
+            skull_p.setPlayerProfile(p.getPlayerProfile());
+            skull_p.setOwnerProfile(p.getPlayerProfile());
+            human.setItemMeta(skull_p);
+            human = itemProperties(human, "Human", null, Enchantment.ARROW_INFINITE, WHITE + "Human Origin");
 
             ItemStack ender = new ItemStack(Material.ENDER_PEARL);
             ItemMeta ender_meta = ender.getItemMeta();
@@ -287,7 +287,6 @@ public class ChoosingCORE implements Listener {
             sculk_meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
             sculk_meta.setLore(sculk_lore);
             sculk.setItemMeta(sculk_meta);
-            Player p = (Player) e.getWhoClicked();
             if (e.getCurrentItem() != null && e.getCurrentItem().containsEnchantment(Enchantment.ARROW_INFINITE)) {
                 setAtributesToDefualt(p);
                 p.setHealthScaled(false);
