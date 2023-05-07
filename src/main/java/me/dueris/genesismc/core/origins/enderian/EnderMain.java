@@ -1,6 +1,7 @@
 package me.dueris.genesismc.core.origins.enderian;
 
 import com.destroystokyo.paper.event.player.PlayerArmorChangeEvent;
+import io.papermc.paper.event.entity.WaterBottleSplashEvent;
 import me.dueris.genesismc.core.GenesisMC;
 import org.bukkit.*;
 import org.bukkit.entity.Endermite;
@@ -32,6 +33,13 @@ public class EnderMain implements Listener {
         this.cooldown = new HashMap<>();
     }
 
+    @EventHandler
+    public void SplashEnderian(WaterBottleSplashEvent e){
+        if(e.getAffectedEntities() instanceof Player){
+            Player p = (Player) e.getAffectedEntities();
+            p.damage(5);
+        }
+    }
 
     @EventHandler
     public void onDamage(EntityDamageEvent e) {
