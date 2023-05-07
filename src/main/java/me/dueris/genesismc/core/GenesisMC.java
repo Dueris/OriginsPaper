@@ -214,7 +214,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         PhantomFormRunnable phantomformrun = new PhantomFormRunnable();
         phantomformrun.runTaskTimer(this, 0, 2);
         PhantomMain phantommainrun = new PhantomMain();
-        phantommainrun.runTaskTimer(this, 0, 13);
+        phantommainrun.runTaskTimer(this, 0, 20);
 //slimeling
         SlimelingRunnable slimelingrun = new SlimelingRunnable();
         slimelingrun.runTaskTimer(this, 0, 5);
