@@ -64,33 +64,15 @@ public class EnderTeleport implements Listener {
             if (e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.LEFT_CLICK_AIR || e.getAction() == Action.LEFT_CLICK_BLOCK || e.getAction() == Action.RIGHT_CLICK_BLOCK) {
                 if (e.getItem() != null) {
                     if (e.getItem().equals(infinpearl)) {
-                        if(p.getInventory().getItemInOffHand().equals(infinpearl)){
-                            p.getInventory().getItemInOffHand().add(1);
-                        }else{
-                            p.getInventory().addItem(infinpearl);
-                        }
-                        p.setCooldown(ENDER_PEARL, 0);
-                    }
-                }
-            } else if (e.getItem() != null) {
-                if (e.getItem().equals(infinpearl)) {
-                    p.getInventory().removeItem(infinpearl);
-                    p.setCooldown(ENDER_PEARL, 0);
-                }
-            }
-        }else{
-            if(e.getItem() != null) {
-                if (e.getItem().isSimilar(infinpearl)) {
-                    if(e.getClickedBlock() != null){
-                        if(!e.getClickedBlock().getType().isInteractable()){
-                            if(e.getItem().isSimilar(infinpearl)){
-                                e.getItem().setAmount(0);
-                                e.setCancelled(true);
+                        if(p.getCooldown(ENDER_PEARL) == 0){
+                            if(p.getInventory().getItemInOffHand().equals(infinpearl)){
 
+                                p.getInventory().getItemInOffHand().add(1);
+                            }else{
+                                p.getInventory().addItem(infinpearl);
                             }
                         }
                     }
-
                 }
             }
         }
@@ -123,7 +105,11 @@ public class EnderTeleport implements Listener {
         if (!(e.getEntity() instanceof EnderPearl)) {
             return;
         } else {
-            ((Player) e.getEntity().getShooter()).setCooldown(Material.ENDER_PEARL, 1);
+            Player p = (Player) e.getEntity().getShooter();
+            PersistentDataContainer data = p.getPersistentDataContainer();
+            @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
+            if(origintag.equalsIgnoreCase("genesis:origin-enderian"));
+            ((Player) e.getEntity().getShooter()).setCooldown(Material.ENDER_PEARL, 45);
         }
     }
 
