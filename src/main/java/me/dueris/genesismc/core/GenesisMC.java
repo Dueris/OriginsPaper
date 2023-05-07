@@ -118,11 +118,11 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         } else {
             getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "[GenesisMC] Successfully loaded version 0.1.6-ALPHA_SNAPSHOT (1.19.4)");
         }
-        if (getServer().getPluginManager().getPlugins().toString().contains("PurpleWolfAPI") || getServer().getPluginManager().isPluginEnabled("PurpleWolfAPI") || getServer().getPluginManager().getPlugin("PurpleWolfAPI") != null) {
-            getServer().getConsoleSender().sendMessage(ChatColor.LIGHT_PURPLE + "[GenesisMC - PurpleWolfAPI] Successfully injected PurpleWolfAPI into plugin");
+        if (getServer().getPluginManager().getPlugins().toString().contains("PurpleWolfAPI") || getServer().getPluginManager().isPluginEnabled("OriginsAPI") || getServer().getPluginManager().getPlugin("PurpleWolfAPI") != null) {
+            getServer().getConsoleSender().sendMessage(ChatColor.LIGHT_PURPLE + "[GenesisMC - OriginsAPI] Successfully injected OriginsAPI into plugin");
         } else {
             //PurpleWolfAPI not avalible, inject built-in
-            getServer().getConsoleSender().sendMessage(ChatColor.LIGHT_PURPLE + "[GenesisMC] PurpleWolfAPI not detected. Injecting built-in API");
+            getServer().getConsoleSender().sendMessage(ChatColor.LIGHT_PURPLE + "[GenesisMC] OriginsAPI not detected. Injecting built-in API");
         }
 
         //Custom origins loading
