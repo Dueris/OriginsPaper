@@ -1,13 +1,10 @@
 package me.dueris.genesismc.core.origins.piglin;
 
 import com.destroystokyo.paper.event.player.PlayerArmorChangeEvent;
-import com.destroystokyo.paper.event.player.PlayerJumpEvent;
 import me.dueris.genesismc.core.GenesisMC;
-import me.dueris.genesismc.custom_origins.powers.AlternateSpawns;
-import net.md_5.bungee.api.chat.BaseComponent;
+import me.dueris.genesismc.custom_origins.powers.WorldSpawnHandler;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
-import org.bukkit.block.Block;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -20,13 +17,10 @@ import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.EnumSet;
-import java.util.Random;
 
 import static org.bukkit.Material.*;
 
@@ -96,20 +90,7 @@ public class PiglinMain implements Listener {
 
     //Friendly Frenemies: Piglins won't attack you unless provoked
 
-    @EventHandler
-    public void onEntityTarget(EntityTargetLivingEntityEvent e) {
-        if (!(e.getTarget() instanceof Player)) return;
-        Player p = (Player) e.getTarget();
-        PersistentDataContainer data = p.getPersistentDataContainer();
-        @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
-        if (origintag.equalsIgnoreCase("genesis:origin-piglin")) {
-            if (e.getEntity().getType() == EntityType.PIGLIN) {
-                if (!piglinsHit.contains(e.getEntity().getEntityId())) {
-                    e.setCancelled(true);
-                }
-            }
-        }
-    }
+    //dueris removed this bc it sent many many errors in console that she did not want to understand lol
 
     @EventHandler
     public void onPiglinHit(EntityDamageByEntityEvent e) {
@@ -125,21 +106,6 @@ public class PiglinMain implements Listener {
                 if (entity.getHealth() - e.getFinalDamage() <= 0) return;
                 piglinsHit.add(e.getEntity().getEntityId());
             }
-        }
-    }
-
-    @EventHandler
-    public void onPlayerRespawn(PlayerRespawnEvent e) {
-        Player p = e.getPlayer();
-        PersistentDataContainer data = p.getPersistentDataContainer();
-        @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
-        if (origintag.equalsIgnoreCase("genesis:origin-piglin")) {
-            if (!(e.isBedSpawn() || e.isAnchorSpawn())) {
-                Location location = AlternateSpawns.NetherSpawn();
-                if (location == null) return;
-                e.setRespawnLocation(location);
-            }
-
         }
     }
 }
