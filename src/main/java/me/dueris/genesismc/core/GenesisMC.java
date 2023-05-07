@@ -267,7 +267,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         Player p = e.getPlayer();
         PersistentDataContainer data = p.getPersistentDataContainer();
         @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
-        if (origintag.equalsIgnoreCase("genesis:origin-piglin") || origintag.equalsIgnoreCase("genesismc:origin-blazeborn")) {
+        if (origintag.equalsIgnoreCase("genesis:origin-piglin") || origintag.equalsIgnoreCase("genesis:origin-blazeborn")) {
             if (!(e.isBedSpawn() || e.isAnchorSpawn())) {
                 Location location = WorldSpawnHandler.NetherSpawn();
                 if (location == null) return;
