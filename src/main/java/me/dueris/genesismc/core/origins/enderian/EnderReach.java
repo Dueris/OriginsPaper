@@ -57,7 +57,7 @@ public class EnderReach implements Listener {
                 if (entity == null) return;
                 Player attacker = (Player) e.getPlayer();
                 LivingEntity victim = (LivingEntity) traceResult4_5F.getHitEntity();
-                if(attacker.getLocation().distance(victim.getLocation()) <=6){
+                if(attacker.getLocation().distance(victim.getLocation()) <=5){
 
                 if (entity.getPassengers().contains(p)) return;
                 if (!entity.isDead()) {
