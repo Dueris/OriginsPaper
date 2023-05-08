@@ -156,7 +156,6 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         getServer().getPluginManager().registerEvents(new ShulkMain(), this);
         getServer().getPluginManager().registerEvents(new JoiningHandler(), this);
         getServer().getPluginManager().registerEvents(new EnchantProtEvent(), this);
-        getServer().getPluginManager().registerEvents(new BrethrenOfEnd(), this);
         getServer().getPluginManager().registerEvents(new ArachnidMain(), this);
         getServer().getPluginManager().registerEvents(new CustomMenuHandler(), this);
         getServer().getPluginManager().registerEvents(new WaterProtAnvil(), this);
@@ -175,6 +174,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         getServer().getPluginManager().registerEvents(new ChoosingCORE(), this);
         getServer().getPluginManager().registerEvents(new ChoosingCUSTOM(), this);
         getServer().getPluginManager().registerEvents(new ChoosingEXP(), this);
+        getServer().getPluginManager().registerEvents(new EnderReach(), this);
         plugin = this;
         getServer().getPluginManager().registerEvents(new DataContainer(), this);
         if (GenesisDataFiles.getPlugCon().getString("beta-enabled").equalsIgnoreCase("true")) {
