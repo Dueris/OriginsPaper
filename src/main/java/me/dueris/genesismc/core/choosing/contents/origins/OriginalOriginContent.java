@@ -199,7 +199,7 @@ public class OriginalOriginContent {
         ender_origin_info1 = itemPropertiesMultipleLore(ender_origin_info1, UNDERLINE + "Teleportaion", null, null, Arrays.asList(WHITE + "You have an infinite ender pearl", WHITE + "that deals no damage"));
         ender_origin_info2 = itemPropertiesMultipleLore(ender_origin_info2, UNDERLINE + "Hydrophobia", null, null, Arrays.asList(WHITE + "You take damage while in", WHITE + "contact with water"));
         ender_origin_info3 = itemProperties(ender_origin_info3, UNDERLINE + "Delicate touch", null, null, WHITE + "You have silk touch hands");
-        ender_origin_info4 = itemPropertiesMultipleLore(ender_origin_info4, UNDERLINE + "Brethren of the End", null, null, Arrays.asList(WHITE + "Enderman don't get mad at you", WHITE + "upon looking at them"));
+        ender_origin_info4 = itemPropertiesMultipleLore(ender_origin_info4, UNDERLINE + "Slender Body", null, null, Arrays.asList(WHITE + "You can reach farther than everyone", WHITE + "due to your long arms"));
         ender_origin_info5 = itemProperties(ender_origin_info5, UNDERLINE + "Bearer of Pearls", null, null, WHITE + "You always drop 0-2 ender pearls upon death");
 
         close = itemProperties(close, RED + "Close", null, null, RED + "Cancel Choosing");
