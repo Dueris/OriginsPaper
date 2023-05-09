@@ -126,7 +126,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
             getServer().getConsoleSender().sendMessage(ChatColor.LIGHT_PURPLE + "[GenesisMC] OriginsAPI not detected. Injecting built-in API");
         }
 
-        //CustomOriginsMethods.removeUnzippedOriginDatapacks();
+        CustomOriginsMethods.removeUnzippedOriginDatapacks();
         CustomOriginsMethods.unzipCustomOriginDatapacks();
         CustomOriginsMethods.loadCustomOriginDatapacks();
         for (String originTag : CustomOriginsMethods.getCustomOriginTags()) {
@@ -324,7 +324,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         } catch (Exception ignored) { }
 
         //deletes origin files unzipped by Genesis
-        //CustomOriginsMethods.removeUnzippedOriginDatapacks();
+        CustomOriginsMethods.removeUnzippedOriginDatapacks();
     }
 
     //Load custom enchantments
