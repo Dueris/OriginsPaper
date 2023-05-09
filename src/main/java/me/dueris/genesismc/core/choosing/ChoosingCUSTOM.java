@@ -25,8 +25,6 @@ import static me.dueris.genesismc.core.items.OrbOfOrigins.orb;
 
 public class ChoosingCUSTOM implements Listener {
 
-    public static HashMap<ItemStack, String> originIdentifier = new HashMap<>();
-
     @EventHandler(priority = EventPriority.HIGH)
     public void CUSOTMCHOOSE_MENU(InventoryClickEvent e) {
         if (e.getCurrentItem() != null) {
