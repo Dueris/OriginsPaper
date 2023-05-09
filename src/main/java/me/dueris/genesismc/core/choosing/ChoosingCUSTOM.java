@@ -1,7 +1,9 @@
 package me.dueris.genesismc.core.choosing;
 
+import me.dueris.genesismc.core.GenesisMC;
 import me.dueris.genesismc.custom_origins.api.CustomOriginsMethods;
 import org.bukkit.*;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -11,12 +13,16 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.tags.ItemTagType;
+import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Objects;
+import java.util.Set;
 
-import static me.dueris.genesismc.core.choosing.ChoosingCORE.itemProperties;
+import static me.dueris.genesismc.core.choosing.ChoosingCORE.*;
 import static me.dueris.genesismc.core.choosing.contents.MainMenuContents.GenesisMainMenuContents;
 import static org.bukkit.ChatColor.RED;
 import static me.dueris.genesismc.core.items.OrbOfOrigins.orb;
@@ -69,11 +75,18 @@ public class ChoosingCUSTOM implements Listener {
                                 String item = minecraftItem.split(":")[1];
                                 ItemStack originIcon = new ItemStack(Material.valueOf(item.toUpperCase()));
 
-                                originIcon = itemProperties(originIcon, CustomOriginsMethods.getCustomOriginName(origintag), ItemFlag.HIDE_ENCHANTS, null, CustomOriginsMethods.getCustomOriginDescription(origintag));
+                                ItemMeta originIconmeta = originIcon.getItemMeta();
+                                originIconmeta.setDisplayName(CustomOriginsMethods.getCustomOriginName(origintag));
+                                originIconmeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+                                ArrayList<String> originIconlore = new ArrayList<>();
+                                originIconlore.add(CustomOriginsMethods.getCustomOriginDescription(origintag));
+                                originIconmeta.setLore(originIconlore);
 
-                                originIdentifier.put(originIcon, origintag);
+                                NamespacedKey key = new NamespacedKey(GenesisMC.getPlugin(), "originTag");
+                                originIconmeta.getPersistentDataContainer().set(key, PersistentDataType.STRING, origintag);
+
+                                originIcon.setItemMeta(originIconmeta);
                                 contents.add(originIcon);
-
                                 customOriginTags.remove(0);
                             } else {
                                 contents.add(new ItemStack(Material.AIR));
@@ -92,9 +105,13 @@ public class ChoosingCUSTOM implements Listener {
     @EventHandler(priority = EventPriority.HIGH)
     public void CUSOTMCHOOSE_ORIGIN(InventoryClickEvent e) {
         if (e.getCurrentItem() != null) {
-            if (originIdentifier.containsKey(e.getCurrentItem())) {
+            NamespacedKey key = new NamespacedKey(GenesisMC.getPlugin(), "originTag");
+            if (e.getCurrentItem().getItemMeta().getPersistentDataContainer().get(key, PersistentDataType.STRING) != null) {
                 @NotNull Inventory custommenu = Bukkit.createInventory(e.getWhoClicked(), 54, "Custom Origin");
-                String origintag = originIdentifier.get(e.getCurrentItem());
+                String origintag = e.getCurrentItem().getItemMeta().getPersistentDataContainer().get(key, PersistentDataType.STRING);
+                System.out.println(e.getCurrentItem().getItemMeta().getPersistentDataContainer().get(key, PersistentDataType.STRING));
+                if (origintag == null) return;
+
 
                 ArrayList<String> originPowerNames = new ArrayList<>();
                 ArrayList<String> originPowerDescriptions = new ArrayList<>();
@@ -122,9 +139,12 @@ public class ChoosingCUSTOM implements Listener {
                 ArrayList<String> originIconlore = new ArrayList<>();
                 originIconlore.add(CustomOriginsMethods.getCustomOriginDescription(origintag));
                 originIconmeta.setLore(originIconlore);
-                originIcon.setItemMeta(originIconmeta);
-                originIcon = itemProperties(originIcon, CustomOriginsMethods.getCustomOriginName(origintag), ItemFlag.HIDE_ENCHANTS, null, CustomOriginsMethods.getCustomOriginDescription(origintag));
 
+                originIconmeta.getPersistentDataContainer().set(key, PersistentDataType.STRING, origintag);
+                NamespacedKey chooseKey = new NamespacedKey(GenesisMC.getPlugin(), "originChoose");
+                originIconmeta.getPersistentDataContainer().set(chooseKey, PersistentDataType.INTEGER, 1);
+
+                originIcon.setItemMeta(originIconmeta);
 
                 ArrayList<ItemStack> contents = new ArrayList<>();
 
@@ -171,6 +191,27 @@ public class ChoosingCUSTOM implements Listener {
                 }
                 custommenu.setContents(contents.toArray(new ItemStack[0]));
                 e.getWhoClicked().openInventory(custommenu);
+            }
+        }
+    }
+
+    @EventHandler(priority = EventPriority.HIGH)
+    public void CustomOriginSelect(InventoryClickEvent e) {
+        if (e.getCurrentItem() != null) {
+            NamespacedKey chooseKey = new NamespacedKey(GenesisMC.getPlugin(), "originChoose");
+            if (e.getCurrentItem().getItemMeta().getPersistentDataContainer().get(chooseKey, PersistentDataType.INTEGER) != null) {
+                NamespacedKey key = new NamespacedKey(GenesisMC.getPlugin(), "originTag");
+                String origintag = e.getCurrentItem().getItemMeta().getPersistentDataContainer().get(key, PersistentDataType.STRING);
+                Player p = (Player) e.getWhoClicked();
+                setAtributesToDefualt(p);
+                Bukkit.getScheduler().runTaskLater(GenesisMC.getPlugin(),()->{
+                    p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, origintag);
+                    p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
+                    p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
+                    DefaultChoose.DefaultChoose(p);
+                    removeItemPhantom(p);
+                    removeItemEnder(p);
+                },1);
             }
         }
     }

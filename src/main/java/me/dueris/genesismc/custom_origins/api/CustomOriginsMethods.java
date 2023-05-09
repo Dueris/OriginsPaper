@@ -35,9 +35,9 @@ public class CustomOriginsMethods {
 
         for (File file : originDatapacks) {
             try {
-                if (file.getName().startsWith(".")) FileUtils.deleteDirectory(new File(Path.of(file.getPath()).toUri())); //Linux
+                if (file.getName().startsWith(".")) FileUtils.deleteDirectory(new File(file.toURI())); //Linux
                 if (SystemUtils.IS_OS_WINDOWS) {
-                if (Boolean.parseBoolean(Files.getAttribute(Path.of(file.getAbsolutePath()), "dos:hidden", LinkOption.NOFOLLOW_LINKS).toString())) FileUtils.deleteDirectory(new File(Path.of(file.getPath()).toUri())); //Windows
+                    if (Boolean.parseBoolean(Files.getAttribute(Path.of(file.getAbsolutePath()), "dos:hidden", LinkOption.NOFOLLOW_LINKS).toString())) FileUtils.deleteDirectory(new File(file.toURI())); //Windows
                 }
             } catch (Exception e) {
                 e.printStackTrace();
