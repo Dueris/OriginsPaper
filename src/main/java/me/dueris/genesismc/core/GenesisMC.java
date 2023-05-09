@@ -23,7 +23,7 @@ import me.dueris.genesismc.core.origins.rabbit.RabbitLeap;
 import me.dueris.genesismc.core.origins.rabbit.RabbitMain;
 import me.dueris.genesismc.core.utils.ParticleHandler;
 import me.dueris.genesismc.custom_origins.CustomOrigins;
-import me.dueris.genesismc.custom_origins.api.CustomOriginsMethods;
+import me.dueris.api.factory.CustomOriginAPI;
 import me.dueris.genesismc.custom_origins.handlers.CustomMenuHandler;
 import me.dueris.genesismc.core.enchantments.EnchantProtEvent;
 import me.dueris.genesismc.core.enchantments.WaterProtection;
@@ -126,16 +126,16 @@ public final class GenesisMC extends JavaPlugin implements Listener {
             getServer().getConsoleSender().sendMessage(ChatColor.LIGHT_PURPLE + "[GenesisMC] OriginsAPI not detected. Injecting built-in API");
         }
 
-        CustomOriginsMethods.removeUnzippedOriginDatapacks();
-        CustomOriginsMethods.unzipCustomOriginDatapacks();
-        CustomOriginsMethods.loadCustomOriginDatapacks();
-        for (String originTag : CustomOriginsMethods.getCustomOriginTags()) {
+        CustomOriginAPI.removeUnzippedOriginDatapacks();
+        CustomOriginAPI.unzipCustomOriginDatapacks();
+        CustomOriginAPI.loadCustomOriginDatapacks();
+        for (String originTag : CustomOriginAPI.getCustomOriginTags()) {
             if (GenesisDataFiles.getPlugCon().getString("console-dump-onstartup").equalsIgnoreCase("true")) {
-                getServer().getConsoleSender().sendMessage("[GenesisMC] Loaded \"" + CustomOriginsMethods.getCustomOriginName(originTag) + "\"");
+                getServer().getConsoleSender().sendMessage("[GenesisMC] Loaded \"" + CustomOriginAPI.getCustomOriginName(originTag) + "\"");
             }
         }
-        if(CustomOriginsMethods.customOrigins.size() > 0){
-            getServer().getConsoleSender().sendMessage("[GenesisMC] Loaded (" + CustomOriginsMethods.customOrigins.size() + ") Custom Origins");
+        if(CustomOriginAPI.customOrigins.size() > 0){
+            getServer().getConsoleSender().sendMessage("[GenesisMC] Loaded (" + CustomOriginAPI.customOrigins.size() + ") Custom Origins");
         }
 
         getServer().getConsoleSender().sendMessage(ChatColor.GRAY + "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
@@ -324,7 +324,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         } catch (Exception ignored) { }
 
         //deletes origin files unzipped by Genesis
-        CustomOriginsMethods.removeUnzippedOriginDatapacks();
+        CustomOriginAPI.removeUnzippedOriginDatapacks();
     }
 
     //Load custom enchantments

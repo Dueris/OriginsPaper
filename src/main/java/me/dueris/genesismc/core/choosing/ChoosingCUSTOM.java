@@ -1,9 +1,8 @@
 package me.dueris.genesismc.core.choosing;
 
 import me.dueris.genesismc.core.GenesisMC;
-import me.dueris.genesismc.custom_origins.api.CustomOriginsMethods;
+import me.dueris.api.factory.CustomOriginAPI;
 import org.bukkit.*;
-import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -13,14 +12,11 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.inventory.meta.tags.ItemTagType;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Objects;
-import java.util.Set;
 
 import static me.dueris.genesismc.core.choosing.ChoosingCORE.*;
 import static me.dueris.genesismc.core.choosing.contents.MainMenuContents.GenesisMainMenuContents;
@@ -51,7 +47,7 @@ public class ChoosingCUSTOM implements Listener {
                     next = itemProperties(next, "Next", ItemFlag.HIDE_ENCHANTS, null, null);
 
                     ArrayList<ItemStack> contents = new ArrayList<>();
-                    ArrayList<String> customOriginTags = CustomOriginsMethods.getCustomOriginTags();
+                    ArrayList<String> customOriginTags = CustomOriginAPI.getCustomOriginTags();
 
                     for (int i = 0; i <= 53; i++) {
                         if (i % 9 == 0 || (i + 1) % 9 == 0) {
@@ -67,19 +63,19 @@ public class ChoosingCUSTOM implements Listener {
                         } else {
                             if (customOriginTags.size() > 0) {
                                 String origintag = customOriginTags.get(0);
-                                while (CustomOriginsMethods.getCustomOriginUnChoosable(origintag)) {
+                                while (CustomOriginAPI.getCustomOriginUnChoosable(origintag)) {
                                     customOriginTags.remove(0);
                                     origintag = customOriginTags.get(0);
                                 }
-                                String minecraftItem = CustomOriginsMethods.getCustomOriginIcon(origintag);
+                                String minecraftItem = CustomOriginAPI.getCustomOriginIcon(origintag);
                                 String item = minecraftItem.split(":")[1];
                                 ItemStack originIcon = new ItemStack(Material.valueOf(item.toUpperCase()));
 
                                 ItemMeta originIconmeta = originIcon.getItemMeta();
-                                originIconmeta.setDisplayName(CustomOriginsMethods.getCustomOriginName(origintag));
+                                originIconmeta.setDisplayName(CustomOriginAPI.getCustomOriginName(origintag));
                                 originIconmeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
                                 ArrayList<String> originIconlore = new ArrayList<>();
-                                originIconlore.add(CustomOriginsMethods.getCustomOriginDescription(origintag));
+                                originIconlore.add(CustomOriginAPI.getCustomOriginDescription(origintag));
                                 originIconmeta.setLore(originIconlore);
 
                                 NamespacedKey key = new NamespacedKey(GenesisMC.getPlugin(), "originTag");
@@ -116,17 +112,17 @@ public class ChoosingCUSTOM implements Listener {
                 ArrayList<String> originPowerNames = new ArrayList<>();
                 ArrayList<String> originPowerDescriptions = new ArrayList<>();
 
-                for (String powerTag : CustomOriginsMethods.getCustomOriginPowers(origintag)) {
-                    if (!CustomOriginsMethods.getCustomOriginPowerHidden(origintag, powerTag)) {
-                        originPowerNames.add(CustomOriginsMethods.getCustomOriginPowerName(origintag, powerTag));
-                        originPowerDescriptions.add(CustomOriginsMethods.getCustomOriginPowerDescription(origintag, powerTag));
+                for (String powerTag : CustomOriginAPI.getCustomOriginPowers(origintag)) {
+                    if (!CustomOriginAPI.getCustomOriginPowerHidden(origintag, powerTag)) {
+                        originPowerNames.add(CustomOriginAPI.getCustomOriginPowerName(origintag, powerTag));
+                        originPowerDescriptions.add(CustomOriginAPI.getCustomOriginPowerDescription(origintag, powerTag));
                     }
                 }
 
                 ItemStack close = new ItemStack(Material.BARRIER);
                 ItemStack back = new ItemStack(Material.SPECTRAL_ARROW);
 
-                String minecraftItem = CustomOriginsMethods.getCustomOriginIcon(origintag);
+                String minecraftItem = CustomOriginAPI.getCustomOriginIcon(origintag);
                 String item = minecraftItem.split(":")[1];
                 ItemStack originIcon = new ItemStack(Material.valueOf(item.toUpperCase()));
 
@@ -134,10 +130,10 @@ public class ChoosingCUSTOM implements Listener {
                 back = itemProperties(back, ChatColor.AQUA + "Return", ItemFlag.HIDE_ENCHANTS, null, null);
 
                 ItemMeta originIconmeta = originIcon.getItemMeta();
-                originIconmeta.setDisplayName(CustomOriginsMethods.getCustomOriginName(origintag));
+                originIconmeta.setDisplayName(CustomOriginAPI.getCustomOriginName(origintag));
                 originIconmeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
                 ArrayList<String> originIconlore = new ArrayList<>();
-                originIconlore.add(CustomOriginsMethods.getCustomOriginDescription(origintag));
+                originIconlore.add(CustomOriginAPI.getCustomOriginDescription(origintag));
                 originIconmeta.setLore(originIconlore);
 
                 originIconmeta.getPersistentDataContainer().set(key, PersistentDataType.STRING, origintag);

@@ -1,4 +1,4 @@
-package me.dueris.genesismc.custom_origins.api;
+package me.dueris.api.factory;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
@@ -8,8 +8,6 @@ import org.bukkit.ChatColor;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
-import oshi.util.FileSystemUtil;
-import oshi.util.FileUtil;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -18,13 +16,11 @@ import java.io.FileReader;
 import java.nio.file.Files;
 import java.nio.file.LinkOption;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.*;
 import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 
-public class CustomOriginsMethods {
+public class CustomOriginAPI {
 
     public static HashMap<String, String> customOrigins = new HashMap<>();
 
