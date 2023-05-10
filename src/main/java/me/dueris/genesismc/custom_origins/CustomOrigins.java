@@ -14,24 +14,24 @@ import static org.bukkit.Bukkit.getServer;
 public class CustomOrigins implements Listener {
 
     public static void onEnableCustomOrigins() {
-        File custom_folder = new File(getServer().getPluginManager().getPlugin("GenesisMC").getDataFolder(), "custom_origins");
-        if(custom_folder.listFiles().length >= 1){
-            DirectoryStream.Filter<Path> filter = new DirectoryStream.Filter<Path>() {
-                @Override
-                public boolean accept(Path file) throws IOException {
-                    return (Files.isDirectory(file));
-                }
-            };
-            Path dir = FileSystems.getDefault().getPath(String.valueOf(getServer().getPluginManager().getPlugin("GenesisMC").getDataFolder() + "/custom_origins/"));
-            try (DirectoryStream<Path> stream = Files.newDirectoryStream(dir, filter)) {
-                for (Path path : stream) {
-                    //begin checks
-
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
+//        File custom_folder = new File(getServer().getPluginManager().getPlugin("GenesisMC").getDataFolder(), "custom_origins");
+//        if(custom_folder.listFiles().length >= 1){
+//            DirectoryStream.Filter<Path> filter = new DirectoryStream.Filter<Path>() {
+//                @Override
+//                public boolean accept(Path file) throws IOException {
+//                    return (Files.isDirectory(file));
+//                }
+//            };
+//            Path dir = FileSystems.getDefault().getPath(String.valueOf(getServer().getPluginManager().getPlugin("GenesisMC").getDataFolder() + "/custom_origins/"));
+//            try (DirectoryStream<Path> stream = Files.newDirectoryStream(dir, filter)) {
+//                for (Path path : stream) {
+//                    //begin checks
+//
+//                }
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//        }
 
     }
 
