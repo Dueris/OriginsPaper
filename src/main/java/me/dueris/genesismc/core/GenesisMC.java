@@ -262,7 +262,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 
         for(Player p : Bukkit.getOnlinePlayers()){
             if(p.isOp()){
-                p.sendMessage(ChatColor.BLUE + "Origins Reloaded");
+                p.sendMessage(ChatColor.BLUE + "Origins Reloaded.");
             }
             CustomOriginExistCheck.customOriginExistCheck(p);
         }
