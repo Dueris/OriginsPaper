@@ -99,7 +99,7 @@ public class ExpandedOriginContent {
         ItemStack rabbit_origin_info5 = new ItemStack(Material.FILLED_MAP);
         ItemStack rabbit_origin_info6 = new ItemStack(Material.FILLED_MAP);
 
-        rabbit_origin_info1 = itemProperties(rabbit_origin_info1, UNDERLINE + "Leap", null, null, WHITE + "You leap in the direction you're looking to");
+        rabbit_origin_info1 = itemPropertiesMultipleLore(rabbit_origin_info1, UNDERLINE + "Leap", null, null, Arrays.asList(WHITE + "You leap in the direction you're looking to", WHITE + "You can use /toggle to toggle this ability"));
         rabbit_origin_info2 = itemProperties(rabbit_origin_info2, UNDERLINE + "Strong Hopper", null, null, WHITE + "You jump significantly higher");
         rabbit_origin_info3 = itemProperties(rabbit_origin_info3, UNDERLINE + "Shock Absorption", null, null, WHITE + "You take less fall damage");
         rabbit_origin_info4 = itemProperties(rabbit_origin_info4, UNDERLINE + "Delicious", null, null, WHITE + "You may drop a rabbit's foot when hit");
