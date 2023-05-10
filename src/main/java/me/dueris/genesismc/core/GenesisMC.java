@@ -36,6 +36,7 @@ import me.dueris.genesismc.core.origins.arachnid.ArachnidMain;
 import me.dueris.genesismc.core.origins.human.HumanMain;
 import me.dueris.genesismc.core.origins.shulk.ShulkInv;
 import me.dueris.genesismc.core.origins.shulk.ShulkMain;
+import me.dueris.genesismc.custom_origins.handlers.CustomOriginExistCheck;
 import me.dueris.genesismc.custom_origins.powers.WorldSpawnHandler;
 import org.bukkit.*;
 import org.bukkit.enchantments.Enchantment;
@@ -43,7 +44,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerRespawnEvent;
-import org.bukkit.event.server.ServerLoadEvent;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -175,6 +175,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         getServer().getPluginManager().registerEvents(new ChoosingCUSTOM(), this);
         getServer().getPluginManager().registerEvents(new ChoosingEXP(), this);
         getServer().getPluginManager().registerEvents(new EnderReach(), this);
+        getServer().getPluginManager().registerEvents(new CustomOriginExistCheck(), this);
         plugin = this;
         getServer().getPluginManager().registerEvents(new DataContainer(), this);
         if (GenesisDataFiles.getPlugCon().getString("beta-enabled").equalsIgnoreCase("true")) {
@@ -263,6 +264,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
             if(p.isOp()){
                 p.sendMessage(ChatColor.BLUE + "Origins Reloaded");
             }
+            CustomOriginExistCheck.customOriginExistCheck(p);
         }
     }
 
