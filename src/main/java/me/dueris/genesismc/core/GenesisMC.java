@@ -259,6 +259,11 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         custom_enchants.add(waterProtectionEnchant);
         registerEnchantment(waterProtectionEnchant);
 
+        for(Player p : Bukkit.getOnlinePlayers()){
+            if(p.isOp()){
+                p.sendMessage(ChatColor.BLUE + "Origins Reloaded");
+            }
+        }
     }
 
     static {
@@ -278,19 +283,6 @@ public final class GenesisMC extends JavaPlugin implements Listener {
             }
 
         }
-    }
-
-    @EventHandler
-    public void StartupCause(ServerLoadEvent e){
-
-        if(e.getType().equals(ServerLoadEvent.LoadType.RELOAD)){
-            for(Player p : Bukkit.getOnlinePlayers()){
-                if(p.isOp()){
-                    p.sendMessage(ChatColor.BLUE + "Origins Reloaded");
-                }
-            }
-        }
-
     }
 
     @Override
