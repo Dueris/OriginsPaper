@@ -16,7 +16,9 @@ import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 
 import static me.dueris.genesismc.core.choosing.ChoosingCORE.*;
 import static me.dueris.genesismc.core.choosing.contents.MainMenuContents.GenesisMainMenuContents;
@@ -72,13 +74,9 @@ public class ChoosingCUSTOM implements Listener {
                                 ItemMeta originIconmeta = originIcon.getItemMeta();
                                 originIconmeta.setDisplayName(CustomOriginAPI.getCustomOriginName(origintag));
                                 originIconmeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-                                ArrayList<String> originIconlore = new ArrayList<>();
-                                originIconlore.add(CustomOriginAPI.getCustomOriginDescription(origintag));
-                                originIconmeta.setLore(originIconlore);
-
+                                originIconmeta.setLore(cutStringsIntoLists(CustomOriginAPI.getCustomOriginDescription(origintag)));
                                 NamespacedKey key = new NamespacedKey(GenesisMC.getPlugin(), "originTag");
                                 originIconmeta.getPersistentDataContainer().set(key, PersistentDataType.STRING, origintag);
-
                                 originIcon.setItemMeta(originIconmeta);
                                 contents.add(originIcon);
                                 customOriginTags.remove(0);
@@ -103,7 +101,6 @@ public class ChoosingCUSTOM implements Listener {
             if (e.getCurrentItem().getItemMeta().getPersistentDataContainer().get(key, PersistentDataType.STRING) != null) {
                 @NotNull Inventory custommenu = Bukkit.createInventory(e.getWhoClicked(), 54, "Custom Origin");
                 String origintag = e.getCurrentItem().getItemMeta().getPersistentDataContainer().get(key, PersistentDataType.STRING);
-                System.out.println(e.getCurrentItem().getItemMeta().getPersistentDataContainer().get(key, PersistentDataType.STRING));
                 if (origintag == null) return;
 
 
@@ -130,10 +127,7 @@ public class ChoosingCUSTOM implements Listener {
                 ItemMeta originIconmeta = originIcon.getItemMeta();
                 originIconmeta.setDisplayName(CustomOriginAPI.getCustomOriginName(origintag));
                 originIconmeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-                ArrayList<String> originIconlore = new ArrayList<>();
-                originIconlore.add(CustomOriginAPI.getCustomOriginDescription(origintag));
-                originIconmeta.setLore(originIconlore);
-
+                originIconmeta.setLore(cutStringsIntoLists(CustomOriginAPI.getCustomOriginDescription(origintag)));
                 originIconmeta.getPersistentDataContainer().set(key, PersistentDataType.STRING, origintag);
                 NamespacedKey chooseKey = new NamespacedKey(GenesisMC.getPlugin(), "originChoose");
                 originIconmeta.getPersistentDataContainer().set(chooseKey, PersistentDataType.INTEGER, 1);
@@ -160,9 +154,7 @@ public class ChoosingCUSTOM implements Listener {
                             ItemMeta meta = originPower.getItemMeta();
                             meta.setDisplayName(powerName);
                             meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-                            ArrayList<String> lore = new ArrayList<>();
-                            lore.add(powerDescription);
-                            meta.setLore(lore);
+                            meta.setLore(cutStringsIntoLists(powerDescription));
                             originPower.setItemMeta(meta);
 
                             contents.add(originPower);
@@ -233,6 +225,22 @@ public class ChoosingCUSTOM implements Listener {
                 }else{e.setCancelled(true);}
             }
         }
+    }
+
+    public List<String> cutStringsIntoLists(String string) {
+        ArrayList<String> strings = new ArrayList<>();
+        while (string.length() > 40) {
+            for (int i = 40; i > 1; i--) {
+                if (String.valueOf(string.charAt(i)).equals(" ")) {
+                    strings.add(string.substring(0, i));
+                    string = string.substring(i+1);
+                    break;
+                }
+            }
+        }
+        if (strings.isEmpty()) return Arrays.asList(string);
+        strings.add(string);
+        return strings.stream().toList();
     }
 }
 
