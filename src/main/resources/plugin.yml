@@ -2,7 +2,7 @@ name: GenesisMC
 version: '${version}'
 main: me.dueris.genesismc.core.GenesisMC
 api-version: 1.19
-authors: [ Dueris, GenesisMC Team ]
+authors: [ Dueris, Tye ]
 folia-supported: true
 description: Bringing the life and fun of the Origins mod to PaperMC
 website: https://genesismc.gitbook.io/genesismc/
