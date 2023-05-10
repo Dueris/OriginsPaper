@@ -153,7 +153,7 @@ public class CustomOriginAPI {
 
     public static String getCustomOriginIcon(String originTag) {
         Object value = getCustomOriginDetail(originTag, "icon");
-        if (value == null) return "minecraft:player_head";
+        if (value == null || value.equals("minecraft:air")) return "minecraft:player_head";
         return (String) value;
     }
 
@@ -203,12 +203,14 @@ public class CustomOriginAPI {
     }
 
     public static String getCustomOriginPowerName(String originTag, String powerTag) {
+        if (powerTag.equals("origins:fall_immunity")) return "Acrobatics";
         Object value = getOriginPowerDetial(originTag, powerTag, "name");
         if (value == null) return "No Name";
         return (String) value;
     }
 
     public static String getCustomOriginPowerDescription(String originTag, String powerTag) {
+        if (powerTag.equals("origins:fall_immunity")) return "You never take fall damage, no matter from which height you fall.";
         Object value = getOriginPowerDetial(originTag, powerTag, "description");
         if (value == null) return "No Description";
         return (String) value;

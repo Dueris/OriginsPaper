@@ -37,6 +37,7 @@ import me.dueris.genesismc.core.origins.human.HumanMain;
 import me.dueris.genesismc.core.origins.shulk.ShulkInv;
 import me.dueris.genesismc.core.origins.shulk.ShulkMain;
 import me.dueris.genesismc.custom_origins.handlers.CustomOriginExistCheck;
+import me.dueris.genesismc.custom_origins.powers.Powers;
 import me.dueris.genesismc.custom_origins.powers.WorldSpawnHandler;
 import org.bukkit.*;
 import org.bukkit.enchantments.Enchantment;
@@ -176,6 +177,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         getServer().getPluginManager().registerEvents(new ChoosingEXP(), this);
         getServer().getPluginManager().registerEvents(new EnderReach(), this);
         getServer().getPluginManager().registerEvents(new CustomOriginExistCheck(), this);
+        getServer().getPluginManager().registerEvents(new Powers(), this);
         plugin = this;
         getServer().getPluginManager().registerEvents(new DataContainer(), this);
         if (GenesisDataFiles.getPlugCon().getString("beta-enabled").equalsIgnoreCase("true")) {
@@ -266,6 +268,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
             }
             CustomOriginExistCheck.customOriginExistCheck(p);
         }
+        Powers.loadPowers();
     }
 
     static {
