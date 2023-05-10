@@ -2,6 +2,7 @@ package me.dueris.genesismc.core.choosing;
 
 import me.dueris.genesismc.core.GenesisMC;
 import me.dueris.api.factory.CustomOriginAPI;
+import me.dueris.genesismc.core.choosing.contents.ChooseMenuContents;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -17,10 +18,10 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 
 import static me.dueris.genesismc.core.choosing.ChoosingCORE.*;
+import static me.dueris.genesismc.core.choosing.contents.ChooseMenuContents.ChooseMenuContent;
 import static me.dueris.genesismc.core.choosing.contents.MainMenuContents.GenesisMainMenuContents;
 import static org.bukkit.ChatColor.RED;
 import static me.dueris.genesismc.core.items.OrbOfOrigins.orb;
@@ -35,58 +36,7 @@ public class ChoosingCUSTOM implements Listener {
                 if (e.getCurrentItem().getType().equals(Material.TIPPED_ARROW)) {
                     Player p = (Player) e.getWhoClicked();
                     p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 10, 9);
-
-                    ItemStack bars = new ItemStack(Material.IRON_BARS);
-                    ItemStack back = new ItemStack(Material.ARROW);
-                    ItemStack next = new ItemStack(Material.ARROW);
-                    ItemStack menu = new ItemStack(Material.SPECTRAL_ARROW);
-
-                    bars = itemProperties(bars, "", ItemFlag.HIDE_ENCHANTS, null, null);
-                    menu = itemProperties(menu, ChatColor.AQUA + "Return", ItemFlag.HIDE_ENCHANTS, null, null);
-                    back = itemProperties(back, "Back", ItemFlag.HIDE_ENCHANTS, null, null);
-                    next = itemProperties(next, "Next", ItemFlag.HIDE_ENCHANTS, null, null);
-
-                    ArrayList<ItemStack> contents = new ArrayList<>();
-                    ArrayList<String> customOriginTags = CustomOriginAPI.getCustomOriginTags();
-
-                    for (int i = 0; i <= 53; i++) {
-                        if (i % 9 == 0 || (i + 1) % 9 == 0) {
-                            contents.add(bars);
-                        } else if (i == 46) {
-                            contents.add(back);
-                        } else if (i == 49) {
-                            contents.add(menu);
-                        } else if (i == 52) {
-                            contents.add(next);
-                        } else if (i >= 46) {
-                            contents.add(new ItemStack(Material.AIR));
-                        } else {
-                            if (customOriginTags.size() > 0) {
-                                String origintag = customOriginTags.get(0);
-                                while (CustomOriginAPI.getCustomOriginUnChoosable(origintag)) {
-                                    customOriginTags.remove(0);
-                                    origintag = customOriginTags.get(0);
-                                }
-                                String minecraftItem = CustomOriginAPI.getCustomOriginIcon(origintag);
-                                String item = minecraftItem.split(":")[1];
-                                ItemStack originIcon = new ItemStack(Material.valueOf(item.toUpperCase()));
-
-                                ItemMeta originIconmeta = originIcon.getItemMeta();
-                                originIconmeta.setDisplayName(CustomOriginAPI.getCustomOriginName(origintag));
-                                originIconmeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-                                originIconmeta.setLore(cutStringsIntoLists(CustomOriginAPI.getCustomOriginDescription(origintag)));
-                                NamespacedKey key = new NamespacedKey(GenesisMC.getPlugin(), "originTag");
-                                originIconmeta.getPersistentDataContainer().set(key, PersistentDataType.STRING, origintag);
-                                originIcon.setItemMeta(originIconmeta);
-                                contents.add(originIcon);
-                                customOriginTags.remove(0);
-                            } else {
-                                contents.add(new ItemStack(Material.AIR));
-                            }
-                        }
-                    }
-
-                    custommenu.setContents(contents.toArray(new ItemStack[0]));
+                    custommenu.setContents(ChooseMenuContent());
                     e.getWhoClicked().openInventory(custommenu);
 
                 }
@@ -102,6 +52,9 @@ public class ChoosingCUSTOM implements Listener {
                 @NotNull Inventory custommenu = Bukkit.createInventory(e.getWhoClicked(), 54, "Custom Origin");
                 String origintag = e.getCurrentItem().getItemMeta().getPersistentDataContainer().get(key, PersistentDataType.STRING);
                 if (origintag == null) return;
+
+                Player p = (Player) e.getWhoClicked();
+                p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 10, 9);
 
 
                 ArrayList<String> originPowerNames = new ArrayList<>();
@@ -208,10 +161,11 @@ public class ChoosingCUSTOM implements Listener {
             if (e.getView().getTitle().equalsIgnoreCase("Custom Origin")) {
                 if (e.getCurrentItem().getType().equals(Material.SPECTRAL_ARROW)) {
                     Player p = (Player) e.getWhoClicked();
-                    @NotNull Inventory mainmenu = Bukkit.createInventory(e.getWhoClicked(), 54, "Choosing Menu");
-                    mainmenu.setContents(GenesisMainMenuContents(p)); //change it to choose menu later (when i'm not almost falling asleep)
-                    e.getWhoClicked().openInventory(mainmenu);
-                }else{e.setCancelled(true);}
+                    p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 10, 9);
+                    @NotNull Inventory custommenu = Bukkit.createInventory(e.getWhoClicked(), 54, "Custom Origins");
+                    custommenu.setContents(ChooseMenuContent());
+                    e.getWhoClicked().openInventory(custommenu);
+                } else e.setCancelled(true);
             }
         }
     }
@@ -221,13 +175,15 @@ public class ChoosingCUSTOM implements Listener {
         if (e.getCurrentItem() != null) {
             if (e.getView().getTitle().equalsIgnoreCase("Custom Origin")) {
                 if (e.getCurrentItem().getType().equals(Material.BARRIER)) {
+                    Player p = (Player) e.getWhoClicked();
+                    p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 10, 9);
                     e.getWhoClicked().closeInventory();
                 }else{e.setCancelled(true);}
             }
         }
     }
 
-    public List<String> cutStringsIntoLists(String string) {
+    public static List<String> cutStringsIntoLists(String string) {
         ArrayList<String> strings = new ArrayList<>();
         while (string.length() > 40) {
             for (int i = 40; i > 1; i--) {

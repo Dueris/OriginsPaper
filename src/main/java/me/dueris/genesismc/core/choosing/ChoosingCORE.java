@@ -78,6 +78,8 @@ public class ChoosingCORE implements Listener {
         if(e.getCurrentItem() != null){
             if(e.getView().getTitle().equalsIgnoreCase("Choosing Menu")){
                 if(e.getCurrentItem().getType().equals(Material.SPECTRAL_ARROW)) {
+                    Player p = (Player) e.getWhoClicked();
+                    p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 10, 9);
                     e.getClickedInventory().setContents(GenesisMainMenuContents((Player) e.getWhoClicked()));
                     e.setCancelled(true);
                 }else{e.setCancelled(true);}
@@ -86,6 +88,8 @@ public class ChoosingCORE implements Listener {
             }else{
                 if(e.getView().getTitle().equalsIgnoreCase("Custom Origins") || e.getView().getTitle().equalsIgnoreCase("Expanded Origins")){
                     if(e.getCurrentItem().getType().equals(Material.SPECTRAL_ARROW)){
+                        Player p = (Player) e.getWhoClicked();
+                        p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 10, 9);
                         @NotNull Inventory mainmenu = Bukkit.createInventory(e.getWhoClicked(), 54, "Choosing Menu");
                         mainmenu.setContents(GenesisMainMenuContents((Player) e.getWhoClicked()));
                         e.getWhoClicked().openInventory(mainmenu);
@@ -99,8 +103,10 @@ public class ChoosingCORE implements Listener {
     @EventHandler
     public void onCustomOriginClose(InventoryClickEvent e) {
         if (e.getCurrentItem() != null) {
-            if (e.getView().getTitle().equalsIgnoreCase("Choosing Menu")) { //Dueris change the menu to the correct one cos idk what the right one is
+            if (e.getView().getTitle().equalsIgnoreCase("Choosing Menu")) {
                 if (e.getCurrentItem().getType().equals(Material.BARRIER)) {
+                    Player p = (Player) e.getWhoClicked();
+                    p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 10, 9);
                     e.getWhoClicked().closeInventory();
                 }else{e.setCancelled(true);}
             }
