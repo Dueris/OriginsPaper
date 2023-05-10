@@ -51,13 +51,9 @@ public class ChooseMenuContents {
                         customOriginTags.remove(0);
                         origintag = customOriginTags.get(0);
                     }
-                    System.out.println(origintag);
                     String minecraftItem = CustomOriginAPI.getCustomOriginIcon(origintag);
-                    System.out.println(minecraftItem);
                     String item = minecraftItem.split(":")[1];
-                    System.out.println(item);
                     ItemStack originIcon = new ItemStack(Material.valueOf(item.toUpperCase()));
-                    System.out.println(originIcon);
 
                     ItemMeta originIconmeta = originIcon.getItemMeta();
                     originIconmeta.setDisplayName(CustomOriginAPI.getCustomOriginName(origintag));
