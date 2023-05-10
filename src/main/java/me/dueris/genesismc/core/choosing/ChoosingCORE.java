@@ -5,7 +5,6 @@ import me.dueris.genesismc.core.files.GenesisDataFiles;
 import me.dueris.genesismc.custom_origins.powers.WorldSpawnHandler;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
-import org.bukkit.block.Skull;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -415,8 +414,8 @@ public class ChoosingCORE implements Listener {
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
                         if(p.getGameMode() == GameMode.SPECTATOR);
                         Location location = WorldSpawnHandler.NetherSpawn();
-                        e.getWhoClicked().teleportAsync(location)
-                        DefaultChoose.DefaultChoose(p):
+                        e.getWhoClicked().teleportAsync(location);
+                        DefaultChoose.DefaultChoose(p);
                         removeItemPhantom(p);
                         removeItemEnder(p);
                     },1);
@@ -512,8 +511,8 @@ public class ChoosingCORE implements Listener {
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
                         if(p.getGameMode() == GameMode.SPECTATOR);
                         Location location = WorldSpawnHandler.NetherSpawn();
-                        e.getWhoClicked().teleportAsync(location)
-                        DefaultChoose.DefaultChoose(p):
+                        e.getWhoClicked().teleportAsync(location);
+                        DefaultChoose.DefaultChoose(p);
                         removeItemPhantom(p);
                         removeItemEnder(p);
                     },1);
