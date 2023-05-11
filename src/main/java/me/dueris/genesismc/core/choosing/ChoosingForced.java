@@ -21,34 +21,18 @@ public class ChoosingForced extends BukkitRunnable {
             PersistentDataContainer data = p.getPersistentDataContainer();
             @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
             if(origintag.equalsIgnoreCase("genesis:origin-null") || p.getScoreboardTags().contains("choosing")){
+                p.setInvulnerable(true);
                 if(!p.getOpenInventory().getTitle().equalsIgnoreCase("Choosing Menu") && !p.getOpenInventory().getTitle().equalsIgnoreCase("Custom Origins") && !p.getOpenInventory().getTitle().equalsIgnoreCase("Expanded Origins") && !p.getOpenInventory().getTitle().equalsIgnoreCase("Custom Origin")){
                     @NotNull Inventory mainmenu = Bukkit.createInventory(p, 54, "Choosing Menu");
                         mainmenu.setContents(GenesisMainMenuContents(p));
                         p.openInventory(mainmenu);
 
                 }
-            }
+            } else p.setInvulnerable(false);
 
             if (!p.getScoreboardTags().contains("chosen")) {
                 p.addScoreboardTag("choosing");
             }
-            if (p.getScoreboardTags().contains("choosing")) {
-                if (p.getOpenInventory().getTitle().equalsIgnoreCase("Choosing Menu") || p.getOpenInventory().getTitle().equalsIgnoreCase("Custom Origins") || p.getOpenInventory().getTitle().equalsIgnoreCase("Expanded Origins") || p.getOpenInventory().getTitle().equalsIgnoreCase("Custom Origin")) {
-                    p.setGameMode(GameMode.SPECTATOR);
-                } else {
-                    if (p.getGameMode().equals(GameMode.SPECTATOR)) {
-                        p.setGameMode(p.getPreviousGameMode());
-
-                    } else {
-                        p.setGameMode(p.getGameMode());
-                    }
-
-                }
-
-
-            }
-
-
         }
     }
 }
