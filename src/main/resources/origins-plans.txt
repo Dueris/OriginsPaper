@@ -92,7 +92,7 @@ Blazeborn
 Born from Flames: Your natural spawn is in the Nether
 Burning Wrath: When on fire, you deal additional damage
 Fire Immunity: You are immune to all types of fire damage
-To Hot for.. Uh.. Ya.: You damage while in water, and Merlings deal more damage to you
+To Hot for.. Uh.. Ya.: You take damage while in water
 Hotblooded: Due to your hot body, venom burns up, making you immune to poison
 Opposite Forces: You are much weaker in colder biomes and at high altitudes
 Flames of the Nether: Upon hitting someone, they are set on fire
