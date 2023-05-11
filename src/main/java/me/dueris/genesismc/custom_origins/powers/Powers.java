@@ -7,6 +7,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityPotionEffectEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
@@ -85,11 +86,11 @@ public class Powers extends BukkitRunnable implements Listener {
     public static ArrayList<String> strong_arms_break_speed = new ArrayList<>();
 
     public static void loadPowers() {
+        //blazeborn
         nether_spawn.add("genesis:origin-blazeborn");
         burning_wrath.add("genesis:origin-blazeborn");
         fire_immunity.add("genesis:origin-blazeborn");
         water_vulnerability.add("genesis:origin-blazeborn");
-        //add more damage from merling
         hotblooded.add("genesis:origin-blazeborn");
         //add You are much weaker in colder biomes and at high altitudes
         //add set player on fire on hit
@@ -198,6 +199,17 @@ public class Powers extends BukkitRunnable implements Listener {
         e.setCancelled(true);
     }
 
+    //hotblooded
+    @EventHandler
+    public void hotblooded(EntityPotionEffectEvent e) {
+        if (!(e.getEntity() instanceof Player p)) return;
+        @Nullable String origintag =  p.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
+        if (!hotblooded.contains(origintag)) return;
+        if (e.getOldEffect() == null) return;
+        if (e.getOldEffect().getType().getId() == PotionEffectType.HUNGER.getId() || e.getOldEffect().getType().getId() == PotionEffectType.HUNGER.getId()) return;
+        if (e.getModifiedType().getId() == PotionEffectType.HUNGER.getId()) e.setCancelled(true);
+        if (e.getModifiedType().getId() == PotionEffectType.POISON.getId()) e.setCancelled(true);
+    }
     //nether_spawn
     @EventHandler
     public void netherSpawn(PlayerRespawnEvent e) {
