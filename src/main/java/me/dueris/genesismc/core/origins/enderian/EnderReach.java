@@ -48,7 +48,11 @@ public class EnderReach implements Listener {
             Location eyeloc = p.getEyeLocation();
             @NotNull Vector direction = eyeloc.getDirection();
             Predicate<Entity> filter = (entity) -> !entity.equals(p);
-
+            LivingEntity enttarg = p.getTargetEntity(6, false);
+            if(enttarg != null){
+               p.attack(enttarg);
+            }
+            /*
             RayTraceResult traceResult4_5F = p.getWorld().rayTrace(eyeloc, eyeloc.getDirection(), 6, FluidCollisionMode.NEVER, false, 0, filter);
 
             if (traceResult4_5F != null) {
@@ -72,6 +76,7 @@ public class EnderReach implements Listener {
                 }
             }
             }
+            */
         }
     }
 
