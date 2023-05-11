@@ -1,5 +1,6 @@
 package me.dueris.genesismc.core.origins.enderian;
 
+import io.papermc.paper.event.player.PlayerArmSwingEvent;
 import me.dueris.genesismc.core.GenesisMC;
 import org.bukkit.Bukkit;
 import org.bukkit.FluidCollisionMode;
@@ -7,6 +8,7 @@ import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -38,20 +40,22 @@ import static java.util.stream.IntStream.range;
 public class EnderReach implements Listener {
 
     @EventHandler
-    public void OnClickREACH(PlayerArmSwingEvent e) {
+    public void OnClickREACH(PlayerInteractEvent e) {
         PersistentDataContainer data = e.getPlayer().getPersistentDataContainer();
         @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
         if (origintag.equalsIgnoreCase("genesis:origin-enderian")) {
-            if (e.getAction().isLeftClick());
+            if (!e.getAction().isLeftClick()) return;
 
             Player p = e.getPlayer();
             Location eyeloc = p.getEyeLocation();
             @NotNull Vector direction = eyeloc.getDirection();
             Predicate<Entity> filter = (entity) -> !entity.equals(p);
-            LivingEntity enttarg = p.getTargetEntity(6, false);
+            LivingEntity enttarg = (LivingEntity) p.getTargetEntity(6, false);
+            Block blockTarget = p.getTargetBlockExact(6);
             if(enttarg != null){
                p.attack(enttarg);
             }
+            if (blockTarget != null) p.breakBlock(blockTarget);
             /*
             RayTraceResult traceResult4_5F = p.getWorld().rayTrace(eyeloc, eyeloc.getDirection(), 6, FluidCollisionMode.NEVER, false, 0, filter);
 
