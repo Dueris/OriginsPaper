@@ -38,10 +38,10 @@ import static java.util.stream.IntStream.range;
 public class EnderReach implements Listener {
 
     @EventHandler
-    public void OnClickREACH(PlayerInteractEvent e) {
+    public void OnClickREACH(PlayerArmSwingEvent e) {
         PersistentDataContainer data = e.getPlayer().getPersistentDataContainer();
         @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
-        if (origintag == "genesis:origin-enderian") {
+        if (origintag.equalsIgnoreCase("genesis:origin-enderian")) {
             if (e.getAction().isLeftClick());
 
             Player p = e.getPlayer();
