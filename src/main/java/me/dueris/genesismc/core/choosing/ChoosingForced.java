@@ -2,7 +2,6 @@ package me.dueris.genesismc.core.choosing;
 
 import me.dueris.genesismc.core.GenesisMC;
 import org.bukkit.Bukkit;
-import org.bukkit.GameMode;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -21,18 +20,20 @@ public class ChoosingForced extends BukkitRunnable {
             PersistentDataContainer data = p.getPersistentDataContainer();
             @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
             if(origintag.equalsIgnoreCase("genesis:origin-null") || p.getScoreboardTags().contains("choosing")){
-                p.setInvulnerable(true);
                 if(!p.getOpenInventory().getTitle().equalsIgnoreCase("Choosing Menu") && !p.getOpenInventory().getTitle().equalsIgnoreCase("Custom Origins") && !p.getOpenInventory().getTitle().equalsIgnoreCase("Expanded Origins") && !p.getOpenInventory().getTitle().equalsIgnoreCase("Custom Origin")){
                     @NotNull Inventory mainmenu = Bukkit.createInventory(p, 54, "Choosing Menu");
-                        mainmenu.setContents(GenesisMainMenuContents(p));
-                        p.openInventory(mainmenu);
+                    mainmenu.setContents(GenesisMainMenuContents(p));
+                    p.openInventory(mainmenu);
 
                 }
-            } else p.setInvulnerable(false);
+            }
 
             if (!p.getScoreboardTags().contains("chosen")) {
                 p.addScoreboardTag("choosing");
             }
+            if (p.getOpenInventory().getTitle().equalsIgnoreCase("Choosing Menu") || p.getOpenInventory().getTitle().equalsIgnoreCase("Custom Origins") || p.getOpenInventory().getTitle().equalsIgnoreCase("Expanded Origins") || p.getOpenInventory().getTitle().equalsIgnoreCase("Custom Origin")) {
+                p.setInvulnerable(true);
+            } else p.setInvulnerable(false);
         }
     }
 }
