@@ -2,6 +2,7 @@ package me.dueris.genesismc.core.choosing;
 
 import me.dueris.genesismc.core.GenesisMC;
 import me.dueris.api.factory.CustomOriginAPI;
+import me.dueris.genesismc.custom_origins.powers.WorldSpawnHandler;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -172,6 +173,7 @@ public class ChoosingCUSTOM implements Listener {
                 Player p = (Player) e.getWhoClicked();
                 setAtributesToDefualt(p);
                 Bukkit.getScheduler().runTaskLater(GenesisMC.getPlugin(),()->{
+                    if (CustomOriginAPI.getCustomOriginPowers(origintag).contains("origins:nether_spawn") && p.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING).equals("genesis:origin-null")) p.teleport(WorldSpawnHandler.NetherSpawn());
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, origintag);
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
