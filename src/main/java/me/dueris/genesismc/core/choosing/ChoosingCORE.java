@@ -114,17 +114,6 @@ public class ChoosingCORE implements Listener {
     }
 
     @EventHandler
-    public static void ChooserJoin(PlayerJoinEvent e) {
-        PersistentDataContainer data = e.getPlayer().getPersistentDataContainer();
-        @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
-        @NotNull Inventory mainmenu = Bukkit.createInventory(e.getPlayer(), 54, "Choosing Menu");
-        if (origintag == "genesis:origin-null") {
-            mainmenu.setContents(GenesisMainMenuContents(e.getPlayer()));
-            e.getPlayer().openInventory(mainmenu);
-        }
-    }
-
-    @EventHandler
     public void OnChoose(InventoryClickEvent e){
         if (e.getView().getTitle().equalsIgnoreCase("Choosing Menu")) {
         if(e.getCurrentItem() != null){
