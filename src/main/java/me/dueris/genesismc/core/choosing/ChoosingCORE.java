@@ -418,9 +418,6 @@ public class ChoosingCORE implements Listener {
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, "genesis:origin-blazeborn");
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
-                        if(p.getGameMode() == GameMode.SPECTATOR);
-                        Location location = WorldSpawnHandler.NetherSpawn();
-                        e.getWhoClicked().teleportAsync(location);
                         DefaultChoose.DefaultChoose(p);
                         removeItemPhantom(p);
                         removeItemEnder(p);
@@ -515,9 +512,6 @@ public class ChoosingCORE implements Listener {
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, "genesis:origin-piglin");
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
-                        if(p.getGameMode() == GameMode.SPECTATOR);
-                        Location location = WorldSpawnHandler.NetherSpawn();
-                        e.getWhoClicked().teleportAsync(location);
                         DefaultChoose.DefaultChoose(p);
                         removeItemPhantom(p);
                         removeItemEnder(p);
