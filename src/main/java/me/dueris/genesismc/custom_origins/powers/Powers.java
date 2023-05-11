@@ -10,6 +10,9 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -17,7 +20,7 @@ import java.util.Random;
 
 import static org.bukkit.Material.*;
 
-public class Powers implements Listener {
+public class Powers extends BukkitRunnable implements Listener {
 
     public static ArrayList<String> fall_immunity = new ArrayList<>();
     public static ArrayList<String> aerial_combatant = new ArrayList<>();
@@ -33,6 +36,7 @@ public class Powers implements Listener {
     public static ArrayList<String> hunger_over_time = new ArrayList<>();
     public static ArrayList<String> slow_falling = new ArrayList<>();
     public static ArrayList<String> swim_speed = new ArrayList<>();
+    public static ArrayList<String> fire_immunity = new ArrayList<>();
     public static ArrayList<String> fragile = new ArrayList<>();
     public static ArrayList<String> fresh_air = new ArrayList<>();
     public static ArrayList<String> launch_into_air = new ArrayList<>();
@@ -81,18 +85,40 @@ public class Powers implements Listener {
     public static ArrayList<String> strong_arms_break_speed = new ArrayList<>();
 
     public static void loadPowers() {
+        nether_spawn.add("genesis:origin-blazeborn");
+        burning_wrath.add("genesis:origin-blazeborn");
+        fire_immunity.add("genesis:origin-blazeborn");
+        water_vulnerability.add("genesis:origin-blazeborn");
+        //add more damage from merling
+        hotblooded.add("genesis:origin-blazeborn");
+        //add You are much weaker in colder biomes and at high altitudes
+        //add set player on fire on hit
+
         for (String originTag : CustomOriginAPI.getCustomOriginTags()) {
             for (String power : CustomOriginAPI.getCustomOriginPowers(originTag)) {
                 if (power.equals("origins:fall_immunity")) fall_immunity.add(originTag);
                 else if (power.equals("origins:nether_spawn")) nether_spawn.add(originTag);
+            }
+        }
+    }
 
+    @Override
+    public void run() {
+        for (Player p : Bukkit.getOnlinePlayers()) {
+            PersistentDataContainer data = p.getPersistentDataContainer();
+            @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
+            //burning_wrath
+            if (burning_wrath.contains(origintag)) {
+                if (p.getFireTicks() > 0) {
+                    p.addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, 10, 0, false, false, false));
+                }
             }
         }
     }
 
     //fall_immunity
     @EventHandler
-    public void Acrobatics(EntityDamageEvent e) {
+    public void acrobatics(EntityDamageEvent e) {
         if (!(e.getEntity() instanceof Player p)) return;
         PersistentDataContainer data = p.getPersistentDataContainer();
         @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
@@ -105,7 +131,7 @@ public class Powers implements Listener {
 
     //nether_spawn
     @EventHandler
-    public void NetherSpawn(PlayerRespawnEvent e) {
+    public void netherSpawn(PlayerRespawnEvent e) {
         Player p = e.getPlayer();
         PersistentDataContainer data = p.getPersistentDataContainer();
         @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
