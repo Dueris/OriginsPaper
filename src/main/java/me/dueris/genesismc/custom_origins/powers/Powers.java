@@ -129,6 +129,16 @@ public class Powers extends BukkitRunnable implements Listener {
         }
     }
 
+    //fire_immunity
+    @EventHandler
+    public void fireImmunity(EntityDamageEvent e) {
+        if (!(e.getEntity() instanceof Player p)) return;
+        @Nullable String origintag =  p.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
+        if (!fire_immunity.contains(origintag)) return;
+        if (!(e.getCause() == EntityDamageEvent.DamageCause.FIRE || e.getCause() == EntityDamageEvent.DamageCause.FIRE_TICK)) return;
+        e.setCancelled(true);
+    }
+
     //nether_spawn
     @EventHandler
     public void netherSpawn(PlayerRespawnEvent e) {
