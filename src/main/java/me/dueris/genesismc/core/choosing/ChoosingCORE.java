@@ -283,12 +283,12 @@ public class ChoosingCORE implements Listener {
             sculk.setItemMeta(sculk_meta);
             if (e.getCurrentItem() != null && e.getCurrentItem().containsEnchantment(Enchantment.ARROW_INFINITE)) {
                 setAtributesToDefualt(p);
+                DefaultChoose.DefaultChoose(p);
                 p.setHealthScaled(false);
                 if(e.getCurrentItem().isSimilar(human)){
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, "genesis:origin-human");
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
-                    DefaultChoose.DefaultChoose(p);
                     setAtributesToDefualt(p);
                     p.closeInventory();
                     removeItemPhantom(p);
@@ -309,7 +309,6 @@ public class ChoosingCORE implements Listener {
                         pearl_meta.setLore(pearl_lore);
                         infinpearl.setItemMeta(pearl_meta);
                         p.getInventory().addItem(infinpearl);
-                        DefaultChoose.DefaultChoose(p);
                         p.closeInventory();
                         removeItemPhantom(p);
                     },1);
@@ -326,7 +325,6 @@ public class ChoosingCORE implements Listener {
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, "genesis:origin-shulk");
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
-                        DefaultChoose.DefaultChoose(p);
                         removeItemPhantom(p);
                         removeItemEnder(p);
                     },1);
@@ -338,7 +336,6 @@ public class ChoosingCORE implements Listener {
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, "genesis:origin-arachnid");
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
-                        DefaultChoose.DefaultChoose(p);
                         removeItemPhantom(p);
                         removeItemEnder(p);
                     },1);
@@ -350,7 +347,6 @@ public class ChoosingCORE implements Listener {
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, "genesis:origin-creep");
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 2);
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
-                        DefaultChoose.DefaultChoose(p);
                         removeItemPhantom(p);
                         removeItemEnder(p);
                     },1);
@@ -374,7 +370,6 @@ public class ChoosingCORE implements Listener {
                         switch_meta.setLore(pearl_lore);
                         spectatorswitch.setItemMeta(switch_meta);
                         p.getInventory().addItem(spectatorswitch);
-                        DefaultChoose.DefaultChoose(p);
                         removeItemEnder(p);
                     },1);
                 }
@@ -384,7 +379,6 @@ public class ChoosingCORE implements Listener {
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, "genesis:origin-slimeling");
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
-                        DefaultChoose.DefaultChoose(p);
                         removeItemPhantom(p);
                         removeItemEnder(p);
                     },1);
@@ -395,7 +389,6 @@ public class ChoosingCORE implements Listener {
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, "genesis:origin-feline");
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
-                        DefaultChoose.DefaultChoose(p);
                         p.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(18);
                         removeItemPhantom(p);
                         removeItemEnder(p);
@@ -407,7 +400,6 @@ public class ChoosingCORE implements Listener {
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, "genesis:origin-blazeborn");
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
-                        DefaultChoose.DefaultChoose(p);
                         removeItemPhantom(p);
                         removeItemEnder(p);
                     },1);
@@ -418,7 +410,6 @@ public class ChoosingCORE implements Listener {
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, "genesis:origin-starborne");
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
-                        DefaultChoose.DefaultChoose(p);
                         removeItemPhantom(p);
                         removeItemEnder(p);
                     },1);
@@ -429,7 +420,6 @@ public class ChoosingCORE implements Listener {
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, "genesis:origin-merling");
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
-                        DefaultChoose.DefaultChoose(p);
                         removeItemPhantom(p);
                         removeItemEnder(p);
                     },1);
@@ -440,7 +430,6 @@ public class ChoosingCORE implements Listener {
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, "genesis:origin-allay");
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
-                        DefaultChoose.DefaultChoose(p);
                         removeItemPhantom(p);
                         removeItemEnder(p);
                     },1);
@@ -452,7 +441,6 @@ public class ChoosingCORE implements Listener {
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, "genesis:origin-rabbit");
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
-                        DefaultChoose.DefaultChoose(p);
                         removeItemPhantom(p);
                         removeItemEnder(p);
                     },1);
@@ -463,7 +451,6 @@ public class ChoosingCORE implements Listener {
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, "genesis:origin-bee");
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
-                        DefaultChoose.DefaultChoose(p);
                         p.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(14);
                         removeItemPhantom(p);
                         removeItemEnder(p);
@@ -478,7 +465,6 @@ public class ChoosingCORE implements Listener {
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, "genesis:origin-elytrian");
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
-                        DefaultChoose.DefaultChoose(p);
                         removeItemPhantom(p);
                         removeItemEnder(p);
                     },1);
@@ -490,7 +476,6 @@ public class ChoosingCORE implements Listener {
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, "genesis:origin-avian");
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
-                        DefaultChoose.DefaultChoose(p);
                         removeItemPhantom(p);
                         removeItemEnder(p);
                     },1);
@@ -501,7 +486,6 @@ public class ChoosingCORE implements Listener {
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, "genesis:origin-piglin");
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
-                        DefaultChoose.DefaultChoose(p);
                         removeItemPhantom(p);
                         removeItemEnder(p);
                     },1);
@@ -512,7 +496,6 @@ public class ChoosingCORE implements Listener {
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, "genesis:origin-sculkling");
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
-                        DefaultChoose.DefaultChoose(p);
                         p.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(24);
                         removeItemPhantom(p);
                         removeItemEnder(p);

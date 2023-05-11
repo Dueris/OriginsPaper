@@ -1,10 +1,10 @@
 package me.dueris.genesismc.core.choosing;
 
-import me.dueris.api.events.OriginChooseEvent;
-import me.dueris.api.events.OriginEvent;
+import me.dueris.genesismc.core.GenesisMC;
 import me.dueris.genesismc.core.items.OrbOfOrigins;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
+import org.bukkit.persistence.PersistentDataType;
 
 import static me.dueris.genesismc.core.items.OrbOfOrigins.orb;
 import static org.bukkit.ChatColor.AQUA;
@@ -35,11 +35,11 @@ public class DefaultChoose {
         // DO NOT UNCOMMENT, DUERIS SAID SHE'D FIX IT WHEN SHE'S LESS TIRED AND THIS ERROR TOOK AN HOUR TO FIND
         //Bukkit.getServer().getPluginManager().callEvent(new OriginChooseEvent(p));
 
-        if (p.getInventory().getItemInMainHand().isSimilar(OrbOfOrigins.orb)) {
+        if (p.getInventory().getItemInMainHand().isSimilar(OrbOfOrigins.orb) && !p.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING).equals("genesis:origin-null")) {
             int amt = p.getInventory().getItemInMainHand().getAmount();
             p.getInventory().getItemInMainHand().setAmount(amt - 1);
         } else {
-            if (p.getInventory().getItemInOffHand().isSimilar(orb)) {
+            if (p.getInventory().getItemInOffHand().isSimilar(orb) && !p.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING).equals("genesis:origin-null")) {
                 int amt = p.getInventory().getItemInOffHand().getAmount();
                 p.getInventory().getItemInOffHand().setAmount(amt - 1);
             }
