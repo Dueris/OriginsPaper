@@ -45,6 +45,7 @@ public class ChoosingCUSTOM implements Listener {
     @EventHandler(priority = EventPriority.HIGH)
     public void CUSOTMCHOOSE_ORIGIN(InventoryClickEvent e) {
         if (e.getCurrentItem() != null) {
+            if (e.getCurrentItem().getItemMeta() == null) return;
             NamespacedKey key = new NamespacedKey(GenesisMC.getPlugin(), "originTag");
             if (e.getCurrentItem().getItemMeta().getPersistentDataContainer().get(key, PersistentDataType.STRING) != null) {
                 @NotNull Inventory custommenu = Bukkit.createInventory(e.getWhoClicked(), 54, "Custom Origin");
@@ -163,6 +164,7 @@ public class ChoosingCUSTOM implements Listener {
     @EventHandler(priority = EventPriority.HIGH)
     public void CustomOriginSelect(InventoryClickEvent e) {
         if (e.getCurrentItem() != null) {
+            if (e.getCurrentItem().getItemMeta() == null) return;
             NamespacedKey chooseKey = new NamespacedKey(GenesisMC.getPlugin(), "originChoose");
             if (e.getCurrentItem().getItemMeta().getPersistentDataContainer().get(chooseKey, PersistentDataType.INTEGER) != null) {
                 NamespacedKey key = new NamespacedKey(GenesisMC.getPlugin(), "originTag");
