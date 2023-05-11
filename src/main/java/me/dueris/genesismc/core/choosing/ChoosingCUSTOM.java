@@ -67,15 +67,16 @@ public class ChoosingCUSTOM implements Listener {
                     }
                 }
 
-                ItemStack close = new ItemStack(Material.BARRIER);
-                ItemStack back = new ItemStack(Material.SPECTRAL_ARROW);
-
                 String minecraftItem = CustomOriginAPI.getCustomOriginIcon(origintag);
                 String item = minecraftItem.split(":")[1];
                 ItemStack originIcon = new ItemStack(Material.valueOf(item.toUpperCase()));
 
-                close = itemProperties(close, RED + "Close", null, null, RED + "Cancel Choosing");
-                back = itemProperties(back, ChatColor.AQUA + "Return", ItemFlag.HIDE_ENCHANTS, null, null);
+                ItemStack close = itemProperties(new ItemStack(Material.BARRIER), RED + "Close", null, null, RED + "Cancel Choosing");
+                ItemStack back = itemProperties(new ItemStack(Material.SPECTRAL_ARROW), ChatColor.AQUA + "Return", ItemFlag.HIDE_ENCHANTS, null, null);
+                ItemStack lowImpact = itemProperties(new ItemStack(Material.GREEN_STAINED_GLASS_PANE), ChatColor.WHITE + "Impact: " + ChatColor.GREEN + "Low", null, null, null);
+                ItemStack mediumImpact = itemProperties(new ItemStack(Material.YELLOW_STAINED_GLASS_PANE), ChatColor.WHITE + "Impact: " + ChatColor.YELLOW + "Medium", null, null, null);
+                ItemStack highImpact = itemProperties(new ItemStack(Material.RED_STAINED_GLASS_PANE), ChatColor.WHITE + "Impact: " + ChatColor.RED + "High", null, null, null);
+
 
                 ItemMeta originIconmeta = originIcon.getItemMeta();
                 originIconmeta.setDisplayName(CustomOriginAPI.getCustomOriginName(origintag));
@@ -88,13 +89,40 @@ public class ChoosingCUSTOM implements Listener {
                 originIcon.setItemMeta(originIconmeta);
 
                 ArrayList<ItemStack> contents = new ArrayList<>();
+                long impact = CustomOriginAPI.getCustomOriginImpact(origintag);
 
                 for (int i = 0; i <= 53; i++) {
                     if (i == 0 || i == 8) {
                         contents.add(close);
-                    } else if (i == 4) {
+                    }
+                    else if (i == 1) {                                          //impact
+                        if (impact == 1) contents.add(lowImpact);
+                        if (impact == 2) contents.add(mediumImpact);
+                        if (impact == 3) contents.add(highImpact);
+                    } else if (i == 2) {
+                        if (impact == 2) contents.add(mediumImpact);
+                        else if (impact == 3) contents.add(highImpact);
+                        else contents.add(new ItemStack(Material.AIR));
+                    } else if (i == 3){
+                        if (impact == 3) contents.add(highImpact);
+                        else contents.add(new ItemStack(Material.AIR));
+                    }
+                    else if (i == 4) {
                         contents.add(orb);
-                    } else if (i == 13) {
+                    }
+                    else if (i == 5){                                           //impact
+                        if (impact == 3) contents.add(highImpact);
+                        else contents.add(new ItemStack(Material.AIR));
+                    } else if (i == 6){
+                        if (impact == 2) contents.add(mediumImpact);
+                        else if (impact == 3) contents.add(highImpact);
+                        else contents.add(new ItemStack(Material.AIR));
+                    }  else if (i == 7) {
+                        if (impact == 1) contents.add(lowImpact);
+                        if (impact == 2) contents.add(mediumImpact);
+                        if (impact == 3) contents.add(highImpact);
+                    }
+                    else if (i == 13) {
                         contents.add(originIcon);
                     } else if ((i >=20 && i <= 24) || (i >=29 && i <= 33) || (i >=38 && i <= 42)) {
 
