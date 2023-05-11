@@ -397,6 +397,7 @@ public class ChoosingCORE implements Listener {
                 if(e.getCurrentItem().isSimilar(blaze)){
                     setAtributesToDefualt(p);
                     Bukkit.getScheduler().runTaskLater(GenesisMC.getPlugin(),()->{
+                        if (p.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING).equals("genesis:origin-null")) p.teleport(WorldSpawnHandler.NetherSpawn());
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, "genesis:origin-blazeborn");
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
@@ -483,6 +484,7 @@ public class ChoosingCORE implements Listener {
                 if(e.getCurrentItem().isSimilar(piglin)){
                     setAtributesToDefualt(p);
                     Bukkit.getScheduler().runTaskLater(GenesisMC.getPlugin(),()->{
+                        if (p.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING).equals("genesis:origin-null")) p.teleport(WorldSpawnHandler.NetherSpawn());
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, "genesis:origin-piglin");
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
