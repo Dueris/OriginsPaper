@@ -187,6 +187,8 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         InfinPearl.init();
         WaterProtItem.init();
         //runnables main
+        Powers powers = new Powers();
+        powers.runTaskTimer(this, 0, 5);
         ChoosingForced forced = new ChoosingForced();
         forced.runTaskTimer(this, 0, 5);
         Items items = new Items();
