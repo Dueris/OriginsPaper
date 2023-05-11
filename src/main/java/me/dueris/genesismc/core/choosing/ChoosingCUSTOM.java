@@ -2,7 +2,6 @@ package me.dueris.genesismc.core.choosing;
 
 import me.dueris.genesismc.core.GenesisMC;
 import me.dueris.api.factory.CustomOriginAPI;
-import me.dueris.genesismc.core.choosing.contents.ChooseMenuContents;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -22,7 +21,6 @@ import java.util.List;
 
 import static me.dueris.genesismc.core.choosing.ChoosingCORE.*;
 import static me.dueris.genesismc.core.choosing.contents.ChooseMenuContents.ChooseMenuContent;
-import static me.dueris.genesismc.core.choosing.contents.MainMenuContents.GenesisMainMenuContents;
 import static org.bukkit.ChatColor.RED;
 import static me.dueris.genesismc.core.items.OrbOfOrigins.orb;
 
