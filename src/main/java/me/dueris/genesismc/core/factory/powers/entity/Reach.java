@@ -19,13 +19,15 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Predicate;
 
+import static me.dueris.genesismc.core.factory.powers.Powers.extra_reach;
+
 public class Reach  implements Listener {
 
     @EventHandler
     public void OnClickREACH(PlayerInteractEvent e) {
         PersistentDataContainer data = e.getPlayer().getPersistentDataContainer();
         @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
-        if (origintag == "genesis:origin-enderian") {
+        if (extra_reach.contains(origintag)) {
             if (e.getAction().isLeftClick());
 
             Player p = e.getPlayer();
