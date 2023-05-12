@@ -83,7 +83,18 @@ public class Powers implements Listener {
     public static ArrayList<String> phantomize = new ArrayList<>();
     public static ArrayList<String> strong_arms_break_speed = new ArrayList<>();
 
+    //genesis
+    public static ArrayList<String> hot_hands= new ArrayList<>();
+
     public static void loadPowers() {
+
+        //arachnid
+        climbing.add("genesis:origin-arachnid");
+        webbing.add("genesis:origin-arachnid");
+        fragile.add("genesis:origin-arachnid");
+        carnivore.add("genesis:origin-arachnid");
+        no_cobweb_slowdown.add("genesis:origin-arachnid");
+
         //blazeborn
         nether_spawn.add("genesis:origin-blazeborn");
         burning_wrath.add("genesis:origin-blazeborn");
@@ -91,7 +102,14 @@ public class Powers implements Listener {
         water_vulnerability.add("genesis:origin-blazeborn");
         hotblooded.add("genesis:origin-blazeborn");
         //add You are much weaker in colder biomes and at high altitudes
-        //add set player on fire on hit
+        hot_hands.add("genesis:origin-blazeborn");
+
+        //avian
+        slow_falling.add("genesis:origin-avian");
+        tailwind.add("genesis:origin-avian");
+        lay_eggs.add("genesis:origin-avian");
+        vegetarian.add("genesis:origin-avian");
+        fresh_air.add("genesis:origin-avian");
 
         for (String originTag : CustomOriginAPI.getCustomOriginTags()) {
             for (String power : CustomOriginAPI.getCustomOriginPowers(originTag)) {
@@ -156,6 +174,8 @@ public class Powers implements Listener {
                 else if (power.equals("origins:no_cobweb_slowdown")) no_cobweb_slowdown.add(originTag);
                 else if (power.equals("origins:phantomize")) phantomize.add(originTag);
                 else if (power.equals("origins:strong_arms_break_speed")) strong_arms_break_speed.add(originTag);
+
+                else if (power.equals("genesis:hot_hands")) strong_arms_break_speed.add(originTag);
             }
         }
     }
