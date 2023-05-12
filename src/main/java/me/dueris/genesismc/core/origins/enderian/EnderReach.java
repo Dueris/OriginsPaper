@@ -49,13 +49,7 @@ public class EnderReach implements Listener {
                     if (entity.getPassengers().contains(p)) return;
                     if (!entity.isDead()) {
                         LivingEntity ent = (LivingEntity) entity;
-
-                        if (e.getPlayer().getInventory().getItemInMainHand() != null) {
-                            ItemStack itm = e.getPlayer().getInventory().getItemInMainHand();
-                            p.attack(ent);
-                        } else {
-                            p.attack(ent);
-                        }
+                        p.attack(ent);
                     }
                 }
             }
