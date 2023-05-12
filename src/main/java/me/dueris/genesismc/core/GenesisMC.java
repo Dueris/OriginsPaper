@@ -39,6 +39,7 @@ import me.dueris.genesismc.core.origins.shulk.ShulkMain;
 import me.dueris.genesismc.custom_origins.handlers.CustomOriginExistCheck;
 import me.dueris.genesismc.custom_origins.powers.Powers;
 import me.dueris.genesismc.custom_origins.powers.WorldSpawnHandler;
+import me.dueris.genesismc.custom_origins.powers.runnables.BurningWrath;
 import org.bukkit.*;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -187,8 +188,6 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         InfinPearl.init();
         WaterProtItem.init();
         //runnables main
-        Powers powers = new Powers();
-        powers.runTaskTimer(this, 0, 5);
         ChoosingForced forced = new ChoosingForced();
         forced.runTaskTimer(this, 0, 5);
         Items items = new Items();
@@ -258,6 +257,9 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 //sculk
         SculkRunnable sculkrun = new SculkRunnable();
         sculkrun.runTaskTimer(this, 0, 5);
+        //power runnables
+        BurningWrath burningWrath = new BurningWrath();
+        burningWrath.runTaskTimer(this, 0, 5);
 
 //enchantments
         waterProtectionEnchant = new WaterProtection("waterprot");
