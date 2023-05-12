@@ -264,6 +264,8 @@ public class CustomOriginAPI {
         if (powerTag.equals("origins:no_cobweb_slowdown")) return "Hidden";
         if (powerTag.equals("origins:phantomize")) return "Phantom Form";
         if (powerTag.equals("origins:strong_arms_break_speed")) return "Hidden";
+
+        if (powerTag.equals("genesis:hot_hands")) return "Hot Hands";
         Object value = getOriginPowerDetial(originTag, powerTag, "name");
         if (value == null) return "No Name";
         return (String) value;
@@ -331,6 +333,8 @@ public class CustomOriginAPI {
         if (powerTag.equals("origins:no_cobweb_slowdown")) return "Hidden";
         if (powerTag.equals("origins:phantomize")) return "You can switch between human and phantom form at wil, but only while you are saturated enough to sprint.";
         if (powerTag.equals("origins:strong_arms_break_speed")) return "Hidden";
+
+        if (powerTag.equals("genesis:hot_hands")) return "Your punches set mobs alight.";
         Object value = getOriginPowerDetial(originTag, powerTag, "description");
         if (value == null) return "No Description";
         return (String) value;
