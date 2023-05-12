@@ -36,7 +36,7 @@ public class EnderReach implements Listener {
             @NotNull Vector direction = eyeloc.getDirection();
             Predicate<Entity> filter = (entity) -> !entity.equals(p);
 
-            RayTraceResult traceResult4_5F = p.getWorld().rayTrace(eyeloc, eyeloc.getDirection(), 6, FluidCollisionMode.NEVER, false, 0, filter);
+            RayTraceResult traceResult4_5F = p.getWorld().rayTrace(eyeloc, eyeloc.getDirection(), 5, FluidCollisionMode.NEVER, false, 0, filter);
 
             if (traceResult4_5F != null) {
                 Entity entity = traceResult4_5F.getHitEntity();
