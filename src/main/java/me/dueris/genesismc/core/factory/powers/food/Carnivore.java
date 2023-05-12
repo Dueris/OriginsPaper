@@ -12,6 +12,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.EnumSet;
 
+import static me.dueris.genesismc.core.factory.powers.Powers.carnivore;
 import static org.bukkit.Material.*;
 import static org.bukkit.Material.CHORUS_FRUIT;
 
@@ -29,7 +30,7 @@ public class Carnivore implements Listener {
     public void CarnivoreEat(PlayerInteractEvent e){
         PersistentDataContainer data = e.getPlayer().getPersistentDataContainer();
         @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
-        if (origintag.equalsIgnoreCase("genesis:origin-arachnid")) {
+        if (carnivore.contains(origintag)) {
             if(e.getItem() != null){
                 if(!meat.contains(e.getItem().getType()) && !excludable.contains(e.getItem().getType()) && e.getItem().getType().isEdible()) {
                     if (e.getAction().isRightClick()) {

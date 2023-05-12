@@ -13,6 +13,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.EnumSet;
 
+import static me.dueris.genesismc.core.factory.powers.Powers.vegetarian;
 import static org.bukkit.Material.*;
 
 public class Vegitarian implements Listener {
@@ -26,7 +27,7 @@ public class Vegitarian implements Listener {
     public void onItemConsume(PlayerInteractEvent e) {
         PersistentDataContainer data = e.getPlayer().getPersistentDataContainer();
         @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
-        if (origintag.equalsIgnoreCase("genesis:origin-avian")) {
+        if (vegetarian.contains(origintag)) {
             ItemStack item = e.getItem();
             if (item == null) return;
             for (Material food : vegies) {
