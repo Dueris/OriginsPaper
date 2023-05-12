@@ -43,5 +43,6 @@ public class OriginStartHandler {
         getServer().getPluginManager().registerEvents(new Reach(), GenesisMC.getPlugin());
         //getServer().getPluginManager().registerEvents(new NoCobwebSlowdown(), GenesisMC.getPlugin()); -- removed do to anti-cheat triggers
         getServer().getPluginManager().registerEvents(new HotHands(), GenesisMC.getPlugin());
+        getServer().getPluginManager().registerEvents(new FallImmunity(), GenesisMC.getPlugin());
     }
 }
