@@ -41,7 +41,7 @@ public class OriginStartHandler {
         getServer().getPluginManager().registerEvents(new Vegitarian(), GenesisMC.getPlugin());
         getServer().getPluginManager().registerEvents(new FreshAir(), GenesisMC.getPlugin());
         getServer().getPluginManager().registerEvents(new Reach(), GenesisMC.getPlugin());
-        //getServer().getPluginManager().registerEvents(new NoCobwebSlowdown(), GenesisMC.getPlugin());
+        //getServer().getPluginManager().registerEvents(new NoCobwebSlowdown(), GenesisMC.getPlugin()); -- removed do to anti-cheat triggers
         getServer().getPluginManager().registerEvents(new HotHands(), GenesisMC.getPlugin());
     }
 }
