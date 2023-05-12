@@ -17,9 +17,9 @@ import static me.dueris.genesismc.core.factory.powers.Powers.vegetarian;
 import static org.bukkit.Material.*;
 
 public class Vegitarian implements Listener {
-    public static EnumSet<Material> vegies;
+    public static EnumSet<Material> notVeggies;
     static {
-        vegies = EnumSet.of(COOKED_BEEF, COOKED_CHICKEN, COOKED_MUTTON, COOKED_COD, COOKED_PORKCHOP, COOKED_RABBIT, COOKED_SALMON,
+        notVeggies = EnumSet.of(COOKED_BEEF, COOKED_CHICKEN, COOKED_MUTTON, COOKED_COD, COOKED_PORKCHOP, COOKED_RABBIT, COOKED_SALMON,
                 BEEF, CHICKEN, MUTTON, COD, PORKCHOP, RABBIT, SALMON, TROPICAL_FISH, PUFFERFISH, RABBIT_STEW);
     }
 
@@ -30,7 +30,7 @@ public class Vegitarian implements Listener {
         if (vegetarian.contains(origintag)) {
             ItemStack item = e.getItem();
             if (item == null) return;
-            for (Material food : vegies) {
+            for (Material food : notVeggies) {
                 if (item.getType() == food) {
                     e.setCancelled(true);
                 }
