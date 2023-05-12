@@ -94,6 +94,7 @@ public class Powers implements Listener {
         fragile.add("genesis:origin-arachnid");
         carnivore.add("genesis:origin-arachnid");
         no_cobweb_slowdown.add("genesis:origin-arachnid");
+        hotblooded.add("genesis:origin-arachnid");
 
         //blazeborn
         nether_spawn.add("genesis:origin-blazeborn");
@@ -175,7 +176,7 @@ public class Powers implements Listener {
                 else if (power.equals("origins:phantomize")) phantomize.add(originTag);
                 else if (power.equals("origins:strong_arms_break_speed")) strong_arms_break_speed.add(originTag);
 
-                else if (power.equals("genesis:hot_hands")) strong_arms_break_speed.add(originTag);
+                else if (power.equals("genesis:hot_hands")) hot_hands.add(originTag);
             }
         }
     }
