@@ -11,6 +11,7 @@ import me.dueris.genesismc.core.factory.powers.runnables.BurningWrath;
 import me.dueris.genesismc.core.factory.powers.runnables.Climbing;
 import me.dueris.genesismc.core.factory.powers.runnables.NoCobwebSlowdown;
 import me.dueris.genesismc.core.factory.powers.runnables.SlowFalling;
+import me.dueris.genesismc.core.factory.powers.world.WorldSpawnHandler;
 
 import static org.bukkit.Bukkit.getServer;
 
@@ -44,5 +45,7 @@ public class OriginStartHandler {
         //getServer().getPluginManager().registerEvents(new NoCobwebSlowdown(), GenesisMC.getPlugin()); -- removed do to anti-cheat triggers
         getServer().getPluginManager().registerEvents(new HotHands(), GenesisMC.getPlugin());
         getServer().getPluginManager().registerEvents(new FallImmunity(), GenesisMC.getPlugin());
+        getServer().getPluginManager().registerEvents(new HotBlooded(), GenesisMC.getPlugin());
+        getServer().getPluginManager().registerEvents(new WorldSpawnHandler(), GenesisMC.getPlugin());
     }
 }
