@@ -13,13 +13,17 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.HashMap;
 import java.util.Random;
+import java.util.UUID;
 
-import static me.dueris.genesismc.core.factory.powers.Powers.master_of_webs;
+import static me.dueris.genesismc.core.factory.powers.Powers.webbing;
 import static org.bukkit.Material.AIR;
 import static org.bukkit.Material.COBWEB;
 
-public class MasterWebs implements Listener {
+public class Webbing implements Listener {
+
+    private static HashMap<UUID, Boolean> canWeb =new HashMap<>();
 
     @EventHandler
     public void WebMaster(EntityDamageByEntityEvent e) {
@@ -27,29 +31,30 @@ public class MasterWebs implements Listener {
             Player p = (Player) e.getDamager();
             PersistentDataContainer data = p.getPersistentDataContainer();
             @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
-            if (master_of_webs.contains(origintag)) {
+            if (!canWeb.containsKey(p.getUniqueId())) canWeb.put(p.getUniqueId(), Boolean.TRUE);
+            if (!canWeb.get(p.getUniqueId())) return;
+            if (webbing.contains(origintag)) {
                 Location loc = e.getEntity().getLocation();
                 Block b = loc.getBlock();
-                Random random = new Random();
-                int r = random.nextInt(10);
-                if (r == 3) {
-                    b.setType(COBWEB);
-                    new BukkitRunnable() {
+                canWeb.replace(p.getUniqueId(), Boolean.FALSE);
+                b.setType(COBWEB);
+                new BukkitRunnable() {
 
-                        @Override
-                        public void run() {
-                            if(b.getType() == AIR || b.getType() == COBWEB){
-                                b.setType(AIR);
-                                this.cancel();
-                            }else{
-                                this.cancel();
-                            }
+                    @Override
+                    public void run() {
+                        canWeb.replace(p.getUniqueId(), Boolean.TRUE);
+                        if(b.getType() == AIR || b.getType() == COBWEB){
+                            b.setType(AIR);
+                            this.cancel();
+                        }else{
+                            this.cancel();
                         }
+                    }
 
-                    }.runTaskTimer(GenesisMC.getPlugin(), 40L, 5L);
-                }
+                }.runTaskTimer(GenesisMC.getPlugin(), 40L, 5L);
             }
         }
     }
-
 }
+
+
