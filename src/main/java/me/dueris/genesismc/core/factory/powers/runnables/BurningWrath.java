@@ -1,4 +1,4 @@
-package me.dueris.genesismc.custom_origins.powers.runnables;
+package me.dueris.genesismc.core.factory.powers.runnables;
 
 import me.dueris.genesismc.core.GenesisMC;
 import org.bukkit.Bukkit;
@@ -11,7 +11,7 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.Nullable;
 
-import static me.dueris.genesismc.custom_origins.powers.Powers.burning_wrath;
+import static me.dueris.genesismc.core.factory.powers.Powers.burning_wrath;
 
 public class BurningWrath extends BukkitRunnable {
     @Override

@@ -1,4 +1,4 @@
-package me.dueris.api.enums;
+package me.dueris.genesismc.core.api.enums;
 
 public enum OriginType {
 

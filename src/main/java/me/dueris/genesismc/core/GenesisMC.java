@@ -22,9 +22,9 @@ import me.dueris.genesismc.core.origins.piglin.PiglinMain;
 import me.dueris.genesismc.core.origins.rabbit.RabbitLeap;
 import me.dueris.genesismc.core.origins.rabbit.RabbitMain;
 import me.dueris.genesismc.core.utils.ParticleHandler;
-import me.dueris.genesismc.custom_origins.CustomOrigins;
-import me.dueris.api.factory.CustomOriginAPI;
-import me.dueris.genesismc.custom_origins.handlers.CustomMenuHandler;
+import me.dueris.genesismc.core.factory.CustomOrigins;
+import me.dueris.genesismc.core.api.factory.CustomOriginAPI;
+import me.dueris.genesismc.core.factory.handlers.CustomMenuHandler;
 import me.dueris.genesismc.core.enchantments.EnchantProtEvent;
 import me.dueris.genesismc.core.enchantments.WaterProtection;
 import me.dueris.genesismc.core.files.GenesisDataFiles;
@@ -36,10 +36,10 @@ import me.dueris.genesismc.core.origins.arachnid.ArachnidMain;
 import me.dueris.genesismc.core.origins.human.HumanMain;
 import me.dueris.genesismc.core.origins.shulk.ShulkInv;
 import me.dueris.genesismc.core.origins.shulk.ShulkMain;
-import me.dueris.genesismc.custom_origins.handlers.CustomOriginExistCheck;
-import me.dueris.genesismc.custom_origins.powers.Powers;
-import me.dueris.genesismc.custom_origins.powers.WorldSpawnHandler;
-import me.dueris.genesismc.custom_origins.powers.runnables.BurningWrath;
+import me.dueris.genesismc.core.factory.handlers.CustomOriginExistCheck;
+import me.dueris.genesismc.core.factory.powers.Powers;
+import me.dueris.genesismc.core.factory.powers.WorldSpawnHandler;
+import me.dueris.genesismc.core.factory.powers.runnables.BurningWrath;
 import org.bukkit.*;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -124,7 +124,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         if (getServer().getPluginManager().getPlugins().toString().contains("PurpleWolfAPI") || getServer().getPluginManager().isPluginEnabled("OriginsAPI") || getServer().getPluginManager().getPlugin("PurpleWolfAPI") != null) {
             getServer().getConsoleSender().sendMessage(ChatColor.LIGHT_PURPLE + "[GenesisMC - OriginsAPI] Successfully injected OriginsAPI plugin");
         } else {
-            //PurpleWolfAPI not avalible, inject built-in
+            //OriginAPI not avalible, inject built-in
             getServer().getConsoleSender().sendMessage(ChatColor.LIGHT_PURPLE + "[GenesisMC] OriginsAPI not detected. Injecting built-in API");
         }
 

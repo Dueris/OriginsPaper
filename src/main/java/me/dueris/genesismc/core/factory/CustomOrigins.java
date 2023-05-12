@@ -1,4 +1,4 @@
-package me.dueris.genesismc.custom_origins;
+package me.dueris.genesismc.core.factory;
 
 import org.bukkit.event.Listener;
 

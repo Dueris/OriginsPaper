@@ -1,4 +1,4 @@
-package me.dueris.api.factory;
+package me.dueris.genesismc.core.api.factory;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;

@@ -2,7 +2,6 @@ package me.dueris.genesismc.core.origins.piglin;
 
 import com.destroystokyo.paper.event.player.PlayerArmorChangeEvent;
 import me.dueris.genesismc.core.GenesisMC;
-import me.dueris.genesismc.custom_origins.powers.WorldSpawnHandler;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.EntityType;
@@ -11,9 +10,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityTargetLivingEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;

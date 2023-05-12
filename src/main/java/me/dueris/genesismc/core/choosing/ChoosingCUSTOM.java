@@ -1,8 +1,8 @@
 package me.dueris.genesismc.core.choosing;
 
 import me.dueris.genesismc.core.GenesisMC;
-import me.dueris.api.factory.CustomOriginAPI;
-import me.dueris.genesismc.custom_origins.powers.WorldSpawnHandler;
+import me.dueris.genesismc.core.api.factory.CustomOriginAPI;
+import me.dueris.genesismc.core.factory.powers.WorldSpawnHandler;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;

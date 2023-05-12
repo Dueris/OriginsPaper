@@ -2,7 +2,7 @@ package me.dueris.genesismc.core.choosing;
 
 import me.dueris.genesismc.core.GenesisMC;
 import me.dueris.genesismc.core.files.GenesisDataFiles;
-import me.dueris.genesismc.custom_origins.powers.WorldSpawnHandler;
+import me.dueris.genesismc.core.factory.powers.WorldSpawnHandler;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.enchantments.Enchantment;
@@ -12,7 +12,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
@@ -29,7 +28,6 @@ import java.util.List;
 import static me.dueris.genesismc.core.choosing.contents.MainMenuContents.GenesisMainMenuContents;
 import static me.dueris.genesismc.core.choosing.contents.origins.ExpandedOriginContent.*;
 import static me.dueris.genesismc.core.choosing.contents.origins.OriginalOriginContent.*;
-import static me.dueris.genesismc.custom_origins.powers.WorldSpawnHandler.NetherSpawn;
 import static org.bukkit.ChatColor.*;
 
 public class ChoosingCORE implements Listener {

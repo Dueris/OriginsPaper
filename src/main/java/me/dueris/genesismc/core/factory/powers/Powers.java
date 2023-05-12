@@ -1,6 +1,6 @@
-package me.dueris.genesismc.custom_origins.powers;
+package me.dueris.genesismc.core.factory.powers;
 
-import me.dueris.api.factory.CustomOriginAPI;
+import me.dueris.genesismc.core.api.factory.CustomOriginAPI;
 import me.dueris.genesismc.core.GenesisMC;
 import org.bukkit.*;
 import org.bukkit.entity.Player;

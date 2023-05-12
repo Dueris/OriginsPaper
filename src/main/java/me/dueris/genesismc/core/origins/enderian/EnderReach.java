@@ -2,40 +2,62 @@ package me.dueris.genesismc.core.origins.enderian;
 
 import io.papermc.paper.event.player.PlayerArmSwingEvent;
 import me.dueris.genesismc.core.GenesisMC;
+import org.bukkit.FluidCollisionMode;
 import org.bukkit.GameMode;
+import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.util.RayTraceResult;
+import org.bukkit.util.Vector;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.function.Predicate;
 
 public class EnderReach implements Listener {
 
     @EventHandler
-    public void OnClickREACH(PlayerArmSwingEvent e) {
+    public void OnClickREACH(PlayerInteractEvent e) {
         PersistentDataContainer data = e.getPlayer().getPersistentDataContainer();
         @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
-        if (origintag.equalsIgnoreCase("genesis:origin-enderian")) {
+        if (origintag == "genesis:origin-enderian") {
+            if (e.getAction().isLeftClick());
+
             Player p = e.getPlayer();
+            Location eyeloc = p.getEyeLocation();
+            @NotNull Vector direction = eyeloc.getDirection();
+            Predicate<Entity> filter = (entity) -> !entity.equals(p);
 
-            int range = 9;
+            RayTraceResult traceResult4_5F = p.getWorld().rayTrace(eyeloc, eyeloc.getDirection(), 6, FluidCollisionMode.NEVER, false, 0, filter);
 
-            RayTraceResult result = p.rayTraceEntities(range, false);
+            if (traceResult4_5F != null) {
+                Entity entity = traceResult4_5F.getHitEntity();
+                //entity code -- pvp
+                if (entity == null) return;
+                Player attacker = (Player) e.getPlayer();
+                LivingEntity victim = (LivingEntity) traceResult4_5F.getHitEntity();
+                if(attacker.getLocation().distance(victim.getLocation()) <=5){
 
-            if (result != null && result.getHitEntity() instanceof LivingEntity target) {
+                    if (entity.getPassengers().contains(p)) return;
+                    if (!entity.isDead()) {
+                        LivingEntity ent = (LivingEntity) entity;
 
-                double maxRange = p.getGameMode() == GameMode.CREATIVE ? 4.5 : 3.0;
-
-                boolean canAttack = result.getHitPosition().distanceSquared(p.getEyeLocation().toVector()) > (maxRange * maxRange);
-
-                if (canAttack) {
-                    p.attack(target);
+                        if (e.getPlayer().getInventory().getItemInMainHand() != null) {
+                            ItemStack itm = e.getPlayer().getInventory().getItemInMainHand();
+                            p.attack(ent);
+                        } else {
+                            p.attack(ent);
+                        }
+                    }
                 }
-
             }
         }
     }

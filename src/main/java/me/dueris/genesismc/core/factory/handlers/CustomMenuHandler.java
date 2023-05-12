@@ -1,24 +1,8 @@
-package me.dueris.genesismc.custom_origins.handlers;
+package me.dueris.genesismc.core.factory.handlers;
 
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
-import org.bukkit.entity.HumanEntity;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
-
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.DirectoryStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-
-import static me.dueris.genesismc.core.items.OrbOfOrigins.orb;
-import static org.bukkit.Bukkit.getServer;
-import static org.bukkit.ChatColor.LIGHT_PURPLE;
 
 public class CustomMenuHandler implements Listener {
 

@@ -1,6 +1,6 @@
 package me.dueris.genesismc.core.choosing.contents;
 
-import me.dueris.api.factory.CustomOriginAPI;
+import me.dueris.genesismc.core.api.factory.CustomOriginAPI;
 import me.dueris.genesismc.core.GenesisMC;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
