@@ -1,9 +1,7 @@
-package me.dueris.genesismc.core.origins.enderian;
+package me.dueris.genesismc.core.factory.powers.entity;
 
-import io.papermc.paper.event.player.PlayerArmSwingEvent;
 import me.dueris.genesismc.core.GenesisMC;
 import org.bukkit.FluidCollisionMode;
-import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Entity;
@@ -12,7 +10,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.util.RayTraceResult;
@@ -22,7 +19,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Predicate;
 
-public class EnderReach implements Listener {
+public class Reach  implements Listener {
 
     @EventHandler
     public void OnClickREACH(PlayerInteractEvent e) {
@@ -56,5 +53,3 @@ public class EnderReach implements Listener {
         }
     }
 }
-
-
