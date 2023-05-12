@@ -1,4 +1,4 @@
-package me.dueris.genesismc.core.factory.powers;
+package me.dueris.genesismc.core.factory.powers.world;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
