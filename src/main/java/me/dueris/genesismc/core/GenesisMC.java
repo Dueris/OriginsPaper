@@ -13,7 +13,6 @@ import me.dueris.genesismc.core.factory.powers.OriginStartHandler;
 import me.dueris.genesismc.core.generation.WaterProtBookGen;
 import me.dueris.genesismc.core.items.Items;
 import me.dueris.genesismc.core.utils.ParticleHandler;
-import me.dueris.genesismc.core.factory.CustomOrigins;
 import me.dueris.genesismc.core.api.factory.CustomOriginAPI;
 import me.dueris.genesismc.core.factory.handlers.CustomMenuHandler;
 import me.dueris.genesismc.core.enchantments.EnchantProtEvent;
@@ -77,8 +76,6 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         getServer().getConsoleSender().sendMessage(ChatColor.BLUE + "[GenesisMC]   \\____|  \\___| |_| |_|  \\___| |___/ |_| |___/ |_|  |_|  \\____|");
         getServer().getConsoleSender().sendMessage(ChatColor.LIGHT_PURPLE + "[GenesisMC]  GenesisMC -- Created by Dueris");
         getServer().getConsoleSender().sendMessage(ChatColor.GRAY + "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-        //custom origins loader
-        CustomOrigins.onEnableCustomOrigins();
        try {
                 Class.forName("io.papermc.paper.threadedregions.RegionizedServer");
            getServer().getConsoleSender().sendMessage(ChatColor.RED + "WARNING: FOLIA IS NOT SUPPORTED ON THIS VERSION TYPE. PLEASE USE THE FOLIA BUILD OF THIS VERSION.");
