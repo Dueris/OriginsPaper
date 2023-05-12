@@ -9,6 +9,8 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.Nullable;
 
+import static me.dueris.genesismc.core.factory.powers.Powers.ender_particles;
+
 public class ParticleHandler extends BukkitRunnable {
     @Override
     public void run() {
@@ -17,7 +19,7 @@ public class ParticleHandler extends BukkitRunnable {
             @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
             if (p.getGameMode() != GameMode.SPECTATOR && !p.hasPotionEffect(PotionEffectType.INVISIBILITY)) {
                 //origintag.equalsIgnoreCase("genesis:origin-")
-                if (origintag == "genesis:origin-enderian") {
+                if (ender_particles.contains(origintag)) {
                     p.getWorld().spawnParticle(Particle.PORTAL, p.getLocation(), 4, 0.6F, -0.5, 0.6F);
                 }
                 //origintag.equalsIgnoreCase("genesis:origin-")
