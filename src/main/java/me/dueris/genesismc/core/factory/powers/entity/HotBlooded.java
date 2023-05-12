@@ -22,7 +22,7 @@ public class HotBlooded implements Listener {
         if (e.getOldEffect() == null) return;
         if (e.getOldEffect().getType().getId() == PotionEffectType.HUNGER.getId() || e.getOldEffect().getType().getId() == PotionEffectType.HUNGER.getId()) return;
         if (e.getModifiedType().getId() == PotionEffectType.HUNGER.getId()) e.setCancelled(true);
-        if (e.getModifiedType().getId() == PotionEffectType.POISON.getId()) e.setCancelled(true);
+        if (e.getModifiedType().getId() == PotionEffectType.POISON.getId()) e.setCancelled(true); ((Player) e.getEntity()).getActivePotionEffects().remove(PotionEffectType.POISON);
     }
 
 }
