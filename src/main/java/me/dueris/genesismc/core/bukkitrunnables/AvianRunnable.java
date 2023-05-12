@@ -17,14 +17,6 @@ public class AvianRunnable extends BukkitRunnable {
 
     @Override
     public void run() {
-        for (Player p : Bukkit.getOnlinePlayers()) {
-            PersistentDataContainer data = p.getPersistentDataContainer();
-            @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
-            if (origintag.equalsIgnoreCase("genesis:origin-avian")) {
-                if (!p.isGliding() && !p.isSneaking() && !p.isSleeping() && !p.isDeeplySleeping() && !(p.getLocation().getBlock().getRelative(BlockFace.DOWN).getType() == Material.SLIME_BLOCK)) {
-                    p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_FALLING, 10, 0, false, false, false));
-                }
-            }
-        }
+
     }
 }
