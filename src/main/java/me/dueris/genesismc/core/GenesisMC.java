@@ -9,6 +9,7 @@ import me.dueris.genesismc.core.commands.ToggleCommand;
 import me.dueris.genesismc.core.commands.subcommands.origin.Info;
 import me.dueris.genesismc.core.commands.subcommands.origin.Purge;
 import me.dueris.genesismc.core.enchantments.WaterProtAnvil;
+import me.dueris.genesismc.core.factory.powers.OriginStartHandler;
 import me.dueris.genesismc.core.generation.WaterProtBookGen;
 import me.dueris.genesismc.core.items.Items;
 import me.dueris.genesismc.core.origins.avian.AvianMain;
@@ -31,14 +32,13 @@ import me.dueris.genesismc.core.files.GenesisDataFiles;
 import me.dueris.genesismc.core.items.InfinPearl;
 import me.dueris.genesismc.core.items.OrbOfOrigins;
 import me.dueris.genesismc.core.items.WaterProtItem;
-import me.dueris.genesismc.core.origins.arachnid.ArachnidClimb;
 import me.dueris.genesismc.core.origins.arachnid.ArachnidMain;
 import me.dueris.genesismc.core.origins.human.HumanMain;
 import me.dueris.genesismc.core.origins.shulk.ShulkInv;
 import me.dueris.genesismc.core.origins.shulk.ShulkMain;
 import me.dueris.genesismc.core.factory.handlers.CustomOriginExistCheck;
 import me.dueris.genesismc.core.factory.powers.Powers;
-import me.dueris.genesismc.core.factory.powers.WorldSpawnHandler;
+import me.dueris.genesismc.core.factory.powers.world.WorldSpawnHandler;
 import me.dueris.genesismc.core.factory.powers.runnables.BurningWrath;
 import org.bukkit.*;
 import org.bukkit.enchantments.Enchantment;
@@ -150,121 +150,53 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         getCommand("shulker").setExecutor(new ShulkInv());
         getCommand("toggle").setExecutor(new ToggleCommand());
 //Event Handler Register
-        getServer().getPluginManager().registerEvents(new EnderSilkTouch(), this);
-        getServer().getPluginManager().registerEvents(new EnderTeleport(), this);
-        getServer().getPluginManager().registerEvents(new HumanMain(), this);
-        getServer().getPluginManager().registerEvents(new EnderMain(), this);
         getServer().getPluginManager().registerEvents(new Purge(), this);
-        getServer().getPluginManager().registerEvents(new ShulkMain(), this);
         getServer().getPluginManager().registerEvents(new JoiningHandler(), this);
         getServer().getPluginManager().registerEvents(new EnchantProtEvent(), this);
-        getServer().getPluginManager().registerEvents(new ArachnidMain(), this);
         getServer().getPluginManager().registerEvents(new CustomMenuHandler(), this);
         getServer().getPluginManager().registerEvents(new WaterProtAnvil(), this);
-        getServer().getPluginManager().registerEvents(new CreepMain(), this);
-        getServer().getPluginManager().registerEvents(new CreepExplode(), this);
         getServer().getPluginManager().registerEvents(new PlayerAddScoreboard(), this);
-        getServer().getPluginManager().registerEvents(new PhantomForm(), this);
-        getServer().getPluginManager().registerEvents(new PhantomMain(), this);
-        getServer().getPluginManager().registerEvents(new RabbitMain(), this);
-        getServer().getPluginManager().registerEvents(new RabbitLeap(), this);
-        getServer().getPluginManager().registerEvents(new AvianMain(), this);
-        getServer().getPluginManager().registerEvents(new PiglinMain(), this);
         getServer().getPluginManager().registerEvents(new WaterProtBookGen(), this);
         getServer().getPluginManager().registerEvents(new KeybindHandler(), this);
         getServer().getPluginManager().registerEvents(new Info(), this);
         getServer().getPluginManager().registerEvents(new ChoosingCORE(), this);
         getServer().getPluginManager().registerEvents(new ChoosingCUSTOM(), this);
         getServer().getPluginManager().registerEvents(new ChoosingEXP(), this);
-        getServer().getPluginManager().registerEvents(new EnderReach(), this);
-        getServer().getPluginManager().registerEvents(new CustomOriginExistCheck(), this);
-        getServer().getPluginManager().registerEvents(new Powers(), this);
+
         plugin = this;
         getServer().getPluginManager().registerEvents(new DataContainer(), this);
         if (GenesisDataFiles.getPlugCon().getString("beta-enabled").equalsIgnoreCase("true")) {
             getCommand("beta").setExecutor(new BetaCommands());
         }
+
+//origin start begin
+
         OrbOfOrigins.init();
         InfinPearl.init();
         WaterProtItem.init();
-        //runnables main
+
         ChoosingForced forced = new ChoosingForced();
         forced.runTaskTimer(this, 0, 5);
         Items items = new Items();
         items.runTaskTimer(this, 0, 5);
-//particle handler
+
+        OriginStartHandler.StartRunnables();
+
+        OriginStartHandler.StartListeners();
+
+    //particle handler
         ParticleHandler handler = new ParticleHandler();
         handler.runTaskTimer(this, 0, 5);
-//scoreboard
+    //scoreboard
         ScoreboardRunnable scorebo = new ScoreboardRunnable();
         scorebo.runTaskTimer(this, 0, 5);
-//enderian
-        EnderianRunnable enderrun = new EnderianRunnable();
-        enderrun.runTaskTimer(this, 0, 5);
-        EnderianDamageRunnable enderdamagerun = new EnderianDamageRunnable();
-        enderdamagerun.runTaskTimer(this, 0, 20);
-//shulk
-        ShulkRunnable shulkrun = new ShulkRunnable();
-        shulkrun.runTaskTimer(this, 0, 5);
-//arachnid
-        ArachnidRunnable arachnidrun = new ArachnidRunnable();
-        arachnidrun.runTaskTimer(this, 0, 15);
-        ArachnidClimb arachnidrunclimb = new ArachnidClimb();
-        arachnidrunclimb.runTaskTimer(this, 0, 5);
-//creep
-        CreepRunnable creeprun = new CreepRunnable();
-        creeprun.runTaskTimer(this, 0, 15);
-//phantom
-        PhantomRunnable phantomrun = new PhantomRunnable();
-        phantomrun.runTaskTimer(this, 0, 5);
-        PhantomFormRunnable phantomformrun = new PhantomFormRunnable();
-        phantomformrun.runTaskTimer(this, 0, 2);
-        PhantomMain phantommainrun = new PhantomMain();
-        phantommainrun.runTaskTimer(this, 0, 20);
-//slimeling
-        SlimelingRunnable slimelingrun = new SlimelingRunnable();
-        slimelingrun.runTaskTimer(this, 0, 5);
-//vexian
-        VexianRunnable vexianrun = new VexianRunnable();
-        vexianrun.runTaskTimer(this, 0, 5);
-//blazeborn
-        BlazebornRunnable blazebornrun = new BlazebornRunnable();
-        blazebornrun.runTaskTimer(this, 0, 5);
-//starborn
-        StarborneRunnable starbornerun = new StarborneRunnable();
-        starbornerun.runTaskTimer(this, 0, 5);
-//merling
-        MerlingRunnable merlingrun = new MerlingRunnable();
-        merlingrun.runTaskTimer(this, 0, 5);
-//allay
-        AllayRunnable allayrun = new AllayRunnable();
-        allayrun.runTaskTimer(this, 0, 5);
-//bumblebee
-        BumblebeeRunnable bumblebeerun = new BumblebeeRunnable();
-        bumblebeerun.runTaskTimer(this, 0, 5);
-//rabbit
-        RabbitRunnable rabbitrun = new RabbitRunnable();
-        rabbitrun.runTaskTimer(this, 0, 5);
-//elytrian
-        ElytrainRunnable elytrainrun = new ElytrainRunnable();
-        elytrainrun.runTaskTimer(this, 0, 5);
-//avian
-        AvianRunnable avianrun = new AvianRunnable();
-        avianrun.runTaskTimer(this, 0, 5);
-//piglin
-        PiglinRunnable piglinrun = new PiglinRunnable();
-        piglinrun.runTaskTimer(this, 0, 5);
-//sculk
-        SculkRunnable sculkrun = new SculkRunnable();
-        sculkrun.runTaskTimer(this, 0, 5);
-        //power runnables
-        BurningWrath burningWrath = new BurningWrath();
-        burningWrath.runTaskTimer(this, 0, 5);
 
-//enchantments
+    //enchantments
         waterProtectionEnchant = new WaterProtection("waterprot");
         custom_enchants.add(waterProtectionEnchant);
         registerEnchantment(waterProtectionEnchant);
+
+//origin start end
 
         for(Player p : Bukkit.getOnlinePlayers()){
             if(p.isOp()){
