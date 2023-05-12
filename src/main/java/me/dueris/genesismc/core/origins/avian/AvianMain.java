@@ -31,35 +31,7 @@ public class AvianMain implements Listener {
                 CYAN_BED,LIGHT_BLUE_BED, BLUE_BED, PURPLE_BED, MAGENTA_BED, PINK_BED);
     }
 
-    @EventHandler
-    public void onBedLeave(PlayerBedLeaveEvent e) {
-        PersistentDataContainer data = e.getPlayer().getPersistentDataContainer();
-        @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
-        if (origintag.equalsIgnoreCase("genesis:origin-avian")) {
-            Player p = e.getPlayer();
-            long time = Bukkit.getServer().getWorld(p.getWorld().getName()).getTime();
 
-            if (time == 0) {
-                p.getWorld().dropItemNaturally(p.getLocation(), new ItemStack(EGG));
-
-            }
-        }
-    }
-
-    @EventHandler
-    public void onItemConsume(PlayerInteractEvent e) {
-        PersistentDataContainer data = e.getPlayer().getPersistentDataContainer();
-        @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
-        if (origintag.equalsIgnoreCase("genesis:origin-avian")) {
-            ItemStack item = e.getItem();
-            if (item == null) return;
-            for (Material food : inedibleFoodAvian) {
-                if (item.getType() == food) {
-                    e.setCancelled(true);
-                }
-            }
-        }
-    }
 
     @EventHandler
     public void onBedEnter(PlayerBedEnterEvent e) {
