@@ -4,8 +4,9 @@ main: me.dueris.genesismc.core.GenesisMC
 api-version: 1.19
 authors: [ Dueris, Tye ]
 folia-supported: true
+#mine diamonds
 description: Bringing the life and fun of the Origins mod to PaperMC
-website: https://genesismc.gitbook.io/genesismc/
+website: https://genesismc.duckdns.org/
 commands:
   origin:
     description: The main root command for the genesis origin plugin.

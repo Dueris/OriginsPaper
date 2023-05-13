@@ -1,4 +1,4 @@
-package me.dueris.genesismc.core.origins;
+package me.dueris.genesismc.core.factory.powers.world;
 
 import me.dueris.genesismc.core.GenesisMC;
 import org.bukkit.ChatColor;
@@ -23,9 +23,9 @@ import java.util.UUID;
 
 import static me.dueris.genesismc.core.factory.powers.Powers.explode_tick;
 
-public class CreepExplode implements Listener {
+public class ExplodeTick implements Listener {
     private final HashMap<UUID, Long> cooldown;
-    public CreepExplode() {
+    public ExplodeTick() {
         this.cooldown = new HashMap<>();
     }
 

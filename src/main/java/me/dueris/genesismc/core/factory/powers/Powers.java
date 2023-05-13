@@ -101,6 +101,7 @@ public class Powers implements Listener {
         carnivore.add("genesis:origin-arachnid");
         no_cobweb_slowdown.add("genesis:origin-arachnid");
         hotblooded.add("genesis:origin-arachnid");
+        arthropod.add("genesis:origin-arachnid");
 
         //blazeborn
         nether_spawn.add("genesis:origin-blazeborn");
@@ -117,6 +118,14 @@ public class Powers implements Listener {
         lay_eggs.add("genesis:origin-avian");
         vegetarian.add("genesis:origin-avian");
         fresh_air.add("genesis:origin-avian");
+
+        //enderian
+        water_vulnerability.add("genesis:origin-enderian");
+        pumpkin_hate.add("genesis:origin-enderian");
+        extra_reach.add("genesis:origin-enderian");
+        silk_touch.add("genesis:origin-enderian");
+
+
 
         for (String originTag : CustomOriginAPI.getCustomOriginTags()) {
             for (String power : CustomOriginAPI.getCustomOriginPowers(originTag)) {
