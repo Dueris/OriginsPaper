@@ -1,10 +1,7 @@
 package me.dueris.genesismc.core.factory.powers.item;
 
 import me.dueris.genesismc.core.GenesisMC;
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
-import org.bukkit.Sound;
+import org.bukkit.*;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.EnderPearl;
 import org.bukkit.entity.Player;
@@ -64,7 +61,7 @@ public class EnderPearlThrow implements Listener {
             if (e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.LEFT_CLICK_AIR || e.getAction() == Action.LEFT_CLICK_BLOCK || e.getAction() == Action.RIGHT_CLICK_BLOCK) {
                 if (e.getItem() != null) {
                     if (e.getItem().equals(infinpearl)) {
-                        if(p.getCooldown(ENDER_PEARL) == 0){
+                        if(p.getCooldown(ENDER_PEARL) == 0 && p.getGameMode() != GameMode.CREATIVE){
                             p.getInventory().addItem(infinpearl);
                         }
                     }
@@ -89,7 +86,7 @@ public class EnderPearlThrow implements Listener {
         infinpearl.setItemMeta(pearl_meta);
         pearl_meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
         if (throw_ender_pearl.contains(origintag)) {
-            if (!p.getInventory().contains(infinpearl)) {
+            if (!p.getInventory().contains(infinpearl) && p.getGameMode() != GameMode.CREATIVE) {
                 p.getInventory().addItem(infinpearl);
             }
         }
