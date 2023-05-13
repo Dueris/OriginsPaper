@@ -55,5 +55,6 @@ public class OriginStartHandler {
         getServer().getPluginManager().registerEvents(new BowInability(), getPlugin());
         getServer().getPluginManager().registerEvents(new PumpkinHate(), getPlugin());
         getServer().getPluginManager().registerEvents(new Reach(), getPlugin());
+        getServer().getPluginManager().registerEvents(new WaterDamage(), getPlugin());
     }
 }

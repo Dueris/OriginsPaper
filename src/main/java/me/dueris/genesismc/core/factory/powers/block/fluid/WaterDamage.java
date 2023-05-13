@@ -1,5 +1,6 @@
 package me.dueris.genesismc.core.factory.powers.block.fluid;
 
+import io.papermc.paper.event.entity.WaterBottleSplashEvent;
 import me.dueris.genesismc.core.GenesisMC;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
@@ -159,6 +160,17 @@ public class WaterDamage extends BukkitRunnable implements Listener {
         }
         if (origintag.contains("genesis:origin-enderian")) {
             p.playSound(p.getLocation(), Sound.ENTITY_ENDERMAN_DEATH, 10, 5);
+        }
+    }
+
+    @EventHandler
+    public void SplashEnderian(WaterBottleSplashEvent e){
+        if(e.getAffectedEntities() instanceof Player){
+            Player p = (Player) e.getAffectedEntities();
+            PersistentDataContainer data = p.getPersistentDataContainer();
+            @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
+            if(water_vulnerability.contains(origintag));
+            p.damage(5);
         }
     }
 
