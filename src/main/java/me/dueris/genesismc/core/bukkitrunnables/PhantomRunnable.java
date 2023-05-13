@@ -64,11 +64,6 @@ public class PhantomRunnable extends BukkitRunnable {
 
                             CraftPlayer craftPlayer = (CraftPlayer) p;
                             ServerPlayer serverPlayer = craftPlayer.getHandle();
-                            //when walking into a block, put player in spectator and make it so they cant go up and down. rewrite movement engine
-                            //upon walk into block, add signal plugin can detect
-                            //just loaded origins bukkit and it doesnt have phantom origin??!?!?
-
-
 
                         }
                 Team team = scoreboard.getTeam("origin-players");

@@ -17,12 +17,6 @@ public class PhantomFormRunnable extends BukkitRunnable {
     @Override
     public void run() {
         for (Player p : Bukkit.getOnlinePlayers()) {
-            
-//            if(p.getGameMode().equals(GameMode.CREATIVE) || p.getGameMode().equals(GameMode.SPECTATOR)){
-//            p.setFlying(true);
-//            }else{
-//            p.setFlying(false);
-//            }
 
             PersistentDataContainer data = p.getPersistentDataContainer();
             @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
@@ -53,6 +47,7 @@ public class PhantomFormRunnable extends BukkitRunnable {
                         if(p.isInsideVehicle()) return;
                         p.setCollidable(false);
                         p.setGameMode(GameMode.SPECTATOR);
+                        p.setFreezeTicks(100);
                         p.setFlying(true);
 
                     }else{

@@ -12,6 +12,7 @@ import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.potion.PotionEffectType;
+import org.checkerframework.checker.units.qual.A;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -85,6 +86,12 @@ public class Powers implements Listener {
 
     //genesis
     public static ArrayList<String> hot_hands= new ArrayList<>();
+    public static ArrayList<String> extra_fire= new ArrayList<>();
+    public static ArrayList<String> entity_ignore= new ArrayList<>();
+    public static ArrayList<String> bow_nope= new ArrayList<>();
+    public static ArrayList<String> silk_touch= new ArrayList<>();
+    public static ArrayList<String> explode_tick= new ArrayList<>();
+    public static ArrayList<String> projectile_immune= new ArrayList<>();
 
     public static void loadPowers() {
 
@@ -94,6 +101,8 @@ public class Powers implements Listener {
         fragile.add("genesis:origin-arachnid");
         carnivore.add("genesis:origin-arachnid");
         no_cobweb_slowdown.add("genesis:origin-arachnid");
+        hotblooded.add("genesis:origin-arachnid");
+        arthropod.add("genesis:origin-arachnid");
 
         //blazeborn
         nether_spawn.add("genesis:origin-blazeborn");
@@ -110,6 +119,17 @@ public class Powers implements Listener {
         lay_eggs.add("genesis:origin-avian");
         vegetarian.add("genesis:origin-avian");
         fresh_air.add("genesis:origin-avian");
+
+        //enderian
+        water_vulnerability.add("genesis:origin-enderian");
+        pumpkin_hate.add("genesis:origin-enderian");
+        extra_reach.add("genesis:origin-enderian");
+        silk_touch.add("genesis:origin-enderian");
+        projectile_immune.add("genesis:origin-enderian");
+        throw_ender_pearl.add("genesis:origin-enderian");
+        ender_particles.add("genesis:origin-enderian");
+
+
 
         for (String originTag : CustomOriginAPI.getCustomOriginTags()) {
             for (String power : CustomOriginAPI.getCustomOriginPowers(originTag)) {
@@ -175,87 +195,16 @@ public class Powers implements Listener {
                 else if (power.equals("origins:phantomize")) phantomize.add(originTag);
                 else if (power.equals("origins:strong_arms_break_speed")) strong_arms_break_speed.add(originTag);
 
-                else if (power.equals("genesis:hot_hands")) strong_arms_break_speed.add(originTag);
+                else if (power.equals("genesis:hot_hands")) hot_hands.add(originTag);
+                else if (power.equals("genesis:extra_fire_tick")) extra_fire.add(originTag);
+                else if (power.equals("genesis:bow_inability")) bow_nope.add(originTag);
+                else if (power.equals("genesis:silk_touch")) silk_touch.add(originTag);
+                else if (power.equals("genesis:explode_tick")) explode_tick.add(originTag);
+                else if (power.equals("genesis:projectile-immune")) projectile_immune.add(originTag);
+
+                //drop_head
+                //entity_ignore
             }
-        }
-    }
-
-    //fall_immunity
-    @EventHandler
-    public void acrobatics(EntityDamageEvent e) {
-        if (!(e.getEntity() instanceof Player p)) return;
-        PersistentDataContainer data = p.getPersistentDataContainer();
-        @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
-        if (fall_immunity.contains(origintag)) {
-            if (e.getCause() == EntityDamageEvent.DamageCause.FALL) {
-                e.setCancelled(true);
-            }
-        }
-    }
-
-    //fire_immunity
-    @EventHandler
-    public void fireImmunity(EntityDamageEvent e) {
-        if (!(e.getEntity() instanceof Player p)) return;
-        @Nullable String origintag =  p.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
-        if (!fire_immunity.contains(origintag)) return;
-        if (!(e.getCause() == EntityDamageEvent.DamageCause.FIRE || e.getCause() == EntityDamageEvent.DamageCause.FIRE_TICK)) return;
-        e.setCancelled(true);
-    }
-
-    //hotblooded
-    @EventHandler
-    public void hotblooded(EntityPotionEffectEvent e) {
-        if (!(e.getEntity() instanceof Player p)) return;
-        @Nullable String origintag =  p.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
-        if (!hotblooded.contains(origintag)) return;
-        if (e.getOldEffect() == null) return;
-        if (e.getOldEffect().getType().getId() == PotionEffectType.HUNGER.getId() || e.getOldEffect().getType().getId() == PotionEffectType.HUNGER.getId()) return;
-        if (e.getModifiedType().getId() == PotionEffectType.HUNGER.getId()) e.setCancelled(true);
-        if (e.getModifiedType().getId() == PotionEffectType.POISON.getId()) e.setCancelled(true);
-    }
-    //nether_spawn
-    @EventHandler
-    public void netherSpawn(PlayerRespawnEvent e) {
-        Player p = e.getPlayer();
-        PersistentDataContainer data = p.getPersistentDataContainer();
-        @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
-        if (nether_spawn.contains(origintag)) {
-            if (!(e.isBedSpawn() || e.isAnchorSpawn())) {
-                Location spawnLocation = null;
-                for (World world : Bukkit.getWorlds()) {
-                    if (world.getEnvironment() == World.Environment.NETHER) {
-
-                        Random random = new Random();
-                        Location location = new Location(world, random.nextInt(-300, 300), 32, random.nextInt(-300, 300));
-
-                        for (int x = (int) (location.getX()-100); x < location.getX()+100; x++) {
-                            for (int z = (int) (location.getZ()-100); z < location.getZ()+100; z++) {
-                                yLoop:
-                                for (int y = (int) (location.getY()); y < location.getY()+68; y++) {
-                                    if (new Location(world, x, y, z).getBlock().getType() != AIR) continue;
-                                    if (new Location(world, x, y+1, z).getBlock().getType() != AIR) continue;
-                                    Material blockBeneath = new Location(world, x, y-1, z).getBlock().getType();
-                                    if (blockBeneath == AIR || blockBeneath == LAVA || blockBeneath == FIRE || blockBeneath == SOUL_FIRE) continue;
-
-                                    for (int potentialX = (int) (new Location(world, x, y, z).getX()-2); potentialX < new Location(world, x, y, z).getX()+2; potentialX++) {
-                                        for (int potentialY = (int) (new Location(world, x, y, z).getY()); potentialY < new Location(world, x, y, z).getY()+2; potentialY++) {
-                                            for (int potentialZ = (int) (new Location(world, x, y, z).getZ()-2); potentialZ < new Location(world, x, y, z).getZ()+2; potentialZ++) {
-                                                if (new Location(world, potentialX, potentialY, potentialZ).getBlock().getType() != AIR) continue yLoop;
-                                            }
-                                        }
-                                    }
-                                    spawnLocation = (new Location(world, x+0.5, y, z+0.5));
-                                }
-                            }
-                        }
-                        break;
-                    }
-                }
-                if (spawnLocation == null) return;
-                e.setRespawnLocation(spawnLocation);
-            }
-
         }
     }
 }

@@ -25,14 +25,6 @@ public class EnderianRunnable extends BukkitRunnable {
             @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
             if (origintag.equalsIgnoreCase("genesis:origin-enderian")) {
 
-
-                List<Entity> nearby23 = p.getNearbyEntities(3, 3, 3);
-
-                for (Entity tmp : nearby23)
-                    if (tmp instanceof CraftThrownPotion)
-                        p.damage(2);
-
-
                 ItemStack infinpearl = new ItemStack(ENDER_PEARL);
 
 
