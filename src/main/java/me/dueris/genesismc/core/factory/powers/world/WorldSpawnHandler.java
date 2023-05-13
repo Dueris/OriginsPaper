@@ -34,7 +34,7 @@ public class WorldSpawnHandler implements Listener {
             if (world.getEnvironment() == World.Environment.NETHER) {
 
                 Random random = new Random();
-                Location location = new Location(world, random.nextInt(-300, 300), 32, random.nextInt(-300, 300));
+                Location location = new Location(world, random.nextInt(-150, 150), 32, random.nextInt(-150, 150));
 
                 for (int x = (int) (location.getX() - 100); x < location.getX() + 100; x++) {
                     for (int z = (int) (location.getZ() - 100); z < location.getZ() + 100; z++) {
