@@ -22,7 +22,7 @@ import static me.dueris.genesismc.core.factory.powers.Powers.nether_spawn;
 import static org.bukkit.Material.*;
 
 public class WorldSpawnHandler implements Listener {
-    public static boolean isOutsideBorder(Block block){
+    public static boolean isInsideBorder(Block block){
         WorldBorder border = block.getWorld().getWorldBorder();
         double radius = border.getSize() / 2;
         Location location = block.getLocation(), center = border.getCenter();
@@ -49,7 +49,7 @@ public class WorldSpawnHandler implements Listener {
                             for (int potentialX = (int) (new Location(world, x, y, z).getX() - 2); potentialX < new Location(world, x, y, z).getX() + 2; potentialX++) {
                                 for (int potentialY = (int) (new Location(world, x, y, z).getY()); potentialY < new Location(world, x, y, z).getY() + 2; potentialY++) {
                                     for (int potentialZ = (int) (new Location(world, x, y, z).getZ() - 2); potentialZ < new Location(world, x, y, z).getZ() + 2; potentialZ++) {
-                                        if ((new Location(world, potentialX, potentialY, potentialZ).getBlock().getType() != AIR) || (isOutsideBorder(new Location(world, potentialX, potentialY, potentialZ).getBlock())))
+                                        if ((new Location(world, potentialX, potentialY, potentialZ).getBlock().getType() != AIR) || (isInsideBorder(new Location(world, potentialX, potentialY, potentialZ).getBlock())))
                                             continue yLoop;
                                     }
                                 }
