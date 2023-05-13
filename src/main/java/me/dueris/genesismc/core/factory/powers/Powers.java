@@ -91,6 +91,7 @@ public class Powers implements Listener {
     public static ArrayList<String> bow_nope= new ArrayList<>();
     public static ArrayList<String> silk_touch= new ArrayList<>();
     public static ArrayList<String> explode_tick= new ArrayList<>();
+    public static ArrayList<String> projectile_immune= new ArrayList<>();
 
     public static void loadPowers() {
 
@@ -124,6 +125,9 @@ public class Powers implements Listener {
         pumpkin_hate.add("genesis:origin-enderian");
         extra_reach.add("genesis:origin-enderian");
         silk_touch.add("genesis:origin-enderian");
+        projectile_immune.add("genesis:origin-enderian");
+        throw_ender_pearl.add("genesis:origin-enderian");
+        ender_particles.add("genesis:origin-enderian");
 
 
 
@@ -196,6 +200,7 @@ public class Powers implements Listener {
                 else if (power.equals("genesis:bow_inability")) bow_nope.add(originTag);
                 else if (power.equals("genesis:silk_touch")) silk_touch.add(originTag);
                 else if (power.equals("genesis:explode_tick")) explode_tick.add(originTag);
+                else if (power.equals("genesis:projectile-immune")) projectile_immune.add(originTag);
 
                 //drop_head
                 //entity_ignore

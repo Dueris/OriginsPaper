@@ -8,6 +8,7 @@ import me.dueris.genesismc.core.factory.powers.block.solid.PumpkinHate;
 import me.dueris.genesismc.core.factory.powers.entity.*;
 import me.dueris.genesismc.core.factory.powers.food.Carnivore;
 import me.dueris.genesismc.core.factory.powers.food.Vegitarian;
+import me.dueris.genesismc.core.factory.powers.item.EnderPearlThrow;
 import me.dueris.genesismc.core.factory.powers.runnables.BurningWrath;
 import me.dueris.genesismc.core.factory.powers.runnables.Climbing;
 import me.dueris.genesismc.core.factory.powers.runnables.SlowFalling;
@@ -56,5 +57,7 @@ public class OriginStartHandler {
         getServer().getPluginManager().registerEvents(new PumpkinHate(), getPlugin());
         getServer().getPluginManager().registerEvents(new Reach(), getPlugin());
         getServer().getPluginManager().registerEvents(new WaterDamage(), getPlugin());
+        getServer().getPluginManager().registerEvents(new ProjectileImmune(), getPlugin());
+        getServer().getPluginManager().registerEvents(new EnderPearlThrow(), getPlugin());
     }
 }
