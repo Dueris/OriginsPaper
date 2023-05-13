@@ -102,3 +102,5 @@ permissions:
     default: op
   genesismc.origins.cmd.toggle:
     default: true
+  genesismc.origins.cmd.recipe:
+    default: true

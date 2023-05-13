@@ -8,6 +8,7 @@ import me.dueris.genesismc.core.commands.TabAutoComplete;
 import me.dueris.genesismc.core.commands.ToggleCommand;
 import me.dueris.genesismc.core.commands.subcommands.origin.Info;
 import me.dueris.genesismc.core.commands.subcommands.origin.Purge;
+import me.dueris.genesismc.core.commands.subcommands.origin.Recipe;
 import me.dueris.genesismc.core.enchantments.WaterProtAnvil;
 import me.dueris.genesismc.core.factory.powers.OriginStartHandler;
 import me.dueris.genesismc.core.generation.WaterProtBookGen;
@@ -145,6 +146,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         getServer().getPluginManager().registerEvents(new ChoosingCORE(), this);
         getServer().getPluginManager().registerEvents(new ChoosingCUSTOM(), this);
         getServer().getPluginManager().registerEvents(new ChoosingEXP(), this);
+        getServer().getPluginManager().registerEvents(new Recipe(), this);
 
         plugin = this;
         getServer().getPluginManager().registerEvents(new DataContainer(), this);
