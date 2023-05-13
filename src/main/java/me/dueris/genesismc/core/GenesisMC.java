@@ -144,7 +144,6 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         getServer().getPluginManager().registerEvents(new Info(), this);
         getServer().getPluginManager().registerEvents(new ChoosingCORE(), this);
         getServer().getPluginManager().registerEvents(new ChoosingCUSTOM(), this);
-        getServer().getPluginManager().registerEvents(new ChoosingEXP(), this);
 
         plugin = this;
         getServer().getPluginManager().registerEvents(new DataContainer(), this);

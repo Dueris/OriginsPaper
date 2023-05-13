@@ -3,6 +3,10 @@ package me.dueris.genesismc.core.factory.powers.block.fluid;
 import me.dueris.genesismc.core.GenesisMC;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -14,7 +18,7 @@ import java.util.UUID;
 
 import static me.dueris.genesismc.core.factory.powers.Powers.water_vulnerability;
 
-public class WaterDamage extends BukkitRunnable {
+public class WaterDamage extends BukkitRunnable implements Listener {
     private final HashMap<UUID, Long> cooldown;
     public WaterDamage() {
         this.cooldown = new HashMap<>();
@@ -138,4 +142,25 @@ public class WaterDamage extends BukkitRunnable {
             }
         }
     }
+
+    @EventHandler
+    public void OnDeathWater(PlayerDeathEvent e){
+        Player p = e.getEntity();
+        PersistentDataContainer data = p.getPersistentDataContainer();
+        @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
+        if (water_vulnerability.contains(origintag)) {
+            Random random = new Random();
+            int r = random.nextInt(2);
+            if (p.isInWaterOrRainOrBubbleColumn()) {
+                p.playSound(p.getLocation(), Sound.ENTITY_ENDERMAN_DEATH, 10, 5);
+                e.setDeathMessage(p.getName() + " took a bath for too long");
+            }
+            p.getLocation().getWorld().dropItem(p.getLocation(), new ItemStack(Material.ENDER_PEARL, r));
+        }
+        if (origintag.contains("genesis:origin-enderian")) {
+            p.playSound(p.getLocation(), Sound.ENTITY_ENDERMAN_DEATH, 10, 5);
+        }
+    }
+
+
 }

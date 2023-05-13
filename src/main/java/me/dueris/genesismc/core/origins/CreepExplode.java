@@ -1,4 +1,4 @@
-package me.dueris.genesismc.core.origins.creep;
+package me.dueris.genesismc.core.origins;
 
 import me.dueris.genesismc.core.GenesisMC;
 import org.bukkit.ChatColor;
@@ -21,6 +21,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
+import static me.dueris.genesismc.core.factory.powers.Powers.explode_tick;
+
 public class CreepExplode implements Listener {
     private final HashMap<UUID, Long> cooldown;
     public CreepExplode() {
@@ -33,10 +35,8 @@ public class CreepExplode implements Listener {
         Player p = e.getPlayer();
         PersistentDataContainer data = p.getPersistentDataContainer();
         @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
-        PersistentDataContainer datacreep = p.getPersistentDataContainer();
-        int creepcanid = datacreep.get(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER);
-        if (origintag.equalsIgnoreCase("genesis:origin-creep")) {
-            if(creepcanid == 2){
+        if (explode_tick.contains(origintag)) {
+
             cooldown.remove(p.getUniqueId());
             new BukkitRunnable() {
                 Material block = e.getPlayer().getLocation().getBlock().getType();
@@ -112,9 +112,6 @@ public class CreepExplode implements Listener {
             }.runTaskTimer(GenesisMC.getPlugin(), 0L, 5L);
         } else {
             }
-
-        } else {
-        }
     }
 
 

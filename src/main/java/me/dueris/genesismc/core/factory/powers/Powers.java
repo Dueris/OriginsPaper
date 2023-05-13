@@ -12,6 +12,7 @@ import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.potion.PotionEffectType;
+import org.checkerframework.checker.units.qual.A;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -85,6 +86,11 @@ public class Powers implements Listener {
 
     //genesis
     public static ArrayList<String> hot_hands= new ArrayList<>();
+    public static ArrayList<String> extra_fire= new ArrayList<>();
+    public static ArrayList<String> entity_ignore= new ArrayList<>();
+    public static ArrayList<String> bow_nope= new ArrayList<>();
+    public static ArrayList<String> silk_touch= new ArrayList<>();
+    public static ArrayList<String> explode_tick= new ArrayList<>();
 
     public static void loadPowers() {
 
@@ -177,6 +183,13 @@ public class Powers implements Listener {
                 else if (power.equals("origins:strong_arms_break_speed")) strong_arms_break_speed.add(originTag);
 
                 else if (power.equals("genesis:hot_hands")) hot_hands.add(originTag);
+                else if (power.equals("genesis:extra_fire_tick")) extra_fire.add(originTag);
+                else if (power.equals("genesis:bow_inability")) bow_nope.add(originTag);
+                else if (power.equals("genesis:silk_touch")) silk_touch.add(originTag);
+                else if (power.equals("genesis:explode_tick")) explode_tick.add(originTag);
+
+                //drop_head
+                //entity_ignore
             }
         }
     }

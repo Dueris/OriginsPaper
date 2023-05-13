@@ -30,6 +30,8 @@ import java.util.HashMap;
 import java.util.Random;
 import java.util.UUID;
 
+import static me.dueris.genesismc.core.factory.powers.Powers.water_vulnerability;
+
 
 public class EnderMain implements Listener {
     private final HashMap<UUID, Long> cooldown;
@@ -73,25 +75,7 @@ public class EnderMain implements Listener {
     }
 
     @EventHandler
-    public void onDrink(PlayerItemConsumeEvent e){
-        Player p = e.getPlayer();
-        PersistentDataContainer data = p.getPersistentDataContainer();
-        @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
-        if (origintag.equalsIgnoreCase("genesis:origin-enderian")) {
-            if(e.getItem().getType().equals(Material.PUMPKIN_PIE)){
-                p.getWorld().createExplosion(p.getLocation(), 0);
-                p.setHealth(1);
-                p.setFoodLevel(p.getFoodLevel()-8);
-            }
-            if(e.getItem().getType().equals(Material.POTION)){
-                p.damage(2);
-            }
-        }
-
-    }
-
-    @EventHandler
-    public void onMovement(PlayerMoveEvent e) {
+    public void OnMovement(PlayerMoveEvent e) {
         Player p = e.getPlayer();
         PersistentDataContainer data = p.getPersistentDataContainer();
         @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
@@ -133,38 +117,5 @@ public class EnderMain implements Listener {
             }
         }
     }
-    @EventHandler
-    public void onDeathWater(PlayerDeathEvent e){
-        Player p = e.getEntity();
-        PersistentDataContainer data = p.getPersistentDataContainer();
-        @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
-        if (origintag.equalsIgnoreCase("genesis:origin-enderian")) {
-            Random random = new Random();
-            int r = random.nextInt(2);
-            if (p.isInWaterOrRainOrBubbleColumn()) {
-                p.playSound(p.getLocation(), Sound.ENTITY_ENDERMAN_DEATH, 10, 5);
-                e.setDeathMessage(p.getName() + " took a bath for too long");
-            }
-                    p.getLocation().getWorld().dropItem(p.getLocation(), new ItemStack(Material.ENDER_PEARL, r));
-            }
-        if (origintag.equalsIgnoreCase("genesis:origin-enderian")) {
-            p.playSound(p.getLocation(), Sound.ENTITY_ENDERMAN_DEATH, 10, 5);
-        }
-        }
-
-    @EventHandler
-    public void onArmorChange(PlayerArmorChangeEvent e) {
-        Player p = e.getPlayer();
-        PersistentDataContainer data = p.getPersistentDataContainer();
-        @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
-        if (origintag.equalsIgnoreCase("genesis:origin-enderian")) {
-            if (e.getNewItem() == null) return;
-            if (e.getNewItem().getType() == Material.CARVED_PUMPKIN) {
-                p.getInventory().setHelmet(new ItemStack(Material.AIR));
-                p.getWorld().dropItemNaturally(p.getLocation(), new ItemStack(Material.CARVED_PUMPKIN));
-            }
-        }
-    }
-
 }
 

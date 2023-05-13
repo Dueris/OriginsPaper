@@ -266,6 +266,9 @@ public class CustomOriginAPI {
         if (powerTag.equals("origins:strong_arms_break_speed")) return "Hidden";
 
         if (powerTag.equals("genesis:hot_hands")) return "Hot Hands";
+        if (powerTag.equals("genesis:extra_fire_tick")) return "Flammable";
+        if (powerTag.equals("genesis:silk_touch")) return "Delicate Touch";
+        if (powerTag.equals("genesis:bow_inability")) return "Horrible Coordination";
         Object value = getOriginPowerDetial(originTag, powerTag, "name");
         if (value == null) return "No Name";
         return (String) value;
@@ -335,6 +338,9 @@ public class CustomOriginAPI {
         if (powerTag.equals("origins:strong_arms_break_speed")) return "Hidden";
 
         if (powerTag.equals("genesis:hot_hands")) return "Your punches set mobs alight.";
+        if (powerTag.equals("genesis:extra_fire_tick")) return "You take 50% more damage from fire";
+        if (powerTag.equals("genesis:silk_touch")) return "You have silk touch hands";
+        if (powerTag.equals("genesis:bow_inability")) return "You are not able to use a bow, you are WAY too clumsy";
         Object value = getOriginPowerDetial(originTag, powerTag, "description");
         if (value == null) return "No Description";
         return (String) value;
