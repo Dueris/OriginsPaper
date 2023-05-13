@@ -2,6 +2,7 @@ package me.dueris.genesismc.core.files;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.json.simple.JSONArray;
@@ -123,5 +124,18 @@ public class GenesisDataFiles {
 
     getOrbCon().addDefault("name", ChatColor.LIGHT_PURPLE + "Orb of Origins");
     getOrbCon().addDefault("orb-of-origins-enabled", true);
+    getOrbCon().addDefault("You can find the correct spelling of items at ", " https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html");
+    getOrbCon().addDefault("crafting.top.left", "NETHERITE_INGOT");
+    getOrbCon().addDefault("crafting.top.middle", "DIAMOND");
+    getOrbCon().addDefault("crafting.top.right", "NETHERITE_INGOT");
+
+    getOrbCon().addDefault("crafting.middle.left", "DIAMOND");
+    getOrbCon().addDefault("crafting.middle.middle", "NETHER_STAR");
+    getOrbCon().addDefault("crafting.middle.right", "DIAMOND");
+
+    getOrbCon().addDefault("crafting.bottom.left", "NETHERITE_INGOT");
+    getOrbCon().addDefault("crafting.bottom.middle", "DIAMOND");
+    getOrbCon().addDefault("crafting.bottom.right", "NETHERITE_INGOT");
+
   }
 }

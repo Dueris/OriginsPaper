@@ -23,6 +23,7 @@ public class GenesisCommandManager implements CommandExecutor {
         subCommands.add(new Get());
         subCommands.add(new Info());
         subCommands.add(new References());
+        subCommands.add(new Recipe());
     }
 
 
