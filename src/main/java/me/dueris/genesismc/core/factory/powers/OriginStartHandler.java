@@ -2,6 +2,7 @@ package me.dueris.genesismc.core.factory.powers;
 
 import me.dueris.genesismc.core.GenesisMC;
 import me.dueris.genesismc.core.factory.handlers.CustomOriginExistCheck;
+import me.dueris.genesismc.core.factory.powers.armour.GoldArmourBuff;
 import me.dueris.genesismc.core.factory.powers.block.Webbing;
 import me.dueris.genesismc.core.factory.powers.block.fluid.WaterDamage;
 import me.dueris.genesismc.core.factory.powers.block.solid.PumpkinHate;
@@ -9,6 +10,7 @@ import me.dueris.genesismc.core.factory.powers.entity.*;
 import me.dueris.genesismc.core.factory.powers.food.Carnivore;
 import me.dueris.genesismc.core.factory.powers.food.Vegitarian;
 import me.dueris.genesismc.core.factory.powers.item.EnderPearlThrow;
+import me.dueris.genesismc.core.factory.powers.item.GoldItemBuff;
 import me.dueris.genesismc.core.factory.powers.runnables.*;
 import me.dueris.genesismc.core.factory.powers.world.WorldSpawnHandler;
 
@@ -79,5 +81,7 @@ public class OriginStartHandler {
         getServer().getPluginManager().registerEvents(new ProjectileImmune(), getPlugin());
         getServer().getPluginManager().registerEvents(new EnderPearlThrow(), getPlugin());
         getServer().getPluginManager().registerEvents(new Phantomized(), getPlugin());
+        getServer().getPluginManager().registerEvents(new GoldArmourBuff(), getPlugin());
+        getServer().getPluginManager().registerEvents(new GoldItemBuff(), getPlugin());
     }
 }

@@ -95,6 +95,8 @@ public class Powers implements Listener {
     public static ArrayList<String> charged = new ArrayList<>();
     public static ArrayList<String> felinephobia = new ArrayList<>();
     public static ArrayList<String> fire_weak = new ArrayList<>();
+    public static ArrayList<String> gold_armour_buff = new ArrayList<>();
+    public static ArrayList<String> gold_item_buff = new ArrayList<>();
 
 
     public static void loadPowers() {
@@ -138,6 +140,11 @@ public class Powers implements Listener {
         burn_in_daylight.add("genesis:origin-phantom");
         phantomize.add("genesis:origin-phantom");
         phantomize_overlay.add("genesis:origin-phantom");
+
+        //piglin
+        gold_armour_buff.add("genesis:origin-piglin");
+        gold_item_buff.add("genesis:origin-piglin");
+        carnivore.add("genesis:origin-piglin");
 
 
 
@@ -214,6 +221,8 @@ public class Powers implements Listener {
                 else if (power.equals("genesis:charged")) charged.add(originTag);
                 else if (power.equals("genesis:felinephobia")) felinephobia.add(originTag);
                 else if (power.equals("genesis:fire_weak")) fire_weak.add(originTag);
+                else if (power.equals("gold_armour_buff")) gold_armour_buff.add(originTag);
+                else if (power.equals("gold_item_buff")) gold_item_buff.add(originTag);
 
                 //drop_head
                 //entity_ignore
