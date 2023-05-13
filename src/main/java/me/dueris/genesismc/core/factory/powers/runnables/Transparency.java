@@ -1,8 +1,10 @@
-package me.dueris.genesismc.core.bukkitrunnables;
+package me.dueris.genesismc.core.factory.powers.runnables;
 
 import me.dueris.genesismc.core.GenesisMC;
 import net.minecraft.server.level.ServerPlayer;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.craftbukkit.v1_19_R3.entity.CraftPlayer;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -21,9 +23,10 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 
+import static me.dueris.genesismc.core.factory.powers.Powers.translucent;
 import static org.bukkit.ChatColor.GRAY;
 
-public class PhantomRunnable extends BukkitRunnable {
+public class Transparency extends BukkitRunnable {
     @Override
     public void run() {
         for (Player p : Bukkit.getOnlinePlayers()) {
@@ -31,7 +34,8 @@ public class PhantomRunnable extends BukkitRunnable {
             Scoreboard scoreboard = manager.getNewScoreboard();
             PersistentDataContainer data = p.getPersistentDataContainer();
             @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
-            if (origintag.equalsIgnoreCase("genesis:origin-phantom")) {
+            if (translucent.contains(origintag)) {
+
                 if(!p.getWorld().isDayTime()){
                     p.setInvisible(false);
                 }else{
@@ -53,19 +57,6 @@ public class PhantomRunnable extends BukkitRunnable {
                 switch_meta.setLore(feather_lore);
                 switch_meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
                 spectatorswitch.setItemMeta(switch_meta);
-                int phantomid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER);
-                        if(phantomid == 1){
-                            if(p.getInventory().getItemInMainHand().isSimilar(spectatorswitch)){
-                                //deactivate
-                            }
-                            }else{
-                            //activate
-                            p.setFlySpeed(0.06F);
-
-                            CraftPlayer craftPlayer = (CraftPlayer) p;
-                            ServerPlayer serverPlayer = craftPlayer.getHandle();
-
-                        }
                 Team team = scoreboard.getTeam("origin-players");
                 if(!p.getScoreboard().equals(team) && team != null){
                     team.addPlayer(p);

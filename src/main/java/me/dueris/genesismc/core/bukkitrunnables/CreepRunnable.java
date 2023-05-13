@@ -31,21 +31,12 @@ public class CreepRunnable extends BukkitRunnable {
         for (Player p : Bukkit.getOnlinePlayers()) {
             PersistentDataContainer data = p.getPersistentDataContainer();
             @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
-            if (origintag.equalsIgnoreCase("genesis:origin-creep")) {
 
-                    if(p.getWorld().isThundering()){
-                    p.addPotionEffect(new PotionEffect(PotionEffectType.GLOWING, 20, 0, true, false, false));
-                    p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 20, 2, true, false, false));
-                    p.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 20, 2, true, false, false));
-                    p.addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, 20, 1, true, false, false));
-
-                }
 
                 List<Entity> nearby2 = p.getNearbyEntities(3, 3, 3);
                 for (Entity tmp : nearby2)
                     if (tmp instanceof Cat)
                         ((Damageable) p).damage(1);
-            }
         }
     }
 }

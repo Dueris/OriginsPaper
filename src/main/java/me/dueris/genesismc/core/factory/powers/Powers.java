@@ -92,6 +92,10 @@ public class Powers implements Listener {
     public static ArrayList<String> silk_touch= new ArrayList<>();
     public static ArrayList<String> explode_tick= new ArrayList<>();
     public static ArrayList<String> projectile_immune= new ArrayList<>();
+    public static ArrayList<String> charged = new ArrayList<>();
+    public static ArrayList<String> felinephobia = new ArrayList<>();
+    public static ArrayList<String> fire_weak = new ArrayList<>();
+
 
     public static void loadPowers() {
 
@@ -128,6 +132,12 @@ public class Powers implements Listener {
         projectile_immune.add("genesis:origin-enderian");
         throw_ender_pearl.add("genesis:origin-enderian");
         ender_particles.add("genesis:origin-enderian");
+
+        //phantom
+        translucent.add("genesis:origin-phantom");
+        burn_in_daylight.add("genesis:origin-phantom");
+        phantomize.add("genesis:origin-phantom");
+        phantomize_overlay.add("genesis:origin-phantom");
 
 
 
@@ -201,6 +211,9 @@ public class Powers implements Listener {
                 else if (power.equals("genesis:silk_touch")) silk_touch.add(originTag);
                 else if (power.equals("genesis:explode_tick")) explode_tick.add(originTag);
                 else if (power.equals("genesis:projectile-immune")) projectile_immune.add(originTag);
+                else if (power.equals("genesis:charged")) charged.add(originTag);
+                else if (power.equals("genesis:felinephobia")) felinephobia.add(originTag);
+                else if (power.equals("genesis:fire_weak")) fire_weak.add(originTag);
 
                 //drop_head
                 //entity_ignore

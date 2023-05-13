@@ -283,6 +283,7 @@ public class ChoosingCORE implements Listener {
                 setAtributesToDefualt(p);
                 DefaultChoose.DefaultChoose(p);
                 p.setHealthScaled(false);
+                p.closeInventory();
                 if(e.getCurrentItem().isSimilar(human)){
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, "genesis:origin-human");
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);

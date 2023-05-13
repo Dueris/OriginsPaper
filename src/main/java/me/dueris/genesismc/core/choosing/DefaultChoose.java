@@ -23,7 +23,6 @@ public class DefaultChoose {
         p.getWorld().spawnParticle(Particle.FIREWORKS_SPARK, p.getLocation(), 6);
         p.setCustomNameVisible(false);
         p.getScoreboardTags().add("chosen");
-        p.setGameMode(GameMode.SURVIVAL);
         p.setHealthScaled(false);
 
         Location loc = new Location(p.getWorld(), p.getLocation().getX(), p.getLocation().getY() + 1, p.getLocation().getZ(), p.getLocation().getYaw(), p.getLocation().getPitch());

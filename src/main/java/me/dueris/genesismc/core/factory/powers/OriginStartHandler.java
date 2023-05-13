@@ -9,9 +9,7 @@ import me.dueris.genesismc.core.factory.powers.entity.*;
 import me.dueris.genesismc.core.factory.powers.food.Carnivore;
 import me.dueris.genesismc.core.factory.powers.food.Vegitarian;
 import me.dueris.genesismc.core.factory.powers.item.EnderPearlThrow;
-import me.dueris.genesismc.core.factory.powers.runnables.BurningWrath;
-import me.dueris.genesismc.core.factory.powers.runnables.Climbing;
-import me.dueris.genesismc.core.factory.powers.runnables.SlowFalling;
+import me.dueris.genesismc.core.factory.powers.runnables.*;
 import me.dueris.genesismc.core.factory.powers.world.WorldSpawnHandler;
 
 import static me.dueris.genesismc.core.GenesisMC.getPlugin;
@@ -32,6 +30,27 @@ public class OriginStartHandler {
 
         SlowFalling slowFalling = new SlowFalling();
         slowFalling.runTaskTimer(getPlugin(), 0, 5);
+
+        Charged charged = new Charged();
+        charged.runTaskTimer(getPlugin(), 0, 5);
+
+        FelinePhobia felinePhobia = new FelinePhobia();
+        felinePhobia.runTaskTimer(getPlugin(), 0, 20);
+
+        JumpBetter jumpBetter = new JumpBetter();
+        jumpBetter.runTaskTimer(getPlugin(), 0, 10);
+
+        MineSpeed mineSpeed = new MineSpeed();
+        mineSpeed.runTaskTimer(getPlugin(), 0, 10);
+
+        Transparency transparency = new Transparency();
+        transparency.runTaskTimer(getPlugin(), 0, 10);
+
+        BurnInDaylight burnInDaylight = new BurnInDaylight();
+        burnInDaylight.runTaskTimer(getPlugin(), 0, 10);
+
+        Phantomized phantomized = new Phantomized();
+        phantomized.runTaskTimer(getPlugin(), 0 , 5);
 
     }
 
@@ -59,5 +78,6 @@ public class OriginStartHandler {
         getServer().getPluginManager().registerEvents(new WaterDamage(), getPlugin());
         getServer().getPluginManager().registerEvents(new ProjectileImmune(), getPlugin());
         getServer().getPluginManager().registerEvents(new EnderPearlThrow(), getPlugin());
+        getServer().getPluginManager().registerEvents(new Phantomized(), getPlugin());
     }
 }

@@ -24,6 +24,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 
+import static me.dueris.genesismc.core.factory.powers.Powers.phantomize;
 import static org.bukkit.ChatColor.DARK_AQUA;
 import static org.bukkit.ChatColor.RED;
 
@@ -58,44 +59,32 @@ public class KeybindHandler implements Listener {
 
             p.openInventory(vault);
 
-        } else if (origintag == "genesis:origin-phantom") {
+        } else if (phantomize.contains(origintag)) {
             e.setCancelled(true);
             int phantomid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER);
             if (phantomid == 1) {
-                if (p.getGameMode() != GameMode.SPECTATOR) {
+                if(p.getGameMode() != GameMode.SPECTATOR) {
 
-                    if (p.getFoodLevel() > 6) {
+                    if(p.getFoodLevel() > 6){
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 2);
                         p.sendActionBar(DARK_AQUA + "Activated Phantom Form");
-                        p.setInvisible(true);
                         p.setSilent(true);
                         p.setCollidable(false);
-                        p.setInvulnerable(false);
-                        p.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0.8);
 
-                    } else {
+                    }else{
                         p.sendMessage(RED + "You must be able to sprint to switch forms");
                     }
 
-                    CraftPlayer craftPlayer = (CraftPlayer) p;
-
-                } else {
-                    p.sendMessage(ChatColor.RED + "You are unable to switch forms while inside a block or in spectator mode.");
-                }
+                }else{p.sendMessage(ChatColor.RED + "You are unable to switch forms while inside a block or in spectator mode.");}
             } else if (phantomid == 2) {
-                if (p.getGameMode() != GameMode.SPECTATOR) {
+                if(p.getGameMode() != GameMode.SPECTATOR) {
 
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
                     p.sendActionBar(DARK_AQUA + "Deactivated Phantom Form");
-                    p.setInvisible(false);
                     p.setSilent(false);
                     p.setCollidable(true);
-                    p.setInvulnerable(false);
-                    p.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0.11);
 
-                } else {
-                    p.sendMessage(ChatColor.RED + "You are unable to switch forms while inside a block or in spectator mode.");
-                }
+                }else{p.sendMessage(ChatColor.RED + "You are unable to switch forms while inside a block or in spectator mode.");}
             } else {
                 p.sendMessage(RED + "Error: Switching could not be executed");
             }
