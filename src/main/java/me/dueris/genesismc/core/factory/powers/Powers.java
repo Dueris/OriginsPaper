@@ -97,7 +97,10 @@ public class Powers implements Listener {
     public static ArrayList<String> fire_weak = new ArrayList<>();
     public static ArrayList<String> gold_armour_buff = new ArrayList<>();
     public static ArrayList<String> gold_item_buff = new ArrayList<>();
-
+    public static ArrayList<String> big_leap_tick = new ArrayList<>();
+    public static ArrayList<String> carrot_only = new ArrayList<>();
+    public static ArrayList<String> jump_increased = new ArrayList<>();
+    public static ArrayList<String> rabbit_drop_foot = new ArrayList<>();
 
     public static void loadPowers() {
 
@@ -146,7 +149,18 @@ public class Powers implements Listener {
         gold_item_buff.add("genesis:origin-piglin");
         carnivore.add("genesis:origin-piglin");
 
+        //rabbit
+        sprint_jump.add("genesis:origin-rabbit");
+        big_leap_tick.add("genesis:origin-rabbit");
+        carrot_only.add("genesis:origin-rabbit");
+        jump_increased.add("genesis:origin-rabbit");
+        rabbit_drop_foot.add("genesis:origin-rabbit");
 
+        //creep
+        felinephobia.add("genesis:origin-creep");
+        explode_tick.add("genesis:origin-creep");
+        charged.add("genesis:origin-creep");
+        bow_nope.add("genesis:origin-creep");
 
         for (String originTag : CustomOriginAPI.getCustomOriginTags()) {
             for (String power : CustomOriginAPI.getCustomOriginPowers(originTag)) {
@@ -221,8 +235,12 @@ public class Powers implements Listener {
                 else if (power.equals("genesis:charged")) charged.add(originTag);
                 else if (power.equals("genesis:felinephobia")) felinephobia.add(originTag);
                 else if (power.equals("genesis:fire_weak")) fire_weak.add(originTag);
-                else if (power.equals("gold_armour_buff")) gold_armour_buff.add(originTag);
-                else if (power.equals("gold_item_buff")) gold_item_buff.add(originTag);
+                else if (power.equals("genesis:gold_armour_buff")) gold_armour_buff.add(originTag);
+                else if (power.equals("genesis:gold_item_buff")) gold_item_buff.add(originTag);
+                else if (power.equals("genesis:big_leap_charge")) big_leap_tick.add(originTag);
+                else if (power.equals("genesis:carrots_only")) carrot_only.add(originTag);
+                else if (power.equals("genesis:jump_boost")) jump_increased.add(originTag);
+                else if (power.equals("genesis:drop_rabbit_foot_damage")) rabbit_drop_foot.add(originTag);
 
                 //drop_head
                 //entity_ignore

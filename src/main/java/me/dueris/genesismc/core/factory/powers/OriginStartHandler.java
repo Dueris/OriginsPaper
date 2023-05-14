@@ -1,6 +1,5 @@
 package me.dueris.genesismc.core.factory.powers;
 
-import me.dueris.genesismc.core.GenesisMC;
 import me.dueris.genesismc.core.factory.handlers.CustomOriginExistCheck;
 import me.dueris.genesismc.core.factory.powers.armour.GoldArmourBuff;
 import me.dueris.genesismc.core.factory.powers.block.Webbing;
@@ -8,6 +7,7 @@ import me.dueris.genesismc.core.factory.powers.block.fluid.WaterDamage;
 import me.dueris.genesismc.core.factory.powers.block.solid.PumpkinHate;
 import me.dueris.genesismc.core.factory.powers.entity.*;
 import me.dueris.genesismc.core.factory.powers.food.Carnivore;
+import me.dueris.genesismc.core.factory.powers.food.CarrotOnly;
 import me.dueris.genesismc.core.factory.powers.food.Vegitarian;
 import me.dueris.genesismc.core.factory.powers.item.EnderPearlThrow;
 import me.dueris.genesismc.core.factory.powers.item.GoldItemBuff;
@@ -54,6 +54,9 @@ public class OriginStartHandler {
         Phantomized phantomized = new Phantomized();
         phantomized.runTaskTimer(getPlugin(), 0 , 5);
 
+        JumpIncreased jumpIncreased = new JumpIncreased();
+        jumpIncreased.runTaskTimer(getPlugin(), 0, 10);
+
     }
 
     public static void StartListeners(){
@@ -83,5 +86,7 @@ public class OriginStartHandler {
         getServer().getPluginManager().registerEvents(new Phantomized(), getPlugin());
         getServer().getPluginManager().registerEvents(new GoldArmourBuff(), getPlugin());
         getServer().getPluginManager().registerEvents(new GoldItemBuff(), getPlugin());
+        getServer().getPluginManager().registerEvents(new BigLeap(), getPlugin());
+        getServer().getPluginManager().registerEvents(new CarrotOnly(), getPlugin());
     }
 }

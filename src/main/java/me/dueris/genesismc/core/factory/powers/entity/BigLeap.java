@@ -1,13 +1,9 @@
-package me.dueris.genesismc.core.origins.rabbit;
+package me.dueris.genesismc.core.factory.powers.entity;
 
 import me.dueris.genesismc.core.GenesisMC;
 import org.bukkit.ChatColor;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Sound;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
-import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -16,15 +12,15 @@ import org.bukkit.event.player.PlayerToggleSneakEvent;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scheduler.BukkitScheduler;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
 
-public class RabbitLeap implements Listener {
+import static me.dueris.genesismc.core.factory.powers.Powers.big_leap_tick;
+
+public class BigLeap implements Listener {
 
     private static HashMap<UUID, Integer> cooldownBefore = new HashMap<>();
     private static HashMap<UUID, Long> cooldownAfter = new HashMap<>();
@@ -48,7 +44,7 @@ public class RabbitLeap implements Listener {
     public void onRabbitLeap(PlayerToggleSneakEvent e) {
         PersistentDataContainer data = e.getPlayer().getPersistentDataContainer();
         @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
-        if (origintag.equalsIgnoreCase("genesis:origin-rabbit")) {
+        if (big_leap_tick.contains(origintag)) {
             Player p = e.getPlayer();
             int toggleState = data.get(new NamespacedKey(GenesisMC.getPlugin(), "toggle"), PersistentDataType.INTEGER);
             if (p.isSneaking()) return;
@@ -136,7 +132,7 @@ public class RabbitLeap implements Listener {
 
         PersistentDataContainer data = p.getPersistentDataContainer();
         @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
-        if (origintag.equalsIgnoreCase("genesis:origin-rabbit")) {
+        if (big_leap_tick.contains(origintag)) {
             if (e.getCause() == EntityDamageEvent.DamageCause.FALL) {
                 if (inAir.contains(p.getUniqueId())) {
                     e.setCancelled(true);
@@ -149,4 +145,5 @@ public class RabbitLeap implements Listener {
             }
         }
     }
+
 }

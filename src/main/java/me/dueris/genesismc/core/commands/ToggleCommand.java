@@ -14,7 +14,9 @@ import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import static me.dueris.genesismc.core.origins.rabbit.RabbitLeap.*;
+import static me.dueris.genesismc.core.factory.powers.Powers.big_leap_tick;
+import static me.dueris.genesismc.core.factory.powers.entity.BigLeap.leapToggle;
+
 
 public class ToggleCommand implements CommandExecutor {
     @Override
@@ -29,7 +31,7 @@ public class ToggleCommand implements CommandExecutor {
                 if (toggleState == 1) data.set(new NamespacedKey(GenesisMC.getPlugin(), "toggle"), PersistentDataType.INTEGER, 2);
                 else data.set(new NamespacedKey(GenesisMC.getPlugin(), "toggle"), PersistentDataType.INTEGER, 1);
 
-                if (origintag.equalsIgnoreCase("genesis:origin-rabbit")) {
+                if (big_leap_tick.contains(origintag)) {
                     leapToggle(p);
                 } else if (false) {
                     ; //add other origin toggles here like this
