@@ -239,7 +239,7 @@ public class OriginalOriginContent {
         menu = itemProperties(menu, ChatColor.AQUA + "Return", ItemFlag.HIDE_ENCHANTS, null, null);
         mermaid = itemProperties(mermaid, "Merling", null, Enchantment.ARROW_INFINITE, BLUE + "Merling Origin");
 
-        ItemStack[] mermaidgui_items = {close, air, air, air, orb, impact, impact, impact, close, air, air, air, air, mermaid, air, air, air, air, air, air, mermaid_origin_info1, mermaid_origin_info2, mermaid_origin_info3, mermaid_origin_info4, mermaid_origin_info5, air, air, air, air, mermaid_origin_info6, blank, blank, blank, blank, air, air, air, air, air, air, air, air, air, air, air, air, air, air, air, menu, air, air, air, air};
+        ItemStack[] mermaidgui_items = {close, impact, impact, impact, orb, impact, impact, impact, close, air, air, air, air, mermaid, air, air, air, air, air, air, mermaid_origin_info1, mermaid_origin_info2, mermaid_origin_info3, mermaid_origin_info4, mermaid_origin_info5, air, air, air, air, mermaid_origin_info6, blank, blank, blank, blank, air, air, air, air, air, air, air, air, air, air, air, air, air, air, air, menu, air, air, air, air};
 
         return mermaidgui_items;
     }
@@ -275,7 +275,7 @@ public class OriginalOriginContent {
         menu = itemProperties(menu, ChatColor.AQUA + "Return", ItemFlag.HIDE_ENCHANTS, null, null);
         blaze = itemProperties(blaze, "Blazeborn", null, Enchantment.ARROW_INFINITE, GOLD + "Blaze Origin");
 
-        ItemStack[] blazegui_items = {close, air, air, air, orb, impact, impact, impact, close, air, air, air, air, blaze, air, air, air, air, air, air, blaze_origin_info1, blaze_origin_info2, blaze_origin_info3, blaze_origin_info4, blaze_origin_info5, air, air, air, air, blaze_origin_info6, blaze_origin_info7, blank, blank, blank, air, air, air, air, air, air, air, air, air, air, air, air, air, air, air, menu, air, air, air, air};
+        ItemStack[] blazegui_items = {close, impact, impact, impact, orb, impact, impact, impact, close, air, air, air, air, blaze, air, air, air, air, air, air, blaze_origin_info1, blaze_origin_info2, blaze_origin_info3, blaze_origin_info4, blaze_origin_info5, air, air, air, air, blaze_origin_info6, blaze_origin_info7, blank, blank, blank, air, air, air, air, air, air, air, air, air, air, air, air, air, air, air, menu, air, air, air, air};
 
         return blazegui_items;
     }
@@ -309,7 +309,7 @@ public class OriginalOriginContent {
         menu = itemProperties(menu, ChatColor.AQUA + "Return", ItemFlag.HIDE_ENCHANTS, null, null);
         phantom = itemProperties(phantom, "Phantom", null, Enchantment.ARROW_INFINITE, BLUE + "Phantom Origin");
 
-        ItemStack[] phantomgui_items = {close, air, air, air, orb, impact, impact, impact, close, air, air, air, air, phantom, air, air, air, air, air, air, phantom_origin_info1, phantom_origin_info2, phantom_origin_info3, phantom_origin_info4, phantom_origin_info5, air, air, air, air, phantom_origin_info6, blank, blank, blank, blank, air, air, air, air, air, air, air, air, air, air, air, air, air, air, air, menu, air, air, air, air};
+        ItemStack[] phantomgui_items = {close, impact, impact, impact, orb, impact, impact, impact, close, air, air, air, air, phantom, air, air, air, air, air, air, phantom_origin_info1, phantom_origin_info2, phantom_origin_info3, phantom_origin_info4, phantom_origin_info5, air, air, air, air, phantom_origin_info6, blank, blank, blank, blank, air, air, air, air, air, air, air, air, air, air, air, air, air, air, air, menu, air, air, air, air};
 
         return phantomgui_items;
     }
