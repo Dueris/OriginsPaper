@@ -2,6 +2,7 @@ package me.dueris.genesismc.core;
 
 import me.dueris.genesismc.core.choosing.*;
 import me.dueris.genesismc.core.commands.GenesisCommandManager;
+import me.dueris.genesismc.core.commands.GiveOrbCommandExtentsion;
 import me.dueris.genesismc.core.commands.TabAutoComplete;
 import me.dueris.genesismc.core.commands.ToggleCommand;
 import me.dueris.genesismc.core.commands.subcommands.origin.Purge;
@@ -142,6 +143,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         getServer().getPluginManager().registerEvents(new ChoosingCORE(), this);
         getServer().getPluginManager().registerEvents(new ChoosingCUSTOM(), this);
         getServer().getPluginManager().registerEvents(new Recipe(), this);
+        getServer().getPluginManager().registerEvents(new GiveOrbCommandExtentsion(), this);
 
         plugin = this;
         getServer().getPluginManager().registerEvents(new DataContainer(), this);
@@ -153,7 +155,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         WaterProtItem.init();
 
         ChoosingForced forced = new ChoosingForced();
-        forced.runTaskTimer(this, 0, 5);
+        forced.runTaskTimer(this, 0, 2);
         Items items = new Items();
         items.runTaskTimer(this, 0, 5);
 
@@ -173,7 +175,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         custom_enchants.add(waterProtectionEnchant);
         registerEnchantment(waterProtectionEnchant);
 
-//origin start end
+
 
         for(Player p : Bukkit.getOnlinePlayers()){
             if(p.isOp()){
@@ -183,6 +185,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         }
         Powers.loadPowers();
     }
+    //origin start end
 
     static {
         tool = EnumSet.of(Material.DIAMOND_AXE, Material.DIAMOND_HOE, Material.DIAMOND_PICKAXE, Material.DIAMOND_SHOVEL, Material.DIAMOND_SWORD, Material.GOLDEN_AXE, Material.GOLDEN_HOE, Material.GOLDEN_PICKAXE, Material.GOLDEN_SHOVEL, Material.GOLDEN_SWORD, Material.NETHERITE_AXE, Material.NETHERITE_HOE, Material.NETHERITE_PICKAXE, Material.NETHERITE_SHOVEL, Material.NETHERITE_SWORD, Material.IRON_AXE, Material.IRON_HOE, Material.IRON_PICKAXE, Material.IRON_SHOVEL, Material.IRON_SWORD, Material.WOODEN_AXE, Material.WOODEN_HOE, Material.WOODEN_PICKAXE, Material.WOODEN_SHOVEL, Material.WOODEN_SWORD, Material.SHEARS);
