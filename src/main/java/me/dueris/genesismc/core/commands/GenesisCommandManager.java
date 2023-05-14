@@ -42,15 +42,17 @@ public class GenesisCommandManager implements CommandExecutor {
             if(args.length == 0){
                 p.sendMessage(ChatColor.RED + "You did not provide any args. Here is a list of commands:");
                 p.sendMessage(ChatColor.YELLOW + "-----------------------------------------",
-                        ChatColor.WHITE + "/origins choose",
-                        ChatColor.WHITE + "/origins purge <player_name>",
-                        ChatColor.WHITE + "/origins reload",
-                        ChatColor.WHITE + "/origins commands",
-                        ChatColor.WHITE + "/origins config",
-                        ChatColor.WHITE + "/origins texture",
+                        ChatColor.WHITE + "/origin choose",
+                        ChatColor.WHITE + "/origin purge <player_name>",
+                        ChatColor.WHITE + "/origin get <player>",
+                        ChatColor.WHITE + "/origin set <player>",
+                        ChatColor.WHITE + "/origin enchant",
+                        ChatColor.WHITE + "/origin gui <player>",
+                        ChatColor.WHITE + "/origin info",
+                        ChatColor.WHITE + "/origin has <player>",
+                        ChatColor.WHITE + "/origin recipe",
+                        ChatColor.WHITE + "/origin references",
                         ChatColor.WHITE + "/shulker open",
-                        ChatColor.WHITE + "/leap or /l",
-                        ChatColor.WHITE + "/beta <beta-args>",
                         ChatColor.YELLOW + "-----------------------------------------"
                 );
             }
