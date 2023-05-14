@@ -106,7 +106,6 @@ public class WaterDamage extends BukkitRunnable implements Listener {
 
 
                             if (p.getHealth() >= basedamage && p.getHealth() != 0 && p.getHealth() - basedamage != 0) {
-                                p.getWorld().playSound(p.getLocation(), Sound.ENTITY_ENDERMAN_DEATH, 10.0F, 5.0F);
                                 p.damage(0.0000001);
                                 p.setHealth(curhealth - basedamage);
 
@@ -153,13 +152,12 @@ public class WaterDamage extends BukkitRunnable implements Listener {
             Random random = new Random();
             int r = random.nextInt(2);
             if (p.isInWaterOrRainOrBubbleColumn()) {
-                p.playSound(p.getLocation(), Sound.ENTITY_ENDERMAN_DEATH, 10, 5);
                 e.setDeathMessage(p.getName() + " took a bath for too long");
             }
             p.getLocation().getWorld().dropItem(p.getLocation(), new ItemStack(Material.ENDER_PEARL, r));
         }
         if (origintag.contains("genesis:origin-enderian")) {
-            p.playSound(p.getLocation(), Sound.ENTITY_ENDERMAN_DEATH, 10, 5);
+
         }
     }
 
