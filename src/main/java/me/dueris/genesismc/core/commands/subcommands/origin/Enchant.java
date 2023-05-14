@@ -2,15 +2,20 @@ package me.dueris.genesismc.core.commands.subcommands.origin;
 
 import me.dueris.genesismc.core.commands.subcommands.SubCommand;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.Arrays;
+import java.util.EnumSet;
 import java.util.List;
 
 import static me.dueris.genesismc.core.GenesisMC.waterProtectionEnchant;
 
 public class Enchant extends SubCommand {
+
+    public static EnumSet<Material> wearable;
+
     @Override
     public String getName() {
         return "enchant";
@@ -29,9 +34,8 @@ public class Enchant extends SubCommand {
     @Override
     public void perform(Player p, String[] args) {
         if (p.hasPermission("genesismc.origins.cmd.enchant")) {
-            if (args.length != 1) {
-                if (args[1].equalsIgnoreCase("genesis:water_protection") && args.length == 2
-                ) {
+            if (args.length != 1 && wearable.contains(p.getInventory().getItemInMainHand().getType())) {
+                if (args[1].equalsIgnoreCase("genesis:water_protection") && args.length == 2) {
                     String level = "I";
                     ItemMeta meta = p.getInventory().getItemInMainHand().getItemMeta();
                     meta.setCustomModelData(1);
@@ -70,8 +74,11 @@ public class Enchant extends SubCommand {
                 }
 
             } else {
-                p.sendMessage(ChatColor.RED + "Invalid args!");
+                p.sendMessage(ChatColor.RED + "Invalid Args! Please hold a wearable item");
             }
         }
+    }
+    static {
+        wearable = EnumSet.of(Material.PUMPKIN, Material.CARVED_PUMPKIN, Material.ELYTRA, Material.TURTLE_HELMET, Material.LEATHER_CHESTPLATE, Material.LEATHER_BOOTS, Material.LEATHER_LEGGINGS, Material.LEATHER_HELMET, Material.CHAINMAIL_BOOTS, Material.CHAINMAIL_CHESTPLATE, Material.CHAINMAIL_HELMET, Material.CHAINMAIL_LEGGINGS, Material.IRON_HELMET, Material.IRON_CHESTPLATE, Material.IRON_LEGGINGS, Material.IRON_BOOTS, Material.GOLDEN_HELMET, Material.GOLDEN_CHESTPLATE, Material.GOLDEN_LEGGINGS, Material.GOLDEN_BOOTS, Material.DIAMOND_HELMET, Material.DIAMOND_CHESTPLATE, Material.DIAMOND_LEGGINGS, Material.DIAMOND_BOOTS, Material.NETHERITE_HELMET, Material.NETHERITE_CHESTPLATE, Material.NETHERITE_LEGGINGS, Material.NETHERITE_BOOTS);
     }
     }
