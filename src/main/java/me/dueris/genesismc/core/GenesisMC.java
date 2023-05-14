@@ -1,7 +1,6 @@
 package me.dueris.genesismc.core;
 
 import me.dueris.genesismc.core.choosing.*;
-import me.dueris.genesismc.core.commands.BetaCommands;
 import me.dueris.genesismc.core.commands.GenesisCommandManager;
 import me.dueris.genesismc.core.commands.TabAutoComplete;
 import me.dueris.genesismc.core.commands.ToggleCommand;
@@ -149,9 +148,6 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 
         plugin = this;
         getServer().getPluginManager().registerEvents(new DataContainer(), this);
-        if (GenesisDataFiles.getPlugCon().getString("beta-enabled").equalsIgnoreCase("true")) {
-            getCommand("beta").setExecutor(new BetaCommands());
-        }
 
 //origin start begin
 

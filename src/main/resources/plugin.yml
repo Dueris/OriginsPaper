@@ -14,12 +14,6 @@ commands:
     usage: /<command> <args>
     aliases:
       - o
-  beta:
-    description: Beta Commands for genesis origins.
-    permission: genesismc.origins.cmd.beta
-    usage: /<command> <args>
-    aliases:
-      - b
   shulker:
     description: Opens the shulk inventory.
     usage: /<command>
