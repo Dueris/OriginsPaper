@@ -21,6 +21,7 @@ import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -63,6 +64,10 @@ public class EnderPearlThrow implements Listener {
                     if (e.getItem().equals(infinpearl)) {
                         if(p.getCooldown(ENDER_PEARL) == 0 && p.getGameMode() != GameMode.CREATIVE){
                             p.getInventory().addItem(infinpearl);
+                            Bukkit.getScheduler().runTaskLater(GenesisMC.getPlugin(),()->{
+                                if(p.getInventory().getItemInMainHand().isSimilar(infinpearl));
+                                p.getInventory().getItemInMainHand().setAmount(1);
+                            }, 1);
                         }
                     }
                 }
