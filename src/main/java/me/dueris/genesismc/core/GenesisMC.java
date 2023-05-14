@@ -128,7 +128,6 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         getCommand("origin").setExecutor(new GenesisCommandManager());
         getCommand("origin").setTabCompleter(new TabAutoComplete());
         getCommand("shulker").setTabCompleter(new TabAutoComplete());
-        getCommand("beta").setTabCompleter(new TabAutoComplete());
         getCommand("shulker").setExecutor(new ShulkInv());
         getCommand("toggle").setExecutor(new ToggleCommand());
 //Event Handler Register
