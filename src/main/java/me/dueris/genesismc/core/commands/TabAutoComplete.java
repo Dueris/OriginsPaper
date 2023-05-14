@@ -1,5 +1,7 @@
 package me.dueris.genesismc.core.commands;
 
+import me.dueris.genesismc.core.api.OriginAPI;
+import me.dueris.genesismc.core.api.factory.CustomOriginAPI;
 import me.dueris.genesismc.core.files.GenesisDataFiles;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -10,7 +12,10 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Stream;
 
 public class TabAutoComplete implements TabCompleter {
     @Override
@@ -20,6 +25,7 @@ public class TabAutoComplete implements TabCompleter {
             if (args.length == 1) {
                 List<String> arguments = new ArrayList<>();
                 arguments.add("info");
+                arguments.add("references");
                 if(sender.hasPermission("genesismc.origins.cmd.recipe")){
                     arguments.add("recipe");
                 }
@@ -46,9 +52,6 @@ public class TabAutoComplete implements TabCompleter {
                 }
 
                 return arguments;
-            } else if (args.length >= 3) {
-                    List<String> nothing = new ArrayList<>();
-                    return nothing;
             } else if (args.length == 2) {
                 if (args[0].equalsIgnoreCase("purge")) {
                     Player[] players = new Player[Bukkit.getServer().getOnlinePlayers().size()];
@@ -58,7 +61,7 @@ public class TabAutoComplete implements TabCompleter {
                         playernames.add(players[i].getName());
                     }
                     return playernames;
-                } else if (args[0].equalsIgnoreCase("get")) {
+                } else if (args[0].equalsIgnoreCase("get") || args[0].equalsIgnoreCase("has")) {
                     Player[] players = new Player[Bukkit.getServer().getOnlinePlayers().size()];
                     List<String> playernames = new ArrayList<>();
                     Bukkit.getServer().getOnlinePlayers().toArray(players);
@@ -74,6 +77,19 @@ public class TabAutoComplete implements TabCompleter {
 
                 }
 
+                List<String> arguments = new ArrayList();
+                return arguments;
+
+            } else if (args.length == 3) {
+                if (args[0].equalsIgnoreCase("has")) {
+                    return OriginAPI.getLoadedOrigins();
+                }else{
+                    List<String> nothin = new ArrayList<>();
+                    return nothin;
+                }
+            }else{
+                List<String> nothin = new ArrayList<>();
+                return nothin;
             }
 
         } else if (command.getName().equalsIgnoreCase("shulker")) {

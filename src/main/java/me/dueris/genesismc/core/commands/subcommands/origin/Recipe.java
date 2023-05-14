@@ -102,7 +102,7 @@ public class Recipe extends SubCommand implements Listener {
     @EventHandler
     public void stopStealing(InventoryClickEvent e) {
         //prevents interactions with the /o recipe command
-        if (e.getView().getTitle().equalsIgnoreCase("Orb Recipe")) {
+        if (e.getView().getTitle().equalsIgnoreCase("Orb Recipe") || e.getView().getTitle().equalsIgnoreCase("Help")) {
             e.setCancelled(true);
         }
     }
