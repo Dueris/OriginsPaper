@@ -67,6 +67,7 @@ public class Phantomized extends BukkitRunnable implements Listener {
                         p.setCollidable(false);
                         p.setGameMode(GameMode.SPECTATOR);
                         p.setFlying(true);
+                        p.setFlySpeed(0.06F);
 
                     }else{
                         if(p.getGameMode().equals(GameMode.SPECTATOR)){

@@ -36,7 +36,6 @@ public class Transparency extends BukkitRunnable {
             @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
             if (translucent.contains(origintag)) {
 
-
                     p.setInvisible(false);
 
                 ItemStack spectatorswitch = new ItemStack(Material.PHANTOM_MEMBRANE);
