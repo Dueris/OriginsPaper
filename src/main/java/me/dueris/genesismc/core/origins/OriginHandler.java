@@ -47,6 +47,8 @@ public class OriginHandler implements Listener {
                 if (r <= 8) {
                     e.getEntity().getLocation().getWorld().dropItem(e.getEntity().getLocation(), new ItemStack(SHULKER_SHELL, 1));
                 }
+            } else if (origintag.equalsIgnoreCase("genesis:origin-enderian")) {
+                e.getEntity().getWorld().playSound(e.getEntity().getLocation(), Sound.ENTITY_ENDERMAN_DEATH, 10.0F, 5.0F);
             }
         }
     }
