@@ -20,7 +20,9 @@ public class ParticleHandler extends BukkitRunnable {
             if (p.getGameMode() != GameMode.SPECTATOR && !p.hasPotionEffect(PotionEffectType.INVISIBILITY)) {
                 //origintag.equalsIgnoreCase("genesis:origin-")
                 if (ender_particles.contains(origintag)) {
-                    p.getWorld().spawnParticle(Particle.REVERSE_PORTAL, p.getLocation(), 4, 0.6F, -0.5, 0.6F);
+                    Particle.DustTransition ender_particle = new Particle.DustTransition(Color.fromRGB(252, 0, 255), Color.fromRGB(209, 0, 255), 1F);
+                    p.getWorld().spawnParticle(Particle.DUST_COLOR_TRANSITION, p.getLocation(), 4, 0.6F, -0.5, 0.6F, ender_particle);
+                    p.getWorld().spawnParticle(Particle.DUST_COLOR_TRANSITION, p.getEyeLocation(), 4, 0.6F, -0.5, 0.6F, ender_particle);
                 }
                 //origintag.equalsIgnoreCase("genesis:origin-")
                 if (origintag == "genesis:origin-starborne") {
