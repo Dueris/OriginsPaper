@@ -360,7 +360,7 @@ public class ChoosingCORE implements Listener {
                         p.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0.11);
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, "genesis:origin-phantom");
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
-                        p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
+                        p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 2);
                         ItemStack spectatorswitch = new ItemStack(Material.PHANTOM_MEMBRANE);
                         ItemMeta switch_meta = spectatorswitch.getItemMeta();
                         switch_meta.setDisplayName(GRAY + "Phantom Form");
