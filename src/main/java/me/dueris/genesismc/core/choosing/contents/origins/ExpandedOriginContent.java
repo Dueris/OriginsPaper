@@ -8,6 +8,7 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import javax.xml.crypto.dsig.spec.DigestMethodParameterSpec;
 import java.util.Arrays;
 
 import static me.dueris.genesismc.core.choosing.ChoosingCORE.itemProperties;
@@ -47,8 +48,10 @@ public class ExpandedOriginContent {
         close = itemProperties(close, RED + "Close", null, null, RED + "Cancel Choosing");
         menu = itemProperties(menu, ChatColor.AQUA + "Return", ItemFlag.HIDE_ENCHANTS, null, null);
         star = itemProperties(star, "Starborne", null, Enchantment.ARROW_INFINITE, LIGHT_PURPLE + "Starborne Origin");
+        ItemStack impact = new ItemStack(Material.YELLOW_STAINED_GLASS_PANE);
 
-        ItemStack[] stargui_items = {close, air, air, air, orb, air, air, air, close, air, air, air, air, star, air, air, air, air, air, air, star_origin_info1, star_origin_info2, star_origin_info3, star_origin_info4, star_origin_info5, air, air, air, air, star_origin_info6, star_origin_info7, star_origin_info8, star_origin_info9, blank, air, air, air, air, air, air, air, air, air, air, air, air, air, air, air, menu, air, air, air, air};
+        impact = itemProperties(impact, WHITE + "Impact:" + YELLOW + " Medium", null, null, null);
+        ItemStack[] stargui_items = {close, impact, impact, air, orb, air, impact, impact, close, air, air, air, air, star, air, air, air, air, air, air, star_origin_info1, star_origin_info2, star_origin_info3, star_origin_info4, star_origin_info5, air, air, air, air, star_origin_info6, star_origin_info7, star_origin_info8, star_origin_info9, blank, air, air, air, air, air, air, air, air, air, air, air, air, air, air, air, menu, air, air, air, air};
 
         return stargui_items;
     }
@@ -79,8 +82,10 @@ public class ExpandedOriginContent {
         close = itemProperties(close, RED + "Close", null, null, RED + "Cancel Choosing");
         menu = itemProperties(menu, ChatColor.AQUA + "Return", ItemFlag.HIDE_ENCHANTS, null, null);
         allay = itemProperties(allay, "Allay", null, Enchantment.ARROW_INFINITE, AQUA + "Allay Origin");
+        ItemStack impact = new ItemStack(Material.GREEN_STAINED_GLASS_PANE);
 
-        ItemStack[] allaygui_items = {close, air, air, air, orb, air, air, air, close, air, air, air, air, allay, air, air, air, air, air, air, allay_origin_info1, allay_origin_info2, allay_origin_info3, allay_origin_info4, allay_origin_info5, air, air, air, air, allay_origin_info6, allay_origin_info7, blank, blank, blank, air, air, air, air, air, air, air, air, air, air, air, air, air, air, air, menu, air, air, air, air};
+        impact = itemProperties(impact, WHITE + "Impact:" + GREEN + " Low", null, null, null);
+        ItemStack[] allaygui_items = {close, impact, air, air, orb, air, air, impact, close, air, air, air, air, allay, air, air, air, air, air, air, allay_origin_info1, allay_origin_info2, allay_origin_info3, allay_origin_info4, allay_origin_info5, air, air, air, air, allay_origin_info6, allay_origin_info7, blank, blank, blank, air, air, air, air, air, air, air, air, air, air, air, air, air, air, air, menu, air, air, air, air};
 
         return allaygui_items;
     }
@@ -109,8 +114,10 @@ public class ExpandedOriginContent {
         close = itemProperties(close, RED + "Close", null, null, RED + "Cancel Choosing");
         menu = itemProperties(menu, ChatColor.AQUA + "Return", ItemFlag.HIDE_ENCHANTS, null, null);
         rabbit = itemProperties(rabbit, "Rabbit", null, Enchantment.ARROW_INFINITE, GOLD + "Bunny Origin");
+        ItemStack impact = new ItemStack(Material.GREEN_STAINED_GLASS_PANE);
 
-        ItemStack[] rabbitgui_items = {close, air, air, air, orb, air, air, air, close, air, air, air, air, rabbit, air, air, air, air, air, air, rabbit_origin_info1, rabbit_origin_info2, rabbit_origin_info3, rabbit_origin_info4, rabbit_origin_info5, air, air, air, air, rabbit_origin_info6, blank, blank, blank, blank, air, air, air, air, air, air, air, air, air, air, air, air, air, air, air, menu, air, air, air, air};
+        impact = itemProperties(impact, WHITE + "Impact:" + GREEN + " Low", null, null, null);
+        ItemStack[] rabbitgui_items = {close, impact, air, air, orb, air, air, impact, close, air, air, air, air, rabbit, air, air, air, air, air, air, rabbit_origin_info1, rabbit_origin_info2, rabbit_origin_info3, rabbit_origin_info4, rabbit_origin_info5, air, air, air, air, rabbit_origin_info6, blank, blank, blank, blank, air, air, air, air, air, air, air, air, air, air, air, air, air, air, air, menu, air, air, air, air};
 
         return rabbitgui_items;
     }
@@ -141,8 +148,10 @@ public class ExpandedOriginContent {
         close = itemProperties(close, RED + "Close", null, null, RED + "Cancel Choosing");
         menu = itemProperties(menu, ChatColor.AQUA + "Return", ItemFlag.HIDE_ENCHANTS, null, null);
         bee = itemProperties(bee, "Bumblebee", null, Enchantment.ARROW_INFINITE, YELLOW + "Bee Origin");
+        ItemStack impact = new ItemStack(Material.GREEN_STAINED_GLASS_PANE);
 
-        ItemStack[] beegui_items = {close, air, air, air, orb, air, air, air, close, air, air, air, air, bee, air, air, air, air, air, air, bee_origin_info1, bee_origin_info2, bee_origin_info3, bee_origin_info4, bee_origin_info5, air, air, air, air, bee_origin_info6, bee_origin_info7, blank, blank, blank, air, air, air, air, air, air, air, air, air, air, air, air, air, air, air, menu, air, air, air, air};
+        impact = itemProperties(impact, WHITE + "Impact:" + GREEN + " Low", null, null, null);
+        ItemStack[] beegui_items = {close, impact, air, air, orb, air, air, impact, close, air, air, air, air, bee, air, air, air, air, air, air, bee_origin_info1, bee_origin_info2, bee_origin_info3, bee_origin_info4, bee_origin_info5, air, air, air, air, bee_origin_info6, bee_origin_info7, blank, blank, blank, air, air, air, air, air, air, air, air, air, air, air, air, air, air, air, menu, air, air, air, air};
 
         return beegui_items;
     }
@@ -169,8 +178,10 @@ public class ExpandedOriginContent {
         close = itemProperties(close, RED + "Close", null, null, RED + "Cancel Choosing");
         menu = itemProperties(menu, ChatColor.AQUA + "Return", ItemFlag.HIDE_ENCHANTS, null, null);
         piglin = itemProperties(piglin, "Piglin", null, Enchantment.ARROW_INFINITE, GOLD + "Piglin Origin");
+        ItemStack impact = new ItemStack(Material.YELLOW_STAINED_GLASS_PANE);
 
-        ItemStack[] piglingui_items = {close, air, air, air, orb, air, air, air, close, air, air, air, air, piglin, air, air, air, air, air, air, piglin_origin_info1, piglin_origin_info2, piglin_origin_info3, piglin_origin_info4, piglin_origin_info5, air, air, air, air, blank, blank, blank, blank, blank, air, air, air, air, air, air, air, air, air, air, air, air, air, air, air, menu, air, air, air, air};
+        impact = itemProperties(impact, WHITE + "Impact:" + YELLOW + " Medium", null, null, null);
+        ItemStack[] piglingui_items = {close, impact, impact, air, orb, air, impact, impact, close, air, air, air, air, piglin, air, air, air, air, air, air, piglin_origin_info1, piglin_origin_info2, piglin_origin_info3, piglin_origin_info4, piglin_origin_info5, air, air, air, air, blank, blank, blank, blank, blank, air, air, air, air, air, air, air, air, air, air, air, air, air, air, air, menu, air, air, air, air};
 
         return piglingui_items;
     }
@@ -203,8 +214,10 @@ public class ExpandedOriginContent {
         close = itemProperties(close, RED + "Close", null, null, RED + "Cancel Choosing");
         menu = itemProperties(menu, ChatColor.AQUA + "Return", ItemFlag.HIDE_ENCHANTS, null, null);
         sculk = itemProperties(sculk, "Sculkling", null, Enchantment.ARROW_INFINITE, BLUE + "Sculk Origin");
+        ItemStack impact = new ItemStack(Material.YELLOW_STAINED_GLASS_PANE);
 
-        ItemStack[] sculkgui_items = {close, air, air, air, orb, air, air, air, close, air, air, air, air, sculk, air, air, air, air, air, air, sculk_origin_info1, sculk_origin_info2, sculk_origin_info3, sculk_origin_info4, sculk_origin_info5, air, air, air, air, sculk_origin_info6, sculk_origin_info7, sculk_origin_info8, blank, blank, air, air, air, air, air, air, air, air, air, air, air, air, air, air, air, menu, air, air, air, air};
+        impact = itemProperties(impact, WHITE + "Impact:" + YELLOW + " Medium", null, null, null);
+        ItemStack[] sculkgui_items = {close, impact, impact, air, orb, air, impact, impact, close, air, air, air, air, sculk, air, air, air, air, air, air, sculk_origin_info1, sculk_origin_info2, sculk_origin_info3, sculk_origin_info4, sculk_origin_info5, air, air, air, air, sculk_origin_info6, sculk_origin_info7, sculk_origin_info8, blank, blank, air, air, air, air, air, air, air, air, air, air, air, air, air, air, air, menu, air, air, air, air};
 
         return sculkgui_items;
     }
@@ -229,8 +242,10 @@ public class ExpandedOriginContent {
         close = itemProperties(close, RED + "Close", null, null, RED + "Cancel Choosing");
         menu = itemProperties(menu, ChatColor.AQUA + "Return", ItemFlag.HIDE_ENCHANTS, null, null);
         creep = itemProperties(creep, "Creep", null, Enchantment.ARROW_INFINITE, GREEN + "Creeper Origin");
+        ItemStack impact = new ItemStack(Material.GREEN_STAINED_GLASS_PANE);
 
-        ItemStack[] creepgui_items = {close, air, air, air, orb, air, air, air, close, air, air, air, air, creep, air, air, air, air, air, air, creep_origin_info1, creep_origin_info2, creep_origin_info3, creep_origin_info4, blank, air, air, air, air, blank, blank, blank, blank, blank, air, air, air, air, air, air, air, air, air, air, air, air, air, air, air, menu, air, air, air, air};
+        impact = itemProperties(impact, WHITE + "Impact:" + GREEN + " Low", null, null, null);
+        ItemStack[] creepgui_items = {close, impact, air, air, orb, air, air, impact, close, air, air, air, air, creep, air, air, air, air, air, air, creep_origin_info1, creep_origin_info2, creep_origin_info3, creep_origin_info4, blank, air, air, air, air, blank, blank, blank, blank, blank, air, air, air, air, air, air, air, air, air, air, air, air, air, air, air, menu, air, air, air, air};
 
         return creepgui_items;
     }
@@ -259,8 +274,10 @@ public class ExpandedOriginContent {
         close = itemProperties(close, RED + "Close", null, null, RED + "Cancel Choosing");
         menu = itemProperties(menu, ChatColor.AQUA + "Return", ItemFlag.HIDE_ENCHANTS, null, null);
         slime = itemProperties(slime, "Slimeling", null, Enchantment.ARROW_INFINITE, GREEN + "Slime Origin");
+        ItemStack impact = new ItemStack(Material.GREEN_STAINED_GLASS_PANE);
 
-        ItemStack[] slimegui_items = {close, air, air, air, orb, air, air, air, close, air, air, air, air, slime, air, air, air, air, air, air, slime_origin_info1, slime_origin_info2, slime_origin_info3, slime_origin_info4, slime_origin_info5, air, air, air, air, slime_origin_info6, blank, blank, blank, blank, air, air, air, air, air, air, air, air, air, air, air, air, air, air, air, menu, air, air, air, air};
+        impact = itemProperties(impact, WHITE + "Impact:" + GREEN + " Low", null, null, null);
+        ItemStack[] slimegui_items = {close, impact, air, air, orb, air, air, impact, close, air, air, air, air, slime, air, air, air, air, air, air, slime_origin_info1, slime_origin_info2, slime_origin_info3, slime_origin_info4, slime_origin_info5, air, air, air, air, slime_origin_info6, blank, blank, blank, blank, air, air, air, air, air, air, air, air, air, air, air, air, air, air, air, menu, air, air, air, air};
 
         return slimegui_items;
     }

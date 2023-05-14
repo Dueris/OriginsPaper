@@ -46,7 +46,7 @@ public class OriginalOriginContent {
         menu = itemProperties(menu, ChatColor.AQUA + "Return", ItemFlag.HIDE_ENCHANTS, null, null);
         human = itemProperties(human, "Human", null, Enchantment.ARROW_INFINITE, WHITE + "Human Origin");
 
-        ItemStack[] humangui_items = {close, air, air, air, orb, impact, impact, impact, close, air, air, air, air, human, air, air, air, air, air, air, blank, blank, human_origin_info, blank, blank, air, air, air, air, blank, blank, blank, blank, blank, air, air, air, air, air, air, air, air, air, air, air, air, air, air, air, menu, air, air, air, air};
+        ItemStack[] humangui_items = {close, impact, air, air, orb, air, air, impact, close, air, air, air, air, human, air, air, air, air, air, air, blank, blank, human_origin_info, blank, blank, air, air, air, air, blank, blank, blank, blank, blank, air, air, air, air, air, air, air, air, air, air, air, air, air, air, air, menu, air, air, air, air};
 
         return humangui_items;
     }
@@ -78,7 +78,7 @@ public class OriginalOriginContent {
         menu = itemProperties(menu, ChatColor.AQUA + "Return", ItemFlag.HIDE_ENCHANTS, null, null);
         avian = itemProperties(avian, "Avian", null, Enchantment.ARROW_INFINITE, DARK_AQUA + "Avian Origin");
 
-        ItemStack[] aviangui_items = {close, air, air, air, orb, impact, impact, impact, close, air, air, air, air, avian, air, air, air, air, air, air, avian_origin_info1, avian_origin_info2, avian_origin_info3, avian_origin_info4, avian_origin_info5, air, air, air, air, blank, blank, blank, blank, blank, air, air, air, air, air, air, air, air, air, air, air, air, air, air, air, menu, air, air, air, air};
+        ItemStack[] aviangui_items = {close, impact, air, air, orb, air, air, impact, close, air, air, air, air, avian, air, air, air, air, air, air, avian_origin_info1, avian_origin_info2, avian_origin_info3, avian_origin_info4, avian_origin_info5, air, air, air, air, blank, blank, blank, blank, blank, air, air, air, air, air, air, air, air, air, air, air, air, air, air, air, menu, air, air, air, air};
 
         return aviangui_items;
     }
@@ -108,7 +108,7 @@ public class OriginalOriginContent {
         menu = itemProperties(menu, ChatColor.AQUA + "Return", ItemFlag.HIDE_ENCHANTS, null, null);
         spider = itemProperties(spider, "Arachnid", null, Enchantment.ARROW_INFINITE, RED + "Spider Origin");
 
-        ItemStack[] spidergui_items = {close, air, air, air, orb, impact, impact, impact, close, air, air, air, air, spider, air, air, air, air, air, air, spider_origin_info1, spider_origin_info2, spider_origin_info3, spider_origin_info4, blank, air, air, air, air, blank, blank, blank, blank, blank, air, air, air, air, air, air, air, air, air, air, air, air, air, air, air, menu, air, air, air, air};
+        ItemStack[] spidergui_items = {close, impact, air, air, orb, air, air, impact, close, air, air, air, air, spider, air, air, air, air, air, air, spider_origin_info1, spider_origin_info2, spider_origin_info3, spider_origin_info4, blank, air, air, air, air, blank, blank, blank, blank, blank, air, air, air, air, air, air, air, air, air, air, air, air, air, air, air, menu, air, air, air, air};
 
         return spidergui_items;
     }
@@ -140,7 +140,7 @@ public class OriginalOriginContent {
         menu = itemProperties(menu, ChatColor.AQUA + "Return", ItemFlag.HIDE_ENCHANTS, null, null);
         elyrtian = itemProperties(elyrtian, "Elytrian", null, Enchantment.ARROW_INFINITE, GRAY + "Elytrian Origin");
 
-        ItemStack[] elyrtiangui_items = {close, air, air, air, orb, impact, impact, impact, close, air, air, air, air, elyrtian, air, air, air, air, air, air, elyrtian_origin_info1, elyrtian_origin_info2, elyrtian_origin_info3, elyrtian_origin_info4, elyrtian_origin_info5, air, air, air, air, blank, blank, blank, blank, blank, air, air, air, air, air, air, air, air, air, air, air, air, air, air, air, menu, air, air, air, air};
+        ItemStack[] elyrtiangui_items = {close, impact, air, air, orb, air, air, impact, close, air, air, air, air, elyrtian, air, air, air, air, air, air, elyrtian_origin_info1, elyrtian_origin_info2, elyrtian_origin_info3, elyrtian_origin_info4, elyrtian_origin_info5, air, air, air, air, blank, blank, blank, blank, blank, air, air, air, air, air, air, air, air, air, air, air, air, air, air, air, menu, air, air, air, air};
 
         return elyrtiangui_items;
     }
@@ -172,7 +172,7 @@ public class OriginalOriginContent {
         menu = itemProperties(menu, ChatColor.AQUA + "Return", ItemFlag.HIDE_ENCHANTS, null, null);
         shulk = itemProperties(shulk, "Shulk", null, Enchantment.ARROW_INFINITE, LIGHT_PURPLE + "Shulker Origin");
 
-        ItemStack[] shulkgui_items = {close, air, air, air, orb, impact, impact, impact, close, air, air, air, air, shulk, air, air, air, air, air, air, shulk_origin_info1, shulk_origin_info2, shulk_origin_info3, shulk_origin_info4, shulk_origin_info5, air, air, air, air, blank, blank, blank, blank, blank, air, air, air, air, air, air, air, air, air, air, air, air, air, air, air, menu, air, air, air, air};
+        ItemStack[] shulkgui_items = {close, impact, air, air, orb, air, air, impact, close, air, air, air, air, shulk, air, air, air, air, air, air, shulk_origin_info1, shulk_origin_info2, shulk_origin_info3, shulk_origin_info4, shulk_origin_info5, air, air, air, air, blank, blank, blank, blank, blank, air, air, air, air, air, air, air, air, air, air, air, air, air, air, air, menu, air, air, air, air};
 
         return shulkgui_items;
     }
@@ -206,7 +206,7 @@ public class OriginalOriginContent {
         menu = itemProperties(menu, ChatColor.AQUA + "Return", ItemFlag.HIDE_ENCHANTS, null, null);
         ender = itemProperties(ender, "Enderian", null, Enchantment.ARROW_INFINITE, LIGHT_PURPLE + "Enderman Origin");
 
-        ItemStack[] endergui_items = {close, air, air, air, orb, impact, impact, impact, close, air, air, air, air, ender, air, air, air, air, air, air, ender_origin_info1, ender_origin_info2, ender_origin_info3, ender_origin_info4, ender_origin_info5, air, air, air, air, blank, blank, blank, blank, blank, air, air, air, air, air, air, air, air, air, air, air, air, air, air, air, menu, air, air, air, air};
+        ItemStack[] endergui_items = {close, impact, impact, air, orb, air, impact, impact, close, air, air, air, air, ender, air, air, air, air, air, air, ender_origin_info1, ender_origin_info2, ender_origin_info3, ender_origin_info4, ender_origin_info5, air, air, air, air, blank, blank, blank, blank, blank, air, air, air, air, air, air, air, air, air, air, air, air, air, air, air, menu, air, air, air, air};
         return endergui_items;
     }
 
@@ -345,7 +345,7 @@ public class OriginalOriginContent {
         menu = itemProperties(menu, ChatColor.AQUA + "Return", ItemFlag.HIDE_ENCHANTS, null, null);
         feline = itemProperties(feline, "Feline", null, Enchantment.ARROW_INFINITE,  GOLD + "Feline Origin");
 
-        ItemStack[] felinegui_items = {close, air, air, air, orb, impact, impact, impact, close, air, air, air, air, feline, air, air, air, air, air, air, feline_origin_info1, feline_origin_info2, feline_origin_info3, feline_origin_info4, feline_origin_info5, air, air, air, air, feline_origin_info6, feline_origin_info7, blank, blank, blank, air, air, air, air, air, air, air, air, air, air, air, air, air, air, air, menu, air, air, air, air};
+        ItemStack[] felinegui_items = {close, impact, impact, air, orb, air, impact, impact, close, air, air, air, air, feline, air, air, air, air, air, air, feline_origin_info1, feline_origin_info2, feline_origin_info3, feline_origin_info4, feline_origin_info5, air, air, air, air, feline_origin_info6, feline_origin_info7, blank, blank, blank, air, air, air, air, air, air, air, air, air, air, air, air, air, air, air, menu, air, air, air, air};
 
         return felinegui_items;
     }
