@@ -43,7 +43,7 @@ public class Purge extends SubCommand implements Listener {
             }else{
                 p.removeScoreboardTag("chosen");
                 p.sendMessage("Your origin has been removed by an operator");
-                p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, "genesis:origin-null");
+                p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, "");
                 p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "phantomid"), PersistentDataType.INTEGER, 1);
             }
         }
