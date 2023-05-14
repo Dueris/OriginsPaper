@@ -3,6 +3,8 @@ package me.dueris.genesismc.core.factory.powers;
 import me.dueris.genesismc.core.factory.handlers.CustomOriginExistCheck;
 import me.dueris.genesismc.core.factory.powers.armour.GoldArmourBuff;
 import me.dueris.genesismc.core.factory.powers.block.Webbing;
+import me.dueris.genesismc.core.factory.powers.block.fluid.WaterBreatheAbove;
+import me.dueris.genesismc.core.factory.powers.block.fluid.WaterBreatheBellow;
 import me.dueris.genesismc.core.factory.powers.block.fluid.WaterDamage;
 import me.dueris.genesismc.core.factory.powers.block.solid.PumpkinHate;
 import me.dueris.genesismc.core.factory.powers.entity.*;
@@ -63,6 +65,12 @@ public class OriginStartHandler {
 
         NoShield shield = new NoShield();
         shield.runTaskTimer(getPlugin(), 0, 10);
+
+        WaterBreatheAbove waterBreathe = new WaterBreatheAbove();
+        waterBreathe.runTaskTimer(getPlugin(), 0, 20);
+
+        WaterBreatheBellow waterBreatheBellow = new WaterBreatheBellow();
+        waterBreatheBellow.runTaskTimer(getPlugin(), 0, 10);
 
     }
 

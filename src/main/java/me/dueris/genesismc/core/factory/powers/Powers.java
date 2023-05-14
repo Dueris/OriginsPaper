@@ -171,6 +171,9 @@ public class Powers implements Listener {
         strong_arms_break_speed.add("genesis:origin-shulk");
         no_shield.add("genesis:origin-shulk");
 
+        //merling
+        water_breathing.add("genesis:origin-merling");
+
         for (String originTag : CustomOriginAPI.getCustomOriginTags()) {
             for (String power : CustomOriginAPI.getCustomOriginPowers(originTag)) {
                 if (power.equals("origins:fall_immunity")) fall_immunity.add(originTag);
