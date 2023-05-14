@@ -86,7 +86,6 @@ public class GenesisDataFiles {
   public static void setDefaults() {
     //PluginConfig
 
-    getPlugCon().addDefault("beta-enabled", false);
     getPlugCon().addDefault("origins-expanded", false);
     getPlugCon().addDefault("use-plugin-detection", true);
     getPlugCon().addDefault("use-builtin-api", true);
