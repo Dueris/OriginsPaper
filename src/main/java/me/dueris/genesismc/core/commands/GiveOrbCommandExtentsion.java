@@ -19,6 +19,7 @@ public class GiveOrbCommandExtentsion implements Listener {
         List<String> playernames = new ArrayList<>();
         Bukkit.getServer().getOnlinePlayers().toArray(players);
         if(e.getMessage().equalsIgnoreCase("/give @s genesis:orb_of_origin")){
+            e.setCancelled(true);
             e.getPlayer().getInventory().addItem(orb);
         }
     }
