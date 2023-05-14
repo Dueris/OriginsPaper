@@ -1,8 +1,10 @@
 package me.dueris.genesismc.core.origins;
 
 import me.dueris.genesismc.core.GenesisMC;
+import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Sound;
+import org.bukkit.World;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
@@ -15,13 +17,31 @@ import org.bukkit.event.entity.EntityTargetEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Random;
 
 import static org.bukkit.Material.SHULKER_SHELL;
 
-public class OriginHandler implements Listener {
+public class OriginHandler extends BukkitRunnable implements Listener {
+
+    @Override
+    public void run() {
+        for (Player p : Bukkit.getOnlinePlayers()) {
+            PersistentDataContainer data = p.getPersistentDataContainer();
+            @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
+            if (origintag.contains("genesis:origin-piglin")) {
+                if (p.getWorld().getEnvironment() != World.Environment.NETHER) {
+                    p.addPotionEffect(new PotionEffect(PotionEffectType.FIRE_RESISTANCE, 10, 0, false, false, false));
+                    p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 10, 0, false, false, false));
+                }
+            }
+        }
+    }
+
     @EventHandler
     public void onhitShulk(EntityDamageEvent e) {
         if (e.getEntity() instanceof Player || e.getEntity() instanceof HumanEntity) {
@@ -65,4 +85,6 @@ public class OriginHandler implements Listener {
             }
         }
     }
+
+
 }

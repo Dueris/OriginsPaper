@@ -1,4 +1,4 @@
-package me.dueris.genesismc.core.bukkitrunnables;
+package me.dueris.genesismc.core.utils;
 
 import me.dueris.genesismc.core.GenesisMC;
 import org.bukkit.Bukkit;
