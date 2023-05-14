@@ -280,8 +280,11 @@ public class ChoosingCORE implements Listener {
             sculk_meta.setLore(sculk_lore);
             sculk.setItemMeta(sculk_meta);
             if (e.getCurrentItem() != null && e.getCurrentItem().containsEnchantment(Enchantment.ARROW_INFINITE)) {
+
+                Bukkit.getScheduler().runTaskLater(GenesisMC.getPlugin(),()->{
+                    DefaultChoose.DefaultChoose(p);
+                }, 2);
                 setAtributesToDefualt(p);
-                DefaultChoose.DefaultChoose(p);
                 p.setHealthScaled(false);
                 p.closeInventory();
                 if(e.getCurrentItem().isSimilar(human)){
