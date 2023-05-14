@@ -28,9 +28,9 @@ public class OriginHandler implements Listener {
             PersistentDataContainer data = e.getEntity().getPersistentDataContainer();
             @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
             if (origintag.equalsIgnoreCase("genesis:origin-shulk")) {
-                e.getEntity().getWorld().playSound(e.getEntity().getLocation(), Sound.ENTITY_SHULKER_HURT, 10.0F, 5.0F);
+                e.getEntity().getWorld().playSound(e.getEntity().getLocation(), Sound.ENTITY_SHULKER_HURT, 10.0F, 1.0F);
             } else if (origintag.equalsIgnoreCase("genesis:origin-enderian")) {
-                e.getEntity().getWorld().playSound(e.getEntity().getLocation(), Sound.ENTITY_ENDERMAN_HURT, 10.0F, 5.0F);
+                e.getEntity().getWorld().playSound(e.getEntity().getLocation(), Sound.ENTITY_ENDERMAN_HURT, 10.0F, 1.0F);
             }
         }
     }
@@ -41,14 +41,14 @@ public class OriginHandler implements Listener {
             PersistentDataContainer data = e.getEntity().getPersistentDataContainer();
             @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
             if (origintag.equalsIgnoreCase("genesis:origin-shulk")) {
-                e.getEntity().getWorld().playSound(e.getEntity().getLocation(), Sound.ENTITY_SHULKER_DEATH, 10.0F, 5.0F);
+                e.getEntity().getWorld().playSound(e.getEntity().getLocation(), Sound.ENTITY_SHULKER_DEATH, 10.0F, 1.0F);
                 Random random = new Random();
                 int r = random.nextInt(100);
                 if (r <= 8) {
                     e.getEntity().getLocation().getWorld().dropItem(e.getEntity().getLocation(), new ItemStack(SHULKER_SHELL, 1));
                 }
             } else if (origintag.equalsIgnoreCase("genesis:origin-enderian")) {
-                e.getEntity().getWorld().playSound(e.getEntity().getLocation(), Sound.ENTITY_ENDERMAN_DEATH, 10.0F, 5.0F);
+                e.getEntity().getWorld().playSound(e.getEntity().getLocation(), Sound.ENTITY_ENDERMAN_DEATH, 10, 1F);
             }
         }
     }
