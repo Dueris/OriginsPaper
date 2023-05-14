@@ -24,10 +24,6 @@ public class DefaultChoose {
         p.setCustomNameVisible(false);
         p.getScoreboardTags().add("chosen");
         p.setHealthScaled(false);
-
-        Location loc = new Location(p.getWorld(), p.getLocation().getX(), p.getLocation().getY() + 1, p.getLocation().getZ(), p.getLocation().getYaw(), p.getLocation().getPitch());
-        p.teleportAsync(loc);
-
         if (p.getScoreboardTags().contains("choosing")) {
             p.removeScoreboardTag("choosing");
         }
