@@ -35,7 +35,7 @@ public class ExplodeTick implements Listener {
         Player p = e.getPlayer();
         PersistentDataContainer data = p.getPersistentDataContainer();
         @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
-        if (explode_tick.contains(origintag)) {
+        if (explode_tick.contains(origintag) && !p.isFlying() && !p.isGliding()) {
 
             cooldown.remove(p.getUniqueId());
             new BukkitRunnable() {

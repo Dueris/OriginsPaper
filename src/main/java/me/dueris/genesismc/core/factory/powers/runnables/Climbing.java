@@ -37,10 +37,6 @@ public class Climbing extends BukkitRunnable {
 
                     if (block.getType() != AIR && p.isSneaking() && !p.isInRain()) {
                         p.addPotionEffect(new PotionEffect(PotionEffectType.LEVITATION, 6, 2, false, false, false));
-                    }else{
-                        if (!p.isInRain()) {
-                            p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_FALLING, 6, 3, false, false, false));
-                        }
                     }
                 }
             }

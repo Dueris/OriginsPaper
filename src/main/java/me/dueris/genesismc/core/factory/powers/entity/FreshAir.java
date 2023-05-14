@@ -35,8 +35,8 @@ public class FreshAir implements Listener {
         if (fresh_air.contains(origintag)) {
             if (e.getPlayer().getWorld().getEnvironment() == World.Environment.NORMAL) {
                 if (e.getBed().getY() <= 99) {
-                    e.setCancelled(true);
                     e.getPlayer().sendActionBar("You need fresh air to sleep");
+                    e.setCancelled(true);
                 }
             }
         }
@@ -55,6 +55,7 @@ public class FreshAir implements Listener {
                         if (block.getType() == bed) {
                             if (e.getAction() == Action.RIGHT_CLICK_BLOCK) {
                                 if (block.getY() <= 99) {
+                                    e.getPlayer().sendActionBar("You need fresh air to sleep");
                                     e.setCancelled(true);
                                 }
                             }

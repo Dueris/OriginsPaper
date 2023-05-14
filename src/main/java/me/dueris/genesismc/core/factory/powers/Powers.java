@@ -101,6 +101,8 @@ public class Powers implements Listener {
     public static ArrayList<String> carrot_only = new ArrayList<>();
     public static ArrayList<String> jump_increased = new ArrayList<>();
     public static ArrayList<String> rabbit_drop_foot = new ArrayList<>();
+    public static ArrayList<String> decreased_explosion = new ArrayList<>();
+    public static ArrayList<String> creeper_head_death_drop = new ArrayList<>();
 
     public static void loadPowers() {
 
@@ -161,6 +163,13 @@ public class Powers implements Listener {
         explode_tick.add("genesis:origin-creep");
         charged.add("genesis:origin-creep");
         bow_nope.add("genesis:origin-creep");
+        decreased_explosion.add("genesis:origin-creep");
+        creeper_head_death_drop.add("genesis:origin-creep");
+
+        //shulk
+        more_exhaustion.add("genesis:origin-shulk");
+        strong_arms_break_speed.add("genesis:origin-shulk");
+        no_shield.add("genesis:origin-shulk");
 
         for (String originTag : CustomOriginAPI.getCustomOriginTags()) {
             for (String power : CustomOriginAPI.getCustomOriginPowers(originTag)) {
@@ -241,6 +250,8 @@ public class Powers implements Listener {
                 else if (power.equals("genesis:carrots_only")) carrot_only.add(originTag);
                 else if (power.equals("genesis:jump_boost")) jump_increased.add(originTag);
                 else if (power.equals("genesis:drop_rabbit_foot_damage")) rabbit_drop_foot.add(originTag);
+                else if (power.equals("genesis:decreased_explosion_damage")) decreased_explosion.add(originTag);
+                else if (power.equals("genesis:creeper_head_death_drop")) creeper_head_death_drop.add(originTag);
 
                 //drop_head
                 //entity_ignore

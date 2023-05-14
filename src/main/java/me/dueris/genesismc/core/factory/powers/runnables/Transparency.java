@@ -36,17 +36,9 @@ public class Transparency extends BukkitRunnable {
             @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
             if (translucent.contains(origintag)) {
 
-                if(!p.getWorld().isDayTime()){
+
                     p.setInvisible(false);
-                }else{
-                    p.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 20, 0, false, false, false));
-                    Team team = scoreboard.getTeam("origin-players");
-                    if(!p.getScoreboard().equals(team) && team != null){
-                        team.addPlayer(p);
-                    }else{
-                        scoreboard.registerNewTeam("origin-players");
-                    }
-                }
+
                 ItemStack spectatorswitch = new ItemStack(Material.PHANTOM_MEMBRANE);
                 ItemMeta switch_meta = spectatorswitch.getItemMeta();
                 switch_meta.setDisplayName(GRAY + "Phantom Form");

@@ -22,7 +22,7 @@ import me.dueris.genesismc.core.files.GenesisDataFiles;
 import me.dueris.genesismc.core.items.InfinPearl;
 import me.dueris.genesismc.core.items.OrbOfOrigins;
 import me.dueris.genesismc.core.items.WaterProtItem;
-import me.dueris.genesismc.core.origins.shulk.ShulkInv;
+import me.dueris.genesismc.core.utils.ShulkInv;
 import me.dueris.genesismc.core.factory.handlers.CustomOriginExistCheck;
 import me.dueris.genesismc.core.factory.powers.Powers;
 import me.dueris.genesismc.core.factory.powers.world.WorldSpawnHandler;

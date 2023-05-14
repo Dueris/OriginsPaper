@@ -1,4 +1,4 @@
-package me.dueris.genesismc.core.origins.shulk;
+package me.dueris.genesismc.core.utils;
 
 import me.dueris.genesismc.core.GenesisMC;
 import me.dueris.genesismc.core.commands.subcommands.SubCommand;

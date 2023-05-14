@@ -47,7 +47,7 @@ public class KeybindHandler implements Listener {
     public static void keybindTriggerMethod(Player p, PlayerSwapHandItemsEvent e){
         PersistentDataContainer data = p.getPersistentDataContainer();
         @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
-        if (origintag == "genesis:origin-shulk") {
+        if (origintag.contains("genesis:origin-shulk")) {
             e.setCancelled(true);
 
             ArrayList<ItemStack> vaultItems = ShulkUtils.getItems(p);

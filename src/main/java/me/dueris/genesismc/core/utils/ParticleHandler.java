@@ -20,7 +20,7 @@ public class ParticleHandler extends BukkitRunnable {
             if (p.getGameMode() != GameMode.SPECTATOR && !p.hasPotionEffect(PotionEffectType.INVISIBILITY)) {
                 //origintag.equalsIgnoreCase("genesis:origin-")
                 if (ender_particles.contains(origintag)) {
-                    p.getWorld().spawnParticle(Particle.PORTAL, p.getLocation(), 4, 0.6F, -0.5, 0.6F);
+                    p.getWorld().spawnParticle(Particle.REVERSE_PORTAL, p.getLocation(), 4, 0.6F, -0.5, 0.6F);
                 }
                 //origintag.equalsIgnoreCase("genesis:origin-")
                 if (origintag == "genesis:origin-starborne") {

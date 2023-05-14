@@ -8,11 +8,15 @@ import me.dueris.genesismc.core.factory.powers.block.solid.PumpkinHate;
 import me.dueris.genesismc.core.factory.powers.entity.*;
 import me.dueris.genesismc.core.factory.powers.food.Carnivore;
 import me.dueris.genesismc.core.factory.powers.food.CarrotOnly;
+import me.dueris.genesismc.core.factory.powers.food.MoreExhaustion;
 import me.dueris.genesismc.core.factory.powers.food.Vegitarian;
+import me.dueris.genesismc.core.factory.powers.item.CreeperDeathDrop;
 import me.dueris.genesismc.core.factory.powers.item.EnderPearlThrow;
 import me.dueris.genesismc.core.factory.powers.item.GoldItemBuff;
 import me.dueris.genesismc.core.factory.powers.runnables.*;
+import me.dueris.genesismc.core.factory.powers.world.ExplodeTick;
 import me.dueris.genesismc.core.factory.powers.world.WorldSpawnHandler;
+import me.dueris.genesismc.core.origins.OriginHandler;
 
 import static me.dueris.genesismc.core.GenesisMC.getPlugin;
 import static org.bukkit.Bukkit.getServer;
@@ -39,9 +43,6 @@ public class OriginStartHandler {
         FelinePhobia felinePhobia = new FelinePhobia();
         felinePhobia.runTaskTimer(getPlugin(), 0, 20);
 
-        JumpBetter jumpBetter = new JumpBetter();
-        jumpBetter.runTaskTimer(getPlugin(), 0, 10);
-
         MineSpeed mineSpeed = new MineSpeed();
         mineSpeed.runTaskTimer(getPlugin(), 0, 10);
 
@@ -56,6 +57,12 @@ public class OriginStartHandler {
 
         JumpIncreased jumpIncreased = new JumpIncreased();
         jumpIncreased.runTaskTimer(getPlugin(), 0, 10);
+
+        BetterMineSpeedRunnable betterMineSpeedRunnable = new BetterMineSpeedRunnable();
+        betterMineSpeedRunnable.runTaskTimer(getPlugin(), 0, 10);
+
+        NoShield shield = new NoShield();
+        shield.runTaskTimer(getPlugin(), 0, 10);
 
     }
 
@@ -88,5 +95,12 @@ public class OriginStartHandler {
         getServer().getPluginManager().registerEvents(new GoldItemBuff(), getPlugin());
         getServer().getPluginManager().registerEvents(new BigLeap(), getPlugin());
         getServer().getPluginManager().registerEvents(new CarrotOnly(), getPlugin());
+        getServer().getPluginManager().registerEvents(new DecreaseExplosion(), getPlugin());
+        getServer().getPluginManager().registerEvents(new CreeperDeathDrop(), getPlugin());
+        getServer().getPluginManager().registerEvents(new ExplodeTick(), getPlugin());
+        getServer().getPluginManager().registerEvents(new RabbitFoot(), getPlugin());
+        getServer().getPluginManager().registerEvents(new MoreExhaustion(), getPlugin());
+        getServer().getPluginManager().registerEvents(new BetterMineSpeed(), getPlugin());
+        getServer().getPluginManager().registerEvents(new OriginHandler(), getPlugin());
     }
 }

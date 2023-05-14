@@ -1,4 +1,4 @@
-package me.dueris.genesismc.core.bukkitrunnables;
+package me.dueris.genesismc.core.factory.powers.runnables;
 
 import me.dueris.genesismc.core.GenesisMC;
 import org.bukkit.Bukkit;
@@ -16,9 +16,11 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.EnumSet;
 
+import static me.dueris.genesismc.core.factory.powers.Powers.strong_arms_break_speed;
 import static org.bukkit.Material.*;
+import static org.bukkit.Material.SHIELD;
 
-public class ShulkRunnable extends BukkitRunnable {
+public class BetterMineSpeedRunnable extends BukkitRunnable {
     public static EnumSet<Material> tools;
     static {
         tools = EnumSet.of(
@@ -33,16 +35,14 @@ public class ShulkRunnable extends BukkitRunnable {
         for (Player p : Bukkit.getOnlinePlayers()) {
             PersistentDataContainer data = p.getPersistentDataContainer();
             @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
-            if (origintag.equalsIgnoreCase("genesis:origin-shulk")) {
+            if (strong_arms_break_speed.contains(origintag)) {
                 if(p.getGameMode().equals(GameMode.SURVIVAL) && !tools.contains(p.getEquipment().getItemInMainHand().getType())) {
                     if (!p.getActivePotionEffects().contains(PotionEffectType.FAST_DIGGING)) {
                         p.addPotionEffect(new PotionEffect(PotionEffectType.FAST_DIGGING, 20, 3, true, false, false));
                     }
                 }
                 p.setCooldown(SHIELD, 100);
-                p.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0.077F);
             }
         }
     }
 }
-
