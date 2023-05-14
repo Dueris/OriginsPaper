@@ -16,21 +16,15 @@ public class TabAutoComplete implements TabCompleter {
     @Override
     public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, @NotNull String[] args) {
 
-        if (command.getName().equalsIgnoreCase("origin")) {
+        if (command.getName().equalsIgnoreCase("origin") && sender.hasPermission("genesismc.origin.cmd.main")) {
             if (args.length == 1) {
                 List<String> arguments = new ArrayList<>();
                 arguments.add("info");
-                if (sender.hasPermission("genesismc.origins.cmd.texture")) {
-                    arguments.add("texture");
-                }
-                if (sender.hasPermission("genesismc.origins.cmd.commandlist")) {
-                    arguments.add("commands");
+                if(sender.hasPermission("genesismc.origins.cmd.recipe")){
+                    arguments.add("recipe");
                 }
                 if (sender.hasPermission("genesismc.origins.cmd.choose")) {
                     arguments.add("choose");
-                }
-                if (sender.hasPermission("genesismc.origins.cmd.config.dump")) {
-                    arguments.add("dump");
                 }
                 if (sender.hasPermission("genesismc.origins.cmd.get")) {
                     arguments.add("get");
@@ -40,6 +34,15 @@ public class TabAutoComplete implements TabCompleter {
                 }
                 if (sender.hasPermission("genesismc.origins.cmd.enchant")) {
                     arguments.add("enchant");
+                }
+                if(sender.hasPermission("genesis.origins.cmd.gui")){
+                    arguments.add("gui");
+                }
+                if(sender.hasPermission("genesis.origins.cmd.has")){
+                    arguments.add("has");
+                }
+                if(sender.hasPermission("genesis.origins.cmd.set")){
+                    arguments.add("set");
                 }
 
                 return arguments;
@@ -107,21 +110,7 @@ public class TabAutoComplete implements TabCompleter {
                 return nothing;
             }
 
-        } else if (command.getName().equalsIgnoreCase("beta")) {
-            if (args.length == 1) {
-                List<String> arguments = new ArrayList<>();
-                if (GenesisDataFiles.getPlugCon().getString("beta-enabled").equalsIgnoreCase("true")) {
-                    arguments.add("orboforigin");
-                    arguments.add("waterprot");
-                }
-                return arguments;
-            } else if (args.length >= 2) {
-                List<String> nothing = new ArrayList<>();
-                return nothing;
-            }
         }
-
-
             return null;
         }
 

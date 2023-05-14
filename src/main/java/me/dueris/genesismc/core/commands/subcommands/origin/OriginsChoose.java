@@ -51,10 +51,10 @@ public class OriginsChoose extends SubCommand {
             PersistentDataContainer data = p.getPersistentDataContainer();
             @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
             int phantomid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER);
-            if (!p.getScoreboardTags().contains("chosen") && origintag.equalsIgnoreCase("genesis:origin-null") && phantomid != 2) {
+            if (!p.getScoreboardTags().contains("chosen") && origintag.equalsIgnoreCase("") && phantomid != 2) {
 
                 @NotNull Inventory mainmenu = Bukkit.createInventory(p, 54, "Choosing Menu");
-                if (origintag == "genesis:origin-null") {
+                if (origintag == "") {
                     mainmenu.setContents(GenesisMainMenuContents(p));
                     p.openInventory(mainmenu);
                 }
@@ -69,8 +69,4 @@ public class OriginsChoose extends SubCommand {
 
     }
 
-    @Override
-    public List<String> getSubcommandArguments(Player player, String[] args) {
-        return null;
-    }
 }

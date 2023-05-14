@@ -67,35 +67,26 @@ permissions:
     default: true
   genesismc.origins.sculkling:
     default: true
+
   genesismc.origins.cmd.main:
     default: true
-  genesismc.origins.cmd.commandlist:
-    default: true
-  genesismc.origins.cmd.config.dump:
-    default: op
   genesismc.origins.cmd.choose:
     default: true
   genesismc.origins.cmd.purge:
     default: op
-  genesismc.origins.cmd.reload:
-    default: op
-  genesismc.origins.cmd.texture:
-    default: true
-  genesismc.origins.beta.orboforigin:
-    default: op
-  genesismc.origins.beta.waterprot:
-    default: op
-  genesismc.choosing.canchoose:
-    default: true
-  genesismc.choosing.custom.canchoose:
-    default: true
-  genesismc.choosing.rechoose:
-    default: true
   genesismc.origins.cmd.get:
     default: op
   genesismc.origins.cmd.enchant:
     default: op
-  genesismc.origins.cmd.toggle:
-    default: true
   genesismc.origins.cmd.recipe:
     default: true
+  genesis.origins.cmd.gui:
+    default: op
+  genesis.origins.cmd.has:
+    default: op
+  genesis.origins.cmd.set:
+    default: op
+
+  genesismc.origins.cmd.toggle:
+    default: true
+

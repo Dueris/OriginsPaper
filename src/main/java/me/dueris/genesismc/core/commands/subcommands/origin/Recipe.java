@@ -107,8 +107,4 @@ public class Recipe extends SubCommand implements Listener {
         }
     }
 
-    @Override
-    public List<String> getSubcommandArguments(Player player, String[] args) {
-        return null;
-    }
 }

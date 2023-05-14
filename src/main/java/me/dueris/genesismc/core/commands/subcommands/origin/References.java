@@ -29,9 +29,4 @@ public class References extends SubCommand {
         p.sendMessage("Sakisiil - Bee origin datapack creator - https://github.com/sakisiil/Origin-Datapacks");
 
     }
-
-    @Override
-    public List<String> getSubcommandArguments(Player player, String[] args) {
-        return null;
-    }
 }

@@ -15,13 +15,8 @@ public class GenesisCommandManager implements CommandExecutor {
     private ArrayList<SubCommand> subCommands = new ArrayList<>();
     public GenesisCommandManager(){
         subCommands.add(new Purge());
-        subCommands.add(new Texture());
-        subCommands.add(new CommandList());
-        subCommands.add(new Dump());
         subCommands.add(new OriginsChoose());
         subCommands.add(new Enchant());
-        subCommands.add(new Get());
-        subCommands.add(new Info());
         subCommands.add(new References());
         subCommands.add(new Recipe());
     }
