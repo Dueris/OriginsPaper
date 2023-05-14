@@ -47,25 +47,8 @@ public class TabAutoComplete implements TabCompleter {
 
                 return arguments;
             } else if (args.length >= 3) {
-                if (args[1].equalsIgnoreCase("genesis:water_protection")) {
-                    List<String> enchantid = new ArrayList<>();
-                    enchantid.add("1");
-                    enchantid.add("2");
-                    enchantid.add("3");
-                    enchantid.add("4");
-                    return enchantid;
-
-                } if(args[1].equalsIgnoreCase("get")) {
-                    List<String> arguments = new ArrayList<>();
-                    arguments.add("origin");
-                    arguments.add("origintag");
-                    arguments.add("help");
-                    arguments.add("keybind");
-                    return arguments;
-                } else {
                     List<String> nothing = new ArrayList<>();
                     return nothing;
-                }
             } else if (args.length == 2) {
                 if (args[0].equalsIgnoreCase("purge")) {
                     Player[] players = new Player[Bukkit.getServer().getOnlinePlayers().size()];
@@ -89,13 +72,6 @@ public class TabAutoComplete implements TabCompleter {
                     enchantid.add("genesis:water_protection");
                     return enchantid;
 
-                }else if(args[0].equalsIgnoreCase("info")) {
-                    List<String> arguments = new ArrayList<>();
-                    arguments.add("get");
-                    return arguments;
-                } else {
-                    List<String> nothing = new ArrayList<>();
-                    return nothing;
                 }
 
             }
@@ -110,8 +86,14 @@ public class TabAutoComplete implements TabCompleter {
                 return nothing;
             }
 
+        } else if (command.getName().equalsIgnoreCase("give")) {
+            if(args.length == 2){
+                List<String> arguments = new ArrayList<>();
+                arguments.add("genesis:orb_of_origin");
+                return arguments;
+            }
         }
-            return null;
+        return null;
         }
 
     }
