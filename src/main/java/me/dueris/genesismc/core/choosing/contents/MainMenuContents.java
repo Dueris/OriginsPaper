@@ -93,12 +93,12 @@ public class MainMenuContents {
             phantom = itemProperties(phantom, RED + "Unavailable", ItemFlag.HIDE_ENCHANTS, Enchantment.ARROW_INFINITE, RED + "This origin is locked by the server owner");
         }
         if (GenesisDataFiles.getPlugCon().getString("slimeling-disable").equalsIgnoreCase("false")) {
-            slimeling = itemProperties(slimeling, GREEN + "Slimeling", null, null, WHITE + "Slime Origin");
+            slimeling = itemProperties(slimeling, GREEN + "Slimeling", null, null, WHITE + "Slime Origin - not coded yet");
         } else {
             slimeling = itemProperties(slimeling, RED + "Unavailable", ItemFlag.HIDE_ENCHANTS, Enchantment.ARROW_INFINITE, RED + "This origin is locked by the server owner");
         }
         if (GenesisDataFiles.getPlugCon().getString("feline-disable").equalsIgnoreCase("false")) {
-            feline = itemProperties(feline, AQUA + "Feline", ItemFlag.HIDE_ATTRIBUTES, null, WHITE + "Feline Origin");
+            feline = itemProperties(feline, AQUA + "Feline", ItemFlag.HIDE_ATTRIBUTES, null, WHITE + "Feline Origin - not coded yet");
         } else {
             feline = itemProperties(feline, RED + "Unavailable", ItemFlag.HIDE_ENCHANTS, Enchantment.ARROW_INFINITE, RED + "This origin is locked by the server owner");
         }
@@ -108,17 +108,17 @@ public class MainMenuContents {
             blazeborn = itemProperties(blazeborn, RED + "Unavailable", ItemFlag.HIDE_ENCHANTS, Enchantment.ARROW_INFINITE, RED + "This origin is locked by the server owner");
         }
         if (GenesisDataFiles.getPlugCon().getString("starborne-disable").equalsIgnoreCase("false")) {
-            starborne = itemProperties(starborne, LIGHT_PURPLE + "Starborne", null, null, WHITE + "Starborne Origin");
+            starborne = itemProperties(starborne, LIGHT_PURPLE + "Starborne", null, null, WHITE + "Starborne Origin - not coded yet");
         } else {
             starborne = itemProperties(starborne, RED + "Unavailable", ItemFlag.HIDE_ENCHANTS, Enchantment.ARROW_INFINITE, RED + "This origin is locked by the server owner");
         }
         if (GenesisDataFiles.getPlugCon().getString("merling-disable").equalsIgnoreCase("false")) {
-            merling = itemProperties(merling, BLUE + "Merling", null, null, WHITE + "Merling Origin");
+            merling = itemProperties(merling, BLUE + "Merling", null, null, WHITE + "Merling Origin - not coded yet");
         } else {
             merling = itemProperties(merling, RED + "Unavailable", ItemFlag.HIDE_ENCHANTS, Enchantment.ARROW_INFINITE, RED + "This origin is locked by the server owner");
         }
         if (GenesisDataFiles.getPlugCon().getString("allay-disable").equalsIgnoreCase("false")) {
-            allay = itemProperties(allay, AQUA + "Allay", null, null, WHITE + "Allay Origin");
+            allay = itemProperties(allay, AQUA + "Allay", null, null, WHITE + "Allay Origin - not coded yet");
         } else {
             allay = itemProperties(allay, RED + "Unavailable", ItemFlag.HIDE_ENCHANTS, Enchantment.ARROW_INFINITE, RED + "This origin is locked by the server owner");
         }
@@ -128,12 +128,12 @@ public class MainMenuContents {
             rabbit = itemProperties(rabbit, RED + "Unavailable", ItemFlag.HIDE_ENCHANTS, Enchantment.ARROW_INFINITE, RED + "This origin is locked by the server owner");
         }
         if (GenesisDataFiles.getPlugCon().getString("bumblebee-disable").equalsIgnoreCase("false")) {
-            bumblebee = itemProperties(bumblebee, YELLOW + "Bumblebee", null, null, WHITE + "Bee Origin");
+            bumblebee = itemProperties(bumblebee, YELLOW + "Bumblebee", null, null, WHITE + "Bee Origin - not coded yet");
         } else {
             bumblebee = itemProperties(bumblebee, RED + "Unavailable", ItemFlag.HIDE_ENCHANTS, Enchantment.ARROW_INFINITE, RED + "This origin is locked by the server owner");
         }
         if (GenesisDataFiles.getPlugCon().getString("elytrian-disable").equalsIgnoreCase("false")) {
-            elytrian = itemProperties(elytrian, GRAY + "Elytrian", null, null, WHITE + "Elytra Origin");
+            elytrian = itemProperties(elytrian, GRAY + "Elytrian", null, null, WHITE + "Elytrian Origin - not coded yet");
         } else {
             elytrian = itemProperties(elytrian, RED + "Unavailable", ItemFlag.HIDE_ENCHANTS, Enchantment.ARROW_INFINITE, RED + "This origin is locked by the server owner");
         }
@@ -148,7 +148,7 @@ public class MainMenuContents {
             piglin = itemProperties(piglin, RED + "Unavailable", ItemFlag.HIDE_ENCHANTS, Enchantment.ARROW_INFINITE, RED + "This origin is locked by the server owner");
         }
         if (GenesisDataFiles.getPlugCon().getString("sculkling-disable").equalsIgnoreCase("false")) {
-            sculkling = itemProperties(sculkling, BLUE + "Sculkling", null, null, WHITE + "Sculkling Origin");
+            sculkling = itemProperties(sculkling, BLUE + "Sculkling", null, null, WHITE + "Sculkling Origin - not coded yet");
         } else {
             sculkling = itemProperties(sculkling, RED + "Unavailable", ItemFlag.HIDE_ENCHANTS, Enchantment.ARROW_INFINITE, RED + "This origin is locked by the server owner");
         }
