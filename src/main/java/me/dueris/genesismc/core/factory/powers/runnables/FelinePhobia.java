@@ -22,12 +22,13 @@ public class FelinePhobia extends BukkitRunnable {
         for(Player p : Bukkit.getOnlinePlayers()){
             PersistentDataContainer data = p.getPersistentDataContainer();
             @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
-            if(felinephobia.contains(origintag));
+            if(felinephobia.contains(origintag)){
             List<Entity> nearby2 = p.getNearbyEntities(3, 3, 3);
             for (Entity tmp : nearby2)
                 if (tmp instanceof Cat)
                     ((Damageable) p).damage(1);
         }
+      }
 
     }
 }
