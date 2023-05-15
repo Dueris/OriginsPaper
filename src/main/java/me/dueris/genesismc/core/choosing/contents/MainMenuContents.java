@@ -40,7 +40,7 @@ public class MainMenuContents {
         ItemStack sculkling = new ItemStack(Material.ECHO_SHARD);
         ItemStack blank = new ItemStack(Material.AIR);
         ItemStack custom_originmenu = new ItemStack(Material.TIPPED_ARROW);
-        ItemStack description = new ItemStack(Material.MAP);
+        ItemStack description = new ItemStack(Material.AIR);
         ItemStack bars = new ItemStack(Material.IRON_BARS);
         ItemStack random = new ItemStack(Material.MAGMA_CREAM);
 
@@ -156,15 +156,7 @@ public class MainMenuContents {
         random = itemProperties(random, ChatColor.LIGHT_PURPLE + "Orb of Origins", ItemFlag.HIDE_ENCHANTS, null, null);
         custom_originmenu = itemProperties(custom_originmenu, ChatColor.YELLOW + "Custom Origins", ItemFlag.HIDE_ENCHANTS, null, null);
         bars = itemProperties(bars, "", ItemFlag.HIDE_ENCHANTS, null, null);
-
-//        ItemMeta exmeta = expanded.getItemMeta();
-//        exmeta.setDisplayName(ChatColor.BLUE + "Origins Expanded");
-//        exmeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-//        ArrayList<String> explore = new ArrayList<>();
-//        exmeta.setLore(explore);
-//        expanded.setItemMeta(exmeta);
-
-        //The description on the top row will be replaced with feline when it is implemented
+        
         ItemStack[] mainmenucontents = {enderian, merling, phantom, elytrian, blazeborn, avian, arachnid, shulk, feline,
                 description, description, description, description, description, description, description, description, description,
                 bars, bars, bars, bars, bars, bars, bars, bars, bars,
