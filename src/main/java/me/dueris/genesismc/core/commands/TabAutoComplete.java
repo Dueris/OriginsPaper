@@ -41,7 +41,7 @@ public class TabAutoComplete implements TabCompleter {
                     arguments.remove("recipe");
                 }
                 if (sender.hasPermission("genesismc.origins.cmd.choose")) {
-                    if(args[0].startsWith("c") || args[0].isEmpty() || args[0].startsWith("ch") || args[0].startsWith("cho") || args[0].startsWith("choo") || args[0].startsWith("choos") || args[0].startsWith("choos") || args[0].startsWith("choose"))
+                    if(args[0].startsWith("c") || args[0].isEmpty() || args[0].startsWith("ch") || args[0].startsWith("cho") || args[0].startsWith("choo") || args[0].startsWith("choos") || args[0].startsWith("choose"))
                     arguments.add("choose");
                 }else{
                     arguments.remove("choose");
@@ -75,7 +75,6 @@ public class TabAutoComplete implements TabCompleter {
                     arguments.add("has");
                 }else{
                     arguments.remove("has");
-
                 }
                 if(sender.hasPermission("genesis.origins.cmd.set")){
                     if(args[0].startsWith("s") || args[0].isEmpty() || args[0].startsWith("se") || args[0].startsWith("set"))
@@ -83,16 +82,23 @@ public class TabAutoComplete implements TabCompleter {
                 }else{
                     arguments.remove("set");
                 }
+                if (sender.hasPermission("genesis.origins.cmd.orb")) {
+                    if (args[0].startsWith("g") || args[0].isEmpty() || args[0].startsWith("gi") || args[0].startsWith("giv") || args[0].startsWith("give"))
+                        arguments.add("give");
+                }else {
+                    arguments.remove("give");
+                }
 
                 return arguments;
             } else if (args.length == 2) {
-                if (args[0].equalsIgnoreCase("get") || args[0].equalsIgnoreCase("has") || args[0].equalsIgnoreCase("purge") || args[0].equalsIgnoreCase("set")) {
+                if (args[0].equalsIgnoreCase("get") || args[0].equalsIgnoreCase("has") || args[0].equalsIgnoreCase("purge") || args[0].equalsIgnoreCase("set") || args[0].equalsIgnoreCase("give")) {
                     Player[] players = new Player[Bukkit.getServer().getOnlinePlayers().size()];
                     List<String> playernames = new ArrayList<>();
                     Bukkit.getServer().getOnlinePlayers().toArray(players);
                     for (int i = 0; i < players.length; i++) {
                         playernames.add(players[i].getName());
                     }
+                    if (args[0].equalsIgnoreCase("give")) playernames.addAll(Arrays.asList("@a", "@e", "@p", "@r", "@s"));
                     return playernames;
 
                 } else if (args[0].equalsIgnoreCase("enchant")) {
@@ -108,7 +114,10 @@ public class TabAutoComplete implements TabCompleter {
             } else if (args.length == 3) {
                 if (args[0].equalsIgnoreCase("has") || args[0].equalsIgnoreCase("set")) {
                     return OriginAPI.getLoadedOrigins();
-                }else{
+                } else if (args[0].equalsIgnoreCase("give")) {
+                    return List.of("genesis:orb_of_origin");
+                }
+                else{
                     List<String> nothin = new ArrayList<>();
                     return nothin;
                 }
@@ -125,13 +134,6 @@ public class TabAutoComplete implements TabCompleter {
             } else if (args.length >= 2) {
                 List<String> nothing = new ArrayList<>();
                 return nothing;
-            }
-
-        } else if (command.getName().equalsIgnoreCase("give")) {
-            if(args.length == 2){
-                List<String> arguments = new ArrayList<>();
-                arguments.add("genesis:orb_of_origin");
-                return arguments;
             }
         }
         return null;

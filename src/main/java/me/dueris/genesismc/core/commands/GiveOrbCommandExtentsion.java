@@ -15,13 +15,7 @@ public class GiveOrbCommandExtentsion implements Listener {
 
     @EventHandler
     public void ProccessGive(PlayerCommandPreprocessEvent e){
-        Player[] players = new Player[Bukkit.getServer().getOnlinePlayers().size()];
-        List<String> playernames = new ArrayList<>();
-        Bukkit.getServer().getOnlinePlayers().toArray(players);
-        if(e.getMessage().equalsIgnoreCase("/give @s genesis:orb_of_origin")){
-            e.setCancelled(true);
-            e.getPlayer().getInventory().addItem(orb);
-        }
+
     }
 
 }

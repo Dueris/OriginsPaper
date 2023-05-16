@@ -4,7 +4,6 @@ main: me.dueris.genesismc.core.GenesisMC
 api-version: 1.19
 authors: [ Dueris, Tye ]
 folia-supported: true
-#mine diamonds
 description: Bringing the life and fun of the Origins mod to PaperMC
 website: https://genesismc.duckdns.org/
 commands:
@@ -86,7 +85,8 @@ permissions:
     default: op
   genesis.origins.cmd.set:
     default: op
-
   genesismc.origins.cmd.toggle:
     default: true
+  gensismc.origins.cmd.orb:
+    default: op
 
