@@ -110,5 +110,6 @@ public class OriginStartHandler {
         getServer().getPluginManager().registerEvents(new MoreExhaustion(), getPlugin());
         getServer().getPluginManager().registerEvents(new BetterMineSpeed(), getPlugin());
         getServer().getPluginManager().registerEvents(new OriginHandler(), getPlugin());
+        getServer().getPluginManager().registerEvents(new FireImmunity(), getPlugin());
     }
 }
