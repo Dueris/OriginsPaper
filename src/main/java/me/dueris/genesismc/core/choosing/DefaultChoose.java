@@ -1,6 +1,7 @@
 package me.dueris.genesismc.core.choosing;
 
 import me.dueris.genesismc.core.GenesisMC;
+import me.dueris.genesismc.core.api.events.OriginChooseEvent;
 import me.dueris.genesismc.core.items.OrbOfOrigins;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
@@ -28,7 +29,10 @@ public class DefaultChoose {
             p.removeScoreboardTag("choosing");
         }
         // DO NOT UNCOMMENT, DUERIS SAID SHE'D FIX IT WHEN SHE'S LESS TIRED AND THIS ERROR TOOK AN HOUR TO FIND
-        //Bukkit.getServer().getPluginManager().callEvent(new OriginChooseEvent(p));
+        if(p != null){
+            //Bukkit.getServer().getPluginManager().callEvent(new OriginChooseEvent(p));
+        }
+
 
         if (p.getInventory().getItemInMainHand().isSimilar(OrbOfOrigins.orb) && !p.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING).equals("genesis:origin-null")) {
             int amt = p.getInventory().getItemInMainHand().getAmount();
