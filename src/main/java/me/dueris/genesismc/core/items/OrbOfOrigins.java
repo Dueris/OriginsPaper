@@ -1,5 +1,6 @@
 package me.dueris.genesismc.core.items;
 
+import me.dueris.genesismc.core.GenesisMC;
 import me.dueris.genesismc.core.files.GenesisDataFiles;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -10,6 +11,7 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.tags.ItemTagType;
 
 import static me.dueris.genesismc.core.files.GenesisDataFiles.getOrbCon;
 
@@ -32,6 +34,7 @@ public class OrbOfOrigins {
         meta.setCustomModelData(00002);
         meta.setDisplayName(GenesisDataFiles.getOrbCon().getString("name"));
         meta.setUnbreakable(true);
+        meta.getCustomTagContainer().setCustomTag(new NamespacedKey(GenesisMC.getPlugin(), "origins"), ItemTagType.STRING, "orb_of_origin");
         meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
         item.setItemMeta(meta);
         orb = item;

@@ -17,6 +17,7 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.inventory.meta.tags.ItemTagType;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
@@ -39,9 +40,8 @@ public class ChoosingCORE implements Listener {
             if (GenesisDataFiles.getPlugCon().getString("orb-of-origins-enabled").equalsIgnoreCase("true")) {
                 if (e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.LEFT_CLICK_AIR || e.getAction() == Action.LEFT_CLICK_BLOCK || e.getAction() == Action.RIGHT_CLICK_BLOCK) {
                     if (p.getOpenInventory().getBottomInventory() != null) ;
-                    ItemStack orb = new ItemStack(Material.MAGMA_CREAM);
-
-                    ItemMeta meta = orb.getItemMeta();
+                    ItemStack item = new ItemStack(Material.MAGMA_CREAM);
+                    ItemMeta meta = item.getItemMeta();
                     meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
                     meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
                     meta.addItemFlags(ItemFlag.HIDE_DESTROYS);
@@ -50,14 +50,15 @@ public class ChoosingCORE implements Listener {
                     meta.setCustomModelData(00002);
                     meta.setDisplayName(GenesisDataFiles.getOrbCon().getString("name"));
                     meta.setUnbreakable(true);
+                    meta.getCustomTagContainer().setCustomTag(new NamespacedKey(GenesisMC.getPlugin(), "origins"), ItemTagType.STRING, "orb_of_origin");
                     meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
-                    orb.setItemMeta(meta);
+                    item.setItemMeta(meta);
                     PersistentDataContainer data = p.getPersistentDataContainer();
                     @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
                     int phantomid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER);
                     if (phantomid == 1) ;
                     if (e.getItem() != null && e.getItem().getType() != null) {
-                        if (e.getItem().isSimilar(orb)) {
+                        if (e.getItem().isSimilar(item)) {
 
                             @NotNull Inventory mainmenu = Bukkit.createInventory(e.getPlayer(), 54, "Choosing Menu");
                             mainmenu.setContents(GenesisMainMenuContents(e.getPlayer()));
@@ -461,9 +462,6 @@ public class ChoosingCORE implements Listener {
                 }
                 if(e.getCurrentItem().isSimilar(elyrtian)){
                     setAtributesToDefualt(p);
-                    Bukkit.getScheduler().runTaskLater(GenesisMC.getPlugin(),()->{
-
-                    },1);
                     Bukkit.getScheduler().runTaskLater(GenesisMC.getPlugin(),()->{
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, "genesis:origin-elytrian");
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);

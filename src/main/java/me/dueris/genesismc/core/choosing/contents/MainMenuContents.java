@@ -45,15 +45,6 @@ public class MainMenuContents {
         ItemStack description = new ItemStack(Material.AIR);
 
         ItemMeta meta = random.getItemMeta();
-        meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
-        meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
-        meta.addItemFlags(ItemFlag.HIDE_DESTROYS);
-        meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-        meta.addItemFlags(ItemFlag.HIDE_PLACED_ON);
-        meta.setCustomModelData(00002);
-        meta.setDisplayName(org.bukkit.ChatColor.LIGHT_PURPLE + "Random Origin");
-        meta.setUnbreakable(true);
-        meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
         random.setItemMeta(meta);
 
         if (GenesisDataFiles.getPlugCon().getString("human-disable").equalsIgnoreCase("false")) {
@@ -162,7 +153,7 @@ public class MainMenuContents {
                 bars, bars, bars, bars, bars, bars, bars, bars, bars,
                 starborne, allay, rabbit, bumblebee, human , sculkling, creep, slimeling, piglin,
                 description, description, description, description, description, description, description, description, description,
-                blank, blank, blank, random, blank, custom_originmenu, blank, blank, blank};
+                blank, blank, blank, blank, custom_originmenu, blank, blank, blank, blank};
 
         return mainmenucontents;
 
