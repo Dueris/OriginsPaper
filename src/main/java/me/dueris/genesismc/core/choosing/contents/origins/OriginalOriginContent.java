@@ -14,6 +14,7 @@ import java.util.Arrays;
 
 import static me.dueris.genesismc.core.choosing.ChoosingCORE.itemPropertiesMultipleLore;
 import static me.dueris.genesismc.core.choosing.ChoosingCORE.itemProperties;
+import static me.dueris.genesismc.core.items.OrbOfOrigins.orb;
 import static org.bukkit.ChatColor.*;
 
 public class OriginalOriginContent {
@@ -45,7 +46,7 @@ public class OriginalOriginContent {
         menu = itemProperties(menu, ChatColor.AQUA + "Return", ItemFlag.HIDE_ENCHANTS, null, null);
         human = itemProperties(human, "Human", null, Enchantment.ARROW_INFINITE, WHITE + "Human Origin");
 
-        ItemStack[] humangui_items = {close, impact, air, air, air, air, air, impact, close, air, air, air, air, human, air, air, air, air, air, air, blank, blank, human_origin_info, blank, blank, air, air, air, air, blank, blank, blank, blank, blank, air, air, air, air, air, air, air, air, air, air, air, air, air, air, air, menu, air, air, air, air};
+        ItemStack[] humangui_items = {close, impact, air, air, orb, air, air, impact, close, air, air, air, air, human, air, air, air, air, air, air, blank, blank, human_origin_info, blank, blank, air, air, air, air, blank, blank, blank, blank, blank, air, air, air, air, air, air, air, air, air, air, air, air, air, air, air, menu, air, air, air, air};
 
         return humangui_items;
     }

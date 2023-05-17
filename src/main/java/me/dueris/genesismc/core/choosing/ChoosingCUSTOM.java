@@ -165,6 +165,7 @@ public class ChoosingCUSTOM implements Listener {
     @EventHandler(priority = EventPriority.HIGH)
     public void CustomOriginSelect(InventoryClickEvent e) {
         if (e.getCurrentItem() != null) {
+            if (e.getCurrentItem().getType() == Material.MAGMA_CREAM) return;
             if (e.getCurrentItem().getItemMeta() == null) return;
             NamespacedKey chooseKey = new NamespacedKey(GenesisMC.getPlugin(), "originChoose");
             if (e.getCurrentItem().getItemMeta().getPersistentDataContainer().get(chooseKey, PersistentDataType.INTEGER) != null) {

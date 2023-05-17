@@ -103,8 +103,7 @@ public class OriginPlayer {
             setAttributesToDefault(player);
             removeItemPhantom(player);
             removeItemEnder(player);
-        }
-        if(origin.contains("genesis:origin-enderian")){
+        } else if(origin.contains("genesis:origin-enderian")){
             setAttributesToDefault(player);
             Bukkit.getScheduler().runTaskLater(GenesisMC.getPlugin(),()->{
                 ItemStack infinpearl = new ItemStack(Material.ENDER_PEARL);
@@ -118,8 +117,7 @@ public class OriginPlayer {
                 player.getInventory().addItem(infinpearl);
                 removeItemPhantom(player);
             },1);
-        }
-        if(origin.contains("genesis:origin-shulk")){
+        } else if(origin.contains("genesis:origin-shulk")){
             float walk = 0.185F;
             setAttributesToDefault(player);
             Bukkit.getScheduler().runTaskLater(GenesisMC.getPlugin(),()->{
@@ -130,24 +128,21 @@ public class OriginPlayer {
                 removeItemPhantom(player);
                 removeItemEnder(player);
             },1);
-        }
-        if(origin.contains("genesis:origin-arachnid")){
+        } else if(origin.contains("genesis:origin-arachnid")){
             setAttributesToDefault(player);
             Bukkit.getScheduler().runTaskLater(GenesisMC.getPlugin(),()->{
                 player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(14);
                 removeItemPhantom(player);
                 removeItemEnder(player);
             },1);
-        }
-        if(origin.contains("genesis:origin-creep")){
+        } else if(origin.contains("genesis:origin-creep")){
             setAttributesToDefault(player);
             Bukkit.getScheduler().runTaskLater(GenesisMC.getPlugin(),()->{
                 player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(18);
                 removeItemPhantom(player);
                 removeItemEnder(player);
             },1);
-        }
-        if(origin.contains("genesis:origin-phantom")){
+        } else if(origin.contains("genesis:origin-phantom")){
             setAttributesToDefault(player);
             Bukkit.getScheduler().runTaskLater(GenesisMC.getPlugin(),()->{
                 player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(14);
@@ -165,92 +160,86 @@ public class OriginPlayer {
                 player.getInventory().addItem(spectatorswitch);
                 removeItemEnder(player);
             },1);
-        }
-        if(origin.contains("genesis:origin-slimeling")){
+        } else if(origin.contains("genesis:origin-slimeling")){
             setAttributesToDefault(player);
             Bukkit.getScheduler().runTaskLater(GenesisMC.getPlugin(),()->{
                 removeItemPhantom(player);
                 removeItemEnder(player);
             },1);
-        }
-        if(origin.contains("genesis:origin-feline")){
+        } else if(origin.contains("genesis:origin-feline")){
             setAttributesToDefault(player);
             Bukkit.getScheduler().runTaskLater(GenesisMC.getPlugin(),()->{
                 player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(18);
                 removeItemPhantom(player);
                 removeItemEnder(player);
             },1);
-        }
-        if(origin.contains("genesis:origin-blaze")){
+        } else if(origin.contains("genesis:origin-blaze")){
             setAttributesToDefault(player);
             Bukkit.getScheduler().runTaskLater(GenesisMC.getPlugin(),()->{
                 removeItemPhantom(player);
                 removeItemEnder(player);
             },1);
-        }
-        if(origin.contains("genesis:origin-starborne")){
+        } else if(origin.contains("genesis:origin-starborne")){
             setAttributesToDefault(player);
             Bukkit.getScheduler().runTaskLater(GenesisMC.getPlugin(),()->{
                 removeItemPhantom(player);
                 removeItemEnder(player);
             },1);
-        }
-        if(origin.contains("geneis:origin-merling")){
+        } else if(origin.contains("geneis:origin-merling")){
             setAttributesToDefault(player);
             Bukkit.getScheduler().runTaskLater(GenesisMC.getPlugin(),()->{
                 removeItemPhantom(player);
                 removeItemEnder(player);
             },1);
-        }
-        if(origin.contains("genesis:origin-allay")){
+        } else if(origin.contains("genesis:origin-allay")){
             setAttributesToDefault(player);
             Bukkit.getScheduler().runTaskLater(GenesisMC.getPlugin(),()->{
                 removeItemPhantom(player);
                 removeItemEnder(player);
             },1);
-        }
-        if(origin.contains("genesis:origin-rabbit")){
+        } else if(origin.contains("genesis:origin-rabbit")){
             setAttributesToDefault(player);
             Bukkit.getScheduler().runTaskLater(GenesisMC.getPlugin(),()->{
                 player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(14);
                 removeItemPhantom(player);
                 removeItemEnder(player);
             },1);
-        }
-        if(origin.contains("genesis:origin-bee")){
+        } else if(origin.contains("genesis:origin-bee")){
             setAttributesToDefault(player);
             Bukkit.getScheduler().runTaskLater(GenesisMC.getPlugin(),()->{
                 player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(14);
                 removeItemPhantom(player);
                 removeItemEnder(player);
             },1);
-        }
-        if(origin.contains("genesis:origin-elytrian")){
+        } else if(origin.contains("genesis:origin-elytrian")){
             setAttributesToDefault(player);
             Bukkit.getScheduler().runTaskLater(GenesisMC.getPlugin(),()->{
                 removeItemPhantom(player);
                 removeItemEnder(player);
             },1);
-        }
-        if(origin.contains("genesis:origin-avian")){
+        } else if(origin.contains("genesis:origin-avian")){
             setAttributesToDefault(player);
             Bukkit.getScheduler().runTaskLater(GenesisMC.getPlugin(),()->{
                 player.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0.17);
                 removeItemPhantom(player);
                 removeItemEnder(player);
             },1);
-        }
-        if(origin.contains("genesis:origin-piglin")){
+        } else if(origin.contains("genesis:origin-piglin")){
             setAttributesToDefault(player);
             Bukkit.getScheduler().runTaskLater(GenesisMC.getPlugin(),()->{
                 removeItemPhantom(player);
                 removeItemEnder(player);
             },1);
-        }
-        if(origin.contains("genesis:origin-sculkling")){
+        } else if(origin.contains("genesis:origin-sculkling")){
             setAttributesToDefault(player);
             Bukkit.getScheduler().runTaskLater(GenesisMC.getPlugin(),()->{
                 player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(24);
+                removeItemPhantom(player);
+                removeItemEnder(player);
+            },1);
+        } else {
+            setAttributesToDefault(player);
+            Bukkit.getScheduler().runTaskLater(GenesisMC.getPlugin(),()->{
                 removeItemPhantom(player);
                 removeItemEnder(player);
             },1);

@@ -12,7 +12,6 @@ import me.dueris.genesismc.core.generation.WaterProtBookGen;
 import me.dueris.genesismc.core.items.Items;
 import me.dueris.genesismc.core.utils.ParticleHandler;
 import me.dueris.genesismc.core.api.factory.CustomOriginAPI;
-import me.dueris.genesismc.core.factory.handlers.CustomMenuHandler;
 import me.dueris.genesismc.core.enchantments.EnchantProtEvent;
 import me.dueris.genesismc.core.enchantments.WaterProtection;
 import me.dueris.genesismc.core.files.GenesisDataFiles;
@@ -134,7 +133,6 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         getServer().getPluginManager().registerEvents(new Purge(), this);
         getServer().getPluginManager().registerEvents(new JoiningHandler(), this);
         getServer().getPluginManager().registerEvents(new EnchantProtEvent(), this);
-        getServer().getPluginManager().registerEvents(new CustomMenuHandler(), this);
         getServer().getPluginManager().registerEvents(new WaterProtAnvil(), this);
         getServer().getPluginManager().registerEvents(new PlayerAddScoreboard(), this);
         getServer().getPluginManager().registerEvents(new WaterProtBookGen(), this);

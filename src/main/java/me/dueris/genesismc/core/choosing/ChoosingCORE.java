@@ -1,6 +1,8 @@
 package me.dueris.genesismc.core.choosing;
 
 import me.dueris.genesismc.core.GenesisMC;
+import me.dueris.genesismc.core.api.OriginAPI;
+import me.dueris.genesismc.core.api.entity.OriginPlayer;
 import me.dueris.genesismc.core.files.GenesisDataFiles;
 import me.dueris.genesismc.core.factory.powers.world.WorldSpawnHandler;
 import org.bukkit.*;
@@ -25,10 +27,12 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import static me.dueris.genesismc.core.choosing.contents.MainMenuContents.GenesisMainMenuContents;
 import static me.dueris.genesismc.core.choosing.contents.origins.ExpandedOriginContent.*;
 import static me.dueris.genesismc.core.choosing.contents.origins.OriginalOriginContent.*;
+import static me.dueris.genesismc.core.items.OrbOfOrigins.orb;
 import static org.bukkit.ChatColor.*;
 
 public class ChoosingCORE implements Listener {
@@ -113,8 +117,27 @@ public class ChoosingCORE implements Listener {
     }
 
     @EventHandler
+    public void onOrbRandom(InventoryClickEvent e) {
+        if (e.getCurrentItem() == null) return;
+        if (e.getCurrentItem().getItemMeta() == null) return;
+        if (e.getView().getTitle().equalsIgnoreCase("Choosing Menu")) {
+            if (e.getCurrentItem() == orb) return;
+            NamespacedKey key = new NamespacedKey(GenesisMC.getPlugin(), "orb");
+            if (e.getCurrentItem().getItemMeta().getPersistentDataContainer().get(key, PersistentDataType.STRING) == null) return;
+            if (e.getCurrentItem().getItemMeta().getPersistentDataContainer().get(key, PersistentDataType.STRING) != "orb") return;
+            Player p = (Player) e.getWhoClicked();
+            ArrayList<String> origins = OriginAPI.getLoadedOrigins();
+            Random random = new Random();
+            String originTag = origins.get(random.nextInt(origins.size()));
+            OriginPlayer.setOrigin(p, originTag);
+            DefaultChoose.DefaultChoose(p);
+        }
+    }
+
+    @EventHandler
     public void OnChoose(InventoryClickEvent e){
         if (e.getView().getTitle().equalsIgnoreCase("Choosing Menu")) {
+            if (e.getCurrentItem().getType() == Material.MAGMA_CREAM) return;
         if(e.getCurrentItem() != null){
             Player p = (Player) e.getWhoClicked();
             //Human

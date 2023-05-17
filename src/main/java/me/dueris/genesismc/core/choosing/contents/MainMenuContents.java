@@ -1,14 +1,17 @@
 package me.dueris.genesismc.core.choosing.contents;
 
+import me.dueris.genesismc.core.GenesisMC;
 import me.dueris.genesismc.core.files.GenesisDataFiles;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -153,14 +156,18 @@ public class MainMenuContents {
         random = itemProperties(random, ChatColor.LIGHT_PURPLE + "Orb of Origins", ItemFlag.HIDE_ENCHANTS, null, null);
         custom_originmenu = itemProperties(custom_originmenu, ChatColor.YELLOW + "Custom Origins", ItemFlag.HIDE_ENCHANTS, null, null);
         close = itemProperties(close, RED + "Close" , null, null, RED + "Cancel choosing");
-
+        ItemStack randomOrb = itemProperties(orb.clone(), LIGHT_PURPLE + "Random", null, null, null);
+        NamespacedKey key = new NamespacedKey(GenesisMC.getPlugin(), "orb");
+        ItemMeta randomOrbmeta = randomOrb.getItemMeta();
+        randomOrbmeta.getPersistentDataContainer().set(key, PersistentDataType.STRING, "orb");
+        randomOrb.setItemMeta(randomOrbmeta);
 
         ItemStack[] mainmenucontents = {avian, arachnid, elytrian, shulk, feline, enderian, merling, blazeborn, phantom,
                 background, background, background, background, human, background, background, background, background,
                 filler, filler, filler, filler, filler, filler, filler, filler, filler,
                 starborne, allay, rabbit, bumblebee, background , sculkling, creep, slimeling, piglin,
                 background, background, background, background, background, background, background, background, background,
-                filler, filler, filler, orb, close, custom_originmenu, filler, filler, filler};
+                filler, filler, filler, randomOrb, close, custom_originmenu, filler, filler, filler};
 
         return mainmenucontents;
 
