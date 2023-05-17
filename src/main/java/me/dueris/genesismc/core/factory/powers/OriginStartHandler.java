@@ -72,6 +72,9 @@ public class OriginStartHandler {
         WaterBreatheBellow waterBreatheBellow = new WaterBreatheBellow();
         waterBreatheBellow.runTaskTimer(getPlugin(), 0, 10);
 
+        TempTailWind tempTailWind = new TempTailWind();
+        tempTailWind.runTaskTimer(getPlugin(), 0, 1);
+
     }
 
     public static void StartListeners(){
