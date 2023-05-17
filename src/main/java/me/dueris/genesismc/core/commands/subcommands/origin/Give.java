@@ -4,6 +4,7 @@ import me.dueris.genesismc.core.commands.subcommands.SubCommand;
 import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.v1_19_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -56,8 +57,19 @@ public class Give extends SubCommand {
         }
 
 
+        ItemStack item;
+        if (args[2].equals("genesis:orb_of_origin")) {
+            item = orb.clone();
+        } else return;
+
+        if (args.length == 4) {
+            item.setAmount(Integer.parseInt(args[3].strip()));
+        } else {
+            item.setAmount(1);
+        }
+
         for (Player player : players) {
-            if (args[2].equals("genesis:orb_of_origin")) player.getInventory().addItem(orb);
+            if (args[2].equals("genesis:orb_of_origin")) player.getInventory().addItem(item);
         }
     }
 }
