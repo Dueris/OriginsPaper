@@ -292,13 +292,11 @@ public class ChoosingCORE implements Listener {
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, "genesis:origin-human");
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
-                    setAtributesToDefualt(p);
                     p.closeInventory();
                     removeItemPhantom(p);
                     removeItemEnder(p);
                 }
                 if(e.getCurrentItem().isSimilar(ender)){
-                    setAtributesToDefualt(p);
                     Bukkit.getScheduler().runTaskLater(GenesisMC.getPlugin(),()->{
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, "genesis:origin-enderian");
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
@@ -319,7 +317,6 @@ public class ChoosingCORE implements Listener {
                 }
                 if(e.getCurrentItem().isSimilar(shulk)){
                     float walk = 0.185F;
-                    setAtributesToDefualt(p);
                     Bukkit.getScheduler().runTaskLater(GenesisMC.getPlugin(),()->{
                         p.getAttribute(Attribute.GENERIC_ARMOR).setBaseValue(8.0);
                         p.setWalkSpeed(walk);
@@ -333,7 +330,6 @@ public class ChoosingCORE implements Listener {
                     },1);
                 }
                 if(e.getCurrentItem().isSimilar(spider)){
-                    setAtributesToDefualt(p);
                     Bukkit.getScheduler().runTaskLater(GenesisMC.getPlugin(),()->{
                         p.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(14);
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, "genesis:origin-arachnid");
@@ -344,7 +340,6 @@ public class ChoosingCORE implements Listener {
                     },1);
                 }
                 if(e.getCurrentItem().isSimilar(creep)){
-                    setAtributesToDefualt(p);
                     Bukkit.getScheduler().runTaskLater(GenesisMC.getPlugin(),()->{
                         p.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(18);
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, "genesis:origin-creep");
@@ -355,7 +350,6 @@ public class ChoosingCORE implements Listener {
                     },1);
                 }
                 if(e.getCurrentItem().isSimilar(phantom)){
-                    setAtributesToDefualt(p);
                     Bukkit.getScheduler().runTaskLater(GenesisMC.getPlugin(),()->{
                         p.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(14);
                         p.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0.11);
@@ -377,7 +371,6 @@ public class ChoosingCORE implements Listener {
                     },1);
                 }
                 if(e.getCurrentItem().isSimilar(slime)){
-                    setAtributesToDefualt(p);
                     Bukkit.getScheduler().runTaskLater(GenesisMC.getPlugin(),()->{
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, "genesis:origin-slimeling");
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
@@ -387,7 +380,6 @@ public class ChoosingCORE implements Listener {
                     },1);
                 }
                 if(e.getCurrentItem().isSimilar(feline)){
-                    setAtributesToDefualt(p);
                     Bukkit.getScheduler().runTaskLater(GenesisMC.getPlugin(),()->{
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, "genesis:origin-feline");
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
@@ -398,7 +390,6 @@ public class ChoosingCORE implements Listener {
                     },1);
                 }
                 if(e.getCurrentItem().isSimilar(blaze)){
-                    setAtributesToDefualt(p);
                     Bukkit.getScheduler().runTaskLater(GenesisMC.getPlugin(),()->{
                         if (p.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING).equals("genesis:origin-null")) p.teleport(WorldSpawnHandler.NetherSpawn());
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, "genesis:origin-blazeborn");
@@ -409,7 +400,6 @@ public class ChoosingCORE implements Listener {
                     },1);
                 }
                 if(e.getCurrentItem().isSimilar(star)){
-                    setAtributesToDefualt(p);
                     Bukkit.getScheduler().runTaskLater(GenesisMC.getPlugin(),()->{
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, "genesis:origin-starborne");
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
@@ -419,7 +409,6 @@ public class ChoosingCORE implements Listener {
                     },1);
                 }
                 if(e.getCurrentItem().isSimilar(merling)){
-                    setAtributesToDefualt(p);
                     Bukkit.getScheduler().runTaskLater(GenesisMC.getPlugin(),()->{
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, "genesis:origin-merling");
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
@@ -429,7 +418,6 @@ public class ChoosingCORE implements Listener {
                     },1);
                 }
                 if(e.getCurrentItem().isSimilar(allay)){
-                    setAtributesToDefualt(p);
                     Bukkit.getScheduler().runTaskLater(GenesisMC.getPlugin(),()->{
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, "genesis:origin-allay");
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
@@ -439,7 +427,6 @@ public class ChoosingCORE implements Listener {
                     },1);
                 }
                 if(e.getCurrentItem().isSimilar(rabbit)){
-                    setAtributesToDefualt(p);
                     Bukkit.getScheduler().runTaskLater(GenesisMC.getPlugin(),()->{
                         p.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(14);
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, "genesis:origin-rabbit");
@@ -450,7 +437,6 @@ public class ChoosingCORE implements Listener {
                     },1);
                 }
                 if(e.getCurrentItem().isSimilar(bee)){
-                    setAtributesToDefualt(p);
                     Bukkit.getScheduler().runTaskLater(GenesisMC.getPlugin(),()->{
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, "genesis:origin-bee");
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
@@ -461,7 +447,6 @@ public class ChoosingCORE implements Listener {
                     },1);
                 }
                 if(e.getCurrentItem().isSimilar(elyrtian)){
-                    setAtributesToDefualt(p);
                     Bukkit.getScheduler().runTaskLater(GenesisMC.getPlugin(),()->{
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, "genesis:origin-elytrian");
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
@@ -471,9 +456,7 @@ public class ChoosingCORE implements Listener {
                     },1);
                 }
                 if(e.getCurrentItem().isSimilar(avian)){
-                    setAtributesToDefualt(p);
                     Bukkit.getScheduler().runTaskLater(GenesisMC.getPlugin(),()->{
-                        p.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0.17);
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, "genesis:origin-avian");
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
@@ -482,7 +465,6 @@ public class ChoosingCORE implements Listener {
                     },1);
                 }
                 if(e.getCurrentItem().isSimilar(piglin)){
-                    setAtributesToDefualt(p);
                     Bukkit.getScheduler().runTaskLater(GenesisMC.getPlugin(),()->{
                         if (p.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING).equals("genesis:origin-null")) p.teleport(WorldSpawnHandler.NetherSpawn());
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, "genesis:origin-piglin");
@@ -493,7 +475,6 @@ public class ChoosingCORE implements Listener {
                     },1);
                 }
                 if(e.getCurrentItem().isSimilar(sculk)){
-                    setAtributesToDefualt(p);
                     Bukkit.getScheduler().runTaskLater(GenesisMC.getPlugin(),()->{
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, "genesis:origin-sculkling");
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
