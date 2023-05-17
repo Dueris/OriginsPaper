@@ -15,6 +15,7 @@ import org.jetbrains.annotations.Nullable;
 import static me.dueris.genesismc.core.choosing.ChoosingCORE.itemProperties;
 import static me.dueris.genesismc.core.choosing.ChoosingCORE.itemPropertiesMultipleLore;
 import static me.dueris.genesismc.core.choosing.ChoosingCUSTOM.cutStringIntoLists;
+import static me.dueris.genesismc.core.items.OrbOfOrigins.orb;
 import static org.bukkit.ChatColor.*;
 import static org.bukkit.ChatColor.RED;
 
@@ -42,11 +43,12 @@ public class MainMenuContents {
         ItemStack avian = new ItemStack(Material.FEATHER);
         ItemStack piglin = new ItemStack(Material.GOLD_INGOT);
         ItemStack sculkling = new ItemStack(Material.ECHO_SHARD);
-        ItemStack blank = new ItemStack(Material.AIR);
         ItemStack custom_originmenu = new ItemStack(Material.TIPPED_ARROW);
-        ItemStack bars = new ItemStack(Material.IRON_BARS);
         ItemStack random = new ItemStack(Material.MAGMA_CREAM);
-        ItemStack description = new ItemStack(Material.AIR);
+        ItemStack background = new ItemStack(Material.GRAY_STAINED_GLASS_PANE);
+        ItemStack filler = new ItemStack(Material.BLACK_STAINED_GLASS_PANE);
+        ItemStack close = new ItemStack(Material.BARRIER);
+
 
         ItemMeta meta = random.getItemMeta();
         random.setItemMeta(meta);
@@ -150,14 +152,15 @@ public class MainMenuContents {
 
         random = itemProperties(random, ChatColor.LIGHT_PURPLE + "Orb of Origins", ItemFlag.HIDE_ENCHANTS, null, null);
         custom_originmenu = itemProperties(custom_originmenu, ChatColor.YELLOW + "Custom Origins", ItemFlag.HIDE_ENCHANTS, null, null);
-        bars = itemProperties(bars, "", ItemFlag.HIDE_ENCHANTS, null, null);
-        
-        ItemStack[] mainmenucontents = {enderian, merling, phantom, elytrian, blazeborn, avian, arachnid, shulk, feline,
-                description, description, description, description, description, description, description, description, description,
-                bars, bars, bars, bars, bars, bars, bars, bars, bars,
-                starborne, allay, rabbit, bumblebee, human , sculkling, creep, slimeling, piglin,
-                description, description, description, description, description, description, description, description, description,
-                blank, blank, blank, blank, custom_originmenu, blank, blank, blank, blank};
+        close = itemProperties(close, RED + "Close" , null, null, RED + "Cancel choosing");
+
+
+        ItemStack[] mainmenucontents = {avian, arachnid, elytrian, shulk, feline, enderian, merling, blazeborn, phantom,
+                background, background, background, background, human, background, background, background, background,
+                filler, filler, filler, filler, filler, filler, filler, filler, filler,
+                starborne, allay, rabbit, bumblebee, background , sculkling, creep, slimeling, piglin,
+                background, background, background, background, background, background, background, background, background,
+                filler, filler, filler, orb, close, custom_originmenu, filler, filler, filler};
 
         return mainmenucontents;
 
