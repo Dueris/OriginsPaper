@@ -57,7 +57,7 @@ public class Give extends SubCommand {
 
 
         for (Player player : players) {
-            if (args[2].equals("genesis:orb_of_orig")) player.getInventory().addItem(orb);
+            if (args[2].equals("genesis:orb_of_origin")) player.getInventory().addItem(orb);
         }
     }
 }
