@@ -43,7 +43,6 @@ public class ChoosingCORE implements Listener {
         if (p.hasPermission("genesismc.choosing.rechoose")) {
             if (GenesisDataFiles.getPlugCon().getString("orb-of-origins-enabled").equalsIgnoreCase("true")) {
                 if (e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.LEFT_CLICK_AIR || e.getAction() == Action.LEFT_CLICK_BLOCK || e.getAction() == Action.RIGHT_CLICK_BLOCK) {
-                    if (p.getOpenInventory().getBottomInventory() != null) ;
                     ItemStack item = new ItemStack(Material.MAGMA_CREAM);
                     ItemMeta meta = item.getItemMeta();
                     meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
