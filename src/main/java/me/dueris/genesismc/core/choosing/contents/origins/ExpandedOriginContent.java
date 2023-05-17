@@ -13,6 +13,7 @@ import java.util.Arrays;
 
 import static me.dueris.genesismc.core.choosing.ChoosingCORE.itemProperties;
 import static me.dueris.genesismc.core.choosing.ChoosingCORE.itemPropertiesMultipleLore;
+import static me.dueris.genesismc.core.items.OrbOfOrigins.orb;
 import static org.bukkit.ChatColor.*;
 
 public class ExpandedOriginContent {
@@ -50,7 +51,7 @@ public class ExpandedOriginContent {
         ItemStack impact = new ItemStack(Material.YELLOW_STAINED_GLASS_PANE);
 
         impact = itemProperties(impact, WHITE + "Impact:" + YELLOW + " Medium", null, null, null);
-        ItemStack[] stargui_items = {close, impact, impact, air, air, air, impact, impact, close, air, air, air, air, star, air, air, air, air, air, air, star_origin_info1, star_origin_info2, star_origin_info3, star_origin_info4, star_origin_info5, air, air, air, air, star_origin_info6, star_origin_info7, star_origin_info8, star_origin_info9, blank, air, air, air, air, air, air, air, air, air, air, air, air, air, air, air, menu, air, air, air, air};
+        ItemStack[] stargui_items = {close, impact, impact, air, orb, air, impact, impact, close, air, air, air, air, star, air, air, air, air, air, air, star_origin_info1, star_origin_info2, star_origin_info3, star_origin_info4, star_origin_info5, air, air, air, air, star_origin_info6, star_origin_info7, star_origin_info8, star_origin_info9, blank, air, air, air, air, air, air, air, air, air, air, air, air, air, air, air, menu, air, air, air, air};
 
         return stargui_items;
     }
@@ -84,7 +85,7 @@ public class ExpandedOriginContent {
         ItemStack impact = new ItemStack(Material.GREEN_STAINED_GLASS_PANE);
 
         impact = itemProperties(impact, WHITE + "Impact:" + GREEN + " Low", null, null, null);
-        ItemStack[] allaygui_items = {close, impact, air, air, air, air, air, impact, close, air, air, air, air, allay, air, air, air, air, air, air, allay_origin_info1, allay_origin_info2, allay_origin_info3, allay_origin_info4, allay_origin_info5, air, air, air, air, allay_origin_info6, allay_origin_info7, blank, blank, blank, air, air, air, air, air, air, air, air, air, air, air, air, air, air, air, menu, air, air, air, air};
+        ItemStack[] allaygui_items = {close, impact, air, air, orb, air, air, impact, close, air, air, air, air, allay, air, air, air, air, air, air, allay_origin_info1, allay_origin_info2, allay_origin_info3, allay_origin_info4, allay_origin_info5, air, air, air, air, allay_origin_info6, allay_origin_info7, blank, blank, blank, air, air, air, air, air, air, air, air, air, air, air, air, air, air, air, menu, air, air, air, air};
 
         return allaygui_items;
     }
@@ -116,7 +117,7 @@ public class ExpandedOriginContent {
         ItemStack impact = new ItemStack(Material.GREEN_STAINED_GLASS_PANE);
 
         impact = itemProperties(impact, WHITE + "Impact:" + GREEN + " Low", null, null, null);
-        ItemStack[] rabbitgui_items = {close, impact, air, air, air, air, air, impact, close, air, air, air, air, rabbit, air, air, air, air, air, air, rabbit_origin_info1, rabbit_origin_info2, rabbit_origin_info3, rabbit_origin_info4, rabbit_origin_info5, air, air, air, air, rabbit_origin_info6, blank, blank, blank, blank, air, air, air, air, air, air, air, air, air, air, air, air, air, air, air, menu, air, air, air, air};
+        ItemStack[] rabbitgui_items = {close, impact, air, air, orb, air, air, impact, close, air, air, air, air, rabbit, air, air, air, air, air, air, rabbit_origin_info1, rabbit_origin_info2, rabbit_origin_info3, rabbit_origin_info4, rabbit_origin_info5, air, air, air, air, rabbit_origin_info6, blank, blank, blank, blank, air, air, air, air, air, air, air, air, air, air, air, air, air, air, air, menu, air, air, air, air};
 
         return rabbitgui_items;
     }
@@ -150,7 +151,7 @@ public class ExpandedOriginContent {
         ItemStack impact = new ItemStack(Material.GREEN_STAINED_GLASS_PANE);
 
         impact = itemProperties(impact, WHITE + "Impact:" + GREEN + " Low", null, null, null);
-        ItemStack[] beegui_items = {close, impact, air, air, air, air, air, impact, close, air, air, air, air, bee, air, air, air, air, air, air, bee_origin_info1, bee_origin_info2, bee_origin_info3, bee_origin_info4, bee_origin_info5, air, air, air, air, bee_origin_info6, bee_origin_info7, blank, blank, blank, air, air, air, air, air, air, air, air, air, air, air, air, air, air, air, menu, air, air, air, air};
+        ItemStack[] beegui_items = {close, impact, air, air, orb, air, air, impact, close, air, air, air, air, bee, air, air, air, air, air, air, bee_origin_info1, bee_origin_info2, bee_origin_info3, bee_origin_info4, bee_origin_info5, air, air, air, air, bee_origin_info6, bee_origin_info7, blank, blank, blank, air, air, air, air, air, air, air, air, air, air, air, air, air, air, air, menu, air, air, air, air};
 
         return beegui_items;
     }
@@ -180,7 +181,7 @@ public class ExpandedOriginContent {
         ItemStack impact = new ItemStack(Material.YELLOW_STAINED_GLASS_PANE);
 
         impact = itemProperties(impact, WHITE + "Impact:" + YELLOW + " Medium", null, null, null);
-        ItemStack[] piglingui_items = {close, impact, impact, air, air, air, impact, impact, close, air, air, air, air, piglin, air, air, air, air, air, air, piglin_origin_info1, piglin_origin_info2, piglin_origin_info3, piglin_origin_info4, piglin_origin_info5, air, air, air, air, blank, blank, blank, blank, blank, air, air, air, air, air, air, air, air, air, air, air, air, air, air, air, menu, air, air, air, air};
+        ItemStack[] piglingui_items = {close, impact, impact, air, orb, air, impact, impact, close, air, air, air, air, piglin, air, air, air, air, air, air, piglin_origin_info1, piglin_origin_info2, piglin_origin_info3, piglin_origin_info4, piglin_origin_info5, air, air, air, air, blank, blank, blank, blank, blank, air, air, air, air, air, air, air, air, air, air, air, air, air, air, air, menu, air, air, air, air};
 
         return piglingui_items;
     }
@@ -216,7 +217,7 @@ public class ExpandedOriginContent {
         ItemStack impact = new ItemStack(Material.YELLOW_STAINED_GLASS_PANE);
 
         impact = itemProperties(impact, WHITE + "Impact:" + YELLOW + " Medium", null, null, null);
-        ItemStack[] sculkgui_items = {close, impact, impact, air, air, air, impact, impact, close, air, air, air, air, sculk, air, air, air, air, air, air, sculk_origin_info1, sculk_origin_info2, sculk_origin_info3, sculk_origin_info4, sculk_origin_info5, air, air, air, air, sculk_origin_info6, sculk_origin_info7, sculk_origin_info8, blank, blank, air, air, air, air, air, air, air, air, air, air, air, air, air, air, air, menu, air, air, air, air};
+        ItemStack[] sculkgui_items = {close, impact, impact, air, orb, air, impact, impact, close, air, air, air, air, sculk, air, air, air, air, air, air, sculk_origin_info1, sculk_origin_info2, sculk_origin_info3, sculk_origin_info4, sculk_origin_info5, air, air, air, air, sculk_origin_info6, sculk_origin_info7, sculk_origin_info8, blank, blank, air, air, air, air, air, air, air, air, air, air, air, air, air, air, air, menu, air, air, air, air};
 
         return sculkgui_items;
     }
@@ -244,7 +245,7 @@ public class ExpandedOriginContent {
         ItemStack impact = new ItemStack(Material.GREEN_STAINED_GLASS_PANE);
 
         impact = itemProperties(impact, WHITE + "Impact:" + GREEN + " Low", null, null, null);
-        ItemStack[] creepgui_items = {close, impact, air, air, air, air, air, impact, close, air, air, air, air, creep, air, air, air, air, air, air, creep_origin_info1, creep_origin_info2, creep_origin_info3, creep_origin_info4, blank, air, air, air, air, blank, blank, blank, blank, blank, air, air, air, air, air, air, air, air, air, air, air, air, air, air, air, menu, air, air, air, air};
+        ItemStack[] creepgui_items = {close, impact, air, air, orb, air, air, impact, close, air, air, air, air, creep, air, air, air, air, air, air, creep_origin_info1, creep_origin_info2, creep_origin_info3, creep_origin_info4, blank, air, air, air, air, blank, blank, blank, blank, blank, air, air, air, air, air, air, air, air, air, air, air, air, air, air, air, menu, air, air, air, air};
 
         return creepgui_items;
     }
@@ -276,7 +277,7 @@ public class ExpandedOriginContent {
         ItemStack impact = new ItemStack(Material.GREEN_STAINED_GLASS_PANE);
 
         impact = itemProperties(impact, WHITE + "Impact:" + GREEN + " Low", null, null, null);
-        ItemStack[] slimegui_items = {close, impact, air, air, air, air, air, impact, close, air, air, air, air, slime, air, air, air, air, air, air, slime_origin_info1, slime_origin_info2, slime_origin_info3, slime_origin_info4, slime_origin_info5, air, air, air, air, slime_origin_info6, blank, blank, blank, blank, air, air, air, air, air, air, air, air, air, air, air, air, air, air, air, menu, air, air, air, air};
+        ItemStack[] slimegui_items = {close, impact, air, air, orb, air, air, impact, close, air, air, air, air, slime, air, air, air, air, air, air, slime_origin_info1, slime_origin_info2, slime_origin_info3, slime_origin_info4, slime_origin_info5, air, air, air, air, slime_origin_info6, blank, blank, blank, blank, air, air, air, air, air, air, air, air, air, air, air, air, air, air, air, menu, air, air, air, air};
 
         return slimegui_items;
     }
