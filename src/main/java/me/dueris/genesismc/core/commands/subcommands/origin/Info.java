@@ -19,7 +19,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 
 import static me.dueris.genesismc.core.choosing.ChoosingCORE.itemProperties;
-import static me.dueris.genesismc.core.choosing.ChoosingCUSTOM.cutStringsIntoLists;
+import static me.dueris.genesismc.core.choosing.ChoosingCUSTOM.cutStringIntoLists;
 import static me.dueris.genesismc.core.items.OrbOfOrigins.orb;
 import static org.bukkit.ChatColor.RED;
 
@@ -129,7 +129,7 @@ public class Info extends SubCommand {
                 ItemMeta originIconmeta = originIcon.getItemMeta();
                 originIconmeta.setDisplayName(CustomOriginAPI.getCustomOriginName(origintag));
                 originIconmeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-                originIconmeta.setLore(cutStringsIntoLists(CustomOriginAPI.getCustomOriginDescription(origintag)));
+                originIconmeta.setLore(cutStringIntoLists(CustomOriginAPI.getCustomOriginDescription(origintag)));
                 originIcon.setItemMeta(originIconmeta);
 
                 ArrayList<ItemStack> contents = new ArrayList<>();
@@ -179,7 +179,7 @@ public class Info extends SubCommand {
                             ItemMeta meta = originPower.getItemMeta();
                             meta.setDisplayName(powerName);
                             meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-                            meta.setLore(cutStringsIntoLists(powerDescription));
+                            meta.setLore(cutStringIntoLists(powerDescription));
                             originPower.setItemMeta(meta);
 
                             contents.add(originPower);

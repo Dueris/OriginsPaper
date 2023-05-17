@@ -81,7 +81,7 @@ public class ChoosingCUSTOM implements Listener {
                 ItemMeta originIconmeta = originIcon.getItemMeta();
                 originIconmeta.setDisplayName(CustomOriginAPI.getCustomOriginName(origintag));
                 originIconmeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-                originIconmeta.setLore(cutStringsIntoLists(CustomOriginAPI.getCustomOriginDescription(origintag)));
+                originIconmeta.setLore(cutStringIntoLists(CustomOriginAPI.getCustomOriginDescription(origintag)));
                 originIconmeta.getPersistentDataContainer().set(key, PersistentDataType.STRING, origintag);
                 NamespacedKey chooseKey = new NamespacedKey(GenesisMC.getPlugin(), "originChoose");
                 originIconmeta.getPersistentDataContainer().set(chooseKey, PersistentDataType.INTEGER, 1);
@@ -135,7 +135,7 @@ public class ChoosingCUSTOM implements Listener {
                             ItemMeta meta = originPower.getItemMeta();
                             meta.setDisplayName(powerName);
                             meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-                            meta.setLore(cutStringsIntoLists(powerDescription));
+                            meta.setLore(cutStringIntoLists(powerDescription));
                             originPower.setItemMeta(meta);
 
                             contents.add(originPower);
@@ -213,7 +213,7 @@ public class ChoosingCUSTOM implements Listener {
         }
     }
 
-    public static List<String> cutStringsIntoLists(String string) {
+    public static List<String> cutStringIntoLists(String string) {
         ArrayList<String> strings = new ArrayList<>();
         while (string.length() > 40) {
             for (int i = 40; i > 1; i--) {

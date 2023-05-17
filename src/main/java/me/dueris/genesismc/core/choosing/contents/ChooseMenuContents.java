@@ -15,7 +15,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 
 import static me.dueris.genesismc.core.choosing.ChoosingCORE.itemProperties;
-import static me.dueris.genesismc.core.choosing.ChoosingCUSTOM.cutStringsIntoLists;
+import static me.dueris.genesismc.core.choosing.ChoosingCUSTOM.cutStringIntoLists;
 
 public class ChooseMenuContents {
 
@@ -58,7 +58,7 @@ public class ChooseMenuContents {
                     ItemMeta originIconmeta = originIcon.getItemMeta();
                     originIconmeta.setDisplayName(CustomOriginAPI.getCustomOriginName(origintag));
                     originIconmeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-                    originIconmeta.setLore(cutStringsIntoLists(CustomOriginAPI.getCustomOriginDescription(origintag)));
+                    originIconmeta.setLore(cutStringIntoLists(CustomOriginAPI.getCustomOriginDescription(origintag)));
                     NamespacedKey key = new NamespacedKey(GenesisMC.getPlugin(), "originTag");
                     originIconmeta.getPersistentDataContainer().set(key, PersistentDataType.STRING, origintag);
                     originIcon.setItemMeta(originIconmeta);
