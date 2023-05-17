@@ -171,7 +171,7 @@ public class ChoosingCUSTOM implements Listener {
                 NamespacedKey key = new NamespacedKey(GenesisMC.getPlugin(), "originTag");
                 String origintag = e.getCurrentItem().getItemMeta().getPersistentDataContainer().get(key, PersistentDataType.STRING);
                 Player p = (Player) e.getWhoClicked();
-                setAtributesToDefualt(p);
+                setAttributesToDefault(p);
                 Bukkit.getScheduler().runTaskLater(GenesisMC.getPlugin(),()->{
                     if (CustomOriginAPI.getCustomOriginPowers(origintag).contains("origins:nether_spawn") && p.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING).equals("genesis:origin-null")) p.teleport(WorldSpawnHandler.NetherSpawn());
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, origintag);

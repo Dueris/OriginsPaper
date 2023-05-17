@@ -285,7 +285,7 @@ public class ChoosingCORE implements Listener {
                 Bukkit.getScheduler().runTaskLater(GenesisMC.getPlugin(),()->{
                     DefaultChoose.DefaultChoose(p);
                 }, 2);
-                setAtributesToDefualt(p);
+                setAttributesToDefault(p);
                 p.setHealthScaled(false);
                 p.closeInventory();
                 if(e.getCurrentItem().isSimilar(human)){
@@ -620,7 +620,7 @@ public class ChoosingCORE implements Listener {
         }
     }
 
-    public static void setAtributesToDefualt(Player p) {
+    public static void setAttributesToDefault(Player p) {
         p.getAttribute(Attribute.GENERIC_ARMOR).setBaseValue(0);
         p.getAttribute(Attribute.GENERIC_ARMOR_TOUGHNESS).setBaseValue(0);
         p.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).setBaseValue(1);
