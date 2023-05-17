@@ -85,7 +85,7 @@ public class ChoosingCORE implements Listener {
 
 
             }else{
-                if(e.getView().getTitle().equalsIgnoreCase("Custom Origins") || e.getView().getTitle().equalsIgnoreCase("Expanded Origins")){
+                if(e.getView().getTitle().equalsIgnoreCase("Custom Origins")){
                     if(e.getCurrentItem().getType().equals(Material.SPECTRAL_ARROW)){
                         Player p = (Player) e.getWhoClicked();
                         p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 10, 9);
