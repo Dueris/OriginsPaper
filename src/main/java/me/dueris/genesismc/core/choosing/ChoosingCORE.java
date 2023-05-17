@@ -100,7 +100,7 @@ public class ChoosingCORE implements Listener {
     }
 
     @EventHandler
-    public void onCustomOriginClose(InventoryClickEvent e) {
+    public void onMenuClose(InventoryClickEvent e) {
         if (e.getCurrentItem() != null) {
             if (e.getView().getTitle().equalsIgnoreCase("Choosing Menu")) {
                 if (e.getCurrentItem().getType().equals(Material.BARRIER)) {
