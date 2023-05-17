@@ -22,7 +22,11 @@ import java.util.zip.ZipInputStream;
 
 public class CustomOriginAPI {
 
-    public static HashMap<String, String> customOrigins = new HashMap<>();
+    private static HashMap<String, String> customOrigins = new HashMap<>();
+
+    public static HashMap<String, String> getCustomOrigins() {
+        return customOrigins;
+    }
 
     public static void removeUnzippedOriginDatapacks() {
         File originDatapackDir = new File(Bukkit.getServer().getPluginManager().getPlugin("GenesisMC").getDataFolder(), "custom_origins");
