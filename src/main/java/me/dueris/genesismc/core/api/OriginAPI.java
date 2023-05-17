@@ -1,34 +1,34 @@
 package me.dueris.genesismc.core.api;
 
-import me.dueris.genesismc.core.api.factory.CustomOriginAPI;
 
 import java.util.ArrayList;
 
-import static me.dueris.genesismc.core.api.factory.CustomOriginAPI.customOrigins;
+import static me.dueris.genesismc.core.api.factory.CustomOriginAPI.getCustomOrigins;
 
 public class OriginAPI {
     
     public static ArrayList<String> getLoadedOrigins(){
-        customOrigins.put("genesis:origin-human", "GenesisMC-Core");
-        customOrigins.put("genesis:origin-enderian", "GenesisMC-Core");
-        customOrigins.put("genesis:origin-merling", "GenesisMC-Core");
-        customOrigins.put("genesis:origin-phantom", "GenesisMC-Core");
-        customOrigins.put("genesis:origin-elytrian", "GenesisMC-Core");
-        customOrigins.put("genesis:origin-blazeborn", "GenesisMC-Core");
-        customOrigins.put("genesis:origin-avian", "GenesisMC-Core");
-        customOrigins.put("genesis:origin-arachnid", "GenesisMC-Core");
-        customOrigins.put("genesis:origin-shulk", "GenesisMC-Core");
-        customOrigins.put("genesis:origin-feline", "GenesisMC-Core");
-        customOrigins.put("genesis:origin-starborne", "GenesisMC-Core");
-        customOrigins.put("genesis:origin-allay", "GenesisMC-Core");
-        customOrigins.put("genesis:origin-rabbit", "GenesisMC-Core");
-        customOrigins.put("genesis:origin-bee", "GenesisMC-Core");
-        customOrigins.put("genesis:origin-human", "GenesisMC-Core");
-        customOrigins.put("genesis:origin-sculkling", "GenesisMC-Core");
-        customOrigins.put("genesis:origin-creep", "GenesisMC-Core");
-        customOrigins.put("genesis:origin-slimeling", "GenesisMC-Core");
-        customOrigins.put("genesis:origin-piglin", "GenesisMC-Core");
-        return new ArrayList<>(customOrigins.keySet());
+        ArrayList<String> origins = new ArrayList<>(getCustomOrigins().keySet());
+        origins.add("genesis:origin-human");
+        origins.add("genesis:origin-enderian");
+        origins.add("genesis:origin-merling");
+        origins.add("genesis:origin-phantom");
+        origins.add("genesis:origin-elytrian");
+        origins.add("genesis:origin-blazeborn");
+        origins.add("genesis:origin-avian");
+        origins.add("genesis:origin-arachnid");
+        origins.add("genesis:origin-shulk");
+        origins.add("genesis:origin-feline");
+        origins.add("genesis:origin-starborne");
+        origins.add("genesis:origin-allay");
+        origins.add("genesis:origin-rabbit");
+        origins.add("genesis:origin-bee");
+        origins.add("genesis:origin-human");
+        origins.add("genesis:origin-sculkling");
+        origins.add("genesis:origin-creep");
+        origins.add("genesis:origin-slimeling");
+        origins.add("genesis:origin-piglin");
+        return origins;
     }
     
     

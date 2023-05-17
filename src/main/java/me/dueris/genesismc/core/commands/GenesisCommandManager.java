@@ -53,6 +53,7 @@ public class GenesisCommandManager implements CommandExecutor {
                         ChatColor.WHITE + "/origin has <player>",
                         ChatColor.WHITE + "/origin recipe",
                         ChatColor.WHITE + "/origin references",
+                        ChatColor.WHITE + "/origin references",
                         ChatColor.WHITE + "/shulker open",
                         ChatColor.YELLOW + "-----------------------------------------"
                 );
