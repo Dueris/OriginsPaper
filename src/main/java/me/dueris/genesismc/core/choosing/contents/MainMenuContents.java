@@ -13,12 +13,16 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import static me.dueris.genesismc.core.choosing.ChoosingCORE.itemProperties;
+import static me.dueris.genesismc.core.choosing.ChoosingCORE.itemPropertiesMultipleLore;
+import static me.dueris.genesismc.core.choosing.ChoosingCUSTOM.cutStringIntoLists;
 import static org.bukkit.ChatColor.*;
 import static org.bukkit.ChatColor.RED;
 
 public class MainMenuContents {
 
     public static @Nullable ItemStack @NotNull [] GenesisMainMenuContents(Player p){
+
+
 
         ItemStack human = new ItemStack(Material.PLAYER_HEAD);
         ItemStack enderian = new ItemStack(Material.ENDER_PEARL);
@@ -54,94 +58,94 @@ public class MainMenuContents {
             skull_p.setPlayerProfile(p.getPlayerProfile());
             skull_p.setOwnerProfile(p.getPlayerProfile());
             human.setItemMeta(skull_p);
-            human = itemProperties(human, WHITE + "Human", null, null, WHITE + "A normal Minecraftexperience");
+            human = itemProperties(human, WHITE + "Human", null, null, WHITE + "A normal Minecraft experience.");
         } else {
-            human = itemProperties(human, RED + "Unavailable", ItemFlag.HIDE_ENCHANTS, Enchantment.ARROW_INFINITE, RED + "This origin is locked by the server owner");
+            human = itemProperties(human, RED + "Unavailable", ItemFlag.HIDE_ENCHANTS, Enchantment.ARROW_INFINITE, RED + "This origin is locked by the server owner.");
         }
         if (GenesisDataFiles.getPlugCon().getString("enderian-disable").equalsIgnoreCase("false")) {
-            enderian = itemProperties(enderian, LIGHT_PURPLE + "Enderian", null, null, WHITE + "Born as the children of the Ender Dragon, Enderians are capable of teleporting, but are vulnerable to water");
+            enderian = itemPropertiesMultipleLore(enderian, LIGHT_PURPLE + "Enderian", null, null, cutStringIntoLists("Born as the children of the Ender Dragon, Enderians are capable of teleporting, but are vulnerable to water."));
         } else {
-            enderian = itemProperties(enderian, RED + "Unavailable", ItemFlag.HIDE_ENCHANTS, Enchantment.ARROW_INFINITE, RED + "This origin is locked by the server owner");
+            enderian = itemProperties(enderian, RED + "Unavailable", ItemFlag.HIDE_ENCHANTS, Enchantment.ARROW_INFINITE, RED + "This origin is locked by the server owner.");
         }
         if (GenesisDataFiles.getPlugCon().getString("shulk-disable").equalsIgnoreCase("false")) {
-            shulk = itemProperties(shulk, DARK_PURPLE + "Shulk", null, null, WHITE + "Related to Shulkers, the bodies of the Shulk are outfitted with a protective shell-like skin and have an extra inventory");
+            shulk = itemPropertiesMultipleLore(shulk, DARK_PURPLE + "Shulk", null, null, cutStringIntoLists("Related to Shulkers, the bodies of the Shulk are outfitted with a protective shell-like skin and have an extra inventory."));
         } else {
-            shulk = itemProperties(shulk, RED + "Unavailable", ItemFlag.HIDE_ENCHANTS, Enchantment.ARROW_INFINITE, RED + "This origin is locked by the server owner");
+            shulk = itemProperties(shulk, RED + "Unavailable", ItemFlag.HIDE_ENCHANTS, Enchantment.ARROW_INFINITE, RED + "This origin is locked by the server owner.");
         }
         if (GenesisDataFiles.getPlugCon().getString("arachnid-disable").equalsIgnoreCase("false")) {
-            arachnid = itemProperties(arachnid, RED + "Arachnid", null, null, WHITE + "Their climbing abilities and the ability to trap their foes in a spiderweb make the Arachnid perfect hunters");
+            arachnid = itemPropertiesMultipleLore(arachnid, RED + "Arachnid", null, null, cutStringIntoLists("Their climbing abilities and the ability to trap their foes in a spiderweb make the Arachnid perfect hunters."));
         } else {
-            arachnid = itemProperties(arachnid, RED + "Unavailable", ItemFlag.HIDE_ENCHANTS, Enchantment.ARROW_INFINITE, RED + "This origin is locked by the server owner");
+            arachnid = itemProperties(arachnid, RED + "Unavailable", ItemFlag.HIDE_ENCHANTS, Enchantment.ARROW_INFINITE, RED + "This origin is locked by the server owner.");
         }
         if (GenesisDataFiles.getPlugCon().getString("creep-disable").equalsIgnoreCase("false")) {
-            creep = itemProperties(creep, GREEN + "Creep", null, null, WHITE + "Silent but deadly, the Creep are skilled in the arts of stealth,  but are TERRIBLY allergic to cats");
+            creep = itemPropertiesMultipleLore(creep, GREEN + "Creep", null, null, cutStringIntoLists("Silent but deadly, the Creep are skilled in the arts of stealth, however they are TERRIBLY allergic to cats."));
         } else {
-            creep = itemProperties(creep, RED + "Unavailable", ItemFlag.HIDE_ENCHANTS, Enchantment.ARROW_INFINITE, RED + "This origin is locked by the server owner");
+            creep = itemProperties(creep, RED + "Unavailable", ItemFlag.HIDE_ENCHANTS, Enchantment.ARROW_INFINITE, RED + "This origin is locked by the server owner.");
         }
         if (GenesisDataFiles.getPlugCon().getString("phantom-disable").equalsIgnoreCase("false")) {
-            phantom = itemProperties(phantom, BLUE + "Phantom", null, null, WHITE + "As half-human and half-phantom beings, these creatures can switch between a Phantom and a normal form");
+            phantom = itemPropertiesMultipleLore(phantom, BLUE + "Phantom", null, null, cutStringIntoLists("As half-human and half-phantom beings, these creatures can switch between a Phantom and a normal form."));
         } else {
             phantom = itemProperties(phantom, RED + "Unavailable", ItemFlag.HIDE_ENCHANTS, Enchantment.ARROW_INFINITE, RED + "This origin is locked by the server owner");
         }
         if (GenesisDataFiles.getPlugCon().getString("slimeling-disable").equalsIgnoreCase("false")) {
-            slimeling = itemProperties(slimeling, GREEN + "Slimeling", null, null, WHITE + "not coded yet");
+            slimeling = itemProperties(slimeling, GREEN + "Slimeling", null, null, RED + "Not yet implemented.");
         } else {
-            slimeling = itemProperties(slimeling, RED + "Unavailable", ItemFlag.HIDE_ENCHANTS, Enchantment.ARROW_INFINITE, RED + "This origin is locked by the server owner");
+            slimeling = itemProperties(slimeling, RED + "Unavailable", ItemFlag.HIDE_ENCHANTS, Enchantment.ARROW_INFINITE, RED + "This origin is locked by the server owner.");
         }
         if (GenesisDataFiles.getPlugCon().getString("feline-disable").equalsIgnoreCase("false")) {
-            feline = itemProperties(feline, AQUA + "Feline", ItemFlag.HIDE_ATTRIBUTES, null, WHITE + "not coded yet");
+            feline = itemProperties(feline, AQUA + "Feline", ItemFlag.HIDE_ATTRIBUTES, null, RED + "Not yet implemented.");
         } else {
-            feline = itemProperties(feline, RED + "Unavailable", ItemFlag.HIDE_ENCHANTS, Enchantment.ARROW_INFINITE, RED + "This origin is locked by the server owner");
+            feline = itemProperties(feline, RED + "Unavailable", ItemFlag.HIDE_ENCHANTS, Enchantment.ARROW_INFINITE, RED + "This origin is locked by the server owner.");
         }
         if (GenesisDataFiles.getPlugCon().getString("blazeborn-disable").equalsIgnoreCase("false")) {
-            blazeborn = itemProperties(blazeborn, GOLD + "Blazeborn", null, null, WHITE + "Late descendants of the Blaze,  the Blazeborn are naturally immune to the perils of the Nether");
+            blazeborn = itemPropertiesMultipleLore(blazeborn, GOLD + "Blazeborn", null, null, cutStringIntoLists("Late descendants of the Blaze,  the Blazeborn are naturally immune to the perils of the Nether."));
         } else {
-            blazeborn = itemProperties(blazeborn, RED + "Unavailable", ItemFlag.HIDE_ENCHANTS, Enchantment.ARROW_INFINITE, RED + "This origin is locked by the server owner");
+            blazeborn = itemProperties(blazeborn, RED + "Unavailable", ItemFlag.HIDE_ENCHANTS, Enchantment.ARROW_INFINITE, RED + "This origin is locked by the server owner.");
         }
         if (GenesisDataFiles.getPlugCon().getString("starborne-disable").equalsIgnoreCase("false")) {
-            starborne = itemProperties(starborne, LIGHT_PURPLE + "Starborne", null, null, WHITE + "not coded yet");
+            starborne = itemProperties(starborne, LIGHT_PURPLE + "Starborne", null, null, RED + "Not yet implemented.");
         } else {
-            starborne = itemProperties(starborne, RED + "Unavailable", ItemFlag.HIDE_ENCHANTS, Enchantment.ARROW_INFINITE, RED + "This origin is locked by the server owner");
+            starborne = itemProperties(starborne, RED + "Unavailable", ItemFlag.HIDE_ENCHANTS, Enchantment.ARROW_INFINITE, RED + "This origin is locked by the server owner.");
         }
         if (GenesisDataFiles.getPlugCon().getString("merling-disable").equalsIgnoreCase("false")) {
-            merling = itemProperties(merling, BLUE + "Merling", null, null, WHITE + "not coded yet");
+            merling = itemProperties(merling, BLUE + "Merling", null, null, RED + "Not yet implemented.");
         } else {
-            merling = itemProperties(merling, RED + "Unavailable", ItemFlag.HIDE_ENCHANTS, Enchantment.ARROW_INFINITE, RED + "This origin is locked by the server owner");
+            merling = itemProperties(merling, RED + "Unavailable", ItemFlag.HIDE_ENCHANTS, Enchantment.ARROW_INFINITE, RED + "This origin is locked by the server owner.");
         }
         if (GenesisDataFiles.getPlugCon().getString("allay-disable").equalsIgnoreCase("false")) {
-            allay = itemProperties(allay, AQUA + "Allay", null, null, WHITE + "not coded yet");
+            allay = itemProperties(allay, AQUA + "Allay", null, null, RED + "Not yet implemented.");
         } else {
-            allay = itemProperties(allay, RED + "Unavailable", ItemFlag.HIDE_ENCHANTS, Enchantment.ARROW_INFINITE, RED + "This origin is locked by the server owner");
+            allay = itemProperties(allay, RED + "Unavailable", ItemFlag.HIDE_ENCHANTS, Enchantment.ARROW_INFINITE, RED + "This origin is locked by the server owner.");
         }
         if (GenesisDataFiles.getPlugCon().getString("rabbit-disable").equalsIgnoreCase("false")) {
-            rabbit = itemProperties(rabbit, GOLD + "Rabbit", null, null, WHITE + "These furry bunnies are extremly good jumpers and have amazing agility");
+            rabbit = itemPropertiesMultipleLore(rabbit, GOLD + "Rabbit", null, null, cutStringIntoLists("These furry bunnies are extremly good jumpers and have amazing agility."));
         } else {
-            rabbit = itemProperties(rabbit, RED + "Unavailable", ItemFlag.HIDE_ENCHANTS, Enchantment.ARROW_INFINITE, RED + "This origin is locked by the server owner");
+            rabbit = itemProperties(rabbit, RED + "Unavailable", ItemFlag.HIDE_ENCHANTS, Enchantment.ARROW_INFINITE, RED + "This origin is locked by the server owner.");
         }
         if (GenesisDataFiles.getPlugCon().getString("bumblebee-disable").equalsIgnoreCase("false")) {
-            bumblebee = itemProperties(bumblebee, YELLOW + "Bumblebee", null, null, WHITE + "not coded yet");
+            bumblebee = itemProperties(bumblebee, YELLOW + "Bumblebee", null, null, RED + "Not yet implemented.");
         } else {
-            bumblebee = itemProperties(bumblebee, RED + "Unavailable", ItemFlag.HIDE_ENCHANTS, Enchantment.ARROW_INFINITE, RED + "This origin is locked by the server owner");
+            bumblebee = itemProperties(bumblebee, RED + "Unavailable", ItemFlag.HIDE_ENCHANTS, Enchantment.ARROW_INFINITE, RED + "This origin is locked by the server owner.");
         }
         if (GenesisDataFiles.getPlugCon().getString("elytrian-disable").equalsIgnoreCase("false")) {
-            elytrian = itemProperties(elytrian, GRAY + "Elytrian", null, null, WHITE + "not coded yet");
+            elytrian = itemProperties(elytrian, GRAY + "Elytrian", null, null, RED + "Not yet implemented.");
         } else {
-            elytrian = itemProperties(elytrian, RED + "Unavailable", ItemFlag.HIDE_ENCHANTS, Enchantment.ARROW_INFINITE, RED + "This origin is locked by the server owner");
+            elytrian = itemProperties(elytrian, RED + "Unavailable", ItemFlag.HIDE_ENCHANTS, Enchantment.ARROW_INFINITE, RED + "This origin is locked by the server owner.");
         }
         if (GenesisDataFiles.getPlugCon().getString("avian-disable").equalsIgnoreCase("false")) {
-            avian = itemProperties(avian, DARK_AQUA + "Avian", null, null, WHITE + "The Avian race has lost their ability to fly a long time ago. Now these peaceful creatures can be seen gliding from one place to another");
+            avian = itemPropertiesMultipleLore(avian, DARK_AQUA + "Avian", null, null, cutStringIntoLists("The Avian race has lost their ability to fly a long time ago. Now these peaceful creatures can be seen gliding from one place to another."));
         } else {
-            avian = itemProperties(avian, RED + "Unavailable", ItemFlag.HIDE_ENCHANTS, Enchantment.ARROW_INFINITE, RED + "This origin is locked by the server owner");
+            avian = itemProperties(avian, RED + "Unavailable", ItemFlag.HIDE_ENCHANTS, Enchantment.ARROW_INFINITE, RED + "This origin is locked by the server owner.");
         }
         if (GenesisDataFiles.getPlugCon().getString("piglin-disable").equalsIgnoreCase("false")) {
-            piglin = itemProperties(piglin, GOLD + "Piglin", null, null, WHITE + "These evolved pigs love gold and shiny things. They have adapted to the harsh environments of the Nether and so they are weaker in other environments");
+            piglin = itemPropertiesMultipleLore(piglin, GOLD + "Piglin", null, null, cutStringIntoLists("These evolved pigs love gold and shiny things. They have adapted to the harsh environments of the Nether and so they are weaker in other environments."));
         } else {
-            piglin = itemProperties(piglin, RED + "Unavailable", ItemFlag.HIDE_ENCHANTS, Enchantment.ARROW_INFINITE, RED + "This origin is locked by the server owner");
+            piglin = itemProperties(piglin, RED + "Unavailable", ItemFlag.HIDE_ENCHANTS, Enchantment.ARROW_INFINITE, RED + "This origin is locked by the server owner.");
         }
         if (GenesisDataFiles.getPlugCon().getString("sculkling-disable").equalsIgnoreCase("false")) {
-            sculkling = itemProperties(sculkling, BLUE + "Sculkling", null, null, WHITE + "not coded yet");
+            sculkling = itemProperties(sculkling, BLUE + "Sculkling", null, null, RED + "Not yet implemented.");
         } else {
-            sculkling = itemProperties(sculkling, RED + "Unavailable", ItemFlag.HIDE_ENCHANTS, Enchantment.ARROW_INFINITE, RED + "This origin is locked by the server owner");
+            sculkling = itemProperties(sculkling, RED + "Unavailable", ItemFlag.HIDE_ENCHANTS, Enchantment.ARROW_INFINITE, RED + "This origin is locked by the server owner.");
         }
 
         random = itemProperties(random, ChatColor.LIGHT_PURPLE + "Orb of Origins", ItemFlag.HIDE_ENCHANTS, null, null);
