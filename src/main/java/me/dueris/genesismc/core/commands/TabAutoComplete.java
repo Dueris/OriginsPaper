@@ -40,23 +40,11 @@ public class TabAutoComplete implements TabCompleter {
                 }else{
                     arguments.remove("recipe");
                 }
-                if (sender.hasPermission("genesismc.origins.cmd.choose")) {
-                    if(args[0].startsWith("c") || args[0].isEmpty() || args[0].startsWith("ch") || args[0].startsWith("cho") || args[0].startsWith("choo") || args[0].startsWith("choos") || args[0].startsWith("choose"))
-                    arguments.add("choose");
-                }else{
-                    arguments.remove("choose");
-                }
                 if (sender.hasPermission("genesismc.origins.cmd.get")) {
                     if(args[0].startsWith("g") || args[0].isEmpty() || args[0].startsWith("ge") || args[0].startsWith("get"))
                     arguments.add("get");
                 }else{
                     arguments.remove("get");
-                }
-                if (sender.hasPermission("genesismc.origins.cmd.purge")) {
-                    if(args[0].startsWith("p") || args[0].isEmpty() || args[0].startsWith("pu") || args[0].startsWith("pur") || args[0].startsWith("purg") || args[0].startsWith("purge"))
-                    arguments.add("purge");
-                }else{
-                    arguments.remove("purge");
                 }
                 if (sender.hasPermission("genesismc.origins.cmd.enchant")) {
                     if(args[0].startsWith("e") || args[0].isEmpty() || args[0].startsWith("en") || args[0].startsWith("enc") || args[0].startsWith("ench") || args[0].startsWith("encha") || args[0].startsWith("enchan") || args[0].startsWith("enchant"))
@@ -91,7 +79,7 @@ public class TabAutoComplete implements TabCompleter {
 
                 return arguments;
             } else if (args.length == 2) {
-                if (args[0].equalsIgnoreCase("get") || args[0].equalsIgnoreCase("has") || args[0].equalsIgnoreCase("purge") || args[0].equalsIgnoreCase("set") || args[0].equalsIgnoreCase("give")) {
+                if (args[0].equalsIgnoreCase("get") || args[0].equalsIgnoreCase("has") || args[0].equalsIgnoreCase("set") || args[0].equalsIgnoreCase("give")) {
                     Player[] players = new Player[Bukkit.getServer().getOnlinePlayers().size()];
                     List<String> playernames = new ArrayList<>();
                     Bukkit.getServer().getOnlinePlayers().toArray(players);
