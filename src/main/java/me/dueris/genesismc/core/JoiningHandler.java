@@ -21,9 +21,7 @@ public class JoiningHandler implements Listener {
     @EventHandler
     public void onJoinFirst(PlayerJoinEvent e) {
         Player p = e.getPlayer();
-        if(!p.getPersistentDataContainer().has(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING)){
-            p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, "");
-        }
+       
         //translation system
         @Nullable Integer originid;
         originid = p.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER);
@@ -56,7 +54,7 @@ public class JoiningHandler implements Listener {
             p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER, 30000000);
         }
         if(originid == 9602042){
-            p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, "genesis:origin-vexian");
+            p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, "");
             p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER, 30000000);
         }
         if(originid == 9811027){
@@ -96,13 +94,19 @@ public class JoiningHandler implements Listener {
             p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER, 30000000);
         }
         if(originid == 4307015){
-            p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, "genesis:origin-sculk");
+            p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, "");
             p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER, 30000000);
         }
 
         if(p.getClientBrandName() != null && p.getClientBrandName().equalsIgnoreCase("Immersions")){
             p.setDisplayName(AQUA + p.getName());
             p.setPlayerListName(AQUA + p.getName());
+
+        }
+        
+         if(!p.getPersistentDataContainer().has(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING)){
+
+            p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, "");
 
         }
 
