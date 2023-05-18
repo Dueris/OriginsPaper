@@ -40,7 +40,6 @@ public class ChoosingCORE implements Listener {
     @EventHandler
     public void onOrbClick(PlayerInteractEvent e) {
         Player p = e.getPlayer();
-        if (p.hasPermission("genesismc.choosing.rechoose")) {
             if (GenesisDataFiles.getPlugCon().getString("orb-of-origins-enabled").equalsIgnoreCase("true")) {
                 if (e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.LEFT_CLICK_AIR || e.getAction() == Action.LEFT_CLICK_BLOCK || e.getAction() == Action.RIGHT_CLICK_BLOCK) {
                     ItemStack item = new ItemStack(Material.MAGMA_CREAM);
@@ -71,7 +70,6 @@ public class ChoosingCORE implements Listener {
                     }
                 }
             }
-        }
     }
 
     @EventHandler
