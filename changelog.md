@@ -69,6 +69,7 @@
 -added orb of origins config
 -fixed command bugs
 -added tons more minor features
+-redid system for force choose
 
 unfortunately, we forgot to add to this list as development continued, lots of things happened and we forgot. we have updated to the extent that we remember.
 </pre>
