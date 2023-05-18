@@ -56,6 +56,7 @@ public class Give extends SubCommand {
             catch (Exception e) {p.sendMessage(RED + "Player not found!");}
         }
 
+        if (players.size() == 0) return;
 
         ItemStack item;
         if (args[2].equals("genesis:orb_of_origin")) {
