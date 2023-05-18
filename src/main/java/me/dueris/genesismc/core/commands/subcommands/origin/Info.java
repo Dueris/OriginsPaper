@@ -8,6 +8,9 @@ import me.dueris.genesismc.core.choosing.contents.origins.OriginalOriginContent;
 import me.dueris.genesismc.core.commands.subcommands.SubCommand;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
@@ -23,7 +26,19 @@ import static me.dueris.genesismc.core.choosing.ChoosingCUSTOM.cutStringIntoList
 import static me.dueris.genesismc.core.items.OrbOfOrigins.orb;
 import static org.bukkit.ChatColor.RED;
 
-public class Info extends SubCommand {
+public class Info extends SubCommand implements Listener {
+
+    @EventHandler
+    public void onMenuExit(InventoryClickEvent e) {
+        if (e.getCurrentItem() == null) return;
+        if (e.getView().getTitle().equalsIgnoreCase("Help")) {
+            if (e.getCurrentItem().getType() == Material.BARRIER || e.getCurrentItem().getType() == Material.SPECTRAL_ARROW) {
+                Player p = (Player) e.getWhoClicked();
+                p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 10, 9);
+                e.getWhoClicked().getInventory().close();
+            }
+        }
+    }
     @Override
     public String getName() {
         return "info";
