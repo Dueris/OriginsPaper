@@ -79,7 +79,7 @@ public class TabAutoComplete implements TabCompleter {
 
                 return arguments;
             } else if (args.length == 2) {
-                if (args[0].equalsIgnoreCase("get") || args[0].equalsIgnoreCase("has") || args[0].equalsIgnoreCase("set") || args[0].equalsIgnoreCase("give")) {
+                if (args[0].equalsIgnoreCase("get") || args[0].equalsIgnoreCase("has") || args[0].equalsIgnoreCase("set") || args[0].equalsIgnoreCase("give") || args[0].equalsIgnoreCase("gui")) {
                     Player[] players = new Player[Bukkit.getServer().getOnlinePlayers().size()];
                     List<String> playernames = new ArrayList<>();
                     Bukkit.getServer().getOnlinePlayers().toArray(players);

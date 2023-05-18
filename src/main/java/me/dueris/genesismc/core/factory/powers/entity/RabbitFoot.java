@@ -27,7 +27,6 @@ public class RabbitFoot implements Listener {
         if (rabbit_drop_foot.contains(origintag)) {
             Random random = new Random();
             int randInt = random.nextInt(9);
-            p.sendMessage(String.valueOf(randInt));
             if (randInt == 4) {
                 p.getWorld().dropItemNaturally(p.getLocation(), new ItemStack(Material.RABBIT_FOOT));
             }
