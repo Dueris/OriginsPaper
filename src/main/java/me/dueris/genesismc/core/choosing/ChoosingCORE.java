@@ -136,7 +136,6 @@ public class ChoosingCORE implements Listener {
     @EventHandler
     public void OnChoose(InventoryClickEvent e){
         if (e.getView().getTitle().equalsIgnoreCase("Choosing Menu")) {
-            if (e.getCurrentItem().getType() == Material.MAGMA_CREAM) return;
         if(e.getCurrentItem() != null){
             Player p = (Player) e.getWhoClicked();
             //Human
