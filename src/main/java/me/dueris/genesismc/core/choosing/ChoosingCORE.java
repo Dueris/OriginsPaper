@@ -129,7 +129,6 @@ public class ChoosingCORE implements Listener {
             Random random = new Random();
             String originTag = origins.get(random.nextInt(origins.size()));
             OriginPlayer.setOrigin(p, originTag);
-            DefaultChoose.DefaultChoose(p);
         }
     }
 
