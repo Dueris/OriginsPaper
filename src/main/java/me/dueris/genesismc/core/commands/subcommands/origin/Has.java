@@ -26,6 +26,7 @@ public class Has extends SubCommand {
 
     @Override
     public void perform(Player p, String[] args) {
+        if (!p.hasPermission("genesismc.origins.cmd.has")) return;
         if(args.length > 2){
             Player given = Bukkit.getPlayer(args[1]);
             String origintag = OriginPlayer.getOriginTag(given);

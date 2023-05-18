@@ -28,6 +28,7 @@ public class Give extends SubCommand {
 
     @Override
     public void perform(Player p, String[] args) {
+        if (!p.hasPermission("genesismc.origins.cmd.give")) return;
         ArrayList<Player> players = new ArrayList<>();
 
         if (args.length < 3) {

@@ -69,16 +69,10 @@ permissions:
 
   genesismc.origins.cmd.main:
     default: true
-  genesismc.origins.cmd.choose:
-    default: true
-  genesismc.origins.cmd.purge:
-    default: op
   genesismc.origins.cmd.get:
     default: op
   genesismc.origins.cmd.enchant:
     default: op
-  genesismc.origins.cmd.recipe:
-    default: true
   genesis.origins.cmd.gui:
     default: op
   genesis.origins.cmd.has:
@@ -90,3 +84,9 @@ permissions:
   gensismc.origins.cmd.orb:
     default: op
 
+  genesismc.origins.cmd.recipe:
+    default: true
+  genesismc.origins.cmd.info:
+    default: true
+  genesismc.origins.cmd.references:
+    default: true

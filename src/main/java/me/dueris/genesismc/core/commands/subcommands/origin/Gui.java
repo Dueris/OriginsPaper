@@ -25,6 +25,7 @@ public class Gui extends SubCommand {
 
     @Override
     public void perform(Player p, String[] args) {
+        if (!p.hasPermission("genesismc.origins.cmd.gui")) return;
         if(args.length > 1){
             try {
                 Player given = Bukkit.getPlayer(args[1]);
