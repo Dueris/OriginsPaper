@@ -28,8 +28,9 @@ public class Get extends SubCommand {
     public void perform(Player p, String[] args) {
         if(args.length > 1){
             try {
-            Player given = Bukkit.getPlayer(args[1]);
-            p.sendMessage(given.getName() + " has the following Origin: " + OriginPlayer.getOriginTag(given));
+                Player given = Bukkit.getPlayer(args[1]);
+                if(given == null) return;
+                p.sendMessage(given.getName() + " has the following Origin: " + OriginPlayer.getOriginTag(given));
             } catch (Exception e) {
                 p.sendMessage(RED + "Could not find player!");
             }
