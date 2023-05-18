@@ -20,12 +20,12 @@ import static me.dueris.genesismc.core.choosing.ChoosingCUSTOM.cutStringIntoList
 public class ChooseMenuContents {
 
     public static @Nullable ItemStack @NotNull [] ChooseMenuContent() {
-        ItemStack bars = new ItemStack(Material.IRON_BARS);
+        ItemStack sides = new ItemStack(Material.BLACK_STAINED_GLASS_PANE);
         ItemStack back = new ItemStack(Material.ARROW);
         ItemStack next = new ItemStack(Material.ARROW);
         ItemStack menu = new ItemStack(Material.SPECTRAL_ARROW);
 
-        bars = itemProperties(bars, "", ItemFlag.HIDE_ENCHANTS, null, null);
+        sides = itemProperties(sides, "", ItemFlag.HIDE_ENCHANTS, null, null);
         menu = itemProperties(menu, ChatColor.AQUA + "Return", ItemFlag.HIDE_ENCHANTS, null, null);
         back = itemProperties(back, "Back", ItemFlag.HIDE_ENCHANTS, null, null);
         next = itemProperties(next, "Next", ItemFlag.HIDE_ENCHANTS, null, null);
@@ -35,7 +35,7 @@ public class ChooseMenuContents {
 
         for (int i = 0; i <= 53; i++) {
             if (i % 9 == 0 || (i + 1) % 9 == 0) {
-                contents.add(bars);
+                contents.add(sides);
             } else if (i == 46) {
                 contents.add(back);
             } else if (i == 49) {
