@@ -5,6 +5,8 @@ import me.dueris.genesismc.core.commands.subcommands.SubCommand;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
+import static org.bukkit.ChatColor.RED;
+
 public class Gui extends SubCommand {
     @Override
     public String getName() {
@@ -25,6 +27,10 @@ public class Gui extends SubCommand {
     public void perform(Player p, String[] args) {
         if(args.length > 1){
             Player given = Bukkit.getPlayer(args[1]);
+            if (given == null) {
+                p.sendMessage(RED + "Could not find player!");
+                return;
+            }
             OriginPlayer.removeOrigin(given);
         }else
         if(args.length == 1){
