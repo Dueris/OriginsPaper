@@ -8,11 +8,9 @@ import org.bukkit.ChatColor;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileReader;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.LinkOption;
 import java.nio.file.Path;
@@ -158,6 +156,13 @@ public class CustomOriginAPI {
     public static String getCustomOriginIcon(String originTag) {
         Object value = getCustomOriginDetail(originTag, "icon");
         if (value == null || value.equals("minecraft:air")) return "minecraft:player_head";
+        if (value instanceof JSONObject) {
+            try {
+                JSONObject parser = (JSONObject) new JSONParser().parse(((JSONObject) value).toJSONString());
+                value = parser.get("item");
+                System.out.println(value);
+            } catch (Exception e) {return "minecraft:player_head";}
+        }
         return (String) value;
     }
 
