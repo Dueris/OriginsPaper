@@ -5,7 +5,6 @@ import me.dueris.genesismc.core.commands.GenesisCommandManager;
 import me.dueris.genesismc.core.commands.TabAutoComplete;
 import me.dueris.genesismc.core.commands.ToggleCommand;
 import me.dueris.genesismc.core.commands.subcommands.origin.Info;
-import me.dueris.genesismc.core.commands.subcommands.origin.Purge;
 import me.dueris.genesismc.core.commands.subcommands.origin.Recipe;
 import me.dueris.genesismc.core.enchantments.WaterProtAnvil;
 import me.dueris.genesismc.core.factory.powers.OriginStartHandler;
@@ -131,7 +130,6 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         getCommand("shulker").setExecutor(new ShulkInv());
         getCommand("toggle").setExecutor(new ToggleCommand());
 //Event Handler Register
-        getServer().getPluginManager().registerEvents(new Purge(), this);
         getServer().getPluginManager().registerEvents(new JoiningHandler(), this);
         getServer().getPluginManager().registerEvents(new EnchantProtEvent(), this);
         getServer().getPluginManager().registerEvents(new WaterProtAnvil(), this);

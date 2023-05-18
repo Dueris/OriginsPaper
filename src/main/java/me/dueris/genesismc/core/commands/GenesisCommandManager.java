@@ -14,8 +14,6 @@ public class GenesisCommandManager implements CommandExecutor {
     //long = epoch time of when ran command
     private ArrayList<SubCommand> subCommands = new ArrayList<>();
     public GenesisCommandManager(){
-        subCommands.add(new Purge());
-        subCommands.add(new OriginsChoose());
         subCommands.add(new Enchant());
         subCommands.add(new References());
         subCommands.add(new Recipe());

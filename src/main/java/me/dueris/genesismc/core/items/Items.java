@@ -7,6 +7,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.PrepareItemCraftEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
@@ -75,6 +76,34 @@ public class Items extends BukkitRunnable implements Listener {
 
         if(e.getInventory().contains(infinpearl) || e.getInventory().contains(spectatorswitch)){
             e.getInventory().setResult(null);
+        }
+    }
+
+    @EventHandler
+    public void CANCEL(PlayerInteractEvent e){
+        ItemStack infinpearl = new ItemStack(ENDER_PEARL);
+
+        ItemMeta pearl_meta = infinpearl.getItemMeta();
+        pearl_meta.setDisplayName(ChatColor.LIGHT_PURPLE + "Teleport");
+        ArrayList<String> pearl_lore = new ArrayList<>();
+        pearl_meta.setUnbreakable(true);
+        pearl_meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
+        pearl_meta.setLore(pearl_lore);
+        infinpearl.setItemMeta(pearl_meta);
+
+        ItemStack spectatorswitch = new ItemStack(Material.PHANTOM_MEMBRANE);
+        ItemMeta switch_meta = spectatorswitch.getItemMeta();
+        switch_meta.setDisplayName(GRAY + "Phantom Form");
+        pearl_lore = new ArrayList();
+        switch_meta.setUnbreakable(true);
+        switch_meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
+        switch_meta.addItemFlags(ItemFlag.HIDE_ITEM_SPECIFICS);
+        switch_meta.setLore(pearl_lore);
+        switch_meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+        spectatorswitch.setItemMeta(switch_meta);
+
+        if(e.getItem().isSimilar(infinpearl) || e.getItem().isSimilar(spectatorswitch)){
+            e.setCancelled(true);
         }
     }
 
