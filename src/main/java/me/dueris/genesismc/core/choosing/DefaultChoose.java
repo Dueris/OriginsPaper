@@ -14,11 +14,11 @@ public class DefaultChoose {
 
     public static void DefaultChoose(Player p) {
 
-        p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 10, 1);
+        p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 10, 2);
 
         //default choose
         p.closeInventory();
-        p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_CHIME, 10, 1);
+        p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_CHIME, 10, 2);
         p.sendMessage(AQUA + "You have chosen an origin!");
         p.spawnParticle(Particle.CLOUD, p.getLocation(), 100);
         p.getWorld().spawnParticle(Particle.FIREWORKS_SPARK, p.getLocation(), 6);

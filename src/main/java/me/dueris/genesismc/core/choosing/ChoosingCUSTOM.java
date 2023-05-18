@@ -34,7 +34,7 @@ public class ChoosingCUSTOM implements Listener {
                 @NotNull Inventory custommenu = Bukkit.createInventory(e.getWhoClicked(), 54, "Custom Origins");
                 if (e.getCurrentItem().getType().equals(Material.TIPPED_ARROW)) {
                     Player p = (Player) e.getWhoClicked();
-                    p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 10, 1);
+                    p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 10, 2);
                     custommenu.setContents(ChooseMenuContent());
                     e.getWhoClicked().openInventory(custommenu);
 
@@ -54,7 +54,7 @@ public class ChoosingCUSTOM implements Listener {
                 if (origintag == null) return;
 
                 Player p = (Player) e.getWhoClicked();
-                p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 10, 1);
+                p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 10, 2);
 
 
                 ArrayList<String> originPowerNames = new ArrayList<>();
@@ -192,7 +192,7 @@ public class ChoosingCUSTOM implements Listener {
             if (e.getView().getTitle().equalsIgnoreCase("Custom Origin")) {
                 if (e.getCurrentItem().getType().equals(Material.SPECTRAL_ARROW)) {
                     Player p = (Player) e.getWhoClicked();
-                    p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 10, 1);
+                    p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 10, 2);
                     @NotNull Inventory custommenu = Bukkit.createInventory(e.getWhoClicked(), 54, "Custom Origins");
                     custommenu.setContents(ChooseMenuContent());
                     e.getWhoClicked().openInventory(custommenu);
@@ -207,7 +207,7 @@ public class ChoosingCUSTOM implements Listener {
             if (e.getView().getTitle().equalsIgnoreCase("Custom Origin")) {
                 if (e.getCurrentItem().getType().equals(Material.BARRIER)) {
                     Player p = (Player) e.getWhoClicked();
-                    p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 10, 1);
+                    p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 10, 2);
                     e.getWhoClicked().closeInventory();
                 }else{e.setCancelled(true);}
             }
