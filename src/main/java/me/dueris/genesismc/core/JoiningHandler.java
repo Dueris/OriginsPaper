@@ -21,9 +21,7 @@ public class JoiningHandler implements Listener {
     @EventHandler
     public void onJoinFirst(PlayerJoinEvent e) {
         Player p = e.getPlayer();
-        if(!p.getPersistentDataContainer().has(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING)){
-            p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, "");
-        }
+       
         //translation system
         @Nullable Integer originid;
         originid = p.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER);
@@ -103,6 +101,12 @@ public class JoiningHandler implements Listener {
         if(p.getClientBrandName() != null && p.getClientBrandName().equalsIgnoreCase("Immersions")){
             p.setDisplayName(AQUA + p.getName());
             p.setPlayerListName(AQUA + p.getName());
+
+        }
+        
+         if(!p.getPersistentDataContainer().has(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING)){
+
+            p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, "");
 
         }
 
