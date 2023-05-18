@@ -31,7 +31,6 @@ public class Gui extends SubCommand {
                 OriginPlayer.removeOrigin(given);
             } catch (Exception e) {
                 p.sendMessage(RED + "Could not find player!");
-                return;
             }
         }else
         if(args.length == 1){
