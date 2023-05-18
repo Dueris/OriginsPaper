@@ -30,6 +30,11 @@ public class Give extends SubCommand {
     public void perform(Player p, String[] args) {
         ArrayList<Player> players = new ArrayList<>();
 
+        if (args.length < 3) {
+            p.sendMessage(RED + "Invalid Args!");
+            return;
+        }
+
         if (args[1].equals("@a")) {
             players.addAll(Bukkit.getOnlinePlayers());
 
@@ -64,7 +69,12 @@ public class Give extends SubCommand {
         } else return;
 
         if (args.length == 4) {
-            item.setAmount(Integer.parseInt(args[3].strip()));
+            try {
+                item.setAmount(Integer.parseInt(args[3].strip()));
+            } catch (Exception e) {
+                p.sendMessage(RED + "Please enter a valid number!");
+                return;
+            }
         } else {
             item.setAmount(1);
         }
