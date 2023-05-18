@@ -103,6 +103,8 @@ public class Powers implements Listener {
     public static ArrayList<String> rabbit_drop_foot = new ArrayList<>();
     public static ArrayList<String> decreased_explosion = new ArrayList<>();
     public static ArrayList<String> creeper_head_death_drop = new ArrayList<>();
+    public static ArrayList<String> resist_fall = new ArrayList<>();
+    public static ArrayList<String> weak_biome_cold = new ArrayList<>();
 
     public static void loadPowers() {
 
@@ -121,7 +123,7 @@ public class Powers implements Listener {
         fire_immunity.add("genesis:origin-blazeborn");
         water_vulnerability.add("genesis:origin-blazeborn");
         hotblooded.add("genesis:origin-blazeborn");
-        //add You are much weaker in colder biomes and at high altitudes
+        weak_biome_cold.add("genesis:origin-blazeborn");
         hot_hands.add("genesis:origin-blazeborn");
 
         //avian
@@ -157,6 +159,7 @@ public class Powers implements Listener {
         carrot_only.add("genesis:origin-rabbit");
         jump_increased.add("genesis:origin-rabbit");
         rabbit_drop_foot.add("genesis:origin-rabbit");
+        resist_fall.add("genesis:origin-rabbit");
 
         //creep
         felinephobia.add("genesis:origin-creep");
@@ -255,6 +258,8 @@ public class Powers implements Listener {
                 else if (power.equals("genesis:drop_rabbit_foot_damage")) rabbit_drop_foot.add(originTag);
                 else if (power.equals("genesis:decreased_explosion_damage")) decreased_explosion.add(originTag);
                 else if (power.equals("genesis:creeper_head_death_drop")) creeper_head_death_drop.add(originTag);
+                else if (power.equals("genesis:resist_fall")) resist_fall.add(originTag);
+                else if (power.equals("genesis:cold_biomes_weak")) weak_biome_cold.add(originTag);
 
                 //drop_head
                 //entity_ignore

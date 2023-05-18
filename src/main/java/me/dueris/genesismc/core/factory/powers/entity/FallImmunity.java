@@ -11,6 +11,7 @@ import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.Nullable;
 
 import static me.dueris.genesismc.core.factory.powers.Powers.fall_immunity;
+import static me.dueris.genesismc.core.factory.powers.Powers.resist_fall;
 
 public class FallImmunity implements Listener {
 
@@ -22,6 +23,19 @@ public class FallImmunity implements Listener {
         if (fall_immunity.contains(origintag)) {
             if (e.getCause() == EntityDamageEvent.DamageCause.FALL) {
                 e.setCancelled(true);
+            }
+        }
+    }
+
+    @EventHandler
+    public void onEntityDamage(EntityDamageEvent e) {
+        if (!(e.getEntity() instanceof Player p)) return;
+
+        PersistentDataContainer data = p.getPersistentDataContainer();
+        @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
+        if (resist_fall.contains(origintag)) {
+            if (e.getCause() == EntityDamageEvent.DamageCause.FALL) {
+                e.setDamage(e.getDamage() - 4);
             }
         }
     }

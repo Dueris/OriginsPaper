@@ -17,6 +17,7 @@ import me.dueris.genesismc.core.factory.powers.item.EnderPearlThrow;
 import me.dueris.genesismc.core.factory.powers.item.GoldItemBuff;
 import me.dueris.genesismc.core.factory.powers.runnables.*;
 import me.dueris.genesismc.core.factory.powers.world.ExplodeTick;
+import me.dueris.genesismc.core.factory.powers.world.WeakBiomeCold;
 import me.dueris.genesismc.core.factory.powers.world.WorldSpawnHandler;
 import me.dueris.genesismc.core.origins.OriginHandler;
 
@@ -74,6 +75,9 @@ public class OriginStartHandler {
 
         TempTailWind tempTailWind = new TempTailWind();
         tempTailWind.runTaskTimer(getPlugin(), 0, 1);
+
+        WeakBiomeCold weakBiomeCold = new WeakBiomeCold();
+        weakBiomeCold.runTaskTimer(getPlugin(), 0, 5);
 
     }
 

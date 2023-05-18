@@ -49,8 +49,10 @@ public class OriginPlayer {
     }
 
     public static void removeOrigin(Player player){
-        PersistentDataContainer data = player.getPersistentDataContainer();
-        data.set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, "");
+        if(player.getPersistentDataContainer() != null){
+            PersistentDataContainer data = player.getPersistentDataContainer();
+            data.set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, "");
+        }
     }
 
     public static boolean hasCoreOrigin(Player player){
