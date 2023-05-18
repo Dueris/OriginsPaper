@@ -1,7 +1,6 @@
 <h3>0.1.6-ALPHA_RELEASE<h3>
-<h4><code>Created by Dueris</code><h4>
+<h4><code>Created by Dueris and Tye</code><h4>
 <hr>
-<h2>THE PLUGIN WILL RUN ON SPIGOT AND BUKKIT, BUT MOST FEATURES WILL NOT WORK. USE AT YOUR OWN RISK</h2>
 <h3>Changelog:</h3>
 <pre>
 -added blindness to choosing player
@@ -59,6 +58,19 @@
 -added Enderians no longer able to wear carved pumpkins
 -added piglin origin
 -added nether spawn power
+-reworked command system to include original origin commands
+-rewrote choosing code, fixed bedrock bugs
+-fixed many bugs
+-added custom origins choosing
+-added custom origin parsing
+-added basic origin powers
+-reworked origin control system to utilize custom origin powers
+-fixed warning bug on startup
+-added orb of origins config
+-fixed command bugs
+-added tons more minor features
+
+unfortunately, we forgot to add to this list as development continued, lots of things happened and we forgot. we have updated to the extent that we remember.
 </pre>
 <hr>
 <header>Again, still in early alpha. Most features do not work atm.</header>
