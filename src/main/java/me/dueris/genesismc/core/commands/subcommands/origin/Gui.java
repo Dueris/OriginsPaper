@@ -26,12 +26,13 @@ public class Gui extends SubCommand {
     @Override
     public void perform(Player p, String[] args) {
         if(args.length > 1){
-            Player given = Bukkit.getPlayer(args[1]);
-            if (given == null) {
+            try {
+                Player given = Bukkit.getPlayer(args[1]);
+                OriginPlayer.removeOrigin(given);
+            } catch (Exception e) {
                 p.sendMessage(RED + "Could not find player!");
                 return;
             }
-            OriginPlayer.removeOrigin(given);
         }else
         if(args.length == 1){
             OriginPlayer.removeOrigin(p);
