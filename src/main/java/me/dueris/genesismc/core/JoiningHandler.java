@@ -22,7 +22,7 @@ public class JoiningHandler implements Listener {
     public void onJoinFirst(PlayerJoinEvent e) {
         Player p = e.getPlayer();
         if(!p.getPersistentDataContainer().has(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING)){
-            p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, "genesis:origin-null");
+            p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, "");
         }
         //translation system
         @Nullable Integer originid;
