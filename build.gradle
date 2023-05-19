@@ -4,7 +4,7 @@ plugins {
 }
 
 group = 'me.dueris'
-version = 'mc1.19.4-v0.1.6.1'
+version = 'mc1.19.#-v0.1.7'
 
 repositories {
     mavenCentral()
