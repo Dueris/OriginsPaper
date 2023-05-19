@@ -43,8 +43,7 @@ public class Reach  implements Listener {
                 //entity code -- pvp
                 if (entity == null) return;
                 Player attacker = (Player) e.getPlayer();
-                if(entity instanceof Projectile) return;
-                if(entity.isDead()) return;
+                if(entity.isDead() || !(entity instanceof LivingEntity)) return;
                 LivingEntity victim = (LivingEntity) traceResult4_5F.getHitEntity();
                 if(attacker.getLocation().distance(victim.getLocation()) <=6){
                     if (entity.getPassengers().contains(p)) return;
