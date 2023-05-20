@@ -60,58 +60,58 @@ public class Info extends SubCommand implements Listener {
             Inventory help = Bukkit.createInventory(p, 54, "Help");
             PersistentDataContainer data = p.getPersistentDataContainer();
             @Nullable String origintagPlayer = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
-            if(origintagPlayer == "genesis:origin-human"){
+            if(origintagPlayer.equals("genesis:origin-human")){
                 help.setContents(OriginalOriginContent.HumanContents(p));
                 p.openInventory(help);
-            }if(origintagPlayer == "genesis:origin-enderian"){
+            }if(origintagPlayer.equals("genesis:origin-enderian")){
                 help.setContents(OriginalOriginContent.EnderianContents());
                 p.openInventory(help);
-            }if(origintagPlayer == "genesis:origin-merling"){
+            }if(origintagPlayer.equals("genesis:origin-merling")){
                 help.setContents(OriginalOriginContent.MerlingContents());
                 p.openInventory(help);
-            }if(origintagPlayer == "genesis:origin-phantom"){
+            }if(origintagPlayer.equals("genesis:origin-phantom")){
                 help.setContents(OriginalOriginContent.PhantomContents());
                 p.openInventory(help);
-            }if(origintagPlayer == "genesis:origin-elytrian"){
+            }if(origintagPlayer.equals("genesis:origin-elytrian")){
                 help.setContents(OriginalOriginContent.ElytrianContents());
                 p.openInventory(help);
-            }if(origintagPlayer == "genesis:origin-blazeborn"){
+            }if(origintagPlayer.equals("genesis:origin-blazeborn")){
                 help.setContents(OriginalOriginContent.BlazebornContents());
                 p.openInventory(help);
-            }if(origintagPlayer == "genesis:origin-avian"){
+            }if(origintagPlayer.equals("genesis:origin-avian")){
                 help.setContents(OriginalOriginContent.AvianContents());
                 p.openInventory(help);
-            }if(origintagPlayer == "genesis:origin-arachnid"){
+            }if(origintagPlayer.equals("genesis:origin-arachnid")){
                 help.setContents(OriginalOriginContent.ArachnidContents());
                 p.openInventory(help);
-            }if(origintagPlayer == "genesis:origin-shulk"){
+            }if(origintagPlayer.equals("genesis:origin-shulk")){
                 help.setContents(OriginalOriginContent.ShulkContents());
                 p.openInventory(help);
-            }if(origintagPlayer == "genesis:origin-feline"){
+            }if(origintagPlayer.equals("genesis:origin-feline")){
                 help.setContents(OriginalOriginContent.FelineContents());
                 p.openInventory(help);
-            }if(origintagPlayer == "genesis:origin-starborne"){
+            }if(origintagPlayer.equals("genesis:origin-starborne")){
                 help.setContents(ExpandedOriginContent.StarborneContents());
                 p.openInventory(help);
-            }if(origintagPlayer == "genesis:origin-allay"){
+            }if(origintagPlayer.equals("genesis:origin-allay")){
                 help.setContents(ExpandedOriginContent.AllayContents());
                 p.openInventory(help);
-            }if(origintagPlayer == "genesis:origin-rabbit"){
+            }if(origintagPlayer.equals("genesis:origin-rabbit")){
                 help.setContents(ExpandedOriginContent.RabbitContents());
                 p.openInventory(help);
-            }if(origintagPlayer == "genesis:origin-bee"){
+            }if(origintagPlayer.equals("genesis:origin-bee")){
                 help.setContents(ExpandedOriginContent.BeeContents());
                 p.openInventory(help);
-            }if(origintagPlayer == "genesis:origin-sculkling"){
+            }if(origintagPlayer.equals("genesis:origin-sculkling")){
                 help.setContents(ExpandedOriginContent.SculkContents());
                 p.openInventory(help);
-            }if(origintagPlayer == "genesis:origin-creep"){
+            }if(origintagPlayer.equals("genesis:origin-creep")){
                 help.setContents(ExpandedOriginContent.CreepContents());
                 p.openInventory(help);
-            }if(origintagPlayer == "genesis:origin-slimeling"){
+            }if(origintagPlayer.equals("genesis:origin-slimeling")){
                 help.setContents(ExpandedOriginContent.SlimelingContents());
                 p.openInventory(help);
-            }if(origintagPlayer == "genesis:origin-piglin"){
+            }if(origintagPlayer.equals("genesis:origin-piglin")){
                 help.setContents(ExpandedOriginContent.PiglinContents());
                 p.openInventory(help);
             }

@@ -51,7 +51,7 @@ public class OriginPlayer {
     public static void removeOrigin(Player player){
         if(player.getPersistentDataContainer() != null){
             PersistentDataContainer data = player.getPersistentDataContainer();
-            data.set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, "");
+            data.set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, "genesis:origin-null");
         }
     }
 
