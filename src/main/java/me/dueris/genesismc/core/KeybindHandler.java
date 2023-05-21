@@ -27,6 +27,7 @@ import java.util.ArrayList;
 
 import static me.dueris.genesismc.core.factory.powers.Powers.launch_into_air;
 import static me.dueris.genesismc.core.factory.powers.Powers.phantomize;
+import static me.dueris.genesismc.core.factory.powers.item.LaunchAir.cooldownAfterElytrian;
 import static org.bukkit.ChatColor.DARK_AQUA;
 import static org.bukkit.ChatColor.RED;
 
