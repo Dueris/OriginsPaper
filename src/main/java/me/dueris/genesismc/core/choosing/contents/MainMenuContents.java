@@ -133,7 +133,7 @@ public class MainMenuContents {
             bumblebee = itemProperties(bumblebee, RED + "Unavailable", ItemFlag.HIDE_ENCHANTS, Enchantment.ARROW_INFINITE, RED + "This origin is locked by the server owner.");
         }
         if (GenesisDataFiles.getPlugCon().getString("elytrian-disable").equalsIgnoreCase("false")) {
-            elytrian = itemProperties(elytrian, GRAY + "Elytrian", null, null, RED + "Not yet implemented.");
+            elytrian = itemProperties(elytrian, GRAY + "Elytrian", null, null, RED + "Often flying around in the winds, Elytrians are uncomfortable when they don't have enough space above their head.");
         } else {
             elytrian = itemProperties(elytrian, RED + "Unavailable", ItemFlag.HIDE_ENCHANTS, Enchantment.ARROW_INFINITE, RED + "This origin is locked by the server owner.");
         }
