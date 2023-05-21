@@ -2,6 +2,7 @@ package me.dueris.genesismc.core.factory.powers;
 
 import me.dueris.genesismc.core.factory.handlers.CustomOriginExistCheck;
 import me.dueris.genesismc.core.factory.powers.armour.FlightElytra;
+import me.dueris.genesismc.core.factory.powers.armour.GoldAmourBellow;
 import me.dueris.genesismc.core.factory.powers.armour.GoldArmourBuff;
 import me.dueris.genesismc.core.factory.powers.block.CeilingWeak;
 import me.dueris.genesismc.core.factory.powers.block.Webbing;
@@ -126,6 +127,7 @@ public class OriginStartHandler {
         getServer().getPluginManager().registerEvents(new FireImmunity(), getPlugin());
         getServer().getPluginManager().registerEvents(new FlightElytra(), getPlugin());
         getServer().getPluginManager().registerEvents(new LaunchAir(), getPlugin());
+        getServer().getPluginManager().registerEvents(new GoldAmourBellow(), getPlugin());
 
     }
 }

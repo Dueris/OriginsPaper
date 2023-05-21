@@ -182,6 +182,7 @@ public class Powers implements Listener {
         more_kinetic_damage.add("genesis:origin-elytrian");
         launch_into_air.add("genesis:origin-elytrian");
         claustrophobia.add("genesis:origin-elytrian");
+        light_armor.add("genesis:origin-elytrian");
 
         for (String originTag : CustomOriginAPI.getCustomOriginTags()) {
             for (String power : CustomOriginAPI.getCustomOriginPowers(originTag)) {
