@@ -312,7 +312,7 @@ public class ChoosingCORE implements Listener {
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
                     p.closeInventory();
                     removeItemPhantom(p);
-                    removeItemEnder(p);
+                    removeItemEnder(p); removeItemElytrian(p);
                 }
                 if(e.getCurrentItem().isSimilar(ender)){
                     Bukkit.getScheduler().runTaskLater(GenesisMC.getPlugin(),()->{
@@ -344,7 +344,7 @@ public class ChoosingCORE implements Listener {
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
                         removeItemPhantom(p);
-                        removeItemEnder(p);
+                        removeItemEnder(p); removeItemElytrian(p);
                     },1);
                 }
                 if(e.getCurrentItem().isSimilar(spider)){
@@ -354,7 +354,7 @@ public class ChoosingCORE implements Listener {
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
                         removeItemPhantom(p);
-                        removeItemEnder(p);
+                        removeItemEnder(p); removeItemElytrian(p);
                     },1);
                 }
                 if(e.getCurrentItem().isSimilar(creep)){
@@ -364,7 +364,7 @@ public class ChoosingCORE implements Listener {
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 2);
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
                         removeItemPhantom(p);
-                        removeItemEnder(p);
+                        removeItemEnder(p); removeItemElytrian(p);
                     },1);
                 }
                 if(e.getCurrentItem().isSimilar(phantom)){
@@ -385,7 +385,7 @@ public class ChoosingCORE implements Listener {
                         switch_meta.setLore(pearl_lore);
                         spectatorswitch.setItemMeta(switch_meta);
                         p.getInventory().addItem(spectatorswitch);
-                        removeItemEnder(p);
+                        removeItemEnder(p); removeItemElytrian(p);
                     },1);
                 }
                 if(e.getCurrentItem().isSimilar(slime)){
@@ -394,7 +394,7 @@ public class ChoosingCORE implements Listener {
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
                         removeItemPhantom(p);
-                        removeItemEnder(p);
+                        removeItemEnder(p); removeItemElytrian(p);
                     },1);
                 }
                 if(e.getCurrentItem().isSimilar(feline)){
@@ -404,7 +404,7 @@ public class ChoosingCORE implements Listener {
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
                         p.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(18);
                         removeItemPhantom(p);
-                        removeItemEnder(p);
+                        removeItemEnder(p); removeItemElytrian(p);
                     },1);
                 }
                 if(e.getCurrentItem().isSimilar(blaze)){
@@ -414,7 +414,7 @@ public class ChoosingCORE implements Listener {
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
                         removeItemPhantom(p);
-                        removeItemEnder(p);
+                        removeItemEnder(p); removeItemElytrian(p);
                     },1);
                 }
                 if(e.getCurrentItem().isSimilar(star)){
@@ -423,7 +423,7 @@ public class ChoosingCORE implements Listener {
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
                         removeItemPhantom(p);
-                        removeItemEnder(p);
+                        removeItemEnder(p); removeItemElytrian(p);
                     },1);
                 }
                 if(e.getCurrentItem().isSimilar(merling)){
@@ -432,7 +432,7 @@ public class ChoosingCORE implements Listener {
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
                         removeItemPhantom(p);
-                        removeItemEnder(p);
+                        removeItemEnder(p); removeItemElytrian(p);
                     },1);
                 }
                 if(e.getCurrentItem().isSimilar(allay)){
@@ -441,7 +441,7 @@ public class ChoosingCORE implements Listener {
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
                         removeItemPhantom(p);
-                        removeItemEnder(p);
+                        removeItemEnder(p); removeItemElytrian(p);
                     },1);
                 }
                 if(e.getCurrentItem().isSimilar(rabbit)){
@@ -451,7 +451,7 @@ public class ChoosingCORE implements Listener {
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
                         removeItemPhantom(p);
-                        removeItemEnder(p);
+                        removeItemEnder(p); removeItemElytrian(p);
                     },1);
                 }
                 if(e.getCurrentItem().isSimilar(bee)){
@@ -461,7 +461,7 @@ public class ChoosingCORE implements Listener {
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
                         p.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(14);
                         removeItemPhantom(p);
-                        removeItemEnder(p);
+                        removeItemEnder(p); removeItemElytrian(p);
                     },1);
                 }
                 if(e.getCurrentItem().isSimilar(elyrtian)){
@@ -470,7 +470,14 @@ public class ChoosingCORE implements Listener {
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
                         removeItemPhantom(p);
-                        removeItemEnder(p);
+                        removeItemEnder(p); removeItemElytrian(p);
+                        ItemStack launchitem = new ItemStack(Material.FEATHER);
+                        ItemMeta launchmeta = launchitem.getItemMeta();
+                        launchmeta.setDisplayName(GRAY + "Launch");
+                        launchmeta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
+                        launchitem.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+                        launchitem.setItemMeta(launchmeta);
+                        p.getInventory().addItem(launchitem);
                     },1);
                 }
                 if(e.getCurrentItem().isSimilar(avian)){
@@ -479,7 +486,7 @@ public class ChoosingCORE implements Listener {
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
                         removeItemPhantom(p);
-                        removeItemEnder(p);
+                        removeItemEnder(p); removeItemElytrian(p);
                     },1);
                 }
                 if(e.getCurrentItem().isSimilar(piglin)){
@@ -489,7 +496,7 @@ public class ChoosingCORE implements Listener {
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
                         removeItemPhantom(p);
-                        removeItemEnder(p);
+                        removeItemEnder(p); removeItemElytrian(p);
                     },1);
                 }
                 if(e.getCurrentItem().isSimilar(sculk)){
@@ -499,7 +506,7 @@ public class ChoosingCORE implements Listener {
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
                         p.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(24);
                         removeItemPhantom(p);
-                        removeItemEnder(p);
+                        removeItemEnder(p); removeItemElytrian(p);
                     },1);
                 }
             }
@@ -697,6 +704,16 @@ public class ChoosingCORE implements Listener {
         switch_meta.setLore(pearl_lore);
         spectatorswitch.setItemMeta(switch_meta);
         player.getInventory().remove(spectatorswitch);
+    }
+
+    public static void removeItemElytrian(Player player){
+        ItemStack launchitem = new ItemStack(Material.FEATHER);
+        ItemMeta launchmeta = launchitem.getItemMeta();
+        launchmeta.setDisplayName(GRAY + "Launch");
+        launchmeta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
+        launchitem.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+        launchitem.setItemMeta(launchmeta);
+        player.getInventory().remove(launchitem);
     }
 
 }

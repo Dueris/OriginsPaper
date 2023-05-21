@@ -18,12 +18,14 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.util.Vector;
 import org.geysermc.floodgate.api.FloodgateApi;
 import org.geysermc.geyser.api.GeyserApi;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 
+import static me.dueris.genesismc.core.factory.powers.Powers.launch_into_air;
 import static me.dueris.genesismc.core.factory.powers.Powers.phantomize;
 import static org.bukkit.ChatColor.DARK_AQUA;
 import static org.bukkit.ChatColor.RED;
@@ -59,7 +61,8 @@ public class KeybindHandler implements Listener {
 
             p.openInventory(vault);
 
-        } else if (phantomize.contains(origintag)) {
+        }
+        if (phantomize.contains(origintag)) {
             e.setCancelled(true);
             int phantomid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER);
             if (phantomid == 1) {
@@ -88,6 +91,10 @@ public class KeybindHandler implements Listener {
             } else {
                 p.sendMessage(RED + "Error: Switching could not be executed");
             }
+        }
+        if(launch_into_air.contains(origintag)){
+            p.setVelocity(new Vector(0, 2, 0));
+            e.setCancelled(true);
         }
 
     }

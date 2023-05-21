@@ -13,6 +13,8 @@ import org.bukkit.event.player.PlayerToggleSneakEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
@@ -36,10 +38,12 @@ public class FlightElytra implements Listener {
         if (elytra.contains(origintag)) {
             if(!p.isOnGround()){
                 glidingPlayers.add(p.getUniqueId());
+                if(p.getGameMode() == GameMode.SPECTATOR) return;
                 new BukkitRunnable() {
                     @Override
                     public void run() {
                         if(p.isOnGround()) {this.cancel(); glidingPlayers.remove(p.getUniqueId());}
+                        p.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 5, 1, false, false, false));
                         p.setGliding(true);
                     }
                 }.runTaskTimer(GenesisMC.getPlugin(), 0L, 1L);

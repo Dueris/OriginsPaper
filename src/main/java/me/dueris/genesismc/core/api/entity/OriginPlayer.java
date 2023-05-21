@@ -225,6 +225,13 @@ public class OriginPlayer {
             Bukkit.getScheduler().runTaskLater(GenesisMC.getPlugin(),()->{
                 removeItemPhantom(player);
                 removeItemEnder(player);
+                ItemStack launchitem = new ItemStack(Material.FEATHER);
+                ItemMeta launchmeta = launchitem.getItemMeta();
+                launchmeta.setDisplayName(GRAY + "Launch");
+                launchmeta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
+                launchitem.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+                launchitem.setItemMeta(launchmeta);
+                player.getInventory().addItem(launchitem);
             },1);
         } else if(origin.contains("genesis:origin-avian")){
             setAttributesToDefault(player);

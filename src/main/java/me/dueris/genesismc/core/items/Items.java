@@ -74,7 +74,14 @@ public class Items extends BukkitRunnable implements Listener {
         switch_meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
         spectatorswitch.setItemMeta(switch_meta);
 
-        if(e.getInventory().contains(infinpearl) || e.getInventory().contains(spectatorswitch)){
+        ItemStack launchitem = new ItemStack(Material.FEATHER);
+        ItemMeta launchmeta = launchitem.getItemMeta();
+        launchmeta.setDisplayName(GRAY + "Launch");
+        launchmeta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
+        launchitem.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+        launchitem.setItemMeta(launchmeta);
+
+        if(e.getInventory().contains(infinpearl) || e.getInventory().contains(spectatorswitch) || e.getInventory().contains(launchitem)){
             e.getInventory().setResult(null);
         }
     }
@@ -102,7 +109,14 @@ public class Items extends BukkitRunnable implements Listener {
         switch_meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
         spectatorswitch.setItemMeta(switch_meta);
 
-        if(e.getItem().isSimilar(infinpearl) || e.getItem().isSimilar(spectatorswitch)){
+        ItemStack launchitem = new ItemStack(Material.FEATHER);
+        ItemMeta launchmeta = launchitem.getItemMeta();
+        launchmeta.setDisplayName(GRAY + "Launch");
+        launchmeta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
+        launchitem.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+        launchitem.setItemMeta(launchmeta);
+
+        if(e.getItem().isSimilar(infinpearl) || e.getItem().isSimilar(spectatorswitch) || e.getItem().isSimilar(spectatorswitch)){
             e.setCancelled(true);
         }
     }

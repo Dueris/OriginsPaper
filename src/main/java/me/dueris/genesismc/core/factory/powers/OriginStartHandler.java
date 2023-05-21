@@ -16,6 +16,7 @@ import me.dueris.genesismc.core.factory.powers.food.Vegitarian;
 import me.dueris.genesismc.core.factory.powers.item.CreeperDeathDrop;
 import me.dueris.genesismc.core.factory.powers.item.EnderPearlThrow;
 import me.dueris.genesismc.core.factory.powers.item.GoldItemBuff;
+import me.dueris.genesismc.core.factory.powers.item.LaunchAir;
 import me.dueris.genesismc.core.factory.powers.runnables.*;
 import me.dueris.genesismc.core.factory.powers.world.ExplodeTick;
 import me.dueris.genesismc.core.factory.powers.world.WeakBiomeCold;
@@ -119,5 +120,6 @@ public class OriginStartHandler {
         getServer().getPluginManager().registerEvents(new OriginHandler(), getPlugin());
         getServer().getPluginManager().registerEvents(new FireImmunity(), getPlugin());
         getServer().getPluginManager().registerEvents(new FlightElytra(), getPlugin());
+        getServer().getPluginManager().registerEvents(new LaunchAir(), getPlugin());
     }
 }
