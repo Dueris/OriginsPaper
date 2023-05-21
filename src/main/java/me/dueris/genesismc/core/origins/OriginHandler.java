@@ -42,18 +42,6 @@ public class OriginHandler extends BukkitRunnable implements Listener {
         }
     }
 
-    @EventHandler
-    public void onhitShulk(EntityDamageEvent e) {
-        if (e.getEntity() instanceof Player || e.getEntity() instanceof HumanEntity) {
-            PersistentDataContainer data = e.getEntity().getPersistentDataContainer();
-            @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
-            if (origintag.equalsIgnoreCase("genesis:origin-shulk")) {
-                e.getEntity().getWorld().playSound(e.getEntity().getLocation(), Sound.ENTITY_SHULKER_HURT, 10.0F, 1.0F);
-            } else if (origintag.equalsIgnoreCase("genesis:origin-enderian")) {
-                e.getEntity().getWorld().playSound(e.getEntity().getLocation(), Sound.ENTITY_ENDERMAN_HURT, 10.0F, 1.0F);
-            }
-        }
-    }
 
     @EventHandler
     public void onDeathShulk(EntityDeathEvent e) {
