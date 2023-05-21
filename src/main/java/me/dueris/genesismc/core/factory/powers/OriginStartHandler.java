@@ -3,6 +3,7 @@ package me.dueris.genesismc.core.factory.powers;
 import me.dueris.genesismc.core.factory.handlers.CustomOriginExistCheck;
 import me.dueris.genesismc.core.factory.powers.armour.FlightElytra;
 import me.dueris.genesismc.core.factory.powers.armour.GoldArmourBuff;
+import me.dueris.genesismc.core.factory.powers.block.CeilingWeak;
 import me.dueris.genesismc.core.factory.powers.block.Webbing;
 import me.dueris.genesismc.core.factory.powers.block.fluid.WaterBreatheAbove;
 import me.dueris.genesismc.core.factory.powers.block.fluid.WaterBreatheBellow;
@@ -22,6 +23,7 @@ import me.dueris.genesismc.core.factory.powers.world.ExplodeTick;
 import me.dueris.genesismc.core.factory.powers.world.WeakBiomeCold;
 import me.dueris.genesismc.core.factory.powers.world.WorldSpawnHandler;
 import me.dueris.genesismc.core.origins.OriginHandler;
+import org.checkerframework.checker.units.qual.C;
 
 import static me.dueris.genesismc.core.GenesisMC.getPlugin;
 import static org.bukkit.Bukkit.getServer;
@@ -80,6 +82,9 @@ public class OriginStartHandler {
 
         WeakBiomeCold weakBiomeCold = new WeakBiomeCold();
         weakBiomeCold.runTaskTimer(getPlugin(), 0, 5);
+
+        CeilingWeak ceilingWeak = new CeilingWeak();
+        ceilingWeak.runTaskTimer(getPlugin(), 0, 2);
     }
 
     public static void StartListeners(){
@@ -121,5 +126,6 @@ public class OriginStartHandler {
         getServer().getPluginManager().registerEvents(new FireImmunity(), getPlugin());
         getServer().getPluginManager().registerEvents(new FlightElytra(), getPlugin());
         getServer().getPluginManager().registerEvents(new LaunchAir(), getPlugin());
+
     }
 }
