@@ -1,6 +1,7 @@
 package me.dueris.genesismc.core.factory.powers;
 
 import me.dueris.genesismc.core.factory.handlers.CustomOriginExistCheck;
+import me.dueris.genesismc.core.factory.powers.armour.FlightElytra;
 import me.dueris.genesismc.core.factory.powers.armour.GoldArmourBuff;
 import me.dueris.genesismc.core.factory.powers.block.Webbing;
 import me.dueris.genesismc.core.factory.powers.block.fluid.WaterBreatheAbove;
@@ -78,7 +79,6 @@ public class OriginStartHandler {
 
         WeakBiomeCold weakBiomeCold = new WeakBiomeCold();
         weakBiomeCold.runTaskTimer(getPlugin(), 0, 5);
-
     }
 
     public static void StartListeners(){
@@ -118,5 +118,6 @@ public class OriginStartHandler {
         getServer().getPluginManager().registerEvents(new BetterMineSpeed(), getPlugin());
         getServer().getPluginManager().registerEvents(new OriginHandler(), getPlugin());
         getServer().getPluginManager().registerEvents(new FireImmunity(), getPlugin());
+        getServer().getPluginManager().registerEvents(new FlightElytra(), getPlugin());
     }
 }

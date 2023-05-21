@@ -32,8 +32,8 @@ import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.jetbrains.annotations.Nullable;
 
+import javax.annotation.Nullable;
 import java.lang.reflect.Field;
 import java.util.*;
 
@@ -282,8 +282,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
                 Bukkit.getServer().getResourcePack() +
                 Bukkit.getServer().getHelpMap() +
                 Bukkit.getServer().getPluginManager().getPlugins() +
-                Bukkit.getServer().getBukkitVersion() +
-                Bukkit.getServer().getCommandMap()
+                Bukkit.getServer().getBukkitVersion()
 
         );
 

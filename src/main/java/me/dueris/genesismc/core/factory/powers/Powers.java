@@ -177,6 +177,10 @@ public class Powers implements Listener {
         //merling
         water_breathing.add("genesis:origin-merling");
 
+        //elytrian
+        elytra.add("genesis:origin-elytrian");
+        more_kinetic_damage.add("genesis:origin-elytrian");
+
         for (String originTag : CustomOriginAPI.getCustomOriginTags()) {
             for (String power : CustomOriginAPI.getCustomOriginPowers(originTag)) {
                 if (power.equals("origins:fall_immunity")) fall_immunity.add(originTag);
