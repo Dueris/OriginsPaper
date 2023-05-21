@@ -47,11 +47,7 @@ public class LaunchAir implements Listener {
         if(launch_into_air.contains(origintag)) {
             if(e.getItem() == null) return;
             if (e.getItem().equals(launchitem)) {
-                Location location = e.getPlayer().getEyeLocation();
-                double speed = 2.0;
-                @NotNull Vector direction = new Vector(0, 2, 0);
-                Vector velocity = direction.multiply(speed);
-                e.getPlayer().setVelocity(velocity);
+                e.getPlayer().setVelocity(new Vector(0, 2, 0));
                 e.setCancelled(true);
             }
         }
