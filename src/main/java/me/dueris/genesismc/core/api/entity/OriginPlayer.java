@@ -1,10 +1,7 @@
 package me.dueris.genesismc.core.api.entity;
 
 import me.dueris.genesismc.core.GenesisMC;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
+import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -13,6 +10,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.util.Vector;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -30,6 +29,14 @@ public class OriginPlayer {
         else{
             return true;
         }
+    }
+
+    public static void launchElytra(Player player){
+        Location location = player.getEyeLocation();
+        double speed = 2.0;
+        @NotNull Vector direction = location.getDirection().normalize();
+        Vector velocity = direction.multiply(speed);
+        player.setVelocity(velocity);
     }
 
     public static boolean hasOrigin(Player player, String origintag){
