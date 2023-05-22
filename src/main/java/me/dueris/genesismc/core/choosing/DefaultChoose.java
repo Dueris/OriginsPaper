@@ -15,7 +15,7 @@ import static org.bukkit.ChatColor.AQUA;
 public class DefaultChoose {
 
     public static void DefaultChoose(Player p) {
-
+    private boolean isRegistered = false;
         p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 10, 2);
 
         //default choose
@@ -30,10 +30,12 @@ public class DefaultChoose {
         if (p.getScoreboardTags().contains("choosing")) {
             p.removeScoreboardTag("choosing");
         }
-        // DO NOT UNCOMMENT, DUERIS SAID SHE'D FIX IT WHEN SHE'S LESS TIRED AND THIS ERROR TOOK AN HOUR TO FIND
+        if(!isRegistered){
+            
         OriginChooseEvent chooseEvent = new OriginChooseEvent(p);
         getServer().getPluginManager().callEvent(chooseEvent);
-        
+        isRegistered = true;
+        }
 
 
         if (p.getInventory().getItemInMainHand().isSimilar(OrbOfOrigins.orb) && !p.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING).equals("genesis:origin-null")) {
