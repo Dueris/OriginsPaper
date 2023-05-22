@@ -3,11 +3,13 @@ package me.dueris.genesismc.core.choosing;
 import me.dueris.genesismc.core.GenesisMC;
 import me.dueris.genesismc.core.api.events.OriginChooseEvent;
 import me.dueris.genesismc.core.items.OrbOfOrigins;
+import me.dueris.genesismc.core.utils.SendCharts;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.persistence.PersistentDataType;
 
 import static me.dueris.genesismc.core.items.OrbOfOrigins.orb;
+import static org.bukkit.Bukkit.getServer;
 import static org.bukkit.ChatColor.AQUA;
 
 public class DefaultChoose {
@@ -43,6 +45,8 @@ public class DefaultChoose {
                 p.getInventory().getItemInOffHand().setAmount(amt - 1);
             }
         }
+
+        SendCharts.originPopularity(p);
 
     }
 }

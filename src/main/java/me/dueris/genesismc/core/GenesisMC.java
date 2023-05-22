@@ -1,6 +1,9 @@
 package me.dueris.genesismc.core;
 
+import me.dueris.genesismc.core.api.events.OriginChooseEvent;
 import me.dueris.genesismc.core.choosing.*;
+import me.dueris.genesismc.core.choosing.contents.origins.ExpandedOriginContent;
+import me.dueris.genesismc.core.choosing.contents.origins.OriginalOriginContent;
 import me.dueris.genesismc.core.commands.GenesisCommandManager;
 import me.dueris.genesismc.core.commands.TabAutoComplete;
 import me.dueris.genesismc.core.commands.ToggleCommand;
@@ -10,6 +13,7 @@ import me.dueris.genesismc.core.enchantments.WaterProtAnvil;
 import me.dueris.genesismc.core.factory.powers.OriginStartHandler;
 import me.dueris.genesismc.core.generation.WaterProtBookGen;
 import me.dueris.genesismc.core.items.Items;
+import me.dueris.genesismc.core.utils.Metrics;
 import me.dueris.genesismc.core.utils.ParticleHandler;
 import me.dueris.genesismc.core.api.factory.CustomOriginAPI;
 import me.dueris.genesismc.core.enchantments.EnchantProtEvent;
@@ -32,6 +36,7 @@ import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import java.lang.reflect.Field;
@@ -40,6 +45,8 @@ import java.util.*;
 public final class GenesisMC extends JavaPlugin implements Listener {
     private static GenesisMC plugin;
     public static EnumSet<Material> tool;
+
+    public static Metrics metrics;
 
     public GenesisMC() {
     }
@@ -53,6 +60,11 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 
 
         plugin = this;
+
+        //bstats
+
+        metrics = new Metrics(this, 18536);
+
 
         getServer().getPluginManager().registerEvents(new DataContainer(), this);
 

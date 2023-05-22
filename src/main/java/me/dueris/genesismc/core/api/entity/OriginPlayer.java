@@ -1,6 +1,7 @@
 package me.dueris.genesismc.core.api.entity;
 
 import me.dueris.genesismc.core.GenesisMC;
+import me.dueris.genesismc.core.utils.SendCharts;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.enchantments.Enchantment;
@@ -260,6 +261,7 @@ public class OriginPlayer {
                 removeItemEnder(player);
             },1);
         }
+        SendCharts.originPopularity(player);
     }
 
 }
