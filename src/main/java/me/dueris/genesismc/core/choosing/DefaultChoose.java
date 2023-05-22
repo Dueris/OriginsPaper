@@ -31,9 +31,9 @@ public class DefaultChoose {
             p.removeScoreboardTag("choosing");
         }
         // DO NOT UNCOMMENT, DUERIS SAID SHE'D FIX IT WHEN SHE'S LESS TIRED AND THIS ERROR TOOK AN HOUR TO FIND
-        if(p != null){
-            //Bukkit.getServer().getPluginManager().callEvent(new OriginChooseEvent(p));
-        }
+        OriginChooseEvent chooseEvent = new OriginChooseEvent(p);
+        getServer().getPluginManager().callEvent(chooseEvent);
+        getServer().getPluginManager().registerEvents(new OriginChooseEvent(p), GenesisMC.getPlugin());
 
 
         if (p.getInventory().getItemInMainHand().isSimilar(OrbOfOrigins.orb) && !p.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING).equals("genesis:origin-null")) {
