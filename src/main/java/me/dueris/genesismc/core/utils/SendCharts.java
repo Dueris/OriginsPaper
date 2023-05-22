@@ -41,7 +41,6 @@ public class SendCharts {
             };
             entry.put(origin, 1);
             map.put(origin, entry);
-            p.sendMessage(origin);
             return map;
         }));
     }
