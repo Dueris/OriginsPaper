@@ -1,6 +1,7 @@
 package me.dueris.genesismc.core.origins;
 
 import me.dueris.genesismc.core.GenesisMC;
+import me.dueris.genesismc.core.api.events.OriginChooseEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Sound;
@@ -75,11 +76,9 @@ public class OriginHandler extends BukkitRunnable implements Listener {
     }
     
     //Dont delete handler
-    @EventHanlder
+    @EventHandler
     public void executeChooseTemplate(OriginChooseEvent e){
-    
     Player player = e.getPlayer();
-        
     }
 
 

@@ -13,9 +13,9 @@ import static org.bukkit.Bukkit.getServer;
 import static org.bukkit.ChatColor.AQUA;
 
 public class DefaultChoose {
+    private static boolean isRegistered = false;
 
     public static void DefaultChoose(Player p) {
-    private boolean isRegistered = false;
         p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 10, 2);
 
         //default choose
