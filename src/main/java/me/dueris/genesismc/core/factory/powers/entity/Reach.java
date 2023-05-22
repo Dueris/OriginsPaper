@@ -4,6 +4,7 @@ import io.papermc.paper.event.player.PlayerArmSwingEvent;
 import me.dueris.genesismc.core.GenesisMC;
 import org.bukkit.*;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -67,12 +68,25 @@ public class Reach implements Listener {
     }
 
     @EventHandler
+    public void BlockPlace(PlayerInteractEvent e){
+        Player p = e.getPlayer();
+        if(p.getGameMode() == GameMode.SPECTATOR) return;
+        if(e.getAction().isRightClick()) {
+            if (getClosestBlockInSight(p, 6) == null) return;
+            if (p.getInventory().getItemInMainHand() == null) return;
+            if (p.getInventory().getItemInMainHand().getType().isBlock()) {
+                placeBlockInSight(p, p.getInventory().getItemInMainHand().getType(), 6);
+            }
+        }
+    }
+
+    @EventHandler
     public void SwingBlockBreakSurvival(PlayerArmSwingEvent e){
         Player p = e.getPlayer();
         if(getClosestBlockInSight(p, 6) == null) return;
     }
 
-    public Block getClosestBlockInSight(Player player, int range) {
+    public static Block getClosestBlockInSight(Player player, int range) {
         Location playerLocation = player.getEyeLocation();
         Location targetLocation = playerLocation.clone();
 
@@ -80,11 +94,37 @@ public class Reach implements Listener {
             targetLocation.add(playerLocation.getDirection());
             Block block = targetLocation.getBlock();
             if (!block.isEmpty()) {
+                BlockFace blockFace = getBlockFace(playerLocation, targetLocation);
                 return block;
             }
         }
 
         return null;
+    }
+
+    public static BlockFace getBlockFace(Location playerLocation, Location targetLocation) {
+        double dx = targetLocation.getX() - playerLocation.getX();
+        double dy = targetLocation.getY() - playerLocation.getY();
+        double dz = targetLocation.getZ() - playerLocation.getZ();
+
+        double max = Math.max(Math.max(Math.abs(dx), Math.abs(dy)), Math.abs(dz));
+
+        if (max == Math.abs(dx)) {
+            return dx > 0 ? BlockFace.EAST : BlockFace.WEST;
+        } else if (max == Math.abs(dy)) {
+            return dy > 0 ? BlockFace.UP : BlockFace.DOWN;
+        } else {
+            return dz > 0 ? BlockFace.SOUTH : BlockFace.NORTH;
+        }
+    }
+
+    public static void placeBlockInSight(Player player, Material material, int range) {
+        Block closestBlock = getClosestBlockInSight(player, range);
+        if (closestBlock != null) {
+            BlockFace blockFace = getBlockFace(player.getLocation(), closestBlock.getLocation());
+            Block placedBlock = closestBlock.getRelative(blockFace);
+            placedBlock.setType(material);
+        }
     }
 
 }
