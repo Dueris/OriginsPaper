@@ -9,11 +9,22 @@ import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class OriginChooseEvent extends OriginEvent {
+public class OriginChooseEvent extends PlayerEvent {
+    
+    private static final HandlerList handlers = new HandlerList();
 
 
     public OriginChooseEvent(@NotNull Player who) {
         super(who);
+    }
+    
+    public static HandlerList getHandlerList(){
+        return handlers;
+    }
+    
+   @Override
+    public HandlerList getHandlers(){
+        return handlers;
     }
 
     public String getOriginTAG() {
