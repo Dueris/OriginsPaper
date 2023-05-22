@@ -62,8 +62,8 @@ public class Reach implements Listener {
         Player p = e.getPlayer();
         if(p.getGameMode() != GameMode.CREATIVE) return;
         if(e.getAction().isLeftClick()) {
-            if (getClosestBlockInSight(p, 6) == null) return;
-            getClosestBlockInSight(p, 6).breakNaturally(false, false);
+            if (getClosestBlockInSight(p, 3, 6) == null) return;
+            getClosestBlockInSight(p, 3, 6).breakNaturally(false, false);
         }
     }
 
@@ -72,10 +72,10 @@ public class Reach implements Listener {
         Player p = e.getPlayer();
         if(p.getGameMode() == GameMode.SPECTATOR) return;
         if(e.getAction().isRightClick()) {
-            if (getClosestBlockInSight(p, 6) == null) return;
+            if (getClosestBlockInSight(p, 3, 6) == null) return;
             if (p.getInventory().getItemInMainHand() == null) return;
             if (p.getInventory().getItemInMainHand().getType().isBlock()) {
-                placeBlockInSight(p, p.getInventory().getItemInMainHand().getType(), 6);
+                placeBlockInSight(p, 3, 6);
             }
         }
     }
@@ -83,48 +83,48 @@ public class Reach implements Listener {
     @EventHandler
     public void SwingBlockBreakSurvival(PlayerArmSwingEvent e){
         Player p = e.getPlayer();
-        if(getClosestBlockInSight(p, 6) == null) return;
+        if(getClosestBlockInSight(p, 3, 6) == null) return;
     }
-
-    public static Block getClosestBlockInSight(Player player, int range) {
-        Location playerLocation = player.getEyeLocation();
+    
+  public static Block getClosestBlockInSight(Player player, int minRange, int maxRange) {
+        Location playerLocation = player.getLocation();
         Location targetLocation = playerLocation.clone();
-
-        for (int i = 0; i < range; i++) {
+        for (int i = minRange; i <= maxRange; i++) {
             targetLocation.add(playerLocation.getDirection());
             Block block = targetLocation.getBlock();
             if (!block.isEmpty()) {
-                BlockFace blockFace = getBlockFace(playerLocation, targetLocation);
                 return block;
             }
         }
-
         return null;
-    }
 
-    public static BlockFace getBlockFace(Location playerLocation, Location targetLocation) {
+  }
+public static void placeBlockInSight(Player player, int minRange, int maxRange) {
+    ItemStack handItem = player.getInventory().getItemInMainHand();
+    if (handItem != null && handItem.getType().isBlock()) {
+        Block closestBlock = getClosestBlockInSight(player, minRange, maxRange);
+        if (closestBlock != null && closestBlock.getType().isAir() && closestBlock.getType().isBlockPlaceable()) {
+            BlockFace blockFace = getBlockFace(player.getLocation(), closestBlock.getLocation());
+            Block placedBlock = closestBlock.getRelative(blockFace);
+            placedBlock.setType(handItem.getType());
+        }
+    }
+}
+
+public static BlockFace getBlockFace(Location playerLocation, Location targetLocation) {
         double dx = targetLocation.getX() - playerLocation.getX();
         double dy = targetLocation.getY() - playerLocation.getY();
         double dz = targetLocation.getZ() - playerLocation.getZ();
-
         double max = Math.max(Math.max(Math.abs(dx), Math.abs(dy)), Math.abs(dz));
-
         if (max == Math.abs(dx)) {
             return dx > 0 ? BlockFace.EAST : BlockFace.WEST;
         } else if (max == Math.abs(dy)) {
             return dy > 0 ? BlockFace.UP : BlockFace.DOWN;
         } else {
             return dz > 0 ? BlockFace.SOUTH : BlockFace.NORTH;
-        }
-    }
 
-    public static void placeBlockInSight(Player player, Material material, int range) {
-        Block closestBlock = getClosestBlockInSight(player, range);
-        if (closestBlock != null) {
-            BlockFace blockFace = getBlockFace(player.getLocation(), closestBlock.getLocation());
-            Block placedBlock = closestBlock.getRelative(blockFace);
-            placedBlock.setType(material);
         }
+
     }
 
 }
