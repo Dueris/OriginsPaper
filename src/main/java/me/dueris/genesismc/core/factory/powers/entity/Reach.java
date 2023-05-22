@@ -1,9 +1,9 @@
 package me.dueris.genesismc.core.factory.powers.entity;
 
+import io.papermc.paper.event.player.PlayerArmSwingEvent;
 import me.dueris.genesismc.core.GenesisMC;
-import org.bukkit.FluidCollisionMode;
-import org.bukkit.Location;
-import org.bukkit.NamespacedKey;
+import org.bukkit.*;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -22,7 +22,7 @@ import java.util.function.Predicate;
 
 import static me.dueris.genesismc.core.factory.powers.Powers.extra_reach;
 
-public class Reach  implements Listener {
+public class Reach implements Listener {
 
     @EventHandler
     public void OnClickREACH(PlayerInteractEvent e) {
@@ -55,4 +55,36 @@ public class Reach  implements Listener {
             }
         }
     }
+
+    @EventHandler
+    public void SwingBlockBreakCreative(PlayerInteractEvent e){
+        Player p = e.getPlayer();
+        if(p.getGameMode() != GameMode.CREATIVE) return;
+        if(e.getAction().isLeftClick()) {
+            if (getClosestBlockInSight(p, 6) == null) return;
+            getClosestBlockInSight(p, 6).breakNaturally(false, false);
+        }
+    }
+
+    @EventHandler
+    public void SwingBlockBreakSurvival(PlayerArmSwingEvent e){
+        Player p = e.getPlayer();
+        if(getClosestBlockInSight(p, 6) == null) return;
+    }
+
+    public Block getClosestBlockInSight(Player player, int range) {
+        Location playerLocation = player.getEyeLocation();
+        Location targetLocation = playerLocation.clone();
+
+        for (int i = 0; i < range; i++) {
+            targetLocation.add(playerLocation.getDirection());
+            Block block = targetLocation.getBlock();
+            if (!block.isEmpty()) {
+                return block;
+            }
+        }
+
+        return null;
+    }
+
 }
