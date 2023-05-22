@@ -12,6 +12,7 @@ import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.util.RayTraceResult;
@@ -100,15 +101,15 @@ public class Reach implements Listener {
 
   }
 public static void placeBlockInSight(Player player, int minRange, int maxRange) {
-//    ItemStack handItem = player.getInventory().getItemInMainHand();
-//    if (handItem != null && handItem.getType().isBlock()) {
-//        Block closestBlock = getClosestBlockInSight(player, minRange, maxRange);
-//        if (closestBlock != null && closestBlock.getType().isAir() && closestBlock.getType().isBlockPlaceable()) {
-//            BlockFace blockFace = getBlockFace(player.getLocation(), closestBlock.getLocation());
-//            Block placedBlock = closestBlock.getRelative(blockFace);
-//            placedBlock.setType(handItem.getType());
-//        }
-//    }
+    ItemStack handItem = player.getInventory().getItemInMainHand();
+    if (handItem.getType().isBlock()) {
+        Block closestBlock = getClosestBlockInSight(player, minRange, maxRange);
+        if (closestBlock != null && closestBlock.getType().isAir() && closestBlock.getType().isSolid()) {
+            BlockFace blockFace = getBlockFace(player.getLocation(), closestBlock.getLocation());
+            Block placedBlock = closestBlock.getRelative(blockFace);
+            placedBlock.setType(handItem.getType());
+        }
+    }
 }
 
 public static BlockFace getBlockFace(Location playerLocation, Location targetLocation) {
