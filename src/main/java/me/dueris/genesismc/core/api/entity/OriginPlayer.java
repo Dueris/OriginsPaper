@@ -24,9 +24,7 @@ import static org.bukkit.ChatColor.GRAY;
 public class OriginPlayer {
 
     public static boolean hasChosenOrigin(Player player){
-        PersistentDataContainer data = player.getPersistentDataContainer();
-        @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
-        if(origintag.equalsIgnoreCase("")) {return false;}
+        if(OriginPlayer.getOriginTag(player).equalsIgnoreCase("")) {return false;}
         else{
             return true;
         }

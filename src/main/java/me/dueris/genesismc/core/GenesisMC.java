@@ -1,5 +1,6 @@
 package me.dueris.genesismc.core;
 
+import me.dueris.genesismc.core.api.entity.OriginPlayer;
 import me.dueris.genesismc.core.api.events.OriginChooseEvent;
 import me.dueris.genesismc.core.choosing.*;
 import me.dueris.genesismc.core.choosing.contents.origins.ExpandedOriginContent;
@@ -201,10 +202,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 
     @EventHandler
     public void NetherOriginRespawn(PlayerRespawnEvent e) {
-        Player p = e.getPlayer();
-        PersistentDataContainer data = p.getPersistentDataContainer();
-        @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
-        if (origintag.equalsIgnoreCase("genesis:origin-piglin") || origintag.equalsIgnoreCase("genesis:origin-blazeborn")) {
+        if (OriginPlayer.getOriginTag(e.getPlayer()).equalsIgnoreCase("genesis:origin-piglin") || OriginPlayer.getOriginTag(e.getPlayer()).equalsIgnoreCase("genesis:origin-blazeborn")) {
             if (!(e.isBedSpawn() || e.isAnchorSpawn())) {
                 Location location = WorldSpawnHandler.NetherSpawn();
                 if (location == null) return;

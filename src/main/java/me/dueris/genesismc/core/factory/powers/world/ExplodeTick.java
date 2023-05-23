@@ -1,6 +1,7 @@
 package me.dueris.genesismc.core.factory.powers.world;
 
 import me.dueris.genesismc.core.GenesisMC;
+import me.dueris.genesismc.core.api.entity.OriginPlayer;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -33,9 +34,7 @@ public class ExplodeTick implements Listener {
     @EventHandler
     public void onShiftCreep(PlayerToggleSneakEvent e) {
         Player p = e.getPlayer();
-        PersistentDataContainer data = p.getPersistentDataContainer();
-        @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
-        if (explode_tick.contains(origintag) && !p.isFlying() && !p.isGliding()) {
+        if (explode_tick.contains(OriginPlayer.getOriginTag(e.getPlayer())) && !p.isFlying() && !p.isGliding()) {
 
             cooldown.remove(p.getUniqueId());
             new BukkitRunnable() {

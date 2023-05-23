@@ -1,6 +1,7 @@
 package me.dueris.genesismc.core.origins;
 
 import me.dueris.genesismc.core.GenesisMC;
+import me.dueris.genesismc.core.api.entity.OriginPlayer;
 import me.dueris.genesismc.core.api.events.OriginChooseEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
@@ -32,9 +33,7 @@ public class OriginHandler extends BukkitRunnable implements Listener {
     @Override
     public void run() {
         for (Player p : Bukkit.getOnlinePlayers()) {
-            PersistentDataContainer data = p.getPersistentDataContainer();
-            @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
-            if (origintag.contains("genesis:origin-piglin")) {
+            if (OriginPlayer.getOriginTag(p).contains("genesis:origin-piglin")) {
                 if (p.getWorld().getEnvironment() != World.Environment.NETHER) {
                     p.addPotionEffect(new PotionEffect(PotionEffectType.FIRE_RESISTANCE, 10, 0, false, false, false));
                     p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 10, 0, false, false, false));
@@ -47,16 +46,15 @@ public class OriginHandler extends BukkitRunnable implements Listener {
     @EventHandler
     public void onDeathShulk(EntityDeathEvent e) {
         if (e.getEntity() instanceof Player || e.getEntity() instanceof HumanEntity) {
-            PersistentDataContainer data = e.getEntity().getPersistentDataContainer();
-            @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
-            if (origintag.equalsIgnoreCase("genesis:origin-shulk")) {
+            Player p = (Player) e.getEntity();
+            if (OriginPlayer.getOriginTag(p).equalsIgnoreCase("genesis:origin-shulk")) {
                 e.getEntity().getWorld().playSound(e.getEntity().getLocation(), Sound.ENTITY_SHULKER_DEATH, 10.0F, 1.0F);
                 Random random = new Random();
                 int r = random.nextInt(100);
                 if (r <= 8) {
                     e.getEntity().getLocation().getWorld().dropItem(e.getEntity().getLocation(), new ItemStack(SHULKER_SHELL, 1));
                 }
-            } else if (origintag.equalsIgnoreCase("genesis:origin-enderian")) {
+            } else if (OriginPlayer.getOriginTag(p).equalsIgnoreCase("genesis:origin-enderian")) {
                 e.getEntity().getWorld().playSound(e.getEntity().getLocation(), Sound.ENTITY_ENDERMAN_DEATH, 10, 1F);
             }
         }
@@ -65,11 +63,11 @@ public class OriginHandler extends BukkitRunnable implements Listener {
     @EventHandler
     public void onTargetShulk(EntityTargetEvent e){
         if(e.getEntity() instanceof ShulkerBullet){
-            PersistentDataContainer data = e.getTarget().getPersistentDataContainer();
-            @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
-            if (origintag.equalsIgnoreCase("genesis:origin-shulk")) {
-                if(e.getTarget() instanceof Player){
-                    e.setCancelled(true);
+            if (e.getTarget() instanceof Player p) {
+                if (OriginPlayer.getOriginTag(p).equalsIgnoreCase("genesis:origin-shulk")) {
+                    if(e.getTarget() instanceof Player) {
+                        e.setCancelled(true);
+                    }
                 }
             }
         }
@@ -81,5 +79,10 @@ public class OriginHandler extends BukkitRunnable implements Listener {
     Player player = e.getPlayer();
     }
 
+    @EventHandler
+    public void testevent(OriginChooseEvent e) {
+        Player player = e.getPlayer();
+        player.sendMessage("fjbxifudgfilzdbvlzdi");
+    }
 
 }

@@ -2,6 +2,7 @@ package me.dueris.genesismc.core.factory.powers.block.fluid;
 
 import io.papermc.paper.event.entity.WaterBottleSplashEvent;
 import me.dueris.genesismc.core.GenesisMC;
+import me.dueris.genesismc.core.api.entity.OriginPlayer;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -27,9 +28,7 @@ public class WaterDamage extends BukkitRunnable implements Listener {
     @Override
     public void run() {
         for(Player p : Bukkit.getOnlinePlayers()) {
-            PersistentDataContainer data = p.getPersistentDataContainer();
-            @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
-            if (water_vulnerability.contains(origintag)) {
+            if (water_vulnerability.contains(OriginPlayer.getOriginTag(p))) {
                 if(!(p.isInsideVehicle())){
                     if(p.isInWaterOrRainOrBubbleColumn()) {
                         if (p.getGameMode().equals(GameMode.SURVIVAL) || p.getGameMode().equals(GameMode.ADVENTURE)) {
@@ -146,9 +145,7 @@ public class WaterDamage extends BukkitRunnable implements Listener {
     @EventHandler
     public void OnDeathWater(PlayerDeathEvent e){
         Player p = e.getEntity();
-        PersistentDataContainer data = p.getPersistentDataContainer();
-        @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
-        if (water_vulnerability.contains(origintag)) {
+        if (water_vulnerability.contains(OriginPlayer.getOriginTag(e.getPlayer()))) {
             Random random = new Random();
             int r = random.nextInt(2);
             if (p.isInWaterOrRainOrBubbleColumn()) {
@@ -156,7 +153,7 @@ public class WaterDamage extends BukkitRunnable implements Listener {
             }
             p.getLocation().getWorld().dropItem(p.getLocation(), new ItemStack(Material.ENDER_PEARL, r));
         }
-        if (origintag.contains("genesis:origin-enderian")) {
+        if (OriginPlayer.getOriginTag(e.getPlayer()).contains("genesis:origin-enderian")) {
 
         }
     }
@@ -165,9 +162,7 @@ public class WaterDamage extends BukkitRunnable implements Listener {
     public void SplashEnderian(WaterBottleSplashEvent e){
         if(e.getAffectedEntities() instanceof Player){
             Player p = (Player) e.getAffectedEntities();
-            PersistentDataContainer data = p.getPersistentDataContainer();
-            @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
-            if(water_vulnerability.contains(origintag));
+            if(water_vulnerability.contains(OriginPlayer.getOriginTag(p)));
             p.damage(5);
         }
     }

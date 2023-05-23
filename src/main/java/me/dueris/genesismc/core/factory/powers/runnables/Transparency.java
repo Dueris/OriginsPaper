@@ -1,6 +1,7 @@
 package me.dueris.genesismc.core.factory.powers.runnables;
 
 import me.dueris.genesismc.core.GenesisMC;
+import me.dueris.genesismc.core.api.entity.OriginPlayer;
 import net.minecraft.server.level.ServerPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -32,9 +33,7 @@ public class Transparency extends BukkitRunnable {
         for (Player p : Bukkit.getOnlinePlayers()) {
             ScoreboardManager manager = Bukkit.getScoreboardManager();
             Scoreboard scoreboard = manager.getNewScoreboard();
-            PersistentDataContainer data = p.getPersistentDataContainer();
-            @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
-            if (translucent.contains(origintag)) {
+            if (translucent.contains(OriginPlayer.getOriginTag(p))) {
 
                     p.setInvisible(false);
 

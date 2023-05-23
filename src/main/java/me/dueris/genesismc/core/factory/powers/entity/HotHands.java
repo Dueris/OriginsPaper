@@ -2,6 +2,7 @@ package me.dueris.genesismc.core.factory.powers.entity;
 
 import io.papermc.paper.event.player.PrePlayerAttackEntityEvent;
 import me.dueris.genesismc.core.GenesisMC;
+import me.dueris.genesismc.core.api.entity.OriginPlayer;
 import org.bukkit.NamespacedKey;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -15,9 +16,7 @@ public class HotHands implements Listener {
 
     @EventHandler
     public void HotHands(PrePlayerAttackEntityEvent e) {
-        PersistentDataContainer data = e.getPlayer().getPersistentDataContainer();
-        @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
-        if (hot_hands.contains(origintag)) {
+        if (hot_hands.contains(OriginPlayer.getOriginTag(e.getPlayer()))) {
             e.getAttacked().setFireTicks(60);
         }
     }

@@ -1,5 +1,6 @@
 package me.dueris.genesismc.core;
 
+import me.dueris.genesismc.core.api.entity.OriginPlayer;
 import me.dueris.genesismc.core.utils.ShulkUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -49,8 +50,7 @@ public class KeybindHandler implements Listener {
 
     public static void keybindTriggerMethod(Player p, PlayerSwapHandItemsEvent e){
         PersistentDataContainer data = p.getPersistentDataContainer();
-        @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
-        if (origintag.contains("genesis:origin-shulk")) {
+        if (OriginPlayer.getOriginTag(e.getPlayer()).contains("genesis:origin-shulk")) {
             e.setCancelled(true);
 
             ArrayList<ItemStack> vaultItems = ShulkUtils.getItems(p);
@@ -63,7 +63,7 @@ public class KeybindHandler implements Listener {
             p.openInventory(vault);
 
         }
-        if (phantomize.contains(origintag)) {
+        if (phantomize.contains(OriginPlayer.getOriginTag(e.getPlayer()))) {
             e.setCancelled(true);
             int phantomid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER);
             if (phantomid == 1) {
@@ -93,7 +93,7 @@ public class KeybindHandler implements Listener {
                 p.sendMessage(RED + "Error: Switching could not be executed");
             }
         }
-        if(launch_into_air.contains(origintag)){
+        if(launch_into_air.contains(OriginPlayer.getOriginTag(e.getPlayer()))){
             p.setVelocity(new Vector(0, 2, 0));
             e.setCancelled(true);
         }

@@ -1,6 +1,7 @@
 package me.dueris.genesismc.core.factory.powers.item;
 
 import me.dueris.genesismc.core.GenesisMC;
+import me.dueris.genesismc.core.api.entity.OriginPlayer;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
@@ -24,11 +25,8 @@ public class GoldItemBuff implements Listener {
     }
     @EventHandler
     public void onEntityDamage(EntityDamageByEntityEvent e) {
-        if (!(e.getDamager() instanceof Player)) return;
-        Player p = (Player) e.getDamager();
-        PersistentDataContainer data = p.getPersistentDataContainer();
-        @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
-        if (gold_item_buff.contains(origintag)) {
+        if (!(e.getDamager() instanceof Player p)) return;
+        if (gold_item_buff.contains(OriginPlayer.getOriginTag(p))) {
             if (goldenTools.contains(p.getInventory().getItemInMainHand().getType())) {
                 e.setDamage(e.getDamage()*1.25);
             }

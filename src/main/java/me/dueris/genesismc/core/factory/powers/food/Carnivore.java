@@ -1,6 +1,7 @@
 package me.dueris.genesismc.core.factory.powers.food;
 
 import me.dueris.genesismc.core.GenesisMC;
+import me.dueris.genesismc.core.api.entity.OriginPlayer;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.event.EventHandler;
@@ -28,9 +29,7 @@ public class Carnivore implements Listener {
 
     @EventHandler
     public void CarnivoreEat(PlayerInteractEvent e){
-        PersistentDataContainer data = e.getPlayer().getPersistentDataContainer();
-        @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
-        if (carnivore.contains(origintag)) {
+        if (carnivore.contains(OriginPlayer.getOriginTag(e.getPlayer()))) {
             if(e.getItem() != null){
                 if(!meat.contains(e.getItem().getType()) && !excludable.contains(e.getItem().getType()) && e.getItem().getType().isEdible()) {
                     if (e.getAction().isRightClick()) {

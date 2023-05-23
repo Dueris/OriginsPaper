@@ -2,6 +2,7 @@ package me.dueris.genesismc.core.factory.powers.entity;
 
 import io.papermc.paper.event.player.PlayerArmSwingEvent;
 import me.dueris.genesismc.core.GenesisMC;
+import me.dueris.genesismc.core.api.entity.OriginPlayer;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -28,9 +29,7 @@ public class Reach implements Listener {
 
     @EventHandler
     public void OnClickREACH(PlayerInteractEvent e) {
-        PersistentDataContainer data = e.getPlayer().getPersistentDataContainer();
-        @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
-        if (extra_reach.contains(origintag)) {
+        if (extra_reach.contains(OriginPlayer.getOriginTag(e.getPlayer()))) {
             if (e.getAction().isLeftClick());
 
             Player p = e.getPlayer();

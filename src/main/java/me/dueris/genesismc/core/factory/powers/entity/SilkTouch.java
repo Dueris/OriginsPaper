@@ -2,6 +2,7 @@ package me.dueris.genesismc.core.factory.powers.entity;
 
 
 import me.dueris.genesismc.core.GenesisMC;
+import me.dueris.genesismc.core.api.entity.OriginPlayer;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
@@ -30,9 +31,7 @@ public class SilkTouch implements Listener {
   public void onBlockBreak(BlockBreakEvent e) {
     if (!e.getBlock().getType().equals(Material.AIR)) {
       Player p = e.getPlayer();
-      PersistentDataContainer data = p.getPersistentDataContainer();
-      @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
-      if (silk_touch.contains(origintag)) {
+      if (silk_touch.contains(OriginPlayer.getOriginTag(e.getPlayer()))) {
         int ic = 1;
         if (p != null && p.getGameMode().equals(GameMode.SURVIVAL) && p.getEquipment().getItemInMainHand().getType().equals(Material.AIR)) {
           if (!e.getBlock().getType().isItem()) {

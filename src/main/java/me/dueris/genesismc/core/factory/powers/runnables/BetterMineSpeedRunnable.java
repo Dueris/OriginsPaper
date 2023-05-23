@@ -1,6 +1,7 @@
 package me.dueris.genesismc.core.factory.powers.runnables;
 
 import me.dueris.genesismc.core.GenesisMC;
+import me.dueris.genesismc.core.api.entity.OriginPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
@@ -33,9 +34,7 @@ public class BetterMineSpeedRunnable extends BukkitRunnable {
     @Override
     public void run() {
         for (Player p : Bukkit.getOnlinePlayers()) {
-            PersistentDataContainer data = p.getPersistentDataContainer();
-            @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
-            if (strong_arms_break_speed.contains(origintag)) {
+            if (strong_arms_break_speed.contains(OriginPlayer.getOriginTag(p))) {
                 if(p.getGameMode().equals(GameMode.SURVIVAL) && !tools.contains(p.getEquipment().getItemInMainHand().getType())) {
                     if (!p.getActivePotionEffects().contains(PotionEffectType.FAST_DIGGING)) {
                         p.addPotionEffect(new PotionEffect(PotionEffectType.FAST_DIGGING, 20, 3, true, false, false));

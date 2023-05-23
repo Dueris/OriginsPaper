@@ -1,6 +1,7 @@
 package me.dueris.genesismc.core.factory.powers.food;
 
 import me.dueris.genesismc.core.GenesisMC;
+import me.dueris.genesismc.core.api.entity.OriginPlayer;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.event.EventHandler;
@@ -17,9 +18,7 @@ import static me.dueris.genesismc.core.factory.powers.Powers.carrot_only;
 public class CarrotOnly implements Listener {
     @EventHandler
     public void onItemConsume(PlayerInteractEvent e) {
-        PersistentDataContainer data = e.getPlayer().getPersistentDataContainer();
-        @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
-        if (carrot_only.contains(origintag)) {
+        if (carrot_only.contains(OriginPlayer.getOriginTag(e.getPlayer()))) {
             @NotNull ItemStack item = e.getItem();
 
             if (item == null) return;;

@@ -1,6 +1,7 @@
 package me.dueris.genesismc.core.factory.powers.entity;
 
 import me.dueris.genesismc.core.GenesisMC;
+import me.dueris.genesismc.core.api.entity.OriginPlayer;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
@@ -19,9 +20,7 @@ public class ProjectileImmune implements Listener {
     public void onDamage(EntityDamageEvent e) {
         if (e.getEntity() instanceof Player || e.getEntity() instanceof HumanEntity) {
             Player p = (Player) e.getEntity();
-            PersistentDataContainer data = p.getPersistentDataContainer();
-            @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
-            if (projectile_immune.contains(origintag)) {
+            if (projectile_immune.contains(OriginPlayer.getOriginTag(p))) {
                 if (e.getCause().equals(EntityDamageEvent.DamageCause.PROJECTILE)) {
                     e.setDamage(0);
                     e.setCancelled(true);

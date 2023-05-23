@@ -1,6 +1,7 @@
 package me.dueris.genesismc.core.factory.powers.runnables;
 
 import me.dueris.genesismc.core.GenesisMC;
+import me.dueris.genesismc.core.api.entity.OriginPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
@@ -18,9 +19,7 @@ public class JumpIncreased extends BukkitRunnable {
     @Override
     public void run() {
         for (Player p : Bukkit.getOnlinePlayers()) {
-            PersistentDataContainer data = p.getPersistentDataContainer();
-            @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
-            if (jump_increased.contains(origintag)) {
+            if (jump_increased.contains(OriginPlayer.getOriginTag(p))) {
                 p.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, 15, 1, false, false, false));
             }
         }

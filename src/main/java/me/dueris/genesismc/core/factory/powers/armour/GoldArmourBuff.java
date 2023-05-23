@@ -2,6 +2,7 @@ package me.dueris.genesismc.core.factory.powers.armour;
 
 import com.destroystokyo.paper.event.player.PlayerArmorChangeEvent;
 import me.dueris.genesismc.core.GenesisMC;
+import me.dueris.genesismc.core.api.entity.OriginPlayer;
 import org.bukkit.NamespacedKey;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
@@ -21,9 +22,7 @@ public class GoldArmourBuff implements Listener {
     @EventHandler
     public void onArmorChange(PlayerArmorChangeEvent e) {
         Player p = e.getPlayer();
-        PersistentDataContainer data = p.getPersistentDataContainer();
-        @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
-        if (gold_item_buff.contains(origintag)) {
+        if (gold_item_buff.contains(OriginPlayer.getOriginTag(e.getPlayer()))) {
             p.getAttribute(Attribute.GENERIC_ARMOR).setBaseValue(0);
             for (ItemStack armour : p.getInventory().getArmorContents()) {
                 if (armour == null) continue;

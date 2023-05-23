@@ -1,6 +1,7 @@
 package me.dueris.genesismc.core.factory.powers.runnables;
 
 import me.dueris.genesismc.core.GenesisMC;
+import me.dueris.genesismc.core.api.entity.OriginPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
@@ -17,9 +18,7 @@ public class Charged extends BukkitRunnable {
     @Override
     public void run() {
         for (Player p : Bukkit.getOnlinePlayers()) {
-            PersistentDataContainer data = p.getPersistentDataContainer();
-            @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
-            if (charged.contains(origintag)) {
+            if (charged.contains(OriginPlayer.getOriginTag(p))) {
 
                 if (p.getWorld().isThundering()) {
                     p.addPotionEffect(new PotionEffect(PotionEffectType.GLOWING, 20, 0, true, false, false));

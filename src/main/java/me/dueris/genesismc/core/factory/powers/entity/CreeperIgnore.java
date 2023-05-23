@@ -1,6 +1,7 @@
 package me.dueris.genesismc.core.factory.powers.entity;
 
 import me.dueris.genesismc.core.GenesisMC;
+import me.dueris.genesismc.core.api.entity.OriginPlayer;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Creeper;
 import org.bukkit.entity.Player;
@@ -18,9 +19,7 @@ public class CreeperIgnore implements Listener {
         if (e.getEntity() instanceof Creeper && (e.getTarget() instanceof Player)) {
 
             Player p = (Player) e.getTarget();
-            PersistentDataContainer data = p.getPersistentDataContainer();
-            @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
-            if (origintag.equalsIgnoreCase("genesis:origin-creep")) {
+            if (OriginPlayer.getOriginTag(p).equalsIgnoreCase("genesis:origin-creep")) {
                 e.setCancelled(true);
             }
         }

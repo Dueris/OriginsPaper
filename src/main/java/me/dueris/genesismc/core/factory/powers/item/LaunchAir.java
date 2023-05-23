@@ -1,6 +1,7 @@
 package me.dueris.genesismc.core.factory.powers.item;
 
 import me.dueris.genesismc.core.GenesisMC;
+import me.dueris.genesismc.core.api.entity.OriginPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -42,9 +43,7 @@ public class LaunchAir implements Listener {
         launchmeta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
         launchitem.addItemFlags(ItemFlag.HIDE_ENCHANTS);
         launchitem.setItemMeta(launchmeta);
-        PersistentDataContainer data = e.getPlayer().getPersistentDataContainer();
-        @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
-        if(launch_into_air.contains(origintag)) {
+        if(launch_into_air.contains(OriginPlayer.getOriginTag(e.getPlayer()))) {
             if(e.getItem() == null) return;
             if (e.getItem().equals(launchitem)) {
                 e.getPlayer().setVelocity(new Vector(0, 2, 0));
@@ -61,9 +60,7 @@ public class LaunchAir implements Listener {
         launchmeta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
         launchitem.addItemFlags(ItemFlag.HIDE_ENCHANTS);
         launchitem.setItemMeta(launchmeta);
-        PersistentDataContainer data = e.getPlayer().getPersistentDataContainer();
-        @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
-        if (launch_into_air.contains(origintag)) {
+        if (launch_into_air.contains(OriginPlayer.getOriginTag(e.getPlayer()))) {
             e.getPlayer().getInventory().addItem(launchitem);
         }
     }
@@ -77,9 +74,7 @@ public class LaunchAir implements Listener {
         launchitem.addItemFlags(ItemFlag.HIDE_ENCHANTS);
         launchitem.setItemMeta(launchmeta);
         if (!e.getDrops().contains(launchitem)) return;
-        PersistentDataContainer data = e.getPlayer().getPersistentDataContainer();
-        @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
-        if (launch_into_air.contains(origintag)) {
+        if (launch_into_air.contains(OriginPlayer.getOriginTag(e.getPlayer()))) {
             e.getDrops().remove(launchitem);
         }
     }

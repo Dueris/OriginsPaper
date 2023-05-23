@@ -1,6 +1,7 @@
 package me.dueris.genesismc.core.factory.powers.world;
 
 import me.dueris.genesismc.core.GenesisMC;
+import me.dueris.genesismc.core.api.entity.OriginPlayer;
 import net.minecraft.data.worldgen.DimensionTypes;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
@@ -67,9 +68,7 @@ public class WorldSpawnHandler implements Listener {
     @EventHandler
     public void netherSpawn(PlayerRespawnEvent e) {
         Player p = e.getPlayer();
-        PersistentDataContainer data = p.getPersistentDataContainer();
-        @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
-        if (nether_spawn.contains(origintag)) {
+        if (nether_spawn.contains(OriginPlayer.getOriginTag(e.getPlayer()))) {
             if (!(e.isBedSpawn() || e.isAnchorSpawn())) {
                 Location spawnLocation = null;
                 for (World world : Bukkit.getWorlds()) {

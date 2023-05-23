@@ -1,6 +1,7 @@
 package me.dueris.genesismc.core.factory.powers.entity;
 
 import me.dueris.genesismc.core.GenesisMC;
+import me.dueris.genesismc.core.api.entity.OriginPlayer;
 import org.bukkit.ChatColor;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Sound;
@@ -43,8 +44,7 @@ public class BigLeap implements Listener {
     @EventHandler
     public void onRabbitLeap(PlayerToggleSneakEvent e) {
         PersistentDataContainer data = e.getPlayer().getPersistentDataContainer();
-        @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
-        if (big_leap_tick.contains(origintag)) {
+        if (big_leap_tick.contains(OriginPlayer.getOriginTag(e.getPlayer()))) {
             Player p = e.getPlayer();
             int toggleState = data.get(new NamespacedKey(GenesisMC.getPlugin(), "toggle"), PersistentDataType.INTEGER);
             if (p.isSneaking()) return;
@@ -130,9 +130,7 @@ public class BigLeap implements Listener {
     public void onEntityDamage(EntityDamageEvent e) {
         if (!(e.getEntity() instanceof Player p)) return;
 
-        PersistentDataContainer data = p.getPersistentDataContainer();
-        @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
-        if (big_leap_tick.contains(origintag)) {
+        if (big_leap_tick.contains(OriginPlayer.getOriginTag(p))) {
             if (e.getCause() == EntityDamageEvent.DamageCause.FALL) {
                 if (inAir.contains(p.getUniqueId())) {
                     e.setCancelled(true);

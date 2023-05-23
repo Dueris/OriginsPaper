@@ -1,6 +1,7 @@
 package me.dueris.genesismc.core.choosing;
 
 import me.dueris.genesismc.core.GenesisMC;
+import me.dueris.genesismc.core.api.entity.OriginPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
@@ -17,9 +18,7 @@ public class ChoosingForced extends BukkitRunnable {
     @Override
     public void run() {
         for(Player p : Bukkit.getOnlinePlayers()) {
-            PersistentDataContainer data = p.getPersistentDataContainer();
-            @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
-            if(origintag.equalsIgnoreCase("genesis:origin-null") || p.getScoreboardTags().contains("choosing")){
+            if(OriginPlayer.getOriginTag(p).equalsIgnoreCase("genesis:origin-null") || p.getScoreboardTags().contains("choosing")){
                 if(!p.getOpenInventory().getTitle().equalsIgnoreCase("Choosing Menu") && !p.getOpenInventory().getTitle().equalsIgnoreCase("Custom Origins") && !p.getOpenInventory().getTitle().equalsIgnoreCase("Expanded Origins") && !p.getOpenInventory().getTitle().equalsIgnoreCase("Custom Origin")){
                     @NotNull Inventory mainmenu = Bukkit.createInventory(p, 54, "Choosing Menu");
                     mainmenu.setContents(GenesisMainMenuContents(p));

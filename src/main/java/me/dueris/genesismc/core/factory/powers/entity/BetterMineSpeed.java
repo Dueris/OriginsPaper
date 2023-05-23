@@ -1,6 +1,7 @@
 package me.dueris.genesismc.core.factory.powers.entity;
 
 import me.dueris.genesismc.core.GenesisMC;
+import me.dueris.genesismc.core.api.entity.OriginPlayer;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -36,9 +37,7 @@ public class BetterMineSpeed implements Listener {
     public void onBreakShulk(BlockBreakEvent e) {
         Player p = e.getPlayer();
         ItemStack i = new ItemStack(e.getBlock().getType(), 1);
-        PersistentDataContainer data = p.getPersistentDataContainer();
-        @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
-        if (strong_arms_break_speed.contains(origintag)) {
+        if (strong_arms_break_speed.contains(OriginPlayer.getOriginTag(e.getPlayer()))) {
             if (nat_stones.contains(e.getBlock().getType())) {
                 if (!tools.contains(p.getEquipment().getItemInMainHand().getType())) {
                     if (!p.getGameMode().equals(GameMode.CREATIVE)) {

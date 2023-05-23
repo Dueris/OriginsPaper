@@ -1,6 +1,7 @@
 package me.dueris.genesismc.core.factory.powers.entity;
 
 import me.dueris.genesismc.core.GenesisMC;
+import me.dueris.genesismc.core.api.entity.OriginPlayer;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
@@ -18,9 +19,7 @@ public class BowInability implements Listener {
     @EventHandler
     public void onUseBow(PlayerInteractEvent e) {
         Player p = e.getPlayer();
-        PersistentDataContainer data = p.getPersistentDataContainer();
-        @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
-        if (bow_nope.contains(origintag)) {
+        if (bow_nope.contains(OriginPlayer.getOriginTag(e.getPlayer()))) {
             if (e.getItem() != null) {
                 if (e.getItem().getType().equals(Material.BOW)) {
                     e.setCancelled(true);

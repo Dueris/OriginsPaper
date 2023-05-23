@@ -2,6 +2,7 @@ package me.dueris.genesismc.core.factory.powers.block.solid;
 
 import com.destroystokyo.paper.event.player.PlayerArmorChangeEvent;
 import me.dueris.genesismc.core.GenesisMC;
+import me.dueris.genesismc.core.api.entity.OriginPlayer;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
@@ -20,9 +21,7 @@ public class PumpkinHate implements Listener {
     @EventHandler
     public void OnArmorChange(PlayerArmorChangeEvent e) {
         Player p = e.getPlayer();
-        PersistentDataContainer data = p.getPersistentDataContainer();
-        @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
-        if (pumpkin_hate.contains(origintag)) {
+        if (pumpkin_hate.contains(OriginPlayer.getOriginTag(e.getPlayer()))) {
             if (e.getNewItem() == null) return;
             if (e.getNewItem().getType() == Material.CARVED_PUMPKIN) {
                 p.getInventory().setHelmet(new ItemStack(Material.AIR));
@@ -34,9 +33,7 @@ public class PumpkinHate implements Listener {
     @EventHandler
     public void onDrink(PlayerItemConsumeEvent e){
         Player p = e.getPlayer();
-        PersistentDataContainer data = p.getPersistentDataContainer();
-        @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
-        if (pumpkin_hate.contains(origintag)) {
+        if (pumpkin_hate.contains(OriginPlayer.getOriginTag(e.getPlayer()))) {
             if(e.getItem().getType().equals(Material.PUMPKIN_PIE)){
                 p.getWorld().createExplosion(p.getLocation(), 0);
                 p.setHealth(1);

@@ -2,6 +2,7 @@ package me.dueris.genesismc.core.factory.powers.armour;
 
 import io.papermc.paper.configuration.constraint.Constraints;
 import me.dueris.genesismc.core.GenesisMC;
+import me.dueris.genesismc.core.api.entity.OriginPlayer;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -33,9 +34,7 @@ public class FlightElytra implements Listener {
     @EventHandler
     public void ExecuteFlight(PlayerToggleSneakEvent e){
         Player p = e.getPlayer();
-        PersistentDataContainer data = p.getPersistentDataContainer();
-        @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
-        if (elytra.contains(origintag)) {
+        if (elytra.contains(OriginPlayer.getOriginTag(e.getPlayer()))) {
             if(!p.isOnGround()){
                 glidingPlayers.add(p.getUniqueId());
                 if(p.getGameMode() == GameMode.SPECTATOR) return;
@@ -54,9 +53,7 @@ public class FlightElytra implements Listener {
     @EventHandler
     public void BoostHandler(PlayerInteractEvent e){
         Player p = e.getPlayer();
-        PersistentDataContainer data = p.getPersistentDataContainer();
-        @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
-        if (elytra.contains(origintag) && e.getAction().equals(Action.LEFT_CLICK_AIR)) {
+        if (elytra.contains(OriginPlayer.getOriginTag(e.getPlayer())) && e.getAction().equals(Action.LEFT_CLICK_AIR)) {
             if(!glidingPlayers.contains(p.getUniqueId())) return;
             if(e.getItem() != null){
                 ItemStack rocket = new ItemStack(Material.FIREWORK_ROCKET);
@@ -74,16 +71,14 @@ public class FlightElytra implements Listener {
     public void ElytraDamageHandler(EntityDamageEvent e){
         if(e.getEntity() instanceof Player){
             Player p = (Player) e.getEntity();
-            PersistentDataContainer data = p.getPersistentDataContainer();
-            @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
-            if (elytra.contains(origintag)) {
+            if (elytra.contains(OriginPlayer.getOriginTag(p))) {
                 if(glidingPlayers.contains(p.getUniqueId())) {
                     if (e.getCause().equals(EntityDamageEvent.DamageCause.FLY_INTO_WALL) || e.getCause().equals(EntityDamageEvent.DamageCause.CONTACT)) {
                         e.setDamage(e.getDamage() * 0.25);
                     }
                 }
             }
-            if (more_kinetic_damage.contains(origintag)) {
+            if (more_kinetic_damage.contains(OriginPlayer.getOriginTag(p))) {
                 if(!glidingPlayers.contains(p.getUniqueId())) {
                     if (e.getCause().equals(EntityDamageEvent.DamageCause.FLY_INTO_WALL) || e.getCause().equals(EntityDamageEvent.DamageCause.CONTACT)) {
                         e.setDamage(e.getDamage() * 1.5);

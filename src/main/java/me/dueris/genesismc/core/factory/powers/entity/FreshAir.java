@@ -1,6 +1,7 @@
 package me.dueris.genesismc.core.factory.powers.entity;
 
 import me.dueris.genesismc.core.GenesisMC;
+import me.dueris.genesismc.core.api.entity.OriginPlayer;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.World;
@@ -30,9 +31,7 @@ public class FreshAir implements Listener {
 
     @EventHandler
     public void onBedEnter(PlayerBedEnterEvent e) {
-        PersistentDataContainer data = e.getPlayer().getPersistentDataContainer();
-        @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
-        if (fresh_air.contains(origintag)) {
+        if (fresh_air.contains(OriginPlayer.getOriginTag(e.getPlayer()))) {
             if (e.getPlayer().getWorld().getEnvironment() == World.Environment.NORMAL) {
                 if (e.getBed().getY() <= 99) {
                     e.getPlayer().sendActionBar("You need fresh air to sleep");
@@ -44,9 +43,7 @@ public class FreshAir implements Listener {
 
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent e) {
-        PersistentDataContainer data = e.getPlayer().getPersistentDataContainer();
-        @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
-        if (fresh_air.contains(origintag)) {
+        if (fresh_air.contains(OriginPlayer.getOriginTag(e.getPlayer()))) {
             Player p = e.getPlayer();
             if (p.getWorld().getEnvironment() == World.Environment.NORMAL) {
                 Block block = e.getClickedBlock();

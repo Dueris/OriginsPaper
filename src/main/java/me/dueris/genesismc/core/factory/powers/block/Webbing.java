@@ -1,6 +1,7 @@
 package me.dueris.genesismc.core.factory.powers.block;
 
 import me.dueris.genesismc.core.GenesisMC;
+import me.dueris.genesismc.core.api.entity.OriginPlayer;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
@@ -29,11 +30,12 @@ public class Webbing implements Listener {
     public void WebMaster(EntityDamageByEntityEvent e) {
         if (e.getDamager() instanceof Player) {
             Player p = (Player) e.getDamager();
-            PersistentDataContainer data = p.getPersistentDataContainer();
-            @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
+
+
+
             if (!canWeb.containsKey(p.getUniqueId())) canWeb.put(p.getUniqueId(), Boolean.TRUE);
             if (!canWeb.get(p.getUniqueId())) return;
-            if (webbing.contains(origintag)) {
+            if (webbing.contains(OriginPlayer.getOriginTag(p))) {
                 Location loc = e.getEntity().getLocation();
                 Block b = loc.getBlock();
                 canWeb.replace(p.getUniqueId(), Boolean.FALSE);

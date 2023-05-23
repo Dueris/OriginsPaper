@@ -1,6 +1,7 @@
 package me.dueris.genesismc.core.commands;
 
 import me.dueris.genesismc.core.GenesisMC;
+import me.dueris.genesismc.core.api.entity.OriginPlayer;
 import org.bukkit.ChatColor;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Sound;
@@ -24,14 +25,13 @@ public class ToggleCommand implements CommandExecutor {
         if (sender instanceof Player) {
             Player p = (Player) sender;
             PersistentDataContainer data = p.getPersistentDataContainer();
-            @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
             if (p.hasPermission("genesismc.origins.cmd.toggle")) {
 
                 int toggleState = data.get(new NamespacedKey(GenesisMC.getPlugin(), "toggle"), PersistentDataType.INTEGER);
                 if (toggleState == 1) data.set(new NamespacedKey(GenesisMC.getPlugin(), "toggle"), PersistentDataType.INTEGER, 2);
                 else data.set(new NamespacedKey(GenesisMC.getPlugin(), "toggle"), PersistentDataType.INTEGER, 1);
 
-                if (big_leap_tick.contains(origintag)) {
+                if (big_leap_tick.contains(OriginPlayer.getOriginTag(p))) {
                     leapToggle(p);
                 } else if (false) {
                     ; //add other origin toggles here like this

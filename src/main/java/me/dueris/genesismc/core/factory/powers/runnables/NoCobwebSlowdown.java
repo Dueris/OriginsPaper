@@ -1,6 +1,7 @@
 package me.dueris.genesismc.core.factory.powers.runnables;
 
 import me.dueris.genesismc.core.GenesisMC;
+import me.dueris.genesismc.core.api.entity.OriginPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -21,9 +22,7 @@ public class NoCobwebSlowdown implements Listener {
     @EventHandler
     public void NoCobwebSlowdown(PlayerMoveEvent e) {
         for(Player p : Bukkit.getOnlinePlayers()) {
-            PersistentDataContainer data = p.getPersistentDataContainer();
-            @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
-            if (no_cobweb_slowdown.contains(origintag)) {
+            if (no_cobweb_slowdown.contains(OriginPlayer.getOriginTag(p))) {
                 Location location = p.getLocation();
                 if (location.getBlock().getType() == Material.COBWEB) {
                     p.sendBlockChange(location, Material.AIR.createBlockData());

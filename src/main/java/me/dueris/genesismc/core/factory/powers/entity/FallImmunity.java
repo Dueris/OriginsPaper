@@ -1,6 +1,7 @@
 package me.dueris.genesismc.core.factory.powers.entity;
 
 import me.dueris.genesismc.core.GenesisMC;
+import me.dueris.genesismc.core.api.entity.OriginPlayer;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -18,9 +19,7 @@ public class FallImmunity implements Listener {
     @EventHandler
     public void acrobatics(EntityDamageEvent e) {
         if (!(e.getEntity() instanceof Player p)) return;
-        PersistentDataContainer data = p.getPersistentDataContainer();
-        @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
-        if (fall_immunity.contains(origintag)) {
+        if (fall_immunity.contains(OriginPlayer.getOriginTag(p))) {
             if (e.getCause() == EntityDamageEvent.DamageCause.FALL) {
                 e.setCancelled(true);
             }
@@ -31,9 +30,7 @@ public class FallImmunity implements Listener {
     public void onEntityDamage(EntityDamageEvent e) {
         if (!(e.getEntity() instanceof Player p)) return;
 
-        PersistentDataContainer data = p.getPersistentDataContainer();
-        @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
-        if (resist_fall.contains(origintag)) {
+        if (resist_fall.contains(OriginPlayer.getOriginTag(p))) {
             if (e.getCause() == EntityDamageEvent.DamageCause.FALL) {
                 e.setDamage(e.getDamage() - 4);
             }

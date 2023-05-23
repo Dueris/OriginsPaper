@@ -1,6 +1,7 @@
 package me.dueris.genesismc.core.factory.powers.world;
 
 import me.dueris.genesismc.core.GenesisMC;
+import me.dueris.genesismc.core.api.entity.OriginPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
@@ -19,9 +20,7 @@ public class FireWeak extends BukkitRunnable {
     @Override
     public void run() {
         for (Player p : Bukkit.getOnlinePlayers()) {
-            PersistentDataContainer data = p.getPersistentDataContainer();
-            @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
-            if (origintag.equalsIgnoreCase("genesis:origin-piglin")) {
+            if (OriginPlayer.getOriginTag(p).equalsIgnoreCase("genesis:origin-piglin")) {
                 if (p.getWorld().getEnvironment() != World.Environment.NETHER) {
                     p.addPotionEffect(new PotionEffect(PotionEffectType.FIRE_RESISTANCE, 10, 0, false, false, false));
                     p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 10, 0, false, false, false));

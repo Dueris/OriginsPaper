@@ -1,6 +1,7 @@
 package me.dueris.genesismc.core.factory.powers.item;
 
 import me.dueris.genesismc.core.GenesisMC;
+import me.dueris.genesismc.core.api.entity.OriginPlayer;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Creeper;
@@ -21,9 +22,7 @@ public class CreeperDeathDrop implements Listener {
     @EventHandler
     public void onCreepDeath(PlayerDeathEvent e) {
         Player p = e.getPlayer();
-        PersistentDataContainer data = p.getPersistentDataContainer();
-        @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
-        if (creeper_head_death_drop.contains(origintag)) {
+        if (creeper_head_death_drop.contains(OriginPlayer.getOriginTag(e.getPlayer()))) {
             if (e.getEntity().getType() == EntityType.CREEPER) {
                 Creeper killer = (Creeper) e.getEntity();
                 if (killer.isPowered()) {
@@ -33,7 +32,7 @@ public class CreeperDeathDrop implements Listener {
                 Player killerp = e.getEntity();
                 PersistentDataContainer datak = killerp.getPersistentDataContainer();
                 @Nullable String origintagk = datak.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
-                if (creeper_head_death_drop.contains(origintag)) {
+                if (creeper_head_death_drop.contains(OriginPlayer.getOriginTag(e.getPlayer()))) {
                     if (p.getWorld().isThundering() && e.getEntity().getPersistentDataContainer().has(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER)) {
                         PersistentDataContainer edata = e.getEntity().getPersistentDataContainer();
                         @Nullable String origintage = edata.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);

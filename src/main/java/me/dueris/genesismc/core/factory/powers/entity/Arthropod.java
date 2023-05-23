@@ -1,6 +1,7 @@
 package me.dueris.genesismc.core.factory.powers.entity;
 
 import me.dueris.genesismc.core.GenesisMC;
+import me.dueris.genesismc.core.api.entity.OriginPlayer;
 import org.bukkit.NamespacedKey;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
@@ -21,9 +22,7 @@ public class Arthropod implements Listener {
     public void OnAttack(EntityDamageByEntityEvent e) {
         if(e.getEntity() instanceof Player){
             Player p = (Player) e.getEntity();
-            PersistentDataContainer data = p.getPersistentDataContainer();
-            @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
-            if (arthropod.contains(origintag)) {
+            if (arthropod.contains(OriginPlayer.getOriginTag(p))) {
                 if(e.getDamager() != null){
                     Entity damager = e.getDamager();
                     if(damager.getType() == EntityType.PLAYER){

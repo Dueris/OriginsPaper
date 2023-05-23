@@ -1,5 +1,6 @@
 package me.dueris.genesismc.core.factory.handlers;
 
+import me.dueris.genesismc.core.api.entity.OriginPlayer;
 import me.dueris.genesismc.core.api.factory.CustomOriginAPI;
 import me.dueris.genesismc.core.GenesisMC;
 import org.bukkit.ChatColor;
@@ -21,20 +22,16 @@ public class CustomOriginExistCheck implements Listener {
 
     @EventHandler
     public static void onPlayerJoin(PlayerJoinEvent e) {
-        PersistentDataContainer data = e.getPlayer().getPersistentDataContainer();
-        @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
-        if (builtInOriginTags.contains(origintag)) return;
-        if (CustomOriginAPI.getCustomOriginTags().contains(origintag)) return;
+        if (builtInOriginTags.contains(OriginPlayer.getOriginTag(e.getPlayer()))) return;
+        if (CustomOriginAPI.getCustomOriginTags().contains(OriginPlayer.getOriginTag(e.getPlayer()))) return;
         e.getPlayer().getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, "genesis:origin-null");
         e.getPlayer().sendMessage(ChatColor.RED + "Your custom origin has been deleted! Please select a new one.");
         e.getPlayer().sendMessage(ChatColor.RED + "If you believe this is a mistake please contact your server admin(s).");
     }
 
     public static void customOriginExistCheck(Player p) {
-        PersistentDataContainer data = p.getPersistentDataContainer();
-        @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
-        if (builtInOriginTags.contains(origintag)) return;
-        if (CustomOriginAPI.getCustomOriginTags().contains(origintag)) return;
+        if (builtInOriginTags.contains(OriginPlayer.getOriginTag(p))) return;
+        if (CustomOriginAPI.getCustomOriginTags().contains(OriginPlayer.getOriginTag(p))) return;
         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, "genesis:origin-null");
         p.sendMessage(ChatColor.RED + "Your custom origin has been deleted! Please select a new one.");
         p.sendMessage(ChatColor.RED + "If you believe this is a mistake please contact your server admin(s).");

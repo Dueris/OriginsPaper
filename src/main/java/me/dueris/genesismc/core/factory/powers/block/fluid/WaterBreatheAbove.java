@@ -1,6 +1,7 @@
 package me.dueris.genesismc.core.factory.powers.block.fluid;
 
 import me.dueris.genesismc.core.GenesisMC;
+import me.dueris.genesismc.core.api.entity.OriginPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -16,9 +17,7 @@ public class WaterBreatheAbove extends BukkitRunnable {
     @Override
     public void run() {
         for(Player p : Bukkit.getOnlinePlayers()) {
-            PersistentDataContainer data = p.getPersistentDataContainer();
-            @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
-                if(water_breathing.contains(origintag)){
+                if(water_breathing.contains(OriginPlayer.getOriginTag(p))){
 
                 }
         }

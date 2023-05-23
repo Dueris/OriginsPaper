@@ -2,6 +2,7 @@ package me.dueris.genesismc.core.factory.powers.entity;
 
 import com.destroystokyo.paper.event.player.PlayerStartSpectatingEntityEvent;
 import me.dueris.genesismc.core.GenesisMC;
+import me.dueris.genesismc.core.api.entity.OriginPlayer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.ServerPlayerConnection;
 import org.bukkit.*;
@@ -37,11 +38,10 @@ public class Phantomized extends BukkitRunnable implements Listener {
         for (Player p : Bukkit.getOnlinePlayers()) {
 
             PersistentDataContainer data = p.getPersistentDataContainer();
-            @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
             int phantomid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER);
 
             if (phantomid == 2) {
-                if (phantomize.contains(origintag)) {
+                if (phantomize.contains(OriginPlayer.getOriginTag(p))) {
                     p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 10, 0, false, false, false));
                     if ((p.getLocation().add(0.55F, 0, 0.55F).getBlock().isSolid() ||
                             p.getLocation().add(0.55F, 0, 0).getBlock().isSolid() ||
@@ -125,9 +125,8 @@ public class Phantomized extends BukkitRunnable implements Listener {
         if(e.getEntity() instanceof Player) {
             Player p = (Player) e.getEntity();
             PersistentDataContainer data = p.getPersistentDataContainer();
-            @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
             int phantomid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER);
-            if (phantomize.contains(origintag) && phantomid == 2) {
+            if (phantomize.contains(OriginPlayer.getOriginTag(p)) && phantomid == 2) {
                 if (e.getCause().equals(EntityDamageEvent.DamageCause.FREEZE)) {
                     e.setDamage(0);
                     e.setCancelled(true);
@@ -150,9 +149,7 @@ public class Phantomized extends BukkitRunnable implements Listener {
         spectatorswitch.setItemMeta(switch_meta);
 
         Player p = e.getPlayer();
-        PersistentDataContainer data = p.getPersistentDataContainer();
-        @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
-        if (phantomize.contains(origintag)) {
+        if (phantomize.contains(OriginPlayer.getOriginTag(e.getPlayer()))) {
             e.getPlayer().getInventory().addItem(spectatorswitch);
         }
     }
@@ -172,9 +169,8 @@ public class Phantomized extends BukkitRunnable implements Listener {
 
         Player p = e.getPlayer();
         PersistentDataContainer data = p.getPersistentDataContainer();
-        @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
         int phantomid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER);
-        if (origintag.equalsIgnoreCase("genesis:origin-phantom")) {
+        if (OriginPlayer.getOriginTag(e.getPlayer()).equalsIgnoreCase("genesis:origin-phantom")) {
 
             if (e.getItem() != null) {
                 if (e.getItem().isSimilar(spectatorswitch)) {
@@ -217,10 +213,9 @@ public class Phantomized extends BukkitRunnable implements Listener {
     public void YLevelBedrockDetectPATCH(PlayerMoveEvent e){
         Player p = e.getPlayer();
         PersistentDataContainer data = p.getPersistentDataContainer();
-        @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
         int phantomid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER);
         //begin checks
-        if (origintag.equalsIgnoreCase("genesis:origin-phantom")) {
+        if (OriginPlayer.getOriginTag(e.getPlayer()).equalsIgnoreCase("genesis:origin-phantom")) {
             if(phantomid == 2) {
                 //in phantom form.
                 //bug fix attempt 3 lol
@@ -239,9 +234,8 @@ public class Phantomized extends BukkitRunnable implements Listener {
         if(e.getCause() == PlayerTeleportEvent.TeleportCause.SPECTATE){
             Player p = e.getPlayer();
             PersistentDataContainer data = p.getPersistentDataContainer();
-            @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
             int phantomid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER);
-            if (origintag.equalsIgnoreCase("genesis:origin-phantom")) {
+            if (OriginPlayer.getOriginTag(p).equalsIgnoreCase("genesis:origin-phantom")) {
                 if(phantomid == 2) {
                     e.setCancelled(true);
                 }
@@ -255,9 +249,8 @@ public class Phantomized extends BukkitRunnable implements Listener {
     public void CancelSpectate(PlayerStartSpectatingEntityEvent e){
         Player p = e.getPlayer();
         PersistentDataContainer data = p.getPersistentDataContainer();
-        @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
         int phantomid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER);
-        if (origintag.equalsIgnoreCase("genesis:origin-phantom")) {
+        if (OriginPlayer.getOriginTag(e.getPlayer()).equalsIgnoreCase("genesis:origin-phantom")) {
             if(phantomid == 2) {
                 e.setCancelled(true);
             }
@@ -278,10 +271,7 @@ public class Phantomized extends BukkitRunnable implements Listener {
         switch_meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
         spectatorswitch.setItemMeta(switch_meta);
 
-        Player p = e.getPlayer();
-        PersistentDataContainer data = p.getPersistentDataContainer();
-        @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
-        if (origintag.equalsIgnoreCase("genesis:origin-phantom")) {
+        if (OriginPlayer.getOriginTag(e.getPlayer()).equalsIgnoreCase("genesis:origin-phantom")) {
             if (e.getItemDrop().getItemStack().isSimilar(spectatorswitch)) {
                 e.setCancelled(true);
             }

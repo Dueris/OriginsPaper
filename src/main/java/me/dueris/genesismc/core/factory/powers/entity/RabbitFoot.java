@@ -1,6 +1,7 @@
 package me.dueris.genesismc.core.factory.powers.entity;
 
 import me.dueris.genesismc.core.GenesisMC;
+import me.dueris.genesismc.core.api.entity.OriginPlayer;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
@@ -22,9 +23,7 @@ public class RabbitFoot implements Listener {
         if (!(e.getEntity() instanceof Player p)) return;
         if (!(e.getDamager() instanceof Player)) return;
 
-        PersistentDataContainer data = p.getPersistentDataContainer();
-        @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
-        if (rabbit_drop_foot.contains(origintag)) {
+        if (rabbit_drop_foot.contains(OriginPlayer.getOriginTag(p))) {
             Random random = new Random();
             int randInt = random.nextInt(9);
             if (randInt == 4) {

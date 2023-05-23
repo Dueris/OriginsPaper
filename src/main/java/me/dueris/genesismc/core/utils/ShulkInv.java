@@ -1,6 +1,7 @@
 package me.dueris.genesismc.core.utils;
 
 import me.dueris.genesismc.core.GenesisMC;
+import me.dueris.genesismc.core.api.entity.OriginPlayer;
 import me.dueris.genesismc.core.commands.subcommands.SubCommand;
 import me.dueris.genesismc.core.utils.ShulkUtils;
 import org.bukkit.Bukkit;
@@ -28,12 +29,9 @@ public class ShulkInv implements CommandExecutor {
   @Override
   public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
-    if (sender instanceof Player){
+    if (sender instanceof Player p){
 
-      Player p = (Player) sender;
-      PersistentDataContainer data = p.getPersistentDataContainer();
-      @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
-      if (origintag.equalsIgnoreCase("genesis:origin-shulk")) {
+      if (OriginPlayer.getOriginTag(p).equalsIgnoreCase("genesis:origin-shulk")) {
       if (args.length > 0) {
         if (args[0].equalsIgnoreCase ( "open" )) {
 

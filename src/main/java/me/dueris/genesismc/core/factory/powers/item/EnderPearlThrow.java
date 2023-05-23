@@ -1,6 +1,7 @@
 package me.dueris.genesismc.core.factory.powers.item;
 
 import me.dueris.genesismc.core.GenesisMC;
+import me.dueris.genesismc.core.api.entity.OriginPlayer;
 import org.bukkit.*;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.EnderPearl;
@@ -34,9 +35,7 @@ public class EnderPearlThrow implements Listener {
     @EventHandler
     public void teleportDamgeOff(PlayerTeleportEvent e) {
         Player p = e.getPlayer();
-        PersistentDataContainer data = p.getPersistentDataContainer();
-        @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
-        if (throw_ender_pearl.contains(origintag) && e.getCause() == PlayerTeleportEvent.TeleportCause.ENDER_PEARL) {
+        if (throw_ender_pearl.contains(OriginPlayer.getOriginTag(e.getPlayer())) && e.getCause() == PlayerTeleportEvent.TeleportCause.ENDER_PEARL) {
             e.setCancelled(true);
             p.teleport(e.getTo());
         }
@@ -56,9 +55,7 @@ public class EnderPearlThrow implements Listener {
         infinpearl.setItemMeta(pearl_meta);
 
         Player p = e.getPlayer();
-        PersistentDataContainer data = p.getPersistentDataContainer();
-        @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
-        if (throw_ender_pearl.contains(origintag)) {
+        if (throw_ender_pearl.contains(OriginPlayer.getOriginTag(e.getPlayer()))) {
             if (e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.LEFT_CLICK_AIR || e.getAction() == Action.LEFT_CLICK_BLOCK || e.getAction() == Action.RIGHT_CLICK_BLOCK) {
                 if (e.getItem() != null) {
                     if (e.getItem().equals(infinpearl)) {
@@ -78,8 +75,6 @@ public class EnderPearlThrow implements Listener {
     @EventHandler
     public void RespawnPearl(PlayerRespawnEvent e) {
         Player p = e.getPlayer();
-        PersistentDataContainer data = p.getPersistentDataContainer();
-        @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
         ItemStack infinpearl = new ItemStack(ENDER_PEARL);
 
         ItemMeta pearl_meta = infinpearl.getItemMeta();
@@ -90,7 +85,7 @@ public class EnderPearlThrow implements Listener {
         pearl_meta.setLore(pearl_lore);
         infinpearl.setItemMeta(pearl_meta);
         pearl_meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
-        if (throw_ender_pearl.contains(origintag)) {
+        if (throw_ender_pearl.contains(OriginPlayer.getOriginTag(e.getPlayer()))) {
             if (!p.getInventory().contains(infinpearl) && p.getGameMode() != GameMode.CREATIVE) {
                 p.getInventory().addItem(infinpearl);
             }
@@ -109,10 +104,7 @@ public class EnderPearlThrow implements Listener {
         pearl_meta.setLore(pearl_lore);
         infinpearl.setItemMeta(pearl_meta);
 
-        Player p = e.getPlayer();
-        PersistentDataContainer data = p.getPersistentDataContainer();
-        @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
-        if(throw_ender_pearl.contains(origintag))
+        if(throw_ender_pearl.contains(OriginPlayer.getOriginTag(e.getPlayer())))
             if (e.getItemDrop().getItemStack().isSimilar(infinpearl)) {
                 e.setCancelled(true);
             }
@@ -122,8 +114,6 @@ public class EnderPearlThrow implements Listener {
     public void RemovePearl(PlayerDeathEvent e) {
         Player p = e.getEntity();
         ItemStack infinpearl = new ItemStack(ENDER_PEARL);
-        PersistentDataContainer data = p.getPersistentDataContainer();
-        @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
         ItemMeta pearl_meta = infinpearl.getItemMeta();
         pearl_meta.setDisplayName(ChatColor.LIGHT_PURPLE + "Teleport");
         ArrayList<String> pearl_lore = new ArrayList<>();
@@ -132,7 +122,7 @@ public class EnderPearlThrow implements Listener {
         pearl_meta.setLore(pearl_lore);
         infinpearl.setItemMeta(pearl_meta);
         pearl_meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
-        if (throw_ender_pearl.contains(origintag)) {
+        if (throw_ender_pearl.contains(OriginPlayer.getOriginTag(e.getPlayer()))) {
             e.getDrops().remove(infinpearl);
             e.getDrops().add(new ItemStack(ENDER_PEARL));
         }

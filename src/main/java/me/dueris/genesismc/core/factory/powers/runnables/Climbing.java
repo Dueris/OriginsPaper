@@ -1,6 +1,7 @@
 package me.dueris.genesismc.core.factory.powers.runnables;
 
 import me.dueris.genesismc.core.GenesisMC;
+import me.dueris.genesismc.core.api.entity.OriginPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
@@ -21,9 +22,7 @@ public class Climbing extends BukkitRunnable {
     @Override
     public void run() {
         for(Player p : Bukkit.getOnlinePlayers()) {
-            PersistentDataContainer data = p.getPersistentDataContainer();
-            @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
-            if (climbing.contains(origintag)) {
+            if (climbing.contains(OriginPlayer.getOriginTag(p))) {
                 if (p.getLocation().getBlock().getRelative(BlockFace.EAST).getType().isSolid() ||
                         p.getLocation().getBlock().getRelative(BlockFace.WEST).getType().isSolid() ||
                         p.getLocation().getBlock().getRelative(BlockFace.NORTH).getType().isSolid() ||
