@@ -1,6 +1,6 @@
 package me.dueris.genesismc.core;
 
-import org.bukkit.*;
+import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -14,7 +14,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.UUID;
 
 import static org.bukkit.Bukkit.getServer;
-import static org.bukkit.ChatColor.*;
+import static org.bukkit.ChatColor.AQUA;
 
 public class JoiningHandler implements Listener {
 

@@ -1,24 +1,9 @@
 package me.dueris.genesismc.core.factory.powers;
 
 import me.dueris.genesismc.core.api.factory.CustomOriginAPI;
-import me.dueris.genesismc.core.GenesisMC;
-import org.bukkit.*;
-import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.entity.EntityPotionEffectEvent;
-import org.bukkit.event.player.PlayerRespawnEvent;
-import org.bukkit.persistence.PersistentDataContainer;
-import org.bukkit.persistence.PersistentDataType;
-import org.bukkit.potion.PotionEffectType;
-import org.checkerframework.checker.units.qual.A;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
-import java.util.Random;
-
-import static org.bukkit.Material.*;
 
 public class Powers implements Listener {
 

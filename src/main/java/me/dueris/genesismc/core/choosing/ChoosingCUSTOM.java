@@ -22,8 +22,8 @@ import java.util.List;
 
 import static me.dueris.genesismc.core.choosing.ChoosingCORE.*;
 import static me.dueris.genesismc.core.choosing.contents.ChooseMenuContents.ChooseMenuContent;
-import static org.bukkit.ChatColor.RED;
 import static me.dueris.genesismc.core.items.OrbOfOrigins.orb;
+import static org.bukkit.ChatColor.RED;
 
 public class ChoosingCUSTOM implements Listener {
 

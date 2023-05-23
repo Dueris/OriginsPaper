@@ -8,7 +8,6 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import javax.xml.crypto.dsig.spec.DigestMethodParameterSpec;
 import java.util.Arrays;
 
 import static me.dueris.genesismc.core.choosing.ChoosingCORE.itemProperties;

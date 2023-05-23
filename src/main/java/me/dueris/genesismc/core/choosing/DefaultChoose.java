@@ -4,7 +4,9 @@ import me.dueris.genesismc.core.GenesisMC;
 import me.dueris.genesismc.core.api.events.OriginChooseEvent;
 import me.dueris.genesismc.core.items.OrbOfOrigins;
 import me.dueris.genesismc.core.utils.SendCharts;
-import org.bukkit.*;
+import org.bukkit.NamespacedKey;
+import org.bukkit.Particle;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.persistence.PersistentDataType;
 

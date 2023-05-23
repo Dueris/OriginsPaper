@@ -6,7 +6,6 @@ import net.minecraft.network.protocol.game.ClientboundCustomPayloadPacket;
 import net.minecraft.resources.ResourceLocation;
 import org.bukkit.craftbukkit.v1_19_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
-import oshi.hardware.platform.unix.freebsd.FreeBsdUsbDevice;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;

@@ -1,21 +1,15 @@
 package me.dueris.genesismc.core.factory.powers.food;
 
-import me.dueris.genesismc.core.GenesisMC;
 import me.dueris.genesismc.core.api.entity.OriginPlayer;
 import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.persistence.PersistentDataContainer;
-import org.bukkit.persistence.PersistentDataType;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.EnumSet;
 
 import static me.dueris.genesismc.core.factory.powers.Powers.carnivore;
 import static org.bukkit.Material.*;
-import static org.bukkit.Material.CHORUS_FRUIT;
 
 public class Carnivore implements Listener {
 

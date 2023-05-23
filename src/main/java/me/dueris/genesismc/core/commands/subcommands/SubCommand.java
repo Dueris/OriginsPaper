@@ -2,8 +2,6 @@ package me.dueris.genesismc.core.commands.subcommands;
 
 import org.bukkit.entity.Player;
 
-import java.util.List;
-
 public abstract class SubCommand {
     public abstract String getName();
 

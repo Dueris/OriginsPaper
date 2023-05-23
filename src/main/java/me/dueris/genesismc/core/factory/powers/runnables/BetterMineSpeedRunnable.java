@@ -1,25 +1,18 @@
 package me.dueris.genesismc.core.factory.powers.runnables;
 
-import me.dueris.genesismc.core.GenesisMC;
 import me.dueris.genesismc.core.api.entity.OriginPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
-import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
-import org.bukkit.persistence.PersistentDataContainer;
-import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.EnumSet;
 
 import static me.dueris.genesismc.core.factory.powers.Powers.strong_arms_break_speed;
 import static org.bukkit.Material.*;
-import static org.bukkit.Material.SHIELD;
 
 public class BetterMineSpeedRunnable extends BukkitRunnable {
     public static EnumSet<Material> tools;

@@ -1,8 +1,6 @@
 package me.dueris.genesismc.core.commands;
 
 import me.dueris.genesismc.core.api.OriginAPI;
-import me.dueris.genesismc.core.api.factory.CustomOriginAPI;
-import me.dueris.genesismc.core.files.GenesisDataFiles;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -13,9 +11,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
-import java.util.stream.Stream;
 
 public class TabAutoComplete implements TabCompleter {
     @Override

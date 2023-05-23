@@ -24,7 +24,6 @@ import me.dueris.genesismc.core.factory.powers.world.ExplodeTick;
 import me.dueris.genesismc.core.factory.powers.world.WeakBiomeCold;
 import me.dueris.genesismc.core.factory.powers.world.WorldSpawnHandler;
 import me.dueris.genesismc.core.origins.OriginHandler;
-import org.checkerframework.checker.units.qual.C;
 
 import static me.dueris.genesismc.core.GenesisMC.getPlugin;
 import static org.bukkit.Bukkit.getServer;

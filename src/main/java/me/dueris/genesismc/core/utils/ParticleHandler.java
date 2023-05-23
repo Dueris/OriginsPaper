@@ -1,15 +1,10 @@
 package me.dueris.genesismc.core.utils;
 
-import com.destroystokyo.paper.ParticleBuilder;
-import me.dueris.genesismc.core.GenesisMC;
 import me.dueris.genesismc.core.api.entity.OriginPlayer;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
-import org.bukkit.persistence.PersistentDataContainer;
-import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.jetbrains.annotations.Nullable;
 
 import static me.dueris.genesismc.core.factory.powers.Powers.ender_particles;
 

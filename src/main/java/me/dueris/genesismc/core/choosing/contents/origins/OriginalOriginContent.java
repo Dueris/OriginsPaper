@@ -12,8 +12,8 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
 
-import static me.dueris.genesismc.core.choosing.ChoosingCORE.itemPropertiesMultipleLore;
 import static me.dueris.genesismc.core.choosing.ChoosingCORE.itemProperties;
+import static me.dueris.genesismc.core.choosing.ChoosingCORE.itemPropertiesMultipleLore;
 import static me.dueris.genesismc.core.items.OrbOfOrigins.orb;
 import static org.bukkit.ChatColor.*;
 

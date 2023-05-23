@@ -20,7 +20,6 @@ import static me.dueris.genesismc.core.choosing.ChoosingCORE.itemPropertiesMulti
 import static me.dueris.genesismc.core.choosing.ChoosingCUSTOM.cutStringIntoLists;
 import static me.dueris.genesismc.core.items.OrbOfOrigins.orb;
 import static org.bukkit.ChatColor.*;
-import static org.bukkit.ChatColor.RED;
 
 public class MainMenuContents {
 

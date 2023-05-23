@@ -3,8 +3,8 @@ package me.dueris.genesismc.core.choosing;
 import me.dueris.genesismc.core.GenesisMC;
 import me.dueris.genesismc.core.api.OriginAPI;
 import me.dueris.genesismc.core.api.entity.OriginPlayer;
-import me.dueris.genesismc.core.files.GenesisDataFiles;
 import me.dueris.genesismc.core.factory.powers.world.WorldSpawnHandler;
+import me.dueris.genesismc.core.files.GenesisDataFiles;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.enchantments.Enchantment;
@@ -23,7 +23,6 @@ import org.bukkit.inventory.meta.tags.ItemTagType;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -4,9 +4,7 @@ import me.dueris.genesismc.core.api.entity.OriginPlayer;
 import me.dueris.genesismc.core.commands.subcommands.SubCommand;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
-import org.checkerframework.checker.units.qual.N;
 
 public class Has extends SubCommand {
     @Override

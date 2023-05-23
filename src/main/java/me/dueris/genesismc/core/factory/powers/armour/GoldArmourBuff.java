@@ -1,21 +1,15 @@
 package me.dueris.genesismc.core.factory.powers.armour;
 
 import com.destroystokyo.paper.event.player.PlayerArmorChangeEvent;
-import me.dueris.genesismc.core.GenesisMC;
 import me.dueris.genesismc.core.api.entity.OriginPlayer;
-import org.bukkit.NamespacedKey;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.persistence.PersistentDataContainer;
-import org.bukkit.persistence.PersistentDataType;
-import org.jetbrains.annotations.Nullable;
 
 import static me.dueris.genesismc.core.factory.powers.Powers.gold_item_buff;
 import static org.bukkit.Material.*;
-import static org.bukkit.Material.GOLDEN_LEGGINGS;
 
 public class GoldArmourBuff implements Listener {
 

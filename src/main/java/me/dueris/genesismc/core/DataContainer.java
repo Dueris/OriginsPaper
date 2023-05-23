@@ -1,6 +1,5 @@
 package me.dueris.genesismc.core;
 
-import me.dueris.genesismc.core.commands.ToggleCommand;
 import me.dueris.genesismc.core.utils.ShulkUtils;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;

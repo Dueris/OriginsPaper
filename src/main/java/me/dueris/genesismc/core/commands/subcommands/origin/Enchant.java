@@ -8,7 +8,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.Arrays;
 import java.util.EnumSet;
-import java.util.List;
 
 import static me.dueris.genesismc.core.GenesisMC.waterProtectionEnchant;
 

@@ -13,7 +13,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import static me.dueris.genesismc.core.factory.powers.Powers.big_leap_tick;
 import static me.dueris.genesismc.core.factory.powers.entity.BigLeap.leapToggle;

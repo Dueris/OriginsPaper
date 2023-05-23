@@ -3,8 +3,6 @@ package me.dueris.genesismc.core.commands.subcommands.origin;
 import me.dueris.genesismc.core.commands.subcommands.SubCommand;
 import org.bukkit.entity.Player;
 
-import java.util.List;
-
 public class References extends SubCommand {
     @Override
     public String getName() {

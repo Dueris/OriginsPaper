@@ -18,7 +18,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 
 import static me.dueris.genesismc.core.choosing.ChoosingCORE.*;
-import static me.dueris.genesismc.core.choosing.ChoosingCORE.removeItemEnder;
 import static org.bukkit.ChatColor.GRAY;
 
 public class OriginPlayer {
