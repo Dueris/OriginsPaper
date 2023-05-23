@@ -52,6 +52,7 @@ public class OriginPlayer {
 
     public static String getOriginTag(Player player){
         PersistentDataContainer data = player.getPersistentDataContainer();
+        if(data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING) == null) return null;
         @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
         return origintag;
     }
