@@ -67,7 +67,6 @@ public class WorldSpawnHandler implements Listener {
 
     @EventHandler
     public void netherSpawn(PlayerRespawnEvent e) {
-        Player p = e.getPlayer();
         if (nether_spawn.contains(OriginPlayer.getOriginTag(e.getPlayer()))) {
             if (!(e.isBedSpawn() || e.isAnchorSpawn())) {
                 Location spawnLocation = null;
@@ -77,6 +76,7 @@ public class WorldSpawnHandler implements Listener {
                         Random random = new Random();
                         Location location = new Location(world, random.nextInt(-300, 300), 32, random.nextInt(-300, 300));
 
+                        mainLoop:
                         for (int x = (int) (location.getX()-100); x < location.getX()+100; x++) {
                             for (int z = (int) (location.getZ()-100); z < location.getZ()+100; z++) {
                                 yLoop:
@@ -94,6 +94,7 @@ public class WorldSpawnHandler implements Listener {
                                         }
                                     }
                                     spawnLocation = (new Location(world, x+0.5, y, z+0.5));
+                                    break mainLoop;
                                 }
                             }
                         }
