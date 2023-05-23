@@ -1,13 +1,19 @@
 package me.dueris.genesismc.core.factory.powers.armour;
 
 import com.destroystokyo.paper.event.player.PlayerArmorChangeEvent;
+import me.dueris.genesismc.core.GenesisMC;
 import me.dueris.genesismc.core.api.entity.OriginPlayer;
 import org.bukkit.Material;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitRunnable;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.EnumSet;
 
 import static me.dueris.genesismc.core.factory.powers.Powers.light_armor;
@@ -21,25 +27,33 @@ public class GoldAmourBellow implements Listener {
     @EventHandler
     public void OnChangeArmour(PlayerArmorChangeEvent e){
         Player p = e.getPlayer();
-        if(light_armor.contains(OriginPlayer.getOriginTag(p))) {
-            if(not_able.contains(e.getNewItem().getType())){
-                /*e.getNewItem().setType(e.getOldItem().getType());
-                e.getNewItem().setItemMeta(e.getOldItem().getItemMeta());
-                e.getPlayer().getInventory().addItem(e.getNewItem());
-                e.getPlayer().getItemOnCursor().setAmount(0);
+        if (!light_armor.contains(OriginPlayer.getOriginTag(p))) return;
+        if (e.getNewItem() == null) return;
 
-                if(e.getOldItem() == null){
-                    e.getNewItem().setAmount(0);
-                    p.getInventory().addItem(e.getNewItem());
-                    p.getItemOnCursor().setAmount(0);
-                }
-
-                p.sendMessage("fjhsldkhjhfsdfsdfsdfsdfsd");
-
-                 */
-            }
-
+        ArrayList<ItemStack> armour = new ArrayList<>(Arrays.asList(p.getInventory().getArmorContents()));
+        for (ItemStack item : armour) {
+            if (item == null) continue;
+            if (!not_able.contains(item.getType())) continue;
+            armour.set(armour.indexOf(item), null);
+            p.getInventory().setArmorContents(armour.toArray(new ItemStack[0]));
+            p.getInventory().addItem(e.getNewItem());
         }
-    }
 
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                ArrayList<ItemStack> armour = new ArrayList<>(Arrays.asList(p.getInventory().getArmorContents()));
+                for (ItemStack item : armour) {
+                    if (item == null) continue;
+                    if (!not_able.contains(item.getType())) continue;
+                    armour.set(armour.indexOf(item), null);
+                    p.getInventory().setArmorContents(armour.toArray(new ItemStack[0]));
+                    p.getInventory().addItem(e.getNewItem());
+                }
+            }
+        }.runTaskTimer(GenesisMC.getPlugin(), 5, 20);
+
+    }
 }
+
+
