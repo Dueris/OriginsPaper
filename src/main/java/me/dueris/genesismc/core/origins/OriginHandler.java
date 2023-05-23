@@ -81,8 +81,8 @@ public class OriginHandler extends BukkitRunnable implements Listener {
 
     @EventHandler
     public void testevent(OriginChooseEvent e) {
-        Player player = e.getPlayer();
-        player.sendMessage("fjbxifudgfilzdbvlzdi");
+//        Player player = e.getPlayer();
+//        player.sendMessage("fjbxifudgfilzdbvlzdi");
     }
 
 }
