@@ -7,7 +7,12 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
@@ -22,6 +27,7 @@ public class GoldAmourBellow implements Listener {
     static {
         not_able = EnumSet.of(DIAMOND_CHESTPLATE, DIAMOND_HELMET, DIAMOND_LEGGINGS, DIAMOND_BOOTS, NETHERITE_HELMET, NETHERITE_CHESTPLATE, NETHERITE_LEGGINGS, NETHERITE_BOOTS);
     }
+    /*
     @EventHandler
     public void OnChangeArmour(PlayerArmorChangeEvent e){
         Player p = e.getPlayer();
@@ -51,6 +57,46 @@ public class GoldAmourBellow implements Listener {
             }
         }.runTaskTimer(GenesisMC.getPlugin(), 5, 20);
 
+    }
+
+     */
+    @EventHandler
+    public void onInventoryClick(InventoryClickEvent event) {
+        if (event.getWhoClicked() instanceof Player) {
+            PlayerInventory inventory = ((Player) event.getWhoClicked()).getInventory();
+            ItemStack clickedItem = event.getCurrentItem();
+            Player player = (Player) event.getWhoClicked();
+            Inventory clickedInventory = event.getClickedInventory();
+            if (clickedInventory != null && clickedInventory.getType() == InventoryType.PLAYER) {
+                int clickedSlot = event.getSlot();
+                EquipmentSlot equipmentSlot = null;
+
+                if (clickedSlot == 36) {
+                    equipmentSlot = EquipmentSlot.HEAD;
+                } else if (clickedSlot == 37) {
+                    equipmentSlot = EquipmentSlot.CHEST;
+                } else if (clickedSlot == 38) {
+                    equipmentSlot = EquipmentSlot.LEGS;
+                } else if (clickedSlot == 39) {
+                    equipmentSlot = EquipmentSlot.FEET;
+                }
+
+                if (equipmentSlot != null) {
+                    Material clickedMaterial = clickedItem.getType();
+                    if ((clickedMaterial == Material.DIAMOND_HELMET ||
+                            clickedMaterial == Material.DIAMOND_CHESTPLATE ||
+                            clickedMaterial == Material.DIAMOND_LEGGINGS ||
+                            clickedMaterial == Material.DIAMOND_BOOTS ||
+                            clickedMaterial == Material.NETHERITE_HELMET ||
+                            clickedMaterial == Material.NETHERITE_CHESTPLATE ||
+                            clickedMaterial == Material.NETHERITE_LEGGINGS ||
+                            clickedMaterial == Material.NETHERITE_BOOTS) &&
+                            equipmentSlot == EquipmentSlot.HAND) {
+                        event.setCancelled(true);
+                    }
+                }
+                }
+        }
     }
 }
 
