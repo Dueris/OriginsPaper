@@ -1,5 +1,6 @@
 package me.dueris.genesismc.core;
 
+import io.papermc.paper.advancement.PaperAdvancementDisplay;
 import me.dueris.genesismc.core.api.entity.OriginPlayer;
 import me.dueris.genesismc.core.api.factory.CustomOriginAPI;
 import me.dueris.genesismc.core.choosing.ChoosingCORE;
@@ -55,12 +56,8 @@ public final class GenesisMC extends JavaPlugin implements Listener {
     @Override
     public void onEnable() {
         // Plugin startup logic
-
-
         plugin = this;
-
         //bstats
-
         metrics = new Metrics(this, 18536);
 
 
@@ -90,6 +87,13 @@ public final class GenesisMC extends JavaPlugin implements Listener {
        } catch (ClassNotFoundException e) {
            //not folia
        }
+        String serverImplementation = Bukkit.getServer().getName();
+
+        if (serverImplementation.contains("CraftBukkit")) {
+            getServer().getConsoleSender().sendMessage(ChatColor.RED + "WARNING: SPIGOT/CRAFTBUKKIT IS NOT SUPPORTED, PLEASE USE PAPERMC.");
+        } else if (serverImplementation.contains("Spigot")) {
+            getServer().getConsoleSender().sendMessage(ChatColor.RED + "WARNING: SPIGOT/CRAFTBUKKIT IS NOT SUPPORTED, PLEASE USE PAPERMC.");
+        }
        if(GenesisDataFiles.getPlugCon().getString("use-builtin-api").equalsIgnoreCase("false")){
            getServer().getConsoleSender().sendMessage(ChatColor.RED + "[GenesisMC] OriginsAPI disabled!! This will cause errors if you do not use the OriginAPI that is built in, or external.");
 
