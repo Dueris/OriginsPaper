@@ -55,12 +55,8 @@ public final class GenesisMC extends JavaPlugin implements Listener {
     @Override
     public void onEnable() {
         // Plugin startup logic
-
-
         plugin = this;
-
         //bstats
-
         metrics = new Metrics(this, 18536);
 
 
@@ -90,6 +86,13 @@ public final class GenesisMC extends JavaPlugin implements Listener {
        } catch (ClassNotFoundException e) {
            //not folia
        }
+        try {
+            Class.forName("com.destroystokyo.paper.Metrics.PaperMetrics");
+            //running paper or fork
+        } catch (ClassNotFoundException e) {
+            getServer().getConsoleSender().sendMessage(ChatColor.RED + "WARNING: SPIGOT/CRAFTBUKKIT IS NOT SUPPORTED, PLEASE USE PAPERMC.");
+        }
+
        if(GenesisDataFiles.getPlugCon().getString("use-builtin-api").equalsIgnoreCase("false")){
            getServer().getConsoleSender().sendMessage(ChatColor.RED + "[GenesisMC] OriginsAPI disabled!! This will cause errors if you do not use the OriginAPI that is built in, or external.");
 
