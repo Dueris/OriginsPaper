@@ -46,7 +46,7 @@ public class KeybindHandler implements Listener {
         if (OriginPlayer.getOriginTag(e.getPlayer()).contains("genesis:origin-shulk")) {
             e.setCancelled(true);
 
-            ArrayList<ItemStack> vaultItems = ShulkUtils.retrieveItems(p);
+            ArrayList<ItemStack> vaultItems = ShulkUtils.getItems(p);
 
             Inventory vault = Bukkit.createInventory(p, InventoryType.DROPPER, "Shulker Inventory");
 
