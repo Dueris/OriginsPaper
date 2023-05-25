@@ -1,9 +1,12 @@
 package me.dueris.genesismc.core.factory.powers;
 
 import me.dueris.genesismc.core.api.factory.CustomOriginAPI;
+import me.dueris.genesismc.core.factory.powers.custom.TargetActionOnHit;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.event.Listener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Powers implements Listener {
 
@@ -91,6 +94,11 @@ public class Powers implements Listener {
     public static ArrayList<String> resist_fall = new ArrayList<>();
     public static ArrayList<String> weak_biome_cold = new ArrayList<>();
 
+
+    //custom origins
+
+    public static HashMap<String, String> targetActionOnHit = new HashMap<>();
+
     public static void loadPowers() {
 
         //arachnid
@@ -171,91 +179,98 @@ public class Powers implements Listener {
         aerial_combatant.add("genesis:origin-elytrian");
 
         for (String originTag : CustomOriginAPI.getTags()) {
-            for (String power : CustomOriginAPI.getOriginPowers(originTag)) {
-                if (power.equals("origins:fall_immunity")) fall_immunity.add(originTag);
-                else if (power.equals("origins:aerial_combatant")) aerial_combatant.add(originTag);
-                else if (power.equals("origins:aqua_affinity")) aqua_affinity.add(originTag);
-                else if (power.equals("origins:aquatic")) aquatic.add(originTag);
-                else if (power.equals("origins:arthropod")) arthropod.add(originTag);
-                else if (power.equals("origins:more_kinetic_damage")) more_kinetic_damage.add(originTag);
-                else if (power.equals("origins:burning_wrath")) burning_wrath.add(originTag);
-                else if (power.equals("origins:carnivore")) carnivore.add(originTag);
-                else if (power.equals("origins:scare_creepers")) scare_creepers.add(originTag);
-                else if (power.equals("origins:claustrophobia")) claustrophobia.add(originTag);
-                else if (power.equals("origins:climbing")) climbing.add(originTag);
-                else if (power.equals("origins:hunger_over_time")) hunger_over_time.add(originTag);
-                else if (power.equals("origins:slow_falling")) slow_falling.add(originTag);
-                else if (power.equals("origins:swim_speed")) swim_speed.add(originTag);
-                else if (power.equals("origins:fire_immunity")) fire_immunity.add(originTag);
-                else if (power.equals("origins:fragile")) fragile.add(originTag);
-                else if (power.equals("origins:fresh_air")) fresh_air.add(originTag);
-                else if (power.equals("origins:launch_into_air")) launch_into_air.add(originTag);
-                else if (power.equals("origins:water_breathing")) water_breathing.add(originTag);
-                else if (power.equals("origins:shulker_inventory")) shulker_inventory.add(originTag);
-                else if (power.equals("origins:hotblooded")) hotblooded.add(originTag);
-                else if (power.equals("origins:water_vulnerability")) water_vulnerability.add(originTag);
-                else if (power.equals("origins:invisibility")) invisibility.add(originTag);
-                else if (power.equals("origins:more_exhaustion")) more_exhaustion.add(originTag);
-                else if (power.equals("origins:like_air")) like_air.add(originTag);
-                else if (power.equals("origins:like_water")) like_water.add(originTag);
-                else if (power.equals("origins:master_of_webs")) master_of_webs.add(originTag);
-                else if (power.equals("origins:light_armor")) light_armor.add(originTag);
-                else if (power.equals("origins:nether_spawn")) nether_spawn.add(originTag);
-                else if (power.equals("origins:nine_lives")) nine_lives.add(originTag);
-                else if (power.equals("origins:cat_vision")) cat_vision.add(originTag);
-                else if (power.equals("origins:lay_eggs")) lay_eggs.add(originTag);
-                else if (power.equals("origins:phasing")) phasing.add(originTag);
-                else if (power.equals("origins:burn_in_daylight")) burn_in_daylight.add(originTag);
-                else if (power.equals("origins:arcane_skin")) arcane_skin.add(originTag);
-                else if (power.equals("origins:end_spawn")) end_spawn.add(originTag);
-                else if (power.equals("origins:phantomize_overlay")) phantomize_overlay.add(originTag);
-                else if (power.equals("origins:pumpkin_hate")) pumpkin_hate.add(originTag);
-                else if (power.equals("origins:extra_reach")) extra_reach.add(originTag);
-                else if (power.equals("origins:sprint_jump")) sprint_jump.add(originTag);
-                else if (power.equals("origins:strong_arms")) strong_arms.add(originTag);
-                else if (power.equals("origins:natural_armor")) natural_armor.add(originTag);
-                else if (power.equals("origins:tailwind")) tailwind.add(originTag);
-                else if (power.equals("origins:throw_ender_pearl")) throw_ender_pearl.add(originTag);
-                else if (power.equals("origins:translucent")) translucent.add(originTag);
-                else if (power.equals("origins:no_shield")) no_shield.add(originTag);
-                else if (power.equals("origins:vegetarian")) vegetarian.add(originTag);
-                else if (power.equals("origins:velvet_paws")) velvet_paws.add(originTag);
-                else if (power.equals("origins:weak_arms")) weak_arms.add(originTag);
-                else if (power.equals("origins:webbing")) webbing.add(originTag);
-                else if (power.equals("origins:water_vision")) water_vision.add(originTag);
-                else if (power.equals("origins:elytra")) elytra.add(originTag);
-                else if (power.equals("origins:air_from_potions")) air_from_potions.add(originTag);
-                else if (power.equals("origins:conduit_power_on_land")) conduit_power_on_land.add(originTag);
-                else if (power.equals("origins:damage_from_potions")) damage_from_potions.add(originTag);
-                else if (power.equals("origins:damage_from_snowballs")) damage_from_snowballs.add(originTag);
-                else if (power.equals("origins:ender_particles")) ender_particles.add(originTag);
-                else if (power.equals("origins:flame_particles")) flame_particles.add(originTag);
-                else if (power.equals("origins:no_cobweb_slowdown")) no_cobweb_slowdown.add(originTag);
-                else if (power.equals("origins:phantomize")) phantomize.add(originTag);
-                else if (power.equals("origins:strong_arms_break_speed")) strong_arms_break_speed.add(originTag);
+            for (String powerTag : CustomOriginAPI.getOriginPowers(originTag)) {
+                if (powerTag.equals("origins:fall_immunity")) fall_immunity.add(originTag);
+                else if (powerTag.equals("origins:aerial_combatant")) aerial_combatant.add(originTag);
+                else if (powerTag.equals("origins:aqua_affinity")) aqua_affinity.add(originTag);
+                else if (powerTag.equals("origins:aquatic")) aquatic.add(originTag);
+                else if (powerTag.equals("origins:arthropod")) arthropod.add(originTag);
+                else if (powerTag.equals("origins:more_kinetic_damage")) more_kinetic_damage.add(originTag);
+                else if (powerTag.equals("origins:burning_wrath")) burning_wrath.add(originTag);
+                else if (powerTag.equals("origins:carnivore")) carnivore.add(originTag);
+                else if (powerTag.equals("origins:scare_creepers")) scare_creepers.add(originTag);
+                else if (powerTag.equals("origins:claustrophobia")) claustrophobia.add(originTag);
+                else if (powerTag.equals("origins:climbing")) climbing.add(originTag);
+                else if (powerTag.equals("origins:hunger_over_time")) hunger_over_time.add(originTag);
+                else if (powerTag.equals("origins:slow_falling")) slow_falling.add(originTag);
+                else if (powerTag.equals("origins:swim_speed")) swim_speed.add(originTag);
+                else if (powerTag.equals("origins:fire_immunity")) fire_immunity.add(originTag);
+                else if (powerTag.equals("origins:fragile")) fragile.add(originTag);
+                else if (powerTag.equals("origins:fresh_air")) fresh_air.add(originTag);
+                else if (powerTag.equals("origins:launch_into_air")) launch_into_air.add(originTag);
+                else if (powerTag.equals("origins:water_breathing")) water_breathing.add(originTag);
+                else if (powerTag.equals("origins:shulker_inventory")) shulker_inventory.add(originTag);
+                else if (powerTag.equals("origins:hotblooded")) hotblooded.add(originTag);
+                else if (powerTag.equals("origins:water_vulnerability")) water_vulnerability.add(originTag);
+                else if (powerTag.equals("origins:invisibility")) invisibility.add(originTag);
+                else if (powerTag.equals("origins:more_exhaustion")) more_exhaustion.add(originTag);
+                else if (powerTag.equals("origins:like_air")) like_air.add(originTag);
+                else if (powerTag.equals("origins:like_water")) like_water.add(originTag);
+                else if (powerTag.equals("origins:master_of_webs")) master_of_webs.add(originTag);
+                else if (powerTag.equals("origins:light_armor")) light_armor.add(originTag);
+                else if (powerTag.equals("origins:nether_spawn")) nether_spawn.add(originTag);
+                else if (powerTag.equals("origins:nine_lives")) nine_lives.add(originTag);
+                else if (powerTag.equals("origins:cat_vision")) cat_vision.add(originTag);
+                else if (powerTag.equals("origins:lay_eggs")) lay_eggs.add(originTag);
+                else if (powerTag.equals("origins:phasing")) phasing.add(originTag);
+                else if (powerTag.equals("origins:burn_in_daylight")) burn_in_daylight.add(originTag);
+                else if (powerTag.equals("origins:arcane_skin")) arcane_skin.add(originTag);
+                else if (powerTag.equals("origins:end_spawn")) end_spawn.add(originTag);
+                else if (powerTag.equals("origins:phantomize_overlay")) phantomize_overlay.add(originTag);
+                else if (powerTag.equals("origins:pumpkin_hate")) pumpkin_hate.add(originTag);
+                else if (powerTag.equals("origins:extra_reach")) extra_reach.add(originTag);
+                else if (powerTag.equals("origins:sprint_jump")) sprint_jump.add(originTag);
+                else if (powerTag.equals("origins:strong_arms")) strong_arms.add(originTag);
+                else if (powerTag.equals("origins:natural_armor")) natural_armor.add(originTag);
+                else if (powerTag.equals("origins:tailwind")) tailwind.add(originTag);
+                else if (powerTag.equals("origins:throw_ender_pearl")) throw_ender_pearl.add(originTag);
+                else if (powerTag.equals("origins:translucent")) translucent.add(originTag);
+                else if (powerTag.equals("origins:no_shield")) no_shield.add(originTag);
+                else if (powerTag.equals("origins:vegetarian")) vegetarian.add(originTag);
+                else if (powerTag.equals("origins:velvet_paws")) velvet_paws.add(originTag);
+                else if (powerTag.equals("origins:weak_arms")) weak_arms.add(originTag);
+                else if (powerTag.equals("origins:webbing")) webbing.add(originTag);
+                else if (powerTag.equals("origins:water_vision")) water_vision.add(originTag);
+                else if (powerTag.equals("origins:elytra")) elytra.add(originTag);
+                else if (powerTag.equals("origins:air_from_potions")) air_from_potions.add(originTag);
+                else if (powerTag.equals("origins:conduit_power_on_land")) conduit_power_on_land.add(originTag);
+                else if (powerTag.equals("origins:damage_from_potions")) damage_from_potions.add(originTag);
+                else if (powerTag.equals("origins:damage_from_snowballs")) damage_from_snowballs.add(originTag);
+                else if (powerTag.equals("origins:ender_particles")) ender_particles.add(originTag);
+                else if (powerTag.equals("origins:flame_particles")) flame_particles.add(originTag);
+                else if (powerTag.equals("origins:no_cobweb_slowdown")) no_cobweb_slowdown.add(originTag);
+                else if (powerTag.equals("origins:phantomize")) phantomize.add(originTag);
+                else if (powerTag.equals("origins:strong_arms_break_speed")) strong_arms_break_speed.add(originTag);
 
-                else if (power.equals("genesis:hot_hands")) hot_hands.add(originTag);
-                else if (power.equals("genesis:extra_fire_tick")) extra_fire.add(originTag);
-                else if (power.equals("genesis:bow_inability")) bow_nope.add(originTag);
-                else if (power.equals("genesis:silk_touch")) silk_touch.add(originTag);
-                else if (power.equals("genesis:explode_tick")) explode_tick.add(originTag);
-                else if (power.equals("genesis:projectile-immune")) projectile_immune.add(originTag);
-                else if (power.equals("genesis:charged")) charged.add(originTag);
-                else if (power.equals("genesis:felinephobia")) felinephobia.add(originTag);
-                else if (power.equals("genesis:fire_weak")) fire_weak.add(originTag);
-                else if (power.equals("genesis:gold_armour_buff")) gold_armour_buff.add(originTag);
-                else if (power.equals("genesis:gold_item_buff")) gold_item_buff.add(originTag);
-                else if (power.equals("genesis:big_leap_charge")) big_leap_tick.add(originTag);
-                else if (power.equals("genesis:carrots_only")) carrot_only.add(originTag);
-                else if (power.equals("genesis:jump_boost")) jump_increased.add(originTag);
-                else if (power.equals("genesis:drop_rabbit_foot_damage")) rabbit_drop_foot.add(originTag);
-                else if (power.equals("genesis:decreased_explosion_damage")) decreased_explosion.add(originTag);
-                else if (power.equals("genesis:creeper_head_death_drop")) creeper_head_death_drop.add(originTag);
-                else if (power.equals("genesis:resist_fall")) resist_fall.add(originTag);
-                else if (power.equals("genesis:cold_biomes_weak")) weak_biome_cold.add(originTag);
+                else if (powerTag.equals("genesis:hot_hands")) hot_hands.add(originTag);
+                else if (powerTag.equals("genesis:extra_fire_tick")) extra_fire.add(originTag);
+                else if (powerTag.equals("genesis:bow_inability")) bow_nope.add(originTag);
+                else if (powerTag.equals("genesis:silk_touch")) silk_touch.add(originTag);
+                else if (powerTag.equals("genesis:explode_tick")) explode_tick.add(originTag);
+                else if (powerTag.equals("genesis:projectile-immune")) projectile_immune.add(originTag);
+                else if (powerTag.equals("genesis:charged")) charged.add(originTag);
+                else if (powerTag.equals("genesis:felinephobia")) felinephobia.add(originTag);
+                else if (powerTag.equals("genesis:fire_weak")) fire_weak.add(originTag);
+                else if (powerTag.equals("genesis:gold_armour_buff")) gold_armour_buff.add(originTag);
+                else if (powerTag.equals("genesis:gold_item_buff")) gold_item_buff.add(originTag);
+                else if (powerTag.equals("genesis:big_leap_charge")) big_leap_tick.add(originTag);
+                else if (powerTag.equals("genesis:carrots_only")) carrot_only.add(originTag);
+                else if (powerTag.equals("genesis:jump_boost")) jump_increased.add(originTag);
+                else if (powerTag.equals("genesis:drop_rabbit_foot_damage")) rabbit_drop_foot.add(originTag);
+                else if (powerTag.equals("genesis:decreased_explosion_damage")) decreased_explosion.add(originTag);
+                else if (powerTag.equals("genesis:creeper_head_death_drop")) creeper_head_death_drop.add(originTag);
+                else if (powerTag.equals("genesis:resist_fall")) resist_fall.add(originTag);
+                else if (powerTag.equals("genesis:cold_biomes_weak")) weak_biome_cold.add(originTag);
 
                 //drop_head
                 //entity_ignore
+
+                else {
+                    String powerType = CustomOriginAPI.getPowerType(originTag, powerTag);
+                    if (powerType == null) return;
+                    if (powerType.equals("origins:target_action_on_hit")) targetActionOnHit.put(originTag, powerTag);
+
+                }
             }
         }
     }

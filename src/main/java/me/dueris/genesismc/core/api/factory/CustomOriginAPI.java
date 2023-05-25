@@ -217,7 +217,7 @@ public class CustomOriginAPI {
     }
 
     /**
-     @return Origin powers from specified custom origin.
+     @return Origin power tags from specified custom origin.
      **/
     public static ArrayList<String> getOriginPowers(String originTag) {
         Object value = getOriginDetail(originTag, "powers");
@@ -256,7 +256,7 @@ public class CustomOriginAPI {
 
     /**
      Has the powers from <a href="https://origins.readthedocs.io/en/latest/misc/base_contents/powers/">origins docs</a> hardcoded.
-     @return Power name from specified power from specified origin
+     @return Power name from specified power from specified origin.
      **/
     public static String getPowerName(String originTag, String powerTag) {
         if (powerTag.equals("origins:fall_immunity")) return "Acrobatics";
@@ -332,7 +332,7 @@ public class CustomOriginAPI {
 
     /**
      Has the powers from <a href="https://origins.readthedocs.io/en/latest/misc/base_contents/powers/">origins docs</a> hardcoded.
-     @return Power description from specified power from specified origin
+     @return Power description from specified power from specified origin.
      **/
     public static String getPowerDescription(String originTag, String powerTag) {
         if (powerTag.equals("origins:fall_immunity")) return "You never take fall damage, no matter from which height you fall.";
@@ -408,7 +408,7 @@ public class CustomOriginAPI {
 
     /**
      Has the powers from <a href="https://origins.readthedocs.io/en/latest/misc/base_contents/powers/">origins docs</a> hardcoded.
-     @return Power hidden from specified power from specified origin
+     @return Power hidden from specified power from specified origin.
      **/
     public static boolean getPowerHidden(String originTag, String powerTag) {
         if (powerTag.equals("origins:aquatic")) return true;
@@ -428,10 +428,34 @@ public class CustomOriginAPI {
     }
 
     /**
-     @return Power hidden from specified power from specified origin
+     @return Power type from specified power from specified origin.
      **/
     public static String getPowerType(String originTag, String powerTag) {
         Object value = getPowerDetail(originTag, powerTag, "type");
         return (String) value;
+    }
+
+    /**
+     @return Power class from specified power from specified origin.
+     **/
+    public static String getPowerClass(String originTag, String powerTag) {
+        Object value = getPowerDetail(originTag, powerTag, "class");
+        return (String) value;
+    }
+
+    /**
+     @return Power attribute from specified power from specified origin.
+     **/
+    public static String getPowerAttribute(String originTag, String powerTag) {
+        Object value = getPowerDetail(originTag, powerTag, "attribute");
+        return (String) value;
+    }
+
+    /**
+     @return Power multiplier from specified power from specified origin.
+     **/
+    public static Float getPowerMultiplier(String originTag, String powerTag) {
+        Object value = getPowerDetail(originTag, powerTag, "multiplier");
+        return (Float) value;
     }
 }
