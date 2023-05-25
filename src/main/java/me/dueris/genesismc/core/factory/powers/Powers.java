@@ -170,8 +170,8 @@ public class Powers implements Listener {
         light_armor.add("genesis:origin-elytrian");
         aerial_combatant.add("genesis:origin-elytrian");
 
-        for (String originTag : CustomOriginAPI.getCustomOriginTags()) {
-            for (String power : CustomOriginAPI.getCustomOriginPowers(originTag)) {
+        for (String originTag : CustomOriginAPI.getTags()) {
+            for (String power : CustomOriginAPI.getOriginPowers(originTag)) {
                 if (power.equals("origins:fall_immunity")) fall_immunity.add(originTag);
                 else if (power.equals("origins:aerial_combatant")) aerial_combatant.add(originTag);
                 else if (power.equals("origins:aqua_affinity")) aqua_affinity.add(originTag);

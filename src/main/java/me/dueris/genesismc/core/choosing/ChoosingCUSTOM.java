@@ -60,14 +60,14 @@ public class ChoosingCUSTOM implements Listener {
                 ArrayList<String> originPowerNames = new ArrayList<>();
                 ArrayList<String> originPowerDescriptions = new ArrayList<>();
 
-                for (String powerTag : CustomOriginAPI.getCustomOriginPowers(origintag)) {
-                    if (!CustomOriginAPI.getCustomOriginPowerHidden(origintag, powerTag)) {
-                        originPowerNames.add(CustomOriginAPI.getCustomOriginPowerName(origintag, powerTag));
-                        originPowerDescriptions.add(CustomOriginAPI.getCustomOriginPowerDescription(origintag, powerTag));
+                for (String powerTag : CustomOriginAPI.getOriginPowers(origintag)) {
+                    if (!CustomOriginAPI.getPowerHidden(origintag, powerTag)) {
+                        originPowerNames.add(CustomOriginAPI.getPowerName(origintag, powerTag));
+                        originPowerDescriptions.add(CustomOriginAPI.getPowerDescription(origintag, powerTag));
                     }
                 }
 
-                String minecraftItem = CustomOriginAPI.getCustomOriginIcon(origintag);
+                String minecraftItem = CustomOriginAPI.getOriginIcon(origintag);
                 String item = minecraftItem.split(":")[1];
                 ItemStack originIcon = new ItemStack(Material.valueOf(item.toUpperCase()));
 
@@ -79,9 +79,9 @@ public class ChoosingCUSTOM implements Listener {
 
 
                 ItemMeta originIconmeta = originIcon.getItemMeta();
-                originIconmeta.setDisplayName(CustomOriginAPI.getCustomOriginName(origintag));
+                originIconmeta.setDisplayName(CustomOriginAPI.getOriginName(origintag));
                 originIconmeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-                originIconmeta.setLore(cutStringIntoLists(CustomOriginAPI.getCustomOriginDescription(origintag)));
+                originIconmeta.setLore(cutStringIntoLists(CustomOriginAPI.getOriginDescription(origintag)));
                 originIconmeta.getPersistentDataContainer().set(key, PersistentDataType.STRING, origintag);
                 NamespacedKey chooseKey = new NamespacedKey(GenesisMC.getPlugin(), "originChoose");
                 originIconmeta.getPersistentDataContainer().set(chooseKey, PersistentDataType.INTEGER, 1);
@@ -89,7 +89,7 @@ public class ChoosingCUSTOM implements Listener {
                 originIcon.setItemMeta(originIconmeta);
 
                 ArrayList<ItemStack> contents = new ArrayList<>();
-                long impact = CustomOriginAPI.getCustomOriginImpact(origintag);
+                long impact = CustomOriginAPI.getOriginImpact(origintag);
 
                 for (int i = 0; i <= 53; i++) {
                     if (i == 0 || i == 8) {
@@ -174,7 +174,7 @@ public class ChoosingCUSTOM implements Listener {
                 Player p = (Player) e.getWhoClicked();
                 setAttributesToDefault(p);
                 Bukkit.getScheduler().runTaskLater(GenesisMC.getPlugin(),()->{
-                    if (CustomOriginAPI.getCustomOriginPowers(origintag).contains("origins:nether_spawn") && p.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING).equals("genesis:origin-null")) p.teleport(WorldSpawnHandler.NetherSpawn());
+                    if (CustomOriginAPI.getOriginPowers(origintag).contains("origins:nether_spawn") && p.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING).equals("genesis:origin-null")) p.teleport(WorldSpawnHandler.NetherSpawn());
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, origintag);
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);

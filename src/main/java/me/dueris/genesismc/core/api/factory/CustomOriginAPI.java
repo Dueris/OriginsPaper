@@ -27,11 +27,17 @@ public class CustomOriginAPI {
 
     private static HashMap<String, String> customOrigins = new HashMap<>();
 
+    /**
+     @return A HashMap with custom origin tags as keys and datapack names as values.
+     **/
     public static HashMap<String, String> getCustomOrigins() {
         return customOrigins;
     }
 
-    public static void removeUnzippedOriginDatapacks() {
+    /**
+     Removes any unzipped datapacks that were created by GenesisMC in the custom_origins folder.
+     **/
+    public static void removeUnzippedDatapacks() {
         File originDatapackDir = new File(Bukkit.getServer().getPluginManager().getPlugin("GenesisMC").getDataFolder(), "custom_origins");
         File[] originDatapacks = originDatapackDir.listFiles();
         if (originDatapacks == null) return;
@@ -49,7 +55,10 @@ public class CustomOriginAPI {
         }
     }
 
-    public static void unzipCustomOriginDatapacks() {
+    /**
+     Unzips any folder in the custom_origins folder.
+     **/
+    public static void unzipDatapacks() {
         File originDatapackDir = new File(Bukkit.getServer().getPluginManager().getPlugin("GenesisMC").getDataFolder(), "custom_origins");
         File[] originDatapacks = originDatapackDir.listFiles();
         if (originDatapacks == null) return;
@@ -94,7 +103,10 @@ public class CustomOriginAPI {
         }
     }
 
-    public static void loadCustomOriginDatapacks() {
+    /**
+     Parses the tags for custom origins and there identifier from folders inside the custom_origins folder.
+     **/
+    public static void loadCustomOrigins() {
         File originDatapackDir = new File(Bukkit.getServer().getPluginManager().getPlugin("GenesisMC").getDataFolder(), "custom_origins");
         File[] originDatapacks = originDatapackDir.listFiles();
         if (originDatapacks == null) return;
@@ -130,15 +142,24 @@ public class CustomOriginAPI {
         }
     }
 
-    public static ArrayList<String> getCustomOriginTags() {
+    /**
+     @return All the custom origin tags loaded.
+     **/
+    public static ArrayList<String> getTags() {
         return new ArrayList<>(customOrigins.keySet());
     }
 
-    public static ArrayList<String> getCustomOriginIdentifiers() {
+    /**
+     @return All the custom origin identifiers loaded.
+     **/
+    public static ArrayList<String> getIdentifiers() {
         return new ArrayList<>(customOrigins.values());
     }
 
-    public static Object getCustomOriginDetail(String originTag, String valueToParse) {
+    /**
+     A method that is used inside the api to parse the data/&lt;Namespace&gt;/origins/&lt;Origin name&gt;.json file.
+     **/
+    public static Object getOriginDetail(String originTag, String valueToParse) {
         String[] values = originTag.split(":");
         String dirName = customOrigins.get(originTag);
         File originDetails = new File(Bukkit.getServer().getPluginManager().getPlugin("GenesisMC").getDataFolder() +"/custom_origins/"+dirName+"/data/"+values[0]+"/origins/"+values[1]+".json");
@@ -152,14 +173,20 @@ public class CustomOriginAPI {
         }
     }
 
-    public static String getCustomOriginName(String originTag) {
-        Object value = getCustomOriginDetail(originTag, "name");
+    /**
+     @return Origin name from specified custom origin.
+     **/
+    public static String getOriginName(String originTag) {
+        Object value = getOriginDetail(originTag, "name");
         if (value == null) return "No Name";
         return (String) value;
     }
 
-    public static String getCustomOriginIcon(String originTag) {
-        Object value = getCustomOriginDetail(originTag, "icon");
+    /**
+     @return Origin icon from specified custom origin.
+     **/
+    public static String getOriginIcon(String originTag) {
+        Object value = getOriginDetail(originTag, "icon");
         if (value == null || value.equals("minecraft:air")) return "minecraft:player_head";
         if (value instanceof JSONObject) {
             try {
@@ -171,37 +198,49 @@ public class CustomOriginAPI {
         return (String) value;
     }
 
-    public static Long getCustomOriginImpact(String originTag) {
-        Object value = getCustomOriginDetail(originTag, "impact");
+    /**
+     @return Origin impact from specified custom origin.
+     **/
+    public static Long getOriginImpact(String originTag) {
+        Object value = getOriginDetail(originTag, "impact");
         if (value == null) return 1L;
         return (Long) value;
     }
 
-    public static String getCustomOriginDescription(String originTag) {
-        Object value = getCustomOriginDetail(originTag, "description");
+    /**
+     @return Origin description from specified custom origin.
+     **/
+    public static String getOriginDescription(String originTag) {
+        Object value = getOriginDetail(originTag, "description");
         if (value == null) return "No Description";
         return (String) value;
     }
 
-    public static ArrayList<String> getCustomOriginPowers(String originTag) {
-        Object value = getCustomOriginDetail(originTag, "powers");
+    /**
+     @return Origin powers from specified custom origin.
+     **/
+    public static ArrayList<String> getOriginPowers(String originTag) {
+        Object value = getOriginDetail(originTag, "powers");
         if (value == null) return new ArrayList<String>(List.of());
         return (ArrayList<String>) value;
     }
 
-    public static boolean getCustomOriginUnChoosable(String originTag) {
-        Object value = getCustomOriginDetail(originTag, "unchoosable");
+    /**
+     @return Origin hidden from specified custom origin.
+     **/
+    public static boolean getOriginHidden(String originTag) {
+        Object value = getOriginDetail(originTag, "unchoosable");
         if (value == null) return false;
         return (Boolean) value;
     }
 
-    public static Object getOriginPowerDetial(String originTag, String powerTag, String valueToParse) {
+    /**
+     A method that is used inside the api to parse the data/&lt;Namespace&gt;/powers/&lt;power&gt;.json files.
+     **/
+    public static Object getPowerDetail(String originTag, String powerTag, String valueToParse) {
         String[] values = powerTag.split(":");
 
-        if (Objects.equals(values[0], "origins")) {
-            return null;
-            //temporary way of dealing with build in origin powers
-        }
+        if (Objects.equals(values[0], "origins")) return null;      //temporary way of dealing with build in origin powers
 
         String dirName = customOrigins.get(originTag);
         File originDetails = new File(Bukkit.getServer().getPluginManager().getPlugin("GenesisMC").getDataFolder() +"/custom_origins/"+dirName+"/data/"+values[0]+"/powers/"+values[1]+".json");
@@ -209,14 +248,17 @@ public class CustomOriginAPI {
             JSONObject parser = (JSONObject) new JSONParser().parse(new FileReader(originDetails.getAbsolutePath()));
             return parser.get(valueToParse);
         } catch (Exception e) {
-            //e.printStackTrace();
-            Bukkit.getServer().getConsoleSender().sendMessage("[GenesisMC] Using power defaults for "+powerTag+" - \""+e.getMessage()+"\"");
-
+            e.printStackTrace();
+            //Bukkit.getServer().getConsoleSender().sendMessage("[GenesisMC] Using power defaults for "+powerTag+" - \""+e.getMessage()+"\"");
             return null;
         }
     }
 
-    public static String getCustomOriginPowerName(String originTag, String powerTag) {
+    /**
+     Has the powers from <a href="https://origins.readthedocs.io/en/latest/misc/base_contents/powers/">origins docs</a> hardcoded.
+     @return Power name from specified power from specified origin
+     **/
+    public static String getPowerName(String originTag, String powerTag) {
         if (powerTag.equals("origins:fall_immunity")) return "Acrobatics";
         if (powerTag.equals("origins:aerial_combatant")) return "Aerial Combatant";
         if (powerTag.equals("origins:aqua_affinity")) return "Aqua Affinity";
@@ -283,12 +325,16 @@ public class CustomOriginAPI {
         if (powerTag.equals("genesis:extra_fire_tick")) return "Flammable";
         if (powerTag.equals("genesis:silk_touch")) return "Delicate Touch";
         if (powerTag.equals("genesis:bow_inability")) return "Horrible Coordination";
-        Object value = getOriginPowerDetial(originTag, powerTag, "name");
+        Object value = getPowerDetail(originTag, powerTag, "name");
         if (value == null) return "No Name";
         return (String) value;
     }
 
-    public static String getCustomOriginPowerDescription(String originTag, String powerTag) {
+    /**
+     Has the powers from <a href="https://origins.readthedocs.io/en/latest/misc/base_contents/powers/">origins docs</a> hardcoded.
+     @return Power description from specified power from specified origin
+     **/
+    public static String getPowerDescription(String originTag, String powerTag) {
         if (powerTag.equals("origins:fall_immunity")) return "You never take fall damage, no matter from which height you fall.";
         if (powerTag.equals("origins:aerial_combatant")) return "You deal substantially more damage while in Elytra flight.";
         if (powerTag.equals("origins:aqua_affinity")) return "You may break blocks underwater as others do on land.";
@@ -355,12 +401,16 @@ public class CustomOriginAPI {
         if (powerTag.equals("genesis:extra_fire_tick")) return "You take 50% more damage from fire";
         if (powerTag.equals("genesis:silk_touch")) return "You have silk touch hands";
         if (powerTag.equals("genesis:bow_inability")) return "You are not able to use a bow, you are WAY too clumsy";
-        Object value = getOriginPowerDetial(originTag, powerTag, "description");
+        Object value = getPowerDetail(originTag, powerTag, "description");
         if (value == null) return "No Description";
         return (String) value;
     }
 
-    public static boolean getCustomOriginPowerHidden(String originTag, String powerTag) {
+    /**
+     Has the powers from <a href="https://origins.readthedocs.io/en/latest/misc/base_contents/powers/">origins docs</a> hardcoded.
+     @return Power hidden from specified power from specified origin
+     **/
+    public static boolean getPowerHidden(String originTag, String powerTag) {
         if (powerTag.equals("origins:aquatic")) return true;
         if (powerTag.equals("origins:arthropod")) return true;
         if (powerTag.equals("origins:phantomize_overlay")) return true;
@@ -372,8 +422,16 @@ public class CustomOriginAPI {
         if (powerTag.equals("origins:flame_particles")) return true;
         if (powerTag.equals("origins:no_cobweb_slowdown")) return true;
         if (powerTag.equals("origins:strong_arms_break_speed")) return true;
-        Object value = getOriginPowerDetial(originTag, powerTag, "hidden");
+        Object value = getPowerDetail(originTag, powerTag, "hidden");
         if (value == null) return false;
         return (Boolean) value;
+    }
+
+    /**
+     @return Power hidden from specified power from specified origin
+     **/
+    public static String getPowerType(String originTag, String powerTag) {
+        Object value = getPowerDetail(originTag, powerTag, "type");
+        return (String) value;
     }
 }

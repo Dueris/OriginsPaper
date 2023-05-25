@@ -1,6 +1,5 @@
 package me.dueris.genesismc.core;
 
-import io.papermc.paper.advancement.PaperAdvancementDisplay;
 import me.dueris.genesismc.core.api.entity.OriginPlayer;
 import me.dueris.genesismc.core.api.factory.CustomOriginAPI;
 import me.dueris.genesismc.core.choosing.ChoosingCORE;
@@ -123,12 +122,12 @@ public final class GenesisMC extends JavaPlugin implements Listener {
             getServer().getConsoleSender().sendMessage(ChatColor.LIGHT_PURPLE + "[GenesisMC] OriginsAPI not detected. Injecting built-in API");
         }
 
-        CustomOriginAPI.removeUnzippedOriginDatapacks();
-        CustomOriginAPI.unzipCustomOriginDatapacks();
-        CustomOriginAPI.loadCustomOriginDatapacks();
-        for (String originTag : CustomOriginAPI.getCustomOriginTags()) {
+        CustomOriginAPI.removeUnzippedDatapacks();
+        CustomOriginAPI.unzipDatapacks();
+        CustomOriginAPI.loadCustomOrigins();
+        for (String originTag : CustomOriginAPI.getTags()) {
             if (GenesisDataFiles.getPlugCon().getString("console-dump-onstartup").equalsIgnoreCase("true")) {
-                getServer().getConsoleSender().sendMessage("[GenesisMC] Loaded \"" + CustomOriginAPI.getCustomOriginName(originTag) + "\"");
+                getServer().getConsoleSender().sendMessage("[GenesisMC] Loaded \"" + CustomOriginAPI.getOriginName(originTag) + "\"");
             }
         }
         if(CustomOriginAPI.getCustomOrigins().size() > 0){
@@ -244,7 +243,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         } catch (Exception ignored) { }
 
         //deletes origin files unzipped by Genesis
-        CustomOriginAPI.removeUnzippedOriginDatapacks();
+        CustomOriginAPI.removeUnzippedDatapacks();
     }
 
     //Load custom enchantments
