@@ -132,6 +132,7 @@ public class OriginStartHandler {
         getServer().getPluginManager().registerEvents(new LaunchAir(), getPlugin());
         getServer().getPluginManager().registerEvents(new GoldAmourBellow(), getPlugin());
         getServer().getPluginManager().registerEvents(new ArielCombat(), getPlugin());
+        getServer().getPluginManager().registerEvents(new Climbing(), getPlugin());
 
     }
 }
