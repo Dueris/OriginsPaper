@@ -1,12 +1,17 @@
 package me.dueris.genesismc.core.api.entity;
 
 import me.dueris.genesismc.core.GenesisMC;
+import me.dueris.genesismc.core.api.enums.OriginDataType;
+import me.dueris.genesismc.core.api.enums.OriginMenu;
+import me.dueris.genesismc.core.api.events.OriginChooseEvent;
+import me.dueris.genesismc.core.choosing.contents.MainMenuContents;
 import me.dueris.genesismc.core.utils.SendCharts;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -20,6 +25,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import static me.dueris.genesismc.core.choosing.ChoosingCORE.*;
+import static me.dueris.genesismc.core.choosing.contents.ChooseMenuContents.ChooseMenuContent;
+import static me.dueris.genesismc.core.choosing.contents.MainMenuContents.GenesisMainMenuContents;
+import static org.bukkit.Bukkit.getServer;
 import static org.bukkit.ChatColor.GRAY;
 
 public class OriginPlayer {
@@ -285,6 +293,65 @@ public class OriginPlayer {
             },1);
         }
         SendCharts.originPopularity(player);
+    }
+
+    public static void resetOriginData(Player player, OriginDataType type){
+        if(type.equals(OriginDataType.CAN_EXPLODE)){
+            player.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
+        } else if (type.equals(OriginDataType.PHANTOMIZED_ID)) {
+            player.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "phantomid"), PersistentDataType.INTEGER, 1);
+        } else if (type.equals(OriginDataType.ORIGINTAG)) {
+            player.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, "genesis:origin-null");
+        } else if (type.equals(OriginDataType.SHULKER_BOX_DATA)) {
+            player.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "shulker-box"), PersistentDataType.STRING, "");
+        } else if (type.equals(OriginDataType.TOGGLE)) {
+            player.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "toggle"), PersistentDataType.INTEGER, 1);
+        } else if (type.equals(OriginDataType.IN_PHANTOMIZED_FORM)) {
+            player.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
+        }
+
+    }
+
+    public static void setOriginData(Player player, OriginDataType type, int value){
+        if(type.equals(OriginDataType.CAN_EXPLODE)){
+            player.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, value);
+        } else if (type.equals(OriginDataType.PHANTOMIZED_ID)) {
+            player.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "phantomid"), PersistentDataType.INTEGER, value);
+        } else if (type.equals(OriginDataType.TOGGLE)) {
+            player.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "toggle"), PersistentDataType.INTEGER, value);
+        } else if (type.equals(OriginDataType.IN_PHANTOMIZED_FORM)) {
+            player.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, value);
+        }
+    }
+
+    public static void setOriginData(Player player, OriginDataType type, String value){
+        if (type.equals(OriginDataType.ORIGINTAG)) {
+            player.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, value);
+        } else if (type.equals(OriginDataType.SHULKER_BOX_DATA)) {
+            player.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "shulker-box"), PersistentDataType.STRING, value);
+        }
+    }
+
+    public static boolean hasChosen(Player player){
+        if(player.getScoreboardTags().contains("chosen")) return true;
+        return false;
+    }
+
+    public static void triggerChooseEvent(Player player){
+        OriginChooseEvent chooseEvent = new OriginChooseEvent(player);
+        getServer().getPluginManager().callEvent(chooseEvent);
+    }
+
+    public static void openOriginGUI(Player player, OriginMenu menu){
+        if(menu.equals(OriginMenu.CHOOSE_MAIN)){
+            @NotNull Inventory custommenu = Bukkit.createInventory(player, 54, "Choosing Menu");
+            custommenu.setContents(GenesisMainMenuContents(player));
+            player.openInventory(custommenu);
+        }else if(menu.equals(OriginMenu.CUSTOM_MAIN)){
+            @NotNull Inventory custommenu = Bukkit.createInventory(player, 54, "Custom Origins");
+            custommenu.setContents(ChooseMenuContent());
+            player.openInventory(custommenu);
+        }
     }
 
 }
