@@ -130,7 +130,7 @@ public class WaterDamage extends BukkitRunnable implements Listener {
 
                                 }
                             } else if (p.getHealth() <= basedamage && p.getHealth() != 0) {
-                                p.setHealth(curhealth - curhealth);
+                                p.setHealth(0.0f);
                             }
 
 
@@ -159,8 +159,7 @@ public class WaterDamage extends BukkitRunnable implements Listener {
 
     @EventHandler
     public void SplashEnderian(WaterBottleSplashEvent e){
-        if(e.getAffectedEntities() instanceof Player){
-            Player p = (Player) e.getAffectedEntities();
+        if(e.getAffectedEntities() instanceof Player p){
             if(water_vulnerability.contains(OriginPlayer.getOriginTag(p)));
             p.damage(5);
         }

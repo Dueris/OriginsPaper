@@ -11,9 +11,8 @@ public class CreeperIgnore implements Listener {
 
     @EventHandler
     public void OnTarget(EntityTargetEvent e) {
-        if (e.getEntity() instanceof Creeper && (e.getTarget() instanceof Player)) {
+        if (e.getEntity() instanceof Creeper && (e.getTarget() instanceof Player p)) {
 
-            Player p = (Player) e.getTarget();
             if (OriginPlayer.getOriginTag(p).equalsIgnoreCase("genesis:origin-creep")) {
                 e.setCancelled(true);
             }

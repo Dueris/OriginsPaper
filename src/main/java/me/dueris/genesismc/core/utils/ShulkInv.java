@@ -16,7 +16,7 @@ import java.util.ArrayList;
 
 public class ShulkInv implements CommandExecutor {
 
-  private ArrayList<SubCommand> subCommands = new ArrayList<>();
+  private final ArrayList<SubCommand> subCommands = new ArrayList<>();
   public ShulkInv(){
   }
 

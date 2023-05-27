@@ -21,8 +21,7 @@ import static me.dueris.genesismc.core.factory.powers.entity.BigLeap.leapToggle;
 public class ToggleCommand implements CommandExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        if (sender instanceof Player) {
-            Player p = (Player) sender;
+        if (sender instanceof Player p) {
             PersistentDataContainer data = p.getPersistentDataContainer();
             if (p.hasPermission("genesismc.origins.cmd.toggle")) {
 
@@ -33,7 +32,7 @@ public class ToggleCommand implements CommandExecutor {
                 if (big_leap_tick.contains(OriginPlayer.getOriginTag(p))) {
                     leapToggle(p);
                 } else if (false) {
-                    ; //add other origin toggles here like this
+                    //add other origin toggles here like this
                 } else {
                     p.sendMessage(ChatColor.RED + "Your origin does not have an ability that can be toggled");
                 }

@@ -38,73 +38,39 @@ public class OriginChooseEvent extends PlayerEvent {
     public boolean isOriginType(OriginType originType){
         @Nullable String origitag = getPlayer().getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
         if(originType.equals(OriginType.HUMAN)){
-            if(origitag.equalsIgnoreCase("genesis:origin-human")){
-                return true;
-            }
+            return origitag.equalsIgnoreCase("genesis:origin-human");
         } else if(originType.equals(OriginType.ENDERIAN)){
-            if(origitag.equalsIgnoreCase("genesis:origin-enderian")){
-                return true;
-            }
+            return origitag.equalsIgnoreCase("genesis:origin-enderian");
         } else if(originType.equals(OriginType.SHULK)){
-            if(origitag.equalsIgnoreCase("genesis:origin-shulk")){
-                return true;
-            }
+            return origitag.equalsIgnoreCase("genesis:origin-shulk");
         } else if(originType.equals(OriginType.ARACHNID)){
-            if(origitag.equalsIgnoreCase("genesis:origin-arachnid")){
-                return true;
-            }
+            return origitag.equalsIgnoreCase("genesis:origin-arachnid");
         } else if(originType.equals(OriginType.CREEP)){
-            if(origitag.equalsIgnoreCase("genesis:origin-creep")){
-                return true;
-            }
+            return origitag.equalsIgnoreCase("genesis:origin-creep");
         } else if(originType.equals(OriginType.PHANTOM)){
-            if(origitag.equalsIgnoreCase("genesis:origin-phantom")){
-                return true;
-            }
+            return origitag.equalsIgnoreCase("genesis:origin-phantom");
         } else if(originType.equals(OriginType.SLIMELING)){
-            if(origitag.equalsIgnoreCase("genesis:origin-slimeling")){
-                return true;
-            }
+            return origitag.equalsIgnoreCase("genesis:origin-slimeling");
         } else if(originType.equals(OriginType.VEXIAN)){
-            if(origitag.equalsIgnoreCase("genesis:origin-vexian")){
-                return true;
-            }
+            return origitag.equalsIgnoreCase("genesis:origin-vexian");
         } else if(originType.equals(OriginType.BLAZEBORN)){
-            if(origitag.equalsIgnoreCase("genesis:origin-blazeborn")){
-                return true;
-            }
+            return origitag.equalsIgnoreCase("genesis:origin-blazeborn");
         } else if(originType.equals(OriginType.STARBORNE)){
-            if(origitag.equalsIgnoreCase("genesis:origin-starborne")){
-                return true;
-            }
+            return origitag.equalsIgnoreCase("genesis:origin-starborne");
         } else if(originType.equals(OriginType.MERLING)){
-            if(origitag.equalsIgnoreCase("genesis:origin-merling")){
-                return true;
-            }
+            return origitag.equalsIgnoreCase("genesis:origin-merling");
         } else if(originType.equals(OriginType.ALLAY)){
-            if(origitag.equalsIgnoreCase("genesis:origin-allay")){
-                return true;
-            }
+            return origitag.equalsIgnoreCase("genesis:origin-allay");
         } else if(originType.equals(OriginType.RABBIT)){
-            if(origitag.equalsIgnoreCase("genesis:origin-rabbit")){
-                return true;
-            }
+            return origitag.equalsIgnoreCase("genesis:origin-rabbit");
         } else if(originType.equals(OriginType.ELYTRIAN)){
-            if(origitag.equalsIgnoreCase("genesis:origin-elytrian")){
-                return true;
-            }
+            return origitag.equalsIgnoreCase("genesis:origin-elytrian");
         } else if(originType.equals(OriginType.PIGLIN)){
-            if(origitag.equalsIgnoreCase("genesis:origin-piglin")){
-                return true;
-            }
+            return origitag.equalsIgnoreCase("genesis:origin-piglin");
         } else if(originType.equals(OriginType.AVIAN)){
-            if(origitag.equalsIgnoreCase("genesis:origin-avian")){
-                return true;
-            }
+            return origitag.equalsIgnoreCase("genesis:origin-avian");
         } else if(originType.equals(OriginType.SCULK)){
-            if(origitag.equalsIgnoreCase("genesis:origin-sculk")){
-                return true;
-            }
+            return origitag.equalsIgnoreCase("genesis:origin-sculk");
         }
         return false;
     }

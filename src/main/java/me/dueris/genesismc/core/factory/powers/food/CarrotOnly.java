@@ -16,7 +16,7 @@ public class CarrotOnly implements Listener {
         if (carrot_only.contains(OriginPlayer.getOriginTag(e.getPlayer()))) {
             @NotNull ItemStack item = e.getItem();
 
-            if (item == null) return;;
+            if (item == null) return;
             if (!item.getType().isEdible()) return;
 
             if (!(item.getType() == Material.CARROT || item.getType() == Material.GOLDEN_CARROT)) {

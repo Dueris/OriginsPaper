@@ -12,6 +12,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.Arrays;
+import java.util.List;
 
 import static me.dueris.genesismc.core.GenesisMC.waterProtectionEnchant;
 
@@ -35,7 +36,7 @@ public class WaterProtAnvil implements Listener {
                         level = "I";
                         meta = e.getResult().getItemMeta();
                         meta.setCustomModelData(1);
-                        e.getResult().setLore(Arrays.asList(ChatColor.GRAY + "Water Protection " + level));
+                        e.getResult().setLore(List.of(ChatColor.GRAY + "Water Protection " + level));
                         e.getResult().addUnsafeEnchantment(GenesisMC.waterProtectionEnchant, 1);
                     } else if (first.getLore().contains(ChatColor.GRAY + "Water Protection II")) {
                         retype = first.getType();
@@ -43,7 +44,7 @@ public class WaterProtAnvil implements Listener {
                         level = "II";
                         meta = e.getResult().getItemMeta();
                         meta.setCustomModelData(2);
-                        e.getResult().setLore(Arrays.asList(ChatColor.GRAY + "Water Protection " + level));
+                        e.getResult().setLore(List.of(ChatColor.GRAY + "Water Protection " + level));
                         e.getResult().addUnsafeEnchantment(GenesisMC.waterProtectionEnchant, 2);
                     } else if (first.getLore().contains(ChatColor.GRAY + "Water Protection III")) {
                         retype = first.getType();
@@ -51,7 +52,7 @@ public class WaterProtAnvil implements Listener {
                         level = "III";
                         meta = e.getResult().getItemMeta();
                         meta.setCustomModelData(3);
-                        e.getResult().setLore(Arrays.asList(ChatColor.GRAY + "Water Protection " + level));
+                        e.getResult().setLore(List.of(ChatColor.GRAY + "Water Protection " + level));
                         e.getResult().addUnsafeEnchantment(GenesisMC.waterProtectionEnchant, 3);
                         p.sendMessage("1.3");
                     } else if (first.getLore().contains(ChatColor.GRAY + "Water Protection IV")) {
@@ -60,7 +61,7 @@ public class WaterProtAnvil implements Listener {
                         level = "IV";
                         meta = e.getResult().getItemMeta();
                         meta.setCustomModelData(4);
-                        e.getResult().setLore(Arrays.asList(ChatColor.GRAY + "Water Protection " + level));
+                        e.getResult().setLore(List.of(ChatColor.GRAY + "Water Protection " + level));
                         e.getResult().addUnsafeEnchantment(GenesisMC.waterProtectionEnchant, 4);
                         p.sendMessage("1.4");
                     }
@@ -77,26 +78,26 @@ public class WaterProtAnvil implements Listener {
                         level = "I";
                         meta = e.getResult().getItemMeta();
                         meta.setCustomModelData(1);
-                        e.getResult().setLore(Arrays.asList(ChatColor.GRAY + "Water Protection " + level));
+                        e.getResult().setLore(List.of(ChatColor.GRAY + "Water Protection " + level));
                         e.getResult().addUnsafeEnchantment(GenesisMC.waterProtectionEnchant, 1);
                     } else if (second.getLore().contains(ChatColor.GRAY + "Water Protection II")) {
                         level = "II";
                         meta = e.getResult().getItemMeta();
                         meta.setCustomModelData(2);
-                        e.getResult().setLore(Arrays.asList(ChatColor.GRAY + "Water Protection " + level));
+                        e.getResult().setLore(List.of(ChatColor.GRAY + "Water Protection " + level));
                         e.getResult().addUnsafeEnchantment(GenesisMC.waterProtectionEnchant, 2);
                     } else if (second.getLore().contains(ChatColor.GRAY + "Water Protection III")) {
                         level = "III";
                         meta = e.getResult().getItemMeta();
                         meta.setCustomModelData(3);
-                        e.getResult().setLore(Arrays.asList(ChatColor.GRAY + "Water Protection " + level));
+                        e.getResult().setLore(List.of(ChatColor.GRAY + "Water Protection " + level));
                         e.getResult().addUnsafeEnchantment(GenesisMC.waterProtectionEnchant, 3);
                         p.sendMessage("2.3");
                     } else if (second.getLore().contains(ChatColor.GRAY + "Water Protection IV")) {
                         level = "IV";
                         meta = e.getResult().getItemMeta();
                         meta.setCustomModelData(4);
-                        e.getResult().setLore(Arrays.asList(ChatColor.GRAY + "Water Protection " + level));
+                        e.getResult().setLore(List.of(ChatColor.GRAY + "Water Protection " + level));
                         e.getResult().addUnsafeEnchantment(GenesisMC.waterProtectionEnchant, 4);
                         p.sendMessage("2.4");
                     }
@@ -112,7 +113,7 @@ public class WaterProtAnvil implements Listener {
                     level = "II";
                     meta = e.getResult().getItemMeta();
                     meta.setCustomModelData(2);
-                    e.getResult().setLore(Arrays.asList(ChatColor.GRAY + "Water Protection " + level));
+                    e.getResult().setLore(List.of(ChatColor.GRAY + "Water Protection " + level));
                     e.getResult().addUnsafeEnchantment(GenesisMC.waterProtectionEnchant, 2);
                 }
             } else if (second.getLore().contains(ChatColor.GRAY + "Water Protection II")) {
@@ -120,7 +121,7 @@ public class WaterProtAnvil implements Listener {
                     level = "III";
                     meta = e.getResult().getItemMeta();
                     meta.setCustomModelData(3);
-                    e.getResult().setLore(Arrays.asList(ChatColor.GRAY + "Water Protection " + level));
+                    e.getResult().setLore(List.of(ChatColor.GRAY + "Water Protection " + level));
                     e.getResult().addUnsafeEnchantment(GenesisMC.waterProtectionEnchant, 3);
                 }
             } else if (second.getLore().contains(ChatColor.GRAY + "Water Protection III")) {
@@ -128,7 +129,7 @@ public class WaterProtAnvil implements Listener {
                     level = "IV";
                     meta = e.getResult().getItemMeta();
                     meta.setCustomModelData(4);
-                    e.getResult().setLore(Arrays.asList(ChatColor.GRAY + "Water Protection " + level));
+                    e.getResult().setLore(List.of(ChatColor.GRAY + "Water Protection " + level));
                     e.getResult().addUnsafeEnchantment(GenesisMC.waterProtectionEnchant, 4);
                 }
 
@@ -137,7 +138,7 @@ public class WaterProtAnvil implements Listener {
                 level = "IV";
                 meta = e.getResult().getItemMeta();
                 meta.setCustomModelData(4);
-                e.getResult().setLore(Arrays.asList(ChatColor.GRAY + "Water Protection " + level));
+                e.getResult().setLore(List.of(ChatColor.GRAY + "Water Protection " + level));
                 e.getResult().addUnsafeEnchantment(GenesisMC.waterProtectionEnchant, 4);
                 p.sendMessage("3.4");
             }
@@ -150,7 +151,7 @@ public class WaterProtAnvil implements Listener {
                 level = "I";
                 meta = e.getResult().getItemMeta();
                 meta.setCustomModelData(1);
-                e.getResult().setLore(Arrays.asList(ChatColor.GRAY + "Water Protection " + level));
+                e.getResult().setLore(List.of(ChatColor.GRAY + "Water Protection " + level));
                 e.getResult().addUnsafeEnchantment(GenesisMC.waterProtectionEnchant, 1);
             } else if (first.getLore().contains(ChatColor.GRAY + "Water Protection II")) {
                 retype = first.getType();
@@ -158,7 +159,7 @@ public class WaterProtAnvil implements Listener {
                 level = "II";
                 meta = e.getResult().getItemMeta();
                 meta.setCustomModelData(2);
-                e.getResult().setLore(Arrays.asList(ChatColor.GRAY + "Water Protection " + level));
+                e.getResult().setLore(List.of(ChatColor.GRAY + "Water Protection " + level));
                 e.getResult().addUnsafeEnchantment(GenesisMC.waterProtectionEnchant, 2);
             } else if (first.getLore().contains(ChatColor.GRAY + "Water Protection III")) {
                 retype = first.getType();
@@ -166,7 +167,7 @@ public class WaterProtAnvil implements Listener {
                 level = "III";
                 meta = e.getResult().getItemMeta();
                 meta.setCustomModelData(3);
-                e.getResult().setLore(Arrays.asList(ChatColor.GRAY + "Water Protection " + level));
+                e.getResult().setLore(List.of(ChatColor.GRAY + "Water Protection " + level));
                 e.getResult().addUnsafeEnchantment(GenesisMC.waterProtectionEnchant, 3);
             } else if (first.getLore().contains(ChatColor.GRAY + "Water Protection IV")) {
                 retype = first.getType();
@@ -174,7 +175,7 @@ public class WaterProtAnvil implements Listener {
                 level = "IV";
                 meta = e.getResult().getItemMeta();
                 meta.setCustomModelData(4);
-                e.getResult().setLore(Arrays.asList(ChatColor.GRAY + "Water Protection " + level));
+                e.getResult().setLore(List.of(ChatColor.GRAY + "Water Protection " + level));
                 e.getResult().addUnsafeEnchantment(GenesisMC.waterProtectionEnchant, 4);
             }
         }
@@ -184,25 +185,25 @@ public class WaterProtAnvil implements Listener {
                 level = "I";
                 meta = e.getResult().getItemMeta();
                 meta.setCustomModelData(1);
-                e.getResult().setLore(Arrays.asList(ChatColor.GRAY + "Water Protection I"));
+                e.getResult().setLore(List.of(ChatColor.GRAY + "Water Protection I"));
                 e.getResult().addUnsafeEnchantment(GenesisMC.waterProtectionEnchant, 1);
             } else if (second.getLore().contains(ChatColor.GRAY + "Water Protection II")) {
                 level = "II";
                 meta = e.getResult().getItemMeta();
                 meta.setCustomModelData(2);
-                e.getResult().setLore(Arrays.asList(ChatColor.GRAY + "Water Protection II"));
+                e.getResult().setLore(List.of(ChatColor.GRAY + "Water Protection II"));
                 e.getResult().addUnsafeEnchantment(GenesisMC.waterProtectionEnchant, 2);
             } else if (second.getLore().contains(ChatColor.GRAY + "Water Protection III")) {
                 level = "III";
                 meta = e.getResult().getItemMeta();
                 meta.setCustomModelData(3);
-                e.getResult().setLore(Arrays.asList(ChatColor.GRAY + "Water Protection III"));
+                e.getResult().setLore(List.of(ChatColor.GRAY + "Water Protection III"));
                 e.getResult().addUnsafeEnchantment(GenesisMC.waterProtectionEnchant, 3);
             } else if (second.getLore().contains(ChatColor.GRAY + "Water Protection IV")) {
                 level = "IV";
                 meta = e.getResult().getItemMeta();
                 meta.setCustomModelData(4);
-                e.getResult().setLore(Arrays.asList(ChatColor.GRAY + "Water Protection VI"));
+                e.getResult().setLore(List.of(ChatColor.GRAY + "Water Protection VI"));
                 e.getResult().addUnsafeEnchantment(GenesisMC.waterProtectionEnchant, 4);
             }
         }

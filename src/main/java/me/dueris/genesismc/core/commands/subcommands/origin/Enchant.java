@@ -8,6 +8,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.Arrays;
 import java.util.EnumSet;
+import java.util.List;
 
 import static me.dueris.genesismc.core.GenesisMC.waterProtectionEnchant;
 
@@ -38,38 +39,38 @@ public class Enchant extends SubCommand {
                     String level = "I";
                     ItemMeta meta = p.getInventory().getItemInMainHand().getItemMeta();
                     meta.setCustomModelData(1);
-                    p.getInventory().getItemInMainHand().setLore(Arrays.asList(ChatColor.GRAY + "Water Protection " + level));
+                    p.getInventory().getItemInMainHand().setLore(List.of(ChatColor.GRAY + "Water Protection " + level));
                     p.getInventory().getItemInMainHand().addUnsafeEnchantment(waterProtectionEnchant, 1);
                 } else if (args.length == 3) {
                     if (args[2].equalsIgnoreCase("1")) {
                         String level = "I";
                         ItemMeta meta = p.getInventory().getItemInMainHand().getItemMeta();
                         meta.setCustomModelData(1);
-                        p.getInventory().getItemInMainHand().setLore(Arrays.asList(ChatColor.GRAY + "Water Protection " + level));
+                        p.getInventory().getItemInMainHand().setLore(List.of(ChatColor.GRAY + "Water Protection " + level));
                         p.getInventory().getItemInMainHand().addUnsafeEnchantment(waterProtectionEnchant, 1);
                     } else if (args[2].equalsIgnoreCase("2")) {
                         String level = "II";
                         ItemMeta meta = p.getInventory().getItemInMainHand().getItemMeta();
                         meta.setCustomModelData(2);
-                        p.getInventory().getItemInMainHand().setLore(Arrays.asList(ChatColor.GRAY + "Water Protection " + level));
+                        p.getInventory().getItemInMainHand().setLore(List.of(ChatColor.GRAY + "Water Protection " + level));
                         p.getInventory().getItemInMainHand().addUnsafeEnchantment(waterProtectionEnchant, 2);
                     } else if (args[2].equalsIgnoreCase("3")) {
                         String level = "III";
                         ItemMeta meta = p.getInventory().getItemInMainHand().getItemMeta();
                         meta.setCustomModelData(3);
-                        p.getInventory().getItemInMainHand().setLore(Arrays.asList(ChatColor.GRAY + "Water Protection " + level));
+                        p.getInventory().getItemInMainHand().setLore(List.of(ChatColor.GRAY + "Water Protection " + level));
                         p.getInventory().getItemInMainHand().addUnsafeEnchantment(waterProtectionEnchant, 3);
                     } else if (args[2].equalsIgnoreCase("4")) {
                         String level = "IV";
                         ItemMeta meta = p.getInventory().getItemInMainHand().getItemMeta();
                         meta.setCustomModelData(4);
-                        p.getInventory().getItemInMainHand().setLore(Arrays.asList(ChatColor.GRAY + "Water Protection " + level));
+                        p.getInventory().getItemInMainHand().setLore(List.of(ChatColor.GRAY + "Water Protection " + level));
                         p.getInventory().getItemInMainHand().addUnsafeEnchantment(waterProtectionEnchant, 4);
                     } else {
-                        p.sendMessage(ChatColor.RED + "Unable to add " + args[1].toString() + " to item because the level is too big.");
+                        p.sendMessage(ChatColor.RED + "Unable to add " + args[1] + " to item because the level is too big.");
                     }
                 } else {
-                    p.sendMessage(ChatColor.RED + "Unable to add " + args[1].toString() + " to item.");
+                    p.sendMessage(ChatColor.RED + "Unable to add " + args[1] + " to item.");
                 }
 
             } else {

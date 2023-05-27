@@ -29,7 +29,7 @@ public class KeybindHandler implements Listener {
 
     @EventHandler
     public void OnPressMainKey(PlayerSwapHandItemsEvent e) {
-        Player p = (Player) e.getPlayer();
+        Player p = e.getPlayer();
         if (Bukkit.getServer().getPluginManager().isPluginEnabled("Geyser-Spigot")) {
             if (!GeyserApi.api().isBedrockPlayer(p.getUniqueId())) {
 

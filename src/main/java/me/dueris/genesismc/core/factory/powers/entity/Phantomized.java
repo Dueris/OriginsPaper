@@ -118,8 +118,7 @@ public class Phantomized extends BukkitRunnable implements Listener {
 
     @EventHandler
     public void RemoveCold(EntityDamageEvent e){
-        if(e.getEntity() instanceof Player) {
-            Player p = (Player) e.getEntity();
+        if(e.getEntity() instanceof Player p) {
             PersistentDataContainer data = p.getPersistentDataContainer();
             int phantomid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER);
             if (phantomize.contains(OriginPlayer.getOriginTag(p)) && phantomid == 2) {
@@ -288,9 +287,7 @@ public class Phantomized extends BukkitRunnable implements Listener {
         spectatorswitch.setItemMeta(switch_meta);
 
         Player p = e.getPlayer();
-        if (e.getDrops().contains(spectatorswitch)) {
-            e.getDrops().remove(spectatorswitch);
-        }
+        e.getDrops().remove(spectatorswitch);
     }
 
 }

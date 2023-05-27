@@ -19,8 +19,8 @@ import static me.dueris.genesismc.core.factory.powers.Powers.silk_touch;
 import static org.bukkit.Bukkit.getServer;
 
 public class SilkTouch implements Listener {
-  private static EnumSet<Material> m;
-  private static EnumSet<Material> tools;
+  private static final EnumSet<Material> m;
+  private static final EnumSet<Material> tools;
 
   @EventHandler
   public void onBlockBreak(BlockBreakEvent e) {

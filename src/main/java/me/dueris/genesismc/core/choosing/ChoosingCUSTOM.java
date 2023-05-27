@@ -225,7 +225,7 @@ public class ChoosingCUSTOM implements Listener {
                 }
             }
         }
-        if (strings.isEmpty()) return Arrays.asList(string);
+        if (strings.isEmpty()) return List.of(string);
         strings.add(string);
         return strings.stream().toList();
     }

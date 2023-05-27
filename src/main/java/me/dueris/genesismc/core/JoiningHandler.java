@@ -125,15 +125,11 @@ public class JoiningHandler implements Listener {
                 UUID uuid = p.getUniqueId();
                 GeyserConnection connection = GeyserApi.api().connectionByUuid(p.getUniqueId());
                 if (GeyserApi.api().isBedrockPlayer(p.getUniqueId()) || FloodgateAPI.isFloodgatePlayer(uuid)) {
-                    if (!p.getScoreboardTags().contains("geyser_player")) {
-                        p.getScoreboardTags().add("geyser_player");
-                    }
+                    p.getScoreboardTags().add("geyser_player");
                 }
             }
             if (GeyserApi.api().isBedrockPlayer(p.getUniqueId())) {
-                if (!p.getScoreboardTags().contains("geyser_player")) {
-                    p.getScoreboardTags().add("geyser_player");
-                }
+                p.getScoreboardTags().add("geyser_player");
             } else {
                 if (p.getScoreboardTags().contains("texture_pack")) {
                     p.setTexturePack("https://drive.google.com/uc?export=download&id=1mLpqQ233C7ZbMIjrdY13ZpFI8tcUTBH2");

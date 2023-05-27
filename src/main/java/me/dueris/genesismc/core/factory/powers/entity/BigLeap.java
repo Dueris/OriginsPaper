@@ -22,10 +22,10 @@ import static me.dueris.genesismc.core.factory.powers.Powers.big_leap_tick;
 
 public class BigLeap implements Listener {
 
-    private static HashMap<UUID, Integer> cooldownBefore = new HashMap<>();
-    private static HashMap<UUID, Long> cooldownAfter = new HashMap<>();
-    private static HashMap<UUID, Boolean> playSound = new HashMap<>();
-    private static ArrayList<UUID> inAir = new ArrayList<>();
+    private static final HashMap<UUID, Integer> cooldownBefore = new HashMap<>();
+    private static final HashMap<UUID, Long> cooldownAfter = new HashMap<>();
+    private static final HashMap<UUID, Boolean> playSound = new HashMap<>();
+    private static final ArrayList<UUID> inAir = new ArrayList<>();
 
 
     public static boolean leapToggle(Player p) {

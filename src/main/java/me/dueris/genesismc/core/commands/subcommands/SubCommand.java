@@ -9,6 +9,6 @@ public abstract class SubCommand {
 
     public abstract String getSyntax();
 
-    public abstract void perform(Player p, String args[]);
+    public abstract void perform(Player p, String[] args);
 
 }

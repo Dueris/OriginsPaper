@@ -14,7 +14,7 @@ public class GenesisCommandManager implements CommandExecutor {
 
     //key = uuid of player
     //long = epoch time of when ran command
-    private ArrayList<SubCommand> subCommands = new ArrayList<>();
+    private final ArrayList<SubCommand> subCommands = new ArrayList<>();
     public GenesisCommandManager(){
         subCommands.add(new Enchant());
         subCommands.add(new References());
@@ -30,8 +30,7 @@ public class GenesisCommandManager implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (sender instanceof Player){
-            Player p = (Player) sender;
+        if (sender instanceof Player p){
             if (args.length > 0){
                 for (int i = 0; i < getSubCommands().size(); i++){
                     if (args[0].equalsIgnoreCase(getSubCommands().get(i).getName())){

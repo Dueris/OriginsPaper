@@ -52,10 +52,7 @@ public class DataContainer implements Listener {
 
       Arrays.stream(e.getInventory().getContents())
               .filter(itemStack -> {
-                if (itemStack == null){
-                  return false;
-                }
-                return true;
+                return itemStack != null;
               })
               .forEach(itemStack -> prunedItems.add(itemStack));
 

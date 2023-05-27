@@ -64,8 +64,7 @@ public class FlightElytra implements Listener {
 
     @EventHandler
     public void ElytraDamageHandler(EntityDamageEvent e){
-        if(e.getEntity() instanceof Player){
-            Player p = (Player) e.getEntity();
+        if(e.getEntity() instanceof Player p){
             if (elytra.contains(OriginPlayer.getOriginTag(p))) {
                 if(glidingPlayers.contains(p.getUniqueId())) {
                     if (e.getCause().equals(EntityDamageEvent.DamageCause.FLY_INTO_WALL) || e.getCause().equals(EntityDamageEvent.DamageCause.CONTACT)) {

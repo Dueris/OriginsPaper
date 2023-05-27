@@ -20,7 +20,7 @@ public class FelinePhobia extends BukkitRunnable {
             List<Entity> nearby2 = p.getNearbyEntities(3, 3, 3);
             for (Entity tmp : nearby2)
                 if (tmp instanceof Cat)
-                    ((Damageable) p).damage(1);
+                    p.damage(1);
         }
       }
 

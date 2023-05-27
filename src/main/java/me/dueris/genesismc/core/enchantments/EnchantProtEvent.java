@@ -11,10 +11,7 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.EnumSet;
-import java.util.Random;
+import java.util.*;
 
 import static me.dueris.genesismc.core.GenesisMC.waterProtectionEnchant;
 import static org.bukkit.Material.ENDER_PEARL;
@@ -31,7 +28,7 @@ public class EnchantProtEvent implements Listener {
         int r5 = random.nextInt(43);
         int beta = random.nextInt(2);
         if (wearable.contains(e.getItem().getType())) {
-            if (r10 == (int) 1 || r10 == (int) 2 || r10 == (int) 3 || r10 == (int) 4 || r10 == (int) 5 || r10 == (int) 6 || r10 == (int) 7 || r10 == (int) 8 || r10 == (int) 9 || r10 == (int) 10) {
+            if (r10 == 1 || r10 == 2 || r10 == 3 || r10 == 4 || r10 == 5 || r10 == 6 || r10 == 7 || r10 == 8 || r10 == 9 || r10 == 10) {
 
                 if(r4 >= 45){
                     e.getEnchantsToAdd().remove(e.getEnchantsToAdd());
@@ -39,7 +36,7 @@ public class EnchantProtEvent implements Listener {
                         String level = "I";
                         ItemMeta meta = e.getItem().getItemMeta();
                         meta.setCustomModelData(1);
-                        e.getItem().setLore(Arrays.asList(ChatColor.GRAY + "Water Protection " + level));
+                        e.getItem().setLore(List.of(ChatColor.GRAY + "Water Protection " + level));
                         e.getItem().addUnsafeEnchantment(waterProtectionEnchant, 1);
                         int basexp = e.getExpLevelCost();
                         e.setExpLevelCost(basexp + 2);
@@ -48,7 +45,7 @@ public class EnchantProtEvent implements Listener {
                         String level = "II";
                         ItemMeta meta = e.getItem().getItemMeta();
                         meta.setCustomModelData(2);
-                        e.getItem().setLore(Arrays.asList(ChatColor.GRAY + "Water Protection " + level));
+                        e.getItem().setLore(List.of(ChatColor.GRAY + "Water Protection " + level));
                         e.getItem().addUnsafeEnchantment(waterProtectionEnchant, 2);
                         int basexp = e.getExpLevelCost();
                         e.setExpLevelCost(basexp + 3);
@@ -56,7 +53,7 @@ public class EnchantProtEvent implements Listener {
                         String level = "III";
                         ItemMeta meta = e.getItem().getItemMeta();
                         meta.setCustomModelData(3);
-                        e.getItem().setLore(Arrays.asList(ChatColor.GRAY + "Water Protection " + level));
+                        e.getItem().setLore(List.of(ChatColor.GRAY + "Water Protection " + level));
                         e.getItem().addUnsafeEnchantment(waterProtectionEnchant, 3);
                         int basexp = e.getExpLevelCost();
                         e.setExpLevelCost(basexp + 4);
@@ -64,7 +61,7 @@ public class EnchantProtEvent implements Listener {
                         String level = "IV";
                         ItemMeta meta = e.getItem().getItemMeta();
                         meta.setCustomModelData(4);
-                        e.getItem().setLore(Arrays.asList(ChatColor.GRAY + "Water Protection " + level));
+                        e.getItem().setLore(List.of(ChatColor.GRAY + "Water Protection " + level));
                         e.getItem().addUnsafeEnchantment(waterProtectionEnchant, 4);
                         int basexp = e.getExpLevelCost();
                         e.setExpLevelCost(basexp + 6);
@@ -76,7 +73,7 @@ public class EnchantProtEvent implements Listener {
                     String level = "I";
                     ItemMeta meta = e.getItem().getItemMeta();
                     meta.setCustomModelData(1);
-                    e.getItem().setLore(Arrays.asList(ChatColor.GRAY + "Water Protection " + level));
+                    e.getItem().setLore(List.of(ChatColor.GRAY + "Water Protection " + level));
                     e.getItem().addUnsafeEnchantment(waterProtectionEnchant, 1);
                     int basexp = e.getExpLevelCost();
                     e.setExpLevelCost(basexp + 2);
@@ -85,7 +82,7 @@ public class EnchantProtEvent implements Listener {
                     String level = "II";
                     ItemMeta meta = e.getItem().getItemMeta();
                     meta.setCustomModelData(2);
-                    e.getItem().setLore(Arrays.asList(ChatColor.GRAY + "Water Protection " + level));
+                    e.getItem().setLore(List.of(ChatColor.GRAY + "Water Protection " + level));
                     e.getItem().addUnsafeEnchantment(waterProtectionEnchant, 2);
                     int basexp = e.getExpLevelCost();
                     e.setExpLevelCost(basexp + 3);
@@ -93,7 +90,7 @@ public class EnchantProtEvent implements Listener {
                     String level = "III";
                     ItemMeta meta = e.getItem().getItemMeta();
                     meta.setCustomModelData(3);
-                    e.getItem().setLore(Arrays.asList(ChatColor.GRAY + "Water Protection " + level));
+                    e.getItem().setLore(List.of(ChatColor.GRAY + "Water Protection " + level));
                     e.getItem().addUnsafeEnchantment(waterProtectionEnchant, 3);
                     int basexp = e.getExpLevelCost();
                     e.setExpLevelCost(basexp + 4);
@@ -101,7 +98,7 @@ public class EnchantProtEvent implements Listener {
                     String level = "IV";
                     ItemMeta meta = e.getItem().getItemMeta();
                     meta.setCustomModelData(4);
-                    e.getItem().setLore(Arrays.asList(ChatColor.GRAY + "Water Protection " + level));
+                    e.getItem().setLore(List.of(ChatColor.GRAY + "Water Protection " + level));
                     e.getItem().addUnsafeEnchantment(waterProtectionEnchant, 4);
                     int basexp = e.getExpLevelCost();
                     e.setExpLevelCost(basexp + 6);
@@ -110,12 +107,12 @@ public class EnchantProtEvent implements Listener {
 
             }
         } else if(e.getItem().getType().equals(Material.BOOK)){
-            if (r10 == (int) 1 || r10 == (int) 2 || r10 == (int) 3 || r10 == (int) 4 || r10 == (int) 5 || r10 == (int) 6 || r10 == (int) 7 || r10 == (int) 8 || r10 == (int) 9 || r10 == (int) 10) {
+            if (r10 == 1 || r10 == 2 || r10 == 3 || r10 == 4 || r10 == 5 || r10 == 6 || r10 == 7 || r10 == 8 || r10 == 9 || r10 == 10) {
                 if (r4 == 1 || r4 == 14 || r4 == 5 || r4 == 17 || r4 == 18 || r4 == 19 || r4 == 20 || r4 == 21 || r4 == 22 || r4 == 23 || r4 == 24 || r4 == 25 || r4 == 26 || r4 == 27 || r4 == 28 || r4 == 29 || r4 == 30) {
                     String level = "I";
                     ItemMeta meta = e.getItem().getItemMeta();
                     meta.setCustomModelData(1);
-                    e.getItem().setLore(Arrays.asList(ChatColor.GRAY + "Water Protection " + level));
+                    e.getItem().setLore(List.of(ChatColor.GRAY + "Water Protection " + level));
                     e.getItem().addUnsafeEnchantment(waterProtectionEnchant, 1);
                     int basexp = e.getExpLevelCost();
                     e.setExpLevelCost(basexp + 2);
@@ -124,7 +121,7 @@ public class EnchantProtEvent implements Listener {
                     String level = "II";
                     ItemMeta meta = e.getItem().getItemMeta();
                     meta.setCustomModelData(2);
-                    e.getItem().setLore(Arrays.asList(ChatColor.GRAY + "Water Protection " + level));
+                    e.getItem().setLore(List.of(ChatColor.GRAY + "Water Protection " + level));
                     e.getItem().addUnsafeEnchantment(waterProtectionEnchant, 2);
                     int basexp = e.getExpLevelCost();
                     e.setExpLevelCost(basexp + 3);
@@ -132,7 +129,7 @@ public class EnchantProtEvent implements Listener {
                     String level = "III";
                     ItemMeta meta = e.getItem().getItemMeta();
                     meta.setCustomModelData(3);
-                    e.getItem().setLore(Arrays.asList(ChatColor.GRAY + "Water Protection " + level));
+                    e.getItem().setLore(List.of(ChatColor.GRAY + "Water Protection " + level));
                     e.getItem().addUnsafeEnchantment(waterProtectionEnchant, 3);
                     int basexp = e.getExpLevelCost();
                     e.setExpLevelCost(basexp + 4);
@@ -140,7 +137,7 @@ public class EnchantProtEvent implements Listener {
                     String level = "IV";
                     ItemMeta meta = e.getItem().getItemMeta();
                     meta.setCustomModelData(4);
-                    e.getItem().setLore(Arrays.asList(ChatColor.GRAY + "Water Protection " + level));
+                    e.getItem().setLore(List.of(ChatColor.GRAY + "Water Protection " + level));
                     e.getItem().addUnsafeEnchantment(waterProtectionEnchant, 4);
                     int basexp = e.getExpLevelCost();
                     e.setExpLevelCost(basexp + 6);

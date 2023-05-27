@@ -34,7 +34,7 @@ public class ExplodeTick implements Listener {
 
             cooldown.remove(p.getUniqueId());
             new BukkitRunnable() {
-                Material block = e.getPlayer().getLocation().getBlock().getType();
+                final Material block = e.getPlayer().getLocation().getBlock().getType();
 
                 @Override
                 public void run() {

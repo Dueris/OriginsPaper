@@ -19,13 +19,11 @@ import static org.bukkit.Material.COBWEB;
 
 public class Webbing implements Listener {
 
-    private static HashMap<UUID, Boolean> canWeb =new HashMap<>();
+    private static final HashMap<UUID, Boolean> canWeb =new HashMap<>();
 
     @EventHandler
     public void WebMaster(EntityDamageByEntityEvent e) {
-        if (e.getDamager() instanceof Player) {
-            Player p = (Player) e.getDamager();
-
+        if (e.getDamager() instanceof Player p) {
 
 
             if (!canWeb.containsKey(p.getUniqueId())) canWeb.put(p.getUniqueId(), Boolean.TRUE);

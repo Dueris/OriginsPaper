@@ -220,9 +220,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
             HashMap<NamespacedKey, Enchantment> byKey = (HashMap<NamespacedKey, Enchantment>) keyField.get(null);
 
             for (Enchantment enchantment : custom_enchants){
-                if(byKey.containsKey(enchantment.getKey())) {
-                    byKey.remove(enchantment.getKey());
-                }
+                byKey.remove(enchantment.getKey());
             }
 
             Field nameField = Enchantment.class.getDeclaredField("byName");
@@ -232,9 +230,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
             HashMap<String, Enchantment> byName = (HashMap<String, Enchantment>) nameField.get(null);
 
             for (Enchantment enchantment : custom_enchants){
-                if(byName.containsKey(enchantment.getName())) {
-                    byName.remove(enchantment.getName());
-                }
+                byName.remove(enchantment.getName());
             }
         } catch (Exception ignored) { }
 

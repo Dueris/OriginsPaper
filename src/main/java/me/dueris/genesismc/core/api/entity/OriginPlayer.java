@@ -25,10 +25,7 @@ import static org.bukkit.ChatColor.GRAY;
 public class OriginPlayer {
 
     public static boolean hasChosenOrigin(Player player){
-        if(OriginPlayer.getOriginTag(player).equalsIgnoreCase("")) {return false;}
-        else{
-            return true;
-        }
+        return !OriginPlayer.getOriginTag(player).equalsIgnoreCase("");
     }
 
     public static void removeArmor(Player player, EquipmentSlot slot) {
@@ -76,10 +73,7 @@ public class OriginPlayer {
         PersistentDataContainer data = player.getPersistentDataContainer();
         @Nullable String origin = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
         if(origin.equalsIgnoreCase("")) return false;
-        if(origin.contains(origintag)) {
-            return true;
-        }
-        return false;
+        return origin.contains(origintag);
     }
 
     public static String getOriginTag(Player player){
@@ -133,11 +127,7 @@ public class OriginPlayer {
             return true;
         }else if(origintagPlayer.contains("genesis:origin-slimeling")){
             return true;
-        }else if(origintagPlayer.contains("genesis:origin-piglin")){
-            return true;
-        }else{
-            return false;
-        }
+        }else return origintagPlayer.contains("genesis:origin-piglin");
     }
 
     public static void setOrigin(Player player, String origin){

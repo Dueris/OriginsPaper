@@ -9,6 +9,7 @@ import org.bukkit.event.world.LootGenerateEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 
 import static me.dueris.genesismc.core.GenesisMC.waterProtectionEnchant;
@@ -29,22 +30,22 @@ public class WaterProtBookGen implements Listener {
                 if(l == 1){
                     ItemStack enchbook = new ItemStack(Material.ENCHANTED_BOOK);
                     enchbook.addEnchantment(waterProtectionEnchant, 1);
-                    enchbook.setLore(Arrays.asList(ChatColor.GRAY + "Water Protection I"));
+                    enchbook.setLore(List.of(ChatColor.GRAY + "Water Protection I"));
                     e.getLoot().add(enchbook);
                 }else if(l == 2){
                     ItemStack enchbook = new ItemStack(Material.ENCHANTED_BOOK);
                     enchbook.addEnchantment(waterProtectionEnchant, 1);
-                    enchbook.setLore(Arrays.asList(ChatColor.GRAY + "Water Protection II"));
+                    enchbook.setLore(List.of(ChatColor.GRAY + "Water Protection II"));
                     e.getLoot().add(enchbook);
                 }else if (l == 3){
                     ItemStack enchbook = new ItemStack(Material.ENCHANTED_BOOK);
                     enchbook.addEnchantment(waterProtectionEnchant, 1);
-                    enchbook.setLore(Arrays.asList(ChatColor.GRAY + "Water Protection III"));
+                    enchbook.setLore(List.of(ChatColor.GRAY + "Water Protection III"));
                     e.getLoot().add(enchbook);
                 } else if (l == 4) {
                     ItemStack enchbook = new ItemStack(Material.ENCHANTED_BOOK);
                     enchbook.addEnchantment(waterProtectionEnchant, 1);
-                    enchbook.setLore(Arrays.asList(ChatColor.GRAY + "Water Protection IV"));
+                    enchbook.setLore(List.of(ChatColor.GRAY + "Water Protection IV"));
                     e.getLoot().add(enchbook);
                 }
 
