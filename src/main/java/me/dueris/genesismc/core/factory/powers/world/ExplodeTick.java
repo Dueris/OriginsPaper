@@ -2,6 +2,7 @@ package me.dueris.genesismc.core.factory.powers.world;
 
 import me.dueris.genesismc.core.GenesisMC;
 import me.dueris.genesismc.core.api.entity.OriginPlayer;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Damageable;
@@ -19,6 +20,7 @@ import java.util.List;
 import java.util.UUID;
 
 import static me.dueris.genesismc.core.factory.powers.Powers.explode_tick;
+import static me.dueris.genesismc.core.factory.powers.entity.SilkTouch.canPlayerBreakBlocks;
 
 public class ExplodeTick implements Listener {
     private final HashMap<UUID, Long> cooldown;
@@ -69,16 +71,23 @@ public class ExplodeTick implements Listener {
 
                             if (p.getWorld().isThundering()) {
                                 p.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 10, 1, true, false, false));
-                                p.getWorld().createExplosion(p.getLocation(), 6);
-                                p.teleportAsync(p.getLocation());
+                                if(Bukkit.getPluginManager().getPlugin("WorldGuard").isEnabled()){
+                                    if(!canPlayerBreakBlocks(p, p.getLocation())) p.getWorld().createExplosion(p.getLocation(), 0); return;
+                                }else{
+                                    p.getWorld().createExplosion(p.getLocation(), 6);
+                                }
                                 p.damage(3);
+                                cooldown.put(p.getUniqueId(), System.currentTimeMillis());
                                 e.setCancelled(true);
                                 this.cancel();
                             } else {
                                 p.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 10, 1, true, false, false));
-                                p.getWorld().createExplosion(p.getLocation(), 3);
+                                if(Bukkit.getPluginManager().getPlugin("WorldGuard").isEnabled()){
+                                    if(!canPlayerBreakBlocks(p, p.getLocation())) p.getWorld().createExplosion(p.getLocation(), 0); return;
+                                }else{
+                                    p.getWorld().createExplosion(p.getLocation(), 3);
+                                }
                                 cooldown.put(p.getUniqueId(), System.currentTimeMillis());
-                                p.teleportAsync(p.getLocation());
                                 p.damage(3);
                                 e.setCancelled(true);
                                 this.cancel();
