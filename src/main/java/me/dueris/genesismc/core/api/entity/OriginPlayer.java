@@ -48,6 +48,22 @@ public class OriginPlayer {
         }
     }
 
+    public static void moveEquipmentInventory(Player player, EquipmentSlot equipmentSlot) {
+        ItemStack item = player.getInventory().getItem(equipmentSlot);
+
+        if (item != null && item.getType() != Material.AIR) {
+            // Find an empty slot in the player's inventory
+            int emptySlot = player.getInventory().firstEmpty();
+
+            if (emptySlot != -1) {
+                // Set the equipment slot to empty
+                player.getInventory().setItem(equipmentSlot, null);
+
+                // Move the item to the empty slot
+                player.getInventory().setItem(emptySlot, item);
+            }
+        }
+    }
     public static void launchElytra(Player player){
         Location location = player.getEyeLocation();
         double speed = 2.0;
