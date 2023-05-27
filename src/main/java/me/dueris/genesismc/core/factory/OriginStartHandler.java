@@ -86,6 +86,9 @@ public class OriginStartHandler {
 
         CeilingWeak ceilingWeak = new CeilingWeak();
         ceilingWeak.runTaskTimer(getPlugin(), 0, 2);
+
+        GoldAmourBellow goldAmourBellow = new GoldAmourBellow();
+        goldAmourBellow.runTaskTimer(getPlugin(), 0, 1);
     }
 
     public static void StartListeners(){
