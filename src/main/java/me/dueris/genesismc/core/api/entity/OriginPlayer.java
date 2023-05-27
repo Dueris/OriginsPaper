@@ -6,6 +6,7 @@ import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -16,6 +17,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import static me.dueris.genesismc.core.choosing.ChoosingCORE.*;
 import static org.bukkit.ChatColor.GRAY;
@@ -26,6 +28,23 @@ public class OriginPlayer {
         if(OriginPlayer.getOriginTag(player).equalsIgnoreCase("")) {return false;}
         else{
             return true;
+        }
+    }
+
+    public void removeArmor(Player player, EquipmentSlot slot) {
+        ItemStack armor = player.getInventory().getItem(slot);
+
+        if (armor != null && armor.getType() != Material.AIR) {
+            // Remove the armor from the player's equipped slot
+            player.getInventory().setItem(slot, new ItemStack(Material.AIR));
+
+            // Add the armor to the player's inventory
+            HashMap<Integer, ItemStack> excess = player.getInventory().addItem(armor);
+
+            // If there is excess armor that couldn't fit in the inventory, drop it
+            for (ItemStack item : excess.values()) {
+                player.getWorld().dropItemNaturally(player.getLocation(), item);
+            }
         }
     }
 
