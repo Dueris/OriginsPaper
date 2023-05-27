@@ -21,6 +21,7 @@ public class JoiningHandler implements Listener {
     @EventHandler
     public void onJoinFirst(PlayerJoinEvent e) {
         Player p = e.getPlayer();
+        p.setMaximumAir(300);
        
         //translation system
         @Nullable Integer originid;
