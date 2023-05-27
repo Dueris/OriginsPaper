@@ -40,14 +40,7 @@ public class OriginHandler extends BukkitRunnable implements Listener {
     public void onDeathShulk(EntityDeathEvent e) {
         if (e.getEntity() instanceof Player || e.getEntity() instanceof HumanEntity) {
             Player p = (Player) e.getEntity();
-            if (OriginPlayer.getOriginTag(p).equalsIgnoreCase("genesis:origin-shulk")) {
-                e.getEntity().getWorld().playSound(e.getEntity().getLocation(), Sound.ENTITY_SHULKER_DEATH, 10.0F, 1.0F);
-                Random random = new Random();
-                int r = random.nextInt(100);
-                if (r <= 8) {
-                    e.getEntity().getLocation().getWorld().dropItem(e.getEntity().getLocation(), new ItemStack(SHULKER_SHELL, 1));
-                }
-            } else if (OriginPlayer.getOriginTag(p).equalsIgnoreCase("genesis:origin-enderian")) {
+            if (OriginPlayer.getOriginTag(p).equalsIgnoreCase("genesis:origin-enderian")) {
                 e.getEntity().getWorld().playSound(e.getEntity().getLocation(), Sound.ENTITY_ENDERMAN_DEATH, 10, 1F);
             }
         }
@@ -72,10 +65,5 @@ public class OriginHandler extends BukkitRunnable implements Listener {
     Player player = e.getPlayer();
     }
 
-    @EventHandler
-    public void testevent(OriginChooseEvent e) {
-//        Player player = e.getPlayer();
-//        player.sendMessage("fjbxifudgfilzdbvlzdi");
-    }
 
 }
