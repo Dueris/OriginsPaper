@@ -93,10 +93,6 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         } else if (serverImplementation.contains("Spigot")) {
             getServer().getConsoleSender().sendMessage(ChatColor.RED + "WARNING: SPIGOT/CRAFTBUKKIT IS NOT SUPPORTED, PLEASE USE PAPERMC.");
         }
-       if(GenesisDataFiles.getPlugCon().getString("use-builtin-api").equalsIgnoreCase("false")){
-           getServer().getConsoleSender().sendMessage(ChatColor.RED + "[GenesisMC] OriginsAPI disabled!! This will cause errors if you do not use the OriginAPI that is built in, or external.");
-
-       }
        if(Bukkit.getServer().getPluginManager().isPluginEnabled("Origins-Bukkit")){
            getServer().getConsoleSender().sendMessage(ChatColor.RED + "[GenesisMC] Unable to start plugin due to Origins Bukkit being present. Using both will cause errors.");
            getServer().getConsoleSender().sendMessage(ChatColor.GRAY + "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
