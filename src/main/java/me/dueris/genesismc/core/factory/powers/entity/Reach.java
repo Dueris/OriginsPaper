@@ -5,27 +5,19 @@ import me.dueris.genesismc.core.api.entity.OriginPlayer;
 import org.bukkit.FluidCollisionMode;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.function.Predicate;
 
 import static me.dueris.genesismc.core.factory.powers.Powers.extra_reach;
@@ -90,39 +82,6 @@ public class Reach implements Listener {
         Player p = e.getPlayer();
         if(getClosestBlockInSight(p, 3, 6) == null) return;
     }
-        private int calculateBreakingTime(Material blockType) {
-            return 20; // Default value of 20 ticks (1 second)
-        }
-
-        private int calculateToolEfficiency(ItemStack tool) {
-            ItemStack item = tool;
-
-            if (item == null || item.getType() == Material.AIR) {
-                return 1;
-            }
-
-            Material itemType = item.getType();
-            double miningSpeed = 1; // Default mining speed
-
-            // Check if the item has the Efficiency enchantment
-            if (item.hasItemMeta()) {
-                ItemMeta itemMeta = item.getItemMeta();
-                if (itemMeta.hasEnchant(Enchantment.DIG_SPEED)) {
-                    int efficiencyLevel = itemMeta.getEnchantLevel(Enchantment.DIG_SPEED);
-                    miningSpeed += (efficiencyLevel * 0.3); // Adjust mining speed based on efficiency level
-                }
-            }
-
-            if (itemType == Material.DIAMOND_PICKAXE || itemType == Material.DIAMOND_SHOVEL ||
-                    itemType == Material.DIAMOND_AXE || itemType == Material.DIAMOND_HOE) {
-                miningSpeed += 3.0; // Adjust mining speed for diamond tools
-            } else if (itemType == Material.IRON_PICKAXE || itemType == Material.IRON_SHOVEL ||
-                    itemType == Material.IRON_AXE || itemType == Material.IRON_HOE) {
-                miningSpeed += 2.0; // Adjust mining speed for iron tools
-            }
-
-            return (int) miningSpeed;
-        }
     
   public static Block getClosestBlockInSight(Player player, int minRange, int maxRange) {
         Location playerLocation = player.getLocation();
