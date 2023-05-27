@@ -37,7 +37,7 @@ public class OriginHandler extends BukkitRunnable implements Listener {
 
 
     @EventHandler
-    public void onDeathShulk(EntityDeathEvent e) {
+    public void onDeath(EntityDeathEvent e) {
         if (e.getEntity() instanceof Player || e.getEntity() instanceof HumanEntity) {
             Player p = (Player) e.getEntity();
             if (OriginPlayer.getOriginTag(p).equalsIgnoreCase("genesis:origin-enderian")) {
