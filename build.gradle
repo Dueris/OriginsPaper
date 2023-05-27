@@ -29,7 +29,7 @@ dependencies {
     paperweight.paperDevBundle("1.19.4-R0.1-SNAPSHOT")
     compileOnly("org.geysermc.api:geyser-api:1.0.1-SNAPSHOT")
     compileOnly("org.geysermc.floodgate:api:2.2.2-SNAPSHOT")
-    compileOnly("com.sk89q.worldguard:worldguard-bukkit:7.0.8")
+    compileOnly("com.sk89q.worldguard:worldguard-bukkit:7.0.7")
 }
 tasks {
     // Configure reobfJar to run when invoking the build task
