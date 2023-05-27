@@ -131,21 +131,4 @@ public class Reach implements Listener {
         }
     }
 
-    public static void breakBlockInRange(Player player, double range) {
-        List<Block> lineOfSight = player.getLineOfSight(null, (int) range);
-
-        for (Block block : lineOfSight) {
-            if (isBreakableBlock(block.getType())) {
-                // Break the block
-                block.breakNaturally();
-                // Play sound or particle effects if desired
-                break; // Stop breaking after the first breakable block within range
-            }
-        }
-    }
-    public static boolean isBreakableBlock(Material material) {
-        // Check if the material is breakable
-        return !material.isAir() && material.isBlock();
-    }
-
 }
