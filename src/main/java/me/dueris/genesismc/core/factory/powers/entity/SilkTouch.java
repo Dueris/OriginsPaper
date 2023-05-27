@@ -11,6 +11,7 @@ import com.sk89q.worldguard.protection.regions.RegionContainer;
 import com.sk89q.worldguard.protection.regions.RegionQuery;
 import me.dueris.genesismc.core.api.entity.OriginPlayer;
 import org.bukkit.*;
+import org.bukkit.block.Block;
 import org.bukkit.block.CreatureSpawner;
 import org.bukkit.block.ShulkerBox;
 import org.bukkit.entity.Player;
@@ -24,6 +25,7 @@ import java.util.EnumSet;
 import java.util.Objects;
 
 import static com.sk89q.worldguard.protection.flags.Flags.BLOCK_BREAK;
+import static me.dueris.genesismc.core.GenesisMC.getPlugin;
 import static me.dueris.genesismc.core.factory.powers.Powers.silk_touch;
 import static org.bukkit.Bukkit.getPlayer;
 import static org.bukkit.Bukkit.getServer;
@@ -32,13 +34,24 @@ public class SilkTouch implements Listener {
   private static EnumSet<Material> m;
   private static EnumSet<Material> tools;
 
+  public static boolean canPlayerBreakBlocks(Player player, Location location) {
+    if (getPlugin().getServer().getPluginManager().isPluginEnabled("WorldGuard")) {
+      Block block = location.getBlock();
+      return player.hasPermission("worldguard.region.bypass." + block.getWorld().getName())
+              || player.hasPermission("worldguard.region.bypass")
+              || player.hasPermission("worldguard.region.bypass.*");
+    }
+
+    return true; // WorldGuard not found or not enabled
+  }
+
   @EventHandler
   public void onBlockBreak(BlockBreakEvent e) {
     if (!e.getBlock().getType().equals(Material.AIR)) {
       Player p = e.getPlayer();
       if (silk_touch.contains(OriginPlayer.getOriginTag(e.getPlayer()))) {
         if(Bukkit.getPluginManager().getPlugin("WorldGuard").isEnabled()){
-          //api not updated?!?!?
+          if(!canPlayerBreakBlocks(p, p.getLocation())) p.sendMessage(ChatColor.RED + "You are unable to do that"); return;
         }
         int ic = 1;
         if (p != null && p.getGameMode().equals(GameMode.SURVIVAL) && p.getEquipment().getItemInMainHand().getType().equals(Material.AIR)) {
