@@ -15,7 +15,6 @@ import static org.bukkit.Bukkit.getServer;
 import static org.bukkit.ChatColor.AQUA;
 
 public class DefaultChoose {
-    private static boolean isRegistered = false;
 
     public static void DefaultChoose(Player p) {
         p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 10, 2);
@@ -35,7 +34,6 @@ public class DefaultChoose {
             
         OriginChooseEvent chooseEvent = new OriginChooseEvent(p);
         getServer().getPluginManager().callEvent(chooseEvent);
-        isRegistered = true;
 
 
         if (p.getInventory().getItemInMainHand().isSimilar(OrbOfOrigins.orb) && !p.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING).equals("genesis:origin-null")) {
