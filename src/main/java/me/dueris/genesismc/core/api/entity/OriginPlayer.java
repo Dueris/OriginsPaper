@@ -333,8 +333,7 @@ public class OriginPlayer {
     }
 
     public static boolean hasChosen(Player player){
-        if(player.getScoreboardTags().contains("chosen")) return true;
-        return false;
+        return player.getScoreboardTags().contains("chosen");
     }
 
     public static void triggerChooseEvent(Player player){
