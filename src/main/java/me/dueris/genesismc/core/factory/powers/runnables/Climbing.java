@@ -43,7 +43,7 @@ public class Climbing extends BukkitRunnable implements Listener {
         }
     }
     private Set<Player> holdingPlayers;
-/*
+
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
         Player player = event.getPlayer();
@@ -74,6 +74,4 @@ public class Climbing extends BukkitRunnable implements Listener {
             }
         }
     }
-
- */
 }
