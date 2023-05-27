@@ -53,7 +53,7 @@ public class Reach implements Listener {
             }
         }
     }
-
+/*
     @EventHandler
     public void SwingBlockBreakCreative(PlayerInteractEvent e){
         Player p = e.getPlayer();
@@ -82,6 +82,8 @@ public class Reach implements Listener {
         Player p = e.getPlayer();
         if(getClosestBlockInSight(p, 3, 6) == null) return;
     }
+
+ */
     
   public static Block getClosestBlockInSight(Player player, int minRange, int maxRange) {
         Location playerLocation = player.getLocation();
