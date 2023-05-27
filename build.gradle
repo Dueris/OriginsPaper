@@ -1,6 +1,7 @@
 plugins {
     id 'java'
     id("io.papermc.paperweight.userdev") version "1.5.4"
+    id("com.gradle.plugin-publish") version "1.1.0"
 }
 
 group = 'me.dueris'
@@ -39,7 +40,6 @@ tasks {
 
 
 }
-
 
 def targetJavaVersion = 17
 java {
