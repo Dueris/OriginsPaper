@@ -71,22 +71,14 @@ public class ExplodeTick implements Listener {
 
                             if (p.getWorld().isThundering()) {
                                 p.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 10, 1, true, false, false));
-                                if(Bukkit.getPluginManager().isPluginEnabled("WorldGuard")){
-                                    if(!canPlayerBreakBlocks(p, p.getLocation())) p.getWorld().createExplosion(p.getLocation(), 0); return;
-                                }else{
                                     p.getWorld().createExplosion(p.getLocation(), 6);
-                                }
                                 p.damage(3);
                                 cooldown.put(p.getUniqueId(), System.currentTimeMillis());
                                 e.setCancelled(true);
                                 this.cancel();
                             } else {
                                 p.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 10, 1, true, false, false));
-                                if(Bukkit.getPluginManager().isPluginEnabled("WorldGuard")){
-                                    if(!canPlayerBreakBlocks(p, p.getLocation())) p.getWorld().createExplosion(p.getLocation(), 0); return;
-                                }else{
                                     p.getWorld().createExplosion(p.getLocation(), 3);
-                                }
                                 cooldown.put(p.getUniqueId(), System.currentTimeMillis());
                                 p.damage(3);
                                 e.setCancelled(true);
