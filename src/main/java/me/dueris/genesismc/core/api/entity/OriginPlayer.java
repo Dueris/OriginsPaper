@@ -31,7 +31,7 @@ public class OriginPlayer {
         }
     }
 
-    public void removeArmor(Player player, EquipmentSlot slot) {
+    public static void removeArmor(Player player, EquipmentSlot slot) {
         ItemStack armor = player.getInventory().getItem(slot);
 
         if (armor != null && armor.getType() != Material.AIR) {
