@@ -86,6 +86,9 @@ public class OriginStartHandler {
 
         CeilingWeak ceilingWeak = new CeilingWeak();
         ceilingWeak.runTaskTimer(getPlugin(), 0, 2);
+
+        PumpkinHate pumpkinHate = new PumpkinHate();
+        pumpkinHate.runTaskTimer(getPlugin(), 0, 2);
     }
 
     public static void StartListeners(){
