@@ -61,7 +61,7 @@ public class OriginStartHandler {
         burnInDaylight.runTaskTimer(getPlugin(), 0, 10);
 
         Phantomized phantomized = new Phantomized();
-        phantomized.runTaskTimer(getPlugin(), 0 , 1);
+        phantomized.runTaskTimer(getPlugin(), 0 , 5);
 
         JumpIncreased jumpIncreased = new JumpIncreased();
         jumpIncreased.runTaskTimer(getPlugin(), 0, 10);
