@@ -30,7 +30,7 @@ public class FlightElytra implements Listener {
     public void ExecuteFlight(PlayerToggleSneakEvent e){
         Player p = e.getPlayer();
         if (elytra.contains(OriginPlayer.getOriginTag(e.getPlayer()))) {
-            if(!p.isOnGround()){
+            if(!p.isOnGround() && !p.isGliding()){
                 glidingPlayers.add(p.getUniqueId());
                 if(p.getGameMode() == GameMode.SPECTATOR) return;
                 new BukkitRunnable() {
