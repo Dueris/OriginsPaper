@@ -50,7 +50,7 @@ public class SilkTouch implements Listener {
     if (!e.getBlock().getType().equals(Material.AIR)) {
       Player p = e.getPlayer();
       if (silk_touch.contains(OriginPlayer.getOriginTag(e.getPlayer()))) {
-        if(Bukkit.getPluginManager().getPlugin("WorldGuard").isEnabled()){
+        if(Bukkit.getPluginManager().isPluginEnabled("WorldGuard")){
           if(!canPlayerBreakBlocks(p, p.getLocation())) p.sendMessage(ChatColor.RED + "You are unable to do that"); return;
         }
         int ic = 1;
