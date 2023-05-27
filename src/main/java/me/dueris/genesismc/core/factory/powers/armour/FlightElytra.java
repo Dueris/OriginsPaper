@@ -39,6 +39,7 @@ public class FlightElytra implements Listener {
                         if(p.isOnGround() || p.isFlying()) {this.cancel(); glidingPlayers.remove(p.getUniqueId());}
                         p.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 5, 3, false, false, false));
                         p.setGliding(true);
+                        p.setFallDistance(0);
                     }
                 }.runTaskTimer(GenesisMC.getPlugin(), 0L, 1L);
             }
