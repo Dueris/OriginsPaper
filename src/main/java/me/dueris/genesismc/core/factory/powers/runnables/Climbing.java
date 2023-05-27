@@ -60,14 +60,14 @@ public class Climbing extends BukkitRunnable implements Listener {
                             // Player is no longer online or no longer holding down right-click
                             cancel();
                             return;
-                        }else{
-                            player.teleportAsync(player.getLocation());
                         }
 
                         // Check if the player is still holding down right-click
                         if (!player.isHandRaised()) {
                             // Player is no longer holding down right-click
                             holdingPlayers.remove(player);
+                        }else{
+                            player.teleportAsync(player.getLocation());
                         }
                     }
                 }.runTaskTimer(getPlugin(), 0, 1); // Check every tick (1/20th of a second)
