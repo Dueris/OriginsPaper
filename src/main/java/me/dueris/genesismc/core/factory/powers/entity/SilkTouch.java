@@ -1,16 +1,10 @@
 package me.dueris.genesismc.core.factory.powers.entity;
 
 
-import com.sk89q.worldedit.bukkit.BukkitAdapter;
-import com.sk89q.worldguard.LocalPlayer;
-import com.sk89q.worldguard.WorldGuard;
-import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
-import com.sk89q.worldguard.protection.ApplicableRegionSet;
-import com.sk89q.worldguard.protection.regions.ProtectedRegion;
-import com.sk89q.worldguard.protection.regions.RegionContainer;
-import com.sk89q.worldguard.protection.regions.RegionQuery;
 import me.dueris.genesismc.core.api.entity.OriginPlayer;
-import org.bukkit.*;
+import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
+import org.bukkit.Material;
 import org.bukkit.block.CreatureSpawner;
 import org.bukkit.block.ShulkerBox;
 import org.bukkit.entity.Player;
@@ -18,14 +12,10 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.Plugin;
 
 import java.util.EnumSet;
-import java.util.Objects;
 
-import static com.sk89q.worldguard.protection.flags.Flags.BLOCK_BREAK;
 import static me.dueris.genesismc.core.factory.powers.Powers.silk_touch;
-import static org.bukkit.Bukkit.getPlayer;
 import static org.bukkit.Bukkit.getServer;
 
 public class SilkTouch implements Listener {
@@ -37,9 +27,6 @@ public class SilkTouch implements Listener {
     if (!e.getBlock().getType().equals(Material.AIR)) {
       Player p = e.getPlayer();
       if (silk_touch.contains(OriginPlayer.getOriginTag(e.getPlayer()))) {
-        if(Bukkit.getPluginManager().getPlugin("WorldGuard").isEnabled()){
-          //api not updated?!?!?
-        }
         int ic = 1;
         if (p != null && p.getGameMode().equals(GameMode.SURVIVAL) && p.getEquipment().getItemInMainHand().getType().equals(Material.AIR)) {
           if (!e.getBlock().getType().isItem()) {
