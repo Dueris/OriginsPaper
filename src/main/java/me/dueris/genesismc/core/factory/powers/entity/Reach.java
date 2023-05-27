@@ -61,6 +61,7 @@ public class Reach implements Listener {
             }
         }
     }
+    /*
 
     @EventHandler
     public void SwingBlockBreakCreative(PlayerInteractEvent e){
@@ -84,6 +85,7 @@ public class Reach implements Listener {
             }
         }
     }
+    */
 
     @EventHandler
     public void SwingBlockBreakSurvival(PlayerArmSwingEvent e){
