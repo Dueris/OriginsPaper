@@ -131,7 +131,6 @@ public class Powers implements Listener {
         pumpkin_hate.add("genesis:origin-enderian");
         extra_reach.add("genesis:origin-enderian");
         silk_touch.add("genesis:origin-enderian");
-        projectile_immune.add("genesis:origin-enderian");
         throw_ender_pearl.add("genesis:origin-enderian");
         ender_particles.add("genesis:origin-enderian");
 
