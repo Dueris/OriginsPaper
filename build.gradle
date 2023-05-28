@@ -37,8 +37,6 @@ tasks {
     assemble {
         dependsOn(reobfJar)
     }
-
-
 }
 
 def targetJavaVersion = 17

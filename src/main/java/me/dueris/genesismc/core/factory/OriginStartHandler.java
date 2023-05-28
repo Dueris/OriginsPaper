@@ -7,8 +7,7 @@ import me.dueris.genesismc.core.factory.powers.armour.GoldAmourBellow;
 import me.dueris.genesismc.core.factory.powers.armour.GoldArmourBuff;
 import me.dueris.genesismc.core.factory.powers.block.CeilingWeak;
 import me.dueris.genesismc.core.factory.powers.block.Webbing;
-import me.dueris.genesismc.core.factory.powers.block.fluid.WaterBreatheAbove;
-import me.dueris.genesismc.core.factory.powers.block.fluid.WaterBreatheBellow;
+import me.dueris.genesismc.core.factory.powers.block.fluid.WaterBreathe;
 import me.dueris.genesismc.core.factory.powers.block.fluid.WaterDamage;
 import me.dueris.genesismc.core.factory.powers.block.solid.PumpkinHate;
 import me.dueris.genesismc.core.factory.powers.entity.*;
@@ -31,7 +30,7 @@ import static org.bukkit.Bukkit.getServer;
 
 public class OriginStartHandler {
 
-    public static void StartRunnables(){
+    public static void StartRunnables() {
 
         Climbing climb = new Climbing();
         climb.runTaskTimer(getPlugin(), 0, 5);
@@ -61,7 +60,7 @@ public class OriginStartHandler {
         burnInDaylight.runTaskTimer(getPlugin(), 0, 10);
 
         Phantomized phantomized = new Phantomized();
-        phantomized.runTaskTimer(getPlugin(), 0 , 5);
+        phantomized.runTaskTimer(getPlugin(), 0, 5);
 
         JumpIncreased jumpIncreased = new JumpIncreased();
         jumpIncreased.runTaskTimer(getPlugin(), 0, 10);
@@ -72,11 +71,8 @@ public class OriginStartHandler {
         NoShield shield = new NoShield();
         shield.runTaskTimer(getPlugin(), 0, 10);
 
-        WaterBreatheAbove waterBreathe = new WaterBreatheAbove();
-        waterBreathe.runTaskTimer(getPlugin(), 0, 20);
-
-        WaterBreatheBellow waterBreatheBellow = new WaterBreatheBellow();
-        waterBreatheBellow.runTaskTimer(getPlugin(), 0, 10);
+        WaterBreathe waterBreathe = new WaterBreathe();
+        waterBreathe.runTaskTimer(getPlugin(), 0, 1);
 
         TempTailWind tempTailWind = new TempTailWind();
         tempTailWind.runTaskTimer(getPlugin(), 0, 1);

@@ -40,6 +40,8 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.HashMap;
 
+import static me.dueris.genesismc.core.factory.powers.block.fluid.WaterBreathe.isInBreathableWater;
+
 public final class GenesisMC extends JavaPlugin implements Listener {
     private static GenesisMC plugin;
     public static EnumSet<Material> tool;
