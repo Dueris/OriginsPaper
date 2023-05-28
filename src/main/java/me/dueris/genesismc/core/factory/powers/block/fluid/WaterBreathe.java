@@ -23,7 +23,7 @@ public class WaterBreathe extends BukkitRunnable {
     public void run() {
         for(Player p : Bukkit.getOnlinePlayers()) {
             if(water_breathing.contains(OriginPlayer.getOriginTag(p))) {
-                if(isInBreathableWater(p) || p.isInWaterOrBubbleColumn()){
+                if(isInBreathableWater(p)){
                     p.setRemainingAir(300);
                     p.addPotionEffect(new PotionEffect(PotionEffectType.WATER_BREATHING, 3, 1, false, false, false));
                     if(outofAIR.contains(p)){
