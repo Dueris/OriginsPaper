@@ -1,0 +1,90 @@
+# GenesisMC - GPL 3.0
+# Version mc1.19.4-v0.1.7-build+
+# DO NOT CHANGE PATH OF CONFIGS, THIS WILL CAUSE ERRORS.
+
+# ~~~~~~~~~~~~~~~~~
+#  Plugin configs
+# ~~~~~~~~~~~~~~~~~
+
+lang: english
+# Determines language file to read
+
+origins-expanded: true
+# Enables and Disables other origins(ones not from the original mod) depending on if its true or false
+
+console-startup-debug: false
+# Enables debug information, when making a bug report, please include a screenshot of the startup while this is "true"
+
+# ~~~~~~~~~~~~~~~~~
+#  Origin Plugin Settings
+# ~~~~~~~~~~~~~~~~~
+
+water-protection: true
+# Determines if "water protection" can be found, or used
+
+orb-of-origins: true
+# Determines if the Orb Of Origins can be crafted
+
+custom-origins: true
+# if true, custom origins will be loaded. if false, custom origins will not load.
+
+# ~~~~~~~~~~~~~~~~~
+#  Core Origins Control
+# ~~~~~~~~~~~~~~~~~
+
+allay-disable: false
+# Disables Allay Origin
+
+arachnid-disable: false
+# Disables Arachnid Origin
+
+avian-disable: false
+# Disables Avian Origin
+
+blazeborn-disable: false
+# Disables Blazeborn Origin
+
+bumblebee-disable: false
+# Disables Bumblebee Origin
+
+creep-disable: false
+# Disables Creep Origin
+
+elytrian-disable: false
+# Disables Elytrian Origin
+
+enderian-disable: false
+# Disables Enderian Origin
+
+feline-disable: false
+# Disables Feline Origin
+
+human-disable: false
+# Disables Human Origin
+
+merling-disable: false
+# Disables Merling Origin
+
+phantom-disable: false
+# Disables Phantom Origin
+
+Piglin-disable: false
+# Disables Piglin Origin
+
+rabbit-disable: false
+# Disables Rabbit Origin
+
+sculkling-disable: false
+# Disables Sculkling Origin
+
+shulk-disable: false
+# Disables Shulk Origin
+
+slimeling-disable: false
+# Disables Slimeling Origin
+
+starborne-disable: false
+# Disables Starborne Origin
+
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -23,10 +23,7 @@ import me.dueris.genesismc.core.items.InfinPearl;
 import me.dueris.genesismc.core.items.Items;
 import me.dueris.genesismc.core.items.OrbOfOrigins;
 import me.dueris.genesismc.core.items.WaterProtItem;
-import me.dueris.genesismc.core.utils.Metrics;
-import me.dueris.genesismc.core.utils.ParticleHandler;
-import me.dueris.genesismc.core.utils.ScoreboardRunnable;
-import me.dueris.genesismc.core.utils.ShulkInv;
+import me.dueris.genesismc.core.utils.*;
 import org.bukkit.*;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -34,7 +31,9 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
 
+import java.awt.image.ImagingOpException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.EnumSet;
@@ -67,11 +66,11 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         //configs + folders
 
         Bukkit.getServer().getPluginManager().registerEvents(this, this);
+        GenesisDataFiles.loadOrbConfig();
+        GenesisDataFiles.loadMainConfig();
+        GenesisDataFiles.loadLangConfig();
         GenesisDataFiles.setup();
-        GenesisDataFiles.getPlugCon().options().copyDefaults(true);
-        GenesisDataFiles.getOrbCon().options().copyDefaults(true);
-        GenesisDataFiles.setDefaults();
-        GenesisDataFiles.save();
+
 
         //start
 
@@ -101,7 +100,15 @@ public final class GenesisMC extends JavaPlugin implements Listener {
            Bukkit.getServer().getPluginManager().disablePlugin(this);
        }
 
-        if (GenesisDataFiles.getPlugCon().getString("console-dump-onstartup").equalsIgnoreCase("true")) {
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                Lang.getLangFile();
+                this.cancel();
+                }
+        }.runTaskTimer(GenesisMC.getPlugin(), 20L, 1L);
+
+        if (GenesisDataFiles.getMainConfig().getString("console-startup-debug").equalsIgnoreCase("true")) {
             getServer().getConsoleSender().sendMessage(ChatColor.GRAY + "[GenesisMC] Loading API version 0.1.1");
             getServer().getConsoleSender().sendMessage(ChatColor.GRAY + "[GenesisMC] Loading Subcommands");
             getServer().getConsoleSender().sendMessage(ChatColor.GRAY + "[GenesisMC] Loading OriginCommands");
@@ -124,7 +131,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         CustomOriginAPI.unzipDatapacks();
         CustomOriginAPI.loadCustomOrigins();
         for (String originTag : CustomOriginAPI.getTags()) {
-            if (GenesisDataFiles.getPlugCon().getString("console-dump-onstartup").equalsIgnoreCase("true")) {
+            if (GenesisDataFiles.getMainConfig().getString("console-startup-debug").equalsIgnoreCase("true")) {
                 getServer().getConsoleSender().sendMessage("[GenesisMC] Loaded \"" + CustomOriginAPI.getOriginName(originTag) + "\"");
             }
         }
@@ -167,7 +174,6 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         items.runTaskTimer(this, 0, 5);
 
         OriginStartHandler.StartRunnables();
-
         OriginStartHandler.StartListeners();
 
     //particle handler
@@ -191,7 +197,9 @@ public final class GenesisMC extends JavaPlugin implements Listener {
             CustomOriginExistCheck.customOriginExistCheck(p);
         }
         Powers.loadPowers();
+        Bukkit.getServer().getConsoleSender().sendMessage(Lang.menu_human_nothing_description);
     }
+
     //origin start end
 
     static {
@@ -265,9 +273,9 @@ public final class GenesisMC extends JavaPlugin implements Listener {
     public static void dumpCon(){
         Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.LIGHT_PURPLE + "[GenesisMC] DUMPING PLUGIN-API FILES:");
         Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.GRAY + "Loading config file:" +
-                GenesisDataFiles.getOrbCon().getValues(Boolean.parseBoolean("all")) +
+                GenesisDataFiles.getMainConfig().getValues(Boolean.parseBoolean("all")) +
                 ChatColor.GRAY +
-                GenesisDataFiles.getPlugCon().getValues(Boolean.parseBoolean("all"))
+                GenesisDataFiles.getMainConfig().getValues(Boolean.parseBoolean("all"))
 
         );
         Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.LIGHT_PURPLE + "[GenesisMC] Loading API");
