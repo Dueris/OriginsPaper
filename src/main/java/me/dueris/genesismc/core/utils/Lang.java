@@ -40,7 +40,7 @@ public class Lang {
         return null;
     }
 
-
+    public static String lang_test = getLocalizedString("lang.test");
     //commands
     public static String command_origin_set_given = getLocalizedString("command.origin.set.given");
     public static String command_origin_set_sender = getLocalizedString("command.origin.set.sender");

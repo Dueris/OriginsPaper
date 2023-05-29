@@ -197,7 +197,13 @@ public final class GenesisMC extends JavaPlugin implements Listener {
             CustomOriginExistCheck.customOriginExistCheck(p);
         }
         Powers.loadPowers();
-        Bukkit.getServer().getConsoleSender().sendMessage(Lang.menu_original_arachnid_spiderman_description);
+        try{
+            Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.GREEN + Lang.lang_test);
+        } catch (Exception e) {
+            Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.RED + "A fatal error has occurred, lang could not be loaded. Disabling GenesisMC....");
+            Bukkit.getServer().getPluginManager().disablePlugin(this);
+        }
+
     }
 
     //origin start end

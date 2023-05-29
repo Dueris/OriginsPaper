@@ -11,7 +11,9 @@
 # %player% - shows the player that is sending or recieving, handled plugin-sided
 
 # Begin LANG
-
+lang:
+  test:
+    "Lang test successful"
 command:
   origin:
     set:
