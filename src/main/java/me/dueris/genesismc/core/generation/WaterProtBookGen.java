@@ -21,8 +21,7 @@ public class WaterProtBookGen implements Listener {
 
 @EventHandler
     public void OnGen(LootGenerateEvent e){
-    if(!(e.getEntity() instanceof Player)) return;
-    Player p = (Player) e.getEntity();
+    if(!(e.getEntity() instanceof Player p)) return;
     WaterProtectionGenerateEvent event = new WaterProtectionGenerateEvent();
     getServer().getPluginManager().callEvent(event);
     if(e.getInventoryHolder() != null){
