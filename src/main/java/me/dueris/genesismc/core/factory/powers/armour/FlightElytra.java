@@ -51,6 +51,7 @@ public class FlightElytra implements Listener {
         Player p = e.getPlayer();
         if (elytra.contains(OriginPlayer.getOriginTag(e.getPlayer())) && e.getAction().equals(Action.LEFT_CLICK_AIR)) {
             if(!glidingPlayers.contains(p.getUniqueId())) return;
+            if(p.getGameMode() == GameMode.CREATIVE) return;
             if(e.getItem() != null){
                 ItemStack rocket = new ItemStack(Material.FIREWORK_ROCKET);
                 if(e.getItem().isSimilar(rocket)){
