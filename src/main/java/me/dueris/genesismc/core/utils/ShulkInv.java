@@ -16,48 +16,48 @@ import java.util.ArrayList;
 
 public class ShulkInv implements CommandExecutor {
 
-  private final ArrayList<SubCommand> subCommands = new ArrayList<>();
-  public ShulkInv(){
-  }
+    private final ArrayList<SubCommand> subCommands = new ArrayList<>();
 
-  @Override
-  public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+    public ShulkInv() {
+    }
 
-    if (sender instanceof Player p){
+    @Override
+    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
-      if (OriginPlayer.getOriginTag(p).equalsIgnoreCase("genesis:origin-shulk")) {
-      if (args.length > 0) {
-        if (args[0].equalsIgnoreCase ( "open" )) {
+        if (sender instanceof Player p) {
 
-          ArrayList<ItemStack> vaultItems = ShulkUtils.getItems ( p );
+            if (OriginPlayer.getOriginTag(p).equalsIgnoreCase("genesis:origin-shulk")) {
+                if (args.length > 0) {
+                    if (args[0].equalsIgnoreCase("open")) {
 
-          Inventory vault = Bukkit.createInventory (p, InventoryType.DROPPER, "Shulker Inventory" );
+                        ArrayList<ItemStack> vaultItems = ShulkUtils.getItems(p);
 
-          vaultItems.stream ( )
-                  .forEach ( itemStack -> vault.addItem ( itemStack ) );
+                        Inventory vault = Bukkit.createInventory(p, InventoryType.DROPPER, "Shulker Inventory");
 
-          p.openInventory ( vault );
+                        vaultItems.stream()
+                                .forEach(itemStack -> vault.addItem(itemStack));
 
+                        p.openInventory(vault);
+
+                    }
+                } else if (args.length == 0) {
+                    ArrayList<ItemStack> vaultItems = ShulkUtils.getItems(p);
+
+                    Inventory vault = Bukkit.createInventory(p, InventoryType.DROPPER, "Shulker Inventory");
+
+                    vaultItems.stream()
+                            .forEach(itemStack -> vault.addItem(itemStack));
+
+                    p.openInventory(vault);
+
+                }
+            } else {
+                p.sendMessage(ChatColor.RED + "You must be a Shulk to access this command");
+            }
         }
-      }else if(args.length == 0){
-        ArrayList<ItemStack> vaultItems = ShulkUtils.getItems ( p );
 
-        Inventory vault = Bukkit.createInventory ( p , InventoryType.DROPPER , "Shulker Inventory" );
 
-        vaultItems.stream ( )
-                .forEach ( itemStack -> vault.addItem ( itemStack ) );
-
-        p.openInventory ( vault );
-
-      }
-    }else{
-      p.sendMessage(ChatColor.RED + "You must be a Shulk to access this command");
+        return true;
     }
-    }
-
-
-
-    return true;
-  }
 }
 

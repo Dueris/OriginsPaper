@@ -16,50 +16,50 @@ import java.util.Arrays;
 
 public class DataContainer implements Listener {
 
-  @EventHandler
-  public void onPlayerJoin(PlayerJoinEvent e){
+    @EventHandler
+    public void onPlayerJoin(PlayerJoinEvent e) {
 
-    Player p = e.getPlayer();
+        Player p = e.getPlayer();
 
-    PersistentDataContainer data = p.getPersistentDataContainer();
+        PersistentDataContainer data = p.getPersistentDataContainer();
 
-    if (!data.has(new NamespacedKey(GenesisMC.getPlugin(), "shulker-box"), PersistentDataType.STRING)){
-      data.set(new NamespacedKey(GenesisMC.getPlugin(), "shulker-box"), PersistentDataType.STRING, "");
-    }
-    if (!p.getPersistentDataContainer().has(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER)) {
-      p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER, 0);
-    }
-    if (!p.getPersistentDataContainer().has(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER)) {
-      p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
-    }
-    if (!p.getPersistentDataContainer().has(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER)) {
-      p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
-    }
-    if (!p.getPersistentDataContainer().has(new NamespacedKey(GenesisMC.getPlugin(), "toggle"), PersistentDataType.INTEGER)) {
-      p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "toggle"), PersistentDataType.INTEGER, 1);
-    }
-
-  }
-
-  @EventHandler
-  public void onInventoryClose(InventoryCloseEvent e){
-
-    Player p = (Player) e.getPlayer();
-
-    if (e.getView().getTitle().equalsIgnoreCase("Shulker Inventory")){
-
-      ArrayList<ItemStack> prunedItems = new ArrayList<>();
-
-      Arrays.stream(e.getInventory().getContents())
-              .filter(itemStack -> {
-                return itemStack != null;
-              })
-              .forEach(itemStack -> prunedItems.add(itemStack));
-
-      ShulkUtils.storeItems(prunedItems, p);
+        if (!data.has(new NamespacedKey(GenesisMC.getPlugin(), "shulker-box"), PersistentDataType.STRING)) {
+            data.set(new NamespacedKey(GenesisMC.getPlugin(), "shulker-box"), PersistentDataType.STRING, "");
+        }
+        if (!p.getPersistentDataContainer().has(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER)) {
+            p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER, 0);
+        }
+        if (!p.getPersistentDataContainer().has(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER)) {
+            p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
+        }
+        if (!p.getPersistentDataContainer().has(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER)) {
+            p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
+        }
+        if (!p.getPersistentDataContainer().has(new NamespacedKey(GenesisMC.getPlugin(), "toggle"), PersistentDataType.INTEGER)) {
+            p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "toggle"), PersistentDataType.INTEGER, 1);
+        }
 
     }
 
-  }
+    @EventHandler
+    public void onInventoryClose(InventoryCloseEvent e) {
+
+        Player p = (Player) e.getPlayer();
+
+        if (e.getView().getTitle().equalsIgnoreCase("Shulker Inventory")) {
+
+            ArrayList<ItemStack> prunedItems = new ArrayList<>();
+
+            Arrays.stream(e.getInventory().getContents())
+                    .filter(itemStack -> {
+                        return itemStack != null;
+                    })
+                    .forEach(itemStack -> prunedItems.add(itemStack));
+
+            ShulkUtils.storeItems(prunedItems, p);
+
+        }
+
+    }
 
 }
