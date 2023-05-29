@@ -26,15 +26,15 @@ public class PumpkinHate implements Listener {
     }
 
     @EventHandler
-    public void onDrink(PlayerItemConsumeEvent e){
+    public void onDrink(PlayerItemConsumeEvent e) {
         Player p = e.getPlayer();
         if (pumpkin_hate.contains(OriginPlayer.getOriginTag(e.getPlayer()))) {
-            if(e.getItem().getType().equals(Material.PUMPKIN_PIE)){
+            if (e.getItem().getType().equals(Material.PUMPKIN_PIE)) {
                 p.getWorld().createExplosion(p.getLocation(), 0);
                 p.setHealth(1);
-                p.setFoodLevel(p.getFoodLevel()-8);
+                p.setFoodLevel(p.getFoodLevel() - 8);
             }
-            if(e.getItem().getType().equals(Material.POTION)){
+            if (e.getItem().getType().equals(Material.POTION)) {
                 p.damage(2);
             }
         }

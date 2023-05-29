@@ -41,11 +41,11 @@ public class OriginHandler extends BukkitRunnable implements Listener {
     }
 
     @EventHandler
-    public void onTargetShulk(EntityTargetEvent e){
-        if(e.getEntity() instanceof ShulkerBullet){
+    public void onTargetShulk(EntityTargetEvent e) {
+        if (e.getEntity() instanceof ShulkerBullet) {
             if (e.getTarget() instanceof Player p) {
                 if (OriginPlayer.getOriginTag(p).equalsIgnoreCase("genesis:origin-shulk")) {
-                    if(e.getTarget() instanceof Player) {
+                    if (e.getTarget() instanceof Player) {
                         e.setCancelled(true);
                     }
                 }

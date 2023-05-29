@@ -26,7 +26,8 @@ public class ToggleCommand implements CommandExecutor {
             if (p.hasPermission("genesismc.origins.cmd.toggle")) {
 
                 int toggleState = data.get(new NamespacedKey(GenesisMC.getPlugin(), "toggle"), PersistentDataType.INTEGER);
-                if (toggleState == 1) data.set(new NamespacedKey(GenesisMC.getPlugin(), "toggle"), PersistentDataType.INTEGER, 2);
+                if (toggleState == 1)
+                    data.set(new NamespacedKey(GenesisMC.getPlugin(), "toggle"), PersistentDataType.INTEGER, 2);
                 else data.set(new NamespacedKey(GenesisMC.getPlugin(), "toggle"), PersistentDataType.INTEGER, 1);
 
                 if (big_leap_tick.contains(OriginPlayer.getOriginTag(p))) {

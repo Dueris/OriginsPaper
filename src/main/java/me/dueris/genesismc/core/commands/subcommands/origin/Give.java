@@ -14,7 +14,9 @@ import static org.bukkit.ChatColor.RED;
 
 public class Give extends SubCommand {
     @Override
-    public String getName() {return "give";}
+    public String getName() {
+        return "give";
+    }
 
     @Override
     public String getDescription() {
@@ -58,8 +60,11 @@ public class Give extends SubCommand {
         } else if (args[1].equals("@s")) {
             players.add(p);
         } else {
-            try {players.add(Bukkit.getPlayer(args[1]));}
-            catch (Exception e) {p.sendMessage(RED + "Player not found!");}
+            try {
+                players.add(Bukkit.getPlayer(args[1]));
+            } catch (Exception e) {
+                p.sendMessage(RED + "Player not found!");
+            }
         }
 
         if (players.size() == 0) return;

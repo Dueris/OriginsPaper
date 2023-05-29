@@ -26,6 +26,22 @@ import static org.bukkit.ChatColor.RED;
 
 public class ChoosingCUSTOM implements Listener {
 
+    public static List<String> cutStringIntoLists(String string) {
+        ArrayList<String> strings = new ArrayList<>();
+        while (string.length() > 40) {
+            for (int i = 40; i > 1; i--) {
+                if (String.valueOf(string.charAt(i)).equals(" ")) {
+                    strings.add(string.substring(0, i));
+                    string = string.substring(i + 1);
+                    break;
+                }
+            }
+        }
+        if (strings.isEmpty()) return List.of(string);
+        strings.add(string);
+        return strings.stream().toList();
+    }
+
     @EventHandler(priority = EventPriority.HIGH)
     public void CUSOTMCHOOSE_MENU(InventoryClickEvent e) {
         if (e.getCurrentItem() != null) {
@@ -93,8 +109,7 @@ public class ChoosingCUSTOM implements Listener {
                 for (int i = 0; i <= 53; i++) {
                     if (i == 0 || i == 8) {
                         contents.add(close);
-                    }
-                    else if (i == 1) {                                          //impact
+                    } else if (i == 1) {                                          //impact
                         if (impact == 1) contents.add(lowImpact);
                         if (impact == 2) contents.add(mediumImpact);
                         if (impact == 3) contents.add(highImpact);
@@ -102,28 +117,25 @@ public class ChoosingCUSTOM implements Listener {
                         if (impact == 2) contents.add(mediumImpact);
                         else if (impact == 3) contents.add(highImpact);
                         else contents.add(new ItemStack(Material.AIR));
-                    } else if (i == 3){
+                    } else if (i == 3) {
                         if (impact == 3) contents.add(highImpact);
                         else contents.add(new ItemStack(Material.AIR));
-                    }
-                    else if (i == 4) {
+                    } else if (i == 4) {
                         contents.add(orb);
-                    }
-                    else if (i == 5){                                           //impact
+                    } else if (i == 5) {                                           //impact
                         if (impact == 3) contents.add(highImpact);
                         else contents.add(new ItemStack(Material.AIR));
-                    } else if (i == 6){
+                    } else if (i == 6) {
                         if (impact == 2) contents.add(mediumImpact);
                         else if (impact == 3) contents.add(highImpact);
                         else contents.add(new ItemStack(Material.AIR));
-                    }  else if (i == 7) {
+                    } else if (i == 7) {
                         if (impact == 1) contents.add(lowImpact);
                         if (impact == 2) contents.add(mediumImpact);
                         if (impact == 3) contents.add(highImpact);
-                    }
-                    else if (i == 13) {
+                    } else if (i == 13) {
                         contents.add(originIcon);
-                    } else if ((i >=20 && i <= 24) || (i >=29 && i <= 33) || (i >=38 && i <= 42)) {
+                    } else if ((i >= 20 && i <= 24) || (i >= 29 && i <= 33) || (i >= 38 && i <= 42)) {
 
                         if (originPowerNames.size() > 0) {
                             String powerName = originPowerNames.get(0);
@@ -142,7 +154,7 @@ public class ChoosingCUSTOM implements Listener {
                             originPowerDescriptions.remove(0);
 
                         } else {
-                            if (i >=38) {
+                            if (i >= 38) {
                                 contents.add(new ItemStack(Material.AIR));
                             } else {
                                 contents.add(new ItemStack(Material.PAPER));
@@ -172,15 +184,16 @@ public class ChoosingCUSTOM implements Listener {
                 String origintag = e.getCurrentItem().getItemMeta().getPersistentDataContainer().get(key, PersistentDataType.STRING);
                 Player p = (Player) e.getWhoClicked();
                 setAttributesToDefault(p);
-                Bukkit.getScheduler().runTaskLater(GenesisMC.getPlugin(),()->{
-                    if (CustomOriginAPI.getOriginPowers(origintag).contains("origins:nether_spawn") && p.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING).equals("genesis:origin-null")) p.teleport(WorldSpawnHandler.NetherSpawn());
+                Bukkit.getScheduler().runTaskLater(GenesisMC.getPlugin(), () -> {
+                    if (CustomOriginAPI.getOriginPowers(origintag).contains("origins:nether_spawn") && p.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING).equals("genesis:origin-null"))
+                        p.teleport(WorldSpawnHandler.NetherSpawn());
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, origintag);
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
                     DefaultChoose.DefaultChoose(p);
                     removeItemPhantom(p);
                     removeItemEnder(p);
-                },1);
+                }, 1);
             }
         }
     }
@@ -208,25 +221,11 @@ public class ChoosingCUSTOM implements Listener {
                     Player p = (Player) e.getWhoClicked();
                     p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 10, 2);
                     e.getWhoClicked().closeInventory();
-                }else{e.setCancelled(true);}
-            }
-        }
-    }
-
-    public static List<String> cutStringIntoLists(String string) {
-        ArrayList<String> strings = new ArrayList<>();
-        while (string.length() > 40) {
-            for (int i = 40; i > 1; i--) {
-                if (String.valueOf(string.charAt(i)).equals(" ")) {
-                    strings.add(string.substring(0, i));
-                    string = string.substring(i+1);
-                    break;
+                } else {
+                    e.setCancelled(true);
                 }
             }
         }
-        if (strings.isEmpty()) return List.of(string);
-        strings.add(string);
-        return strings.stream().toList();
     }
 }
 

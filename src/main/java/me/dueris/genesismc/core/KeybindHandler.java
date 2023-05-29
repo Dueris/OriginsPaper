@@ -29,21 +29,7 @@ import static org.bukkit.ChatColor.RED;
 
 public class KeybindHandler implements Listener {
 
-    @EventHandler
-    public void OnPressMainKey(PlayerSwapHandItemsEvent e) {
-        Player p = e.getPlayer();
-        if (Bukkit.getServer().getPluginManager().isPluginEnabled("Geyser-Spigot")) {
-            if (!GeyserApi.api().isBedrockPlayer(p.getUniqueId())) {
-
-                keybindTriggerMethod(p, e);
-
-            }
-        }else{
-            keybindTriggerMethod(p, e);
-        }
-    }
-
-    public static void keybindTriggerMethod(Player p, PlayerSwapHandItemsEvent e){
+    public static void keybindTriggerMethod(Player p, PlayerSwapHandItemsEvent e) {
         OriginKeybindExecuteEvent event = new OriginKeybindExecuteEvent(p);
         getServer().getPluginManager().callEvent(event);
 
@@ -65,37 +51,55 @@ public class KeybindHandler implements Listener {
             e.setCancelled(true);
             int phantomid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER);
             if (phantomid == 1) {
-                if(p.getGameMode() != GameMode.SPECTATOR) {
+                if (p.getGameMode() != GameMode.SPECTATOR) {
 
-                    if(p.getFoodLevel() > 6){
+                    if (p.getFoodLevel() > 6) {
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 2);
                         p.sendActionBar(DARK_AQUA + "Activated Phantom Form");
                         p.setSilent(true);
                         p.setCollidable(false);
 
-                    }else{
+                    } else {
                         p.sendMessage(RED + "You must be able to sprint to switch forms");
                     }
 
-                }else{p.sendMessage(ChatColor.RED + "You are unable to switch forms while inside a block or in spectator mode.");}
+                } else {
+                    p.sendMessage(ChatColor.RED + "You are unable to switch forms while inside a block or in spectator mode.");
+                }
             } else if (phantomid == 2) {
-                if(p.getGameMode() != GameMode.SPECTATOR) {
+                if (p.getGameMode() != GameMode.SPECTATOR) {
 
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
                     p.sendActionBar(DARK_AQUA + "Deactivated Phantom Form");
                     p.setSilent(false);
                     p.setCollidable(true);
 
-                }else{p.sendMessage(ChatColor.RED + "You are unable to switch forms while inside a block or in spectator mode.");}
+                } else {
+                    p.sendMessage(ChatColor.RED + "You are unable to switch forms while inside a block or in spectator mode.");
+                }
             } else {
                 p.sendMessage(RED + "Error: Switching could not be executed");
             }
         }
-        if(launch_into_air.contains(OriginPlayer.getOriginTag(e.getPlayer()))){
+        if (launch_into_air.contains(OriginPlayer.getOriginTag(e.getPlayer()))) {
             p.setVelocity(new Vector(0, 2, 0));
             e.setCancelled(true);
         }
 
+    }
+
+    @EventHandler
+    public void OnPressMainKey(PlayerSwapHandItemsEvent e) {
+        Player p = e.getPlayer();
+        if (Bukkit.getServer().getPluginManager().isPluginEnabled("Geyser-Spigot")) {
+            if (!GeyserApi.api().isBedrockPlayer(p.getUniqueId())) {
+
+                keybindTriggerMethod(p, e);
+
+            }
+        } else {
+            keybindTriggerMethod(p, e);
+        }
     }
 
 }

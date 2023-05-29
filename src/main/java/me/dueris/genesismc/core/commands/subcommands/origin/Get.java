@@ -26,16 +26,15 @@ public class Get extends SubCommand {
     @Override
     public void perform(Player p, String[] args) {
         if (!p.hasPermission("genesismc.origins.cmd.get")) return;
-        if(args.length > 1){
+        if (args.length > 1) {
             try {
                 Player given = Bukkit.getPlayer(args[1]);
-                if(given == null) return;
+                if (given == null) return;
                 p.sendMessage(given.getName() + " has the following Origin: " + OriginPlayer.getOriginTag(given));
             } catch (Exception e) {
                 p.sendMessage(RED + "Could not find player!");
             }
-        }else
-        if(args.length == 1){
+        } else if (args.length == 1) {
             p.sendMessage(p.getName() + " has the following Origin: " + OriginPlayer.getOriginTag(p));
         }
 

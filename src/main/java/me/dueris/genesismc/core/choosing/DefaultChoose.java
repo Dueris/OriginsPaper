@@ -31,7 +31,7 @@ public class DefaultChoose {
         if (p.getScoreboardTags().contains("choosing")) {
             p.removeScoreboardTag("choosing");
         }
-            
+
         OriginChooseEvent chooseEvent = new OriginChooseEvent(p);
         getServer().getPluginManager().callEvent(chooseEvent);
 

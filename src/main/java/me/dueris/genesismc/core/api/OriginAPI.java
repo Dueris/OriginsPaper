@@ -6,8 +6,8 @@ import java.util.ArrayList;
 import static me.dueris.genesismc.core.api.factory.CustomOriginAPI.getCustomOrigins;
 
 public class OriginAPI {
-    
-    public static ArrayList<String> getLoadedOrigins(){
+
+    public static ArrayList<String> getLoadedOrigins() {
         ArrayList<String> origins = new ArrayList<>(getCustomOrigins().keySet());
         origins.add("genesis:origin-human");
         origins.add("genesis:origin-enderian");
@@ -30,6 +30,6 @@ public class OriginAPI {
         origins.add("genesis:origin-piglin");
         return origins;
     }
-    
-    
+
+
 }

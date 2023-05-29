@@ -22,10 +22,10 @@ public class FireWeak extends BukkitRunnable {
                 }
 
                 Location location = p.getLocation();
-                for (int x = (int) (location.getX()-4); x < location.getX()+4; x++) {
-                    for (int y = (int) (location.getY()-2); y < location.getY()+2; y++) {
-                        for (int z = (int) (location.getZ()-4); z < location.getZ()+4; z++) {
-                            if (p.getWorld().getBlockAt(x,y,z).getType() == SOUL_FIRE) {
+                for (int x = (int) (location.getX() - 4); x < location.getX() + 4; x++) {
+                    for (int y = (int) (location.getY() - 2); y < location.getY() + 2; y++) {
+                        for (int z = (int) (location.getZ() - 4); z < location.getZ() + 4; z++) {
+                            if (p.getWorld().getBlockAt(x, y, z).getType() == SOUL_FIRE) {
                                 p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 10, 1, false, false, false));
                                 p.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, 10, 1, false, false, false));
                             }

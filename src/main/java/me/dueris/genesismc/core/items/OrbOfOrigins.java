@@ -40,23 +40,23 @@ public class OrbOfOrigins {
         orb = item;
 
         try {
-        //Shaped Recipe for ORB_OF_ORIGINS
-        if (GenesisDataFiles.getOrbCon().getString("orb-of-origins-enabled").equalsIgnoreCase("true")) {
-            ShapedRecipe sr = new ShapedRecipe(NamespacedKey.minecraft("orboforigins"), item);
-            sr.shape("123",
-                    "456",
-                    "789");
-            sr.setIngredient('1', Material.valueOf(getOrbCon().get("crafting.top.left").toString()));
-            sr.setIngredient('2', Material.valueOf(getOrbCon().get("crafting.top.middle").toString()));
-            sr.setIngredient('3', Material.valueOf(getOrbCon().get("crafting.top.right").toString()));
-            sr.setIngredient('4', Material.valueOf(getOrbCon().get("crafting.middle.left").toString()));
-            sr.setIngredient('5', Material.valueOf(getOrbCon().get("crafting.middle.middle").toString()));
-            sr.setIngredient('6', Material.valueOf(getOrbCon().get("crafting.middle.right").toString()));
-            sr.setIngredient('7', Material.valueOf(getOrbCon().get("crafting.bottom.left").toString()));
-            sr.setIngredient('8', Material.valueOf(getOrbCon().get("crafting.bottom.middle").toString()));
-            sr.setIngredient('9', Material.valueOf(getOrbCon().get("crafting.bottom.right").toString()));
-            Bukkit.getServer().addRecipe(sr);
-        }
+            //Shaped Recipe for ORB_OF_ORIGINS
+            if (GenesisDataFiles.getOrbCon().getString("orb-of-origins-enabled").equalsIgnoreCase("true")) {
+                ShapedRecipe sr = new ShapedRecipe(NamespacedKey.minecraft("orboforigins"), item);
+                sr.shape("123",
+                        "456",
+                        "789");
+                sr.setIngredient('1', Material.valueOf(getOrbCon().get("crafting.top.left").toString()));
+                sr.setIngredient('2', Material.valueOf(getOrbCon().get("crafting.top.middle").toString()));
+                sr.setIngredient('3', Material.valueOf(getOrbCon().get("crafting.top.right").toString()));
+                sr.setIngredient('4', Material.valueOf(getOrbCon().get("crafting.middle.left").toString()));
+                sr.setIngredient('5', Material.valueOf(getOrbCon().get("crafting.middle.middle").toString()));
+                sr.setIngredient('6', Material.valueOf(getOrbCon().get("crafting.middle.right").toString()));
+                sr.setIngredient('7', Material.valueOf(getOrbCon().get("crafting.bottom.left").toString()));
+                sr.setIngredient('8', Material.valueOf(getOrbCon().get("crafting.bottom.middle").toString()));
+                sr.setIngredient('9', Material.valueOf(getOrbCon().get("crafting.bottom.right").toString()));
+                Bukkit.getServer().addRecipe(sr);
+            }
         } catch (Exception exception) {
             Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.RED + "[GenesisMC] Failed to load custom origin orb recipe!");
             Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.RED + "[GenesisMC] Either delete the file, or add a valid material/path.");

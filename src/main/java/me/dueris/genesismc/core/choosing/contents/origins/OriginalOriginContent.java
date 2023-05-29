@@ -19,7 +19,7 @@ import static org.bukkit.ChatColor.*;
 
 public class OriginalOriginContent {
 
-    public static ItemStack[] HumanContents(Player p){
+    public static ItemStack[] HumanContents(Player p) {
         ItemStack close = new ItemStack(Material.BARRIER);
         ItemStack menu = new ItemStack(Material.SPECTRAL_ARROW);
         ItemStack human = new ItemStack(Material.PLAYER_HEAD);
@@ -51,7 +51,7 @@ public class OriginalOriginContent {
         return humangui_items;
     }
 
-    public static @Nullable ItemStack @NotNull [] AvianContents(){
+    public static @Nullable ItemStack @NotNull [] AvianContents() {
         ItemStack close = new ItemStack(Material.BARRIER);
         ItemStack menu = new ItemStack(Material.SPECTRAL_ARROW);
         ItemStack avian = new ItemStack(Material.FEATHER);
@@ -83,7 +83,7 @@ public class OriginalOriginContent {
         return aviangui_items;
     }
 
-    public static @Nullable ItemStack @NotNull [] ArachnidContents(){
+    public static @Nullable ItemStack @NotNull [] ArachnidContents() {
         ItemStack close = new ItemStack(Material.BARRIER);
         ItemStack menu = new ItemStack(Material.SPECTRAL_ARROW);
         ItemStack spider = new ItemStack(Material.COBWEB);
@@ -113,7 +113,7 @@ public class OriginalOriginContent {
         return spidergui_items;
     }
 
-    public static @Nullable ItemStack @NotNull [] ElytrianContents(){
+    public static @Nullable ItemStack @NotNull [] ElytrianContents() {
         ItemStack close = new ItemStack(Material.BARRIER);
         ItemStack menu = new ItemStack(Material.SPECTRAL_ARROW);
         ItemStack elyrtian = new ItemStack(Material.ELYTRA);
@@ -145,7 +145,7 @@ public class OriginalOriginContent {
         return elyrtiangui_items;
     }
 
-    public static @Nullable ItemStack @NotNull [] ShulkContents(){
+    public static @Nullable ItemStack @NotNull [] ShulkContents() {
         ItemStack close = new ItemStack(Material.BARRIER);
         ItemStack menu = new ItemStack(Material.SPECTRAL_ARROW);
         ItemStack shulk = new ItemStack(Material.SHULKER_SHELL);
@@ -179,7 +179,7 @@ public class OriginalOriginContent {
 
     //Feline
 
-    public static @Nullable ItemStack @NotNull [] EnderianContents(){
+    public static @Nullable ItemStack @NotNull [] EnderianContents() {
         ItemStack close = new ItemStack(Material.BARRIER);
         ItemStack menu = new ItemStack(Material.SPECTRAL_ARROW);
         ItemStack ender = new ItemStack(Material.ENDER_PEARL);
@@ -210,7 +210,7 @@ public class OriginalOriginContent {
         return endergui_items;
     }
 
-    public static @Nullable ItemStack @NotNull [] MerlingContents(){
+    public static @Nullable ItemStack @NotNull [] MerlingContents() {
         ItemStack close = new ItemStack(Material.BARRIER);
         ItemStack menu = new ItemStack(Material.SPECTRAL_ARROW);
         ItemStack mermaid = new ItemStack(Material.COD);
@@ -244,7 +244,7 @@ public class OriginalOriginContent {
         return mermaidgui_items;
     }
 
-    public static @Nullable ItemStack @NotNull [] BlazebornContents(){
+    public static @Nullable ItemStack @NotNull [] BlazebornContents() {
         ItemStack close = new ItemStack(Material.BARRIER);
         ItemStack menu = new ItemStack(Material.SPECTRAL_ARROW);
         ItemStack blaze = new ItemStack(Material.BLAZE_POWDER);
@@ -280,7 +280,7 @@ public class OriginalOriginContent {
         return blazegui_items;
     }
 
-    public static @Nullable ItemStack @NotNull [] PhantomContents(){
+    public static @Nullable ItemStack @NotNull [] PhantomContents() {
         ItemStack close = new ItemStack(Material.BARRIER);
         ItemStack menu = new ItemStack(Material.SPECTRAL_ARROW);
         ItemStack phantom = new ItemStack(Material.PHANTOM_MEMBRANE);
@@ -314,7 +314,7 @@ public class OriginalOriginContent {
         return phantomgui_items;
     }
 
-    public static @Nullable ItemStack @NotNull [] FelineContents(){
+    public static @Nullable ItemStack @NotNull [] FelineContents() {
         ItemStack close = new ItemStack(Material.BARRIER);
         ItemStack menu = new ItemStack(Material.SPECTRAL_ARROW);
         ItemStack feline = new ItemStack(Material.ORANGE_WOOL);
@@ -343,7 +343,7 @@ public class OriginalOriginContent {
 
         close = itemProperties(close, RED + "Close", null, null, RED + "Cancel Choosing");
         menu = itemProperties(menu, ChatColor.AQUA + "Return", ItemFlag.HIDE_ENCHANTS, null, null);
-        feline = itemProperties(feline, "Feline", null, Enchantment.ARROW_INFINITE,  GOLD + "Feline Origin");
+        feline = itemProperties(feline, "Feline", null, Enchantment.ARROW_INFINITE, GOLD + "Feline Origin");
 
         ItemStack[] felinegui_items = {close, impact, impact, air, orb, air, impact, impact, close, air, air, air, air, feline, air, air, air, air, air, air, feline_origin_info1, feline_origin_info2, feline_origin_info3, feline_origin_info4, feline_origin_info5, air, air, air, air, feline_origin_info6, feline_origin_info7, blank, blank, blank, air, air, air, air, air, air, air, air, air, air, air, air, air, air, air, menu, air, air, air, air};
 

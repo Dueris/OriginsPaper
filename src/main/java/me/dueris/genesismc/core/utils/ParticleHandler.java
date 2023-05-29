@@ -36,7 +36,6 @@ public class ParticleHandler extends BukkitRunnable {
                     p.getWorld().spawnParticle(Particle.DUST_COLOR_TRANSITION, p.getEyeLocation(), 3, 0.4F, -0.5, 0.4F, dustColorTransition);
 
 
-
                 }
 
             }

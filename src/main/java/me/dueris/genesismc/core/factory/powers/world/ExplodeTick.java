@@ -22,6 +22,7 @@ import static me.dueris.genesismc.core.factory.powers.Powers.explode_tick;
 
 public class ExplodeTick implements Listener {
     private final HashMap<UUID, Long> cooldown;
+
     public ExplodeTick() {
         this.cooldown = new HashMap<>();
     }
@@ -99,14 +100,14 @@ public class ExplodeTick implements Listener {
                         }
 
 
-                    }else{
+                    } else {
                         this.cancel();
                     }
                 }
 
             }.runTaskTimer(GenesisMC.getPlugin(), 0L, 5L);
         } else {
-            }
+        }
     }
 
 

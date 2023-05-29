@@ -40,6 +40,49 @@ public class BigLeap implements Listener {
         return true;
     }
 
+    //This solved "java.lang.NoClassDefFoundError"
+    public static void doLeap(Player p) {
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                if (cooldownAfter.containsKey(p.getUniqueId())) {
+                    if (System.currentTimeMillis() - cooldownAfter.get(p.getUniqueId()) >= 0) {
+                        p.sendActionBar(ChatColor.RED + "|||||||||");
+                    }
+                    if (System.currentTimeMillis() - cooldownAfter.get(p.getUniqueId()) >= 2500) {
+                        p.sendActionBar(ChatColor.RED + "|||||||");
+                    }
+                    if (System.currentTimeMillis() - cooldownAfter.get(p.getUniqueId()) >= 5000) {
+                        p.sendActionBar(ChatColor.YELLOW + "|||||");
+                    }
+                    if (System.currentTimeMillis() - cooldownAfter.get(p.getUniqueId()) >= 7500) {
+                        p.sendActionBar(ChatColor.YELLOW + "|||");
+                    }
+                    if (System.currentTimeMillis() - cooldownAfter.get(p.getUniqueId()) >= 10000) {
+                        cooldownAfter.remove(p.getUniqueId());
+                        p.sendActionBar(ChatColor.GREEN + "-");
+                        inAir.remove(p.getUniqueId());
+                        p.playSound(p.getLocation(), Sound.ENTITY_ARROW_HIT_PLAYER, 1, 2);
+
+                    }
+                } else {
+                    this.cancel();
+                }
+            }
+        }.runTaskTimer(GenesisMC.getPlugin(), 0L, 10L);
+
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                if (cooldownAfter.containsKey(p.getUniqueId())) {
+                    p.playSound(p.getLocation(), Sound.BLOCK_SCAFFOLDING_HIT, 1, 2);
+                } else {
+                    this.cancel();
+                }
+            }
+        }.runTaskTimer(GenesisMC.getPlugin(), 0L, 50L);
+    }
+
     @EventHandler
     public void onRabbitLeap(PlayerToggleSneakEvent e) {
         PersistentDataContainer data = e.getPlayer().getPersistentDataContainer();
@@ -78,7 +121,7 @@ public class BigLeap implements Listener {
                     } else {
                         cooldownAfter.put(p.getUniqueId(), System.currentTimeMillis());
                         inAir.add(p.getUniqueId());
-                        p.setVelocity(p.getLocation().getDirection().multiply(1.5 + cooldownBefore.get(p.getUniqueId())/10));
+                        p.setVelocity(p.getLocation().getDirection().multiply(1.5 + cooldownBefore.get(p.getUniqueId()) / 10));
                         cooldownBefore.remove(p.getUniqueId());
                         playSound.remove(p.getUniqueId());
                         doLeap(p);
@@ -87,42 +130,6 @@ public class BigLeap implements Listener {
                 }
             }.runTaskTimer(GenesisMC.getPlugin(), 0L, 2L);
         }
-    }
-
-    //This solved "java.lang.NoClassDefFoundError"
-    public static void doLeap(Player p) {
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                if (cooldownAfter.containsKey(p.getUniqueId())) {
-                    if (System.currentTimeMillis() - cooldownAfter.get(p.getUniqueId()) >= 0) {
-                        p.sendActionBar(ChatColor.RED + "|||||||||");
-                    } if (System.currentTimeMillis() - cooldownAfter.get(p.getUniqueId()) >= 2500) {
-                        p.sendActionBar(ChatColor.RED + "|||||||");
-                    } if (System.currentTimeMillis() - cooldownAfter.get(p.getUniqueId()) >= 5000) {
-                        p.sendActionBar(ChatColor.YELLOW + "|||||");
-                    } if (System.currentTimeMillis() - cooldownAfter.get(p.getUniqueId()) >= 7500) {
-                        p.sendActionBar(ChatColor.YELLOW + "|||");
-                    } if (System.currentTimeMillis() - cooldownAfter.get(p.getUniqueId()) >= 10000) {
-                        cooldownAfter.remove(p.getUniqueId());
-                        p.sendActionBar(ChatColor.GREEN + "-");
-                        inAir.remove(p.getUniqueId());
-                        p.playSound(p.getLocation(), Sound.ENTITY_ARROW_HIT_PLAYER, 1, 2);
-
-                    }
-                } else {
-                    this.cancel();
-                }
-            }
-        }.runTaskTimer(GenesisMC.getPlugin(), 0L, 10L);
-
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                if (cooldownAfter.containsKey(p.getUniqueId())) {p.playSound(p.getLocation(), Sound.BLOCK_SCAFFOLDING_HIT, 1, 2);}
-                else {this.cancel();}
-            }
-        } .runTaskTimer(GenesisMC.getPlugin(), 0L, 50L);
     }
 
     @EventHandler

@@ -18,7 +18,7 @@ public class MoreExhaustion implements Listener {
             if (p.isSprinting() && !p.getGameMode().equals(GameMode.CREATIVE) && !p.getGameMode().equals(GameMode.SPECTATOR)) {
                 Random random = new Random();
                 int r = random.nextInt(750);
-                if(!p.isSwimming()) {
+                if (!p.isSwimming()) {
                     if (r < 10) {
                         int foodamt = p.getFoodLevel();
                         p.setFoodLevel(foodamt - 1);

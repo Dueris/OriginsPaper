@@ -11,7 +11,7 @@ import java.util.ArrayList;
 
 public class EXPMenuContents {
 
-    public static ItemStack[] EXPContents(){
+    public static ItemStack[] EXPContents() {
         ItemStack empty = new ItemStack(Material.AIR);
         ItemStack orb = OrbOfOrigins.orb;
         ItemStack bars = new ItemStack(Material.IRON_BARS);

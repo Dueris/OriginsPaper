@@ -15,6 +15,7 @@ public class Carnivore implements Listener {
 
     public static EnumSet<Material> meat;
     public static EnumSet<Material> excludable;
+
     static {
         meat = EnumSet.of(COOKED_BEEF, COOKED_CHICKEN, COOKED_MUTTON, COOKED_COD, COOKED_PORKCHOP, COOKED_RABBIT, COOKED_SALMON,
                 BEEF, CHICKEN, MUTTON, COD, PORKCHOP, RABBIT, SALMON, TROPICAL_FISH, PUFFERFISH, RABBIT_STEW);
@@ -22,10 +23,10 @@ public class Carnivore implements Listener {
     }
 
     @EventHandler
-    public void CarnivoreEat(PlayerInteractEvent e){
+    public void CarnivoreEat(PlayerInteractEvent e) {
         if (carnivore.contains(OriginPlayer.getOriginTag(e.getPlayer()))) {
-            if(e.getItem() != null){
-                if(!meat.contains(e.getItem().getType()) && !excludable.contains(e.getItem().getType()) && e.getItem().getType().isEdible()) {
+            if (e.getItem() != null) {
+                if (!meat.contains(e.getItem().getType()) && !excludable.contains(e.getItem().getType()) && e.getItem().getType().isEdible()) {
                     if (e.getAction().isRightClick()) {
                         e.setCancelled(true);
                     }

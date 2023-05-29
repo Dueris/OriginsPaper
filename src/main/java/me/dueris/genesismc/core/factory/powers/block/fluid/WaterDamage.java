@@ -20,15 +20,17 @@ import static me.dueris.genesismc.core.factory.powers.block.fluid.WaterBreathe.o
 
 public class WaterDamage extends BukkitRunnable implements Listener {
     private final HashMap<UUID, Long> cooldown;
+
     public WaterDamage() {
         this.cooldown = new HashMap<>();
     }
+
     @Override
     public void run() {
-        for(Player p : Bukkit.getOnlinePlayers()) {
+        for (Player p : Bukkit.getOnlinePlayers()) {
             if (water_vulnerability.contains(OriginPlayer.getOriginTag(p))) {
-                if(!(p.isInsideVehicle())){
-                    if(p.isInWaterOrRainOrBubbleColumn()) {
+                if (!(p.isInsideVehicle())) {
+                    if (p.isInWaterOrRainOrBubbleColumn()) {
                         if (p.getGameMode().equals(GameMode.SURVIVAL) || p.getGameMode().equals(GameMode.ADVENTURE)) {
                             float curhealth = (float) p.getHealth();
                             float helemt_modifier = 0;
@@ -40,7 +42,7 @@ public class WaterDamage extends BukkitRunnable implements Listener {
                             float prot3 = (float) 0.6;
                             float prot4 = (float) 0.9;
                             if (p.getInventory().getHelmet() != null) {
-                                if(p.getInventory().getHelmet().getLore() != null) {
+                                if (p.getInventory().getHelmet().getLore() != null) {
                                     if (p.getEquipment().getHelmet().getLore().contains(ChatColor.GRAY + "Water Protection I")) {
                                         helemt_modifier = prot1;
                                     } else if (p.getEquipment().getHelmet().getLore().contains(ChatColor.GRAY + "Water Protection II")) {
@@ -55,7 +57,7 @@ public class WaterDamage extends BukkitRunnable implements Listener {
                                 }
                             }
                             if (p.getInventory().getChestplate() != null) {
-                                if(p.getInventory().getChestplate().getLore() != null) {
+                                if (p.getInventory().getChestplate().getLore() != null) {
                                     if (p.getEquipment().getChestplate().getLore().contains(ChatColor.GRAY + "Water Protection I")) {
                                         chestplate_modifier = prot1;
                                     } else if (p.getEquipment().getChestplate().getLore().contains(ChatColor.GRAY + "Water Protection II")) {
@@ -85,7 +87,7 @@ public class WaterDamage extends BukkitRunnable implements Listener {
                                 }
                             }
                             if (p.getInventory().getBoots() != null) {
-                                if(p.getInventory().getBoots().getLore() != null) {
+                                if (p.getInventory().getBoots().getLore() != null) {
                                     if (p.getEquipment().getBoots().getLore().contains(ChatColor.GRAY + "Water Protection I")) {
                                         boots_modifier = prot1;
                                     } else if (p.getEquipment().getBoots().getLore().contains(ChatColor.GRAY + "Water Protection II")) {
@@ -109,7 +111,7 @@ public class WaterDamage extends BukkitRunnable implements Listener {
                                 Random random = new Random();
 
                                 int r = random.nextInt(3);
-                                if(r == 1){
+                                if (r == 1) {
                                     if (p.getInventory().getHelmet() != null) {
                                         int heldur = p.getEquipment().getHelmet().getDurability();
                                         p.getEquipment().getHelmet().setDurability((short) (heldur + 3));
@@ -137,11 +139,11 @@ public class WaterDamage extends BukkitRunnable implements Listener {
                     }
                 }
             }
-            if(water_breathing.contains(OriginPlayer.getOriginTag(p))){
-                if(outofAIR.contains(p)){
-                    if(p.getRemainingAir() > 20){
+            if (water_breathing.contains(OriginPlayer.getOriginTag(p))) {
+                if (outofAIR.contains(p)) {
+                    if (p.getRemainingAir() > 20) {
                         outofAIR.remove(p);
-                    }else{
+                    } else {
                         p.damage(2);
                         p.playSound(p, Sound.ENTITY_PLAYER_HURT_DROWN, 10, 1);
                     }
@@ -152,7 +154,7 @@ public class WaterDamage extends BukkitRunnable implements Listener {
     }
 
     @EventHandler
-    public void OnDeathWater(PlayerDeathEvent e){
+    public void OnDeathWater(PlayerDeathEvent e) {
         Player p = e.getEntity();
         if (water_vulnerability.contains(OriginPlayer.getOriginTag(e.getPlayer()))) {
             Random random = new Random();
@@ -168,9 +170,9 @@ public class WaterDamage extends BukkitRunnable implements Listener {
     }
 
     @EventHandler
-    public void SplashEnderian(WaterBottleSplashEvent e){
-        if(e.getAffectedEntities() instanceof Player p){
-            if(water_vulnerability.contains(OriginPlayer.getOriginTag(p)));
+    public void SplashEnderian(WaterBottleSplashEvent e) {
+        if (e.getAffectedEntities() instanceof Player p) {
+            if (water_vulnerability.contains(OriginPlayer.getOriginTag(p))) ;
             p.damage(5);
         }
     }

@@ -18,7 +18,8 @@ public class GenesisCommandManager implements CommandExecutor {
     //key = uuid of player
     //long = epoch time of when ran command
     private final ArrayList<SubCommand> subCommands = new ArrayList<>();
-    public GenesisCommandManager(){
+
+    public GenesisCommandManager() {
         subCommands.add(new Enchant());
         subCommands.add(new References());
         subCommands.add(new Recipe());
@@ -33,18 +34,18 @@ public class GenesisCommandManager implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (sender instanceof Player p){
-            if (args.length > 0){
-                for (int i = 0; i < getSubCommands().size(); i++){
-                    if (args[0].equalsIgnoreCase(getSubCommands().get(i).getName())){
-                        getSubCommands().get(i).perform(p,args);
+        if (sender instanceof Player p) {
+            if (args.length > 0) {
+                for (int i = 0; i < getSubCommands().size(); i++) {
+                    if (args[0].equalsIgnoreCase(getSubCommands().get(i).getName())) {
+                        getSubCommands().get(i).perform(p, args);
                         OriginCommandEvent event = new OriginCommandEvent(p);
                         getServer().getPluginManager().callEvent(event);
                     }
 
                 }
             }
-            if(args.length == 0){
+            if (args.length == 0) {
                 p.sendMessage(ChatColor.RED + "You did not provide any args. Here is a list of commands:");
                 p.sendMessage(ChatColor.YELLOW + "-----------------------------------------",
                         ChatColor.WHITE + "/origin choose",
@@ -67,12 +68,7 @@ public class GenesisCommandManager implements CommandExecutor {
     }
 
 
-
-
-
-
-
-public ArrayList<SubCommand> getSubCommands(){
+    public ArrayList<SubCommand> getSubCommands() {
         return subCommands;
-}
+    }
 }

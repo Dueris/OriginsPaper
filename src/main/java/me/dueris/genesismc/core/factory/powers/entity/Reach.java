@@ -22,35 +22,6 @@ import static me.dueris.genesismc.core.factory.powers.Powers.extra_reach;
 
 public class Reach implements Listener {
 
-    @EventHandler
-    public void OnClickREACH(PlayerInteractEvent e) {
-        if (extra_reach.contains(OriginPlayer.getOriginTag(e.getPlayer()))) {
-            if (e.getAction().isLeftClick());
-
-            Player p = e.getPlayer();
-            Location eyeloc = p.getEyeLocation();
-            @NotNull Vector direction = eyeloc.getDirection();
-            Predicate<Entity> filter = (entity) -> !entity.equals(p);
-
-            RayTraceResult traceResult4_5F = p.getWorld().rayTrace(eyeloc, eyeloc.getDirection(), 6, FluidCollisionMode.NEVER, false, 0, filter);
-
-            if (traceResult4_5F != null) {
-                Entity entity = traceResult4_5F.getHitEntity();
-                //entity code -- pvp
-                if (entity == null) return;
-                Player attacker = e.getPlayer();
-                if(entity.isDead() || !(entity instanceof LivingEntity)) return;
-                LivingEntity victim = (LivingEntity) traceResult4_5F.getHitEntity();
-                if(attacker.getLocation().distance(victim.getLocation()) <=6){
-                    if (entity.getPassengers().contains(p)) return;
-                    if (!entity.isDead()) {
-                        LivingEntity ent = (LivingEntity) entity;
-                        p.attack(ent);
-                    }
-                }
-            }
-        }
-    }
     /*
         @EventHandler
         public void SwingBlockBreakCreative(PlayerInteractEvent e){
@@ -121,6 +92,36 @@ public class Reach implements Listener {
                         item.setAmount(item.getAmount() - 1);
                     } else {
                         player.getInventory().setItemInMainHand(new ItemStack(Material.AIR));
+                    }
+                }
+            }
+        }
+    }
+
+    @EventHandler
+    public void OnClickREACH(PlayerInteractEvent e) {
+        if (extra_reach.contains(OriginPlayer.getOriginTag(e.getPlayer()))) {
+            if (e.getAction().isLeftClick()) ;
+
+            Player p = e.getPlayer();
+            Location eyeloc = p.getEyeLocation();
+            @NotNull Vector direction = eyeloc.getDirection();
+            Predicate<Entity> filter = (entity) -> !entity.equals(p);
+
+            RayTraceResult traceResult4_5F = p.getWorld().rayTrace(eyeloc, eyeloc.getDirection(), 6, FluidCollisionMode.NEVER, false, 0, filter);
+
+            if (traceResult4_5F != null) {
+                Entity entity = traceResult4_5F.getHitEntity();
+                //entity code -- pvp
+                if (entity == null) return;
+                Player attacker = e.getPlayer();
+                if (entity.isDead() || !(entity instanceof LivingEntity)) return;
+                LivingEntity victim = (LivingEntity) traceResult4_5F.getHitEntity();
+                if (attacker.getLocation().distance(victim.getLocation()) <= 6) {
+                    if (entity.getPassengers().contains(p)) return;
+                    if (!entity.isDead()) {
+                        LivingEntity ent = (LivingEntity) entity;
+                        p.attack(ent);
                     }
                 }
             }

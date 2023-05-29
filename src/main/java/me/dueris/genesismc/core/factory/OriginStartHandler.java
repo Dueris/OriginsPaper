@@ -87,7 +87,7 @@ public class OriginStartHandler {
         goldAmourBellow.runTaskTimer(getPlugin(), 0, 1);
     }
 
-    public static void StartListeners(){
+    public static void StartListeners() {
 
         getServer().getPluginManager().registerEvents(new CustomOriginExistCheck(), getPlugin());
         getServer().getPluginManager().registerEvents(new Powers(), getPlugin());

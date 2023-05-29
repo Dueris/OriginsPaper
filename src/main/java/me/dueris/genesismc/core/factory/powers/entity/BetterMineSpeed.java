@@ -28,6 +28,7 @@ public class BetterMineSpeed implements Listener {
                 WOODEN_SHOVEL, STONE_SHOVEL, GOLDEN_SHOVEL, IRON_SHOVEL, DIAMOND_SHOVEL, NETHERITE_SHOVEL,
                 SHEARS);
     }
+
     @EventHandler
     public void onBreakShulk(BlockBreakEvent e) {
         Player p = e.getPlayer();

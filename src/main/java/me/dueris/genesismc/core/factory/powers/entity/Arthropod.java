@@ -15,14 +15,14 @@ public class Arthropod implements Listener {
 
     @EventHandler
     public void OnAttack(EntityDamageByEntityEvent e) {
-        if(e.getEntity() instanceof Player p){
+        if (e.getEntity() instanceof Player p) {
             if (arthropod.contains(OriginPlayer.getOriginTag(p))) {
-                if(e.getDamager() != null){
+                if (e.getDamager() != null) {
                     Entity damager = e.getDamager();
-                    if(damager.getType() == EntityType.PLAYER){
+                    if (damager.getType() == EntityType.PLAYER) {
                         Player d = (Player) damager;
                         if (d.getInventory().getItemInMainHand() != null && d.getInventory().getItemInMainHand().getItemMeta() != null) {
-                            if(d.getInventory().getItemInMainHand().getItemMeta().hasEnchant(Enchantment.DAMAGE_ARTHROPODS)) {
+                            if (d.getInventory().getItemInMainHand().getItemMeta().hasEnchant(Enchantment.DAMAGE_ARTHROPODS)) {
                                 if (d.getInventory().getItemInMainHand().getEnchantmentLevel(Enchantment.DAMAGE_ARTHROPODS) == 1) {
                                     p.damage(1);
                                 } else if (d.getInventory().getItemInMainHand().getEnchantmentLevel(Enchantment.DAMAGE_ARTHROPODS) == 2) {

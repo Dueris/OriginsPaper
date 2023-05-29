@@ -11,10 +11,10 @@ import static me.dueris.genesismc.core.factory.powers.armour.FlightElytra.glidin
 
 public class ArielCombat implements Listener {
     @EventHandler
-    public void ArielCombat(EntityDamageByEntityEvent e){
-        if(!(e.getDamager() instanceof Player)) return;
-        if(aerial_combatant.contains(OriginPlayer.getOriginTag((Player) e.getDamager()))){
-            if((glidingPlayers.contains(e.getDamager().getUniqueId())) || ((Player) e.getDamager()).isGliding()){
+    public void ArielCombat(EntityDamageByEntityEvent e) {
+        if (!(e.getDamager() instanceof Player)) return;
+        if (aerial_combatant.contains(OriginPlayer.getOriginTag((Player) e.getDamager()))) {
+            if ((glidingPlayers.contains(e.getDamager().getUniqueId())) || ((Player) e.getDamager()).isGliding()) {
                 e.setDamage(e.getDamage() * 2);
             }
         }

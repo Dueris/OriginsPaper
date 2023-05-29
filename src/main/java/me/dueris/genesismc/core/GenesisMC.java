@@ -41,16 +41,71 @@ import java.util.EnumSet;
 import java.util.HashMap;
 
 public final class GenesisMC extends JavaPlugin implements Listener {
-    private static GenesisMC plugin;
     public static EnumSet<Material> tool;
-
     public static Metrics metrics;
+    public static ArrayList<Enchantment> custom_enchants = new ArrayList<>();
+    public static WaterProtection waterProtectionEnchant;
+    private static GenesisMC plugin;
+
+    static {
+        tool = EnumSet.of(Material.DIAMOND_AXE, Material.DIAMOND_HOE, Material.DIAMOND_PICKAXE, Material.DIAMOND_SHOVEL, Material.DIAMOND_SWORD, Material.GOLDEN_AXE, Material.GOLDEN_HOE, Material.GOLDEN_PICKAXE, Material.GOLDEN_SHOVEL, Material.GOLDEN_SWORD, Material.NETHERITE_AXE, Material.NETHERITE_HOE, Material.NETHERITE_PICKAXE, Material.NETHERITE_SHOVEL, Material.NETHERITE_SWORD, Material.IRON_AXE, Material.IRON_HOE, Material.IRON_PICKAXE, Material.IRON_SHOVEL, Material.IRON_SWORD, Material.WOODEN_AXE, Material.WOODEN_HOE, Material.WOODEN_PICKAXE, Material.WOODEN_SHOVEL, Material.WOODEN_SWORD, Material.SHEARS);
+    }
 
     public GenesisMC() {
     }
 
-    public static ArrayList<Enchantment> custom_enchants = new ArrayList<>();
-    public static WaterProtection waterProtectionEnchant;
+    //origin start end
+
+    //Load custom enchantments
+    public static void registerEnchantment(Enchantment enchantment) {
+        boolean registered = true;
+        try {
+            Field f = Enchantment.class.getDeclaredField("acceptingNew");
+            f.setAccessible(true);
+            f.set(null, true);
+            Enchantment.registerEnchantment(enchantment);
+        } catch (Exception e) {
+            registered = false;
+            e.printStackTrace();
+        }
+        if (registered) {
+            // It's been registered!
+        }
+    }
+
+    public static GenesisMC getPlugin() {
+        return plugin;
+    }
+
+    public static void dumpCon() {
+        Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.LIGHT_PURPLE + "[GenesisMC] DUMPING PLUGIN-API FILES:");
+        Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.GRAY + "Loading config file:" +
+                GenesisDataFiles.getMainConfig().getValues(Boolean.parseBoolean("all")) +
+                ChatColor.GRAY +
+                GenesisDataFiles.getMainConfig().getValues(Boolean.parseBoolean("all"))
+
+        );
+        Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.LIGHT_PURPLE + "[GenesisMC] Loading API");
+        Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.GRAY + "[GenesisMC] DUMPING SERVER FILES:" +
+                Bukkit.getServer().getVersion() +
+                Bukkit.getServer().getAllowEnd() +
+                Bukkit.getServer().getAllowNether() +
+                Bukkit.getServer().getPluginManager() +
+                Bukkit.getServer().getMaxPlayers() +
+                Bukkit.getServer().getConnectionThrottle() +
+                Bukkit.getServer().getLogger() +
+                Bukkit.getServer().getName() +
+                Bukkit.getServer().getBukkitVersion() +
+                Bukkit.getServer().getDefaultGameMode() +
+                Bukkit.getServer().getWorldType() +
+                Bukkit.getServer().getResourcePack() +
+                Bukkit.getServer().getHelpMap() +
+                Bukkit.getServer().getPluginManager().getPlugins() +
+                Bukkit.getServer().getBukkitVersion()
+
+        );
+
+    }
 
     @Override
     public void onEnable() {
@@ -80,12 +135,12 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         getServer().getConsoleSender().sendMessage(ChatColor.BLUE + "[GenesisMC]   \\____|  \\___| |_| |_|  \\___| |___/ |_| |___/ |_|  |_|  \\____|");
         getServer().getConsoleSender().sendMessage(ChatColor.LIGHT_PURPLE + "[GenesisMC]  GenesisMC -- Created by Dueris");
         getServer().getConsoleSender().sendMessage(ChatColor.GRAY + "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-       try {
-                Class.forName("io.papermc.paper.threadedregions.RegionizedServer");
-           getServer().getConsoleSender().sendMessage(ChatColor.RED + "WARNING: FOLIA IS NOT SUPPORTED ON THIS VERSION TYPE. PLEASE USE THE FOLIA BUILD OF THIS VERSION.");
-       } catch (ClassNotFoundException e) {
-           //not folia
-       }
+        try {
+            Class.forName("io.papermc.paper.threadedregions.RegionizedServer");
+            getServer().getConsoleSender().sendMessage(ChatColor.RED + "WARNING: FOLIA IS NOT SUPPORTED ON THIS VERSION TYPE. PLEASE USE THE FOLIA BUILD OF THIS VERSION.");
+        } catch (ClassNotFoundException e) {
+            //not folia
+        }
         String serverImplementation = Bukkit.getServer().getName();
 
         if (serverImplementation.contains("CraftBukkit")) {
@@ -93,11 +148,11 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         } else if (serverImplementation.contains("Spigot")) {
             getServer().getConsoleSender().sendMessage(ChatColor.RED + "WARNING: SPIGOT/CRAFTBUKKIT IS NOT SUPPORTED, PLEASE USE PAPERMC.");
         }
-       if(Bukkit.getServer().getPluginManager().isPluginEnabled("Origins-Bukkit")){
-           getServer().getConsoleSender().sendMessage(ChatColor.RED + "[GenesisMC] Unable to start plugin due to Origins Bukkit being present. Using both will cause errors.");
-           getServer().getConsoleSender().sendMessage(ChatColor.GRAY + "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-           Bukkit.getServer().getPluginManager().disablePlugin(this);
-       }
+        if (Bukkit.getServer().getPluginManager().isPluginEnabled("Origins-Bukkit")) {
+            getServer().getConsoleSender().sendMessage(ChatColor.RED + "[GenesisMC] Unable to start plugin due to Origins Bukkit being present. Using both will cause errors.");
+            getServer().getConsoleSender().sendMessage(ChatColor.GRAY + "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+            Bukkit.getServer().getPluginManager().disablePlugin(this);
+        }
 
         new BukkitRunnable() {
             @Override
@@ -110,7 +165,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
                 }
 
                 this.cancel();
-                }
+            }
         }.runTaskTimer(GenesisMC.getPlugin(), 20L, 1L);
 
         if (GenesisDataFiles.getMainConfig().getString("console-startup-debug").equalsIgnoreCase("true")) {
@@ -142,7 +197,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
                 getServer().getConsoleSender().sendMessage("[GenesisMC] Loaded \"" + CustomOriginAPI.getOriginName(originTag) + "\"");
             }
         }
-        if(CustomOriginAPI.getCustomOrigins().size() > 0){
+        if (CustomOriginAPI.getCustomOrigins().size() > 0) {
             getServer().getConsoleSender().sendMessage("[GenesisMC] Loaded (" + CustomOriginAPI.getCustomOrigins().size() + ") Custom Origins");
         }
 
@@ -184,40 +239,33 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         OriginStartHandler.StartRunnables();
         OriginStartHandler.StartListeners();
 
-    //particle handler
+        //particle handler
         ParticleHandler handler = new ParticleHandler();
         handler.runTaskTimer(this, 0, 5);
-    //scoreboard
+        //scoreboard
         ScoreboardRunnable scorebo = new ScoreboardRunnable();
         scorebo.runTaskTimer(this, 0, 5);
 
-    //enchantments
+        //enchantments
         waterProtectionEnchant = new WaterProtection("waterprot");
         custom_enchants.add(waterProtectionEnchant);
         registerEnchantment(waterProtectionEnchant);
 
 
-
-        for(Player p : Bukkit.getOnlinePlayers()){
-            if(p.isOp()){
+        for (Player p : Bukkit.getOnlinePlayers()) {
+            if (p.isOp()) {
                 p.sendMessage(ChatColor.BLUE + "Origins Reloaded.");
             }
             CustomOriginExistCheck.customOriginExistCheck(p);
         }
         Powers.loadPowers();
-        try{
+        try {
             Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.GREEN + Lang.lang_test);
         } catch (Exception e) {
             Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.RED + "A fatal error has occurred, lang could not be loaded. Disabling GenesisMC....");
             Bukkit.getServer().getPluginManager().disablePlugin(this);
         }
 
-    }
-
-    //origin start end
-
-    static {
-        tool = EnumSet.of(Material.DIAMOND_AXE, Material.DIAMOND_HOE, Material.DIAMOND_PICKAXE, Material.DIAMOND_SHOVEL, Material.DIAMOND_SWORD, Material.GOLDEN_AXE, Material.GOLDEN_HOE, Material.GOLDEN_PICKAXE, Material.GOLDEN_SHOVEL, Material.GOLDEN_SWORD, Material.NETHERITE_AXE, Material.NETHERITE_HOE, Material.NETHERITE_PICKAXE, Material.NETHERITE_SHOVEL, Material.NETHERITE_SWORD, Material.IRON_AXE, Material.IRON_HOE, Material.IRON_PICKAXE, Material.IRON_SHOVEL, Material.IRON_SWORD, Material.WOODEN_AXE, Material.WOODEN_HOE, Material.WOODEN_PICKAXE, Material.WOODEN_SHOVEL, Material.WOODEN_SWORD, Material.SHEARS);
     }
 
     @EventHandler
@@ -243,7 +291,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
             @SuppressWarnings("unchecked")
             HashMap<NamespacedKey, Enchantment> byKey = (HashMap<NamespacedKey, Enchantment>) keyField.get(null);
 
-            for (Enchantment enchantment : custom_enchants){
+            for (Enchantment enchantment : custom_enchants) {
                 byKey.remove(enchantment.getKey());
             }
 
@@ -253,64 +301,13 @@ public final class GenesisMC extends JavaPlugin implements Listener {
             @SuppressWarnings("unchecked")
             HashMap<String, Enchantment> byName = (HashMap<String, Enchantment>) nameField.get(null);
 
-            for (Enchantment enchantment : custom_enchants){
+            for (Enchantment enchantment : custom_enchants) {
                 byName.remove(enchantment.getName());
             }
-        } catch (Exception ignored) { }
+        } catch (Exception ignored) {
+        }
 
         //deletes origin files unzipped by Genesis
         CustomOriginAPI.removeUnzippedDatapacks();
-    }
-
-    //Load custom enchantments
-    public static void registerEnchantment(Enchantment enchantment) {
-        boolean registered = true;
-        try {
-            Field f = Enchantment.class.getDeclaredField("acceptingNew");
-            f.setAccessible(true);
-            f.set(null, true);
-            Enchantment.registerEnchantment(enchantment);
-        } catch (Exception e) {
-            registered = false;
-            e.printStackTrace();
-        }
-        if(registered){
-            // It's been registered!
-        }
-    }
-
-
-    public static GenesisMC getPlugin() {
-        return plugin;
-    }
-
-    public static void dumpCon(){
-        Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.LIGHT_PURPLE + "[GenesisMC] DUMPING PLUGIN-API FILES:");
-        Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.GRAY + "Loading config file:" +
-                GenesisDataFiles.getMainConfig().getValues(Boolean.parseBoolean("all")) +
-                ChatColor.GRAY +
-                GenesisDataFiles.getMainConfig().getValues(Boolean.parseBoolean("all"))
-
-        );
-        Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.LIGHT_PURPLE + "[GenesisMC] Loading API");
-        Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.GRAY + "[GenesisMC] DUMPING SERVER FILES:" +
-                Bukkit.getServer().getVersion() +
-                Bukkit.getServer().getAllowEnd() +
-                Bukkit.getServer().getAllowNether() +
-                Bukkit.getServer().getPluginManager() +
-                Bukkit.getServer().getMaxPlayers() +
-                Bukkit.getServer().getConnectionThrottle() +
-                Bukkit.getServer().getLogger() +
-                Bukkit.getServer().getName() +
-                Bukkit.getServer().getBukkitVersion() +
-                Bukkit.getServer().getDefaultGameMode() +
-                Bukkit.getServer().getWorldType() +
-                Bukkit.getServer().getResourcePack() +
-                Bukkit.getServer().getHelpMap() +
-                Bukkit.getServer().getPluginManager().getPlugins() +
-                Bukkit.getServer().getBukkitVersion()
-
-        );
-
     }
 }

@@ -71,13 +71,13 @@ public class Powers implements Listener {
     public static ArrayList<String> strong_arms_break_speed = new ArrayList<>();
 
     //genesis
-    public static ArrayList<String> hot_hands= new ArrayList<>();
-    public static ArrayList<String> extra_fire= new ArrayList<>();
-    public static ArrayList<String> entity_ignore= new ArrayList<>();
-    public static ArrayList<String> bow_nope= new ArrayList<>();
-    public static ArrayList<String> silk_touch= new ArrayList<>();
-    public static ArrayList<String> explode_tick= new ArrayList<>();
-    public static ArrayList<String> projectile_immune= new ArrayList<>();
+    public static ArrayList<String> hot_hands = new ArrayList<>();
+    public static ArrayList<String> extra_fire = new ArrayList<>();
+    public static ArrayList<String> entity_ignore = new ArrayList<>();
+    public static ArrayList<String> bow_nope = new ArrayList<>();
+    public static ArrayList<String> silk_touch = new ArrayList<>();
+    public static ArrayList<String> explode_tick = new ArrayList<>();
+    public static ArrayList<String> projectile_immune = new ArrayList<>();
     public static ArrayList<String> charged = new ArrayList<>();
     public static ArrayList<String> felinephobia = new ArrayList<>();
     public static ArrayList<String> fire_weak = new ArrayList<>();
@@ -259,8 +259,8 @@ public class Powers implements Listener {
                 else if (powerTag.equals("genesis:resist_fall")) resist_fall.add(originTag);
                 else if (powerTag.equals("genesis:cold_biomes_weak")) weak_biome_cold.add(originTag);
 
-                //drop_head
-                //entity_ignore
+                    //drop_head
+                    //entity_ignore
 
                 else {
                     String powerType = CustomOriginAPI.getPowerType(originTag, powerTag);

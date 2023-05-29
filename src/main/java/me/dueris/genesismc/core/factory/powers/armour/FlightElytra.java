@@ -26,17 +26,21 @@ import static me.dueris.genesismc.core.factory.powers.Powers.more_kinetic_damage
 
 public class FlightElytra implements Listener {
     public static ArrayList<UUID> glidingPlayers = new ArrayList<>();
+
     @EventHandler
-    public void ExecuteFlight(PlayerToggleSneakEvent e){
+    public void ExecuteFlight(PlayerToggleSneakEvent e) {
         Player p = e.getPlayer();
         if (elytra.contains(OriginPlayer.getOriginTag(e.getPlayer()))) {
-            if(!p.isOnGround() && !p.isGliding()){
+            if (!p.isOnGround() && !p.isGliding()) {
                 glidingPlayers.add(p.getUniqueId());
-                if(p.getGameMode() == GameMode.SPECTATOR) return;
+                if (p.getGameMode() == GameMode.SPECTATOR) return;
                 new BukkitRunnable() {
                     @Override
                     public void run() {
-                        if(p.isOnGround() || p.isFlying()) {this.cancel(); glidingPlayers.remove(p.getUniqueId());}
+                        if (p.isOnGround() || p.isFlying()) {
+                            this.cancel();
+                            glidingPlayers.remove(p.getUniqueId());
+                        }
                         p.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 5, 3, false, false, false));
                         p.setGliding(true);
                         p.setFallDistance(0);
@@ -47,14 +51,14 @@ public class FlightElytra implements Listener {
     }
 
     @EventHandler
-    public void BoostHandler(PlayerInteractEvent e){
+    public void BoostHandler(PlayerInteractEvent e) {
         Player p = e.getPlayer();
         if (elytra.contains(OriginPlayer.getOriginTag(e.getPlayer())) && e.getAction().equals(Action.LEFT_CLICK_AIR)) {
-            if(!glidingPlayers.contains(p.getUniqueId())) return;
-            if(p.getGameMode() == GameMode.CREATIVE) return;
-            if(e.getItem() != null){
+            if (!glidingPlayers.contains(p.getUniqueId())) return;
+            if (p.getGameMode() == GameMode.CREATIVE) return;
+            if (e.getItem() != null) {
                 ItemStack rocket = new ItemStack(Material.FIREWORK_ROCKET);
-                if(e.getItem().isSimilar(rocket)){
+                if (e.getItem().isSimilar(rocket)) {
                     launchElytra(p);
                     e.getItem().setAmount(e.getItem().getAmount() - 1);
                     p.playSound(p.getLocation(), Sound.ENTITY_FIREWORK_ROCKET_LAUNCH, 10, 1);
@@ -65,17 +69,17 @@ public class FlightElytra implements Listener {
     }
 
     @EventHandler
-    public void ElytraDamageHandler(EntityDamageEvent e){
-        if(e.getEntity() instanceof Player p){
+    public void ElytraDamageHandler(EntityDamageEvent e) {
+        if (e.getEntity() instanceof Player p) {
             if (elytra.contains(OriginPlayer.getOriginTag(p))) {
-                if(glidingPlayers.contains(p.getUniqueId())) {
+                if (glidingPlayers.contains(p.getUniqueId())) {
                     if (e.getCause().equals(EntityDamageEvent.DamageCause.FLY_INTO_WALL) || e.getCause().equals(EntityDamageEvent.DamageCause.CONTACT)) {
                         e.setDamage(e.getDamage() * 0.25);
                     }
                 }
             }
             if (more_kinetic_damage.contains(OriginPlayer.getOriginTag(p))) {
-                if(!glidingPlayers.contains(p.getUniqueId())) {
+                if (!glidingPlayers.contains(p.getUniqueId())) {
                     if (e.getCause().equals(EntityDamageEvent.DamageCause.FLY_INTO_WALL) || e.getCause().equals(EntityDamageEvent.DamageCause.CONTACT)) {
                         e.setDamage(e.getDamage() * 1.5);
                     }

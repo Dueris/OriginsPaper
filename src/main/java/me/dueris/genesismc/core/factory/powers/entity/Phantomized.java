@@ -29,6 +29,18 @@ import static me.dueris.genesismc.core.factory.powers.Powers.phantomize;
 import static org.bukkit.ChatColor.*;
 
 public class Phantomized extends BukkitRunnable implements Listener {
+    public static void initializePhantomOverlay(Player player) {
+        CraftWorldBorder border = (CraftWorldBorder) Bukkit.createWorldBorder();
+        border.setCenter(player.getWorld().getWorldBorder().getCenter());
+        border.setSize(player.getWorld().getWorldBorder().getSize());
+        border.setWarningDistance(999999999);
+        player.setWorldBorder(border);
+    }
+
+    public static void deactivatePhantomOverlay(Player player) {
+        player.setWorldBorder(player.getWorld().getWorldBorder());
+    }
+
     @Override
     public void run() {
         for (Player p : Bukkit.getOnlinePlayers()) {
@@ -59,20 +71,20 @@ public class Phantomized extends BukkitRunnable implements Listener {
                             p.getEyeLocation().add(-0.55F, 0, 0.55F).getBlock().isSolid())
                     ) {
                         //can form
-                        if(p.isInsideVehicle()) return;
+                        if (p.isInsideVehicle()) return;
                         p.setCollidable(false);
                         p.setGameMode(GameMode.SPECTATOR);
                         p.setFlying(true);
                         p.setFlySpeed(0.05F);
 
-                    }else{
-                        if(p.getGameMode().equals(GameMode.SPECTATOR)){
+                    } else {
+                        if (p.getGameMode().equals(GameMode.SPECTATOR)) {
                             if (p.getPreviousGameMode().equals(GameMode.CREATIVE)) {
                                 p.setGameMode(p.getPreviousGameMode());
                                 p.setFlying(true);
-                            }else{
+                            } else {
                                 p.setGameMode(p.getPreviousGameMode());
-                                if(p.isOnGround());
+                                if (p.isOnGround()) ;
                                 p.setFlying(false);
                             }
 
@@ -85,40 +97,28 @@ public class Phantomized extends BukkitRunnable implements Listener {
 
                     Random random = new Random();
                     int r = random.nextInt(650);
-                    if(!p.isSwimming()) {
+                    if (!p.isSwimming()) {
                         if (r < 10) {
-                            if(p.getFoodLevel() > 1){
+                            if (p.getFoodLevel() > 1) {
                                 int foodamt = p.getFoodLevel();
                                 p.setFoodLevel(foodamt - 1);
                             }
                         }
                     }
-                }else{
+                } else {
                     deactivatePhantomOverlay(p);
                     p.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0.10000000149011612F);
                 }
-            }else{
+            } else {
                 deactivatePhantomOverlay(p);
                 p.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0.10000000149011612F);
             }
         }
     }
 
-    public static void initializePhantomOverlay(Player player){
-        CraftWorldBorder border = (CraftWorldBorder) Bukkit.createWorldBorder();
-        border.setCenter(player.getWorld().getWorldBorder().getCenter());
-        border.setSize(player.getWorld().getWorldBorder().getSize());
-        border.setWarningDistance(999999999);
-        player.setWorldBorder(border);
-    }
-
-    public static void deactivatePhantomOverlay(Player player){
-        player.setWorldBorder(player.getWorld().getWorldBorder());
-    }
-
     @EventHandler
-    public void RemoveCold(EntityDamageEvent e){
-        if(e.getEntity() instanceof Player p) {
+    public void RemoveCold(EntityDamageEvent e) {
+        if (e.getEntity() instanceof Player p) {
             PersistentDataContainer data = p.getPersistentDataContainer();
             int phantomid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER);
             if (phantomize.contains(OriginPlayer.getOriginTag(p)) && phantomid == 2) {
@@ -131,7 +131,7 @@ public class Phantomized extends BukkitRunnable implements Listener {
     }
 
     @EventHandler
-    public void onRespawn(PlayerRespawnEvent e){
+    public void onRespawn(PlayerRespawnEvent e) {
         ItemStack spectatorswitch = new ItemStack(Material.PHANTOM_MEMBRANE);
         ItemMeta switch_meta = spectatorswitch.getItemMeta();
         switch_meta.setDisplayName(GRAY + "Phantom Form");
@@ -170,28 +170,32 @@ public class Phantomized extends BukkitRunnable implements Listener {
             if (e.getItem() != null) {
                 if (e.getItem().isSimilar(spectatorswitch)) {
                     if (phantomid == 1) {
-                        if(p.getGameMode() != GameMode.SPECTATOR) {
+                        if (p.getGameMode() != GameMode.SPECTATOR) {
 
-                            if(p.getFoodLevel() > 6){
+                            if (p.getFoodLevel() > 6) {
                                 p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 2);
                                 p.sendActionBar(DARK_AQUA + "Activated Phantom Form");
                                 p.setSilent(true);
                                 p.setCollidable(false);
 
-                            }else{
+                            } else {
                                 p.sendMessage(RED + "You must be able to sprint to switch forms");
                             }
 
-                        }else{p.sendMessage(ChatColor.RED + "You are unable to switch forms while inside a block or in spectator mode.");}
+                        } else {
+                            p.sendMessage(ChatColor.RED + "You are unable to switch forms while inside a block or in spectator mode.");
+                        }
                     } else if (phantomid == 2) {
-                        if(p.getGameMode() != GameMode.SPECTATOR) {
+                        if (p.getGameMode() != GameMode.SPECTATOR) {
 
                             p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
                             p.sendActionBar(DARK_AQUA + "Deactivated Phantom Form");
                             p.setSilent(false);
                             p.setCollidable(true);
 
-                        }else{p.sendMessage(ChatColor.RED + "You are unable to switch forms while inside a block or in spectator mode.");}
+                        } else {
+                            p.sendMessage(ChatColor.RED + "You are unable to switch forms while inside a block or in spectator mode.");
+                        }
                     } else {
                         p.sendMessage(RED + "Error: Switching could not be executed");
                     }
@@ -205,16 +209,16 @@ public class Phantomized extends BukkitRunnable implements Listener {
 
     @EventHandler
 
-    public void YLevelBedrockDetectPATCH(PlayerMoveEvent e){
+    public void YLevelBedrockDetectPATCH(PlayerMoveEvent e) {
         Player p = e.getPlayer();
         PersistentDataContainer data = p.getPersistentDataContainer();
         int phantomid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER);
         //begin checks
         if (OriginPlayer.getOriginTag(e.getPlayer()).equalsIgnoreCase("genesis:origin-phantom")) {
-            if(phantomid == 2) {
+            if (phantomid == 2) {
                 //in phantom form.
                 //bug fix attempt 3 lol
-                if(e.getTo().getY() <= -63.5){
+                if (e.getTo().getY() <= -63.5) {
                     final Location loc = new Location(p.getWorld(), e.getFrom().getX(), e.getFrom().getY(), e.getFrom().getZ(), e.getTo().getYaw(), e.getTo().getPitch());
                     p.teleportAsync(loc);
                     p.sendMessage("You are unable to go bellow Y level -64 while in Phantom Form");
@@ -225,13 +229,13 @@ public class Phantomized extends BukkitRunnable implements Listener {
     }
 
     @EventHandler
-    public void TPPATCH(PlayerTeleportEvent e){
-        if(e.getCause() == PlayerTeleportEvent.TeleportCause.SPECTATE){
+    public void TPPATCH(PlayerTeleportEvent e) {
+        if (e.getCause() == PlayerTeleportEvent.TeleportCause.SPECTATE) {
             Player p = e.getPlayer();
             PersistentDataContainer data = p.getPersistentDataContainer();
             int phantomid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER);
             if (OriginPlayer.getOriginTag(p).equalsIgnoreCase("genesis:origin-phantom")) {
-                if(phantomid == 2) {
+                if (phantomid == 2) {
                     e.setCancelled(true);
                 }
 
@@ -241,12 +245,12 @@ public class Phantomized extends BukkitRunnable implements Listener {
 
 
     @EventHandler
-    public void CancelSpectate(PlayerStartSpectatingEntityEvent e){
+    public void CancelSpectate(PlayerStartSpectatingEntityEvent e) {
         Player p = e.getPlayer();
         PersistentDataContainer data = p.getPersistentDataContainer();
         int phantomid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER);
         if (OriginPlayer.getOriginTag(e.getPlayer()).equalsIgnoreCase("genesis:origin-phantom")) {
-            if(phantomid == 2) {
+            if (phantomid == 2) {
                 e.setCancelled(true);
             }
 
@@ -254,7 +258,7 @@ public class Phantomized extends BukkitRunnable implements Listener {
     }
 
     @EventHandler
-    public void onDrop(PlayerDropItemEvent e){
+    public void onDrop(PlayerDropItemEvent e) {
         ItemStack spectatorswitch = new ItemStack(Material.PHANTOM_MEMBRANE);
         ItemMeta switch_meta = spectatorswitch.getItemMeta();
         switch_meta.setDisplayName(GRAY + "Phantom Form");
@@ -274,7 +278,7 @@ public class Phantomized extends BukkitRunnable implements Listener {
     }
 
     @EventHandler
-    public void onDeath(PlayerDeathEvent e){
+    public void onDeath(PlayerDeathEvent e) {
         ItemStack spectatorswitch = new ItemStack(Material.PHANTOM_MEMBRANE);
         ItemMeta switch_meta = spectatorswitch.getItemMeta();
         switch_meta.setDisplayName(GRAY + "Phantom Form");

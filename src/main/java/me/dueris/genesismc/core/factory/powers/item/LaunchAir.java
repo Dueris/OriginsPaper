@@ -24,23 +24,6 @@ public class LaunchAir implements Listener {
     public static HashMap<UUID, Long> cooldownAfterElytrian = new HashMap<>();
 
     @EventHandler
-    public void ExecuteLaunch(PlayerInteractEvent e){
-        ItemStack launchitem = new ItemStack(Material.FEATHER);
-        ItemMeta launchmeta = launchitem.getItemMeta();
-        launchmeta.setDisplayName(GRAY + "Launch");
-        launchmeta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
-        launchitem.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-        launchitem.setItemMeta(launchmeta);
-        if(launch_into_air.contains(OriginPlayer.getOriginTag(e.getPlayer()))) {
-            if(e.getItem() == null) return;
-            if (e.getItem().equals(launchitem)) {
-                e.getPlayer().setVelocity(new Vector(0, 2, 0));
-                e.setCancelled(true);
-            }
-        }
-    }
-
-    @EventHandler
     public static void RespawnLaunchItem(PlayerRespawnEvent e) {
         ItemStack launchitem = new ItemStack(Material.FEATHER);
         ItemMeta launchmeta = launchitem.getItemMeta();
@@ -64,6 +47,23 @@ public class LaunchAir implements Listener {
         if (!e.getDrops().contains(launchitem)) return;
         if (launch_into_air.contains(OriginPlayer.getOriginTag(e.getPlayer()))) {
             e.getDrops().remove(launchitem);
+        }
+    }
+
+    @EventHandler
+    public void ExecuteLaunch(PlayerInteractEvent e) {
+        ItemStack launchitem = new ItemStack(Material.FEATHER);
+        ItemMeta launchmeta = launchitem.getItemMeta();
+        launchmeta.setDisplayName(GRAY + "Launch");
+        launchmeta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
+        launchitem.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+        launchitem.setItemMeta(launchmeta);
+        if (launch_into_air.contains(OriginPlayer.getOriginTag(e.getPlayer()))) {
+            if (e.getItem() == null) return;
+            if (e.getItem().equals(launchitem)) {
+                e.getPlayer().setVelocity(new Vector(0, 2, 0));
+                e.setCancelled(true);
+            }
         }
     }
 

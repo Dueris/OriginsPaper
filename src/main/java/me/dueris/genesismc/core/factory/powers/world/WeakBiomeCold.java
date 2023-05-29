@@ -13,9 +13,9 @@ import static me.dueris.genesismc.core.factory.powers.Powers.weak_biome_cold;
 public class WeakBiomeCold extends BukkitRunnable {
     @Override
     public void run() {
-        for(Player p : Bukkit.getOnlinePlayers()){
+        for (Player p : Bukkit.getOnlinePlayers()) {
             Location location = p.getLocation();
-            if(weak_biome_cold.contains(OriginPlayer.getOriginTag(p))) {
+            if (weak_biome_cold.contains(OriginPlayer.getOriginTag(p))) {
                 if (location.getBlock().getTemperature() < 0.6) {
                     p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 10, 1, false, false, false));
                     p.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, 10, 1, false, false, false));

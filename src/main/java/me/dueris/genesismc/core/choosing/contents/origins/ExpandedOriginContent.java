@@ -17,7 +17,7 @@ import static org.bukkit.ChatColor.*;
 
 public class ExpandedOriginContent {
 
-    public static @Nullable ItemStack @NotNull [] StarborneContents(){
+    public static @Nullable ItemStack @NotNull [] StarborneContents() {
         ItemStack close = new ItemStack(Material.BARRIER);
         ItemStack menu = new ItemStack(Material.SPECTRAL_ARROW);
         ItemStack star = new ItemStack(Material.NETHER_STAR);
@@ -55,7 +55,7 @@ public class ExpandedOriginContent {
         return stargui_items;
     }
 
-    public static @Nullable ItemStack @NotNull [] AllayContents(){
+    public static @Nullable ItemStack @NotNull [] AllayContents() {
         ItemStack close = new ItemStack(Material.BARRIER);
         ItemStack menu = new ItemStack(Material.SPECTRAL_ARROW);
         ItemStack allay = new ItemStack(Material.AMETHYST_SHARD);
@@ -89,7 +89,7 @@ public class ExpandedOriginContent {
         return allaygui_items;
     }
 
-    public static @Nullable ItemStack @NotNull [] RabbitContents(){
+    public static @Nullable ItemStack @NotNull [] RabbitContents() {
         ItemStack close = new ItemStack(Material.BARRIER);
         ItemStack menu = new ItemStack(Material.SPECTRAL_ARROW);
         ItemStack rabbit = new ItemStack(Material.CARROT);
@@ -121,7 +121,7 @@ public class ExpandedOriginContent {
         return rabbitgui_items;
     }
 
-    public static @Nullable ItemStack @NotNull [] BeeContents(){
+    public static @Nullable ItemStack @NotNull [] BeeContents() {
         ItemStack close = new ItemStack(Material.BARRIER);
         ItemStack menu = new ItemStack(Material.SPECTRAL_ARROW);
         ItemStack bee = new ItemStack(Material.HONEYCOMB);
@@ -155,7 +155,7 @@ public class ExpandedOriginContent {
         return beegui_items;
     }
 
-    public static @Nullable ItemStack @NotNull [] PiglinContents(){
+    public static @Nullable ItemStack @NotNull [] PiglinContents() {
         ItemStack close = new ItemStack(Material.BARRIER);
         ItemStack menu = new ItemStack(Material.SPECTRAL_ARROW);
         ItemStack piglin = new ItemStack(Material.GOLD_INGOT);
@@ -185,7 +185,7 @@ public class ExpandedOriginContent {
         return piglingui_items;
     }
 
-    public static @Nullable ItemStack @NotNull [] SculkContents(){
+    public static @Nullable ItemStack @NotNull [] SculkContents() {
         ItemStack close = new ItemStack(Material.BARRIER);
         ItemStack menu = new ItemStack(Material.SPECTRAL_ARROW);
         ItemStack sculk = new ItemStack(Material.ECHO_SHARD);
@@ -221,7 +221,7 @@ public class ExpandedOriginContent {
         return sculkgui_items;
     }
 
-    public static @Nullable ItemStack @NotNull [] CreepContents(){
+    public static @Nullable ItemStack @NotNull [] CreepContents() {
         ItemStack close = new ItemStack(Material.BARRIER);
         ItemStack menu = new ItemStack(Material.SPECTRAL_ARROW);
         ItemStack creep = new ItemStack(Material.GUNPOWDER);
@@ -249,7 +249,7 @@ public class ExpandedOriginContent {
         return creepgui_items;
     }
 
-    public static @Nullable ItemStack @NotNull [] SlimelingContents(){
+    public static @Nullable ItemStack @NotNull [] SlimelingContents() {
         ItemStack close = new ItemStack(Material.BARRIER);
         ItemStack menu = new ItemStack(Material.SPECTRAL_ARROW);
         ItemStack slime = new ItemStack(Material.SLIME_BALL);

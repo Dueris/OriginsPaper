@@ -17,48 +17,46 @@ import static org.bukkit.Bukkit.getServer;
 
 public class WaterProtBookGen implements Listener {
 
-@EventHandler
-    public void OnGen(LootGenerateEvent e){
-    if(!(e.getEntity() instanceof Player p)) return;
-    WaterProtectionGenerateEvent event = new WaterProtectionGenerateEvent();
-    getServer().getPluginManager().callEvent(event);
-    if(e.getInventoryHolder() != null){
-        if(e.getWorld().canGenerateStructures()){
+    @EventHandler
+    public void OnGen(LootGenerateEvent e) {
+        if (!(e.getEntity() instanceof Player p)) return;
+        WaterProtectionGenerateEvent event = new WaterProtectionGenerateEvent();
+        getServer().getPluginManager().callEvent(event);
+        if (e.getInventoryHolder() != null) {
+            if (e.getWorld().canGenerateStructures()) {
 
-            Random random = new Random();
-            int r = random.nextInt(1000);
-            if (r <= 20) {
-                
-                int l = random.nextInt(4);
-                if(l == 1){
-                    ItemStack enchbook = new ItemStack(Material.ENCHANTED_BOOK);
-                    enchbook.addEnchantment(waterProtectionEnchant, 1);
-                    enchbook.setLore(List.of(ChatColor.GRAY + "Water Protection I"));
-                    e.getLoot().add(enchbook);
-                }else if(l == 2){
-                    ItemStack enchbook = new ItemStack(Material.ENCHANTED_BOOK);
-                    enchbook.addEnchantment(waterProtectionEnchant, 1);
-                    enchbook.setLore(List.of(ChatColor.GRAY + "Water Protection II"));
-                    e.getLoot().add(enchbook);
-                }else if (l == 3){
-                    ItemStack enchbook = new ItemStack(Material.ENCHANTED_BOOK);
-                    enchbook.addEnchantment(waterProtectionEnchant, 1);
-                    enchbook.setLore(List.of(ChatColor.GRAY + "Water Protection III"));
-                    e.getLoot().add(enchbook);
-                } else if (l == 4) {
-                    ItemStack enchbook = new ItemStack(Material.ENCHANTED_BOOK);
-                    enchbook.addEnchantment(waterProtectionEnchant, 1);
-                    enchbook.setLore(List.of(ChatColor.GRAY + "Water Protection IV"));
-                    e.getLoot().add(enchbook);
+                Random random = new Random();
+                int r = random.nextInt(1000);
+                if (r <= 20) {
+
+                    int l = random.nextInt(4);
+                    if (l == 1) {
+                        ItemStack enchbook = new ItemStack(Material.ENCHANTED_BOOK);
+                        enchbook.addEnchantment(waterProtectionEnchant, 1);
+                        enchbook.setLore(List.of(ChatColor.GRAY + "Water Protection I"));
+                        e.getLoot().add(enchbook);
+                    } else if (l == 2) {
+                        ItemStack enchbook = new ItemStack(Material.ENCHANTED_BOOK);
+                        enchbook.addEnchantment(waterProtectionEnchant, 1);
+                        enchbook.setLore(List.of(ChatColor.GRAY + "Water Protection II"));
+                        e.getLoot().add(enchbook);
+                    } else if (l == 3) {
+                        ItemStack enchbook = new ItemStack(Material.ENCHANTED_BOOK);
+                        enchbook.addEnchantment(waterProtectionEnchant, 1);
+                        enchbook.setLore(List.of(ChatColor.GRAY + "Water Protection III"));
+                        e.getLoot().add(enchbook);
+                    } else if (l == 4) {
+                        ItemStack enchbook = new ItemStack(Material.ENCHANTED_BOOK);
+                        enchbook.addEnchantment(waterProtectionEnchant, 1);
+                        enchbook.setLore(List.of(ChatColor.GRAY + "Water Protection IV"));
+                        e.getLoot().add(enchbook);
+                    }
+
                 }
 
+
             }
-
-
-
-
         }
     }
-}
 
 }

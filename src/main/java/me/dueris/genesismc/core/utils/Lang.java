@@ -9,37 +9,6 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import java.io.File;
 
 public class Lang {
-    public static File getLangFile(){
-
-        String langFileName = GenesisDataFiles.getMainConfig().getString("lang");
-        String filePath = GenesisMC.getPlugin().getDataFolder() + File.separator + "lang" + File.separator + langFileName + "-lang.yml";
-        File langFile = new File(filePath);
-
-        try {
-            if (!langFile.exists()) {
-                Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.RED + "Error finding lang file, please restart the server, or use a valid lang file");
-                return null;
-            }
-        } catch (SecurityException e) {
-            Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.RED + "Error accessing lang file: " + ChatColor.WHITE + e.getMessage());
-            return null;
-        }
-
-        return langFile;
-
-    }
-
-    public static String getLocalizedString(String key) {
-        File langFile = getLangFile();
-
-        if (langFile != null) {
-            YamlConfiguration langConfig = YamlConfiguration.loadConfiguration(langFile);
-            return langConfig.getString(key);
-        }
-
-        return null;
-    }
-
     public static String lang_test = getLocalizedString("lang.test");
     //commands
     public static String command_origin_set_given = getLocalizedString("command.origin.set.given");
@@ -157,5 +126,36 @@ public class Lang {
     public static String menu_original_feline_acrobatics_description = getLocalizedString("menu.original.feline.acrobatics.description");
     public static String menu_original_feline_ankles_title = getLocalizedString("menu.original.feline.strong_ankles.title");
     public static String menu_original_feline_ankles_description = getLocalizedString("menu.original.feline.strong_ankles.description");
+
+    public static File getLangFile() {
+
+        String langFileName = GenesisDataFiles.getMainConfig().getString("lang");
+        String filePath = GenesisMC.getPlugin().getDataFolder() + File.separator + "lang" + File.separator + langFileName + "-lang.yml";
+        File langFile = new File(filePath);
+
+        try {
+            if (!langFile.exists()) {
+                Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.RED + "Error finding lang file, please restart the server, or use a valid lang file");
+                return null;
+            }
+        } catch (SecurityException e) {
+            Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.RED + "Error accessing lang file: " + ChatColor.WHITE + e.getMessage());
+            return null;
+        }
+
+        return langFile;
+
+    }
+
+    public static String getLocalizedString(String key) {
+        File langFile = getLangFile();
+
+        if (langFile != null) {
+            YamlConfiguration langConfig = YamlConfiguration.loadConfiguration(langFile);
+            return langConfig.getString(key);
+        }
+
+        return null;
+    }
 
 }

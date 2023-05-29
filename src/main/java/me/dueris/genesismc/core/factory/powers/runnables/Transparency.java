@@ -26,7 +26,7 @@ public class Transparency extends BukkitRunnable {
             Scoreboard scoreboard = manager.getNewScoreboard();
             if (translucent.contains(OriginPlayer.getOriginTag(p))) {
 
-                    p.setInvisible(false);
+                p.setInvisible(false);
 
                 ItemStack spectatorswitch = new ItemStack(Material.PHANTOM_MEMBRANE);
                 ItemMeta switch_meta = spectatorswitch.getItemMeta();
@@ -39,7 +39,7 @@ public class Transparency extends BukkitRunnable {
                 switch_meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
                 spectatorswitch.setItemMeta(switch_meta);
                 Team team = scoreboard.getTeam("origin-players");
-                if(!p.getScoreboard().equals(team) && team != null){
+                if (!p.getScoreboard().equals(team) && team != null) {
                     team.addPlayer(p);
                 }
 

@@ -25,16 +25,16 @@ public class Has extends SubCommand {
     @Override
     public void perform(Player p, String[] args) {
         if (!p.hasPermission("genesismc.origins.cmd.has")) return;
-        if(args.length > 2){
+        if (args.length > 2) {
             Player given = Bukkit.getPlayer(args[1]);
             String origintag = OriginPlayer.getOriginTag(given);
-            if(origintag.equalsIgnoreCase(args[2])){
+            if (origintag.equalsIgnoreCase(args[2])) {
                 p.sendMessage("Test passed");
-            }else{
+            } else {
                 p.sendMessage("Test failed");
             }
 
-        }else{
+        } else {
             p.sendMessage(ChatColor.RED + "Invalid Args!!!");
         }
     }

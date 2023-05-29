@@ -17,12 +17,14 @@ public class HotBlooded implements Listener {
     @EventHandler
     public void hotblooded(EntityPotionEffectEvent e) {
         if (!(e.getEntity() instanceof Player p)) return;
-        @Nullable String origintag =  p.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
+        @Nullable String origintag = p.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
         if (!hotblooded.contains(origintag)) return;
         if (e.getOldEffect() == null) return;
-        if (e.getOldEffect().getType().getId() == PotionEffectType.HUNGER.getId() || e.getOldEffect().getType().getId() == PotionEffectType.HUNGER.getId()) return;
+        if (e.getOldEffect().getType().getId() == PotionEffectType.HUNGER.getId() || e.getOldEffect().getType().getId() == PotionEffectType.HUNGER.getId())
+            return;
         if (e.getModifiedType().getId() == PotionEffectType.HUNGER.getId()) e.setCancelled(true);
-        if (e.getModifiedType().getId() == PotionEffectType.POISON.getId()) e.setCancelled(true); ((Player) e.getEntity()).getActivePotionEffects().remove(PotionEffectType.POISON);
+        if (e.getModifiedType().getId() == PotionEffectType.POISON.getId()) e.setCancelled(true);
+        ((Player) e.getEntity()).getActivePotionEffects().remove(PotionEffectType.POISON);
     }
 
 }

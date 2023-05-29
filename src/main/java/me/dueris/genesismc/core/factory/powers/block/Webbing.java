@@ -19,7 +19,7 @@ import static org.bukkit.Material.COBWEB;
 
 public class Webbing implements Listener {
 
-    private static final HashMap<UUID, Boolean> canWeb =new HashMap<>();
+    private static final HashMap<UUID, Boolean> canWeb = new HashMap<>();
 
     @EventHandler
     public void WebMaster(EntityDamageByEntityEvent e) {
@@ -38,10 +38,10 @@ public class Webbing implements Listener {
                     @Override
                     public void run() {
                         canWeb.replace(p.getUniqueId(), Boolean.TRUE);
-                        if(b.getType() == AIR || b.getType() == COBWEB){
+                        if (b.getType() == AIR || b.getType() == COBWEB) {
                             b.setType(AIR);
                             this.cancel();
-                        }else{
+                        } else {
                             this.cancel();
                         }
                     }

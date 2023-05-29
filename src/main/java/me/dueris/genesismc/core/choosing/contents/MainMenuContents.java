@@ -23,8 +23,7 @@ import static org.bukkit.ChatColor.*;
 
 public class MainMenuContents {
 
-    public static @Nullable ItemStack @NotNull [] GenesisMainMenuContents(Player p){
-
+    public static @Nullable ItemStack @NotNull [] GenesisMainMenuContents(Player p) {
 
 
         ItemStack human = new ItemStack(Material.PLAYER_HEAD);
@@ -154,7 +153,7 @@ public class MainMenuContents {
 
         random = itemProperties(random, ChatColor.LIGHT_PURPLE + "Orb of Origins", ItemFlag.HIDE_ENCHANTS, null, null);
         custom_originmenu = itemProperties(custom_originmenu, ChatColor.YELLOW + "Custom Origins", ItemFlag.HIDE_ENCHANTS, null, null);
-        close = itemProperties(close, RED + "Close" , null, null, RED + "Cancel choosing");
+        close = itemProperties(close, RED + "Close", null, null, RED + "Cancel choosing");
         ItemStack randomOrb = itemProperties(orb.clone(), LIGHT_PURPLE + "Random", null, null, null);
         NamespacedKey key = new NamespacedKey(GenesisMC.getPlugin(), "orb");
         ItemMeta randomOrbmeta = randomOrb.getItemMeta();
@@ -164,7 +163,7 @@ public class MainMenuContents {
         ItemStack[] mainmenucontents = {avian, arachnid, elytrian, shulk, feline, enderian, merling, blazeborn, phantom,
                 background, background, background, background, human, background, background, background, background,
                 filler, filler, filler, filler, filler, filler, filler, filler, filler,
-                starborne, allay, rabbit, bumblebee, background , sculkling, creep, slimeling, piglin,
+                starborne, allay, rabbit, bumblebee, background, sculkling, creep, slimeling, piglin,
                 background, background, background, background, background, background, background, background, background,
                 filler, filler, filler, randomOrb, close, custom_originmenu, filler, filler, filler};
 

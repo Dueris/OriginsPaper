@@ -14,14 +14,14 @@ import static me.dueris.genesismc.core.factory.powers.Powers.felinephobia;
 public class FelinePhobia extends BukkitRunnable {
     @Override
     public void run() {
-        for(Player p : Bukkit.getOnlinePlayers()){
-            if(felinephobia.contains(OriginPlayer.getOriginTag(p))){
-            List<Entity> nearby2 = p.getNearbyEntities(3, 3, 3);
-            for (Entity tmp : nearby2)
-                if (tmp instanceof Cat)
-                    p.damage(1);
+        for (Player p : Bukkit.getOnlinePlayers()) {
+            if (felinephobia.contains(OriginPlayer.getOriginTag(p))) {
+                List<Entity> nearby2 = p.getNearbyEntities(3, 3, 3);
+                for (Entity tmp : nearby2)
+                    if (tmp instanceof Cat)
+                        p.damage(1);
+            }
         }
-      }
 
     }
 }

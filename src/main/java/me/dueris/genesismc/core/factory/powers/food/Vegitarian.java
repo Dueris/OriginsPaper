@@ -14,6 +14,7 @@ import static org.bukkit.Material.*;
 
 public class Vegitarian implements Listener {
     public static EnumSet<Material> notVeggies;
+
     static {
         notVeggies = EnumSet.of(COOKED_BEEF, COOKED_CHICKEN, COOKED_MUTTON, COOKED_COD, COOKED_PORKCHOP, COOKED_RABBIT, COOKED_SALMON,
                 BEEF, CHICKEN, MUTTON, COD, PORKCHOP, RABBIT, SALMON, TROPICAL_FISH, PUFFERFISH, RABBIT_STEW);

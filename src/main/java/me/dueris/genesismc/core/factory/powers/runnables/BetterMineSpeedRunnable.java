@@ -16,6 +16,7 @@ import static org.bukkit.Material.*;
 
 public class BetterMineSpeedRunnable extends BukkitRunnable {
     public static EnumSet<Material> tools;
+
     static {
         tools = EnumSet.of(
                 WOODEN_PICKAXE, STONE_PICKAXE, GOLDEN_PICKAXE, IRON_PICKAXE, DIAMOND_PICKAXE, NETHERITE_PICKAXE,
@@ -28,7 +29,7 @@ public class BetterMineSpeedRunnable extends BukkitRunnable {
     public void run() {
         for (Player p : Bukkit.getOnlinePlayers()) {
             if (strong_arms_break_speed.contains(OriginPlayer.getOriginTag(p))) {
-                if(p.getGameMode().equals(GameMode.SURVIVAL) && !tools.contains(p.getEquipment().getItemInMainHand().getType())) {
+                if (p.getGameMode().equals(GameMode.SURVIVAL) && !tools.contains(p.getEquipment().getItemInMainHand().getType())) {
                     if (!p.getActivePotionEffects().contains(PotionEffectType.FAST_DIGGING)) {
                         p.addPotionEffect(new PotionEffect(PotionEffectType.FAST_DIGGING, 20, 3, true, false, false));
                     }

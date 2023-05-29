@@ -6,40 +6,40 @@ import org.bukkit.event.Listener;
 
 public class Listeners implements Listener {
     @EventHandler
-    public void orbevent(OrbInteractEvent e){
+    public void orbevent(OrbInteractEvent e) {
 
     }
 
     @EventHandler
-    public void originchooseevent(OriginChooseEvent e){
+    public void originchooseevent(OriginChooseEvent e) {
 
     }
 
     @EventHandler
-    public void origincommandevent(OriginCommandEvent e){
+    public void origincommandevent(OriginCommandEvent e) {
     }
 
     @EventHandler
-    public void originkeybindevent(OriginKeybindExecuteEvent e){
-
-    }
-
-    @EventHandler
-    public void originpacketevent(OriginPacketSendEvent e){
+    public void originkeybindevent(OriginKeybindExecuteEvent e) {
 
     }
 
     @EventHandler
-    public void originloadevent(OriginsLoadEvent e){
+    public void originpacketevent(OriginPacketSendEvent e) {
 
     }
 
     @EventHandler
-    public void waterprotgenevent(WaterProtectionGenerateEvent e){
+    public void originloadevent(OriginsLoadEvent e) {
+
     }
 
     @EventHandler
-    public void executeChooseEvent(OriginChooseEvent e){
+    public void waterprotgenevent(WaterProtectionGenerateEvent e) {
+    }
+
+    @EventHandler
+    public void executeChooseEvent(OriginChooseEvent e) {
         e.getPlayer().sendMessage("choose");
     }
 }

@@ -22,7 +22,7 @@ public class WaterProtAnvil implements Listener {
         ItemStack first = e.getInventory().getFirstItem();
         ItemStack second = e.getInventory().getSecondItem();
         ItemStack result = e.getInventory().getResult();
-        Player p = (Player)e.getView().getPlayer();
+        Player p = (Player) e.getView().getPlayer();
         Material retype;
         String level;
         ItemMeta meta;
@@ -208,4 +208,4 @@ public class WaterProtAnvil implements Listener {
         }
 
     }
-    }
+}

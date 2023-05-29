@@ -12,12 +12,12 @@ public class OrbInteractEvent extends PlayerEvent {
         super(who);
     }
 
-    public static HandlerList getHandlerList(){
+    public static HandlerList getHandlerList() {
         return handlers;
     }
 
     @Override
-    public HandlerList getHandlers(){
+    public HandlerList getHandlers() {
         return handlers;
     }
 }

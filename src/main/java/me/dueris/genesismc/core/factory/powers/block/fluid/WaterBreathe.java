@@ -16,18 +16,29 @@ import static me.dueris.genesismc.core.factory.powers.Powers.water_breathing;
 
 public class WaterBreathe extends BukkitRunnable {
     public static ArrayList<Player> outofAIR = new ArrayList<>();
+
+    public static boolean isInBreathableWater(Player player) {
+        Block block = player.getEyeLocation().getBlock();
+        Material material = block.getType();
+        if (block.getType().equals(Material.WATER)) {
+            return true;
+        } else return player.isInWater() && !material.equals(Material.AIR);
+    }
+
     @Override
     public void run() {
-        for(Player p : Bukkit.getOnlinePlayers()) {
-            if(water_breathing.contains(OriginPlayer.getOriginTag(p))) {
-                if(isInBreathableWater(p)){
-                    if(p.getRemainingAir() < 290){
+        for (Player p : Bukkit.getOnlinePlayers()) {
+            if (water_breathing.contains(OriginPlayer.getOriginTag(p))) {
+                if (isInBreathableWater(p)) {
+                    if (p.getRemainingAir() < 290) {
                         p.setRemainingAir(p.getRemainingAir() + 7);
-                    }else{p.setRemainingAir(300);}
+                    } else {
+                        p.setRemainingAir(300);
+                    }
                     p.addPotionEffect(new PotionEffect(PotionEffectType.WATER_BREATHING, 3, 1, false, false, false));
                     outofAIR.remove(p);
-                }else{
-                    if(p.getGameMode().equals(GameMode.CREATIVE) || p.getGameMode().equals(GameMode.SPECTATOR)) return;
+                } else {
+                    if (p.getGameMode().equals(GameMode.CREATIVE) || p.getGameMode().equals(GameMode.SPECTATOR)) return;
                     int remainingAir = p.getRemainingAir();
                     if (remainingAir <= 5) {
                         p.setRemainingAir(0);
@@ -38,21 +49,14 @@ public class WaterBreathe extends BukkitRunnable {
                         outofAIR.remove(p);
                     }
                 }
-                if(outofAIR.contains(p)){
-                    if(p.getRemainingAir() > 20){
+                if (outofAIR.contains(p)) {
+                    if (p.getRemainingAir() > 20) {
                         outofAIR.remove(p);
                     }
                 }
             }
         }
 
-    }
-
-    public static boolean isInBreathableWater(Player player) {
-        Block block = player.getEyeLocation().getBlock();
-        Material material = block.getType();
-        if(block.getType().equals(Material.WATER)) {return true;
-        }else return player.isInWater() && !material.equals(Material.AIR);
     }
 
 }

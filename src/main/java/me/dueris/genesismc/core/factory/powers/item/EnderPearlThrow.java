@@ -53,10 +53,10 @@ public class EnderPearlThrow implements Listener {
             if (e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.LEFT_CLICK_AIR || e.getAction() == Action.LEFT_CLICK_BLOCK || e.getAction() == Action.RIGHT_CLICK_BLOCK) {
                 if (e.getItem() != null) {
                     if (e.getItem().equals(infinpearl)) {
-                        if(p.getCooldown(ENDER_PEARL) == 0 && p.getGameMode() != GameMode.CREATIVE){
+                        if (p.getCooldown(ENDER_PEARL) == 0 && p.getGameMode() != GameMode.CREATIVE) {
                             p.getInventory().addItem(infinpearl);
-                            Bukkit.getScheduler().runTaskLater(GenesisMC.getPlugin(),()->{
-                                if(p.getInventory().getItemInMainHand().isSimilar(infinpearl));
+                            Bukkit.getScheduler().runTaskLater(GenesisMC.getPlugin(), () -> {
+                                if (p.getInventory().getItemInMainHand().isSimilar(infinpearl)) ;
                                 p.getInventory().getItemInMainHand().setAmount(1);
                             }, 1);
                         }
@@ -98,7 +98,7 @@ public class EnderPearlThrow implements Listener {
         pearl_meta.setLore(pearl_lore);
         infinpearl.setItemMeta(pearl_meta);
 
-        if(throw_ender_pearl.contains(OriginPlayer.getOriginTag(e.getPlayer())))
+        if (throw_ender_pearl.contains(OriginPlayer.getOriginTag(e.getPlayer())))
             if (e.getItemDrop().getItemStack().isSimilar(infinpearl)) {
                 e.setCancelled(true);
             }
