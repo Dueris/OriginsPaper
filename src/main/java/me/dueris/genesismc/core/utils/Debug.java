@@ -15,30 +15,10 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.util.Arrays;
 
 import static me.dueris.genesismc.core.GenesisMC.*;
+import static me.dueris.genesismc.core.utils.BukkitUtils.printValues;
 import static org.bukkit.Bukkit.getServer;
 
 public class Debug {
-
-    public static void printValues(ConfigurationSection section, String indent) {
-        StringBuilder values = new StringBuilder();
-
-        for (String key : section.getKeys(false)) {
-            String path = section.getCurrentPath() + "|" + key;
-            Object value = section.get(key);
-
-            if (value instanceof ConfigurationSection) {
-                // If the value is another section, recursively print its values
-                ConfigurationSection subsection = (ConfigurationSection) value;
-                printValues(subsection, indent + "  ");
-            } else {
-                // Append the key and value to the StringBuilder
-                values.append(indent).append(path).append(": ").append(value).append("  ");
-            }
-        }
-
-        // Print the concatenated values
-        Bukkit.getLogger().info(values.toString());
-    }
 
     public static void executeGenesisDebug(){
         getServer().getConsoleSender().sendMessage("Executing Genesis Debug..");
