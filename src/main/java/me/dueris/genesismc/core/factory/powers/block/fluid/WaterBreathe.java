@@ -26,9 +26,7 @@ public class WaterBreathe extends BukkitRunnable {
                 if(isInBreathableWater(p)){
                     p.setRemainingAir(300);
                     p.addPotionEffect(new PotionEffect(PotionEffectType.WATER_BREATHING, 3, 1, false, false, false));
-                    if(outofAIR.contains(p)){
-                        outofAIR.remove(p);
-                    }
+                    outofAIR.remove(p);
                 }else{
                     int remainingAir = p.getRemainingAir();
                     if (remainingAir <= 5) {
@@ -37,9 +35,7 @@ public class WaterBreathe extends BukkitRunnable {
                     } else {
                         p.setRemainingAir(remainingAir - 5);
 
-                        if(outofAIR.contains(p)){
-                            outofAIR.remove(p);
-                        }
+                        outofAIR.remove(p);
                     }
                 }
                 if(outofAIR.contains(p)){
@@ -55,10 +51,7 @@ public class WaterBreathe extends BukkitRunnable {
     public static boolean isInBreathableWater(Player player) {
         Block block = player.getEyeLocation().getBlock();
         Material material = block.getType();
-        if(material == Material.WATER || block.getBlockData() instanceof Waterlogged || block instanceof Waterlogged || block.getState() instanceof Waterlogged){
-            return true;
-        }
-        return false;
+        return material == Material.WATER || block.getBlockData() instanceof Waterlogged || block instanceof Waterlogged || block.getState() instanceof Waterlogged;
     }
 
 }
