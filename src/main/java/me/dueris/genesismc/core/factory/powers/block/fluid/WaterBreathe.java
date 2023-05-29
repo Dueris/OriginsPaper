@@ -1,7 +1,10 @@
 package me.dueris.genesismc.core.factory.powers.block.fluid;
 
 import me.dueris.genesismc.core.api.entity.OriginPlayer;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.data.Waterlogged;
@@ -25,7 +28,6 @@ public class WaterBreathe extends BukkitRunnable {
                     p.addPotionEffect(new PotionEffect(PotionEffectType.WATER_BREATHING, 3, 1, false, false, false));
                     outofAIR.remove(p);
                 }else{
-                    if(p.getGameMode() == GameMode.CREATIVE) return;
                     int remainingAir = p.getRemainingAir();
                     if (remainingAir <= 5) {
                         p.setRemainingAir(0);
@@ -49,10 +51,9 @@ public class WaterBreathe extends BukkitRunnable {
     public static boolean isInBreathableWater(Player player) {
         Block block = player.getEyeLocation().getBlock();
         Material material = block.getType();
-        if(block.getType().equals(Material.WATER)) {return true;}
-        if(block.getType().equals(Material.KELP_PLANT)) {return true;}
-        if(block.getType().equals(Material.KELP)) {return true;}
-        if(block.getType().equals(Material.SEAGRASS)) {return true;}
+        if(block.getType().equals(Material.WATER)) {
+            return true;
+        }else if(p.isInWater() && !material.equals(Material.AIR)){return true;}
         return false;
     }
 
