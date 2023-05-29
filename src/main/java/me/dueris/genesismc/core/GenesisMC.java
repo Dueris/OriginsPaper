@@ -33,10 +33,13 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.HashMap;
+
+import static org.bukkit.Bukkit.getServer;
 
 public final class GenesisMC extends JavaPlugin implements Listener {
     public static EnumSet<Material> tool;
@@ -75,36 +78,6 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         return plugin;
     }
 
-    public static void dumpCon() {
-        Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.LIGHT_PURPLE + "[GenesisMC] DUMPING PLUGIN-API FILES:");
-        Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.GRAY + "Loading config file:" +
-                GenesisDataFiles.getMainConfig().getValues(Boolean.parseBoolean("all")) +
-                ChatColor.GRAY +
-                GenesisDataFiles.getMainConfig().getValues(Boolean.parseBoolean("all"))
-
-        );
-        Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.LIGHT_PURPLE + "[GenesisMC] Loading API");
-        Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.GRAY + "[GenesisMC] DUMPING SERVER FILES:" +
-                Bukkit.getServer().getVersion() +
-                Bukkit.getServer().getAllowEnd() +
-                Bukkit.getServer().getAllowNether() +
-                Bukkit.getServer().getPluginManager() +
-                Bukkit.getServer().getMaxPlayers() +
-                Bukkit.getServer().getConnectionThrottle() +
-                Bukkit.getServer().getLogger() +
-                Bukkit.getServer().getName() +
-                Bukkit.getServer().getBukkitVersion() +
-                Bukkit.getServer().getDefaultGameMode() +
-                Bukkit.getServer().getWorldType() +
-                Bukkit.getServer().getResourcePack() +
-                Bukkit.getServer().getHelpMap() +
-                Bukkit.getServer().getPluginManager().getPlugins() +
-                Bukkit.getServer().getBukkitVersion()
-
-        );
-
-    }
-
     @Override
     public void onEnable() {
         // Plugin startup logic
@@ -122,7 +95,6 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         GenesisDataFiles.loadMainConfig();
         GenesisDataFiles.loadLangConfig();
         GenesisDataFiles.setup();
-
 
         //start
 
