@@ -4,7 +4,6 @@ import me.dueris.genesismc.core.GenesisMC;
 import me.dueris.genesismc.core.api.OriginAPI;
 import me.dueris.genesismc.core.api.entity.OriginPlayer;
 import me.dueris.genesismc.core.api.events.OrbInteractEvent;
-import me.dueris.genesismc.core.api.events.OriginChooseEvent;
 import me.dueris.genesismc.core.factory.powers.world.WorldSpawnHandler;
 import me.dueris.genesismc.core.files.GenesisDataFiles;
 import org.bukkit.*;

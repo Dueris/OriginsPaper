@@ -1,10 +1,10 @@
 package me.dueris.genesismc.core.factory.powers.entity;
 
-import io.papermc.paper.event.player.PlayerArmSwingEvent;
 import me.dueris.genesismc.core.api.entity.OriginPlayer;
-import org.bukkit.*;
+import org.bukkit.FluidCollisionMode;
+import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -12,16 +12,12 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.util.BlockIterator;
 import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
-import org.geysermc.geyser.api.GeyserApi;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
 import java.util.function.Predicate;
 
-import static io.netty.handler.codec.http.multipart.InterfaceHttpData.HttpDataType.Attribute;
 import static me.dueris.genesismc.core.factory.powers.Powers.extra_reach;
 
 public class Reach implements Listener {

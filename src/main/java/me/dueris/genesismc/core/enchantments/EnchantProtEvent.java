@@ -11,7 +11,10 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.EnumSet;
+import java.util.List;
+import java.util.Random;
 
 import static me.dueris.genesismc.core.GenesisMC.waterProtectionEnchant;
 import static org.bukkit.Material.ENDER_PEARL;

@@ -4,7 +4,6 @@ import me.dueris.genesismc.core.GenesisMC;
 import me.dueris.genesismc.core.api.enums.OriginDataType;
 import me.dueris.genesismc.core.api.enums.OriginMenu;
 import me.dueris.genesismc.core.api.events.OriginChooseEvent;
-import me.dueris.genesismc.core.choosing.contents.MainMenuContents;
 import me.dueris.genesismc.core.utils.SendCharts;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;

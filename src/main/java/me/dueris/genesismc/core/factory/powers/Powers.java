@@ -1,8 +1,6 @@
 package me.dueris.genesismc.core.factory.powers;
 
 import me.dueris.genesismc.core.api.factory.CustomOriginAPI;
-import me.dueris.genesismc.core.factory.powers.custom.TargetActionOnHit;
-import org.bukkit.attribute.Attribute;
 import org.bukkit.event.Listener;
 
 import java.util.ArrayList;

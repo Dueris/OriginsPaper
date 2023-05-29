@@ -1,6 +1,5 @@
 package me.dueris.genesismc.core.commands;
 
-import me.dueris.genesismc.core.api.events.OrbInteractEvent;
 import me.dueris.genesismc.core.api.events.OriginCommandEvent;
 import me.dueris.genesismc.core.commands.subcommands.SubCommand;
 import me.dueris.genesismc.core.commands.subcommands.origin.*;

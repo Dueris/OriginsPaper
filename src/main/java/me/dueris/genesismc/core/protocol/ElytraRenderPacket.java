@@ -1,7 +1,6 @@
 package me.dueris.genesismc.core.protocol;
 
 import io.netty.buffer.Unpooled;
-import me.dueris.genesismc.core.api.events.OrbInteractEvent;
 import me.dueris.genesismc.core.api.events.OriginPacketSendEvent;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.game.ClientboundCustomPayloadPacket;

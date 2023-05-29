@@ -1,7 +1,5 @@
 package me.dueris.genesismc.core.api.enums;
 
-import org.bukkit.inventory.ItemStack;
-
 public enum OriginDataType {
     ORIGINTAG,
     PHANTOMIZED_ID,
