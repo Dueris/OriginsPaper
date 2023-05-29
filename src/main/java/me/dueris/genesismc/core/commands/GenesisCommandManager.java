@@ -1,12 +1,15 @@
 package me.dueris.genesismc.core.commands;
 
+import io.papermc.paper.configuration.GlobalConfiguration;
 import me.dueris.genesismc.core.api.events.OriginCommandEvent;
 import me.dueris.genesismc.core.commands.subcommands.SubCommand;
 import me.dueris.genesismc.core.commands.subcommands.origin.*;
+import me.dueris.genesismc.core.utils.Debug;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -44,6 +47,7 @@ public class GenesisCommandManager implements CommandExecutor {
                     }
 
                 }
+
             }
             if (args.length == 0) {
                 p.sendMessage(ChatColor.RED + "You did not provide any args. Here is a list of commands:");

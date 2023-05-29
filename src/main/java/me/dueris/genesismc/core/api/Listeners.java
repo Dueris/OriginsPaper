@@ -30,11 +30,6 @@ public class Listeners implements Listener {
     }
 
     @EventHandler
-    public void originloadevent(OriginsLoadEvent e) {
-
-    }
-
-    @EventHandler
     public void waterprotgenevent(WaterProtectionGenerateEvent e) {
     }
 

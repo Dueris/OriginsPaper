@@ -2,7 +2,6 @@ package me.dueris.genesismc.core;
 
 import me.dueris.genesismc.core.api.Listeners;
 import me.dueris.genesismc.core.api.entity.OriginPlayer;
-import me.dueris.genesismc.core.api.events.OriginsLoadEvent;
 import me.dueris.genesismc.core.api.factory.CustomOriginAPI;
 import me.dueris.genesismc.core.choosing.ChoosingCORE;
 import me.dueris.genesismc.core.choosing.ChoosingCUSTOM;
@@ -33,7 +32,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -135,63 +133,21 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         getServer().getConsoleSender().sendMessage(ChatColor.BLUE + "[GenesisMC]   \\____|  \\___| |_| |_|  \\___| |___/ |_| |___/ |_|  |_|  \\____|");
         getServer().getConsoleSender().sendMessage(ChatColor.LIGHT_PURPLE + "[GenesisMC]  GenesisMC -- Created by Dueris");
         getServer().getConsoleSender().sendMessage(ChatColor.GRAY + "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-        try {
-            Class.forName("io.papermc.paper.threadedregions.RegionizedServer");
-            getServer().getConsoleSender().sendMessage(ChatColor.RED + "WARNING: FOLIA IS NOT SUPPORTED ON THIS VERSION TYPE. PLEASE USE THE FOLIA BUILD OF THIS VERSION.");
-        } catch (ClassNotFoundException e) {
-            //not folia
-        }
-        String serverImplementation = Bukkit.getServer().getName();
-
-        if (serverImplementation.contains("CraftBukkit")) {
-            getServer().getConsoleSender().sendMessage(ChatColor.RED + "WARNING: SPIGOT/CRAFTBUKKIT IS NOT SUPPORTED, PLEASE USE PAPERMC.");
-        } else if (serverImplementation.contains("Spigot")) {
-            getServer().getConsoleSender().sendMessage(ChatColor.RED + "WARNING: SPIGOT/CRAFTBUKKIT IS NOT SUPPORTED, PLEASE USE PAPERMC.");
-        }
-        if (Bukkit.getServer().getPluginManager().isPluginEnabled("Origins-Bukkit")) {
-            getServer().getConsoleSender().sendMessage(ChatColor.RED + "[GenesisMC] Unable to start plugin due to Origins Bukkit being present. Using both will cause errors.");
-            getServer().getConsoleSender().sendMessage(ChatColor.GRAY + "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-            Bukkit.getServer().getPluginManager().disablePlugin(this);
-        }
-
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                try {
-                    Lang.getLangFile();
-                } catch (Exception e) {
-                    Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.RED + "ERROR: Couldnt load lang file. Disabling GenesisMC...");
-                    Bukkit.getServer().getPluginManager().disablePlugin(GenesisMC.getPlugin());
-                }
-
-                this.cancel();
-            }
-        }.runTaskTimer(GenesisMC.getPlugin(), 20L, 1L);
 
         if (GenesisDataFiles.getMainConfig().getString("console-startup-debug").equalsIgnoreCase("true")) {
-            getServer().getConsoleSender().sendMessage(ChatColor.GRAY + "[GenesisMC] Loading API version 0.1.1");
-            getServer().getConsoleSender().sendMessage(ChatColor.GRAY + "[GenesisMC] Loading Subcommands");
-            getServer().getConsoleSender().sendMessage(ChatColor.GRAY + "[GenesisMC] Loading OriginCommands");
-            //method
-            dumpCon();
+            Debug.executeGenesisDebug();
+            Debug.testIncompatiblePlugins();
+            Debug.versionTest();
             getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "[GenesisMC] Successfully loaded version 0.1.7-ALPHA_SNAPSHOT 1.19.4)");
             getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "[GenesisMC] Successfully loaded API version 0.1.2-BETA (1.19.4)");
             getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "[GenesisMC] Successfully loaded CONFIG version (1.19.4)");
         } else {
             getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "[GenesisMC] Successfully loaded version 0.1.7-ALPHA_SNAPSHOT (1.19.4)");
         }
-        if (getServer().getPluginManager().getPlugins().toString().contains("PurpleWolfAPI") || getServer().getPluginManager().isPluginEnabled("OriginsAPI") || getServer().getPluginManager().getPlugin("PurpleWolfAPI") != null) {
-            getServer().getConsoleSender().sendMessage(ChatColor.LIGHT_PURPLE + "[GenesisMC - OriginsAPI] Successfully injected OriginsAPI plugin");
-        } else {
-            //OriginAPI not avalible, inject built-in
-            getServer().getConsoleSender().sendMessage(ChatColor.LIGHT_PURPLE + "[GenesisMC] OriginsAPI not detected. Injecting built-in API");
-        }
 
         CustomOriginAPI.removeUnzippedDatapacks();
         CustomOriginAPI.unzipDatapacks();
         CustomOriginAPI.loadCustomOrigins();
-        OriginsLoadEvent event = new OriginsLoadEvent();
-        getServer().getPluginManager().callEvent(event);
         for (String originTag : CustomOriginAPI.getTags()) {
             if (GenesisDataFiles.getMainConfig().getString("console-startup-debug").equalsIgnoreCase("true")) {
                 getServer().getConsoleSender().sendMessage("[GenesisMC] Loaded \"" + CustomOriginAPI.getOriginName(originTag) + "\"");
@@ -221,9 +177,8 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         getServer().getPluginManager().registerEvents(new Recipe(), this);
         getServer().getPluginManager().registerEvents(new Info(), this);
         getServer().getPluginManager().registerEvents(new Listeners(), this);
-
-        plugin = this;
         getServer().getPluginManager().registerEvents(new DataContainer(), this);
+        plugin = this;
 
 //origin start begin
 
@@ -250,7 +205,6 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         waterProtectionEnchant = new WaterProtection("waterprot");
         custom_enchants.add(waterProtectionEnchant);
         registerEnchantment(waterProtectionEnchant);
-
 
         for (Player p : Bukkit.getOnlinePlayers()) {
             if (p.isOp()) {
