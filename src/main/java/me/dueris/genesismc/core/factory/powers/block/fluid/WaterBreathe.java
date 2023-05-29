@@ -51,7 +51,8 @@ public class WaterBreathe extends BukkitRunnable {
     public static boolean isInBreathableWater(Player player) {
         Block block = player.getEyeLocation().getBlock();
         Material material = block.getType();
-        return material == Material.WATER || block.getBlockData() instanceof Waterlogged || block instanceof Waterlogged || block.getState() instanceof Waterlogged;
+        if(block.isLiquid() || block.getState() instanceof Waterlogged || block.getBlockData() instanceof Waterlogged || !block.isCollidable()) return true;
+        return false;
     }
 
 }
