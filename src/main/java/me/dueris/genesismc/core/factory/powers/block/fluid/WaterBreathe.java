@@ -27,7 +27,7 @@ public class WaterBreathe extends BukkitRunnable {
                     p.addPotionEffect(new PotionEffect(PotionEffectType.WATER_BREATHING, 3, 1, false, false, false));
                     outofAIR.remove(p);
                 }else{
-                    if(p.getGameMode().equals(GameMode.CREATIVE)) return;
+                    if(p.getGameMode().equals(GameMode.CREATIVE) || p.getGameMode().equals(GameMode.SPECTATOR)) return;
                     int remainingAir = p.getRemainingAir();
                     if (remainingAir <= 5) {
                         p.setRemainingAir(0);
