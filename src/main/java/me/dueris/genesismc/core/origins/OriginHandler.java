@@ -58,12 +58,5 @@ public class OriginHandler extends BukkitRunnable implements Listener {
             }
         }
     }
-    
-    //Dont delete handler
-    @EventHandler
-    public void executeChooseTemplate(OriginChooseEvent e){
-    Player player = e.getPlayer();
-    }
-
 
 }

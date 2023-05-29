@@ -1,6 +1,8 @@
 package me.dueris.genesismc.core;
 
+import me.dueris.genesismc.core.api.Listeners;
 import me.dueris.genesismc.core.api.entity.OriginPlayer;
+import me.dueris.genesismc.core.api.events.OriginsLoadEvent;
 import me.dueris.genesismc.core.api.factory.CustomOriginAPI;
 import me.dueris.genesismc.core.choosing.ChoosingCORE;
 import me.dueris.genesismc.core.choosing.ChoosingCUSTOM;
@@ -40,6 +42,7 @@ import java.util.EnumSet;
 import java.util.HashMap;
 
 import static me.dueris.genesismc.core.factory.powers.block.fluid.WaterBreathe.isInBreathableWater;
+import static org.bukkit.Bukkit.getServer;
 
 public final class GenesisMC extends JavaPlugin implements Listener {
     private static GenesisMC plugin;
@@ -130,6 +133,8 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         CustomOriginAPI.removeUnzippedDatapacks();
         CustomOriginAPI.unzipDatapacks();
         CustomOriginAPI.loadCustomOrigins();
+        OriginsLoadEvent event = new OriginsLoadEvent();
+        getServer().getPluginManager().callEvent(event);
         for (String originTag : CustomOriginAPI.getTags()) {
             if (GenesisDataFiles.getMainConfig().getString("console-startup-debug").equalsIgnoreCase("true")) {
                 getServer().getConsoleSender().sendMessage("[GenesisMC] Loaded \"" + CustomOriginAPI.getOriginName(originTag) + "\"");
@@ -158,6 +163,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         getServer().getPluginManager().registerEvents(new ChoosingCUSTOM(), this);
         getServer().getPluginManager().registerEvents(new Recipe(), this);
         getServer().getPluginManager().registerEvents(new Info(), this);
+        getServer().getPluginManager().registerEvents(new Listeners(), this);
 
         plugin = this;
         getServer().getPluginManager().registerEvents(new DataContainer(), this);

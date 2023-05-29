@@ -3,6 +3,8 @@ package me.dueris.genesismc.core.choosing;
 import me.dueris.genesismc.core.GenesisMC;
 import me.dueris.genesismc.core.api.OriginAPI;
 import me.dueris.genesismc.core.api.entity.OriginPlayer;
+import me.dueris.genesismc.core.api.events.OrbInteractEvent;
+import me.dueris.genesismc.core.api.events.OriginChooseEvent;
 import me.dueris.genesismc.core.factory.powers.world.WorldSpawnHandler;
 import me.dueris.genesismc.core.files.GenesisDataFiles;
 import org.bukkit.*;
@@ -32,6 +34,7 @@ import static me.dueris.genesismc.core.choosing.contents.MainMenuContents.Genesi
 import static me.dueris.genesismc.core.choosing.contents.origins.ExpandedOriginContent.*;
 import static me.dueris.genesismc.core.choosing.contents.origins.OriginalOriginContent.*;
 import static me.dueris.genesismc.core.items.OrbOfOrigins.orb;
+import static org.bukkit.Bukkit.getServer;
 import static org.bukkit.ChatColor.*;
 
 public class ChoosingCORE implements Listener {
@@ -63,6 +66,9 @@ public class ChoosingCORE implements Listener {
                             @NotNull Inventory mainmenu = Bukkit.createInventory(e.getPlayer(), 54, "Choosing Menu");
                             mainmenu.setContents(GenesisMainMenuContents(e.getPlayer()));
                             e.getPlayer().openInventory(mainmenu);
+
+                            OrbInteractEvent event = new OrbInteractEvent(p);
+                            getServer().getPluginManager().callEvent(event);
 
                         }
                     }

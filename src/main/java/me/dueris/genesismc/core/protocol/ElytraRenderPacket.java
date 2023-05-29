@@ -1,6 +1,8 @@
 package me.dueris.genesismc.core.protocol;
 
 import io.netty.buffer.Unpooled;
+import me.dueris.genesismc.core.api.events.OrbInteractEvent;
+import me.dueris.genesismc.core.api.events.OriginPacketSendEvent;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.game.ClientboundCustomPayloadPacket;
 import net.minecraft.resources.ResourceLocation;
@@ -11,8 +13,14 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
+import static org.bukkit.Bukkit.getServer;
+
 public class ElytraRenderPacket {
     public static void sendCustomPacket(Player player, String message) {
+
+        OriginPacketSendEvent event = new OriginPacketSendEvent(player);
+        getServer().getPluginManager().callEvent(event);
+
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         DataOutputStream dataOutputStream = new DataOutputStream(outputStream);
 

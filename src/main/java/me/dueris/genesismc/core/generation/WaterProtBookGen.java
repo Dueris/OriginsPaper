@@ -1,5 +1,7 @@
 package me.dueris.genesismc.core.generation;
 
+import me.dueris.genesismc.core.api.events.OriginsLoadEvent;
+import me.dueris.genesismc.core.api.events.WaterProtectionGenerateEvent;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -13,12 +15,16 @@ import java.util.List;
 import java.util.Random;
 
 import static me.dueris.genesismc.core.GenesisMC.waterProtectionEnchant;
+import static org.bukkit.Bukkit.getServer;
 
 public class WaterProtBookGen implements Listener {
 
 @EventHandler
     public void OnGen(LootGenerateEvent e){
+    if(!(e.getEntity() instanceof Player)) return;
     Player p = (Player) e.getEntity();
+    WaterProtectionGenerateEvent event = new WaterProtectionGenerateEvent();
+    getServer().getPluginManager().callEvent(event);
     if(e.getInventoryHolder() != null){
         if(e.getWorld().canGenerateStructures()){
 

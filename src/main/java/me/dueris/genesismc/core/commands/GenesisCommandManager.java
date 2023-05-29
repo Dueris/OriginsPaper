@@ -1,5 +1,7 @@
 package me.dueris.genesismc.core.commands;
 
+import me.dueris.genesismc.core.api.events.OrbInteractEvent;
+import me.dueris.genesismc.core.api.events.OriginCommandEvent;
 import me.dueris.genesismc.core.commands.subcommands.SubCommand;
 import me.dueris.genesismc.core.commands.subcommands.origin.*;
 import org.bukkit.ChatColor;
@@ -9,6 +11,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
+
+import static org.bukkit.Bukkit.getServer;
 
 public class GenesisCommandManager implements CommandExecutor {
 
@@ -35,6 +39,8 @@ public class GenesisCommandManager implements CommandExecutor {
                 for (int i = 0; i < getSubCommands().size(); i++){
                     if (args[0].equalsIgnoreCase(getSubCommands().get(i).getName())){
                         getSubCommands().get(i).perform(p,args);
+                        OriginCommandEvent event = new OriginCommandEvent(p);
+                        getServer().getPluginManager().callEvent(event);
                     }
 
                 }

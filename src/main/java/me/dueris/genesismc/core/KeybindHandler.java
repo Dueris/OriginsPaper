@@ -1,6 +1,8 @@
 package me.dueris.genesismc.core;
 
 import me.dueris.genesismc.core.api.entity.OriginPlayer;
+import me.dueris.genesismc.core.api.events.OrbInteractEvent;
+import me.dueris.genesismc.core.api.events.OriginKeybindExecuteEvent;
 import me.dueris.genesismc.core.utils.ShulkUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -22,6 +24,7 @@ import java.util.ArrayList;
 
 import static me.dueris.genesismc.core.factory.powers.Powers.launch_into_air;
 import static me.dueris.genesismc.core.factory.powers.Powers.phantomize;
+import static org.bukkit.Bukkit.getServer;
 import static org.bukkit.ChatColor.DARK_AQUA;
 import static org.bukkit.ChatColor.RED;
 
@@ -42,6 +45,9 @@ public class KeybindHandler implements Listener {
     }
 
     public static void keybindTriggerMethod(Player p, PlayerSwapHandItemsEvent e){
+        OriginKeybindExecuteEvent event = new OriginKeybindExecuteEvent(p);
+        getServer().getPluginManager().callEvent(event);
+
         PersistentDataContainer data = p.getPersistentDataContainer();
         if (OriginPlayer.getOriginTag(e.getPlayer()).contains("genesis:origin-shulk")) {
             e.setCancelled(true);
