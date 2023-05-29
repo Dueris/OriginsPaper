@@ -68,7 +68,7 @@ merling-disable: false
 phantom-disable: false
 # Disables Phantom Origin
 
-Piglin-disable: false
+piglin-disable: false
 # Disables Piglin Origin
 
 rabbit-disable: false

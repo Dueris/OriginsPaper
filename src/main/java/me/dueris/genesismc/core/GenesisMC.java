@@ -197,7 +197,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
             CustomOriginExistCheck.customOriginExistCheck(p);
         }
         Powers.loadPowers();
-        Bukkit.getServer().getConsoleSender().sendMessage(Lang.menu_human_nothing_description);
+        Bukkit.getServer().getConsoleSender().sendMessage(Lang.menu_original_arachnid_spiderman_description);
     }
 
     //origin start end

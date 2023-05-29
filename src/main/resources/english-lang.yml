@@ -19,11 +19,12 @@ command:
                          sender:  "Set %player% origin to %originlayer% "
                 get:
                          sender:  "%player% has the layer %originlayer% "
-                purge:
-                         sender:  "Successfully removed the origin of %player% "
-                         given:  "Your origin has been removed by an operator "
                 gui:
                          sender:   "Opened choose menu for %player%  "
+                has:
+                         sender:
+                                  failed: "Test failed."
+                                  passed: "Test passed."
         layer:
                 get:
                         sender:  "%player% layers are: %originlayer%  "
