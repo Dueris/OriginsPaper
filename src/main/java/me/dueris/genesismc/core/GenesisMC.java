@@ -106,7 +106,13 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         new BukkitRunnable() {
             @Override
             public void run() {
-                Lang.getLangFile();
+                try {
+                    Lang.getLangFile();
+                } catch (Exception e) {
+                    Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.RED + "ERROR: Couldnt load lang file. Disabling GenesisMC...");
+                    Bukkit.getServer().getPluginManager().disablePlugin(GenesisMC.getPlugin());
+                }
+
                 this.cancel();
                 }
         }.runTaskTimer(GenesisMC.getPlugin(), 20L, 1L);
