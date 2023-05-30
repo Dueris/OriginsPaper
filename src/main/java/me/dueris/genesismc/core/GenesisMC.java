@@ -1,8 +1,7 @@
 package me.dueris.genesismc.core;
 
-import me.dueris.genesismc.core.api.Listeners;
-import me.dueris.genesismc.core.api.entity.OriginPlayer;
-import me.dueris.genesismc.core.api.factory.CustomOriginAPI;
+import me.dueris.genesismc.core.entity.OriginPlayer;
+import me.dueris.genesismc.core.factory.CraftApoli;
 import me.dueris.genesismc.core.choosing.ChoosingCORE;
 import me.dueris.genesismc.core.choosing.ChoosingCUSTOM;
 import me.dueris.genesismc.core.choosing.ChoosingForced;
@@ -33,13 +32,10 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.HashMap;
-
-import static org.bukkit.Bukkit.getServer;
 
 public final class GenesisMC extends JavaPlugin implements Listener {
     public static EnumSet<Material> tool;
@@ -117,16 +113,16 @@ public final class GenesisMC extends JavaPlugin implements Listener {
             getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "[GenesisMC] Successfully loaded version 0.1.7-ALPHA_SNAPSHOT (1.19.4)");
         }
 
-        CustomOriginAPI.removeUnzippedDatapacks();
-        CustomOriginAPI.unzipDatapacks();
-        CustomOriginAPI.loadCustomOrigins();
-        for (String originTag : CustomOriginAPI.getTags()) {
+        CraftApoli.removeUnzippedDatapacks();
+        CraftApoli.unzipDatapacks();
+        CraftApoli.loadCustomOrigins();
+        for (String originTag : CraftApoli.getTags()) {
             if (GenesisDataFiles.getMainConfig().getString("console-startup-debug").equalsIgnoreCase("true")) {
-                getServer().getConsoleSender().sendMessage("[GenesisMC] Loaded \"" + CustomOriginAPI.getOriginName(originTag) + "\"");
+                getServer().getConsoleSender().sendMessage("[GenesisMC] Loaded \"" + CraftApoli.getOriginName(originTag) + "\"");
             }
         }
-        if (CustomOriginAPI.getCustomOrigins().size() > 0) {
-            getServer().getConsoleSender().sendMessage("[GenesisMC] Loaded (" + CustomOriginAPI.getCustomOrigins().size() + ") Custom Origins");
+        if (CraftApoli.getCustomOrigins().size() > 0) {
+            getServer().getConsoleSender().sendMessage("[GenesisMC] Loaded (" + CraftApoli.getCustomOrigins().size() + ") Custom Origins");
         }
 
         getServer().getConsoleSender().sendMessage(ChatColor.GRAY + "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
@@ -234,6 +230,6 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         }
 
         //deletes origin files unzipped by Genesis
-        CustomOriginAPI.removeUnzippedDatapacks();
+        CraftApoli.removeUnzippedDatapacks();
     }
 }

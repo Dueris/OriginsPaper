@@ -1,7 +1,7 @@
-package me.dueris.genesismc.core.api.events;
+package me.dueris.genesismc.core.events;
 
 import me.dueris.genesismc.core.GenesisMC;
-import me.dueris.genesismc.core.api.enums.OriginType;
+import me.dueris.genesismc.core.enums.OriginType;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;

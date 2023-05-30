@@ -1,6 +1,6 @@
 package me.dueris.genesismc.core.generation;
 
-import me.dueris.genesismc.core.api.events.WaterProtectionGenerateEvent;
+import me.dueris.genesismc.core.events.WaterProtectionGenerateEvent;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;

@@ -1,6 +1,6 @@
 package me.dueris.genesismc.core.factory.powers.entity;
 
-import me.dueris.genesismc.core.api.entity.OriginPlayer;
+import me.dueris.genesismc.core.entity.OriginPlayer;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;

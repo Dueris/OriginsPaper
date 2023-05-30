@@ -1,7 +1,7 @@
 package me.dueris.genesismc.core.factory.powers.entity;
 
 import me.dueris.genesismc.core.GenesisMC;
-import me.dueris.genesismc.core.api.entity.OriginPlayer;
+import me.dueris.genesismc.core.entity.OriginPlayer;
 import org.bukkit.ChatColor;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Sound;

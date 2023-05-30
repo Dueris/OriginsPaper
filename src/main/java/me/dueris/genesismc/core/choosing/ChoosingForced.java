@@ -1,6 +1,6 @@
 package me.dueris.genesismc.core.choosing;
 
-import me.dueris.genesismc.core.api.entity.OriginPlayer;
+import me.dueris.genesismc.core.entity.OriginPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;

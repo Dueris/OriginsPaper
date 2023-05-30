@@ -1,6 +1,6 @@
 package me.dueris.genesismc.core.factory.powers;
 
-import me.dueris.genesismc.core.api.factory.CustomOriginAPI;
+import me.dueris.genesismc.core.factory.CraftApoli;
 import org.bukkit.event.Listener;
 
 import java.util.ArrayList;
@@ -175,8 +175,8 @@ public class Powers implements Listener {
         light_armor.add("genesis:origin-elytrian");
         aerial_combatant.add("genesis:origin-elytrian");
 
-        for (String originTag : CustomOriginAPI.getTags()) {
-            for (String powerTag : CustomOriginAPI.getOriginPowers(originTag)) {
+        for (String originTag : CraftApoli.getTags()) {
+            for (String powerTag : CraftApoli.getOriginPowers(originTag)) {
                 if (powerTag.equals("origins:fall_immunity")) fall_immunity.add(originTag);
                 else if (powerTag.equals("origins:aerial_combatant")) aerial_combatant.add(originTag);
                 else if (powerTag.equals("origins:aqua_affinity")) aqua_affinity.add(originTag);
@@ -263,7 +263,7 @@ public class Powers implements Listener {
                     //entity_ignore
 
                 else {
-                    String powerType = CustomOriginAPI.getPowerType(originTag, powerTag);
+                    String powerType = CraftApoli.getPowerType(originTag, powerTag);
                     if (powerType == null) return;
                     if (powerType.equals("origins:target_action_on_hit")) targetActionOnHit.put(originTag, powerTag);
 

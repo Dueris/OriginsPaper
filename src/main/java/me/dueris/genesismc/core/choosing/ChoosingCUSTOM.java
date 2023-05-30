@@ -1,7 +1,7 @@
 package me.dueris.genesismc.core.choosing;
 
 import me.dueris.genesismc.core.GenesisMC;
-import me.dueris.genesismc.core.api.factory.CustomOriginAPI;
+import me.dueris.genesismc.core.factory.CraftApoli;
 import me.dueris.genesismc.core.factory.powers.world.WorldSpawnHandler;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
@@ -75,14 +75,14 @@ public class ChoosingCUSTOM implements Listener {
                 ArrayList<String> originPowerNames = new ArrayList<>();
                 ArrayList<String> originPowerDescriptions = new ArrayList<>();
 
-                for (String powerTag : CustomOriginAPI.getOriginPowers(origintag)) {
-                    if (!CustomOriginAPI.getPowerHidden(origintag, powerTag)) {
-                        originPowerNames.add(CustomOriginAPI.getPowerName(origintag, powerTag));
-                        originPowerDescriptions.add(CustomOriginAPI.getPowerDescription(origintag, powerTag));
+                for (String powerTag : CraftApoli.getOriginPowers(origintag)) {
+                    if (!CraftApoli.getPowerHidden(origintag, powerTag)) {
+                        originPowerNames.add(CraftApoli.getPowerName(origintag, powerTag));
+                        originPowerDescriptions.add(CraftApoli.getPowerDescription(origintag, powerTag));
                     }
                 }
 
-                String minecraftItem = CustomOriginAPI.getOriginIcon(origintag);
+                String minecraftItem = CraftApoli.getOriginIcon(origintag);
                 String item = minecraftItem.split(":")[1];
                 ItemStack originIcon = new ItemStack(Material.valueOf(item.toUpperCase()));
 
@@ -94,9 +94,9 @@ public class ChoosingCUSTOM implements Listener {
 
 
                 ItemMeta originIconmeta = originIcon.getItemMeta();
-                originIconmeta.setDisplayName(CustomOriginAPI.getOriginName(origintag));
+                originIconmeta.setDisplayName(CraftApoli.getOriginName(origintag));
                 originIconmeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-                originIconmeta.setLore(cutStringIntoLists(CustomOriginAPI.getOriginDescription(origintag)));
+                originIconmeta.setLore(cutStringIntoLists(CraftApoli.getOriginDescription(origintag)));
                 originIconmeta.getPersistentDataContainer().set(key, PersistentDataType.STRING, origintag);
                 NamespacedKey chooseKey = new NamespacedKey(GenesisMC.getPlugin(), "originChoose");
                 originIconmeta.getPersistentDataContainer().set(chooseKey, PersistentDataType.INTEGER, 1);
@@ -104,7 +104,7 @@ public class ChoosingCUSTOM implements Listener {
                 originIcon.setItemMeta(originIconmeta);
 
                 ArrayList<ItemStack> contents = new ArrayList<>();
-                long impact = CustomOriginAPI.getOriginImpact(origintag);
+                long impact = CraftApoli.getOriginImpact(origintag);
 
                 for (int i = 0; i <= 53; i++) {
                     if (i == 0 || i == 8) {
@@ -185,7 +185,7 @@ public class ChoosingCUSTOM implements Listener {
                 Player p = (Player) e.getWhoClicked();
                 setAttributesToDefault(p);
                 Bukkit.getScheduler().runTaskLater(GenesisMC.getPlugin(), () -> {
-                    if (CustomOriginAPI.getOriginPowers(origintag).contains("origins:nether_spawn") && p.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING).equals("genesis:origin-null"))
+                    if (CraftApoli.getOriginPowers(origintag).contains("origins:nether_spawn") && p.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING).equals("genesis:origin-null"))
                         p.teleport(WorldSpawnHandler.NetherSpawn());
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, origintag);
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);

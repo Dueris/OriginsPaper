@@ -1,9 +1,9 @@
 package me.dueris.genesismc.core.choosing;
 
 import me.dueris.genesismc.core.GenesisMC;
-import me.dueris.genesismc.core.api.OriginAPI;
-import me.dueris.genesismc.core.api.entity.OriginPlayer;
-import me.dueris.genesismc.core.api.events.OrbInteractEvent;
+import me.dueris.genesismc.core.CraftOrigin;
+import me.dueris.genesismc.core.entity.OriginPlayer;
+import me.dueris.genesismc.core.events.OrbInteractEvent;
 import me.dueris.genesismc.core.factory.powers.world.WorldSpawnHandler;
 import me.dueris.genesismc.core.files.GenesisDataFiles;
 import org.bukkit.*;
@@ -205,7 +205,7 @@ public class ChoosingCORE implements Listener {
             if (e.getCurrentItem().getItemMeta().getPersistentDataContainer().get(key, PersistentDataType.STRING) != "orb")
                 return;
             Player p = (Player) e.getWhoClicked();
-            ArrayList<String> origins = OriginAPI.getLoadedOrigins();
+            ArrayList<String> origins = CraftOrigin.getLoadedOrigins();
             Random random = new Random();
             String originTag = origins.get(random.nextInt(origins.size()));
             OriginPlayer.setOrigin(p, originTag);

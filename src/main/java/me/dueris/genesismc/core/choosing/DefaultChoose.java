@@ -1,7 +1,7 @@
 package me.dueris.genesismc.core.choosing;
 
 import me.dueris.genesismc.core.GenesisMC;
-import me.dueris.genesismc.core.api.events.OriginChooseEvent;
+import me.dueris.genesismc.core.events.OriginChooseEvent;
 import me.dueris.genesismc.core.items.OrbOfOrigins;
 import me.dueris.genesismc.core.utils.SendCharts;
 import org.bukkit.NamespacedKey;

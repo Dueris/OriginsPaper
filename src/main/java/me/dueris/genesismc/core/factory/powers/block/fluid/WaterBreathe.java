@@ -1,6 +1,6 @@
 package me.dueris.genesismc.core.factory.powers.block.fluid;
 
-import me.dueris.genesismc.core.api.entity.OriginPlayer;
+import me.dueris.genesismc.core.entity.OriginPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Material;

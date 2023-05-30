@@ -1,11 +1,11 @@
-package me.dueris.genesismc.core.api;
+package me.dueris.genesismc.core;
 
 
 import java.util.ArrayList;
 
-import static me.dueris.genesismc.core.api.factory.CustomOriginAPI.getCustomOrigins;
+import static me.dueris.genesismc.core.factory.CraftApoli.getCustomOrigins;
 
-public class OriginAPI {
+public class CraftOrigin {
 
     public static ArrayList<String> getLoadedOrigins() {
         ArrayList<String> origins = new ArrayList<>(getCustomOrigins().keySet());

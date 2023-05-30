@@ -1,7 +1,7 @@
 package me.dueris.genesismc.core.factory.powers.runnables;
 
 import me.dueris.genesismc.core.GenesisMC;
-import me.dueris.genesismc.core.api.entity.OriginPlayer;
+import me.dueris.genesismc.core.entity.OriginPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;

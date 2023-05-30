@@ -1,4 +1,4 @@
-package me.dueris.genesismc.core.api.events;
+package me.dueris.genesismc.core.events;
 
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;

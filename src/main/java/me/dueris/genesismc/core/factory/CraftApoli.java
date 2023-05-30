@@ -1,4 +1,4 @@
-package me.dueris.genesismc.core.api.factory;
+package me.dueris.genesismc.core.factory;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
@@ -23,7 +23,7 @@ import java.util.Objects;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-public class CustomOriginAPI {
+public class CraftApoli {
 
     private static final HashMap<String, String> customOrigins = new HashMap<>();
 

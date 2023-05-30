@@ -1,6 +1,6 @@
-package me.dueris.genesismc.core.api;
+package me.dueris.genesismc.core;
 
-import me.dueris.genesismc.core.api.events.*;
+import me.dueris.genesismc.core.events.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 

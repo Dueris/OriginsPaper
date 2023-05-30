@@ -1,7 +1,7 @@
 package me.dueris.genesismc.core.utils;
 
 import me.dueris.genesismc.core.GenesisMC;
-import me.dueris.genesismc.core.api.factory.CustomOriginAPI;
+import me.dueris.genesismc.core.factory.CraftApoli;
 import me.dueris.genesismc.core.factory.handlers.CustomOriginExistCheck;
 import me.dueris.genesismc.core.factory.powers.Powers;
 import me.dueris.genesismc.core.files.GenesisDataFiles;
@@ -67,13 +67,13 @@ public class Debug {
             getServer().getConsoleSender().sendMessage(ChatColor.RED + "A fatal error has occurred, lang could not be loaded. Disabling GenesisMC....");
             getServer().getPluginManager().disablePlugin(getPlugin());
         }
-        for (String originTag : CustomOriginAPI.getTags()) {
+        for (String originTag : CraftApoli.getTags()) {
             if (GenesisDataFiles.getMainConfig().getString("console-startup-debug").equalsIgnoreCase("true")) {
-                getServer().getConsoleSender().sendMessage("[GenesisMC] Loaded \"" + CustomOriginAPI.getOriginName(originTag) + "\"");
+                getServer().getConsoleSender().sendMessage("[GenesisMC] Loaded \"" + CraftApoli.getOriginName(originTag) + "\"");
             }
         }
-        if (CustomOriginAPI.getCustomOrigins().size() > 0) {
-            getServer().getConsoleSender().sendMessage("[GenesisMC] Loaded (" + CustomOriginAPI.getCustomOrigins().size() + ") Custom Origins");
+        if (CraftApoli.getCustomOrigins().size() > 0) {
+            getServer().getConsoleSender().sendMessage("[GenesisMC] Loaded (" + CraftApoli.getCustomOrigins().size() + ") Custom Origins");
         }
         for (Player p : Bukkit.getOnlinePlayers()) {
             Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.BLUE + "Origins Reloaded.");

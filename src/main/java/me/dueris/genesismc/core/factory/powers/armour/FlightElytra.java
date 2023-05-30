@@ -1,7 +1,7 @@
 package me.dueris.genesismc.core.factory.powers.armour;
 
 import me.dueris.genesismc.core.GenesisMC;
-import me.dueris.genesismc.core.api.entity.OriginPlayer;
+import me.dueris.genesismc.core.entity.OriginPlayer;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -20,7 +20,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.util.ArrayList;
 import java.util.UUID;
 
-import static me.dueris.genesismc.core.api.entity.OriginPlayer.launchElytra;
+import static me.dueris.genesismc.core.entity.OriginPlayer.launchElytra;
 import static me.dueris.genesismc.core.factory.powers.Powers.elytra;
 import static me.dueris.genesismc.core.factory.powers.Powers.more_kinetic_damage;
 

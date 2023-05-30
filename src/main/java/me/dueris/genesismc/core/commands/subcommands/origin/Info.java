@@ -1,8 +1,8 @@
 package me.dueris.genesismc.core.commands.subcommands.origin;
 
 import me.dueris.genesismc.core.GenesisMC;
-import me.dueris.genesismc.core.api.entity.OriginPlayer;
-import me.dueris.genesismc.core.api.factory.CustomOriginAPI;
+import me.dueris.genesismc.core.entity.OriginPlayer;
+import me.dueris.genesismc.core.factory.CraftApoli;
 import me.dueris.genesismc.core.choosing.contents.origins.ExpandedOriginContent;
 import me.dueris.genesismc.core.choosing.contents.origins.OriginalOriginContent;
 import me.dueris.genesismc.core.commands.subcommands.SubCommand;
@@ -139,14 +139,14 @@ public class Info extends SubCommand implements Listener {
                 ArrayList<String> originPowerNames = new ArrayList<>();
                 ArrayList<String> originPowerDescriptions = new ArrayList<>();
 
-                for (String powerTag : CustomOriginAPI.getOriginPowers(origintag)) {
-                    if (!CustomOriginAPI.getPowerHidden(origintag, powerTag)) {
-                        originPowerNames.add(CustomOriginAPI.getPowerName(origintag, powerTag));
-                        originPowerDescriptions.add(CustomOriginAPI.getPowerDescription(origintag, powerTag));
+                for (String powerTag : CraftApoli.getOriginPowers(origintag)) {
+                    if (!CraftApoli.getPowerHidden(origintag, powerTag)) {
+                        originPowerNames.add(CraftApoli.getPowerName(origintag, powerTag));
+                        originPowerDescriptions.add(CraftApoli.getPowerDescription(origintag, powerTag));
                     }
                 }
 
-                String minecraftItem = CustomOriginAPI.getOriginIcon(origintag);
+                String minecraftItem = CraftApoli.getOriginIcon(origintag);
                 String item = minecraftItem.split(":")[1];
                 ItemStack originIcon = new ItemStack(Material.valueOf(item.toUpperCase()));
 
@@ -158,13 +158,13 @@ public class Info extends SubCommand implements Listener {
 
 
                 ItemMeta originIconmeta = originIcon.getItemMeta();
-                originIconmeta.setDisplayName(CustomOriginAPI.getOriginName(origintag));
+                originIconmeta.setDisplayName(CraftApoli.getOriginName(origintag));
                 originIconmeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-                originIconmeta.setLore(cutStringIntoLists(CustomOriginAPI.getOriginDescription(origintag)));
+                originIconmeta.setLore(cutStringIntoLists(CraftApoli.getOriginDescription(origintag)));
                 originIcon.setItemMeta(originIconmeta);
 
                 ArrayList<ItemStack> contents = new ArrayList<>();
-                long impact = CustomOriginAPI.getOriginImpact(origintag);
+                long impact = CraftApoli.getOriginImpact(origintag);
 
                 for (int i = 0; i <= 53; i++) {
                     if (i == 0 || i == 8) {

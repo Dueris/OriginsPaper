@@ -1,7 +1,7 @@
 package me.dueris.genesismc.core.factory.powers.custom;
 
-import me.dueris.genesismc.core.api.entity.OriginPlayer;
-import me.dueris.genesismc.core.api.factory.CustomOriginAPI;
+import me.dueris.genesismc.core.entity.OriginPlayer;
+import me.dueris.genesismc.core.factory.CraftApoli;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -16,9 +16,9 @@ public class TargetActionOnHit extends BukkitRunnable {
                 String originTag = OriginPlayer.getOriginTag(p);
                 String powerTag = targetActionOnHit.get(originTag);
 
-                String powerClass = CustomOriginAPI.getPowerClass(originTag, powerTag);
-                String powerAttribute = CustomOriginAPI.getPowerAttribute(originTag, powerTag);
-                Float powerMultiplier = CustomOriginAPI.getPowerMultiplier(originTag, powerTag);
+                String powerClass = CraftApoli.getPowerClass(originTag, powerTag);
+                String powerAttribute = CraftApoli.getPowerAttribute(originTag, powerTag);
+                Float powerMultiplier = CraftApoli.getPowerMultiplier(originTag, powerTag);
             }
         }
     }
