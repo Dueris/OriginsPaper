@@ -1,13 +1,4 @@
-/build/libs/genesismc-0.1.5-ALPHA_SNAPSHOT.jar
-/build/tmp/jar/MANIFEST.MF
-/.gradle/7.3.3/checksums/md5-checksums.bin
-/build/resources/main/origins-plans.txt
-/build/resources/main/plugin.yml
-/build/tmp/compileJava/previous-compilation-data.bin
-/.gradle/7.3.3/fileHashes/resourceHashesCache.bin
-/.gradle/7.3.3/checksums/sha1-checksums.bin
-/gradle/
-/.idea/
 /build/
 /.gradle/
-gradle.properties
+/.stfolder/
+/gradle/
