@@ -132,7 +132,6 @@ public final class GenesisMC extends JavaPlugin implements Listener {
             System.out.println(origin.getIdentifier());
         }
 
-        getServer().getConsoleSender().sendMessage(ChatColor.GRAY + "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
         getServer().getPluginManager().registerEvents(this, this);
 //Commands
         getCommand("origin").setExecutor(new GenesisCommandManager());
@@ -194,6 +193,8 @@ public final class GenesisMC extends JavaPlugin implements Listener {
             Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.RED + "A fatal error has occurred, lang could not be loaded. Disabling GenesisMC....");
             Bukkit.getServer().getPluginManager().disablePlugin(this);
         }
+
+        getServer().getConsoleSender().sendMessage(ChatColor.GRAY + "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
 
     }
 
