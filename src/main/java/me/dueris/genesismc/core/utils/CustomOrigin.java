@@ -1,14 +1,15 @@
 package me.dueris.genesismc.core.utils;
 
 import java.io.File;
+import java.util.HashMap;
 
 public class CustomOrigin {
     String identifier;
-    File originLayerFile;
-    File originFile;
+    HashMap<String, Object> originLayerFile;
+    HashMap<String, Object> originFile;
     PowerContainer powerContainer;
 
-    public CustomOrigin(String identifier, File originLayerFile, File originFile, PowerContainer powerContainer) {
+    public CustomOrigin(String identifier, HashMap<String, Object> originLayerFile, HashMap<String, Object> originFile, PowerContainer powerContainer) {
         this.identifier = identifier;
         this.originLayerFile = originLayerFile;
         this.originFile = originFile;
@@ -23,11 +24,11 @@ public class CustomOrigin {
         return this.identifier;
     }
 
-    public File getOriginLayerFile() {
+    public HashMap<String, Object> getOriginLayerFile() {
         return this.originLayerFile;
     }
 
-    public File getOriginFile() {
+    public HashMap<String, Object> getOriginFile() {
         return this.originFile;
     }
 

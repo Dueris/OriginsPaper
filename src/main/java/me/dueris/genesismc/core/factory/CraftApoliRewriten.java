@@ -8,12 +8,16 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
+import javax.json.JsonString;
 import java.io.File;
 import java.io.FileReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 
 public class CraftApoliRewriten {
+
+    //make it load the files into memory rather than use File object (just stores filepaths)
 
     private static ArrayList<CustomOrigin> customOrigins = new ArrayList<>();
 
@@ -23,6 +27,13 @@ public class CraftApoliRewriten {
     public static ArrayList<CustomOrigin> getOrigins() {
         return customOrigins;
     }
+
+    private static HashMap<String, Object> fileToHashMap(JSONObject JSONFileParser) {
+        HashMap<String, Object> data = new HashMap<>();
+        for (Object key : JSONFileParser.keySet()) data.put((String) key, JSONFileParser.get(key));
+        return data;
+    }
+
 
     /**
      * Loads the custom origins from the datapack dir into memory.
@@ -37,9 +48,6 @@ public class CraftApoliRewriten {
             File origin_layers = new File(datapack.getAbsolutePath() + "/data/origins/origin_layers/origin.json");
             if (!origin_layers.exists()) continue;
 
-            String identifier = "";
-            File originLayerFile = origin_layers;
-            File originsFile;
             PowerContainer powers = new PowerContainer();
 
             String originFolder = "";
@@ -54,21 +62,21 @@ public class CraftApoliRewriten {
                     String[] valueSplit = value.split(":");
                     originFolder = valueSplit[0];
                     originFileName = valueSplit[1];
-
-                    identifier = originFolder+":"+originFileName;
                 }
-
-                originsFile = (new File(datapack.getAbsolutePath() + "/data/"+originFolder+"/origins/"+originFileName+".json"));
 
                 JSONObject originParser = (JSONObject) new JSONParser().parse(new FileReader(datapack.getAbsolutePath() + "/data/"+originFolder+"/origins/"+originFileName+".json"));
                 ArrayList<String> powersList = (ArrayList<String>) originParser.get("powers");
 
-                for (String powerFileName : powersList) {
-                    File powerFile = new File(datapack.getAbsolutePath() + "/data/"+originFolder+"/powers/"+powerFileName+".json");
-                    powers.add(originFolder+":"+originFileName, powerFile, originFolder+":"+originFileName);
+                for (String string : powersList) {
+                    String[] powerLocation = string.split(":");
+                    String powerFolder = powerLocation[0];
+                    String powerFileName = powerLocation[1];
+
+                    JSONObject powerParser = (JSONObject) new JSONParser().parse(new FileReader(datapack.getAbsolutePath() + "/data/"+powerFolder+"/powers/"+powerFileName+".json"));
+                    powers.add(originFolder+":"+originFileName, fileToHashMap(powerParser), originFolder+":"+originFileName);
                 }
 
-                customOrigins.add(new CustomOrigin(identifier, originLayerFile, originsFile, powers));
+                customOrigins.add(new CustomOrigin(originFolder+":"+originFileName, fileToHashMap(originLayerParser), fileToHashMap(originParser), powers));
 
             } catch (Exception e) {
                 e.printStackTrace();
