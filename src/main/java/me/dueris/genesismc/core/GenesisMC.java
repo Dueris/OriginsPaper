@@ -127,9 +127,10 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 //            getServer().getConsoleSender().sendMessage("[GenesisMC] Loaded (" + CraftApoli.getCustomOrigins().size() + ") Custom Origins");
 //        }
         CraftApoliRewriten.loadOrigins();
-//        for (CustomOrigin origin : CraftApoliRewriten.getOrigins()) {
-//            System.out.println(origin.toString());
-//        }
+        for (CustomOrigin origin : CraftApoliRewriten.getOrigins()) {
+            //System.out.println(origin.toString());
+            System.out.println(origin.getIdentifier());
+        }
 
         getServer().getConsoleSender().sendMessage(ChatColor.GRAY + "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
         getServer().getPluginManager().registerEvents(this, this);
