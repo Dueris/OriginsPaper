@@ -1,6 +1,5 @@
 package me.dueris.genesismc.core.utils;
 
-import java.io.File;
 import java.util.HashMap;
 
 public class CustomOrigin {
