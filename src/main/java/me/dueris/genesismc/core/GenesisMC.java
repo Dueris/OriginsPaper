@@ -13,6 +13,7 @@ import me.dueris.genesismc.core.commands.subcommands.origin.Recipe;
 import me.dueris.genesismc.core.enchantments.EnchantProtEvent;
 import me.dueris.genesismc.core.enchantments.WaterProtAnvil;
 import me.dueris.genesismc.core.enchantments.WaterProtection;
+import me.dueris.genesismc.core.factory.CraftApoliRewriten;
 import me.dueris.genesismc.core.factory.OriginStartHandler;
 import me.dueris.genesismc.core.factory.handlers.CustomOriginExistCheck;
 import me.dueris.genesismc.core.factory.powers.Powers;
@@ -34,6 +35,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.HashMap;
 
@@ -113,16 +115,24 @@ public final class GenesisMC extends JavaPlugin implements Listener {
             getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "[GenesisMC] Successfully loaded version 0.1.7-ALPHA_SNAPSHOT (1.19.4)");
         }
 
-        CraftApoli.removeUnzippedDatapacks();
-        CraftApoli.unzipDatapacks();
-        CraftApoli.loadCustomOrigins();
-        for (String originTag : CraftApoli.getTags()) {
-            if (GenesisDataFiles.getMainConfig().getString("console-startup-debug").equalsIgnoreCase("true")) {
-                getServer().getConsoleSender().sendMessage("[GenesisMC] Loaded \"" + CraftApoli.getOriginName(originTag) + "\"");
-            }
-        }
-        if (CraftApoli.getCustomOrigins().size() > 0) {
-            getServer().getConsoleSender().sendMessage("[GenesisMC] Loaded (" + CraftApoli.getCustomOrigins().size() + ") Custom Origins");
+//        CraftApoli.removeUnzippedDatapacks();
+//        CraftApoli.unzipDatapacks();
+//        CraftApoli.loadCustomOrigins();
+//        for (String originTag : CraftApoli.getTags()) {
+//            if (GenesisDataFiles.getMainConfig().getString("console-startup-debug").equalsIgnoreCase("true")) {
+//                getServer().getConsoleSender().sendMessage("[GenesisMC] Loaded \"" + CraftApoli.getOriginName(originTag) + "\"");
+//            }
+//        }
+//        if (CraftApoli.getCustomOrigins().size() > 0) {
+//            getServer().getConsoleSender().sendMessage("[GenesisMC] Loaded (" + CraftApoli.getCustomOrigins().size() + ") Custom Origins");
+//        }
+        CraftApoliRewriten.loadOrigins();
+        for (CustomOrigin origin : CraftApoliRewriten.getOrigins()) {
+//            System.out.println(origin.getIdentifier());
+//            System.out.println(origin.getOriginFile());
+//            System.out.println(origin.getOriginLayerFile());
+//            System.out.println(origin.getPowerContainer());
+            System.out.println(origin.toString());
         }
 
         getServer().getConsoleSender().sendMessage(ChatColor.GRAY + "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
