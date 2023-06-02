@@ -25,7 +25,7 @@ import java.util.zip.ZipInputStream;
 
 public class CraftApoli {
 
-    private static final HashMap<String, String> customOrigins = new HashMap<>();
+    private static HashMap<String, String> customOrigins = new HashMap<>();
 
     /**
      * @return A HashMap with custom origin tags as keys and datapack names as values.
