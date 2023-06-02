@@ -13,6 +13,9 @@ public class PowerContainer {
     public PowerContainer() {
     }
 
+    /**
+     * @return The powerContainer formatted for debugging, not to be used in other circumstances.
+     */
     public String toString() {
         return "PowerIdentifier: " + this.powerIdentifier + ", PowerFile: " + this.powerFile.toString() + ", PowerSource: " + this.powerSource.toString();
     }

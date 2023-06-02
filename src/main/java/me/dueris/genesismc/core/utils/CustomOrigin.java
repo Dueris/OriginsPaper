@@ -16,6 +16,9 @@ public class CustomOrigin {
         this.powerContainer = powerContainer;
     }
 
+    /**
+     * @return The customOrigin formatted for debugging, not to be used in other circumstances.
+     */
     public String toString() {
         return "Identifier: " + this.identifier + ", OriginLayerFile: " + this.originLayerFile + ", OriginFile: " + this.originFile + ", PowerContainer {" + this.powerContainer.toString() + "}";
     }
