@@ -1,10 +1,7 @@
 package me.dueris.genesismc.core.utils;
 
-import me.dueris.genesismc.core.factory.CraftApoliRewriten;
 import org.json.simple.JSONObject;
 
-import java.io.ByteArrayOutputStream;
-import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;

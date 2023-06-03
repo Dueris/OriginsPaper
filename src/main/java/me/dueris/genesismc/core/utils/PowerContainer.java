@@ -1,8 +1,9 @@
 package me.dueris.genesismc.core.utils;
 
+import java.io.Serializable;
 import java.util.HashMap;
 
-public class PowerContainer {
+public class PowerContainer implements Serializable {
 
     String powerTag;
     HashMap<String, Object> powerFile;
