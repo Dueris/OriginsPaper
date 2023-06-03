@@ -3,14 +3,34 @@ package me.dueris.genesismc.core.utils;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 
-import java.io.BufferedInputStream;
-import java.io.IOException;
+import java.io.*;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 
+import static me.dueris.genesismc.core.GenesisMC.getPlugin;
+
 public class BukkitUtils {
+
+    public static void downloadFileToDirFromResource(String childPathFromOverworld, String resourceLocation){
+        File datapackFile = new File(Bukkit.getWorlds().get(0).getName(), childPathFromOverworld);
+        if (!datapackFile.exists()) {
+            InputStream resource = getPlugin().getResource(resourceLocation);
+            if (resource != null) {
+                try (OutputStream outputStream = new FileOutputStream(datapackFile)) {
+                    byte[] buffer = new byte[1024];
+                    int length;
+                    while ((length = resource.read(buffer)) > 0) {
+                        outputStream.write(buffer, 0, length);
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        }
+    }
 
     public static void downloadFileFromURL(String fileUrl) throws IOException {
         URL url = new URL(fileUrl);
