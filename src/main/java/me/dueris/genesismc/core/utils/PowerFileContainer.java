@@ -13,6 +13,11 @@ public class PowerFileContainer implements Serializable {
         this.values = values;
     }
 
+    @Override
+    public String toString() {
+        return this.keys.toString() + this.values.toString();
+    }
+
     public Object get(String key) {
         int index = this.keys.indexOf(key);
         if (index == -1) return null;
