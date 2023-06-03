@@ -1,6 +1,6 @@
 package me.dueris.genesismc.core.factory;
 
-import me.dueris.genesismc.core.utils.CustomOrigin;
+import me.dueris.genesismc.core.utils.OriginContainer;
 import me.dueris.genesismc.core.utils.PowerContainer;
 import org.apache.commons.io.FilenameUtils;
 import org.bukkit.Bukkit;
@@ -22,13 +22,13 @@ public class CraftApoliRewriten {
 
     //make it load the files into memory rather than use File object (just stores filepaths)
 
-    private static ArrayList<CustomOrigin> customOrigins = new ArrayList<>();
+    private static ArrayList<OriginContainer> originContainers = new ArrayList<>();
 
     /**
      * @return A copy of the CustomOrigin object array for all the origins that are loaded.
      **/
-    public static ArrayList<CustomOrigin> getOrigins() {
-        return (ArrayList<CustomOrigin>) customOrigins.clone();
+    public static ArrayList<OriginContainer> getOrigins() {
+        return (ArrayList<OriginContainer>) originContainers.clone();
     }
 
     private static HashMap<String, Object> fileToHashMap(JSONObject JSONFileParser) {
@@ -107,7 +107,7 @@ public class CraftApoliRewriten {
                                 powerContainers.add(new PowerContainer(originFolder+":"+originFileName, fileToHashMap(powerParser), originFolder+":"+originFileName));
                             }
 
-                            customOrigins.add(new CustomOrigin(originFolder+":"+originFileName, fileToHashMap(originLayerParser), fileToHashMap(originParser), powerContainers));
+                            originContainers.add(new OriginContainer(originFolder+":"+originFileName, fileToHashMap(originLayerParser), fileToHashMap(originParser), powerContainers));
                         }
 
                 } catch (Exception e) {
@@ -151,7 +151,7 @@ public class CraftApoliRewriten {
                     powerContainers.add(new PowerContainer(originFolder+":"+originFileName, fileToHashMap(powerParser), originFolder+":"+originFileName));
                 }
 
-                customOrigins.add(new CustomOrigin(originFolder+":"+originFileName, fileToHashMap(originLayerParser), fileToHashMap(originParser), powerContainers));
+                originContainers.add(new OriginContainer(originFolder+":"+originFileName, fileToHashMap(originLayerParser), fileToHashMap(originParser), powerContainers));
 
             } catch (Exception e) {
                 e.printStackTrace();

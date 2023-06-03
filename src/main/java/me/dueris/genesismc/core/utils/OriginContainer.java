@@ -5,13 +5,13 @@ import org.json.simple.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class CustomOrigin {
+public class OriginContainer {
     String tag;
     HashMap<String, Object> originLayerFile;
     HashMap<String, Object> originFile;
     ArrayList<PowerContainer> powerContainer;
 
-    public CustomOrigin(String tag, HashMap<String, Object> originLayerFile, HashMap<String, Object> originFile, ArrayList<PowerContainer> powerContainer) {
+    public OriginContainer(String tag, HashMap<String, Object> originLayerFile, HashMap<String, Object> originFile, ArrayList<PowerContainer> powerContainer) {
         this.tag = tag;
         this.originLayerFile = originLayerFile;
         this.originFile = originFile;

@@ -4,7 +4,7 @@ import me.dueris.genesismc.core.GenesisMC;
 import me.dueris.genesismc.core.factory.CraftApoli;
 import me.dueris.genesismc.core.factory.CraftApoliRewriten;
 import me.dueris.genesismc.core.factory.powers.world.WorldSpawnHandler;
-import me.dueris.genesismc.core.utils.CustomOrigin;
+import me.dueris.genesismc.core.utils.OriginContainer;
 import me.dueris.genesismc.core.utils.PowerContainer;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
@@ -71,8 +71,8 @@ public class ChoosingCUSTOM implements Listener {
                 String originTag = e.getCurrentItem().getItemMeta().getPersistentDataContainer().get(key, PersistentDataType.STRING);
                 if (originTag == null) return;
 
-                CustomOrigin origin = null;
-                for (CustomOrigin origins : CraftApoliRewriten.getOrigins()) {
+                OriginContainer origin = null;
+                for (OriginContainer origins : CraftApoliRewriten.getOrigins()) {
                     if (origins.getTag().equals(originTag)) {origin = origins; break;}
                 }
 

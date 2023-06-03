@@ -2,7 +2,7 @@ package me.dueris.genesismc.core.choosing.contents;
 
 import me.dueris.genesismc.core.GenesisMC;
 import me.dueris.genesismc.core.factory.CraftApoliRewriten;
-import me.dueris.genesismc.core.utils.CustomOrigin;
+import me.dueris.genesismc.core.utils.OriginContainer;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -32,7 +32,7 @@ public class ChooseMenuContents {
         next = itemProperties(next, "Next", ItemFlag.HIDE_ENCHANTS, null, null);
 
         ArrayList<ItemStack> contents = new ArrayList<>();
-        ArrayList<CustomOrigin> customOriginTags = CraftApoliRewriten.getOrigins();
+        ArrayList<OriginContainer> originContainerTags = CraftApoliRewriten.getOrigins();
 
         for (int i = 0; i <= 53; i++) {
             if (i % 9 == 0 || (i + 1) % 9 == 0) {
@@ -46,11 +46,11 @@ public class ChooseMenuContents {
             } else if (i >= 46) {
                 contents.add(new ItemStack(Material.AIR));
             } else {
-                if (customOriginTags.size() > 0) {
-                    CustomOrigin origin = customOriginTags.get(0);
+                if (originContainerTags.size() > 0) {
+                    OriginContainer origin = originContainerTags.get(0);
                     while (origin.getUnchooseable()) {
-                        customOriginTags.remove(0);
-                        origin = customOriginTags.get(0);
+                        originContainerTags.remove(0);
+                        origin = originContainerTags.get(0);
                     }
                     String minecraftItem = origin.getIcon();
                     String item = minecraftItem.split(":")[1];
@@ -64,7 +64,7 @@ public class ChooseMenuContents {
                     originIconmeta.getPersistentDataContainer().set(key, PersistentDataType.STRING, origin.getTag());
                     originIcon.setItemMeta(originIconmeta);
                     contents.add(originIcon);
-                    customOriginTags.remove(0);
+                    originContainerTags.remove(0);
                 } else {
                     contents.add(new ItemStack(Material.AIR));
                 }

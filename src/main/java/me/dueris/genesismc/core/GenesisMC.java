@@ -115,7 +115,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         }
 
         CraftApoliRewriten.loadOrigins();
-        for (CustomOrigin origins : CraftApoliRewriten.getOrigins()) {
+        for (OriginContainer origins : CraftApoliRewriten.getOrigins()) {
             if (GenesisDataFiles.getMainConfig().getString("console-startup-debug").equalsIgnoreCase("true")) {
                 getServer().getConsoleSender().sendMessage("[GenesisMC] Loaded \"" + origins.getName() + "\"");
             }
