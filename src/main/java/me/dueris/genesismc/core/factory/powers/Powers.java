@@ -229,7 +229,7 @@ public class Powers implements Listener {
                 else if (powerTag.equals("origins:weak_arms")) weak_arms.add(originTag);
                 else if (powerTag.equals("origins:webbing")) webbing.add(originTag);
                 else if (powerTag.equals("origins:water_vision")) water_vision.add(originTag);
-                else if (powerTag.equals("origins:elytra")) elytra.add(originTag);
+                else if (powerTag.equals("origins:elytra_flight")) elytra.add(originTag);
                 else if (powerTag.equals("origins:air_from_potions")) air_from_potions.add(originTag);
                 else if (powerTag.equals("origins:conduit_power_on_land")) conduit_power_on_land.add(originTag);
                 else if (powerTag.equals("origins:damage_from_potions")) damage_from_potions.add(originTag);

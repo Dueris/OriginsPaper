@@ -1,9 +1,6 @@
 {
-  "type": "origins:attribute",
-  "modifier": {
-    "name": "Fragile health reduction",
-    "attribute": "minecraft:generic.max_health",
-    "value": -6.0,
-    "operation": "addition"
-  }
+  "type": "origins:fragile",
+  "hidden": false,
+  "name": "menu.original.arachnid.squishable.title",
+  "description": "menu.original.arachnid.squishable.description"
 }
