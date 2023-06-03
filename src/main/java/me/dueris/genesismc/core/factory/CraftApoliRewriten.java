@@ -25,10 +25,10 @@ public class CraftApoliRewriten {
     private static ArrayList<CustomOrigin> customOrigins = new ArrayList<>();
 
     /**
-     * @return A CustomOrigin object array for all the origins that are loaded.
+     * @return A copy of the CustomOrigin object array for all the origins that are loaded.
      **/
     public static ArrayList<CustomOrigin> getOrigins() {
-        return customOrigins;
+        return (ArrayList<CustomOrigin>) customOrigins.clone();
     }
 
     private static HashMap<String, Object> fileToHashMap(JSONObject JSONFileParser) {
@@ -68,7 +68,6 @@ public class CraftApoliRewriten {
                     }
 
                     boolean originDatapack = false;
-                    PowerContainer powers = new PowerContainer();
                     JSONObject originLayerParser = null;
                     String originFolder = "";
                     String originFileName = "";
@@ -97,16 +96,18 @@ public class CraftApoliRewriten {
                             JSONObject originParser = (JSONObject) new JSONParser().parse(files.get(path));
                             ArrayList<String> powersList = (ArrayList<String>) originParser.get("powers");
 
+                            ArrayList<PowerContainer> powerContainers= new ArrayList<>();
+
                             for (String string : powersList) {
                                 String[] powerLocation = string.split(":");
                                 String powerFolder = powerLocation[0];
                                 String powerFileName = powerLocation[1];
 
                                 JSONObject powerParser = (JSONObject) new JSONParser().parse(files.get(Path.of("data"+File.separator+powerFolder+File.separator+"powers"+File.separator+powerFileName+".json")));
-                                powers.add(originFolder+":"+originFileName, fileToHashMap(powerParser), originFolder+":"+originFileName);
+                                powerContainers.add(new PowerContainer(originFolder+":"+originFileName, fileToHashMap(powerParser), originFolder+":"+originFileName));
                             }
 
-                            customOrigins.add(new CustomOrigin(originFolder+":"+originFileName, fileToHashMap(originLayerParser), fileToHashMap(originParser), powers));
+                            customOrigins.add(new CustomOrigin(originFolder+":"+originFileName, fileToHashMap(originLayerParser), fileToHashMap(originParser), powerContainers));
                         }
 
                 } catch (Exception e) {
@@ -120,8 +121,6 @@ public class CraftApoliRewriten {
             //non zip
             File origin_layers = new File(datapack.getAbsolutePath() + File.separator+"data"+File.separator+"origins"+File.separator+"origin_layers"+File.separator+"origin.json");
             if (!origin_layers.exists()) continue;
-
-            PowerContainer powers = new PowerContainer();
 
             String originFolder = "";
             String originFileName = "";
@@ -141,16 +140,18 @@ public class CraftApoliRewriten {
                 JSONObject originParser = (JSONObject) new JSONParser().parse(new FileReader(datapack.getAbsolutePath() + File.separator+"data"+File.separator+originFolder+File.separator+"origins"+File.separator+originFileName+".json"));
                 ArrayList<String> powersList = (ArrayList<String>) originParser.get("powers");
 
+                ArrayList<PowerContainer> powerContainers= new ArrayList<>();
+
                 for (String string : powersList) {
                     String[] powerLocation = string.split(":");
                     String powerFolder = powerLocation[0];
                     String powerFileName = powerLocation[1];
 
                     JSONObject powerParser = (JSONObject) new JSONParser().parse(new FileReader(datapack.getAbsolutePath() + File.separator+"data"+File.separator+powerFolder+File.separator+"powers"+File.separator+powerFileName+".json"));
-                    powers.add(originFolder+":"+originFileName, fileToHashMap(powerParser), originFolder+":"+originFileName);
+                    powerContainers.add(new PowerContainer(originFolder+":"+originFileName, fileToHashMap(powerParser), originFolder+":"+originFileName));
                 }
 
-                customOrigins.add(new CustomOrigin(originFolder+":"+originFileName, fileToHashMap(originLayerParser), fileToHashMap(originParser), powers));
+                customOrigins.add(new CustomOrigin(originFolder+":"+originFileName, fileToHashMap(originLayerParser), fileToHashMap(originParser), powerContainers));
 
             } catch (Exception e) {
                 e.printStackTrace();
