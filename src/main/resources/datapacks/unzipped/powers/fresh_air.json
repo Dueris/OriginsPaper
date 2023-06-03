@@ -1,9 +1,6 @@
 {
-  "type": "origins:prevent_sleep",
-  "block_condition": {
-    "type": "origins:height",
-    "comparison": "<",
-    "compare_to": 86
-  },
-  "message": "origins.avian_sleep_fail"
+  "type": "origins:fresh_air",
+  "hidden": false,
+  "name": "menu.original.avian.fresh_air.title",
+  "description": "menu.original.avian.fresh_air.description"
 }

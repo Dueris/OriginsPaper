@@ -3,8 +3,7 @@
 		"origins:climbing",
 		"origins:master_of_webs",
 		"origins:carnivore",
-		"origins:fragile",
-		"origins:arthropod"
+		"origins:fragile"
 	],
 	"icon": {
 		"item": "minecraft:cobweb"
