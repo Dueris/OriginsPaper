@@ -136,7 +136,7 @@ public class ChoosingCUSTOM implements Listener {
                         contents.add(originIcon);
                     } else if ((i >= 20 && i <= 24) || (i >= 29 && i <= 33) || (i >= 38 && i <= 42)) {
 
-                        if (powerContainers.size() > 0 && powerContainers.get(0).getHidden() == false) {
+                        if (powerContainers.size() > 0 && !powerContainers.get(0).getHidden()) {
                             ItemStack originPower = new ItemStack(Material.FILLED_MAP);
 
                             ItemMeta meta = originPower.getItemMeta();

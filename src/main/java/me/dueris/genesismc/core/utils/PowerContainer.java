@@ -1,16 +1,17 @@
 package me.dueris.genesismc.core.utils;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class PowerContainer implements Serializable {
 
     String powerTag;
-    HashMap<String, Object> powerFile;
+    PowerFileContainer powerFile;
     String powerSource;
 
 
-    public PowerContainer(String powerTag, HashMap<String, Object> powerFile, String powerSource) {
+    public PowerContainer(String powerTag, PowerFileContainer powerFile, String powerSource) {
         this.powerTag = powerTag;
         this.powerFile = powerFile;
         this.powerSource = powerSource;
@@ -20,7 +21,7 @@ public class PowerContainer implements Serializable {
         return this.powerTag;
     }
 
-    public HashMap<String, Object> getPowerFile() {
+    public PowerFileContainer getPowerFile() {
         return this.powerFile;
     }
 
@@ -201,34 +202,4 @@ public class PowerContainer implements Serializable {
         return (Boolean) hidden;
     }
 
-//    public void add(String powerTag, HashMap<String, Object> powerFile, String powerSource) {
-//        this.powerTag.add(powerTag);
-//        this.powerFile.add(powerFile);
-//        this.powerSource.add(powerSource);
-//    }
-//
-//    public void removeByTag(String powerTag) {
-//        int index = this.powerTag.indexOf(powerTag);
-//        this.powerTag.remove(index);
-//        this.powerFile.remove(index);
-//        this.powerSource.remove(index);
-//    }
-//
-//    public void removeByFile(HashMap<String, String> powerFile) {
-//        int index = this.powerFile.indexOf(powerFile);
-//        this.powerTag.remove(index);
-//        this.powerFile.remove(index);
-//        this.powerSource.remove(index);
-//    }
-//
-//    public void removeBySource(String powerSource) {
-//        int index = this.powerSource.indexOf(powerSource);
-//        this.powerTag.remove(index);
-//        this.powerFile.remove(index);
-//        this.powerSource.remove(index);
-//    }
-
-//    public HashMap<String, Object> getPowerFileFromTag(String powerTag) {
-//        return this.powerFile.get(this.powerTag.indexOf(powerTag));
-//    }
 }
