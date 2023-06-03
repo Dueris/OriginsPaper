@@ -160,4 +160,31 @@ public class CraftApoliRewriten {
         }
     }
 
+    public static OriginContainer getOrigin(String originTag) {
+        for (OriginContainer origin : getOrigins()) if (origin.getTag().equals(originTag)) return origin;
+        return null;
+    }
+
+    public static byte[] toByteArray(OriginContainer origin) {
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        try {
+            ObjectOutputStream oos = new ObjectOutputStream(bos);
+            oos.writeObject(origin);
+            oos.flush();
+            return bos.toByteArray();
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    public static OriginContainer toOriginContainer(byte[] origin) {
+        ByteArrayInputStream bis = new ByteArrayInputStream(origin);
+        try {
+            ObjectInput oi = new ObjectInputStream(bis);
+            return (OriginContainer) oi.readObject();
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
 }
