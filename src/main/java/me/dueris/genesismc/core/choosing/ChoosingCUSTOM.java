@@ -65,8 +65,9 @@ public class ChoosingCUSTOM implements Listener {
             NamespacedKey key = new NamespacedKey(GenesisMC.getPlugin(), "originTag");
             if (e.getCurrentItem().getItemMeta().getPersistentDataContainer().get(key, PersistentDataType.STRING) != null) {
                 @NotNull Inventory custommenu = Bukkit.createInventory(e.getWhoClicked(), 54, "Custom Origin");
-                String origintag = e.getCurrentItem().getItemMeta().getPersistentDataContainer().get(key, PersistentDataType.STRING);
-                if (origintag == null) return;
+                String originTag = e.getCurrentItem().getItemMeta().getPersistentDataContainer().get(key, PersistentDataType.STRING);
+                //PersistentDataType.STRING
+                if (originTag == null) return;
 
                 Player p = (Player) e.getWhoClicked();
                 p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 10, 2);
@@ -75,14 +76,14 @@ public class ChoosingCUSTOM implements Listener {
                 ArrayList<String> originPowerNames = new ArrayList<>();
                 ArrayList<String> originPowerDescriptions = new ArrayList<>();
 
-                for (String powerTag : CraftApoli.getOriginPowers(origintag)) {
-                    if (!CraftApoli.getPowerHidden(origintag, powerTag)) {
-                        originPowerNames.add(CraftApoli.getPowerName(origintag, powerTag));
-                        originPowerDescriptions.add(CraftApoli.getPowerDescription(origintag, powerTag));
+                for (String powerTag : CraftApoli.getOriginPowers(originTag)) {
+                    if (!CraftApoli.getPowerHidden(originTag, powerTag)) {
+                        originPowerNames.add(CraftApoli.getPowerName(originTag, powerTag));
+                        originPowerDescriptions.add(CraftApoli.getPowerDescription(originTag, powerTag));
                     }
                 }
 
-                String minecraftItem = CraftApoli.getOriginIcon(origintag);
+                String minecraftItem = CraftApoli.getOriginIcon(originTag);
                 String item = minecraftItem.split(":")[1];
                 ItemStack originIcon = new ItemStack(Material.valueOf(item.toUpperCase()));
 
@@ -94,17 +95,17 @@ public class ChoosingCUSTOM implements Listener {
 
 
                 ItemMeta originIconmeta = originIcon.getItemMeta();
-                originIconmeta.setDisplayName(CraftApoli.getOriginName(origintag));
+                originIconmeta.setDisplayName(CraftApoli.getOriginName(originTag));
                 originIconmeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-                originIconmeta.setLore(cutStringIntoLists(CraftApoli.getOriginDescription(origintag)));
-                originIconmeta.getPersistentDataContainer().set(key, PersistentDataType.STRING, origintag);
+                originIconmeta.setLore(cutStringIntoLists(CraftApoli.getOriginDescription(originTag)));
+                originIconmeta.getPersistentDataContainer().set(key, PersistentDataType.STRING, originTag);
                 NamespacedKey chooseKey = new NamespacedKey(GenesisMC.getPlugin(), "originChoose");
                 originIconmeta.getPersistentDataContainer().set(chooseKey, PersistentDataType.INTEGER, 1);
 
                 originIcon.setItemMeta(originIconmeta);
 
                 ArrayList<ItemStack> contents = new ArrayList<>();
-                long impact = CraftApoli.getOriginImpact(origintag);
+                long impact = CraftApoli.getOriginImpact(originTag);
 
                 for (int i = 0; i <= 53; i++) {
                     if (i == 0 || i == 8) {
