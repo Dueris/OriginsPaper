@@ -60,7 +60,10 @@ public class OriginStartHandler {
         burnInDaylight.runTaskTimer(getPlugin(), 0, 10);
 
         Phantomized phantomized = new Phantomized();
-        phantomized.runTaskTimer(getPlugin(), 0, 5);
+        phantomized.runTaskTimer(getPlugin(), 0, 1);
+
+        PhantomizeOverlay phantomizedo = new PhantomizeOverlay();
+        phantomizedo.runTaskTimer(getPlugin(), 0, 2);
 
         JumpIncreased jumpIncreased = new JumpIncreased();
         jumpIncreased.runTaskTimer(getPlugin(), 0, 10);
@@ -85,6 +88,9 @@ public class OriginStartHandler {
 
         GoldAmourBellow goldAmourBellow = new GoldAmourBellow();
         goldAmourBellow.runTaskTimer(getPlugin(), 0, 1);
+
+        AttributeHandler naturalArmour = new AttributeHandler();
+        naturalArmour.runTaskTimer(getPlugin(), 0, 5);
     }
 
     public static void StartListeners() {
