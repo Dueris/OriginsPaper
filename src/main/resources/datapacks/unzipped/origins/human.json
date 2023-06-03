@@ -1,7 +1,7 @@
 {
-  "icon": {
-    "item": "minecraft:player_head"
-  },
-  "order": 0,
-  "impact": 0
+	"icon": {
+		"item": "minecraft:player_head"
+	},
+	"order": 0,
+	"impact": 0
 }

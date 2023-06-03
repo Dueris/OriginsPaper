@@ -1,6 +1,8 @@
 {
-  "type": "origins:strong_arms_break_speed",
-  "hidden": false,
-  "name": "menu.original.shulk.strong_arms.title",
-  "description": "menu.original.shulk.strong_arms.description"
+  "type": "origins:modify_harvest",
+  "allow": true,
+  "block_condition": {
+    "type": "origins:in_tag",
+    "tag": "origins:natural_stone"
+  }
 }

@@ -1,6 +1,8 @@
 {
-  "type": "origins:more_exhaustion",
-  "hidden": false,
-  "name": "menu.original.shulk.large_appetite.title",
-  "description": "menu.original.shulk.large_appetite.description"
+  "type": "origins:modify_exhaustion",
+  "modifier": {
+    "name": "Extra exhaustion from large appetite",
+    "value": 0.6,
+    "operation": "multiply_base"
+  }
 }

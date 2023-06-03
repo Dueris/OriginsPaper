@@ -1,6 +1,9 @@
 {
-  "type": "origins:no_shield",
-  "hidden": false,
-  "name": "menu.original.shulk.unweildy.title",
-  "description": "menu.original.shulk.unweildy.description"
+  "type": "origins:prevent_item_use",
+  "item_condition": {
+    "type": "origins:ingredient",
+    "ingredient": {
+      "tag": "origins:shields"
+    }
+  }
 }
