@@ -2,6 +2,9 @@
   "icon": {
     "item": "minecraft:player_head"
   },
+  "powers": [
+    "genesis:null"
+  ],
   "order": 0,
   "impact": 0
 }
