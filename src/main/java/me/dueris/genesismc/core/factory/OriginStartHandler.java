@@ -24,7 +24,6 @@ import me.dueris.genesismc.core.factory.powers.world.ExplodeTick;
 import me.dueris.genesismc.core.factory.powers.world.WeakBiomeCold;
 import me.dueris.genesismc.core.factory.powers.world.WorldSpawnHandler;
 import me.dueris.genesismc.core.origins.OriginHandler;
-import org.checkerframework.checker.units.qual.N;
 
 import static me.dueris.genesismc.core.GenesisMC.getPlugin;
 import static org.bukkit.Bukkit.getServer;
@@ -90,7 +89,7 @@ public class OriginStartHandler {
         GoldAmourBellow goldAmourBellow = new GoldAmourBellow();
         goldAmourBellow.runTaskTimer(getPlugin(), 0, 1);
 
-        NaturalArmour naturalArmour = new NaturalArmour();
+        AttributeHandler naturalArmour = new AttributeHandler();
         naturalArmour.runTaskTimer(getPlugin(), 0, 5);
     }
 
