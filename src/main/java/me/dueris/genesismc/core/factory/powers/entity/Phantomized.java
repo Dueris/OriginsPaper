@@ -93,7 +93,6 @@ public class Phantomized extends BukkitRunnable implements Listener {
 
                     //code for if player is in "Phantom Form"
                     p.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0.085);
-                    initializePhantomOverlay(p);
 
                     Random random = new Random();
                     int r = random.nextInt(650);
@@ -106,11 +105,9 @@ public class Phantomized extends BukkitRunnable implements Listener {
                         }
                     }
                 } else {
-                    deactivatePhantomOverlay(p);
                     p.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0.10000000149011612F);
                 }
             } else {
-                deactivatePhantomOverlay(p);
                 p.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0.10000000149011612F);
             }
         }
