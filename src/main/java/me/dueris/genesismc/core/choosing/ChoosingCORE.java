@@ -186,7 +186,7 @@ public class ChoosingCORE implements Listener {
                 if (e.getCurrentItem().getType().equals(Material.BARRIER)) {
                     Player p = (Player) e.getWhoClicked();
                     p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 10, 2);
-                    if (OriginPlayer.getOriginTag(p).equals("genesis:origin-null")) p.kick(Component.text("You are forced to choose an origin!"));
+                    if (OriginPlayer.getOriginTag(p).equalsIgnoreCase("genesis:origin-null") || p.getScoreboardTags().contains("choosing")) p.kick(Component.text("You are forced to choose an origin!"));
                     e.getWhoClicked().closeInventory();
                 } else {
                     e.setCancelled(true);
