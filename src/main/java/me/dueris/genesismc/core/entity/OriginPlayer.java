@@ -4,6 +4,8 @@ import me.dueris.genesismc.core.GenesisMC;
 import me.dueris.genesismc.core.enums.OriginDataType;
 import me.dueris.genesismc.core.enums.OriginMenu;
 import me.dueris.genesismc.core.events.OriginChooseEvent;
+import me.dueris.genesismc.core.factory.CraftApoliRewriten;
+import me.dueris.genesismc.core.utils.OriginContainer;
 import me.dueris.genesismc.core.utils.SendCharts;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
@@ -32,7 +34,7 @@ import static org.bukkit.ChatColor.GRAY;
 public class OriginPlayer {
 
     public static boolean hasChosenOrigin(Player player) {
-        return !OriginPlayer.getOriginTag(player).equalsIgnoreCase("");
+        return true; //!OriginPlayer.getOriginTag(player).equalsIgnoreCase("");
     }
 
     public static void removeArmor(Player player, EquipmentSlot slot) {
@@ -84,12 +86,11 @@ public class OriginPlayer {
         return origin.contains(origintag);
     }
 
-    public static String getOriginTag(Player player) {
+    public static OriginContainer getOrigin(Player player) {
         PersistentDataContainer data = player.getPersistentDataContainer();
-        if (data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING) == null)
-            return null;
-        @Nullable String origintag = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
-        return origintag;
+        if (data.get(new NamespacedKey(GenesisMC.getPlugin(), "origin"), PersistentDataType.BYTE_ARRAY) == null)
+            return new OriginContainer("genesis:origin-null", null, null, null);
+        return CraftApoliRewriten.toOriginContainer(data.get(new NamespacedKey(GenesisMC.getPlugin(), "origin"), PersistentDataType.BYTE_ARRAY));
     }
 
     public static void removeOrigin(Player player) {

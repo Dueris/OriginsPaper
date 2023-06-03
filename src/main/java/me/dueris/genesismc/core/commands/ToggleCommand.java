@@ -30,7 +30,7 @@ public class ToggleCommand implements CommandExecutor {
                     data.set(new NamespacedKey(GenesisMC.getPlugin(), "toggle"), PersistentDataType.INTEGER, 2);
                 else data.set(new NamespacedKey(GenesisMC.getPlugin(), "toggle"), PersistentDataType.INTEGER, 1);
 
-                if (big_leap_tick.contains(OriginPlayer.getOriginTag(p))) {
+                if (big_leap_tick.contains(OriginPlayer.getOrigin(p).getTag())) {
                     leapToggle(p);
                 } else if (false) {
                     //add other origin toggles here like this

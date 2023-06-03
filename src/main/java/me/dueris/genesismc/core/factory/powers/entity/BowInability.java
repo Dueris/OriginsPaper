@@ -14,7 +14,7 @@ public class BowInability implements Listener {
     @EventHandler
     public void onUseBow(PlayerInteractEvent e) {
         Player p = e.getPlayer();
-        if (bow_nope.contains(OriginPlayer.getOriginTag(e.getPlayer()))) {
+        if (bow_nope.contains(OriginPlayer.getOrigin(e.getPlayer()).getTag())) {
             if (e.getItem() != null) {
                 if (e.getItem().getType().equals(Material.BOW)) {
                     e.setCancelled(true);

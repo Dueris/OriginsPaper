@@ -12,8 +12,8 @@ public class TargetActionOnHit extends BukkitRunnable {
     @Override
     public void run() {
         for (Player p : Bukkit.getOnlinePlayers()) {
-            if (targetActionOnHit.containsKey(OriginPlayer.getOriginTag(p))) {
-                String originTag = OriginPlayer.getOriginTag(p);
+            if (targetActionOnHit.containsKey(OriginPlayer.getOrigin(p).getTag())) {
+                String originTag = OriginPlayer.getOrigin(p).getTag();
                 String powerTag = targetActionOnHit.get(originTag);
 
                 String powerClass = CraftApoli.getPowerClass(originTag, powerTag);

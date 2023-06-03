@@ -26,7 +26,7 @@ public class ShulkInv implements CommandExecutor {
 
         if (sender instanceof Player p) {
 
-            if (OriginPlayer.getOriginTag(p).equalsIgnoreCase("genesis:origin-shulk")) {
+            if (OriginPlayer.getOrigin(p).getTag().equalsIgnoreCase("genesis:origin-shulk")) {
                 if (args.length > 0) {
                     if (args[0].equalsIgnoreCase("open")) {
 

@@ -22,7 +22,7 @@ public class Vegitarian implements Listener {
 
     @EventHandler
     public void onItemConsume(PlayerInteractEvent e) {
-        if (vegetarian.contains(OriginPlayer.getOriginTag(e.getPlayer()))) {
+        if (vegetarian.contains(OriginPlayer.getOrigin(e.getPlayer()).getTag())) {
             ItemStack item = e.getItem();
             if (item == null) return;
             for (Material food : notVeggies) {

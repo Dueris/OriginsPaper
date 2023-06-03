@@ -192,7 +192,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 
     @EventHandler
     public void NetherOriginRespawn(PlayerRespawnEvent e) {
-        if (OriginPlayer.getOriginTag(e.getPlayer()).equalsIgnoreCase("genesis:origin-piglin") || OriginPlayer.getOriginTag(e.getPlayer()).equalsIgnoreCase("genesis:origin-blazeborn")) {
+        if (OriginPlayer.getOrigin(e.getPlayer()).getTag().equalsIgnoreCase("genesis:origin-piglin") || OriginPlayer.getOrigin(e.getPlayer()).getTag().equalsIgnoreCase("genesis:origin-blazeborn")) {
             if (!(e.isBedSpawn() || e.isAnchorSpawn())) {
                 Location location = WorldSpawnHandler.NetherSpawn();
                 if (location == null) return;

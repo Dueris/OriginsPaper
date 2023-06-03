@@ -15,7 +15,7 @@ public class LayEggs implements Listener {
 
     @EventHandler
     public void LayEgg(PlayerBedLeaveEvent e) {
-        if (lay_eggs.contains(OriginPlayer.getOriginTag(e.getPlayer()))) {
+        if (lay_eggs.contains(OriginPlayer.getOrigin(e.getPlayer()).getTag())) {
             Player p = e.getPlayer();
             long time = Bukkit.getServer().getWorld(p.getWorld().getName()).getTime();
 

@@ -16,7 +16,7 @@ public class SlowFalling extends BukkitRunnable {
     @Override
     public void run() {
         for (Player p : Bukkit.getOnlinePlayers()) {
-            if (slow_falling.contains(OriginPlayer.getOriginTag(p))) {
+            if (slow_falling.contains(OriginPlayer.getOrigin(p).getTag())) {
                 if (!p.isGliding() && !p.isSneaking() && !p.isSleeping() && !p.isDeeplySleeping() && !(p.getLocation().getBlock().getRelative(BlockFace.DOWN).getType() == Material.SLIME_BLOCK)) {
                     p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_FALLING, 10, 0, false, false, false));
                 }
