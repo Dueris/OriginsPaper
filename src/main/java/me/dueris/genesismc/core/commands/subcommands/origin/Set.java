@@ -3,6 +3,7 @@ package me.dueris.genesismc.core.commands.subcommands.origin;
 import me.dueris.genesismc.core.entity.OriginPlayer;
 import me.dueris.genesismc.core.factory.CraftApoli;
 import me.dueris.genesismc.core.commands.subcommands.SubCommand;
+import me.dueris.genesismc.core.factory.CraftApoliRewriten;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -39,13 +40,13 @@ public class Set extends SubCommand {
 
             String originTag = args[2];
             ArrayList<String> originTags = new ArrayList<>(List.of("genesis:origin-human", "genesis:origin-enderian", "genesis:origin-merling", "genesis:origin-phantom", "genesis:origin-elytrian", "genesis:origin-blazeborn", "genesis:origin-avian", "genesis:origin-arachnid", "genesis:origin-shulk", "genesis:origin-feline", "genesis:origin-starborne", "genesis:origin-allay", "genesis:origin-rabbit", "genesis:origin-bee", "genesis:origin-sculkling", "genesis:origin-creep", "genesis:origin-slimeling", "genesis:origin-piglin"));
-            originTags.addAll(CraftApoli.getTags());
+            originTags.addAll(CraftApoliRewriten.getOriginTags());
             if (!originTags.contains(originTag)) {
                 p.sendMessage(RED + "Invalid origin.");
                 return;
             }
 
-            OriginPlayer.setOrigin(given, originTag);
+            OriginPlayer.setOrigin(given, CraftApoliRewriten.getOrigin(originTag));
         } else {
             p.sendMessage(RED + "Invalid Args!!!");
         }
