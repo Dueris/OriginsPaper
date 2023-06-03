@@ -102,10 +102,13 @@ public class CraftApoliRewriten {
                                 originFileName.add(valueSplit[1]);
                             }
 
+
+
                         }
                     }
 
                     if (!originDatapack) continue;
+
 
                     while (originFolder.size() > 0) {
 
@@ -113,6 +116,7 @@ public class CraftApoliRewriten {
                             if (path.equals(Path.of("data" + File.separator + originFolder.get(0) + File.separator + "origins" + File.separator + originFileName.get(0) + ".json"))) {
                                 JSONObject originParser = (JSONObject) new JSONParser().parse(files.get(path));
                                 ArrayList<String> powersList = (ArrayList<String>) originParser.get("powers");
+
 
                                 ArrayList<PowerContainer> powerContainers = new ArrayList<>();
 
@@ -126,14 +130,14 @@ public class CraftApoliRewriten {
                                             JSONObject powerParser = (JSONObject) new JSONParser().parse(files.get(Path.of("data" + File.separator + powerFolder + File.separator + "powers" + File.separator + powerFileName + ".json")));
                                             powerContainers.add(new PowerContainer(powerFolder + ":" + powerFileName, fileToPowerFileContainer(powerParser), powerFolder + ":" + powerFileName));
                                         } catch (NullPointerException nullPointerException) {
-                                            Bukkit.getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] Error parsing \""+powerFolder+":"+powerFileName+"\" for \""+originFolder.get(0)+":"+originFileName.get(0)+"\"").color(TextColor.color(255, 0, 0)));
+                                            Bukkit.getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] Error parsing \"" + powerFolder + ":" + powerFileName + "\" for \"" + originFolder.get(0) + ":" + originFileName.get(0) + "\"").color(TextColor.color(255, 0, 0)));
                                         }
                                     }
                                 }
 
                                 originContainers.add(new OriginContainer(originFolder.get(0) + ":" + originFileName.get(0), fileToHashMap(originLayerParser), fileToHashMap(originParser), powerContainers));
-                            }
 
+                            }
                         originFolder.remove(0);
                         originFileName.remove(0);
                     }
@@ -154,7 +158,7 @@ public class CraftApoliRewriten {
             ArrayList<String> originFileName = new ArrayList<>();
 
             try {
-                JSONObject originLayerParser = (JSONObject) new JSONParser().parse(new FileReader(datapack.getAbsolutePath() + File.separator+"data"+File.separator+"origins"+File.separator+"origin_layers"+File.separator+"origin.json"));
+                JSONObject originLayerParser = (JSONObject) new JSONParser().parse(new FileReader(datapack.getAbsolutePath() + File.separator + "data" + File.separator + "origins" + File.separator + "origin_layers" + File.separator + "origin.json"));
                 JSONArray originLayer_origins = ((JSONArray) originLayerParser.get("origins"));
 
                 for (Object o : originLayer_origins) {
@@ -164,34 +168,37 @@ public class CraftApoliRewriten {
                     originFileName.add(valueSplit[1]);
                 }
 
+
                 while (originFolder.size() > 0) {
 
+                    try {
+                        JSONObject originParser = (JSONObject) new JSONParser().parse(new FileReader(datapack.getAbsolutePath() + File.separator + "data" + File.separator + originFolder.get(0) + File.separator + "origins" + File.separator + originFileName.get(0) + ".json"));
+                        ArrayList<String> powersList = (ArrayList<String>) originParser.get("powers");
 
-                    JSONObject originParser = (JSONObject) new JSONParser().parse(new FileReader(datapack.getAbsolutePath() + File.separator + "data" + File.separator + originFolder.get(0) + File.separator + "origins" + File.separator + originFileName.get(0) + ".json"));
-                    ArrayList<String> powersList = (ArrayList<String>) originParser.get("powers");
+                        ArrayList<PowerContainer> powerContainers = new ArrayList<>();
 
-                    ArrayList<PowerContainer> powerContainers = new ArrayList<>();
+                        if (powersList != null) {
+                            for (String string : powersList) {
+                                String[] powerLocation = string.split(":");
+                                String powerFolder = powerLocation[0];
+                                String powerFileName = powerLocation[1];
 
-                    if (powersList != null) {
-                        for (String string : powersList) {
-                            String[] powerLocation = string.split(":");
-                            String powerFolder = powerLocation[0];
-                            String powerFileName = powerLocation[1];
-
-                            try {
-                                JSONObject powerParser = (JSONObject) new JSONParser().parse(new FileReader(datapack.getAbsolutePath() + File.separator + "data" + File.separator + powerFolder + File.separator + "powers" + File.separator + powerFileName + ".json"));
-                                powerContainers.add(new PowerContainer(powerFolder + ":" + powerFileName, fileToPowerFileContainer(powerParser), powerFolder + ":" + powerFileName));
-                            } catch (FileNotFoundException fileNotFoundException) {
-                                Bukkit.getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] Error parsing \"" + powerFolder + ":" + powerFileName + "\" for \"" + originFolder.get(0) + ":" + originFileName.get(0) + "\"").color(TextColor.color(255, 0, 0)));
+                                try {
+                                    JSONObject powerParser = (JSONObject) new JSONParser().parse(new FileReader(datapack.getAbsolutePath() + File.separator + "data" + File.separator + powerFolder + File.separator + "powers" + File.separator + powerFileName + ".json"));
+                                    powerContainers.add(new PowerContainer(powerFolder + ":" + powerFileName, fileToPowerFileContainer(powerParser), powerFolder + ":" + powerFileName));
+                                } catch (FileNotFoundException fileNotFoundException) {
+                                    Bukkit.getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] Error parsing \"" + powerFolder + ":" + powerFileName + "\" for \"" + originFolder.get(0) + ":" + originFileName.get(0) + "\"").color(TextColor.color(255, 0, 0)));
+                                }
                             }
                         }
+
+                        originContainers.add(new OriginContainer(originFolder.get(0) + ":" + originFileName.get(0), fileToHashMap(originLayerParser), fileToHashMap(originParser), powerContainers));
+
+                    } catch (FileNotFoundException fileNotFoundException) {
+                        Bukkit.getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] Error parsing \"" + datapack.getName() + File.separator + "data" + File.separator + originFolder.get(0) + File.separator + "origins" + File.separator + originFileName.get(0) + ".json" + "\"").color(TextColor.color(255, 0, 0)));
                     }
-
-                    originContainers.add(new OriginContainer(originFolder.get(0) + ":" + originFileName.get(0), fileToHashMap(originLayerParser), fileToHashMap(originParser), powerContainers));
-
                     originFolder.remove(0);
                     originFileName.remove(0);
-
                 }
             } catch (Exception e) {
                 e.printStackTrace();
