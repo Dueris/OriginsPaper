@@ -15,7 +15,7 @@ public class FireWeak extends BukkitRunnable {
     @Override
     public void run() {
         for (Player p : Bukkit.getOnlinePlayers()) {
-            if (OriginPlayer.getOriginTag(p).equalsIgnoreCase("genesis:origin-piglin")) {
+            if (OriginPlayer.getOrigin(p).getTag().equalsIgnoreCase("genesis:origin-piglin")) {
                 if (p.getWorld().getEnvironment() != World.Environment.NETHER) {
                     p.addPotionEffect(new PotionEffect(PotionEffectType.FIRE_RESISTANCE, 10, 0, false, false, false));
                     p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 10, 0, false, false, false));

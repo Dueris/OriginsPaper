@@ -13,7 +13,7 @@ public class BurningWrath extends BukkitRunnable {
     @Override
     public void run() {
         for (Player p : Bukkit.getOnlinePlayers()) {
-            if (burning_wrath.contains(OriginPlayer.getOriginTag(p))) {
+            if (burning_wrath.contains(OriginPlayer.getOrigin(p).getTag())) {
                 if (p.getFireTicks() > 0) {
                     p.addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, 10, 0, false, false, false));
                 }

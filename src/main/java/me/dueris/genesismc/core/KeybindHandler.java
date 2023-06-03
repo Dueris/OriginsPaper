@@ -34,7 +34,7 @@ public class KeybindHandler implements Listener {
         getServer().getPluginManager().callEvent(event);
 
         PersistentDataContainer data = p.getPersistentDataContainer();
-        if (OriginPlayer.getOriginTag(e.getPlayer()).contains("genesis:origin-shulk")) {
+        if (OriginPlayer.getOrigin(e.getPlayer()).getTag().contains("genesis:origin-shulk")) {
             e.setCancelled(true);
 
             ArrayList<ItemStack> vaultItems = ShulkUtils.getItems(p);
@@ -47,7 +47,7 @@ public class KeybindHandler implements Listener {
             p.openInventory(vault);
 
         }
-        if (phantomize.contains(OriginPlayer.getOriginTag(e.getPlayer()))) {
+        if (phantomize.contains(OriginPlayer.getOrigin(e.getPlayer()).getTag())) {
             e.setCancelled(true);
             int phantomid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER);
             if (phantomid == 1) {
@@ -81,7 +81,7 @@ public class KeybindHandler implements Listener {
                 p.sendMessage(RED + "Error: Switching could not be executed");
             }
         }
-        if (launch_into_air.contains(OriginPlayer.getOriginTag(e.getPlayer()))) {
+        if (launch_into_air.contains(OriginPlayer.getOrigin(e.getPlayer()).getTag())) {
             p.setVelocity(new Vector(0, 2, 0));
             e.setCancelled(true);
         }

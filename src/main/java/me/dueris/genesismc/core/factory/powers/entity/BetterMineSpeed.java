@@ -33,7 +33,7 @@ public class BetterMineSpeed implements Listener {
     public void onBreakShulk(BlockBreakEvent e) {
         Player p = e.getPlayer();
         ItemStack i = new ItemStack(e.getBlock().getType(), 1);
-        if (strong_arms_break_speed.contains(OriginPlayer.getOriginTag(e.getPlayer()))) {
+        if (strong_arms_break_speed.contains(OriginPlayer.getOrigin(e.getPlayer()).getTag())) {
             if (nat_stones.contains(e.getBlock().getType())) {
                 if (!tools.contains(p.getEquipment().getItemInMainHand().getType())) {
                     if (!p.getGameMode().equals(GameMode.CREATIVE)) {

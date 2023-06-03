@@ -20,16 +20,16 @@ public class CustomOriginExistCheck implements Listener {
 
     @EventHandler
     public static void onPlayerJoin(PlayerJoinEvent e) {
-        if (builtInOriginTags.contains(OriginPlayer.getOriginTag(e.getPlayer()))) return;
-        if (CraftApoli.getTags().contains(OriginPlayer.getOriginTag(e.getPlayer()))) return;
+        if (builtInOriginTags.contains(OriginPlayer.getOrigin(e.getPlayer()).getTag())) return;
+        if (CraftApoli.getTags().contains(OriginPlayer.getOrigin(e.getPlayer()).getTag())) return;
         e.getPlayer().getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, "genesis:origin-null");
         e.getPlayer().sendMessage(ChatColor.RED + "Your custom origin has been deleted! Please select a new one.");
         e.getPlayer().sendMessage(ChatColor.RED + "If you believe this is a mistake please contact your server admin(s).");
     }
 
     public static void customOriginExistCheck(Player p) {
-        if (builtInOriginTags.contains(OriginPlayer.getOriginTag(p))) return;
-        if (CraftApoli.getTags().contains(OriginPlayer.getOriginTag(p))) return;
+        if (builtInOriginTags.contains(OriginPlayer.getOrigin(p).getTag())) return;
+        if (CraftApoli.getTags().contains(OriginPlayer.getOrigin(p).getTag())) return;
         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, "genesis:origin-null");
         p.sendMessage(ChatColor.RED + "Your custom origin has been deleted! Please select a new one.");
         p.sendMessage(ChatColor.RED + "If you believe this is a mistake please contact your server admin(s).");

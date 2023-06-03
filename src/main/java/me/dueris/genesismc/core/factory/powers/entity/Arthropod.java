@@ -16,7 +16,7 @@ public class Arthropod implements Listener {
     @EventHandler
     public void OnAttack(EntityDamageByEntityEvent e) {
         if (e.getEntity() instanceof Player p) {
-            if (arthropod.contains(OriginPlayer.getOriginTag(p))) {
+            if (arthropod.contains(OriginPlayer.getOrigin(p).getTag())) {
                 if (e.getDamager() != null) {
                     Entity damager = e.getDamager();
                     if (damager.getType() == EntityType.PLAYER) {

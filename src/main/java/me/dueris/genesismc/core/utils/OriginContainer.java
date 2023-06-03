@@ -29,7 +29,7 @@ public class OriginContainer implements Serializable {
 
 
     public String getTag() {
-        return new String(this.tag);
+        return this.tag;
     }
 
     public HashMap<String, Object> getOriginLayerFile() {

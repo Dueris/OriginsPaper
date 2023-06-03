@@ -12,7 +12,7 @@ public class NoShield extends BukkitRunnable {
     @Override
     public void run() {
         for (Player p : Bukkit.getOnlinePlayers()) {
-            if (no_shield.contains(OriginPlayer.getOriginTag(p))) {
+            if (no_shield.contains(OriginPlayer.getOrigin(p).getTag())) {
                 p.setCooldown(SHIELD, 100);
             }
         }

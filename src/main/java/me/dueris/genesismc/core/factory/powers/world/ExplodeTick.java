@@ -31,7 +31,7 @@ public class ExplodeTick implements Listener {
     @EventHandler
     public void onShiftCreep(PlayerToggleSneakEvent e) {
         Player p = e.getPlayer();
-        if (explode_tick.contains(OriginPlayer.getOriginTag(e.getPlayer())) && !p.isFlying() && !p.isGliding()) {
+        if (explode_tick.contains(OriginPlayer.getOrigin(e.getPlayer()).getTag()) && !p.isFlying() && !p.isGliding()) {
 
             cooldown.remove(p.getUniqueId());
             new BukkitRunnable() {

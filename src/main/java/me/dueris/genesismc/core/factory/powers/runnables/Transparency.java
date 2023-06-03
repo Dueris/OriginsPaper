@@ -24,7 +24,7 @@ public class Transparency extends BukkitRunnable {
         for (Player p : Bukkit.getOnlinePlayers()) {
             ScoreboardManager manager = Bukkit.getScoreboardManager();
             Scoreboard scoreboard = manager.getNewScoreboard();
-            if (translucent.contains(OriginPlayer.getOriginTag(p))) {
+            if (translucent.contains(OriginPlayer.getOrigin(p).getTag())) {
 
                 p.setInvisible(false);
 

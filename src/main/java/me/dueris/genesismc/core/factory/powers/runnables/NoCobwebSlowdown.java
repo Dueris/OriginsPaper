@@ -18,7 +18,7 @@ public class NoCobwebSlowdown implements Listener {
     @EventHandler
     public void NoCobwebSlowdown(PlayerMoveEvent e) {
         for (Player p : Bukkit.getOnlinePlayers()) {
-            if (no_cobweb_slowdown.contains(OriginPlayer.getOriginTag(p))) {
+            if (no_cobweb_slowdown.contains(OriginPlayer.getOrigin(p).getTag())) {
                 Location location = p.getLocation();
                 if (location.getBlock().getType() == Material.COBWEB) {
                     p.sendBlockChange(location, Material.AIR.createBlockData());

@@ -30,7 +30,7 @@ public class FlightElytra implements Listener {
     @EventHandler
     public void ExecuteFlight(PlayerToggleSneakEvent e) {
         Player p = e.getPlayer();
-        if (elytra.contains(OriginPlayer.getOriginTag(e.getPlayer()))) {
+        if (elytra.contains(OriginPlayer.getOrigin(e.getPlayer()).getTag())) {
             if (!p.isOnGround() && !p.isGliding()) {
                 glidingPlayers.add(p.getUniqueId());
                 if (p.getGameMode() == GameMode.SPECTATOR) return;
@@ -53,7 +53,7 @@ public class FlightElytra implements Listener {
     @EventHandler
     public void BoostHandler(PlayerInteractEvent e) {
         Player p = e.getPlayer();
-        if (elytra.contains(OriginPlayer.getOriginTag(e.getPlayer())) && e.getAction().equals(Action.LEFT_CLICK_AIR)) {
+        if (elytra.contains(OriginPlayer.getOrigin(e.getPlayer()).getTag()) && e.getAction().equals(Action.LEFT_CLICK_AIR)) {
             if (!glidingPlayers.contains(p.getUniqueId())) return;
             if (p.getGameMode() == GameMode.CREATIVE) return;
             if (e.getItem() != null) {
@@ -71,14 +71,14 @@ public class FlightElytra implements Listener {
     @EventHandler
     public void ElytraDamageHandler(EntityDamageEvent e) {
         if (e.getEntity() instanceof Player p) {
-            if (elytra.contains(OriginPlayer.getOriginTag(p))) {
+            if (elytra.contains(OriginPlayer.getOrigin(p).getTag())) {
                 if (glidingPlayers.contains(p.getUniqueId())) {
                     if (e.getCause().equals(EntityDamageEvent.DamageCause.FLY_INTO_WALL) || e.getCause().equals(EntityDamageEvent.DamageCause.CONTACT)) {
                         e.setDamage(e.getDamage() * 0.25);
                     }
                 }
             }
-            if (more_kinetic_damage.contains(OriginPlayer.getOriginTag(p))) {
+            if (more_kinetic_damage.contains(OriginPlayer.getOrigin(p).getTag())) {
                 if (!glidingPlayers.contains(p.getUniqueId())) {
                     if (e.getCause().equals(EntityDamageEvent.DamageCause.FLY_INTO_WALL) || e.getCause().equals(EntityDamageEvent.DamageCause.CONTACT)) {
                         e.setDamage(e.getDamage() * 1.5);

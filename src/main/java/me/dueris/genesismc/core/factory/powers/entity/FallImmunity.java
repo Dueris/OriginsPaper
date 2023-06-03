@@ -14,7 +14,7 @@ public class FallImmunity implements Listener {
     @EventHandler
     public void acrobatics(EntityDamageEvent e) {
         if (!(e.getEntity() instanceof Player p)) return;
-        if (fall_immunity.contains(OriginPlayer.getOriginTag(p))) {
+        if (fall_immunity.contains(OriginPlayer.getOrigin(p).getTag())) {
             if (e.getCause() == EntityDamageEvent.DamageCause.FALL) {
                 e.setCancelled(true);
             }
@@ -25,7 +25,7 @@ public class FallImmunity implements Listener {
     public void onEntityDamage(EntityDamageEvent e) {
         if (!(e.getEntity() instanceof Player p)) return;
 
-        if (resist_fall.contains(OriginPlayer.getOriginTag(p))) {
+        if (resist_fall.contains(OriginPlayer.getOrigin(p).getTag())) {
             if (e.getCause() == EntityDamageEvent.DamageCause.FALL) {
                 e.setDamage(e.getDamage() - 4);
             }

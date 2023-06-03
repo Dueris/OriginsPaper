@@ -15,7 +15,7 @@ public class WeakBiomeCold extends BukkitRunnable {
     public void run() {
         for (Player p : Bukkit.getOnlinePlayers()) {
             Location location = p.getLocation();
-            if (weak_biome_cold.contains(OriginPlayer.getOriginTag(p))) {
+            if (weak_biome_cold.contains(OriginPlayer.getOrigin(p).getTag())) {
                 if (location.getBlock().getTemperature() < 0.6) {
                     p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 10, 1, false, false, false));
                     p.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, 10, 1, false, false, false));

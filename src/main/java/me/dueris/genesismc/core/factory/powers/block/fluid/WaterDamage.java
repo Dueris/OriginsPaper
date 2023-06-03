@@ -28,7 +28,7 @@ public class WaterDamage extends BukkitRunnable implements Listener {
     @Override
     public void run() {
         for (Player p : Bukkit.getOnlinePlayers()) {
-            if (water_vulnerability.contains(OriginPlayer.getOriginTag(p))) {
+            if (water_vulnerability.contains(OriginPlayer.getOrigin(p).getTag())) {
                 if (!(p.isInsideVehicle())) {
                     if (p.isInWaterOrRainOrBubbleColumn()) {
                         if (p.getGameMode().equals(GameMode.SURVIVAL) || p.getGameMode().equals(GameMode.ADVENTURE)) {
@@ -139,7 +139,7 @@ public class WaterDamage extends BukkitRunnable implements Listener {
                     }
                 }
             }
-            if (water_breathing.contains(OriginPlayer.getOriginTag(p))) {
+            if (water_breathing.contains(OriginPlayer.getOrigin(p).getTag())) {
                 if (outofAIR.contains(p)) {
                     if (p.getRemainingAir() > 20) {
                         outofAIR.remove(p);
@@ -156,7 +156,7 @@ public class WaterDamage extends BukkitRunnable implements Listener {
     @EventHandler
     public void OnDeathWater(PlayerDeathEvent e) {
         Player p = e.getEntity();
-        if (water_vulnerability.contains(OriginPlayer.getOriginTag(e.getPlayer()))) {
+        if (water_vulnerability.contains(OriginPlayer.getOrigin(e.getPlayer()).getTag())) {
             Random random = new Random();
             int r = random.nextInt(2);
             if (p.isInWaterOrRainOrBubbleColumn()) {
@@ -164,7 +164,7 @@ public class WaterDamage extends BukkitRunnable implements Listener {
             }
             p.getLocation().getWorld().dropItem(p.getLocation(), new ItemStack(Material.ENDER_PEARL, r));
         }
-        if (OriginPlayer.getOriginTag(e.getPlayer()).contains("genesis:origin-enderian")) {
+        if (OriginPlayer.getOrigin(e.getPlayer()).getTag().contains("genesis:origin-enderian")) {
 
         }
     }
@@ -172,7 +172,7 @@ public class WaterDamage extends BukkitRunnable implements Listener {
     @EventHandler
     public void SplashEnderian(WaterBottleSplashEvent e) {
         if (e.getAffectedEntities() instanceof Player p) {
-            if (water_vulnerability.contains(OriginPlayer.getOriginTag(p))) ;
+            if (water_vulnerability.contains(OriginPlayer.getOrigin(p).getTag())) ;
             p.damage(5);
         }
     }

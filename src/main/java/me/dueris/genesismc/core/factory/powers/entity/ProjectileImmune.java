@@ -15,7 +15,7 @@ public class ProjectileImmune implements Listener {
     public void onDamage(EntityDamageEvent e) {
         if (e.getEntity() instanceof Player || e.getEntity() instanceof HumanEntity) {
             Player p = (Player) e.getEntity();
-            if (projectile_immune.contains(OriginPlayer.getOriginTag(p))) {
+            if (projectile_immune.contains(OriginPlayer.getOrigin(p).getTag())) {
                 if (e.getCause().equals(EntityDamageEvent.DamageCause.PROJECTILE)) {
                     e.setDamage(0);
                     e.setCancelled(true);
