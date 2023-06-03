@@ -3,8 +3,11 @@ package me.dueris.genesismc.core.factory;
 import me.dueris.genesismc.core.utils.OriginContainer;
 import me.dueris.genesismc.core.utils.PowerContainer;
 import me.dueris.genesismc.core.utils.PowerFileContainer;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextColor;
 import org.apache.commons.io.FilenameUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -82,8 +85,8 @@ public class CraftApoliRewriten {
 
                     boolean originDatapack = false;
                     JSONObject originLayerParser = null;
-                    String originFolder = "";
-                    String originFileName = "";
+                    ArrayList<String> originFolder = new ArrayList<>();
+                    ArrayList<String> originFileName = new ArrayList<>();
 
                     for (Path path : files.keySet()) {
                         if (path.equals(Path.of("data"+File.separator+"origins"+File.separator+"origin_layers"+File.separator+"origin.json"))) {
@@ -95,8 +98,8 @@ public class CraftApoliRewriten {
                             for (Object o : originLayer_origins) {
                                 String value = (String) o;
                                 String[] valueSplit = value.split(":");
-                                originFolder = valueSplit[0];
-                                originFileName = valueSplit[1];
+                                originFolder.add(valueSplit[0]);
+                                originFileName.add(valueSplit[1]);
                             }
 
                         }
@@ -104,24 +107,36 @@ public class CraftApoliRewriten {
 
                     if (!originDatapack) continue;
 
-                    for (Path path : files.keySet())
-                        if (path.equals(Path.of("data"+File.separator+originFolder+File.separator+"origins"+File.separator+originFileName+".json"))) {
-                            JSONObject originParser = (JSONObject) new JSONParser().parse(files.get(path));
-                            ArrayList<String> powersList = (ArrayList<String>) originParser.get("powers");
+                    while (originFolder.size() > 0) {
 
-                            ArrayList<PowerContainer> powerContainers= new ArrayList<>();
+                        for (Path path : files.keySet())
+                            if (path.equals(Path.of("data" + File.separator + originFolder.get(0) + File.separator + "origins" + File.separator + originFileName.get(0) + ".json"))) {
+                                JSONObject originParser = (JSONObject) new JSONParser().parse(files.get(path));
+                                ArrayList<String> powersList = (ArrayList<String>) originParser.get("powers");
 
-                            for (String string : powersList) {
-                                String[] powerLocation = string.split(":");
-                                String powerFolder = powerLocation[0];
-                                String powerFileName = powerLocation[1];
+                                ArrayList<PowerContainer> powerContainers = new ArrayList<>();
 
-                                JSONObject powerParser = (JSONObject) new JSONParser().parse(files.get(Path.of("data"+File.separator+powerFolder+File.separator+"powers"+File.separator+powerFileName+".json")));
-                                powerContainers.add(new PowerContainer(powerFolder+":"+powerFileName, fileToPowerFileContainer(powerParser), powerFolder+":"+powerFileName));
+                                if (powersList != null) {
+                                    for (String string : powersList) {
+                                        String[] powerLocation = string.split(":");
+                                        String powerFolder = powerLocation[0];
+                                        String powerFileName = powerLocation[1];
+
+                                        try {
+                                            JSONObject powerParser = (JSONObject) new JSONParser().parse(files.get(Path.of("data" + File.separator + powerFolder + File.separator + "powers" + File.separator + powerFileName + ".json")));
+                                            powerContainers.add(new PowerContainer(powerFolder + ":" + powerFileName, fileToPowerFileContainer(powerParser), powerFolder + ":" + powerFileName));
+                                        } catch (NullPointerException nullPointerException) {
+                                            Bukkit.getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] Error parsing \""+powerFolder+":"+powerFileName+"\" for \""+originFolder.get(0)+":"+originFileName.get(0)+"\"").color(TextColor.color(255, 0, 0)));
+                                        }
+                                    }
+                                }
+
+                                originContainers.add(new OriginContainer(originFolder.get(0) + ":" + originFileName.get(0), fileToHashMap(originLayerParser), fileToHashMap(originParser), powerContainers));
                             }
 
-                            originContainers.add(new OriginContainer(originFolder+":"+originFileName, fileToHashMap(originLayerParser), fileToHashMap(originParser), powerContainers));
-                        }
+                        originFolder.remove(0);
+                        originFileName.remove(0);
+                    }
 
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -135,8 +150,8 @@ public class CraftApoliRewriten {
             File origin_layers = new File(datapack.getAbsolutePath() + File.separator+"data"+File.separator+"origins"+File.separator+"origin_layers"+File.separator+"origin.json");
             if (!origin_layers.exists()) continue;
 
-            String originFolder = "";
-            String originFileName = "";
+            ArrayList<String> originFolder = new ArrayList<>();
+            ArrayList<String> originFileName = new ArrayList<>();
 
             try {
                 JSONObject originLayerParser = (JSONObject) new JSONParser().parse(new FileReader(datapack.getAbsolutePath() + File.separator+"data"+File.separator+"origins"+File.separator+"origin_layers"+File.separator+"origin.json"));
@@ -145,27 +160,39 @@ public class CraftApoliRewriten {
                 for (Object o : originLayer_origins) {
                     String value = (String) o;
                     String[] valueSplit = value.split(":");
-                    originFolder = valueSplit[0];
-                    originFileName = valueSplit[1];
+                    originFolder.add(valueSplit[0]);
+                    originFileName.add(valueSplit[1]);
                 }
 
+                while (originFolder.size() > 0) {
 
-                JSONObject originParser = (JSONObject) new JSONParser().parse(new FileReader(datapack.getAbsolutePath() + File.separator+"data"+File.separator+originFolder+File.separator+"origins"+File.separator+originFileName+".json"));
-                ArrayList<String> powersList = (ArrayList<String>) originParser.get("powers");
 
-                ArrayList<PowerContainer> powerContainers= new ArrayList<>();
+                    JSONObject originParser = (JSONObject) new JSONParser().parse(new FileReader(datapack.getAbsolutePath() + File.separator + "data" + File.separator + originFolder.get(0) + File.separator + "origins" + File.separator + originFileName.get(0) + ".json"));
+                    ArrayList<String> powersList = (ArrayList<String>) originParser.get("powers");
 
-                for (String string : powersList) {
-                    String[] powerLocation = string.split(":");
-                    String powerFolder = powerLocation[0];
-                    String powerFileName = powerLocation[1];
+                    ArrayList<PowerContainer> powerContainers = new ArrayList<>();
 
-                    JSONObject powerParser = (JSONObject) new JSONParser().parse(new FileReader(datapack.getAbsolutePath() + File.separator+"data"+File.separator+powerFolder+File.separator+"powers"+File.separator+powerFileName+".json"));
-                    powerContainers.add(new PowerContainer(powerFolder+":"+powerFileName, fileToPowerFileContainer(powerParser), powerFolder+":"+powerFileName));
+                    if (powersList != null) {
+                        for (String string : powersList) {
+                            String[] powerLocation = string.split(":");
+                            String powerFolder = powerLocation[0];
+                            String powerFileName = powerLocation[1];
+
+                            try {
+                                JSONObject powerParser = (JSONObject) new JSONParser().parse(new FileReader(datapack.getAbsolutePath() + File.separator + "data" + File.separator + powerFolder + File.separator + "powers" + File.separator + powerFileName + ".json"));
+                                powerContainers.add(new PowerContainer(powerFolder + ":" + powerFileName, fileToPowerFileContainer(powerParser), powerFolder + ":" + powerFileName));
+                            } catch (FileNotFoundException fileNotFoundException) {
+                                Bukkit.getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] Error parsing \"" + powerFolder + ":" + powerFileName + "\" for \"" + originFolder.get(0) + ":" + originFileName.get(0) + "\"").color(TextColor.color(255, 0, 0)));
+                            }
+                        }
+                    }
+
+                    originContainers.add(new OriginContainer(originFolder.get(0) + ":" + originFileName.get(0), fileToHashMap(originLayerParser), fileToHashMap(originParser), powerContainers));
+
+                    originFolder.remove(0);
+                    originFileName.remove(0);
+
                 }
-
-                originContainers.add(new OriginContainer(originFolder+":"+originFileName, fileToHashMap(originLayerParser), fileToHashMap(originParser), powerContainers));
-
             } catch (Exception e) {
                 e.printStackTrace();
                 //Bukkit.getServer().getConsoleSender().sendMessage("[GenesisMC] Failed to parse the \"/data/origins/origin_layers/origin.json\" file for " + datapack.getName() + ". Is it a valid origin file?");
