@@ -56,7 +56,6 @@ public class CraftApoliRewriten {
      * Loads the custom origins from the datapack dir into memory.
      **/
     public static void loadOrigins() {
-        originContainers.add(null_Origin);
         File DatapackDir = new File(Bukkit.getServer().getPluginManager().getPlugin("GenesisMC").getDataFolder() + File.separator + ".." + File.separator + ".." + File.separator + Bukkit.getServer().getWorlds().get(0).getName() + File.separator + "datapacks");
         File[] datapacks = DatapackDir.listFiles();
         if (datapacks == null) return;
