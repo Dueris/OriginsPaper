@@ -115,6 +115,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         }
 
         CraftApoliRewriten.loadOrigins();
+        BukkitUtils.downloadFileToDirFromResource("datapacks/OriginsGenesis.zip", "datapacks/zipped/OriginsGenesis.zip");
         for (OriginContainer origins : CraftApoliRewriten.getOrigins()) {
             if (GenesisDataFiles.getMainConfig().getString("console-startup-debug").equalsIgnoreCase("true")) {
                 getServer().getConsoleSender().sendMessage("[GenesisMC] Loaded \"" + origins.getName() + "\"");
