@@ -123,7 +123,7 @@ public class OriginContainer implements Serializable {
      * @return If the origin is choose-able from the choose menu.
      */
     public Boolean getUnchooseable() {
-        Boolean hidden = (Boolean) this.originFile.get("unchoosable");
+        Boolean hidden = (Boolean) this.originFile.get("unchooseable");
         if (hidden == null) return false;
         return hidden;
     }
