@@ -210,7 +210,7 @@ public class ChoosingCORE implements Listener {
             ArrayList<String> origins = CraftApoliRewriten.getOriginTags();
             Random random = new Random();
             String originTag = origins.get(random.nextInt(origins.size()));
-            OriginPlayer.setOrigin(p, originTag);
+            OriginPlayer.setOrigin(p, CraftApoliRewriten.getOrigin(originTag));
         }
     }
 
