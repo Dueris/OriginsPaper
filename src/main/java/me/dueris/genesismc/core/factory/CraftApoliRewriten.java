@@ -178,6 +178,12 @@ public class CraftApoliRewriten {
         return null;
     }
 
+    public static ArrayList<String> getOriginTags() {
+        ArrayList<String> tags = new ArrayList<>();
+        for (OriginContainer origin : getOrigins()) tags.add(origin.getTag());
+        return tags;
+    }
+
     public static byte[] toByteArray(OriginContainer origin) {
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         try {
