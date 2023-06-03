@@ -1,11 +1,15 @@
 package me.dueris.genesismc.core.utils;
 
+import me.dueris.genesismc.core.factory.CraftApoliRewriten;
 import org.json.simple.JSONObject;
 
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class OriginContainer {
+public class OriginContainer implements Serializable {
     String tag;
     HashMap<String, Object> originLayerFile;
     HashMap<String, Object> originFile;
@@ -21,6 +25,7 @@ public class OriginContainer {
     /**
      * @return The customOrigin formatted for debugging, not to be used in other circumstances.
      */
+    @Override
     public String toString() {
         return "Tag: " + this.tag + ", OriginLayerFile: " + this.originLayerFile + ", OriginFile: " + this.originFile + ", PowerContainer {" + this.powerContainer.toString() + "}";
     }
