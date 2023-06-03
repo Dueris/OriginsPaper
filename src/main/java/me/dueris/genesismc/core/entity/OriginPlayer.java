@@ -89,14 +89,14 @@ public class OriginPlayer {
     public static OriginContainer getOrigin(Player player) {
         PersistentDataContainer data = player.getPersistentDataContainer();
         if (data.get(new NamespacedKey(GenesisMC.getPlugin(), "origin"), PersistentDataType.BYTE_ARRAY) == null || CraftApoliRewriten.toOriginContainer(data.get(new NamespacedKey(GenesisMC.getPlugin(), "origin"), PersistentDataType.BYTE_ARRAY)) == null || CraftApoliRewriten.toOriginContainer(data.get(new NamespacedKey(GenesisMC.getPlugin(), "origin"), PersistentDataType.BYTE_ARRAY)).getTag() == null)
-            return new OriginContainer("genesis:origin-null", null, null, null);
+            return new CraftApoliRewriten().nullOrigin();
         return CraftApoliRewriten.toOriginContainer(data.get(new NamespacedKey(GenesisMC.getPlugin(), "origin"), PersistentDataType.BYTE_ARRAY));
     }
 
     public static void removeOrigin(Player player) {
         if (player.getPersistentDataContainer() != null) {
             PersistentDataContainer data = player.getPersistentDataContainer();
-            data.set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, "genesis:origin-null");
+            data.set(new NamespacedKey(GenesisMC.getPlugin(), "origin"), PersistentDataType.BYTE_ARRAY, CraftApoliRewriten.toByteArray(CraftApoliRewriten.nullOrigin()));
         }
     }
 

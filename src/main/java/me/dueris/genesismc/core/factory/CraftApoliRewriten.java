@@ -10,10 +10,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Enumeration;
-import java.util.HashMap;
+import java.util.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -22,7 +19,11 @@ import java.nio.file.*;
 
 public class CraftApoliRewriten {
 
-    //make it load the files into memory rather than use File object (just stores filepaths)
+    private static final OriginContainer null_Origin = new OriginContainer("genesis:origin-null", new HashMap<String, Object>(Map.of( "hidden", true, "origins", "genesis:origin-null")), new HashMap<String, Object>(Map.of("impact", "0", "icon", "minecraft:player_head", "powers", "genesis:null", "order", "0", "unchooseable", true)), new ArrayList<>(List.of(new PowerContainer("genesis:null", new PowerFileContainer(new ArrayList<>(), new ArrayList<>()), "genesis:origin-null"))));
+
+    public static OriginContainer nullOrigin() {
+        return null_Origin;
+    }
 
     @SuppressWarnings("FieldMayBeFinal")
     private static ArrayList<OriginContainer> originContainers = new ArrayList<>();
@@ -55,6 +56,7 @@ public class CraftApoliRewriten {
      * Loads the custom origins from the datapack dir into memory.
      **/
     public static void loadOrigins() {
+        originContainers.add(null_Origin);
         File DatapackDir = new File(Bukkit.getServer().getPluginManager().getPlugin("GenesisMC").getDataFolder() + File.separator + ".." + File.separator + ".." + File.separator + Bukkit.getServer().getWorlds().get(0).getName() + File.separator + "datapacks");
         File[] datapacks = DatapackDir.listFiles();
         if (datapacks == null) return;
