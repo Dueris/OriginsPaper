@@ -1,4 +1,3 @@
 {
-  "type": "origins:action_on_wake_up",
-
+  "type": "origins:action_on_wake_up"
 }
