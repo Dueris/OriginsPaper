@@ -1,7 +1,8 @@
 package me.dueris.genesismc.core.choosing.contents;
 
 import me.dueris.genesismc.core.GenesisMC;
-import me.dueris.genesismc.core.factory.CraftApoli;
+import me.dueris.genesismc.core.factory.CraftApoliRewriten;
+import me.dueris.genesismc.core.utils.OriginContainer;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -31,7 +32,7 @@ public class ChooseMenuContents {
         next = itemProperties(next, "Next", ItemFlag.HIDE_ENCHANTS, null, null);
 
         ArrayList<ItemStack> contents = new ArrayList<>();
-        ArrayList<String> customOriginTags = CraftApoli.getTags();
+        ArrayList<OriginContainer> originContainerTags = CraftApoliRewriten.getOrigins();
 
         for (int i = 0; i <= 53; i++) {
             if (i % 9 == 0 || (i + 1) % 9 == 0) {
@@ -45,25 +46,25 @@ public class ChooseMenuContents {
             } else if (i >= 46) {
                 contents.add(new ItemStack(Material.AIR));
             } else {
-                if (customOriginTags.size() > 0) {
-                    String origintag = customOriginTags.get(0);
-                    while (CraftApoli.getOriginHidden(origintag)) {
-                        customOriginTags.remove(0);
-                        origintag = customOriginTags.get(0);
+                if (originContainerTags.size() > 0) {
+                    OriginContainer origin = originContainerTags.get(0);
+                    while (origin.getUnchooseable()) {
+                        originContainerTags.remove(0);
+                        origin = originContainerTags.get(0);
                     }
-                    String minecraftItem = CraftApoli.getOriginIcon(origintag);
+                    String minecraftItem = origin.getIcon();
                     String item = minecraftItem.split(":")[1];
                     ItemStack originIcon = new ItemStack(Material.valueOf(item.toUpperCase()));
 
                     ItemMeta originIconmeta = originIcon.getItemMeta();
-                    originIconmeta.setDisplayName(CraftApoli.getOriginName(origintag));
+                    originIconmeta.setDisplayName(origin.getName());
                     originIconmeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-                    originIconmeta.setLore(cutStringIntoLists(CraftApoli.getOriginDescription(origintag)));
+                    originIconmeta.setLore(cutStringIntoLists(origin.getDescription()));
                     NamespacedKey key = new NamespacedKey(GenesisMC.getPlugin(), "originTag");
-                    originIconmeta.getPersistentDataContainer().set(key, PersistentDataType.STRING, origintag);
+                    originIconmeta.getPersistentDataContainer().set(key, PersistentDataType.STRING, origin.getTag());
                     originIcon.setItemMeta(originIconmeta);
                     contents.add(originIcon);
-                    customOriginTags.remove(0);
+                    originContainerTags.remove(0);
                 } else {
                     contents.add(new ItemStack(Material.AIR));
                 }

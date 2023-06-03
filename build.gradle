@@ -4,7 +4,7 @@ plugins {
 }
 
 group = 'me.dueris'
-version = 'mc1.19.#-v0.1.7-build+'
+version = 'mc1.19.4-v0.1.7'
 
 repositories {
     mavenCentral()
@@ -31,20 +31,13 @@ dependencies {
     compileOnly("org.geysermc.floodgate:api:2.2.2-SNAPSHOT")
     compileOnly("com.sk89q.worldguard:worldguard-bukkit:7.0.7")
 }
+
 tasks {
     // Configure reobfJar to run when invoking the build task
     assemble {
         dependsOn(reobfJar)
     }
 }
-
-def targetJavaVersion = 17
-java {
-    toolchain {
-        languageVersion.set(JavaLanguageVersion.of(17))
-    }
-}
-
 
 processResources {
     def props = [version: version]

@@ -6,6 +6,7 @@ import me.dueris.genesismc.core.entity.OriginPlayer;
 import me.dueris.genesismc.core.events.OrbInteractEvent;
 import me.dueris.genesismc.core.factory.powers.world.WorldSpawnHandler;
 import me.dueris.genesismc.core.files.GenesisDataFiles;
+import net.kyori.adventure.text.Component;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.enchantments.Enchantment;
@@ -185,6 +186,7 @@ public class ChoosingCORE implements Listener {
                 if (e.getCurrentItem().getType().equals(Material.BARRIER)) {
                     Player p = (Player) e.getWhoClicked();
                     p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 10, 2);
+                    if (OriginPlayer.getOriginTag(p).equalsIgnoreCase("genesis:origin-null") || p.getScoreboardTags().contains("choosing")) p.kick(Component.text("You are forced to choose an origin!"));
                     e.getWhoClicked().closeInventory();
                 } else {
                     e.setCancelled(true);

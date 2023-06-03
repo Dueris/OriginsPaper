@@ -2,7 +2,10 @@ package me.dueris.genesismc.core.choosing;
 
 import me.dueris.genesismc.core.GenesisMC;
 import me.dueris.genesismc.core.factory.CraftApoli;
+import me.dueris.genesismc.core.factory.CraftApoliRewriten;
 import me.dueris.genesismc.core.factory.powers.world.WorldSpawnHandler;
+import me.dueris.genesismc.core.utils.OriginContainer;
+import me.dueris.genesismc.core.utils.PowerContainer;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -65,24 +68,20 @@ public class ChoosingCUSTOM implements Listener {
             NamespacedKey key = new NamespacedKey(GenesisMC.getPlugin(), "originTag");
             if (e.getCurrentItem().getItemMeta().getPersistentDataContainer().get(key, PersistentDataType.STRING) != null) {
                 @NotNull Inventory custommenu = Bukkit.createInventory(e.getWhoClicked(), 54, "Custom Origin");
-                String origintag = e.getCurrentItem().getItemMeta().getPersistentDataContainer().get(key, PersistentDataType.STRING);
-                if (origintag == null) return;
+                String originTag = e.getCurrentItem().getItemMeta().getPersistentDataContainer().get(key, PersistentDataType.STRING);
+                if (originTag == null) return;
+
+                OriginContainer origin = null;
+                for (OriginContainer origins : CraftApoliRewriten.getOrigins()) {
+                    if (origins.getTag().equals(originTag)) {origin = origins; break;}
+                }
 
                 Player p = (Player) e.getWhoClicked();
                 p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 10, 2);
 
+                ArrayList<PowerContainer> powerContainers = origin.getPowerContainers();
 
-                ArrayList<String> originPowerNames = new ArrayList<>();
-                ArrayList<String> originPowerDescriptions = new ArrayList<>();
-
-                for (String powerTag : CraftApoli.getOriginPowers(origintag)) {
-                    if (!CraftApoli.getPowerHidden(origintag, powerTag)) {
-                        originPowerNames.add(CraftApoli.getPowerName(origintag, powerTag));
-                        originPowerDescriptions.add(CraftApoli.getPowerDescription(origintag, powerTag));
-                    }
-                }
-
-                String minecraftItem = CraftApoli.getOriginIcon(origintag);
+                String minecraftItem = origin.getIcon();
                 String item = minecraftItem.split(":")[1];
                 ItemStack originIcon = new ItemStack(Material.valueOf(item.toUpperCase()));
 
@@ -94,22 +93,22 @@ public class ChoosingCUSTOM implements Listener {
 
 
                 ItemMeta originIconmeta = originIcon.getItemMeta();
-                originIconmeta.setDisplayName(CraftApoli.getOriginName(origintag));
+                originIconmeta.setDisplayName(origin.getName());
                 originIconmeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-                originIconmeta.setLore(cutStringIntoLists(CraftApoli.getOriginDescription(origintag)));
-                originIconmeta.getPersistentDataContainer().set(key, PersistentDataType.STRING, origintag);
+                originIconmeta.setLore(cutStringIntoLists(origin.getDescription()));
+                originIconmeta.getPersistentDataContainer().set(key, PersistentDataType.STRING, originTag);
                 NamespacedKey chooseKey = new NamespacedKey(GenesisMC.getPlugin(), "originChoose");
                 originIconmeta.getPersistentDataContainer().set(chooseKey, PersistentDataType.INTEGER, 1);
 
                 originIcon.setItemMeta(originIconmeta);
 
                 ArrayList<ItemStack> contents = new ArrayList<>();
-                long impact = CraftApoli.getOriginImpact(origintag);
+                long impact = CraftApoli.getOriginImpact(originTag);
 
                 for (int i = 0; i <= 53; i++) {
                     if (i == 0 || i == 8) {
                         contents.add(close);
-                    } else if (i == 1) {                                          //impact
+                    } else if (i == 1) {
                         if (impact == 1) contents.add(lowImpact);
                         if (impact == 2) contents.add(mediumImpact);
                         if (impact == 3) contents.add(highImpact);
@@ -122,7 +121,7 @@ public class ChoosingCUSTOM implements Listener {
                         else contents.add(new ItemStack(Material.AIR));
                     } else if (i == 4) {
                         contents.add(orb);
-                    } else if (i == 5) {                                           //impact
+                    } else if (i == 5) {
                         if (impact == 3) contents.add(highImpact);
                         else contents.add(new ItemStack(Material.AIR));
                     } else if (i == 6) {
@@ -137,21 +136,17 @@ public class ChoosingCUSTOM implements Listener {
                         contents.add(originIcon);
                     } else if ((i >= 20 && i <= 24) || (i >= 29 && i <= 33) || (i >= 38 && i <= 42)) {
 
-                        if (originPowerNames.size() > 0) {
-                            String powerName = originPowerNames.get(0);
-                            String powerDescription = originPowerDescriptions.get(0);
-
+                        if (powerContainers.size() > 0 && powerContainers.get(0).getHidden() == false) {
                             ItemStack originPower = new ItemStack(Material.FILLED_MAP);
 
                             ItemMeta meta = originPower.getItemMeta();
-                            meta.setDisplayName(powerName);
+                            meta.setDisplayName(powerContainers.get(0).getName());
                             meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-                            meta.setLore(cutStringIntoLists(powerDescription));
+                            meta.setLore(cutStringIntoLists(powerContainers.get(0).getDesription()));
                             originPower.setItemMeta(meta);
 
                             contents.add(originPower);
-                            originPowerNames.remove(0);
-                            originPowerDescriptions.remove(0);
+                            powerContainers.remove(0);
 
                         } else {
                             if (i >= 38) {

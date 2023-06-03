@@ -13,6 +13,7 @@ import me.dueris.genesismc.core.commands.subcommands.origin.Recipe;
 import me.dueris.genesismc.core.enchantments.EnchantProtEvent;
 import me.dueris.genesismc.core.enchantments.WaterProtAnvil;
 import me.dueris.genesismc.core.enchantments.WaterProtection;
+import me.dueris.genesismc.core.factory.CraftApoliRewriten;
 import me.dueris.genesismc.core.factory.OriginStartHandler;
 import me.dueris.genesismc.core.factory.handlers.CustomOriginExistCheck;
 import me.dueris.genesismc.core.factory.powers.Powers;
@@ -113,19 +114,16 @@ public final class GenesisMC extends JavaPlugin implements Listener {
             getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "[GenesisMC] Successfully loaded version 0.1.7-ALPHA_SNAPSHOT (1.19.4)");
         }
 
-        CraftApoli.removeUnzippedDatapacks();
-        CraftApoli.unzipDatapacks();
-        CraftApoli.loadCustomOrigins();
-        for (String originTag : CraftApoli.getTags()) {
+        CraftApoliRewriten.loadOrigins();
+        for (OriginContainer origins : CraftApoliRewriten.getOrigins()) {
             if (GenesisDataFiles.getMainConfig().getString("console-startup-debug").equalsIgnoreCase("true")) {
-                getServer().getConsoleSender().sendMessage("[GenesisMC] Loaded \"" + CraftApoli.getOriginName(originTag) + "\"");
+                getServer().getConsoleSender().sendMessage("[GenesisMC] Loaded \"" + origins.getName() + "\"");
             }
         }
-        if (CraftApoli.getCustomOrigins().size() > 0) {
-            getServer().getConsoleSender().sendMessage("[GenesisMC] Loaded (" + CraftApoli.getCustomOrigins().size() + ") Custom Origins");
+        if (CraftApoliRewriten.getOrigins().size() > 0) {
+            getServer().getConsoleSender().sendMessage("[GenesisMC] Loaded (" + CraftApoliRewriten.getOrigins().size() + ") Custom Origins");
         }
 
-        getServer().getConsoleSender().sendMessage(ChatColor.GRAY + "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
         getServer().getPluginManager().registerEvents(this, this);
 //Commands
         getCommand("origin").setExecutor(new GenesisCommandManager());
@@ -187,6 +185,8 @@ public final class GenesisMC extends JavaPlugin implements Listener {
             Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.RED + "A fatal error has occurred, lang could not be loaded. Disabling GenesisMC....");
             Bukkit.getServer().getPluginManager().disablePlugin(this);
         }
+
+        getServer().getConsoleSender().sendMessage(ChatColor.GRAY + "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
 
     }
 
