@@ -197,7 +197,7 @@ public class PowerContainer implements Serializable {
         if (this.powerTag.equals("origins:no_cobweb_slowdown")) return true;
         if (this.powerTag.equals("origins:strong_arms_break_speed")) return true;
 
-        Object hidden = (Boolean) powerFile.get("hidden");
+        Object hidden = powerFile.get("hidden");
         if (hidden == null) return false;
         return (Boolean) hidden;
     }
