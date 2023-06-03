@@ -211,7 +211,7 @@ public class Lang {
     public static String menu_expanded_slimeling_jump_title = getLocalizedString("menu.expanded.slimeling.improved_jump.title");
     public static String menu_expanded_slimeling_jump_description = getLocalizedString("menu.expanded.slimeling.improved_jump.description");
     public static String menu_expanded_slimeling_leap_title = getLocalizedString("menu.expanded.slimeling.great_leap.title");
-    public static String menu_expanded_slimeling_leap_description = getLocalizedString("menu.expanded.slimeling.great_leap.description                ");
+    public static String menu_expanded_slimeling_leap_description = getLocalizedString("menu.expanded.slimeling.great_leap.description");
     public static String menu_expanded_slimeling_skin_title = getLocalizedString("menu.expanded.slimeling.slimy_skin.title");
     public static String menu_expanded_slimeling_skin_description = getLocalizedString("menu.expanded.slimeling.slimy_skin.description");
     public static String menu_expanded_slimeling_burnable_title = getLocalizedString("menu.expanded.slimeling.burnable.title");
