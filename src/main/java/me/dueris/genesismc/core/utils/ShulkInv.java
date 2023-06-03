@@ -14,6 +14,8 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 
+import static me.dueris.genesismc.core.factory.powers.Powers.shulker_inventory;
+
 public class ShulkInv implements CommandExecutor {
 
     private final ArrayList<SubCommand> subCommands = new ArrayList<>();
@@ -26,7 +28,7 @@ public class ShulkInv implements CommandExecutor {
 
         if (sender instanceof Player p) {
 
-            if (OriginPlayer.getOrigin(p).getTag().equalsIgnoreCase("genesis:origin-shulk")) {
+            if (shulker_inventory.contains(OriginPlayer.getOrigin((Player) sender).getTag())) {
                 if (args.length > 0) {
                     if (args[0].equalsIgnoreCase("open")) {
 
@@ -52,7 +54,7 @@ public class ShulkInv implements CommandExecutor {
 
                 }
             } else {
-                p.sendMessage(ChatColor.RED + "You must be a Shulk to access this command");
+                p.sendMessage(ChatColor.RED + "You must have the Shulker Inventory power to access this command");
             }
         }
 

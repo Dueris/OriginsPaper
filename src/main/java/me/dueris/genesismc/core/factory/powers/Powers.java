@@ -163,6 +163,7 @@ public class Powers implements Listener {
         more_exhaustion.add("genesis:origin-shulk");
         strong_arms_break_speed.add("genesis:origin-shulk");
         no_shield.add("genesis:origin-shulk");
+        shulker_inventory.add("genesis:origin-shulk");
 
         //merling
         water_breathing.add("genesis:origin-merling");

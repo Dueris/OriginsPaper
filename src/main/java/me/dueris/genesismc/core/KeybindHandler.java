@@ -21,8 +21,7 @@ import org.geysermc.geyser.api.GeyserApi;
 
 import java.util.ArrayList;
 
-import static me.dueris.genesismc.core.factory.powers.Powers.launch_into_air;
-import static me.dueris.genesismc.core.factory.powers.Powers.phantomize;
+import static me.dueris.genesismc.core.factory.powers.Powers.*;
 import static org.bukkit.Bukkit.getServer;
 import static org.bukkit.ChatColor.DARK_AQUA;
 import static org.bukkit.ChatColor.RED;
@@ -34,7 +33,7 @@ public class KeybindHandler implements Listener {
         getServer().getPluginManager().callEvent(event);
 
         PersistentDataContainer data = p.getPersistentDataContainer();
-        if (OriginPlayer.getOrigin(e.getPlayer()).getTag().contains("genesis:origin-shulk")) {
+        if (shulker_inventory.contains(OriginPlayer.getOrigin(e.getPlayer()).getTag())) {
             e.setCancelled(true);
 
             ArrayList<ItemStack> vaultItems = ShulkUtils.getItems(p);
