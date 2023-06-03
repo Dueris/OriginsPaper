@@ -2,6 +2,7 @@ package me.dueris.genesismc.core.factory;
 
 import me.dueris.genesismc.core.utils.OriginContainer;
 import me.dueris.genesismc.core.utils.PowerContainer;
+import me.dueris.genesismc.core.utils.PowerFileContainer;
 import org.apache.commons.io.FilenameUtils;
 import org.bukkit.Bukkit;
 import org.json.simple.JSONArray;
@@ -10,6 +11,7 @@ import org.json.simple.parser.JSONParser;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.zip.ZipEntry;
@@ -22,6 +24,7 @@ public class CraftApoliRewriten {
 
     //make it load the files into memory rather than use File object (just stores filepaths)
 
+    @SuppressWarnings("FieldMayBeFinal")
     private static ArrayList<OriginContainer> originContainers = new ArrayList<>();
 
     /**
@@ -35,6 +38,16 @@ public class CraftApoliRewriten {
         HashMap<String, Object> data = new HashMap<>();
         for (Object key : JSONFileParser.keySet()) data.put((String) key, JSONFileParser.get(key));
         return data;
+    }
+
+    private static PowerFileContainer fileToPowerFileContainer(JSONObject JSONFileParser) {
+        ArrayList<String> keys = new ArrayList<>();
+        ArrayList<Object> values = new ArrayList<>();
+        for (Object key : JSONFileParser.keySet()) {
+            keys.add((String) key);
+            values.add(JSONFileParser.get((String) key));
+        }
+        return new PowerFileContainer(keys, values);
     }
 
 
@@ -104,7 +117,7 @@ public class CraftApoliRewriten {
                                 String powerFileName = powerLocation[1];
 
                                 JSONObject powerParser = (JSONObject) new JSONParser().parse(files.get(Path.of("data"+File.separator+powerFolder+File.separator+"powers"+File.separator+powerFileName+".json")));
-                                powerContainers.add(new PowerContainer(originFolder+":"+originFileName, fileToHashMap(powerParser), originFolder+":"+originFileName));
+                                powerContainers.add(new PowerContainer(powerFolder+":"+powerFileName, fileToPowerFileContainer(powerParser), powerFolder+":"+powerFileName));
                             }
 
                             originContainers.add(new OriginContainer(originFolder+":"+originFileName, fileToHashMap(originLayerParser), fileToHashMap(originParser), powerContainers));
@@ -148,7 +161,7 @@ public class CraftApoliRewriten {
                     String powerFileName = powerLocation[1];
 
                     JSONObject powerParser = (JSONObject) new JSONParser().parse(new FileReader(datapack.getAbsolutePath() + File.separator+"data"+File.separator+powerFolder+File.separator+"powers"+File.separator+powerFileName+".json"));
-                    powerContainers.add(new PowerContainer(originFolder+":"+originFileName, fileToHashMap(powerParser), originFolder+":"+originFileName));
+                    powerContainers.add(new PowerContainer(powerFolder+":"+powerFileName, fileToPowerFileContainer(powerParser), powerFolder+":"+powerFileName));
                 }
 
                 originContainers.add(new OriginContainer(originFolder+":"+originFileName, fileToHashMap(originLayerParser), fileToHashMap(originParser), powerContainers));
