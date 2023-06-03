@@ -110,8 +110,9 @@ public class ChoosingCUSTOM implements Listener {
                         contents.add(close);
                     } else if (i == 1) {
                         if (impact == 1) contents.add(lowImpact);
-                        if (impact == 2) contents.add(mediumImpact);
-                        if (impact == 3) contents.add(highImpact);
+                        else if (impact == 2) contents.add(mediumImpact);
+                        else if (impact == 3) contents.add(highImpact);
+                        else contents.add(new ItemStack(Material.AIR));
                     } else if (i == 2) {
                         if (impact == 2) contents.add(mediumImpact);
                         else if (impact == 3) contents.add(highImpact);
@@ -130,8 +131,9 @@ public class ChoosingCUSTOM implements Listener {
                         else contents.add(new ItemStack(Material.AIR));
                     } else if (i == 7) {
                         if (impact == 1) contents.add(lowImpact);
-                        if (impact == 2) contents.add(mediumImpact);
-                        if (impact == 3) contents.add(highImpact);
+                        else if (impact == 2) contents.add(mediumImpact);
+                        else if (impact == 3) contents.add(highImpact);
+                        else contents.add(new ItemStack(Material.AIR));
                     } else if (i == 13) {
                         contents.add(originIcon);
                     } else if ((i >= 20 && i <= 24) || (i >= 29 && i <= 33) || (i >= 38 && i <= 42)) {
