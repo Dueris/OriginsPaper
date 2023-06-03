@@ -10,10 +10,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Enumeration;
-import java.util.HashMap;
+import java.util.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -22,7 +19,11 @@ import java.nio.file.*;
 
 public class CraftApoliRewriten {
 
-    //make it load the files into memory rather than use File object (just stores filepaths)
+    public static OriginContainer null_Origin = new OriginContainer("genesis:null", new HashMap<String, Object>(Map.of( "hidden", "true", "origins", "genesis:null")), new HashMap<String, Object>(Map.of("impact", "0", "icon", "\"item\":\"minecraft:player_head\"", "powers", "genesis:null\"", "order", "0")), new ArrayList<>(List.of(new PowerContainer("genesis:null", new PowerFileContainer(new ArrayList<>(), new ArrayList<>()), "PowerSource: genesis:null)"))));
+
+    public static OriginContainer nullOrigin() {
+        return null_Origin;
+    }
 
     @SuppressWarnings("FieldMayBeFinal")
     private static ArrayList<OriginContainer> originContainers = new ArrayList<>();

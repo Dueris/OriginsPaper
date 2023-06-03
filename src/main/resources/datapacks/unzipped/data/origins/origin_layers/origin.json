@@ -13,7 +13,6 @@
     "origins:merling",
     "origins:phantom",
     "origins:shulk",
-    "genesis:null"
   ],
   "allow_random": true,
   "exclude_random": [
