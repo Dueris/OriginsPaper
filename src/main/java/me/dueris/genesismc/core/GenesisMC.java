@@ -33,6 +33,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.io.File;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.EnumSet;
@@ -114,8 +115,8 @@ public final class GenesisMC extends JavaPlugin implements Listener {
             getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "[GenesisMC] Successfully loaded version 0.1.7-ALPHA_SNAPSHOT (1.19.4)");
         }
 
+        BukkitUtils.downloadFileToDirFromResource("datapacks"+File.separator+"OriginsGenesis.zip", "datapacks/OriginsGenesis.zip");
         CraftApoliRewriten.loadOrigins();
-        BukkitUtils.downloadFileToDirFromResource("datapacks/OriginsGenesis.zip", "datapacks/zipped/OriginsGenesis.zip");
         for (OriginContainer origins : CraftApoliRewriten.getOrigins()) {
             if (GenesisDataFiles.getMainConfig().getString("console-startup-debug").equalsIgnoreCase("true")) {
                 getServer().getConsoleSender().sendMessage("[GenesisMC] Loaded \"" + origins.getName() + "\"");

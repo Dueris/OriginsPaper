@@ -1,6 +1,8 @@
 package me.dueris.genesismc.core.utils;
 
+import org.apache.commons.io.FilenameUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.io.*;
@@ -8,14 +10,17 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 import static me.dueris.genesismc.core.GenesisMC.getPlugin;
 
 public class BukkitUtils {
 
-    public static void downloadFileToDirFromResource(String childPathFromOverworld, String resourceLocation){
+    public static void downloadFileToDirFromResource(String childPathFromOverworld, String resourceLocation) {
+
         File datapackFile = new File(Bukkit.getWorlds().get(0).getName(), childPathFromOverworld);
-        if (!datapackFile.exists()) {
+        if (!datapackFile.exists() && !Files.exists(Path.of(FilenameUtils.removeExtension(datapackFile.getAbsolutePath())))) {
             InputStream resource = getPlugin().getResource(resourceLocation);
             if (resource != null) {
                 try (OutputStream outputStream = new FileOutputStream(datapackFile)) {
@@ -27,8 +32,45 @@ public class BukkitUtils {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-
             }
+
+            try {
+                File unzippedDestinationFile = new File(datapackFile.getAbsoluteFile().toURI());
+                Path destination;
+                destination = Path.of(FilenameUtils.removeExtension(unzippedDestinationFile.getPath()));
+
+                if (!Files.exists(destination)) Files.createDirectory(destination);
+
+                FileInputStream fileInputStream = new FileInputStream(datapackFile);
+                ZipInputStream zipInputStream = new ZipInputStream(fileInputStream);
+                ZipEntry zipEntry = zipInputStream.getNextEntry();
+                while (zipEntry != null) {
+
+                    Path path = destination.resolve(zipEntry.getName());
+                    if (!path.startsWith(destination))
+                        Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.RED + "[GenesisMC] Something went wrong ¯\\_(ツ)_/¯");
+
+                    if (zipEntry.isDirectory()) Files.createDirectories(path);
+                    else {
+                        BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(Files.newOutputStream(path));
+                        byte[] bytes = zipInputStream.readAllBytes();
+                        bufferedOutputStream.write(bytes, 0, bytes.length);
+                        bufferedOutputStream.close();
+                    }
+                    zipEntry = zipInputStream.getNextEntry();
+                }
+                zipInputStream.close();
+                zipInputStream.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            try {
+                Files.delete(Path.of(datapackFile.getAbsolutePath()));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
         }
     }
 
