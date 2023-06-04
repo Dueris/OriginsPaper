@@ -25,6 +25,8 @@ import me.dueris.genesismc.core.items.Items;
 import me.dueris.genesismc.core.items.OrbOfOrigins;
 import me.dueris.genesismc.core.items.WaterProtItem;
 import me.dueris.genesismc.core.utils.*;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.*;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -102,28 +104,28 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         getServer().getConsoleSender().sendMessage(ChatColor.AQUA + "[GenesisMC]  | |_| | |  __/ | | | | |  __/ \\__ \\ | | \\__ \\ | |  | | | |___ ");
         getServer().getConsoleSender().sendMessage(ChatColor.BLUE + "[GenesisMC]   \\____|  \\___| |_| |_|  \\___| |___/ |_| |___/ |_|  |_|  \\____|");
         getServer().getConsoleSender().sendMessage(ChatColor.LIGHT_PURPLE + "[GenesisMC]  GenesisMC -- Created by Dueris");
-        getServer().getConsoleSender().sendMessage(ChatColor.GRAY + "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+        getServer().getConsoleSender().sendMessage(Component.text("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~").color(TextColor.color(128, 128, 128)));
 
         if (GenesisDataFiles.getMainConfig().getString("console-startup-debug").equalsIgnoreCase("true")) {
             Debug.executeGenesisDebug();
             Debug.testIncompatiblePlugins();
             Debug.versionTest();
-            getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "[GenesisMC] Successfully loaded version 0.1.7-ALPHA_SNAPSHOT 1.19.4)");
-            getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "[GenesisMC] Successfully loaded API version 0.1.2-BETA (1.19.4)");
-            getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "[GenesisMC] Successfully loaded CONFIG version (1.19.4)");
+            getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] Successfully loaded version 0.1.7-ALPHA_SNAPSHOT 1.19.4)").color(TextColor.color(0,200,0)));
+            getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] Successfully loaded API version 0.1.2-BETA (1.19.4)").color(TextColor.color(0,200,0)));
+            getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] Successfully loaded CONFIG version (1.19.4)").color(TextColor.color(0,200,0)));
         } else {
-            getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "[GenesisMC] Successfully loaded version 0.1.7-ALPHA_SNAPSHOT (1.19.4)");
+            getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] Successfully loaded version 0.1.7-ALPHA_SNAPSHOT (1.19.4)"));
         }
 
         BukkitUtils.downloadFileToDirFromResource("datapacks"+File.separator+"OriginsGenesis.zip", "datapacks/OriginsGenesis.zip");
         CraftApoliRewriten.loadOrigins();
         for (OriginContainer origins : CraftApoliRewriten.getOrigins()) {
             if (GenesisDataFiles.getMainConfig().getString("console-startup-debug").equalsIgnoreCase("true")) {
-                getServer().getConsoleSender().sendMessage("[GenesisMC] Loaded \"" + origins.getName() + "\"");
+                getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] Loaded \"" + origins.getName() + "\""));
             }
         }
         if (CraftApoliRewriten.getOrigins().size() > 0) {
-            getServer().getConsoleSender().sendMessage("[GenesisMC] Loaded (" + CraftApoliRewriten.getOrigins().size() + ") Origins");
+            getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] Loaded (" + CraftApoliRewriten.getOrigins().size() + ") Origins"));
         }
 
         getServer().getPluginManager().registerEvents(this, this);
@@ -182,13 +184,13 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         }
         Powers.loadPowers();
         try {
-            Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.GREEN + Lang.lang_test);
+            Bukkit.getServer().getConsoleSender().sendMessage(Component.text(Lang.lang_test).color(TextColor.color(0,200,0)));
         } catch (Exception e) {
-            Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.RED + "A fatal error has occurred, lang could not be loaded. Disabling GenesisMC....");
+            Bukkit.getServer().getConsoleSender().sendMessage(Component.text("A fatal error has occurred, lang could not be loaded. Disabling GenesisMC....").color(TextColor.color(200,0,0)));
             Bukkit.getServer().getPluginManager().disablePlugin(this);
         }
 
-        getServer().getConsoleSender().sendMessage(ChatColor.GRAY + "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+        getServer().getConsoleSender().sendMessage(Component.text("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~").color(TextColor.color(128, 128, 128)));
 
     }
 
@@ -206,7 +208,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 
     @Override
     public void onDisable() {
-        getServer().getConsoleSender().sendMessage(ChatColor.RED + "[GenesisMC] Disabling GenesisMC Origins.");
+        getServer().getConsoleSender().sendMessage(Component.text(ChatColor.RED + "[GenesisMC] Disabling GenesisMC Origins."));
         // Disable enchantments
         try {
             Field keyField = Enchantment.class.getDeclaredField("byKey");
