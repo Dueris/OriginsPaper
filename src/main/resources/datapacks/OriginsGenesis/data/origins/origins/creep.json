@@ -1,11 +1,9 @@
 {
 	"powers": [
-		"origins:elytra",
-		"origins:launch_into_air",
-		"origins:aerial_combatant",
-		"origins:light_armor",
-		"origins:claustrophobia",
-		"origins:more_kinetic_damage"
+		"genesis:charged",
+		"genesis:creeper_ignore",
+		"genesis:explosion_tick",
+		"genesis:felinephobia"
 	],
 	"icon": {
 		"item": "minecraft:gunpowder"

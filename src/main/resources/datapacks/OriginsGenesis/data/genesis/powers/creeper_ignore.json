@@ -1,0 +1,6 @@
+{
+  "type": "genesis:creeper_ignore",
+  "hidden": false,
+  "name": "menu.expanded.creep.friend_in_me.title",
+  "description": "menu.expanded.creep.friend_in_me.description"
+}
