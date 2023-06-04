@@ -1,6 +1,6 @@
 {
 	"type": "genesis:poison_damage",
-	"hidden": "false",
+	"hidden": false,
 	"name": "menu.expanded.bee.poisonous.title",
 	"description": "menu.expanded.bee.poisonous.description"
 }

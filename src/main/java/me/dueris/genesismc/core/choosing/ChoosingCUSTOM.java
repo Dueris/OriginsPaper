@@ -4,6 +4,7 @@ import me.dueris.genesismc.core.GenesisMC;
 import me.dueris.genesismc.core.choosing.contents.MainMenuContents;
 import me.dueris.genesismc.core.factory.CraftApoli;
 import me.dueris.genesismc.core.factory.CraftApoliRewriten;
+import me.dueris.genesismc.core.utils.Lang;
 import me.dueris.genesismc.core.utils.OriginContainer;
 import me.dueris.genesismc.core.utils.PowerContainer;
 import org.bukkit.*;
@@ -157,9 +158,18 @@ public class ChoosingCUSTOM implements Listener {
                             ItemStack originPower = new ItemStack(Material.FILLED_MAP);
 
                             ItemMeta meta = originPower.getItemMeta();
-                            meta.setDisplayName(powerContainers.get(0).getName());
+                            if(powerContainers.get(0).getName().startsWith("menu.")){
+                                meta.setDisplayName(Lang.getLocalizedString(powerContainers.get(0).getName()));
+                            }else{
+                                meta.setDisplayName(powerContainers.get(0).getName());
+                            }
                             meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-                            meta.setLore(cutStringIntoLists(powerContainers.get(0).getDesription()));
+                            meta.addItemFlags(ItemFlag.HIDE_ITEM_SPECIFICS);
+                            if(powerContainers.get(0).getDesription().startsWith("menu.")){
+                                meta.setLore(cutStringIntoLists(Lang.getLocalizedString(powerContainers.get(0).getDesription())));
+                            }else{
+                                meta.setLore(cutStringIntoLists(powerContainers.get(0).getDesription()));
+                            }
                             originPower.setItemMeta(meta);
 
                             contents.add(originPower);

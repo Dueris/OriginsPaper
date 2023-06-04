@@ -179,7 +179,7 @@ public class PowerContainer implements Serializable {
 //        if (this.powerTag.equals("genesis:silk_touch")) return "You have silk touch hands";
 //        if (this.powerTag.equals("genesis:bow_inability")) return "You are not able to use a bow, you are WAY too clumsy";
 
-        Object description = this.powerFile.get("name");
+        Object description = this.powerFile.get("description");
         if (description == null) return "No Description.";
         return (String) description;
     }
