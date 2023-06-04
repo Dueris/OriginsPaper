@@ -7,7 +7,6 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import org.apache.commons.io.FilenameUtils;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -250,6 +249,14 @@ public class CraftApoliRewriten {
                 || origin.getTag().equals("origins:merling")
                 || origin.getTag().equals("origins:phantom")
                 || origin.getTag().equals("origins:shulk");
+    }
+
+    public static ArrayList<OriginContainer> getOriginOrigins() {
+        ArrayList<OriginContainer> originOrigins = new ArrayList<>();
+        for (OriginContainer origin : getOrigins()) {
+            if (isOriginOrigin(origin)) originOrigins.add(origin);
+        }
+        return originOrigins;
     }
 
 }
