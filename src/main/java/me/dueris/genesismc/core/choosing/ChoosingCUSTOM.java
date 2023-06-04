@@ -1,9 +1,9 @@
 package me.dueris.genesismc.core.choosing;
 
 import me.dueris.genesismc.core.GenesisMC;
+import me.dueris.genesismc.core.choosing.contents.MainMenuContents;
 import me.dueris.genesismc.core.factory.CraftApoli;
 import me.dueris.genesismc.core.factory.CraftApoliRewriten;
-import me.dueris.genesismc.core.factory.powers.world.WorldSpawnHandler;
 import me.dueris.genesismc.core.utils.OriginContainer;
 import me.dueris.genesismc.core.utils.PowerContainer;
 import org.bukkit.*;
@@ -21,9 +21,11 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import static me.dueris.genesismc.core.choosing.ChoosingCORE.*;
 import static me.dueris.genesismc.core.choosing.contents.ChooseMenuContents.ChooseMenuContent;
+import static me.dueris.genesismc.core.choosing.contents.MainMenuContents.GenesisMainMenuContents;
 import static me.dueris.genesismc.core.items.OrbOfOrigins.orb;
 import static org.bukkit.ChatColor.RED;
 
@@ -209,6 +211,17 @@ public class ChoosingCUSTOM implements Listener {
                 if (e.getCurrentItem().getType().equals(Material.SPECTRAL_ARROW)) {
                     Player p = (Player) e.getWhoClicked();
                     p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 10, 2);
+                    NamespacedKey key = new NamespacedKey(GenesisMC.getPlugin(), "originTag");
+
+                    for (OriginContainer origin: CraftApoliRewriten.getOriginOrigins()) {
+                        if (Objects.equals(e.getClickedInventory().getContents()[13].getItemMeta().getPersistentDataContainer().get(key, PersistentDataType.STRING), origin.getTag())) {
+                            @NotNull Inventory mainmenu = Bukkit.createInventory(e.getWhoClicked(), 54, "Choosing Menu");
+                            mainmenu.setContents(GenesisMainMenuContents((Player) e.getWhoClicked()));
+                            e.getWhoClicked().openInventory(mainmenu);
+                            return;
+                        }
+                    }
+
                     @NotNull Inventory custommenu = Bukkit.createInventory(e.getWhoClicked(), 54, "Custom Origins");
                     custommenu.setContents(ChooseMenuContent());
                     e.getWhoClicked().openInventory(custommenu);
