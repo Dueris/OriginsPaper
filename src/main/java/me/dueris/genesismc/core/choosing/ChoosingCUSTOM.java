@@ -109,7 +109,7 @@ public class ChoosingCUSTOM implements Listener {
                 originIcon.setItemMeta(originIconmeta);
 
                 ArrayList<ItemStack> contents = new ArrayList<>();
-                long impact = CraftApoli.getOriginImpact(originTag);
+                long impact = origin.getImpact();
 
                 for (int i = 0; i <= 53; i++) {
                     if (i == 0 || i == 8) {
@@ -156,7 +156,6 @@ public class ChoosingCUSTOM implements Listener {
                         }
                         if (powerContainers.size() > 0) {
 
-
                             ItemStack originPower = new ItemStack(Material.FILLED_MAP);
 
                             ItemMeta meta = originPower.getItemMeta();
@@ -166,17 +165,6 @@ public class ChoosingCUSTOM implements Listener {
                             originPower.setItemMeta(meta);
 
                             contents.add(originPower);
-
-//                            if(powerContainers.get(0).getName().startsWith("menu.")){
-//                                meta.setDisplayName(Lang.getLocalizedString(powerContainers.get(0).getName()));
-//                            }else{
-//                                meta.setDisplayName(powerContainers.get(0).getName());
-
-//                            if(powerContainers.get(0).getDesription().startsWith("menu.")){
-//                                meta.setLore(cutStringIntoLists(Lang.getLocalizedString(powerContainers.get(0).getDesription())));
-//                            }else{
-//                                meta.setLore(cutStringIntoLists(powerContainers.get(0).getDesription()));
-//                            }
 
                             powerContainers.remove(0);
 
