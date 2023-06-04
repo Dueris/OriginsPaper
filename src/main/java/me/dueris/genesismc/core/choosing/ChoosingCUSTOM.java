@@ -155,24 +155,28 @@ public class ChoosingCUSTOM implements Listener {
                             powerContainers.remove(0);
                         }
                         if (powerContainers.size() > 0) {
+
+
                             ItemStack originPower = new ItemStack(Material.FILLED_MAP);
 
                             ItemMeta meta = originPower.getItemMeta();
-                            if(powerContainers.get(0).getName().startsWith("menu.")){
-                                meta.setDisplayName(Lang.getLocalizedString(powerContainers.get(0).getName()));
-                            }else{
-                                meta.setDisplayName(powerContainers.get(0).getName());
-                            }
+                            meta.setDisplayName(powerContainers.get(0).getName());
                             meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-                            meta.addItemFlags(ItemFlag.HIDE_ITEM_SPECIFICS);
-                            if(powerContainers.get(0).getDesription().startsWith("menu.")){
-                                meta.setLore(cutStringIntoLists(Lang.getLocalizedString(powerContainers.get(0).getDesription())));
-                            }else{
-                                meta.setLore(cutStringIntoLists(powerContainers.get(0).getDesription()));
-                            }
+                            meta.setLore(cutStringIntoLists(powerContainers.get(0).getDesription()));
                             originPower.setItemMeta(meta);
 
                             contents.add(originPower);
+
+//                            if(powerContainers.get(0).getName().startsWith("menu.")){
+//                                meta.setDisplayName(Lang.getLocalizedString(powerContainers.get(0).getName()));
+//                            }else{
+//                                meta.setDisplayName(powerContainers.get(0).getName());
+
+//                            if(powerContainers.get(0).getDesription().startsWith("menu.")){
+//                                meta.setLore(cutStringIntoLists(Lang.getLocalizedString(powerContainers.get(0).getDesription())));
+//                            }else{
+//                                meta.setLore(cutStringIntoLists(powerContainers.get(0).getDesription()));
+//                            }
 
                             powerContainers.remove(0);
 

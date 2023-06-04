@@ -39,6 +39,12 @@ public class PowerFileContainer implements Serializable {
         return false;
     }
 
+    public void replace(String key, String newValue) {
+        int index = this.keys.indexOf(key);
+        if (index == -1) add(key, newValue);
+        else this.values.set(index, newValue);
+    }
+
     public ArrayList<String> getKeys() {
         return keys;
     }

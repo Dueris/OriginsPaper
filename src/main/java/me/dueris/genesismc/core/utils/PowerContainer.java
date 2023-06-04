@@ -33,6 +33,7 @@ public class PowerContainer implements Serializable {
     /**
      * @return The powerContainer formatted for debugging, not to be used in other circumstances.
      */
+    @Override
     public String toString() {
         return "powerTag: " + this.powerTag + ", PowerFile: " + this.powerFile.toString() + ", PowerSource: " + this.powerSource.toString();
     }
@@ -200,6 +201,14 @@ public class PowerContainer implements Serializable {
         Object hidden = powerFile.get("hidden");
         if (hidden == null) return false;
         return (Boolean) hidden;
+    }
+
+    public void setName(String newName) {
+        this.powerFile.replace("name", newName);
+    }
+
+    public void setDescription(String newDescription) {
+        this.powerFile.replace("description", newDescription);
     }
 
 }

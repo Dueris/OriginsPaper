@@ -1,5 +1,6 @@
 package me.dueris.genesismc.core.factory;
 
+import me.dueris.genesismc.core.utils.Lang;
 import me.dueris.genesismc.core.utils.OriginContainer;
 import me.dueris.genesismc.core.utils.PowerContainer;
 import me.dueris.genesismc.core.utils.PowerFileContainer;
@@ -11,6 +12,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
+import javax.lang.model.util.Elements;
 import java.io.*;
 import java.util.*;
 import java.util.zip.ZipEntry;
@@ -50,6 +52,15 @@ public class CraftApoliRewriten {
             values.add(JSONFileParser.get((String) key));
         }
         return new PowerFileContainer(keys, values);
+    }
+
+    private static void translateOrigins() {
+        for (OriginContainer origin :getOriginOrigins()) {
+            for (PowerContainer power : origin.getPowerContainers()) {
+                power.setName(Lang.getLocalizedString(power.getName()));
+                power.setDescription(Lang.getLocalizedString(power.getDesription()));
+            }
+        }
     }
 
 
@@ -100,8 +111,6 @@ public class CraftApoliRewriten {
                                 originFolder.add(valueSplit[0]);
                                 originFileName.add(valueSplit[1]);
                             }
-
-
 
                         }
                     }
@@ -204,6 +213,7 @@ public class CraftApoliRewriten {
                 //Bukkit.getServer().getConsoleSender().sendMessage("[GenesisMC] Failed to parse the \"/data/origins/origin_layers/origin.json\" file for " + datapack.getName() + ". Is it a valid origin file?");
             }
         }
+        translateOrigins();
     }
 
     public static OriginContainer getOrigin(String originTag) {
