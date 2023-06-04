@@ -7,8 +7,11 @@ import me.dueris.genesismc.core.choosing.contents.origins.ExpandedOriginContent;
 import me.dueris.genesismc.core.choosing.contents.origins.OriginalOriginContent;
 import me.dueris.genesismc.core.commands.subcommands.SubCommand;
 import me.dueris.genesismc.core.factory.CraftApoliRewriten;
+import me.dueris.genesismc.core.factory.powers.Powers;
 import me.dueris.genesismc.core.utils.OriginContainer;
+import me.dueris.genesismc.core.utils.PlayerPower;
 import me.dueris.genesismc.core.utils.PowerContainer;
+import net.royawesome.jlibnoise.module.combiner.Power;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -76,8 +79,8 @@ public class Info extends SubCommand implements Listener {
             String item = minecraftItem.split(":")[1];
             ItemStack originIcon = new ItemStack(Material.valueOf(item.toUpperCase()));
 
-            ItemStack close = itemProperties(new ItemStack(Material.BARRIER), RED + "Close", null, null, RED + "Cancel Choosing");
-            ItemStack back = itemProperties(new ItemStack(Material.SPECTRAL_ARROW), ChatColor.AQUA + "Return", ItemFlag.HIDE_ENCHANTS, null, null);
+            ItemStack close = itemProperties(new ItemStack(Material.BARRIER), RED + "Close", null, null, null);
+            ItemStack back = itemProperties(new ItemStack(Material.SPECTRAL_ARROW), ChatColor.AQUA + "Close", ItemFlag.HIDE_ENCHANTS, null, null);
             ItemStack lowImpact = itemProperties(new ItemStack(Material.GREEN_STAINED_GLASS_PANE), ChatColor.WHITE + "Impact: " + ChatColor.GREEN + "Low", null, null, null);
             ItemStack mediumImpact = itemProperties(new ItemStack(Material.YELLOW_STAINED_GLASS_PANE), ChatColor.WHITE + "Impact: " + ChatColor.YELLOW + "Medium", null, null, null);
             ItemStack highImpact = itemProperties(new ItemStack(Material.RED_STAINED_GLASS_PANE), ChatColor.WHITE + "Impact: " + ChatColor.RED + "High", null, null, null);
