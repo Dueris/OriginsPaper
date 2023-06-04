@@ -7,7 +7,7 @@
 		"genesis:jump_boost"
 	],
 	"icon": {
-		"item": "minecraft:slimeball"
+		"item": "minecraft:slime_ball"
 	},
 	"order": 17,
 	"impact": 1,
