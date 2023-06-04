@@ -1,7 +1,9 @@
 package me.dueris.genesismc.core.choosing.contents;
 
 import me.dueris.genesismc.core.GenesisMC;
+import me.dueris.genesismc.core.factory.CraftApoliRewriten;
 import me.dueris.genesismc.core.files.GenesisDataFiles;
+import me.dueris.genesismc.core.utils.OriginContainer;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -23,32 +25,44 @@ import static org.bukkit.ChatColor.*;
 
 public class MainMenuContents {
 
+    private static ItemStack applyProperties(ItemStack icon) {
+        for (OriginContainer origin : CraftApoliRewriten.getOrigins()) {
+            if (!CraftApoliRewriten.isOriginOrigin(origin)) continue;
+            if (Material.valueOf(origin.getIcon().split(":")[1].toUpperCase()) != icon.getType()) continue;
+            ItemMeta meta = icon.getItemMeta();
+            NamespacedKey key = new NamespacedKey(GenesisMC.getPlugin(), "originTag");
+            meta.getPersistentDataContainer().set(key,PersistentDataType.STRING, origin.getTag());
+            icon.setItemMeta(meta);
+        }
+        return icon;
+    }
+
     public static @Nullable ItemStack @NotNull [] GenesisMainMenuContents(Player p) {
 
 
-        ItemStack human = new ItemStack(Material.PLAYER_HEAD);
-        ItemStack enderian = new ItemStack(Material.ENDER_PEARL);
-        ItemStack shulk = new ItemStack(Material.SHULKER_SHELL);
-        ItemStack arachnid = new ItemStack(Material.COBWEB);
-        ItemStack creep = new ItemStack(Material.GUNPOWDER);
-        ItemStack phantom = new ItemStack(Material.PHANTOM_MEMBRANE);
-        ItemStack slimeling = new ItemStack(Material.SLIME_BALL);
-        ItemStack feline = new ItemStack(Material.ORANGE_WOOL);
-        ItemStack blazeborn = new ItemStack(Material.BLAZE_POWDER);
-        ItemStack starborne = new ItemStack(Material.NETHER_STAR);
-        ItemStack merling = new ItemStack(Material.COD);
-        ItemStack allay = new ItemStack(Material.AMETHYST_SHARD);
-        ItemStack rabbit = new ItemStack(Material.CARROT);
-        ItemStack bumblebee = new ItemStack(Material.HONEYCOMB);
-        ItemStack elytrian = new ItemStack(Material.ELYTRA);
-        ItemStack avian = new ItemStack(Material.FEATHER);
-        ItemStack piglin = new ItemStack(Material.GOLD_INGOT);
-        ItemStack sculkling = new ItemStack(Material.ECHO_SHARD);
-        ItemStack custom_originmenu = new ItemStack(Material.TIPPED_ARROW);
-        ItemStack random = new ItemStack(Material.MAGMA_CREAM);
-        ItemStack background = new ItemStack(Material.GRAY_STAINED_GLASS_PANE);
-        ItemStack filler = new ItemStack(Material.BLACK_STAINED_GLASS_PANE);
-        ItemStack close = new ItemStack(Material.BARRIER);
+        ItemStack human = applyProperties(new ItemStack(Material.PLAYER_HEAD));
+        ItemStack enderian = applyProperties(new ItemStack(Material.ENDER_PEARL));
+        ItemStack shulk = applyProperties(new ItemStack(Material.SHULKER_SHELL));
+        ItemStack arachnid = applyProperties(new ItemStack(Material.COBWEB));
+        ItemStack creep = applyProperties(new ItemStack(Material.GUNPOWDER));
+        ItemStack phantom = applyProperties(new ItemStack(Material.PHANTOM_MEMBRANE));
+        ItemStack slimeling = applyProperties(new ItemStack(Material.SLIME_BALL));
+        ItemStack feline = applyProperties(new ItemStack(Material.ORANGE_WOOL));
+        ItemStack blazeborn = applyProperties(new ItemStack(Material.BLAZE_POWDER));
+        ItemStack starborne = applyProperties(new ItemStack(Material.NETHER_STAR));
+        ItemStack merling = applyProperties(new ItemStack(Material.COD));
+        ItemStack allay = applyProperties(new ItemStack(Material.AMETHYST_SHARD));
+        ItemStack rabbit = applyProperties(new ItemStack(Material.CARROT));
+        ItemStack bumblebee = applyProperties(new ItemStack(Material.HONEYCOMB));
+        ItemStack elytrian = applyProperties(new ItemStack(Material.ELYTRA));
+        ItemStack avian = applyProperties(new ItemStack(Material.FEATHER));
+        ItemStack piglin = applyProperties(new ItemStack(Material.GOLD_INGOT));
+        ItemStack sculkling = applyProperties(new ItemStack(Material.ECHO_SHARD));
+        ItemStack custom_originmenu = applyProperties(new ItemStack(Material.TIPPED_ARROW));
+        ItemStack random = applyProperties(new ItemStack(Material.MAGMA_CREAM));
+        ItemStack background = applyProperties(new ItemStack(Material.GRAY_STAINED_GLASS_PANE));
+        ItemStack filler = applyProperties(new ItemStack(Material.BLACK_STAINED_GLASS_PANE));
+        ItemStack close = applyProperties(new ItemStack(Material.BARRIER));
 
 
         ItemMeta meta = random.getItemMeta();

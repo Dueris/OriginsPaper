@@ -31,6 +31,7 @@ public class ChoosingCUSTOM implements Listener {
 
     public static List<String> cutStringIntoLists(String string) {
         ArrayList<String> strings = new ArrayList<>();
+        int startStringLength = string.length();
         while (string.length() > 40) {
             for (int i = 40; i > 1; i--) {
                 if (String.valueOf(string.charAt(i)).equals(" ")) {
@@ -39,6 +40,7 @@ public class ChoosingCUSTOM implements Listener {
                     break;
                 }
             }
+            if (startStringLength == string.length()) return List.of(string);
         }
         if (strings.isEmpty()) return List.of(string);
         strings.add(string);
@@ -62,12 +64,12 @@ public class ChoosingCUSTOM implements Listener {
     }
 
     @EventHandler(priority = EventPriority.HIGH)
-    public void CUSOTMCHOOSE_ORIGIN(InventoryClickEvent e) {
+    public void OriginChoose(InventoryClickEvent e) {
         if (e.getCurrentItem() != null) {
             if (e.getCurrentItem().getItemMeta() == null) return;
             NamespacedKey key = new NamespacedKey(GenesisMC.getPlugin(), "originTag");
             if (e.getCurrentItem().getItemMeta().getPersistentDataContainer().get(key, PersistentDataType.STRING) != null) {
-                @NotNull Inventory custommenu = Bukkit.createInventory(e.getWhoClicked(), 54, "Custom Origin");
+                @NotNull Inventory custommenu = Bukkit.createInventory(e.getWhoClicked(), 54, "Origin");
                 String originTag = e.getCurrentItem().getItemMeta().getPersistentDataContainer().get(key, PersistentDataType.STRING);
                 if (originTag == null) return;
 
@@ -201,9 +203,9 @@ public class ChoosingCUSTOM implements Listener {
     }
 
     @EventHandler
-    public void onCustomOriginBack(InventoryClickEvent e) {
+    public void OriginBack(InventoryClickEvent e) {
         if (e.getCurrentItem() != null) {
-            if (e.getView().getTitle().equalsIgnoreCase("Custom Origin")) {
+            if (e.getView().getTitle().equalsIgnoreCase("Origin")) {
                 if (e.getCurrentItem().getType().equals(Material.SPECTRAL_ARROW)) {
                     Player p = (Player) e.getWhoClicked();
                     p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 10, 2);
@@ -216,9 +218,9 @@ public class ChoosingCUSTOM implements Listener {
     }
 
     @EventHandler
-    public void onCustomOriginClose(InventoryClickEvent e) {
+    public void OriginClose(InventoryClickEvent e) {
         if (e.getCurrentItem() != null) {
-            if (e.getView().getTitle().equalsIgnoreCase("Custom Origin")) {
+            if (e.getView().getTitle().equalsIgnoreCase("Origin")) {
                 if (e.getCurrentItem().getType().equals(Material.BARRIER)) {
                     Player p = (Player) e.getWhoClicked();
                     p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 10, 2);
