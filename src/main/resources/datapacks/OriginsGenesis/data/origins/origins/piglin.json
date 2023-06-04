@@ -1,11 +1,11 @@
 {
 	"powers": [
-		"origins:elytra",
-		"origins:launch_into_air",
-		"origins:aerial_combatant",
-		"origins:light_armor",
-		"origins:claustrophobia",
-		"origins:more_kinetic_damage"
+		"genesis:gold_armor",
+		"genesis:gold_tools",
+		"genesis:piglin_attack",
+		"origins:nether_spawn",
+		"genesis:overworld_stack_buff",
+		"genesis:fire_weak_type"
 	],
 	"icon": {
 		"item": "minecraft:gold_ingot"
