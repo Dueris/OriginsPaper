@@ -8,7 +8,7 @@
 		"genesis:weak_night"
 	],
 	"icon": {
-		"item": "minecraft:honey_comb"
+		"item": "minecraft:honeycomb"
 	},
 	"order": 13,
 	"impact": 1,
