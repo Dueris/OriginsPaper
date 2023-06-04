@@ -240,4 +240,16 @@ public class CraftApoliRewriten {
         }
     }
 
+    public static Boolean isOriginOrigin(OriginContainer origin) {
+        return origin.getTag().equals("origins:arachnid") || origin.getTag().equals("origins:avian")
+                || origin.getTag().equals("origins:blazeborn")
+                || origin.getTag().equals("origins:elytrian")
+                || origin.getTag().equals("origins:enderian")
+                || origin.getTag().equals("origins:feline")
+                || origin.getTag().equals("origins:human")
+                || origin.getTag().equals("origins:merling")
+                || origin.getTag().equals("origins:phantom")
+                || origin.getTag().equals("origins:shulk");
+    }
+
 }
