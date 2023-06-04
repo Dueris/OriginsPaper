@@ -60,7 +60,7 @@ public class OriginContainer implements Serializable {
      * @return An array containing all the origin powers.
      */
     public ArrayList<PowerContainer> getPowerContainers() {
-        return new ArrayList<PowerContainer>(this.powerContainer);
+        return new ArrayList<>(this.powerContainer);
     }
 
 
