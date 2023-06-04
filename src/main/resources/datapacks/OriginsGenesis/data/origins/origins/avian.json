@@ -10,5 +10,7 @@
 		"item": "minecraft:feather"
 	},
 	"order": 0,
-	"impact": 1
+	"impact": 1,
+	"display_name": "Avian",
+	"description": "The Avian race has lost their ability to fly a long time ago. Now these peaceful creatures can be seen gliding from one place to another"
 }

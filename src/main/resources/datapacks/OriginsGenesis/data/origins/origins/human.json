@@ -3,5 +3,7 @@
 		"item": "minecraft:player_head"
 	},
 	"order": 0,
-	"impact": 0
+	"impact": 0,
+	"display_name": "Human",
+	"description": "A normal Minecraft experience"
 }

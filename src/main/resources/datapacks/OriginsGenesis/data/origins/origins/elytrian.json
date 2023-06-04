@@ -11,5 +11,7 @@
 		"item": "minecraft:elytra"
 	},
 	"order": 3,
-	"impact": 1
+	"impact": 1,
+	"display_name": "Elytrian",
+	"description": "Often flying around in the winds, Elytrians are uncomfortable when they don't have enough space above their head"
 }
