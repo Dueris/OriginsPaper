@@ -137,8 +137,10 @@ public class ChoosingCUSTOM implements Listener {
                     } else if (i == 13) {
                         contents.add(originIcon);
                     } else if ((i >= 20 && i <= 24) || (i >= 29 && i <= 33) || (i >= 38 && i <= 42)) {
-
-                        if (powerContainers.size() > 0 && !powerContainers.get(0).getHidden()) {
+                        while (powerContainers.size() > 0 && powerContainers.get(0).getHidden()) {
+                            powerContainers.remove(0);
+                        }
+                        if (powerContainers.size() > 0) {
                             ItemStack originPower = new ItemStack(Material.FILLED_MAP);
 
                             ItemMeta meta = originPower.getItemMeta();
@@ -148,6 +150,7 @@ public class ChoosingCUSTOM implements Listener {
                             originPower.setItemMeta(meta);
 
                             contents.add(originPower);
+
                             powerContainers.remove(0);
 
                         } else {
@@ -157,6 +160,7 @@ public class ChoosingCUSTOM implements Listener {
                                 contents.add(new ItemStack(Material.PAPER));
                             }
                         }
+
 
                     } else if (i == 49) {
                         contents.add(back);
