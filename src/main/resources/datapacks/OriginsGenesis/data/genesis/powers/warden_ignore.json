@@ -1,0 +1,6 @@
+{
+  "type": "genesis:warden_ignore",
+  "hidden": false,
+  "name": "menu.expanded.sculk.besties_forever.title",
+  "description": "menu.expanded.sculk.besties_forever.description"
+}

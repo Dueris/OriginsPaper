@@ -1,0 +1,6 @@
+{
+  "type": "genesis:daylight_debuff",
+  "hidden": false,
+  "name": "menu.expanded.sculk.afraid_of_light.title",
+  "description": "menu.expanded.sculk.afraid_of_light.description"
+}

@@ -1,0 +1,6 @@
+{
+  "type": "genesis:sonic_boom",
+  "hidden": false,
+  "name": "menu.expanded.sculk.carrier_echos.title",
+  "description": "menu.expanded.sculk.carrier_echos.description"
+}

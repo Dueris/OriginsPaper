@@ -1,0 +1,6 @@
+{
+  "type": "genesis:sculk_growth_death",
+  "hidden": false,
+  "name": "menu.expanded.sculk.it_grows.title",
+  "description": "menu.expanded.sculk.it_grows.description"
+}

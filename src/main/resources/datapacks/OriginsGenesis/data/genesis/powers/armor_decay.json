@@ -1,0 +1,6 @@
+{
+  "type": "genesis:armor_decay",
+  "hidden": false,
+  "name": "menu.expanded.sculk.decaying_essence.title",
+  "description": "menu.expanded.sculk.decaying_essence.description"
+}

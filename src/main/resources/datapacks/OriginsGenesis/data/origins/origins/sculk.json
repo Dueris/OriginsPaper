@@ -1,11 +1,13 @@
 {
 	"powers": [
-		"origins:elytra",
-		"origins:launch_into_air",
-		"origins:aerial_combatant",
-		"origins:light_armor",
-		"origins:claustrophobia",
-		"origins:more_kinetic_damage"
+		"genesis:armor_decay",
+		"genesis:block_stack_buff",
+		"genesis:deep_dark_spawn",
+		"genesis:echo_pulse",
+		"genesis:light_debuff",
+		"genesis:sculk_growth_death",
+		"genesis:sonic_boom",
+		"genesis:warden_ignore"
 	],
 	"icon": {
 		"item": "minecraft:echo_shard"
