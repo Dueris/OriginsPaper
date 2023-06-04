@@ -12,5 +12,7 @@
 		"item": "minecraft:cod"
 	},
 	"order": 0,
-	"impact": 3
+	"impact": 3,
+	"display_name": "Merling",
+	"description": "Not implemented yet"
 }

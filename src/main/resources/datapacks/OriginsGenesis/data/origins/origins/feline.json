@@ -11,5 +11,7 @@
 		"item": "minecraft:orange_wool"
 	},
 	"order": 0,
-	"impact": 2
+	"impact": 2,
+	"display_name": "Feline",
+	"description": "Not implemented yet"
 }
