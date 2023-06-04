@@ -178,7 +178,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 
         for (Player p : Bukkit.getOnlinePlayers()) {
             if (p.isOp()) {
-                p.sendMessage(ChatColor.BLUE + "Origins Reloaded.");
+                p.sendMessage(Component.text("Origins Reloaded.").color(TextColor.color(0, 0, 200)));
             }
             CustomOriginExistCheck.customOriginExistCheck(p);
         }
@@ -208,7 +208,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 
     @Override
     public void onDisable() {
-        getServer().getConsoleSender().sendMessage(Component.text(ChatColor.RED + "[GenesisMC] Disabling GenesisMC Origins."));
+        getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] Disabling GenesisMC Origins.").color(TextColor.color(200,0,0)));
         // Disable enchantments
         try {
             Field keyField = Enchantment.class.getDeclaredField("byKey");
