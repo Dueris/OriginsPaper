@@ -1,5 +1,6 @@
 package me.dueris.genesismc.core.utils;
 
+import org.bukkit.Material;
 import org.json.simple.JSONObject;
 
 import java.io.Serializable;
@@ -126,6 +127,13 @@ public class OriginContainer implements Serializable {
         Boolean hidden = (Boolean) this.originFile.get("unchooseable");
         if (hidden == null) return false;
         return hidden;
+    }
+
+    /**
+     * @return The icon as a Material Object.
+     */
+    public Material getMaterialIcon() {
+        return Material.valueOf(getIcon().split(":")[1].toUpperCase());
     }
 
 }
