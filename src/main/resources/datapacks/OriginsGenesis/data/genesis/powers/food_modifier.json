@@ -1,0 +1,6 @@
+{
+	"type": "genesis:cookie_buff",
+	"hidden": false,
+	"name": "menu.expanded.allay.cookies.title",
+	"description": "menu.expanded.allay.cookies.title"
+}

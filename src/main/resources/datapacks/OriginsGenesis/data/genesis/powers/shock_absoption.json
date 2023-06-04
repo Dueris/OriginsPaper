@@ -1,0 +1,6 @@
+{
+	"type": "genesis:resist_fall",
+	"hidden": false,
+	"name": "menu.expanded.rabbit.shock_absorption.title",
+	"description": "menu.expanded.rabbit.shock_absorption.description"
+}

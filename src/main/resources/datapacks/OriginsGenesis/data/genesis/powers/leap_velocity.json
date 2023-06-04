@@ -1,0 +1,6 @@
+{
+	"type": "genesis:big_leap_charge",
+	"hidden": false,
+	"name": "menu.expanded.rabbit.leap.title",
+	"description": "menu.expanded.rabbit.leap.description"
+}

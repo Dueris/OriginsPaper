@@ -1,0 +1,17 @@
+{
+	"powers": [
+		"genesis:creative_flight",
+		"genesis:creative_flight_rain_cancel",
+		"genesis:flower_boost_health",
+		"origins:slow_falling",
+		"origins:fragile",
+		"genesis:weak_night"
+	],
+	"icon": {
+		"item": "minecraft:honey_comb"
+	},
+	"order": 13,
+	"impact": 1,
+	"display_name": "Bee",
+	"description": "tell dueris to make a description"
+}
