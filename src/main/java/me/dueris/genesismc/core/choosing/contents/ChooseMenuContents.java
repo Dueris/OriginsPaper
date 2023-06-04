@@ -32,7 +32,10 @@ public class ChooseMenuContents {
         next = itemProperties(next, "Next", ItemFlag.HIDE_ENCHANTS, null, null);
 
         ArrayList<ItemStack> contents = new ArrayList<>();
-        ArrayList<OriginContainer> originContainerTags = CraftApoliRewriten.getOrigins();
+        ArrayList<OriginContainer> originContainers = new ArrayList<>();
+        for (OriginContainer origin : CraftApoliRewriten.getOrigins()) {
+             if (!CraftApoliRewriten.isOriginOrigin(origin)) originContainers.add(origin);
+        }
 
         for (int i = 0; i <= 53; i++) {
             if (i % 9 == 0 || (i + 1) % 9 == 0) {
@@ -46,11 +49,11 @@ public class ChooseMenuContents {
             } else if (i >= 46) {
                 contents.add(new ItemStack(Material.AIR));
             } else {
-                if (originContainerTags.size() > 0) {
-                    OriginContainer origin = originContainerTags.get(0);
+                if (originContainers.size() > 0) {
+                    OriginContainer origin = originContainers.get(0);
                     while (origin.getUnchooseable()) {
-                        originContainerTags.remove(0);
-                        origin = originContainerTags.get(0);
+                        originContainers.remove(0);
+                        origin = originContainers.get(0);
                     }
                     String minecraftItem = origin.getIcon();
                     String item = minecraftItem.split(":")[1];
@@ -64,7 +67,7 @@ public class ChooseMenuContents {
                     originIconmeta.getPersistentDataContainer().set(key, PersistentDataType.STRING, origin.getTag());
                     originIcon.setItemMeta(originIconmeta);
                     contents.add(originIcon);
-                    originContainerTags.remove(0);
+                    originContainers.remove(0);
                 } else {
                     contents.add(new ItemStack(Material.AIR));
                 }
