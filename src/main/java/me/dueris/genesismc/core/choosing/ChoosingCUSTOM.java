@@ -16,6 +16,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 
@@ -66,7 +67,7 @@ public class ChoosingCUSTOM implements Listener {
     }
 
     @EventHandler(priority = EventPriority.HIGH)
-    public void OriginChoose(InventoryClickEvent e) {
+    public void OriginChooseMenu(InventoryClickEvent e) {
         if (e.getCurrentItem() != null) {
             if (e.getCurrentItem().getItemMeta() == null) return;
             NamespacedKey key = new NamespacedKey(GenesisMC.getPlugin(), "originTag");
@@ -139,6 +140,14 @@ public class ChoosingCUSTOM implements Listener {
                         else if (impact == 3) contents.add(highImpact);
                         else contents.add(new ItemStack(Material.AIR));
                     } else if (i == 13) {
+                        if (origin.getTag().equals("origins:human")) {
+                            SkullMeta skull_p = (SkullMeta) originIcon.getItemMeta();
+                            skull_p.setOwningPlayer(p);
+                            skull_p.setOwner(p.getName());
+                            skull_p.setPlayerProfile(p.getPlayerProfile());
+                            skull_p.setOwnerProfile(p.getPlayerProfile());
+                            originIcon.setItemMeta(skull_p);
+                        }
                         contents.add(originIcon);
                     } else if ((i >= 20 && i <= 24) || (i >= 29 && i <= 33) || (i >= 38 && i <= 42)) {
                         while (powerContainers.size() > 0 && powerContainers.get(0).getHidden()) {
@@ -179,7 +188,7 @@ public class ChoosingCUSTOM implements Listener {
     }
 
     @EventHandler(priority = EventPriority.HIGH)
-    public void CustomOriginSelect(InventoryClickEvent e) {
+    public void OriginSelect(InventoryClickEvent e) {
         if (e.getCurrentItem() != null) {
             if (e.getCurrentItem().getType() == Material.MAGMA_CREAM) return;
             if (e.getCurrentItem().getItemMeta() == null) return;
