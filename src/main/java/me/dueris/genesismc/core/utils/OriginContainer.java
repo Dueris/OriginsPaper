@@ -112,6 +112,13 @@ public class OriginContainer implements Serializable {
     }
 
     /**
+     * @return The icon as a Material Object.
+     */
+    public Material getMaterialIcon() {
+        return Material.valueOf(getIcon().split(":")[1].toUpperCase());
+    }
+
+    /**
      * @return The impact of the origin.
      */
     public Long getImpact() {
@@ -128,12 +135,4 @@ public class OriginContainer implements Serializable {
         if (hidden == null) return false;
         return hidden;
     }
-
-    /**
-     * @return The icon as a Material Object.
-     */
-    public Material getMaterialIcon() {
-        return Material.valueOf(getIcon().split(":")[1].toUpperCase());
-    }
-
 }
