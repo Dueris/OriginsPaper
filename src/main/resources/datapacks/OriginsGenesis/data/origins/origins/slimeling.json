@@ -4,7 +4,7 @@
 		"genesis:slime_block_bounce",
 		"genesis:split_slime",
 		"genesis:leap_velocity",
-		"origins:jump_boost"
+		"genesis:jump_boost"
 	],
 	"icon": {
 		"item": "minecraft:slimeball"

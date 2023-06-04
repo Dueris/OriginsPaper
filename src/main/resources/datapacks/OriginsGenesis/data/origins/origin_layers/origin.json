@@ -12,7 +12,14 @@
     "origins:human",
     "origins:merling",
     "origins:phantom",
-    "origins:shulk"
+    "origins:shulk",
+    "origins:allay",
+    "origins:rabbit",
+    "origins:bee",
+    "origins:sculkling",
+    "origins:creep",
+    "origins:slimeling",
+    "origins:piglin"
   ],
   "allow_random": true,
   "exclude_random": [

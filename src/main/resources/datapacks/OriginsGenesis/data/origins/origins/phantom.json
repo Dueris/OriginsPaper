@@ -2,7 +2,6 @@
 	"powers": [
 		"origins:phantomize",
 		"origins:translucent",
-		"origins:invisibility",
 		"origins:burn_in_daylight",
 		"origins:fragile",
 		"origins:phantomize_overlay"
