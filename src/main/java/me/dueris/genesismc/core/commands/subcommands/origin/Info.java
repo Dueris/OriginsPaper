@@ -18,8 +18,10 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -61,20 +63,14 @@ public class Info extends SubCommand implements Listener {
     @Override
     public void perform(Player p, String[] args) {
         if (args.length == 1) {
-            Inventory help = Bukkit.createInventory(p, 54, "Help");
-            PersistentDataContainer data = p.getPersistentDataContainer();
-            OriginContainer origin = CraftApoliRewriten.toOriginContainer(data.get(new NamespacedKey(GenesisMC.getPlugin(), "origin"), PersistentDataType.BYTE_ARRAY));
-            NamespacedKey key = new NamespacedKey(GenesisMC.getPlugin(), "originTag");
+            NamespacedKey key = new NamespacedKey(GenesisMC.getPlugin(), "origin");
+            @NotNull Inventory help = Bukkit.createInventory(p, 54, "Help");
+            OriginContainer origin = CraftApoliRewriten.toOriginContainer(p.getPersistentDataContainer().get(key, PersistentDataType.BYTE_ARRAY));
+            if (origin == null) return;
 
-            ArrayList<String> originPowerNames = new ArrayList<>();
-            ArrayList<String> originPowerDescriptions = new ArrayList<>();
+            p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 10, 2);
 
-            for (PowerContainer powers : origin.getPowerContainers()) {
-                if (!powers.getHidden()) {
-                    originPowerNames.add(origin.getName());
-                    originPowerDescriptions.add(origin.getDescription());
-                }
-            }
+            ArrayList<PowerContainer> powerContainers = origin.getPowerContainers();
 
             String minecraftItem = origin.getIcon();
             String item = minecraftItem.split(":")[1];
@@ -91,6 +87,7 @@ public class Info extends SubCommand implements Listener {
             originIconmeta.setDisplayName(origin.getName());
             originIconmeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
             originIconmeta.setLore(cutStringIntoLists(origin.getDescription()));
+
             originIcon.setItemMeta(originIconmeta);
 
             ArrayList<ItemStack> contents = new ArrayList<>();
@@ -99,7 +96,7 @@ public class Info extends SubCommand implements Listener {
             for (int i = 0; i <= 53; i++) {
                 if (i == 0 || i == 8) {
                     contents.add(close);
-                } else if (i == 1) {                                          //impact
+                } else if (i == 1) {
                     if (impact == 1) contents.add(lowImpact);
                     else if (impact == 2) contents.add(mediumImpact);
                     else if (impact == 3) contents.add(highImpact);
@@ -113,7 +110,7 @@ public class Info extends SubCommand implements Listener {
                     else contents.add(new ItemStack(Material.AIR));
                 } else if (i == 4) {
                     contents.add(orb);
-                } else if (i == 5) {                                           //impact
+                } else if (i == 5) {
                     if (impact == 3) contents.add(highImpact);
                     else contents.add(new ItemStack(Material.AIR));
                 } else if (i == 6) {
@@ -126,24 +123,32 @@ public class Info extends SubCommand implements Listener {
                     else if (impact == 3) contents.add(highImpact);
                     else contents.add(new ItemStack(Material.AIR));
                 } else if (i == 13) {
+                    if (origin.getTag().equals("origins:human")) {
+                        SkullMeta skull_p = (SkullMeta) originIcon.getItemMeta();
+                        skull_p.setOwningPlayer(p);
+                        skull_p.setOwner(p.getName());
+                        skull_p.setPlayerProfile(p.getPlayerProfile());
+                        skull_p.setOwnerProfile(p.getPlayerProfile());
+                        originIcon.setItemMeta(skull_p);
+                    }
                     contents.add(originIcon);
                 } else if ((i >= 20 && i <= 24) || (i >= 29 && i <= 33) || (i >= 38 && i <= 42)) {
-
-                    if (originPowerNames.size() > 0) {
-                        String powerName = originPowerNames.get(0);
-                        String powerDescription = originPowerDescriptions.get(0);
+                    while (powerContainers.size() > 0 && powerContainers.get(0).getHidden()) {
+                        powerContainers.remove(0);
+                    }
+                    if (powerContainers.size() > 0) {
 
                         ItemStack originPower = new ItemStack(Material.FILLED_MAP);
 
                         ItemMeta meta = originPower.getItemMeta();
-                        meta.setDisplayName(powerName);
+                        meta.setDisplayName(powerContainers.get(0).getName());
                         meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-                        meta.setLore(cutStringIntoLists(powerDescription));
+                        meta.setLore(cutStringIntoLists(powerContainers.get(0).getDesription()));
                         originPower.setItemMeta(meta);
 
                         contents.add(originPower);
-                        originPowerNames.remove(0);
-                        originPowerDescriptions.remove(0);
+
+                        powerContainers.remove(0);
 
                     } else {
                         if (i >= 38) {
@@ -152,6 +157,7 @@ public class Info extends SubCommand implements Listener {
                             contents.add(new ItemStack(Material.PAPER));
                         }
                     }
+
 
                 } else if (i == 49) {
                     contents.add(back);
@@ -162,6 +168,5 @@ public class Info extends SubCommand implements Listener {
             help.setContents(contents.toArray(new ItemStack[0]));
             p.openInventory(help);
         }
-
     }
 }
