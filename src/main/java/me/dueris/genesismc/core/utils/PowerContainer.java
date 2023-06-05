@@ -1,8 +1,6 @@
 package me.dueris.genesismc.core.utils;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
 
 public class PowerContainer implements Serializable {
 
@@ -25,7 +23,7 @@ public class PowerContainer implements Serializable {
         return this.powerFile;
     }
 
-    public String getPowerSource() {
+    public String getSource() {
         return this.powerSource;
     }
 
