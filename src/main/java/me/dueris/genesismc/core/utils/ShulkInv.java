@@ -28,7 +28,7 @@ public class ShulkInv implements CommandExecutor {
 
         if (sender instanceof Player p) {
 
-            if (shulker_inventory.contains(OriginPlayer.getOrigin((Player) sender).getTag())) {
+            if (shulker_inventory.contains((Player) sender)) {
                 if (args.length > 0) {
                     if (args[0].equalsIgnoreCase("open")) {
 

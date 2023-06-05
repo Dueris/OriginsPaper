@@ -22,7 +22,7 @@ public class CreeperDeathDrop implements Listener {
     @EventHandler
     public void onCreepDeath(PlayerDeathEvent e) {
         Player p = e.getPlayer();
-        if (creeper_head_death_drop.contains(e.getPlayer().getUniqueId().toString())) {
+        if (creeper_head_death_drop.contains(e.getPlayer())) {
             if (e.getEntity().getType() == EntityType.CREEPER) {
                 Creeper killer = (Creeper) e.getEntity();
                 if (killer.isPowered()) {
@@ -32,7 +32,7 @@ public class CreeperDeathDrop implements Listener {
                 Player killerp = e.getEntity();
                 PersistentDataContainer datak = killerp.getPersistentDataContainer();
                 @Nullable String origintagk = datak.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
-                if (creeper_head_death_drop.contains(e.getPlayer().getUniqueId().toString())) {
+                if (creeper_head_death_drop.contains(e.getPlayer())) {
                     if (p.getWorld().isThundering() && e.getEntity().getPersistentDataContainer().has(new NamespacedKey(GenesisMC.getPlugin(), "originid"), PersistentDataType.INTEGER)) {
                         PersistentDataContainer edata = e.getEntity().getPersistentDataContainer();
                         @Nullable String origintage = edata.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);

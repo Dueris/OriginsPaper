@@ -27,7 +27,7 @@ public class PhantomizeOverlay extends BukkitRunnable {
             int phantomid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER);
 
             if (phantomid == 2) {
-                if (phantomize_overlay.contains(p.getUniqueId().toString())) {
+                if (phantomize_overlay.contains(p)) {
                     Phantomized.initializePhantomOverlay(p);
                 }else{Phantomized.deactivatePhantomOverlay(p);}
             }else{Phantomized.deactivatePhantomOverlay(p);}

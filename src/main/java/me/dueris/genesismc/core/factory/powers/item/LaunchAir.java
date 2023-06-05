@@ -31,7 +31,7 @@ public class LaunchAir implements Listener {
         launchmeta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
         launchitem.addItemFlags(ItemFlag.HIDE_ENCHANTS);
         launchitem.setItemMeta(launchmeta);
-        if (launch_into_air.contains(e.getPlayer().getUniqueId().toString())) {
+        if (launch_into_air.contains(e.getPlayer())) {
             e.getPlayer().getInventory().addItem(launchitem);
         }
     }
@@ -45,7 +45,7 @@ public class LaunchAir implements Listener {
         launchitem.addItemFlags(ItemFlag.HIDE_ENCHANTS);
         launchitem.setItemMeta(launchmeta);
         if (!e.getDrops().contains(launchitem)) return;
-        if (launch_into_air.contains(e.getPlayer().getUniqueId().toString())) {
+        if (launch_into_air.contains(e.getPlayer())) {
             e.getDrops().remove(launchitem);
         }
     }
@@ -58,7 +58,7 @@ public class LaunchAir implements Listener {
         launchmeta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
         launchitem.addItemFlags(ItemFlag.HIDE_ENCHANTS);
         launchitem.setItemMeta(launchmeta);
-        if (launch_into_air.contains(e.getPlayer().getUniqueId().toString())) {
+        if (launch_into_air.contains(e.getPlayer())) {
             if (e.getItem() == null) return;
             if (e.getItem().equals(launchitem)) {
                 e.getPlayer().setVelocity(new Vector(0, 2, 0));

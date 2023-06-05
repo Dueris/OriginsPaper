@@ -30,7 +30,7 @@ public class FlightElytra implements Listener {
     @EventHandler
     public void ExecuteFlight(PlayerToggleSneakEvent e) {
         Player p = e.getPlayer();
-        if (elytra.contains(e.getPlayer().getUniqueId().toString())) {
+        if (elytra.contains(e.getPlayer())) {
             if (!p.isOnGround() && !p.isGliding()) {
                 glidingPlayers.add(p.getUniqueId());
                 if (p.getGameMode() == GameMode.SPECTATOR) return;
@@ -53,8 +53,8 @@ public class FlightElytra implements Listener {
     @EventHandler
     public void BoostHandler(PlayerInteractEvent e) {
         Player p = e.getPlayer();
-        if (elytra.contains(e.getPlayer().getUniqueId().toString()) && e.getAction().equals(Action.LEFT_CLICK_AIR)) {
-            if (!glidingPlayers.contains(p.getUniqueId().toString())) return;
+        if (elytra.contains(e.getPlayer()) && e.getAction().equals(Action.LEFT_CLICK_AIR)) {
+            if (!glidingPlayers.contains(p)) return;
             if (p.getGameMode() == GameMode.CREATIVE) return;
             if (e.getItem() != null) {
                 ItemStack rocket = new ItemStack(Material.FIREWORK_ROCKET);
@@ -71,15 +71,15 @@ public class FlightElytra implements Listener {
     @EventHandler
     public void ElytraDamageHandler(EntityDamageEvent e) {
         if (e.getEntity() instanceof Player p) {
-            if (elytra.contains(p.getUniqueId().toString())) {
-                if (glidingPlayers.contains(p.getUniqueId().toString())) {
+            if (elytra.contains(p)) {
+                if (glidingPlayers.contains(p)) {
                     if (e.getCause().equals(EntityDamageEvent.DamageCause.FLY_INTO_WALL) || e.getCause().equals(EntityDamageEvent.DamageCause.CONTACT)) {
                         e.setDamage(e.getDamage() * 0.25);
                     }
                 }
             }
-            if (more_kinetic_damage.contains(p.getUniqueId().toString())) {
-                if (!glidingPlayers.contains(p.getUniqueId().toString())) {
+            if (more_kinetic_damage.contains(p)) {
+                if (!glidingPlayers.contains(p)) {
                     if (e.getCause().equals(EntityDamageEvent.DamageCause.FLY_INTO_WALL) || e.getCause().equals(EntityDamageEvent.DamageCause.CONTACT)) {
                         e.setDamage(e.getDamage() * 1.5);
                     }

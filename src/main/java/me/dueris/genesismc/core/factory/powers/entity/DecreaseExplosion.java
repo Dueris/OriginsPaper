@@ -12,7 +12,7 @@ public class DecreaseExplosion implements Listener {
     @EventHandler
     public void onCreepDamage(EntityDamageEvent e) {
         if (e.getEntity() instanceof Player p) {
-            if (decreased_explosion.contains(p.getUniqueId().toString())) {
+            if (decreased_explosion.contains(p)) {
                 if (e.getCause() == EntityDamageEvent.DamageCause.BLOCK_EXPLOSION || e.getCause() == EntityDamageEvent.DamageCause.ENTITY_EXPLOSION) {
                     e.setDamage(e.getFinalDamage() * 0.55);
                 }

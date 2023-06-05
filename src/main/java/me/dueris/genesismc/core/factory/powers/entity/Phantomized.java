@@ -49,7 +49,7 @@ public class Phantomized extends BukkitRunnable implements Listener {
             int phantomid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER);
 
             if (phantomid == 2) {
-                if (phantomize.contains(p.getUniqueId().toString())) {
+                if (phantomize.contains(p)) {
                     p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 10, 0, false, false, false));
                     if ((p.getLocation().add(0.55F, 0, 0.55F).getBlock().isSolid() ||
                             p.getLocation().add(0.55F, 0, 0).getBlock().isSolid() ||
@@ -118,7 +118,7 @@ public class Phantomized extends BukkitRunnable implements Listener {
         if (e.getEntity() instanceof Player p) {
             PersistentDataContainer data = p.getPersistentDataContainer();
             int phantomid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER);
-            if (phantomize.contains(p.getUniqueId().toString()) && phantomid == 2) {
+            if (phantomize.contains(p) && phantomid == 2) {
                 if (e.getCause().equals(EntityDamageEvent.DamageCause.FREEZE)) {
                     e.setDamage(0);
                     e.setCancelled(true);
@@ -141,7 +141,7 @@ public class Phantomized extends BukkitRunnable implements Listener {
         spectatorswitch.setItemMeta(switch_meta);
 
         Player p = e.getPlayer();
-        if (phantomize.contains(e.getPlayer().getUniqueId().toString())) {
+        if (phantomize.contains(e.getPlayer())) {
             e.getPlayer().getInventory().addItem(spectatorswitch);
         }
     }

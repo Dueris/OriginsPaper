@@ -59,11 +59,6 @@ public class Info extends SubCommand implements Listener {
 
     @Override
     public void perform(Player p, String[] args) {
-        for (String uuid : Powers.tailwind) {
-            System.out.println(Bukkit.getPlayer(uuid));
-            System.out.println(OriginPlayer.getOrigin(Bukkit.getPlayer(uuid)).getPowerContainers());
-        }
-
         if (args.length == 1) {
             NamespacedKey key = new NamespacedKey(GenesisMC.getPlugin(), "origin");
             @NotNull Inventory help = Bukkit.createInventory(p, 54, "Help");

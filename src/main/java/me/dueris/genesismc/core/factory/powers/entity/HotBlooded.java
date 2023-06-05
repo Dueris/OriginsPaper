@@ -17,7 +17,7 @@ public class HotBlooded implements Listener {
     @EventHandler
     public void hotblooded(EntityPotionEffectEvent e) {
         if (!(e.getEntity() instanceof Player p)) return;
-        if (!hotblooded.contains(p.getUniqueId().toString())) return;
+        if (!hotblooded.contains(p)) return;
         if (e.getOldEffect() == null) return;
         if (e.getOldEffect().getType().getId() == PotionEffectType.HUNGER.getId() || e.getOldEffect().getType().getId() == PotionEffectType.HUNGER.getId())
             return;
