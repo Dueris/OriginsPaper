@@ -52,6 +52,7 @@ public class CraftApoliRewriten {
     private static void translateOrigins() {
         for (OriginContainer origin :getOriginOrigins()) {
             for (PowerContainer power : origin.getPowerContainers()) {
+                power.setName(Lang.getLocalizedString(power.getName()));
                 power.setDescription(Lang.getLocalizedString(power.getDesription()));
             }
         }
