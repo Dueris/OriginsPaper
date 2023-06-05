@@ -265,11 +265,11 @@ public class CraftApoliRewriten {
     }
 
     public static ArrayList<OriginContainer> getCoreOrigins() {
-        ArrayList<OriginContainer> originOrigins = new ArrayList<>();
+        ArrayList<OriginContainer> coreOrigins = new ArrayList<>();
         for (OriginContainer origin : getOrigins()) {
-            if (isCoreOrigin(origin)) originOrigins.add(origin);
+            if (isCoreOrigin(origin)) coreOrigins.add(origin);
         }
-        return originOrigins;
+        return coreOrigins;
     }
 
 }
