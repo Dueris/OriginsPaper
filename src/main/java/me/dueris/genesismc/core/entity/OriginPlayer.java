@@ -361,7 +361,9 @@ public class OriginPlayer {
     }
 
     public static void assignPowers(Player player) {
-        for (PowerContainer power : getOrigin(player).getPowerContainers()) {
+        OriginContainer origin = getOrigin(player);
+        for (PowerContainer power : origin.getPowerContainers()) {
+            if (!origin.getTag().equals(power.getSource())) return;
             switch (power.getType()) {
                 case "origins:fall_immunity" -> fall_immunity.add(player);
                 case "origins:aerial_combatant" -> aerial_combatant.add(player);
@@ -448,7 +450,9 @@ public class OriginPlayer {
     }
 
     public static void unassignPowers(Player player) {
-        for (PowerContainer power :  getOrigin(player).getPowerContainers()) {
+        OriginContainer origin = getOrigin(player);
+        for (PowerContainer power : origin.getPowerContainers()) {
+            if (!origin.getTag().equals(power.getSource())) return;
             switch (power.getType()) {
                 case "origins:fall_immunity" -> fall_immunity.remove(player);
                 case "origins:aerial_combatant" -> aerial_combatant.remove(player);
