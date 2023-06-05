@@ -195,7 +195,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         getServer().getConsoleSender().sendMessage(Component.text("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~").color(TextColor.color(128, 128, 128)));
 
 
-        //for (Player p : Bukkit.getOnlinePlayers()) OriginPlayer.assignPowers(p);
+        for (Player p : Bukkit.getOnlinePlayers()) OriginPlayer.assignPowers(p);
     }
 
     @EventHandler

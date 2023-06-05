@@ -142,7 +142,7 @@ public class OriginPlayer {
     }
 
     public static void setOrigin(Player player, OriginContainer origin) {
-        //unassignPowers(player);
+        unassignPowers(player);
         player.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origin"), PersistentDataType.BYTE_ARRAY, CraftApoliRewriten.toByteArray(origin));
         String originTag = origin.getTag();
         if (originTag.contains("genesis:origin-human")) {
@@ -298,7 +298,7 @@ public class OriginPlayer {
             }, 1);
         }
         SendCharts.originPopularity(player);
-        //assignPowers(player);
+        assignPowers(player);
     }
 
     public static void resetOriginData(Player player, OriginDataType type) {
@@ -362,9 +362,7 @@ public class OriginPlayer {
     public static void assignPowers(Player player) {
         OriginContainer origin = getOrigin(player);
         UUID uuid = player.getUniqueId();
-        player.sendMessage(uuid.toString());
         for (PowerContainer power : origin.getPowerContainers()) {
-            player.sendMessage(power.getType());
             switch (power.getType()) {
                 case "origins:fall_immunity" -> fall_immunity.add(uuid.toString());
                 case "origins:aerial_combatant" -> aerial_combatant.add(uuid.toString());
@@ -451,13 +449,9 @@ public class OriginPlayer {
     }
 
     public static void unassignPowers(Player player) {
-        System.out.println(OriginPlayer.getOrigin(player).getTag());
         OriginContainer origin = getOrigin(player);
         UUID uuid = player.getUniqueId();
-        player.sendMessage(uuid.toString());
         for (PowerContainer power : origin.getPowerContainers()) {
-            player.sendMessage(power.getType());
-            player.sendMessage(power.getSource());
             if (!origin.getTag().equals(power.getSource())) continue;
             switch (power.getType()) {
                 case "origins:fall_immunity" -> fall_immunity.remove(uuid.toString());

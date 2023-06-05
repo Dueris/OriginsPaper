@@ -12,12 +12,12 @@ public class PlayerHandler implements Listener {
     @EventHandler
     public void playerJoinListener(PlayerJoinEvent e) {
         Player player = e.getPlayer();
-        //OriginPlayer.assignPowers(player);
+        OriginPlayer.assignPowers(player);
     }
 
     @EventHandler
     public void playerQuitListener(PlayerQuitEvent e) {
         Player player = e.getPlayer();
-        //OriginPlayer.unassignPowers(player);
+        OriginPlayer.unassignPowers(player);
     }
 }
