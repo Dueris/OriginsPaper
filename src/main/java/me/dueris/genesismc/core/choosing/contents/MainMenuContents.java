@@ -26,7 +26,7 @@ import static org.bukkit.ChatColor.*;
 public class MainMenuContents {
 
     private static ItemStack applyProperties(ItemStack icon) {
-        for (OriginContainer origin : CraftApoliRewriten.getOriginOrigins()) {
+        for (OriginContainer origin : CraftApoliRewriten.getCoreOrigins()) {
             if (origin.getMaterialIcon() != icon.getType()) continue;
             ItemMeta meta = icon.getItemMeta();
             NamespacedKey key = new NamespacedKey(GenesisMC.getPlugin(), "originTag");

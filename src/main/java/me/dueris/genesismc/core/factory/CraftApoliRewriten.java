@@ -50,7 +50,7 @@ public class CraftApoliRewriten {
     }
 
     private static void translateOrigins() {
-        for (OriginContainer origin :getOriginOrigins()) {
+        for (OriginContainer origin : getCoreOrigins()) {
             for (PowerContainer power : origin.getPowerContainers()) {
                 power.setName(Lang.getLocalizedString(power.getName()));
                 power.setDescription(Lang.getLocalizedString(power.getDesription()));
@@ -244,7 +244,7 @@ public class CraftApoliRewriten {
         }
     }
 
-    public static Boolean isOriginOrigin(OriginContainer origin) {
+    public static Boolean isCoreOrigin(OriginContainer origin) {
         return origin.getTag().equals("origins:arachnid") || origin.getTag().equals("origins:avian")
                 || origin.getTag().equals("origins:blazeborn")
                 || origin.getTag().equals("origins:elytrian")
@@ -253,13 +253,21 @@ public class CraftApoliRewriten {
                 || origin.getTag().equals("origins:human")
                 || origin.getTag().equals("origins:merling")
                 || origin.getTag().equals("origins:phantom")
-                || origin.getTag().equals("origins:shulk");
+                || origin.getTag().equals("origins:shulk")
+                || origin.getTag().equals("origins:ally")
+                || origin.getTag().equals("origins:bee")
+                || origin.getTag().equals("origins:creep")
+                || origin.getTag().equals("origins:piglin")
+                || origin.getTag().equals("origins:rabbit")
+                || origin.getTag().equals("origins:sculkling")
+                || origin.getTag().equals("origins:slimeling")
+                || origin.getTag().equals("origins:starborne");
     }
 
-    public static ArrayList<OriginContainer> getOriginOrigins() {
+    public static ArrayList<OriginContainer> getCoreOrigins() {
         ArrayList<OriginContainer> originOrigins = new ArrayList<>();
         for (OriginContainer origin : getOrigins()) {
-            if (isOriginOrigin(origin)) originOrigins.add(origin);
+            if (isCoreOrigin(origin)) originOrigins.add(origin);
         }
         return originOrigins;
     }

@@ -3,7 +3,6 @@ package me.dueris.genesismc.core.choosing;
 import me.dueris.genesismc.core.GenesisMC;
 import me.dueris.genesismc.core.entity.OriginPlayer;
 import me.dueris.genesismc.core.factory.CraftApoliRewriten;
-import me.dueris.genesismc.core.factory.powers.Powers;
 import me.dueris.genesismc.core.utils.OriginContainer;
 import me.dueris.genesismc.core.utils.PowerContainer;
 import net.kyori.adventure.text.Component;
@@ -227,7 +226,7 @@ public class ChoosingCUSTOM implements Listener {
                     p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 10, 2);
                     NamespacedKey key = new NamespacedKey(GenesisMC.getPlugin(), "originTag");
 
-                    for (OriginContainer origin: CraftApoliRewriten.getOriginOrigins()) {
+                    for (OriginContainer origin: CraftApoliRewriten.getCoreOrigins()) {
                         if (Objects.equals(e.getClickedInventory().getContents()[13].getItemMeta().getPersistentDataContainer().get(key, PersistentDataType.STRING), origin.getTag())) {
                             @NotNull Inventory mainmenu = Bukkit.createInventory(e.getWhoClicked(), 54, "Choosing Menu");
                             mainmenu.setContents(GenesisMainMenuContents((Player) e.getWhoClicked()));
