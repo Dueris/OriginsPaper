@@ -72,7 +72,7 @@ menu:
         title: "Weaver "
         description: "You hinder your foes with cobwebs upon attacking them "
       squishable:
-        title: "Squishable "
+        title: "Fragile"
         description: "You have 3 less hearts "
       tiny_carnivore:
         title: "Tiny Carnivor "
