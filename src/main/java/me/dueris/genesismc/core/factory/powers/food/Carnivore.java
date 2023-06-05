@@ -24,7 +24,7 @@ public class Carnivore implements Listener {
 
     @EventHandler
     public void CarnivoreEat(PlayerInteractEvent e) {
-        if (carnivore.contains(OriginPlayer.getOrigin(e.getPlayer()).getTag())) {
+        if (carnivore.contains(e.getPlayer())) {
             if (e.getItem() != null) {
                 if (!meat.contains(e.getItem().getType()) && !excludable.contains(e.getItem().getType()) && e.getItem().getType().isEdible()) {
                     if (e.getAction().isRightClick()) {

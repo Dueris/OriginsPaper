@@ -17,7 +17,7 @@ public class Climbing extends BukkitRunnable {
     @Override
     public void run() {
         for (Player p : Bukkit.getOnlinePlayers()) {
-            if (climbing.contains(OriginPlayer.getOrigin(p).getTag())) {
+            if (climbing.contains(p)) {
                 if (p.getLocation().getBlock().getRelative(BlockFace.EAST).getType().isSolid() ||
                         p.getLocation().getBlock().getRelative(BlockFace.WEST).getType().isSolid() ||
                         p.getLocation().getBlock().getRelative(BlockFace.NORTH).getType().isSolid() ||

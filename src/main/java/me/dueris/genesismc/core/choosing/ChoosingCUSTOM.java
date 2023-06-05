@@ -205,15 +205,15 @@ public class ChoosingCUSTOM implements Listener {
                 Bukkit.getScheduler().runTaskLater(GenesisMC.getPlugin(), () -> {
 //                    if (CraftApoli.getOriginPowers(origintag).contains("origins:nether_spawn") && p.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING).equals("genesis:origin-null"))
 //                        p.teleport(WorldSpawnHandler.NetherSpawn());
+                    OriginPlayer.unassignPowers(p);
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origin"), PersistentDataType.BYTE_ARRAY, CraftApoliRewriten.toByteArray(origin));
+                    OriginPlayer.assignPowers(p);
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
                     DefaultChoose.DefaultChoose(p);
                     removeItemPhantom(p);
                     removeItemEnder(p);
                 }, 1);
-                OriginPlayer.unassignPowers(p);
-                OriginPlayer.assignPowers(p);
             }
         }
     }

@@ -12,14 +12,14 @@ public class TargetActionOnHit extends BukkitRunnable {
     @Override
     public void run() {
         for (Player p : Bukkit.getOnlinePlayers()) {
-            if (targetActionOnHit.containsKey(OriginPlayer.getOrigin(p).getTag())) {
-                String originTag = OriginPlayer.getOrigin(p).getTag();
-                String powerTag = targetActionOnHit.get(originTag);
-
-                String powerClass = CraftApoli.getPowerClass(originTag, powerTag);
-                String powerAttribute = CraftApoli.getPowerAttribute(originTag, powerTag);
-                Float powerMultiplier = CraftApoli.getPowerMultiplier(originTag, powerTag);
-            }
+//            if (targetActionOnHit.containsKey(p)) {
+//                String originTag = p;
+//                String powerTag = targetActionOnHit.get(originTag);
+//
+//                String powerClass = CraftApoli.getPowerClass(originTag, powerTag);
+//                String powerAttribute = CraftApoli.getPowerAttribute(originTag, powerTag);
+//                Float powerMultiplier = CraftApoli.getPowerMultiplier(originTag, powerTag);
+//            }
         }
     }
 }

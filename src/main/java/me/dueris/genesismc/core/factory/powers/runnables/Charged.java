@@ -13,7 +13,7 @@ public class Charged extends BukkitRunnable {
     @Override
     public void run() {
         for (Player p : Bukkit.getOnlinePlayers()) {
-            if (charged.contains(OriginPlayer.getOrigin(p).getTag())) {
+            if (charged.contains(p)) {
 
                 if (p.getWorld().isThundering()) {
                     p.addPotionEffect(new PotionEffect(PotionEffectType.GLOWING, 20, 0, true, false, false));

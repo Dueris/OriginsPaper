@@ -13,10 +13,10 @@ public class AttributeHandler extends BukkitRunnable {
     @Override
     public void run() {
         for(Player p: Bukkit.getOnlinePlayers()){
-            if(natural_armor.contains(OriginPlayer.getOrigin(p).getTag())){
+            if(natural_armor.contains(p)){
                 p.getAttribute(Attribute.GENERIC_ARMOR).setBaseValue(8);
             }
-            if(nine_lives.contains(OriginPlayer.getOrigin(p).getTag())){
+            if(nine_lives.contains(p)){
                 p.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(18);
             }
         }

@@ -180,11 +180,11 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 
         for (Player p : Bukkit.getOnlinePlayers()) {
             if (p.isOp()) {
-                p.sendMessage(Component.text("Origins Reloaded.").color(TextColor.color(0, 0, 200)));
+                p.sendMessage(Component.text("Origins Reloaded.").color(TextColor.color(137, 207, 240)));
             }
             CustomOriginExistCheck.customOriginExistCheck(p);
         }
-        Powers.loadPowers();
+
         try {
             Bukkit.getServer().getConsoleSender().sendMessage(Component.text(Lang.lang_test).color(TextColor.color(0,200,0)));
         } catch (Exception e) {
@@ -194,6 +194,8 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 
         getServer().getConsoleSender().sendMessage(Component.text("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~").color(TextColor.color(128, 128, 128)));
 
+
+        for (Player p : Bukkit.getOnlinePlayers()) OriginPlayer.assignPowers(p);
     }
 
     @EventHandler

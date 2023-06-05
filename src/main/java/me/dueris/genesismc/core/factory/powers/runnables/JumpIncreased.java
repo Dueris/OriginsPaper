@@ -13,7 +13,7 @@ public class JumpIncreased extends BukkitRunnable {
     @Override
     public void run() {
         for (Player p : Bukkit.getOnlinePlayers()) {
-            if (jump_increased.contains(OriginPlayer.getOrigin(p).getTag())) {
+            if (jump_increased.contains(p)) {
                 p.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, 15, 1, false, false, false));
             }
         }

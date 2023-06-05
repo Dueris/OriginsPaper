@@ -60,7 +60,6 @@ public class Debug {
     }
 
     public static void executeGenesisReload(){
-        Powers.loadPowers();
         try {
             getServer().getConsoleSender().sendMessage(ChatColor.GREEN + Lang.lang_test);
         } catch (Exception e) {

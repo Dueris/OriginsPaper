@@ -27,7 +27,7 @@ public class FreshAir implements Listener {
 
     @EventHandler
     public void onBedEnter(PlayerBedEnterEvent e) {
-        if (fresh_air.contains(OriginPlayer.getOrigin(e.getPlayer()).getTag())) {
+        if (fresh_air.contains(e.getPlayer())) {
             if (e.getPlayer().getWorld().getEnvironment() == World.Environment.NORMAL) {
                 if (e.getBed().getY() <= 99) {
                     e.getPlayer().sendActionBar("You need fresh air to sleep");
@@ -39,7 +39,7 @@ public class FreshAir implements Listener {
 
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent e) {
-        if (fresh_air.contains(OriginPlayer.getOrigin(e.getPlayer()).getTag())) {
+        if (fresh_air.contains(e.getPlayer())) {
             Player p = e.getPlayer();
             if (p.getWorld().getEnvironment() == World.Environment.NORMAL) {
                 Block block = e.getClickedBlock();

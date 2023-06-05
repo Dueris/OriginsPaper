@@ -15,7 +15,7 @@ public class FelinePhobia extends BukkitRunnable {
     @Override
     public void run() {
         for (Player p : Bukkit.getOnlinePlayers()) {
-            if (felinephobia.contains(OriginPlayer.getOrigin(p).getTag())) {
+            if (felinephobia.contains(p)) {
                 List<Entity> nearby2 = p.getNearbyEntities(3, 3, 3);
                 for (Entity tmp : nearby2)
                     if (tmp instanceof Cat)

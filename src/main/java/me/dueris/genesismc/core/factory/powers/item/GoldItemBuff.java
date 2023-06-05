@@ -22,7 +22,7 @@ public class GoldItemBuff implements Listener {
     @EventHandler
     public void onEntityDamage(EntityDamageByEntityEvent e) {
         if (!(e.getDamager() instanceof Player p)) return;
-        if (gold_item_buff.contains(OriginPlayer.getOrigin(p).getTag())) {
+        if (gold_item_buff.contains(p)) {
             if (goldenTools.contains(p.getInventory().getItemInMainHand().getType())) {
                 e.setDamage(e.getDamage() * 1.25);
             }

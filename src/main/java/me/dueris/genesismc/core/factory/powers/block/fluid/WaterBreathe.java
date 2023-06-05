@@ -28,7 +28,7 @@ public class WaterBreathe extends BukkitRunnable {
     @Override
     public void run() {
         for (Player p : Bukkit.getOnlinePlayers()) {
-            if (water_breathing.contains(OriginPlayer.getOrigin(p).getTag())) {
+            if (water_breathing.contains(p)) {
                 if (isInBreathableWater(p)) {
                     if (p.getRemainingAir() < 290) {
                         p.setRemainingAir(p.getRemainingAir() + 7);

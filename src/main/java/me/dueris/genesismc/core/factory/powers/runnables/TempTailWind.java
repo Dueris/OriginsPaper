@@ -13,7 +13,7 @@ public class TempTailWind extends BukkitRunnable {
     @Override
     public void run() {
         for (Player p : Bukkit.getOnlinePlayers()) {
-            if (tailwind.contains(OriginPlayer.getOrigin(p).getTag())) {
+            if (tailwind.contains(p)) {
                 p.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0.17F);
             }
         }
