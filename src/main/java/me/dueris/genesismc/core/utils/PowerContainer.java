@@ -15,11 +15,11 @@ public class PowerContainer implements Serializable {
         this.powerSource = powerSource;
     }
 
-    public String getPowerTag() {
+    public String getTag() {
         return this.powerTag;
     }
 
-    public PowerFileContainer getPowerFile() {
+    public PowerFileContainer getFile() {
         return this.powerFile;
     }
 
