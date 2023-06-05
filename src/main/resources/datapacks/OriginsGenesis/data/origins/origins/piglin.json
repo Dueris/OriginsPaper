@@ -12,6 +12,6 @@
 	},
 	"order": 15,
 	"impact": 2,
-	"display_name": "Piglin",
+	"name": "Piglin",
 	"description": "tell dueris to make a description"
 }

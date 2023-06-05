@@ -10,6 +10,6 @@
 	},
 	"order": 16,
 	"impact": 1,
-	"display_name": "Creep",
+	"name": "Creep",
 	"description": "tell dueris to make a description"
 }
