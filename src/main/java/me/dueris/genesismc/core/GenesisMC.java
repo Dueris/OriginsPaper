@@ -16,6 +16,7 @@ import me.dueris.genesismc.core.enchantments.WaterProtection;
 import me.dueris.genesismc.core.factory.CraftApoliRewriten;
 import me.dueris.genesismc.core.factory.OriginStartHandler;
 import me.dueris.genesismc.core.factory.handlers.CustomOriginExistCheck;
+import me.dueris.genesismc.core.factory.handlers.PlayerHandler;
 import me.dueris.genesismc.core.factory.powers.Powers;
 import me.dueris.genesismc.core.factory.powers.world.WorldSpawnHandler;
 import me.dueris.genesismc.core.files.GenesisDataFiles;
@@ -148,6 +149,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         getServer().getPluginManager().registerEvents(new Info(), this);
         getServer().getPluginManager().registerEvents(new Listeners(), this);
         getServer().getPluginManager().registerEvents(new DataContainer(), this);
+        getServer().getPluginManager().registerEvents(new PlayerHandler(), this);
         plugin = this;
 
 //origin start begin

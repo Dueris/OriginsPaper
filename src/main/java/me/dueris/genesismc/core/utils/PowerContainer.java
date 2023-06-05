@@ -38,6 +38,13 @@ public class PowerContainer implements Serializable {
         return "powerTag: " + this.powerTag + ", PowerFile: " + this.powerFile.toString() + ", PowerSource: " + this.powerSource.toString();
     }
 
+    public void setName(String newName) {
+        this.powerFile.replace("name", newName);
+    }
+
+    public void setDescription(String newDescription) {
+        this.powerFile.replace("description", newDescription);
+    }
 
     public String getName() {
 //        if (this.powerTag.equals("origins:fall_immunity")) return "Acrobatics";
@@ -106,7 +113,6 @@ public class PowerContainer implements Serializable {
 //        if (this.powerTag.equals("genesis:extra_fire_tick")) return "Flammable";
 //        if (this.powerTag.equals("genesis:silk_touch")) return "Delicate Touch";
 //        if (this.powerTag.equals("genesis:bow_inability")) return "Horrible Coordination";
-
         Object name = this.powerFile.get("name");
         if (name == null) return "No Name";
         return (String) name;
@@ -179,7 +185,6 @@ public class PowerContainer implements Serializable {
 //        if (this.powerTag.equals("genesis:extra_fire_tick")) return "You take 50% more damage from fire";
 //        if (this.powerTag.equals("genesis:silk_touch")) return "You have silk touch hands";
 //        if (this.powerTag.equals("genesis:bow_inability")) return "You are not able to use a bow, you are WAY too clumsy";
-
         Object description = this.powerFile.get("description");
         if (description == null) return "No Description.";
         return (String) description;
@@ -203,12 +208,10 @@ public class PowerContainer implements Serializable {
         return (Boolean) hidden;
     }
 
-    public void setName(String newName) {
-        this.powerFile.replace("name", newName);
-    }
-
-    public void setDescription(String newDescription) {
-        this.powerFile.replace("description", newDescription);
+    public String getType() {
+        Object type = powerFile.get("type");
+        if (type == null) return "";
+        return (String) type;
     }
 
 }

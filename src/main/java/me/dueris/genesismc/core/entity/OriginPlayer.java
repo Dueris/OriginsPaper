@@ -5,7 +5,10 @@ import me.dueris.genesismc.core.enums.OriginDataType;
 import me.dueris.genesismc.core.enums.OriginMenu;
 import me.dueris.genesismc.core.events.OriginChooseEvent;
 import me.dueris.genesismc.core.factory.CraftApoliRewriten;
+import me.dueris.genesismc.core.factory.powers.Powers;
 import me.dueris.genesismc.core.utils.OriginContainer;
+import me.dueris.genesismc.core.utils.PlayerPower;
+import me.dueris.genesismc.core.utils.PowerContainer;
 import me.dueris.genesismc.core.utils.SendCharts;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
@@ -296,6 +299,8 @@ public class OriginPlayer {
             }, 1);
         }
         SendCharts.originPopularity(player);
+        unassignPowers(player);
+        assignPowers(player);
     }
 
     public static void resetOriginData(Player player, OriginDataType type) {
@@ -354,6 +359,17 @@ public class OriginPlayer {
             custommenu.setContents(ChooseMenuContent());
             player.openInventory(custommenu);
         }
+    }
+
+    public static void assignPowers(Player player) {
+        OriginContainer origin = OriginPlayer.getOrigin(player);
+        for (PowerContainer power : origin.getPowerContainers()) {
+            Powers.powerArray.add(new PlayerPower(player, power));
+        }
+    }
+
+    public static void unassignPowers(Player player) {
+        Powers.powerArray.removeIf(pp -> pp.getPlayer().equals(player));
     }
 
 }

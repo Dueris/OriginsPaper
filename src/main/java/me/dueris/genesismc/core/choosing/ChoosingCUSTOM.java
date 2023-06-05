@@ -1,12 +1,12 @@
 package me.dueris.genesismc.core.choosing;
 
 import me.dueris.genesismc.core.GenesisMC;
-import me.dueris.genesismc.core.choosing.contents.MainMenuContents;
-import me.dueris.genesismc.core.factory.CraftApoli;
+import me.dueris.genesismc.core.entity.OriginPlayer;
 import me.dueris.genesismc.core.factory.CraftApoliRewriten;
-import me.dueris.genesismc.core.utils.Lang;
+import me.dueris.genesismc.core.factory.powers.Powers;
 import me.dueris.genesismc.core.utils.OriginContainer;
 import me.dueris.genesismc.core.utils.PowerContainer;
+import net.kyori.adventure.text.Component;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -200,6 +200,7 @@ public class ChoosingCUSTOM implements Listener {
                 String originTag = e.getCurrentItem().getItemMeta().getPersistentDataContainer().get(key, PersistentDataType.STRING);
                 OriginContainer origin = CraftApoliRewriten.getOrigin(originTag);
                 Player p = (Player) e.getWhoClicked();
+                if (origin == null) {p.sendMessage(Component.text("This origin is null ¯\\_(ツ)_/¯")); return;}
                 setAttributesToDefault(p);
                 Bukkit.getScheduler().runTaskLater(GenesisMC.getPlugin(), () -> {
 //                    if (CraftApoli.getOriginPowers(origintag).contains("origins:nether_spawn") && p.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING).equals("genesis:origin-null"))
@@ -211,6 +212,8 @@ public class ChoosingCUSTOM implements Listener {
                     removeItemPhantom(p);
                     removeItemEnder(p);
                 }, 1);
+                OriginPlayer.unassignPowers(p);
+                OriginPlayer.assignPowers(p);
             }
         }
     }

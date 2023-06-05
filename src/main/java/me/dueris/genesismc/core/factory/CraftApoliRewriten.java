@@ -1,9 +1,5 @@
 package me.dueris.genesismc.core.factory;
-
-import me.dueris.genesismc.core.utils.Lang;
-import me.dueris.genesismc.core.utils.OriginContainer;
-import me.dueris.genesismc.core.utils.PowerContainer;
-import me.dueris.genesismc.core.utils.PowerFileContainer;
+import me.dueris.genesismc.core.utils.*;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import org.apache.commons.io.FilenameUtils;
@@ -12,7 +8,6 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
-import javax.lang.model.util.Elements;
 import java.io.*;
 import java.util.*;
 import java.util.zip.ZipEntry;
