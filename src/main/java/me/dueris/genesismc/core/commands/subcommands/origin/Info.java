@@ -1,17 +1,10 @@
 package me.dueris.genesismc.core.commands.subcommands.origin;
 
 import me.dueris.genesismc.core.GenesisMC;
-import me.dueris.genesismc.core.entity.OriginPlayer;
-import me.dueris.genesismc.core.factory.CraftApoli;
-import me.dueris.genesismc.core.choosing.contents.origins.ExpandedOriginContent;
-import me.dueris.genesismc.core.choosing.contents.origins.OriginalOriginContent;
 import me.dueris.genesismc.core.commands.subcommands.SubCommand;
 import me.dueris.genesismc.core.factory.CraftApoliRewriten;
-import me.dueris.genesismc.core.factory.powers.Powers;
 import me.dueris.genesismc.core.utils.OriginContainer;
-import me.dueris.genesismc.core.utils.PlayerPower;
 import me.dueris.genesismc.core.utils.PowerContainer;
-import net.royawesome.jlibnoise.module.combiner.Power;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -22,10 +15,8 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
-import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 
