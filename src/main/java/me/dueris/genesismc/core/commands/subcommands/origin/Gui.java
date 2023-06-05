@@ -29,11 +29,13 @@ public class Gui extends SubCommand {
         if (args.length > 1) {
             try {
                 Player given = Bukkit.getPlayer(args[1]);
+                OriginPlayer.unassignPowers(given);
                 OriginPlayer.removeOrigin(given);
             } catch (Exception e) {
                 p.sendMessage(RED + "Could not find player!");
             }
         } else if (args.length == 1) {
+            OriginPlayer.unassignPowers(p);
             OriginPlayer.removeOrigin(p);
         }
     }

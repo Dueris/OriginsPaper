@@ -58,7 +58,7 @@ public class WorldSpawnHandler implements Listener {
 
     @EventHandler
     public void netherSpawn(PlayerRespawnEvent e) {
-        if (nether_spawn.contains(e.getPlayer())) {
+        if (nether_spawn.contains(e.getPlayer().getUniqueId().toString())) {
             if (!(e.isBedSpawn() || e.isAnchorSpawn())) {
                 Location spawnLocation = null;
                 for (World world : Bukkit.getWorlds()) {

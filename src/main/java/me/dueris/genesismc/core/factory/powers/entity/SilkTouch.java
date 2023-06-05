@@ -31,7 +31,7 @@ public class SilkTouch implements Listener {
     public void onBlockBreak(BlockBreakEvent e) {
         if (!e.getBlock().getType().equals(Material.AIR)) {
             Player p = e.getPlayer();
-            if (silk_touch.contains(e.getPlayer())) {
+            if (silk_touch.contains(e.getPlayer().getUniqueId().toString())) {
                 int ic = 1;
                 if (p != null && p.getGameMode().equals(GameMode.SURVIVAL) && p.getEquipment().getItemInMainHand().getType().equals(Material.AIR)) {
                     if (!e.getBlock().getType().isItem()) {

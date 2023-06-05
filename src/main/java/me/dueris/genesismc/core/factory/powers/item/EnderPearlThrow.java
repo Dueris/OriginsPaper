@@ -29,7 +29,7 @@ public class EnderPearlThrow implements Listener {
     @EventHandler
     public void teleportDamgeOff(PlayerTeleportEvent e) {
         Player p = e.getPlayer();
-        if (throw_ender_pearl.contains(e.getPlayer()) && e.getCause() == PlayerTeleportEvent.TeleportCause.ENDER_PEARL) {
+        if (throw_ender_pearl.contains(e.getPlayer().getUniqueId().toString()) && e.getCause() == PlayerTeleportEvent.TeleportCause.ENDER_PEARL) {
             e.setCancelled(true);
             p.teleport(e.getTo());
         }
@@ -49,7 +49,7 @@ public class EnderPearlThrow implements Listener {
         infinpearl.setItemMeta(pearl_meta);
 
         Player p = e.getPlayer();
-        if (throw_ender_pearl.contains(e.getPlayer())) {
+        if (throw_ender_pearl.contains(e.getPlayer().getUniqueId().toString())) {
             if (e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.LEFT_CLICK_AIR || e.getAction() == Action.LEFT_CLICK_BLOCK || e.getAction() == Action.RIGHT_CLICK_BLOCK) {
                 if (e.getItem() != null) {
                     if (e.getItem().equals(infinpearl)) {
@@ -79,7 +79,7 @@ public class EnderPearlThrow implements Listener {
         pearl_meta.setLore(pearl_lore);
         infinpearl.setItemMeta(pearl_meta);
         pearl_meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
-        if (throw_ender_pearl.contains(e.getPlayer())) {
+        if (throw_ender_pearl.contains(e.getPlayer().getUniqueId().toString())) {
             if (!p.getInventory().contains(infinpearl) && p.getGameMode() != GameMode.CREATIVE) {
                 p.getInventory().addItem(infinpearl);
             }
@@ -98,7 +98,7 @@ public class EnderPearlThrow implements Listener {
         pearl_meta.setLore(pearl_lore);
         infinpearl.setItemMeta(pearl_meta);
 
-        if (throw_ender_pearl.contains(e.getPlayer()))
+        if (throw_ender_pearl.contains(e.getPlayer().getUniqueId().toString()))
             if (e.getItemDrop().getItemStack().isSimilar(infinpearl)) {
                 e.setCancelled(true);
             }
@@ -116,7 +116,7 @@ public class EnderPearlThrow implements Listener {
         pearl_meta.setLore(pearl_lore);
         infinpearl.setItemMeta(pearl_meta);
         pearl_meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
-        if (throw_ender_pearl.contains(e.getPlayer())) {
+        if (throw_ender_pearl.contains(e.getPlayer().getUniqueId().toString())) {
             e.getDrops().remove(infinpearl);
             e.getDrops().add(new ItemStack(ENDER_PEARL));
         }

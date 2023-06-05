@@ -23,7 +23,7 @@ public class GoldAmourBellow extends BukkitRunnable implements Listener {
     @Override
     public void run() {
         for (Player p : Bukkit.getOnlinePlayers()) {
-            if (light_armor.contains(p)) {
+            if (light_armor.contains(p.getUniqueId().toString())) {
                 if (p.getEquipment().getHelmet() != null && not_able.contains(p.getEquipment().getHelmet().getType())) {
                     OriginPlayer.moveEquipmentInventory(p, EquipmentSlot.HEAD);
                 }

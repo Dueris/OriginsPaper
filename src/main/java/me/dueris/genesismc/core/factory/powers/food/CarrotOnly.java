@@ -13,7 +13,7 @@ import static me.dueris.genesismc.core.factory.powers.Powers.carrot_only;
 public class CarrotOnly implements Listener {
     @EventHandler
     public void onItemConsume(PlayerInteractEvent e) {
-        if (carrot_only.contains(e.getPlayer())) {
+        if (carrot_only.contains(e.getPlayer().getUniqueId().toString())) {
             @NotNull ItemStack item = e.getItem();
 
             if (item == null) return;

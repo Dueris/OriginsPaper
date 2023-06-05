@@ -26,7 +26,7 @@ public class Reach implements Listener {
         @EventHandler
         public void SwingBlockBreakCreative(PlayerInteractEvent e){
             Player p = e.getPlayer();
-            if(extra_reach.contains(p)){
+            if(extra_reach.contains(p.getUniqueId().toString())){
                 if(p.getGameMode() != GameMode.CREATIVE) return;
                 if(e.getAction().isLeftClick()) {
                     breakBlockInRange(p, 20);
@@ -39,7 +39,7 @@ public class Reach implements Listener {
         @EventHandler
         public void PlaceBlock(PlayerInteractEvent e){
             Player p = e.getPlayer();
-            if(extra_reach.contains(p)){
+            if(extra_reach.contains(p.getUniqueId().toString())){
                 if(p.getGameMode() == GameMode.SPECTATOR) return;
                 if(e.getAction().isLeftClick()) {
                     placeClosestBlockInSight(p);
@@ -100,7 +100,7 @@ public class Reach implements Listener {
 
     @EventHandler
     public void OnClickREACH(PlayerInteractEvent e) {
-        if (extra_reach.contains(e.getPlayer())) {
+        if (extra_reach.contains(e.getPlayer().getUniqueId().toString())) {
             if (e.getAction().isLeftClick()) ;
 
             Player p = e.getPlayer();

@@ -86,7 +86,7 @@ public class BigLeap implements Listener {
     @EventHandler
     public void onRabbitLeap(PlayerToggleSneakEvent e) {
         PersistentDataContainer data = e.getPlayer().getPersistentDataContainer();
-        if (big_leap_tick.contains(e.getPlayer())) {
+        if (big_leap_tick.contains(e.getPlayer().getUniqueId().toString())) {
             Player p = e.getPlayer();
             int toggleState = data.get(new NamespacedKey(GenesisMC.getPlugin(), "toggle"), PersistentDataType.INTEGER);
             if (p.isSneaking()) return;
@@ -136,9 +136,9 @@ public class BigLeap implements Listener {
     public void onEntityDamage(EntityDamageEvent e) {
         if (!(e.getEntity() instanceof Player p)) return;
 
-        if (big_leap_tick.contains(p)) {
+        if (big_leap_tick.contains(p.getUniqueId().toString())) {
             if (e.getCause() == EntityDamageEvent.DamageCause.FALL) {
-                if (inAir.contains(p.getUniqueId())) {
+                if (inAir.contains(p.getUniqueId().toString())) {
                     e.setCancelled(true);
                     inAir.remove(p.getUniqueId());
                 }

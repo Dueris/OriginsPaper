@@ -28,7 +28,7 @@ public class Webbing implements Listener {
 
             if (!canWeb.containsKey(p.getUniqueId())) canWeb.put(p.getUniqueId(), Boolean.TRUE);
             if (!canWeb.get(p.getUniqueId())) return;
-            if (webbing.contains(p)) {
+            if (webbing.contains(p.getUniqueId().toString())) {
                 Location loc = e.getEntity().getLocation();
                 Block b = loc.getBlock();
                 canWeb.replace(p.getUniqueId(), Boolean.FALSE);

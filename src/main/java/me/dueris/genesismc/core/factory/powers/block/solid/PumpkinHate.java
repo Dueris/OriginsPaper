@@ -16,7 +16,7 @@ public class PumpkinHate implements Listener {
     @EventHandler
     public void OnArmorChange(PlayerArmorChangeEvent e) {
         Player p = e.getPlayer();
-        if (pumpkin_hate.contains(e.getPlayer())) {
+        if (pumpkin_hate.contains(e.getPlayer().getUniqueId().toString())) {
             if (e.getNewItem() == null) return;
             if (e.getNewItem().getType() == Material.CARVED_PUMPKIN) {
                 p.getInventory().setHelmet(new ItemStack(Material.AIR));
@@ -28,7 +28,7 @@ public class PumpkinHate implements Listener {
     @EventHandler
     public void onDrink(PlayerItemConsumeEvent e) {
         Player p = e.getPlayer();
-        if (pumpkin_hate.contains(e.getPlayer())) {
+        if (pumpkin_hate.contains(e.getPlayer().getUniqueId().toString())) {
             if (e.getItem().getType().equals(Material.PUMPKIN_PIE)) {
                 p.getWorld().createExplosion(p.getLocation(), 0);
                 p.setHealth(1);

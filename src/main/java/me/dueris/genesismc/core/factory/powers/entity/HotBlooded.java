@@ -17,8 +17,7 @@ public class HotBlooded implements Listener {
     @EventHandler
     public void hotblooded(EntityPotionEffectEvent e) {
         if (!(e.getEntity() instanceof Player p)) return;
-        @Nullable String origintag = p.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
-        if (!hotblooded.contains(origintag)) return;
+        if (!hotblooded.contains(p.getUniqueId().toString())) return;
         if (e.getOldEffect() == null) return;
         if (e.getOldEffect().getType().getId() == PotionEffectType.HUNGER.getId() || e.getOldEffect().getType().getId() == PotionEffectType.HUNGER.getId())
             return;

@@ -188,7 +188,7 @@ public class CraftApoliRewriten {
 
                                 try {
                                     JSONObject powerParser = (JSONObject) new JSONParser().parse(new FileReader(datapack.getAbsolutePath() + File.separator + "data" + File.separator + powerFolder + File.separator + "powers" + File.separator + powerFileName + ".json"));
-                                    powerContainers.add(new PowerContainer(powerFolder + ":" + powerFileName, fileToPowerFileContainer(powerParser), powerFolder + ":" + powerFileName));
+                                    powerContainers.add(new PowerContainer(powerFolder + ":" + powerFileName, fileToPowerFileContainer(powerParser), originFolder.get(0) + ":" + originFileName.get(0)));
                                 } catch (FileNotFoundException fileNotFoundException) {
                                     Bukkit.getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] Error parsing \"" + powerFolder + ":" + powerFileName + "\" for \"" + originFolder.get(0) + ":" + originFileName.get(0) + "\"").color(TextColor.color(255, 0, 0)));
                                 }

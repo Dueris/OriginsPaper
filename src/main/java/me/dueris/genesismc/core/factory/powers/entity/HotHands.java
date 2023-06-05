@@ -11,7 +11,7 @@ public class HotHands implements Listener {
 
     @EventHandler
     public void HotHands(PrePlayerAttackEntityEvent e) {
-        if (hot_hands.contains(e.getPlayer())) {
+        if (hot_hands.contains(e.getPlayer().getUniqueId().toString())) {
             e.getAttacked().setFireTicks(60);
         }
     }

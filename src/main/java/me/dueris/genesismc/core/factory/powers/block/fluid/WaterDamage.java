@@ -28,7 +28,7 @@ public class WaterDamage extends BukkitRunnable implements Listener {
     @Override
     public void run() {
         for (Player p : Bukkit.getOnlinePlayers()) {
-            if (water_vulnerability.contains(p)) {
+            if (water_vulnerability.contains(p.getUniqueId().toString())) {
                 if (!(p.isInsideVehicle())) {
                     if (p.isInWaterOrRainOrBubbleColumn()) {
                         if (p.getGameMode().equals(GameMode.SURVIVAL) || p.getGameMode().equals(GameMode.ADVENTURE)) {
@@ -139,8 +139,8 @@ public class WaterDamage extends BukkitRunnable implements Listener {
                     }
                 }
             }
-            if (water_breathing.contains(p)) {
-                if (outofAIR.contains(p)) {
+            if (water_breathing.contains(p.getUniqueId().toString())) {
+                if (outofAIR.contains(p.getUniqueId().toString())) {
                     if (p.getRemainingAir() > 20) {
                         outofAIR.remove(p);
                     } else {
@@ -156,7 +156,7 @@ public class WaterDamage extends BukkitRunnable implements Listener {
     @EventHandler
     public void OnDeathWater(PlayerDeathEvent e) {
         Player p = e.getEntity();
-        if (water_vulnerability.contains(e.getPlayer())) {
+        if (water_vulnerability.contains(e.getPlayer().getUniqueId().toString())) {
             Random random = new Random();
             int r = random.nextInt(2);
             if (p.isInWaterOrRainOrBubbleColumn()) {
@@ -172,7 +172,7 @@ public class WaterDamage extends BukkitRunnable implements Listener {
     @EventHandler
     public void SplashEnderian(WaterBottleSplashEvent e) {
         if (e.getAffectedEntities() instanceof Player p) {
-            if (water_vulnerability.contains(p)) ;
+            if (water_vulnerability.contains(p.getUniqueId().toString())) ;
             p.damage(5);
         }
     }

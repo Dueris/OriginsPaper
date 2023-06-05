@@ -16,7 +16,7 @@ public class GoldArmourBuff implements Listener {
     @EventHandler
     public void onArmorChange(PlayerArmorChangeEvent e) {
         Player p = e.getPlayer();
-        if (gold_item_buff.contains(e.getPlayer())) {
+        if (gold_item_buff.contains(e.getPlayer().getUniqueId().toString())) {
             p.getAttribute(Attribute.GENERIC_ARMOR).setBaseValue(0);
             for (ItemStack armour : p.getInventory().getArmorContents()) {
                 if (armour == null) continue;

@@ -18,7 +18,7 @@ public class RabbitFoot implements Listener {
         if (!(e.getEntity() instanceof Player p)) return;
         if (!(e.getDamager() instanceof Player)) return;
 
-        if (rabbit_drop_foot.contains(p)) {
+        if (rabbit_drop_foot.contains(p.getUniqueId().toString())) {
             Random random = new Random();
             int randInt = random.nextInt(9);
             if (randInt == 4) {

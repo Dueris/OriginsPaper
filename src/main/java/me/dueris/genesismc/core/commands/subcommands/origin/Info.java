@@ -2,7 +2,9 @@ package me.dueris.genesismc.core.commands.subcommands.origin;
 
 import me.dueris.genesismc.core.GenesisMC;
 import me.dueris.genesismc.core.commands.subcommands.SubCommand;
+import me.dueris.genesismc.core.entity.OriginPlayer;
 import me.dueris.genesismc.core.factory.CraftApoliRewriten;
+import me.dueris.genesismc.core.factory.powers.Powers;
 import me.dueris.genesismc.core.utils.OriginContainer;
 import me.dueris.genesismc.core.utils.PowerContainer;
 import org.bukkit.*;
@@ -19,6 +21,7 @@ import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.UUID;
 
 import static me.dueris.genesismc.core.choosing.ChoosingCORE.itemProperties;
 import static me.dueris.genesismc.core.choosing.ChoosingCUSTOM.cutStringIntoLists;
@@ -56,6 +59,11 @@ public class Info extends SubCommand implements Listener {
 
     @Override
     public void perform(Player p, String[] args) {
+        for (String uuid : Powers.tailwind) {
+            System.out.println(Bukkit.getPlayer(uuid));
+            System.out.println(OriginPlayer.getOrigin(Bukkit.getPlayer(uuid)).getPowerContainers());
+        }
+
         if (args.length == 1) {
             NamespacedKey key = new NamespacedKey(GenesisMC.getPlugin(), "origin");
             @NotNull Inventory help = Bukkit.createInventory(p, 54, "Help");

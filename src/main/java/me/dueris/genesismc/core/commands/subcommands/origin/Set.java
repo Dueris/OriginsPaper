@@ -39,9 +39,7 @@ public class Set extends SubCommand {
             }
 
             String originTag = args[2];
-            ArrayList<String> originTags = new ArrayList<>(List.of("genesis:origin-human", "genesis:origin-enderian", "genesis:origin-merling", "genesis:origin-phantom", "genesis:origin-elytrian", "genesis:origin-blazeborn", "genesis:origin-avian", "genesis:origin-arachnid", "genesis:origin-shulk", "genesis:origin-feline", "genesis:origin-starborne", "genesis:origin-allay", "genesis:origin-rabbit", "genesis:origin-bee", "genesis:origin-sculkling", "genesis:origin-creep", "genesis:origin-slimeling", "genesis:origin-piglin"));
-            originTags.addAll(CraftApoliRewriten.getOriginTags());
-            if (!originTags.contains(originTag)) {
+            if (!CraftApoliRewriten.getOriginTags().contains(originTag)) {
                 p.sendMessage(RED + "Invalid origin.");
                 return;
             }
