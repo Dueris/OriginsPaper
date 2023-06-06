@@ -363,6 +363,26 @@ public class OriginPlayer {
         OriginContainer origin = getOrigin(player);
         for (PowerContainer power : origin.getPowerContainers()) {
             switch (power.getType()) {
+                case "genesis:hot_hands" -> hot_hands.add(player);
+                case "genesis:extra_fire_tick" -> extra_fire.add(player);
+                case "genesis:bow_inability" -> bow_nope.add(player);
+                case "genesis:silk_touch" -> silk_touch.add(player);
+                case "genesis:explode_tick" -> explode_tick.add(player);
+                case "genesis:projectile-immune" -> projectile_immune.add(player);
+                case "genesis:charged" -> charged.add(player);
+                case "genesis:felinephobia" -> felinephobia.add(player);
+                case "genesis:fire_weak" -> fire_weak.add(player);
+                case "genesis:gold_armour_buff" -> gold_armour_buff.add(player);
+                case "genesis:gold_item_buff" -> gold_item_buff.add(player);
+                case "genesis:big_leap_charge" -> big_leap_tick.add(player);
+                case "genesis:carrots_only" -> carrot_only.add(player);
+                case "genesis:jump_boost" -> jump_increased.add(player);
+                case "genesis:drop_rabbit_foot_damage" -> rabbit_drop_foot.add(player);
+                case "genesis:decreased_explosion_damage" -> decreased_explosion.add(player);
+                case "genesis:creeper_head_death_drop" -> creeper_head_death_drop.add(player);
+                case "genesis:resist_fall" -> resist_fall.add(player);
+                case "genesis:cold_biomes_weak" -> weak_biome_cold.add(player);
+
                 case "origins:fall_immunity" -> fall_immunity.add(player);
                 case "origins:aerial_combatant" -> aerial_combatant.add(player);
                 case "origins:aqua_affinity" -> aqua_affinity.add(player);
@@ -424,25 +444,9 @@ public class OriginPlayer {
                 case "origins:no_cobweb_slowdown" -> no_cobweb_slowdown.add(player);
                 case "origins:phantomize" -> phantomize.add(player);
                 case "origins:strong_arms_break_speed" -> strong_arms_break_speed.add(player);
-                case "genesis:hot_hands" -> hot_hands.add(player);
-                case "genesis:extra_fire_tick" -> extra_fire.add(player);
-                case "genesis:bow_inability" -> bow_nope.add(player);
-                case "genesis:silk_touch" -> silk_touch.add(player);
-                case "genesis:explode_tick" -> explode_tick.add(player);
-                case "genesis:projectile-immune" -> projectile_immune.add(player);
-                case "genesis:charged" -> charged.add(player);
-                case "genesis:felinephobia" -> felinephobia.add(player);
-                case "genesis:fire_weak" -> fire_weak.add(player);
-                case "genesis:gold_armour_buff" -> gold_armour_buff.add(player);
-                case "genesis:gold_item_buff" -> gold_item_buff.add(player);
-                case "genesis:big_leap_charge" -> big_leap_tick.add(player);
-                case "genesis:carrots_only" -> carrot_only.add(player);
-                case "genesis:jump_boost" -> jump_increased.add(player);
-                case "genesis:drop_rabbit_foot_damage" -> rabbit_drop_foot.add(player);
-                case "genesis:decreased_explosion_damage" -> decreased_explosion.add(player);
-                case "genesis:creeper_head_death_drop" -> creeper_head_death_drop.add(player);
-                case "genesis:resist_fall" -> resist_fall.add(player);
-                case "genesis:cold_biomes_weak" -> weak_biome_cold.add(player);
+
+                case "origins:attribute_modify_transfer" -> attribute_modify_transfer.add(player);
+
             }
         }
     }
@@ -452,6 +456,26 @@ public class OriginPlayer {
         for (PowerContainer power : origin.getPowerContainers()) {
             if (!origin.getTag().equals(power.getSource())) continue;
             switch (power.getType()) {
+                case "genesis:hot_hands" -> hot_hands.remove(player);
+                case "genesis:extra_fire_tick" -> extra_fire.remove(player);
+                case "genesis:bow_inability" -> bow_nope.remove(player);
+                case "genesis:silk_touch" -> silk_touch.remove(player);
+                case "genesis:explode_tick" -> explode_tick.remove(player);
+                case "genesis:projectile-immune" -> projectile_immune.remove(player);
+                case "genesis:charged" -> charged.remove(player);
+                case "genesis:felinephobia" -> felinephobia.remove(player);
+                case "genesis:fire_weak" -> fire_weak.remove(player);
+                case "genesis:gold_armour_buff" -> gold_armour_buff.remove(player);
+                case "genesis:gold_item_buff" -> gold_item_buff.remove(player);
+                case "genesis:big_leap_charge" -> big_leap_tick.remove(player);
+                case "genesis:carrots_only" -> carrot_only.remove(player);
+                case "genesis:jump_boost" -> jump_increased.remove(player);
+                case "genesis:drop_rabbit_foot_damage" -> rabbit_drop_foot.remove(player);
+                case "genesis:decreased_explosion_damage" -> decreased_explosion.remove(player);
+                case "genesis:creeper_head_death_drop" -> creeper_head_death_drop.remove(player);
+                case "genesis:resist_fall" -> resist_fall.remove(player);
+                case "genesis:cold_biomes_weak" -> weak_biome_cold.remove(player);
+
                 case "origins:fall_immunity" -> fall_immunity.remove(player);
                 case "origins:aerial_combatant" -> aerial_combatant.remove(player);
                 case "origins:aqua_affinity" -> aqua_affinity.remove(player);
@@ -513,25 +537,8 @@ public class OriginPlayer {
                 case "origins:no_cobweb_slowdown" -> no_cobweb_slowdown.remove(player);
                 case "origins:phantomize" -> phantomize.remove(player);
                 case "origins:strong_arms_break_speed" -> strong_arms_break_speed.remove(player);
-                case "genesis:hot_hands" -> hot_hands.remove(player);
-                case "genesis:extra_fire_tick" -> extra_fire.remove(player);
-                case "genesis:bow_inability" -> bow_nope.remove(player);
-                case "genesis:silk_touch" -> silk_touch.remove(player);
-                case "genesis:explode_tick" -> explode_tick.remove(player);
-                case "genesis:projectile-immune" -> projectile_immune.remove(player);
-                case "genesis:charged" -> charged.remove(player);
-                case "genesis:felinephobia" -> felinephobia.remove(player);
-                case "genesis:fire_weak" -> fire_weak.remove(player);
-                case "genesis:gold_armour_buff" -> gold_armour_buff.remove(player);
-                case "genesis:gold_item_buff" -> gold_item_buff.remove(player);
-                case "genesis:big_leap_charge" -> big_leap_tick.remove(player);
-                case "genesis:carrots_only" -> carrot_only.remove(player);
-                case "genesis:jump_boost" -> jump_increased.remove(player);
-                case "genesis:drop_rabbit_foot_damage" -> rabbit_drop_foot.remove(player);
-                case "genesis:decreased_explosion_damage" -> decreased_explosion.remove(player);
-                case "genesis:creeper_head_death_drop" -> creeper_head_death_drop.remove(player);
-                case "genesis:resist_fall" -> resist_fall.remove(player);
-                case "genesis:cold_biomes_weak" -> weak_biome_cold.remove(player);
+
+                case "origins:attribute_modify_transfer" -> attribute_modify_transfer.remove(player);
             }
         }
     }

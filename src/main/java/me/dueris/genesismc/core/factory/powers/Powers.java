@@ -95,7 +95,7 @@ public class Powers implements Listener {
 
     //custom origins
 
-    public static HashMap<Player, Player> targetActionOnHit = new HashMap<>();
+    public static ArrayList<Player> attribute_modify_transfer = new ArrayList<>();
 
 }
 /*

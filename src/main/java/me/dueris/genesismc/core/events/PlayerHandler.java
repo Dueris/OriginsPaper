@@ -1,4 +1,4 @@
-package me.dueris.genesismc.core.factory.handlers;
+package me.dueris.genesismc.core.events;
 
 import me.dueris.genesismc.core.entity.OriginPlayer;
 import org.bukkit.entity.Player;
