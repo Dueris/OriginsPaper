@@ -253,46 +253,71 @@ menu:
 
   expanded:
 
-    starborne:
-      wanderer:
-        title: "Wanderer of the Stars "
-        description: "You cannot sleep at night "
+    
+      starborne:
+                        starbeam:
+                                 title: "Starbeam"
+                                 description: "You can blast a star beam every 30 seconds, dealing 10 damage"
 
-      shooting_star:
-        title: "Shooting Star "
-        description: "You can fling yourself into the air after a 5 second cooldown "
+                        shooting_star:
+                                 title: "Shooting Star "
+                                 description: "You can fling yourself into the air after a 5 second cooldown "
 
-      falling_stars:
-        title: "Falling Stars "
-        description: "You can drop stars on your enemy every 30 seconds "
+                        supernova:
+                                 title: "Supernova "
+                                 description: "All the collected star energy that you have accumulated through your time in the stars needs to go somewhere, So whenever you happen to meet your demise you will explode in a great Supernova"
 
-      supernova:
-        title: "Supernova "
-        description: "When you die, you explode into a supernova "
+                        cold_vacuum:
+                                 title: "Cold Vacuum "
+                                 description: "You are used to the coldness of space, so you take double damage from fire "
 
-      cold_vacuum:
-        title: "Cold Vacuum "
-        description: "You are used to the coldness of space, so you take double damage from fire "
+                        stargazer:
+                                 title: "Stargazer "
+                                 description: "When exposed to the stars, you gain speed and regeneration "
 
-      stargazer:
-        title: "Stargazer "
-        description: "When exposed to the stars, you gain speed and regeneration "
+                        nonviolent:
+                                 title: "Nonviolent "
+                                 description: "In the great abyss of space, violence is uncommon if you even come across someone in the first place, this results in you having a small chance to be immobilized upon taking damage."
 
-      unknown_realms:
-        title: "Unknown Realms "
-        description: "Being in a realm without stars makes you weaker "
+                        starwatcher:
+                                 title: "Starwatcher "
+                                 description: "When not exposed to the stars, you get a little sad and will move a bit slower
 
-      nonviolent:
-        title: "Nonviolent "
-        description: "You have a chance to be imobilized upon taking damage, and your a vegetarian "
+        
+        
 
-      starwatcher:
-        title: "Starwatcher "
-        description: "When not exposed to the stars, you get a little sad and will move a bit slower "
+      
+        
+        
 
-      gaurdian:
-        title: "Gaurdian of the Stars "
-        description: "Killing the Ender Dragon, you are now the Gaurdian of The Stars, giving you a weapon forged from the stars "
+      
+        
+        
+
+      
+        
+        
+
+      
+        
+        
+
+      
+        
+        
+
+      
+        
+        
+
+        
+      
+        
+        
+
+      
+        
+        
 
     allay:
       little_fairy:
