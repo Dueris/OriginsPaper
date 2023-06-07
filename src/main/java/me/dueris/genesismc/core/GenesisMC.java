@@ -98,12 +98,12 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 
         //start
 
-        getServer().getConsoleSender().sendMessage(ChatColor.RED + "[GenesisMC]    ____                               _         __  __    ____ ");
-        getServer().getConsoleSender().sendMessage(ChatColor.YELLOW + "[GenesisMC]   / ___|   ___   _ __     ___   ___  (_)  ___  |  \\/  |  / ___|");
-        getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "[GenesisMC]  | |  _   / _ \\ | '_ \\   / _ \\ / __| | | / __| | |\\/| | | |    ");
-        getServer().getConsoleSender().sendMessage(ChatColor.AQUA + "[GenesisMC]  | |_| | |  __/ | | | | |  __/ \\__ \\ | | \\__ \\ | |  | | | |___ ");
-        getServer().getConsoleSender().sendMessage(ChatColor.BLUE + "[GenesisMC]   \\____|  \\___| |_| |_|  \\___| |___/ |_| |___/ |_|  |_|  \\____|");
-        getServer().getConsoleSender().sendMessage(ChatColor.LIGHT_PURPLE + "[GenesisMC]  GenesisMC -- Created by Dueris");
+        getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC]    ____                               _         __  __    ____ ").color(TextColor.color(255,0,0)));
+        getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC]   / ___|   ___   _ __     ___   ___  (_)  ___  |  \\/  |  / ___|").color(TextColor.color(255,255,0)));
+        getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC]  | |  _   / _ \\ | '_ \\   / _ \\ / __| | | / __| | |\\/| | | |    ").color(TextColor.color(0,255,0)));
+        getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC]  | |_| | |  __/ | | | | |  __/ \\__ \\ | | \\__ \\ | |  | | | |___ ").color(TextColor.color(160, 32, 240)));
+        getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC]   \\____|  \\___| |_| |_|  \\___| |___/ |_| |___/ |_|  |_|  \\____|").color(TextColor.color(0, 150, 255)));
+        getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC]  GenesisMC -- Created by Dueris").color(TextColor.color(252, 15, 192)));
         getServer().getConsoleSender().sendMessage(Component.text("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~").color(TextColor.color(128, 128, 128)));
 
         if (GenesisDataFiles.getMainConfig().getString("console-startup-debug").equalsIgnoreCase("true")) {
