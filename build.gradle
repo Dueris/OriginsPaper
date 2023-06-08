@@ -1,10 +1,10 @@
 plugins {
     id 'java'
-    id("io.papermc.paperweight.userdev") version "1.5.4"
+    id("io.papermc.paperweight.userdev") version "1.5.5"
 }
 
 group = 'me.dueris'
-version = 'mc1.19.4-v0.1.7'
+version = 'mc1.20-v0.1.7'
 
 repositories {
     mavenCentral()
@@ -26,10 +26,9 @@ repositories {
 }
 
 dependencies {
-    paperweight.paperDevBundle("1.19.4-R0.1-SNAPSHOT")
+    paperweight.paperDevBundle("1.20-R0.1-SNAPSHOT")
     compileOnly("org.geysermc.api:geyser-api:1.0.1-SNAPSHOT")
     compileOnly("org.geysermc.floodgate:api:2.2.2-SNAPSHOT")
-    compileOnly("com.sk89q.worldguard:worldguard-bukkit:7.0.7")
 }
 
 tasks {
