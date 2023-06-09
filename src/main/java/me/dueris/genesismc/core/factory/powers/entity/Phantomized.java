@@ -5,7 +5,7 @@ import me.dueris.genesismc.core.GenesisMC;
 import me.dueris.genesismc.core.entity.OriginPlayer;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
-import org.bukkit.craftbukkit.v1_19_R3.CraftWorldBorder;
+import org.bukkit.craftbukkit.v1_20_R1.CraftWorldBorder;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;

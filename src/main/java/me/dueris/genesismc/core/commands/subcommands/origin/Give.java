@@ -2,7 +2,7 @@ package me.dueris.genesismc.core.commands.subcommands.origin;
 
 import me.dueris.genesismc.core.commands.subcommands.SubCommand;
 import org.bukkit.Bukkit;
-import org.bukkit.craftbukkit.v1_19_R3.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_20_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
