@@ -9,13 +9,14 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import static me.dueris.genesismc.core.factory.powers.Powers.fire_weak;
 import static org.bukkit.Material.SOUL_FIRE;
 
 public class FireWeak extends BukkitRunnable {
     @Override
     public void run() {
         for (Player p : Bukkit.getOnlinePlayers()) {
-            if (OriginPlayer.getOrigin(p).getTag().equalsIgnoreCase("genesis:origin-piglin")) {
+            if (fire_weak.contains(p)) {
                 if (p.getWorld().getEnvironment() != World.Environment.NETHER) {
                     p.addPotionEffect(new PotionEffect(PotionEffectType.FIRE_RESISTANCE, 10, 0, false, false, false));
                     p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 10, 0, false, false, false));
