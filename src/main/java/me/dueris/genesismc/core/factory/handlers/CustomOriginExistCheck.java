@@ -20,6 +20,7 @@ public class CustomOriginExistCheck implements Listener {
     }
 
     public static void customOriginExistCheck(Player p) {
+        if (OriginPlayer.getOrigin(p) == null) return;
         if (CraftApoliRewriten.getOriginTags().contains(OriginPlayer.getOrigin(p).getTag())) return;
         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origin"), PersistentDataType.BYTE_ARRAY, CraftApoliRewriten.toByteArray(CraftApoliRewriten.nullOrigin()));
         p.sendMessage(Component.text(ChatColor.RED + "Your origin has been removed! Please select a new one."));
