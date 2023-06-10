@@ -1,6 +1,6 @@
 {
-	"type": "genesis:nausea_action_eat_meat",
-	"hidden": false,
-	"name": "menu.expanded.allay.friendly_angel.title",
-	"description": "menu.expanded.allay.friendly_angel.title"
+  "type": "genesis:nausea_action_eat_meat",
+  "hidden": false,
+  "name": "menu.expanded.allay.friendly_angel.title",
+  "description": "menu.expanded.allay.friendly_angel.title"
 }

@@ -29,7 +29,7 @@ public class PowerFileContainer implements Serializable {
         this.values.add(value);
     }
 
-    public void remove (String key) {
+    public void remove(String key) {
         this.keys.remove(key);
         this.values.remove(this.keys.indexOf(key));
     }

@@ -1,6 +1,6 @@
 {
-	"type": "genesis:treasure_loot_bonus",
-	"hidden": false,
-	"name": "menu.expanded.allay.treasure_finder.title",
-	"description": "menu.expanded.allay.treasure_finder.description"
+  "type": "genesis:treasure_loot_bonus",
+  "hidden": false,
+  "name": "menu.expanded.allay.treasure_finder.title",
+  "description": "menu.expanded.allay.treasure_finder.description"
 }

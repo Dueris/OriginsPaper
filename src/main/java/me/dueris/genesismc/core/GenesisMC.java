@@ -1,7 +1,5 @@
 package me.dueris.genesismc.core;
 
-import me.dueris.genesismc.core.entity.OriginPlayer;
-import me.dueris.genesismc.core.factory.CraftApoli;
 import me.dueris.genesismc.core.choosing.ChoosingCORE;
 import me.dueris.genesismc.core.choosing.ChoosingCUSTOM;
 import me.dueris.genesismc.core.choosing.ChoosingForced;
@@ -13,10 +11,11 @@ import me.dueris.genesismc.core.commands.subcommands.origin.Recipe;
 import me.dueris.genesismc.core.enchantments.EnchantProtEvent;
 import me.dueris.genesismc.core.enchantments.WaterProtAnvil;
 import me.dueris.genesismc.core.enchantments.WaterProtection;
+import me.dueris.genesismc.core.entity.OriginPlayer;
+import me.dueris.genesismc.core.events.PlayerHandler;
 import me.dueris.genesismc.core.factory.CraftApoliRewriten;
 import me.dueris.genesismc.core.factory.OriginStartHandler;
 import me.dueris.genesismc.core.factory.handlers.CustomOriginExistCheck;
-import me.dueris.genesismc.core.events.PlayerHandler;
 import me.dueris.genesismc.core.factory.powers.world.WorldSpawnHandler;
 import me.dueris.genesismc.core.files.GenesisDataFiles;
 import me.dueris.genesismc.core.generation.WaterProtBookGen;
@@ -40,8 +39,6 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.HashMap;
-
-import static me.dueris.genesismc.core.factory.CraftApoliRewriten.getOrigin;
 
 public final class GenesisMC extends JavaPlugin implements Listener {
     public static EnumSet<Material> tool;
@@ -113,14 +110,14 @@ public final class GenesisMC extends JavaPlugin implements Listener {
             Debug.executeGenesisDebug();
             Debug.testIncompatiblePlugins();
             Debug.versionTest();
-            getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] Successfully loaded version 0.1.7-ALPHA_SNAPSHOT 1.20)").color(TextColor.color(0,200,0)));
-            getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] Successfully loaded API version 0.1.2-BETA (1.20)").color(TextColor.color(0,200,0)));
-            getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] Successfully loaded CONFIG version (1.20)").color(TextColor.color(0,200,0)));
+            getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] Successfully loaded version 0.1.7-ALPHA_SNAPSHOT 1.20)").color(TextColor.color(0, 200, 0)));
+            getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] Successfully loaded API version 0.1.2-BETA (1.20)").color(TextColor.color(0, 200, 0)));
+            getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] Successfully loaded CONFIG version (1.20)").color(TextColor.color(0, 200, 0)));
         } else {
             getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] Successfully loaded version 0.1.7-ALPHA_SNAPSHOT (1.20)"));
         }
 
-        BukkitUtils.downloadFileToDirFromResource("datapacks"+File.separator+"OriginsGenesis.zip", "datapacks/OriginsGenesis.zip");
+        BukkitUtils.downloadFileToDirFromResource("datapacks" + File.separator + "OriginsGenesis.zip", "datapacks/OriginsGenesis.zip");
         CraftApoliRewriten.loadOrigins();
         for (OriginContainer origins : CraftApoliRewriten.getOrigins()) {
             if (GenesisDataFiles.getMainConfig().getString("console-startup-debug").equalsIgnoreCase("true")) {
@@ -190,9 +187,9 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         }
 
         try {
-            Bukkit.getServer().getConsoleSender().sendMessage(Component.text(Lang.lang_test).color(TextColor.color(0,200,0)));
+            Bukkit.getServer().getConsoleSender().sendMessage(Component.text(Lang.lang_test).color(TextColor.color(0, 200, 0)));
         } catch (Exception e) {
-            Bukkit.getServer().getConsoleSender().sendMessage(Component.text("A fatal error has occurred, lang could not be loaded. Disabling GenesisMC....").color(TextColor.color(200,0,0)));
+            Bukkit.getServer().getConsoleSender().sendMessage(Component.text("A fatal error has occurred, lang could not be loaded. Disabling GenesisMC....").color(TextColor.color(200, 0, 0)));
             Bukkit.getServer().getPluginManager().disablePlugin(this);
         }
 
@@ -216,7 +213,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 
     @Override
     public void onDisable() {
-        getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] Disabling GenesisMC Origins.").color(TextColor.color(200,0,0)));
+        getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] Disabling GenesisMC Origins.").color(TextColor.color(200, 0, 0)));
         // Disable enchantments
         try {
             Field keyField = Enchantment.class.getDeclaredField("byKey");

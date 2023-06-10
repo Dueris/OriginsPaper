@@ -4,7 +4,6 @@ import me.dueris.genesismc.core.GenesisMC;
 import me.dueris.genesismc.core.entity.OriginPlayer;
 import me.dueris.genesismc.core.events.OrbInteractEvent;
 import me.dueris.genesismc.core.factory.CraftApoliRewriten;
-import me.dueris.genesismc.core.factory.powers.world.WorldSpawnHandler;
 import me.dueris.genesismc.core.files.GenesisDataFiles;
 import net.kyori.adventure.text.Component;
 import org.bukkit.*;
@@ -20,7 +19,6 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.inventory.meta.tags.ItemTagType;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
@@ -31,11 +29,9 @@ import java.util.List;
 import java.util.Random;
 
 import static me.dueris.genesismc.core.choosing.contents.MainMenuContents.GenesisMainMenuContents;
-import static me.dueris.genesismc.core.choosing.contents.origins.ExpandedOriginContent.*;
-import static me.dueris.genesismc.core.choosing.contents.origins.OriginalOriginContent.*;
 import static me.dueris.genesismc.core.items.OrbOfOrigins.orb;
 import static org.bukkit.Bukkit.getServer;
-import static org.bukkit.ChatColor.*;
+import static org.bukkit.ChatColor.GRAY;
 
 public class ChoosingCORE implements Listener {
 
@@ -186,7 +182,8 @@ public class ChoosingCORE implements Listener {
                 if (e.getCurrentItem().getType().equals(Material.BARRIER)) {
                     Player p = (Player) e.getWhoClicked();
                     p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 10, 2);
-                    if (OriginPlayer.getOrigin(p).getTag().equalsIgnoreCase("genesis:origin-null") || p.getScoreboardTags().contains("choosing")) p.kick(Component.text("You are forced to choose an origin!"));
+                    if (OriginPlayer.getOrigin(p).getTag().equalsIgnoreCase("genesis:origin-null") || p.getScoreboardTags().contains("choosing"))
+                        p.kick(Component.text("You are forced to choose an origin!"));
                     e.getWhoClicked().closeInventory();
                 } else {
                     e.setCancelled(true);

@@ -1,6 +1,5 @@
 package me.dueris.genesismc.core.factory.powers.food;
 
-import me.dueris.genesismc.core.entity.OriginPlayer;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;

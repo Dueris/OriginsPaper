@@ -1,6 +1,5 @@
 package me.dueris.genesismc.core.factory.powers.entity;
 
-import me.dueris.genesismc.core.entity.OriginPlayer;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;

@@ -1,6 +1,6 @@
 {
-	"type": "genesis:creative_flight_rain_cancel",
-	"hidden": false,
-	"name": "menu.expanded.bee.rain.title",
-	"description": "menu.expanded.bee.rain.description"
+  "type": "genesis:creative_flight_rain_cancel",
+  "hidden": false,
+  "name": "menu.expanded.bee.rain.title",
+  "description": "menu.expanded.bee.rain.description"
 }

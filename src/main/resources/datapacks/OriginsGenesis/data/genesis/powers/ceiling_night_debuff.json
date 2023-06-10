@@ -1,6 +1,6 @@
 {
-	"type": "genesis:ceiling_debuff_condition_night",
-	"hidden": false,
-	"name": "menu.expanded.starborne.starwatcher.title",
-	"description": "menu.expanded.starborne.starwatcher.description"
+  "type": "genesis:ceiling_debuff_condition_night",
+  "hidden": false,
+  "name": "menu.expanded.starborne.starwatcher.title",
+  "description": "menu.expanded.starborne.starwatcher.description"
 }

@@ -1,19 +1,19 @@
 {
-	"powers": [
-		"genesis:flamable",
-		"genesis:food_modifier",
-		"genesis:glowing_spirit",
-		"genesis:jukebox_anchor",
-		"genesis:little_fairy",
-		"genesis:nausea_eat_meat",
-		"genesis:sparkle_particles",
-		"genesis:treasure_loot_bonus"
-	],
-	"icon": {
-		"item": "minecraft:cookie"
-	},
-	"order": 11,
-	"impact": 1,
-	"name": "Allay",
-	"description": "These friendly fairies love the sweet sounds of music, and a yummy cookie :)."
+  "powers": [
+    "genesis:flamable",
+    "genesis:food_modifier",
+    "genesis:glowing_spirit",
+    "genesis:jukebox_anchor",
+    "genesis:little_fairy",
+    "genesis:nausea_eat_meat",
+    "genesis:sparkle_particles",
+    "genesis:treasure_loot_bonus"
+  ],
+  "icon": {
+    "item": "minecraft:cookie"
+  },
+  "order": 11,
+  "impact": 1,
+  "name": "Allay",
+  "description": "These friendly fairies love the sweet sounds of music, and a yummy cookie :)."
 }

@@ -1,6 +1,5 @@
 package me.dueris.genesismc.core.factory.powers.world;
 
-import me.dueris.genesismc.core.entity.OriginPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;

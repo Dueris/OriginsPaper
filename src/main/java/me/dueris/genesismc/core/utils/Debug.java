@@ -3,7 +3,6 @@ package me.dueris.genesismc.core.utils;
 import me.dueris.genesismc.core.GenesisMC;
 import me.dueris.genesismc.core.factory.CraftApoli;
 import me.dueris.genesismc.core.factory.handlers.CustomOriginExistCheck;
-import me.dueris.genesismc.core.factory.powers.Powers;
 import me.dueris.genesismc.core.files.GenesisDataFiles;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -14,13 +13,13 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.Arrays;
 
-import static me.dueris.genesismc.core.GenesisMC.*;
+import static me.dueris.genesismc.core.GenesisMC.getPlugin;
 import static me.dueris.genesismc.core.utils.BukkitUtils.printValues;
 import static org.bukkit.Bukkit.getServer;
 
 public class Debug {
 
-    public static void executeGenesisDebug(){
+    public static void executeGenesisDebug() {
         getServer().getConsoleSender().sendMessage("Executing Genesis Debug..");
 
         FileConfiguration mainConfig = GenesisDataFiles.getMainConfig();
@@ -42,7 +41,7 @@ public class Debug {
                 Arrays.stream(getServer().getPluginManager().getPlugins()).toArray().toString() +
                 Bukkit.getServer().getMaxWorldSize() +
                 Bukkit.getMinecraftVersion()
-                );
+        );
         new BukkitRunnable() {
             @Override
             public void run() {
@@ -59,7 +58,7 @@ public class Debug {
 
     }
 
-    public static void executeGenesisReload(){
+    public static void executeGenesisReload() {
         try {
             getServer().getConsoleSender().sendMessage(ChatColor.GREEN + Lang.lang_test);
         } catch (Exception e) {
@@ -83,7 +82,7 @@ public class Debug {
         }
     }
 
-    public static void testIncompatiblePlugins(){
+    public static void testIncompatiblePlugins() {
         if (Bukkit.getServer().getPluginManager().isPluginEnabled("Origins-Bukkit")) {
             getServer().getConsoleSender().sendMessage(ChatColor.RED + "[GenesisMC] Unable to start plugin due to Origins Bukkit being present. Using both will cause errors.");
             getServer().getConsoleSender().sendMessage(ChatColor.GRAY + "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
@@ -91,7 +90,7 @@ public class Debug {
         }
     }
 
-    public static void versionTest(){
+    public static void versionTest() {
         boolean isCraftBukkit = false;
         boolean isSpigot = false;
         boolean isPaper = false;

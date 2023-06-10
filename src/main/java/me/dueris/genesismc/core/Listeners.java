@@ -39,5 +39,7 @@ public class Listeners implements Listener {
     }
 
     @EventHandler
-    public void executeChangeEvent(OriginChangeEvent e){e.getPlayer();}
+    public void executeChangeEvent(OriginChangeEvent e) {
+        e.getPlayer();
+    }
 }

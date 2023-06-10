@@ -1,6 +1,6 @@
 {
-	"type": "genesis:carrots_only",
-	"hidden": false,
-	"name": "menu.expanded.rabbit.picky_eater.title",
-	"description": "menu.expanded.rabbit.picky_eater.description"
+  "type": "genesis:carrots_only",
+  "hidden": false,
+  "name": "menu.expanded.rabbit.picky_eater.title",
+  "description": "menu.expanded.rabbit.picky_eater.description"
 }

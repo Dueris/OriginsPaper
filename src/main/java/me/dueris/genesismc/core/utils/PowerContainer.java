@@ -33,7 +33,7 @@ public class PowerContainer implements Serializable {
      */
     @Override
     public String toString() {
-        return "powerTag: " + this.powerTag + ", PowerFile: " + this.powerFile.toString() + ", PowerSource: " + this.powerSource.toString();
+        return "powerTag: " + this.powerTag + ", PowerFile: " + this.powerFile.toString() + ", PowerSource: " + this.powerSource;
     }
 
     public void setName(String newName) {

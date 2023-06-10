@@ -1,6 +1,5 @@
 package me.dueris.genesismc.core;
 
-import me.dueris.genesismc.core.entity.OriginPlayer;
 import me.dueris.genesismc.core.events.OriginKeybindExecuteEvent;
 import me.dueris.genesismc.core.utils.ShulkUtils;
 import org.bukkit.Bukkit;

@@ -1,7 +1,6 @@
 package me.dueris.genesismc.core.factory.powers.armour;
 
 import com.destroystokyo.paper.event.player.PlayerArmorChangeEvent;
-import me.dueris.genesismc.core.entity.OriginPlayer;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;

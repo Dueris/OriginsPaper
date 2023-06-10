@@ -1,17 +1,17 @@
 {
-	"powers": [
-		"genesis:gold_armor",
-		"genesis:gold_tools",
-		"genesis:piglin_attack",
-		"origins:nether_spawn",
-		"genesis:overworld_stack_buff",
-		"genesis:fire_weak_type"
-	],
-	"icon": {
-		"item": "minecraft:gold_ingot"
-	},
-	"order": 15,
-	"impact": 2,
-	"name": "Piglin",
-	"description": "tell dueris to make a description"
+  "powers": [
+    "genesis:gold_armor",
+    "genesis:gold_tools",
+    "genesis:piglin_attack",
+    "origins:nether_spawn",
+    "genesis:overworld_stack_buff",
+    "genesis:fire_weak_type"
+  ],
+  "icon": {
+    "item": "minecraft:gold_ingot"
+  },
+  "order": 15,
+  "impact": 2,
+  "name": "Piglin",
+  "description": "tell dueris to make a description"
 }

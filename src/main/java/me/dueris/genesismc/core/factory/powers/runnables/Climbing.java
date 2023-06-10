@@ -1,6 +1,5 @@
 package me.dueris.genesismc.core.factory.powers.runnables;
 
-import me.dueris.genesismc.core.entity.OriginPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;

@@ -16,10 +16,10 @@ public class OriginContainer implements Serializable {
     /**
      * The files are parsed into hashmaps by putting the json key as the key and the value as the value.
      *
-     * @param tag The origin tag.
+     * @param tag             The origin tag.
      * @param originLayerFile The origin layer file, parsed into a HashMap.
-     * @param originFile The origin file, parsed into a HashMap.
-     * @param powerContainer An array of powers that the origin has.
+     * @param originFile      The origin file, parsed into a HashMap.
+     * @param powerContainer  An array of powers that the origin has.
      */
     public OriginContainer(String tag, HashMap<String, Object> originLayerFile, HashMap<String, Object> originFile, ArrayList<PowerContainer> powerContainer) {
         this.tag = tag;
@@ -47,7 +47,7 @@ public class OriginContainer implements Serializable {
      * @return The origin layer file parsed into a HashMap.
      */
     public HashMap<String, Object> getOriginLayerFile() {
-        return new  HashMap<String, Object>(this.originLayerFile);
+        return new HashMap<String, Object>(this.originLayerFile);
     }
 
     /**
@@ -66,6 +66,7 @@ public class OriginContainer implements Serializable {
 
 
     //origin file
+
     /**
      * @return The name of the origin.
      */

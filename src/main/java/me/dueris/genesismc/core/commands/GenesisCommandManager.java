@@ -1,8 +1,8 @@
 package me.dueris.genesismc.core.commands;
 
-import me.dueris.genesismc.core.events.OriginCommandEvent;
 import me.dueris.genesismc.core.commands.subcommands.SubCommand;
 import me.dueris.genesismc.core.commands.subcommands.origin.*;
+import me.dueris.genesismc.core.events.OriginCommandEvent;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;

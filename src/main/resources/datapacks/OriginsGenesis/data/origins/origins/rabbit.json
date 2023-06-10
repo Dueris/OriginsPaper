@@ -1,17 +1,17 @@
 {
-	"powers": [
-		"genesis:carrots_only",
-		"genesis:jump_boost",
-		"genesis:leap_velocity",
-		"genesis:rabbit_foot_drop",
-		"genesis:shock_absoption",
-		"origins:fragile"
-	],
-	"icon": {
-		"item": "minecraft:carrot"
-	},
-	"order": 12,
-	"impact": 1,
-	"name": "Rabbit",
-	"description": "tell dueris to make description"
+  "powers": [
+    "genesis:carrots_only",
+    "genesis:jump_boost",
+    "genesis:leap_velocity",
+    "genesis:rabbit_foot_drop",
+    "genesis:shock_absoption",
+    "origins:fragile"
+  ],
+  "icon": {
+    "item": "minecraft:carrot"
+  },
+  "order": 12,
+  "impact": 1,
+  "name": "Rabbit",
+  "description": "tell dueris to make description"
 }

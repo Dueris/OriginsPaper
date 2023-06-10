@@ -1,9 +1,9 @@
 {
-	"icon": {
-		"item": "minecraft:player_head"
-	},
-	"order": 0,
-	"impact": 0,
-	"name": "Human",
-	"description": "A normal Minecraft experience"
+  "icon": {
+    "item": "minecraft:player_head"
+  },
+  "order": 0,
+  "impact": 0,
+  "name": "Human",
+  "description": "A normal Minecraft experience"
 }

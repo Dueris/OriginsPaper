@@ -30,7 +30,7 @@ public class MainMenuContents {
             if (origin.getMaterialIcon() != icon.getType()) continue;
             ItemMeta meta = icon.getItemMeta();
             NamespacedKey key = new NamespacedKey(GenesisMC.getPlugin(), "originTag");
-            meta.getPersistentDataContainer().set(key,PersistentDataType.STRING, origin.getTag());
+            meta.getPersistentDataContainer().set(key, PersistentDataType.STRING, origin.getTag());
             icon.setItemMeta(meta);
         }
         return icon;

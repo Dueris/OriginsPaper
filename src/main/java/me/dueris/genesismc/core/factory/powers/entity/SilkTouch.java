@@ -1,7 +1,6 @@
 package me.dueris.genesismc.core.factory.powers.entity;
 
 
-import me.dueris.genesismc.core.entity.OriginPlayer;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Material;

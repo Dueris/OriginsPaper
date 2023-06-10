@@ -1,6 +1,6 @@
 {
-	"type": "genesis:glowing_entity",
-	"hidden": false,
-	"name": "menu.expanded.allay.blue_spirit.title",
-	"description": "menu.expanded.allay.blue_spirit.description"
+  "type": "genesis:glowing_entity",
+  "hidden": false,
+  "name": "menu.expanded.allay.blue_spirit.title",
+  "description": "menu.expanded.allay.blue_spirit.description"
 }

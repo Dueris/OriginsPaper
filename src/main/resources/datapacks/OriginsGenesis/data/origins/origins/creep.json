@@ -1,15 +1,15 @@
 {
-	"powers": [
-		"genesis:charged",
-		"genesis:creeper_ignore",
-		"genesis:explosion_tick",
-		"genesis:felinephobia"
-	],
-	"icon": {
-		"item": "minecraft:gunpowder"
-	},
-	"order": 16,
-	"impact": 1,
-	"name": "Creep",
-	"description": "tell dueris to make a description"
+  "powers": [
+    "genesis:charged",
+    "genesis:creeper_ignore",
+    "genesis:explosion_tick",
+    "genesis:felinephobia"
+  ],
+  "icon": {
+    "item": "minecraft:gunpowder"
+  },
+  "order": 16,
+  "impact": 1,
+  "name": "Creep",
+  "description": "tell dueris to make a description"
 }

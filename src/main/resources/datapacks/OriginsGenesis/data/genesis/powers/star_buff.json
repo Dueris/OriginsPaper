@@ -1,6 +1,6 @@
 {
-	"type": "genesis:star_buff",
-	"hidden": false,
-	"name": "menu.expanded.starborne.stargazer.title",
-	"description": "menu.expanded.starborne.stargazer.description"
+  "type": "genesis:star_buff",
+  "hidden": false,
+  "name": "menu.expanded.starborne.stargazer.title",
+  "description": "menu.expanded.starborne.stargazer.description"
 }

@@ -34,7 +34,7 @@ public class ChooseMenuContents {
         ArrayList<ItemStack> contents = new ArrayList<>();
         ArrayList<OriginContainer> originContainers = new ArrayList<>();
         for (OriginContainer origin : CraftApoliRewriten.getOrigins()) {
-             if (!CraftApoliRewriten.isCoreOrigin(origin)) originContainers.add(origin);
+            if (!CraftApoliRewriten.isCoreOrigin(origin)) originContainers.add(origin);
         }
 
         for (int i = 0; i <= 53; i++) {

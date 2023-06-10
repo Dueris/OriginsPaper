@@ -1,5 +1,9 @@
 package me.dueris.genesismc.core.factory;
-import me.dueris.genesismc.core.utils.*;
+
+import me.dueris.genesismc.core.utils.Lang;
+import me.dueris.genesismc.core.utils.OriginContainer;
+import me.dueris.genesismc.core.utils.PowerContainer;
+import me.dueris.genesismc.core.utils.PowerFileContainer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import org.apache.commons.io.FileUtils;
@@ -12,23 +16,26 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.LinkOption;
+import java.nio.file.Path;
 import java.util.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
-
-import java.nio.file.*;
 import java.util.zip.ZipInputStream;
 
 public class CraftApoliRewriten {
 
-    private static final OriginContainer null_Origin = new OriginContainer("genesis:origin-null", new HashMap<String, Object>(Map.of( "hidden", true, "origins", "genesis:origin-null")), new HashMap<String, Object>(Map.of("impact", "0", "icon", "minecraft:player_head", "powers", "genesis:null", "order", "0", "unchooseable", true)), new ArrayList<>(List.of(new PowerContainer("genesis:null", new PowerFileContainer(new ArrayList<>(), new ArrayList<>()), "genesis:origin-null"))));
-    private static final OriginContainer choosing_Origin = new OriginContainer("genesis:origin-choosing", new HashMap<String, Object>(Map.of( "hidden", true, "origins", "genesis:origin-choosing")), new HashMap<String, Object>(Map.of("impact", "0", "icon", "minecraft:player_head", "powers", "genesis:choosing", "order", "0", "unchooseable", true)), new ArrayList<>(List.of(new PowerContainer("genesis:choosing", new PowerFileContainer(new ArrayList<>(), new ArrayList<>()), "genesis:origin-null"))));
+    private static final OriginContainer null_Origin = new OriginContainer("genesis:origin-null", new HashMap<String, Object>(Map.of("hidden", true, "origins", "genesis:origin-null")), new HashMap<String, Object>(Map.of("impact", "0", "icon", "minecraft:player_head", "powers", "genesis:null", "order", "0", "unchooseable", true)), new ArrayList<>(List.of(new PowerContainer("genesis:null", new PowerFileContainer(new ArrayList<>(), new ArrayList<>()), "genesis:origin-null"))));
+    private static final OriginContainer choosing_Origin = new OriginContainer("genesis:origin-choosing", new HashMap<String, Object>(Map.of("hidden", true, "origins", "genesis:origin-choosing")), new HashMap<String, Object>(Map.of("impact", "0", "icon", "minecraft:player_head", "powers", "genesis:choosing", "order", "0", "unchooseable", true)), new ArrayList<>(List.of(new PowerContainer("genesis:choosing", new PowerFileContainer(new ArrayList<>(), new ArrayList<>()), "genesis:origin-null"))));
 
     public static OriginContainer nullOrigin() {
         return null_Origin;
     }
 
-    public static OriginContainer choosingOrigin(){return choosing_Origin;}
+    public static OriginContainer choosingOrigin() {
+        return choosing_Origin;
+    }
 
     @SuppressWarnings("FieldMayBeFinal")
     private static ArrayList<OriginContainer> originContainers = new ArrayList<>();
@@ -122,7 +129,7 @@ public class CraftApoliRewriten {
         ArrayList<Object> values = new ArrayList<>();
         for (Object key : JSONFileParser.keySet()) {
             keys.add((String) key);
-            values.add(JSONFileParser.get((String) key));
+            values.add(JSONFileParser.get(key));
         }
         return new PowerFileContainer(keys, values);
     }
@@ -172,7 +179,7 @@ public class CraftApoliRewriten {
                     ArrayList<String> originFileName = new ArrayList<>();
 
                     for (Path path : files.keySet()) {
-                        if (path.equals(Path.of("data"+File.separator+"origins"+File.separator+"origin_layers"+File.separator+"origin.json"))) {
+                        if (path.equals(Path.of("data" + File.separator + "origins" + File.separator + "origin_layers" + File.separator + "origin.json"))) {
                             originDatapack = true;
 
                             originLayerParser = (JSONObject) new JSONParser().parse(files.get(path));
@@ -232,7 +239,7 @@ public class CraftApoliRewriten {
             }
 
             //non zip
-            File origin_layers = new File(datapack.getAbsolutePath() + File.separator+"data"+File.separator+"origins"+File.separator+"origin_layers"+File.separator+"origin.json");
+            File origin_layers = new File(datapack.getAbsolutePath() + File.separator + "data" + File.separator + "origins" + File.separator + "origin_layers" + File.separator + "origin.json");
             if (!origin_layers.exists()) continue;
 
             ArrayList<String> originFolder = new ArrayList<>();

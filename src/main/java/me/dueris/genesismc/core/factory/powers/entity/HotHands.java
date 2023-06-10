@@ -1,7 +1,6 @@
 package me.dueris.genesismc.core.factory.powers.entity;
 
 import io.papermc.paper.event.player.PrePlayerAttackEntityEvent;
-import me.dueris.genesismc.core.entity.OriginPlayer;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 

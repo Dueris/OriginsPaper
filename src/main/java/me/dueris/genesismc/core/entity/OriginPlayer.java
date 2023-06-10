@@ -25,7 +25,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.UUID;
 
 import static me.dueris.genesismc.core.choosing.ChoosingCORE.*;
 import static me.dueris.genesismc.core.choosing.contents.ChooseMenuContents.ChooseMenuContent;
@@ -349,12 +348,8 @@ public class OriginPlayer {
         getServer().getPluginManager().callEvent(chooseEvent);
     }
 
-    public static boolean isInPhantomForm(Player player){
-        if (player.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER) == 1){
-            return false;
-        }else{
-            return true;
-        }
+    public static boolean isInPhantomForm(Player player) {
+        return player.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER) != 1;
     }
 
     public static void openOriginGUI(Player player, OriginMenu menu) {

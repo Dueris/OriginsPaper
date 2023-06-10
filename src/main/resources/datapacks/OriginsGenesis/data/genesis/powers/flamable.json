@@ -1,6 +1,6 @@
 {
-	"type": "genesis:flamable",
-	"hidden": false,
-	"name": "menu.expanded.allay.kinda_flamable.title",
-	"description": "menu.expanded.allay.kinda_flamable.description"
+  "type": "genesis:flamable",
+  "hidden": false,
+  "name": "menu.expanded.allay.kinda_flamable.title",
+  "description": "menu.expanded.allay.kinda_flamable.description"
 }

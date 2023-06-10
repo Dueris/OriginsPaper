@@ -1,6 +1,5 @@
 package me.dueris.genesismc.core.factory.powers.entity;
 
-import me.dueris.genesismc.core.entity.OriginPlayer;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -12,7 +11,6 @@ import org.bukkit.inventory.ItemStack;
 import java.util.EnumSet;
 
 import static me.dueris.genesismc.core.factory.powers.Powers.strong_arms;
-import static me.dueris.genesismc.core.factory.powers.Powers.strong_arms_break_speed;
 import static org.bukkit.Material.*;
 
 public class BetterMineSpeed implements Listener {

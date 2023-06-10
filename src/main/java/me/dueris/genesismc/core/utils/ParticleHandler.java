@@ -33,9 +33,9 @@ public class ParticleHandler extends BukkitRunnable {
                     p.getWorld().spawnParticle(Particle.DUST_COLOR_TRANSITION, p.getLocation(), 3, 0.4F, -0.5, 0.4F, dustColorTransition);
                     p.getWorld().spawnParticle(Particle.DUST_COLOR_TRANSITION, p.getEyeLocation(), 3, 0.4F, -0.5, 0.4F, dustColorTransition);
                 }
-                if(flame_particles.contains(OriginPlayer.getOrigin(p).getTag())){
-                    p.getWorld().spawnParticle(Particle.FLAME, p.getLocation(), 3,0.4F, -0.5, 0.4F);
-                    p.getWorld().spawnParticle(Particle.FLAME, p.getEyeLocation(), 3,0.4F, -0.5, 0.4F);
+                if (flame_particles.contains(OriginPlayer.getOrigin(p).getTag())) {
+                    p.getWorld().spawnParticle(Particle.FLAME, p.getLocation(), 3, 0.4F, -0.5, 0.4F);
+                    p.getWorld().spawnParticle(Particle.FLAME, p.getEyeLocation(), 3, 0.4F, -0.5, 0.4F);
                 }
             }
         }

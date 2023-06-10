@@ -82,7 +82,10 @@ public class ChoosingCUSTOM implements Listener {
 
                 OriginContainer origin = null;
                 for (OriginContainer origins : CraftApoliRewriten.getOrigins()) {
-                    if (origins.getTag().equals(originTag)) {origin = origins; break;}
+                    if (origins.getTag().equals(originTag)) {
+                        origin = origins;
+                        break;
+                    }
                 }
 
                 Player p = (Player) e.getWhoClicked();
@@ -203,7 +206,10 @@ public class ChoosingCUSTOM implements Listener {
                 String originTag = e.getCurrentItem().getItemMeta().getPersistentDataContainer().get(key, PersistentDataType.STRING);
                 OriginContainer origin = CraftApoliRewriten.getOrigin(originTag);
                 Player p = (Player) e.getWhoClicked();
-                if (origin == null) {p.sendMessage(Component.text("This origin is null ¯\\_(ツ)_/¯")); return;}
+                if (origin == null) {
+                    p.sendMessage(Component.text("This origin is null ¯\\_(ツ)_/¯"));
+                    return;
+                }
                 setAttributesToDefault(p);
                 Bukkit.getScheduler().runTaskLater(GenesisMC.getPlugin(), () -> {
                     OriginPlayer.unassignPowers(p);
@@ -218,7 +224,7 @@ public class ChoosingCUSTOM implements Listener {
                     p.getScoreboardTags().remove("choosing");
                 }, 1);
                 Bukkit.getScheduler().runTaskLater(GenesisMC.getPlugin(), () -> {
-                    if(launch_into_air.contains(p)){
+                    if (launch_into_air.contains(p)) {
                         ItemStack launchitem = new ItemStack(Material.FEATHER);
                         ItemMeta launchmeta = launchitem.getItemMeta();
                         launchmeta.setDisplayName(GRAY + "Launch");
@@ -227,7 +233,7 @@ public class ChoosingCUSTOM implements Listener {
                         launchitem.setItemMeta(launchmeta);
                         p.getInventory().addItem(launchitem);
                     }
-                    if(throw_ender_pearl.contains(p)){
+                    if (throw_ender_pearl.contains(p)) {
                         ItemStack infinpearl = new ItemStack(Material.ENDER_PEARL);
                         ItemMeta pearl_meta = infinpearl.getItemMeta();
                         pearl_meta.setDisplayName(ChatColor.LIGHT_PURPLE + "Teleport");
@@ -238,7 +244,7 @@ public class ChoosingCUSTOM implements Listener {
                         infinpearl.setItemMeta(pearl_meta);
                         p.getInventory().addItem(infinpearl);
                     }
-                    if(phantomize.contains(p)){
+                    if (phantomize.contains(p)) {
                         ItemStack spectatorswitch = new ItemStack(Material.PHANTOM_MEMBRANE);
                         ItemMeta switch_meta = spectatorswitch.getItemMeta();
                         switch_meta.setDisplayName(GRAY + "Phantom Form");
@@ -251,7 +257,8 @@ public class ChoosingCUSTOM implements Listener {
                         spectatorswitch.setItemMeta(switch_meta);
                         p.getInventory().addItem(spectatorswitch);
                     }
-                    if (nether_spawn.contains(p) && p.getBedSpawnLocation() == null) p.teleport(WorldSpawnHandler.NetherSpawn());
+                    if (nether_spawn.contains(p) && p.getBedSpawnLocation() == null)
+                        p.teleport(WorldSpawnHandler.NetherSpawn());
                 }, 2);
             }
         }
@@ -266,7 +273,7 @@ public class ChoosingCUSTOM implements Listener {
                     p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 10, 2);
                     NamespacedKey key = new NamespacedKey(GenesisMC.getPlugin(), "originTag");
 
-                    for (OriginContainer origin: CraftApoliRewriten.getCoreOrigins()) {
+                    for (OriginContainer origin : CraftApoliRewriten.getCoreOrigins()) {
                         if (Objects.equals(e.getClickedInventory().getContents()[13].getItemMeta().getPersistentDataContainer().get(key, PersistentDataType.STRING), origin.getTag())) {
                             @NotNull Inventory mainmenu = Bukkit.createInventory(e.getWhoClicked(), 54, "Choosing Menu");
                             mainmenu.setContents(GenesisMainMenuContents((Player) e.getWhoClicked()));

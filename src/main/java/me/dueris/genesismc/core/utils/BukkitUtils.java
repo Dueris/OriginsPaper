@@ -120,9 +120,8 @@ public class BukkitUtils {
             String path = section.getCurrentPath() + "|" + key;
             Object value = section.get(key);
 
-            if (value instanceof ConfigurationSection) {
+            if (value instanceof ConfigurationSection subsection) {
                 // If the value is another section, recursively print its values
-                ConfigurationSection subsection = (ConfigurationSection) value;
                 printValues(subsection, indent + "  ");
             } else {
                 // Append the key and value to the StringBuilder

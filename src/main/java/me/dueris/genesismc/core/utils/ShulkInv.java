@@ -1,6 +1,5 @@
 package me.dueris.genesismc.core.utils;
 
-import me.dueris.genesismc.core.entity.OriginPlayer;
 import me.dueris.genesismc.core.commands.subcommands.SubCommand;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;

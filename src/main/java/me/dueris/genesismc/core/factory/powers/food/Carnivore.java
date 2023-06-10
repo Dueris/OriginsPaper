@@ -1,6 +1,5 @@
 package me.dueris.genesismc.core.factory.powers.food;
 
-import me.dueris.genesismc.core.entity.OriginPlayer;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -26,7 +25,7 @@ public class Carnivore implements Listener {
     public void CarnivoreEat(PlayerInteractEvent e) {
         if (carnivore.contains(e.getPlayer())) {
             if (e.getItem() != null) {
-                if(e.getClickedBlock().getType().isInteractable()) return;
+                if (e.getClickedBlock().getType().isInteractable()) return;
                 if (!meat.contains(e.getItem().getType()) && !excludable.contains(e.getItem().getType()) && e.getItem().getType().isEdible()) {
                     if (e.getAction().isRightClick()) {
                         e.setCancelled(true);

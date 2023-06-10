@@ -1,19 +1,19 @@
 {
-	"powers": [
-		"genesis:armor_decay",
-		"genesis:block_stack_buff",
-		"genesis:deep_dark_spawn",
-		"genesis:echo_pulse",
-		"genesis:light_debuff",
-		"genesis:sculk_growth_death",
-		"genesis:sonic_boom",
-		"genesis:warden_ignore"
-	],
-	"icon": {
-		"item": "minecraft:echo_shard"
-	},
-	"order": 14,
-	"impact": 2,
-	"name": "Sculkling",
-	"description": "tell dueris to make description"
+  "powers": [
+    "genesis:armor_decay",
+    "genesis:block_stack_buff",
+    "genesis:deep_dark_spawn",
+    "genesis:echo_pulse",
+    "genesis:light_debuff",
+    "genesis:sculk_growth_death",
+    "genesis:sonic_boom",
+    "genesis:warden_ignore"
+  ],
+  "icon": {
+    "item": "minecraft:echo_shard"
+  },
+  "order": 14,
+  "impact": 2,
+  "name": "Sculkling",
+  "description": "tell dueris to make description"
 }

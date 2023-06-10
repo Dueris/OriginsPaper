@@ -1,6 +1,6 @@
 {
-	"type": "genesis:flower_boost_health",
-	"hidden": false,
-	"name": "menu.expanded.bee.bloom.title",
-	"description": "menu.expanded.bee.bloom.description"
+  "type": "genesis:flower_boost_health",
+  "hidden": false,
+  "name": "menu.expanded.bee.bloom.title",
+  "description": "menu.expanded.bee.bloom.description"
 }
