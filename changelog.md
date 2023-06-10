@@ -35,6 +35,18 @@ Changelog:
     -added german
     -added russian
     -added english
+    -added spanish
+    -added traditional chinese
+-added vcs api
+-update 1.20
+-rewrote custom origin handling
+-made built in origins run on custom origins datapacks
+-made new classes, added tons to the api
+-added new "origins" byte field to playerdata
+-added new Origin and Power Containers
+-added javadocs
+-optimized lots of code
+-cleaned 99% of the project code
 
 </pre>
 <hr>
