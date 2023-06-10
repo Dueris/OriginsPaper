@@ -1,6 +1,6 @@
 {
-  "type": "origins:effect_immunity",
+  "type": "origins:hotblooded",
   "hidden": false,
-  "name": "menu.original.blazeborn.fire_immunity.title",
-  "description": "menu.original.blazeborn.fire_immunity.description"
+  "name": "menu.original.blazeborn.hotblooded.title",
+  "description": "menu.original.blazeborn.hotblooded.description"
 }
