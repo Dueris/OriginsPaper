@@ -110,11 +110,11 @@ public final class GenesisMC extends JavaPlugin implements Listener {
             Debug.executeGenesisDebug();
             Debug.testIncompatiblePlugins();
             Debug.versionTest();
-            getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] Successfully loaded version 0.1.7-ALPHA_SNAPSHOT 1.19.4)").color(TextColor.color(0,200,0)));
-            getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] Successfully loaded API version 0.1.2-BETA (1.19.4)").color(TextColor.color(0,200,0)));
-            getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] Successfully loaded CONFIG version (1.19.4)").color(TextColor.color(0,200,0)));
+            getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] Successfully loaded version 0.1.7-ALPHA_SNAPSHOT 1.20)").color(TextColor.color(0,200,0)));
+            getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] Successfully loaded API version 0.1.2-BETA (1.20)").color(TextColor.color(0,200,0)));
+            getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] Successfully loaded CONFIG version (1.20)").color(TextColor.color(0,200,0)));
         } else {
-            getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] Successfully loaded version 0.1.7-ALPHA_SNAPSHOT (1.19.4)"));
+            getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] Successfully loaded version 0.1.7-ALPHA_SNAPSHOT (1.20)"));
         }
 
         BukkitUtils.downloadFileToDirFromResource("datapacks"+File.separator+"OriginsGenesis.zip", "datapacks/OriginsGenesis.zip");
