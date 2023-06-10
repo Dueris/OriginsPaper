@@ -1,5 +1,5 @@
 {
-  "type": "genesis:explosion_tick",
+  "type": "genesis:explode_tick",
   "hidden": false,
   "name": "menu.expanded.creep.boom.title",
   "description": "menu.expanded.creep.boom.description"
