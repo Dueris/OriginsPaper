@@ -332,7 +332,7 @@ public class CraftApoliRewriten {
                 || origin.getTag().equals("origins:merling")
                 || origin.getTag().equals("origins:phantom")
                 || origin.getTag().equals("origins:shulk")
-                || origin.getTag().equals("origins:ally")
+                || origin.getTag().equals("origins:allay")
                 || origin.getTag().equals("origins:bee")
                 || origin.getTag().equals("origins:creep")
                 || origin.getTag().equals("origins:piglin")
