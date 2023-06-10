@@ -11,7 +11,6 @@ import org.bukkit.scoreboard.ScoreboardManager;
 import org.bukkit.scoreboard.Team;
 
 public class PlayerAddScoreboard extends BukkitRunnable implements Listener {
-
     ScoreboardManager manager = Bukkit.getScoreboardManager();
     Scoreboard scoreboard = manager.getNewScoreboard();
     Team team = scoreboard.registerNewTeam("origin-players");

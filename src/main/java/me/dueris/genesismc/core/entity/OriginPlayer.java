@@ -349,6 +349,14 @@ public class OriginPlayer {
         getServer().getPluginManager().callEvent(chooseEvent);
     }
 
+    public static boolean isInPhantomForm(Player player){
+        if (player.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER) == 1){
+            return false;
+        }else{
+            return true;
+        }
+    }
+
     public static void openOriginGUI(Player player, OriginMenu menu) {
         if (menu.equals(OriginMenu.CHOOSE_MAIN)) {
             @NotNull Inventory custommenu = Bukkit.createInventory(player, 54, "Choosing Menu");
