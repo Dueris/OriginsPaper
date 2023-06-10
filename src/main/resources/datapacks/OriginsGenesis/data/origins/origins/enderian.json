@@ -5,6 +5,7 @@
 		"origins:extra_reach",
 		"origins:ender_particles",
 		"origins:damage_from_potions",
+		"origins:throw_ender_pearl",
 		"genesis:silk_touch"
 	],
 	"icon": {
