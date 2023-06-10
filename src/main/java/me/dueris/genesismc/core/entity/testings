@@ -91,8 +91,8 @@ public class OriginPlayer {
 
     public static OriginContainer getOrigin(Player player) {
         PersistentDataContainer data = player.getPersistentDataContainer();
-//        if (data.get(new NamespacedKey(GenesisMC.getPlugin(), "origin"), PersistentDataType.BYTE_ARRAY) == null)
-//            return new CraftApoliRewriten().nullOrigin();
+        if (data.get(new NamespacedKey(GenesisMC.getPlugin(), "origin"), PersistentDataType.BYTE_ARRAY) == null)
+            return new CraftApoliRewriten().nullOrigin();
         return CraftApoliRewriten.toOriginContainer(data.get(new NamespacedKey(GenesisMC.getPlugin(), "origin"), PersistentDataType.BYTE_ARRAY));
     }
 
