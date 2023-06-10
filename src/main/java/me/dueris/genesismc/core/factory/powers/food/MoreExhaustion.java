@@ -17,7 +17,7 @@ public class MoreExhaustion implements Listener {
         if (OriginPlayer.getOrigin(e.getPlayer()).getTag().equalsIgnoreCase("genesis:origin-shulk")) {
             if (p.isSprinting() && !p.getGameMode().equals(GameMode.CREATIVE) && !p.getGameMode().equals(GameMode.SPECTATOR)) {
                 Random random = new Random();
-                int r = random.nextInt(750);
+                int r = random.nextInt(650);
                 if (!p.isSwimming()) {
                     if (r < 10) {
                         int foodamt = p.getFoodLevel();
