@@ -37,7 +37,7 @@ import static org.bukkit.ChatColor.GRAY;
 public class OriginPlayer {
 
     public static boolean hasChosenOrigin(Player player) {
-        return true; //!OriginPlayer.getOriginTag(player).equalsIgnoreCase("");
+        return !OriginPlayer.getOrigin(player).getTag().equalsIgnoreCase("");
     }
 
     public static void removeArmor(Player player, EquipmentSlot slot) {
