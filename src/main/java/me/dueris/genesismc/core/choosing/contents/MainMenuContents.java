@@ -1,7 +1,7 @@
 package me.dueris.genesismc.core.choosing.contents;
 
 import me.dueris.genesismc.core.GenesisMC;
-import me.dueris.genesismc.core.factory.CraftApoliRewriten;
+import me.dueris.genesismc.core.factory.CraftApoli;
 import me.dueris.genesismc.core.files.GenesisDataFiles;
 import me.dueris.genesismc.core.utils.OriginContainer;
 import net.md_5.bungee.api.ChatColor;
@@ -26,7 +26,7 @@ import static org.bukkit.ChatColor.*;
 public class MainMenuContents {
 
     private static ItemStack applyProperties(ItemStack icon) {
-        for (OriginContainer origin : CraftApoliRewriten.getCoreOrigins()) {
+        for (OriginContainer origin : CraftApoli.getCoreOrigins()) {
             if (origin.getMaterialIcon() != icon.getType()) continue;
             ItemMeta meta = icon.getItemMeta();
             NamespacedKey key = new NamespacedKey(GenesisMC.getPlugin(), "originTag");

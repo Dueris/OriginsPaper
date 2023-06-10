@@ -1,6 +1,6 @@
 package me.dueris.genesismc.core.commands;
 
-import me.dueris.genesismc.core.factory.CraftApoliRewriten;
+import me.dueris.genesismc.core.factory.CraftApoli;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -100,7 +100,7 @@ public class TabAutoComplete implements TabCompleter {
 
             } else if (args.length == 3) {
                 if (args[0].equalsIgnoreCase("has") || args[0].equalsIgnoreCase("set")) {
-                    return CraftApoliRewriten.getOriginTags();
+                    return CraftApoli.getOriginTags();
                 } else if (args[0].equalsIgnoreCase("give")) {
                     return List.of("genesis:orb_of_origin");
                 } else {

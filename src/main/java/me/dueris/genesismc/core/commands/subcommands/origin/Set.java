@@ -3,7 +3,7 @@ package me.dueris.genesismc.core.commands.subcommands.origin;
 import me.dueris.genesismc.core.commands.subcommands.SubCommand;
 import me.dueris.genesismc.core.entity.OriginPlayer;
 import me.dueris.genesismc.core.events.OriginChangeEvent;
-import me.dueris.genesismc.core.factory.CraftApoliRewriten;
+import me.dueris.genesismc.core.factory.CraftApoli;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -37,12 +37,12 @@ public class Set extends SubCommand {
             }
 
             String originTag = args[2];
-            if (!CraftApoliRewriten.getOriginTags().contains(originTag)) {
+            if (!CraftApoli.getOriginTags().contains(originTag)) {
                 p.sendMessage(RED + "Invalid origin.");
                 return;
             }
 
-            OriginPlayer.setOrigin(given, CraftApoliRewriten.getOrigin(originTag));
+            OriginPlayer.setOrigin(given, CraftApoli.getOrigin(originTag));
             OriginChangeEvent originChangeEvent = new OriginChangeEvent(given);
             getServer().getPluginManager().callEvent(originChangeEvent);
         } else {

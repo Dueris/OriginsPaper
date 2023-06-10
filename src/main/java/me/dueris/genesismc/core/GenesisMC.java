@@ -13,7 +13,7 @@ import me.dueris.genesismc.core.enchantments.WaterProtAnvil;
 import me.dueris.genesismc.core.enchantments.WaterProtection;
 import me.dueris.genesismc.core.entity.OriginPlayer;
 import me.dueris.genesismc.core.events.PlayerHandler;
-import me.dueris.genesismc.core.factory.CraftApoliRewriten;
+import me.dueris.genesismc.core.factory.CraftApoli;
 import me.dueris.genesismc.core.factory.OriginStartHandler;
 import me.dueris.genesismc.core.factory.handlers.CustomOriginExistCheck;
 import me.dueris.genesismc.core.factory.powers.world.WorldSpawnHandler;
@@ -118,14 +118,14 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         }
 
         BukkitUtils.downloadFileToDirFromResource("datapacks" + File.separator + "OriginsGenesis.zip", "datapacks/OriginsGenesis.zip");
-        CraftApoliRewriten.loadOrigins();
-        for (OriginContainer origins : CraftApoliRewriten.getOrigins()) {
+        CraftApoli.loadOrigins();
+        for (OriginContainer origins : CraftApoli.getOrigins()) {
             if (GenesisDataFiles.getMainConfig().getString("console-startup-debug").equalsIgnoreCase("true")) {
                 getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] Loaded \"" + origins.getName() + "\""));
             }
         }
-        if (CraftApoliRewriten.getOrigins().size() > 0) {
-            getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] Loaded (" + CraftApoliRewriten.getOrigins().size() + ") Origins"));
+        if (CraftApoli.getOrigins().size() > 0) {
+            getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] Loaded (" + CraftApoli.getOrigins().size() + ") Origins"));
         }
 
         getServer().getPluginManager().registerEvents(this, this);
@@ -178,7 +178,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         registerEnchantment(waterProtectionEnchant);
 
         for (Player p : Bukkit.getOnlinePlayers()) {
-            System.out.print(CraftApoliRewriten.nullOrigin());
+            System.out.print(CraftApoli.nullOrigin());
             System.out.print(OriginPlayer.getOrigin(p).getTag());
             if (p.isOp()) {
                 p.sendMessage(Component.text("Origins Reloaded.").color(TextColor.color(137, 207, 240)));
@@ -239,6 +239,6 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         }
 
         //deletes origin files unzipped by Genesis
-        CraftApoliRewriten.removeUnzippedDatapacks();
+        CraftApoli.removeUnzippedDatapacks();
     }
 }

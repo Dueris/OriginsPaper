@@ -1,7 +1,7 @@
 package me.dueris.genesismc.core.choosing.contents;
 
 import me.dueris.genesismc.core.GenesisMC;
-import me.dueris.genesismc.core.factory.CraftApoliRewriten;
+import me.dueris.genesismc.core.factory.CraftApoli;
 import me.dueris.genesismc.core.utils.OriginContainer;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -33,8 +33,8 @@ public class ChooseMenuContents {
 
         ArrayList<ItemStack> contents = new ArrayList<>();
         ArrayList<OriginContainer> originContainers = new ArrayList<>();
-        for (OriginContainer origin : CraftApoliRewriten.getOrigins()) {
-            if (!CraftApoliRewriten.isCoreOrigin(origin)) originContainers.add(origin);
+        for (OriginContainer origin : CraftApoli.getOrigins()) {
+            if (!CraftApoli.isCoreOrigin(origin)) originContainers.add(origin);
         }
 
         for (int i = 0; i <= 53; i++) {

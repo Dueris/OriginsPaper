@@ -2,7 +2,7 @@ package me.dueris.genesismc.core.choosing;
 
 import me.dueris.genesismc.core.GenesisMC;
 import me.dueris.genesismc.core.entity.OriginPlayer;
-import me.dueris.genesismc.core.factory.CraftApoliRewriten;
+import me.dueris.genesismc.core.factory.CraftApoli;
 import me.dueris.genesismc.core.factory.powers.world.WorldSpawnHandler;
 import me.dueris.genesismc.core.utils.OriginContainer;
 import me.dueris.genesismc.core.utils.PowerContainer;
@@ -81,7 +81,7 @@ public class ChoosingCUSTOM implements Listener {
                 if (originTag == null) return;
 
                 OriginContainer origin = null;
-                for (OriginContainer origins : CraftApoliRewriten.getOrigins()) {
+                for (OriginContainer origins : CraftApoli.getOrigins()) {
                     if (origins.getTag().equals(originTag)) {
                         origin = origins;
                         break;
@@ -204,7 +204,7 @@ public class ChoosingCUSTOM implements Listener {
             if (e.getCurrentItem().getItemMeta().getPersistentDataContainer().get(chooseKey, PersistentDataType.INTEGER) != null) {
                 NamespacedKey key = new NamespacedKey(GenesisMC.getPlugin(), "originTag");
                 String originTag = e.getCurrentItem().getItemMeta().getPersistentDataContainer().get(key, PersistentDataType.STRING);
-                OriginContainer origin = CraftApoliRewriten.getOrigin(originTag);
+                OriginContainer origin = CraftApoli.getOrigin(originTag);
                 Player p = (Player) e.getWhoClicked();
                 if (origin == null) {
                     p.sendMessage(Component.text("This origin is null ¯\\_(ツ)_/¯"));
@@ -213,7 +213,7 @@ public class ChoosingCUSTOM implements Listener {
                 setAttributesToDefault(p);
                 Bukkit.getScheduler().runTaskLater(GenesisMC.getPlugin(), () -> {
                     OriginPlayer.unassignPowers(p);
-                    p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origin"), PersistentDataType.BYTE_ARRAY, CraftApoliRewriten.toByteArray(origin));
+                    p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origin"), PersistentDataType.BYTE_ARRAY, CraftApoli.toByteArray(origin));
                     OriginPlayer.assignPowers(p);
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
@@ -273,7 +273,7 @@ public class ChoosingCUSTOM implements Listener {
                     p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 10, 2);
                     NamespacedKey key = new NamespacedKey(GenesisMC.getPlugin(), "originTag");
 
-                    for (OriginContainer origin : CraftApoliRewriten.getCoreOrigins()) {
+                    for (OriginContainer origin : CraftApoli.getCoreOrigins()) {
                         if (Objects.equals(e.getClickedInventory().getContents()[13].getItemMeta().getPersistentDataContainer().get(key, PersistentDataType.STRING), origin.getTag())) {
                             @NotNull Inventory mainmenu = Bukkit.createInventory(e.getWhoClicked(), 54, "Choosing Menu");
                             mainmenu.setContents(GenesisMainMenuContents((Player) e.getWhoClicked()));

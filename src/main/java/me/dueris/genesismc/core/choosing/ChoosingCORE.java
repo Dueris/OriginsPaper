@@ -3,7 +3,7 @@ package me.dueris.genesismc.core.choosing;
 import me.dueris.genesismc.core.GenesisMC;
 import me.dueris.genesismc.core.entity.OriginPlayer;
 import me.dueris.genesismc.core.events.OrbInteractEvent;
-import me.dueris.genesismc.core.factory.CraftApoliRewriten;
+import me.dueris.genesismc.core.factory.CraftApoli;
 import me.dueris.genesismc.core.files.GenesisDataFiles;
 import net.kyori.adventure.text.Component;
 import org.bukkit.*;
@@ -204,10 +204,10 @@ public class ChoosingCORE implements Listener {
             if (e.getCurrentItem().getItemMeta().getPersistentDataContainer().get(key, PersistentDataType.STRING) != "orb")
                 return;
             Player p = (Player) e.getWhoClicked();
-            ArrayList<String> origins = CraftApoliRewriten.getOriginTags();
+            ArrayList<String> origins = CraftApoli.getOriginTags();
             Random random = new Random();
             String originTag = origins.get(random.nextInt(origins.size()));
-            OriginPlayer.setOrigin(p, CraftApoliRewriten.getOrigin(originTag));
+            OriginPlayer.setOrigin(p, CraftApoli.getOrigin(originTag));
         }
     }
 

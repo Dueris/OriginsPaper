@@ -2,7 +2,7 @@ package me.dueris.genesismc.core.commands.subcommands.origin;
 
 import me.dueris.genesismc.core.GenesisMC;
 import me.dueris.genesismc.core.commands.subcommands.SubCommand;
-import me.dueris.genesismc.core.factory.CraftApoliRewriten;
+import me.dueris.genesismc.core.factory.CraftApoli;
 import me.dueris.genesismc.core.utils.OriginContainer;
 import me.dueris.genesismc.core.utils.PowerContainer;
 import org.bukkit.*;
@@ -59,7 +59,7 @@ public class Info extends SubCommand implements Listener {
         if (args.length == 1) {
             NamespacedKey key = new NamespacedKey(GenesisMC.getPlugin(), "origin");
             @NotNull Inventory help = Bukkit.createInventory(p, 54, "Help");
-            OriginContainer origin = CraftApoliRewriten.toOriginContainer(p.getPersistentDataContainer().get(key, PersistentDataType.BYTE_ARRAY));
+            OriginContainer origin = CraftApoli.toOriginContainer(p.getPersistentDataContainer().get(key, PersistentDataType.BYTE_ARRAY));
             if (origin == null) return;
 
             p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 10, 2);

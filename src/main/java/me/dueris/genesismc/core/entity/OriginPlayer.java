@@ -4,7 +4,7 @@ import me.dueris.genesismc.core.GenesisMC;
 import me.dueris.genesismc.core.enums.OriginDataType;
 import me.dueris.genesismc.core.enums.OriginMenu;
 import me.dueris.genesismc.core.events.OriginChooseEvent;
-import me.dueris.genesismc.core.factory.CraftApoliRewriten;
+import me.dueris.genesismc.core.factory.CraftApoli;
 import me.dueris.genesismc.core.utils.OriginContainer;
 import me.dueris.genesismc.core.utils.PowerContainer;
 import me.dueris.genesismc.core.utils.SendCharts;
@@ -91,15 +91,15 @@ public class OriginPlayer {
     public static OriginContainer getOrigin(Player player) {
         PersistentDataContainer data = player.getPersistentDataContainer();
         if (data.get(new NamespacedKey(GenesisMC.getPlugin(), "origin"), PersistentDataType.BYTE_ARRAY) == null) {
-            setOrigin(player, new CraftApoliRewriten().nullOrigin());
-            return new CraftApoliRewriten().nullOrigin();
+            setOrigin(player, new CraftApoli().nullOrigin());
+            return new CraftApoli().nullOrigin();
         }
-        return CraftApoliRewriten.toOriginContainer(data.get(new NamespacedKey(GenesisMC.getPlugin(), "origin"), PersistentDataType.BYTE_ARRAY));
+        return CraftApoli.toOriginContainer(data.get(new NamespacedKey(GenesisMC.getPlugin(), "origin"), PersistentDataType.BYTE_ARRAY));
     }
 
     public static void removeOrigin(Player player) {
         PersistentDataContainer data = player.getPersistentDataContainer();
-        data.set(new NamespacedKey(GenesisMC.getPlugin(), "origin"), PersistentDataType.BYTE_ARRAY, CraftApoliRewriten.toByteArray(CraftApoliRewriten.nullOrigin()));
+        data.set(new NamespacedKey(GenesisMC.getPlugin(), "origin"), PersistentDataType.BYTE_ARRAY, CraftApoli.toByteArray(CraftApoli.nullOrigin()));
     }
 
     public static boolean hasCoreOrigin(Player player) {
@@ -144,7 +144,7 @@ public class OriginPlayer {
 
     public static void setOrigin(Player player, OriginContainer origin) {
         unassignPowers(player);
-        player.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origin"), PersistentDataType.BYTE_ARRAY, CraftApoliRewriten.toByteArray(origin));
+        player.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origin"), PersistentDataType.BYTE_ARRAY, CraftApoli.toByteArray(origin));
         String originTag = origin.getTag();
         if (originTag.contains("genesis:origin-human")) {
             setAttributesToDefault(player);

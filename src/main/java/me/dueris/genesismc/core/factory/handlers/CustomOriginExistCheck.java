@@ -2,7 +2,7 @@ package me.dueris.genesismc.core.factory.handlers;
 
 import me.dueris.genesismc.core.GenesisMC;
 import me.dueris.genesismc.core.entity.OriginPlayer;
-import me.dueris.genesismc.core.factory.CraftApoliRewriten;
+import me.dueris.genesismc.core.factory.CraftApoli;
 import net.kyori.adventure.text.Component;
 import org.bukkit.ChatColor;
 import org.bukkit.NamespacedKey;
@@ -20,9 +20,9 @@ public class CustomOriginExistCheck implements Listener {
     }
 
     public static void customOriginExistCheck(Player p) {
-        if (OriginPlayer.getOrigin(p) == new CraftApoliRewriten().nullOrigin()) return;
-        if (CraftApoliRewriten.getOriginTags().contains(OriginPlayer.getOrigin(p).getTag())) return;
-        p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origin"), PersistentDataType.BYTE_ARRAY, CraftApoliRewriten.toByteArray(CraftApoliRewriten.nullOrigin()));
+        if (OriginPlayer.getOrigin(p) == new CraftApoli().nullOrigin()) return;
+        if (CraftApoli.getOriginTags().contains(OriginPlayer.getOrigin(p).getTag())) return;
+        p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origin"), PersistentDataType.BYTE_ARRAY, CraftApoli.toByteArray(CraftApoli.nullOrigin()));
         p.sendMessage(Component.text(ChatColor.RED + "Your origin has been removed! Please select a new one."));
         p.sendMessage(Component.text(ChatColor.RED + "If you believe this is a mistake please contact your server admin(s)."));
     }
