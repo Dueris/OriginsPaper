@@ -48,9 +48,9 @@ public class MainMenuContents {
         ItemStack slimeling = applyProperties(new ItemStack(Material.SLIME_BALL));
         ItemStack feline = applyProperties(new ItemStack(Material.ORANGE_WOOL));
         ItemStack blazeborn = applyProperties(new ItemStack(Material.BLAZE_POWDER));
-        ItemStack starborne = applyProperties(new ItemStack(Material.NETHER_STAR));
+        ItemStack starborne = applyProperties(new ItemStack(Material.END_CRYSTAL));
         ItemStack merling = applyProperties(new ItemStack(Material.COD));
-        ItemStack allay = applyProperties(new ItemStack(Material.AMETHYST_SHARD));
+        ItemStack allay = applyProperties(new ItemStack(Material.COOKIE));
         ItemStack rabbit = applyProperties(new ItemStack(Material.CARROT));
         ItemStack bumblebee = applyProperties(new ItemStack(Material.HONEYCOMB));
         ItemStack elytrian = applyProperties(new ItemStack(Material.ELYTRA));
