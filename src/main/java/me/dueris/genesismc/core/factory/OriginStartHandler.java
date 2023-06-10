@@ -21,6 +21,7 @@ import me.dueris.genesismc.core.factory.powers.item.GoldItemBuff;
 import me.dueris.genesismc.core.factory.powers.item.LaunchAir;
 import me.dueris.genesismc.core.factory.powers.runnables.*;
 import me.dueris.genesismc.core.factory.powers.world.ExplodeTick;
+import me.dueris.genesismc.core.factory.powers.world.FireWeak;
 import me.dueris.genesismc.core.factory.powers.world.WeakBiomeCold;
 import me.dueris.genesismc.core.factory.powers.world.WorldSpawnHandler;
 import me.dueris.genesismc.core.origins.OriginHandler;
@@ -94,6 +95,9 @@ public class OriginStartHandler {
 
         HotBlooded hotBlooded = new HotBlooded();
         hotBlooded.runTaskTimer(getPlugin(), 0, 2);
+
+        FireWeak fireWeak = new FireWeak();
+        fireWeak.runTaskTimer(getPlugin(), 0, 3);
     }
 
     public static void StartListeners() {

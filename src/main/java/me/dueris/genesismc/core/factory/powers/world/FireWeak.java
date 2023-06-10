@@ -17,11 +17,6 @@ public class FireWeak extends BukkitRunnable {
     public void run() {
         for (Player p : Bukkit.getOnlinePlayers()) {
             if (fire_weak.contains(p)) {
-                if (p.getWorld().getEnvironment() != World.Environment.NETHER) {
-                    p.addPotionEffect(new PotionEffect(PotionEffectType.FIRE_RESISTANCE, 10, 0, false, false, false));
-                    p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 10, 0, false, false, false));
-                }
-
                 Location location = p.getLocation();
                 for (int x = (int) (location.getX() - 4); x < location.getX() + 4; x++) {
                     for (int y = (int) (location.getY() - 2); y < location.getY() + 2; y++) {
