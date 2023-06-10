@@ -381,7 +381,7 @@ public class OriginPlayer {
                 case "genesis:projectile-immune" -> projectile_immune.add(player);
                 case "genesis:charged" -> charged.add(player);
                 case "genesis:felinephobia" -> felinephobia.add(player);
-                case "genesis:fire_weak" -> fire_weak.add(player);
+                case "genesis:blue_fire_weak" -> fire_weak.add(player);
                 case "genesis:gold_armour_buff" -> gold_armour_buff.add(player);
                 case "genesis:gold_item_buff" -> gold_item_buff.add(player);
                 case "genesis:big_leap_charge" -> big_leap_tick.add(player);
@@ -474,7 +474,7 @@ public class OriginPlayer {
                 case "genesis:projectile-immune" -> projectile_immune.remove(player);
                 case "genesis:charged" -> charged.remove(player);
                 case "genesis:felinephobia" -> felinephobia.remove(player);
-                case "genesis:fire_weak" -> fire_weak.remove(player);
+                case "genesis:blue_fire_weak" -> fire_weak.remove(player);
                 case "genesis:gold_armour_buff" -> gold_armour_buff.remove(player);
                 case "genesis:gold_item_buff" -> gold_item_buff.remove(player);
                 case "genesis:big_leap_charge" -> big_leap_tick.remove(player);
