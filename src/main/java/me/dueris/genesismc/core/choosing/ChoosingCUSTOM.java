@@ -251,7 +251,7 @@ public class ChoosingCUSTOM implements Listener {
                         spectatorswitch.setItemMeta(switch_meta);
                         p.getInventory().addItem(spectatorswitch);
                     }
-                    if (nether_spawn.contains(p) && OriginPlayer.getOrigin(p).getTag().equalsIgnoreCase("genesis:origin-choosing")) p.teleport(WorldSpawnHandler.NetherSpawn());
+                    if (nether_spawn.contains(p) && p.getBedSpawnLocation() == null) p.teleport(WorldSpawnHandler.NetherSpawn());
                 }, 2);
             }
         }

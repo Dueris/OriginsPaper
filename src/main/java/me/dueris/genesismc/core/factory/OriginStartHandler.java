@@ -91,6 +91,9 @@ public class OriginStartHandler {
 
         AttributeHandler naturalArmour = new AttributeHandler();
         naturalArmour.runTaskTimer(getPlugin(), 0, 5);
+
+        HotBlooded hotBlooded = new HotBlooded();
+        hotBlooded.runTaskTimer(getPlugin(), 0, 2);
     }
 
     public static void StartListeners() {
