@@ -19,7 +19,8 @@
     "origins:sculkling",
     "origins:creep",
     "origins:slimeling",
-    "origins:piglin"
+    "origins:piglin",
+    "origins:starborne"
   ],
   "allow_random": true,
   "exclude_random": [
