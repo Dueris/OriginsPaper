@@ -3,6 +3,7 @@ package me.dueris.genesismc.core.choosing;
 import me.dueris.genesismc.core.GenesisMC;
 import me.dueris.genesismc.core.entity.OriginPlayer;
 import me.dueris.genesismc.core.factory.CraftApoliRewriten;
+import me.dueris.genesismc.core.factory.powers.world.WorldSpawnHandler;
 import me.dueris.genesismc.core.utils.OriginContainer;
 import me.dueris.genesismc.core.utils.PowerContainer;
 import net.kyori.adventure.text.Component;
@@ -205,8 +206,6 @@ public class ChoosingCUSTOM implements Listener {
                 if (origin == null) {p.sendMessage(Component.text("This origin is null ¯\\_(ツ)_/¯")); return;}
                 setAttributesToDefault(p);
                 Bukkit.getScheduler().runTaskLater(GenesisMC.getPlugin(), () -> {
-//                    if (CraftApoli.getOriginPowers(origintag).contains("origins:nether_spawn") && p.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING).equals("genesis:origin-null"))
-//                        p.teleport(WorldSpawnHandler.NetherSpawn());
                     OriginPlayer.unassignPowers(p);
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origin"), PersistentDataType.BYTE_ARRAY, CraftApoliRewriten.toByteArray(origin));
                     OriginPlayer.assignPowers(p);
@@ -216,6 +215,7 @@ public class ChoosingCUSTOM implements Listener {
                     removeItemPhantom(p);
                     removeItemEnder(p);
                     removeItemElytrian(p);
+                    p.getScoreboardTags().remove("choosing");
                 }, 1);
                 Bukkit.getScheduler().runTaskLater(GenesisMC.getPlugin(), () -> {
                     if(launch_into_air.contains(p)){
@@ -251,6 +251,7 @@ public class ChoosingCUSTOM implements Listener {
                         spectatorswitch.setItemMeta(switch_meta);
                         p.getInventory().addItem(spectatorswitch);
                     }
+                    if (nether_spawn.contains(p) && OriginPlayer.getOrigin(p).getTag().equalsIgnoreCase("genesis:origin-choosing")) p.teleport(WorldSpawnHandler.NetherSpawn());
                 }, 2);
             }
         }

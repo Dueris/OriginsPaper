@@ -1,5 +1,5 @@
 {
-  "type": "origins:modify_player_spawn",
+  "type": "origins:nether_spawn",
   "hidden": false,
   "name": "menu.original.blazeborn.born_from_flames.title",
   "description": "menu.original.blazeborn.born_from_flames.description"

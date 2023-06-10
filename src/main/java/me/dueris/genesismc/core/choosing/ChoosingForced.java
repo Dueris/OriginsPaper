@@ -13,7 +13,7 @@ public class ChoosingForced extends BukkitRunnable {
     @Override
     public void run() {
         for (Player p : Bukkit.getOnlinePlayers()) {
-            if (OriginPlayer.getOrigin(p).getTag().equalsIgnoreCase("genesis:origin-null") || p.getScoreboardTags().contains("choosing")) {
+            if (OriginPlayer.getOrigin(p).getTag().equalsIgnoreCase("genesis:origin-choosing") || OriginPlayer.getOrigin(p).getTag().equalsIgnoreCase("genesis:origin-null")) {
                 if (!p.getOpenInventory().getTitle().equalsIgnoreCase("Choosing Menu") && !p.getOpenInventory().getTitle().equalsIgnoreCase("Custom Origins") && !p.getOpenInventory().getTitle().equalsIgnoreCase("Expanded Origins") && !p.getOpenInventory().getTitle().equalsIgnoreCase("Custom Origin") && !p.getOpenInventory().getTitle().equalsIgnoreCase("Origin")) {
                     @NotNull Inventory mainmenu = Bukkit.createInventory(p, 54, "Choosing Menu");
                     mainmenu.setContents(GenesisMainMenuContents(p));

@@ -22,10 +22,13 @@ import java.util.zip.ZipInputStream;
 public class CraftApoliRewriten {
 
     private static final OriginContainer null_Origin = new OriginContainer("genesis:origin-null", new HashMap<String, Object>(Map.of( "hidden", true, "origins", "genesis:origin-null")), new HashMap<String, Object>(Map.of("impact", "0", "icon", "minecraft:player_head", "powers", "genesis:null", "order", "0", "unchooseable", true)), new ArrayList<>(List.of(new PowerContainer("genesis:null", new PowerFileContainer(new ArrayList<>(), new ArrayList<>()), "genesis:origin-null"))));
+    private static final OriginContainer choosing_Origin = new OriginContainer("genesis:origin-choosing", new HashMap<String, Object>(Map.of( "hidden", true, "origins", "genesis:origin-choosing")), new HashMap<String, Object>(Map.of("impact", "0", "icon", "minecraft:player_head", "powers", "genesis:choosing", "order", "0", "unchooseable", true)), new ArrayList<>(List.of(new PowerContainer("genesis:choosing", new PowerFileContainer(new ArrayList<>(), new ArrayList<>()), "genesis:origin-null"))));
 
     public static OriginContainer nullOrigin() {
         return null_Origin;
     }
+
+    public static OriginContainer choosingOrigin(){return choosing_Origin;}
 
     @SuppressWarnings("FieldMayBeFinal")
     private static ArrayList<OriginContainer> originContainers = new ArrayList<>();
