@@ -242,6 +242,6 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         }
 
         //deletes origin files unzipped by Genesis
-        CraftApoli.removeUnzippedDatapacks();
+        CraftApoliRewriten.removeUnzippedDatapacks();
     }
 }

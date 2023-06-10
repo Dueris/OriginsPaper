@@ -35,6 +35,9 @@ public class Listeners implements Listener {
 
     @EventHandler
     public void executeChooseEvent(OriginChooseEvent e) {
-        e.getPlayer().sendMessage("choose");
+        e.getPlayer();
     }
+
+    @EventHandler
+    public void executeChangeEvent(OriginChangeEvent e){e.getPlayer();}
 }
