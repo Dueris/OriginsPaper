@@ -1,3 +1,6 @@
 {
-  "type": "origins:action_on_wake_up"
+  "type": "origins:lay_eggs",
+  "hidden": false,
+  "name": "menu.original.avian.oviparous.title",
+  "description": "menu.original.avian.oviparous.description"
 }
