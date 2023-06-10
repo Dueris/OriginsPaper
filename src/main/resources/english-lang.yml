@@ -17,48 +17,48 @@ lang:
 command:
   origin:
     set:
-      given:  "Your origin has been set to %originlayer% "
-      sender:  "Set %player% origin to %originlayer% "
+      given: "Your origin has been set to %originlayer% "
+      sender: "Set %player% origin to %originlayer% "
     get:
-      sender:  "%player% has the layer %originlayer% "
+      sender: "%player% has the layer %originlayer% "
     gui:
-      sender:   "Opened choose menu for %player%  "
+      sender: "Opened choose menu for %player%  "
     has:
       sender:
         failed: "Test failed."
         passed: "Test passed."
   layer:
     get:
-      sender:  "%player% layers are: %originlayer%  "
+      sender: "%player% layers are: %originlayer%  "
     set:
-      given:  "Your OriginLayer has been changed to %originlayer%  "
+      given: "Your OriginLayer has been changed to %originlayer%  "
     add:
-      given:  "An OriginLayer has been added by an operator(%originlayer%)  "
+      given: "An OriginLayer has been added by an operator(%originlayer%)  "
     remove:
-      given:  "Your OriginLayer %originlayer% has been removed by an operator  "
+      given: "Your OriginLayer %originlayer% has been removed by an operator  "
   toggle:
-    on:  "Toggled main ability trigger ON  "
-    off:  "Toggled main ability trigger OFF  "
+    on: "Toggled main ability trigger ON  "
+    off: "Toggled main ability trigger OFF  "
 
 menu:
   original:
     human:
       nothing:
-        title:  "Nothing  "
-        description:  "Enough said.  "
+        title: "Nothing  "
+        description: "Enough said.  "
 
     avian:
       featherweight:
-        title:  "Featherweight  "
-        description:  "You fall as gently to the ground as a feather would, unless you shift "
+        title: "Featherweight  "
+        description: "You fall as gently to the ground as a feather would, unless you shift "
       tailwind:
-        title:  "Tailwind  "
-        description:  "You are a little quicker on foot than others  "
+        title: "Tailwind  "
+        description: "You are a little quicker on foot than others  "
       oviparous:
-        title:  "Oviparous  "
-        description:  "Whenever you wake up in the morning, you lay an egg  "
+        title: "Oviparous  "
+        description: "Whenever you wake up in the morning, you lay an egg  "
       vegitarian:
-        title:  "Vegitarian "
+        title: "Vegitarian "
         description: "You can't digest any meat "
       fresh_air:
         title: "Fresh Air "
@@ -252,72 +252,34 @@ menu:
 
 
   expanded:
+    starborne:
+      starbeam:
+        title: "Starbeam"
+        description: "You can blast a star beam every 30 seconds, dealing 10 damage"
 
-    
-      starborne:
-                        starbeam:
-                                 title: "Starbeam"
-                                 description: "You can blast a star beam every 30 seconds, dealing 10 damage"
+      shooting_star:
+        title: "Shooting Star "
+        description: "You can fling yourself into the air after a 5 second cooldown "
 
-                        shooting_star:
-                                 title: "Shooting Star "
-                                 description: "You can fling yourself into the air after a 5 second cooldown "
+      supernova:
+        title: "Supernova "
+        description: "All the collected star energy that you have accumulated through your time in the stars needs to go somewhere, So whenever you happen to meet your demise you will explode in a great Supernova"
 
-                        supernova:
-                                 title: "Supernova "
-                                 description: "All the collected star energy that you have accumulated through your time in the stars needs to go somewhere, So whenever you happen to meet your demise you will explode in a great Supernova"
+      cold_vacuum:
+        title: "Cold Vacuum "
+        description: "You are used to the coldness of space, so you take double damage from fire "
 
-                        cold_vacuum:
-                                 title: "Cold Vacuum "
-                                 description: "You are used to the coldness of space, so you take double damage from fire "
+      stargazer:
+        title: "Stargazer "
+        description: "When exposed to the stars, you gain speed and regeneration "
 
-                        stargazer:
-                                 title: "Stargazer "
-                                 description: "When exposed to the stars, you gain speed and regeneration "
+      nonviolent:
+        title: "Nonviolent "
+        description: "In the great abyss of space, violence is uncommon if you even come across someone in the first place, this results in you having a small chance to be immobilized upon taking damage."
 
-                        nonviolent:
-                                 title: "Nonviolent "
-                                 description: "In the great abyss of space, violence is uncommon if you even come across someone in the first place, this results in you having a small chance to be immobilized upon taking damage."
-
-                        starwatcher:
-                                 title: "Starwatcher "
-                                 description: "When not exposed to the stars, you get a little sad and will move a bit slower
-
-        
-        
-
-      
-        
-        
-
-      
-        
-        
-
-      
-        
-        
-
-      
-        
-        
-
-      
-        
-        
-
-      
-        
-        
-
-        
-      
-        
-        
-
-      
-        
-        
+      starwatcher:
+        title: "Starwatcher "
+        description: "When not exposed to the stars, you get a little sad and will move a bit slower"
 
     allay:
       little_fairy:
