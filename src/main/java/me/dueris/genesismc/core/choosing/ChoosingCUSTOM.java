@@ -7,6 +7,7 @@ import me.dueris.genesismc.core.utils.OriginContainer;
 import me.dueris.genesismc.core.utils.PowerContainer;
 import net.kyori.adventure.text.Component;
 import org.bukkit.*;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -27,7 +28,9 @@ import java.util.Objects;
 import static me.dueris.genesismc.core.choosing.ChoosingCORE.*;
 import static me.dueris.genesismc.core.choosing.contents.ChooseMenuContents.ChooseMenuContent;
 import static me.dueris.genesismc.core.choosing.contents.MainMenuContents.GenesisMainMenuContents;
+import static me.dueris.genesismc.core.factory.powers.Powers.*;
 import static me.dueris.genesismc.core.items.OrbOfOrigins.orb;
+import static org.bukkit.ChatColor.GRAY;
 import static org.bukkit.ChatColor.RED;
 
 public class ChoosingCUSTOM implements Listener {
@@ -212,7 +215,43 @@ public class ChoosingCUSTOM implements Listener {
                     DefaultChoose.DefaultChoose(p);
                     removeItemPhantom(p);
                     removeItemEnder(p);
+                    removeItemElytrian(p);
                 }, 1);
+                Bukkit.getScheduler().runTaskLater(GenesisMC.getPlugin(), () -> {
+                    if(launch_into_air.contains(p)){
+                        ItemStack launchitem = new ItemStack(Material.FEATHER);
+                        ItemMeta launchmeta = launchitem.getItemMeta();
+                        launchmeta.setDisplayName(GRAY + "Launch");
+                        launchmeta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
+                        launchitem.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+                        launchitem.setItemMeta(launchmeta);
+                        p.getInventory().addItem(launchitem);
+                    }
+                    if(throw_ender_pearl.contains(p)){
+                        ItemStack infinpearl = new ItemStack(Material.ENDER_PEARL);
+                        ItemMeta pearl_meta = infinpearl.getItemMeta();
+                        pearl_meta.setDisplayName(ChatColor.LIGHT_PURPLE + "Teleport");
+                        ArrayList<String> pearl_lore = new ArrayList();
+                        pearl_meta.setUnbreakable(true);
+                        pearl_meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
+                        pearl_meta.setLore(pearl_lore);
+                        infinpearl.setItemMeta(pearl_meta);
+                        p.getInventory().addItem(infinpearl);
+                    }
+                    if(phantomize.contains(p)){
+                        ItemStack spectatorswitch = new ItemStack(Material.PHANTOM_MEMBRANE);
+                        ItemMeta switch_meta = spectatorswitch.getItemMeta();
+                        switch_meta.setDisplayName(GRAY + "Phantom Form");
+                        ArrayList<String> pearl_lore = new ArrayList();
+                        switch_meta.setUnbreakable(true);
+                        switch_meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
+                        switch_meta.addItemFlags(ItemFlag.HIDE_ITEM_SPECIFICS);
+                        switch_meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+                        switch_meta.setLore(pearl_lore);
+                        spectatorswitch.setItemMeta(switch_meta);
+                        p.getInventory().addItem(spectatorswitch);
+                    }
+                }, 2);
             }
         }
     }
