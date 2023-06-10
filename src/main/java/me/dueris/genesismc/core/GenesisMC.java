@@ -41,6 +41,8 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.HashMap;
 
+import static me.dueris.genesismc.core.factory.CraftApoliRewriten.getOrigin;
+
 public final class GenesisMC extends JavaPlugin implements Listener {
     public static EnumSet<Material> tool;
     public static Metrics metrics;
@@ -97,6 +99,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         GenesisDataFiles.setup();
 
         //start
+
 
         getServer().getConsoleSender().sendMessage(ChatColor.RED + ("[GenesisMC]    ____                               _         __  __    ____ "));
         getServer().getConsoleSender().sendMessage(ChatColor.YELLOW + ("[GenesisMC]   / ___|   ___   _ __     ___   ___  (_)  ___  |  \\/  |  / ___|"));
@@ -178,6 +181,8 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         registerEnchantment(waterProtectionEnchant);
 
         for (Player p : Bukkit.getOnlinePlayers()) {
+            System.out.print(CraftApoliRewriten.nullOrigin());
+            System.out.print(OriginPlayer.getOrigin(p).getTag());
             if (p.isOp()) {
                 p.sendMessage(Component.text("Origins Reloaded.").color(TextColor.color(137, 207, 240)));
             }
