@@ -2,8 +2,11 @@ package me.dueris.genesismc.core.factory;
 import me.dueris.genesismc.core.utils.*;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang.SystemUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -14,6 +17,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import java.nio.file.*;
+import java.util.zip.ZipInputStream;
 
 public class CraftApoliRewriten {
 
@@ -31,6 +35,77 @@ public class CraftApoliRewriten {
      **/
     public static ArrayList<OriginContainer> getOrigins() {
         return (ArrayList<OriginContainer>) originContainers.clone();
+    }
+
+    /**
+     * Removes any unzipped datapacks that were created by GenesisMC in the custom_origins folder.
+     **/
+    public static void removeUnzippedDatapacks() {
+        File originDatapackDir = new File(Bukkit.getServer().getPluginManager().getPlugin("GenesisMC").getDataFolder() + File.separator + ".." + File.separator + ".." + File.separator + Bukkit.getServer().getWorlds().get(0).getName() + File.separator + "datapacks");
+        File[] originDatapacks = originDatapackDir.listFiles();
+        if (originDatapacks == null) return;
+
+        for (File file : originDatapacks) {
+            try {
+                if (file.getName().startsWith(".")) FileUtils.deleteDirectory(new File(file.toURI())); //Linux
+                if (SystemUtils.IS_OS_WINDOWS) {
+                    if (Boolean.parseBoolean(Files.getAttribute(Path.of(file.getAbsolutePath()), "dos:hidden", LinkOption.NOFOLLOW_LINKS).toString()))
+                        FileUtils.deleteDirectory(new File(file.toURI())); //Windows
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.RED + "[GenesisMC] Error trying to remove old custom origin \"" + file.getName() + "\" - This file was automatically unzipped by Genesis.");
+            }
+        }
+    }
+
+    /**
+     * Unzips any folder in the custom_origins folder.
+     **/
+    public static void unzipDatapacks() {
+        File originDatapackDir = new File(Bukkit.getServer().getPluginManager().getPlugin("GenesisMC").getDataFolder() + File.separator + ".." + File.separator + ".." + File.separator + Bukkit.getServer().getWorlds().get(0).getName() + File.separator + "datapacks");
+        File[] originDatapacks = originDatapackDir.listFiles();
+        if (originDatapacks == null) return;
+
+        for (File file : originDatapacks) {
+            if (!FilenameUtils.getExtension(file.getName()).equals("zip")) continue;
+
+            try {
+                File unzippedDestinationFile = new File(file.getAbsolutePath());
+                Path destination;
+                if (SystemUtils.IS_OS_WINDOWS) {
+                    destination = Path.of(FilenameUtils.removeExtension(unzippedDestinationFile.getPath()) + "_UnzippedByGenesis");
+                    Files.setAttribute(destination, "dos:hidden", true, LinkOption.NOFOLLOW_LINKS);
+                } else
+                    destination = Path.of(FilenameUtils.removeExtension(unzippedDestinationFile.getParent() + "/." + unzippedDestinationFile.getName()) + "_UnzippedByGenesis");
+
+                if (!Files.exists(destination)) Files.createDirectory(destination);
+                else continue;
+
+                FileInputStream fileInputStream = new FileInputStream(file);
+                ZipInputStream zipInputStream = new ZipInputStream(fileInputStream);
+                ZipEntry zipEntry = zipInputStream.getNextEntry();
+                while (zipEntry != null) {
+
+                    Path path = destination.resolve(zipEntry.getName());
+                    if (!path.startsWith(destination))
+                        Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.RED + "[GenesisMC] Something went wrong ¯\\_(ツ)_/¯");
+
+                    if (zipEntry.isDirectory()) Files.createDirectories(path);
+                    else {
+                        BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(Files.newOutputStream(path));
+                        byte[] bytes = zipInputStream.readAllBytes();
+                        bufferedOutputStream.write(bytes, 0, bytes.length);
+                        bufferedOutputStream.close();
+                    }
+                    zipEntry = zipInputStream.getNextEntry();
+                }
+                zipInputStream.close();
+                zipInputStream.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     private static HashMap<String, Object> fileToHashMap(JSONObject JSONFileParser) {
