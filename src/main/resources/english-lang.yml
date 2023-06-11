@@ -151,21 +151,9 @@ menu:
         title: "Wet Eyes "
         description: "Your vision underwater is nearly perfect "
 
-      opposing_forces:
-        title: "Opposing Forces "
-        description: "You take significantly more damage from fire "
-
       fins:
         title: "Fins "
         description: "You can swim much faster underwater, and don't sink underwater "
-
-      please_dont:
-        title: "Please.. dont "
-        description: "Don't eat fish, its basically cannabalism and thats gross. It gives you nausea "
-
-      luck_of_the_sea:
-        title: "Luck of the Sea "
-        description: "You have increased fishing luck "
 
     blazeborn:
       born_from_flames:
