@@ -5,11 +5,15 @@ import me.dueris.genesismc.core.factory.powers.Powers;
 import me.dueris.genesismc.core.factory.powers.armour.FlightElytra;
 import me.dueris.genesismc.core.factory.powers.armour.GoldAmourBellow;
 import me.dueris.genesismc.core.factory.powers.armour.GoldArmourBuff;
+import me.dueris.genesismc.core.factory.powers.attributes.AttributeHandler;
 import me.dueris.genesismc.core.factory.powers.block.CeilingWeak;
 import me.dueris.genesismc.core.factory.powers.block.Webbing;
+import me.dueris.genesismc.core.factory.powers.block.fluid.SwimSpeed;
 import me.dueris.genesismc.core.factory.powers.block.fluid.WaterBreathe;
 import me.dueris.genesismc.core.factory.powers.block.fluid.WaterDamage;
+import me.dueris.genesismc.core.factory.powers.block.fluid.WaterVision;
 import me.dueris.genesismc.core.factory.powers.block.solid.PumpkinHate;
+import me.dueris.genesismc.core.factory.powers.effects.*;
 import me.dueris.genesismc.core.factory.powers.entity.*;
 import me.dueris.genesismc.core.factory.powers.food.Carnivore;
 import me.dueris.genesismc.core.factory.powers.food.CarrotOnly;
@@ -19,11 +23,7 @@ import me.dueris.genesismc.core.factory.powers.item.CreeperDeathDrop;
 import me.dueris.genesismc.core.factory.powers.item.EnderPearlThrow;
 import me.dueris.genesismc.core.factory.powers.item.GoldItemBuff;
 import me.dueris.genesismc.core.factory.powers.item.LaunchAir;
-import me.dueris.genesismc.core.factory.powers.runnables.*;
-import me.dueris.genesismc.core.factory.powers.world.ExplodeTick;
-import me.dueris.genesismc.core.factory.powers.world.FireWeak;
-import me.dueris.genesismc.core.factory.powers.world.WeakBiomeCold;
-import me.dueris.genesismc.core.factory.powers.world.WorldSpawnHandler;
+import me.dueris.genesismc.core.factory.powers.world.*;
 import me.dueris.genesismc.core.origins.OriginHandler;
 
 import static me.dueris.genesismc.core.GenesisMC.getPlugin;
@@ -78,7 +78,7 @@ public class OriginStartHandler {
         WaterBreathe waterBreathe = new WaterBreathe();
         waterBreathe.runTaskTimer(getPlugin(), 0, 1);
 
-        TempTailWind tempTailWind = new TempTailWind();
+        TailWind tempTailWind = new TailWind();
         tempTailWind.runTaskTimer(getPlugin(), 0, 1);
 
         WeakBiomeCold weakBiomeCold = new WeakBiomeCold();
@@ -98,6 +98,15 @@ public class OriginStartHandler {
 
         FireWeak fireWeak = new FireWeak();
         fireWeak.runTaskTimer(getPlugin(), 0, 3);
+
+        AquaAffinity aquaAffinity = new AquaAffinity();
+        aquaAffinity.runTaskTimer(getPlugin(), 5, 0);
+
+        WaterVision waterVision = new WaterVision();
+        waterVision.runTaskTimer(getPlugin(), 5, 0);
+
+        SwimSpeed swimSpeed = new SwimSpeed();
+        swimSpeed.runTaskTimer(getPlugin(), 5, 0);
     }
 
     public static void StartListeners() {

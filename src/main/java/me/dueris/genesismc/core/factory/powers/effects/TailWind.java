@@ -1,4 +1,4 @@
-package me.dueris.genesismc.core.factory.powers.runnables;
+package me.dueris.genesismc.core.factory.powers.effects;
 
 import org.bukkit.Bukkit;
 import org.bukkit.attribute.Attribute;
@@ -7,7 +7,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import static me.dueris.genesismc.core.factory.powers.Powers.tailwind;
 
-public class TempTailWind extends BukkitRunnable {
+public class TailWind extends BukkitRunnable {
 
     @Override
     public void run() {

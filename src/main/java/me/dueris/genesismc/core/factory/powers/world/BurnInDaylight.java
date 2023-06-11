@@ -1,4 +1,4 @@
-package me.dueris.genesismc.core.factory.powers.runnables;
+package me.dueris.genesismc.core.factory.powers.world;
 
 import me.dueris.genesismc.core.GenesisMC;
 import org.bukkit.Bukkit;
