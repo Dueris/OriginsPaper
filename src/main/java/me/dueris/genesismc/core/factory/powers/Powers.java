@@ -68,6 +68,7 @@ public class Powers implements Listener {
     public static ArrayList<Player> no_cobweb_slowdown = new ArrayList<>();
     public static ArrayList<Player> phantomize = new ArrayList<>();
     public static ArrayList<Player> strong_arms_break_speed = new ArrayList<>();
+    public static ArrayList<Player> apply_effect = new ArrayList<>();
 
     //genesis
     public static ArrayList<Player> hot_hands = new ArrayList<>();

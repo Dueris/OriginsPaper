@@ -449,7 +449,7 @@ public class OriginPlayer {
                 case "origins:no_cobweb_slowdown" -> no_cobweb_slowdown.add(player);
                 case "origins:phantomize" -> phantomize.add(player);
                 case "origins:strong_arms_break_speed" -> strong_arms_break_speed.add(player);
-
+                case "origins:apply_effect" -> apply_effect.add(player);
                 case "origins:attribute_modify_transfer" -> attribute_modify_transfer.add(player);
 
             }

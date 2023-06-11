@@ -16,6 +16,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.UUID;
 
@@ -86,4 +87,14 @@ public class FlightElytra implements Listener {
             }
         }
     }
+
+//    public static File getPowerFile(){
+//
+//    }
+//
+//    public static boolean getRenderElytra() {
+//        Object render = getPowerFile().get("render");
+//        if (render == null || render.toString().equals("false")) return false;
+//        if (render.toString().equals("true")) return true;
+//    }
 }
