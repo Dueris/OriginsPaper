@@ -8,10 +8,7 @@ import me.dueris.genesismc.core.factory.powers.armour.GoldArmourBuff;
 import me.dueris.genesismc.core.factory.powers.attributes.AttributeHandler;
 import me.dueris.genesismc.core.factory.powers.block.CeilingWeak;
 import me.dueris.genesismc.core.factory.powers.block.Webbing;
-import me.dueris.genesismc.core.factory.powers.block.fluid.SwimSpeed;
-import me.dueris.genesismc.core.factory.powers.block.fluid.WaterBreathe;
-import me.dueris.genesismc.core.factory.powers.block.fluid.WaterDamage;
-import me.dueris.genesismc.core.factory.powers.block.fluid.WaterVision;
+import me.dueris.genesismc.core.factory.powers.block.fluid.*;
 import me.dueris.genesismc.core.factory.powers.block.solid.PumpkinHate;
 import me.dueris.genesismc.core.factory.powers.effects.*;
 import me.dueris.genesismc.core.factory.powers.entity.*;
@@ -151,6 +148,8 @@ public class OriginStartHandler {
         getServer().getPluginManager().registerEvents(new GoldAmourBellow(), getPlugin());
         getServer().getPluginManager().registerEvents(new ArielCombat(), getPlugin());
         getServer().getPluginManager().registerEvents(new Fragile(), getPlugin());
+        getServer().getPluginManager().registerEvents(new ImpalingMore(), getPlugin());
+        getServer().getPluginManager().registerEvents(new AirFromPotions(), getPlugin());
 
     }
 }
