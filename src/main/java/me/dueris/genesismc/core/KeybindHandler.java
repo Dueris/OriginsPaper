@@ -21,6 +21,7 @@ import org.geysermc.geyser.api.GeyserApi;
 import java.util.ArrayList;
 
 import static me.dueris.genesismc.core.factory.powers.Powers.*;
+import static me.dueris.genesismc.core.factory.powers.item.LaunchAir.cooldownAfterElytrian;
 import static org.bukkit.Bukkit.getServer;
 import static org.bukkit.ChatColor.DARK_AQUA;
 import static org.bukkit.ChatColor.RED;
@@ -80,6 +81,9 @@ public class KeybindHandler implements Listener {
             }
         }
         if (launch_into_air.contains(p)) {
+            if (!p.isOnGround()) return;
+            if (p.isSneaking()) return;
+            if (cooldownAfterElytrian.containsKey(p.getUniqueId())) return;
             p.setVelocity(new Vector(0, 2, 0));
             e.setCancelled(true);
         }

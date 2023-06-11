@@ -1,7 +1,10 @@
 package me.dueris.genesismc.core.factory.powers.item;
 
+import me.dueris.genesismc.core.GenesisMC;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
@@ -10,8 +13,10 @@ import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -19,8 +24,6 @@ import static me.dueris.genesismc.core.factory.powers.Powers.launch_into_air;
 import static org.bukkit.ChatColor.GRAY;
 
 public class LaunchAir implements Listener {
-
-    public static HashMap<UUID, Long> cooldownAfterElytrian = new HashMap<>();
 
     @EventHandler
     public static void RespawnLaunchItem(PlayerRespawnEvent e) {
@@ -48,7 +51,38 @@ public class LaunchAir implements Listener {
             e.getDrops().remove(launchitem);
         }
     }
+    public static final HashMap<UUID, Integer> cooldownBeforeElytrian = new HashMap<>();
+    public static final HashMap<UUID, Long> cooldownAfterElytrian = new HashMap<>();
+    public static final ArrayList<UUID> canLaunch = new ArrayList<>();
 
+    public static void doLaunch(Player p) {
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                if (cooldownAfterElytrian.containsKey(p.getUniqueId())) {
+                    if (System.currentTimeMillis() - cooldownAfterElytrian.get(p.getUniqueId()) >= 0) {
+                        p.sendActionBar(ChatColor.RED + "|||||||||");
+                    }
+                    if (System.currentTimeMillis() - cooldownAfterElytrian.get(p.getUniqueId()) >= 4500) {
+                        p.sendActionBar(ChatColor.RED + "|||||||");
+                    }
+                    if (System.currentTimeMillis() - cooldownAfterElytrian.get(p.getUniqueId()) >= 7000) {
+                        p.sendActionBar(ChatColor.YELLOW + "|||||");
+                    }
+                    if (System.currentTimeMillis() - cooldownAfterElytrian.get(p.getUniqueId()) >= 9500) {
+                        p.sendActionBar(ChatColor.YELLOW + "|||");
+                    }
+                    if (System.currentTimeMillis() - cooldownAfterElytrian.get(p.getUniqueId()) >= 12000) {
+                        cooldownAfterElytrian.remove(p.getUniqueId());
+                        p.sendActionBar(ChatColor.GREEN + "-");
+                        canLaunch.add(p.getUniqueId());
+                    }
+                } else {
+                    this.cancel();
+                }
+            }
+        }.runTaskTimer(GenesisMC.getPlugin(), 0L, 10L);
+    }
     @EventHandler
     public void ExecuteLaunch(PlayerInteractEvent e) {
         ItemStack launchitem = new ItemStack(Material.FEATHER);
@@ -57,10 +91,40 @@ public class LaunchAir implements Listener {
         launchmeta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
         launchitem.addItemFlags(ItemFlag.HIDE_ENCHANTS);
         launchitem.setItemMeta(launchmeta);
+        Player p = e.getPlayer();
         if (launch_into_air.contains(e.getPlayer())) {
             if (e.getItem() == null) return;
+            if (!p.isOnGround()) return;
+            if (p.isSneaking()) return;
+            if (cooldownAfterElytrian.containsKey(p.getUniqueId())) return;
             if (e.getItem().equals(launchitem)) {
-                e.getPlayer().setVelocity(new Vector(0, 2, 0));
+//
+
+                cooldownBeforeElytrian.put(p.getUniqueId(), 0);
+
+                new BukkitRunnable() {
+                    @Override
+                    public void run() {
+                        cooldownBeforeElytrian.replace(p.getUniqueId(), cooldownBeforeElytrian.get(p.getUniqueId()) + 1);
+                            if (cooldownBeforeElytrian.get(p.getUniqueId()) == 1) {
+                                p.sendActionBar(ChatColor.RED + "|||");
+                            } else if (cooldownBeforeElytrian.get(p.getUniqueId()) == 2) {
+                                p.sendActionBar(ChatColor.RED + "|||||");
+                            } else if (cooldownBeforeElytrian.get(p.getUniqueId()) == 3) {
+                                p.sendActionBar(ChatColor.YELLOW + "|||||||");
+                            } else if (cooldownBeforeElytrian.get(p.getUniqueId()) == 4) {
+                                p.sendActionBar(ChatColor.YELLOW + "|||||||||");
+                            } else if (cooldownBeforeElytrian.get(p.getUniqueId()) == 5) {
+                                p.sendActionBar(ChatColor.GREEN + "|||||||||||");
+                            }else if (cooldownBeforeElytrian.get(p.getUniqueId()) >= 6){
+                                cooldownAfterElytrian.put(p.getUniqueId(), System.currentTimeMillis());
+                                canLaunch.remove(p);
+                                doLaunch(p);
+                                e.getPlayer().setVelocity(new Vector(0, 1.7, 0));
+                                this.cancel();
+                            }
+                    }
+                }.runTaskTimer(GenesisMC.getPlugin(), 0L, 2L);
                 e.setCancelled(true);
             }
         }
