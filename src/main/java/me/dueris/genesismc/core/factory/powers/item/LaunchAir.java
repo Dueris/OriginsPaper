@@ -120,7 +120,7 @@ public class LaunchAir implements Listener {
                                 cooldownAfterElytrian.put(p.getUniqueId(), System.currentTimeMillis());
                                 canLaunch.remove(p);
                                 doLaunch(p);
-                                e.getPlayer().setVelocity(new Vector(0, 1.7, 0));
+                                p.setVelocity(new Vector(p.getVelocity().getX(), p.getVelocity().getY() + 1.7, p.getVelocity().getZ()));
                                 this.cancel();
                             }
                     }

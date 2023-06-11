@@ -84,7 +84,7 @@ public class KeybindHandler implements Listener {
             if (!p.isOnGround()) return;
             if (p.isSneaking()) return;
             if (cooldownAfterElytrian.containsKey(p.getUniqueId())) return;
-            p.setVelocity(new Vector(0, 2, 0));
+            p.setVelocity(new Vector(p.getVelocity().getX(), p.getVelocity().getY() + 1.7, p.getVelocity().getZ()));
             e.setCancelled(true);
         }
 
