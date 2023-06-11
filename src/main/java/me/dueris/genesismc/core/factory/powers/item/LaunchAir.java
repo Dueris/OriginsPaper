@@ -94,7 +94,6 @@ public class LaunchAir implements Listener {
         Player p = e.getPlayer();
         if (launch_into_air.contains(e.getPlayer())) {
             if (e.getItem() == null) return;
-            if (!p.isOnGround()) return;
             if (p.isSneaking()) return;
             if (cooldownAfterElytrian.containsKey(p.getUniqueId())) return;
             if (e.getItem().equals(launchitem)) {

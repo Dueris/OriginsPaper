@@ -102,8 +102,8 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         getServer().getConsoleSender().sendMessage(ChatColor.YELLOW + ("[GenesisMC]   / ___|   ___   _ __     ___   ___  (_)  ___  |  \\/  |  / ___|"));
         getServer().getConsoleSender().sendMessage(ChatColor.GREEN + ("[GenesisMC]  | |  _   / _ \\ | '_ \\   / _ \\ / __| | | / __| | |\\/| | | |    "));
         getServer().getConsoleSender().sendMessage(ChatColor.AQUA + ("[GenesisMC]  | |_| | |  __/ | | | | |  __/ \\__ \\ | | \\__ \\ | |  | | | |___ "));
-        getServer().getConsoleSender().sendMessage(ChatColor.LIGHT_PURPLE + ("[GenesisMC]   \\____|  \\___| |_| |_|  \\___| |___/ |_| |___/ |_|  |_|  \\____|"));
-        getServer().getConsoleSender().sendMessage(ChatColor.WHITE + ("[GenesisMC]  GenesisMC -- Created by Dueris"));
+        getServer().getConsoleSender().sendMessage(ChatColor.BLUE + ("[GenesisMC]   \\____|  \\___| |_| |_|  \\___| |___/ |_| |___/ |_|  |_|  \\____|"));
+        getServer().getConsoleSender().sendMessage(ChatColor.LIGHT_PURPLE + ("[GenesisMC]  GenesisMC -- Created by Dueris"));
         getServer().getConsoleSender().sendMessage(ChatColor.WHITE + ("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"));
 
         if (GenesisDataFiles.getMainConfig().getString("console-startup-debug").equalsIgnoreCase("true")) {
@@ -193,7 +193,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
             Bukkit.getServer().getPluginManager().disablePlugin(this);
         }
 
-        getServer().getConsoleSender().sendMessage(Component.text("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~").color(TextColor.color(128, 128, 128)));
+        getServer().getConsoleSender().sendMessage(ChatColor.WHITE + "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
 
 
         for (Player p : Bukkit.getOnlinePlayers()) OriginPlayer.assignPowers(p);
