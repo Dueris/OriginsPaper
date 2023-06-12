@@ -1,7 +1,7 @@
 name: GenesisMC
 version: '${version}'
 main: me.dueris.genesismc.core.GenesisMC
-api-version: 1.20
+api-version: '1.20'
 authors: [ Dueris, Tye ]
 folia-supported: true
 description: Bringing the life and fun of the Origins mod to PaperMC
