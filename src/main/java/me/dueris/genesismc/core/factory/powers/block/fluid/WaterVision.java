@@ -15,7 +15,7 @@ public class WaterVision extends BukkitRunnable {
         for(Player p : Bukkit.getOnlinePlayers()){
             if(water_vision.contains(p)){
                 if(isInBreathableWater(p)){
-                    p.addPotionEffect(new PotionEffect(PotionEffectType.CONDUIT_POWER, 15, 5, false, false));
+                    p.addPotionEffect(new PotionEffect(PotionEffectType.CONDUIT_POWER, 15, 3, false, false));
                 }
             }
         }
