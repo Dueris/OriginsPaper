@@ -47,119 +47,6 @@ public class CraftApoli {
         return (ArrayList<OriginContainer>) originContainers.clone();
     }
 
-    private static final HashMap<String, String> customOrigins = new HashMap<>();
-
-    /**
-     * @return A HashMap with custom origin tags as keys and datapack names as values.
-     **/
-    public static HashMap<String, String> getCustomOrigins() {
-        return customOrigins;
-    }
-
-    /**
-     * @return All the custom origin tags loaded.
-     **/
-    public static ArrayList<String> getTags() {
-        return new ArrayList<>(customOrigins.keySet());
-    }
-
-    /**
-     * A method that is used inside the api to parse the data/&lt;Namespace&gt;/origins/&lt;Origin name&gt;.json file.
-     **/
-    public static Object getOriginDetail(String originTag, String valueToParse) {
-        String[] values = originTag.split(":");
-        String dirName = customOrigins.get(originTag);
-        File originDetails = new File(Bukkit.getServer().getPluginManager().getPlugin("GenesisMC").getDataFolder() + "/custom_origins/" + dirName + "/data/" + values[0] + "/origins/" + values[1] + ".json");
-        try {
-            JSONObject parser = (JSONObject) new JSONParser().parse(new FileReader(originDetails.getAbsolutePath()));
-            return parser.get(valueToParse);
-        } catch (Exception e) {
-            //e.printStackTrace();
-            //Bukkit.getServer().getConsoleSender().sendMessage("[GenesisMC] Using origin defaults for "+originTag+" - \""+e.getMessage()+"\"");
-            return null;
-        }
-    }
-
-    /**
-     * @return Origin name from specified custom origin.
-     **/
-    public static String getOriginName(String originTag) {
-        Object value = getOriginDetail(originTag, "name");
-        if (value == null) return "No Name";
-        return (String) value;
-    }
-
-    /**
-     * Removes any unzipped datapacks that were created by GenesisMC in the custom_origins folder.
-     **/
-    public static void removeUnzippedDatapacks() {
-        File originDatapackDir = new File(Bukkit.getServer().getPluginManager().getPlugin("GenesisMC").getDataFolder() + File.separator + ".." + File.separator + ".." + File.separator + Bukkit.getServer().getWorlds().get(0).getName() + File.separator + "datapacks");
-        File[] originDatapacks = originDatapackDir.listFiles();
-        if (originDatapacks == null) return;
-
-        for (File file : originDatapacks) {
-            try {
-                if (file.getName().startsWith(".")) FileUtils.deleteDirectory(new File(file.toURI())); //Linux
-                if (SystemUtils.IS_OS_WINDOWS) {
-                    if (Boolean.parseBoolean(Files.getAttribute(Path.of(file.getAbsolutePath()), "dos:hidden", LinkOption.NOFOLLOW_LINKS).toString()))
-                        FileUtils.deleteDirectory(new File(file.toURI())); //Windows
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-                Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.RED + "[GenesisMC] Error trying to remove old custom origin \"" + file.getName() + "\" - This file was automatically unzipped by Genesis.");
-            }
-        }
-    }
-
-    /**
-     * Unzips any folder in the custom_origins folder.
-     **/
-    public static void unzipDatapacks() {
-        File originDatapackDir = new File(Bukkit.getServer().getPluginManager().getPlugin("GenesisMC").getDataFolder() + File.separator + ".." + File.separator + ".." + File.separator + Bukkit.getServer().getWorlds().get(0).getName() + File.separator + "datapacks");
-        File[] originDatapacks = originDatapackDir.listFiles();
-        if (originDatapacks == null) return;
-
-        for (File file : originDatapacks) {
-            if (!FilenameUtils.getExtension(file.getName()).equals("zip")) continue;
-
-            try {
-                File unzippedDestinationFile = new File(file.getAbsolutePath());
-                Path destination;
-                if (SystemUtils.IS_OS_WINDOWS) {
-                    destination = Path.of(FilenameUtils.removeExtension(unzippedDestinationFile.getPath()) + "_UnzippedByGenesis");
-                    Files.setAttribute(destination, "dos:hidden", true, LinkOption.NOFOLLOW_LINKS);
-                } else
-                    destination = Path.of(FilenameUtils.removeExtension(unzippedDestinationFile.getParent() + "/." + unzippedDestinationFile.getName()) + "_UnzippedByGenesis");
-
-                if (!Files.exists(destination)) Files.createDirectory(destination);
-                else continue;
-
-                FileInputStream fileInputStream = new FileInputStream(file);
-                ZipInputStream zipInputStream = new ZipInputStream(fileInputStream);
-                ZipEntry zipEntry = zipInputStream.getNextEntry();
-                while (zipEntry != null) {
-
-                    Path path = destination.resolve(zipEntry.getName());
-                    if (!path.startsWith(destination))
-                        Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.RED + "[GenesisMC] Something went wrong ¯\\_(ツ)_/¯");
-
-                    if (zipEntry.isDirectory()) Files.createDirectories(path);
-                    else {
-                        BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(Files.newOutputStream(path));
-                        byte[] bytes = zipInputStream.readAllBytes();
-                        bufferedOutputStream.write(bytes, 0, bytes.length);
-                        bufferedOutputStream.close();
-                    }
-                    zipEntry = zipInputStream.getNextEntry();
-                }
-                zipInputStream.close();
-                zipInputStream.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
     private static HashMap<String, Object> fileToHashMap(JSONObject JSONFileParser) {
         HashMap<String, Object> data = new HashMap<>();
         for (Object key : JSONFileParser.keySet()) data.put((String) key, JSONFileParser.get(key));
@@ -397,6 +284,151 @@ public class CraftApoli {
             if (isCoreOrigin(origin)) coreOrigins.add(origin);
         }
         return coreOrigins;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    //REWRITE NEEDED
+
+    private static final HashMap<String, String> customOrigins = new HashMap<>();
+
+    /**
+     * @return A HashMap with custom origin tags as keys and datapack names as values.
+     **/
+    public static HashMap<String, String> getCustomOrigins() {
+        return customOrigins;
+    }
+
+    /**
+     * @return All the custom origin tags loaded.
+     **/
+    public static ArrayList<String> getTags() {
+        return new ArrayList<>(customOrigins.keySet());
+    }
+
+    /**
+     * A method that is used inside the api to parse the data/&lt;Namespace&gt;/origins/&lt;Origin name&gt;.json file.
+     **/
+    public static Object getOriginDetail(String originTag, String valueToParse) {
+        String[] values = originTag.split(":");
+        String dirName = customOrigins.get(originTag);
+        File originDetails = new File(Bukkit.getServer().getPluginManager().getPlugin("GenesisMC").getDataFolder() + "/custom_origins/" + dirName + "/data/" + values[0] + "/origins/" + values[1] + ".json");
+        try {
+            JSONObject parser = (JSONObject) new JSONParser().parse(new FileReader(originDetails.getAbsolutePath()));
+            return parser.get(valueToParse);
+        } catch (Exception e) {
+            //e.printStackTrace();
+            //Bukkit.getServer().getConsoleSender().sendMessage("[GenesisMC] Using origin defaults for "+originTag+" - \""+e.getMessage()+"\"");
+            return null;
+        }
+    }
+
+    /**
+     * @return Origin name from specified custom origin.
+     **/
+    public static String getOriginName(String originTag) {
+        Object value = getOriginDetail(originTag, "name");
+        if (value == null) return "No Name";
+        return (String) value;
+    }
+
+    /**
+     * Removes any unzipped datapacks that were created by GenesisMC in the custom_origins folder.
+     **/
+    public static void removeUnzippedDatapacks() {
+        File originDatapackDir = new File(Bukkit.getServer().getPluginManager().getPlugin("GenesisMC").getDataFolder() + File.separator + ".." + File.separator + ".." + File.separator + Bukkit.getServer().getWorlds().get(0).getName() + File.separator + "datapacks");
+        File[] originDatapacks = originDatapackDir.listFiles();
+        if (originDatapacks == null) return;
+
+        for (File file : originDatapacks) {
+            try {
+                if (file.getName().startsWith(".")) FileUtils.deleteDirectory(new File(file.toURI())); //Linux
+                if (SystemUtils.IS_OS_WINDOWS) {
+                    if (Boolean.parseBoolean(Files.getAttribute(Path.of(file.getAbsolutePath()), "dos:hidden", LinkOption.NOFOLLOW_LINKS).toString()))
+                        FileUtils.deleteDirectory(new File(file.toURI())); //Windows
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.RED + "[GenesisMC] Error trying to remove old custom origin \"" + file.getName() + "\" - This file was automatically unzipped by Genesis.");
+            }
+        }
+    }
+
+    /**
+     * Unzips any folder in the custom_origins folder.
+     **/
+    public static void unzipDatapacks() {
+        File originDatapackDir = new File(Bukkit.getServer().getPluginManager().getPlugin("GenesisMC").getDataFolder() + File.separator + ".." + File.separator + ".." + File.separator + Bukkit.getServer().getWorlds().get(0).getName() + File.separator + "datapacks");
+        File[] originDatapacks = originDatapackDir.listFiles();
+        if (originDatapacks == null) return;
+
+        for (File file : originDatapacks) {
+            if (!FilenameUtils.getExtension(file.getName()).equals("zip")) continue;
+
+            try {
+                File unzippedDestinationFile = new File(file.getAbsolutePath());
+                Path destination;
+                if (SystemUtils.IS_OS_WINDOWS) {
+                    destination = Path.of(FilenameUtils.removeExtension(unzippedDestinationFile.getPath()) + "_UnzippedByGenesis");
+                    Files.setAttribute(destination, "dos:hidden", true, LinkOption.NOFOLLOW_LINKS);
+                } else
+                    destination = Path.of(FilenameUtils.removeExtension(unzippedDestinationFile.getParent() + "/." + unzippedDestinationFile.getName()) + "_UnzippedByGenesis");
+
+                if (!Files.exists(destination)) Files.createDirectory(destination);
+                else continue;
+
+                FileInputStream fileInputStream = new FileInputStream(file);
+                ZipInputStream zipInputStream = new ZipInputStream(fileInputStream);
+                ZipEntry zipEntry = zipInputStream.getNextEntry();
+                while (zipEntry != null) {
+
+                    Path path = destination.resolve(zipEntry.getName());
+                    if (!path.startsWith(destination))
+                        Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.RED + "[GenesisMC] Something went wrong ¯\\_(ツ)_/¯");
+
+                    if (zipEntry.isDirectory()) Files.createDirectories(path);
+                    else {
+                        BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(Files.newOutputStream(path));
+                        byte[] bytes = zipInputStream.readAllBytes();
+                        bufferedOutputStream.write(bytes, 0, bytes.length);
+                        bufferedOutputStream.close();
+                    }
+                    zipEntry = zipInputStream.getNextEntry();
+                }
+                zipInputStream.close();
+                zipInputStream.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
 }
