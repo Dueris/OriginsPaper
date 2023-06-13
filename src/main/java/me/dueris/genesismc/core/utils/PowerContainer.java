@@ -74,8 +74,8 @@ public class PowerContainer implements Serializable {
         return (String) type;
     }
 
-    public Boolean getRender() {
-        Object render = powerFile.get("render");
+    public Boolean getShouldRender() {
+        Object render = powerFile.get("render_elytra");
         if (render == null) return false;
         return (Boolean) render;
     }

@@ -1,6 +1,11 @@
 package me.dueris.genesismc.core.factory.powers.armour;
 
 import me.dueris.genesismc.core.GenesisMC;
+import me.dueris.genesismc.core.entity.OriginPlayer;
+import me.dueris.genesismc.core.protocol.SendStringPacketPayload;
+import me.dueris.genesismc.core.utils.OriginContainer;
+import me.dueris.genesismc.core.utils.PowerContainer;
+import me.dueris.genesismc.core.utils.PowerFileContainer;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -16,21 +21,26 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.UUID;
 
+import static me.dueris.genesismc.core.entity.OriginPlayer.getOrigin;
 import static me.dueris.genesismc.core.entity.OriginPlayer.launchElytra;
 import static me.dueris.genesismc.core.factory.powers.Powers.elytra;
 import static me.dueris.genesismc.core.factory.powers.Powers.more_kinetic_damage;
 
 public class FlightElytra implements Listener {
+    PowerContainer container;
     public static ArrayList<UUID> glidingPlayers = new ArrayList<>();
 
     @EventHandler
+    @SuppressWarnings("unchecked")
     public void ExecuteFlight(PlayerToggleSneakEvent e) {
         Player p = e.getPlayer();
         if (elytra.contains(e.getPlayer())) {
+            if (OriginPlayer.getOrigin(p).getPowerFileFromType("origins:render_elytra").getShouldRender()) {
+                SendStringPacketPayload.sendCustomPacket(p, "ExecuteGenesisOriginsElytraRenderID:12232285");
+            }
             if (!p.isOnGround() && !p.isGliding()) {
                 glidingPlayers.add(p.getUniqueId());
                 if (p.getGameMode() == GameMode.SPECTATOR) return;
@@ -88,13 +98,5 @@ public class FlightElytra implements Listener {
         }
     }
 
-//    public static File getPowerFile(){
-//
-//    }
-//
-//    public static boolean getRenderElytra() {
-//        Object render = getPowerFile().get("render");
-//        if (render == null || render.toString().equals("false")) return false;
-//        if (render.toString().equals("true")) return true;
-//    }
+
 }
