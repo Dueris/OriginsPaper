@@ -1,6 +1,11 @@
 package me.dueris.genesismc.core.utils;
 
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+
 import java.io.Serializable;
+import java.util.HashMap;
 
 public class PowerContainer implements Serializable {
 
@@ -80,4 +85,14 @@ public class PowerContainer implements Serializable {
         return (Boolean) render;
     }
 
+    public HashMap<String, Object> getModifier() {
+        Object obj = powerFile.get("modifier");
+        if (obj == null) return new HashMap<>();
+        JSONArray modifier = (JSONArray) obj;
+        for (int i = 0;i < modifier.size(); i++) {
+            modifier.get(i);
+            System.out.println(modifier.get(i));
+        }
+        return null;
+    }
 }
