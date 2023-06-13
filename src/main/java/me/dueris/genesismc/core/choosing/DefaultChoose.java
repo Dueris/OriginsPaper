@@ -5,6 +5,8 @@ import me.dueris.genesismc.core.events.OriginChangeEvent;
 import me.dueris.genesismc.core.events.OriginChooseEvent;
 import me.dueris.genesismc.core.items.OrbOfOrigins;
 import me.dueris.genesismc.core.utils.SendCharts;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
@@ -12,8 +14,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.persistence.PersistentDataType;
 
 import static me.dueris.genesismc.core.items.OrbOfOrigins.orb;
+import static me.dueris.genesismc.core.utils.Colours.AQUA;
 import static org.bukkit.Bukkit.getServer;
-import static org.bukkit.ChatColor.AQUA;
 
 public class DefaultChoose {
 
@@ -23,7 +25,7 @@ public class DefaultChoose {
         //default choose
         p.closeInventory();
         p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_CHIME, 10, 2);
-        p.sendMessage(AQUA + "You have chosen an origin!");
+        p.sendMessage(Component.text("You have chosen an origin!").color(TextColor.fromHexString(AQUA)));
         p.spawnParticle(Particle.CLOUD, p.getLocation(), 100);
         p.getWorld().spawnParticle(Particle.FIREWORKS_SPARK, p.getLocation(), 6);
         p.setCustomNameVisible(false);
