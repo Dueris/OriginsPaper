@@ -74,4 +74,10 @@ public class PowerContainer implements Serializable {
         return (String) type;
     }
 
+    public Boolean getRender() {
+        Object render = powerFile.get("render");
+        if (render == null) return false;
+        return (Boolean) render;
+    }
+
 }
