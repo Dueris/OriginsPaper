@@ -57,7 +57,6 @@ public class Set extends SubCommand {
                 OriginChangeEvent originChangeEvent = new OriginChangeEvent(p);
                 getServer().getPluginManager().callEvent(originChangeEvent);
             }
-        } else {
         }
     }
 }

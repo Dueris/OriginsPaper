@@ -36,8 +36,8 @@ public class Gui extends SubCommand {
                 OriginPlayer.removeOrigin(p);
             }
         } else if (args.length == 1 && sender instanceof Player p) {
-                OriginPlayer.unassignPowers(p);
-                OriginPlayer.removeOrigin(p);
+            OriginPlayer.unassignPowers(p);
+            OriginPlayer.removeOrigin(p);
         }
     }
 }
