@@ -1,5 +1,5 @@
 # GenesisMC - GPL 3.0
-# Version mc1.19.4-v0.1.7-build+
+# Version mc1.20-v0.2.1
 # DO NOT CHANGE PATH OF CONFIGS, THIS WILL CAUSE ERRORS.
 
 # ~~~~~~~~~~~~~~~~~
@@ -14,6 +14,9 @@ origins-expanded: true
 
 console-startup-debug: false
 # Enables debug information, when making a bug report, please include a screenshot of the startup while this is "true"
+
+# Controls whether the plugin will perform a version check on start up.
+version-check: true
 
 # ~~~~~~~~~~~~~~~~~
 #  Origin Plugin Settings

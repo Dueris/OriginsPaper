@@ -80,9 +80,9 @@ public final class GenesisMC extends JavaPlugin implements Listener {
     public void onEnable() {
         // Plugin startup logic
         plugin = this;
+
         //bstats
         metrics = new Metrics(this, 18536);
-
 
         getServer().getPluginManager().registerEvents(new DataContainer(), this);
 
@@ -96,7 +96,6 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 
         //start
 
-
         getServer().getConsoleSender().sendMessage(ChatColor.RED + ("[GenesisMC]    ____                               _         __  __    ____ "));
         getServer().getConsoleSender().sendMessage(ChatColor.YELLOW + ("[GenesisMC]   / ___|   ___   _ __     ___   ___  (_)  ___  |  \\/  |  / ___|"));
         getServer().getConsoleSender().sendMessage(ChatColor.GREEN + ("[GenesisMC]  | |  _   / _ \\ | '_ \\   / _ \\ / __| | | / __| | |\\/| | | |    "));
@@ -104,6 +103,12 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         getServer().getConsoleSender().sendMessage(ChatColor.BLUE + ("[GenesisMC]   \\____|  \\___| |_| |_|  \\___| |___/ |_| |___/ |_|  |_|  \\____|"));
         getServer().getConsoleSender().sendMessage(ChatColor.LIGHT_PURPLE + ("[GenesisMC]  GenesisMC -- Created by Dueris"));
         getServer().getConsoleSender().sendMessage(ChatColor.WHITE + ("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"));
+
+        if (GenesisDataFiles.getMainConfig().getString("version-check") == null || GenesisDataFiles.getMainConfig().getString("version-check").equalsIgnoreCase("true")) {
+            VersionControl.pluginVersionCheck();
+        } else {
+            getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] Skipping version check.."));
+        }
 
         if (GenesisDataFiles.getMainConfig().getString("console-startup-debug").equalsIgnoreCase("true")) {
             Debug.executeGenesisDebug();
