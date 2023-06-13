@@ -2,7 +2,6 @@ package me.dueris.genesismc.core.factory.powers;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
-import org.checkerframework.checker.units.qual.A;
 
 import java.util.ArrayList;
 

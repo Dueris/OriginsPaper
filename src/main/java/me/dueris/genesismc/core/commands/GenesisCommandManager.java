@@ -4,17 +4,14 @@ import me.dueris.genesismc.core.commands.subcommands.SubCommand;
 import me.dueris.genesismc.core.commands.subcommands.origin.*;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
-import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 
 import static me.dueris.genesismc.core.utils.Colours.RED;
 import static me.dueris.genesismc.core.utils.Colours.YELLOW;
-import static org.bukkit.Bukkit.getServer;
 
 public class GenesisCommandManager implements CommandExecutor {
 

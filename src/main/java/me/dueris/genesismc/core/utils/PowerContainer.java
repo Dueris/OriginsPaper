@@ -1,8 +1,6 @@
 package me.dueris.genesismc.core.utils;
 
 import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
 
 import java.io.Serializable;
 import java.util.HashMap;

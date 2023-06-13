@@ -1,7 +1,6 @@
 package me.dueris.genesismc.core.factory.powers.attributes;
 
 import me.dueris.genesismc.core.entity.OriginPlayer;
-import net.minecraft.network.protocol.game.ClientboundCustomChatCompletionsPacket;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.attribute.Attribute;

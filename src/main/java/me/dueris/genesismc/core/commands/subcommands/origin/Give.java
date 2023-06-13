@@ -1,19 +1,14 @@
 package me.dueris.genesismc.core.commands.subcommands.origin;
 
-import me.dueris.genesismc.core.GenesisMC;
 import me.dueris.genesismc.core.commands.PlayerSelector;
 import me.dueris.genesismc.core.commands.subcommands.SubCommand;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
-import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.ConsoleCommandSender;
-import org.bukkit.craftbukkit.v1_20_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
-import java.util.Random;
 
 import static me.dueris.genesismc.core.items.OrbOfOrigins.orb;
 import static me.dueris.genesismc.core.utils.Colours.RED;
