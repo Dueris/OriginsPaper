@@ -180,7 +180,7 @@ public class CraftApoli {
         for (OriginContainer origin : getCoreOrigins()) {
             for (PowerContainer power : origin.getPowerContainers()) {
                 power.setName(Lang.getLocalizedString(power.getName()));
-                power.setDescription(Lang.getLocalizedString(power.getDesription()));
+                power.setDescription(Lang.getLocalizedString(power.getDescription()));
             }
         }
     }

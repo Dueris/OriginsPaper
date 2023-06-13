@@ -50,7 +50,7 @@ public class PowerContainer implements Serializable {
         return (String) name;
     }
 
-    public String getDesription() {
+    public String getDescription() {
         Object description = this.powerFile.get("description");
         if (description == null) return "No Description.";
         return (String) description;

@@ -137,7 +137,7 @@ public class Info extends SubCommand implements Listener {
                         ItemMeta meta = originPower.getItemMeta();
                         meta.setDisplayName(powerContainers.get(0).getName());
                         meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-                        meta.setLore(cutStringIntoLists(powerContainers.get(0).getDesription()));
+                        meta.setLore(cutStringIntoLists(powerContainers.get(0).getDescription()));
                         originPower.setItemMeta(meta);
 
                         contents.add(originPower);
