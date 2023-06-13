@@ -137,7 +137,7 @@ public class BigLeap implements Listener {
 
         if (big_leap_tick.contains(p)) {
             if (e.getCause() == EntityDamageEvent.DamageCause.FALL) {
-                if (inAir.contains(p)) {
+                if (inAir.contains(p.getUniqueId())) {
                     e.setCancelled(true);
                     inAir.remove(p.getUniqueId());
                 }
