@@ -184,8 +184,6 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         registerEnchantment(waterProtectionEnchant);
 
         for (Player p : Bukkit.getOnlinePlayers()) {
-            System.out.print(CraftApoli.nullOrigin());
-            System.out.print(OriginPlayer.getOrigin(p).getTag());
             if (p.isOp()) {
                 p.sendMessage(Component.text("Origins Reloaded.").color(TextColor.color(137, 207, 240)));
             }
