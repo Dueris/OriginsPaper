@@ -2,7 +2,8 @@ package me.dueris.genesismc.core.commands;
 
 import me.dueris.genesismc.core.commands.subcommands.SubCommand;
 import me.dueris.genesismc.core.commands.subcommands.origin.*;
-import me.dueris.genesismc.core.events.OriginCommandEvent;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -11,6 +12,8 @@ import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 
+import static me.dueris.genesismc.core.utils.Colours.RED;
+import static me.dueris.genesismc.core.utils.Colours.YELLOW;
 import static org.bukkit.Bukkit.getServer;
 
 public class GenesisCommandManager implements CommandExecutor {
@@ -34,36 +37,31 @@ public class GenesisCommandManager implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (sender instanceof Player p) {
-            if (args.length > 0) {
-                for (int i = 0; i < getSubCommands().size(); i++) {
-                    if (args[0].equalsIgnoreCase(getSubCommands().get(i).getName())) {
-                        getSubCommands().get(i).perform(p, args);
-                        OriginCommandEvent event = new OriginCommandEvent(p);
-                        getServer().getPluginManager().callEvent(event);
-                    }
-
+        if (args.length > 0) {
+            for (int i = 0; i < getSubCommands().size(); i++) {
+                if (args[0].equalsIgnoreCase(getSubCommands().get(i).getName())) {
+                    getSubCommands().get(i).perform(sender, args);
+                    //OriginCommandEvent event = new OriginCommandEvent(sender);
+                    //getServer().getPluginManager().callEvent(event);
                 }
 
             }
-            if (args.length == 0) {
-                p.sendMessage(ChatColor.RED + "You did not provide any args. Here is a list of commands:");
-                p.sendMessage(ChatColor.YELLOW + "-----------------------------------------",
-                        ChatColor.WHITE + "/origin choose",
-                        ChatColor.WHITE + "/origin purge <player_name>",
-                        ChatColor.WHITE + "/origin get <player>",
-                        ChatColor.WHITE + "/origin set <player>",
-                        ChatColor.WHITE + "/origin enchant",
-                        ChatColor.WHITE + "/origin gui <player>",
-                        ChatColor.WHITE + "/origin info",
-                        ChatColor.WHITE + "/origin has <player>",
-                        ChatColor.WHITE + "/origin recipe",
-                        ChatColor.WHITE + "/origin references",
-                        ChatColor.WHITE + "/origin references",
-                        ChatColor.WHITE + "/shulker open",
-                        ChatColor.YELLOW + "-----------------------------------------"
-                );
-            }
+
+        }
+        if (args.length == 0) {
+            sender.sendMessage(Component.text("You did not provide any args. Here is a list of commands:").color(TextColor.fromHexString(RED)));
+            sender.sendMessage(Component.text("-----------------------------------------").color(TextColor.fromHexString(YELLOW)));
+            sender.sendMessage(Component.text("/origin get <player>"));
+            sender.sendMessage(Component.text("/origin set <player>"));
+            sender.sendMessage(Component.text("/origin enchant <player> <genesis enchantment> <amount>"));
+            sender.sendMessage(Component.text("/origin gui <player>"));
+            sender.sendMessage(Component.text("/origin get <player> <genesis item> <amount>"));
+            sender.sendMessage(Component.text("/origin info"));
+            sender.sendMessage(Component.text("/origin has <player>"));
+            sender.sendMessage(Component.text("/origin recipe"));
+            sender.sendMessage(Component.text("/origin references"));
+            sender.sendMessage(Component.text("/shulker open"));
+            sender.sendMessage(Component.text("-----------------------------------------").color(TextColor.fromHexString(YELLOW)));
         }
         return true;
     }

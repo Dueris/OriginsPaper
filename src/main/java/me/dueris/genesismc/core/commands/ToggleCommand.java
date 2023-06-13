@@ -2,6 +2,8 @@ package me.dueris.genesismc.core.commands;
 
 import me.dueris.genesismc.core.GenesisMC;
 import me.dueris.genesismc.core.entity.OriginPlayer;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.ChatColor;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Sound;
@@ -16,6 +18,7 @@ import org.jetbrains.annotations.NotNull;
 
 import static me.dueris.genesismc.core.factory.powers.Powers.big_leap_tick;
 import static me.dueris.genesismc.core.factory.powers.entity.BigLeap.leapToggle;
+import static me.dueris.genesismc.core.utils.Colours.RED;
 
 
 public class ToggleCommand implements CommandExecutor {
@@ -35,15 +38,15 @@ public class ToggleCommand implements CommandExecutor {
                 } else if (false) {
                     //add other origin toggles here like this
                 } else {
-                    p.sendMessage(ChatColor.RED + "Your origin does not have an ability that can be toggled");
+                    sender.sendMessage(Component.text("Your origin does not have an ability that can be toggled").color(TextColor.fromHexString(RED)));
                 }
 
             } else {
-                p.sendMessage(ChatColor.RED + "You do not have permission to use this command.");
+                sender.sendMessage(Component.text("You do not have permission to use this command.").color(TextColor.fromHexString(RED)));
                 p.playSound(p.getLocation(), Sound.BLOCK_ANVIL_LAND, 0.3f, 1);
             }
         } else if (sender instanceof ConsoleCommandSender) {
-            sender.getServer().getConsoleSender().sendMessage(ChatColor.RED + "This is a player only command.");
+            sender.sendMessage(Component.text("This is a player only command.").color(TextColor.fromHexString(RED)));
         }
         return true;
     }

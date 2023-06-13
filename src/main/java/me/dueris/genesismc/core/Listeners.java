@@ -15,9 +15,9 @@ public class Listeners implements Listener {
 
     }
 
-    @EventHandler
-    public void origincommandevent(OriginCommandEvent e) {
-    }
+//    @EventHandler
+//    public void origincommandevent(OriginCommandEvent e) {
+//    }
 
     @EventHandler
     public void originkeybindevent(OriginKeybindExecuteEvent e) {

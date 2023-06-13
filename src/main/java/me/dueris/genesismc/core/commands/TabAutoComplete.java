@@ -21,55 +21,55 @@ public class TabAutoComplete implements TabCompleter {
             if (args.length == 1) {
                 List<String> arguments = new ArrayList<>();
                 if (sender.hasPermission("genesismc.origins.cmd.info")) {
-                    if (args[0].startsWith("i") || args[0].isEmpty() || args[0].startsWith("in") || args[0].startsWith("inf") || args[0].startsWith("info"))
+                    if (args[0].equals("i") || args[0].isEmpty() || args[0].equals("in") || args[0].equals("inf") || args[0].equals("info"))
                         arguments.add("info");
                 } else {
                     arguments.remove("info");
                 }
                 if (sender.hasPermission("genesismc.origins.cmd.references")) {
-                    if (args[0].startsWith("r") || args[0].isEmpty() || args[0].startsWith("re") || args[0].startsWith("ref") || args[0].startsWith("refe") || args[0].startsWith("refer") || args[0].startsWith("refere") || args[0].startsWith("referen") || args[0].startsWith("referenc") || args[0].startsWith("reference") || args[0].startsWith("references"))
+                    if (args[0].equals("r") || args[0].isEmpty() || args[0].equals("re") || args[0].equals("ref") || args[0].equals("refe") || args[0].equals("refer") || args[0].equals("refere") || args[0].equals("referen") || args[0].equals("referenc") || args[0].equals("reference") || args[0].equals("references"))
                         arguments.add("references");
                 } else {
                     arguments.remove("references");
                 }
                 if (sender.hasPermission("genesismc.origins.cmd.recipe")) {
-                    if (args[0].startsWith("r") || args[0].isEmpty() || args[0].startsWith("re") || args[0].startsWith("rec") || args[0].startsWith("reci") || args[0].startsWith("recip") || args[0].startsWith("recipe"))
+                    if (args[0].equals("r") || args[0].isEmpty() || args[0].equals("re") || args[0].equals("rec") || args[0].equals("reci") || args[0].equals("recip") || args[0].equals("recipe"))
                         arguments.add("recipe");
                 } else {
                     arguments.remove("recipe");
                 }
                 if (sender.hasPermission("genesismc.origins.cmd.get")) {
-                    if (args[0].startsWith("g") || args[0].isEmpty() || args[0].startsWith("ge") || args[0].startsWith("get"))
+                    if (args[0].equals("g") || args[0].isEmpty() || args[0].equals("ge") || args[0].equals("get"))
                         arguments.add("get");
                 } else {
                     arguments.remove("get");
                 }
                 if (sender.hasPermission("genesismc.origins.cmd.enchant")) {
-                    if (args[0].startsWith("e") || args[0].isEmpty() || args[0].startsWith("en") || args[0].startsWith("enc") || args[0].startsWith("ench") || args[0].startsWith("encha") || args[0].startsWith("enchan") || args[0].startsWith("enchant"))
+                    if (args[0].equals("e") || args[0].isEmpty() || args[0].equals("en") || args[0].equals("enc") || args[0].equals("ench") || args[0].equals("encha") || args[0].equals("enchan") || args[0].equals("enchant"))
                         arguments.add("enchant");
                 } else {
                     arguments.remove("enchant");
                 }
                 if (sender.hasPermission("genesis.origins.cmd.gui")) {
-                    if (args[0].startsWith("g") || args[0].isEmpty() || args[0].startsWith("gu") || args[0].startsWith("gui"))
+                    if (args[0].equals("g") || args[0].isEmpty() || args[0].equals("gu") || args[0].equals("gui"))
                         arguments.add("gui");
                 } else {
                     arguments.remove("gui");
                 }
                 if (sender.hasPermission("genesis.origins.cmd.has")) {
-                    if (args[0].startsWith("h") || args[0].isEmpty() || args[0].startsWith("ha") || args[0].startsWith("has"))
+                    if (args[0].equals("h") || args[0].isEmpty() || args[0].equals("ha") || args[0].equals("has"))
                         arguments.add("has");
                 } else {
                     arguments.remove("has");
                 }
                 if (sender.hasPermission("genesis.origins.cmd.set")) {
-                    if (args[0].startsWith("s") || args[0].isEmpty() || args[0].startsWith("se") || args[0].startsWith("set"))
+                    if (args[0].equals("s") || args[0].isEmpty() || args[0].equals("se") || args[0].equals("set"))
                         arguments.add("set");
                 } else {
                     arguments.remove("set");
                 }
                 if (sender.hasPermission("genesis.origins.cmd.orb")) {
-                    if (args[0].startsWith("g") || args[0].isEmpty() || args[0].startsWith("gi") || args[0].startsWith("giv") || args[0].startsWith("give"))
+                    if (args[0].equals("g") || args[0].isEmpty() || args[0].equals("gi") || args[0].equals("giv") || args[0].equals("give"))
                         arguments.add("give");
                 } else {
                     arguments.remove("give");
@@ -77,39 +77,32 @@ public class TabAutoComplete implements TabCompleter {
 
                 return arguments;
             } else if (args.length == 2) {
-                if (args[0].equalsIgnoreCase("get") || args[0].equalsIgnoreCase("has") || args[0].equalsIgnoreCase("set") || args[0].equalsIgnoreCase("give") || args[0].equalsIgnoreCase("gui")) {
+                if (args[0].equalsIgnoreCase("get") || args[0].equalsIgnoreCase("has") || args[0].equalsIgnoreCase("set") || args[0].equalsIgnoreCase("give") || args[0].equalsIgnoreCase("gui") || args[0].equalsIgnoreCase("enchant")) {
                     Player[] players = new Player[Bukkit.getServer().getOnlinePlayers().size()];
                     List<String> playernames = new ArrayList<>();
                     Bukkit.getServer().getOnlinePlayers().toArray(players);
-                    for (int i = 0; i < players.length; i++) {
-                        playernames.add(players[i].getName());
+                    for (Player player : players) {
+                        playernames.add(player.getName());
                     }
-                    if (args[0].equalsIgnoreCase("give"))
-                        playernames.addAll(Arrays.asList("@a", "@e", "@p", "@r", "@s"));
+                    playernames.addAll(Arrays.asList("@a", "@e", "@p", "@r", "@s"));
                     return playernames;
-
-                } else if (args[0].equalsIgnoreCase("enchant")) {
-                    List<String> enchantid = new ArrayList<>();
-                    enchantid.add("genesis:water_protection");
-                    return enchantid;
 
                 }
 
-                List<String> arguments = new ArrayList();
-                return arguments;
+                return new ArrayList<>();
 
             } else if (args.length == 3) {
                 if (args[0].equalsIgnoreCase("has") || args[0].equalsIgnoreCase("set")) {
                     return CraftApoli.getOriginTags();
                 } else if (args[0].equalsIgnoreCase("give")) {
                     return List.of("genesis:orb_of_origin");
+                } else if (args[0].equalsIgnoreCase("enchant")) {
+                    return List.of("genesis:water_protection");
                 } else {
-                    List<String> nothin = new ArrayList<>();
-                    return nothin;
+                    return new ArrayList<>();
                 }
             } else {
-                List<String> nothin = new ArrayList<>();
-                return nothin;
+                return new ArrayList<>();
             }
 
         } else if (command.getName().equalsIgnoreCase("shulker")) {
@@ -118,8 +111,7 @@ public class TabAutoComplete implements TabCompleter {
                 arguments.add("open");
                 return arguments;
             } else if (args.length >= 2) {
-                List<String> nothing = new ArrayList<>();
-                return nothing;
+                return new ArrayList<>();
             }
         }
         return null;

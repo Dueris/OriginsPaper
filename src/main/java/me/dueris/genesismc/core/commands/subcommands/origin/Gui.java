@@ -1,11 +1,19 @@
 package me.dueris.genesismc.core.commands.subcommands.origin;
 
+import me.dueris.genesismc.core.commands.PlayerSelector;
 import me.dueris.genesismc.core.commands.subcommands.SubCommand;
 import me.dueris.genesismc.core.entity.OriginPlayer;
+import me.dueris.genesismc.core.utils.Colours;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.Bukkit;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import static org.bukkit.ChatColor.RED;
+import java.util.ArrayList;
+
+import static me.dueris.genesismc.core.utils.Colours.RED;
+
 
 public class Gui extends SubCommand {
     @Override
@@ -24,19 +32,18 @@ public class Gui extends SubCommand {
     }
 
     @Override
-    public void perform(Player p, String[] args) {
-        if (!p.hasPermission("genesismc.origins.cmd.gui")) return;
+    public void perform(CommandSender sender, String[] args) {
+        if (!sender.hasPermission("genesismc.origins.cmd.gui")) return;
         if (args.length > 1) {
-            try {
-                Player given = Bukkit.getPlayer(args[1]);
-                OriginPlayer.unassignPowers(given);
-                OriginPlayer.removeOrigin(given);
-            } catch (Exception e) {
-                p.sendMessage(RED + "Could not find player!");
+            ArrayList<Player> players = PlayerSelector.playerSelector(sender, args[1]);
+            if (players.size() == 0) return;
+            for (Player p : players) {
+                OriginPlayer.unassignPowers(p);
+                OriginPlayer.removeOrigin(p);
             }
-        } else if (args.length == 1) {
-            OriginPlayer.unassignPowers(p);
-            OriginPlayer.removeOrigin(p);
+        } else if (args.length == 1 && sender instanceof Player p) {
+                OriginPlayer.unassignPowers(p);
+                OriginPlayer.removeOrigin(p);
         }
     }
 }

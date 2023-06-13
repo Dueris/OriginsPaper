@@ -1,14 +1,20 @@
 package me.dueris.genesismc.core.commands.subcommands.origin;
 
+import me.dueris.genesismc.core.commands.PlayerSelector;
 import me.dueris.genesismc.core.commands.subcommands.SubCommand;
 import me.dueris.genesismc.core.entity.OriginPlayer;
 import me.dueris.genesismc.core.events.OriginChangeEvent;
 import me.dueris.genesismc.core.factory.CraftApoli;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.Bukkit;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
+
+import static me.dueris.genesismc.core.utils.Colours.RED;
 import static org.bukkit.Bukkit.getServer;
-import static org.bukkit.ChatColor.RED;
 
 public class Set extends SubCommand {
     @Override
@@ -27,26 +33,32 @@ public class Set extends SubCommand {
     }
 
     @Override
-    public void perform(Player p, String[] args) {
-        if (!p.hasPermission("genesismc.origins.cmd.set")) return;
+    public void perform(CommandSender sender, String[] args) {
+        if (!sender.hasPermission("genesismc.origins.cmd.set")) return;
+        if (args.length == 1) {
+            sender.sendMessage(Component.text("No player specified!").color(TextColor.fromHexString(RED)));
+            return;
+        }
+        if (args.length == 2) {
+            sender.sendMessage(Component.text("No origin specified!").color(TextColor.fromHexString(RED)));
+            return;
+        }
         if (args.length > 2) {
-            Player given = Bukkit.getPlayer(args[1]);
-            if (given == null) {
-                p.sendMessage(RED + "Not a valid player.");
-                return;
-            }
+            ArrayList<Player> players = PlayerSelector.playerSelector(sender, args[1]);
+            if (players.size() == 0) return;
 
             String originTag = args[2];
             if (!CraftApoli.getOriginTags().contains(originTag)) {
-                p.sendMessage(RED + "Invalid origin.");
+                sender.sendMessage(Component.text("Invalid origin!").color(TextColor.fromHexString(RED)));
                 return;
             }
 
-            OriginPlayer.setOrigin(given, CraftApoli.getOrigin(originTag));
-            OriginChangeEvent originChangeEvent = new OriginChangeEvent(given);
-            getServer().getPluginManager().callEvent(originChangeEvent);
+            for (Player p : players) {
+                OriginPlayer.setOrigin(p, CraftApoli.getOrigin(originTag));
+                OriginChangeEvent originChangeEvent = new OriginChangeEvent(p);
+                getServer().getPluginManager().callEvent(originChangeEvent);
+            }
         } else {
-            p.sendMessage(RED + "Invalid Args!!!");
         }
     }
 }
