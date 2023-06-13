@@ -146,13 +146,12 @@ public class OriginPlayer {
         unassignPowers(player);
         player.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origin"), PersistentDataType.BYTE_ARRAY, CraftApoli.toByteArray(origin));
         String originTag = origin.getTag();
+        setAttributesToDefault(player);
+        removeItemPhantom(player);
+        removeItemEnder(player);
+        removeItemElytrian(player);
         if (originTag.contains("genesis:origin-human")) {
-            setAttributesToDefault(player);
-            removeItemPhantom(player);
-            removeItemEnder(player);
-        } else if (originTag.contains("genesis:origin-enderian")) {
-            setAttributesToDefault(player);
-            Bukkit.getScheduler().runTaskLater(GenesisMC.getPlugin(), () -> {
+        } else if (originTag.contains("origins:enderian")) {
                 ItemStack infinpearl = new ItemStack(Material.ENDER_PEARL);
                 ItemMeta pearl_meta = infinpearl.getItemMeta();
                 pearl_meta.setDisplayName(ChatColor.LIGHT_PURPLE + "Teleport");
@@ -162,36 +161,17 @@ public class OriginPlayer {
                 pearl_meta.setLore(pearl_lore);
                 infinpearl.setItemMeta(pearl_meta);
                 player.getInventory().addItem(infinpearl);
-                removeItemPhantom(player);
-            }, 1);
-        } else if (originTag.contains("genesis:origin-shulk")) {
+        } else if (originTag.contains("origins:shulk")) {
             float walk = 0.185F;
-            setAttributesToDefault(player);
-            Bukkit.getScheduler().runTaskLater(GenesisMC.getPlugin(), () -> {
                 player.getAttribute(Attribute.GENERIC_ARMOR).setBaseValue(8.0);
                 player.setWalkSpeed(walk);
                 player.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE).setBaseValue(0.45F);
                 player.getAttribute(Attribute.GENERIC_ARMOR_TOUGHNESS).setBaseValue(2.2);
-                removeItemPhantom(player);
-                removeItemEnder(player);
-            }, 1);
-        } else if (originTag.contains("genesis:origin-arachnid")) {
-            setAttributesToDefault(player);
-            Bukkit.getScheduler().runTaskLater(GenesisMC.getPlugin(), () -> {
+        } else if (originTag.contains("origins:arachnid")) {
                 player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(14);
-                removeItemPhantom(player);
-                removeItemEnder(player);
-            }, 1);
-        } else if (originTag.contains("genesis:origin-creep")) {
-            setAttributesToDefault(player);
-            Bukkit.getScheduler().runTaskLater(GenesisMC.getPlugin(), () -> {
+        } else if (originTag.contains("origins:creep")) {
                 player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(18);
-                removeItemPhantom(player);
-                removeItemEnder(player);
-            }, 1);
-        } else if (originTag.contains("genesis:origin-phantom")) {
-            setAttributesToDefault(player);
-            Bukkit.getScheduler().runTaskLater(GenesisMC.getPlugin(), () -> {
+        } else if (originTag.contains("origins:phantom")) {
                 player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(14);
                 player.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0.11);
                 ItemStack spectatorswitch = new ItemStack(Material.PHANTOM_MEMBRANE);
@@ -205,64 +185,18 @@ public class OriginPlayer {
                 switch_meta.setLore(pearl_lore);
                 spectatorswitch.setItemMeta(switch_meta);
                 player.getInventory().addItem(spectatorswitch);
-                removeItemEnder(player);
-            }, 1);
-        } else if (originTag.contains("genesis:origin-slimeling")) {
-            setAttributesToDefault(player);
-            Bukkit.getScheduler().runTaskLater(GenesisMC.getPlugin(), () -> {
-                removeItemPhantom(player);
-                removeItemEnder(player);
-            }, 1);
-        } else if (originTag.contains("genesis:origin-feline")) {
-            setAttributesToDefault(player);
-            Bukkit.getScheduler().runTaskLater(GenesisMC.getPlugin(), () -> {
+        } else if (originTag.contains("origins:slimeling")) {
+        } else if (originTag.contains("origins:feline")) {
                 player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(18);
-                removeItemPhantom(player);
-                removeItemEnder(player);
-            }, 1);
-        } else if (originTag.contains("genesis:origin-blaze")) {
-            setAttributesToDefault(player);
-            Bukkit.getScheduler().runTaskLater(GenesisMC.getPlugin(), () -> {
-                removeItemPhantom(player);
-                removeItemEnder(player);
-            }, 1);
-        } else if (originTag.contains("genesis:origin-starborne")) {
-            setAttributesToDefault(player);
-            Bukkit.getScheduler().runTaskLater(GenesisMC.getPlugin(), () -> {
-                removeItemPhantom(player);
-                removeItemEnder(player);
-            }, 1);
-        } else if (originTag.contains("geneis:origin-merling")) {
-            setAttributesToDefault(player);
-            Bukkit.getScheduler().runTaskLater(GenesisMC.getPlugin(), () -> {
-                removeItemPhantom(player);
-                removeItemEnder(player);
-            }, 1);
-        } else if (originTag.contains("genesis:origin-allay")) {
-            setAttributesToDefault(player);
-            Bukkit.getScheduler().runTaskLater(GenesisMC.getPlugin(), () -> {
-                removeItemPhantom(player);
-                removeItemEnder(player);
-            }, 1);
-        } else if (originTag.contains("genesis:origin-rabbit")) {
-            setAttributesToDefault(player);
-            Bukkit.getScheduler().runTaskLater(GenesisMC.getPlugin(), () -> {
+        } else if (originTag.contains("origins:blaze")) {
+        } else if (originTag.contains("origins:starborne")) {
+        } else if (originTag.contains("origins:merling")) {
+        } else if (originTag.contains("origins:allay")) {
+        } else if (originTag.contains("origins:rabbit")) {
                 player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(14);
-                removeItemPhantom(player);
-                removeItemEnder(player);
-            }, 1);
-        } else if (originTag.contains("genesis:origin-bee")) {
-            setAttributesToDefault(player);
-            Bukkit.getScheduler().runTaskLater(GenesisMC.getPlugin(), () -> {
+        } else if (originTag.contains("origins:bee")) {
                 player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(14);
-                removeItemPhantom(player);
-                removeItemEnder(player);
-            }, 1);
-        } else if (originTag.contains("genesis:origin-elytrian")) {
-            setAttributesToDefault(player);
-            Bukkit.getScheduler().runTaskLater(GenesisMC.getPlugin(), () -> {
-                removeItemPhantom(player);
-                removeItemEnder(player);
+        } else if (originTag.contains("origins:elytrian")) {
                 ItemStack launchitem = new ItemStack(Material.FEATHER);
                 ItemMeta launchmeta = launchitem.getItemMeta();
                 launchmeta.setDisplayName(GRAY + "Launch");
@@ -270,34 +204,14 @@ public class OriginPlayer {
                 launchitem.addItemFlags(ItemFlag.HIDE_ENCHANTS);
                 launchitem.setItemMeta(launchmeta);
                 player.getInventory().addItem(launchitem);
-            }, 1);
-        } else if (originTag.contains("genesis:origin-avian")) {
-            setAttributesToDefault(player);
-            Bukkit.getScheduler().runTaskLater(GenesisMC.getPlugin(), () -> {
+        } else if (originTag.contains("origins:avian")) {
                 player.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0.17);
-                removeItemPhantom(player);
-                removeItemEnder(player);
-            }, 1);
-        } else if (originTag.contains("genesis:origin-piglin")) {
-            setAttributesToDefault(player);
-            Bukkit.getScheduler().runTaskLater(GenesisMC.getPlugin(), () -> {
-                removeItemPhantom(player);
-                removeItemEnder(player);
-            }, 1);
-        } else if (originTag.contains("genesis:origin-sculkling")) {
-            setAttributesToDefault(player);
-            Bukkit.getScheduler().runTaskLater(GenesisMC.getPlugin(), () -> {
+        } else if (originTag.contains("origins:piglin")) {
+        } else if (originTag.contains("origins:sculkling")) {
                 player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(24);
-                removeItemPhantom(player);
-                removeItemEnder(player);
-            }, 1);
         } else {
-            setAttributesToDefault(player);
-            Bukkit.getScheduler().runTaskLater(GenesisMC.getPlugin(), () -> {
-                removeItemPhantom(player);
-                removeItemEnder(player);
-            }, 1);
         }
+
         SendCharts.originPopularity(player);
         assignPowers(player);
     }
