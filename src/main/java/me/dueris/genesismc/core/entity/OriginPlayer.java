@@ -450,6 +450,7 @@ public class OriginPlayer {
                 case "origins:phantomize" -> phantomize.add(player);
                 case "origins:strong_arms_break_speed" -> strong_arms_break_speed.add(player);
                 case "origins:apply_effect" -> apply_effect.add(player);
+                case "origins:attribute" -> attribute.add(player);
                 case "origins:attribute_modify_transfer" -> attribute_modify_transfer.add(player);
 
             }
@@ -541,6 +542,7 @@ public class OriginPlayer {
                 case "origins:flame_particles" -> flame_particles.remove(player);
                 case "origins:no_cobweb_slowdown" -> no_cobweb_slowdown.remove(player);
                 case "origins:phantomize" -> phantomize.remove(player);
+                case "origins:attribute" -> attribute.remove(player);
                 case "origins:strong_arms_break_speed" -> strong_arms_break_speed.remove(player);
 
                 case "origins:attribute_modify_transfer" -> attribute_modify_transfer.remove(player);
