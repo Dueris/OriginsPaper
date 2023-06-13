@@ -3,9 +3,15 @@ package me.dueris.genesismc.core.choosing;
 import me.dueris.genesismc.core.GenesisMC;
 import me.dueris.genesismc.core.entity.OriginPlayer;
 import me.dueris.genesismc.core.events.OrbInteractEvent;
+import me.dueris.genesismc.core.events.OriginChangeEvent;
+import me.dueris.genesismc.core.events.OriginChooseEvent;
 import me.dueris.genesismc.core.factory.CraftApoli;
 import me.dueris.genesismc.core.files.GenesisDataFiles;
+import me.dueris.genesismc.core.items.OrbOfOrigins;
+import me.dueris.genesismc.core.utils.OriginContainer;
+import me.dueris.genesismc.core.utils.SendCharts;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.enchantments.Enchantment;
@@ -30,6 +36,7 @@ import java.util.Random;
 
 import static me.dueris.genesismc.core.choosing.contents.MainMenuContents.GenesisMainMenuContents;
 import static me.dueris.genesismc.core.items.OrbOfOrigins.orb;
+import static me.dueris.genesismc.core.utils.Colours.AQUA;
 import static org.bukkit.Bukkit.getServer;
 import static org.bukkit.ChatColor.GRAY;
 
@@ -197,17 +204,48 @@ public class ChoosingCORE implements Listener {
         if (e.getCurrentItem() == null) return;
         if (e.getCurrentItem().getItemMeta() == null) return;
         if (e.getView().getTitle().equalsIgnoreCase("Choosing Menu")) {
-            if (e.getCurrentItem() == orb) return;
             NamespacedKey key = new NamespacedKey(GenesisMC.getPlugin(), "orb");
-            if (e.getCurrentItem().getItemMeta().getPersistentDataContainer().get(key, PersistentDataType.STRING) == null)
-                return;
-            if (e.getCurrentItem().getItemMeta().getPersistentDataContainer().get(key, PersistentDataType.STRING) != "orb")
-                return;
+            if (e.getCurrentItem().getItemMeta().getPersistentDataContainer().get(key, PersistentDataType.STRING) == null) return;
+            if (e.getCurrentItem().getItemMeta().getPersistentDataContainer().get(key, PersistentDataType.STRING) != "orb") return;
+
             Player p = (Player) e.getWhoClicked();
-            ArrayList<String> origins = CraftApoli.getOriginTags();
+            ArrayList<OriginContainer> origins = CraftApoli.getOrigins();
             Random random = new Random();
-            String originTag = origins.get(random.nextInt(origins.size()));
-            OriginPlayer.setOrigin(p, CraftApoli.getOrigin(originTag));
+            OriginContainer origin = origins.get(random.nextInt(origins.size()));
+            OriginPlayer.setOrigin(p, origin);
+
+            e.setCancelled(true);
+            p.closeInventory();
+
+            p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 10, 2);
+            p.closeInventory();
+            p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_CHIME, 10, 2);
+            p.sendMessage(Component.text("Your random origin is "+origin.getName()+"!").color(TextColor.fromHexString(AQUA)));
+            p.spawnParticle(Particle.CLOUD, p.getLocation(), 100);
+            p.getWorld().spawnParticle(Particle.FIREWORKS_SPARK, p.getLocation(), 6);
+            p.setCustomNameVisible(false);
+            p.getScoreboardTags().add("chosen");
+            p.setHealthScaled(false);
+            if (p.getScoreboardTags().contains("choosing")) {
+                p.removeScoreboardTag("choosing");
+            }
+
+            OriginChooseEvent chooseEvent = new OriginChooseEvent(p);
+            getServer().getPluginManager().callEvent(chooseEvent);
+            OriginChangeEvent Event = new OriginChangeEvent(p);
+            getServer().getPluginManager().callEvent(Event);
+
+            if (p.getInventory().getItemInMainHand().isSimilar(OrbOfOrigins.orb) && !p.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING).equals("genesis:origin-null")) {
+                int amt = p.getInventory().getItemInMainHand().getAmount();
+                p.getInventory().getItemInMainHand().setAmount(amt - 1);
+            } else {
+                if (p.getInventory().getItemInOffHand().isSimilar(orb) && !p.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING).equals("genesis:origin-null")) {
+                    int amt = p.getInventory().getItemInOffHand().getAmount();
+                    p.getInventory().getItemInOffHand().setAmount(amt - 1);
+                }
+            }
+
+            SendCharts.originPopularity(p);
         }
     }
 
