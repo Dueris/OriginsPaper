@@ -104,6 +104,9 @@ public class OriginStartHandler {
 
         SwimSpeed swimSpeed = new SwimSpeed();
         swimSpeed.runTaskTimer(getPlugin(), 5, 0);
+
+        AttributeHandler attributeHandler = new AttributeHandler();
+        attributeHandler.runTaskTimer(getPlugin(), 0, 10);
     }
 
     public static void StartListeners() {
