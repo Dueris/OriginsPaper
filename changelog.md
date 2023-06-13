@@ -3,7 +3,7 @@
 <hr>
 Changelog:
 <pre>
--update versioning to 0.1.7
+-update versioning to 0.2.1
 -fixed enderian reach putting errors into console
 -fixed origin-null error
 -fixed /origin set
@@ -47,6 +47,7 @@ Changelog:
 -added javadocs
 -optimized lots of code
 -cleaned 99% of the project code
+-added merling powers
 
 </pre>
 <hr>
