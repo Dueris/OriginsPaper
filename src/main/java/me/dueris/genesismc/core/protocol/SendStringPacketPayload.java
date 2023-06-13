@@ -14,7 +14,7 @@ import java.io.IOException;
 
 import static org.bukkit.Bukkit.getServer;
 
-public class ElytraRenderPacket {
+public class SendStringPacketPayload {
     public static void sendCustomPacket(Player player, String message) {
 
         OriginPacketSendEvent event = new OriginPacketSendEvent(player);
