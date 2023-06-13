@@ -68,4 +68,10 @@ public class PowerContainer implements Serializable {
         return (String) type;
     }
 
+    public String getValue(String key) {
+        Object type = powerFile.get(key);
+        if (type == null) return "";
+        return (String) type;
+    }
+
 }
