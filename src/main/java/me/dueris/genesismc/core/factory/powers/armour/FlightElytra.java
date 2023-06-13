@@ -34,6 +34,7 @@ public class FlightElytra implements Listener {
     public static ArrayList<UUID> glidingPlayers = new ArrayList<>();
 
     @EventHandler
+    @SuppressWarnings("unchecked")
     public void ExecuteFlight(PlayerToggleSneakEvent e) {
         Player p = e.getPlayer();
         if (elytra.contains(e.getPlayer())) {
