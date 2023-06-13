@@ -107,7 +107,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         if (GenesisDataFiles.getMainConfig().getString("version-check") == null || GenesisDataFiles.getMainConfig().getString("version-check").equalsIgnoreCase("true")) {
             VersionControl.pluginVersionCheck();
         } else {
-            getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] Skipping version check.."));
+            getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] Skipping version check").color(TextColor.fromHexString("#EEDC5B")));
         }
 
         if (GenesisDataFiles.getMainConfig().getString("console-startup-debug").equalsIgnoreCase("true")) {
@@ -190,7 +190,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         }
 
         try {
-            Bukkit.getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC]" + Lang.lang_test).color(TextColor.color(0, 200, 0)));
+            Bukkit.getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] " + Lang.lang_test).color(TextColor.color(0, 200, 0)));
         } catch (Exception e) {
             Bukkit.getServer().getConsoleSender().sendMessage(Component.text("A fatal error has occurred, lang could not be loaded. Disabling GenesisMC....").color(TextColor.color(200, 0, 0)));
             Bukkit.getServer().getPluginManager().disablePlugin(this);
