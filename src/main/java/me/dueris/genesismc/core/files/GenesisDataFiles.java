@@ -1,7 +1,5 @@
 package me.dueris.genesismc.core.files;
 
-import jdk.dynalink.StandardOperation;
-import me.dueris.genesismc.core.utils.BukkitUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -10,19 +8,10 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
 import java.nio.file.Files;
-import java.nio.file.OpenOption;
-import java.nio.file.Path;
-import java.nio.file.StandardOpenOption;
-import java.security.CodeSource;
-import java.util.ArrayList;
 import java.util.Set;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
 
 import static org.bukkit.Bukkit.getLogger;
-import static org.bukkit.Bukkit.getUpdateFolder;
 
 public class GenesisDataFiles {
 
@@ -42,9 +31,9 @@ public class GenesisDataFiles {
         File lang = new File(Bukkit.getServer().getPluginManager().getPlugin("GenesisMC").getDataFolder(), "lang");
         orbConfigFile = new File(Bukkit.getServer().getPluginManager().getPlugin("GenesisMC").getDataFolder(), "orboforigins.yml");
         mainConfigFile = new File(Bukkit.getServer().getPluginManager().getPlugin("GenesisMC").getDataFolder(), "origin-server.yml");
-        englishLangFile = new File(Bukkit.getServer().getPluginManager().getPlugin("GenesisMC").getDataFolder() + File.separator + "lang", "english.yml");
-        germanLangFile = new File(Bukkit.getServer().getPluginManager().getPlugin("GenesisMC").getDataFolder() + File.separator + "lang", "german.yml");
-        russianLangFile = new File(Bukkit.getServer().getPluginManager().getPlugin("GenesisMC").getDataFolder() + File.separator + "lang", "russian.yml");
+        englishLangFile = new File(Bukkit.getServer().getPluginManager().getPlugin("GenesisMC").getDataFolder() + File.separator + "lang", "datapacks/langFiles/english.yml");
+        germanLangFile = new File(Bukkit.getServer().getPluginManager().getPlugin("GenesisMC").getDataFolder() + File.separator + "lang", "datapacks/langFiles/german.yml");
+        russianLangFile = new File(Bukkit.getServer().getPluginManager().getPlugin("GenesisMC").getDataFolder() + File.separator + "lang", "datapacks/langFiles/russian.yml");
         if (!lang.exists()) {
             lang.mkdirs();
         }
@@ -125,10 +114,10 @@ public class GenesisDataFiles {
 
     }
 
-    private static void addMissingLines(File configFile, String filename) {
+    private static void addMissingLines(File configFile, String filePath) {
         try {
             File tempConfigFile = new File(Bukkit.getServer().getPluginManager().getPlugin("GenesisMC").getDataFolder(), "tempfile.yml");
-            InputStream inputStream = Bukkit.getServer().getPluginManager().getPlugin("GenesisMC").getResource(filename);
+            InputStream inputStream = Bukkit.getServer().getPluginManager().getPlugin("GenesisMC").getResource(filePath);
             Files.copy(inputStream, tempConfigFile.toPath());
 
             FileConfiguration tempConfig = YamlConfiguration.loadConfiguration(tempConfigFile);
@@ -181,10 +170,10 @@ public class GenesisDataFiles {
     }
 
     public static void loadLangConfig() {
-        englishLangFile = new File(Bukkit.getServer().getPluginManager().getPlugin("GenesisMC").getDataFolder() + File.separator + "/lang/" + File.separator, "english.yml");
+        englishLangFile = new File(Bukkit.getServer().getPluginManager().getPlugin("GenesisMC").getDataFolder() + File.separator + "/lang/" + File.separator, "datapacks/langFiles/english.yml");
         if (!englishLangFile.exists()) {
             englishLangFile.getParentFile().mkdirs();
-            try (InputStream inputStream = Bukkit.getServer().getPluginManager().getPlugin("GenesisMC").getResource("english.yml")) {
+            try (InputStream inputStream = Bukkit.getServer().getPluginManager().getPlugin("GenesisMC").getResource("datapacks/langFiles/english.yml")) {
                 Files.copy(inputStream, englishLangFile.toPath());
             } catch (Exception e) {
                 getLogger().severe("Failed to create custom configuration file: " + e.getMessage());
@@ -192,13 +181,13 @@ public class GenesisDataFiles {
         }
 
         // Load the custom configuration file
-        addMissingLines(englishLangFile, "english.yml");
+        addMissingLines(englishLangFile, "datapacks/langFiles/english.yml");
         englishLang = YamlConfiguration.loadConfiguration(englishLangFile);
 
-        russianLangFile = new File(Bukkit.getServer().getPluginManager().getPlugin("GenesisMC").getDataFolder() + File.separator + "/lang/" + File.separator, "russian.yml");
+        russianLangFile = new File(Bukkit.getServer().getPluginManager().getPlugin("GenesisMC").getDataFolder() + File.separator + "/lang/" + File.separator, "datapacks/langFiles/russian.yml");
         if (!russianLangFile.exists()) {
             russianLangFile.getParentFile().mkdirs();
-            try (InputStream inputStream = Bukkit.getServer().getPluginManager().getPlugin("GenesisMC").getResource("russian.yml")) {
+            try (InputStream inputStream = Bukkit.getServer().getPluginManager().getPlugin("GenesisMC").getResource("datapacks/langFiles/russian.yml")) {
                 Files.copy(inputStream, russianLangFile.toPath());
             } catch (Exception e) {
                 getLogger().severe("Failed to create custom configuration file: " + e.getMessage());
@@ -206,13 +195,13 @@ public class GenesisDataFiles {
         }
 
         // Load the custom configuration file
-        addMissingLines(russianLangFile, "russian.yml");
+        addMissingLines(russianLangFile, "datapacks/langFiles/russian.yml");
         russianLang = YamlConfiguration.loadConfiguration(russianLangFile);
 
-        germanLangFile = new File(Bukkit.getServer().getPluginManager().getPlugin("GenesisMC").getDataFolder() + File.separator + "/lang/" + File.separator, "german.yml");
+        germanLangFile = new File(Bukkit.getServer().getPluginManager().getPlugin("GenesisMC").getDataFolder() + File.separator + "/lang/" + File.separator, "datapacks/langFiles/german.yml");
         if (!germanLangFile.exists()) {
             germanLangFile.getParentFile().mkdirs();
-            try (InputStream inputStream = Bukkit.getServer().getPluginManager().getPlugin("GenesisMC").getResource("german.yml")) {
+            try (InputStream inputStream = Bukkit.getServer().getPluginManager().getPlugin("GenesisMC").getResource("datapacks/langFiles/german.yml")) {
                 Files.copy(inputStream, germanLangFile.toPath());
             } catch (Exception e) {
                 getLogger().severe("Failed to create custom configuration file: " + e.getMessage());
@@ -220,7 +209,7 @@ public class GenesisDataFiles {
         }
 
         // Load the custom configuration file
-        addMissingLines(germanLangFile, "german.yml");
+        addMissingLines(germanLangFile, "datapacks/langFiles/german.yml");
         germanLang = YamlConfiguration.loadConfiguration(germanLangFile);
     }
 
