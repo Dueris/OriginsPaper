@@ -26,10 +26,7 @@ import me.dueris.genesismc.core.items.WaterProtItem;
 import me.dueris.genesismc.core.utils.*;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
+import org.bukkit.*;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -42,7 +39,7 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.HashMap;
 
-import static me.dueris.genesismc.core.utils.Colours.RED;
+import static me.dueris.genesismc.core.utils.Colours.*;
 
 public final class GenesisMC extends JavaPlugin implements Listener {
     public static EnumSet<Material> tool;
@@ -115,13 +112,13 @@ public final class GenesisMC extends JavaPlugin implements Listener {
             Bukkit.getServer().getPluginManager().disablePlugin(this);
             return;
         }
-        Bukkit.getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] " + Lang.lang_test).color(TextColor.color(0, 200, 0)));
+        Bukkit.getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] " + Lang.lang_test).color(TextColor.fromHexString(GREEN)));
 
         //version check
         if (GenesisDataFiles.getMainConfig().getString("version-check") == null || GenesisDataFiles.getMainConfig().getString("version-check").equalsIgnoreCase("true")) {
             VersionControl.pluginVersionCheck();
         } else {
-            getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] Skipping version check").color(TextColor.fromHexString("#EEDC5B")));
+            getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] Skipping version check").color(TextColor.fromHexString(YELLOW)));
         }
 
         //debug check
@@ -129,10 +126,10 @@ public final class GenesisMC extends JavaPlugin implements Listener {
             Debug.executeGenesisDebug();
             Debug.testIncompatiblePlugins();
             Debug.versionTest();
-            getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] Successfully loaded version mc1.20-v0.2.1").color(TextColor.color(0, 200, 0)));
-            getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] Successfully loaded API version 1.0.4").color(TextColor.color(0, 200, 0)));
+            getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] Successfully loaded version mc1.20-v0.2.1").color(TextColor.fromHexString(GREEN)));
+            getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] Successfully loaded API version 1.0.4").color(TextColor.fromHexString(GREEN)));
         } else {
-            getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] Successfully loaded version mc1.20-v0.2.1").color(TextColor.color(0, 200, 0)));
+            getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] Successfully loaded version mc1.20-v0.2.1").color(TextColor.fromHexString(GREEN)));
         }
 
         //origin load
@@ -140,11 +137,11 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         CraftApoli.loadOrigins();
         for (OriginContainer origins : CraftApoli.getOrigins()) {
             if (GenesisDataFiles.getMainConfig().getString("console-startup-debug").equalsIgnoreCase("true")) {
-                getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] Loaded \"" + origins.getName() + "\"").color(TextColor.color(0, 200, 0)));
+                getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] Loaded \"" + origins.getName() + "\"").color(TextColor.fromHexString(GREEN)));
             }
         }
         if (CraftApoli.getOrigins().size() > 0) {
-            getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] Loaded (" + CraftApoli.getOrigins().size() + ") Origins").color(TextColor.color(0, 200, 0)));
+            getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] Loaded (" + CraftApoli.getOrigins().size() + ") Origins").color(TextColor.fromHexString(GREEN)));
         }
 
 
@@ -203,7 +200,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         for (Player p : Bukkit.getOnlinePlayers()) {
             CustomOriginExistCheck.customOriginExistCheck(p);
             OriginPlayer.assignPowers(p);
-            if (p.isOp()) p.sendMessage(Component.text("Origins Reloaded.").color(TextColor.color(137, 207, 240)));
+            if (p.isOp()) p.sendMessage(Component.text("Origins Reloaded.").color(TextColor.fromHexString(AQUA)));
         }
     }
 
