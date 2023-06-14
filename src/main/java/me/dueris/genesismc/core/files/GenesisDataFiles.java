@@ -22,6 +22,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import static org.bukkit.Bukkit.getLogger;
+import static org.bukkit.Bukkit.getUpdateFolder;
 
 public class GenesisDataFiles {
 
@@ -125,32 +126,23 @@ public class GenesisDataFiles {
     }
 
     private static void addMissingLines(File configFile, String filename) {
-        Set<String> presentKeys = YamlConfiguration.loadConfiguration(configFile).getKeys(true);
-
         try {
-            String fileData = new String(Bukkit.getServer().getPluginManager().getPlugin("GenesisMC").getResource(filename).readAllBytes());
-            ArrayList<String> expectedKeys = new ArrayList<>();
-            ArrayList<String> keysAndValues = new ArrayList<>();
-            for (String line : fileData.split("\n")) {
-                if (line.charAt(0) == '#') continue;
-                if (line.isBlank()) continue;
-                expectedKeys.add(line.split(":")[0]);
-                keysAndValues.add(line);
-            }
+            File tempConfigFile = new File(Bukkit.getServer().getPluginManager().getPlugin("GenesisMC").getDataFolder(), "tempfile.yml");
+            InputStream inputStream = Bukkit.getServer().getPluginManager().getPlugin("GenesisMC").getResource(filename);
+            Files.copy(inputStream, tempConfigFile.toPath());
 
-            if (presentKeys.containsAll(expectedKeys)) return;
-            for (String key : presentKeys) {
-                if (!expectedKeys.contains(key)) continue;
-                keysAndValues.remove(expectedKeys.indexOf(key));
-                expectedKeys.remove(key);
-            }
+            FileConfiguration tempConfig = YamlConfiguration.loadConfiguration(tempConfigFile);
+            FileConfiguration sourceConfig = YamlConfiguration.loadConfiguration(configFile);
+            Set<String> tempKeys = tempConfig.getKeys(true);
+            Set<String> sourceKeys = sourceConfig.getKeys(true);
 
-            for (String line : keysAndValues) {
-                Files.write(Path.of(configFile.getAbsolutePath()), ("\n"+line).getBytes(), StandardOpenOption.APPEND);
-            }
+            if (sourceKeys.equals(tempKeys)) {tempConfigFile.delete(); return;}
+            for (String key : sourceKeys) tempKeys.remove(key);
+            for (String key: tempKeys) sourceConfig.set(key, tempConfig.get(key));
 
+            sourceConfig.save(configFile);
+            tempConfigFile.delete();
         } catch (Exception e) {
-            getLogger().warning("[GenesisMC] Error appending new lines to config file - "+filename);
             e.printStackTrace();
         }
     }
@@ -184,7 +176,7 @@ public class GenesisDataFiles {
         }
 
         // Load the custom configuration file
-        //addMissingLines(orbConfigFile, "orboforigins.yml");
+        addMissingLines(orbConfigFile, "orboforigins.yml");
         orbconfig = YamlConfiguration.loadConfiguration(orbConfigFile);
     }
 
@@ -200,7 +192,7 @@ public class GenesisDataFiles {
         }
 
         // Load the custom configuration file
-        //addMissingLines(englishLangFile, "english.yml");
+        addMissingLines(englishLangFile, "english.yml");
         englishLang = YamlConfiguration.loadConfiguration(englishLangFile);
 
         russianLangFile = new File(Bukkit.getServer().getPluginManager().getPlugin("GenesisMC").getDataFolder() + File.separator + "/lang/" + File.separator, "russian.yml");
@@ -214,7 +206,7 @@ public class GenesisDataFiles {
         }
 
         // Load the custom configuration file
-        //addMissingLines(russianLangFile, "russian.yml");
+        addMissingLines(russianLangFile, "russian.yml");
         russianLang = YamlConfiguration.loadConfiguration(russianLangFile);
 
         germanLangFile = new File(Bukkit.getServer().getPluginManager().getPlugin("GenesisMC").getDataFolder() + File.separator + "/lang/" + File.separator, "german.yml");
@@ -228,7 +220,7 @@ public class GenesisDataFiles {
         }
 
         // Load the custom configuration file
-        //addMissingLines(germanLangFile, "german.yml");
+        addMissingLines(germanLangFile, "german.yml");
         germanLang = YamlConfiguration.loadConfiguration(germanLangFile);
     }
 
