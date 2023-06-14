@@ -1,5 +1,7 @@
 package me.dueris.genesismc.core.files;
 
+import jdk.dynalink.StandardOperation;
+import me.dueris.genesismc.core.utils.BukkitUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -8,7 +10,16 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.nio.file.Files;
+import java.nio.file.OpenOption;
+import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
+import java.security.CodeSource;
+import java.util.ArrayList;
+import java.util.Set;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 import static org.bukkit.Bukkit.getLogger;
 
@@ -113,6 +124,37 @@ public class GenesisDataFiles {
 
     }
 
+    private static void addMissingLines(File configFile, String filename) {
+        Set<String> presentKeys = YamlConfiguration.loadConfiguration(configFile).getKeys(true);
+
+        try {
+            String fileData = new String(Bukkit.getServer().getPluginManager().getPlugin("GenesisMC").getResource(filename).readAllBytes());
+            ArrayList<String> expectedKeys = new ArrayList<>();
+            ArrayList<String> keysAndValues = new ArrayList<>();
+            for (String line : fileData.split("\n")) {
+                if (line.charAt(0) == '#') continue;
+                if (line.isBlank()) continue;
+                expectedKeys.add(line.split(":")[0]);
+                keysAndValues.add(line);
+            }
+
+            if (presentKeys.containsAll(expectedKeys)) return;
+            for (String key : presentKeys) {
+                if (!expectedKeys.contains(key)) continue;
+                keysAndValues.remove(expectedKeys.indexOf(key));
+                expectedKeys.remove(key);
+            }
+
+            for (String line : keysAndValues) {
+                Files.write(Path.of(mainConfigFile.getAbsolutePath()), ("\n"+line).getBytes(), StandardOpenOption.APPEND);
+            }
+
+        } catch (Exception e) {
+            getLogger().warning("[GenesisMC] Error appending new lines to config file - "+filename);
+            e.printStackTrace();
+        }
+    }
+
 
     public static void loadMainConfig() {
         mainConfigFile = new File(Bukkit.getServer().getPluginManager().getPlugin("GenesisMC").getDataFolder(), "origin-server.yml");
@@ -126,6 +168,7 @@ public class GenesisDataFiles {
         }
 
         // Load the custom configuration file
+        addMissingLines(mainConfigFile, "origin-server.yml");
         mainConfig = YamlConfiguration.loadConfiguration(mainConfigFile);
     }
 
@@ -141,6 +184,7 @@ public class GenesisDataFiles {
         }
 
         // Load the custom configuration file
+        addMissingLines(orbConfigFile, "orboforigins.yml");
         orbconfig = YamlConfiguration.loadConfiguration(orbConfigFile);
     }
 
@@ -156,6 +200,7 @@ public class GenesisDataFiles {
         }
 
         // Load the custom configuration file
+        addMissingLines(englishLangFile, "english-lang.yml");
         englishLang = YamlConfiguration.loadConfiguration(englishLangFile);
 
         russianLangFile = new File(Bukkit.getServer().getPluginManager().getPlugin("GenesisMC").getDataFolder() + File.separator + "/lang/" + File.separator, "russian-lang.yml");
@@ -169,6 +214,7 @@ public class GenesisDataFiles {
         }
 
         // Load the custom configuration file
+        addMissingLines(russianLangFile, "russian-lang.yml");
         russianLang = YamlConfiguration.loadConfiguration(russianLangFile);
 
         germanLangFile = new File(Bukkit.getServer().getPluginManager().getPlugin("GenesisMC").getDataFolder() + File.separator + "/lang/" + File.separator, "german-lang.yml");
@@ -182,6 +228,7 @@ public class GenesisDataFiles {
         }
 
         // Load the custom configuration file
+        addMissingLines(germanLangFile, "german-lang.yml");
         germanLang = YamlConfiguration.loadConfiguration(germanLangFile);
     }
 
