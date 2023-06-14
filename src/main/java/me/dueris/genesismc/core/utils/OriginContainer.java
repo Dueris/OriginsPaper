@@ -137,6 +137,9 @@ public class OriginContainer implements Serializable {
         return hidden;
     }
 
+    /**
+     * @return The PowerContainer with the given type if present in the origin.
+     */
     public PowerContainer getPowerFileFromType(String powerType) {
         for (PowerContainer power : getPowerContainers()) {
             if (power.getType().equals(powerType)) return power;

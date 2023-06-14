@@ -42,12 +42,18 @@ public class CraftApoli {
         return (ArrayList<OriginContainer>) originContainers.clone();
     }
 
+    /**
+     * Parses a JSON file into a HashMap.
+     **/
     private static HashMap<String, Object> fileToHashMap(JSONObject JSONFileParser) {
         HashMap<String, Object> data = new HashMap<>();
         for (Object key : JSONFileParser.keySet()) data.put((String) key, JSONFileParser.get(key));
         return data;
     }
 
+    /**
+     * Parses a JSON file into a PowerFIleContainer.
+     **/
     private static PowerFileContainer fileToPowerFileContainer(JSONObject JSONFileParser) {
         ArrayList<String> keys = new ArrayList<>();
         ArrayList<Object> values = new ArrayList<>();
@@ -58,6 +64,9 @@ public class CraftApoli {
         return new PowerFileContainer(keys, values);
     }
 
+    /**
+     * Changes the origin names to those specified in the lang file.
+     **/
     private static void translateOrigins() {
         for (OriginContainer origin : getCoreOrigins()) {
             for (PowerContainer power : origin.getPowerContainers()) {
@@ -220,17 +229,26 @@ public class CraftApoli {
         translateOrigins();
     }
 
+    /**
+     * @return The origin that has the specified tag.
+     **/
     public static OriginContainer getOrigin(String originTag) {
         for (OriginContainer origin : getOrigins()) if (origin.getTag().equals(originTag)) return origin;
         return null;
     }
 
+    /**
+     * @return An ArrayList of all loaded originTags.
+     **/
     public static ArrayList<String> getOriginTags() {
         ArrayList<String> tags = new ArrayList<>();
         for (OriginContainer origin : getOrigins()) tags.add(origin.getTag());
         return tags;
     }
 
+    /**
+     * @return The OriginContainer serialized into a byte array.
+     **/
     public static byte[] toByteArray(OriginContainer origin) {
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         try {
@@ -243,6 +261,9 @@ public class CraftApoli {
         }
     }
 
+    /**
+     * @return The byte deserialized into an OriginContainer.
+     **/
     public static OriginContainer toOriginContainer(byte[] origin) {
         ByteArrayInputStream bis = new ByteArrayInputStream(origin);
         try {
@@ -253,6 +274,9 @@ public class CraftApoli {
         }
     }
 
+    /**
+     * @return True if an origin is part of the core origins.
+     **/
     public static Boolean isCoreOrigin(OriginContainer origin) {
         return origin.getTag().equals("origins:arachnid") || origin.getTag().equals("origins:avian")
                 || origin.getTag().equals("origins:blazeborn")
@@ -273,6 +297,9 @@ public class CraftApoli {
                 || origin.getTag().equals("origins:starborne");
     }
 
+    /**
+     * @return An ArrayList of loaded core origins.
+     **/
     public static ArrayList<OriginContainer> getCoreOrigins() {
         ArrayList<OriginContainer> coreOrigins = new ArrayList<>();
         for (OriginContainer origin : getOrigins()) {
