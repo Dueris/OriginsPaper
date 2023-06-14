@@ -42,8 +42,8 @@ public class GenesisDataFiles {
         orbConfigFile = new File(Bukkit.getServer().getPluginManager().getPlugin("GenesisMC").getDataFolder(), "orboforigins.yml");
         mainConfigFile = new File(Bukkit.getServer().getPluginManager().getPlugin("GenesisMC").getDataFolder(), "origin-server.yml");
         englishLangFile = new File(Bukkit.getServer().getPluginManager().getPlugin("GenesisMC").getDataFolder() + File.separator + "lang", "english.yml");
-        germanLangFile = new File(Bukkit.getServer().getPluginManager().getPlugin("GenesisMC").getDataFolder() + File.separator + "lang", "deutsch.yml");
-        russianLangFile = new File(Bukkit.getServer().getPluginManager().getPlugin("GenesisMC").getDataFolder() + File.separator + "lang", "русский.yml");
+        germanLangFile = new File(Bukkit.getServer().getPluginManager().getPlugin("GenesisMC").getDataFolder() + File.separator + "lang", "german.yml");
+        russianLangFile = new File(Bukkit.getServer().getPluginManager().getPlugin("GenesisMC").getDataFolder() + File.separator + "lang", "russian.yml");
         if (!lang.exists()) {
             lang.mkdirs();
         }
@@ -77,7 +77,7 @@ public class GenesisDataFiles {
             try {
                 germanLangFile.createNewFile();
             } catch (IOException var2) {
-                Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.RED + "Unable to create deutsch.yml. Please reload or restart server. If that doesn't work, contact Dueris on her Discord server");
+                Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.RED + "Unable to create german.yml. Please reload or restart server. If that doesn't work, contact Dueris on her Discord server");
             }
         }
 
@@ -85,7 +85,7 @@ public class GenesisDataFiles {
             try {
                 russianLangFile.createNewFile();
             } catch (IOException var2) {
-                Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.RED + "Unable to create русский.yml. Please reload or restart server. If that doesn't work, contact Dueris on her Discord server");
+                Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.RED + "Unable to create russian.yml. Please reload or restart server. If that doesn't work, contact Dueris on her Discord server");
             }
         }
 
@@ -146,7 +146,7 @@ public class GenesisDataFiles {
             }
 
             for (String line : keysAndValues) {
-                Files.write(Path.of(mainConfigFile.getAbsolutePath()), ("\n"+line).getBytes(), StandardOpenOption.APPEND);
+                Files.write(Path.of(configFile.getAbsolutePath()), ("\n"+line).getBytes(), StandardOpenOption.APPEND);
             }
 
         } catch (Exception e) {
@@ -184,7 +184,7 @@ public class GenesisDataFiles {
         }
 
         // Load the custom configuration file
-        addMissingLines(orbConfigFile, "orboforigins.yml");
+        //addMissingLines(orbConfigFile, "orboforigins.yml");
         orbconfig = YamlConfiguration.loadConfiguration(orbConfigFile);
     }
 
@@ -200,13 +200,13 @@ public class GenesisDataFiles {
         }
 
         // Load the custom configuration file
-        addMissingLines(englishLangFile, "english.yml");
+        //addMissingLines(englishLangFile, "english.yml");
         englishLang = YamlConfiguration.loadConfiguration(englishLangFile);
 
-        russianLangFile = new File(Bukkit.getServer().getPluginManager().getPlugin("GenesisMC").getDataFolder() + File.separator + "/lang/" + File.separator, "русский.yml");
+        russianLangFile = new File(Bukkit.getServer().getPluginManager().getPlugin("GenesisMC").getDataFolder() + File.separator + "/lang/" + File.separator, "russian.yml");
         if (!russianLangFile.exists()) {
             russianLangFile.getParentFile().mkdirs();
-            try (InputStream inputStream = Bukkit.getServer().getPluginManager().getPlugin("GenesisMC").getResource("русский.yml")) {
+            try (InputStream inputStream = Bukkit.getServer().getPluginManager().getPlugin("GenesisMC").getResource("russian.yml")) {
                 Files.copy(inputStream, russianLangFile.toPath());
             } catch (Exception e) {
                 getLogger().severe("Failed to create custom configuration file: " + e.getMessage());
@@ -214,13 +214,13 @@ public class GenesisDataFiles {
         }
 
         // Load the custom configuration file
-        addMissingLines(russianLangFile, "русский.yml");
+        //addMissingLines(russianLangFile, "russian.yml");
         russianLang = YamlConfiguration.loadConfiguration(russianLangFile);
 
-        germanLangFile = new File(Bukkit.getServer().getPluginManager().getPlugin("GenesisMC").getDataFolder() + File.separator + "/lang/" + File.separator, "deutsch.yml");
+        germanLangFile = new File(Bukkit.getServer().getPluginManager().getPlugin("GenesisMC").getDataFolder() + File.separator + "/lang/" + File.separator, "german.yml");
         if (!germanLangFile.exists()) {
             germanLangFile.getParentFile().mkdirs();
-            try (InputStream inputStream = Bukkit.getServer().getPluginManager().getPlugin("GenesisMC").getResource("deutsch.yml")) {
+            try (InputStream inputStream = Bukkit.getServer().getPluginManager().getPlugin("GenesisMC").getResource("german.yml")) {
                 Files.copy(inputStream, germanLangFile.toPath());
             } catch (Exception e) {
                 getLogger().severe("Failed to create custom configuration file: " + e.getMessage());
@@ -228,7 +228,7 @@ public class GenesisDataFiles {
         }
 
         // Load the custom configuration file
-        addMissingLines(germanLangFile, "deutsch.yml");
+        //addMissingLines(germanLangFile, "german.yml");
         germanLang = YamlConfiguration.loadConfiguration(germanLangFile);
     }
 
