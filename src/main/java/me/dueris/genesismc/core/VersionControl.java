@@ -58,9 +58,11 @@ public class VersionControl {
                 if (versionId[0].equals("latest")) latestId = Integer.parseInt(versionId[1]);
             }
 
-            if (latestId - pluginId > 0) Bukkit.getLogger().warning("[GenesisMC] You are running a version of the plugin that is out of date!\n    Please install the latest version from https://modrinth.com/plugin/genesismc/versions");
-            if (latestId - pluginId == 0) Bukkit.getConsoleSender().sendMessage(Component.text("[GenesisMC] You are running the latest version of the plugin!").color(TextColor.color(0, 200, 0)));
-            if (latestId - pluginId < 0) Bukkit.getConsoleSender().sendMessage(Component.text("[GenesisMC] You are running a dev build! Join our discord server at https://discord.gg/RKmQnU6SRt or open an issue on github for any feedback :)").color(TextColor.color(0, 200, 0)));
+            int diff = latestId - pluginId;
+
+            if (diff > 0) Bukkit.getLogger().warning("[GenesisMC] You are running a version of the plugin that is "+diff+" versions out of date!\n    Please install the latest version from https://modrinth.com/plugin/genesismc/versions");
+            if (diff == 0) Bukkit.getConsoleSender().sendMessage(Component.text("[GenesisMC] You are running the latest version of the plugin!").color(TextColor.color(0, 200, 0)));
+            if (diff < 0) Bukkit.getConsoleSender().sendMessage(Component.text("[GenesisMC] You are running a dev build! Join our discord server at https://discord.gg/RKmQnU6SRt or open an issue on github for any feedback :)").color(TextColor.color(0, 200, 0)));
 
         } catch (Exception e) {
             Bukkit.getLogger().warning("[GenesisMC] Failed to connect to version control website!\n    You may be using an outdated version of the plugin!\n    You can install the latest version from https://modrinth.com/plugin/genesismc/versions");
