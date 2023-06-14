@@ -11,6 +11,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 
 public class TabAutoComplete implements TabCompleter {
@@ -84,7 +85,8 @@ public class TabAutoComplete implements TabCompleter {
                     for (Player player : players) {
                         playernames.add(player.getName());
                     }
-                    playernames.addAll(Arrays.asList("@a", "@e", "@p", "@r", "@s"));
+                    playernames.removeIf(name -> !args[1].equals(name.substring(0, args[1].length())));
+                    if (args[1].isBlank() || args[1].charAt(0) == '@') playernames.addAll(Arrays.asList("@a", "@e", "@p", "@r", "@s"));
                     return playernames;
 
                 }
@@ -93,7 +95,9 @@ public class TabAutoComplete implements TabCompleter {
 
             } else if (args.length == 3) {
                 if (args[0].equalsIgnoreCase("has") || args[0].equalsIgnoreCase("set")) {
-                    return CraftApoli.getOriginTags();
+                    ArrayList<String> origins = CraftApoli.getOriginTags();
+                    origins.removeIf(origin -> !origin.startsWith(args[2]));
+                    return origins;
                 } else if (args[0].equalsIgnoreCase("give")) {
                     return List.of("genesis:orb_of_origin");
                 } else if (args[0].equalsIgnoreCase("enchant")) {
