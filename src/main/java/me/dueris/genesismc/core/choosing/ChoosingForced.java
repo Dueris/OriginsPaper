@@ -22,10 +22,6 @@ public class ChoosingForced extends BukkitRunnable {
 
                 }
             }
-
-            if (!p.getScoreboardTags().contains("chosen")) {
-                p.addScoreboardTag("choosing");
-            }
             p.setInvulnerable(p.getOpenInventory().getTitle().equalsIgnoreCase("Choosing Menu") || p.getOpenInventory().getTitle().equalsIgnoreCase("Custom Origins") || p.getOpenInventory().getTitle().equalsIgnoreCase("Expanded Origins") || p.getOpenInventory().getTitle().equalsIgnoreCase("Custom Origin"));
         }
     }

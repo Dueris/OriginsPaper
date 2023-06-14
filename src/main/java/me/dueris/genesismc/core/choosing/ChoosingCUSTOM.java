@@ -221,7 +221,6 @@ public class ChoosingCUSTOM implements Listener {
                     removeItemPhantom(p);
                     removeItemEnder(p);
                     removeItemElytrian(p);
-                    p.getScoreboardTags().remove("choosing");
                 }, 1);
                 Bukkit.getScheduler().runTaskLater(GenesisMC.getPlugin(), () -> {
                     if (launch_into_air.contains(p)) {

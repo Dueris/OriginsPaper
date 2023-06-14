@@ -253,10 +253,6 @@ public class OriginPlayer {
         }
     }
 
-    public static boolean hasChosen(Player player) {
-        return player.getScoreboardTags().contains("chosen");
-    }
-
     public static void triggerChooseEvent(Player player) {
         OriginChooseEvent chooseEvent = new OriginChooseEvent(player);
         getServer().getPluginManager().callEvent(chooseEvent);

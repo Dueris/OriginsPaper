@@ -29,11 +29,7 @@ public class DefaultChoose {
         p.spawnParticle(Particle.CLOUD, p.getLocation(), 100);
         p.getWorld().spawnParticle(Particle.FIREWORKS_SPARK, p.getLocation(), 6);
         p.setCustomNameVisible(false);
-        p.getScoreboardTags().add("chosen");
         p.setHealthScaled(false);
-        if (p.getScoreboardTags().contains("choosing")) {
-            p.removeScoreboardTag("choosing");
-        }
 
         OriginChooseEvent chooseEvent = new OriginChooseEvent(p);
         getServer().getPluginManager().callEvent(chooseEvent);
