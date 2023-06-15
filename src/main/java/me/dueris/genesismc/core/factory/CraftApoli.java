@@ -130,7 +130,6 @@ public class CraftApoli {
 
                     if (!originDatapack) continue;
 
-
                     while (originFolder.size() > 0) {
 
                         for (Path path : files.keySet())
@@ -162,6 +161,8 @@ public class CraftApoli {
                         originFolder.remove(0);
                         originFileName.remove(0);
                     }
+
+                    zip.close();
 
                 } catch (Exception e) {
                     e.printStackTrace();
