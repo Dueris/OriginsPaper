@@ -14,13 +14,15 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import static me.dueris.genesismc.core.choosing.ChoosingCORE.itemProperties;
 import static me.dueris.genesismc.core.choosing.ChoosingCUSTOM.cutStringIntoLists;
 
 public class ChooseMenuContents {
 
-    public static @Nullable ItemStack @NotNull [] ChooseMenuContent() {
+    public static @Nullable ItemStack @NotNull [] ChooseMenuContent(int pageNumber) {
+        System.out.println(pageNumber);
         ItemStack sides = new ItemStack(Material.BLACK_STAINED_GLASS_PANE);
         ItemStack back = new ItemStack(Material.ARROW);
         ItemStack next = new ItemStack(Material.ARROW);
@@ -32,10 +34,36 @@ public class ChooseMenuContents {
         next = itemProperties(next, "Next", ItemFlag.HIDE_ENCHANTS, null, null);
 
         ArrayList<ItemStack> contents = new ArrayList<>();
-        ArrayList<OriginContainer> originContainers = new ArrayList<>();
-        for (OriginContainer origin : CraftApoli.getOrigins()) {
-            if (!CraftApoli.isCoreOrigin(origin)) originContainers.add(origin);
+        ArrayList<OriginContainer> originContainers = new ArrayList<>(CraftApoli.getOrigins());
+
+        Iterator<OriginContainer> originitr = originContainers.iterator();
+        while (originitr.hasNext()) {
+            OriginContainer origin = originitr.next();
+            if (CraftApoli.isCoreOrigin(origin)) originitr.remove();
         }
+
+        System.out.println(originContainers.size());
+
+        Iterator<OriginContainer> originitr2 = originContainers.iterator();
+        while (originitr2.hasNext()) {
+            OriginContainer origin = originitr2.next();
+            if (originContainers.indexOf(origin) < (21 * pageNumber)) originitr2.remove(); //should remove 35 origins from list multipled by the page number, eg for page 1 it would removed the first 35 origins
+        }
+
+        NamespacedKey pageKey = new NamespacedKey(GenesisMC.getPlugin(), "page");
+        ItemMeta backMeta = back.getItemMeta();
+        if (pageNumber == 0) backMeta.getPersistentDataContainer().set(pageKey, PersistentDataType.INTEGER, 0);
+        else backMeta.getPersistentDataContainer().set(pageKey, PersistentDataType.INTEGER, pageNumber-1);
+        back.setItemMeta(backMeta);
+
+        System.out.println(originContainers.size());
+
+        System.out.println(20 * pageNumber);
+
+        ItemMeta nextMeta = next.getItemMeta();
+        if (originContainers.size() < 37) nextMeta.getPersistentDataContainer().set(pageKey, PersistentDataType.INTEGER, pageNumber);
+        else nextMeta.getPersistentDataContainer().set(pageKey, PersistentDataType.INTEGER, pageNumber+1);
+        next.setItemMeta(nextMeta);
 
         for (int i = 0; i <= 53; i++) {
             if (i % 9 == 0 || (i + 1) % 9 == 0) {

@@ -269,7 +269,7 @@ public class OriginPlayer {
             player.openInventory(custommenu);
         } else if (menu.equals(OriginMenu.CUSTOM_MAIN)) {
             @NotNull Inventory custommenu = Bukkit.createInventory(player, 54, "Custom Origins");
-            custommenu.setContents(ChooseMenuContent());
+            custommenu.setContents(ChooseMenuContent(0));
             player.openInventory(custommenu);
         }
     }

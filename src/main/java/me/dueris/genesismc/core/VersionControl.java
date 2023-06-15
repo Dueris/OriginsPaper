@@ -66,6 +66,7 @@ public class VersionControl {
             if (diff < 0) Bukkit.getConsoleSender().sendMessage(Component.text("[GenesisMC] You are running a dev build! Join our discord server at https://discord.gg/RKmQnU6SRt or open an issue on github for any feedback :)").color(TextColor.fromHexString(GREEN)));
 
         } catch (Exception e) {
+            e.printStackTrace();
             Bukkit.getLogger().warning("[GenesisMC] Failed to connect to version control website!\n    You may be using an outdated version of the plugin!\n    You can install the latest version from https://modrinth.com/plugin/genesismc/versions");
         }
     }
