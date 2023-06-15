@@ -10,8 +10,7 @@ public class ImpalingMore implements Listener {
 
     @EventHandler
     public void ImpalingEvent(EntityDamageByEntityEvent e){
-        if(!(e.getEntity() instanceof Player)) return;
-        Player p = (Player) e.getEntity();
+        if(!(e.getEntity() instanceof Player p)) return;
         if(e.getDamager() instanceof Trident){
             e.setDamage(e.getDamage() * 1.5);
         }
