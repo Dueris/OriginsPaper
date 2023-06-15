@@ -6,14 +6,14 @@
 #  Plugin configs
 # ~~~~~~~~~~~~~~~~~
 
+# Determines language file to read.
 lang: english
-# Determines language file to read
 
+# Enables and Disables other origins(ones not from the original mod) depending on if its true or false.
 origins-expanded: true
-# Enables and Disables other origins(ones not from the original mod) depending on if its true or false
 
+# Enables debug information, when making a bug report, please include a screenshot of the startup while this is "true".
 console-startup-debug: false
-# Enables debug information, when making a bug report, please include a screenshot of the startup while this is "true"
 
 # Controls whether the plugin will perform a version check on start up.
 version-check: true
@@ -22,72 +22,72 @@ version-check: true
 #  Origin Plugin Settings
 # ~~~~~~~~~~~~~~~~~
 
+# Determines if "water protection" can be found, or used.
 water-protection: true
-# Determines if "water protection" can be found, or used
 
+# Determines if the Orb Of Origins can be crafted.
 orb-of-origins: true
-# Determines if the Orb Of Origins can be crafted
 
-custom-origins: true
 # if true, custom origins will be loaded. if false, custom origins will not load.
+custom-origins: true
 
 # ~~~~~~~~~~~~~~~~~
 #  Core Origins Control
 # ~~~~~~~~~~~~~~~~~
 
+# Disables Allay Origin.
 allay-disable: false
-# Disables Allay Origin
 
+# Disables Arachnid Origin.
 arachnid-disable: false
-# Disables Arachnid Origin
 
+# Disables Avian Origin.
 avian-disable: false
-# Disables Avian Origin
 
+# Disables Blazeborn Origin.
 blazeborn-disable: false
-# Disables Blazeborn Origin
 
+# Disables Bumblebee Origin.
 bumblebee-disable: false
-# Disables Bumblebee Origin
 
+# Disables Creep Origin.
 creep-disable: false
-# Disables Creep Origin
 
+# Disables Elytrian Origin.
 elytrian-disable: false
-# Disables Elytrian Origin
 
+# Disables Enderian Origin.
 enderian-disable: false
-# Disables Enderian Origin
 
+# Disables Feline Origin.
 feline-disable: false
-# Disables Feline Origin
 
+# Disables Human Origin.
 human-disable: false
-# Disables Human Origin
 
+# Disables Merling Origin.
 merling-disable: false
-# Disables Merling Origin
 
+# Disables Phantom Origin.
 phantom-disable: false
-# Disables Phantom Origin
 
+# Disables Piglin Origin.
 piglin-disable: false
-# Disables Piglin Origin
 
+# Disables Rabbit Origin.
 rabbit-disable: false
-# Disables Rabbit Origin
 
+# Disables Sculkling Origin.
 sculkling-disable: false
-# Disables Sculkling Origin
 
+# Disables Shulk Origin.
 shulk-disable: false
-# Disables Shulk Origin
 
+# Disables Slimeling Origin.
 slimeling-disable: false
-# Disables Slimeling Origin
 
+# Disables Starborne Origin.
 starborne-disable: false
-# Disables Starborne Origin
 
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
