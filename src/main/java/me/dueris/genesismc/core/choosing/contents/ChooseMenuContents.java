@@ -22,7 +22,6 @@ import static me.dueris.genesismc.core.choosing.ChoosingCUSTOM.cutStringIntoList
 public class ChooseMenuContents {
 
     public static @Nullable ItemStack @NotNull [] ChooseMenuContent(int pageNumber) {
-        System.out.println(pageNumber);
         ItemStack sides = new ItemStack(Material.BLACK_STAINED_GLASS_PANE);
         ItemStack back = new ItemStack(Material.ARROW);
         ItemStack next = new ItemStack(Material.ARROW);
@@ -36,18 +35,10 @@ public class ChooseMenuContents {
         ArrayList<ItemStack> contents = new ArrayList<>();
         ArrayList<OriginContainer> originContainers = new ArrayList<>(CraftApoli.getOrigins());
 
-        Iterator<OriginContainer> originitr = originContainers.iterator();
-        while (originitr.hasNext()) {
-            OriginContainer origin = originitr.next();
-            if (CraftApoli.isCoreOrigin(origin)) originitr.remove();
-        }
-
-        System.out.println(originContainers.size());
-
-        Iterator<OriginContainer> originitr2 = originContainers.iterator();
-        while (originitr2.hasNext()) {
-            OriginContainer origin = originitr2.next();
-            if (originContainers.indexOf(origin) < (21 * pageNumber)) originitr2.remove(); //should remove 35 origins from list multipled by the page number, eg for page 1 it would removed the first 35 origins
+        originContainers.removeIf(CraftApoli::isCoreOrigin);
+        for (int i = 0; 35 * pageNumber > i; i++) {
+            if (originContainers.isEmpty()) break;
+            originContainers.remove(0);
         }
 
         NamespacedKey pageKey = new NamespacedKey(GenesisMC.getPlugin(), "page");
@@ -56,9 +47,6 @@ public class ChooseMenuContents {
         else backMeta.getPersistentDataContainer().set(pageKey, PersistentDataType.INTEGER, pageNumber-1);
         back.setItemMeta(backMeta);
 
-        System.out.println(originContainers.size());
-
-        System.out.println(20 * pageNumber);
 
         ItemMeta nextMeta = next.getItemMeta();
         if (originContainers.size() < 37) nextMeta.getPersistentDataContainer().set(pageKey, PersistentDataType.INTEGER, pageNumber);
