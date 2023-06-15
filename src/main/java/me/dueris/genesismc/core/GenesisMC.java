@@ -39,7 +39,7 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.HashMap;
 
-import static me.dueris.genesismc.core.utils.BukkitColor.*;
+import static me.dueris.genesismc.core.utils.BukkitColour.*;
 
 public final class GenesisMC extends JavaPlugin implements Listener {
     public static EnumSet<Material> tool;

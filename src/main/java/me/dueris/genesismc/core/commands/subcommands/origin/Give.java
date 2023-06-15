@@ -11,7 +11,7 @@ import org.bukkit.inventory.ItemStack;
 import java.util.ArrayList;
 
 import static me.dueris.genesismc.core.items.OrbOfOrigins.orb;
-import static me.dueris.genesismc.core.utils.BukkitColor.RED;
+import static me.dueris.genesismc.core.utils.BukkitColour.RED;
 
 public class Give extends SubCommand {
     @Override

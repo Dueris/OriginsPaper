@@ -10,8 +10,8 @@ import org.bukkit.command.CommandSender;
 
 import java.util.ArrayList;
 
-import static me.dueris.genesismc.core.utils.BukkitColor.RED;
-import static me.dueris.genesismc.core.utils.BukkitColor.YELLOW;
+import static me.dueris.genesismc.core.utils.BukkitColour.RED;
+import static me.dueris.genesismc.core.utils.BukkitColour.YELLOW;
 
 public class GenesisCommandManager implements CommandExecutor {
 
