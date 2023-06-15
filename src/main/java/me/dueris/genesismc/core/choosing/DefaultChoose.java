@@ -14,7 +14,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.persistence.PersistentDataType;
 
 import static me.dueris.genesismc.core.items.OrbOfOrigins.orb;
-import static me.dueris.genesismc.core.utils.Colours.AQUA;
+import static me.dueris.genesismc.core.utils.BukkitColor.AQUA;
 import static org.bukkit.Bukkit.getServer;
 
 public class DefaultChoose {

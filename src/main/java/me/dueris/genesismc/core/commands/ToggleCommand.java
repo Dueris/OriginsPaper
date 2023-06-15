@@ -17,7 +17,7 @@ import org.jetbrains.annotations.NotNull;
 
 import static me.dueris.genesismc.core.factory.powers.Powers.big_leap_tick;
 import static me.dueris.genesismc.core.factory.powers.entity.BigLeap.leapToggle;
-import static me.dueris.genesismc.core.utils.Colours.RED;
+import static me.dueris.genesismc.core.utils.BukkitColor.RED;
 
 
 public class ToggleCommand implements CommandExecutor {

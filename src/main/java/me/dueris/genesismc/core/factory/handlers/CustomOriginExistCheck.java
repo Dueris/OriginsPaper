@@ -5,7 +5,6 @@ import me.dueris.genesismc.core.entity.OriginPlayer;
 import me.dueris.genesismc.core.factory.CraftApoli;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
-import org.bukkit.ChatColor;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -13,7 +12,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.persistence.PersistentDataType;
 
-import static me.dueris.genesismc.core.utils.Colours.RED;
+import static me.dueris.genesismc.core.utils.BukkitColor.RED;
 
 public class CustomOriginExistCheck implements Listener {
 

@@ -24,7 +24,7 @@ import java.util.ArrayList;
 
 import static me.dueris.genesismc.core.choosing.ChoosingCORE.itemProperties;
 import static me.dueris.genesismc.core.files.GenesisDataFiles.getOrbCon;
-import static me.dueris.genesismc.core.utils.Colours.RED;
+import static me.dueris.genesismc.core.utils.BukkitColor.RED;
 
 public class Recipe extends SubCommand implements Listener {
     @Override

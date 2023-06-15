@@ -26,7 +26,7 @@ import java.util.ArrayList;
 import static me.dueris.genesismc.core.choosing.ChoosingCORE.itemProperties;
 import static me.dueris.genesismc.core.choosing.ChoosingCUSTOM.cutStringIntoLists;
 import static me.dueris.genesismc.core.items.OrbOfOrigins.orb;
-import static me.dueris.genesismc.core.utils.Colours.RED;
+import static me.dueris.genesismc.core.utils.BukkitColor.RED;
 
 public class Info extends SubCommand implements Listener {
 

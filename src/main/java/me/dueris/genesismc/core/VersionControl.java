@@ -8,7 +8,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URL;
 
-import static me.dueris.genesismc.core.utils.Colours.GREEN;
+import static me.dueris.genesismc.core.utils.BukkitColor.GREEN;
 import static org.bukkit.Bukkit.getLogger;
 import static org.bukkit.Bukkit.getServer;
 

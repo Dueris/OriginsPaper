@@ -15,7 +15,7 @@ import java.util.EnumSet;
 import java.util.List;
 
 import static me.dueris.genesismc.core.GenesisMC.waterProtectionEnchant;
-import static me.dueris.genesismc.core.utils.Colours.RED;
+import static me.dueris.genesismc.core.utils.BukkitColor.RED;
 
 public class Enchant extends SubCommand {
 
