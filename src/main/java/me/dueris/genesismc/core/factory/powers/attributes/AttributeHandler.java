@@ -33,9 +33,9 @@ public class AttributeHandler extends BukkitRunnable {
 
                 System.out.println(OriginPlayer.getOrigin(p).getPowerFileFromType("origins:attribute").getModifier());
 
-                Attribute attribute_modifier = Attribute.valueOf(OriginPlayer.getOrigin(p).getPowerFileFromType("origins:attribute").getValue("attribute"));
-                Integer value = Integer.valueOf(OriginPlayer.getOrigin(p).getPowerFileFromType("origins:attribute").getValue("value"));
-                String operation = OriginPlayer.getOrigin(p).getPowerFileFromType("origins:attribute").getValue("operation");
+                Attribute attribute_modifier = Attribute.valueOf(String.valueOf(OriginPlayer.getOrigin(p).getPowerFileFromType("origins:attribute").getModifier().get("attribute")));
+                Integer value = Integer.valueOf((Integer) OriginPlayer.getOrigin(p).getPowerFileFromType("origins:attribute").getModifier().get("value"));
+                String operation = String.valueOf(OriginPlayer.getOrigin(p).getPowerFileFromType("origins:attribute").getModifier().get("operation"));
                 int base_value = (int) p.getAttribute(Attribute.valueOf(attribute_modifier.toString())).getBaseValue();
 
                 BinaryOperator mathOperator = operationMap.get(operation);

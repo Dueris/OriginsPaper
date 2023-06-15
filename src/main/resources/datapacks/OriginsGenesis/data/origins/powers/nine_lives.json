@@ -1,6 +1,11 @@
 {
-  "type": "origins:nine_lives",
+  "type": "origins:attribute",
   "hidden": false,
   "name": "menu.original.feline.nine_lives.title",
-  "description": "menu.original.feline.nine_lives.description"
+  "description": "menu.original.feline.nine_lives.description",
+  "modifier": {
+    "attribute": "minecraft:generic.max_health",
+    "value": 2,
+    "operation": "subtraction"
+  }
 }
