@@ -17,19 +17,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
-public class OriginHandler extends BukkitRunnable implements Listener {
-
-    @Override
-    public void run() {
-        for (Player p : Bukkit.getOnlinePlayers()) {
-            if (OriginPlayer.getOrigin(p).getTag().contains("genesis:origin-piglin")) {
-                if (p.getWorld().getEnvironment() != World.Environment.NETHER) {
-                    p.addPotionEffect(new PotionEffect(PotionEffectType.FIRE_RESISTANCE, 10, 0, false, false, false));
-                    p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 10, 0, false, false, false));
-                }
-            }
-        }
-    }
+public class OriginHandler implements Listener {
 
     @EventHandler
     public void SetOriginTag(OriginChangeEvent e){
@@ -40,9 +28,10 @@ public class OriginHandler extends BukkitRunnable implements Listener {
     public void onDeath(EntityDeathEvent e) {
         if (e.getEntity() instanceof Player || e.getEntity() instanceof HumanEntity) {
             Player p = (Player) e.getEntity();
-            if (OriginPlayer.getOrigin(p).getTag().equalsIgnoreCase("genesis:origin-enderian")) {
-                e.getEntity().getWorld().playSound(e.getEntity().getLocation(), Sound.ENTITY_ENDERMAN_DEATH, 10, 1F);
-            }
+            // old genesis code
+//            if (OriginPlayer.getOrigin(p).getTag().equalsIgnoreCase("genesis:origin-enderian")) {
+//                e.getEntity().getWorld().playSound(e.getEntity().getLocation(), Sound.ENTITY_ENDERMAN_DEATH, 10, 1F);
+//            }
         }
     }
 
@@ -50,11 +39,12 @@ public class OriginHandler extends BukkitRunnable implements Listener {
     public void onTargetShulk(EntityTargetEvent e) {
         if (e.getEntity() instanceof ShulkerBullet) {
             if (e.getTarget() instanceof Player p) {
-                if (OriginPlayer.getOrigin(p).getTag().equalsIgnoreCase("genesis:origin-shulk")) {
-                    if (e.getTarget() instanceof Player) {
-                        e.setCancelled(true);
-                    }
-                }
+                // old genesis code
+//                if (OriginPlayer.getOrigin(p).getTag().equalsIgnoreCase("genesis:origin-shulk")) {
+//                    if (e.getTarget() instanceof Player) {
+//                        e.setCancelled(true);
+//                    }
+//                }
             }
         }
     }

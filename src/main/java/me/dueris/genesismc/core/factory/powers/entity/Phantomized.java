@@ -50,7 +50,7 @@ public class Phantomized extends BukkitRunnable implements Listener {
 
             if (phantomid == 2) {
                 if (phantomize.contains(p)) {
-                    p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 10, 0, false, false, false));
+                    p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 20, 0, false, false, false));
                     if ((p.getLocation().add(0.55F, 0, 0.55F).getBlock().isSolid() ||
                             p.getLocation().add(0.55F, 0, 0).getBlock().isSolid() ||
                             p.getLocation().add(0, 0, 0.55F).getBlock().isSolid() ||
@@ -74,7 +74,7 @@ public class Phantomized extends BukkitRunnable implements Listener {
                         if (p.isInsideVehicle()) return;
                         p.setCollidable(false);
                         p.setGameMode(GameMode.SPECTATOR);
-                        p.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 15, 255, false, false, false));
+                        p.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 20, 255, false, false, false));
                         p.setFlying(true);
                         p.setFlySpeed(0.05F);
 
@@ -163,7 +163,7 @@ public class Phantomized extends BukkitRunnable implements Listener {
         Player p = e.getPlayer();
         PersistentDataContainer data = p.getPersistentDataContainer();
         int phantomid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER);
-        if (OriginPlayer.getOrigin(e.getPlayer()).getTag().equalsIgnoreCase("genesis:origin-phantom")) {
+        if (phantomize.contains(p)) {
 
             if (e.getItem() != null) {
                 if (e.getItem().isSimilar(spectatorswitch)) {
@@ -212,7 +212,7 @@ public class Phantomized extends BukkitRunnable implements Listener {
         PersistentDataContainer data = p.getPersistentDataContainer();
         int phantomid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER);
         //begin checks
-        if (OriginPlayer.getOrigin(e.getPlayer()).getTag().equalsIgnoreCase("genesis:origin-phantom")) {
+        if (phantomize.contains(p)) {
             if (phantomid == 2) {
                 //in phantom form.
                 //bug fix attempt 3 lol
@@ -232,7 +232,7 @@ public class Phantomized extends BukkitRunnable implements Listener {
             Player p = e.getPlayer();
             PersistentDataContainer data = p.getPersistentDataContainer();
             int phantomid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER);
-            if (OriginPlayer.getOrigin(p).getTag().equalsIgnoreCase("genesis:origin-phantom")) {
+            if (phantomize.contains(p)) {
                 if (phantomid == 2) {
                     e.setCancelled(true);
                 }
@@ -247,7 +247,7 @@ public class Phantomized extends BukkitRunnable implements Listener {
         Player p = e.getPlayer();
         PersistentDataContainer data = p.getPersistentDataContainer();
         int phantomid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER);
-        if (OriginPlayer.getOrigin(e.getPlayer()).getTag().equalsIgnoreCase("genesis:origin-phantom")) {
+        if (phantomize.contains(p)) {
             if (phantomid == 2) {
                 e.setCancelled(true);
             }
@@ -268,7 +268,7 @@ public class Phantomized extends BukkitRunnable implements Listener {
         switch_meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
         spectatorswitch.setItemMeta(switch_meta);
 
-        if (OriginPlayer.getOrigin(e.getPlayer()).getTag().equalsIgnoreCase("genesis:origin-phantom")) {
+        if (phantomize.contains(e.getPlayer())) {
             if (e.getItemDrop().getItemStack().isSimilar(spectatorswitch)) {
                 e.setCancelled(true);
             }

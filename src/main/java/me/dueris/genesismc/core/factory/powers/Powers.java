@@ -92,6 +92,7 @@ public class Powers implements Listener {
     public static ArrayList<Player> creeper_head_death_drop = new ArrayList<>();
     public static ArrayList<Player> resist_fall = new ArrayList<>();
     public static ArrayList<Player> weak_biome_cold = new ArrayList<>();
+    public static ArrayList<Player> overworld_piglin_zombified = new ArrayList<>();
 
 
     //custom origins

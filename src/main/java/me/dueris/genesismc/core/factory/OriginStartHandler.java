@@ -107,6 +107,9 @@ public class OriginStartHandler {
 
         AttributeHandler attributeHandler = new AttributeHandler();
         attributeHandler.runTaskTimer(getPlugin(), 0, 10);
+
+        OverworldPiglinZombified piglinZombified = new OverworldPiglinZombified();
+        piglinZombified.runTaskTimer(getPlugin(), 0, 40);
     }
 
     public static void StartListeners() {

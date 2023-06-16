@@ -302,6 +302,7 @@ public class OriginPlayer {
                 case "genesis:creeper_head_death_drop" -> creeper_head_death_drop.add(player);
                 case "genesis:resist_fall" -> resist_fall.add(player);
                 case "genesis:cold_biomes_weak" -> weak_biome_cold.add(player);
+                case "genesis:overworld_piglin_zombified" -> overworld_piglin_zombified.add(player);
 
                 case "origins:fall_immunity" -> fall_immunity.add(player);
                 case "origins:aerial_combatant" -> aerial_combatant.add(player);
@@ -396,6 +397,7 @@ public class OriginPlayer {
                 case "genesis:creeper_head_death_drop" -> creeper_head_death_drop.remove(player);
                 case "genesis:resist_fall" -> resist_fall.remove(player);
                 case "genesis:cold_biomes_weak" -> weak_biome_cold.remove(player);
+                case "genesis:overworld_piglin_zombified" -> overworld_piglin_zombified.remove(player);
 
                 case "origins:fall_immunity" -> fall_immunity.remove(player);
                 case "origins:aerial_combatant" -> aerial_combatant.remove(player);
