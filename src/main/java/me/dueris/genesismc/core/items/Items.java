@@ -116,6 +116,7 @@ public class Items extends BukkitRunnable implements Listener {
         launchmeta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
         launchitem.addItemFlags(ItemFlag.HIDE_ENCHANTS);
         launchitem.setItemMeta(launchmeta);
+        if(e.getItem() == null) return;
 
         if (e.getItem().isSimilar(infinpearl) || e.getItem().isSimilar(spectatorswitch) || e.getItem().isSimilar(spectatorswitch)) {
             e.setCancelled(true);
