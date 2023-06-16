@@ -11,6 +11,7 @@ import me.dueris.genesismc.core.factory.powers.block.Webbing;
 import me.dueris.genesismc.core.factory.powers.block.fluid.*;
 import me.dueris.genesismc.core.factory.powers.block.solid.PumpkinHate;
 import me.dueris.genesismc.core.factory.powers.effects.*;
+import me.dueris.genesismc.core.factory.powers.effects.StrongArmsBreakSpeed;
 import me.dueris.genesismc.core.factory.powers.entity.*;
 import me.dueris.genesismc.core.factory.powers.food.Carnivore;
 import me.dueris.genesismc.core.factory.powers.food.CarrotOnly;
@@ -65,9 +66,6 @@ public class OriginStartHandler {
 
         JumpIncreased jumpIncreased = new JumpIncreased();
         jumpIncreased.runTaskTimer(getPlugin(), 0, 10);
-
-        BetterMineSpeedRunnable betterMineSpeedRunnable = new BetterMineSpeedRunnable();
-        betterMineSpeedRunnable.runTaskTimer(getPlugin(), 0, 10);
 
         NoShield shield = new NoShield();
         shield.runTaskTimer(getPlugin(), 0, 10);
@@ -146,7 +144,7 @@ public class OriginStartHandler {
         getServer().getPluginManager().registerEvents(new ExplodeTick(), getPlugin());
         getServer().getPluginManager().registerEvents(new RabbitFoot(), getPlugin());
         getServer().getPluginManager().registerEvents(new MoreExhaustion(), getPlugin());
-        getServer().getPluginManager().registerEvents(new BetterMineSpeed(), getPlugin());
+        getServer().getPluginManager().registerEvents(new StrongArms(), getPlugin());
         getServer().getPluginManager().registerEvents(new OriginHandler(), getPlugin());
         getServer().getPluginManager().registerEvents(new FireImmunity(), getPlugin());
         getServer().getPluginManager().registerEvents(new FlightElytra(), getPlugin());
@@ -157,6 +155,7 @@ public class OriginStartHandler {
         getServer().getPluginManager().registerEvents(new ImpalingMore(), getPlugin());
         getServer().getPluginManager().registerEvents(new AirFromPotions(), getPlugin());
         getServer().getPluginManager().registerEvents(new AttributeHandler(), getPlugin());
+        getServer().getPluginManager().registerEvents(new StrongArmsBreakSpeed(), getPlugin());
 
     }
 }

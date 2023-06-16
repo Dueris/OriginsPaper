@@ -13,7 +13,7 @@ import java.util.EnumSet;
 import static me.dueris.genesismc.core.factory.powers.Powers.strong_arms;
 import static org.bukkit.Material.*;
 
-public class BetterMineSpeed implements Listener {
+public class StrongArms implements Listener {
     public static EnumSet<Material> tools;
     public static EnumSet<Material> nat_stones;
 
