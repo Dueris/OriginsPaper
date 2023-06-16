@@ -99,6 +99,10 @@ menu:
         title: "Brittle Bones "
         description: "You take more damage from falling and flying into blocks "
 
+      aerial_combatant:
+        title: "Aerial Combatant"
+        description: "You deal substantially more damage while in Elytra flight."
+
     shulk:
       hoarder:
         title: "Hoarder(/shulker open, or press F to open) "
