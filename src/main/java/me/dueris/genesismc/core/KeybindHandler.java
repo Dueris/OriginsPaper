@@ -89,23 +89,11 @@ public class KeybindHandler implements Listener {
                     @Override
                     public void run() {
                         cooldownBeforeElytrian.replace(p.getUniqueId(), cooldownBeforeElytrian.get(p.getUniqueId()) + 1);
-                        if (cooldownBeforeElytrian.get(p.getUniqueId()) == 1) {
-                            p.sendActionBar(ChatColor.RED + "|||");
-                        } else if (cooldownBeforeElytrian.get(p.getUniqueId()) == 2) {
-                            p.sendActionBar(ChatColor.RED + "|||||");
-                        } else if (cooldownBeforeElytrian.get(p.getUniqueId()) == 3) {
-                            p.sendActionBar(ChatColor.YELLOW + "|||||||");
-                        } else if (cooldownBeforeElytrian.get(p.getUniqueId()) == 4) {
-                            p.sendActionBar(ChatColor.YELLOW + "|||||||||");
-                        } else if (cooldownBeforeElytrian.get(p.getUniqueId()) == 5) {
-                            p.sendActionBar(ChatColor.GREEN + "|||||||||||");
-                        }else if (cooldownBeforeElytrian.get(p.getUniqueId()) >= 6){
                             cooldownAfterElytrian.put(p.getUniqueId(), System.currentTimeMillis());
                             canLaunch.remove(p);
                             doLaunch(p);
                             p.setVelocity(new Vector(p.getVelocity().getX(), p.getVelocity().getY() + 1.7, p.getVelocity().getZ()));
                             this.cancel();
-                        }
                     }
                 }.runTaskTimer(GenesisMC.getPlugin(), 0L, 2L);
                 e.setCancelled(true);
