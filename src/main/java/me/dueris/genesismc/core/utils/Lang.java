@@ -220,7 +220,7 @@ public class Lang {
     public static File getLangFile() {
 
         String langFileName = GenesisDataFiles.getMainConfig().getString("lang");
-        String filePath = GenesisMC.getPlugin().getDataFolder() + File.separator + "lang" + File.separator + "datapacks"  + File.separator + "langFiles" + File.separator + langFileName + ".yml";
+        String filePath = GenesisMC.getPlugin().getDataFolder() + File.separator + "lang" + File.separator + langFileName + ".yml";
         File langFile = new File(filePath);
 
         try {
