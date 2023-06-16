@@ -12,7 +12,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.persistence.PersistentDataType;
 
-import static me.dueris.genesismc.core.utils.BukkitColor.RED;
+import static me.dueris.genesismc.core.utils.BukkitColour.RED;
 
 public class CustomOriginExistCheck implements Listener {
 

@@ -14,13 +14,14 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import static me.dueris.genesismc.core.choosing.ChoosingCORE.itemProperties;
 import static me.dueris.genesismc.core.choosing.ChoosingCUSTOM.cutStringIntoLists;
 
 public class ChooseMenuContents {
 
-    public static @Nullable ItemStack @NotNull [] ChooseMenuContent() {
+    public static @Nullable ItemStack @NotNull [] ChooseMenuContent(int pageNumber) {
         ItemStack sides = new ItemStack(Material.BLACK_STAINED_GLASS_PANE);
         ItemStack back = new ItemStack(Material.ARROW);
         ItemStack next = new ItemStack(Material.ARROW);
@@ -32,10 +33,25 @@ public class ChooseMenuContents {
         next = itemProperties(next, "Next", ItemFlag.HIDE_ENCHANTS, null, null);
 
         ArrayList<ItemStack> contents = new ArrayList<>();
-        ArrayList<OriginContainer> originContainers = new ArrayList<>();
-        for (OriginContainer origin : CraftApoli.getOrigins()) {
-            if (!CraftApoli.isCoreOrigin(origin)) originContainers.add(origin);
+        ArrayList<OriginContainer> originContainers = new ArrayList<>(CraftApoli.getOrigins());
+
+        originContainers.removeIf(CraftApoli::isCoreOrigin);
+        for (int i = 0; 35 * pageNumber > i; i++) {
+            if (originContainers.isEmpty()) break;
+            originContainers.remove(0);
         }
+
+        NamespacedKey pageKey = new NamespacedKey(GenesisMC.getPlugin(), "page");
+        ItemMeta backMeta = back.getItemMeta();
+        if (pageNumber == 0) backMeta.getPersistentDataContainer().set(pageKey, PersistentDataType.INTEGER, 0);
+        else backMeta.getPersistentDataContainer().set(pageKey, PersistentDataType.INTEGER, pageNumber-1);
+        back.setItemMeta(backMeta);
+
+
+        ItemMeta nextMeta = next.getItemMeta();
+        if (originContainers.size() < 37) nextMeta.getPersistentDataContainer().set(pageKey, PersistentDataType.INTEGER, pageNumber);
+        else nextMeta.getPersistentDataContainer().set(pageKey, PersistentDataType.INTEGER, pageNumber+1);
+        next.setItemMeta(nextMeta);
 
         for (int i = 0; i <= 53; i++) {
             if (i % 9 == 0 || (i + 1) % 9 == 0) {

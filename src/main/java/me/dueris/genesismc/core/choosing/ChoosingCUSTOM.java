@@ -62,7 +62,7 @@ public class ChoosingCUSTOM implements Listener {
                 if (e.getCurrentItem().getType().equals(Material.TIPPED_ARROW)) {
                     Player p = (Player) e.getWhoClicked();
                     p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 10, 2);
-                    custommenu.setContents(ChooseMenuContent());
+                    custommenu.setContents(ChooseMenuContent(0));
                     e.getWhoClicked().openInventory(custommenu);
 
                 }
@@ -282,7 +282,7 @@ public class ChoosingCUSTOM implements Listener {
                     }
 
                     @NotNull Inventory custommenu = Bukkit.createInventory(e.getWhoClicked(), 54, "Custom Origins");
-                    custommenu.setContents(ChooseMenuContent());
+                    custommenu.setContents(ChooseMenuContent(0));
                     e.getWhoClicked().openInventory(custommenu);
                 } else e.setCancelled(true);
             }
@@ -303,5 +303,26 @@ public class ChoosingCUSTOM implements Listener {
             }
         }
     }
+
+    @EventHandler
+    public void scroll(InventoryClickEvent e) {
+        if (e.getCurrentItem() != null) {
+            if (e.getView().getTitle().equalsIgnoreCase("Custom Origins")) {
+                ItemStack item = e.getCurrentItem();
+                if (item.getType().equals(Material.ARROW) && (e.getCurrentItem().getItemMeta().getDisplayName().equals("Back") || e.getCurrentItem().getItemMeta().getDisplayName().equals("Next"))) {
+                    @NotNull Inventory custommenu = Bukkit.createInventory(e.getWhoClicked(), 54, "Custom Origins");
+                    NamespacedKey key = new NamespacedKey(GenesisMC.getPlugin(), "page");
+                    custommenu.setContents(ChooseMenuContent(item.getItemMeta().getPersistentDataContainer().get(key, PersistentDataType.INTEGER)));
+                    Player p = (Player) e.getWhoClicked();
+                    p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 10, 2);
+                    e.getWhoClicked().closeInventory();
+                    e.getWhoClicked().openInventory(custommenu);
+                } else {
+                    e.setCancelled(true);
+                }
+            }
+        }
+    }
 }
+
 
