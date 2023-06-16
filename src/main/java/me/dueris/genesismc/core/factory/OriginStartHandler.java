@@ -153,6 +153,7 @@ public class OriginStartHandler {
         getServer().getPluginManager().registerEvents(new Fragile(), getPlugin());
         getServer().getPluginManager().registerEvents(new ImpalingMore(), getPlugin());
         getServer().getPluginManager().registerEvents(new AirFromPotions(), getPlugin());
+        getServer().getPluginManager().registerEvents(new AttributeHandler(), getPlugin());
 
     }
 }
