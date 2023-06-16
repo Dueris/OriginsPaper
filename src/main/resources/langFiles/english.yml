@@ -203,7 +203,7 @@ menu:
     phantom:
       translucent:
         title: "Translucent "
-        description: "You are slightly translucent, and at night you become more solid "
+        description: "Your skin is translucent."
 
       not_vampire:
         title: "Not Really a Vampire "
@@ -211,7 +211,7 @@ menu:
 
       phasing:
         title: "Phasing(Press F to activate, or use item) "
-        description: "You can turn into your \"Phantom Form\", allowing you to walk through walls"
+        description: "You can switch between human and phantom form at will, but only while you are saturated enough to sprint."
 
       fast_metabolism:
         title: "Fast Metabolism "
