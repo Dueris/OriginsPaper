@@ -17,7 +17,7 @@ public class HotBlooded extends BukkitRunnable implements Listener {
                 if (p.hasPotionEffect((PotionEffectType.POISON))) {
                     p.removePotionEffect(PotionEffectType.POISON);
                 }
-                if (p.hasPotionEffect(PotionEffectType.POISON)) {
+                if (p.hasPotionEffect(PotionEffectType.HUNGER)) {
                     p.removePotionEffect(PotionEffectType.HUNGER);
                 }
             }
