@@ -1,5 +1,4 @@
 # GenesisMC - GPL 3.0
-# Version mc1.20-v0.1.7
 # DO NOT CHANGE PATH OF CONFIGS, THIS WILL CAUSE ERRORS.
 
 # ~~~~~~~~~~~~~~~~~
@@ -18,10 +17,6 @@ console-startup-debug: false
 # Controls whether the plugin will perform a version check on start up.
 version-check: true
 
-# ~~~~~~~~~~~~~~~~~
-#  Origin Plugin Settings
-# ~~~~~~~~~~~~~~~~~
-
 # Determines if "water protection" can be found, or used.
 water-protection: true
 
@@ -30,64 +25,3 @@ orb-of-origins: true
 
 # if true, custom origins will be loaded. if false, custom origins will not load.
 custom-origins: true
-
-# ~~~~~~~~~~~~~~~~~
-#  Core Origins Control
-# ~~~~~~~~~~~~~~~~~
-
-# Disables Allay Origin.
-allay-disable: false
-
-# Disables Arachnid Origin.
-arachnid-disable: false
-
-# Disables Avian Origin.
-avian-disable: false
-
-# Disables Blazeborn Origin.
-blazeborn-disable: false
-
-# Disables Bumblebee Origin.
-bumblebee-disable: false
-
-# Disables Creep Origin.
-creep-disable: false
-
-# Disables Elytrian Origin.
-elytrian-disable: false
-
-# Disables Enderian Origin.
-enderian-disable: false
-
-# Disables Feline Origin.
-feline-disable: false
-
-# Disables Human Origin.
-human-disable: false
-
-# Disables Merling Origin.
-merling-disable: false
-
-# Disables Phantom Origin.
-phantom-disable: false
-
-# Disables Piglin Origin.
-piglin-disable: false
-
-# Disables Rabbit Origin.
-rabbit-disable: false
-
-# Disables Sculkling Origin.
-sculkling-disable: false
-
-# Disables Shulk Origin.
-shulk-disable: false
-
-# Disables Slimeling Origin.
-slimeling-disable: false
-
-# Disables Starborne Origin.
-starborne-disable: false
-
-
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
