@@ -156,8 +156,8 @@ public class Phantomized extends BukkitRunnable implements Listener {
         switch_meta.setUnbreakable(true);
         switch_meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
         switch_meta.addItemFlags(ItemFlag.HIDE_ITEM_SPECIFICS);
-        switch_meta.setLore(pearl_lore);
         switch_meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+        switch_meta.setLore(pearl_lore);
         spectatorswitch.setItemMeta(switch_meta);
 
         Player p = e.getPlayer();
