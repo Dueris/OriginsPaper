@@ -145,6 +145,10 @@ menu:
         title: "Bearer of Pearls "
         description: "You always drop 0-2 ender pearls upon death "
 
+      pumpkin_hate:
+        title: "Scared of Gourds"
+        description: "You are afraid of pumpkins. For a good reason."
+
 
     merling:
       gills:

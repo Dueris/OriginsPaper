@@ -1,4 +1,6 @@
 {
   "type": "origins:pumpkin_hate",
-  "hidden": true
+  "hidden": false,
+  "name": "menu.original.enderian.pumpkin_hate.title",
+  "description": "menu.original.enderian.pumpkin_hate.description"
 }
