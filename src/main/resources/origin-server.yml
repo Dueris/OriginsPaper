@@ -6,10 +6,8 @@
 # ~~~~~~~~~~~~~~~~~
 
 # Determines language file to read.
+#options: English - english, Deutsch - german, русский - russian
 lang: english
-
-# Enables and Disables other origins(ones not from the original mod) depending on if its true or false.
-origins-expanded: true
 
 # Enables debug information, when making a bug report, please include a screenshot of the startup while this is "true".
 console-startup-debug: false
@@ -22,6 +20,3 @@ water-protection: true
 
 # Determines if the Orb Of Origins can be crafted.
 orb-of-origins: true
-
-# if true, custom origins will be loaded. if false, custom origins will not load.
-custom-origins: true

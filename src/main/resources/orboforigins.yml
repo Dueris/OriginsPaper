@@ -1,4 +1,7 @@
-# GenesisMC - orb of origins config
+orb-of-origins-enabled: true
+
+name: §dOrb of Origins
+
 # You can find the correct spelling of items at https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html
 crafting:
   top:
@@ -13,5 +16,3 @@ crafting:
     left: NETHERITE_INGOT
     middle: DIAMOND
     right: NETHERITE_INGOT
-orb-of-origins-enabled: true
-name: §dOrb of Origins
