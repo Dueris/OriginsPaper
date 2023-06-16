@@ -22,8 +22,7 @@ import org.geysermc.geyser.api.GeyserApi;
 import java.util.ArrayList;
 
 import static me.dueris.genesismc.core.factory.powers.Powers.*;
-import static me.dueris.genesismc.core.factory.powers.item.LaunchAir.canLaunch;
-import static me.dueris.genesismc.core.factory.powers.item.LaunchAir.cooldownAfterElytrian;
+import static me.dueris.genesismc.core.factory.powers.item.LaunchAir.*;
 import static org.bukkit.Bukkit.getServer;
 import static org.bukkit.ChatColor.DARK_AQUA;
 import static org.bukkit.ChatColor.RED;
@@ -85,36 +84,20 @@ public class KeybindHandler implements Listener {
         if (launch_into_air.contains(p)) {
             if (p.isSneaking()) return;
             if (cooldownAfterElytrian.containsKey(p.getUniqueId())) return;
-            p.setVelocity(new Vector(p.getVelocity().getX(), p.getVelocity().getY() + 1.7, p.getVelocity().getZ()));
-            new BukkitRunnable() {
-                @Override
-                public void run() {
-                    if (cooldownAfterElytrian.containsKey(p.getUniqueId())) {
-                        if (System.currentTimeMillis() - cooldownAfterElytrian.get(p.getUniqueId()) >= 0) {
-                            p.sendActionBar(ChatColor.RED + "|||||||||");
-                        }
-                        if (System.currentTimeMillis() - cooldownAfterElytrian.get(p.getUniqueId()) >= 4500) {
-                            p.sendActionBar(ChatColor.RED + "|||||||");
-                        }
-                        if (System.currentTimeMillis() - cooldownAfterElytrian.get(p.getUniqueId()) >= 7000) {
-                            p.sendActionBar(ChatColor.YELLOW + "|||||");
-                        }
-                        if (System.currentTimeMillis() - cooldownAfterElytrian.get(p.getUniqueId()) >= 9500) {
-                            p.sendActionBar(ChatColor.YELLOW + "|||");
-                        }
-                        if (System.currentTimeMillis() - cooldownAfterElytrian.get(p.getUniqueId()) >= 12000) {
-                            cooldownAfterElytrian.remove(p.getUniqueId());
-                            p.sendActionBar(ChatColor.GREEN + "-");
-                            canLaunch.add(p.getUniqueId());
-                        }
-                    } else {
-                        this.cancel();
+                cooldownBeforeElytrian.put(p.getUniqueId(), 0);
+                new BukkitRunnable() {
+                    @Override
+                    public void run() {
+                        cooldownBeforeElytrian.replace(p.getUniqueId(), cooldownBeforeElytrian.get(p.getUniqueId()) + 1);
+                            cooldownAfterElytrian.put(p.getUniqueId(), System.currentTimeMillis());
+                            canLaunch.remove(p);
+                            doLaunch(p);
+                            p.setVelocity(new Vector(p.getVelocity().getX(), p.getVelocity().getY() + 1.7, p.getVelocity().getZ()));
+                            this.cancel();
                     }
-                }
-            }.runTaskTimer(GenesisMC.getPlugin(), 0L, 10L);
-            e.setCancelled(true);
+                }.runTaskTimer(GenesisMC.getPlugin(), 0L, 2L);
+                e.setCancelled(true);
         }
-
     }
 
     @EventHandler
