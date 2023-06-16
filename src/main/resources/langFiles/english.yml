@@ -161,11 +161,15 @@ menu:
 
       fins:
         title: "Fins "
-        description: "You can swim much faster underwater, and don't sink underwater "
+        description: "Your underwater speed is increased."
 
       aqua_affinity:
         title: "Aqua Affinity"
         description: "You may break blocks underwater as other do on land."
+
+      like_water:
+        title: "Like Water"
+        description: "When underwater, you do not sink to the ground unless you want to."
 
     blazeborn:
       born_from_flames:
