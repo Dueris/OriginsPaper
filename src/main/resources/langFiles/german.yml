@@ -253,46 +253,33 @@ menu:
   expanded:
     
     starborne:
-      wanderer:
-        title: "Wanderer der Sterne "
-        description: "Nachts kann man nicht schlafen "
-      
+      starbeam:
+        title: "Sternenstrahl"
+        description: "Du kannst alle 30 Sekunden einen Sternstrahl abfeuern, der 10 Schaden verursacht"
+
       shooting_star:
         title: "Sternschnuppe "
         description: "Nach einer Abklingzeit von 5 Sekunden können Sie sich in die Luft werfen "
-      
-      falling_stars:
-        title: "Fallende Sterne "
-        description: "Du kannst alle 30 Sekunden Sterne auf deinen Feind fallen lassen "
-      
+
       supernova:
         title: "Supernova "
-        description: "Wenn du stirbst, explodierst du in eine Supernova "
-      
+        description: "Die gesamte gesammelte Sternenenergie, die Sie während Ihrer Zeit in den Sternen angesammelt haben, muss irgendwo hingehen. Wann immer Sie also sterben, werden Sie in einer großen Supernova explodieren"
+
       cold_vacuum:
         title: "Kaltes Vakuum "
         description: "Du bist an die Kälte des Weltraums gewöhnt und erleidest daher doppelten Schaden durch Feuer "
-      
+
       stargazer:
         title: "Sternengucker "
         description: "Wenn Sie den Sternen ausgesetzt sind, gewinnen Sie an Geschwindigkeit und Regeneration "
-      
-      unknown_realms:
-        title: "Unbekannte Reiche "
-        description: "In einem Reich ohne Sterne zu sein, macht dich schwächer "
-      
+
       nonviolent:
         title: "Gewaltfrei "
-        description: "Es besteht die Möglichkeit, dass Sie bewegungsunfähig werden, wenn Sie Schaden erleiden, und Sie sind Vegetarier "
-      
+        description: "In den großen Abgründen des Weltraums kommt es selten zu Gewalt. Wenn Sie überhaupt jemandem begegnen, besteht eine geringe Chance, dass Sie bewegungsunfähig werden, wenn Sie Schaden erleiden."
+
       starwatcher:
         title: "Sternenbeobachter "
         description: "Wenn man nicht den Sternen ausgesetzt ist, wird man etwas traurig und bewegt sich etwas langsamer "
-      
-      gaurdian:
-        title: "Gaurdian der Sterne "
-        description: "Wenn du den Enderdrachen tötest, bist du nun der Gaurdian der Sterne und erhältst eine aus den Sternen geschmiedete Waffe "
-    
     alllay:
       little_fairy:
         title: "Kleine Fee "
