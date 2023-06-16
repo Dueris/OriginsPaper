@@ -44,60 +44,60 @@ menu:
   original:
     human:
       nothing:
-        title: "Nothing  "
-        description: "Enough said.  "
+        title: "Nothing"
+        description: "Enough said."
 
     avian:
       featherweight:
-        title: "Featherweight  "
-        description: "You fall as gently to the ground as a feather would, unless you shift "
+        title: "Featherweight"
+        description: "You fall as gently to the ground as a feather would, unless you shift."
       tailwind:
-        title: "Tailwind  "
-        description: "You are a little quicker on foot than others  "
+        title: "Tailwind"
+        description: "You are a little quicker on foot than others."
       oviparous:
-        title: "Oviparous  "
-        description: "Whenever you wake up in the morning, you lay an egg  "
-      vegitarian:
-        title: "Vegitarian "
-        description: "You can't digest any meat "
+        title: "Oviparous "
+        description: "Whenever you wake up in the morning, you lay an egg."
+      vegetarian:
+        title: "Vegetarian"
+        description: "You can't digest any meat."
       fresh_air:
-        title: "Fresh Air "
-        description: "When sleeping, your bed needs to be at an altitude of at least 100 blocks "
+        title: "Fresh Air"
+        description: "When sleeping, your bed needs to be at an altitude of at least 100 blocks."
 
     arachnid:
       spiderman:
-        title: "SpiderMan "
-        description: "You can climb up walls, but not when its raining (hold shift)"
+        title: "SpiderMan"
+        description: "You can climb up walls, but not when its raining (hold shift)."
       weaver:
-        title: "Weaver "
-        description: "You hinder your foes with cobwebs upon attacking them "
+        title: "Weaver"
+        description: "You hinder your foes with cobwebs upon attacking them."
       squishable:
         title: "Fragile"
-        description: "You have 3 less hearts "
+        description: "You have 3 less hearts."
       tiny_carnivore:
-        title: "Tiny Carnivor "
-        description: "You can only eat meat "
+        title: "Tiny Carnivor"
+        description: "You can only eat meat."
 
     elytrian:
       winged:
-        title: "Winged "
-        description: "You have Elytra wings without needing to equip any (tap shift when in air)"
+        title: "Winged"
+        description: "You have Elytra wings without needing to equip any (tap shift when in air)."
 
       gift_of_the_winds:
-        title: "Gift of the Winds "
-        description: "Every 30 seconds, you can launch yourself 20 blocks in the air "
+        title: "Gift of the Winds"
+        description: "Every 30 seconds, you can launch yourself 20 blocks in the air."
 
       claustrophobia:
-        title: "Calustrophobia "
-        description: "Being somewhere with a low ceiling for too long will weaken you "
+        title: "Calustrophobia"
+        description: "Being somewhere with a low ceiling for too long will weaken you."
 
       need_for_mobility:
-        title: "Need for Mobility "
-        description: "You cannot wear any heavy armour with protection values higher than chainmail "
+        title: "Need for Mobility"
+        description: "You cannot wear any heavy armour with protection values higher than chainmail."
 
       brittle_bones:
-        title: "Brittle Bones "
-        description: "You take more damage from falling and flying into blocks "
+        title: "Brittle Bones"
+        description: "You take more damage from falling and flying into blocks."
 
       aerial_combatant:
         title: "Aerial Combatant"
@@ -106,44 +106,44 @@ menu:
     shulk:
       hoarder:
         title: "Hoarder(/shulker open, or press F to open) "
-        description: "You have 9 extra inventory slots that you keep upon death "
+        description: "You have 9 extra inventory slots that you keep upon death."
 
       sturdy_skin:
-        title: "Sturdy Skin "
-        description: "Your skin has natural protection "
+        title: "Sturdy Skin"
+        description: "Your skin has natural protection."
 
       strong_arms:
-        title: "Strong Arms "
-        description: "You can break natural stones without a pickaxe "
+        title: "Strong Arms"
+        description: "You can break natural stones without a pickaxe."
 
       unweildy:
-        title: "Unwieldy "
-        description: "You cannot hold a shield "
+        title: "Unwieldy"
+        description: "You cannot hold a shield."
 
       large_appetite:
-        title: "Large Appetite "
-        description: "You exhaust much quicker than others "
+        title: "Large Appetite"
+        description: "You exhaust much quicker than others."
 
     enderian:
       teleportation:
-        title: "Teleportation "
-        description: "You have an infinite ender pearl that deals no damage "
+        title: "Teleportation"
+        description: "You have an infinite ender pearl that deals no damage."
 
       hydrophobia:
-        title: "Hydrophobia "
-        description: "You take damage while in contact with water "
+        title: "Hydrophobia"
+        description: "You take damage while in contact with water."
 
       delicate_touch:
-        title: "Delicate Touch "
-        description: "You have silk touch hands "
+        title: "Delicate Touch"
+        description: "You have silk touch hands."
 
       slender_body:
-        title: "Slender Body "
-        description: "You can reach farther than everyone due to your long arms, but you are too weak to mine farther away "
+        title: "Slender Body"
+        description: "You can reach farther than everyone due to your long arms, but you are too weak to mine farther away."
 
       bearer_of_pearls:
-        title: "Bearer of Pearls "
-        description: "You always drop 0-2 ender pearls upon death "
+        title: "Bearer of Pearls"
+        description: "You always drop 0-2 ender pearls upon death."
 
       pumpkin_hate:
         title: "Scared of Gourds"
@@ -152,15 +152,15 @@ menu:
 
     merling:
       gills:
-        title: "Gills "
-        description: "You can ONLY breathe underwater, when raining, you can breathe on land for a short time "
+        title: "Gills"
+        description: "You can ONLY breathe underwater, when raining, you can breathe on land for a short time."
 
       wet_eyes:
-        title: "Wet Eyes "
-        description: "Your vision underwater is nearly perfect "
+        title: "Wet Eyes"
+        description: "Your vision underwater is nearly perfect."
 
       fins:
-        title: "Fins "
+        title: "Fins"
         description: "Your underwater speed is increased."
 
       aqua_affinity:
@@ -173,295 +173,295 @@ menu:
 
     blazeborn:
       born_from_flames:
-        title: "Born from Flames "
-        description: "Your natural spawn is in the Nether "
+        title: "Born from Flames"
+        description: "Your natural spawn is in the Nether."
 
       burning_wrath:
-        title: "Burning Wrath "
-        description: "When on fire, you deal additional damage "
+        title: "Burning Wrath"
+        description: "When on fire, you deal additional damage."
 
       fire_immunity:
-        title: "Fire Immunity "
-        description: "You are immune to all types of fire damage "
+        title: "Fire Immunity"
+        description: "You are immune to all types of fire damage."
 
       to_hot_for_water:
-        title: "To Hot for.. Uh.. Ya.. Water? "
-        description: "You get damaged while in water "
+        title: "To Hot for.. Uh.. Ya.. Water?"
+        description: "You get damaged while in water."
 
       hotblooded:
-        title: "Hotblooded "
-        description: "Due to your hot body, venom burns up, making you immune to poison and hunger status effects"
+        title: "Hotblooded"
+        description: "Due to your hot body, venom burns up, making you immune to poison and hunger status effects."
 
       opposite_forces:
-        title: "Opposite Forces "
-        description: "You are much weaker in colder biomes and at high altitudes "
+        title: "Opposite Forces"
+        description: "You are much weaker in colder biomes and at high altitudes."
 
       flames_of_nether:
-        title: "Flames of the Nether "
-        description: "Upon hitting someone, they are set on fire "
+        title: "Flames of the Nether"
+        description: "Upon hitting someone, they are set on fire."
 
     phantom:
       translucent:
-        title: "Translucent "
+        title: "Translucent"
         description: "Your skin is translucent."
 
       not_vampire:
-        title: "Not Really a Vampire "
-        description: "You take damage from sunlight "
+        title: "Not Really a Vampire"
+        description: "You take damage from sunlight."
 
       phasing:
-        title: "Phasing(Press F to activate, or use item) "
+        title: "Phasing(Press F to activate, or use item)"
         description: "You can switch between human and phantom form at will, but only while you are saturated enough to sprint."
 
       fast_metabolism:
-        title: "Fast Metabolism "
-        description: "While in Phantom Form, you loose twice as much hunger "
+        title: "Fast Metabolism"
+        description: "While in Phantom Form, you loose twice as much hunger."
 
       fragile_creature:
-        title: "Fragile Creature "
-        description: "You have 3 less hearts "
+        title: "Fragile Creature"
+        description: "You have 3 less hearts."
 
       invisibility:
-        title: "Invisibility "
-        description: "While phantomized, you become fully invisible "
+        title: "Invisibility"
+        description: "While phantomized, you become fully invisible."
 
     feline:
       nine_lives:
-        title: "9 Lives "
-        description: "You have 9 hearts of health "
+        title: "9 Lives"
+        description: "You have 9 hearts of health."
 
       good_jumper:
-        title: "Good jumper "
-        description: "You can jump higher while sprinting "
+        title: "Good jumper"
+        description: "You can jump higher while sprinting."
 
       nocturnal:
-        title: "Nocturnal "
-        description: "You have natural night vision "
+        title: "Nocturnal"
+        description: "You have natural night vision."
 
       catlike_appearance:
-        title: "Catlike Appearance "
-        description: "Creepers are scard of you "
+        title: "Catlike Appearance"
+        description: "Creepers are scared of you."
 
       velvet_paws:
-        title: "Velvet Paws "
-        description: "Your footsteps dont cause any vibrations "
+        title: "Velvet Paws"
+        description: "Your footsteps don't cause any vibrations."
 
       acrobatics:
-        title: "Acrobatics "
-        description: "You never take fall damage "
+        title: "Acrobatics"
+        description: "You never take fall damage."
 
       strong_ankles:
-        title: "Strong Ankles "
-        description: "You are able to jump higher by jumping while sprinting "
+        title: "Strong Ankles"
+        description: "You are able to jump higher by jumping while sprinting."
 
 
   expanded:
     starborne:
       starbeam:
         title: "Starbeam"
-        description: "You can blast a star beam every 30 seconds, dealing 10 damage"
+        description: "You can blast a star beam every 30 seconds, dealing 10 damage."
 
       shooting_star:
-        title: "Shooting Star "
-        description: "You can fling yourself into the air after a 5 second cooldown "
+        title: "Shooting Star"
+        description: "You can fling yourself into the air after a 5 second cooldown."
 
       supernova:
-        title: "Supernova "
-        description: "All the collected star energy that you have accumulated through your time in the stars needs to go somewhere, So whenever you happen to meet your demise you will explode in a great Supernova"
+        title: "Supernova"
+        description: "All the collected star energy that you have accumulated through your time in the stars needs to go somewhere, So whenever you happen to meet your demise you will explode in a great Supernova."
 
       cold_vacuum:
-        title: "Cold Vacuum "
-        description: "You are used to the coldness of space, so you take double damage from fire "
+        title: "Cold Vacuum"
+        description: "You are used to the coldness of space, so you take double damage from fire."
 
       stargazer:
-        title: "Stargazer "
-        description: "When exposed to the stars, you gain speed and regeneration "
+        title: "Stargazer"
+        description: "When exposed to the stars, you gain speed and regeneration."
 
       nonviolent:
-        title: "Nonviolent "
+        title: "Nonviolent"
         description: "In the great abyss of space, violence is uncommon if you even come across someone in the first place, this results in you having a small chance to be immobilized upon taking damage."
 
       starwatcher:
-        title: "Starwatcher "
-        description: "When not exposed to the stars, you get a little sad and will move a bit slower"
+        title: "Starwatcher"
+        description: "When not exposed to the stars, you get a little sad and will move a bit slower."
 
     allay:
       little_fairy:
-        title: "Little Fairy "
-        description: "You have small wings, you can fly and float "
+        title: "Little Fairy"
+        description: "You have small wings, you can fly and float."
 
       blue_spirit:
-        title: "Blue Spirit "
-        description: "You are semi-translucent, and glow in dark places "
+        title: "Blue Spirit"
+        description: "You are semi-translucent, and glow in dark places."
 
       sound_of_music:
-        title: "Sounds of Music "
-        description: "You enjoy the sounds of music, you can use a jukebox as a respawn anchor "
+        title: "Sounds of Music"
+        description: "You enjoy the sounds of music, you can use a jukebox as a respawn anchor."
 
       cookies:
-        title: "COOKIES "
-        description: "Cookies give the same saturation as steak "
+        title: "COOKIES"
+        description: "Cookies give the same saturation as steak."
 
       treasure_finder:
-        title: "Treasure Finder "
-        description: "You have increased chances of getting treasure loot, and villagers will lower their prices for you "
+        title: "Treasure Finder"
+        description: "You have increased chances of getting treasure loot, and villagers will lower their prices for you."
 
       kinda_flamable:
-        title: "Kinda Flamable "
-        description: "You burn easily, you take extra fire damage, and you have half health "
+        title: "Kinda Flamable"
+        description: "You burn easily, you take extra fire damage, and you have half health."
 
       friendly_angel:
-        title: "Friendly Angel "
-        description: "You don't like to harm animals, you get nauseous when eating meat "
+        title: "Friendly Angel"
+        description: "You don't like to harm animals, you get nauseous when eating meat."
 
     rabbit:
       leap:
-        title: "Leap "
-        description: "You can leap in the direction you are looking to "
+        title: "Leap"
+        description: "You can leap in the direction you are looking to."
 
       strong_hopper:
-        title: "Strong Hopper "
-        description: "You can jump significantly higher "
+        title: "Strong Hopper"
+        description: "You can jump significantly higher."
 
       shock_absorption:
-        title: "Shock Absorption "
-        description: "You take less fall damage "
+        title: "Shock Absorption"
+        description: "You take less fall damage."
 
       delicious:
-        title: "Delicious "
-        description: "You may drop a rabbit's foot when hit "
+        title: "Delicious"
+        description: "You may drop a rabbit's foot when hit."
 
       picky_eater:
-        title: "Picky Eater "
-        description: "You can only eat carrots and golden carrots "
+        title: "Picky Eater"
+        description: "You can only eat carrots and golden carrots."
 
       fragile:
-        title: "Fragile "
-        description: "You have 3 less hearts "
+        title: "Fragile"
+        description: "You have 3 less hearts."
 
     bee:
       featherweight:
-        title: "Featherweight "
-        description: "You fall as gently to the ground as a feather would unless you shift "
+        title: "Featherweight"
+        description: "You fall as gently to the ground as a feather would unless you shift."
 
       poisonous:
-        title: "Poisonous "
-        description: "Hitting someone gives them poison for 2 seconds "
+        title: "Poisonous"
+        description: "Hitting someone gives them poison for 2 seconds."
 
       bloom:
-        title: "Bloom "
-        description: "You gain regeneration when near flowers "
+        title: "Bloom"
+        description: "You gain regeneration when near flowers."
 
       flight:
-        title: "Flight "
-        description: "You can fly, just like a bee!(WHATT) "
+        title: "Flight"
+        description: "You can fly, just like a bee!(WHATT)."
 
       nighttime:
-        title: "Nighttime "
-        description: "You are sleepy at night, so you walk and fly slower "
+        title: "Nighttime"
+        description: "You are sleepy at night, so you walk and fly slower."
 
       lifespan:
-        title: "Lifespan "
-        description: "You have 3 less hearts "
+        title: "Lifespan"
+        description: "You have 3 less hearts."
 
       rain:
-        title: "Rain "
-        description: "You cannot fly when in the rain and are weaker while wet "
+        title: "Rain"
+        description: "You cannot fly when in the rain and are weaker while wet."
 
     piglin:
       shiny:
-        title: "I like to be SHINY "
-        description: "Golden tools deal extra damage and gold armour has more protection "
+        title: "I like to be SHINY"
+        description: "Golden tools deal extra damage and gold armour has more protection."
 
       friendly_frenemies:
-        title: "Friendly Frenemies "
-        description: "Piglins won't attack you unless provoked, Brutes will still attack on sight "
+        title: "Friendly Frenemies"
+        description: "Piglins won't attack you unless provoked, Brutes will still attack on sight."
 
       nether_dweller:
-        title: "Nether Dweller "
-        description: "Your natural spawn is in the Nether and you can only eat meat "
+        title: "Nether Dweller"
+        description: "Your natural spawn is in the Nether and you can only eat meat."
 
       colder_realms:
-        title: "Colder Realms "
-        description: "When outside of the Nether, you zombify and become immune to fire and slower "
+        title: "Colder Realms"
+        description: "When outside of the Nether, you zombify and become immune to fire and slower."
 
       blue_spooky:
-        title: "BLUE FIRE SPOOKY "
-        description: "You are afraid of soul fire, becoming weak when near it "
+        title: "BLUE FIRE SPOOKY"
+        description: "You are afraid of soul fire, becoming weak when near it."
 
     sculk:
       one_of_them:
-        title: "One of Them "
-        description: "You spawn in the Deep Dark "
+        title: "One of Them"
+        description: "You spawn in the Deep Dark."
 
       amongst_people:
-        title: "Amongst Your People "
-        description: "You get buffs while near sculk blocks "
+        title: "Amongst Your People"
+        description: "You get buffs while near sculk blocks."
 
       besties_forever:
-        title: "Best Friends Forever "
-        description: "The Warden wont attack you, and you don't trigger Sculk Shriekers "
+        title: "Best Friends Forever"
+        description: "The Warden wont attack you, and you don't trigger Sculk Shriekers."
 
       afraid_of_light:
-        title: "Afraid of the Light "
-        description: "You are weaker while in sunlight "
+        title: "Afraid of the Light"
+        description: "You are weaker while in sunlight."
 
       it_grows:
-        title: "It Grows "
-        description: "Upon dying, a small patch of sculk will grow around you, you gain some saturation "
+        title: "It Grows"
+        description: "Upon dying, a small patch of sculk will grow around you, you gain some saturation."
 
       echo_pulse:
-        title: "Echo Pulse "
-        description: "You can see all entities around you, you gain some saturation "
+        title: "Echo Pulse"
+        description: "You can see all entities around you, you gain some saturation."
 
       decaying_essence:
-        title: "Decaying Essence "
-        description: "All armour you wear will slowly deteriorate "
+        title: "Decaying Essence"
+        description: "All armour you wear will slowly deteriorate."
 
       carrier_echos:
-        title: "Carrier of Echos "
-        description: "You emmit a sonic boom upon Shift-Clicking your Boom keybind, or your Boom item(30 second cooldown) "
+        title: "Carrier of Echos"
+        description: "You emmit a sonic boom upon Shift-Clicking your Boom keybind, or your Boom item(30 second cooldown)."
 
     creep:
       boom:
-        title: "BOOOOM "
-        description: "You can explode at will, but you take 5 hearts of damage "
+        title: "BOOOOM"
+        description: "You can explode at will, but you take 5 hearts of damage."
 
       charged:
         title: "Charged "
-        description: "During thunderstorms, you are significantly stronger "
+        description: "During thunderstorms, you are significantly stronger."
 
       friend_in_me:
-        title: "You got a Friend in Me "
-        description: "Other creepers will not attack you "
+        title: "You got a Friend in Me"
+        description: "Other creepers will not attack you."
 
       felinephobia:
-        title: "Felinephobia "
-        description: "You are scared of cats and you will take damage when near one "
+        title: "Felinephobia"
+        description: "You are scared of cats and you will take damage when near one."
 
     slimeling:
       bouncy:
-        title: "Bouncy "
-        description: "You bounce on any block as if it were a slime block "
+        title: "Bouncy"
+        description: "You bounce on any block as if it were a slime block."
 
       not_very_solid:
-        title: "Not Very Solid "
-        description: "Upon being hit, you have a chance to split and create small slimes "
+        title: "Not Very Solid"
+        description: "Upon being hit, you have a chance to split and create small slimes."
 
       improved_jump:
-        title: "Improved Leap "
-        description: "You have an improved leap at the cost of movement speed "
+        title: "Improved Leap"
+        description: "You have an improved leap at the cost of movement speed."
 
       great_leap:
-        title: "Great Leap "
-        description: "Upon shifting for 4 seconds(nothing in hand), you leap in the direction you are looking "
+        title: "Great Leap"
+        description: "Upon shifting for 4 seconds(nothing in hand), you leap in the direction you are looking."
 
       slimy_skin:
-        title: "Slimy Skin "
-        description: "You have the green translucent skin of a slime "
+        title: "Slimy Skin"
+        description: "You have the green translucent skin of a slime."
 
       burnable:
-        title: "Burnable "
-        description: "You burn when in hotter biomes "
+        title: "Burnable"
+        description: "You burn when in hotter biomes."
 
 # End of LANG
