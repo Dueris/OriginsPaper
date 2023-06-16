@@ -75,8 +75,8 @@ public class OriginStartHandler {
         WaterBreathe waterBreathe = new WaterBreathe();
         waterBreathe.runTaskTimer(getPlugin(), 0, 1);
 
-        TailWind tempTailWind = new TailWind();
-        tempTailWind.runTaskTimer(getPlugin(), 0, 1);
+        TailWind tailWind = new TailWind();
+        tailWind.runTaskTimer(getPlugin(), 0, 1);
 
         WeakBiomeCold weakBiomeCold = new WeakBiomeCold();
         weakBiomeCold.runTaskTimer(getPlugin(), 0, 5);
