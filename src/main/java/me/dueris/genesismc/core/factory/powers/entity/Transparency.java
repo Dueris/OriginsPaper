@@ -19,12 +19,12 @@ public class Transparency extends BukkitRunnable {
         for (Player p : Bukkit.getOnlinePlayers()) {
             ScoreboardManager manager = Bukkit.getScoreboardManager();
             Scoreboard scoreboard = manager.getNewScoreboard();
-            Team team = scoreboard.getTeam("origin-players");
+            //Team team = scoreboard.getTeam("origin-players");
             if (translucent.contains(p)) {
-                if (team == null) {
-                    team = scoreboard.registerNewTeam("origin-players");
-                }
-                team.addEntity(p);
+//                if (team == null) {
+//                    team = scoreboard.registerNewTeam("origin-players");
+//                }
+                //team.addEntity(p);
                 if (OriginPlayer.isInPhantomForm(p)) {
                     for (Player other : Bukkit.getOnlinePlayers()) {
                         other.hidePlayer(GenesisMC.getPlugin(), p);
@@ -32,7 +32,7 @@ public class Transparency extends BukkitRunnable {
                 } else {
                     p.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 15, 255, false, false, false));
                     for (Player other : Bukkit.getOnlinePlayers()) {
-                        team.addEntity(other);
+                        //team.addEntity(other);
                         other.showPlayer(GenesisMC.getPlugin(), p);
                     }
                 }

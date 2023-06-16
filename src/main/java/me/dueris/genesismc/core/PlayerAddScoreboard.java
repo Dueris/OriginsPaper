@@ -17,22 +17,22 @@ public class PlayerAddScoreboard extends BukkitRunnable implements Listener {
 
     @EventHandler
     public void OnNewOriginPlayerJoin(PlayerJoinEvent e) {
-        Player p = e.getPlayer();
-        team.addEntities(p);
-        team.setCanSeeFriendlyInvisibles(true);
-        team.setDisplayName("Origin Player");
-        p.setScoreboard(scoreboard);
+//        Player p = e.getPlayer();
+//        team.addEntities(p);
+//        team.setCanSeeFriendlyInvisibles(true);
+//        team.setDisplayName("Origin Player");
+//        p.setScoreboard(scoreboard);
     }
 
     @Override
     public void run() {
-        for (Player p : Bukkit.getOnlinePlayers()) {
-            Team team = scoreboard.getTeam("origin-players");
-            if (!p.getScoreboard().equals(team) && team != null) {
-                team.addPlayer(p);
-            } else {
-                scoreboard.registerNewTeam("origin-players");
-            }
-        }
+//        for (Player p : Bukkit.getOnlinePlayers()) {
+//            Team team = scoreboard.getTeam("origin-players");
+//            if (!p.getScoreboard().equals(team) && team != null) {
+//                team.addPlayer(p);
+//            } else {
+//                scoreboard.registerNewTeam("origin-players");
+//            }
+//        }
     }
 }
