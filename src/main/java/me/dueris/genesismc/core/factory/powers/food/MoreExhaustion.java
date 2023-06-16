@@ -9,12 +9,14 @@ import org.bukkit.event.player.PlayerMoveEvent;
 
 import java.util.Random;
 
+import static me.dueris.genesismc.core.factory.powers.Powers.more_exhaustion;
+
 public class MoreExhaustion implements Listener {
 
     @EventHandler
     public void onSprint(PlayerMoveEvent e) {
         Player p = e.getPlayer();
-        if (OriginPlayer.getOrigin(e.getPlayer()).getTag().equalsIgnoreCase("genesis:origin-shulk")) {
+        if (more_exhaustion.contains(p)) {
             if (p.isSprinting() && !p.getGameMode().equals(GameMode.CREATIVE) && !p.getGameMode().equals(GameMode.SPECTATOR)) {
                 Random random = new Random();
                 int r = random.nextInt(650);
