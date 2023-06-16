@@ -56,6 +56,11 @@ public class OriginPlayer {
         }
     }
 
+    public static void setTagData(Player player, String tag){
+        PersistentDataContainer data = player.getPersistentDataContainer();
+        data.set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, tag);
+    }
+
     public static void moveEquipmentInventory(Player player, EquipmentSlot equipmentSlot) {
         ItemStack item = player.getInventory().getItem(equipmentSlot);
 

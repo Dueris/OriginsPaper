@@ -1,7 +1,9 @@
 package me.dueris.genesismc.core.origins;
 
 import me.dueris.genesismc.core.entity.OriginPlayer;
+import me.dueris.genesismc.core.events.OriginChangeEvent;
 import org.bukkit.Bukkit;
+import org.bukkit.NamespacedKey;
 import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.entity.HumanEntity;
@@ -29,6 +31,10 @@ public class OriginHandler extends BukkitRunnable implements Listener {
         }
     }
 
+    @EventHandler
+    public void SetOriginTag(OriginChangeEvent e){
+        OriginPlayer.setTagData(e.getPlayer(), OriginPlayer.getOrigin(e.getPlayer()).getTag());
+    }
 
     @EventHandler
     public void onDeath(EntityDeathEvent e) {
