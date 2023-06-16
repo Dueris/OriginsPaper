@@ -1,6 +1,9 @@
 package me.dueris.genesismc.core.utils;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -126,12 +129,19 @@ public class PowerContainer implements Serializable {
      */
     public HashMap<String, Object> getModifier() {
         Object obj = powerFile.get("modifier");
-        if (obj == null) return new HashMap<>();
-        JSONArray modifier = (JSONArray) obj;
-        for (int i = 0;i < modifier.size(); i++) {
-            modifier.get(i);
-            System.out.println(modifier.get(i));
+        if(obj == null) return new HashMap<>();
+
+        if(obj instanceof JSONObject) {
+            JSONObject modifier = (JSONObject) obj;
+            HashMap<String, Object> result = new HashMap<>();
+            for(Object key : modifier.keySet()){
+                String string_key = (String) key;
+                Object value = modifier.get(string_key);
+                result.put(string_key, value);
+            }
+            return result;
         }
+
         return null;
     }
 }
