@@ -1,4 +1,6 @@
 {
   "type": "origins:aqua_affinity",
-  "hidden": true
+  "hidden": false,
+  "name": "menu.original.merling.wet_eyes.title",
+  "description": "menu.original.merling.wet_eyes.description"
 }

@@ -163,6 +163,10 @@ menu:
         title: "Fins "
         description: "You can swim much faster underwater, and don't sink underwater "
 
+      aqua_affinity:
+        title: "Aqua Affinity"
+        description: "You may break blocks underwater as other do on land."
+
     blazeborn:
       born_from_flames:
         title: "Born from Flames "
