@@ -1,6 +1,11 @@
 {
-  "type": "origins:fragile",
+  "type": "origins:attribute",
   "hidden": false,
   "name": "menu.original.arachnid.squishable.title",
-  "description": "menu.original.arachnid.squishable.description"
+  "description": "menu.original.arachnid.squishable.description",
+  "modifier": {
+    "attribute": "minecraft:generic.max_health",
+    "value": 6,
+    "operation": "subtraction"
+  }
 }
