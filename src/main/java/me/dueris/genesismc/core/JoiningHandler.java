@@ -36,16 +36,9 @@ public class JoiningHandler implements Listener {
             }
         }
 
-
         if (p.getClientBrandName() != null && p.getClientBrandName().equalsIgnoreCase("Immersions")) {
             p.setDisplayName(AQUA + p.getName());
             p.setPlayerListName(AQUA + p.getName());
-
-        }
-
-        if (!p.getPersistentDataContainer().has(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING)) {
-
-            p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, "genesis:origin-null");
 
         }
 

@@ -1,6 +1,8 @@
 package me.dueris.genesismc.core.utils;
 
 import me.dueris.genesismc.core.GenesisMC;
+import me.dueris.genesismc.core.entity.OriginPlayer;
+import me.dueris.genesismc.core.factory.CraftApoli;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.persistence.PersistentDataType;
@@ -13,12 +15,12 @@ import static me.dueris.genesismc.core.GenesisMC.metrics;
 public class SendCharts {
 
     public static void originPopularity(Player p) {
-        String originTag = p.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
-        if (originTag == null) return;
+        OriginContainer origin = CraftApoli.toOriginContainer(p.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "origin"), PersistentDataType.BYTE_ARRAY));
+        if (origin == null) return;
         metrics.addCustomChart(new Metrics.DrilldownPie("originPopularity", () -> {
             Map<String, Map<String, Integer>> map = new HashMap<>();
             Map<String, Integer> entry = new HashMap<>();
-            String origin = switch (originTag) {
+            String originName = switch (origin.getTag()) {
                 case "origins:human" -> "Human";
                 case "origins:enderian" -> "Enderian";
                 case "origins:merling" -> "Merling";
@@ -39,8 +41,8 @@ public class SendCharts {
                 case "origins:piglin" -> "Piglin";
                 default -> "Custom Origin";
             };
-            entry.put(origin, 1);
-            map.put(origin, entry);
+            entry.put(originName, 1);
+            map.put(originName, entry);
             return map;
         }));
     }
