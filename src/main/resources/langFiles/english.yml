@@ -67,7 +67,7 @@ menu:
     arachnid:
       spiderman:
         title: "SpiderMan "
-        description: "You can climb up walls, but not when its raining "
+        description: "You can climb up walls, but not when its raining (hold shift)"
       weaver:
         title: "Weaver "
         description: "You hinder your foes with cobwebs upon attacking them "
@@ -81,11 +81,11 @@ menu:
     elytrian:
       winged:
         title: "Winged "
-        description: "You have Elytra wings without needing to equip any "
+        description: "You have Elytra wings without needing to equip any (tap shift when in air)"
 
       gift_of_the_winds:
         title: "Gift of the Winds "
-        description: "Every 60 seconds, you can launch yourself 20 blocks in the air "
+        description: "Every 30 seconds, you can launch yourself 20 blocks in the air "
 
       claustrophobia:
         title: "Calustrophobia "
