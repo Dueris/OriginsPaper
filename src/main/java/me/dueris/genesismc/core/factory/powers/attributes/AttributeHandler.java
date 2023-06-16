@@ -12,6 +12,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 import java.util.function.BinaryOperator;
 
 import static me.dueris.genesismc.core.factory.powers.Powers.*;
@@ -30,11 +31,22 @@ public class AttributeHandler extends BukkitRunnable implements Listener {
         }
         if(attribute.contains(p)){
             Map<String, BinaryOperator<Integer>> operationMap = new HashMap<>();
-
+            //base value = a
+            //modifier value = b
             operationMap.put("addition", Integer::sum);
             operationMap.put("subtraction", (a, b) -> a - b);
             operationMap.put("multiplication", (a, b) -> a * b);
             operationMap.put("division", (a, b) -> a / b);
+            operationMap.put("multiply_base", (a, b) -> a + (a * b));
+            operationMap.put("multiply_total", (a, b) -> a * (1 + b));
+            operationMap.put("set_total", (a, b) -> a - a + b);
+
+            Random random = new Random();
+
+            operationMap.put("add_random_max", (a, b) -> a + random.nextInt(b));
+            operationMap.put("subtract_random_max", (a, b) -> a - random.nextInt(b));
+            operationMap.put("multiply_random_max", (a, b) -> a * random.nextInt(b));
+            operationMap.put("divide_random_max", (a, b) -> a / random.nextInt(b));
 
             System.out.println(OriginPlayer.getOrigin(p).getPowerFileFromType("origins:attribute").getModifier());
 
