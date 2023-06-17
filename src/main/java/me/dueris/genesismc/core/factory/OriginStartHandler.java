@@ -54,7 +54,7 @@ public class OriginStartHandler {
         mineSpeed.runTaskTimer(getPlugin(), 0, 10);
 
         PlayerRender transparency = new PlayerRender();
-        transparency.runTaskTimer(getPlugin(), 0, 10);
+        transparency.runTaskTimer(getPlugin(), 0, 5);
 
         BurnInDaylight burnInDaylight = new BurnInDaylight();
         burnInDaylight.runTaskTimer(getPlugin(), 0, 10);
