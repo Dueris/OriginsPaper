@@ -151,7 +151,7 @@ public class PowerContainer implements Serializable {
      * @return null if object not found
      */
     public HashMap<String, Object> getConditions() {
-        Object obj = powerFile.get("modifier");
+        Object obj = powerFile.get("condition");
         if(obj == null) return new HashMap<>();
 
         if(obj instanceof JSONObject) {
