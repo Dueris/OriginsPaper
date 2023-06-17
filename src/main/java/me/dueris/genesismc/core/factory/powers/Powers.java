@@ -70,6 +70,7 @@ public class Powers implements Listener {
     public static ArrayList<Player> strong_arms_break_speed = new ArrayList<>();
     public static ArrayList<Player> apply_effect = new ArrayList<>();
     public static ArrayList<Player> attribute = new ArrayList<>();
+    public static ArrayList<Player> conditioned_attribute = new ArrayList<>();
 
     //genesis
     public static ArrayList<Player> hot_hands = new ArrayList<>();
