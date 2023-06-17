@@ -1,5 +1,6 @@
 package me.dueris.genesismc.core.factory.powers.attributes;
 
+import com.destroystokyo.paper.event.player.PlayerJumpEvent;
 import me.dueris.genesismc.core.entity.OriginPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -7,6 +8,9 @@ import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityToggleGlideEvent;
+import org.bukkit.event.player.PlayerToggleFlightEvent;
+import org.bukkit.event.player.PlayerToggleSneakEvent;
 import org.bukkit.event.player.PlayerToggleSprintEvent;
 
 import java.util.HashMap;
@@ -100,6 +104,52 @@ public class AttributeConditioned implements Listener {
         }else{
             if(conditioned_attribute.contains(p)){
                 if(!OriginPlayer.getOrigin(p).getPowerFileFromType("origins:conditioned_attribute").getConditions().get("type").toString().equalsIgnoreCase("origins:sprinting")) return;
+                inverseConditionAttribute(p);
+            }
+        }
+    }
+    @EventHandler
+    public void ExecuteFlightCondition(PlayerToggleFlightEvent e){
+        Player p = e.getPlayer();
+        if(e.isFlying()){
+            if(conditioned_attribute.contains(p)){
+                if(!OriginPlayer.getOrigin(p).getPowerFileFromType("origins:conditioned_attribute").getConditions().get("type").toString().equalsIgnoreCase("origins:flying")) return;
+                executeConditionAttribute(p);
+            }
+        }else{
+            if(conditioned_attribute.contains(p)){
+                if(!OriginPlayer.getOrigin(p).getPowerFileFromType("origins:conditioned_attribute").getConditions().get("type").toString().equalsIgnoreCase("origins:flying")) return;
+                inverseConditionAttribute(p);
+            }
+        }
+    }
+    @EventHandler
+    public void ExecuteGlideCondition(EntityToggleGlideEvent e){
+        if(!(e.getEntity() instanceof Player)) return;
+        Player p = (Player) e.getEntity();
+        if(e.isGliding()){
+            if(conditioned_attribute.contains(p)){
+                if(!OriginPlayer.getOrigin(p).getPowerFileFromType("origins:conditioned_attribute").getConditions().get("type").toString().equalsIgnoreCase("origins:gliding")) return;
+                executeConditionAttribute(p);
+            }
+        }else{
+            if(conditioned_attribute.contains(p)){
+                if(!OriginPlayer.getOrigin(p).getPowerFileFromType("origins:conditioned_attribute").getConditions().get("type").toString().equalsIgnoreCase("origins:gliding")) return;
+                inverseConditionAttribute(p);
+            }
+        }
+    }
+    @EventHandler
+    public void ExecuteSneakCondition(PlayerToggleSneakEvent e){
+        Player p = e.getPlayer();
+        if(e.isSneaking()){
+            if(conditioned_attribute.contains(p)){
+                if(!OriginPlayer.getOrigin(p).getPowerFileFromType("origins:conditioned_attribute").getConditions().get("type").toString().equalsIgnoreCase("origins:sneaking")) return;
+                executeConditionAttribute(p);
+            }
+        }else{
+            if(conditioned_attribute.contains(p)){
+                if(!OriginPlayer.getOrigin(p).getPowerFileFromType("origins:conditioned_attribute").getConditions().get("type").toString().equalsIgnoreCase("origins:sneaking")) return;
                 inverseConditionAttribute(p);
             }
         }
