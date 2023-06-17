@@ -125,7 +125,8 @@ public class PowerContainer implements Serializable {
     }
 
     /**
-     * @return //not implemented
+     * @return Modifiers in the power file
+     * @return null if object not found
      */
     public HashMap<String, Object> getModifier() {
         Object obj = powerFile.get("modifier");
