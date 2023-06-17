@@ -5,6 +5,7 @@ import me.dueris.genesismc.core.factory.powers.Powers;
 import me.dueris.genesismc.core.factory.powers.armour.FlightElytra;
 import me.dueris.genesismc.core.factory.powers.armour.GoldAmourBellow;
 import me.dueris.genesismc.core.factory.powers.armour.GoldArmourBuff;
+import me.dueris.genesismc.core.factory.powers.attributes.AttributeConditioned;
 import me.dueris.genesismc.core.factory.powers.attributes.AttributeHandler;
 import me.dueris.genesismc.core.factory.powers.block.CeilingWeak;
 import me.dueris.genesismc.core.factory.powers.block.Webbing;
@@ -160,6 +161,7 @@ public class OriginStartHandler {
         getServer().getPluginManager().registerEvents(new AttributeHandler(), getPlugin());
         getServer().getPluginManager().registerEvents(new StrongArmsBreakSpeed(), getPlugin());
         getServer().getPluginManager().registerEvents(new LikeWater(), getPlugin());
+        getServer().getPluginManager().registerEvents(new AttributeConditioned(), getPlugin());
 
     }
 }
