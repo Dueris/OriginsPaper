@@ -145,4 +145,26 @@ public class PowerContainer implements Serializable {
 
         return null;
     }
+
+    /**
+     * @return Conditions in the power file
+     * @return null if object not found
+     */
+    public HashMap<String, Object> getConditions() {
+        Object obj = powerFile.get("modifier");
+        if(obj == null) return new HashMap<>();
+
+        if(obj instanceof JSONObject) {
+            JSONObject modifier = (JSONObject) obj;
+            HashMap<String, Object> result = new HashMap<>();
+            for(Object key : modifier.keySet()){
+                String string_key = (String) key;
+                Object value = modifier.get(string_key);
+                result.put(string_key, value);
+            }
+            return result;
+        }
+
+        return null;
+    }
 }
