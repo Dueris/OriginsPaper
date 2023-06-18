@@ -126,10 +126,10 @@ public final class GenesisMC extends JavaPlugin implements Listener {
             Debug.executeGenesisDebug();
             Debug.testIncompatiblePlugins();
             Debug.versionTest();
-            getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] Successfully loaded version mc1.20-v0.1.7").color(TextColor.fromHexString(GREEN)));
-            getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] Successfully loaded API version 1.0.4").color(TextColor.fromHexString(GREEN)));
+            getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] Successfully loaded version mc1.20-v0.2.1").color(TextColor.fromHexString(GREEN)));
+            getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] Successfully loaded API version 1.0.5").color(TextColor.fromHexString(GREEN)));
         } else {
-            getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] Successfully loaded version mc1.20-v0.1.7").color(TextColor.fromHexString(GREEN)));
+            getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] Successfully loaded version mc1.20-v0.2.1").color(TextColor.fromHexString(GREEN)));
         }
 
         //origin load
