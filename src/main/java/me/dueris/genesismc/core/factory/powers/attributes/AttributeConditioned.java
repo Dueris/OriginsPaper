@@ -42,6 +42,8 @@ public class AttributeConditioned implements Listener {
         operationMap.put("multiply_random_max", (a, b) -> a * random.nextInt(b));
         operationMap.put("divide_random_max", (a, b) -> a / random.nextInt(b));
 
+        if(OriginPlayer.getOrigin(p).getPowerFileFromType("origins:conditioned_attribute") == null) return;
+
         Attribute attribute_modifier = Attribute.valueOf(OriginPlayer.getOrigin(p).getPowerFileFromType("origins:conditioned_attribute").getModifier().get("attribute").toString().split(":")[1].replace(".", "_").toUpperCase());
         int value = Integer.valueOf(OriginPlayer.getOrigin(p).getPowerFileFromType("origins:conditioned_attribute").getModifier().get("value").toString());
         String operation = String.valueOf(OriginPlayer.getOrigin(p).getPowerFileFromType("origins:conditioned_attribute").getModifier().get("operation"));
@@ -74,6 +76,8 @@ public class AttributeConditioned implements Listener {
         operationMap.put("subtract_random_max", (a, b) -> a + random.nextInt(b));
         operationMap.put("multiply_random_max", (a, b) -> a / random.nextInt(b));
         operationMap.put("divide_random_max", (a, b) -> a * random.nextInt(b));
+
+        if(OriginPlayer.getOrigin(p).getPowerFileFromType("origins:conditioned_attribute") == null) return;
 
         Attribute attribute_modifier = Attribute.valueOf(OriginPlayer.getOrigin(p).getPowerFileFromType("origins:conditioned_attribute").getModifier().get("attribute").toString().split(":")[1].replace(".", "_").toUpperCase());
         int value = Integer.valueOf(OriginPlayer.getOrigin(p).getPowerFileFromType("origins:conditioned_attribute").getModifier().get("value").toString());
