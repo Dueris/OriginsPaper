@@ -48,6 +48,18 @@ Changelog:
 -optimized lots of code
 -cleaned 99% of the project code
 -added merling powers
+-fixed elytrian keybind
+-added getModifier() to custom origins
+-added attribute power for custom origins
+-added conditioned_attribute
+-modified/rewrote the invis/transparency system
+-made the core origins datapack for CO
+-added datapack loading
+-moved custom origins loading to datapacks folder
+-fixed some bugs
+-added pumpkin hate invis
+-fixed crafting bug
+-fixed bugs with origincontainer
 
 </pre>
 <hr>
