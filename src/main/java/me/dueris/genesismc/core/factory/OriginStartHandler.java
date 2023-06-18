@@ -5,6 +5,7 @@ import me.dueris.genesismc.core.factory.powers.Powers;
 import me.dueris.genesismc.core.factory.powers.armour.FlightElytra;
 import me.dueris.genesismc.core.factory.powers.armour.GoldAmourBellow;
 import me.dueris.genesismc.core.factory.powers.armour.GoldArmourBuff;
+import me.dueris.genesismc.core.factory.powers.attributes.AttributeConditioned;
 import me.dueris.genesismc.core.factory.powers.attributes.AttributeHandler;
 import me.dueris.genesismc.core.factory.powers.block.CeilingWeak;
 import me.dueris.genesismc.core.factory.powers.block.Webbing;
@@ -52,8 +53,8 @@ public class OriginStartHandler {
         MineSpeed mineSpeed = new MineSpeed();
         mineSpeed.runTaskTimer(getPlugin(), 0, 10);
 
-        Transparency transparency = new Transparency();
-        transparency.runTaskTimer(getPlugin(), 0, 10);
+        PlayerRender transparency = new PlayerRender();
+        transparency.runTaskTimer(getPlugin(), 0, 5);
 
         BurnInDaylight burnInDaylight = new BurnInDaylight();
         burnInDaylight.runTaskTimer(getPlugin(), 0, 10);
@@ -108,6 +109,9 @@ public class OriginStartHandler {
 
         OverworldPiglinZombified piglinZombified = new OverworldPiglinZombified();
         piglinZombified.runTaskTimer(getPlugin(), 0, 40);
+
+        LikeWater likeWater = new LikeWater();
+        likeWater.runTaskTimer(getPlugin(), 0, 3);
     }
 
     public static void StartListeners() {
@@ -156,6 +160,8 @@ public class OriginStartHandler {
         getServer().getPluginManager().registerEvents(new AirFromPotions(), getPlugin());
         getServer().getPluginManager().registerEvents(new AttributeHandler(), getPlugin());
         getServer().getPluginManager().registerEvents(new StrongArmsBreakSpeed(), getPlugin());
+        getServer().getPluginManager().registerEvents(new LikeWater(), getPlugin());
+        getServer().getPluginManager().registerEvents(new AttributeConditioned(), getPlugin());
 
     }
 }

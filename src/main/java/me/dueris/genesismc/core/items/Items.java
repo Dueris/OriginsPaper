@@ -64,12 +64,12 @@ public class Items extends BukkitRunnable implements Listener {
         ItemStack spectatorswitch = new ItemStack(Material.PHANTOM_MEMBRANE);
         ItemMeta switch_meta = spectatorswitch.getItemMeta();
         switch_meta.setDisplayName(GRAY + "Phantom Form");
-        pearl_lore = new ArrayList();
+        ArrayList<String> phanlore = new ArrayList();
         switch_meta.setUnbreakable(true);
         switch_meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
         switch_meta.addItemFlags(ItemFlag.HIDE_ITEM_SPECIFICS);
-        switch_meta.setLore(pearl_lore);
         switch_meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+        switch_meta.setLore(phanlore);
         spectatorswitch.setItemMeta(switch_meta);
 
         ItemStack launchitem = new ItemStack(Material.FEATHER);
@@ -79,43 +79,11 @@ public class Items extends BukkitRunnable implements Listener {
         launchitem.addItemFlags(ItemFlag.HIDE_ENCHANTS);
         launchitem.setItemMeta(launchmeta);
 
-        if (e.getInventory().contains(infinpearl) || e.getInventory().contains(spectatorswitch) || e.getInventory().contains(launchitem)) {
-            e.getInventory().setResult(null);
-        }
-    }
-
-    @EventHandler
-    public void CANCEL(PlayerInteractEvent e) {
-        ItemStack infinpearl = new ItemStack(ENDER_PEARL);
-
-        ItemMeta pearl_meta = infinpearl.getItemMeta();
-        pearl_meta.setDisplayName(ChatColor.LIGHT_PURPLE + "Teleport");
-        ArrayList<String> pearl_lore = new ArrayList<>();
-        pearl_meta.setUnbreakable(true);
-        pearl_meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
-        pearl_meta.setLore(pearl_lore);
-        infinpearl.setItemMeta(pearl_meta);
-
-        ItemStack spectatorswitch = new ItemStack(Material.PHANTOM_MEMBRANE);
-        ItemMeta switch_meta = spectatorswitch.getItemMeta();
-        switch_meta.setDisplayName(GRAY + "Phantom Form");
-        pearl_lore = new ArrayList();
-        switch_meta.setUnbreakable(true);
-        switch_meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
-        switch_meta.addItemFlags(ItemFlag.HIDE_ITEM_SPECIFICS);
-        switch_meta.setLore(pearl_lore);
-        switch_meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-        spectatorswitch.setItemMeta(switch_meta);
-
-        ItemStack launchitem = new ItemStack(Material.FEATHER);
-        ItemMeta launchmeta = launchitem.getItemMeta();
-        launchmeta.setDisplayName(GRAY + "Launch");
-        launchmeta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
-        launchitem.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-        launchitem.setItemMeta(launchmeta);
-
-        if (e.getItem().isSimilar(infinpearl) || e.getItem().isSimilar(spectatorswitch) || e.getItem().isSimilar(spectatorswitch)) {
-            e.setCancelled(true);
+        for (ItemStack ingredient : e.getInventory().getMatrix()) {
+            if ((ingredient != null && ingredient.isSimilar(infinpearl)) || (ingredient != null && ingredient.isSimilar(spectatorswitch)) || (ingredient != null && ingredient.isSimilar(launchitem))) {
+                e.getInventory().setResult(null); // Set the crafting result to null
+                return;
+            }
         }
     }
 

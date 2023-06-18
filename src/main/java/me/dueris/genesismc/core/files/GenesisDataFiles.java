@@ -26,6 +26,8 @@ public class GenesisDataFiles {
     public static File germanLangFile;
     public static FileConfiguration russianLang;
     public static File russianLangFile;
+    public static FileConfiguration chineseLang;
+    public static File chineseLangFile;
 
     public static void setup() {
         File lang = new File(Bukkit.getServer().getPluginManager().getPlugin("GenesisMC").getDataFolder(), "lang");
@@ -34,6 +36,7 @@ public class GenesisDataFiles {
         englishLangFile = new File(Bukkit.getServer().getPluginManager().getPlugin("GenesisMC").getDataFolder() + File.separator + "lang", "english.yml");
         germanLangFile = new File(Bukkit.getServer().getPluginManager().getPlugin("GenesisMC").getDataFolder() + File.separator + "lang", "german.yml");
         russianLangFile = new File(Bukkit.getServer().getPluginManager().getPlugin("GenesisMC").getDataFolder() + File.separator + "lang", "russian.yml");
+        chineseLangFile = new File(Bukkit.getServer().getPluginManager().getPlugin("GenesisMC").getDataFolder() + File.separator + "lang", "trad-chinese.yml");
         if (!lang.exists()) {
             lang.mkdirs();
         }
@@ -58,7 +61,7 @@ public class GenesisDataFiles {
         if (!englishLangFile.exists()) {
             try {
                 englishLangFile.createNewFile();
-            } catch (IOException var2) {
+            } catch (IOException var21) {
                 Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.RED + "Unable to create english.yml. Please reload or restart server. If that doesn't work, contact Dueris on her Discord server");
             }
         }
@@ -66,7 +69,7 @@ public class GenesisDataFiles {
         if (!germanLangFile.exists()) {
             try {
                 germanLangFile.createNewFile();
-            } catch (IOException var2) {
+            } catch (IOException var28) {
                 Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.RED + "Unable to create german.yml. Please reload or restart server. If that doesn't work, contact Dueris on her Discord server");
             }
         }
@@ -74,8 +77,15 @@ public class GenesisDataFiles {
         if (!russianLangFile.exists()) {
             try {
                 russianLangFile.createNewFile();
-            } catch (IOException var2) {
+            } catch (IOException var7) {
                 Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.RED + "Unable to create russian.yml. Please reload or restart server. If that doesn't work, contact Dueris on her Discord server");
+            }
+        }
+        if (!chineseLangFile.exists()) {
+            try {
+                chineseLangFile.createNewFile();
+            } catch (IOException var6) {
+                Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.RED + "Unable to create trad-chinese.yml. Please reload or restart server. If that doesn't work, contact Dueris on her Discord server");
             }
         }
 
@@ -108,6 +118,11 @@ public class GenesisDataFiles {
 
         try {
             germanLang.save(germanLangFile);
+        } catch (IOException e) {
+            Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.RED + "Couldn't save yml file: " + e.getMessage());
+        }
+        try {
+            chineseLang.save(chineseLangFile);
         } catch (IOException e) {
             Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.RED + "Couldn't save yml file: " + e.getMessage());
         }
@@ -211,6 +226,20 @@ public class GenesisDataFiles {
         // Load the custom configuration file
         addMissingLines(germanLangFile, "langFiles/german.yml");
         germanLang = YamlConfiguration.loadConfiguration(germanLangFile);
+
+        chineseLangFile = new File(Bukkit.getServer().getPluginManager().getPlugin("GenesisMC").getDataFolder() + File.separator + "/lang/" + File.separator, "trad-chinese.yml");
+        if (!chineseLangFile.exists()) {
+            chineseLangFile.getParentFile().mkdirs();
+            try (InputStream inputStream = Bukkit.getServer().getPluginManager().getPlugin("GenesisMC").getResource("langFiles/trad-chinese.yml")) {
+                Files.copy(inputStream, chineseLangFile.toPath());
+            } catch (Exception e) {
+                getLogger().severe("Failed to create custom configuration file: " + e.getMessage());
+            }
+        }
+
+        // Load the custom configuration file
+        addMissingLines(chineseLangFile, "langFiles/trad-chinese.yml");
+        chineseLang = YamlConfiguration.loadConfiguration(chineseLangFile);
     }
 
     public static FileConfiguration getMainConfig() {
@@ -231,6 +260,10 @@ public class GenesisDataFiles {
 
     public static FileConfiguration getRussianLang() {
         return russianLang;
+    }
+
+    public static FileConfiguration getChineseLang() {
+        return chineseLang;
     }
 
 }

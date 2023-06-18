@@ -48,7 +48,7 @@ public class AttributeHandler extends BukkitRunnable implements Listener {
             operationMap.put("multiply_random_max", (a, b) -> a * random.nextInt(b));
             operationMap.put("divide_random_max", (a, b) -> a / random.nextInt(b));
 
-            System.out.println(OriginPlayer.getOrigin(p).getPowerFileFromType("origins:attribute").getModifier());
+            if(OriginPlayer.getOrigin(p).getPowerFileFromType("origins:attribute") == null) return;
 
             Attribute attribute_modifier = Attribute.valueOf(OriginPlayer.getOrigin(p).getPowerFileFromType("origins:attribute").getModifier().get("attribute").toString().split(":")[1].replace(".", "_").toUpperCase());
             int value = Integer.valueOf(OriginPlayer.getOrigin(p).getPowerFileFromType("origins:attribute").getModifier().get("value").toString());

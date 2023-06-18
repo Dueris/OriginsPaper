@@ -74,7 +74,7 @@ public class Phantomized extends BukkitRunnable implements Listener {
                         if (p.isInsideVehicle()) return;
                         p.setCollidable(false);
                         p.setGameMode(GameMode.SPECTATOR);
-                        p.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 20, 255, false, false, false));
+                        p.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 40, 255, false, false, false));
                         p.setFlying(true);
                         p.setFlySpeed(0.05F);
 
@@ -156,8 +156,8 @@ public class Phantomized extends BukkitRunnable implements Listener {
         switch_meta.setUnbreakable(true);
         switch_meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
         switch_meta.addItemFlags(ItemFlag.HIDE_ITEM_SPECIFICS);
-        switch_meta.setLore(pearl_lore);
         switch_meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+        switch_meta.setLore(pearl_lore);
         spectatorswitch.setItemMeta(switch_meta);
 
         Player p = e.getPlayer();
@@ -174,8 +174,8 @@ public class Phantomized extends BukkitRunnable implements Listener {
                                 p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 2);
                                 p.sendActionBar(DARK_AQUA + "Activated Phantom Form");
                                 p.setSilent(true);
-                                p.setCollidable(false);
-
+                                p.setCollidable(true);
+                                p.setInvulnerable(false);
                             } else {
                                 p.sendMessage(RED + "You must be able to sprint to switch forms");
                             }
@@ -190,6 +190,7 @@ public class Phantomized extends BukkitRunnable implements Listener {
                             p.sendActionBar(DARK_AQUA + "Deactivated Phantom Form");
                             p.setSilent(false);
                             p.setCollidable(true);
+                            p.setInvulnerable(false);
 
                         } else {
                             p.sendMessage(ChatColor.RED + "You are unable to switch forms while inside a block or in spectator mode.");
