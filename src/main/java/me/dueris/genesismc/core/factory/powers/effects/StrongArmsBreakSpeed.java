@@ -10,6 +10,7 @@ import org.bukkit.potion.PotionEffectType;
 
 import java.util.EnumSet;
 
+import static me.dueris.genesismc.core.factory.powers.Powers.strong_arms_break_speed;
 import static org.bukkit.Material.*;
 
 public class StrongArmsBreakSpeed implements Listener {
@@ -31,6 +32,7 @@ public class StrongArmsBreakSpeed implements Listener {
     @EventHandler
     public void breakBlock(PlayerInteractEvent e) {
         Player p = e.getPlayer();
+        if (!strong_arms_break_speed.contains(p)) return;
         if (e.getClickedBlock() != null && stones.contains(e.getClickedBlock().getType()) && e.getAction().isLeftClick() && !tools.contains(p.getEquipment().getItemInMainHand().getType())) {
             e.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.FAST_DIGGING, 60, 15, false, false, false ));
         } else if (p.getEquipment().getItemInMainHand().getType() == AIR) { //beacons exist
