@@ -82,15 +82,14 @@ public class TabAutoComplete implements TabCompleter {
                     Player[] players = new Player[Bukkit.getServer().getOnlinePlayers().size()];
                     List<String> playernames = new ArrayList<>();
                     Bukkit.getServer().getOnlinePlayers().toArray(players);
-                    for (Player player : players) {
-                        playernames.add(player.getName());
-                    }
-                    Iterator<String> playerIterator = playernames.iterator();
-                    while (playerIterator.hasNext()) {
-                        String name = playerIterator.next();
-                        if (name.length() > args[1].length()) {playernames.remove(name); continue;}
+                    for (Player player : players) playernames.add(player.getName());
+
+                    for (int i = 0; i < playernames.size(); i++) {
+                        String name = playernames.get(i);
+                        if (name.length() < args[1].length()) {playernames.remove(name); continue;}
                         if (!args[1].equals(name.substring(0, args[1].length()))) playernames.remove(name);
                     }
+
                     if (args[1].isBlank() || args[1].charAt(0) == '@') playernames.addAll(Arrays.asList("@a", "@e", "@p", "@r", "@s"));
                     return playernames;
 
