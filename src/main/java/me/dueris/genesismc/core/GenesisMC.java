@@ -38,6 +38,8 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.HashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static me.dueris.genesismc.core.utils.BukkitColour.*;
 
@@ -54,8 +56,6 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 
     public GenesisMC() {
     }
-
-    //origin start end
 
     //Load custom enchantments
     public static void registerEnchantment(Enchantment enchantment) {
@@ -82,7 +82,6 @@ public final class GenesisMC extends JavaPlugin implements Listener {
     public void onEnable() {
         // Plugin startup logic
         plugin = this;
-
         //bstats
         metrics = new Metrics(this, 18536);
 
@@ -105,7 +104,6 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         Bukkit.getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC]   \\____|  \\___| |_| |_|  \\___| |___/ |_| |___/ |_|  |_|  \\____|").color(TextColor.fromHexString("#333fb7")));
         Bukkit.getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC]  GenesisMC -- Created by The Genesis Team").color(TextColor.fromHexString("#dd50ff")));
         Bukkit.getServer().getConsoleSender().sendMessage(Component.text("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"));
-
         //lang check
         if (Lang.lang_test == null) {
             getLogger().warning("[GenesisMC] Lang could not be loaded! Disabling plugin.");
