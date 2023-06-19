@@ -16,3 +16,5 @@ build.gradle
 gradlew.bat
 gradlew
 /run/
+/gradle/
+/gradle/

@@ -22,15 +22,15 @@ public class EffectImmunity extends BukkitRunnable {
     public void run() {
         for (Player p : Bukkit.getOnlinePlayers()) {
             if (effect_immunity.contains(p)) {
-                List<String> effectStrings = OriginPlayer.getOrigin(p).getPowerFileFromType("origins:effect_immunity").getEffects();
-                for(String effectString : effectStrings){
-                    PotionEffectType effectType = PotionEffectType.getByName(effectString);
-                    if(effectType != null){
-                        if(p.hasPotionEffect(effectType)){
-                            p.removePotionEffect(effectType);
-                        }
-                    }
-                }
+//                List<String> effectStrings = OriginPlayer.getOrigin(p).getPowerFileFromType("origins:effect_immunity").getEffects();
+//                for(String effectString : effectStrings){
+//                    PotionEffectType effectType = PotionEffectType.getByName(effectString);
+//                    if(effectType != null){
+//                        if(p.hasPotionEffect(effectType)){
+//                            p.removePotionEffect(effectType);
+//                        }
+//                    }
+//                }
 
             }
         }
