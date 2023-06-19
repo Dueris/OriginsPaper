@@ -6,7 +6,9 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class PowerContainer implements Serializable {
 
@@ -144,6 +146,25 @@ public class PowerContainer implements Serializable {
         }
 
         return null;
+    }
+
+    /**
+     * @return Effects in the power file
+     * @return null if object not found
+     */
+    public List<String> getEffects() {
+        List<String> effects = new ArrayList<>();
+        Object obj = powerFile.get("effects");
+        if (obj instanceof JSONArray) {
+            JSONArray effectsArray = (JSONArray) obj;
+            for (Object effectObj : effectsArray) {
+                if (effectObj instanceof String) {
+                    String effect = (String) effectObj;
+                    effects.add(effect);
+                }
+            }
+        }
+        return effects;
     }
 
     /**

@@ -1,4 +1,4 @@
-package me.dueris.genesismc.core.factory.powers.effects;
+package me.dueris.genesismc.core.factory.powers.effects.general;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
