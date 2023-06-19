@@ -15,3 +15,6 @@ build.gradle
 .gitignore
 gradlew.bat
 gradlew
+/run/
+/gradle/
+/gradle/
