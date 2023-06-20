@@ -38,12 +38,12 @@ dependencies {
 //    compileOnly("org.geysermc.floodgate:api:2.2.2-SNAPSHOT")
 }
 
-tasks {
-    // Configure reobfJar to run when invoking the build task
-    assemble {
-        dependsOn(reobfJar)
-    }
-}
+//tasks {
+//    // Configure reobfJar to run when invoking the build task
+//    assemble {
+//        dependsOn(reobfJar)
+//    }
+//}
 
 processResources {
     def props = [version: version]
