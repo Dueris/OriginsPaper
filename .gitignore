@@ -1,0 +1,7 @@
+/gradle/
+/.idea/
+/.gradle/
+/.gitignore
+/gradle.properties
+/settings.gradle
+/build/
