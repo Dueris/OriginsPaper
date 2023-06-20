@@ -1,12 +1,13 @@
 plugins {
     id 'java'
-    id 'maven-publish'
+    id("maven-publish")
     id("io.papermc.paperweight.userdev") version "1.5.5"
     id("xyz.jpenilla.run-paper") version "2.0.1"
 }
-
+apply plugin: 'java'
+apply plugin: 'maven-publish'
 group = 'me.dueris'
-version = 'mc1.20-v0.1.7'
+version = 'mc1.20-v0.2.1'
 
 repositories {
     mavenCentral()
@@ -32,7 +33,7 @@ repositories {
 
 
 dependencies {
-    paperweight.paperDevBundle("1.20-R0.1-SNAPSHOT")
+    paperweight.paperDevBundle("1.20.1-R0.1-SNAPSHOT")
     compileOnly("org.geysermc.geyser:api:2.1.1-SNAPSHOT")
     compileOnly("org.geysermc.floodgate:api:2.2.2-SNAPSHOT")
 }
@@ -44,10 +45,35 @@ tasks {
     }
 }
 
+def targetJavaVersion = 17
+java {
+    def javaVersion = JavaVersion.toVersion(targetJavaVersion)
+    sourceCompatibility = javaVersion
+    targetCompatibility = javaVersion
+    if (JavaVersion.current() < javaVersion) {
+        toolchain.languageVersion = JavaLanguageVersion.of(targetJavaVersion)
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    if (targetJavaVersion >= 10 || JavaVersion.current().isJava10Compatible()) {
+        options.release = targetJavaVersion
+    }
+}
+
 processResources {
     def props = [version: version]
     inputs.properties props
+    filteringCharset 'UTF-8'
     filesMatching('plugin.yml') {
         expand props
+    }
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            from components.java
+        }
     }
 }

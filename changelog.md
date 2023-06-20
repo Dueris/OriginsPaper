@@ -3,8 +3,10 @@
 <hr>
 Changelog:
 <pre>
--made plugin compatible to run on Folia
--added effect classes for CO, expect bugs
+-fixed tab complete bug
+-added power check on strong_arms_break_speed
+-removed blazeborn particles
+-added layers
 </pre>
 <hr>
 <header>Again, still in early beta. Most features do not work atm.</header>

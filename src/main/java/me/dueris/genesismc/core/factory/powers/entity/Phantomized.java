@@ -2,7 +2,6 @@ package me.dueris.genesismc.core.factory.powers.entity;
 
 import com.destroystokyo.paper.event.player.PlayerStartSpectatingEntityEvent;
 import me.dueris.genesismc.core.GenesisMC;
-import me.dueris.genesismc.core.entity.OriginPlayer;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.craftbukkit.v1_20_R1.CraftWorldBorder;

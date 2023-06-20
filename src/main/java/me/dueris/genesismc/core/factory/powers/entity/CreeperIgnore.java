@@ -1,6 +1,5 @@
 package me.dueris.genesismc.core.factory.powers.entity;
 
-import me.dueris.genesismc.core.entity.OriginPlayer;
 import org.bukkit.entity.Creeper;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;

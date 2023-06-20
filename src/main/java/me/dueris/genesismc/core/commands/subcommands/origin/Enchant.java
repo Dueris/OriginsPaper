@@ -57,7 +57,7 @@ public class Enchant extends SubCommand {
 
             for (Player p : players) {
                 if (!wearable.contains(p.getInventory().getItemInMainHand().getType())) {
-                    sender.sendMessage(Component.text(p.getName()+" Is not holding an enchant-able item!").color(TextColor.fromHexString(RED)));
+                    sender.sendMessage(Component.text(p.getName() + " Is not holding an enchant-able item!").color(TextColor.fromHexString(RED)));
                     continue;
                 }
 

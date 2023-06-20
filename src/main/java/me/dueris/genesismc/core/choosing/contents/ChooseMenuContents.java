@@ -14,7 +14,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 
 import static me.dueris.genesismc.core.choosing.ChoosingCORE.itemProperties;
 import static me.dueris.genesismc.core.choosing.ChoosingCUSTOM.cutStringIntoLists;
@@ -44,13 +43,14 @@ public class ChooseMenuContents {
         NamespacedKey pageKey = new NamespacedKey(GenesisMC.getPlugin(), "page");
         ItemMeta backMeta = back.getItemMeta();
         if (pageNumber == 0) backMeta.getPersistentDataContainer().set(pageKey, PersistentDataType.INTEGER, 0);
-        else backMeta.getPersistentDataContainer().set(pageKey, PersistentDataType.INTEGER, pageNumber-1);
+        else backMeta.getPersistentDataContainer().set(pageKey, PersistentDataType.INTEGER, pageNumber - 1);
         back.setItemMeta(backMeta);
 
 
         ItemMeta nextMeta = next.getItemMeta();
-        if (originContainers.size() < 37) nextMeta.getPersistentDataContainer().set(pageKey, PersistentDataType.INTEGER, pageNumber);
-        else nextMeta.getPersistentDataContainer().set(pageKey, PersistentDataType.INTEGER, pageNumber+1);
+        if (originContainers.size() < 37)
+            nextMeta.getPersistentDataContainer().set(pageKey, PersistentDataType.INTEGER, pageNumber);
+        else nextMeta.getPersistentDataContainer().set(pageKey, PersistentDataType.INTEGER, pageNumber + 1);
         next.setItemMeta(nextMeta);
 
         for (int i = 0; i <= 53; i++) {

@@ -12,9 +12,9 @@ import static me.dueris.genesismc.core.factory.powers.block.fluid.WaterBreathe.i
 public class AquaAffinity extends BukkitRunnable {
     @Override
     public void run() {
-        for(Player p : Bukkit.getOnlinePlayers()){
-            if(aqua_affinity.contains(p)){
-                if(isInBreathableWater(p)){
+        for (Player p : Bukkit.getOnlinePlayers()) {
+            if (aqua_affinity.contains(p)) {
+                if (isInBreathableWater(p)) {
                     p.addPotionEffect(new PotionEffect(PotionEffectType.FAST_DIGGING, 15, 2, false, false, false));
                 }
             }

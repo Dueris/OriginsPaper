@@ -12,7 +12,6 @@ import me.dueris.genesismc.core.factory.powers.block.Webbing;
 import me.dueris.genesismc.core.factory.powers.block.fluid.*;
 import me.dueris.genesismc.core.factory.powers.block.solid.PumpkinHate;
 import me.dueris.genesismc.core.factory.powers.effects.*;
-import me.dueris.genesismc.core.factory.powers.effects.StrongArmsBreakSpeed;
 import me.dueris.genesismc.core.factory.powers.entity.*;
 import me.dueris.genesismc.core.factory.powers.food.Carnivore;
 import me.dueris.genesismc.core.factory.powers.food.CarrotOnly;

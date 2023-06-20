@@ -2,7 +2,10 @@ package me.dueris.genesismc.core.factory.powers.entity;
 
 import me.dueris.genesismc.core.GenesisMC;
 import me.dueris.genesismc.core.entity.OriginPlayer;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.Particle;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
@@ -11,8 +14,6 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.ScoreboardManager;
 import org.bukkit.scoreboard.Team;
-
-import java.util.ArrayList;
 
 import static me.dueris.genesismc.core.factory.powers.Powers.pumpkin_hate;
 import static me.dueris.genesismc.core.factory.powers.Powers.translucent;
@@ -58,7 +59,7 @@ public class PlayerRender extends BukkitRunnable {
                 team.addEntry(p.getName());
             }
 
-            if(isInTranslucentList){
+            if (isInTranslucentList) {
                 for (Player other : Bukkit.getOnlinePlayers()) {
                     if (!other.equals(p)) {
                         other.showPlayer(GenesisMC.getPlugin(), p);

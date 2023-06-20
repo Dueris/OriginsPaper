@@ -205,8 +205,10 @@ public class ChoosingCORE implements Listener {
         if (e.getCurrentItem().getItemMeta() == null) return;
         if (e.getView().getTitle().equalsIgnoreCase("Choosing Menu")) {
             NamespacedKey key = new NamespacedKey(GenesisMC.getPlugin(), "orb");
-            if (e.getCurrentItem().getItemMeta().getPersistentDataContainer().get(key, PersistentDataType.STRING) == null) return;
-            if (e.getCurrentItem().getItemMeta().getPersistentDataContainer().get(key, PersistentDataType.STRING) != "orb") return;
+            if (e.getCurrentItem().getItemMeta().getPersistentDataContainer().get(key, PersistentDataType.STRING) == null)
+                return;
+            if (e.getCurrentItem().getItemMeta().getPersistentDataContainer().get(key, PersistentDataType.STRING) != "orb")
+                return;
 
             Player p = (Player) e.getWhoClicked();
             ArrayList<OriginContainer> origins = CraftApoli.getOrigins();
@@ -220,7 +222,7 @@ public class ChoosingCORE implements Listener {
             p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 10, 2);
             p.closeInventory();
             p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_CHIME, 10, 2);
-            p.sendMessage(Component.text("Your random origin is "+origin.getName()+"!").color(TextColor.fromHexString(AQUA)));
+            p.sendMessage(Component.text("Your random origin is " + origin.getName() + "!").color(TextColor.fromHexString(AQUA)));
             p.spawnParticle(Particle.CLOUD, p.getLocation(), 100);
             p.getWorld().spawnParticle(Particle.FIREWORKS_SPARK, p.getLocation(), 6);
             p.setCustomNameVisible(false);

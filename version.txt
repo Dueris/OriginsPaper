@@ -1,4 +1,5 @@
 # version : id |
 0.1.7 : 0 |
+0.1.7.1 : 1 |
 
-latest : 0 |
+latest : 1 |

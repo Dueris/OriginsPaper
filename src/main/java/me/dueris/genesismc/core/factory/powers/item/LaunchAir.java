@@ -51,6 +51,7 @@ public class LaunchAir implements Listener {
             e.getDrops().remove(launchitem);
         }
     }
+
     public static final HashMap<UUID, Integer> cooldownBeforeElytrian = new HashMap<>();
     public static final HashMap<UUID, Long> cooldownAfterElytrian = new HashMap<>();
     public static final ArrayList<UUID> canLaunch = new ArrayList<>();
@@ -83,6 +84,7 @@ public class LaunchAir implements Listener {
             }
         }.runTaskTimer(GenesisMC.getPlugin(), 0L, 10L);
     }
+
     @EventHandler
     public void ExecuteLaunch(PlayerInteractEvent e) {
         ItemStack launchitem = new ItemStack(Material.FEATHER);
@@ -105,11 +107,11 @@ public class LaunchAir implements Listener {
                     @Override
                     public void run() {
                         cooldownBeforeElytrian.replace(p.getUniqueId(), cooldownBeforeElytrian.get(p.getUniqueId()) + 1);
-                                cooldownAfterElytrian.put(p.getUniqueId(), System.currentTimeMillis());
-                                canLaunch.remove(p);
-                                doLaunch(p);
-                                p.setVelocity(new Vector(p.getVelocity().getX(), p.getVelocity().getY() + 1.7, p.getVelocity().getZ()));
-                                this.cancel();
+                        cooldownAfterElytrian.put(p.getUniqueId(), System.currentTimeMillis());
+                        canLaunch.remove(p);
+                        doLaunch(p);
+                        p.setVelocity(new Vector(p.getVelocity().getX(), p.getVelocity().getY() + 1.7, p.getVelocity().getZ()));
+                        this.cancel();
                     }
                 }.runTaskTimer(GenesisMC.getPlugin(), 0L, 2L);
                 e.setCancelled(true);

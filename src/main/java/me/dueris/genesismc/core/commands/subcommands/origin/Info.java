@@ -64,7 +64,8 @@ public class Info extends SubCommand implements Listener {
                 help.setContents(infoMenu(p, playerPage.get(p)));
                 p.openInventory(help);
             }
-        } else sender.sendMessage(Component.text("You must be a player to use this command!").color(TextColor.fromHexString(RED)));
+        } else
+            sender.sendMessage(Component.text("You must be a player to use this command!").color(TextColor.fromHexString(RED)));
     }
 
     public ItemStack[] infoMenu(Player p, Integer page) {
