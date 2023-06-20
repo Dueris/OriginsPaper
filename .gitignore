@@ -4,6 +4,8 @@
 /.gitignore
 /gradle.properties
 /settings.gradle
+/gradlew.bat
+/gradlew
 /build/
 /run/logs/2023-06-18-1.log.gz
 /run/logs/2023-06-18-2.log.gz
@@ -158,3 +160,5 @@
 /run/libraries/org/xerial/sqlite-jdbc/3.42.0.0/sqlite-jdbc-3.42.0.0.jar
 /run/libraries/net/minecrell/terminalconsoleappender/1.3.0/terminalconsoleappender-1.3.0.jar
 /run/libraries/com/velocitypowered/velocity-native/3.1.2-SNAPSHOT/velocity-native-3.1.2-SNAPSHOT.jar
+/run/
+/.stfolder/
