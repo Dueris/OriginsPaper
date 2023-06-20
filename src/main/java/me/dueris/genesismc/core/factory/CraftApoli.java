@@ -248,7 +248,7 @@ public class CraftApoli {
     }
 
     /**
-     * @return The OriginContainer serialized into a byte array.
+     * @return The OriginContainer serialized into a byte array.i've
      **/
     public static byte[] toByteArray(OriginContainer origin) {
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
@@ -258,6 +258,8 @@ public class CraftApoli {
             oos.flush();
             return bos.toByteArray();
         } catch (Exception e) {
+            Bukkit.getLogger().warning("CRUCIAL ERROR, PLEASE REPORTING THIS IMMEDIATELY TO THE DEVS!!");
+            e.printStackTrace();
             return null;
         }
     }
@@ -271,6 +273,8 @@ public class CraftApoli {
             ObjectInput oi = new ObjectInputStream(bis);
             return (OriginContainer) oi.readObject();
         } catch (Exception e) {
+            Bukkit.getLogger().warning("CRUCIAL ERROR, PLEASE REPORTING THIS IMMEDIATELY TO THE DEVS!!");
+            e.printStackTrace();
             return null;
         }
     }
