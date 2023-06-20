@@ -17,9 +17,9 @@ public class PlayerHandler implements Listener {
 
         //resets the origin on join
         OriginContainer origin = OriginPlayer.getOrigin(player);
-        if (!origin.getTag().equals(CraftApoli.nullOrigin().getTag())) {
-            OriginPlayer.setOrigin(player, origin);
-        }
+//        if (!origin.getTag().equals(CraftApoli.nullOrigin().getTag())) {
+//            OriginPlayer.setOrigin(player, origin);
+//        }
 
         OriginPlayer.assignPowers(player);
     }
