@@ -55,8 +55,8 @@ public class VersionControl {
             String[] var0 = data.split("\\|");
             for (String var1 : var0) {
                 String[] versionId = var1.split(":");
-                if (versionId[0].equals(pluginVersion)) pluginId = Integer.parseInt(versionId[1]);
-                if (versionId[0].equals("latest")) latestId = Integer.parseInt(versionId[1]);
+                if (versionId[0].strip().equals(pluginVersion)) pluginId = Integer.parseInt(versionId[1].strip());
+                if (versionId[0].strip().equals("latest")) latestId = Integer.parseInt(versionId[1].strip());
             }
 
             int diff = latestId - pluginId;
