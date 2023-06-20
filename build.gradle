@@ -4,7 +4,8 @@ plugins {
     id("io.papermc.paperweight.userdev") version "1.5.5"
     id("xyz.jpenilla.run-paper") version "2.0.1"
 }
-
+apply plugin: 'java'
+apply plugin: 'maven-publish'
 group = 'com.github.Dueris'
 version = 'mc1.20-v0.2.1'
 
