@@ -21,7 +21,7 @@ public class AttributeHandler extends BukkitRunnable implements Listener {
 
 
     @EventHandler
-    public void ExecuteAttributeModification(OriginChangeEvent e){
+    public void ExecuteAttributeModification(OriginChangeEvent e) {
         Player p = e.getPlayer();
         if (natural_armor.contains(p)) {
             p.getAttribute(Attribute.GENERIC_ARMOR).setBaseValue(8);
@@ -29,7 +29,7 @@ public class AttributeHandler extends BukkitRunnable implements Listener {
         if (nine_lives.contains(p)) {
             p.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(18);
         }
-        if(attribute.contains(p)){
+        if (attribute.contains(p)) {
             Map<String, BinaryOperator<Integer>> operationMap = new HashMap<>();
             //base value = a
             //modifier value = b
@@ -39,7 +39,7 @@ public class AttributeHandler extends BukkitRunnable implements Listener {
             operationMap.put("division", (a, b) -> a / b);
             operationMap.put("multiply_base", (a, b) -> a + (a * b));
             operationMap.put("multiply_total", (a, b) -> a * (1 + b));
-            operationMap.put("set_total", (a, b) -> a - a + b);
+            operationMap.put("set_total", (a, b) -> b);
 
             Random random = new Random();
 
@@ -48,7 +48,7 @@ public class AttributeHandler extends BukkitRunnable implements Listener {
             operationMap.put("multiply_random_max", (a, b) -> a * random.nextInt(b));
             operationMap.put("divide_random_max", (a, b) -> a / random.nextInt(b));
 
-            if(OriginPlayer.getOrigin(p).getPowerFileFromType("origins:attribute") == null) return;
+            if (OriginPlayer.getOrigin(p).getPowerFileFromType("origins:attribute") == null) return;
 
             Attribute attribute_modifier = Attribute.valueOf(OriginPlayer.getOrigin(p).getPowerFileFromType("origins:attribute").getModifier().get("attribute").toString().split(":")[1].replace(".", "_").toUpperCase());
             int value = Integer.valueOf(OriginPlayer.getOrigin(p).getPowerFileFromType("origins:attribute").getModifier().get("value").toString());
@@ -56,16 +56,15 @@ public class AttributeHandler extends BukkitRunnable implements Listener {
             int base_value = (int) p.getAttribute(Attribute.valueOf(attribute_modifier.toString())).getBaseValue();
 
             BinaryOperator mathOperator = operationMap.get(operation);
-            if(mathOperator != null) {
+            if (mathOperator != null) {
                 int result = (int) mathOperator.apply(base_value, value);
                 p.getAttribute(Attribute.valueOf(attribute_modifier.toString())).setBaseValue(result);
-            }else{
+            } else {
                 Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.RED + "Unable to parse origins:attribute, unable to get result");
             }
 
         }
     }
-
 
 
     @Override

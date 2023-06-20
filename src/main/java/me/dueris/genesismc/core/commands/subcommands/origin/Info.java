@@ -154,7 +154,8 @@ public class Info extends SubCommand implements Listener {
                 help.setContents(contents.toArray(new ItemStack[0]));
                 p.openInventory(help);
             }
-        } else sender.sendMessage(Component.text("You must be a player to use this command!").color(TextColor.fromHexString(RED)));
+        } else
+            sender.sendMessage(Component.text("You must be a player to use this command!").color(TextColor.fromHexString(RED)));
     }
 
     @EventHandler

@@ -85,7 +85,7 @@ public class FlightElytra implements Listener {
             }
             if (more_kinetic_damage.contains(p)) {
                 if (!glidingPlayers.contains(p)) {
-                    if (e.getCause().equals(EntityDamageEvent.DamageCause.FLY_INTO_WALL) || e.getCause().equals(EntityDamageEvent.DamageCause.CONTACT) || e.getCause().equals(EntityDamageEvent.DamageCause.FALL) ) {
+                    if (e.getCause().equals(EntityDamageEvent.DamageCause.FLY_INTO_WALL) || e.getCause().equals(EntityDamageEvent.DamageCause.CONTACT) || e.getCause().equals(EntityDamageEvent.DamageCause.FALL)) {
                         e.setDamage(e.getDamage() * 1.5);
                     }
                 }

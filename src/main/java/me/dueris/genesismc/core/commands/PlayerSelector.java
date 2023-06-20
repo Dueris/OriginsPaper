@@ -16,7 +16,7 @@ import static me.dueris.genesismc.core.utils.BukkitColour.RED;
 
 public class PlayerSelector {
 
-    public static ArrayList<Player> playerSelector (CommandSender sender, String playerArg) {
+    public static ArrayList<Player> playerSelector(CommandSender sender, String playerArg) {
         ArrayList<Player> players = new ArrayList<>();
 
         switch (playerArg) {

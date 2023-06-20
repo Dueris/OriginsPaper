@@ -61,9 +61,12 @@ public class VersionControl {
 
             int diff = latestId - pluginId;
 
-            if (diff > 0) Bukkit.getLogger().warning("[GenesisMC] You are running a version of the plugin that is "+diff+" versions out of date!\n    Please install the latest version from https://modrinth.com/plugin/genesismc/versions");
-            if (diff == 0) Bukkit.getConsoleSender().sendMessage(Component.text("[GenesisMC] You are running the latest version of the plugin!").color(TextColor.fromHexString(GREEN)));
-            if (diff < 0) Bukkit.getConsoleSender().sendMessage(Component.text("[GenesisMC] You are running a dev build! Join our discord server at https://discord.gg/RKmQnU6SRt or open an issue on github for any feedback :)").color(TextColor.fromHexString(GREEN)));
+            if (diff > 0)
+                Bukkit.getLogger().warning("[GenesisMC] You are running a version of the plugin that is " + diff + " versions out of date!\n    Please install the latest version from https://modrinth.com/plugin/genesismc/versions");
+            if (diff == 0)
+                Bukkit.getConsoleSender().sendMessage(Component.text("[GenesisMC] You are running the latest version of the plugin!").color(TextColor.fromHexString(GREEN)));
+            if (diff < 0)
+                Bukkit.getConsoleSender().sendMessage(Component.text("[GenesisMC] You are running a dev build! Join our discord server at https://discord.gg/RKmQnU6SRt or open an issue on github for any feedback :)").color(TextColor.fromHexString(GREEN)));
 
         } catch (Exception e) {
             e.printStackTrace();

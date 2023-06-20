@@ -140,9 +140,12 @@ public class GenesisDataFiles {
             Set<String> tempKeys = tempConfig.getKeys(true);
             Set<String> sourceKeys = sourceConfig.getKeys(true);
 
-            if (sourceKeys.equals(tempKeys)) {tempConfigFile.delete(); return;}
+            if (sourceKeys.equals(tempKeys)) {
+                tempConfigFile.delete();
+                return;
+            }
             for (String key : sourceKeys) tempKeys.remove(key);
-            for (String key: tempKeys) sourceConfig.set(key, tempConfig.get(key));
+            for (String key : tempKeys) sourceConfig.set(key, tempConfig.get(key));
 
             sourceConfig.save(configFile);
             tempConfigFile.delete();

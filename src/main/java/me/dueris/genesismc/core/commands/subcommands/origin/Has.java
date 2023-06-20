@@ -43,8 +43,9 @@ public class Has extends SubCommand {
             ArrayList<Player> players = PlayerSelector.playerSelector(sender, args[1]);
             if (players.size() == 0) return;
             for (Player p : players) {
-                if (OriginPlayer.getOrigin(p).getTag().equalsIgnoreCase(args[2])) sender.sendMessage(Component.text(p.getName()+" Passed the test!"));
-                else sender.sendMessage(Component.text(p.getName()+" Failed the test."));
+                if (OriginPlayer.getOrigin(p).getTag().equalsIgnoreCase(args[2]))
+                    sender.sendMessage(Component.text(p.getName() + " Passed the test!"));
+                else sender.sendMessage(Component.text(p.getName() + " Failed the test."));
             }
         }
     }

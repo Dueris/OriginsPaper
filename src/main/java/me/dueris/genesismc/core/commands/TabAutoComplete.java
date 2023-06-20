@@ -85,11 +85,15 @@ public class TabAutoComplete implements TabCompleter {
 
                     for (int i = 0; i < playernames.size(); i++) {
                         String name = playernames.get(i);
-                        if (name.length() < args[1].length()) {playernames.remove(name); continue;}
+                        if (name.length() < args[1].length()) {
+                            playernames.remove(name);
+                            continue;
+                        }
                         if (!args[1].equals(name.substring(0, args[1].length()))) playernames.remove(name);
                     }
 
-                    if (args[1].isBlank() || args[1].charAt(0) == '@') playernames.addAll(Arrays.asList("@a", "@e", "@p", "@r", "@s"));
+                    if (args[1].isBlank() || args[1].charAt(0) == '@')
+                        playernames.addAll(Arrays.asList("@a", "@e", "@p", "@r", "@s"));
                     return playernames;
 
                 }

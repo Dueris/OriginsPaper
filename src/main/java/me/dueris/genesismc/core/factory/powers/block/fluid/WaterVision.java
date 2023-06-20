@@ -12,9 +12,9 @@ import static me.dueris.genesismc.core.factory.powers.block.fluid.WaterBreathe.i
 public class WaterVision extends BukkitRunnable {
     @Override
     public void run() {
-        for(Player p : Bukkit.getOnlinePlayers()){
-            if(water_vision.contains(p)){
-                if(isInBreathableWater(p)){
+        for (Player p : Bukkit.getOnlinePlayers()) {
+            if (water_vision.contains(p)) {
+                if (isInBreathableWater(p)) {
                     p.addPotionEffect(new PotionEffect(PotionEffectType.CONDUIT_POWER, 15, 3, false, false));
                 }
             }

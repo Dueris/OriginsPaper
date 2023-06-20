@@ -13,7 +13,7 @@ import org.bukkit.event.entity.EntityTargetEvent;
 public class OriginHandler implements Listener {
 
     @EventHandler
-    public void SetOriginTag(OriginChangeEvent e){
+    public void SetOriginTag(OriginChangeEvent e) {
         OriginPlayer.setTagData(e.getPlayer(), OriginPlayer.getOrigin(e.getPlayer()).getTag());
     }
 

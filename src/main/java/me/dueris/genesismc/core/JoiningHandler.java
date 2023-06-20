@@ -29,7 +29,7 @@ public class JoiningHandler implements Listener {
         String originTag = p.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "originTag"), PersistentDataType.STRING);
         if (originTag != null) {
             for (OriginContainer origin : CraftApoli.getOrigins()) {
-                if (("origin-"+(origin.getTag().substring(8))).equals(originTag.substring(8)))
+                if (("origin-" + (origin.getTag().substring(8))).equals(originTag.substring(8)))
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origin"), PersistentDataType.BYTE_ARRAY, CraftApoli.toByteArray(origin));
             }
         }
@@ -62,7 +62,6 @@ public class JoiningHandler implements Listener {
         if (!p.getPersistentDataContainer().has(new NamespacedKey(GenesisMC.getPlugin(), "toggle"), PersistentDataType.INTEGER)) {
             p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "toggle"), PersistentDataType.INTEGER, 1);
         }
-
 
 
         if (getServer().getPluginManager().isPluginEnabled("Geyser-Spigot")) {

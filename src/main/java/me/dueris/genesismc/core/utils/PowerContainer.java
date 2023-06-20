@@ -15,8 +15,8 @@ public class PowerContainer implements Serializable {
     String powerSource;
 
     /**
-     * @param powerTag The power tag.
-     * @param powerFile The data within a power file.
+     * @param powerTag    The power tag.
+     * @param powerFile   The data within a power file.
      * @param powerSource What applied the power to the origin.
      */
     public PowerContainer(String powerTag, PowerFileContainer powerFile, String powerSource) {
@@ -130,12 +130,11 @@ public class PowerContainer implements Serializable {
      */
     public HashMap<String, Object> getModifier() {
         Object obj = powerFile.get("modifier");
-        if(obj == null) return new HashMap<>();
+        if (obj == null) return new HashMap<>();
 
-        if(obj instanceof JSONObject) {
-            JSONObject modifier = (JSONObject) obj;
+        if (obj instanceof JSONObject modifier) {
             HashMap<String, Object> result = new HashMap<>();
-            for(Object key : modifier.keySet()){
+            for (Object key : modifier.keySet()) {
                 String string_key = (String) key;
                 Object value = modifier.get(string_key);
                 result.put(string_key, value);
@@ -153,11 +152,9 @@ public class PowerContainer implements Serializable {
     public List<String> getEffects() {
         List<String> effects = new ArrayList<>();
         Object obj = powerFile.get("effects");
-        if (obj instanceof JSONArray) {
-            JSONArray effectsArray = (JSONArray) obj;
+        if (obj instanceof JSONArray effectsArray) {
             for (Object effectObj : effectsArray) {
-                if (effectObj instanceof String) {
-                    String effect = (String) effectObj;
+                if (effectObj instanceof String effect) {
                     effects.add(effect);
                 }
             }
@@ -171,12 +168,11 @@ public class PowerContainer implements Serializable {
      */
     public HashMap<String, Object> getConditions() {
         Object obj = powerFile.get("condition");
-        if(obj == null) return new HashMap<>();
+        if (obj == null) return new HashMap<>();
 
-        if(obj instanceof JSONObject) {
-            JSONObject modifier = (JSONObject) obj;
+        if (obj instanceof JSONObject modifier) {
             HashMap<String, Object> result = new HashMap<>();
-            for(Object key : modifier.keySet()){
+            for (Object key : modifier.keySet()) {
                 String string_key = (String) key;
                 Object value = modifier.get(string_key);
                 result.put(string_key, value);

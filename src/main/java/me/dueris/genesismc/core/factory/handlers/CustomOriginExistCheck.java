@@ -25,13 +25,14 @@ public class CustomOriginExistCheck implements Listener {
     }
 
     public static void customOriginExistCheck(Player p) {
-        if(OriginPlayer.getOrigin(p) == null){
+        if (OriginPlayer.getOrigin(p) == null) {
             Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.RED + "[GenesisMC] Error getting " + p.getName() + "'s PersistentOriginData!");
             String origintag = p.getPersistentDataContainer().get(new NamespacedKey(getPlugin(), "origintag"), PersistentDataType.STRING);
-            if(CraftApoli.getOriginTags().contains(origintag)){
-                if(p.getPersistentDataContainer().get(new NamespacedKey(getPlugin(), "origin"), PersistentDataType.BYTE_ARRAY) == null) p.getPersistentDataContainer().set(new NamespacedKey(getPlugin(), "origin"), PersistentDataType.BYTE_ARRAY, CraftApoli.toByteArray(CraftApoli.getOrigin(origintag)));
+            if (CraftApoli.getOriginTags().contains(origintag)) {
+                if (p.getPersistentDataContainer().get(new NamespacedKey(getPlugin(), "origin"), PersistentDataType.BYTE_ARRAY) == null)
+                    p.getPersistentDataContainer().set(new NamespacedKey(getPlugin(), "origin"), PersistentDataType.BYTE_ARRAY, CraftApoli.toByteArray(CraftApoli.getOrigin(origintag)));
             }
-        }else{
+        } else {
             if (OriginPlayer.getOrigin(p).getTag().equals(new CraftApoli().nullOrigin().getTag())) return;
             if (CraftApoli.getOriginTags().contains(OriginPlayer.getOrigin(p).getTag())) return;
         }

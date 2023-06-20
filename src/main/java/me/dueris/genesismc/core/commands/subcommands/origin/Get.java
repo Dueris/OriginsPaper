@@ -31,7 +31,8 @@ public class Get extends SubCommand {
         if (args.length > 1) {
             ArrayList<Player> players = PlayerSelector.playerSelector(sender, args[1]);
             if (players.size() == 0) return;
-            for (Player p : players) sender.sendMessage(Component.text(p.getName() + " has the following Origin: " + OriginPlayer.getOrigin(p).getTag()));
+            for (Player p : players)
+                sender.sendMessage(Component.text(p.getName() + " has the following Origin: " + OriginPlayer.getOrigin(p).getTag()));
         } else if (args.length == 1 && sender instanceof Player p) {
             p.sendMessage(Component.text(p.getName() + " has the following Origin: " + OriginPlayer.getOrigin(p).getTag()));
         }

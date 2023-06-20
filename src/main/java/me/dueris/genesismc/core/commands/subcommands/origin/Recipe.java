@@ -89,7 +89,8 @@ public class Recipe extends SubCommand implements Listener {
                     else if (i == 30)
                         contents.add(new ItemStack(Material.valueOf(getOrbCon().get("crafting.bottom.right").toString())));
                     else if (i == 24) contents.add(new ItemStack(orb));
-                    else if (i == 49) contents.add( itemProperties(new ItemStack(Material.BARRIER), ChatColor.RED+"Close", null, null, ChatColor.RED+"Close recipe menu."));
+                    else if (i == 49)
+                        contents.add(itemProperties(new ItemStack(Material.BARRIER), ChatColor.RED + "Close", null, null, ChatColor.RED + "Close recipe menu."));
                     else if (i > 44) contents.add(new ItemStack(Material.WHITE_STAINED_GLASS_PANE));
                     else contents.add(blank);
                 }
@@ -100,7 +101,8 @@ public class Recipe extends SubCommand implements Listener {
                 sender.sendMessage(Component.text("Failed to load custom origin orb recipe!").color(TextColor.fromHexString(RED)));
                 sender.sendMessage(Component.text("If you are an admin: Either delete the file, or add a valid material/path.").color(TextColor.fromHexString(RED)));
             }
-        } else sender.sendMessage(Component.text("You must be a player to use this command!").color(TextColor.fromHexString(RED)));
+        } else
+            sender.sendMessage(Component.text("You must be a player to use this command!").color(TextColor.fromHexString(RED)));
     }
 
     @EventHandler

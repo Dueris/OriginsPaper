@@ -18,13 +18,14 @@ import java.util.zip.ZipInputStream;
 public class BukkitUtils {
 
     public static void CopyOriginDatapack() {
-        if (Files.exists(Path.of(Bukkit.getWorlds().get(0).getName()+File.separator+"datapacks"+File.separator+"OriginsGenesis"))) return;
+        if (Files.exists(Path.of(Bukkit.getWorlds().get(0).getName() + File.separator + "datapacks" + File.separator + "OriginsGenesis")))
+            return;
 
         try {
             CodeSource src = BukkitUtils.class.getProtectionDomain().getCodeSource();
             URL jar = src.getLocation();
             ZipInputStream zip = new ZipInputStream(jar.openStream());
-            while(true) {
+            while (true) {
                 ZipEntry e = zip.getNextEntry();
                 if (e == null)
                     break;
@@ -35,12 +36,12 @@ public class BukkitUtils {
                 if (name.equals("datapacks/")) continue;
 
                 name = name.substring(10);
-                File file = new File(Path.of(Bukkit.getWorlds().get(0).getName()+File.separator+"datapacks"+File.separator+name).toAbsolutePath().toString());
+                File file = new File(Path.of(Bukkit.getWorlds().get(0).getName() + File.separator + "datapacks" + File.separator + name).toAbsolutePath().toString());
                 if (!file.getName().contains(".")) {
                     Files.createDirectory(Path.of(file.getAbsolutePath()));
                     continue;
                 }
-                Files.writeString(Path.of(file.getAbsolutePath()),new String(zip.readAllBytes()));
+                Files.writeString(Path.of(file.getAbsolutePath()), new String(zip.readAllBytes()));
             }
             zip.close();
         } catch (Exception e) {

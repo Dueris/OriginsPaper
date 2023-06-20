@@ -59,7 +59,7 @@ public class PlayerRender extends BukkitRunnable {
                 team.addEntry(p.getName());
             }
 
-            if(isInTranslucentList){
+            if (isInTranslucentList) {
                 for (Player other : Bukkit.getOnlinePlayers()) {
                     if (!other.equals(p)) {
                         other.showPlayer(GenesisMC.getPlugin(), p);

@@ -34,7 +34,7 @@ public class StrongArmsBreakSpeed implements Listener {
         Player p = e.getPlayer();
         if (!strong_arms_break_speed.contains(p)) return;
         if (e.getClickedBlock() != null && stones.contains(e.getClickedBlock().getType()) && e.getAction().isLeftClick() && !tools.contains(p.getEquipment().getItemInMainHand().getType())) {
-            e.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.FAST_DIGGING, 60, 15, false, false, false ));
+            e.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.FAST_DIGGING, 60, 15, false, false, false));
         } else if (p.getEquipment().getItemInMainHand().getType() == AIR) { //beacons exist
             e.getPlayer().removePotionEffect(PotionEffectType.FAST_DIGGING);
         }
