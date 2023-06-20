@@ -6,30 +6,37 @@ import me.dueris.genesismc.core.utils.PowerContainer;
 import me.dueris.genesismc.core.utils.PowerFileContainer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.lang.SystemUtils;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
 import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
-import java.util.zip.ZipInputStream;
 
 public class CraftApoli {
 
     private static final OriginContainer null_Origin = new OriginContainer("genesis:origin-null", new HashMap<String, Object>(Map.of("hidden", true, "origins", "genesis:origin-null")), new HashMap<String, Object>(Map.of("impact", "0", "icon", "minecraft:player_head", "powers", "genesis:null", "order", "0", "unchooseable", true)), new ArrayList<>(List.of(new PowerContainer("genesis:null", new PowerFileContainer(new ArrayList<>(), new ArrayList<>()), "genesis:origin-null"))));
 
+    /**
+     * @return A copy of The null origin.
+     **/
     public static OriginContainer nullOrigin() {
         return null_Origin;
+    }
+
+
+    private static ArrayList<String> originLayers = new ArrayList<>(List.of("origins:origin"));
+
+    /**
+     * @return A copy of each layerTag that is loaded.
+     **/
+    public static ArrayList<String> getLayers() {
+        return (ArrayList<String>) originLayers.clone();
     }
 
     @SuppressWarnings("FieldMayBeFinal")
@@ -248,9 +255,9 @@ public class CraftApoli {
     }
 
     /**
-     * @return The OriginContainer serialized into a byte array.i've
+     * @return The HashMap serialized into a byte array.
      **/
-    public static byte[] toByteArray(OriginContainer origin) {
+    public static byte[] toByteArray(HashMap<String, OriginContainer> origin) {
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         try {
             ObjectOutputStream oos = new ObjectOutputStream(bos);
@@ -260,18 +267,33 @@ public class CraftApoli {
         } catch (Exception e) {
             Bukkit.getLogger().warning("CRUCIAL ERROR, PLEASE REPORTING THIS IMMEDIATELY TO THE DEVS!!");
             e.printStackTrace();
+            return toByteArray(new HashMap<>(Map.of("origins:origin", CraftApoli.null_Origin)) );
+        }
+    }
+
+    /**
+     * @return The byte array deserialized into the origin specified by the layer.
+     **/
+    public static OriginContainer toOriginContainer(byte[] origin, String originLayer) {
+        ByteArrayInputStream bis = new ByteArrayInputStream(origin);
+        try {
+            ObjectInput oi = new ObjectInputStream(bis);
+            return ((HashMap<String, OriginContainer>) oi.readObject()).get(originLayer);
+        } catch (Exception e) {
+            Bukkit.getLogger().warning("CRUCIAL ERROR, PLEASE REPORTING THIS IMMEDIATELY TO THE DEVS!!");
+            e.printStackTrace();
             return null;
         }
     }
 
     /**
-     * @return The byte deserialized into an OriginContainer.
+     * @return The byte array deserialized into a HashMap of the originLayer and the OriginContainer.
      **/
-    public static OriginContainer toOriginContainer(byte[] origin) {
+    public static HashMap<String, OriginContainer> toOriginContainer(byte[] origin) {
         ByteArrayInputStream bis = new ByteArrayInputStream(origin);
         try {
             ObjectInput oi = new ObjectInputStream(bis);
-            return (OriginContainer) oi.readObject();
+            return (HashMap<String, OriginContainer>) oi.readObject();
         } catch (Exception e) {
             Bukkit.getLogger().warning("CRUCIAL ERROR, PLEASE REPORTING THIS IMMEDIATELY TO THE DEVS!!");
             e.printStackTrace();

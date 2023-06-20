@@ -15,6 +15,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.persistence.PersistentDataType;
 
+import java.util.HashMap;
+
 import static me.dueris.genesismc.core.GenesisMC.getPlugin;
 import static me.dueris.genesismc.core.factory.CraftApoli.nullOrigin;
 import static me.dueris.genesismc.core.utils.BukkitColour.RED;
@@ -27,18 +29,16 @@ public class CustomOriginExistCheck implements Listener {
     }
 
     public static void customOriginExistCheck(Player p) {
-        if(OriginPlayer.getOrigin(p) == null){
-            Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.RED + "[GenesisMC] Error getting " + p.getName() + "'s PersistentOriginData!");
-            String origintag = p.getPersistentDataContainer().get(new NamespacedKey(getPlugin(), "origintag"), PersistentDataType.STRING);
-            if(CraftApoli.getOriginTags().contains(origintag)){
-                if(p.getPersistentDataContainer().get(new NamespacedKey(getPlugin(), "origin"), PersistentDataType.BYTE_ARRAY) == null) p.getPersistentDataContainer().set(new NamespacedKey(getPlugin(), "origin"), PersistentDataType.BYTE_ARRAY, CraftApoli.toByteArray(CraftApoli.getOrigin(origintag)));
-            }
-        }else{
-            if (OriginPlayer.getOrigin(p).getTag().equals(new CraftApoli().nullOrigin().getTag())) return;
-            if (CraftApoli.getOriginTags().contains(OriginPlayer.getOrigin(p).getTag())) return;
+        HashMap<String, OriginContainer> origins = OriginPlayer.getOrigin(p);
+        for (OriginContainer origin : origins.values()){
+            if (origin.getTag().equals(new CraftApoli().nullOrigin().getTag())) continue;
+            if (CraftApoli.getOriginTags().contains(origin.getTag())) continue;
+            NamespacedKey key = new NamespacedKey(GenesisMC.getPlugin(), "origins");
+            HashMap<String, OriginContainer> playerOrigins = CraftApoli.toOriginContainer(p.getPersistentDataContainer().get(key, PersistentDataType.BYTE_ARRAY));
+            playerOrigins.replace(OriginPlayer.getLayer(p, origin), CraftApoli.nullOrigin());
+            p.getPersistentDataContainer().set(key, PersistentDataType.BYTE_ARRAY, CraftApoli.toByteArray(playerOrigins));
+            p.sendMessage(Component.text("Your origin has been removed! Please select a new one.").color(TextColor.fromHexString(RED)));
+            p.sendMessage(Component.text("If you believe this is a mistake please contact your server admin(s).").color(TextColor.fromHexString(RED)));
         }
-        p.getPersistentDataContainer().set(new NamespacedKey(getPlugin(), "origin"), PersistentDataType.BYTE_ARRAY, CraftApoli.toByteArray(nullOrigin()));
-        p.sendMessage(Component.text("Your origin has been removed! Please select a new one.").color(TextColor.fromHexString(RED)));
-        p.sendMessage(Component.text("If you believe this is a mistake please contact your server admin(s).").color(TextColor.fromHexString(RED)));
     }
 }

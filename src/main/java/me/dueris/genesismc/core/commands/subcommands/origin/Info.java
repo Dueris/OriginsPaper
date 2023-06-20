@@ -22,13 +22,19 @@ import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import static me.dueris.genesismc.core.choosing.ChoosingCORE.itemProperties;
 import static me.dueris.genesismc.core.choosing.ChoosingCUSTOM.cutStringIntoLists;
+import static me.dueris.genesismc.core.choosing.contents.ChooseMenuContents.ChooseMenuContent;
 import static me.dueris.genesismc.core.items.OrbOfOrigins.orb;
 import static me.dueris.genesismc.core.utils.BukkitColour.RED;
 
 public class Info extends SubCommand implements Listener {
+
+    @SuppressWarnings("FieldMayBeFinal")
+    private static HashMap<Player, ArrayList<OriginContainer>> playerOrigins = new HashMap<>();
+    private static HashMap<Player, Integer> playerPage = new HashMap<>();
 
     @Override
     public String getName() {
@@ -49,129 +55,169 @@ public class Info extends SubCommand implements Listener {
     public void perform(CommandSender sender, String[] args) {
         if (sender instanceof Player p) {
             if (args.length == 1) {
-                NamespacedKey key = new NamespacedKey(GenesisMC.getPlugin(), "origin");
-                @NotNull Inventory help = Bukkit.createInventory(p, 54, "Help");
-                OriginContainer origin = CraftApoli.toOriginContainer(p.getPersistentDataContainer().get(key, PersistentDataType.BYTE_ARRAY));
-                if (origin == null) return;
-
+                @NotNull Inventory help = Bukkit.createInventory(p, 54, "Info");
                 p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 10, 2);
-
-                ArrayList<PowerContainer> powerContainers = origin.getPowerContainers();
-
-                String minecraftItem = origin.getIcon();
-                String item = minecraftItem.split(":")[1];
-                ItemStack originIcon = new ItemStack(Material.valueOf(item.toUpperCase()));
-
-                ItemStack close = itemProperties(new ItemStack(Material.BARRIER), ChatColor.RED + "Close", null, null, null);
-                ItemStack back = itemProperties(new ItemStack(Material.SPECTRAL_ARROW), ChatColor.AQUA + "Close", ItemFlag.HIDE_ENCHANTS, null, null);
-                ItemStack lowImpact = itemProperties(new ItemStack(Material.GREEN_STAINED_GLASS_PANE), ChatColor.WHITE + "Impact: " + ChatColor.GREEN + "Low", null, null, null);
-                ItemStack mediumImpact = itemProperties(new ItemStack(Material.YELLOW_STAINED_GLASS_PANE), ChatColor.WHITE + "Impact: " + ChatColor.YELLOW + "Medium", null, null, null);
-                ItemStack highImpact = itemProperties(new ItemStack(Material.RED_STAINED_GLASS_PANE), ChatColor.WHITE + "Impact: " + ChatColor.RED + "High", null, null, null);
-
-
-                ItemMeta originIconmeta = originIcon.getItemMeta();
-                originIconmeta.setDisplayName(origin.getName());
-                originIconmeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-                originIconmeta.setLore(cutStringIntoLists(origin.getDescription()));
-
-                originIcon.setItemMeta(originIconmeta);
-
-                ArrayList<ItemStack> contents = new ArrayList<>();
-                long impact = origin.getImpact();
-
-                for (int i = 0; i <= 53; i++) {
-                    if (i == 0 || i == 8) {
-                        contents.add(close);
-                    } else if (i == 1) {
-                        if (impact == 1) contents.add(lowImpact);
-                        else if (impact == 2) contents.add(mediumImpact);
-                        else if (impact == 3) contents.add(highImpact);
-                        else contents.add(new ItemStack(Material.AIR));
-                    } else if (i == 2) {
-                        if (impact == 2) contents.add(mediumImpact);
-                        else if (impact == 3) contents.add(highImpact);
-                        else contents.add(new ItemStack(Material.AIR));
-                    } else if (i == 3) {
-                        if (impact == 3) contents.add(highImpact);
-                        else contents.add(new ItemStack(Material.AIR));
-                    } else if (i == 4) {
-                        contents.add(orb);
-                    } else if (i == 5) {
-                        if (impact == 3) contents.add(highImpact);
-                        else contents.add(new ItemStack(Material.AIR));
-                    } else if (i == 6) {
-                        if (impact == 2) contents.add(mediumImpact);
-                        else if (impact == 3) contents.add(highImpact);
-                        else contents.add(new ItemStack(Material.AIR));
-                    } else if (i == 7) {
-                        if (impact == 1) contents.add(lowImpact);
-                        else if (impact == 2) contents.add(mediumImpact);
-                        else if (impact == 3) contents.add(highImpact);
-                        else contents.add(new ItemStack(Material.AIR));
-                    } else if (i == 13) {
-                        if (origin.getTag().equals("origins:human")) {
-                            SkullMeta skull_p = (SkullMeta) originIcon.getItemMeta();
-                            skull_p.setOwningPlayer(p);
-                            skull_p.setOwner(p.getName());
-                            skull_p.setPlayerProfile(p.getPlayerProfile());
-                            skull_p.setOwnerProfile(p.getPlayerProfile());
-                            originIcon.setItemMeta(skull_p);
-                        }
-                        contents.add(originIcon);
-                    } else if ((i >= 20 && i <= 24) || (i >= 29 && i <= 33) || (i >= 38 && i <= 42)) {
-                        while (powerContainers.size() > 0 && powerContainers.get(0).getHidden()) {
-                            powerContainers.remove(0);
-                        }
-                        if (powerContainers.size() > 0) {
-
-                            ItemStack originPower = new ItemStack(Material.FILLED_MAP);
-
-                            ItemMeta meta = originPower.getItemMeta();
-                            meta.setDisplayName(powerContainers.get(0).getName());
-                            meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-                            meta.setLore(cutStringIntoLists(powerContainers.get(0).getDescription()));
-                            originPower.setItemMeta(meta);
-
-                            contents.add(originPower);
-
-                            powerContainers.remove(0);
-
-                        } else {
-                            if (i >= 38) {
-                                contents.add(new ItemStack(Material.AIR));
-                            } else {
-                                contents.add(new ItemStack(Material.PAPER));
-                            }
-                        }
-
-
-                    } else if (i == 49) {
-                        contents.add(back);
-                    } else {
-                        contents.add(new ItemStack(Material.AIR));
-                    }
-                }
-                help.setContents(contents.toArray(new ItemStack[0]));
+                HashMap<String, OriginContainer> origins = CraftApoli.toOriginContainer(p.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "origins"), PersistentDataType.BYTE_ARRAY));
+                assert origins != null;
+                playerOrigins.put(p, new ArrayList<>(origins.values()));
+                if (!playerPage.containsKey(p)) playerPage.put(p, 0);
+                help.setContents(infoMenu(p, playerPage.get(p)));
                 p.openInventory(help);
             }
         } else sender.sendMessage(Component.text("You must be a player to use this command!").color(TextColor.fromHexString(RED)));
     }
 
+    public ItemStack[] infoMenu(Player p, Integer page) {
+        OriginContainer origin = playerOrigins.get(p).get(page);
+
+        ArrayList<PowerContainer> powerContainers = origin.getPowerContainers();
+
+        String minecraftItem = origin.getIcon();
+        String item = minecraftItem.split(":")[1];
+        ItemStack originIcon = new ItemStack(Material.valueOf(item.toUpperCase()));
+
+        ItemStack close = itemProperties(new ItemStack(Material.BARRIER), ChatColor.RED + "Close", null, null, null);
+        ItemStack exit = itemProperties(new ItemStack(Material.SPECTRAL_ARROW), ChatColor.AQUA + "Close", ItemFlag.HIDE_ENCHANTS, null, null);
+        ItemStack lowImpact = itemProperties(new ItemStack(Material.GREEN_STAINED_GLASS_PANE), ChatColor.WHITE + "Impact: " + ChatColor.GREEN + "Low", null, null, null);
+        ItemStack mediumImpact = itemProperties(new ItemStack(Material.YELLOW_STAINED_GLASS_PANE), ChatColor.WHITE + "Impact: " + ChatColor.YELLOW + "Medium", null, null, null);
+        ItemStack highImpact = itemProperties(new ItemStack(Material.RED_STAINED_GLASS_PANE), ChatColor.WHITE + "Impact: " + ChatColor.RED + "High", null, null, null);
+        ItemStack back = itemProperties(new ItemStack(Material.ARROW), "Back", ItemFlag.HIDE_ENCHANTS, null, null);
+        ItemStack next = itemProperties(new ItemStack(Material.ARROW), "Next", ItemFlag.HIDE_ENCHANTS, null, null);
+
+
+        ItemMeta originIconmeta = originIcon.getItemMeta();
+        originIconmeta.setDisplayName(origin.getName());
+        originIconmeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+        originIconmeta.setLore(cutStringIntoLists(origin.getDescription()));
+        originIcon.setItemMeta(originIconmeta);
+
+        NamespacedKey pageKey = new NamespacedKey(GenesisMC.getPlugin(), "page");
+        ItemMeta backMeta = back.getItemMeta();
+        if (page == 0) backMeta.getPersistentDataContainer().set(pageKey, PersistentDataType.INTEGER, 0);
+        else backMeta.getPersistentDataContainer().set(pageKey, PersistentDataType.INTEGER, page-1);
+        back.setItemMeta(backMeta);
+
+
+        ItemMeta nextMeta = next.getItemMeta();
+        if (playerOrigins.get(p).size() == page) nextMeta.getPersistentDataContainer().set(pageKey, PersistentDataType.INTEGER, page);
+        else nextMeta.getPersistentDataContainer().set(pageKey, PersistentDataType.INTEGER, page+1);
+        next.setItemMeta(nextMeta);
+
+
+        ArrayList<ItemStack> contents = new ArrayList<>();
+        long impact = origin.getImpact();
+
+        for (int i = 0; i <= 53; i++) {
+            if (i == 0 || i == 8) {
+                contents.add(close);
+            } else if (i == 1) {
+                if (impact == 1) contents.add(lowImpact);
+                else if (impact == 2) contents.add(mediumImpact);
+                else if (impact == 3) contents.add(highImpact);
+                else contents.add(new ItemStack(Material.AIR));
+            } else if (i == 2) {
+                if (impact == 2) contents.add(mediumImpact);
+                else if (impact == 3) contents.add(highImpact);
+                else contents.add(new ItemStack(Material.AIR));
+            } else if (i == 3) {
+                if (impact == 3) contents.add(highImpact);
+                else contents.add(new ItemStack(Material.AIR));
+            } else if (i == 4) {
+                contents.add(orb);
+            } else if (i == 5) {
+                if (impact == 3) contents.add(highImpact);
+                else contents.add(new ItemStack(Material.AIR));
+            } else if (i == 6) {
+                if (impact == 2) contents.add(mediumImpact);
+                else if (impact == 3) contents.add(highImpact);
+                else contents.add(new ItemStack(Material.AIR));
+            } else if (i == 7) {
+                if (impact == 1) contents.add(lowImpact);
+                else if (impact == 2) contents.add(mediumImpact);
+                else if (impact == 3) contents.add(highImpact);
+                else contents.add(new ItemStack(Material.AIR));
+            } else if (i == 13) {
+                if (origin.getTag().equals("origins:human")) {
+                    SkullMeta skull_p = (SkullMeta) originIcon.getItemMeta();
+                    skull_p.setOwningPlayer(p);
+                    skull_p.setOwner(p.getName());
+                    skull_p.setPlayerProfile(p.getPlayerProfile());
+                    skull_p.setOwnerProfile(p.getPlayerProfile());
+                    originIcon.setItemMeta(skull_p);
+                }
+                contents.add(originIcon);
+            } else if ((i >= 20 && i <= 24) || (i >= 29 && i <= 33) || (i >= 38 && i <= 42)) {
+                while (powerContainers.size() > 0 && powerContainers.get(0).getHidden()) {
+                    powerContainers.remove(0);
+                }
+                if (powerContainers.size() > 0) {
+
+                    ItemStack originPower = new ItemStack(Material.FILLED_MAP);
+
+                    ItemMeta meta = originPower.getItemMeta();
+                    meta.setDisplayName(powerContainers.get(0).getName());
+                    meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+                    meta.setLore(cutStringIntoLists(powerContainers.get(0).getDescription()));
+                    originPower.setItemMeta(meta);
+
+                    contents.add(originPower);
+
+                    powerContainers.remove(0);
+
+                } else {
+                    if (i >= 38) {
+                        contents.add(new ItemStack(Material.AIR));
+                    } else {
+                        contents.add(new ItemStack(Material.PAPER));
+                    }
+                }
+
+
+            } else if (i == 46) {
+                contents.add(back);
+            } else if (i == 49) {
+                contents.add(exit);
+            }else if (i == 52) {
+                contents.add(next);
+            } else {
+                contents.add(new ItemStack(Material.AIR));
+            }
+        }
+        return contents.toArray(new ItemStack[0]);
+    }
+
     @EventHandler
     public void stopStealingInfo(InventoryClickEvent e) {
-        if (e.getView().getTitle().equalsIgnoreCase("Help")) e.setCancelled(true);
+        if (e.getView().getTitle().equalsIgnoreCase("Info")) e.setCancelled(true);
     }
 
     @EventHandler
     public void onMenuExitInfo(InventoryClickEvent e) {
         if (e.getCurrentItem() == null) return;
-        if (e.getView().getTitle().equalsIgnoreCase("Help")) {
+        if (e.getView().getTitle().equalsIgnoreCase("Info")) {
             if (e.getCurrentItem().getType() == Material.BARRIER || e.getCurrentItem().getType() == Material.SPECTRAL_ARROW) {
                 Player p = (Player) e.getWhoClicked();
                 p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 10, 9);
                 e.getWhoClicked().getInventory().close();
             }
         }
+    }
+
+    @EventHandler
+    public void onMenuScroll(InventoryClickEvent e) {
+        ItemStack item = e.getCurrentItem();
+        Player player = (Player) e.getWhoClicked();
+        if (item == null) return;
+        if (!e.getView().getTitle().equalsIgnoreCase("Info")) return;
+        if (item.getType() != Material.ARROW && (item.getItemMeta().getDisplayName().equals("Back") || item.getItemMeta().getDisplayName().equals("Next"))) {
+            @NotNull Inventory info = Bukkit.createInventory(player, 54, "Info");
+            info.setContents(infoMenu(player, item.getItemMeta().getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "page"), PersistentDataType.INTEGER)));
+            player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 10, 2);
+            player.closeInventory();
+            player.openInventory(info);
+        }
+
+
     }
 
 }

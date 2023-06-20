@@ -98,16 +98,28 @@ public class TabAutoComplete implements TabCompleter {
                 return new ArrayList<>();
 
             } else if (args.length == 3) {
-                if (args[0].equalsIgnoreCase("has") || args[0].equalsIgnoreCase("set")) {
-                    ArrayList<String> origins = CraftApoli.getOriginTags();
-                    origins.removeIf(origin -> !origin.startsWith(args[2]));
-                    return origins;
-                } else if (args[0].equalsIgnoreCase("give")) {
+
+                if (args[0].equalsIgnoreCase("get") || args[0].equalsIgnoreCase("has") || args[0].equalsIgnoreCase("set")) {
+                    ArrayList<String> layers = CraftApoli.getLayers();
+                    for (int i = 0; i < layers.size(); i++) {
+                        String layer = layers.get(i);
+                        if (layer.length() < args[2].length()) {layers.remove(layer); continue;}
+                        if (!layer.equals(layers.get(i).substring(0, layer.length()))) layers.remove(layers.get(i));
+                    }
+                    return layers;
+                }
+                if (args[0].equalsIgnoreCase("give")) {
                     return List.of("genesis:orb_of_origin");
                 } else if (args[0].equalsIgnoreCase("enchant")) {
                     return List.of("genesis:water_protection");
                 } else {
                     return new ArrayList<>();
+                }
+            } else if (args.length == 4){
+                if (args[0].equalsIgnoreCase("has") || args[0].equalsIgnoreCase("set")) {
+                    ArrayList<String> origins = CraftApoli.getOriginTags();
+                    origins.removeIf(origin -> !origin.startsWith(args[3]));
+                    return origins;
                 }
             } else {
                 return new ArrayList<>();

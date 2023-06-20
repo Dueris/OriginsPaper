@@ -212,9 +212,9 @@ public class ChoosingCUSTOM implements Listener {
                 }
                 setAttributesToDefault(p);
                 Bukkit.getScheduler().runTaskLater(GenesisMC.getPlugin(), () -> {
-                    OriginPlayer.unassignPowers(p);
-                    p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origin"), PersistentDataType.BYTE_ARRAY, CraftApoli.toByteArray(origin));
-                    OriginPlayer.assignPowers(p);
+                    OriginPlayer.unassignPowers(p, "origins:origin");
+                    OriginPlayer.setOrigin(p, "origins:origin", origin);
+                    OriginPlayer.assignPowers(p, "origins:origin");
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
                     DefaultChoose.DefaultChoose(p);

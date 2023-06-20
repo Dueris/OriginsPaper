@@ -3,6 +3,7 @@ package me.dueris.genesismc.core;
 import me.dueris.genesismc.core.entity.OriginPlayer;
 import me.dueris.genesismc.core.factory.CraftApoli;
 import me.dueris.genesismc.core.utils.OriginContainer;
+import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -15,6 +16,11 @@ import org.geysermc.geyser.api.GeyserApi;
 import org.geysermc.geyser.api.connection.GeyserConnection;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.ByteArrayInputStream;
+import java.io.ObjectInput;
+import java.io.ObjectInputStream;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 import static org.bukkit.Bukkit.getServer;
@@ -32,8 +38,18 @@ public class JoiningHandler implements Listener {
         if (originTag != null) {
             for (OriginContainer origin : CraftApoli.getOrigins()) {
                 if (("origin-"+(origin.getTag().substring(8))).equals(originTag.substring(8)))
-                    p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origin"), PersistentDataType.BYTE_ARRAY, CraftApoli.toByteArray(origin));
+                    p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origins"), PersistentDataType.BYTE_ARRAY, CraftApoli.toByteArray(new HashMap<>(Map.of("origins:origin", origin))));
             }
+        }
+
+        ByteArrayInputStream bis = new ByteArrayInputStream(p.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "origin"), PersistentDataType.BYTE_ARRAY));
+        try {
+            ObjectInput oi = new ObjectInputStream(bis);
+            OriginContainer origin = (OriginContainer) oi.readObject();
+            p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origins"), PersistentDataType.BYTE_ARRAY, CraftApoli.toByteArray(new HashMap<>(Map.of("origins:origin", origin))));
+        } catch (Exception er) {
+            Bukkit.getLogger().warning("[GenesisMC] Error converting old origin container");
+            er.printStackTrace();
         }
 
         if (p.getClientBrandName() != null && p.getClientBrandName().equalsIgnoreCase("Immersions")) {
@@ -52,8 +68,8 @@ public class JoiningHandler implements Listener {
         if (!data.has(new NamespacedKey(GenesisMC.getPlugin(), "shulker-box"), PersistentDataType.STRING)) {
             data.set(new NamespacedKey(GenesisMC.getPlugin(), "shulker-box"), PersistentDataType.STRING, "");
         }
-        if (!p.getPersistentDataContainer().has(new NamespacedKey(GenesisMC.getPlugin(), "origin"), PersistentDataType.BYTE_ARRAY)) {
-            p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origin"), PersistentDataType.BYTE_ARRAY, CraftApoli.toByteArray(CraftApoli.nullOrigin()));
+        if (!p.getPersistentDataContainer().has(new NamespacedKey(GenesisMC.getPlugin(), "origins"), PersistentDataType.BYTE_ARRAY)) {
+            p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origins"), PersistentDataType.BYTE_ARRAY, CraftApoli.toByteArray(new HashMap<>(Map.of("origins:origin", CraftApoli.nullOrigin()))));
         }
         if (!p.getPersistentDataContainer().has(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER)) {
             p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
@@ -71,7 +87,6 @@ public class JoiningHandler implements Listener {
             if (getServer().getPluginManager().isPluginEnabled("floodgate")) {
                 FloodgateApi FloodgateAPI = FloodgateApi.getInstance();
                 UUID uuid = p.getUniqueId();
-                GeyserConnection connection = GeyserApi.api().connectionByUuid(p.getUniqueId());
                 if (GeyserApi.api().isBedrockPlayer(p.getUniqueId()) || FloodgateAPI.isFloodgatePlayer(uuid)) {
                     p.getScoreboardTags().add("geyser_player");
                 }

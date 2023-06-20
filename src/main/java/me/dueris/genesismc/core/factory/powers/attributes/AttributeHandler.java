@@ -2,6 +2,8 @@ package me.dueris.genesismc.core.factory.powers.attributes;
 
 import me.dueris.genesismc.core.entity.OriginPlayer;
 import me.dueris.genesismc.core.events.OriginChangeEvent;
+import me.dueris.genesismc.core.utils.OriginContainer;
+import me.dueris.genesismc.core.utils.PowerContainer;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.attribute.Attribute;
@@ -17,7 +19,7 @@ import java.util.function.BinaryOperator;
 
 import static me.dueris.genesismc.core.factory.powers.Powers.*;
 
-public class AttributeHandler extends BukkitRunnable implements Listener {
+public class AttributeHandler implements Listener {
 
 
     @EventHandler
@@ -48,29 +50,25 @@ public class AttributeHandler extends BukkitRunnable implements Listener {
             operationMap.put("multiply_random_max", (a, b) -> a * random.nextInt(b));
             operationMap.put("divide_random_max", (a, b) -> a / random.nextInt(b));
 
-            if(OriginPlayer.getOrigin(p).getPowerFileFromType("origins:attribute") == null) return;
+            for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
 
-            Attribute attribute_modifier = Attribute.valueOf(OriginPlayer.getOrigin(p).getPowerFileFromType("origins:attribute").getModifier().get("attribute").toString().split(":")[1].replace(".", "_").toUpperCase());
-            int value = Integer.valueOf(OriginPlayer.getOrigin(p).getPowerFileFromType("origins:attribute").getModifier().get("value").toString());
-            String operation = String.valueOf(OriginPlayer.getOrigin(p).getPowerFileFromType("origins:attribute").getModifier().get("operation"));
-            int base_value = (int) p.getAttribute(Attribute.valueOf(attribute_modifier.toString())).getBaseValue();
+                PowerContainer power = origin.getPowerFileFromType("origins:attribute");
+                if (power == null) continue;
 
-            BinaryOperator mathOperator = operationMap.get(operation);
-            if(mathOperator != null) {
-                int result = (int) mathOperator.apply(base_value, value);
-                p.getAttribute(Attribute.valueOf(attribute_modifier.toString())).setBaseValue(result);
-            }else{
-                Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.RED + "Unable to parse origins:attribute, unable to get result");
+
+                Attribute attribute_modifier = Attribute.valueOf(power.getModifier().get("attribute").toString().split(":")[1].replace(".", "_").toUpperCase());
+                int value = Integer.valueOf(power.getModifier().get("value").toString());
+                String operation = String.valueOf(power.getModifier().get("operation"));
+                int base_value = (int) p.getAttribute(Attribute.valueOf(attribute_modifier.toString())).getBaseValue();
+
+                BinaryOperator mathOperator = operationMap.get(operation);
+                if (mathOperator != null) {
+                    int result = (int) mathOperator.apply(base_value, value);
+                    p.getAttribute(Attribute.valueOf(attribute_modifier.toString())).setBaseValue(result);
+                } else {
+                    Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.RED + "Unable to parse origins:attribute, unable to get result");
+                }
             }
-
-        }
-    }
-
-
-
-    @Override
-    public void run() {
-        for (Player p : Bukkit.getOnlinePlayers()) {
 
         }
     }

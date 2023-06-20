@@ -86,9 +86,6 @@ public class OriginStartHandler {
         GoldAmourBellow goldAmourBellow = new GoldAmourBellow();
         goldAmourBellow.runTaskTimer(getPlugin(), 0, 1);
 
-        AttributeHandler naturalArmour = new AttributeHandler();
-        naturalArmour.runTaskTimer(getPlugin(), 0, 5);
-
         HotBlooded hotBlooded = new HotBlooded();
         hotBlooded.runTaskTimer(getPlugin(), 0, 2);
 
@@ -103,9 +100,6 @@ public class OriginStartHandler {
 
         SwimSpeed swimSpeed = new SwimSpeed();
         swimSpeed.runTaskTimer(getPlugin(), 5, 0);
-
-        AttributeHandler attributeHandler = new AttributeHandler();
-        attributeHandler.runTaskTimer(getPlugin(), 0, 10);
 
         OverworldPiglinZombified piglinZombified = new OverworldPiglinZombified();
         piglinZombified.runTaskTimer(getPlugin(), 0, 40);

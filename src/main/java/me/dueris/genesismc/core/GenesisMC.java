@@ -127,7 +127,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
             Debug.testIncompatiblePlugins();
             Debug.versionTest();
             getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] Successfully loaded version mc1.20-v0.1.7").color(TextColor.fromHexString(GREEN)));
-            getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] Successfully loaded API version 1.0.4").color(TextColor.fromHexString(GREEN)));
+            getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] Successfully loaded API version 1.0.15").color(TextColor.fromHexString(GREEN)));
         } else {
             getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] Successfully loaded version mc1.20-v0.1.7").color(TextColor.fromHexString(GREEN)));
         }
@@ -202,18 +202,6 @@ public final class GenesisMC extends JavaPlugin implements Listener {
             CustomOriginExistCheck.customOriginExistCheck(p);
             OriginPlayer.assignPowers(p);
             if (p.isOp()) p.sendMessage(Component.text("Origins Reloaded.").color(TextColor.fromHexString(AQUA)));
-        }
-    }
-
-    @EventHandler
-    public void NetherOriginRespawn(PlayerRespawnEvent e) {
-        if (OriginPlayer.getOrigin(e.getPlayer()).getTag().equalsIgnoreCase("genesis:origin-piglin") || OriginPlayer.getOrigin(e.getPlayer()).getTag().equalsIgnoreCase("genesis:origin-blazeborn")) {
-            if (!(e.isBedSpawn() || e.isAnchorSpawn())) {
-                Location location = WorldSpawnHandler.NetherSpawn();
-                if (location == null) return;
-                e.setRespawnLocation(location);
-            }
-
         }
     }
 

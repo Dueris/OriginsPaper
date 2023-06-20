@@ -164,9 +164,6 @@ public class WaterDamage extends BukkitRunnable implements Listener {
             }
             p.getLocation().getWorld().dropItem(p.getLocation(), new ItemStack(Material.ENDER_PEARL, r));
         }
-        if (OriginPlayer.getOrigin(e.getPlayer()).getTag().contains("genesis:origin-enderian")) {
-
-        }
     }
 
     @EventHandler

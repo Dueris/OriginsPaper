@@ -3,6 +3,7 @@ package me.dueris.genesismc.core.factory.powers.armour;
 import me.dueris.genesismc.core.GenesisMC;
 import me.dueris.genesismc.core.entity.OriginPlayer;
 import me.dueris.genesismc.core.protocol.SendStringPacketPayload;
+import me.dueris.genesismc.core.utils.OriginContainer;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -19,6 +20,7 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.UUID;
 
 import static me.dueris.genesismc.core.entity.OriginPlayer.launchElytra;
@@ -33,7 +35,8 @@ public class FlightElytra implements Listener {
     public void ExecuteFlight(PlayerToggleSneakEvent e) {
         Player p = e.getPlayer();
         if (elytra.contains(e.getPlayer())) {
-            if (OriginPlayer.getOrigin(p).getPowerFileFromType("origins:elytra_flight").getShouldRender()) {
+            for (OriginContainer origin : OriginPlayer.getOrigin(p).values())
+            if (origin.getPowerFileFromType("origins:elytra_flight").getShouldRender()) {
                 SendStringPacketPayload.sendCustomPacket(p, "ExecuteGenesisOriginsElytraRenderID:12232285");
             }
             if (!p.isOnGround() && !p.isGliding()) {

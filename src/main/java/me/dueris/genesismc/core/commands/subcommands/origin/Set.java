@@ -39,21 +39,30 @@ public class Set extends SubCommand {
             return;
         }
         if (args.length == 2) {
+            sender.sendMessage(Component.text("No layer specified!").color(TextColor.fromHexString(RED)));
+            return;
+        }
+        if (args.length == 3) {
             sender.sendMessage(Component.text("No origin specified!").color(TextColor.fromHexString(RED)));
             return;
         }
-        if (args.length > 2) {
+        if (args.length > 3) {
             ArrayList<Player> players = PlayerSelector.playerSelector(sender, args[1]);
             if (players.size() == 0) return;
 
-            String originTag = args[2];
+            if (!CraftApoli.getLayers().contains(args[2])) {
+                sender.sendMessage(Component.text("Invalid layer!").color(TextColor.fromHexString(RED)));
+                return;
+            }
+
+            String originTag = args[3];
             if (!CraftApoli.getOriginTags().contains(originTag)) {
                 sender.sendMessage(Component.text("Invalid origin!").color(TextColor.fromHexString(RED)));
                 return;
             }
 
             for (Player p : players) {
-                OriginPlayer.setOrigin(p, CraftApoli.getOrigin(originTag));
+                OriginPlayer.setOrigin(p, args[2], CraftApoli.getOrigin(originTag));
                 OriginChangeEvent originChangeEvent = new OriginChangeEvent(p);
                 getServer().getPluginManager().callEvent(originChangeEvent);
             }

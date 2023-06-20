@@ -1,7 +1,11 @@
 package me.dueris.genesismc.core.factory.powers.attributes;
 
-import com.destroystokyo.paper.event.player.PlayerJumpEvent;
 import me.dueris.genesismc.core.entity.OriginPlayer;
+import me.dueris.genesismc.core.utils.OriginContainer;
+import me.dueris.genesismc.core.utils.PowerContainer;
+import me.dueris.genesismc.core.utils.PowerFileContainer;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.attribute.Attribute;
@@ -18,8 +22,8 @@ import java.util.Map;
 import java.util.Random;
 import java.util.function.BinaryOperator;
 
-import static me.dueris.genesismc.core.factory.powers.Powers.attribute;
 import static me.dueris.genesismc.core.factory.powers.Powers.conditioned_attribute;
+import static me.dueris.genesismc.core.utils.BukkitColour.RED;
 
 public class AttributeConditioned implements Listener {
 
@@ -42,19 +46,24 @@ public class AttributeConditioned implements Listener {
         operationMap.put("multiply_random_max", (a, b) -> a * random.nextInt(b));
         operationMap.put("divide_random_max", (a, b) -> a / random.nextInt(b));
 
-        if(OriginPlayer.getOrigin(p).getPowerFileFromType("origins:conditioned_attribute") == null) return;
+        for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
 
-        Attribute attribute_modifier = Attribute.valueOf(OriginPlayer.getOrigin(p).getPowerFileFromType("origins:conditioned_attribute").getModifier().get("attribute").toString().split(":")[1].replace(".", "_").toUpperCase());
-        int value = Integer.valueOf(OriginPlayer.getOrigin(p).getPowerFileFromType("origins:conditioned_attribute").getModifier().get("value").toString());
-        String operation = String.valueOf(OriginPlayer.getOrigin(p).getPowerFileFromType("origins:conditioned_attribute").getModifier().get("operation"));
-        int base_value = (int) p.getAttribute(Attribute.valueOf(attribute_modifier.toString())).getBaseValue();
+             PowerContainer power = origin.getPowerFileFromType("origins:conditioned_attribute");
+            if (power == null) continue;
 
-        BinaryOperator mathOperator = operationMap.get(operation);
-        if(mathOperator != null) {
-            int result = (int) mathOperator.apply(base_value, value);
-            p.getAttribute(Attribute.valueOf(attribute_modifier.toString())).setBaseValue(result);
-        }else{
-            Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.RED + "Unable to parse origins:attribute, unable to get result");
+
+            Attribute attribute_modifier = Attribute.valueOf(power.getModifier().get("attribute").toString().split(":")[1].replace(".", "_").toUpperCase());
+            int value = Integer.parseInt(power.getModifier().get("value").toString());
+            String operation = String.valueOf(power.getModifier().get("operation"));
+            int base_value = (int) p.getAttribute(Attribute.valueOf(attribute_modifier.toString())).getBaseValue();
+
+            BinaryOperator mathOperator = operationMap.get(operation);
+            if (mathOperator != null) {
+                int result = (int) mathOperator.apply(base_value, value);
+                p.getAttribute(Attribute.valueOf(attribute_modifier.toString())).setBaseValue(result);
+            } else {
+                Bukkit.getServer().getConsoleSender().sendMessage(Component.text("Unable to parse origins:attribute, unable to get result").color(TextColor.fromHexString(RED)));
+            }
         }
     }
 
@@ -77,83 +86,70 @@ public class AttributeConditioned implements Listener {
         operationMap.put("multiply_random_max", (a, b) -> a / random.nextInt(b));
         operationMap.put("divide_random_max", (a, b) -> a * random.nextInt(b));
 
-        if(OriginPlayer.getOrigin(p).getPowerFileFromType("origins:conditioned_attribute") == null) return;
+        for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
 
-        Attribute attribute_modifier = Attribute.valueOf(OriginPlayer.getOrigin(p).getPowerFileFromType("origins:conditioned_attribute").getModifier().get("attribute").toString().split(":")[1].replace(".", "_").toUpperCase());
-        int value = Integer.valueOf(OriginPlayer.getOrigin(p).getPowerFileFromType("origins:conditioned_attribute").getModifier().get("value").toString());
-        String operation = String.valueOf(OriginPlayer.getOrigin(p).getPowerFileFromType("origins:conditioned_attribute").getModifier().get("operation"));
-        int base_value = (int) p.getAttribute(Attribute.valueOf(attribute_modifier.toString())).getBaseValue();
+            PowerContainer power = origin.getPowerFileFromType("origins:conditioned_attribute");
+            if (power == null) continue;
 
-        BinaryOperator mathOperator = operationMap.get(operation);
-        if(mathOperator != null) {
-            int result = (int) mathOperator.apply(base_value, value);
-            p.getAttribute(Attribute.valueOf(attribute_modifier.toString())).setBaseValue(result);
-        }else{
-            Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.RED + "Unable to parse origins:conditioned_attribute, unable to get result");
+            Attribute attribute_modifier = Attribute.valueOf(power.getModifier().get("attribute").toString().split(":")[1].replace(".", "_").toUpperCase());
+            int value = Integer.valueOf(power.getModifier().get("value").toString());
+            String operation = String.valueOf(power.getModifier().get("operation"));
+            int base_value = (int) p.getAttribute(Attribute.valueOf(attribute_modifier.toString())).getBaseValue();
+
+            BinaryOperator mathOperator = operationMap.get(operation);
+            if (mathOperator != null) {
+                int result = (int) mathOperator.apply(base_value, value);
+                p.getAttribute(Attribute.valueOf(attribute_modifier.toString())).setBaseValue(result);
+            } else {
+                Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.RED + "Unable to parse origins:conditioned_attribute, unable to get result");
+            }
         }
     }
 
     @EventHandler
     public void ExecuteSprintCondition(PlayerToggleSprintEvent e){
         Player p = e.getPlayer();
-        if(e.isSprinting()){
+        for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
             if(conditioned_attribute.contains(p)){
-                if(!OriginPlayer.getOrigin(p).getPowerFileFromType("origins:conditioned_attribute").getConditions().get("type").toString().equalsIgnoreCase("origins:sprinting")) return;
-                executeConditionAttribute(p);
-            }
-        }else{
-            if(conditioned_attribute.contains(p)){
-                if(!OriginPlayer.getOrigin(p).getPowerFileFromType("origins:conditioned_attribute").getConditions().get("type").toString().equalsIgnoreCase("origins:sprinting")) return;
-                inverseConditionAttribute(p);
+                if(!origin.getPowerFileFromType("origins:conditioned_attribute").getConditions().get("type").toString().equalsIgnoreCase("origins:sprinting")) return;
+                if(e.isSprinting()) executeConditionAttribute(p);
+                else inverseConditionAttribute(p);
             }
         }
     }
     @EventHandler
     public void ExecuteFlightCondition(PlayerToggleFlightEvent e){
         Player p = e.getPlayer();
-        if(e.isFlying()){
+        for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
             if(conditioned_attribute.contains(p)){
-                if(!OriginPlayer.getOrigin(p).getPowerFileFromType("origins:conditioned_attribute").getConditions().get("type").toString().equalsIgnoreCase("origins:flying")) return;
-                executeConditionAttribute(p);
-            }
-        }else{
-            if(conditioned_attribute.contains(p)){
-                if(!OriginPlayer.getOrigin(p).getPowerFileFromType("origins:conditioned_attribute").getConditions().get("type").toString().equalsIgnoreCase("origins:flying")) return;
-                inverseConditionAttribute(p);
+                if(!origin.getPowerFileFromType("origins:conditioned_attribute").getConditions().get("type").toString().equalsIgnoreCase("origins:flying")) return;
+                if(e.isFlying()) executeConditionAttribute(p);
+                else inverseConditionAttribute(p);
             }
         }
     }
+
     @EventHandler
     public void ExecuteGlideCondition(EntityToggleGlideEvent e){
-        if(!(e.getEntity() instanceof Player)) return;
-        Player p = (Player) e.getEntity();
-        if(e.isGliding()){
+        if(!(e.getEntity() instanceof Player p)) return;
+        for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
             if(conditioned_attribute.contains(p)){
-                if(!OriginPlayer.getOrigin(p).getPowerFileFromType("origins:conditioned_attribute").getConditions().get("type").toString().equalsIgnoreCase("origins:gliding")) return;
-                executeConditionAttribute(p);
-            }
-        }else{
-            if(conditioned_attribute.contains(p)){
-                if(!OriginPlayer.getOrigin(p).getPowerFileFromType("origins:conditioned_attribute").getConditions().get("type").toString().equalsIgnoreCase("origins:gliding")) return;
-                inverseConditionAttribute(p);
+                if(!origin.getPowerFileFromType("origins:conditioned_attribute").getConditions().get("type").toString().equalsIgnoreCase("origins:gliding")) return;
+                if(e.isGliding()) executeConditionAttribute(p);
+                else inverseConditionAttribute(p);
             }
         }
     }
+
     @EventHandler
     public void ExecuteSneakCondition(PlayerToggleSneakEvent e){
         Player p = e.getPlayer();
-        if(e.isSneaking()){
+        for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
             if(conditioned_attribute.contains(p)){
-                if(!OriginPlayer.getOrigin(p).getPowerFileFromType("origins:conditioned_attribute").getConditions().get("type").toString().equalsIgnoreCase("origins:sneaking")) return;
-                executeConditionAttribute(p);
-            }
-        }else{
-            if(conditioned_attribute.contains(p)){
-                if(!OriginPlayer.getOrigin(p).getPowerFileFromType("origins:conditioned_attribute").getConditions().get("type").toString().equalsIgnoreCase("origins:sneaking")) return;
-                inverseConditionAttribute(p);
+                if(!origin.getPowerFileFromType("origins:conditioned_attribute").getConditions().get("type").toString().equalsIgnoreCase("origins:sneaking")) return;
+                if(e.isSneaking()) executeConditionAttribute(p);
+                else inverseConditionAttribute(p);
             }
         }
     }
-
-
 }

@@ -3,10 +3,14 @@ package me.dueris.genesismc.core.commands.subcommands.origin;
 import me.dueris.genesismc.core.commands.PlayerSelector;
 import me.dueris.genesismc.core.commands.subcommands.SubCommand;
 import me.dueris.genesismc.core.entity.OriginPlayer;
+import me.dueris.genesismc.core.factory.CraftApoli;
+import me.dueris.genesismc.core.utils.OriginContainer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Set;
 
 
 public class Gui extends SubCommand {
@@ -32,12 +36,20 @@ public class Gui extends SubCommand {
             ArrayList<Player> players = PlayerSelector.playerSelector(sender, args[1]);
             if (players.size() == 0) return;
             for (Player p : players) {
-                OriginPlayer.unassignPowers(p);
-                OriginPlayer.removeOrigin(p);
+                HashMap<String, OriginContainer> origins = OriginPlayer.getOrigin(p);
+                Set<String> layers = origins.keySet();
+                for (String layer : layers) {
+                    OriginPlayer.unassignPowers(p, layer);
+                    OriginPlayer.setOrigin(p,layer, CraftApoli.nullOrigin());
+                }
             }
         } else if (args.length == 1 && sender instanceof Player p) {
-            OriginPlayer.unassignPowers(p);
-            OriginPlayer.removeOrigin(p);
+            HashMap<String, OriginContainer> origins = OriginPlayer.getOrigin(p);
+            Set<String> layers = origins.keySet();
+            for (String layer : layers) {
+                OriginPlayer.unassignPowers(p, layer);
+                OriginPlayer.setOrigin(p,layer, CraftApoli.nullOrigin());
+            }
         }
     }
 }
