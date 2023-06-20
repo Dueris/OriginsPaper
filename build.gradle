@@ -52,3 +52,11 @@ processResources {
         expand props
     }
 }
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            from components.java
+        }
+    }
+}
