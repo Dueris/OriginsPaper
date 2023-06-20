@@ -1,6 +1,5 @@
 package me.dueris.genesismc.core;
 
-import me.dueris.genesismc.core.entity.OriginPlayer;
 import me.dueris.genesismc.core.factory.CraftApoli;
 import me.dueris.genesismc.core.utils.OriginContainer;
 import org.bukkit.NamespacedKey;
@@ -13,7 +12,6 @@ import org.bukkit.persistence.PersistentDataType;
 import org.geysermc.floodgate.api.FloodgateApi;
 import org.geysermc.geyser.api.GeyserApi;
 import org.geysermc.geyser.api.connection.GeyserConnection;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
 

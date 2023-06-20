@@ -1,9 +1,7 @@
 package me.dueris.genesismc.core.factory.handlers;
 
-import me.dueris.genesismc.core.GenesisMC;
 import me.dueris.genesismc.core.entity.OriginPlayer;
 import me.dueris.genesismc.core.factory.CraftApoli;
-import me.dueris.genesismc.core.utils.OriginContainer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.Bukkit;

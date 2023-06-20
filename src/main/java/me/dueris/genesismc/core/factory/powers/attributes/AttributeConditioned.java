@@ -1,6 +1,5 @@
 package me.dueris.genesismc.core.factory.powers.attributes;
 
-import com.destroystokyo.paper.event.player.PlayerJumpEvent;
 import me.dueris.genesismc.core.entity.OriginPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -18,7 +17,6 @@ import java.util.Map;
 import java.util.Random;
 import java.util.function.BinaryOperator;
 
-import static me.dueris.genesismc.core.factory.powers.Powers.attribute;
 import static me.dueris.genesismc.core.factory.powers.Powers.conditioned_attribute;
 
 public class AttributeConditioned implements Listener {

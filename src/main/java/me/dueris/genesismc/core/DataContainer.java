@@ -1,15 +1,11 @@
 package me.dueris.genesismc.core;
 
-import me.dueris.genesismc.core.factory.CraftApoli;
 import me.dueris.genesismc.core.utils.ShulkUtils;
-import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.persistence.PersistentDataContainer;
-import org.bukkit.persistence.PersistentDataType;
 
 import java.util.ArrayList;
 import java.util.Arrays;

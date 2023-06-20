@@ -1,16 +1,10 @@
 package me.dueris.genesismc.core.factory.powers.block.fluid;
 
-import org.bukkit.Bukkit;
-import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerToggleSneakEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
-
-import static me.dueris.genesismc.core.factory.powers.Powers.like_water;
 
 public class LikeWater extends BukkitRunnable implements Listener {
     ArrayList<Player> toggled_players = new ArrayList<>();

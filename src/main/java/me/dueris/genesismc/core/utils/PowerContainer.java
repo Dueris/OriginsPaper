@@ -1,7 +1,5 @@
 package me.dueris.genesismc.core.utils;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
