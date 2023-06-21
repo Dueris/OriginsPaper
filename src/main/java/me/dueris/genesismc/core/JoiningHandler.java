@@ -46,7 +46,6 @@ public class JoiningHandler implements Listener {
             p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origins"), PersistentDataType.BYTE_ARRAY, CraftApoli.toByteArray(new HashMap<>(Map.of("origins:origin", origin))));
         } catch (Exception er) {
             Bukkit.getLogger().warning("[GenesisMC] Error converting old origin container");
-            er.printStackTrace();
         }
 
         if (p.getClientBrandName() != null && p.getClientBrandName().equalsIgnoreCase("Immersions")) {
