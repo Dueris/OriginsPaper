@@ -9,6 +9,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -20,6 +21,7 @@ import org.geysermc.geyser.api.GeyserApi;
 import java.io.ByteArrayInputStream;
 import java.io.ObjectInput;
 import java.io.ObjectInputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -29,14 +31,16 @@ import static org.bukkit.Bukkit.getServer;
 import static org.bukkit.ChatColor.AQUA;
 
 public class JoiningHandler implements Listener {
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void playerJoinHandler(PlayerJoinEvent e) {
         Player p = e.getPlayer();
         p.setMaximumAir(300);
+
+        // ---  translation system ---
         if (!p.getPersistentDataContainer().has(new NamespacedKey(GenesisMC.getPlugin(), "origins"), PersistentDataType.BYTE_ARRAY)) {
             p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origins"), PersistentDataType.BYTE_ARRAY, CraftApoli.toByteArray(new HashMap<>(Map.of("origins:origin", CraftApoli.nullOrigin()))));
         }
-        //translation system
+
         String originTag = p.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "originTag"), PersistentDataType.STRING);
         if (originTag != null) {
             for (OriginContainer origin : CraftApoli.getOrigins()) {
@@ -52,11 +56,18 @@ public class JoiningHandler implements Listener {
             try {
                 ObjectInput oi = new ObjectInputStream(bis);
                 OriginContainer origin = (OriginContainer) oi.readObject();
-                p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origins"), PersistentDataType.BYTE_ARRAY, CraftApoli.toByteArray(new HashMap<>(Map.of("origins:origin", origin))));
+                HashMap<String, OriginContainer> origins = new HashMap<>();
+                ArrayList<String> layers = CraftApoli.getLayers();
+                p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origins"), PersistentDataType.BYTE_ARRAY, CraftApoli.toByteArray(new HashMap<>(Map.of(layers.get(0), origin))));
+                layers.remove(0);
+                if (layers.size() > 1 ) {
+                    for (String layer : layers) origins.put(layer, CraftApoli.nullOrigin());
+                }
             } catch (Exception er) {
                 Bukkit.getLogger().warning("[GenesisMC] Error converting old origin container");
             }
         }
+        // --- end ---
 
         if (p.getClientBrandName() != null && p.getClientBrandName().equalsIgnoreCase("Immersions")) {
             p.setDisplayName(AQUA + p.getName());
