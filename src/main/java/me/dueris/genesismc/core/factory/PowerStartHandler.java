@@ -27,7 +27,7 @@ import me.dueris.genesismc.core.origins.OriginHandler;
 import static me.dueris.genesismc.core.GenesisMC.getPlugin;
 import static org.bukkit.Bukkit.getServer;
 
-public class OriginStartHandler {
+public class PowerStartHandler {
 
     public static void StartRunnables() {
 
