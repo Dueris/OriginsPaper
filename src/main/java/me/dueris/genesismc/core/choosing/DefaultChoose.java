@@ -1,8 +1,10 @@
 package me.dueris.genesismc.core.choosing;
 
 import me.dueris.genesismc.core.GenesisMC;
+import me.dueris.genesismc.core.entity.OriginPlayer;
 import me.dueris.genesismc.core.events.OriginChangeEvent;
 import me.dueris.genesismc.core.events.OriginChooseEvent;
+import me.dueris.genesismc.core.factory.CraftApoli;
 import me.dueris.genesismc.core.items.OrbOfOrigins;
 import me.dueris.genesismc.core.utils.SendCharts;
 import net.kyori.adventure.text.Component;
@@ -36,11 +38,11 @@ public class DefaultChoose {
         OriginChangeEvent Event = new OriginChangeEvent(p);
         getServer().getPluginManager().callEvent(Event);
 
-        if (p.getInventory().getItemInMainHand().isSimilar(OrbOfOrigins.orb) && !p.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING).equals("genesis:origin-null")) {
+        if (p.getInventory().getItemInMainHand().isSimilar(OrbOfOrigins.orb) && !OriginPlayer.hasOrigin(p, CraftApoli.nullOrigin().getTag())) {
             int amt = p.getInventory().getItemInMainHand().getAmount();
             p.getInventory().getItemInMainHand().setAmount(amt - 1);
         } else {
-            if (p.getInventory().getItemInOffHand().isSimilar(orb) && !p.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING).equals("genesis:origin-null")) {
+            if (p.getInventory().getItemInOffHand().isSimilar(orb) && !OriginPlayer.hasOrigin(p, CraftApoli.nullOrigin().getTag())) {
                 int amt = p.getInventory().getItemInOffHand().getAmount();
                 p.getInventory().getItemInOffHand().setAmount(amt - 1);
             }

@@ -49,7 +49,7 @@ public class ShulkUtils {
 
                 os.close();
             } catch (IOException ex) {
-                System.out.println(ex);
+                ex.printStackTrace();
             }
         }
     }
@@ -81,7 +81,7 @@ public class ShulkUtils {
 
                 in.close();
             } catch (IOException | ClassNotFoundException ex) {
-                System.out.println(ex);
+                ex.printStackTrace();
             }
         }
 

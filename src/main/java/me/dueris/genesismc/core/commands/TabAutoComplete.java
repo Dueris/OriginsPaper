@@ -127,6 +127,7 @@ public class TabAutoComplete implements TabCompleter {
                     origins.removeIf(origin -> !origin.startsWith(args[3]));
                     return origins;
                 }
+                return new ArrayList<>();
             } else {
                 return new ArrayList<>();
             }

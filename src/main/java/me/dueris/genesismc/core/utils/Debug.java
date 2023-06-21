@@ -1,8 +1,8 @@
 package me.dueris.genesismc.core.utils;
 
 import me.dueris.genesismc.core.GenesisMC;
+import me.dueris.genesismc.core.JoiningHandler;
 import me.dueris.genesismc.core.factory.CraftApoli;
-import me.dueris.genesismc.core.factory.handlers.CustomOriginExistCheck;
 import me.dueris.genesismc.core.files.GenesisDataFiles;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
@@ -81,7 +81,7 @@ public class Debug {
             if (p.isOp()) {
                 p.sendMessage(ChatColor.BLUE + "Origins Reloaded.");
             }
-            CustomOriginExistCheck.customOriginExistCheck(p);
+            JoiningHandler.customOriginExistCheck(p);
         }
     }
 
