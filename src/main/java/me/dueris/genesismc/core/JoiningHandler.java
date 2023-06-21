@@ -43,17 +43,19 @@ public class JoiningHandler implements Listener {
                 if (("origin-" + (origin.getTag().substring(8))).equals(originTag.substring(8)))
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origins"), PersistentDataType.BYTE_ARRAY, CraftApoli.toByteArray(new HashMap<>(Map.of("origins:origin", origin))));
             }
-        } else {
+        } else if(!p.getPersistentDataContainer().has(new NamespacedKey(GenesisMC.getPlugin(), "origins"), PersistentDataType.BYTE_ARRAY)) {
             p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origins"), PersistentDataType.BYTE_ARRAY, CraftApoli.toByteArray(new HashMap<>(Map.of("origins:origin", CraftApoli.nullOrigin()))));
         }
 
-        ByteArrayInputStream bis = new ByteArrayInputStream(p.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "origins"), PersistentDataType.BYTE_ARRAY));
-        try {
-            ObjectInput oi = new ObjectInputStream(bis);
-            OriginContainer origin = (OriginContainer) oi.readObject();
-            p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origins"), PersistentDataType.BYTE_ARRAY, CraftApoli.toByteArray(new HashMap<>(Map.of("origins:origin", origin))));
-        } catch (Exception er) {
-            Bukkit.getLogger().warning("[GenesisMC] Error converting old origin container");
+        if(p.getPersistentDataContainer().has(new NamespacedKey(GenesisMC.getPlugin(), "origin"), PersistentDataType.BYTE_ARRAY)) {
+            ByteArrayInputStream bis = new ByteArrayInputStream(p.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "origins"), PersistentDataType.BYTE_ARRAY));
+            try {
+                ObjectInput oi = new ObjectInputStream(bis);
+                OriginContainer origin = (OriginContainer) oi.readObject();
+                p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origins"), PersistentDataType.BYTE_ARRAY, CraftApoli.toByteArray(new HashMap<>(Map.of("origins:origin", origin))));
+            } catch (Exception er) {
+                Bukkit.getLogger().warning("[GenesisMC] Error converting old origin container");
+            }
         }
 
         if (p.getClientBrandName() != null && p.getClientBrandName().equalsIgnoreCase("Immersions")) {
