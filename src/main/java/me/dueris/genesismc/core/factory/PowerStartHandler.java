@@ -155,7 +155,6 @@ public class PowerStartHandler {
         getServer().getPluginManager().registerEvents(new StrongArmsBreakSpeed(), getPlugin());
         getServer().getPluginManager().registerEvents(new LikeWater(), getPlugin());
         getServer().getPluginManager().registerEvents(new AttributeConditioned(), getPlugin());
-        getServer().getPluginManager().registerEvents(new FelinePhobia(), getPlugin());
-
+        getServer().getPluginManager().registerEvents(new CreeperScare(), getPlugin());
     }
 }

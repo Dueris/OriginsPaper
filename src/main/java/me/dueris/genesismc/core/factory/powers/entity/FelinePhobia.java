@@ -13,18 +13,9 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.util.List;
 
 import static me.dueris.genesismc.core.factory.powers.Powers.felinephobia;
+import static me.dueris.genesismc.core.factory.powers.Powers.scare_creepers;
 
 public class FelinePhobia extends BukkitRunnable implements Listener {
-
-    @EventHandler
-    public void OnTarget(EntityTargetEvent e) {
-        if (e.getEntity() instanceof Creeper && (e.getTarget() instanceof Player p)) {
-
-            if (felinephobia.contains(p)) {
-                e.setCancelled(true);
-            }
-        }
-    }
 
     @Override
     public void run() {
