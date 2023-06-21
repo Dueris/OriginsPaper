@@ -12,10 +12,8 @@ import me.dueris.genesismc.core.enchantments.EnchantProtEvent;
 import me.dueris.genesismc.core.enchantments.WaterProtAnvil;
 import me.dueris.genesismc.core.enchantments.WaterProtection;
 import me.dueris.genesismc.core.entity.OriginPlayer;
-import me.dueris.genesismc.core.events.PlayerHandler;
 import me.dueris.genesismc.core.factory.CraftApoli;
 import me.dueris.genesismc.core.factory.OriginStartHandler;
-import me.dueris.genesismc.core.factory.handlers.CustomOriginExistCheck;
 import me.dueris.genesismc.core.files.GenesisDataFiles;
 import me.dueris.genesismc.core.generation.WaterProtBookGen;
 import me.dueris.genesismc.core.items.InfinPearl;
@@ -160,7 +158,6 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         getServer().getPluginManager().registerEvents(new Info(), this);
         getServer().getPluginManager().registerEvents(new Listeners(), this);
         getServer().getPluginManager().registerEvents(new DataContainer(), this);
-        getServer().getPluginManager().registerEvents(new PlayerHandler(), this);
         getServer().getPluginManager().registerEvents(new Items(), this);
         plugin = this;
 
@@ -194,7 +191,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 
 
         for (Player p : Bukkit.getOnlinePlayers()) {
-            CustomOriginExistCheck.customOriginExistCheck(p);
+            JoiningHandler.customOriginExistCheck(p);
             OriginPlayer.assignPowers(p);
             if (p.isOp()) p.sendMessage(Component.text("Origins Reloaded.").color(TextColor.fromHexString(AQUA)));
         }
