@@ -282,7 +282,7 @@ public class CraftApoli {
         } catch (Exception e) {
             Bukkit.getLogger().warning("CRUCIAL ERROR, PLEASE REPORTING THIS IMMEDIATELY TO THE DEVS!!");
             e.printStackTrace();
-            return null;
+            return nullOrigin();
         }
     }
 
@@ -297,7 +297,7 @@ public class CraftApoli {
         } catch (Exception e) {
             Bukkit.getLogger().warning("CRUCIAL ERROR, PLEASE REPORTING THIS IMMEDIATELY TO THE DEVS!!");
             e.printStackTrace();
-            return null;
+            return new HashMap<>(Map.of("origins:origin", CraftApoli.null_Origin));
         }
     }
 
