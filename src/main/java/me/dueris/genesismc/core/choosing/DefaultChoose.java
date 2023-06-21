@@ -9,6 +9,7 @@ import me.dueris.genesismc.core.items.OrbOfOrigins;
 import me.dueris.genesismc.core.utils.SendCharts;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
+import org.bukkit.GameMode;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
@@ -40,10 +41,12 @@ public class DefaultChoose {
 
         if (p.getInventory().getItemInMainHand().isSimilar(OrbOfOrigins.orb) && !OriginPlayer.hasOrigin(p, CraftApoli.nullOrigin().getTag())) {
             int amt = p.getInventory().getItemInMainHand().getAmount();
+            if(p.getGameMode().equals(GameMode.CREATIVE)) return;
             p.getInventory().getItemInMainHand().setAmount(amt - 1);
         } else {
             if (p.getInventory().getItemInOffHand().isSimilar(orb) && !OriginPlayer.hasOrigin(p, CraftApoli.nullOrigin().getTag())) {
                 int amt = p.getInventory().getItemInOffHand().getAmount();
+                if(p.getGameMode().equals(GameMode.CREATIVE)) return;
                 p.getInventory().getItemInOffHand().setAmount(amt - 1);
             }
         }
