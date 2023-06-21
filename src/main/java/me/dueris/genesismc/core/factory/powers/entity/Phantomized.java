@@ -11,6 +11,10 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.inventory.InventoryAction;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryMoveItemEvent;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
@@ -271,6 +275,54 @@ public class Phantomized extends BukkitRunnable implements Listener {
         if (phantomize.contains(e.getPlayer())) {
             if (e.getItemDrop().getItemStack().isSimilar(spectatorswitch)) {
                 e.setCancelled(true);
+            }
+        }
+    }
+
+    @EventHandler
+    public void onTransfer(InventoryClickEvent e) {
+        if(e.getClick().isKeyboardClick()) {
+            if(e.getView().getTopInventory().getType() == InventoryType.CRAFTING) return;
+            if(e.getView().getBottomInventory().getItem(e.getHotbarButton()) != null) {
+                ItemStack transferred = e.getView().getBottomInventory().getItem(e.getHotbarButton());
+                if(transferred.getType().equals(Material.PHANTOM_MEMBRANE)) {
+                    ItemStack spectatorswitch = new ItemStack(Material.PHANTOM_MEMBRANE);
+                    ItemMeta switch_meta = spectatorswitch.getItemMeta();
+                    switch_meta.setDisplayName(GRAY + "Phantom Form");
+                    ArrayList<String> pearl_lore = new ArrayList();
+                    switch_meta.setUnbreakable(true);
+                    switch_meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
+                    switch_meta.addItemFlags(ItemFlag.HIDE_ITEM_SPECIFICS);
+                    switch_meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+                    switch_meta.setLore(pearl_lore);
+                    spectatorswitch.setItemMeta(switch_meta);
+
+                    if(transferred.isSimilar(spectatorswitch)) {
+                        e.setCancelled(true);
+                    }
+                }
+            }
+
+            return;
+        }
+        if(e.getView().getTopInventory().getType() != InventoryType.CRAFTING) {
+            if(e.getView().getTopInventory().getHolder().equals(e.getWhoClicked())) return;
+            if(e.getCurrentItem() == null) return;
+            if(e.getCurrentItem().getType().equals(Material.PHANTOM_MEMBRANE)) {
+                ItemStack spectatorswitch = new ItemStack(Material.PHANTOM_MEMBRANE);
+                ItemMeta switch_meta = spectatorswitch.getItemMeta();
+                switch_meta.setDisplayName(GRAY + "Phantom Form");
+                ArrayList<String> pearl_lore = new ArrayList();
+                switch_meta.setUnbreakable(true);
+                switch_meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
+                switch_meta.addItemFlags(ItemFlag.HIDE_ITEM_SPECIFICS);
+                switch_meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+                switch_meta.setLore(pearl_lore);
+                spectatorswitch.setItemMeta(switch_meta);
+
+                if(e.getCurrentItem().isSimilar(spectatorswitch)) {
+                    e.setCancelled(true);
+                }
             }
         }
     }

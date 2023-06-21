@@ -4,12 +4,15 @@ import me.dueris.genesismc.core.GenesisMC;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
+import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
@@ -21,6 +24,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import java.util.ArrayList;
 
 import static me.dueris.genesismc.core.factory.powers.Powers.throw_ender_pearl;
+import static org.bukkit.ChatColor.GRAY;
 import static org.bukkit.Material.ENDER_PEARL;
 
 public class EnderPearlThrow implements Listener {
@@ -88,7 +92,6 @@ public class EnderPearlThrow implements Listener {
     @EventHandler
     public void CancelDrop(PlayerDropItemEvent e) {
         ItemStack infinpearl = new ItemStack(ENDER_PEARL);
-
         ItemMeta pearl_meta = infinpearl.getItemMeta();
         pearl_meta.setDisplayName(ChatColor.LIGHT_PURPLE + "Teleport");
         ArrayList<String> pearl_lore = new ArrayList<>();
@@ -101,6 +104,50 @@ public class EnderPearlThrow implements Listener {
             if (e.getItemDrop().getItemStack().isSimilar(infinpearl)) {
                 e.setCancelled(true);
             }
+    }
+
+    @EventHandler
+    public void onTransfer(InventoryClickEvent e) {
+        if(e.getClick().isKeyboardClick()) {
+            if(e.getView().getTopInventory().getType() == InventoryType.CRAFTING) return;
+            if(e.getView().getBottomInventory().getItem(e.getHotbarButton()) != null) {
+                ItemStack transferred = e.getView().getBottomInventory().getItem(e.getHotbarButton());
+                if(transferred.getType().equals(Material.ENDER_PEARL)) {
+                    ItemStack infinpearl = new ItemStack(ENDER_PEARL);
+                    ItemMeta pearl_meta = infinpearl.getItemMeta();
+                    pearl_meta.setDisplayName(ChatColor.LIGHT_PURPLE + "Teleport");
+                    ArrayList<String> pearl_lore = new ArrayList<>();
+                    pearl_meta.setUnbreakable(true);
+                    pearl_meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
+                    pearl_meta.setLore(pearl_lore);
+                    infinpearl.setItemMeta(pearl_meta);
+
+                    if(transferred.isSimilar(infinpearl)) {
+                        e.setCancelled(true);
+                    }
+                }
+            }
+
+            return;
+        }
+        if(e.getView().getTopInventory().getType() != InventoryType.CRAFTING) {
+            if(e.getView().getTopInventory().getHolder().equals(e.getWhoClicked())) return;
+            if(e.getCurrentItem() == null) return;
+            if(e.getCurrentItem().getType().equals(Material.ENDER_PEARL)) {
+                ItemStack infinpearl = new ItemStack(ENDER_PEARL);
+                ItemMeta pearl_meta = infinpearl.getItemMeta();
+                pearl_meta.setDisplayName(ChatColor.LIGHT_PURPLE + "Teleport");
+                ArrayList<String> pearl_lore = new ArrayList<>();
+                pearl_meta.setUnbreakable(true);
+                pearl_meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
+                pearl_meta.setLore(pearl_lore);
+                infinpearl.setItemMeta(pearl_meta);
+
+                if(e.getCurrentItem().isSimilar(infinpearl)) {
+                    e.setCancelled(true);
+                }
+            }
+        }
     }
 
     @EventHandler
