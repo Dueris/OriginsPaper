@@ -41,7 +41,7 @@ public class AttributeHandler implements Listener {
             operationMap.put("division", (a, b) -> a / b);
             operationMap.put("multiply_base", (a, b) -> a + (a * b));
             operationMap.put("multiply_total", (a, b) -> a * (1 + b));
-            operationMap.put("set_total", (a, b) -> a - a + b);
+            operationMap.put("set_total", (a, b) -> 0 + b);
 
             Random random = new Random();
 

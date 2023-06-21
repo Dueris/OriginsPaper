@@ -34,7 +34,7 @@ public class Info extends SubCommand implements Listener {
 
     @SuppressWarnings("FieldMayBeFinal")
     private static HashMap<Player, ArrayList<OriginContainer>> playerOrigins = new HashMap<>();
-    private static HashMap<Player, Integer> playerPage = new HashMap<>();
+    private static final HashMap<Player, Integer> playerPage = new HashMap<>();
 
     @Override
     public String getName() {

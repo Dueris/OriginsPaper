@@ -30,7 +30,7 @@ public class CraftApoli {
     }
 
 
-    private static ArrayList<String> originLayers = new ArrayList<>(List.of("origins:origin"));
+    private static final ArrayList<String> originLayers = new ArrayList<>(List.of("origins:origin"));
 
     /**
      * @return A copy of each layerTag that is loaded.
