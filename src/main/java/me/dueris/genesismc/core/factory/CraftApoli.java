@@ -267,7 +267,7 @@ public class CraftApoli {
         } catch (Exception e) {
             Bukkit.getLogger().warning("CRUCIAL ERROR, PLEASE REPORTING THIS IMMEDIATELY TO THE DEVS!!");
             e.printStackTrace();
-            return toByteArray(new HashMap<>(Map.of("origins:origin", CraftApoli.null_Origin)) );
+            return toByteArray(new HashMap<>(Map.of("origins:origin", CraftApoli.null_Origin)));
         }
     }
 

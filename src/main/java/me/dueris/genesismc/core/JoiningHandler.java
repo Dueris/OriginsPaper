@@ -1,6 +1,5 @@
 package me.dueris.genesismc.core;
 
-import me.dueris.genesismc.core.entity.OriginPlayer;
 import me.dueris.genesismc.core.factory.CraftApoli;
 import me.dueris.genesismc.core.utils.OriginContainer;
 import org.bukkit.Bukkit;
@@ -13,8 +12,6 @@ import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.geysermc.floodgate.api.FloodgateApi;
 import org.geysermc.geyser.api.GeyserApi;
-import org.geysermc.geyser.api.connection.GeyserConnection;
-import org.jetbrains.annotations.Nullable;
 
 import java.io.ByteArrayInputStream;
 import java.io.ObjectInput;
@@ -37,7 +34,7 @@ public class JoiningHandler implements Listener {
         String originTag = p.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "originTag"), PersistentDataType.STRING);
         if (originTag != null) {
             for (OriginContainer origin : CraftApoli.getOrigins()) {
-                if (("origin-"+(origin.getTag().substring(8))).equals(originTag.substring(8)))
+                if (("origin-" + (origin.getTag().substring(8))).equals(originTag.substring(8)))
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origins"), PersistentDataType.BYTE_ARRAY, CraftApoli.toByteArray(new HashMap<>(Map.of("origins:origin", origin))));
             }
         }
@@ -80,7 +77,6 @@ public class JoiningHandler implements Listener {
         if (!p.getPersistentDataContainer().has(new NamespacedKey(GenesisMC.getPlugin(), "toggle"), PersistentDataType.INTEGER)) {
             p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "toggle"), PersistentDataType.INTEGER, 1);
         }
-
 
 
         if (getServer().getPluginManager().isPluginEnabled("Geyser-Spigot")) {

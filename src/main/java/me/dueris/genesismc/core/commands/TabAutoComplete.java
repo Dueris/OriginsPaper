@@ -106,7 +106,10 @@ public class TabAutoComplete implements TabCompleter {
                     ArrayList<String> layers = CraftApoli.getLayers();
                     for (int i = 0; i < layers.size(); i++) {
                         String layer = layers.get(i);
-                        if (layer.length() < args[2].length()) {layers.remove(layer); continue;}
+                        if (layer.length() < args[2].length()) {
+                            layers.remove(layer);
+                            continue;
+                        }
                         if (!layer.equals(layers.get(i).substring(0, layer.length()))) layers.remove(layers.get(i));
                     }
                     return layers;
@@ -118,7 +121,7 @@ public class TabAutoComplete implements TabCompleter {
                 } else {
                     return new ArrayList<>();
                 }
-            } else if (args.length == 4){
+            } else if (args.length == 4) {
                 if (args[0].equalsIgnoreCase("has") || args[0].equalsIgnoreCase("set")) {
                     ArrayList<String> origins = CraftApoli.getOriginTags();
                     origins.removeIf(origin -> !origin.startsWith(args[3]));

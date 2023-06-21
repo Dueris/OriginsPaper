@@ -26,7 +26,6 @@ import java.util.HashMap;
 
 import static me.dueris.genesismc.core.choosing.ChoosingCORE.itemProperties;
 import static me.dueris.genesismc.core.choosing.ChoosingCUSTOM.cutStringIntoLists;
-import static me.dueris.genesismc.core.choosing.contents.ChooseMenuContents.ChooseMenuContent;
 import static me.dueris.genesismc.core.items.OrbOfOrigins.orb;
 import static me.dueris.genesismc.core.utils.BukkitColour.RED;
 
@@ -95,13 +94,14 @@ public class Info extends SubCommand implements Listener {
         NamespacedKey pageKey = new NamespacedKey(GenesisMC.getPlugin(), "page");
         ItemMeta backMeta = back.getItemMeta();
         if (page == 0) backMeta.getPersistentDataContainer().set(pageKey, PersistentDataType.INTEGER, 0);
-        else backMeta.getPersistentDataContainer().set(pageKey, PersistentDataType.INTEGER, page-1);
+        else backMeta.getPersistentDataContainer().set(pageKey, PersistentDataType.INTEGER, page - 1);
         back.setItemMeta(backMeta);
 
 
         ItemMeta nextMeta = next.getItemMeta();
-        if (playerOrigins.get(p).size() == page) nextMeta.getPersistentDataContainer().set(pageKey, PersistentDataType.INTEGER, page);
-        else nextMeta.getPersistentDataContainer().set(pageKey, PersistentDataType.INTEGER, page+1);
+        if (playerOrigins.get(p).size() == page)
+            nextMeta.getPersistentDataContainer().set(pageKey, PersistentDataType.INTEGER, page);
+        else nextMeta.getPersistentDataContainer().set(pageKey, PersistentDataType.INTEGER, page + 1);
         next.setItemMeta(nextMeta);
 
 
@@ -178,7 +178,7 @@ public class Info extends SubCommand implements Listener {
                 contents.add(back);
             } else if (i == 49) {
                 contents.add(exit);
-            }else if (i == 52) {
+            } else if (i == 52) {
                 contents.add(next);
             } else {
                 contents.add(new ItemStack(Material.AIR));

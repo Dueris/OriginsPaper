@@ -42,7 +42,8 @@ public class Get extends SubCommand {
 
         ArrayList<Player> players = PlayerSelector.playerSelector(sender, args[1]);
         if (players.size() == 0) return;
-        for (Player p : players) sender.sendMessage(Component.text(p.getName() + " has the following "+ args[2] + " : " + OriginPlayer.getOrigin(p, args[2]).getTag()));
+        for (Player p : players)
+            sender.sendMessage(Component.text(p.getName() + " has the following " + args[2] + " : " + OriginPlayer.getOrigin(p, args[2]).getTag()));
 
     }
 }

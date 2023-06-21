@@ -1,7 +1,5 @@
 package me.dueris.genesismc.core.origins;
 
-import me.dueris.genesismc.core.entity.OriginPlayer;
-import me.dueris.genesismc.core.events.OriginChangeEvent;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.ShulkerBullet;

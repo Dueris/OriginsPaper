@@ -10,7 +10,6 @@ import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -23,7 +22,7 @@ public class AttributeHandler implements Listener {
 
 
     @EventHandler
-    public void ExecuteAttributeModification(OriginChangeEvent e){
+    public void ExecuteAttributeModification(OriginChangeEvent e) {
         Player p = e.getPlayer();
         if (natural_armor.contains(p)) {
             p.getAttribute(Attribute.GENERIC_ARMOR).setBaseValue(8);
@@ -31,7 +30,7 @@ public class AttributeHandler implements Listener {
         if (nine_lives.contains(p)) {
             p.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(18);
         }
-        if(attribute.contains(p)){
+        if (attribute.contains(p)) {
             Map<String, BinaryOperator<Integer>> operationMap = new HashMap<>();
             //base value = a
             //modifier value = b
@@ -41,7 +40,7 @@ public class AttributeHandler implements Listener {
             operationMap.put("division", (a, b) -> a / b);
             operationMap.put("multiply_base", (a, b) -> a + (a * b));
             operationMap.put("multiply_total", (a, b) -> a * (1 + b));
-            operationMap.put("set_total", (a, b) -> 0 + b);
+            operationMap.put("set_total", (a, b) -> b);
 
             Random random = new Random();
 

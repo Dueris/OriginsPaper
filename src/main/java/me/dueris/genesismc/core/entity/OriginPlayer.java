@@ -101,7 +101,6 @@ public class OriginPlayer {
     }
 
     /**
-     *
      * @param originLayer The layer the origin is in
      * @return The OriginContainer for the specified layer
      */
@@ -116,7 +115,6 @@ public class OriginPlayer {
     }
 
     /**
-     *
      * @return A HashMap of layers and OriginContainer that the player has.
      */
 
@@ -254,11 +252,11 @@ public class OriginPlayer {
     }
 
     public static String getLayer(Player p, OriginContainer origin) {
-         HashMap<String, OriginContainer> origins = getOrigin(p);
-         for (String layer : origins.keySet()) {
-             if (origins.get(layer).getTag().equals(origin.getTag())) return layer;
-         }
-         return null;
+        HashMap<String, OriginContainer> origins = getOrigin(p);
+        for (String layer : origins.keySet()) {
+            if (origins.get(layer).getTag().equals(origin.getTag())) return layer;
+        }
+        return null;
     }
 
     public static void resetOriginData(Player player, OriginDataType type) {
@@ -424,6 +422,7 @@ public class OriginPlayer {
         HashMap<String, OriginContainer> origins = getOrigin(player);
         for (String layer : origins.keySet()) unassignPowers(player, layer);
     }
+
     public static void unassignPowers(Player player, String layer) {
         OriginContainer origin = getOrigin(player, layer);
         for (PowerContainer power : origin.getPowerContainers()) {

@@ -66,7 +66,8 @@ public class Has extends SubCommand {
             assert origins != null;
             for (String layer : origins.keySet()) {
                 if (!layer.equals(args[2])) continue;
-                if (OriginPlayer.hasOrigin(p, args[3])) sender.sendMessage(Component.text(p.getName() + " Passed the test!"));
+                if (OriginPlayer.hasOrigin(p, args[3]))
+                    sender.sendMessage(Component.text(p.getName() + " Passed the test!"));
                 else sender.sendMessage(Component.text(p.getName() + " Failed the test."));
             }
         }

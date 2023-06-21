@@ -3,7 +3,6 @@ package me.dueris.genesismc.core.factory.powers.attributes;
 import me.dueris.genesismc.core.entity.OriginPlayer;
 import me.dueris.genesismc.core.utils.OriginContainer;
 import me.dueris.genesismc.core.utils.PowerContainer;
-import me.dueris.genesismc.core.utils.PowerFileContainer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.Bukkit;
@@ -27,7 +26,7 @@ import static me.dueris.genesismc.core.utils.BukkitColour.RED;
 
 public class AttributeConditioned implements Listener {
 
-    public static void executeConditionAttribute(Player p){
+    public static void executeConditionAttribute(Player p) {
         Map<String, BinaryOperator<Integer>> operationMap = new HashMap<>();
         //base value = a
         //modifier value = b
@@ -37,7 +36,7 @@ public class AttributeConditioned implements Listener {
         operationMap.put("division", (a, b) -> a / b);
         operationMap.put("multiply_base", (a, b) -> a + (a * b));
         operationMap.put("multiply_total", (a, b) -> a * (1 + b));
-        operationMap.put("set_total", (a, b) -> 0 + b);
+        operationMap.put("set_total", (a, b) -> b);
 
         Random random = new Random();
 
@@ -48,7 +47,7 @@ public class AttributeConditioned implements Listener {
 
         for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
 
-             PowerContainer power = origin.getPowerFileFromType("origins:conditioned_attribute");
+            PowerContainer power = origin.getPowerFileFromType("origins:conditioned_attribute");
             if (power == null) continue;
 
 
@@ -67,7 +66,7 @@ public class AttributeConditioned implements Listener {
         }
     }
 
-    public static void inverseConditionAttribute(Player p){
+    public static void inverseConditionAttribute(Player p) {
         Map<String, BinaryOperator<Integer>> operationMap = new HashMap<>();
         //base value = a
         //modifier value = b
@@ -107,47 +106,52 @@ public class AttributeConditioned implements Listener {
     }
 
     @EventHandler
-    public void ExecuteSprintCondition(PlayerToggleSprintEvent e){
+    public void ExecuteSprintCondition(PlayerToggleSprintEvent e) {
         Player p = e.getPlayer();
         for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
-            if(conditioned_attribute.contains(p)){
-                if(!origin.getPowerFileFromType("origins:conditioned_attribute").getConditions().get("type").toString().equalsIgnoreCase("origins:sprinting")) return;
-                if(e.isSprinting()) executeConditionAttribute(p);
-                else inverseConditionAttribute(p);
-            }
-        }
-    }
-    @EventHandler
-    public void ExecuteFlightCondition(PlayerToggleFlightEvent e){
-        Player p = e.getPlayer();
-        for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
-            if(conditioned_attribute.contains(p)){
-                if(!origin.getPowerFileFromType("origins:conditioned_attribute").getConditions().get("type").toString().equalsIgnoreCase("origins:flying")) return;
-                if(e.isFlying()) executeConditionAttribute(p);
+            if (conditioned_attribute.contains(p)) {
+                if (!origin.getPowerFileFromType("origins:conditioned_attribute").getConditions().get("type").toString().equalsIgnoreCase("origins:sprinting"))
+                    return;
+                if (e.isSprinting()) executeConditionAttribute(p);
                 else inverseConditionAttribute(p);
             }
         }
     }
 
     @EventHandler
-    public void ExecuteGlideCondition(EntityToggleGlideEvent e){
-        if(!(e.getEntity() instanceof Player p)) return;
+    public void ExecuteFlightCondition(PlayerToggleFlightEvent e) {
+        Player p = e.getPlayer();
         for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
-            if(conditioned_attribute.contains(p)){
-                if(!origin.getPowerFileFromType("origins:conditioned_attribute").getConditions().get("type").toString().equalsIgnoreCase("origins:gliding")) return;
-                if(e.isGliding()) executeConditionAttribute(p);
+            if (conditioned_attribute.contains(p)) {
+                if (!origin.getPowerFileFromType("origins:conditioned_attribute").getConditions().get("type").toString().equalsIgnoreCase("origins:flying"))
+                    return;
+                if (e.isFlying()) executeConditionAttribute(p);
                 else inverseConditionAttribute(p);
             }
         }
     }
 
     @EventHandler
-    public void ExecuteSneakCondition(PlayerToggleSneakEvent e){
+    public void ExecuteGlideCondition(EntityToggleGlideEvent e) {
+        if (!(e.getEntity() instanceof Player p)) return;
+        for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
+            if (conditioned_attribute.contains(p)) {
+                if (!origin.getPowerFileFromType("origins:conditioned_attribute").getConditions().get("type").toString().equalsIgnoreCase("origins:gliding"))
+                    return;
+                if (e.isGliding()) executeConditionAttribute(p);
+                else inverseConditionAttribute(p);
+            }
+        }
+    }
+
+    @EventHandler
+    public void ExecuteSneakCondition(PlayerToggleSneakEvent e) {
         Player p = e.getPlayer();
         for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
-            if(conditioned_attribute.contains(p)){
-                if(!origin.getPowerFileFromType("origins:conditioned_attribute").getConditions().get("type").toString().equalsIgnoreCase("origins:sneaking")) return;
-                if(e.isSneaking()) executeConditionAttribute(p);
+            if (conditioned_attribute.contains(p)) {
+                if (!origin.getPowerFileFromType("origins:conditioned_attribute").getConditions().get("type").toString().equalsIgnoreCase("origins:sneaking"))
+                    return;
+                if (e.isSneaking()) executeConditionAttribute(p);
                 else inverseConditionAttribute(p);
             }
         }

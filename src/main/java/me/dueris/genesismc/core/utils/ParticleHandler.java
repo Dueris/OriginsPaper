@@ -1,7 +1,6 @@
 package me.dueris.genesismc.core.utils;
 
 import me.dueris.genesismc.core.entity.OriginPlayer;
-import me.dueris.genesismc.core.factory.CraftApoli;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffectType;

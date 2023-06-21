@@ -6,8 +6,6 @@ import me.dueris.genesismc.core.factory.CraftApoli;
 import me.dueris.genesismc.core.utils.OriginContainer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -17,8 +15,6 @@ import org.bukkit.persistence.PersistentDataType;
 
 import java.util.HashMap;
 
-import static me.dueris.genesismc.core.GenesisMC.getPlugin;
-import static me.dueris.genesismc.core.factory.CraftApoli.nullOrigin;
 import static me.dueris.genesismc.core.utils.BukkitColour.RED;
 
 public class CustomOriginExistCheck implements Listener {
@@ -30,7 +26,7 @@ public class CustomOriginExistCheck implements Listener {
 
     public static void customOriginExistCheck(Player p) {
         HashMap<String, OriginContainer> origins = OriginPlayer.getOrigin(p);
-        for (OriginContainer origin : origins.values()){
+        for (OriginContainer origin : origins.values()) {
             if (origin.getTag().equals(new CraftApoli().nullOrigin().getTag())) continue;
             if (CraftApoli.getOriginTags().contains(origin.getTag())) continue;
             NamespacedKey key = new NamespacedKey(GenesisMC.getPlugin(), "origins");

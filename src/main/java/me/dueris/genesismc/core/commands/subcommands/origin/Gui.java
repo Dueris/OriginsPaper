@@ -40,7 +40,7 @@ public class Gui extends SubCommand {
                 Set<String> layers = origins.keySet();
                 for (String layer : layers) {
                     OriginPlayer.unassignPowers(p, layer);
-                    OriginPlayer.setOrigin(p,layer, CraftApoli.nullOrigin());
+                    OriginPlayer.setOrigin(p, layer, CraftApoli.nullOrigin());
                 }
             }
         } else if (args.length == 1 && sender instanceof Player p) {
@@ -48,7 +48,7 @@ public class Gui extends SubCommand {
             Set<String> layers = origins.keySet();
             for (String layer : layers) {
                 OriginPlayer.unassignPowers(p, layer);
-                OriginPlayer.setOrigin(p,layer, CraftApoli.nullOrigin());
+                OriginPlayer.setOrigin(p, layer, CraftApoli.nullOrigin());
             }
         }
     }

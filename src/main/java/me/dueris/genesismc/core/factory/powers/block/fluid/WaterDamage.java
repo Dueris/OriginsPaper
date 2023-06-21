@@ -1,7 +1,6 @@
 package me.dueris.genesismc.core.factory.powers.block.fluid;
 
 import io.papermc.paper.event.entity.WaterBottleSplashEvent;
-import me.dueris.genesismc.core.entity.OriginPlayer;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
