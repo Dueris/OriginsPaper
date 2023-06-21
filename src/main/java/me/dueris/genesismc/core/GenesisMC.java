@@ -13,7 +13,7 @@ import me.dueris.genesismc.core.enchantments.WaterProtAnvil;
 import me.dueris.genesismc.core.enchantments.WaterProtection;
 import me.dueris.genesismc.core.entity.OriginPlayer;
 import me.dueris.genesismc.core.factory.CraftApoli;
-import me.dueris.genesismc.core.factory.OriginStartHandler;
+import me.dueris.genesismc.core.factory.PowerStartHandler;
 import me.dueris.genesismc.core.files.GenesisDataFiles;
 import me.dueris.genesismc.core.generation.WaterProtBookGen;
 import me.dueris.genesismc.core.items.InfinPearl;
@@ -172,8 +172,8 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         Items items = new Items();
         items.runTaskTimer(this, 0, 5);
 
-        OriginStartHandler.StartRunnables();
-        OriginStartHandler.StartListeners();
+        PowerStartHandler.StartRunnables();
+        PowerStartHandler.StartListeners();
 
         //particle handler
         ParticleHandler handler = new ParticleHandler();
