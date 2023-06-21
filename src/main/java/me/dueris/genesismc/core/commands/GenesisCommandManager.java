@@ -29,6 +29,7 @@ public class GenesisCommandManager implements CommandExecutor {
         subCommands.add(new Info());
         subCommands.add(new Set());
         subCommands.add(new Give());
+        subCommands.add(new Bug());
     }
 
 
@@ -48,15 +49,16 @@ public class GenesisCommandManager implements CommandExecutor {
         if (args.length == 0) {
             sender.sendMessage(Component.text("You did not provide any args. Here is a list of commands:").color(TextColor.fromHexString(RED)));
             sender.sendMessage(Component.text("-----------------------------------------").color(TextColor.fromHexString(YELLOW)));
-            sender.sendMessage(Component.text("/origin get <player>"));
-            sender.sendMessage(Component.text("/origin set <player>"));
+            sender.sendMessage(Component.text("/origin get <player> <origin layer>"));
+            sender.sendMessage(Component.text("/origin set <player> <origin layer>"));
             sender.sendMessage(Component.text("/origin enchant <player> <genesis enchantment> <amount>"));
             sender.sendMessage(Component.text("/origin gui <player>"));
             sender.sendMessage(Component.text("/origin get <player> <genesis item> <amount>"));
             sender.sendMessage(Component.text("/origin info"));
-            sender.sendMessage(Component.text("/origin has <player>"));
+            sender.sendMessage(Component.text("/origin has <player> <origin layer>"));
             sender.sendMessage(Component.text("/origin recipe"));
             sender.sendMessage(Component.text("/origin references"));
+            sender.sendMessage(Component.text("/origin bug"));
             sender.sendMessage(Component.text("/shulker open"));
             sender.sendMessage(Component.text("-----------------------------------------").color(TextColor.fromHexString(YELLOW)));
         }

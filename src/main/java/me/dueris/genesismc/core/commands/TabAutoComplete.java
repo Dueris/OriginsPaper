@@ -74,6 +74,12 @@ public class TabAutoComplete implements TabCompleter {
                 } else {
                     arguments.remove("give");
                 }
+                if (sender.hasPermission("genesis.origins.cmd.bug")) {
+                    if (args[0].equals("b") || args[0].isEmpty() || args[0].equals("bu") || args[0].equals("bug"))
+                        arguments.add("bug");
+                } else {
+                    arguments.remove("bug");
+                }
 
                 return arguments;
             } else if (args.length == 2) {
