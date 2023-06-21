@@ -77,7 +77,7 @@ public class Phantomized extends BukkitRunnable implements Listener {
                         if (p.isInsideVehicle()) return;
                         p.setCollidable(false);
                         p.setGameMode(GameMode.SPECTATOR);
-                        p.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 40, 255, false, false, false));
+                        p.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 10, 255, false, false, false));
                         p.setFlying(true);
                         p.setFlySpeed(0.05F);
 
