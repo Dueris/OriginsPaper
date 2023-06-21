@@ -8,6 +8,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemFlag;
@@ -21,6 +24,7 @@ import java.util.HashMap;
 import java.util.UUID;
 
 import static me.dueris.genesismc.core.factory.powers.Powers.launch_into_air;
+import static me.dueris.genesismc.core.factory.powers.Powers.phantomize;
 import static org.bukkit.ChatColor.GRAY;
 
 public class LaunchAir implements Listener {
@@ -49,6 +53,60 @@ public class LaunchAir implements Listener {
         if (!e.getDrops().contains(launchitem)) return;
         if (launch_into_air.contains(e.getPlayer())) {
             e.getDrops().remove(launchitem);
+        }
+    }
+
+    @EventHandler
+    public void onDrop(PlayerDropItemEvent e) {
+        ItemStack launchitem = new ItemStack(Material.FEATHER);
+        ItemMeta launchmeta = launchitem.getItemMeta();
+        launchmeta.setDisplayName(GRAY + "Launch");
+        launchmeta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
+        launchitem.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+        launchitem.setItemMeta(launchmeta);
+
+        if (e.getItemDrop().getItemStack().isSimilar(launchitem)) {
+            e.setCancelled(true);
+        }
+    }
+
+    @EventHandler
+    public void onTransfer(InventoryClickEvent e) {
+        if(e.getClick().isKeyboardClick()) {
+            if(e.getView().getTopInventory().getType() == InventoryType.CRAFTING) return;
+            if(e.getView().getBottomInventory().getItem(e.getHotbarButton()) != null) {
+                ItemStack transferred = e.getView().getBottomInventory().getItem(e.getHotbarButton());
+                if(transferred.getType().equals(Material.FEATHER)) {
+                    ItemStack launchitem = new ItemStack(Material.FEATHER);
+                    ItemMeta launchmeta = launchitem.getItemMeta();
+                    launchmeta.setDisplayName(GRAY + "Launch");
+                    launchmeta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
+                    launchitem.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+                    launchitem.setItemMeta(launchmeta);
+
+                    if(transferred.isSimilar(launchitem)) {
+                        e.setCancelled(true);
+                    }
+                }
+            }
+
+            return;
+        }
+        if(e.getView().getTopInventory().getType() != InventoryType.CRAFTING) {
+            if(e.getView().getTopInventory().getHolder().equals(e.getWhoClicked())) return;
+            if(e.getCurrentItem() == null) return;
+            if(e.getCurrentItem().getType().equals(Material.FEATHER)) {
+                ItemStack launchitem = new ItemStack(Material.FEATHER);
+                ItemMeta launchmeta = launchitem.getItemMeta();
+                launchmeta.setDisplayName(GRAY + "Launch");
+                launchmeta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
+                launchitem.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+                launchitem.setItemMeta(launchmeta);
+
+                if(e.getCurrentItem().isSimilar(launchitem)) {
+                    e.setCancelled(true);
+                }
+            }
         }
     }
 
