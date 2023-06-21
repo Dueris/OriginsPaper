@@ -212,9 +212,13 @@ public class ChoosingCORE implements Listener {
 
             Player p = (Player) e.getWhoClicked();
             ArrayList<OriginContainer> origins = CraftApoli.getOrigins();
+            ArrayList<String> layers = CraftApoli.getLayers();
             Random random = new Random();
-            OriginContainer origin = origins.get(random.nextInt(origins.size()));
-            OriginPlayer.setOrigin(p, "origins:origin", origin);
+            for (String layer : layers) {
+                OriginContainer origin = origins.get(random.nextInt(origins.size()));
+                OriginPlayer.setOrigin(p, layer, origin);
+                p.sendMessage(Component.text("Your random origin(s) are " + layer + " : " + origin.getName() + "!").color(TextColor.fromHexString(AQUA)));
+            }
 
             e.setCancelled(true);
             p.closeInventory();
@@ -222,7 +226,6 @@ public class ChoosingCORE implements Listener {
             p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 10, 2);
             p.closeInventory();
             p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_CHIME, 10, 2);
-            p.sendMessage(Component.text("Your random origin is " + origin.getName() + "!").color(TextColor.fromHexString(AQUA)));
             p.spawnParticle(Particle.CLOUD, p.getLocation(), 100);
             p.getWorld().spawnParticle(Particle.FIREWORKS_SPARK, p.getLocation(), 6);
             p.setCustomNameVisible(false);
@@ -233,11 +236,11 @@ public class ChoosingCORE implements Listener {
             OriginChangeEvent Event = new OriginChangeEvent(p);
             getServer().getPluginManager().callEvent(Event);
 
-            if (p.getInventory().getItemInMainHand().isSimilar(OrbOfOrigins.orb) && !p.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING).equals("genesis:origin-null")) {
+            if (p.getInventory().getItemInMainHand().isSimilar(OrbOfOrigins.orb) && !OriginPlayer.hasOrigin(p, CraftApoli.nullOrigin().getTag())) {
                 int amt = p.getInventory().getItemInMainHand().getAmount();
                 p.getInventory().getItemInMainHand().setAmount(amt - 1);
             } else {
-                if (p.getInventory().getItemInOffHand().isSimilar(orb) && !p.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING).equals("genesis:origin-null")) {
+                if (p.getInventory().getItemInOffHand().isSimilar(orb) && !OriginPlayer.hasOrigin(p, CraftApoli.nullOrigin().getTag())) {
                     int amt = p.getInventory().getItemInOffHand().getAmount();
                     p.getInventory().getItemInOffHand().setAmount(amt - 1);
                 }

@@ -58,11 +58,6 @@ public class OriginPlayer {
         }
     }
 
-    public static void setTagData(Player player, String tag) {
-        PersistentDataContainer data = player.getPersistentDataContainer();
-        data.set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, tag);
-    }
-
     public static void moveEquipmentInventory(Player player, EquipmentSlot equipmentSlot) {
         ItemStack item = player.getInventory().getItem(equipmentSlot);
 
@@ -91,13 +86,8 @@ public class OriginPlayer {
     public static boolean hasOrigin(Player player, String originTag) {
         HashMap<String, OriginContainer> origins = CraftApoli.toOriginContainer(player.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "origins"), PersistentDataType.BYTE_ARRAY));
         assert origins != null;
-        return origins.containsValue(CraftApoli.getOrigin(originTag));
-    }
-
-    public static boolean hasOrigin(Player player, OriginContainer origin) {
-        HashMap<String, OriginContainer> origins = CraftApoli.toOriginContainer(player.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "origins"), PersistentDataType.BYTE_ARRAY));
-        assert origins != null;
-        return origins.containsValue(origin);
+        for (OriginContainer origin : origins.values()) if (origin.getTag().equals(originTag)) return true;
+        return false;
     }
 
     /**
@@ -127,44 +117,44 @@ public class OriginPlayer {
         return CraftApoli.toOriginContainer(data.get(new NamespacedKey(GenesisMC.getPlugin(), "origins"), PersistentDataType.BYTE_ARRAY));
     }
 
-    public static boolean hasCoreOrigin(Player player) {
+    public static boolean hasCoreOrigin(Player player, String layer) {
         PersistentDataContainer data = player.getPersistentDataContainer();
-        @Nullable String origintagPlayer = data.get(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING);
-        if (origintagPlayer.contains("genesis:origin-human")) {
+        String originTag = OriginPlayer.getOrigin(player, layer).getTag();
+        if (originTag.contains("genesis:origin-human")) {
             return true;
-        } else if (origintagPlayer.contains("genesis:origin-enderian")) {
+        } else if (originTag.contains("genesis:origin-enderian")) {
             return true;
-        } else if (origintagPlayer.contains("genesis:origin-merling")) {
+        } else if (originTag.contains("genesis:origin-merling")) {
             return true;
-        } else if (origintagPlayer.contains("genesis:origin-phantom")) {
+        } else if (originTag.contains("genesis:origin-phantom")) {
             return true;
-        } else if (origintagPlayer.contains("genesis:origin-elytrian")) {
+        } else if (originTag.contains("genesis:origin-elytrian")) {
             return true;
-        } else if (origintagPlayer.contains("genesis:origin-blazeborn")) {
+        } else if (originTag.contains("genesis:origin-blazeborn")) {
             return true;
-        } else if (origintagPlayer.contains("genesis:origin-avian")) {
+        } else if (originTag.contains("genesis:origin-avian")) {
             return true;
-        } else if (origintagPlayer.contains("genesis:origin-arachnid")) {
+        } else if (originTag.contains("genesis:origin-arachnid")) {
             return true;
-        } else if (origintagPlayer.contains("genesis:origin-shulk")) {
+        } else if (originTag.contains("genesis:origin-shulk")) {
             return true;
-        } else if (origintagPlayer.contains("genesis:origin-feline")) {
+        } else if (originTag.contains("genesis:origin-feline")) {
             return true;
-        } else if (origintagPlayer.contains("genesis:origin-starborne")) {
+        } else if (originTag.contains("genesis:origin-starborne")) {
             return true;
-        } else if (origintagPlayer.contains("genesis:origin-allay")) {
+        } else if (originTag.contains("genesis:origin-allay")) {
             return true;
-        } else if (origintagPlayer.contains("genesis:origin-rabbit")) {
+        } else if (originTag.contains("genesis:origin-rabbit")) {
             return true;
-        } else if (origintagPlayer.contains("genesis:origin-bee")) {
+        } else if (originTag.contains("genesis:origin-bee")) {
             return true;
-        } else if (origintagPlayer.contains("genesis:origin-sculkling")) {
+        } else if (originTag.contains("genesis:origin-sculkling")) {
             return true;
-        } else if (origintagPlayer.contains("genesis:origin-creep")) {
+        } else if (originTag.contains("genesis:origin-creep")) {
             return true;
-        } else if (origintagPlayer.contains("genesis:origin-slimeling")) {
+        } else if (originTag.contains("genesis:origin-slimeling")) {
             return true;
-        } else return origintagPlayer.contains("genesis:origin-piglin");
+        } else return originTag.contains("genesis:origin-piglin");
     }
 
     public static void setOrigin(Player player, String layer, OriginContainer origin) {
@@ -264,8 +254,6 @@ public class OriginPlayer {
             player.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
         } else if (type.equals(OriginDataType.PHANTOMIZED_ID)) {
             player.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "phantomid"), PersistentDataType.INTEGER, 1);
-        } else if (type.equals(OriginDataType.ORIGINTAG)) {
-            player.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, "genesis:origin-null");
         } else if (type.equals(OriginDataType.SHULKER_BOX_DATA)) {
             player.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "shulker-box"), PersistentDataType.STRING, "");
         } else if (type.equals(OriginDataType.TOGGLE)) {
@@ -285,14 +273,6 @@ public class OriginPlayer {
             player.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "toggle"), PersistentDataType.INTEGER, value);
         } else if (type.equals(OriginDataType.IN_PHANTOMIZED_FORM)) {
             player.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, value);
-        }
-    }
-
-    public static void setOriginData(Player player, OriginDataType type, String value) {
-        if (type.equals(OriginDataType.ORIGINTAG)) {
-            player.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origintag"), PersistentDataType.STRING, value);
-        } else if (type.equals(OriginDataType.SHULKER_BOX_DATA)) {
-            player.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "shulker-box"), PersistentDataType.STRING, value);
         }
     }
 
