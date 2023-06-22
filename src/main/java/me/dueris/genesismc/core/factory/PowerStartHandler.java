@@ -23,6 +23,7 @@ import me.dueris.genesismc.core.factory.powers.item.GoldItemBuff;
 import me.dueris.genesismc.core.factory.powers.item.LaunchAir;
 import me.dueris.genesismc.core.factory.powers.world.*;
 import me.dueris.genesismc.core.origins.OriginHandler;
+import org.checkerframework.checker.units.qual.N;
 
 import static me.dueris.genesismc.core.GenesisMC.getPlugin;
 import static org.bukkit.Bukkit.getServer;
@@ -108,6 +109,9 @@ public class PowerStartHandler {
 
         LikeWater likeWater = new LikeWater();
         likeWater.runTaskTimer(getPlugin(), 0, 3);
+
+        NightVision nightVision = new NightVision();
+        nightVision.runTaskTimer(getPlugin(), 0, 10);
     }
 
     public static void StartListeners() {
