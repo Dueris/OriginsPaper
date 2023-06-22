@@ -1,3 +1,12 @@
+---
+name: Bug report
+about: Create a report to help us improve
+title: ''
+labels: ''
+assignees: ''
+
+---
+
 name: Bug report
 description: "Use this template if you're running into bugs or other issues"
 labels:
