@@ -92,6 +92,8 @@ public class Powers implements Listener {
     public static ArrayList<Player> overlay = new ArrayList<>();
     public static ArrayList<Player> particle = new ArrayList<>();
     public static ArrayList<Player> recipe = new ArrayList<>();
+    public static ArrayList<Player> replace_loot_table = new ArrayList<>();
+
 
     //genesis
     public static ArrayList<Player> hot_hands = new ArrayList<>();
