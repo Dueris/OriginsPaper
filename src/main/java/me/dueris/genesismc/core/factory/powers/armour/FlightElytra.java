@@ -4,9 +4,12 @@ import me.dueris.genesismc.core.GenesisMC;
 import me.dueris.genesismc.core.entity.OriginPlayer;
 import me.dueris.genesismc.core.protocol.SendStringPacketPayload;
 import me.dueris.genesismc.core.utils.OriginContainer;
+import net.minecraft.server.level.ServerPlayer;
 import org.bukkit.GameMode;
+import org.bukkit.GameRule;
 import org.bukkit.Material;
 import org.bukkit.Sound;
+import org.bukkit.craftbukkit.v1_20_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -37,6 +40,8 @@ public class FlightElytra implements Listener {
             for (OriginContainer origin : OriginPlayer.getOrigin(p).values())
                 if (origin.getPowerFileFromType("origins:elytra_flight").getShouldRender()) {
                     SendStringPacketPayload.sendCustomPacket(p, "ExecuteGenesisOriginsElytraRenderID:12232285");
+                    CraftPlayer player = (CraftPlayer) p;
+                    player.getWorld().setGameRule(GameRule.DISABLE_ELYTRA_MOVEMENT_CHECK, false);
                 }
             if (!p.isOnGround() && !p.isGliding()) {
                 glidingPlayers.add(p.getUniqueId());
