@@ -1,11 +1,8 @@
----
 name: Bug report
 about: Submit a bug report or plugin crash
 title: Plugin bug and/or crash
 labels: bug, help wanted
 assignees: Dueris
-
----
 
 name: Bug Report
 description: File a bug report
