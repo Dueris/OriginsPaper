@@ -95,6 +95,7 @@ public class Powers implements Listener {
     public static ArrayList<Player> replace_loot_table = new ArrayList<>();
     public static ArrayList<Player> self_glow = new ArrayList<>();
     public static ArrayList<Player> shader = new ArrayList<>();
+    public static ArrayList<Player> shaking = new ArrayList<>();
 
     //genesis
     public static ArrayList<Player> hot_hands = new ArrayList<>();
