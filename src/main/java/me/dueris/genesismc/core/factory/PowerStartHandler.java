@@ -73,6 +73,9 @@ public class PowerStartHandler {
         WaterBreathe waterBreathe = new WaterBreathe();
         waterBreathe.runTaskTimer(getPlugin(), 0, 1);
 
+        FlightHandler flightHandler = new FlightHandler();
+        flightHandler.runTaskTimer(getPlugin(), 0, 2);
+
         TailWind tailWind = new TailWind();
         tailWind.runTaskTimer(getPlugin(), 0, 1);
 

@@ -40,7 +40,9 @@ public class PlayerRender extends BukkitRunnable {
                         other.hidePlayer(GenesisMC.getPlugin(), p);
                     }
                 }
-                team.addEntry(p.getName());
+                if(!team.getEntries().contains(p)){
+                    team.addEntry(p.getName());
+                }
             } else if (isInvisible && !isInTranslucentList) {
                 for (Player other : Bukkit.getOnlinePlayers()) {
                     if (!other.equals(p)) {
@@ -49,14 +51,18 @@ public class PlayerRender extends BukkitRunnable {
                 }
                 Location location = p.getLocation();
                 location.getWorld().spawnParticle(Particle.SPELL_MOB_AMBIENT, location, 2, 0.0, 0.0, 0.0, 1.0, null);
-                team.addEntry(p.getName());
+                if(!team.getEntries().contains(p)){
+                    team.addEntry(p.getName());
+                }
             } else {
                 for (Player other : Bukkit.getOnlinePlayers()) {
                     if (!other.equals(p)) {
                         other.showPlayer(GenesisMC.getPlugin(), p);
                     }
                 }
-                team.addEntry(p.getName());
+                if(!team.getEntries().contains(p)){
+                    team.addEntry(p.getName());
+                }
             }
 
             if (isInTranslucentList) {
@@ -66,7 +72,9 @@ public class PlayerRender extends BukkitRunnable {
                     }
                 }
                 p.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 15, 255, false, false, false));
-                team.addEntry(p.getName());
+                if(!team.getEntries().contains(p)){
+                    team.addEntry(p.getName());
+                }
             }
 
             // Hide player from pumpkin_hate players if wearing a pumpkin
