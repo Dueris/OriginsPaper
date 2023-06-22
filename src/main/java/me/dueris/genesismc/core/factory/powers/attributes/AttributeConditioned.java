@@ -110,7 +110,7 @@ public class AttributeConditioned implements Listener {
         Player p = e.getPlayer();
         for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
             if (conditioned_attribute.contains(p)) {
-                if (!origin.getPowerFileFromType("origins:conditioned_attribute").getConditions().get("type").toString().equalsIgnoreCase("origins:sprinting"))
+                if (!origin.getPowerFileFromType("origins:conditioned_attribute").getCondition().get("type").toString().equalsIgnoreCase("origins:sprinting"))
                     return;
                 if (e.isSprinting()) executeConditionAttribute(p);
                 else inverseConditionAttribute(p);
@@ -123,7 +123,7 @@ public class AttributeConditioned implements Listener {
         Player p = e.getPlayer();
         for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
             if (conditioned_attribute.contains(p)) {
-                if (!origin.getPowerFileFromType("origins:conditioned_attribute").getConditions().get("type").toString().equalsIgnoreCase("origins:flying"))
+                if (!origin.getPowerFileFromType("origins:conditioned_attribute").getCondition().get("type").toString().equalsIgnoreCase("origins:flying"))
                     return;
                 if (e.isFlying()) executeConditionAttribute(p);
                 else inverseConditionAttribute(p);
@@ -136,7 +136,7 @@ public class AttributeConditioned implements Listener {
         if (!(e.getEntity() instanceof Player p)) return;
         for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
             if (conditioned_attribute.contains(p)) {
-                if (!origin.getPowerFileFromType("origins:conditioned_attribute").getConditions().get("type").toString().equalsIgnoreCase("origins:gliding"))
+                if (!origin.getPowerFileFromType("origins:conditioned_attribute").getCondition().get("type").toString().equalsIgnoreCase("origins:gliding"))
                     return;
                 if (e.isGliding()) executeConditionAttribute(p);
                 else inverseConditionAttribute(p);
@@ -149,7 +149,7 @@ public class AttributeConditioned implements Listener {
         Player p = e.getPlayer();
         for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
             if (conditioned_attribute.contains(p)) {
-                if (!origin.getPowerFileFromType("origins:conditioned_attribute").getConditions().get("type").toString().equalsIgnoreCase("origins:sneaking"))
+                if (!origin.getPowerFileFromType("origins:conditioned_attribute").getCondition().get("type").toString().equalsIgnoreCase("origins:sneaking"))
                     return;
                 if (e.isSneaking()) executeConditionAttribute(p);
                 else inverseConditionAttribute(p);
