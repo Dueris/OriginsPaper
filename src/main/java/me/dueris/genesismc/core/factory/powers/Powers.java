@@ -85,6 +85,7 @@ public class Powers implements Listener {
     public static ArrayList<Player> grounded = new ArrayList<>();
     public static ArrayList<Player> ignore_water = new ArrayList<>();
     public static ArrayList<Player> keep_inventory = new ArrayList<>();
+    public static ArrayList<Player> lava_vision = new ArrayList<>();
 
     //genesis
     public static ArrayList<Player> hot_hands = new ArrayList<>();
