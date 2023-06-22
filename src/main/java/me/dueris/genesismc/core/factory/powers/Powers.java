@@ -83,7 +83,7 @@ public class Powers implements Listener {
     public static ArrayList<Player> fire_projectile = new ArrayList<>();
     public static ArrayList<Player> freeze = new ArrayList<>();
     public static ArrayList<Player> grounded = new ArrayList<>();
-
+    public static ArrayList<Player> ignore_water = new ArrayList<>();
 
     //genesis
     public static ArrayList<Player> hot_hands = new ArrayList<>();
