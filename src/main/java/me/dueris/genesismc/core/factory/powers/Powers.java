@@ -75,7 +75,9 @@ public class Powers implements Listener {
     public static ArrayList<Player> creative_flight = new ArrayList<>();
     public static ArrayList<Player> burn = new ArrayList<>();
     public static ArrayList<Player> conditioned_restrict_armor = new ArrayList<>();
-
+    public static ArrayList<Player> cooldown = new ArrayList<>();
+    public static ArrayList<Player> dmg_over_time = new ArrayList<>();
+    public static ArrayList<Player> disable_regen = new ArrayList<>();
     //genesis
     public static ArrayList<Player> hot_hands = new ArrayList<>();
     public static ArrayList<Player> extra_fire = new ArrayList<>();
