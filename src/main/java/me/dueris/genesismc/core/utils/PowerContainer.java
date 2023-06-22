@@ -106,16 +106,6 @@ public class PowerContainer implements Serializable {
     }
 
     /**
-     * @param key The value to get from the power file.
-     * @return The specified value from the power file. Will return "" if the value is no present.
-     */
-    public String getValue(String key) {
-        Object type = powerFile.get(key);
-        if (type == null) return "";
-        return (String) type;
-    }
-
-    /**
      * @return Whether the elytra should be displayed. Will return false if "render_elytra" is not present.
      */
     public Boolean getShouldRender() {
@@ -166,7 +156,7 @@ public class PowerContainer implements Serializable {
      * @return Conditions in the power file
      * @return null if object not found
      */
-    public HashMap<String, Object> getConditions() {
+    public HashMap<String, Object> getCondition() {
         Object obj = powerFile.get("condition");
         if (obj == null) return new HashMap<>();
 
@@ -182,4 +172,25 @@ public class PowerContainer implements Serializable {
 
         return null;
     }
+
+    /**
+     * Checks the PowerFile for the specified condition
+     * @return A HashMap of the keys and values in the condition or null if the condition type isn't found
+     */
+    public HashMap<String, Object> getCondition(String conditionType) {
+        Object obj = powerFile.get(conditionType);
+        if (obj == null) return new HashMap<>();
+        if (obj instanceof JSONObject modifier) {
+            HashMap<String, Object> result = new HashMap<>();
+            for (Object key : modifier.keySet()) {
+                String string_key = (String) key;
+                Object value = modifier.get(string_key);
+                result.put(string_key, value);
+            }
+            return result;
+        }
+
+        return null;
+    }
+
 }
