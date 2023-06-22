@@ -81,6 +81,7 @@ public class Powers implements Listener {
     public static ArrayList<Player> entity_glow = new ArrayList<>();
     public static ArrayList<Player> entity_group = new ArrayList<>();
     public static ArrayList<Player> fire_projectile = new ArrayList<>();
+    public static ArrayList<Player> freeze = new ArrayList<>();
 
     //genesis
     public static ArrayList<Player> hot_hands = new ArrayList<>();
