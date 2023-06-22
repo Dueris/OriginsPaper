@@ -102,6 +102,7 @@ public class Powers implements Listener {
     public static ArrayList<Player> swimming = new ArrayList<>();
     public static ArrayList<Player> toggle_night_vision = new ArrayList<>();
     public static ArrayList<Player> toggle_power = new ArrayList<>();
+    public static ArrayList<Player> tooltip = new ArrayList<>();
 
     //genesis
     public static ArrayList<Player> hot_hands = new ArrayList<>();
