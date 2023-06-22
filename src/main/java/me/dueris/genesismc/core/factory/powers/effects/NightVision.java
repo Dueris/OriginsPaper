@@ -22,7 +22,7 @@ public class NightVision extends BukkitRunnable {
             Set<String> layers = origins.keySet();
             for (String layer : layers) {
                 if(night_vision.contains(p)){
-                    int strength = (int) OriginPlayer.getOrigin(p, layer).getPowerFileFromType("origins:night_vision").getFile().get("strength");
+                    int strength = Integer.parseInt(OriginPlayer.getOrigin(p, layer).getPowerFileFromType("origins:night_vision").getValue("strength"));
                     p.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, 20, strength, false, false, false));
                 }
 
