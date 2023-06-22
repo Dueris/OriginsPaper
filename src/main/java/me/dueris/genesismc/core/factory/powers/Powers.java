@@ -100,6 +100,7 @@ public class Powers implements Listener {
     public static ArrayList<Player> stacking_status_effect = new ArrayList<>();
     public static ArrayList<Player> starting_equip = new ArrayList<>();
     public static ArrayList<Player> swimming = new ArrayList<>();
+    public static ArrayList<Player> toggle_night_vision = new ArrayList<>();
 
     //genesis
     public static ArrayList<Player> hot_hands = new ArrayList<>();
