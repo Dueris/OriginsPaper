@@ -394,6 +394,7 @@ public class OriginPlayer {
                 case "origins:attribute_modify_transfer" -> attribute_modify_transfer.add(player);
                 case "origins:conditioned_attribute" -> conditioned_attribute.add(player);
                 case "origins:creative_flight" -> creative_flight.add(player);
+                case "origins:night_vision" -> night_vision.add(player);
 
             }
         }
@@ -497,6 +498,7 @@ public class OriginPlayer {
                 case "origins:strong_arms_break_speed" -> strong_arms_break_speed.remove(player);
                 case "origins:conditioned_attribute" -> conditioned_attribute.remove(player);
                 case "origins:attribute_modify_transfer" -> attribute_modify_transfer.remove(player);
+                case "origins:night_vision" -> night_vision.remove(player);
                 case "origins:creative_flight" -> creative_flight.remove(player);
             }
         }
