@@ -120,12 +120,6 @@ public class PowerContainer implements Serializable {
         return (String) render;
     }
 
-    public String get(String tyedontremovethis) {
-        Object helpme = powerFile.get(tyedontremovethis);
-        if (helpme == null) return "";
-        return (String) helpme;
-    }
-
     /**
      * @return Modifiers in the power file
      * @return null if object not found
