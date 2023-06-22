@@ -114,10 +114,10 @@ public class PowerContainer implements Serializable {
         return (Boolean) render;
     }
 
-    public String getStrength() {
+    public int getStrength() {
         Object render = powerFile.get("strength");
-        if (render == null) return "";
-        return (String) render;
+        if (render == null) return 1;
+        return (int) render;
     }
 
     /**
