@@ -90,6 +90,7 @@ public class Powers implements Listener {
     public static ArrayList<Player> multiple = new ArrayList<>();
     public static ArrayList<Player> night_vision = new ArrayList<>();
     public static ArrayList<Player> overlay = new ArrayList<>();
+    public static ArrayList<Player> particle = new ArrayList<>();
 
     //genesis
     public static ArrayList<Player> hot_hands = new ArrayList<>();
