@@ -20,17 +20,12 @@ import java.util.zip.ZipFile;
 
 public class CraftApoli {
 
+    @SuppressWarnings("FieldMayBeFinal")
+    private static ArrayList<String> originLayers = new ArrayList<>();
+    @SuppressWarnings("FieldMayBeFinal")
+    private static ArrayList<OriginContainer> originContainers = new ArrayList<>();
     private static final OriginContainer null_Origin = new OriginContainer("genesis:origin-null", new HashMap<String, Object>(Map.of("hidden", true, "origins", "genesis:origin-null")), new HashMap<String, Object>(Map.of("impact", "0", "icon", "minecraft:player_head", "powers", "genesis:null", "order", "0", "unchooseable", true)), new ArrayList<>(List.of(new PowerContainer("genesis:null", new PowerFileContainer(new ArrayList<>(), new ArrayList<>()), "genesis:origin-null"))));
 
-    /**
-     * @return A copy of The null origin.
-     **/
-    public static OriginContainer nullOrigin() {
-        return null_Origin;
-    }
-
-
-    private static final ArrayList<String> originLayers = new ArrayList<>(List.of("origins:origin"));
 
     /**
      * @return A copy of each layerTag that is loaded.
@@ -39,15 +34,20 @@ public class CraftApoli {
         return (ArrayList<String>) originLayers.clone();
     }
 
-    @SuppressWarnings("FieldMayBeFinal")
-    private static ArrayList<OriginContainer> originContainers = new ArrayList<>();
-
     /**
      * @return A copy of the CustomOrigin object array for all the origins that are loaded.
      **/
     public static ArrayList<OriginContainer> getOrigins() {
         return (ArrayList<OriginContainer>) originContainers.clone();
     }
+
+    /**
+     * @return A copy of The null origin.
+     **/
+    public static OriginContainer nullOrigin() {
+        return null_Origin;
+    }
+
 
     /**
      * Parses a JSON file into a HashMap.
@@ -182,6 +182,21 @@ public class CraftApoli {
             }
 
             //non zip
+            File dataDir = new File(datapack.getAbsolutePath() + File.separator + "data");
+            if (!dataDir.isDirectory()) continue;
+
+            for (File namespace : dataDir.listFiles()) {
+                if (!namespace.isDirectory()) continue;
+                String layerNamespace = namespace.getName();
+                File originLayers = new File(namespace.getAbsolutePath() + File.separator + "origin_layers");
+                if (!originLayers.isDirectory()) continue;
+                for (File originLayer : originLayers.listFiles()) {
+                    if (!FilenameUtils.getExtension(originLayer.getName()).equals("json")) continue;
+                    String layerName = FilenameUtils.getBaseName(originLayer.getName());
+                    CraftApoli.originLayers.add(layerNamespace+":"+layerName);
+                }
+            }
+
             File origin_layers = new File(datapack.getAbsolutePath() + File.separator + "data" + File.separator + "origins" + File.separator + "origin_layers" + File.separator + "origin.json");
             if (!origin_layers.exists()) continue;
 
@@ -237,6 +252,7 @@ public class CraftApoli {
             }
         }
         translateOrigins();
+        System.out.println(getLayers());
     }
 
     /**
