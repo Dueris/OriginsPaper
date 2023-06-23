@@ -26,9 +26,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import static me.dueris.genesismc.core.utils.BukkitColour.AQUA;
 import static me.dueris.genesismc.core.utils.BukkitColour.RED;
 import static org.bukkit.Bukkit.getServer;
-import static org.bukkit.ChatColor.AQUA;
 
 public class JoiningHandler implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
@@ -116,6 +116,8 @@ public class JoiningHandler implements Listener {
         customOriginExistCheck(e.getPlayer());
         OriginPlayer.assignPowers(e.getPlayer());
 
+
+        p.sendMessage(Component.text("GenesisMC is still in alpha, if you notice any inconsistencies or variations from the origins mod please use the /origin bug command to inform us about the issue!").color(TextColor.fromHexString(AQUA)));
 
     }
 
