@@ -77,8 +77,10 @@ public class CraftApoli {
     private static void translateOrigins() {
         for (OriginContainer origin : getCoreOrigins()) {
             for (PowerContainer power : origin.getPowerContainers()) {
-                power.setName(Lang.getLocalizedString(power.getName()));
-                power.setDescription(Lang.getLocalizedString(power.getDescription()));
+                String powerName = Lang.getLocalizedString(power.getName());
+                if (powerName != null) power.setName(powerName);
+                String powerDescription = Lang.getLocalizedString(power.getDescription());
+                if (powerDescription != null) power.setDescription(powerDescription);
             }
         }
     }
