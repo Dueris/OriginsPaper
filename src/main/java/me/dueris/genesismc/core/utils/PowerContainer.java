@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 
 public class PowerContainer implements Serializable {
-
+    private static final long serialVersionUID = 3214684849685854096L;
     String powerTag;
     PowerFileContainer powerFile;
     String powerSource;
@@ -114,6 +114,12 @@ public class PowerContainer implements Serializable {
         return (Boolean) render;
     }
 
+    public int getStrength() {
+        Object render = powerFile.get("strength");
+        if (render == null) return 1;
+        return (int) render;
+    }
+
     /**
      * @return Modifiers in the power file
      * @return null if object not found
@@ -156,7 +162,7 @@ public class PowerContainer implements Serializable {
      * @return Conditions in the power file
      * @return null if object not found
      */
-    public HashMap<String, Object> getCondition() {
+    public HashMap<String, Object> getConditions() {
         Object obj = powerFile.get("condition");
         if (obj == null) return new HashMap<>();
 

@@ -26,7 +26,6 @@ public class PlayerRender extends BukkitRunnable {
         Team team = scoreboard.getTeam("origin-players");
         if (team == null) {
             team = scoreboard.registerNewTeam("origin-players");
-            team.setOption(Team.Option.NAME_TAG_VISIBILITY, Team.OptionStatus.NEVER);
         }
 
         for (Player p : Bukkit.getOnlinePlayers()) {
