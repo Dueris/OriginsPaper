@@ -3,6 +3,9 @@ package me.dueris.genesismc.core.utils;
 import org.bukkit.Material;
 import org.json.simple.JSONObject;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -12,7 +15,8 @@ public class OriginContainer implements Serializable {
     HashMap<String, Object> originLayerFile;
     HashMap<String, Object> originFile;
     ArrayList<PowerContainer> powerContainer;
-
+    private static final long serialVersionUID = 123456789L;
+    private HashMap<String, PowerFileContainer> containerMap;
     /**
      * The files are parsed into hashmaps by putting the json key as the key and the value as the value.
      *

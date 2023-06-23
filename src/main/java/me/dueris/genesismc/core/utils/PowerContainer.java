@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 
 public class PowerContainer implements Serializable {
-
+    private static final long serialVersionUID = 3214684849685854096L;
     String powerTag;
     PowerFileContainer powerFile;
     String powerSource;
