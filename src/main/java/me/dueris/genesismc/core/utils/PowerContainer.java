@@ -3,13 +3,15 @@ package me.dueris.genesismc.core.utils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 public class PowerContainer implements Serializable {
-    private static final long serialVersionUID = 3214684849685854096L;
+    @Serial
+    private static final long serialVersionUID = 2L;
     String powerTag;
     PowerFileContainer powerFile;
     String powerSource;
@@ -114,6 +116,9 @@ public class PowerContainer implements Serializable {
         return (Boolean) render;
     }
 
+    /**
+     * @return The strength for the night vision power.
+     */
     public int getStrength() {
         Object render = powerFile.get("strength");
         if (render == null) return 1;
@@ -121,8 +126,7 @@ public class PowerContainer implements Serializable {
     }
 
     /**
-     * @return Modifiers in the power file
-     * @return null if object not found
+     * @return Modifiers in the power file or null if not found
      */
     public HashMap<String, Object> getModifier() {
         Object obj = powerFile.get("modifier");
@@ -142,8 +146,7 @@ public class PowerContainer implements Serializable {
     }
 
     /**
-     * @return Effects in the power file
-     * @return null if object not found
+     * @return Effects in the power file or null if not found
      */
     public List<String> getEffects() {
         List<String> effects = new ArrayList<>();
@@ -158,11 +161,13 @@ public class PowerContainer implements Serializable {
         return effects;
     }
 
+
     /**
-     * @return Conditions in the power file
-     * @return null if object not found
+     * Checks the powerfile for the "condition" tag
+     * @return Conditions in the power file or null if not found
      */
-    public HashMap<String, Object> getConditions() {
+    @Deprecated
+    public HashMap<String, Object> getCondition() {
         Object obj = powerFile.get("condition");
         if (obj == null) return new HashMap<>();
 
