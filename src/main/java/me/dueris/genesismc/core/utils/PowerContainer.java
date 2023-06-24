@@ -212,6 +212,26 @@ public class PowerContainer implements Serializable {
         return null;
     }
 
+    /**
+     * @return Legs value in the power file or null if not found
+     */
+    public HashMap<String, Object> getLegs() {
+        Object obj = powerFile.get("legs");
+        if (obj == null) return new HashMap<>();
+
+        if (obj instanceof JSONObject modifier) {
+            HashMap<String, Object> result = new HashMap<>();
+            for (Object key : modifier.keySet()) {
+                String string_key = (String) key;
+                Object value = modifier.get(string_key);
+                result.put(string_key, value);
+            }
+            return result;
+        }
+
+        return null;
+    }
+
 
     /**
      * @return Effects in the power file or null if not found
