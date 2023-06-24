@@ -1,5 +1,7 @@
 package me.dueris.genesismc.core.factory.powers.entity;
 
+import me.dueris.genesismc.core.entity.OriginPlayer;
+import me.dueris.genesismc.core.utils.OriginContainer;
 import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -8,7 +10,11 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.util.HashMap;
+import java.util.Set;
+
 import static me.dueris.genesismc.core.factory.powers.Powers.climbing;
+import static me.dueris.genesismc.core.factory.powers.Powers.night_vision;
 import static org.bukkit.Material.AIR;
 
 public class Climbing extends BukkitRunnable {
@@ -38,9 +44,17 @@ public class Climbing extends BukkitRunnable {
                                 p.getEyeLocation().getBlock().getRelative(BlockFace.SOUTH).getType().isCollidable()
                         )) {
                     Block block = p.getTargetBlock(null, 2);
+                    HashMap<String, OriginContainer> origins = OriginPlayer.getOrigin(p);
+                    Set<String> layers = origins.keySet();
+                    boolean rain_cancel = false;
+                    for (String layer : layers) {
+                        boolean cancel_bool = OriginPlayer.getOrigin(p, layer).getPowerFileFromType("origins:climbing").getRainCancel();
+                        if(cancel_bool) rain_cancel = true;
+                        if(!rain_cancel) return;
+                        if (block.getType() != AIR && p.isSneaking() && !p.isInRain()) {
+                            p.addPotionEffect(new PotionEffect(PotionEffectType.LEVITATION, 6, 2, false, false, false));
+                        }
 
-                    if (block.getType() != AIR && p.isSneaking() && !p.isInRain()) {
-                        p.addPotionEffect(new PotionEffect(PotionEffectType.LEVITATION, 6, 2, false, false, false));
                     }
                 }
             }
