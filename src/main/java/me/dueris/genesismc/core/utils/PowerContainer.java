@@ -126,6 +126,15 @@ public class PowerContainer implements Serializable {
     }
 
     /**
+     * @return Should the climbing power be canceled in the rain or not
+     */
+    public boolean getRainCancel(){
+        Object render = powerFile.get("rain_cancel");
+        if (render == null) return false;
+        return (boolean) render;
+    }
+
+    /**
      * @return Modifiers in the power file or null if not found
      */
     public HashMap<String, Object> getModifier() {
