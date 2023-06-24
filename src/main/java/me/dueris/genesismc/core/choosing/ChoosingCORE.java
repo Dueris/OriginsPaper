@@ -223,28 +223,7 @@ public class ChoosingCORE implements Listener {
             e.setCancelled(true);
             p.closeInventory();
 
-            p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 10, 2);
-            p.closeInventory();
-            p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_CHIME, 10, 2);
-            p.spawnParticle(Particle.CLOUD, p.getLocation(), 100);
-            p.getWorld().spawnParticle(Particle.FIREWORKS_SPARK, p.getLocation(), 6);
-            p.setCustomNameVisible(false);
-            p.setHealthScaled(false);
-
-            OriginChooseEvent chooseEvent = new OriginChooseEvent(p);
-            getServer().getPluginManager().callEvent(chooseEvent);
-            OriginChangeEvent Event = new OriginChangeEvent(p);
-            getServer().getPluginManager().callEvent(Event);
-
-            if (p.getInventory().getItemInMainHand().isSimilar(OrbOfOrigins.orb) && !OriginPlayer.hasOrigin(p, CraftApoli.nullOrigin().getTag())) {
-                int amt = p.getInventory().getItemInMainHand().getAmount();
-                p.getInventory().getItemInMainHand().setAmount(amt - 1);
-            } else {
-                if (p.getInventory().getItemInOffHand().isSimilar(orb) && !OriginPlayer.hasOrigin(p, CraftApoli.nullOrigin().getTag())) {
-                    int amt = p.getInventory().getItemInOffHand().getAmount();
-                    p.getInventory().getItemInOffHand().setAmount(amt - 1);
-                }
-            }
+            DefaultChoose.DefaultChoose(p);
 
             SendCharts.originPopularity(p);
         }
