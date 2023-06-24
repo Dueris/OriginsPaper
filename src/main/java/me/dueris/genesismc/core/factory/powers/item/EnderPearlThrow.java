@@ -112,6 +112,7 @@ public class EnderPearlThrow implements Listener {
             if(e.getView().getTopInventory().getType() == InventoryType.CRAFTING) return;
             if(e.getView().getBottomInventory().getItem(e.getHotbarButton()) != null) {
                 ItemStack transferred = e.getView().getBottomInventory().getItem(e.getHotbarButton());
+                if(transferred == null) return;
                 if(transferred.getType().equals(Material.ENDER_PEARL)) {
                     ItemStack infinpearl = new ItemStack(ENDER_PEARL);
                     ItemMeta pearl_meta = infinpearl.getItemMeta();
@@ -131,7 +132,7 @@ public class EnderPearlThrow implements Listener {
             return;
         }
         if(e.getView().getTopInventory().getType() != InventoryType.CRAFTING) {
-            if(e.getView().getTopInventory().getHolder().equals(e.getWhoClicked())) return;
+            if(e.getView().getTopInventory().getHolder() != null && e.getView().getTopInventory().getHolder().equals(e.getWhoClicked())) return;
             if(e.getCurrentItem() == null) return;
             if(e.getCurrentItem().getType().equals(Material.ENDER_PEARL)) {
                 ItemStack infinpearl = new ItemStack(ENDER_PEARL);

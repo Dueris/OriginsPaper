@@ -76,6 +76,7 @@ public class LaunchAir implements Listener {
             if(e.getView().getTopInventory().getType() == InventoryType.CRAFTING) return;
             if(e.getView().getBottomInventory().getItem(e.getHotbarButton()) != null) {
                 ItemStack transferred = e.getView().getBottomInventory().getItem(e.getHotbarButton());
+                if(transferred == null) return;
                 if(transferred.getType().equals(Material.FEATHER)) {
                     ItemStack launchitem = new ItemStack(Material.FEATHER);
                     ItemMeta launchmeta = launchitem.getItemMeta();
@@ -93,7 +94,7 @@ public class LaunchAir implements Listener {
             return;
         }
         if(e.getView().getTopInventory().getType() != InventoryType.CRAFTING) {
-            if(e.getView().getTopInventory().getHolder().equals(e.getWhoClicked())) return;
+            if(e.getView().getTopInventory().getHolder() != null && e.getView().getTopInventory().getHolder().equals(e.getWhoClicked())) return;
             if(e.getCurrentItem() == null) return;
             if(e.getCurrentItem().getType().equals(Material.FEATHER)) {
                 ItemStack launchitem = new ItemStack(Material.FEATHER);
