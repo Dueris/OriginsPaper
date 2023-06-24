@@ -46,11 +46,9 @@ public class Climbing extends BukkitRunnable {
                     Block block = p.getTargetBlock(null, 2);
                     HashMap<String, OriginContainer> origins = OriginPlayer.getOrigin(p);
                     Set<String> layers = origins.keySet();
-                    boolean rain_cancel = false;
                     for (String layer : layers) {
                         boolean cancel_bool = OriginPlayer.getOrigin(p, layer).getPowerFileFromType("origins:climbing").getRainCancel();
-                        if(cancel_bool) rain_cancel = true;
-                        if(!rain_cancel) return;
+                        if(!cancel_bool) return;
                         if (block.getType() != AIR && p.isSneaking() && !p.isInRain()) {
                             p.addPotionEffect(new PotionEffect(PotionEffectType.LEVITATION, 6, 2, false, false, false));
                         }
