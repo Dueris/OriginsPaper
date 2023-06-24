@@ -117,10 +117,28 @@ public class PowerContainer implements Serializable {
     }
 
     /**
-     * @return The strength for the night vision power.
+     * @return The value "strength" from the power file
      */
     public Long getStrength() {
         Object render = powerFile.get("strength");
+        if (render == null) return 1L;
+        return (long) render;
+    }
+
+    /**
+     * @return The value "interval" from the power file
+     */
+    public Long getInterval() {
+        Object render = powerFile.get("interval");
+        if (render == null) return 1L;
+        return (long) render;
+    }
+
+    /**
+     * @return The value "burn_duration" from the power file
+     */
+    public Long getBurnDuration() {
+        Object render = powerFile.get("burn_duration");
         if (render == null) return 1L;
         return (long) render;
     }
