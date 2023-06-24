@@ -130,7 +130,7 @@ public class PowerContainer implements Serializable {
      */
     public Long getInterval() {
         Object render = powerFile.get("interval");
-        if (render == null) return 1L;
+        if (render == null) return null;
         return (long) render;
     }
 
@@ -139,7 +139,7 @@ public class PowerContainer implements Serializable {
      */
     public Long getBurnDuration() {
         Object render = powerFile.get("burn_duration");
-        if (render == null) return 1L;
+        if (render == null) return null;
         return (long) render;
     }
 
