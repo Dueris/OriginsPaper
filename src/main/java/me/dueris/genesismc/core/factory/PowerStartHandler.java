@@ -112,6 +112,9 @@ public class PowerStartHandler {
 
         NightVision nightVision = new NightVision();
         nightVision.runTaskTimer(getPlugin(), 0, 10);
+
+        Burn burn = new Burn();
+        burn.runTaskTimer(getPlugin(), 0, 1);
     }
 
     public static void StartListeners() {
