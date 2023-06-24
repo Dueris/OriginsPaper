@@ -24,11 +24,14 @@ import me.dueris.genesismc.core.utils.*;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.lang.reflect.Field;
@@ -133,6 +136,9 @@ public final class GenesisMC extends JavaPlugin implements Listener {
                 getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] Loaded \"" + origins.getName() + "\"").color(TextColor.fromHexString(GREEN)));
             }
         }
+        for(Player p : Bukkit.getOnlinePlayers()){
+            p.getScoreboard().getTeam("origin-players").addEntity(p);
+        }
         if (CraftApoli.getOrigins().size() > 0) {
             getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] Loaded (" + CraftApoli.getOrigins().size() + ") Origins").color(TextColor.fromHexString(GREEN)));
         }
@@ -197,9 +203,20 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         }
     }
 
+    @EventHandler
+    public void invulnerableBugPatch(PlayerJoinEvent e){
+        Player p = e.getPlayer();
+        if(!p.isInvulnerable() && p.getGameMode() != GameMode.CREATIVE && p.getGameMode() != GameMode.SPECTATOR) return;
+        p.setInvulnerable(false);
+    }
+
     @Override
     public void onDisable() {
         // Disable enchantments
+        for(Player p : Bukkit.getOnlinePlayers()){
+            p.getScoreboard().getTeam("origin-players").removeEntity(p);
+            ChoosingCORE.setAttributesToDefault(p);
+        }
         try {
             Field keyField = Enchantment.class.getDeclaredField("byKey");
 
