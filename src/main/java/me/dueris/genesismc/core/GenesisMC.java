@@ -215,7 +215,6 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         // Disable enchantments
         for(Player p : Bukkit.getOnlinePlayers()){
             p.getScoreboard().getTeam("origin-players").removeEntity(p);
-            ChoosingCORE.setAttributesToDefault(p);
         }
         try {
             Field keyField = Enchantment.class.getDeclaredField("byKey");
