@@ -34,11 +34,12 @@ public class Burn extends BukkitRunnable {
                 if(ticksE < interval) {
                     ticksE++;
                     return;
-                }
+                }else{
                     Long burn_duration = power.getBurnDuration();
-                    p.setFireTicks(Math.toIntExact(burn_duration));
+                    p.setFireTicks(burn_duration.intValue());
 
                     ticksE = 0;
+                }
                 }
             }
         }
