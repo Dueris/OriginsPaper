@@ -144,6 +144,15 @@ public class PowerContainer implements Serializable {
     }
 
     /**
+     * @return The value "tick_rate" from the power file
+     */
+    public Long getTickRate() {
+        Object render = powerFile.get("tick_rate");
+        if (render == null) return null;
+        return (long) render;
+    }
+
+    /**
      * @return Should the climbing power be canceled in the rain or not
      */
     public boolean getRainCancel(){
