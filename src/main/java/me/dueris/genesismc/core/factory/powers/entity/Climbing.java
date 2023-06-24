@@ -17,7 +17,7 @@ public class Climbing extends BukkitRunnable {
     public void run() {
         for (Player p : Bukkit.getOnlinePlayers()) {
             if (climbing.contains(p)) {
-                if (p.getLocation().getBlock().getRelative(BlockFace.EAST).getType().isSolid() ||
+                if ((p.getLocation().getBlock().getRelative(BlockFace.EAST).getType().isSolid() ||
                         p.getLocation().getBlock().getRelative(BlockFace.WEST).getType().isSolid() ||
                         p.getLocation().getBlock().getRelative(BlockFace.NORTH).getType().isSolid() ||
                         p.getLocation().getBlock().getRelative(BlockFace.SOUTH).getType().isSolid() ||
@@ -25,7 +25,18 @@ public class Climbing extends BukkitRunnable {
                         p.getEyeLocation().getBlock().getRelative(BlockFace.EAST).getType().isSolid() ||
                         p.getEyeLocation().getBlock().getRelative(BlockFace.WEST).getType().isSolid() ||
                         p.getEyeLocation().getBlock().getRelative(BlockFace.NORTH).getType().isSolid() ||
-                        p.getEyeLocation().getBlock().getRelative(BlockFace.SOUTH).getType().isSolid()) {
+                        p.getEyeLocation().getBlock().getRelative(BlockFace.SOUTH).getType().isSolid()) && (
+
+                        p.getLocation().getBlock().getRelative(BlockFace.EAST).getType().isCollidable() ||
+                                p.getLocation().getBlock().getRelative(BlockFace.WEST).getType().isCollidable() ||
+                                p.getLocation().getBlock().getRelative(BlockFace.NORTH).getType().isCollidable() ||
+                                p.getLocation().getBlock().getRelative(BlockFace.SOUTH).getType().isCollidable() ||
+                                p.getEyeLocation().add(0, 1, 0).getBlock().getType().isCollidable() ||
+                                p.getEyeLocation().getBlock().getRelative(BlockFace.EAST).getType().isCollidable() ||
+                                p.getEyeLocation().getBlock().getRelative(BlockFace.WEST).getType().isCollidable() ||
+                                p.getEyeLocation().getBlock().getRelative(BlockFace.NORTH).getType().isCollidable() ||
+                                p.getEyeLocation().getBlock().getRelative(BlockFace.SOUTH).getType().isCollidable()
+                        )) {
                     Block block = p.getTargetBlock(null, 2);
 
                     if (block.getType() != AIR && p.isSneaking() && !p.isInRain()) {
