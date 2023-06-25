@@ -24,6 +24,7 @@ import me.dueris.genesismc.core.factory.powers.item.GoldItemBuff;
 import me.dueris.genesismc.core.factory.powers.item.LaunchAir;
 import me.dueris.genesismc.core.factory.powers.world.*;
 import me.dueris.genesismc.core.origins.OriginHandler;
+import me.dueris.genesismc.core.utils.ShulkInv;
 import org.checkerframework.checker.units.qual.N;
 
 import static me.dueris.genesismc.core.GenesisMC.getPlugin;
@@ -170,5 +171,6 @@ public class PowerStartHandler {
         getServer().getPluginManager().registerEvents(new LikeWater(), getPlugin());
         getServer().getPluginManager().registerEvents(new AttributeConditioned(), getPlugin());
         getServer().getPluginManager().registerEvents(new CreeperScare(), getPlugin());
+        getServer().getPluginManager().registerEvents(new ShulkInv(), getPlugin());
     }
 }
