@@ -1,6 +1,10 @@
 {
-  "type": "origins:fall_immunity",
   "hidden": false,
   "name": "menu.original.feline.acrobatics.title",
-  "description": "menu.original.feline.acrobatics.description"
+  "description": "menu.original.feline.acrobatics.description",
+  "type": "origins:invulnerability",
+  "damage_condition": {
+    "type": "origins:name",
+    "name": "fall"
+  }
 }
