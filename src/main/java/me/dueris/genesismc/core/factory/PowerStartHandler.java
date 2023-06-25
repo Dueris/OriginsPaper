@@ -5,6 +5,7 @@ import me.dueris.genesismc.core.factory.powers.Powers;
 import me.dueris.genesismc.core.factory.powers.armour.FlightElytra;
 import me.dueris.genesismc.core.factory.powers.armour.GoldAmourBellow;
 import me.dueris.genesismc.core.factory.powers.armour.GoldArmourBuff;
+import me.dueris.genesismc.core.factory.powers.armour.RestrictArmor;
 import me.dueris.genesismc.core.factory.powers.attributes.AttributeConditioned;
 import me.dueris.genesismc.core.factory.powers.attributes.AttributeHandler;
 import me.dueris.genesismc.core.factory.powers.block.CeilingWeak;
@@ -115,6 +116,9 @@ public class PowerStartHandler {
 
         Burn burn = new Burn();
         burn.runTaskTimer(getPlugin(), 0, 1);
+
+        RestrictArmor restrictArmor = new RestrictArmor();
+        restrictArmor.runTaskTimer(getPlugin(), 0, 1);
     }
 
     public static void StartListeners() {
