@@ -301,6 +301,28 @@ public class PowerContainer implements Serializable {
     }
 
     /**
+     * Checks the powerfile for the "condition" tag
+     * @return Conditions in the power file or null if not found
+     */
+    @Deprecated
+    public HashMap<String, Object> getDamageCondition() {
+        Object obj = powerFile.get("damage_condition");
+        if (obj == null) return new HashMap<>();
+
+        if (obj instanceof JSONObject modifier) {
+            HashMap<String, Object> result = new HashMap<>();
+            for (Object key : modifier.keySet()) {
+                String string_key = (String) key;
+                Object value = modifier.get(string_key);
+                result.put(string_key, value);
+            }
+            return result;
+        }
+
+        return null;
+    }
+
+    /**
      * Checks the PowerFile for the specified condition
      * @return A HashMap of the keys and values in the condition or null if the condition type isn't found
      */
