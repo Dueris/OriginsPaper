@@ -4,6 +4,8 @@ import com.destroystokyo.paper.event.player.PlayerStartSpectatingEntityEvent;
 import me.dueris.genesismc.core.GenesisMC;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.craftbukkit.v1_20_R1.CraftWorldBorder;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -24,6 +26,7 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -42,6 +45,28 @@ public class Phantomized extends BukkitRunnable implements Listener {
 
     public static void deactivatePhantomOverlay(Player player) {
         player.setWorldBorder(player.getWorld().getWorldBorder());
+    }
+
+    @EventHandler
+    public void shiftGoDown(PlayerToggleSneakEvent e){
+        if(e.isSneaking()){
+            Player p = e.getPlayer();
+            PersistentDataContainer data = p.getPersistentDataContainer();
+            int phantomid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER);
+            if(phantomid == 2){
+                if(phantomize.contains(p)){
+                    if(!p.getLocation().getBlock().isCollidable()){
+                        if(p.getLocation().getBlock().getRelative(BlockFace.DOWN).isCollidable()){
+                            Location currentLocation = p.getLocation();
+                            Location targetLocation = currentLocation.getBlock().getRelative(BlockFace.DOWN).getLocation();
+                            Location loc = new Location(targetLocation.getWorld(), targetLocation.getX(), targetLocation.getY(), targetLocation.getZ(), p.getEyeLocation().getYaw(), p.getEyeLocation().getPitch());
+
+                            p.teleport(loc);
+                        }
+                    }
+                }
+            }
+        }
     }
 
     @Override
@@ -77,7 +102,7 @@ public class Phantomized extends BukkitRunnable implements Listener {
                         if (p.isInsideVehicle()) return;
                         p.setCollidable(false);
                         p.setGameMode(GameMode.SPECTATOR);
-                        p.setViewDistance(1);
+                        p.setViewDistance(2);
                         p.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 10, 255, false, false, false));
                         p.setFlying(true);
                         p.setFlySpeed(0.05F);
