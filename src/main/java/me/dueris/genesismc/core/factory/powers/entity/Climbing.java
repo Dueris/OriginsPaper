@@ -14,7 +14,6 @@ import java.util.HashMap;
 import java.util.Set;
 
 import static me.dueris.genesismc.core.factory.powers.Powers.climbing;
-import static me.dueris.genesismc.core.factory.powers.Powers.night_vision;
 import static org.bukkit.Material.AIR;
 
 public class Climbing extends BukkitRunnable {

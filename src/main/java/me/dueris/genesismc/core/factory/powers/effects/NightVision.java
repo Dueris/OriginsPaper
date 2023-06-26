@@ -1,7 +1,6 @@
 package me.dueris.genesismc.core.factory.powers.effects;
 
 import me.dueris.genesismc.core.entity.OriginPlayer;
-import me.dueris.genesismc.core.factory.CraftApoli;
 import me.dueris.genesismc.core.utils.OriginContainer;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;

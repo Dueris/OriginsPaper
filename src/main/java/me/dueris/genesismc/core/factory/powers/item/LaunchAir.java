@@ -24,7 +24,6 @@ import java.util.HashMap;
 import java.util.UUID;
 
 import static me.dueris.genesismc.core.factory.powers.Powers.launch_into_air;
-import static me.dueris.genesismc.core.factory.powers.Powers.phantomize;
 import static org.bukkit.ChatColor.GRAY;
 
 public class LaunchAir implements Listener {

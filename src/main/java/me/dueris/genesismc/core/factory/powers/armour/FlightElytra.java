@@ -4,7 +4,6 @@ import me.dueris.genesismc.core.GenesisMC;
 import me.dueris.genesismc.core.entity.OriginPlayer;
 import me.dueris.genesismc.core.protocol.SendStringPacketPayload;
 import me.dueris.genesismc.core.utils.OriginContainer;
-import net.minecraft.server.level.ServerPlayer;
 import org.bukkit.GameMode;
 import org.bukkit.GameRule;
 import org.bukkit.Material;

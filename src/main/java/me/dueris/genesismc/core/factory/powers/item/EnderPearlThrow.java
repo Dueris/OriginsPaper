@@ -24,7 +24,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 import java.util.ArrayList;
 
 import static me.dueris.genesismc.core.factory.powers.Powers.throw_ender_pearl;
-import static org.bukkit.ChatColor.GRAY;
 import static org.bukkit.Material.ENDER_PEARL;
 
 public class EnderPearlThrow implements Listener {

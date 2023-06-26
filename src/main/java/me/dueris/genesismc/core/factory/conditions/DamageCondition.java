@@ -1,6 +1,5 @@
 package me.dueris.genesismc.core.factory.conditions;
 
-import me.dueris.genesismc.core.entity.OriginPlayer;
 import me.dueris.genesismc.core.factory.powers.armour.RestrictArmor;
 import me.dueris.genesismc.core.utils.OriginContainer;
 import org.bukkit.Material;
@@ -10,7 +9,7 @@ import org.bukkit.event.entity.EntityDamageByBlockEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 
-import static org.bukkit.event.entity.EntityDamageEvent.*;
+import static org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 
 public class DamageCondition {
     public static boolean checkDamageCondition(Player p, OriginContainer origin, String powerfile, EntityDamageEvent e){
