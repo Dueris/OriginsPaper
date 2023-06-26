@@ -28,9 +28,10 @@ public class DamageCondition {
         }
 
         if (type.equalsIgnoreCase("origins:attacker")) {
-            String entity_con_type = origin.getPowerFileFromType(powerfile).getEntityConditionFromDamageCondition().get("type").toString();
-            String entity_type = origin.getPowerFileFromType(powerfile).getEntityConditionFromDamageCondition().get("entity_type").toString();
-            //tell dueris to make entity conditions
+            if(e instanceof EntityDamageByEntityEvent){
+                EntityDamageByEntityEvent event = (EntityDamageByEntityEvent) e;
+                EntityCondition.checkEntityCondition(p, origin, powerfile, event.getDamager());
+            }
         }
 
         if (type.equalsIgnoreCase("origins:bypasses_armor")) {
