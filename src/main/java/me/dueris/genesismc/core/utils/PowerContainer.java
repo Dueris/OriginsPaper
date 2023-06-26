@@ -344,6 +344,36 @@ public class PowerContainer implements Serializable {
         return new HashMap<>();
     }
 
+    public HashMap<String, Object> getEntityConditionFromAnywhere() {
+        HashMap<String, Object> result = new HashMap<>();
+        searchEntityCondition(powerFile, result);
+        return result;
+    }
+
+    private void searchEntityCondition(Object obj, HashMap<String, Object> result) {
+        if (obj instanceof JSONObject jsonObject) {
+            for (Object key : jsonObject.keySet()) {
+                String stringKey = (String) key;
+                Object value = jsonObject.get(stringKey);
+                if (stringKey.equals("entity_condition")) {
+                    if (value instanceof JSONObject entityCondition) {
+                        for (Object entityKey : entityCondition.keySet()) {
+                            String entityStringKey = (String) entityKey;
+                            Object entityValue = entityCondition.get(entityStringKey);
+                            result.put(entityStringKey, entityValue);
+                        }
+                    }
+                } else {
+                    searchEntityCondition(value, result);
+                }
+            }
+        } else if (obj instanceof JSONArray jsonArray) {
+            for (Object element : jsonArray) {
+                searchEntityCondition(element, result);
+            }
+        }
+    }
+
     /**
      * Checks the PowerFile for the specified condition
      *
