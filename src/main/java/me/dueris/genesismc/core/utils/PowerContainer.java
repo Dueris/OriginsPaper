@@ -355,12 +355,12 @@ public class PowerContainer implements Serializable {
             for (Object key : jsonObject.keySet()) {
                 String stringKey = (String) key;
                 Object value = jsonObject.get(stringKey);
-                if (stringKey.equals("entity_condition")) {
-                    if (value instanceof JSONObject entityCondition) {
-                        for (Object entityKey : entityCondition.keySet()) {
-                            String entityStringKey = (String) entityKey;
-                            Object entityValue = entityCondition.get(entityStringKey);
-                            result.put(entityStringKey, entityValue);
+                if (stringKey.equals("condition") || stringKey.equals("entity_condition")) {
+                    if (value instanceof JSONObject condition) {
+                        for (Object conditionKey : condition.keySet()) {
+                            String conditionStringKey = (String) conditionKey;
+                            Object conditionValue = condition.get(conditionStringKey);
+                            result.put(conditionStringKey, conditionValue);
                         }
                     }
                 } else {
