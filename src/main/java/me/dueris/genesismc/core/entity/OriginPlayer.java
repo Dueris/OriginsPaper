@@ -397,6 +397,7 @@ public class OriginPlayer {
                 case "origins:night_vision" -> night_vision.add(player);
                 case "origins:burn" -> burn.add(player);
                 case "origins:restrict_armor" -> restrict_armor.add(player);
+                case "origins:invulnerability" -> dmg_invulnerable.add(player);
 
             }
         }
@@ -504,6 +505,7 @@ public class OriginPlayer {
                 case "origins:creative_flight" -> creative_flight.remove(player);
                 case "origins:burn" -> burn.remove(player);
                 case "origins:restrict_armor" -> restrict_armor.remove(player);
+                case "origins:invulnerability" -> dmg_invulnerable.remove(player);
             }
         }
     }
