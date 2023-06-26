@@ -136,7 +136,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
                 getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] Loaded \"" + origins.getName() + "\"").color(TextColor.fromHexString(GREEN)));
             }
         }
-        for(Player p : Bukkit.getOnlinePlayers()){
+        for (Player p : Bukkit.getOnlinePlayers()) {
             p.getScoreboard().getTeam("origin-players").addEntity(p);
         }
         if (CraftApoli.getOrigins().size() > 0) {
@@ -204,16 +204,17 @@ public final class GenesisMC extends JavaPlugin implements Listener {
     }
 
     @EventHandler
-    public void invulnerableBugPatch(PlayerJoinEvent e){
+    public void invulnerableBugPatch(PlayerJoinEvent e) {
         Player p = e.getPlayer();
-        if(!p.isInvulnerable() && p.getGameMode() != GameMode.CREATIVE && p.getGameMode() != GameMode.SPECTATOR) return;
+        if (!p.isInvulnerable() && p.getGameMode() != GameMode.CREATIVE && p.getGameMode() != GameMode.SPECTATOR)
+            return;
         p.setInvulnerable(false);
     }
 
     @Override
     public void onDisable() {
         // Disable enchantments
-        for(Player p : Bukkit.getOnlinePlayers()){
+        for (Player p : Bukkit.getOnlinePlayers()) {
             p.getScoreboard().getTeam("origin-players").removeEntity(p);
         }
         try {

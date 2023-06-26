@@ -193,7 +193,7 @@ public class CraftApoli {
                 for (File originLayer : originLayers.listFiles()) {
                     if (!FilenameUtils.getExtension(originLayer.getName()).equals("json")) continue;
                     String layerName = FilenameUtils.getBaseName(originLayer.getName());
-                    CraftApoli.originLayers.add(layerNamespace+":"+layerName);
+                    CraftApoli.originLayers.add(layerNamespace + ":" + layerName);
                 }
             }
 

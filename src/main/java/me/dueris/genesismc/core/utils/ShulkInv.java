@@ -30,18 +30,18 @@ public class ShulkInv implements CommandExecutor, Listener {
     }
 
     @EventHandler
-    public void MoveBackChange(OriginChangeEvent e){
+    public void MoveBackChange(OriginChangeEvent e) {
         Player p = e.getPlayer();
         new BukkitRunnable() {
             @Override
             public void run() {
-                if(!shulker_inventory.contains(p)){
+                if (!shulker_inventory.contains(p)) {
                     ArrayList<ItemStack> vaultItems = ShulkUtils.getItems(p);
                     Inventory vault = Bukkit.createInventory(p, InventoryType.DROPPER, "Shulker Inventory");
 
                     vaultItems.stream()
                             .forEach(itemStack -> vault.addItem(itemStack));
-                    for(ItemStack item : vault.getContents()){
+                    for (ItemStack item : vault.getContents()) {
                         if (item != null && item.getType() != Material.AIR) {
                             p.getWorld().dropItemNaturally(p.getLocation(), item);
                             vault.removeItem(item);

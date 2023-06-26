@@ -107,12 +107,12 @@ public class EnderPearlThrow implements Listener {
 
     @EventHandler
     public void onTransfer(InventoryClickEvent e) {
-        if(e.getClick().isKeyboardClick()) {
-            if(e.getView().getTopInventory().getType() == InventoryType.CRAFTING) return;
-            if(e.getView().getBottomInventory().getItem(e.getHotbarButton()) != null) {
+        if (e.getClick().isKeyboardClick()) {
+            if (e.getView().getTopInventory().getType() == InventoryType.CRAFTING) return;
+            if (e.getView().getBottomInventory().getItem(e.getHotbarButton()) != null) {
                 ItemStack transferred = e.getView().getBottomInventory().getItem(e.getHotbarButton());
-                if(transferred == null) return;
-                if(transferred.getType().equals(Material.ENDER_PEARL)) {
+                if (transferred == null) return;
+                if (transferred.getType().equals(Material.ENDER_PEARL)) {
                     ItemStack infinpearl = new ItemStack(ENDER_PEARL);
                     ItemMeta pearl_meta = infinpearl.getItemMeta();
                     pearl_meta.setDisplayName(ChatColor.LIGHT_PURPLE + "Teleport");
@@ -122,7 +122,7 @@ public class EnderPearlThrow implements Listener {
                     pearl_meta.setLore(pearl_lore);
                     infinpearl.setItemMeta(pearl_meta);
 
-                    if(transferred.isSimilar(infinpearl)) {
+                    if (transferred.isSimilar(infinpearl)) {
                         e.setCancelled(true);
                     }
                 }
@@ -130,10 +130,11 @@ public class EnderPearlThrow implements Listener {
 
             return;
         }
-        if(e.getView().getTopInventory().getType() != InventoryType.CRAFTING) {
-            if(e.getView().getTopInventory().getHolder() != null && e.getView().getTopInventory().getHolder().equals(e.getWhoClicked())) return;
-            if(e.getCurrentItem() == null) return;
-            if(e.getCurrentItem().getType().equals(Material.ENDER_PEARL)) {
+        if (e.getView().getTopInventory().getType() != InventoryType.CRAFTING) {
+            if (e.getView().getTopInventory().getHolder() != null && e.getView().getTopInventory().getHolder().equals(e.getWhoClicked()))
+                return;
+            if (e.getCurrentItem() == null) return;
+            if (e.getCurrentItem().getType().equals(Material.ENDER_PEARL)) {
                 ItemStack infinpearl = new ItemStack(ENDER_PEARL);
                 ItemMeta pearl_meta = infinpearl.getItemMeta();
                 pearl_meta.setDisplayName(ChatColor.LIGHT_PURPLE + "Teleport");
@@ -143,7 +144,7 @@ public class EnderPearlThrow implements Listener {
                 pearl_meta.setLore(pearl_lore);
                 infinpearl.setItemMeta(pearl_meta);
 
-                if(e.getCurrentItem().isSimilar(infinpearl)) {
+                if (e.getCurrentItem().isSimilar(infinpearl)) {
                     e.setCancelled(true);
                 }
             }

@@ -71,12 +71,12 @@ public class LaunchAir implements Listener {
 
     @EventHandler
     public void onTransfer(InventoryClickEvent e) {
-        if(e.getClick().isKeyboardClick()) {
-            if(e.getView().getTopInventory().getType() == InventoryType.CRAFTING) return;
-            if(e.getView().getBottomInventory().getItem(e.getHotbarButton()) != null) {
+        if (e.getClick().isKeyboardClick()) {
+            if (e.getView().getTopInventory().getType() == InventoryType.CRAFTING) return;
+            if (e.getView().getBottomInventory().getItem(e.getHotbarButton()) != null) {
                 ItemStack transferred = e.getView().getBottomInventory().getItem(e.getHotbarButton());
-                if(transferred == null) return;
-                if(transferred.getType().equals(Material.FEATHER)) {
+                if (transferred == null) return;
+                if (transferred.getType().equals(Material.FEATHER)) {
                     ItemStack launchitem = new ItemStack(Material.FEATHER);
                     ItemMeta launchmeta = launchitem.getItemMeta();
                     launchmeta.setDisplayName(GRAY + "Launch");
@@ -84,7 +84,7 @@ public class LaunchAir implements Listener {
                     launchitem.addItemFlags(ItemFlag.HIDE_ENCHANTS);
                     launchitem.setItemMeta(launchmeta);
 
-                    if(transferred.isSimilar(launchitem)) {
+                    if (transferred.isSimilar(launchitem)) {
                         e.setCancelled(true);
                     }
                 }
@@ -92,10 +92,11 @@ public class LaunchAir implements Listener {
 
             return;
         }
-        if(e.getView().getTopInventory().getType() != InventoryType.CRAFTING) {
-            if(e.getView().getTopInventory().getHolder() != null && e.getView().getTopInventory().getHolder().equals(e.getWhoClicked())) return;
-            if(e.getCurrentItem() == null) return;
-            if(e.getCurrentItem().getType().equals(Material.FEATHER)) {
+        if (e.getView().getTopInventory().getType() != InventoryType.CRAFTING) {
+            if (e.getView().getTopInventory().getHolder() != null && e.getView().getTopInventory().getHolder().equals(e.getWhoClicked()))
+                return;
+            if (e.getCurrentItem() == null) return;
+            if (e.getCurrentItem().getType().equals(Material.FEATHER)) {
                 ItemStack launchitem = new ItemStack(Material.FEATHER);
                 ItemMeta launchmeta = launchitem.getItemMeta();
                 launchmeta.setDisplayName(GRAY + "Launch");
@@ -103,7 +104,7 @@ public class LaunchAir implements Listener {
                 launchitem.addItemFlags(ItemFlag.HIDE_ENCHANTS);
                 launchitem.setItemMeta(launchmeta);
 
-                if(e.getCurrentItem().isSimilar(launchitem)) {
+                if (e.getCurrentItem().isSimilar(launchitem)) {
                     e.setCancelled(true);
                 }
             }

@@ -47,11 +47,11 @@ public class JoiningHandler implements Listener {
                 if (("origin-" + (origin.getTag().substring(8))).equals(originTag.substring(8)))
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origins"), PersistentDataType.BYTE_ARRAY, CraftApoli.toByteArray(new HashMap<>(Map.of("origins:origin", origin))));
             }
-        } else if(!p.getPersistentDataContainer().has(new NamespacedKey(GenesisMC.getPlugin(), "origins"), PersistentDataType.BYTE_ARRAY)) {
+        } else if (!p.getPersistentDataContainer().has(new NamespacedKey(GenesisMC.getPlugin(), "origins"), PersistentDataType.BYTE_ARRAY)) {
             p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origins"), PersistentDataType.BYTE_ARRAY, CraftApoli.toByteArray(new HashMap<>(Map.of("origins:origin", CraftApoli.nullOrigin()))));
         }
 
-        if(p.getPersistentDataContainer().has(new NamespacedKey(GenesisMC.getPlugin(), "origin"), PersistentDataType.BYTE_ARRAY)) {
+        if (p.getPersistentDataContainer().has(new NamespacedKey(GenesisMC.getPlugin(), "origin"), PersistentDataType.BYTE_ARRAY)) {
             ByteArrayInputStream bis = new ByteArrayInputStream(p.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "origin"), PersistentDataType.BYTE_ARRAY));
             try {
                 ObjectInput oi = new ObjectInputStream(bis);
@@ -60,7 +60,7 @@ public class JoiningHandler implements Listener {
                 ArrayList<String> layers = CraftApoli.getLayers();
                 p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origins"), PersistentDataType.BYTE_ARRAY, CraftApoli.toByteArray(new HashMap<>(Map.of(layers.get(0), origin))));
                 layers.remove(0);
-                if (layers.size() > 1 ) {
+                if (layers.size() > 1) {
                     for (String layer : layers) origins.put(layer, CraftApoli.nullOrigin());
                 }
             } catch (Exception er) {
@@ -140,7 +140,6 @@ public class JoiningHandler implements Listener {
             p.sendMessage(Component.text("If you believe this is a mistake please contact your server admin(s).").color(TextColor.fromHexString(RED)));
         }
     }
-
 
 
 }

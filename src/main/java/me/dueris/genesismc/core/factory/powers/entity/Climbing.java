@@ -41,16 +41,16 @@ public class Climbing extends BukkitRunnable {
                                 p.getEyeLocation().getBlock().getRelative(BlockFace.WEST).getType().isCollidable() ||
                                 p.getEyeLocation().getBlock().getRelative(BlockFace.NORTH).getType().isCollidable() ||
                                 p.getEyeLocation().getBlock().getRelative(BlockFace.SOUTH).getType().isCollidable()
-                        )) {
+                )) {
                     Block block = p.getTargetBlock(null, 2);
                     HashMap<String, OriginContainer> origins = OriginPlayer.getOrigin(p);
                     Set<String> layers = origins.keySet();
                     for (String layer : layers) {
                         boolean cancel_bool = OriginPlayer.getOrigin(p, layer).getPowerFileFromType("origins:climbing").getRainCancel();
-                        if(!cancel_bool){
-                            if(!p.isSneaking()) return;
+                        if (!cancel_bool) {
+                            if (!p.isSneaking()) return;
                             p.addPotionEffect(new PotionEffect(PotionEffectType.LEVITATION, 6, 2, false, false, false));
-                        }else{
+                        } else {
                             if (block.getType() != AIR && p.isSneaking() && !p.isInRain()) {
                                 p.addPotionEffect(new PotionEffect(PotionEffectType.LEVITATION, 6, 2, false, false, false));
                             }

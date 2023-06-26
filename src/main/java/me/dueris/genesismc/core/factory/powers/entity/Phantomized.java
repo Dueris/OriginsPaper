@@ -44,15 +44,15 @@ public class Phantomized extends BukkitRunnable implements Listener {
     }
 
     @EventHandler
-    public void shiftGoDown(PlayerToggleSneakEvent e){
-        if(e.isSneaking()){
+    public void shiftGoDown(PlayerToggleSneakEvent e) {
+        if (e.isSneaking()) {
             Player p = e.getPlayer();
             PersistentDataContainer data = p.getPersistentDataContainer();
             int phantomid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER);
-            if(phantomid == 2){
-                if(phantomize.contains(p)){
-                    if(!p.getLocation().getBlock().isCollidable()){
-                        if(p.getLocation().getBlock().getRelative(BlockFace.DOWN).isCollidable()){
+            if (phantomid == 2) {
+                if (phantomize.contains(p)) {
+                    if (!p.getLocation().getBlock().isCollidable()) {
+                        if (p.getLocation().getBlock().getRelative(BlockFace.DOWN).isCollidable()) {
                             Location currentLocation = p.getLocation();
                             Location targetLocation = currentLocation.getBlock().getRelative(BlockFace.DOWN).getLocation();
                             Location loc = new Location(targetLocation.getWorld(), targetLocation.getX(), targetLocation.getY(), targetLocation.getZ(), p.getEyeLocation().getYaw(), p.getEyeLocation().getPitch());
@@ -303,12 +303,12 @@ public class Phantomized extends BukkitRunnable implements Listener {
 
     @EventHandler
     public void onTransfer(InventoryClickEvent e) {
-        if(e.getClick().isKeyboardClick()) {
-            if(e.getView().getTopInventory().getType() == InventoryType.CRAFTING) return;
-            if(e.getView().getBottomInventory().getItem(e.getHotbarButton()) != null) {
+        if (e.getClick().isKeyboardClick()) {
+            if (e.getView().getTopInventory().getType() == InventoryType.CRAFTING) return;
+            if (e.getView().getBottomInventory().getItem(e.getHotbarButton()) != null) {
                 ItemStack transferred = e.getView().getBottomInventory().getItem(e.getHotbarButton());
-                if(transferred == null) return;
-                if(transferred.getType().equals(Material.PHANTOM_MEMBRANE)) {
+                if (transferred == null) return;
+                if (transferred.getType().equals(Material.PHANTOM_MEMBRANE)) {
                     ItemStack spectatorswitch = new ItemStack(Material.PHANTOM_MEMBRANE);
                     ItemMeta switch_meta = spectatorswitch.getItemMeta();
                     switch_meta.setDisplayName(GRAY + "Phantom Form");
@@ -320,7 +320,7 @@ public class Phantomized extends BukkitRunnable implements Listener {
                     switch_meta.setLore(pearl_lore);
                     spectatorswitch.setItemMeta(switch_meta);
 
-                    if(transferred.isSimilar(spectatorswitch)) {
+                    if (transferred.isSimilar(spectatorswitch)) {
                         e.setCancelled(true);
                     }
                 }
@@ -328,10 +328,11 @@ public class Phantomized extends BukkitRunnable implements Listener {
 
             return;
         }
-        if(e.getView().getTopInventory().getType() != InventoryType.CRAFTING) {
-            if(e.getView().getTopInventory().getHolder() != null && e.getView().getTopInventory().getHolder().equals(e.getWhoClicked())) return;
-            if(e.getCurrentItem() == null) return;
-            if(e.getCurrentItem().getType().equals(Material.PHANTOM_MEMBRANE)) {
+        if (e.getView().getTopInventory().getType() != InventoryType.CRAFTING) {
+            if (e.getView().getTopInventory().getHolder() != null && e.getView().getTopInventory().getHolder().equals(e.getWhoClicked()))
+                return;
+            if (e.getCurrentItem() == null) return;
+            if (e.getCurrentItem().getType().equals(Material.PHANTOM_MEMBRANE)) {
                 ItemStack spectatorswitch = new ItemStack(Material.PHANTOM_MEMBRANE);
                 ItemMeta switch_meta = spectatorswitch.getItemMeta();
                 switch_meta.setDisplayName(GRAY + "Phantom Form");
@@ -343,7 +344,7 @@ public class Phantomized extends BukkitRunnable implements Listener {
                 switch_meta.setLore(pearl_lore);
                 spectatorswitch.setItemMeta(switch_meta);
 
-                if(e.getCurrentItem().isSimilar(spectatorswitch)) {
+                if (e.getCurrentItem().isSimilar(spectatorswitch)) {
                     e.setCancelled(true);
                 }
             }

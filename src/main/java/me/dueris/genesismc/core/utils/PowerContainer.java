@@ -155,7 +155,7 @@ public class PowerContainer implements Serializable {
     /**
      * @return Should the climbing power be canceled in the rain or not
      */
-    public boolean getRainCancel(){
+    public boolean getRainCancel() {
         Object render = powerFile.get("rain_cancel");
         if (render == null) return false;
         return (boolean) render;
@@ -280,6 +280,7 @@ public class PowerContainer implements Serializable {
 
     /**
      * Checks the powerfile for the "condition" tag
+     *
      * @return Conditions in the power file or null if not found
      */
     @Deprecated
@@ -302,6 +303,7 @@ public class PowerContainer implements Serializable {
 
     /**
      * Checks the powerfile for the "condition" tag
+     *
      * @return Conditions in the power file or null if not found
      */
     @Deprecated
@@ -328,8 +330,7 @@ public class PowerContainer implements Serializable {
 
         if (obj instanceof JSONObject damageCondition) {
             Object entityConditionObj = damageCondition.get("entity_condition");
-            if (entityConditionObj instanceof JSONObject) {
-                JSONObject entityCondition = (JSONObject) entityConditionObj;
+            if (entityConditionObj instanceof JSONObject entityCondition) {
                 HashMap<String, Object> result = new HashMap<>();
                 for (Object key : entityCondition.keySet()) {
                     String stringKey = (String) key;
@@ -345,6 +346,7 @@ public class PowerContainer implements Serializable {
 
     /**
      * Checks the PowerFile for the specified condition
+     *
      * @return A HashMap of the keys and values in the condition or null if the condition type isn't found
      */
     public HashMap<String, Object> getCondition(String conditionType) {

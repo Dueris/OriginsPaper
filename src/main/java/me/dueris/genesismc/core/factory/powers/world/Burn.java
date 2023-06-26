@@ -23,22 +23,25 @@ public class Burn extends BukkitRunnable {
 
     @Override
     public void run() {
-        for (Player p : Bukkit.getOnlinePlayers()){
-            if(burn.contains(p)){
+        for (Player p : Bukkit.getOnlinePlayers()) {
+            if (burn.contains(p)) {
                 for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
                     PowerContainer power = origin.getPowerFileFromType("origins:burn");
                     if (power == null) continue;
-                    if(power.getInterval() == null) {Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "Unable to parse interval for origins:burn"); return;}
+                    if (power.getInterval() == null) {
+                        Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "Unable to parse interval for origins:burn");
+                        return;
+                    }
                     interval = power.getInterval();
-                if(ticksE < interval) {
-                    ticksE++;
-                    return;
-                }else{
-                    Long burn_duration = power.getBurnDuration();
-                    p.setFireTicks(burn_duration.intValue());
+                    if (ticksE < interval) {
+                        ticksE++;
+                        return;
+                    } else {
+                        Long burn_duration = power.getBurnDuration();
+                        p.setFireTicks(burn_duration.intValue());
 
-                    ticksE = 0;
-                }
+                        ticksE = 0;
+                    }
                 }
             }
         }

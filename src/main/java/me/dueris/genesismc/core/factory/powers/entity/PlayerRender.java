@@ -39,7 +39,7 @@ public class PlayerRender extends BukkitRunnable {
                         other.hidePlayer(GenesisMC.getPlugin(), p);
                     }
                 }
-                if(!team.getEntries().contains(p)){
+                if (!team.getEntries().contains(p)) {
                     team.addEntry(p.getName());
                 }
             } else if (isInvisible && !isInTranslucentList) {
@@ -50,7 +50,7 @@ public class PlayerRender extends BukkitRunnable {
                 }
                 Location location = p.getLocation();
                 location.getWorld().spawnParticle(Particle.SPELL_MOB_AMBIENT, location, 2, 0.0, 0.0, 0.0, 1.0, null);
-                if(!team.getEntries().contains(p)){
+                if (!team.getEntries().contains(p)) {
                     team.addEntry(p.getName());
                 }
             } else {
@@ -59,7 +59,7 @@ public class PlayerRender extends BukkitRunnable {
                         other.showPlayer(GenesisMC.getPlugin(), p);
                     }
                 }
-                if(!team.getEntries().contains(p)){
+                if (!team.getEntries().contains(p)) {
                     team.addEntry(p.getName());
                 }
             }
@@ -71,7 +71,7 @@ public class PlayerRender extends BukkitRunnable {
                     }
                 }
                 p.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 15, 255, false, false, false));
-                if(!team.getEntries().contains(p)){
+                if (!team.getEntries().contains(p)) {
                     team.addEntry(p.getName());
                 }
             }
