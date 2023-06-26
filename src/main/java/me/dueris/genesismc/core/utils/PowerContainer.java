@@ -309,9 +309,76 @@ public class PowerContainer implements Serializable {
      *
      * @return Conditions in the power file or null if not found
      */
-    @Deprecated
     public HashMap<String, Object> getDamageCondition() {
         Object obj = powerFile.get("damage_condition");
+        if (obj == null) return new HashMap<>();
+
+        if (obj instanceof JSONObject modifier) {
+            HashMap<String, Object> result = new HashMap<>();
+            for (Object key : modifier.keySet()) {
+                String string_key = (String) key;
+                Object value = modifier.get(string_key);
+                result.put(string_key, value);
+            }
+            return result;
+        }
+
+        return null;
+    }
+
+    public HashMap<String, Object> getFluidCondition() {
+        Object obj = powerFile.get("fluid_condition");
+        if (obj == null) return new HashMap<>();
+
+        if (obj instanceof JSONObject modifier) {
+            HashMap<String, Object> result = new HashMap<>();
+            for (Object key : modifier.keySet()) {
+                String string_key = (String) key;
+                Object value = modifier.get(string_key);
+                result.put(string_key, value);
+            }
+            return result;
+        }
+
+        return null;
+    }
+
+    public HashMap<String, Object> getBiomeCondition() {
+        Object obj = powerFile.get("fluid_condition");
+        if (obj == null) return new HashMap<>();
+
+        if (obj instanceof JSONObject modifier) {
+            HashMap<String, Object> result = new HashMap<>();
+            for (Object key : modifier.keySet()) {
+                String string_key = (String) key;
+                Object value = modifier.get(string_key);
+                result.put(string_key, value);
+            }
+            return result;
+        }
+
+        return null;
+    }
+
+    public HashMap<String, Object> getItemCondition() {
+        Object obj = powerFile.get("item_condition");
+        if (obj == null) return new HashMap<>();
+
+        if (obj instanceof JSONObject modifier) {
+            HashMap<String, Object> result = new HashMap<>();
+            for (Object key : modifier.keySet()) {
+                String string_key = (String) key;
+                Object value = modifier.get(string_key);
+                result.put(string_key, value);
+            }
+            return result;
+        }
+
+        return null;
+    }
+
+    public HashMap<String, Object> getBlockCondition() {
+        Object obj = powerFile.get("block_condition");
         if (obj == null) return new HashMap<>();
 
         if (obj instanceof JSONObject modifier) {
@@ -347,34 +414,21 @@ public class PowerContainer implements Serializable {
         return new HashMap<>();
     }
 
-    public HashMap<String, Object> getEntityConditionFromAnywhere() {
-        HashMap<String, Object> result = new HashMap<>();
-        searchEntityCondition(powerFile, result);
-        return result;
-    }
+    public HashMap<String, Object> getEntityCondition() {
+        Object obj = powerFile.get("entity_condition");
+        if (obj == null) return new HashMap<>();
 
-    private void searchEntityCondition(Object obj, HashMap<String, Object> result) {
-        if (obj instanceof JSONObject jsonObject) {
-            for (Object key : jsonObject.keySet()) {
-                String stringKey = (String) key;
-                Object value = jsonObject.get(stringKey);
-                if (stringKey.equals("condition") || stringKey.equals("entity_condition")) {
-                    if (value instanceof JSONObject condition) {
-                        for (Object conditionKey : condition.keySet()) {
-                            String conditionStringKey = (String) conditionKey;
-                            Object conditionValue = condition.get(conditionStringKey);
-                            result.put(conditionStringKey, conditionValue);
-                        }
-                    }
-                } else {
-                    searchEntityCondition(value, result);
-                }
+        if (obj instanceof JSONObject modifier) {
+            HashMap<String, Object> result = new HashMap<>();
+            for (Object key : modifier.keySet()) {
+                String string_key = (String) key;
+                Object value = modifier.get(string_key);
+                result.put(string_key, value);
             }
-        } else if (obj instanceof JSONArray jsonArray) {
-            for (Object element : jsonArray) {
-                searchEntityCondition(element, result);
-            }
+            return result;
         }
+
+        return null;
     }
 
     /**
