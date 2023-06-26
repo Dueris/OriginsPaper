@@ -28,7 +28,6 @@ public class DefaultChoose {
         //default choose
         p.closeInventory();
         p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_CHIME, 10, 2);
-        p.sendMessage(Component.text("You have chosen an origin!").color(TextColor.fromHexString(AQUA)));
         p.spawnParticle(Particle.CLOUD, p.getLocation(), 100);
         p.getWorld().spawnParticle(Particle.FIREWORKS_SPARK, p.getLocation(), 6);
         p.setCustomNameVisible(false);
