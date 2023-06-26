@@ -14,6 +14,7 @@ import me.dueris.genesismc.core.factory.powers.block.fluid.*;
 import me.dueris.genesismc.core.factory.powers.block.solid.PumpkinHate;
 import me.dueris.genesismc.core.factory.powers.effects.*;
 import me.dueris.genesismc.core.factory.powers.entity.*;
+import me.dueris.genesismc.core.factory.powers.entity.damage.InvulnerabilityDamage;
 import me.dueris.genesismc.core.factory.powers.food.Carnivore;
 import me.dueris.genesismc.core.factory.powers.food.CarrotOnly;
 import me.dueris.genesismc.core.factory.powers.food.MoreExhaustion;
@@ -172,5 +173,6 @@ public class PowerStartHandler {
         getServer().getPluginManager().registerEvents(new AttributeConditioned(), getPlugin());
         getServer().getPluginManager().registerEvents(new CreeperScare(), getPlugin());
         getServer().getPluginManager().registerEvents(new ShulkInv(), getPlugin());
+        getServer().getPluginManager().registerEvents(new InvulnerabilityDamage(), getPlugin());
     }
 }
