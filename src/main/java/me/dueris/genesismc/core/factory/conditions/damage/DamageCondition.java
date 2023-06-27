@@ -1,6 +1,5 @@
 package me.dueris.genesismc.core.factory.conditions.damage;
 
-import me.dueris.genesismc.core.factory.conditions.EntityCondition;
 import me.dueris.genesismc.core.factory.powers.armour.RestrictArmor;
 import me.dueris.genesismc.core.utils.OriginContainer;
 import org.bukkit.Material;
