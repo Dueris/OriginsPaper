@@ -25,6 +25,11 @@ public class EntityCondition {
             if(ability.equalsIgnoreCase("minecraft:invulnerable")){
                 if(entity.isInvulnerable()) return true;
             }
+            if(ability.equalsIgnoreCase("minecraft:maybuild")){
+                if(entity.hasPermission("minecraft.build")){
+                    return true;
+                }
+            }
         }
         return false;
     }
