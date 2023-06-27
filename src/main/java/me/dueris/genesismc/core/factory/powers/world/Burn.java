@@ -1,6 +1,7 @@
 package me.dueris.genesismc.core.factory.powers.world;
 
 import me.dueris.genesismc.core.entity.OriginPlayer;
+import me.dueris.genesismc.core.factory.conditions.Conditions;
 import me.dueris.genesismc.core.utils.OriginContainer;
 import me.dueris.genesismc.core.utils.PowerContainer;
 import org.bukkit.Bukkit;
@@ -37,6 +38,7 @@ public class Burn extends BukkitRunnable {
                         ticksE++;
                         return;
                     } else {
+                        if(!Conditions.check(p, origin, "origins:burn", null, p)) return;
                         Long burn_duration = power.getBurnDuration();
                         p.setFireTicks(burn_duration.intValue());
 
