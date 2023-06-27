@@ -1,6 +1,7 @@
 package me.dueris.genesismc.core.factory.conditions.entity;
 
 import me.dueris.genesismc.core.utils.OriginContainer;
+import org.bukkit.GameMode;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
@@ -15,7 +16,12 @@ public class EntityCondition {
                     if(player.isFlying()) return true;
                 }
             }
-
+            if(ability.equalsIgnoreCase("minecraft:instabuild")){
+                if(entity instanceof Player){
+                    Player player = (Player) entity;
+                    if(player.getGameMode().equals(GameMode.CREATIVE)) return true;
+                }
+            }
         }
         return false;
     }
