@@ -22,6 +22,9 @@ public class EntityCondition {
                     if(player.getGameMode().equals(GameMode.CREATIVE)) return true;
                 }
             }
+            if(ability.equalsIgnoreCase("minecraft:invulnerable")){
+                if(entity.isInvulnerable()) return true;
+            }
         }
         return false;
     }
