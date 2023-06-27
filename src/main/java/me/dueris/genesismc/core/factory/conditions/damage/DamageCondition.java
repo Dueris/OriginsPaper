@@ -1,5 +1,6 @@
 package me.dueris.genesismc.core.factory.conditions.damage;
 
+import me.dueris.genesismc.core.factory.conditions.entity.EntityCondition;
 import me.dueris.genesismc.core.factory.powers.armour.RestrictArmor;
 import me.dueris.genesismc.core.utils.OriginContainer;
 import org.bukkit.Material;
@@ -30,7 +31,7 @@ public class DamageCondition {
         if (type.equalsIgnoreCase("origins:attacker")) {
             if(e instanceof EntityDamageByEntityEvent){
                 EntityDamageByEntityEvent event = (EntityDamageByEntityEvent) e;
-                EntityCondition.checkEntityCondition(p, origin, powerfile, event.getDamager());
+                EntityCondition.check(p, origin, powerfile, event.getDamager());
             }
         }
 
