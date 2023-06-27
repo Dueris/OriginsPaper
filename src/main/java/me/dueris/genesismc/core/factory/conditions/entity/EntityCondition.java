@@ -30,6 +30,12 @@ public class EntityCondition {
                     return true;
                 }
             }
+            if(ability.equalsIgnoreCase("minecraft:mayfly")){
+                if(entity instanceof Player){
+                    Player player = (Player) entity;
+                    if(player.getAllowFlight() == true) return true;
+                }
+            }
         }
         return false;
     }
