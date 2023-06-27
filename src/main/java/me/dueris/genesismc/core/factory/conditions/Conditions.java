@@ -1,6 +1,7 @@
 package me.dueris.genesismc.core.factory.conditions;
 
 import me.dueris.genesismc.core.factory.conditions.damage.DamageCondition;
+import me.dueris.genesismc.core.factory.conditions.entity.EntityCondition;
 import me.dueris.genesismc.core.utils.OriginContainer;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -12,7 +13,7 @@ public class Conditions {
             return DamageCondition.checkDamageCondition(p, origin, powerfile, dmgevent);
         }
         if(entity != null){
-            return EntityCondition.checkEntityCondition(p, origin, powerfile, entity);
+            return EntityCondition.check(p, origin, powerfile, entity);
         }
         return true;
     }
