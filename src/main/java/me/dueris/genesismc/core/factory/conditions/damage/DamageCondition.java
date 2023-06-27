@@ -14,6 +14,7 @@ import static org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 
 public class DamageCondition {
     public static boolean checkDamageCondition(Player p, OriginContainer origin, String powerfile, EntityDamageEvent e) {
+        if(origin.getPowerFileFromType(powerfile).getDamageCondition() == null) return true;
 
         String type = origin.getPowerFileFromType(powerfile).getDamageCondition().get("type").toString();
 
