@@ -11,6 +11,9 @@ public class Conditions {
         if(dmgevent != null){
             return DamageCondition.checkDamageCondition(p, origin, powerfile, dmgevent);
         }
+        if(entity != null){
+            return EntityCondition.checkEntityCondition(p, origin, powerfile, entity);
+        }
         return true;
     }
 }
