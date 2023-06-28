@@ -9,6 +9,9 @@ apply plugin: 'maven-publish'
 group = 'me.dueris'
 version = 'mc1.20-v0.2.1'
 
+sourceCompatibility = JavaVersion.VERSION_17
+targetCompatibility = JavaVersion.VERSION_17
+
 repositories {
     mavenCentral()
     maven {
@@ -27,7 +30,10 @@ repositories {
         url = "https://maven.enginehub.org/repo/"
     }
     maven {
-        url = "https://jitpack.io"
+        url = 'https://jitpack.io'
+    }
+    maven {
+        url = "https://repo.codemc.org/repository/maven-releases/"
     }
 }
 
@@ -35,10 +41,23 @@ java {
     toolchain.languageVersion.set(JavaLanguageVersion.of(17))
 }
 
+configurations {
+    shade
+}
+
 dependencies {
     paperweight.paperDevBundle("1.20.1-R0.1-SNAPSHOT")
     compileOnly("org.geysermc.geyser:api:2.1.1-SNAPSHOT")
     compileOnly("org.geysermc.floodgate:api:2.2.2-SNAPSHOT")
+    implementation("net.skinsrestorer:skinsrestorer-api:14.2.3")
+}
+
+jar {
+    dependsOn configurations.shade
+
+    from {
+        configurations.shade.collect { it.isDirectory() ? it : zipTree(it) }
+    }
 }
 
 tasks {
@@ -79,4 +98,13 @@ publishing {
             from components.java
         }
     }
+    repositories {
+        // Add repositories to publish to here.
+        // Notice: This block does NOT have the same function as the block in the top level.
+        // The repositories here will be used for publishing your artifact, not for
+        // retrieving dependencies.
+        mavenLocal()
+    }
 }
+
+

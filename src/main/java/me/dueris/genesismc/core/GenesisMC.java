@@ -14,6 +14,7 @@ import me.dueris.genesismc.core.enchantments.WaterProtection;
 import me.dueris.genesismc.core.entity.OriginPlayer;
 import me.dueris.genesismc.core.factory.CraftApoli;
 import me.dueris.genesismc.core.factory.PowerStartHandler;
+import me.dueris.genesismc.core.factory.powers.world.ModelColor;
 import me.dueris.genesismc.core.files.GenesisDataFiles;
 import me.dueris.genesismc.core.generation.WaterProtBookGen;
 import me.dueris.genesismc.core.items.InfinPearl;
@@ -23,21 +24,21 @@ import me.dueris.genesismc.core.items.WaterProtItem;
 import me.dueris.genesismc.core.utils.*;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
-import org.bukkit.Bukkit;
-import org.bukkit.GameMode;
-import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
+import net.skinsrestorer.api.SkinsRestorerAPI;
+import org.bukkit.*;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.HashMap;
+import java.util.logging.Logger;
 
 import static me.dueris.genesismc.core.utils.BukkitColour.*;
 
@@ -47,7 +48,6 @@ public final class GenesisMC extends JavaPlugin implements Listener {
     public static ArrayList<Enchantment> custom_enchants = new ArrayList<>();
     public static WaterProtection waterProtectionEnchant;
     private static GenesisMC plugin;
-
     static {
         tool = EnumSet.of(Material.DIAMOND_AXE, Material.DIAMOND_HOE, Material.DIAMOND_PICKAXE, Material.DIAMOND_SHOVEL, Material.DIAMOND_SWORD, Material.GOLDEN_AXE, Material.GOLDEN_HOE, Material.GOLDEN_PICKAXE, Material.GOLDEN_SHOVEL, Material.GOLDEN_SWORD, Material.NETHERITE_AXE, Material.NETHERITE_HOE, Material.NETHERITE_PICKAXE, Material.NETHERITE_SHOVEL, Material.NETHERITE_SWORD, Material.IRON_AXE, Material.IRON_HOE, Material.IRON_PICKAXE, Material.IRON_SHOVEL, Material.IRON_SWORD, Material.WOODEN_AXE, Material.WOODEN_HOE, Material.WOODEN_PICKAXE, Material.WOODEN_SHOVEL, Material.WOODEN_SWORD, Material.SHEARS);
     }
@@ -165,6 +165,18 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         getServer().getPluginManager().registerEvents(new Listeners(), this);
         getServer().getPluginManager().registerEvents(new DataContainer(), this);
         getServer().getPluginManager().registerEvents(new Items(), this);
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                if(getServer().getPluginManager().isPluginEnabled("SkinsRestorer")){
+                    getServer().getPluginManager().registerEvents(new ModelColor(), GenesisMC.getPlugin());
+                    getServer().getConsoleSender().sendMessage(ChatColor.AQUA + "Hooked into SkinRestorer! ModelColor enabled :)");
+                }else{
+                    getServer().getConsoleSender().sendMessage(ChatColor.AQUA + "SkinRestorer not found, ModelColor disabled");
+                }
+                this.cancel();
+            }
+        }.runTaskTimer(GenesisMC.getPlugin(), 130L, 1L);
         plugin = this;
 
 //origin start begin
@@ -216,6 +228,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         // Disable enchantments
         for (Player p : Bukkit.getOnlinePlayers()) {
             p.getScoreboard().getTeam("origin-players").removeEntity(p);
+            Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), "skin clear " + p.getName());
         }
         try {
             Field keyField = Enchantment.class.getDeclaredField("byKey");
