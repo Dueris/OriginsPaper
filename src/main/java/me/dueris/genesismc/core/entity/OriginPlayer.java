@@ -5,10 +5,12 @@ import me.dueris.genesismc.core.enums.OriginDataType;
 import me.dueris.genesismc.core.enums.OriginMenu;
 import me.dueris.genesismc.core.events.OriginChooseEvent;
 import me.dueris.genesismc.core.factory.CraftApoli;
+import me.dueris.genesismc.core.utils.LayerContainer;
 import me.dueris.genesismc.core.utils.OriginContainer;
 import me.dueris.genesismc.core.utils.PowerContainer;
 import me.dueris.genesismc.core.utils.SendCharts;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.enchantments.Enchantment;
@@ -31,6 +33,7 @@ import static me.dueris.genesismc.core.choosing.ChoosingCORE.*;
 import static me.dueris.genesismc.core.choosing.contents.ChooseMenuContents.ChooseMenuContent;
 import static me.dueris.genesismc.core.choosing.contents.MainMenuContents.GenesisMainMenuContents;
 import static me.dueris.genesismc.core.factory.powers.Powers.*;
+import static me.dueris.genesismc.core.utils.BukkitColour.RED;
 import static org.bukkit.Bukkit.getServer;
 import static org.bukkit.ChatColor.GRAY;
 
@@ -83,40 +86,43 @@ public class OriginPlayer {
     }
 
     public static boolean hasOrigin(Player player, String originTag) {
-        HashMap<String, OriginContainer> origins = CraftApoli.toOriginContainer(player.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "origins"), PersistentDataType.BYTE_ARRAY));
+        HashMap<LayerContainer, OriginContainer> origins = CraftApoli.toOriginContainer(player.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "origins"), PersistentDataType.BYTE_ARRAY));
         assert origins != null;
         for (OriginContainer origin : origins.values()) if (origin.getTag().equals(originTag)) return true;
         return false;
     }
 
     /**
-     * @param originLayer The layer the origin is in
+     * @param layer The layer the origin is in
      * @return The OriginContainer for the specified layer
      */
 
-    public static OriginContainer getOrigin(Player player, String originLayer) {
+    public static OriginContainer getOrigin(Player player, LayerContainer layer) {
         PersistentDataContainer data = player.getPersistentDataContainer();
         if (data.get(new NamespacedKey(GenesisMC.getPlugin(), "origins"), PersistentDataType.BYTE_ARRAY) == null) {
-            setOrigin(player, originLayer, new CraftApoli().nullOrigin());
-            return new CraftApoli().nullOrigin();
+            setOrigin(player, layer, CraftApoli.nullOrigin());
+            return CraftApoli.nullOrigin();
         }
-        return CraftApoli.toOriginContainer(data.get(new NamespacedKey(GenesisMC.getPlugin(), "origins"), PersistentDataType.BYTE_ARRAY), originLayer);
+        return CraftApoli.toOriginContainer(data.get(new NamespacedKey(GenesisMC.getPlugin(), "origins"), PersistentDataType.BYTE_ARRAY), layer);
     }
 
     /**
      * @return A HashMap of layers and OriginContainer that the player has.
      */
 
-    public static HashMap<String, OriginContainer> getOrigin(Player player) {
+    public static HashMap<LayerContainer, OriginContainer> getOrigin(Player player) {
         PersistentDataContainer data = player.getPersistentDataContainer();
         if (data.get(new NamespacedKey(GenesisMC.getPlugin(), "origins"), PersistentDataType.BYTE_ARRAY) == null) {
-            setOrigin(player, "origins:origin", new CraftApoli().nullOrigin());
-            return new HashMap<>(Map.of("origins:origin", new CraftApoli().nullOrigin()));
+            ArrayList<LayerContainer> layers = CraftApoli.getLayers();
+            for (LayerContainer layer : layers) {
+                setOrigin(player, layer, CraftApoli.nullOrigin());
+                return new HashMap<>(Map.of(layer, CraftApoli.nullOrigin()));
+            }
         }
         return CraftApoli.toOriginContainer(data.get(new NamespacedKey(GenesisMC.getPlugin(), "origins"), PersistentDataType.BYTE_ARRAY));
     }
 
-    public static boolean hasCoreOrigin(Player player, String layer) {
+    public static boolean hasCoreOrigin(Player player, LayerContainer layer) {
         PersistentDataContainer data = player.getPersistentDataContainer();
         String originTag = OriginPlayer.getOrigin(player, layer).getTag();
         if (originTag.contains("genesis:origin-human")) {
@@ -156,17 +162,19 @@ public class OriginPlayer {
         } else return originTag.contains("genesis:origin-piglin");
     }
 
-    public static void setOrigin(Player player, String layer, OriginContainer origin) {
+    public static void setOrigin(Player player, LayerContainer layer, OriginContainer origin) {
         NamespacedKey key = new NamespacedKey(GenesisMC.getPlugin(), "origins");
-        HashMap<String, OriginContainer> origins = CraftApoli.toOriginContainer(player.getPersistentDataContainer().get(key, PersistentDataType.BYTE_ARRAY));
+        HashMap<LayerContainer, OriginContainer> origins = CraftApoli.toOriginContainer(player.getPersistentDataContainer().get(key, PersistentDataType.BYTE_ARRAY));
         assert origins != null;
         if (!CraftApoli.getLayers().contains(layer)) {
-            player.sendMessage(Component.text("[GenesisMC] The layer specified doesn't exist."));
+            player.sendMessage(Component.text("[GenesisMC] The layer specified doesn't exist.").color(TextColor.fromHexString(RED)));
             return;
         }
-        unassignPowers(player, layer);
 
-        origins.replace(layer, origin);
+        unassignPowers(player, layer);
+        for (LayerContainer layers : origins.keySet()) {
+            if (layer.getTag().equals(layers.getTag())) origins.replace(layers, origin);
+        }
         player.getPersistentDataContainer().set(key, PersistentDataType.BYTE_ARRAY, CraftApoli.toByteArray(origins));
 
         String originTag = origin.getTag();
@@ -174,7 +182,8 @@ public class OriginPlayer {
         removeItemPhantom(player);
         removeItemEnder(player);
         removeItemElytrian(player);
-        if (originTag.contains("genesis:origin-human")) {
+
+        if (originTag.contains("origins:human")) {
         } else if (originTag.contains("origins:enderian")) {
             ItemStack infinpearl = new ItemStack(Material.ENDER_PEARL);
             ItemMeta pearl_meta = infinpearl.getItemMeta();
@@ -240,9 +249,9 @@ public class OriginPlayer {
         assignPowers(player, layer);
     }
 
-    public static String getLayer(Player p, OriginContainer origin) {
-        HashMap<String, OriginContainer> origins = getOrigin(p);
-        for (String layer : origins.keySet()) {
+    public static LayerContainer getLayer(Player p, OriginContainer origin) {
+        HashMap<LayerContainer, OriginContainer> origins = getOrigin(p);
+        for (LayerContainer layer : origins.keySet()) {
             if (origins.get(layer).getTag().equals(origin.getTag())) return layer;
         }
         return null;
@@ -297,11 +306,11 @@ public class OriginPlayer {
     }
 
     public static void assignPowers(Player player) {
-        HashMap<String, OriginContainer> origins = getOrigin(player);
-        for (String layer : origins.keySet()) assignPowers(player, layer);
+        HashMap<LayerContainer, OriginContainer> origins = getOrigin(player);
+        for (LayerContainer layer : origins.keySet()) assignPowers(player, layer);
     }
 
-    public static void assignPowers(Player player, String layer) {
+    public static void assignPowers(Player player, LayerContainer layer) {
         OriginContainer origin = getOrigin(player, layer);
         for (PowerContainer power : origin.getPowerContainers()) {
             switch (power.getType()) {
@@ -403,16 +412,14 @@ public class OriginPlayer {
     }
 
     public static void unassignPowers(Player player) {
-        HashMap<String, OriginContainer> origins = getOrigin(player);
-        for (String layer : origins.keySet()) unassignPowers(player, layer);
+        HashMap<LayerContainer, OriginContainer> origins = getOrigin(player);
+        for (LayerContainer layer : origins.keySet()) unassignPowers(player, layer);
     }
 
-    public static void unassignPowers(Player player, String layer) {
+    public static void unassignPowers(Player player, LayerContainer layer) {
         OriginContainer origin = getOrigin(player, layer);
         for (PowerContainer power : origin.getPowerContainers()) {
-            //player.sendMessage(power.getTag());
             if (!origin.getTag().equals(power.getSource())) continue;
-            //player.sendMessage("a");
             switch (power.getType()) {
                 case "genesis:hot_hands" -> hot_hands.remove(player);
                 case "genesis:extra_fire_tick" -> extra_fire.remove(player);

@@ -1,6 +1,7 @@
 package me.dueris.genesismc.core.commands;
 
 import me.dueris.genesismc.core.factory.CraftApoli;
+import me.dueris.genesismc.core.utils.LayerContainer;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -11,6 +12,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class TabAutoComplete implements TabCompleter {
@@ -109,16 +111,18 @@ public class TabAutoComplete implements TabCompleter {
             } else if (args.length == 3) {
 
                 if (args[0].equalsIgnoreCase("get") || args[0].equalsIgnoreCase("has") || args[0].equalsIgnoreCase("set")) {
-                    ArrayList<String> layers = CraftApoli.getLayers();
+                    ArrayList<LayerContainer> layers = CraftApoli.getLayers();
                     for (int i = 0; i < layers.size(); i++) {
-                        String layer = layers.get(i);
-                        if (layer.length() < args[2].length()) {
-                            layers.remove(layer);
+                        String tag = layers.get(i).getTag();
+                        if (tag.length() < args[2].length()) {
+                            layers.remove(layers.get(i));
                             continue;
                         }
-                        if (!layer.equals(layers.get(i).substring(0, layer.length()))) layers.remove(layers.get(i));
+                        if (!tag.equals(layers.get(i).getTag().substring(0, tag.length()))) layers.remove(layers.get(i));
                     }
-                    return layers;
+                    ArrayList<String> layerTags = new ArrayList<>();
+                    for (LayerContainer layer : layers) layerTags.add(layer.getTag());
+                    return layerTags;
                 }
                 if (args[0].equalsIgnoreCase("give")) {
                     return List.of("genesis:orb_of_origin");

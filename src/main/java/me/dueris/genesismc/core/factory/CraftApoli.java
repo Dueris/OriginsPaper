@@ -1,9 +1,10 @@
 package me.dueris.genesismc.core.factory;
 
 import me.dueris.genesismc.core.utils.Lang;
+import me.dueris.genesismc.core.utils.LayerContainer;
 import me.dueris.genesismc.core.utils.OriginContainer;
 import me.dueris.genesismc.core.utils.PowerContainer;
-import me.dueris.genesismc.core.utils.PowerFileContainer;
+import me.dueris.genesismc.core.utils.FileContainer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import org.apache.commons.io.FilenameUtils;
@@ -21,17 +22,17 @@ import java.util.zip.ZipFile;
 public class CraftApoli {
 
     @SuppressWarnings("FieldMayBeFinal")
-    private static ArrayList<String> originLayers = new ArrayList<>();
+    private static ArrayList<LayerContainer> originLayers = new ArrayList<>();
     @SuppressWarnings("FieldMayBeFinal")
     private static ArrayList<OriginContainer> originContainers = new ArrayList<>();
-    private static final OriginContainer null_Origin = new OriginContainer("genesis:origin-null", new HashMap<String, Object>(Map.of("hidden", true, "origins", "genesis:origin-null")), new HashMap<String, Object>(Map.of("impact", "0", "icon", "minecraft:player_head", "powers", "genesis:null", "order", "0", "unchooseable", true)), new ArrayList<>(List.of(new PowerContainer("genesis:null", new PowerFileContainer(new ArrayList<>(), new ArrayList<>()), "genesis:origin-null"))));
+    private static final OriginContainer null_Origin = new OriginContainer("genesis:origin-null", new FileContainer(new ArrayList<>(List.of("hidden", "origins")), new ArrayList<>(List.of(true, "genesis:origin-null"))) , new HashMap<String, Object>(Map.of("impact", "0", "icon", "minecraft:player_head", "powers", "genesis:null", "order", "0", "unchooseable", true)), new ArrayList<>(List.of(new PowerContainer("genesis:null", new FileContainer(new ArrayList<>(), new ArrayList<>()), "genesis:origin-null"))));
 
 
     /**
      * @return A copy of each layerTag that is loaded.
      **/
-    public static ArrayList<String> getLayers() {
-        return (ArrayList<String>) originLayers.clone();
+    public static ArrayList<LayerContainer> getLayers() {
+        return (ArrayList<LayerContainer>) originLayers.clone();
     }
 
     /**
@@ -61,14 +62,14 @@ public class CraftApoli {
     /**
      * Parses a JSON file into a PowerFIleContainer.
      **/
-    private static PowerFileContainer fileToPowerFileContainer(JSONObject JSONFileParser) {
+    private static FileContainer fileToFileContainer(JSONObject JSONFileParser) {
         ArrayList<String> keys = new ArrayList<>();
         ArrayList<Object> values = new ArrayList<>();
         for (Object key : JSONFileParser.keySet()) {
             keys.add((String) key);
             values.add(JSONFileParser.get(key));
         }
-        return new PowerFileContainer(keys, values);
+        return new FileContainer(keys, values);
     }
 
     /**
@@ -157,14 +158,14 @@ public class CraftApoli {
 
                                         try {
                                             JSONObject powerParser = (JSONObject) new JSONParser().parse(files.get(Path.of("data" + File.separator + powerFolder + File.separator + "powers" + File.separator + powerFileName + ".json")));
-                                            powerContainers.add(new PowerContainer(powerFolder + ":" + powerFileName, fileToPowerFileContainer(powerParser), originFolder.get(0) + ":" + originFileName.get(0)));
+                                            powerContainers.add(new PowerContainer(powerFolder + ":" + powerFileName, fileToFileContainer(powerParser), originFolder.get(0) + ":" + originFileName.get(0)));
                                         } catch (NullPointerException nullPointerException) {
                                             Bukkit.getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] Error parsing \"" + powerFolder + ":" + powerFileName + "\" for \"" + originFolder.get(0) + ":" + originFileName.get(0) + "\"").color(TextColor.color(255, 0, 0)));
                                         }
                                     }
                                 }
 
-                                originContainers.add(new OriginContainer(originFolder.get(0) + ":" + originFileName.get(0), fileToHashMap(originLayerParser), fileToHashMap(originParser), powerContainers));
+                                originContainers.add(new OriginContainer(originFolder.get(0) + ":" + originFileName.get(0), fileToFileContainer(originLayerParser), fileToHashMap(originParser), powerContainers));
 
                             }
                         originFolder.remove(0);
@@ -193,7 +194,11 @@ public class CraftApoli {
                 for (File originLayer : originLayers.listFiles()) {
                     if (!FilenameUtils.getExtension(originLayer.getName()).equals("json")) continue;
                     String layerName = FilenameUtils.getBaseName(originLayer.getName());
-                    CraftApoli.originLayers.add(layerNamespace + ":" + layerName);
+                    try {
+                    CraftApoli.originLayers.add(new LayerContainer(layerNamespace+":"+layerName, fileToFileContainer((JSONObject) new JSONParser().parse(new FileReader(originLayer)))));
+                    } catch (Exception e) {
+                        Bukkit.getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] Error parsing \""+ datapack.getName() + File.separator + "data" + File.separator + namespace.getName() + File.separator + "origin_layers" + File.separator + layerName + ".json" + "\"").color(TextColor.color(255, 0, 0)));
+                    }
                 }
             }
 
@@ -231,14 +236,14 @@ public class CraftApoli {
 
                                 try {
                                     JSONObject powerParser = (JSONObject) new JSONParser().parse(new FileReader(datapack.getAbsolutePath() + File.separator + "data" + File.separator + powerFolder + File.separator + "powers" + File.separator + powerFileName + ".json"));
-                                    powerContainers.add(new PowerContainer(powerFolder + ":" + powerFileName, fileToPowerFileContainer(powerParser), originFolder.get(0) + ":" + originFileName.get(0)));
+                                    powerContainers.add(new PowerContainer(powerFolder + ":" + powerFileName, fileToFileContainer(powerParser), originFolder.get(0) + ":" + originFileName.get(0)));
                                 } catch (FileNotFoundException fileNotFoundException) {
                                     Bukkit.getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] Error parsing \"" + powerFolder + ":" + powerFileName + "\" for \"" + originFolder.get(0) + ":" + originFileName.get(0) + "\"").color(TextColor.color(255, 0, 0)));
                                 }
                             }
                         }
 
-                        originContainers.add(new OriginContainer(originFolder.get(0) + ":" + originFileName.get(0), fileToHashMap(originLayerParser), fileToHashMap(originParser), powerContainers));
+                        originContainers.add(new OriginContainer(originFolder.get(0) + ":" + originFileName.get(0), fileToFileContainer(originLayerParser), fileToHashMap(originParser), powerContainers));
 
                     } catch (FileNotFoundException fileNotFoundException) {
                         Bukkit.getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] Error parsing \"" + datapack.getName() + File.separator + "data" + File.separator + originFolder.get(0) + File.separator + "origins" + File.separator + originFileName.get(0) + ".json" + "\"").color(TextColor.color(255, 0, 0)));
@@ -252,7 +257,6 @@ public class CraftApoli {
             }
         }
         translateOrigins();
-        System.out.println(getLayers());
     }
 
     /**
@@ -275,7 +279,7 @@ public class CraftApoli {
     /**
      * @return The HashMap serialized into a byte array.
      **/
-    public static byte[] toByteArray(HashMap<String, OriginContainer> origin) {
+    public static byte[] toByteArray(HashMap<LayerContainer, OriginContainer> origin) {
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         try {
             ObjectOutputStream oos = new ObjectOutputStream(bos);
@@ -285,37 +289,41 @@ public class CraftApoli {
         } catch (Exception e) {
             Bukkit.getLogger().warning("CRUCIAL ERROR, PLEASE REPORTING THIS IMMEDIATELY TO THE DEVS!!");
             e.printStackTrace();
-            return toByteArray(new HashMap<>(Map.of("origins:origin", CraftApoli.null_Origin)));
+            return toByteArray(new HashMap<>(Map.of(CraftApoli.getLayers().get(0), CraftApoli.nullOrigin())));
         }
     }
 
     /**
      * @return The byte array deserialized into the origin specified by the layer.
      **/
-    public static OriginContainer toOriginContainer(byte[] origin, String originLayer) {
+    public static OriginContainer toOriginContainer(byte[] origin, LayerContainer originLayer) {
         ByteArrayInputStream bis = new ByteArrayInputStream(origin);
         try {
             ObjectInput oi = new ObjectInputStream(bis);
-            return ((HashMap<String, OriginContainer>) oi.readObject()).get(originLayer);
+            HashMap<LayerContainer, OriginContainer> originData = (HashMap<LayerContainer, OriginContainer>) oi.readObject();
+            for (LayerContainer layer : originData.keySet()) {
+                if (layer.getTag().equals(originLayer.getTag())) return originData.get(layer);
+            }
         } catch (Exception e) {
-            Bukkit.getLogger().warning("CRUCIAL ERROR, PLEASE REPORTING THIS IMMEDIATELY TO THE DEVS!!");
             e.printStackTrace();
             return nullOrigin();
         }
+        Bukkit.getLogger().warning("CRUCIAL ERROR, PLEASE REPORTING THIS IMMEDIATELY TO THE DEVS!!");
+        return nullOrigin();
     }
 
     /**
      * @return The byte array deserialized into a HashMap of the originLayer and the OriginContainer.
      **/
-    public static HashMap<String, OriginContainer> toOriginContainer(byte[] origin) {
+    public static HashMap<LayerContainer, OriginContainer> toOriginContainer(byte[] origin) {
         ByteArrayInputStream bis = new ByteArrayInputStream(origin);
         try {
             ObjectInput oi = new ObjectInputStream(bis);
-            return (HashMap<String, OriginContainer>) oi.readObject();
+            return (HashMap<LayerContainer, OriginContainer>) oi.readObject();
         } catch (Exception e) {
             Bukkit.getLogger().warning("CRUCIAL ERROR, PLEASE REPORTING THIS IMMEDIATELY TO THE DEVS!!");
             e.printStackTrace();
-            return new HashMap<>(Map.of("origins:origin", CraftApoli.null_Origin));
+            return new HashMap<>(Map.of(CraftApoli.getLayers().get(0), CraftApoli.nullOrigin()));
         }
     }
 
@@ -351,5 +359,15 @@ public class CraftApoli {
             if (isCoreOrigin(origin)) coreOrigins.add(origin);
         }
         return coreOrigins;
+    }
+
+    /**
+     * @return The loaded layer with the specified tag. If there is no layer with that tag the first layer will be returned.
+     **/
+    public static LayerContainer getLayerFromTag(String layerTag) {
+        for (LayerContainer layer : CraftApoli.getLayers()) {
+            if (layer.getTag().equals(layerTag)) return layer;
+        }
+        return CraftApoli.getLayers().get(0);
     }
 }

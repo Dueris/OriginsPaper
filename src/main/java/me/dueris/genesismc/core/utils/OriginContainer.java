@@ -14,23 +14,21 @@ public class OriginContainer implements Serializable {
     private static final long serialVersionUID = 1L;
 
     String tag;
-    String layer;
-    HashMap<String, Object> originLayerFile;
+    FileContainer layerFile;
     HashMap<String, Object> originFile;
     ArrayList<PowerContainer> powerContainer;
 
     /**
-     * The files are parsed into hashmaps by putting the json key as the key and the value as the value.
+     * An object that stores an origin and all the details about it.
      *
      * @param tag             The origin tag.
-     * @param originLayerFile The origin layer file, parsed into a HashMap.
+     * @param layerFile The origin layer file data.
      * @param originFile      The origin file, parsed into a HashMap.
      * @param powerContainer  An array of powers that the origin has.
      */
-    public OriginContainer(String tag, HashMap<String, Object> originLayerFile, HashMap<String, Object> originFile, ArrayList<PowerContainer> powerContainer) {
+    public OriginContainer(String tag, FileContainer layerFile, HashMap<String, Object> originFile, ArrayList<PowerContainer> powerContainer) {
         this.tag = tag;
-        //this.layer = layer;
-        this.originLayerFile = originLayerFile;
+        this.layerFile = layerFile;
         this.originFile = originFile;
         this.powerContainer = powerContainer;
     }
@@ -40,7 +38,7 @@ public class OriginContainer implements Serializable {
      */
     @Override
     public String toString() {
-        return "Tag: " + this.tag + ", OriginLayerFile: " + this.originLayerFile + ", OriginFile: " + this.originFile + ", PowerContainer: " + this.powerContainer.toString();
+        return "Tag: " + this.tag + ", OriginLayerFile: " + this.layerFile + ", OriginFile: " + this.originFile + ", PowerContainer: " + this.powerContainer.toString();
     }
 
     /**
@@ -53,8 +51,8 @@ public class OriginContainer implements Serializable {
     /**
      * @return The origin layer file parsed into a HashMap.
      */
-    public HashMap<String, Object> getOriginLayerFile() {
-        return new HashMap<String, Object>(this.originLayerFile);
+    public FileContainer getLayerFile() {
+        return this.layerFile;
     }
 
     /**
@@ -152,5 +150,11 @@ public class OriginContainer implements Serializable {
             if (power.getType().equals(powerType)) return power;
         }
         return null;
+    }
+
+    public String getLayerName() {
+        String name = (String) this.layerFile.get("name");
+        if (name == null) return "No layer name found";
+        return name;
     }
 }

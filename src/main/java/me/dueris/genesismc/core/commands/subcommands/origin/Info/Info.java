@@ -1,8 +1,9 @@
-package me.dueris.genesismc.core.commands.subcommands.origin;
+package me.dueris.genesismc.core.commands.subcommands.origin.Info;
 
 import me.dueris.genesismc.core.GenesisMC;
 import me.dueris.genesismc.core.commands.subcommands.SubCommand;
 import me.dueris.genesismc.core.factory.CraftApoli;
+import me.dueris.genesismc.core.utils.LayerContainer;
 import me.dueris.genesismc.core.utils.OriginContainer;
 import me.dueris.genesismc.core.utils.PowerContainer;
 import net.kyori.adventure.text.Component;
@@ -19,6 +20,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -32,8 +34,8 @@ import static me.dueris.genesismc.core.utils.BukkitColour.RED;
 public class Info extends SubCommand implements Listener {
 
     @SuppressWarnings("FieldMayBeFinal")
-    private static HashMap<Player, ArrayList<OriginContainer>> playerOrigins = new HashMap<>();
-    private static final HashMap<Player, Integer> playerPage = new HashMap<>();
+    public static HashMap<Player, ArrayList<OriginContainer>> playerOrigins = new HashMap<>();
+    public static final HashMap<Player, Integer> playerPage = new HashMap<>();
 
     @Override
     public String getName() {
@@ -54,14 +56,15 @@ public class Info extends SubCommand implements Listener {
     public void perform(CommandSender sender, String[] args) {
         if (sender instanceof Player p) {
             if (args.length == 1) {
-                @NotNull Inventory help = Bukkit.createInventory(p, 54, "Info");
-                p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 10, 2);
-                HashMap<String, OriginContainer> origins = CraftApoli.toOriginContainer(p.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "origins"), PersistentDataType.BYTE_ARRAY));
+                HashMap<LayerContainer, OriginContainer> origins = CraftApoli.toOriginContainer(p.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "origins"), PersistentDataType.BYTE_ARRAY));
                 assert origins != null;
                 playerOrigins.put(p, new ArrayList<>(origins.values()));
                 if (!playerPage.containsKey(p)) playerPage.put(p, 0);
+
+                @NotNull Inventory help = Bukkit.createInventory(p, 54, "Info - " + playerOrigins.get(p).get(playerPage.get(p)).getLayerName());
                 help.setContents(infoMenu(p, playerPage.get(p)));
                 p.openInventory(help);
+                p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 10, 2);
             }
         } else
             sender.sendMessage(Component.text("You must be a player to use this command!").color(TextColor.fromHexString(RED)));
@@ -189,13 +192,13 @@ public class Info extends SubCommand implements Listener {
 
     @EventHandler
     public void stopStealingInfo(InventoryClickEvent e) {
-        if (e.getView().getTitle().equalsIgnoreCase("Info")) e.setCancelled(true);
+        if (e.getView().getTitle().startsWith("Info")) e.setCancelled(true);
     }
 
     @EventHandler
     public void onMenuExitInfo(InventoryClickEvent e) {
         if (e.getCurrentItem() == null) return;
-        if (e.getView().getTitle().equalsIgnoreCase("Info")) {
+        if (e.getView().getTitle().startsWith("Info")) {
             if (e.getCurrentItem().getType() == Material.BARRIER || e.getCurrentItem().getType() == Material.SPECTRAL_ARROW) {
                 Player p = (Player) e.getWhoClicked();
                 p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 10, 9);
@@ -209,9 +212,13 @@ public class Info extends SubCommand implements Listener {
         ItemStack item = e.getCurrentItem();
         Player player = (Player) e.getWhoClicked();
         if (item == null) return;
-        if (!e.getView().getTitle().equalsIgnoreCase("Info")) return;
-        if (item.getType() != Material.ARROW && (item.getItemMeta().getDisplayName().equals("Back") || item.getItemMeta().getDisplayName().equals("Next"))) {
-            @NotNull Inventory info = Bukkit.createInventory(player, 54, "Info");
+        if (!e.getView().getTitle().startsWith("Info")) return;
+        if (item.getType() == Material.ARROW && (item.getItemMeta().getDisplayName().equals("Back") || item.getItemMeta().getDisplayName().equals("Next"))) {
+
+            if (item.getItemMeta().getDisplayName().equals("Back") && playerPage.get(player) > 0) playerPage.put(player, playerPage.get(player)-1);
+            if (item.getItemMeta().getDisplayName().equals("Next") && playerPage.get(player) <= playerOrigins.get(player).size()) playerPage.put(player, playerPage.get(player)+1);
+
+            @NotNull Inventory info = Bukkit.createInventory(player, 54, "Info - " + playerOrigins.get(player).get(playerPage.get(player)).getLayerName());
             info.setContents(infoMenu(player, item.getItemMeta().getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "page"), PersistentDataType.INTEGER)));
             player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 10, 2);
             player.closeInventory();
@@ -220,5 +227,4 @@ public class Info extends SubCommand implements Listener {
 
 
     }
-
 }

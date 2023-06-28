@@ -13,7 +13,7 @@ public class PowerContainer implements Serializable {
     @Serial
     private static final long serialVersionUID = 2L;
     String powerTag;
-    PowerFileContainer powerFile;
+    FileContainer powerFile;
     String powerSource;
 
     /**
@@ -21,7 +21,7 @@ public class PowerContainer implements Serializable {
      * @param powerFile   The data within a power file.
      * @param powerSource What applied the power to the origin.
      */
-    public PowerContainer(String powerTag, PowerFileContainer powerFile, String powerSource) {
+    public PowerContainer(String powerTag, FileContainer powerFile, String powerSource) {
         this.powerTag = powerTag;
         this.powerFile = powerFile;
         this.powerSource = powerSource;
@@ -34,12 +34,12 @@ public class PowerContainer implements Serializable {
         return this.powerTag;
     }
 
-    /**
-     * @return The power file.
-     */
-    public PowerFileContainer getFile() {
-        return this.powerFile;
-    }
+//    /**
+//     * @return The power file.
+//     */
+//    public FileContainer getFile() {
+//        return this.powerFile;
+//    }
 
     /**
      * @return The source of the power.
