@@ -18,22 +18,22 @@ public class EntityCondition {
                 }
             }
             if(entity_con_type.equalsIgnoreCase("origins:ability")){
-                try{
-                    String ability = origin.getPowerFileFromType(powerfile).getEntityConditionFromAnywhere().get("ability").toString();
-                    if(ability.equalsIgnoreCase("minecraft:flying")){
-                        if(entity instanceof Player){
-                            return ((Player) entity).isGliding() || ((Player) entity).isFlying();
-                        }
-
-                    }
-                    if(ability.equalsIgnoreCase("instabuild")){
-                        if(entity instanceof Player){
-                            Player player = (Player) entity;
-                        }
-                    }
-                }catch (Exception e){
-                    return false;
-                }
+//                try{
+//                    String ability = origin.getPowerFileFromType(powerfile).getEntityConditionFromAnywhere().get("ability").toString();
+//                    if(ability.equalsIgnoreCase("minecraft:flying")){
+//                        if(entity instanceof Player){
+//                            return ((Player) entity).isGliding() || ((Player) entity).isFlying();
+//                        }
+//
+//                    }
+//                    if(ability.equalsIgnoreCase("instabuild")){
+//                        if(entity instanceof Player){
+//                            Player player = (Player) entity;
+//                        }
+//                    }
+//                }catch (Exception e){
+//                    return false;
+//                }
 
             }
         }catch (Exception e){
