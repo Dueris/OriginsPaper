@@ -3,6 +3,7 @@ package me.dueris.genesismc.core.commands.subcommands.origin;
 import me.dueris.genesismc.core.commands.PlayerSelector;
 import me.dueris.genesismc.core.commands.subcommands.SubCommand;
 import me.dueris.genesismc.core.entity.OriginPlayer;
+import me.dueris.genesismc.core.factory.CraftApoli;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.command.CommandSender;
@@ -43,7 +44,7 @@ public class Get extends SubCommand {
         ArrayList<Player> players = PlayerSelector.playerSelector(sender, args[1]);
         if (players.size() == 0) return;
         for (Player p : players)
-            sender.sendMessage(Component.text(p.getName() + " has the following " + args[2] + " : " + OriginPlayer.getOrigin(p, args[2]).getTag()));
+            sender.sendMessage(Component.text(p.getName() + " has the following " + args[2] + " : " + OriginPlayer.getOrigin(p, CraftApoli.getLayerFromTag(args[2])).getTag()));
 
     }
 }

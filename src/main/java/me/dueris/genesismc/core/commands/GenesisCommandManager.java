@@ -2,6 +2,7 @@ package me.dueris.genesismc.core.commands;
 
 import me.dueris.genesismc.core.commands.subcommands.SubCommand;
 import me.dueris.genesismc.core.commands.subcommands.origin.*;
+import me.dueris.genesismc.core.commands.subcommands.origin.Info.Info;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.command.Command;

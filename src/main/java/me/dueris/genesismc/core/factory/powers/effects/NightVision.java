@@ -1,6 +1,7 @@
 package me.dueris.genesismc.core.factory.powers.effects;
 
 import me.dueris.genesismc.core.entity.OriginPlayer;
+import me.dueris.genesismc.core.utils.LayerContainer;
 import me.dueris.genesismc.core.utils.OriginContainer;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -17,9 +18,9 @@ public class NightVision extends BukkitRunnable {
     @Override
     public void run() {
         for (Player p : Bukkit.getOnlinePlayers()) {
-            HashMap<String, OriginContainer> origins = OriginPlayer.getOrigin(p);
-            Set<String> layers = origins.keySet();
-            for (String layer : layers) {
+            HashMap<LayerContainer, OriginContainer> origins = OriginPlayer.getOrigin(p);
+            Set<LayerContainer> layers = origins.keySet();
+            for (LayerContainer layer : layers) {
                 if (night_vision.contains(p)) {
                     Long strength = OriginPlayer.getOrigin(p, layer).getPowerFileFromType("origins:night_vision").getStrength();
                     p.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, 400, Math.toIntExact(strength), false, false, false));

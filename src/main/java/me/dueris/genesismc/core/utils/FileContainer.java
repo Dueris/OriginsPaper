@@ -4,7 +4,7 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-public class PowerFileContainer implements Serializable {
+public class FileContainer implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 3L;
@@ -12,7 +12,7 @@ public class PowerFileContainer implements Serializable {
     ArrayList<String> keys;
     ArrayList<Object> values;
 
-    public PowerFileContainer(ArrayList<String> keys, ArrayList<Object> values) {
+    public FileContainer(ArrayList<String> keys, ArrayList<Object> values) {
         this.keys = keys;
         this.values = values;
     }

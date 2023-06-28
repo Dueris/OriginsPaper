@@ -51,7 +51,7 @@ public class Set extends SubCommand {
             ArrayList<Player> players = PlayerSelector.playerSelector(sender, args[1]);
             if (players.size() == 0) return;
 
-            if (!CraftApoli.getLayers().contains(args[2])) {
+            if (!CraftApoli.getLayers().contains(CraftApoli.getLayerFromTag(args[2]))) {
                 sender.sendMessage(Component.text("Invalid layer!").color(TextColor.fromHexString(RED)));
                 return;
             }
@@ -63,7 +63,7 @@ public class Set extends SubCommand {
             }
 
             for (Player p : players) {
-                OriginPlayer.setOrigin(p, args[2], CraftApoli.getOrigin(originTag));
+                OriginPlayer.setOrigin(p, CraftApoli.getLayerFromTag(args[2]), CraftApoli.getOrigin(originTag));
                 OriginPlayer.resetOriginData(p, OriginDataType.IN_PHANTOMIZED_FORM);
                 OriginChangeEvent originChangeEvent = new OriginChangeEvent(p);
                 getServer().getPluginManager().callEvent(originChangeEvent);

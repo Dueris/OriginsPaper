@@ -3,8 +3,12 @@ package me.dueris.genesismc.core.choosing;
 import me.dueris.genesismc.core.GenesisMC;
 import me.dueris.genesismc.core.entity.OriginPlayer;
 import me.dueris.genesismc.core.events.OrbInteractEvent;
+import me.dueris.genesismc.core.events.OriginChangeEvent;
+import me.dueris.genesismc.core.events.OriginChooseEvent;
 import me.dueris.genesismc.core.factory.CraftApoli;
 import me.dueris.genesismc.core.files.GenesisDataFiles;
+import me.dueris.genesismc.core.items.OrbOfOrigins;
+import me.dueris.genesismc.core.utils.LayerContainer;
 import me.dueris.genesismc.core.utils.OriginContainer;
 import me.dueris.genesismc.core.utils.SendCharts;
 import net.kyori.adventure.text.Component;
@@ -23,20 +27,20 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.tags.ItemTagType;
-import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 import static me.dueris.genesismc.core.choosing.contents.MainMenuContents.GenesisMainMenuContents;
+import static me.dueris.genesismc.core.items.OrbOfOrigins.orb;
 import static me.dueris.genesismc.core.utils.BukkitColour.AQUA;
 import static org.bukkit.Bukkit.getServer;
 import static org.bukkit.ChatColor.GRAY;
 
 public class ChoosingCORE implements Listener {
+
+    public static HashMap<Player, LayerContainer> choosing = new HashMap<>();
 
     public static void setAttributesToDefault(Player p) {
         p.getAttribute(Attribute.GENERIC_ARMOR).setBaseValue(0);
@@ -129,19 +133,11 @@ public class ChoosingCORE implements Listener {
                 meta.getCustomTagContainer().setCustomTag(new NamespacedKey(GenesisMC.getPlugin(), "origins"), ItemTagType.STRING, "orb_of_origin");
                 meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
                 item.setItemMeta(meta);
-                PersistentDataContainer data = p.getPersistentDataContainer();
-                int phantomid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER);
-                if (phantomid == 1) ;
-                if (e.getItem() != null && e.getItem().getType() != null) {
+                if (e.getItem() != null) {
                     if (e.getItem().isSimilar(item)) {
-
-                        @NotNull Inventory mainmenu = Bukkit.createInventory(e.getPlayer(), 54, "Choosing Menu");
-                        mainmenu.setContents(GenesisMainMenuContents(e.getPlayer()));
-                        e.getPlayer().openInventory(mainmenu);
-
+                        for (LayerContainer layer : CraftApoli.getLayers()) OriginPlayer.setOrigin(p, layer, CraftApoli.nullOrigin());
                         OrbInteractEvent event = new OrbInteractEvent(p);
                         getServer().getPluginManager().callEvent(event);
-
                     }
                 }
             }
@@ -150,30 +146,16 @@ public class ChoosingCORE implements Listener {
 
     @EventHandler
     public void OnInteractCancel(InventoryClickEvent e) {
-
         if (e.getCurrentItem() != null) {
-            if (e.getView().getTitle().equalsIgnoreCase("Choosing Menu")) {
+            if (e.getView().getTitle().startsWith("Custom Origins")) {
                 if (e.getCurrentItem().getType().equals(Material.SPECTRAL_ARROW)) {
                     Player p = (Player) e.getWhoClicked();
                     p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 10, 2);
-                    e.getClickedInventory().setContents(GenesisMainMenuContents((Player) e.getWhoClicked()));
-                    e.setCancelled(true);
-                } else {
-                    e.setCancelled(true);
+                    @NotNull Inventory mainmenu = Bukkit.createInventory(e.getWhoClicked(), 54, "Choosing Menu - "+choosing.get(p));
+                    mainmenu.setContents(GenesisMainMenuContents((Player) e.getWhoClicked()));
+                    e.getWhoClicked().openInventory(mainmenu);
                 }
-
-
-            } else {
-                if (e.getView().getTitle().equalsIgnoreCase("Custom Origins")) {
-                    if (e.getCurrentItem().getType().equals(Material.SPECTRAL_ARROW)) {
-                        Player p = (Player) e.getWhoClicked();
-                        p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 10, 2);
-                        @NotNull Inventory mainmenu = Bukkit.createInventory(e.getWhoClicked(), 54, "Choosing Menu");
-                        mainmenu.setContents(GenesisMainMenuContents((Player) e.getWhoClicked()));
-                        e.getWhoClicked().openInventory(mainmenu);
-                    }
-                    e.setCancelled(true);
-                }
+                e.setCancelled(true);
             }
         }
     }
@@ -181,7 +163,7 @@ public class ChoosingCORE implements Listener {
     @EventHandler
     public void onMenuClose(InventoryClickEvent e) {
         if (e.getCurrentItem() != null) {
-            if (e.getView().getTitle().equalsIgnoreCase("Choosing Menu")) {
+            if (e.getView().getTitle().startsWith("Choosing Menu")) {
                 if (e.getCurrentItem().getType().equals(Material.BARRIER)) {
                     Player p = (Player) e.getWhoClicked();
                     p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 10, 2);
@@ -199,18 +181,18 @@ public class ChoosingCORE implements Listener {
     public void onOrbRandom(InventoryClickEvent e) {
         if (e.getCurrentItem() == null) return;
         if (e.getCurrentItem().getItemMeta() == null) return;
-        if (e.getView().getTitle().equalsIgnoreCase("Choosing Menu")) {
+        if (e.getView().getTitle().startsWith("Choosing Menu")) {
             NamespacedKey key = new NamespacedKey(GenesisMC.getPlugin(), "orb");
             if (e.getCurrentItem().getItemMeta().getPersistentDataContainer().get(key, PersistentDataType.STRING) == null)
                 return;
-            if (e.getCurrentItem().getItemMeta().getPersistentDataContainer().get(key, PersistentDataType.STRING) != "orb")
+            if (!Objects.equals(e.getCurrentItem().getItemMeta().getPersistentDataContainer().get(key, PersistentDataType.STRING), "orb"))
                 return;
 
             Player p = (Player) e.getWhoClicked();
             ArrayList<OriginContainer> origins = CraftApoli.getOrigins();
-            ArrayList<String> layers = CraftApoli.getLayers();
+            ArrayList<LayerContainer> layers = CraftApoli.getLayers();
             Random random = new Random();
-            for (String layer : layers) {
+            for (LayerContainer layer : layers) {
                 OriginContainer origin = origins.get(random.nextInt(origins.size()));
                 OriginPlayer.setOrigin(p, layer, origin);
                 p.sendMessage(Component.text("Your random origin(s) are " + layer + " : " + origin.getName() + "!").color(TextColor.fromHexString(AQUA)));
@@ -219,7 +201,28 @@ public class ChoosingCORE implements Listener {
             e.setCancelled(true);
             p.closeInventory();
 
-            DefaultChoose.DefaultChoose(p);
+            p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 10, 2);
+            p.closeInventory();
+            p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_CHIME, 10, 2);
+            p.spawnParticle(Particle.CLOUD, p.getLocation(), 100);
+            p.getWorld().spawnParticle(Particle.FIREWORKS_SPARK, p.getLocation(), 6);
+            p.setCustomNameVisible(false);
+            p.setHealthScaled(false);
+
+            OriginChooseEvent chooseEvent = new OriginChooseEvent(p);
+            getServer().getPluginManager().callEvent(chooseEvent);
+            OriginChangeEvent Event = new OriginChangeEvent(p);
+            getServer().getPluginManager().callEvent(Event);
+
+            if (p.getInventory().getItemInMainHand().isSimilar(OrbOfOrigins.orb) && !OriginPlayer.hasOrigin(p, CraftApoli.nullOrigin().getTag())) {
+                int amt = p.getInventory().getItemInMainHand().getAmount();
+                p.getInventory().getItemInMainHand().setAmount(amt - 1);
+            } else {
+                if (p.getInventory().getItemInOffHand().isSimilar(orb) && !OriginPlayer.hasOrigin(p, CraftApoli.nullOrigin().getTag())) {
+                    int amt = p.getInventory().getItemInOffHand().getAmount();
+                    p.getInventory().getItemInOffHand().setAmount(amt - 1);
+                }
+            }
 
             SendCharts.originPopularity(p);
         }

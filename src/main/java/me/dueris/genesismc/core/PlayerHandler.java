@@ -2,6 +2,7 @@ package me.dueris.genesismc.core;
 
 import me.dueris.genesismc.core.entity.OriginPlayer;
 import me.dueris.genesismc.core.factory.CraftApoli;
+import me.dueris.genesismc.core.utils.LayerContainer;
 import me.dueris.genesismc.core.utils.OriginContainer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
@@ -21,7 +22,6 @@ import org.geysermc.geyser.api.GeyserApi;
 import java.io.ByteArrayInputStream;
 import java.io.ObjectInput;
 import java.io.ObjectInputStream;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -30,25 +30,28 @@ import static me.dueris.genesismc.core.utils.BukkitColour.AQUA;
 import static me.dueris.genesismc.core.utils.BukkitColour.RED;
 import static org.bukkit.Bukkit.getServer;
 
-public class JoiningHandler implements Listener {
+public class PlayerHandler implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
-    public void playerJoinHandler(PlayerJoinEvent e) {
+    public void playerJoin(PlayerJoinEvent e) {
         Player p = e.getPlayer();
         p.setMaximumAir(300);
 
-        // ---  translation system ---
-        if (!p.getPersistentDataContainer().has(new NamespacedKey(GenesisMC.getPlugin(), "origins"), PersistentDataType.BYTE_ARRAY)) {
-            p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origins"), PersistentDataType.BYTE_ARRAY, CraftApoli.toByteArray(new HashMap<>(Map.of("origins:origin", CraftApoli.nullOrigin()))));
+        //set origins to null if none present
+        if (p.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "origins"), PersistentDataType.BYTE_ARRAY) == null) {
+            HashMap<LayerContainer, OriginContainer> origins = new HashMap<>();
+            for (LayerContainer layer : CraftApoli.getLayers()) origins.put(layer, CraftApoli.nullOrigin());
+            p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origins"), PersistentDataType.BYTE_ARRAY, CraftApoli.toByteArray(origins));
         }
 
+        // ---  translation system ---
         String originTag = p.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "originTag"), PersistentDataType.STRING);
         if (originTag != null) {
             for (OriginContainer origin : CraftApoli.getOrigins()) {
                 if (("origin-" + (origin.getTag().substring(8))).equals(originTag.substring(8)))
-                    p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origins"), PersistentDataType.BYTE_ARRAY, CraftApoli.toByteArray(new HashMap<>(Map.of("origins:origin", origin))));
+                    p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origins"), PersistentDataType.BYTE_ARRAY, CraftApoli.toByteArray(new HashMap<>(Map.of(CraftApoli.getLayerFromTag("origins:origin"), origin))));
             }
         } else if (!p.getPersistentDataContainer().has(new NamespacedKey(GenesisMC.getPlugin(), "origins"), PersistentDataType.BYTE_ARRAY)) {
-            p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origins"), PersistentDataType.BYTE_ARRAY, CraftApoli.toByteArray(new HashMap<>(Map.of("origins:origin", CraftApoli.nullOrigin()))));
+            p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origins"), PersistentDataType.BYTE_ARRAY, CraftApoli.toByteArray(new HashMap<>(Map.of(CraftApoli.getLayerFromTag("origins:origin"), CraftApoli.nullOrigin()))));
         }
 
         if (p.getPersistentDataContainer().has(new NamespacedKey(GenesisMC.getPlugin(), "origin"), PersistentDataType.BYTE_ARRAY)) {
@@ -56,13 +59,7 @@ public class JoiningHandler implements Listener {
             try {
                 ObjectInput oi = new ObjectInputStream(bis);
                 OriginContainer origin = (OriginContainer) oi.readObject();
-                HashMap<String, OriginContainer> origins = new HashMap<>();
-                ArrayList<String> layers = CraftApoli.getLayers();
-                p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origins"), PersistentDataType.BYTE_ARRAY, CraftApoli.toByteArray(new HashMap<>(Map.of(layers.get(0), origin))));
-                layers.remove(0);
-                if (layers.size() > 1) {
-                    for (String layer : layers) origins.put(layer, CraftApoli.nullOrigin());
-                }
+                p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origins"), PersistentDataType.BYTE_ARRAY, CraftApoli.toByteArray(new HashMap<>(Map.of(CraftApoli.getLayerFromTag("origins:origin"), origin))));
             } catch (Exception er) {
                 Bukkit.getLogger().warning("[GenesisMC] Error converting old origin container");
             }
@@ -72,7 +69,6 @@ public class JoiningHandler implements Listener {
         if (p.getClientBrandName() != null && p.getClientBrandName().equalsIgnoreCase("Immersions")) {
             p.setDisplayName(AQUA + p.getName());
             p.setPlayerListName(AQUA + p.getName());
-
         }
 
         if (p.getScoreboardTags().contains("texture_pack")) {
@@ -113,11 +109,10 @@ public class JoiningHandler implements Listener {
             }
         }
 
-        customOriginExistCheck(e.getPlayer());
-        OriginPlayer.assignPowers(e.getPlayer());
+        customOriginExistCheck(p);
+        OriginPlayer.assignPowers(p);
 
-
-        p.sendMessage(Component.text("GenesisMC is still in alpha, if you notice any inconsistencies or variations from the origins mod please use the /origin bug command to inform us about the issue!").color(TextColor.fromHexString(AQUA)));
+        p.sendMessage(Component.text("GenesisMC is in beta and still has lots of bugs, use /origin bug and notify us about any issues!").color(TextColor.fromHexString(AQUA)));
 
     }
 
@@ -128,12 +123,12 @@ public class JoiningHandler implements Listener {
 
 
     public static void customOriginExistCheck(Player p) {
-        HashMap<String, OriginContainer> origins = OriginPlayer.getOrigin(p);
+        HashMap<LayerContainer, OriginContainer> origins = OriginPlayer.getOrigin(p);
         for (OriginContainer origin : origins.values()) {
-            if (origin.getTag().equals(new CraftApoli().nullOrigin().getTag())) continue;
+            if (origin.getTag().equals(CraftApoli.nullOrigin().getTag())) continue;
             if (CraftApoli.getOriginTags().contains(origin.getTag())) continue;
             NamespacedKey key = new NamespacedKey(GenesisMC.getPlugin(), "origins");
-            HashMap<String, OriginContainer> playerOrigins = CraftApoli.toOriginContainer(p.getPersistentDataContainer().get(key, PersistentDataType.BYTE_ARRAY));
+            HashMap<LayerContainer, OriginContainer> playerOrigins = CraftApoli.toOriginContainer(p.getPersistentDataContainer().get(key, PersistentDataType.BYTE_ARRAY));
             playerOrigins.replace(OriginPlayer.getLayer(p, origin), CraftApoli.nullOrigin());
             p.getPersistentDataContainer().set(key, PersistentDataType.BYTE_ARRAY, CraftApoli.toByteArray(playerOrigins));
             p.sendMessage(Component.text("Your origin has been removed! Please select a new one.").color(TextColor.fromHexString(RED)));

@@ -55,12 +55,12 @@ public class ChoosingCUSTOM implements Listener {
     }
 
     @EventHandler(priority = EventPriority.HIGH)
-    public void CUSOTMCHOOSE_MENU(InventoryClickEvent e) {
+    public void CustomOriginMenu(InventoryClickEvent e) {
         if (e.getCurrentItem() != null) {
-            if (e.getView().getTitle().equalsIgnoreCase("Choosing Menu")) {
-                @NotNull Inventory custommenu = Bukkit.createInventory(e.getWhoClicked(), 54, "Custom Origins");
+            if (e.getView().getTitle().startsWith("Choosing Menu")) {
+                Player p = (Player) e.getWhoClicked();
+                @NotNull Inventory custommenu = Bukkit.createInventory(e.getWhoClicked(), 54, "Custom Origins - "+choosing.get(p).getName());
                 if (e.getCurrentItem().getType().equals(Material.TIPPED_ARROW)) {
-                    Player p = (Player) e.getWhoClicked();
                     p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 10, 2);
                     custommenu.setContents(ChooseMenuContent(0));
                     e.getWhoClicked().openInventory(custommenu);
@@ -75,11 +75,13 @@ public class ChoosingCUSTOM implements Listener {
         if (e.getCurrentItem() != null) {
             if (e.getCurrentItem().getItemMeta() == null) return;
             NamespacedKey key = new NamespacedKey(GenesisMC.getPlugin(), "originTag");
-            if (e.getCurrentItem().getItemMeta().getPersistentDataContainer().get(key, PersistentDataType.STRING) != null) {
-                @NotNull Inventory custommenu = Bukkit.createInventory(e.getWhoClicked(), 54, "Origin");
+            if (e.getCurrentItem().getItemMeta().getPersistentDataContainer().get(key, PersistentDataType.STRING) != null && !e.getView().getTitle().startsWith("Origin")) {
+                Player p = (Player) e.getWhoClicked();
+                @NotNull Inventory custommenu = Bukkit.createInventory(e.getWhoClicked(), 54, "Origin - "+choosing.get(p).getName());
                 String originTag = e.getCurrentItem().getItemMeta().getPersistentDataContainer().get(key, PersistentDataType.STRING);
                 if (originTag == null) return;
 
+                //gets the origin container from the tag
                 OriginContainer origin = null;
                 for (OriginContainer origins : CraftApoli.getOrigins()) {
                     if (origins.getTag().equals(originTag)) {
@@ -88,7 +90,6 @@ public class ChoosingCUSTOM implements Listener {
                     }
                 }
 
-                Player p = (Player) e.getWhoClicked();
                 p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 10, 2);
 
                 ArrayList<PowerContainer> powerContainers = origin.getPowerContainers();
@@ -196,25 +197,23 @@ public class ChoosingCUSTOM implements Listener {
     }
 
     @EventHandler(priority = EventPriority.HIGH)
-    public void OriginSelect(InventoryClickEvent e) {
+    public void OriginChoose(InventoryClickEvent e) {
         if (e.getCurrentItem() != null) {
             if (e.getCurrentItem().getType() == Material.MAGMA_CREAM) return;
             if (e.getCurrentItem().getItemMeta() == null) return;
+
             NamespacedKey chooseKey = new NamespacedKey(GenesisMC.getPlugin(), "originChoose");
             if (e.getCurrentItem().getItemMeta().getPersistentDataContainer().get(chooseKey, PersistentDataType.INTEGER) != null) {
                 NamespacedKey key = new NamespacedKey(GenesisMC.getPlugin(), "originTag");
                 String originTag = e.getCurrentItem().getItemMeta().getPersistentDataContainer().get(key, PersistentDataType.STRING);
                 OriginContainer origin = CraftApoli.getOrigin(originTag);
                 Player p = (Player) e.getWhoClicked();
-                if (origin == null) {
-                    p.sendMessage(Component.text("This origin is null ¯\\_(ツ)_/¯"));
-                    return;
-                }
+                assert origin != null;
+
                 setAttributesToDefault(p);
+                OriginPlayer.setOrigin(p, choosing.get(p), origin);
+                choosing.remove(p);
                 Bukkit.getScheduler().runTaskLater(GenesisMC.getPlugin(), () -> {
-                    OriginPlayer.unassignPowers(p, "origins:origin");
-                    OriginPlayer.setOrigin(p, "origins:origin", origin);
-                    OriginPlayer.assignPowers(p, "origins:origin");
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
                     DefaultChoose.DefaultChoose(p);
@@ -266,7 +265,7 @@ public class ChoosingCUSTOM implements Listener {
     @EventHandler
     public void OriginBack(InventoryClickEvent e) {
         if (e.getCurrentItem() != null) {
-            if (e.getView().getTitle().equalsIgnoreCase("Origin")) {
+            if (e.getView().getTitle().startsWith("Origin")) {
                 if (e.getCurrentItem().getType().equals(Material.SPECTRAL_ARROW)) {
                     Player p = (Player) e.getWhoClicked();
                     p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 10, 2);
@@ -274,14 +273,14 @@ public class ChoosingCUSTOM implements Listener {
 
                     for (OriginContainer origin : CraftApoli.getCoreOrigins()) {
                         if (Objects.equals(e.getClickedInventory().getContents()[13].getItemMeta().getPersistentDataContainer().get(key, PersistentDataType.STRING), origin.getTag())) {
-                            @NotNull Inventory mainmenu = Bukkit.createInventory(e.getWhoClicked(), 54, "Choosing Menu");
+                            @NotNull Inventory mainmenu = Bukkit.createInventory(e.getWhoClicked(), 54, "Choosing Menu - "+choosing.get(p).getName());
                             mainmenu.setContents(GenesisMainMenuContents((Player) e.getWhoClicked()));
                             e.getWhoClicked().openInventory(mainmenu);
                             return;
                         }
                     }
 
-                    @NotNull Inventory custommenu = Bukkit.createInventory(e.getWhoClicked(), 54, "Custom Origins");
+                    @NotNull Inventory custommenu = Bukkit.createInventory(e.getWhoClicked(), 54, "Custom Origins - "+choosing.get(p).getName());
                     custommenu.setContents(ChooseMenuContent(0));
                     e.getWhoClicked().openInventory(custommenu);
                 } else e.setCancelled(true);
@@ -292,7 +291,7 @@ public class ChoosingCUSTOM implements Listener {
     @EventHandler
     public void OriginClose(InventoryClickEvent e) {
         if (e.getCurrentItem() != null) {
-            if (e.getView().getTitle().equalsIgnoreCase("Origin")) {
+            if (e.getView().getTitle().startsWith("Origin")) {
                 if (e.getCurrentItem().getType().equals(Material.BARRIER)) {
                     Player p = (Player) e.getWhoClicked();
                     p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 10, 2);
@@ -307,13 +306,13 @@ public class ChoosingCUSTOM implements Listener {
     @EventHandler
     public void scroll(InventoryClickEvent e) {
         if (e.getCurrentItem() != null) {
-            if (e.getView().getTitle().equalsIgnoreCase("Custom Origins")) {
+            if (e.getView().getTitle().startsWith("Custom Origins")) {
                 ItemStack item = e.getCurrentItem();
                 if (item.getType().equals(Material.ARROW) && (e.getCurrentItem().getItemMeta().getDisplayName().equals("Back") || e.getCurrentItem().getItemMeta().getDisplayName().equals("Next"))) {
-                    @NotNull Inventory custommenu = Bukkit.createInventory(e.getWhoClicked(), 54, "Custom Origins");
+                    Player p = (Player) e.getWhoClicked();
+                    @NotNull Inventory custommenu = Bukkit.createInventory(e.getWhoClicked(), 54, "Custom Origins - "+choosing.get(p).getName());
                     NamespacedKey key = new NamespacedKey(GenesisMC.getPlugin(), "page");
                     custommenu.setContents(ChooseMenuContent(item.getItemMeta().getPersistentDataContainer().get(key, PersistentDataType.INTEGER)));
-                    Player p = (Player) e.getWhoClicked();
                     p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 10, 2);
                     e.getWhoClicked().closeInventory();
                     e.getWhoClicked().openInventory(custommenu);

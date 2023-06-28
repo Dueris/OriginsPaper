@@ -139,18 +139,18 @@ public class MainMenuContents {
 
         ItemStack randomOrb = itemProperties(orb.clone(), LIGHT_PURPLE + "Random", null, null, null);
         NamespacedKey key = new NamespacedKey(GenesisMC.getPlugin(), "orb");
-        ItemMeta randomOrbmeta = randomOrb.getItemMeta();
-        randomOrbmeta.getPersistentDataContainer().set(key, PersistentDataType.STRING, "orb");
-        randomOrb.setItemMeta(randomOrbmeta);
+        ItemMeta randomOrbMeta = randomOrb.getItemMeta();
+        randomOrbMeta.getPersistentDataContainer().set(key, PersistentDataType.STRING, "orb");
+        randomOrb.setItemMeta(randomOrbMeta);
 
-        ItemStack[] mainmenucontents = {avian, arachnid, elytrian, shulk, feline, enderian, merling, blazeborn, phantom,
+        ItemStack[] mainMenuContents = {avian, arachnid, elytrian, shulk, feline, enderian, merling, blazeborn, phantom,
                 background, background, background, background, human, background, background, background, background,
                 filler, filler, filler, filler, filler, filler, filler, filler, filler,
                 starborne, allay, rabbit, bumblebee, background, sculkling, creep, slimeling, piglin,
                 background, background, background, background, background, background, background, background, background,
                 filler, filler, filler, randomOrb, close, custom_originmenu, filler, filler, filler};
 
-        return mainmenucontents;
+        return mainMenuContents;
 
     }
 

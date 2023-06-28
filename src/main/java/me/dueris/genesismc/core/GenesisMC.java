@@ -6,7 +6,8 @@ import me.dueris.genesismc.core.choosing.ChoosingForced;
 import me.dueris.genesismc.core.commands.GenesisCommandManager;
 import me.dueris.genesismc.core.commands.TabAutoComplete;
 import me.dueris.genesismc.core.commands.ToggleCommand;
-import me.dueris.genesismc.core.commands.subcommands.origin.Info;
+import me.dueris.genesismc.core.commands.subcommands.origin.Info.InInfoCheck;
+import me.dueris.genesismc.core.commands.subcommands.origin.Info.Info;
 import me.dueris.genesismc.core.commands.subcommands.origin.Recipe;
 import me.dueris.genesismc.core.enchantments.EnchantProtEvent;
 import me.dueris.genesismc.core.enchantments.WaterProtAnvil;
@@ -145,14 +146,14 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 
 
         getServer().getPluginManager().registerEvents(this, this);
-//Commands
+    //Commands
         getCommand("origin").setExecutor(new GenesisCommandManager());
         getCommand("origin").setTabCompleter(new TabAutoComplete());
         getCommand("shulker").setTabCompleter(new TabAutoComplete());
         getCommand("shulker").setExecutor(new ShulkInv());
         getCommand("toggle").setExecutor(new ToggleCommand());
-//Event Handler Register
-        getServer().getPluginManager().registerEvents(new JoiningHandler(), this);
+    //Event Handler Register
+        getServer().getPluginManager().registerEvents(new PlayerHandler(), this);
         getServer().getPluginManager().registerEvents(new EnchantProtEvent(), this);
         getServer().getPluginManager().registerEvents(new WaterProtAnvil(), this);
         getServer().getPluginManager().registerEvents(new PlayerAddScoreboard(), this);
@@ -179,26 +180,30 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         }.runTaskTimer(GenesisMC.getPlugin(), 130L, 1L);
         plugin = this;
 
-//origin start begin
 
         OrbOfOrigins.init();
         InfinPearl.init();
         WaterProtItem.init();
 
+        //runnables
         ChoosingForced forced = new ChoosingForced();
         forced.runTaskTimer(this, 0, 2);
+
         Items items = new Items();
         items.runTaskTimer(this, 0, 5);
 
         PowerStartHandler.StartRunnables();
         PowerStartHandler.StartListeners();
 
-        //particle handler
         ParticleHandler handler = new ParticleHandler();
         handler.runTaskTimer(this, 0, 5);
-        //scoreboard
+
         ScoreboardRunnable scorebo = new ScoreboardRunnable();
         scorebo.runTaskTimer(this, 0, 5);
+
+        InInfoCheck info = new InInfoCheck();
+        info.runTaskTimer(this, 0, 5);
+
 
         //enchantments
         waterProtectionEnchant = new WaterProtection("waterprot");
@@ -209,7 +214,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 
 
         for (Player p : Bukkit.getOnlinePlayers()) {
-            JoiningHandler.customOriginExistCheck(p);
+            PlayerHandler.customOriginExistCheck(p);
             OriginPlayer.assignPowers(p);
             if (p.isOp()) p.sendMessage(Component.text("Origins Reloaded.").color(TextColor.fromHexString(AQUA)));
         }

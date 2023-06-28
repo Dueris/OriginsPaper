@@ -21,15 +21,10 @@ import static me.dueris.genesismc.core.choosing.ChoosingCUSTOM.cutStringIntoList
 public class ChooseMenuContents {
 
     public static @Nullable ItemStack @NotNull [] ChooseMenuContent(int pageNumber) {
-        ItemStack sides = new ItemStack(Material.BLACK_STAINED_GLASS_PANE);
-        ItemStack back = new ItemStack(Material.ARROW);
-        ItemStack next = new ItemStack(Material.ARROW);
-        ItemStack menu = new ItemStack(Material.SPECTRAL_ARROW);
-
-        sides = itemProperties(sides, "", ItemFlag.HIDE_ENCHANTS, null, null);
-        menu = itemProperties(menu, ChatColor.AQUA + "Return", ItemFlag.HIDE_ENCHANTS, null, null);
-        back = itemProperties(back, "Back", ItemFlag.HIDE_ENCHANTS, null, null);
-        next = itemProperties(next, "Next", ItemFlag.HIDE_ENCHANTS, null, null);
+        ItemStack sides = itemProperties(new ItemStack(Material.BLACK_STAINED_GLASS_PANE), "", ItemFlag.HIDE_ENCHANTS, null, null);
+        ItemStack menu = itemProperties(new ItemStack(Material.SPECTRAL_ARROW), ChatColor.AQUA + "Return", ItemFlag.HIDE_ENCHANTS, null, null);
+        ItemStack back = itemProperties(new ItemStack(Material.ARROW), "Back", ItemFlag.HIDE_ENCHANTS, null, null);
+        ItemStack next = itemProperties(new ItemStack(Material.ARROW), "Next", ItemFlag.HIDE_ENCHANTS, null, null);
 
         ArrayList<ItemStack> contents = new ArrayList<>();
         ArrayList<OriginContainer> originContainers = new ArrayList<>(CraftApoli.getOrigins());

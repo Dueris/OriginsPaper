@@ -5,6 +5,7 @@ import me.dueris.genesismc.core.commands.PlayerSelector;
 import me.dueris.genesismc.core.commands.subcommands.SubCommand;
 import me.dueris.genesismc.core.entity.OriginPlayer;
 import me.dueris.genesismc.core.factory.CraftApoli;
+import me.dueris.genesismc.core.utils.LayerContainer;
 import me.dueris.genesismc.core.utils.OriginContainer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
@@ -51,7 +52,7 @@ public class Has extends SubCommand {
         }
         ArrayList<Player> players = PlayerSelector.playerSelector(sender, args[1]);
         if (players.size() == 0) return;
-        if (!CraftApoli.getLayers().contains(args[2])) {
+        if (!CraftApoli.getLayers().contains(CraftApoli.getLayerFromTag(args[2]))) {
             sender.sendMessage(Component.text("Invalid layer!").color(TextColor.fromHexString(RED)));
             return;
         }
@@ -62,10 +63,8 @@ public class Has extends SubCommand {
         }
 
         for (Player p : players) {
-            HashMap<String, OriginContainer> origins = CraftApoli.toOriginContainer(p.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "origins"), PersistentDataType.BYTE_ARRAY));
-            assert origins != null;
-            for (String layer : origins.keySet()) {
-                if (!layer.equals(args[2])) continue;
+            for (LayerContainer layer : CraftApoli.getLayers()) {
+                if (!layer.getTag().equals(args[2])) continue;
                 if (OriginPlayer.hasOrigin(p, args[3]))
                     sender.sendMessage(Component.text(p.getName() + " Passed the test!"));
                 else sender.sendMessage(Component.text(p.getName() + " Failed the test."));

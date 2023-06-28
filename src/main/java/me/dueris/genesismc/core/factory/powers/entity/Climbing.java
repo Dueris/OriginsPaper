@@ -1,6 +1,7 @@
 package me.dueris.genesismc.core.factory.powers.entity;
 
 import me.dueris.genesismc.core.entity.OriginPlayer;
+import me.dueris.genesismc.core.utils.LayerContainer;
 import me.dueris.genesismc.core.utils.OriginContainer;
 import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
@@ -43,9 +44,9 @@ public class Climbing extends BukkitRunnable {
                                 p.getEyeLocation().getBlock().getRelative(BlockFace.SOUTH).getType().isCollidable()
                 )) {
                     Block block = p.getTargetBlock(null, 2);
-                    HashMap<String, OriginContainer> origins = OriginPlayer.getOrigin(p);
-                    Set<String> layers = origins.keySet();
-                    for (String layer : layers) {
+                    HashMap<LayerContainer, OriginContainer> origins = OriginPlayer.getOrigin(p);
+                    Set<LayerContainer> layers = origins.keySet();
+                    for (LayerContainer layer : layers) {
                         boolean cancel_bool = OriginPlayer.getOrigin(p, layer).getPowerFileFromType("origins:climbing").getRainCancel();
                         if (!cancel_bool) {
                             if (!p.isSneaking()) return;
