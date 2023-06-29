@@ -249,6 +249,17 @@ public class OriginPlayer {
         assignPowers(player, layer);
     }
 
+    /**
+     * WARNING: will remove the layer containing the origin from the playerdata. If you need to make a player re choose an origin use setOrigin and pass in CraftApoli.nullOrigin().
+     * @param player player.
+     * @param layer the layer to remove from playerdata.
+     */
+    public static void removeOrigin(Player player, LayerContainer layer) {
+        HashMap<LayerContainer, OriginContainer> origins = getOrigin(player);
+        origins.remove(layer);
+        player.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origins"), PersistentDataType.BYTE_ARRAY, CraftApoli.toByteArray(origins));
+    }
+
     public static LayerContainer getLayer(Player p, OriginContainer origin) {
         HashMap<LayerContainer, OriginContainer> origins = getOrigin(p);
         for (LayerContainer layer : origins.keySet()) {
