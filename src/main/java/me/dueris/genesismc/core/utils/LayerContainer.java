@@ -5,7 +5,6 @@ import org.json.simple.JSONObject;
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class LayerContainer implements Serializable {
     @Serial
@@ -48,6 +47,15 @@ public class LayerContainer implements Serializable {
         String name = (String) this.layerFile.get("name");
         if (name == null) return tag;
         return name;
+    }
+
+    /**
+     * @return The name of the layer file or tag if null
+     */
+    public boolean getReplace() {
+        Boolean replace = (Boolean) this.layerFile.get("replace");
+        if (replace == null) return false;
+        return replace;
     }
 
     /**
