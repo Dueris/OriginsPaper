@@ -167,7 +167,7 @@ public class OriginPlayer {
         HashMap<LayerContainer, OriginContainer> origins = CraftApoli.toOriginContainer(player.getPersistentDataContainer().get(key, PersistentDataType.BYTE_ARRAY));
         assert origins != null;
         if (!CraftApoli.getLayers().contains(layer)) {
-            player.sendMessage(Component.text("[GenesisMC] The layer specified doesn't exist.").color(TextColor.fromHexString(RED)));
+            //player.sendMessage(Component.text("[GenesisMC] The layer specified doesn't exist.").color(TextColor.fromHexString(RED)));
             return;
         }
 
@@ -302,18 +302,6 @@ public class OriginPlayer {
 
     public static boolean isInPhantomForm(Player player) {
         return player.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER) != 1;
-    }
-
-    public static void openOriginGUI(Player player, OriginMenu menu) {
-        if (menu.equals(OriginMenu.CHOOSE_MAIN)) {
-            @NotNull Inventory custommenu = Bukkit.createInventory(player, 54, "Choosing Menu");
-            custommenu.setContents(GenesisMainMenuContents(player));
-            player.openInventory(custommenu);
-        } else if (menu.equals(OriginMenu.CUSTOM_MAIN)) {
-            @NotNull Inventory custommenu = Bukkit.createInventory(player, 54, "Custom Origins");
-            custommenu.setContents(ChooseMenuContent(0));
-            player.openInventory(custommenu);
-        }
     }
 
     public static void assignPowers(Player player) {

@@ -213,7 +213,7 @@ public class CraftApoli {
             ArrayList<String> originFileName = new ArrayList<>();
 
             try {
-                JSONObject originLayerParser = (JSONObject) new JSONParser().parse(new FileReader(datapack.getAbsolutePath() + File.separator + "data" + File.separator + "origins" + File.separator + "origin_layers" + File.separator + "origin.json"));
+                JSONObject originLayerParser = (JSONObject) new JSONParser().parse(new FileReader(Bukkit.getServer().getPluginManager().getPlugin("GenesisMC").getDataFolder() + File.separator + ".." + File.separator + ".." + File.separator + Bukkit.getServer().getWorlds().get(0).getName() + File.separator + "datapacks"+ File.separator + origin_layer.getPath()));
                 JSONArray originLayer_origins = ((JSONArray) originLayerParser.get("origins"));
 
                 for (Object o : originLayer_origins) {
