@@ -1,5 +1,6 @@
 package me.dueris.genesismc.core.commands.subcommands.origin;
 
+import me.dueris.genesismc.core.GenesisMC;
 import me.dueris.genesismc.core.commands.PlayerSelector;
 import me.dueris.genesismc.core.commands.subcommands.SubCommand;
 import me.dueris.genesismc.core.entity.OriginPlayer;
@@ -7,9 +8,14 @@ import me.dueris.genesismc.core.factory.CraftApoli;
 import me.dueris.genesismc.core.utils.LayerContainer;
 import me.dueris.genesismc.core.utils.OriginContainer;
 import org.bukkit.Bukkit;
+import org.bukkit.NamespacedKey;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.profile.PlayerTextures;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
@@ -43,8 +49,25 @@ public class Gui extends SubCommand {
                 for (LayerContainer layer : CraftApoli.getLayers()) {
                     OriginPlayer.unassignPowers(p, layer);
                     OriginPlayer.setOrigin(p, layer, CraftApoli.nullOrigin());
-                    if(Bukkit.getPluginManager().isPluginEnabled("SkinsRestorer")){
-                        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "skin clear " + p.getName());
+                    String skinData = p.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "original-skin-url"), PersistentDataType.STRING).toString();
+                    if(p.getPlayerProfile().getTextures().getSkinModel() == PlayerTextures.SkinModel.CLASSIC){
+                        try {
+                            p.getPlayerProfile().getTextures().setSkin(new URL(skinData), PlayerTextures.SkinModel.CLASSIC);
+                        } catch (MalformedURLException e) {
+                            e.printStackTrace();
+                        }
+                    }else{
+                        try {
+                            p.getPlayerProfile().getTextures().setSkin(new URL(skinData), PlayerTextures.SkinModel.SLIM);
+                        } catch (MalformedURLException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    for(Player pls : Bukkit.getOnlinePlayers()){
+                        pls.hidePlayer(GenesisMC.getPlugin(), p);
+                    }
+                    for(Player pls : Bukkit.getOnlinePlayers()){
+                        pls.showPlayer(GenesisMC.getPlugin(), p);
                     }
                 }
             }
@@ -52,8 +75,25 @@ public class Gui extends SubCommand {
             for (LayerContainer layer : CraftApoli.getLayers()) {
                 OriginPlayer.unassignPowers(p, layer);
                 OriginPlayer.setOrigin(p, layer, CraftApoli.nullOrigin());
-                if(Bukkit.getPluginManager().isPluginEnabled("SkinsRestorer")){
-                    Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "skin clear " + p.getName());
+                String skinData = p.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "original-skin-url"), PersistentDataType.STRING).toString();
+                if(p.getPlayerProfile().getTextures().getSkinModel() == PlayerTextures.SkinModel.CLASSIC){
+                    try {
+                        p.getPlayerProfile().getTextures().setSkin(new URL(skinData), PlayerTextures.SkinModel.CLASSIC);
+                    } catch (MalformedURLException e) {
+                        e.printStackTrace();
+                    }
+                }else{
+                    try {
+                        p.getPlayerProfile().getTextures().setSkin(new URL(skinData), PlayerTextures.SkinModel.SLIM);
+                    } catch (MalformedURLException e) {
+                        e.printStackTrace();
+                    }
+                }
+                for(Player pls : Bukkit.getOnlinePlayers()){
+                    pls.hidePlayer(GenesisMC.getPlugin(), p);
+                }
+                for(Player pls : Bukkit.getOnlinePlayers()){
+                    pls.showPlayer(GenesisMC.getPlugin(), p);
                 }
             }
         }

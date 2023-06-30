@@ -1,22 +1,41 @@
 package me.dueris.genesismc.core.factory.powers.entity;
 
+import com.destroystokyo.paper.profile.PlayerProfile;
+import com.mojang.authlib.GameProfile;
+import com.mojang.authlib.properties.Property;
 import me.dueris.genesismc.core.GenesisMC;
 import me.dueris.genesismc.core.entity.OriginPlayer;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.Particle;
+import me.dueris.genesismc.core.events.OriginChangeEvent;
+import me.dueris.genesismc.core.utils.OriginContainer;
+import net.skinsrestorer.api.PlayerWrapper;
+import net.skinsrestorer.api.SkinsRestorerAPI;
+import net.skinsrestorer.api.property.IProperty;
+import org.bukkit.*;
+import org.bukkit.craftbukkit.v1_20_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.profile.PlayerTextures;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.ScoreboardManager;
 import org.bukkit.scoreboard.Team;
+import org.mineskin.MineskinClient;
+import org.mineskin.data.Skin;
 
-import static me.dueris.genesismc.core.factory.powers.Powers.pumpkin_hate;
-import static me.dueris.genesismc.core.factory.powers.Powers.translucent;
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
+import java.util.concurrent.CompletableFuture;
+
+import static me.dueris.genesismc.core.factory.powers.Powers.*;
+import static me.dueris.genesismc.core.factory.powers.Powers.model_color;
 
 public class PlayerRender extends BukkitRunnable {
     @Override
@@ -91,4 +110,197 @@ public class PlayerRender extends BukkitRunnable {
             }
         }
     }
+
+    public static class ModelColor implements Listener {
+        private SkinsRestorerAPI skinsRestorerAPI = null;
+
+        @EventHandler
+        public void onPlayerChoose(OriginChangeEvent event) {
+            Player player = event.getPlayer();
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    if (model_color.contains(player)) {
+                        for (OriginContainer origin : OriginPlayer.getOrigin(player).values()) {
+                            if(origin.getPowerFileFromType("origins:model_color") == null){
+                                model_color.remove(player);
+                            }
+                            if(origin.getPowerFileFromType("origins:model_color") == null){
+                                model_color.remove(player);
+                            }
+                            if(origin.getPowerFileFromType("origins:model_color") == null){
+                                model_color.remove(player);
+                            }
+                            Double red = (Double) origin.getPowerFileFromType("origins:model_color").getModifier().get("red");
+                            Double blue = (Double) origin.getPowerFileFromType("origins:model_color").getModifier().get("blue");
+                            Double green = (Double) origin.getPowerFileFromType("origins:model_color").getModifier().get("green");
+                            Long alphaTint = (long) origin.getPowerFileFromType("origins:model_color").getModifier().get("alpha");
+                            String savePath = Bukkit.getServer().getPluginManager().getPlugin("genesismc").getDataFolder().getPath() + File.separator + "skins";
+                            skinsRestorerAPI = SkinsRestorerAPI.getApi();
+                            ModelColor.modifyPlayerSkin(player, red, green, blue, savePath, alphaTint, skinsRestorerAPI);
+
+                            String skinData = player.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "modified-skin-url"), PersistentDataType.STRING).toString();
+                            if(player.getPlayerProfile().getTextures().getSkinModel() == PlayerTextures.SkinModel.CLASSIC){
+                                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "skin set " + player.getName() + " " + player.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "modified-skin-url"), PersistentDataType.STRING).toString() + " CLASSIC");
+                            }else{
+                                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "skin set " + player.getName() + " " + player.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "modified-skin-url"), PersistentDataType.STRING).toString() + " SLIM");
+                            }
+
+                        }
+                    } else {
+                        for (OriginContainer origin : OriginPlayer.getOrigin(player).values()) {
+                            Double red = Double.valueOf(0);
+                            Double blue = Double.valueOf(0);
+                            Double green = Double.valueOf(0);
+                            Long alphaTint = 0L;
+                            String savePath = Bukkit.getServer().getPluginManager().getPlugin("genesismc").getDataFolder().getPath() + File.separator + "skins";
+                            skinsRestorerAPI = SkinsRestorerAPI.getApi();
+                            ModelColor.modifyPlayerSkin(player, red, green, blue, savePath, alphaTint, skinsRestorerAPI);
+
+                            String skinData = player.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "original-skin-url"), PersistentDataType.STRING).toString();
+                            if(player.getPlayerProfile().getTextures().getSkinModel() == PlayerTextures.SkinModel.CLASSIC){
+                                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "skin set " + player.getName() + " " + player.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "original-skin-url"), PersistentDataType.STRING).toString() + " CLASSIC");
+
+                            }else{
+                                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "skin set " + player.getName() + " " + player.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "original-skin-url"), PersistentDataType.STRING).toString() + " SLIM");
+                            }
+
+                        }
+                    }
+                    this.cancel();
+                }
+            }.runTaskTimer(GenesisMC.getPlugin(), 4L, 1L);
+        }
+        private void setSkinURL(Player player, String skinURL) {
+            CraftPlayer craftPlayer = (CraftPlayer) player;
+            GameProfile gameProfile = craftPlayer.getProfile();
+
+            // Clear existing properties (skins)
+            gameProfile.getProperties().removeAll("textures");
+
+            // Set the new skin URL
+            gameProfile.getProperties().put("textures", new Property("textures", skinURL));
+
+            // Update the player's appearance
+            for (Player onlinePlayer : Bukkit.getServer().getOnlinePlayers()) {
+                if (onlinePlayer != player) {
+                    onlinePlayer.hidePlayer(GenesisMC.getPlugin(), player);
+                    onlinePlayer.showPlayer(GenesisMC.getPlugin(), player);
+                }
+            }
+        }
+
+        public static void modifyPlayerSkin(Player player, Double redTint, Double greenTint, Double blueTint, String savePath, Long alphaTint, SkinsRestorerAPI skinsRestorerAPI) {
+            PlayerProfile gameProfile = ((CraftPlayer) player).getPlayerProfile();
+            String textureProperty = skinsRestorerAPI.getSkinTextureUrl(SkinsRestorerAPI.getApi().getSkinData(player.getName()));
+            String imageUrl = textureProperty;
+            String uuid = player.getUniqueId().toString();
+            String originalFileName = uuid + ".png";
+            String modifiedFileName = uuid + "_modified.png";
+
+            try {
+                BufferedImage originalImage = downloadImage(imageUrl, savePath, originalFileName);
+                BufferedImage modifiedImage = modifyImage(originalImage, redTint, greenTint, blueTint, alphaTint, player);
+                saveImage(modifiedImage, savePath, modifiedFileName);
+                MineskinClient mineskinClient = new MineskinClient();
+
+                File modifiedFile = new File(savePath, modifiedFileName);
+
+                CompletableFuture<Skin> future = mineskinClient.generateUpload(modifiedFile);
+                future.thenAccept(skinData -> {
+                    if (skinData == null) {
+                        // Failed to generate the skin data
+                        future.cancel(true);
+                        return;
+                    }
+                    PlayerProfile playerProfile = player.getPlayerProfile();
+
+
+                    Skin skin = skinData;
+
+                    String url = skin.data.texture.url;
+                    player.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "modified-skin-url"), PersistentDataType.STRING, url);
+                    IProperty platformprop = skinsRestorerAPI.createPlatformProperty(player.getUniqueId() + "_modified", skin.data.texture.value, skin.data.texture.signature);
+                    PlayerWrapper playerWrapper = new PlayerWrapper(player);
+                    skinsRestorerAPI.applySkin(playerWrapper, platformprop);
+
+                });
+
+                CompletableFuture<Skin> futureorg = mineskinClient.generateUpload(originalImage);
+                futureorg.thenAccept(skinData -> {
+                    if (skinData == null) {
+                        // Failed to generate the skin data
+                        return;
+                    }
+
+                    Skin skin = skinData;
+
+                    String url = skin.data.texture.url;
+                    player.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "original-skin-url"), PersistentDataType.STRING, url);
+                    String playername = player.getName();
+
+                });
+            } catch (IOException e) {
+                Bukkit.getServer().getConsoleSender().sendMessage("Failed to process the player's skin.");
+                e.printStackTrace();
+            }
+        }
+
+        private static BufferedImage downloadImage(String imageUrl, String savePath, String fileName) throws IOException {
+            URL url = new URL("https://textures.minecraft.net" + imageUrl);
+            BufferedImage image = ImageIO.read(url);
+            File outputDir = new File(savePath);
+            outputDir.mkdirs();
+
+            File outputFile = new File(savePath, fileName);
+            ImageIO.write(image, "png", outputFile);
+
+            return image;
+        }
+
+        private static BufferedImage modifyImage(BufferedImage originalImage, double redTint, double greenTint, double blueTint, double alphaTint, Player player) {
+            if (redTint > 1 || greenTint > 1 || blueTint > 1 || alphaTint > 1) {
+                // Throw an error if any of the color values are greater than 1
+                throw new IllegalArgumentException("Color values must be between 0 and 1.");
+            }
+
+            BufferedImage modifiedImage = new BufferedImage(originalImage.getWidth(), originalImage.getHeight(), BufferedImage.TYPE_INT_ARGB);
+
+            for (int x = 0; x < modifiedImage.getWidth(); x++) {
+                for (int y = 0; y < modifiedImage.getHeight(); y++) {
+                    int rgb = originalImage.getRGB(x, y);
+                    int alpha = (rgb >> 24) & 0xFF;
+                    int red = (rgb >> 16) & 0xFF;
+                    int green = (rgb >> 8) & 0xFF;
+                    int blue = rgb & 0xFF;
+
+                    // Apply tint as an overlay
+                    red = blendColorComponent(red, redTint);
+                    green = blendColorComponent(green, greenTint);
+                    blue = blendColorComponent(blue, blueTint);
+
+                    int modifiedRGB = (alpha << 24) | (red << 16) | (green << 8) | blue;
+                    modifiedImage.setRGB(x, y, modifiedRGB);
+                }
+            }
+
+            return modifiedImage;
+        }
+
+        private static int blendColorComponent(int original, double tint) {
+            double blended = original * tint;
+            int clamped = (int) Math.min(Math.max(blended, 0), 255);
+            return clamped;
+        }
+
+        private static void saveImage(BufferedImage image, String savePath, String fileName) throws IOException {
+            File outputDir = new File(savePath);
+            outputDir.mkdirs();
+
+            File outputFile = new File(savePath, fileName);
+            ImageIO.write(image, "png", outputFile);
+        }
+
+    }
+
 }

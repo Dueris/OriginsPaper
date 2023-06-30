@@ -15,7 +15,7 @@ import me.dueris.genesismc.core.enchantments.WaterProtection;
 import me.dueris.genesismc.core.entity.OriginPlayer;
 import me.dueris.genesismc.core.factory.CraftApoli;
 import me.dueris.genesismc.core.factory.PowerStartHandler;
-import me.dueris.genesismc.core.factory.powers.world.ModelColor;
+import me.dueris.genesismc.core.factory.powers.entity.PlayerRender;
 import me.dueris.genesismc.core.files.GenesisDataFiles;
 import me.dueris.genesismc.core.generation.WaterProtBookGen;
 import me.dueris.genesismc.core.items.InfinPearl;
@@ -168,7 +168,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
             @Override
             public void run() {
                 if(getServer().getPluginManager().isPluginEnabled("SkinsRestorer")){
-                    getServer().getPluginManager().registerEvents(new ModelColor(), GenesisMC.getPlugin());
+                    getServer().getPluginManager().registerEvents(new PlayerRender.ModelColor(), GenesisMC.getPlugin());
                     getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] SkinRestorer detected, enabling ModelColour").color(TextColor.fromHexString(AQUA)));
                 }else{
                     getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] SkinRestorer not detected, disabling ModelColor").color(TextColor.fromHexString(AQUA)));
