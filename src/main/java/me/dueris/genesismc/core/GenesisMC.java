@@ -25,7 +25,11 @@ import me.dueris.genesismc.core.items.WaterProtItem;
 import me.dueris.genesismc.core.utils.*;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
+import net.skinsrestorer.api.SkinVariant;
 import net.skinsrestorer.api.SkinsRestorerAPI;
+import net.skinsrestorer.api.exception.SkinRequestException;
+import net.skinsrestorer.api.interfaces.IMineSkinAPI;
+import net.skinsrestorer.api.property.IProperty;
 import org.bukkit.*;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -177,7 +181,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
                 }
                 this.cancel();
             }
-        }.runTaskTimer(GenesisMC.getPlugin(), 130L, 1L);
+        }.runTaskTimer(GenesisMC.getPlugin(), 100L, 1L);
         plugin = this;
 
 
