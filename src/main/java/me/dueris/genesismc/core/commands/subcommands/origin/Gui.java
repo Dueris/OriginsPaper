@@ -6,6 +6,7 @@ import me.dueris.genesismc.core.entity.OriginPlayer;
 import me.dueris.genesismc.core.factory.CraftApoli;
 import me.dueris.genesismc.core.utils.LayerContainer;
 import me.dueris.genesismc.core.utils.OriginContainer;
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -40,12 +41,18 @@ public class Gui extends SubCommand {
                 for (LayerContainer layer : CraftApoli.getLayers()) {
                     OriginPlayer.unassignPowers(p, layer);
                     OriginPlayer.setOrigin(p, layer, CraftApoli.nullOrigin());
+                    if(Bukkit.getPluginManager().isPluginEnabled("SkinsRestorer")){
+                        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "skin clear " + p.getName());
+                    }
                 }
             }
         } else if (args.length == 1 && sender instanceof Player p) {
             for (LayerContainer layer : CraftApoli.getLayers()) {
                 OriginPlayer.unassignPowers(p, layer);
                 OriginPlayer.setOrigin(p, layer, CraftApoli.nullOrigin());
+                if(Bukkit.getPluginManager().isPluginEnabled("SkinsRestorer")){
+                    Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "skin clear " + p.getName());
+                }
             }
         }
     }
