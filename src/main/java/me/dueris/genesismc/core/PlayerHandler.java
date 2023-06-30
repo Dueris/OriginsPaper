@@ -116,7 +116,8 @@ public class PlayerHandler implements Listener {
             }
         }
 
-        customOriginExistCheck(p);
+        layerChecks(p);
+        //customOriginExistCheck(p);
         OriginPlayer.assignPowers(p);
 
         p.sendMessage(Component.text("GenesisMC is in beta and still has lots of bugs, use /origin bug and notify us about any issues!").color(TextColor.fromHexString(AQUA)));
@@ -143,5 +144,21 @@ public class PlayerHandler implements Listener {
         }
     }
 
-
+    public static void layerChecks(Player p) {
+        HashMap<LayerContainer, OriginContainer> origins = OriginPlayer.getOrigin(p);
+        for (LayerContainer layer : origins.keySet()) {
+            if (origins.get(layer).getTag().equals(CraftApoli.nullOrigin().getTag())) continue;
+            if (!CraftApoli.layerExists(layer)) {
+                OriginPlayer.removeOrigin(p, layer);
+                p.sendMessage(Component.text("The layer \""+layer.getName()+"\" has been removed!\nIf you believe this is a mistake please contact your server admin(s).").color(TextColor.fromHexString(RED)));
+                continue;
+            }
+            System.out.println(origins.get(layer).getTag());
+            if (!CraftApoli.getLayerFromTag(layer.getTag()).getOrigins().contains(origins.get(layer).getTag())) {
+                origins.replace(layer, CraftApoli.nullOrigin());
+                p.sendMessage(Component.text("Your selected origin has been removed from the \""+layer.getName()+"\" layer!\nIf you believe this is a mistake please contact your server admin(s).").color(TextColor.fromHexString(RED)));
+            }
+        }
+        p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origins"), PersistentDataType.BYTE_ARRAY, CraftApoli.toByteArray(origins));
+    }
 }

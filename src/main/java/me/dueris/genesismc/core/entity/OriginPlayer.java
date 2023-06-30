@@ -167,7 +167,7 @@ public class OriginPlayer {
         HashMap<LayerContainer, OriginContainer> origins = CraftApoli.toOriginContainer(player.getPersistentDataContainer().get(key, PersistentDataType.BYTE_ARRAY));
         assert origins != null;
         if (!CraftApoli.getLayers().contains(layer)) {
-            player.sendMessage(Component.text("[GenesisMC] The layer specified doesn't exist.").color(TextColor.fromHexString(RED)));
+            //player.sendMessage(Component.text("[GenesisMC] The layer specified doesn't exist.").color(TextColor.fromHexString(RED)));
             return;
         }
 
@@ -249,6 +249,17 @@ public class OriginPlayer {
         assignPowers(player, layer);
     }
 
+    /**
+     * WARNING: will remove the layer containing the origin from the playerdata. If you need to make a player re choose an origin use setOrigin and pass in CraftApoli.nullOrigin().
+     * @param player player.
+     * @param layer the layer to remove from playerdata.
+     */
+    public static void removeOrigin(Player player, LayerContainer layer) {
+        HashMap<LayerContainer, OriginContainer> origins = getOrigin(player);
+        origins.remove(layer);
+        player.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origins"), PersistentDataType.BYTE_ARRAY, CraftApoli.toByteArray(origins));
+    }
+
     public static LayerContainer getLayer(Player p, OriginContainer origin) {
         HashMap<LayerContainer, OriginContainer> origins = getOrigin(p);
         for (LayerContainer layer : origins.keySet()) {
@@ -291,18 +302,6 @@ public class OriginPlayer {
 
     public static boolean isInPhantomForm(Player player) {
         return player.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER) != 1;
-    }
-
-    public static void openOriginGUI(Player player, OriginMenu menu) {
-        if (menu.equals(OriginMenu.CHOOSE_MAIN)) {
-            @NotNull Inventory custommenu = Bukkit.createInventory(player, 54, "Choosing Menu");
-            custommenu.setContents(GenesisMainMenuContents(player));
-            player.openInventory(custommenu);
-        } else if (menu.equals(OriginMenu.CUSTOM_MAIN)) {
-            @NotNull Inventory custommenu = Bukkit.createInventory(player, 54, "Custom Origins");
-            custommenu.setContents(ChooseMenuContent(0));
-            player.openInventory(custommenu);
-        }
     }
 
     public static void assignPowers(Player player) {

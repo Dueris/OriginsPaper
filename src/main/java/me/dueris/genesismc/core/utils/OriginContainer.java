@@ -22,7 +22,7 @@ public class OriginContainer implements Serializable {
      * An object that stores an origin and all the details about it.
      *
      * @param tag             The origin tag.
-     * @param layerFile The origin layer file data.
+     * @param layerFile       The origin layer file data.
      * @param originFile      The origin file, parsed into a HashMap.
      * @param powerContainer  An array of powers that the origin has.
      */
@@ -152,7 +152,16 @@ public class OriginContainer implements Serializable {
         return null;
     }
 
+    /**
+     * @return The name of the layer the origin is in
+     */
     public String getLayerName() {
+        String name = (String) this.layerFile.get("name");
+        if (name == null) return "No layer name found";
+        return name;
+    }
+
+    public String getLayerTag() {
         String name = (String) this.layerFile.get("name");
         if (name == null) return "No layer name found";
         return name;

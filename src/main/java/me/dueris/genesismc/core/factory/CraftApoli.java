@@ -25,7 +25,6 @@ public class CraftApoli {
     private static ArrayList<LayerContainer> originLayers = new ArrayList<>();
     @SuppressWarnings("FieldMayBeFinal")
     private static ArrayList<OriginContainer> originContainers = new ArrayList<>();
-    private static final OriginContainer null_Origin = new OriginContainer("genesis:origin-null", new FileContainer(new ArrayList<>(List.of("hidden", "origins")), new ArrayList<>(List.of(true, "genesis:origin-null"))) , new HashMap<String, Object>(Map.of("impact", "0", "icon", "minecraft:player_head", "powers", "genesis:null", "order", "0", "unchooseable", true)), new ArrayList<>(List.of(new PowerContainer("genesis:null", new FileContainer(new ArrayList<>(), new ArrayList<>()), "genesis:origin-null"))));
 
 
     /**
@@ -46,7 +45,7 @@ public class CraftApoli {
      * @return A copy of The null origin.
      **/
     public static OriginContainer nullOrigin() {
-        return null_Origin;
+        return new OriginContainer("genesis:origin-null", new FileContainer(new ArrayList<>(List.of("hidden", "origins")), new ArrayList<>(List.of(true, "genesis:origin-null"))) , new HashMap<String, Object>(Map.of("impact", "0", "icon", "minecraft:player_head", "powers", "genesis:null", "order", "0", "unchooseable", true)), new ArrayList<>(List.of(new PowerContainer("genesis:null", new FileContainer(new ArrayList<>(), new ArrayList<>()), "genesis:origin-null"))));
     }
 
 
@@ -185,7 +184,9 @@ public class CraftApoli {
             //non zip
             File dataDir = new File(datapack.getAbsolutePath() + File.separator + "data");
             if (!dataDir.isDirectory()) continue;
+            File origin_layer = null;
 
+            //find layer file
             for (File namespace : dataDir.listFiles()) {
                 if (!namespace.isDirectory()) continue;
                 String layerNamespace = namespace.getName();
@@ -195,21 +196,24 @@ public class CraftApoli {
                     if (!FilenameUtils.getExtension(originLayer.getName()).equals("json")) continue;
                     String layerName = FilenameUtils.getBaseName(originLayer.getName());
                     try {
-                    CraftApoli.originLayers.add(new LayerContainer(layerNamespace+":"+layerName, fileToFileContainer((JSONObject) new JSONParser().parse(new FileReader(originLayer)))));
+                        LayerContainer layer = new LayerContainer(layerNamespace+":"+layerName, fileToFileContainer((JSONObject) new JSONParser().parse(new FileReader(originLayer))));
+                        //removes an origin layer if a layer with teh same namespace has the replace key set to true
+                        if (layer.getReplace() && layerExists(layer)) CraftApoli.originLayers.removeIf(existingLayer -> layer.getTag().equals(existingLayer.getTag()));
+                        CraftApoli.originLayers.add(layer);
+                        origin_layer = new File(datapack.getName() + File.separator + "data" + File.separator + namespace.getName() + File.separator + "origin_layers" + File.separator + layerName + ".json");
                     } catch (Exception e) {
                         Bukkit.getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] Error parsing \""+ datapack.getName() + File.separator + "data" + File.separator + namespace.getName() + File.separator + "origin_layers" + File.separator + layerName + ".json" + "\"").color(TextColor.color(255, 0, 0)));
                     }
                 }
             }
 
-            File origin_layers = new File(datapack.getAbsolutePath() + File.separator + "data" + File.separator + "origins" + File.separator + "origin_layers" + File.separator + "origin.json");
-            if (!origin_layers.exists()) continue;
+            if (origin_layer == null) continue;
 
             ArrayList<String> originFolder = new ArrayList<>();
             ArrayList<String> originFileName = new ArrayList<>();
 
             try {
-                JSONObject originLayerParser = (JSONObject) new JSONParser().parse(new FileReader(datapack.getAbsolutePath() + File.separator + "data" + File.separator + "origins" + File.separator + "origin_layers" + File.separator + "origin.json"));
+                JSONObject originLayerParser = (JSONObject) new JSONParser().parse(new FileReader(Bukkit.getServer().getPluginManager().getPlugin("GenesisMC").getDataFolder() + File.separator + ".." + File.separator + ".." + File.separator + Bukkit.getServer().getWorlds().get(0).getName() + File.separator + "datapacks"+ File.separator + origin_layer.getPath()));
                 JSONArray originLayer_origins = ((JSONArray) originLayerParser.get("origins"));
 
                 for (Object o : originLayer_origins) {
@@ -370,4 +374,15 @@ public class CraftApoli {
         }
         return CraftApoli.getLayers().get(0);
     }
+
+    /**
+     * @return True if the layer given is currently loaded.
+     **/
+    public static boolean layerExists(LayerContainer layer) {
+        for (LayerContainer layers : CraftApoli.getLayers()) {
+            if (layers.getTag().equals(layer.getTag())) return true;
+        }
+        return false;
+    }
+
 }

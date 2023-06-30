@@ -2,6 +2,7 @@ package me.dueris.genesismc.core.choosing.contents;
 
 import me.dueris.genesismc.core.GenesisMC;
 import me.dueris.genesismc.core.factory.CraftApoli;
+import me.dueris.genesismc.core.utils.LayerContainer;
 import me.dueris.genesismc.core.utils.OriginContainer;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -15,12 +16,13 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 
+import static me.dueris.genesismc.core.choosing.ChoosingCORE.choosing;
 import static me.dueris.genesismc.core.choosing.ChoosingCORE.itemProperties;
 import static me.dueris.genesismc.core.choosing.ChoosingCUSTOM.cutStringIntoLists;
 
 public class ChooseMenuContents {
 
-    public static @Nullable ItemStack @NotNull [] ChooseMenuContent(int pageNumber) {
+    public static @Nullable ItemStack @NotNull [] ChooseMenuContent(int pageNumber, LayerContainer choosingLayer) {
         ItemStack sides = itemProperties(new ItemStack(Material.BLACK_STAINED_GLASS_PANE), "", ItemFlag.HIDE_ENCHANTS, null, null);
         ItemStack menu = itemProperties(new ItemStack(Material.SPECTRAL_ARROW), ChatColor.AQUA + "Return", ItemFlag.HIDE_ENCHANTS, null, null);
         ItemStack back = itemProperties(new ItemStack(Material.ARROW), "Back", ItemFlag.HIDE_ENCHANTS, null, null);
@@ -29,18 +31,27 @@ public class ChooseMenuContents {
         ArrayList<ItemStack> contents = new ArrayList<>();
         ArrayList<OriginContainer> originContainers = new ArrayList<>(CraftApoli.getOrigins());
 
+        //removes the core origins
         originContainers.removeIf(CraftApoli::isCoreOrigin);
+
+        //removes origins not in the layer
+        for (int i = 0; i < originContainers.size(); i++) {
+            OriginContainer origin = originContainers.get(i);
+            if (!choosingLayer.getOrigins().contains(origin.getTag())) originContainers.remove(origin);
+        }
+
+        //removes the origins that can't be displayed on the page due to page size constraints.
         for (int i = 0; 35 * pageNumber > i; i++) {
             if (originContainers.isEmpty()) break;
             originContainers.remove(0);
         }
 
+        //sets which page the arrows will go to
         NamespacedKey pageKey = new NamespacedKey(GenesisMC.getPlugin(), "page");
         ItemMeta backMeta = back.getItemMeta();
         if (pageNumber == 0) backMeta.getPersistentDataContainer().set(pageKey, PersistentDataType.INTEGER, 0);
         else backMeta.getPersistentDataContainer().set(pageKey, PersistentDataType.INTEGER, pageNumber - 1);
         back.setItemMeta(backMeta);
-
 
         ItemMeta nextMeta = next.getItemMeta();
         if (originContainers.size() < 37)
@@ -48,6 +59,8 @@ public class ChooseMenuContents {
         else nextMeta.getPersistentDataContainer().set(pageKey, PersistentDataType.INTEGER, pageNumber + 1);
         next.setItemMeta(nextMeta);
 
+
+        //generates the menu
         for (int i = 0; i <= 53; i++) {
             if (i % 9 == 0 || (i + 1) % 9 == 0) {
                 contents.add(sides);

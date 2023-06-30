@@ -1,11 +1,11 @@
 package me.dueris.genesismc.core.utils;
 
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class LayerContainer implements Serializable {
     @Serial
@@ -51,22 +51,20 @@ public class LayerContainer implements Serializable {
     }
 
     /**
+     * @return The name of the layer file or tag if null
+     */
+    public boolean getReplace() {
+        Boolean replace = (Boolean) this.layerFile.get("replace");
+        if (replace == null) return false;
+        return replace;
+    }
+
+    /**
      * @return An array list of the loaded origins tags
      */
     public ArrayList<String> getOrigins() {
-        Object obj = layerFile.get("origins");
-        if (obj == null) return new ArrayList<>();
-
-        if (obj instanceof JSONObject modifier) {
-            ArrayList<String> result = new ArrayList<>();
-            for (Object key : modifier.keySet()) {
-                String string_key = (String) key;
-                String value = (String) modifier.get(string_key);
-                result.add(value);
-            }
-            return result;
-        }
-
-        return null;
+        Object array = layerFile.get("origins");
+        if (array instanceof JSONArray origins) return new ArrayList<String>(origins);
+        return new ArrayList<>();
     }
 }
