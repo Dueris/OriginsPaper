@@ -23,6 +23,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 
 import static me.dueris.genesismc.core.choosing.ChoosingCORE.itemProperties;
+import static me.dueris.genesismc.core.files.GenesisDataFiles.getMainConfig;
 import static me.dueris.genesismc.core.files.GenesisDataFiles.getOrbCon;
 import static me.dueris.genesismc.core.utils.BukkitColour.RED;
 
@@ -46,7 +47,7 @@ public class Recipe extends SubCommand implements Listener {
     public void perform(CommandSender sender, String[] args) {
         if (sender instanceof Player p) {
             if (!p.hasPermission("genesismc.origins.cmd.recipe")) return;
-            if (getOrbCon().get("orb-of-origins-enabled") == null || getOrbCon().get("orb-of-origins-enabled").toString() != "true") {
+            if (getMainConfig().get("orb-of-origins") == null || getOrbCon().get("orb-of-origins-enabled").toString() != "true") {
                 p.sendMessage(Component.text("Orb of origin crafting has been disabled by a server admin!").color(TextColor.fromHexString(RED)));
                 return;
             }

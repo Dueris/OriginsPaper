@@ -41,7 +41,7 @@ public class OrbOfOrigins {
 
         try {
             //Shaped Recipe for ORB_OF_ORIGINS
-            if (GenesisDataFiles.getOrbCon().getString("orb-of-origins-enabled").equalsIgnoreCase("true")) {
+            if (GenesisDataFiles.getMainConfig().getString("orb-of-origins").equalsIgnoreCase("true")) {
                 ShapedRecipe sr = new ShapedRecipe(NamespacedKey.minecraft("orboforigins"), item);
                 sr.shape("123",
                         "456",
