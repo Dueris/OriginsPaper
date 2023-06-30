@@ -1,5 +1,6 @@
 package me.dueris.genesismc.core.factory;
 
+import me.dueris.genesismc.core.files.GenesisDataFiles;
 import me.dueris.genesismc.core.utils.Lang;
 import me.dueris.genesismc.core.utils.LayerContainer;
 import me.dueris.genesismc.core.utils.OriginContainer;
@@ -90,6 +91,8 @@ public class CraftApoli {
      * Loads the custom origins from the datapack dir into memory.
      **/
     public static void loadOrigins() {
+        Boolean showErrors = Boolean.valueOf(GenesisDataFiles.getMainConfig().get("console-print-parse-errors").toString());
+
         File DatapackDir = new File(Bukkit.getServer().getPluginManager().getPlugin("GenesisMC").getDataFolder() + File.separator + ".." + File.separator + ".." + File.separator + Bukkit.getServer().getWorlds().get(0).getName() + File.separator + "datapacks");
         File[] datapacks = DatapackDir.listFiles();
         if (datapacks == null) return;
@@ -159,7 +162,8 @@ public class CraftApoli {
                                             JSONObject powerParser = (JSONObject) new JSONParser().parse(files.get(Path.of("data" + File.separator + powerFolder + File.separator + "powers" + File.separator + powerFileName + ".json")));
                                             powerContainers.add(new PowerContainer(powerFolder + ":" + powerFileName, fileToFileContainer(powerParser), originFolder.get(0) + ":" + originFileName.get(0)));
                                         } catch (NullPointerException nullPointerException) {
-                                            Bukkit.getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] Error parsing \"" + powerFolder + ":" + powerFileName + "\" for \"" + originFolder.get(0) + ":" + originFileName.get(0) + "\"").color(TextColor.color(255, 0, 0)));
+                                            if (showErrors)
+                                               Bukkit.getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] Error parsing \"" + powerFolder + ":" + powerFileName + "\" for \"" + originFolder.get(0) + ":" + originFileName.get(0) + "\"").color(TextColor.color(255, 0, 0)));
                                         }
                                     }
                                 }
@@ -174,7 +178,8 @@ public class CraftApoli {
                     zip.close();
 
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    if (showErrors)
+                       e.printStackTrace();
                 }
 
             } else {
@@ -202,13 +207,15 @@ public class CraftApoli {
                         CraftApoli.originLayers.add(layer);
                         origin_layer = new File(datapack.getName() + File.separator + "data" + File.separator + namespace.getName() + File.separator + "origin_layers" + File.separator + layerName + ".json");
                     } catch (Exception e) {
-                        Bukkit.getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] Error parsing \""+ datapack.getName() + File.separator + "data" + File.separator + namespace.getName() + File.separator + "origin_layers" + File.separator + layerName + ".json" + "\"").color(TextColor.color(255, 0, 0)));
+                        if (showErrors)
+                            Bukkit.getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] Error parsing \""+ datapack.getName() + File.separator + "data" + File.separator + namespace.getName() + File.separator + "origin_layers" + File.separator + layerName + ".json" + "\"").color(TextColor.color(255, 0, 0)));
                     }
                 }
             }
 
             if (origin_layer == null) continue;
 
+            //sets up arrays for origins in the datapack
             ArrayList<String> originFolder = new ArrayList<>();
             ArrayList<String> originFileName = new ArrayList<>();
 
@@ -216,6 +223,7 @@ public class CraftApoli {
                 JSONObject originLayerParser = (JSONObject) new JSONParser().parse(new FileReader(Bukkit.getServer().getPluginManager().getPlugin("GenesisMC").getDataFolder() + File.separator + ".." + File.separator + ".." + File.separator + Bukkit.getServer().getWorlds().get(0).getName() + File.separator + "datapacks"+ File.separator + origin_layer.getPath()));
                 JSONArray originLayer_origins = ((JSONArray) originLayerParser.get("origins"));
 
+                //gets every origin from the layer
                 for (Object o : originLayer_origins) {
                     String value = (String) o;
                     String[] valueSplit = value.split(":");
@@ -223,7 +231,7 @@ public class CraftApoli {
                     originFileName.add(valueSplit[1]);
                 }
 
-
+                //gets the powers for every origin
                 while (originFolder.size() > 0) {
 
                     try {
@@ -242,7 +250,8 @@ public class CraftApoli {
                                     JSONObject powerParser = (JSONObject) new JSONParser().parse(new FileReader(datapack.getAbsolutePath() + File.separator + "data" + File.separator + powerFolder + File.separator + "powers" + File.separator + powerFileName + ".json"));
                                     powerContainers.add(new PowerContainer(powerFolder + ":" + powerFileName, fileToFileContainer(powerParser), originFolder.get(0) + ":" + originFileName.get(0)));
                                 } catch (FileNotFoundException fileNotFoundException) {
-                                    Bukkit.getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] Error parsing \"" + powerFolder + ":" + powerFileName + "\" for \"" + originFolder.get(0) + ":" + originFileName.get(0) + "\"").color(TextColor.color(255, 0, 0)));
+                                    if (showErrors)
+                                        Bukkit.getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] Error parsing \"" + powerFolder + ":" + powerFileName + "\" for \"" + originFolder.get(0) + ":" + originFileName.get(0) + "\"").color(TextColor.color(255, 0, 0)));
                                 }
                             }
                         }
@@ -250,16 +259,19 @@ public class CraftApoli {
                         originContainers.add(new OriginContainer(originFolder.get(0) + ":" + originFileName.get(0), fileToFileContainer(originLayerParser), fileToHashMap(originParser), powerContainers));
 
                     } catch (FileNotFoundException fileNotFoundException) {
-                        Bukkit.getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] Error parsing \"" + datapack.getName() + File.separator + "data" + File.separator + originFolder.get(0) + File.separator + "origins" + File.separator + originFileName.get(0) + ".json" + "\"").color(TextColor.color(255, 0, 0)));
+                        if (showErrors)
+                            Bukkit.getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] Error parsing \"" + datapack.getName() + File.separator + "data" + File.separator + originFolder.get(0) + File.separator + "origins" + File.separator + originFileName.get(0) + ".json" + "\"").color(TextColor.color(255, 0, 0)));
                     }
                     originFolder.remove(0);
                     originFileName.remove(0);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                if (showErrors)
+                    e.printStackTrace();
                 //Bukkit.getServer().getConsoleSender().sendMessage("[GenesisMC] Failed to parse the \"/data/origins/origin_layers/origin.json\" file for " + datapack.getName() + ". Is it a valid origin file?");
             }
         }
+        //if an origin is a core one checks if there are translations for the powers
         translateOrigins();
     }
 
