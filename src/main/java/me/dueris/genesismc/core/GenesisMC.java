@@ -25,11 +25,6 @@ import me.dueris.genesismc.core.items.WaterProtItem;
 import me.dueris.genesismc.core.utils.*;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
-import net.skinsrestorer.api.SkinVariant;
-import net.skinsrestorer.api.SkinsRestorerAPI;
-import net.skinsrestorer.api.exception.SkinRequestException;
-import net.skinsrestorer.api.interfaces.IMineSkinAPI;
-import net.skinsrestorer.api.property.IProperty;
 import org.bukkit.*;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -43,7 +38,6 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.HashMap;
-import java.util.logging.Logger;
 
 import static me.dueris.genesismc.core.utils.BukkitColour.*;
 
@@ -175,9 +169,9 @@ public final class GenesisMC extends JavaPlugin implements Listener {
             public void run() {
                 if(getServer().getPluginManager().isPluginEnabled("SkinsRestorer")){
                     getServer().getPluginManager().registerEvents(new ModelColor(), GenesisMC.getPlugin());
-                    getServer().getConsoleSender().sendMessage(ChatColor.AQUA + "Hooked into SkinRestorer! ModelColor enabled :)");
+                    getServer().getConsoleSender().sendMessage(Component.text("SkinRestorer detected, enabling ModelColour").color(TextColor.fromHexString(AQUA)));
                 }else{
-                    getServer().getConsoleSender().sendMessage(ChatColor.AQUA + "SkinRestorer not found, ModelColor disabled");
+                    getServer().getConsoleSender().sendMessage(Component.text("SkinRestorer not detected, disabling ModelColor").color(TextColor.fromHexString(AQUA)));
                 }
                 this.cancel();
             }
