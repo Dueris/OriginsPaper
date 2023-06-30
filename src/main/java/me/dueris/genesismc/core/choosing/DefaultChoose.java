@@ -29,8 +29,6 @@ public class DefaultChoose {
 
         OriginChooseEvent chooseEvent = new OriginChooseEvent(p);
         getServer().getPluginManager().callEvent(chooseEvent);
-        OriginChangeEvent Event = new OriginChangeEvent(p);
-        getServer().getPluginManager().callEvent(Event);
 
         if (p.getInventory().getItemInMainHand().isSimilar(OrbOfOrigins.orb) && !OriginPlayer.hasOrigin(p, CraftApoli.nullOrigin().getTag())) {
             int amt = p.getInventory().getItemInMainHand().getAmount();
