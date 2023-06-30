@@ -14,6 +14,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
 
+import static me.dueris.genesismc.core.factory.powers.Powers.translucent;
+
 
 public class Gui extends SubCommand {
     @Override

@@ -32,6 +32,7 @@ import java.net.URL;
 import java.util.concurrent.CompletableFuture;
 
 import static me.dueris.genesismc.core.factory.powers.Powers.model_color;
+import static me.dueris.genesismc.core.factory.powers.Powers.translucent;
 
 public class ModelColor implements Listener {
     private SkinsRestorerAPI skinsRestorerAPI = null;
@@ -47,9 +48,10 @@ public class ModelColor implements Listener {
                         Long red = (Long) origin.getPowerFileFromType("origins:model_color").getModifier().get("red");
                         Long blue = (Long) origin.getPowerFileFromType("origins:model_color").getModifier().get("blue");
                         Long green = (Long) origin.getPowerFileFromType("origins:model_color").getModifier().get("green");
+                        Long alphaTint = (Long) origin.getPowerFileFromType("origins:model_color").getModifier().get("alpha");
                         String savePath = Bukkit.getServer().getPluginManager().getPlugin("genesismc").getDataFolder().getPath() + File.separator + "skins";
                         skinsRestorerAPI = SkinsRestorerAPI.getApi();
-                        ModelColor.modifyPlayerSkin(player, Math.toIntExact(red), Math.toIntExact(green), Math.toIntExact(blue), savePath, false, skinsRestorerAPI);
+                        ModelColor.modifyPlayerSkin(player, Math.toIntExact(red), Math.toIntExact(green), Math.toIntExact(blue), savePath, Math.toIntExact(alphaTint));
 
                         String skinData = player.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "modified-skin-url"), PersistentDataType.STRING).toString();
                         if(player.getPlayerProfile().getTextures().getSkinModel() == PlayerTextures.SkinModel.CLASSIC){
@@ -64,9 +66,10 @@ public class ModelColor implements Listener {
                         int red = 0;
                         int blue = 0;
                         int green = 0;
+                        int alphaTint = 0;
                         String savePath = Bukkit.getServer().getPluginManager().getPlugin("genesismc").getDataFolder().getPath() + File.separator + "skins";
                         skinsRestorerAPI = SkinsRestorerAPI.getApi();
-                        ModelColor.modifyPlayerSkin(player, red, green, blue, savePath, true, skinsRestorerAPI);
+                        ModelColor.modifyPlayerSkin(player, red, green, blue, savePath, alphaTint);
 
                         String skinData = player.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "original-skin-url"), PersistentDataType.STRING).toString();
                         if(player.getPlayerProfile().getTextures().getSkinModel() == PlayerTextures.SkinModel.CLASSIC){
@@ -82,7 +85,7 @@ public class ModelColor implements Listener {
         }.runTaskTimer(GenesisMC.getPlugin(), 4L, 1L);
     }
 
-    public static void modifyPlayerSkin(Player player, int redTint, int greenTint, int blueTint, String savePath, boolean retrieve, SkinsRestorerAPI skinsRestorerAPI) {
+    public static void modifyPlayerSkin(Player player, int redTint, int greenTint, int blueTint, String savePath, int alphaTint) {
         PlayerProfile gameProfile = ((CraftPlayer) player).getPlayerProfile();
         String textureProperty = gameProfile.getTextures().getSkin().getFile();
         String imageUrl = textureProperty;
@@ -92,7 +95,7 @@ public class ModelColor implements Listener {
 
         try {
             BufferedImage originalImage = downloadImage(imageUrl, savePath, originalFileName);
-            BufferedImage modifiedImage = modifyImage(originalImage, redTint, greenTint, blueTint);
+            BufferedImage modifiedImage = modifyImage(originalImage, redTint, greenTint, blueTint, alphaTint, player);
             saveImage(modifiedImage, savePath, modifiedFileName);
             MineskinClient mineskinClient = new MineskinClient();
 
@@ -145,7 +148,7 @@ public class ModelColor implements Listener {
         return image;
     }
 
-    private static BufferedImage modifyImage(BufferedImage originalImage, int redTint, int greenTint, int blueTint) {
+    private static BufferedImage modifyImage(BufferedImage originalImage, int redTint, int greenTint, int blueTint, int alphaTint, Player player) {
         BufferedImage modifiedImage = new BufferedImage(originalImage.getWidth(), originalImage.getHeight(), BufferedImage.TYPE_INT_ARGB);
 
         for (int x = 0; x < modifiedImage.getWidth(); x++) {
@@ -155,6 +158,8 @@ public class ModelColor implements Listener {
                 int red = (rgb >> 16) & 0xFF;
                 int green = (rgb >> 8) & 0xFF;
                 int blue = rgb & 0xFF;
+
+//                if(alphaTint > 0) translucent.add(player);
 
                 // Apply tint as an overlay
                 red = blendColorComponent(red, redTint);
@@ -173,35 +178,6 @@ public class ModelColor implements Listener {
         int blended = original + tint;
         return Math.min(Math.max(blended, 0), 255);
     }
-
-
-
-    /*
-    private static BufferedImage modifyImage(BufferedImage originalImage, int redTint, int greenTint, int blueTint) {
-    BufferedImage modifiedImage = new BufferedImage(originalImage.getWidth(), originalImage.getHeight(), BufferedImage.TYPE_INT_ARGB);
-    Graphics graphics = modifiedImage.getGraphics();
-    graphics.drawImage(originalImage, 0, 0, null);
-
-    for (int x = 0; x < modifiedImage.getWidth(); x++) {
-        for (int y = 0; y < modifiedImage.getHeight(); y++) {
-            int rgb = modifiedImage.getRGB(x, y);
-            Color color = new Color(rgb, true);
-
-            if (color.getAlpha() != 0) {
-                int modifiedRGB = new Color(
-                        Math.max(color.getRed() - redTint, 0),
-                        Math.max(color.getGreen() - greenTint, 0),
-                        Math.max(color.getBlue() - blueTint, 0),
-                        color.getAlpha()
-                ).getRGB();
-                modifiedImage.setRGB(x, y, modifiedRGB);
-            }
-        }
-    }
-
-    return modifiedImage;
-}
-     */
 
     private static void saveImage(BufferedImage image, String savePath, String fileName) throws IOException {
         File outputDir = new File(savePath);
