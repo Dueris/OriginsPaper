@@ -169,9 +169,9 @@ public final class GenesisMC extends JavaPlugin implements Listener {
             public void run() {
                 if(getServer().getPluginManager().isPluginEnabled("SkinsRestorer")){
                     getServer().getPluginManager().registerEvents(new ModelColor(), GenesisMC.getPlugin());
-                    getServer().getConsoleSender().sendMessage(Component.text("SkinRestorer detected, enabling ModelColour").color(TextColor.fromHexString(AQUA)));
+                    getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] SkinRestorer detected, enabling ModelColour").color(TextColor.fromHexString(AQUA)));
                 }else{
-                    getServer().getConsoleSender().sendMessage(Component.text("SkinRestorer not detected, disabling ModelColor").color(TextColor.fromHexString(AQUA)));
+                    getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] SkinRestorer not detected, disabling ModelColor").color(TextColor.fromHexString(AQUA)));
                 }
                 this.cancel();
             }
