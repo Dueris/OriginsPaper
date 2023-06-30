@@ -5,7 +5,7 @@
 #  Plugin configs
 # ~~~~~~~~~~~~~~~~~
 
-# Determines language file to read, replace with the second word in the options list.
+# Determines language file to read, replace with the second word in the options list for your language.
 # Options: english = english, deutsch = german, русский = russian, 繁体中文 = trad-chinese
 lang: english
 
