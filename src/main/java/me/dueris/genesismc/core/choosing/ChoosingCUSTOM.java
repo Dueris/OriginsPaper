@@ -2,6 +2,7 @@ package me.dueris.genesismc.core.choosing;
 
 import me.dueris.genesismc.core.GenesisMC;
 import me.dueris.genesismc.core.entity.OriginPlayer;
+import me.dueris.genesismc.core.events.OriginChangeEvent;
 import me.dueris.genesismc.core.factory.CraftApoli;
 import me.dueris.genesismc.core.factory.powers.world.WorldSpawnHandler;
 import me.dueris.genesismc.core.utils.OriginContainer;
@@ -31,6 +32,7 @@ import static me.dueris.genesismc.core.choosing.contents.ChooseMenuContents.Choo
 import static me.dueris.genesismc.core.choosing.contents.MainMenuContents.GenesisMainMenuContents;
 import static me.dueris.genesismc.core.factory.powers.Powers.*;
 import static me.dueris.genesismc.core.items.OrbOfOrigins.orb;
+import static org.bukkit.Bukkit.getServer;
 import static org.bukkit.ChatColor.GRAY;
 import static org.bukkit.ChatColor.RED;
 
@@ -258,6 +260,8 @@ public class ChoosingCUSTOM implements Listener {
                     if (nether_spawn.contains(p) && p.getBedSpawnLocation() == null)
                         p.teleport(WorldSpawnHandler.NetherSpawn());
                 }, 2);
+                OriginChangeEvent Event = new OriginChangeEvent(p);
+                getServer().getPluginManager().callEvent(Event);
             }
         }
     }
