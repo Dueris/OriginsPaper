@@ -245,7 +245,7 @@ public class PlayerRender extends BukkitRunnable {
                 e.printStackTrace();
             }
         }
-
+        @SuppressWarnings("javax.imageio.IIOException")
         private static BufferedImage downloadImage(String imageUrl, String savePath, String fileName) throws IOException {
             URL url = new URL("https://textures.minecraft.net" + imageUrl);
             BufferedImage image = ImageIO.read(url);
