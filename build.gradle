@@ -30,6 +30,7 @@ repositories {
     maven {
         url = "https://repo.codemc.org/repository/maven-releases/"
     }
+    maven { url = "https://jitpack.io"}
 }
 
 java {
@@ -49,6 +50,7 @@ dependencies {
     compileOnly "org.mineskin:java-client:1.2.4-SNAPSHOT"
     compileOnly("com.mojang:authlib:1.11")
     shade("org.mineskin:java-client:1.2.4-SNAPSHOT")
+    implementation("com.github.InventivetalentDev:GlowAPI:1.5.6-SNAPSHOT")
 }
 
 jar {
