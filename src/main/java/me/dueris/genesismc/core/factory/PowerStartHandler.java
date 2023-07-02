@@ -120,6 +120,7 @@ public class PowerStartHandler {
 
         RestrictArmor restrictArmor = new RestrictArmor();
         restrictArmor.runTaskTimer(getPlugin(), 0, 1);
+
     }
 
     public static void StartListeners() {
