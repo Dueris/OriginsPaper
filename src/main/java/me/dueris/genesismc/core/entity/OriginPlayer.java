@@ -406,6 +406,7 @@ public class OriginPlayer {
                 case "origins:restrict_armor" -> restrict_armor.add(player);
                 case "origins:invulnerability" -> dmg_invulnerable.add(player);
                 case "origins:model_color" -> model_color.add(player);
+                case "genesis:bioluminescent" -> bioluminescent.add(player);
 
             }
         }
@@ -513,6 +514,7 @@ public class OriginPlayer {
                 case "origins:restrict_armor" -> restrict_armor.remove(player);
                 case "origins:invulnerability" -> dmg_invulnerable.remove(player);
                 case "origins:model_color" -> model_color.remove(player);
+                case "genesis:bioluminescent" -> bioluminescent.remove(player);
             }
         }
     }
