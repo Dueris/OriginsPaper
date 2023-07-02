@@ -241,8 +241,7 @@ public class PlayerRender extends BukkitRunnable {
 
                 });
             } catch (IOException e) {
-                Bukkit.getServer().getConsoleSender().sendMessage("Failed to process the player's skin.");
-                e.printStackTrace();
+                //rip
             }
         }
         @SuppressWarnings("javax.imageio.IIOException")
