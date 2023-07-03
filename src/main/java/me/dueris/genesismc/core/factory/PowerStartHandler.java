@@ -1,6 +1,7 @@
 package me.dueris.genesismc.core.factory;
 
 import me.dueris.genesismc.core.factory.handlers.CustomOriginExistCheck;
+import me.dueris.genesismc.core.factory.powers.FlightHandler;
 import me.dueris.genesismc.core.factory.powers.Powers;
 import me.dueris.genesismc.core.factory.powers.armour.FlightElytra;
 import me.dueris.genesismc.core.factory.powers.armour.GoldAmourBellow;
@@ -19,9 +20,10 @@ import me.dueris.genesismc.core.factory.powers.food.Carnivore;
 import me.dueris.genesismc.core.factory.powers.food.CarrotOnly;
 import me.dueris.genesismc.core.factory.powers.food.MoreExhaustion;
 import me.dueris.genesismc.core.factory.powers.food.Vegitarian;
-import me.dueris.genesismc.core.factory.powers.item.CreeperDeathDrop;
+import me.dueris.genesismc.core.factory.powers.genesis.*;
+import me.dueris.genesismc.core.factory.powers.genesis.CreeperDeathDrop;
 import me.dueris.genesismc.core.factory.powers.item.EnderPearlThrow;
-import me.dueris.genesismc.core.factory.powers.item.GoldItemBuff;
+import me.dueris.genesismc.core.factory.powers.genesis.GoldItemBuff;
 import me.dueris.genesismc.core.factory.powers.item.LaunchAir;
 import me.dueris.genesismc.core.factory.powers.world.*;
 import me.dueris.genesismc.core.origins.OriginHandler;

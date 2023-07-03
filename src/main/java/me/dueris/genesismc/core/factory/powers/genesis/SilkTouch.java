@@ -1,4 +1,4 @@
-package me.dueris.genesismc.core.factory.powers.entity;
+package me.dueris.genesismc.core.factory.powers.genesis;
 
 
 import org.bukkit.ChatColor;

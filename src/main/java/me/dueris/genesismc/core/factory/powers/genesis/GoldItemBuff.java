@@ -1,4 +1,4 @@
-package me.dueris.genesismc.core.factory.powers.item;
+package me.dueris.genesismc.core.factory.powers.genesis;
 
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
