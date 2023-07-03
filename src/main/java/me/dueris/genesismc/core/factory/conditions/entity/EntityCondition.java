@@ -39,6 +39,10 @@ public class EntityCondition {
                 }
             }
         }
+
+        if(type.equalsIgnoreCase("origins:advancement")){
+
+        }
         return false;
     }
 }
