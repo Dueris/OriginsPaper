@@ -1,7 +1,12 @@
 package me.dueris.genesismc.core.factory.conditions.entity;
 
 import me.dueris.genesismc.core.utils.OriginContainer;
+import net.minecraft.advancements.AdvancementList;
+import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
+import org.bukkit.NamespacedKey;
+import org.bukkit.advancement.Advancement;
+import org.bukkit.advancement.AdvancementDisplayType;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
@@ -24,7 +29,8 @@ public class EntityCondition {
                     if(player.getGameMode().equals(GameMode.CREATIVE)) return true;
                 }
             }
-            if(ability.equalsIgnoreCase("minecraft:invulnerable")){
+            if(ability.equalsIgnoreCase("minecraft:invuln" +
+                    "rable")){
                 if(entity.isInvulnerable()) return true;
             }
             if(ability.equalsIgnoreCase("minecraft:maybuild")){
@@ -41,7 +47,15 @@ public class EntityCondition {
         }
 
         if(type.equalsIgnoreCase("origins:advancement")){
-
+            String advancementString = origin.getPowerFileFromType(powerfile).getEntityCondition().get("advancement").toString();
+            if(entity instanceof Player){
+                Player player = (Player) entity;
+                Advancement advancement = Bukkit.getAdvancement(NamespacedKey.minecraft(advancementString));
+                //advancementString.split("/")[1].toUpperCase();
+                if(player.hasAI()){
+                    return true;
+                }
+            }
         }
         return false;
     }
