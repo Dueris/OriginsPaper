@@ -102,6 +102,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         Bukkit.getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC]  GenesisMC -- Created by The Genesis Team").color(TextColor.fromHexString("#dd50ff")));
         Bukkit.getServer().getConsoleSender().sendMessage(Component.text("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"));
         //lang check
+        Bukkit.getServer().shutdown();
         if (Lang.lang_test == null) {
             getLogger().warning("[GenesisMC] Lang could not be loaded! Disabling plugin.");
             Bukkit.getServer().getPluginManager().disablePlugin(this);
