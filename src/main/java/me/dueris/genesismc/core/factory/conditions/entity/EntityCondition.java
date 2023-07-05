@@ -1,19 +1,25 @@
 package me.dueris.genesismc.core.factory.conditions.entity;
 
 import me.dueris.genesismc.core.utils.OriginContainer;
-import net.minecraft.advancements.AdvancementList;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
-import org.bukkit.NamespacedKey;
+import org.bukkit.World;
 import org.bukkit.advancement.Advancement;
-import org.bukkit.advancement.AdvancementDisplayType;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 
 public class EntityCondition {
+
     public static boolean check(Player p, OriginContainer origin, String powerfile, Entity entity){
         if(origin.getPowerFileFromType(powerfile).getEntityCondition() == null) return true;
-
+        p.sendMessage("entity_start");
         String type = origin.getPowerFileFromType(powerfile).getEntityCondition().get("type").toString();
         if(type.equalsIgnoreCase("origins:ability")){
             String ability = origin.getPowerFileFromType(powerfile).getEntityCondition().get("ability").toString();
@@ -50,11 +56,34 @@ public class EntityCondition {
             String advancementString = origin.getPowerFileFromType(powerfile).getEntityCondition().get("advancement").toString();
             if(entity instanceof Player){
                 Player player = (Player) entity;
-                Advancement advancement = Bukkit.getAdvancement(NamespacedKey.minecraft(advancementString));
-                //advancementString.split("/")[1].toUpperCase();
-                if(player.hasAI()){
-                    return true;
-                }
+                player.sendMessage(advancementString);
+                World world = player.getWorld();
+                File worldFolder = world.getWorldFolder();
+                File advancementsFolder = new File(worldFolder, "advancements");
+                File playerAdvancementFile = new File(advancementsFolder, player.getUniqueId() + ".json");
+
+                if (playerAdvancementFile.exists()) {
+                    player.sendMessage("exists");
+                    try {
+                        JSONParser parser = new JSONParser();
+                        JSONObject jsonObject = (JSONObject) parser.parse(new FileReader(playerAdvancementFile));
+                        JSONObject advancementJson = (JSONObject) jsonObject.get(advancementString);
+
+                        if (advancementJson != null) {
+                            player.sendMessage("json");
+                            Boolean done = (Boolean) advancementJson.get("done");
+                            if (done != null) {
+                                player.sendMessage("notnull");
+                                player.sendMessage(done.toString());
+                                if(done.toString() == "true"){
+                                    return true;
+                                }
+                            }else{return false;}
+                        }else{return false;}
+                    } catch (IOException | ParseException e) {
+                        e.printStackTrace();
+                    }
+                }else{return false;}
             }
         }
         return false;
