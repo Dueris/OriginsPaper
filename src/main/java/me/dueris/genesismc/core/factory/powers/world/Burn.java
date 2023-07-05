@@ -6,6 +6,7 @@ import me.dueris.genesismc.core.utils.OriginContainer;
 import me.dueris.genesismc.core.utils.PowerContainer;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -38,6 +39,8 @@ public class Burn extends BukkitRunnable {
                         ticksE++;
                         return;
                     } else {
+                        if(p.isInWaterOrRainOrBubbleColumn()) return;
+                        if(p.getGameMode() == GameMode.CREATIVE) return;
                         if(!Conditions.check(p, origin, "origins:burn", null, p)) return;
                         Long burn_duration = power.getBurnDuration();
                         p.setFireTicks(burn_duration.intValue());
