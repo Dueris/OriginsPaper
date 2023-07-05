@@ -47,6 +47,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
     public static ArrayList<Enchantment> custom_enchants = new ArrayList<>();
     public static WaterProtection waterProtectionEnchant;
     private static GenesisMC plugin;
+    private ConditionManager conditionManager;
     static {
         tool = EnumSet.of(Material.DIAMOND_AXE, Material.DIAMOND_HOE, Material.DIAMOND_PICKAXE, Material.DIAMOND_SHOVEL, Material.DIAMOND_SWORD, Material.GOLDEN_AXE, Material.GOLDEN_HOE, Material.GOLDEN_PICKAXE, Material.GOLDEN_SHOVEL, Material.GOLDEN_SWORD, Material.NETHERITE_AXE, Material.NETHERITE_HOE, Material.NETHERITE_PICKAXE, Material.NETHERITE_SHOVEL, Material.NETHERITE_SWORD, Material.IRON_AXE, Material.IRON_HOE, Material.IRON_PICKAXE, Material.IRON_SHOVEL, Material.IRON_SWORD, Material.WOODEN_AXE, Material.WOODEN_HOE, Material.WOODEN_PICKAXE, Material.WOODEN_SHOVEL, Material.WOODEN_SWORD, Material.SHEARS);
     }
@@ -93,7 +94,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         GenesisDataFiles.setup();
 
         //start
-
+        conditionManager = new ConditionManager(this);
         Bukkit.getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC]    ____                               _         __  __    ____ ").color(TextColor.fromHexString("#b9362f")));
         Bukkit.getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC]   / ___|   ___   _ __     ___   ___  (_)  ___  |  \\/  |  / ___|").color(TextColor.fromHexString("#bebe42")));
         Bukkit.getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC]  | |  _   / _ \\ | '_ \\   / _ \\ / __| | | / __| | |\\/| | | |    ").color(TextColor.fromHexString("#4fec4f")));
