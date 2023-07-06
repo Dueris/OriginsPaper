@@ -215,10 +215,12 @@ public class ChoosingCORE implements Listener {
             getServer().getPluginManager().callEvent(Event);
 
             if (p.getInventory().getItemInMainHand().isSimilar(OrbOfOrigins.orb) && !OriginPlayer.hasOrigin(p, CraftApoli.nullOrigin().getTag())) {
+                if(p.getGameMode() == GameMode.CREATIVE) return;
                 int amt = p.getInventory().getItemInMainHand().getAmount();
                 p.getInventory().getItemInMainHand().setAmount(amt - 1);
             } else {
                 if (p.getInventory().getItemInOffHand().isSimilar(orb) && !OriginPlayer.hasOrigin(p, CraftApoli.nullOrigin().getTag())) {
+                    if(p.getGameMode() == GameMode.CREATIVE) return;
                     int amt = p.getInventory().getItemInOffHand().getAmount();
                     p.getInventory().getItemInOffHand().setAmount(amt - 1);
                 }
