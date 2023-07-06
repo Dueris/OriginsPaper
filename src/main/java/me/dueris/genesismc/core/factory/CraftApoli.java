@@ -202,13 +202,25 @@ public class CraftApoli {
                     String layerName = FilenameUtils.getBaseName(originLayer.getName());
                     try {
                         LayerContainer layer = new LayerContainer(layerNamespace+":"+layerName, fileToFileContainer((JSONObject) new JSONParser().parse(new FileReader(originLayer))));
-                        //removes an origin layer if a layer with teh same namespace has the replace key set to true
-                        if (layer.getReplace() && layerExists(layer)) CraftApoli.originLayers.removeIf(existingLayer -> layer.getTag().equals(existingLayer.getTag()));
-                        CraftApoli.originLayers.add(layer);
+
+                        if (layer.getReplace() && layerExists(layer)) {
+                            //removes an origin layer if a layer with the same namespace has the replace key set to true
+                            CraftApoli.originLayers.removeIf(existingLayer -> layer.getTag().equals(existingLayer.getTag()));
+                            CraftApoli.originLayers.add(layer);
+                        } else if (layerExists(layer)) {
+                            //adds an origin to a layer if it already exists and the replace key is null or false
+                            LayerContainer existingLayer = CraftApoli.originLayers.get(CraftApoli.originLayers.indexOf(getLayerFromTag(layer.getTag())));
+                            existingLayer.addOrigin(layer.getOrigins());
+                            CraftApoli.originLayers.set(CraftApoli.originLayers.indexOf(getLayerFromTag(layer.getTag())), existingLayer);
+                        } else {
+                            CraftApoli.originLayers.add(layer);
+                        }
+
                         origin_layer = new File(datapack.getName() + File.separator + "data" + File.separator + namespace.getName() + File.separator + "origin_layers" + File.separator + layerName + ".json");
                     } catch (Exception e) {
-                        if (showErrors)
-                            Bukkit.getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] Error parsing \""+ datapack.getName() + File.separator + "data" + File.separator + namespace.getName() + File.separator + "origin_layers" + File.separator + layerName + ".json" + "\"").color(TextColor.color(255, 0, 0)));
+                        if (showErrors) {
+                            Bukkit.getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] Error parsing \"" + datapack.getName() + File.separator + "data" + File.separator + namespace.getName() + File.separator + "origin_layers" + File.separator + layerName + ".json" + "\"").color(TextColor.color(255, 0, 0)));
+                        }
                     }
                 }
             }
@@ -391,8 +403,8 @@ public class CraftApoli {
      * @return True if the layer given is currently loaded.
      **/
     public static boolean layerExists(LayerContainer layer) {
-        for (LayerContainer layers : CraftApoli.getLayers()) {
-            if (layers.getTag().equals(layer.getTag())) return true;
+        for (LayerContainer loadedLayers : CraftApoli.getLayers()) {
+            if (loadedLayers.getTag().equals(layer.getTag())) return true;
         }
         return false;
     }

@@ -44,7 +44,7 @@ public class MainMenuContents {
             originDetails.put(origin.getTag(), origin.getName());
         }
 
-        if (originDetails.isEmpty()) return ChooseMenuContents.ChooseMenuContent(0, choosing.get(p));
+        //if (originDetails.isEmpty()) return ChooseMenuContents.ChooseMenuContent(0, choosing.get(p));
 
         HashMap<String, String> originDescriptions = new HashMap<>();
         for (OriginContainer origin : CraftApoli.getCoreOrigins()) {

@@ -1,8 +1,12 @@
 package me.dueris.genesismc.core.utils;
 
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 
 public class FileContainer implements Serializable {
 
@@ -19,7 +23,7 @@ public class FileContainer implements Serializable {
 
     @Override
     public String toString() {
-        return this.keys.toString() + this.values.toString();
+        return this.keys.toString() + "\n" + this.values.toString();
     }
 
     public Object get(String key) {
@@ -28,9 +32,11 @@ public class FileContainer implements Serializable {
         return this.values.get(index);
     }
 
-    public void add(String key, Object value) {
-        this.keys.add(key);
-        this.values.add(value);
+    public void addOrigin(ArrayList<String> originTags) {
+        int index = this.keys.indexOf("origins");
+        JSONArray origins = (JSONArray) this.values.get(index);
+        origins.addAll(originTags);
+        this.values.set(index, origins);
     }
 
     public void remove(String key) {
@@ -45,8 +51,7 @@ public class FileContainer implements Serializable {
 
     public void replace(String key, String newValue) {
         int index = this.keys.indexOf(key);
-        if (index == -1) add(key, newValue);
-        else this.values.set(index, newValue);
+        if (index != -1) this.values.set(index, newValue);
     }
 
     public ArrayList<String> getKeys() {

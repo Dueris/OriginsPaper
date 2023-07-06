@@ -75,20 +75,20 @@ public class Gui extends SubCommand {
             for (LayerContainer layer : CraftApoli.getLayers()) {
                 OriginPlayer.unassignPowers(p, layer);
                 OriginPlayer.setOrigin(p, layer, CraftApoli.nullOrigin());
-                String skinData = p.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "original-skin-url"), PersistentDataType.STRING).toString();
-                if(p.getPlayerProfile().getTextures().getSkinModel() == PlayerTextures.SkinModel.CLASSIC){
-                    try {
-                        p.getPlayerProfile().getTextures().setSkin(new URL(skinData), PlayerTextures.SkinModel.CLASSIC);
-                    } catch (MalformedURLException e) {
-                        e.printStackTrace();
-                    }
-                }else{
-                    try {
-                        p.getPlayerProfile().getTextures().setSkin(new URL(skinData), PlayerTextures.SkinModel.SLIM);
-                    } catch (MalformedURLException e) {
-                        e.printStackTrace();
-                    }
-                }
+//                String skinData = p.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "original-skin-url"), PersistentDataType.STRING).toString();
+//                if(p.getPlayerProfile().getTextures().getSkinModel() == PlayerTextures.SkinModel.CLASSIC){
+//                    try {
+//                        p.getPlayerProfile().getTextures().setSkin(new URL(skinData), PlayerTextures.SkinModel.CLASSIC);
+//                    } catch (MalformedURLException e) {
+//                        e.printStackTrace();
+//                    }
+//                }else{
+//                    try {
+//                        p.getPlayerProfile().getTextures().setSkin(new URL(skinData), PlayerTextures.SkinModel.SLIM);
+//                    } catch (MalformedURLException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
                 for(Player pls : Bukkit.getOnlinePlayers()){
                     pls.hidePlayer(GenesisMC.getPlugin(), p);
                 }
