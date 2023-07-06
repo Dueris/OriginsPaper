@@ -1,5 +1,6 @@
 package me.dueris.genesismc.core.factory.conditions.damage;
 
+import me.dueris.genesismc.core.factory.conditions.Condition;
 import me.dueris.genesismc.core.factory.conditions.entity.EntityCondition;
 import me.dueris.genesismc.core.factory.powers.armour.RestrictArmor;
 import me.dueris.genesismc.core.utils.OriginContainer;
@@ -12,9 +13,11 @@ import org.bukkit.event.entity.EntityDamageEvent;
 
 import static org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 
-public class DamageCondition {
-    public static boolean checkDamageCondition(Player p, OriginContainer origin, String powerfile, EntityDamageEvent e) {
-        if(origin.getPowerFileFromType(powerfile).getDamageCondition().equals(null)) return false;
+public class DamageCondition extends Condition {
+
+    public static boolean check(Player p, OriginContainer origin, String powerfile, EntityDamageEvent e) {
+        if(origin.getPowerFileFromType(powerfile).getDamageCondition() == null) return false;
+        if(origin.getPowerFileFromType(powerfile).getDamageCondition().get("type") == null) return false;
 
         String type = origin.getPowerFileFromType(powerfile).getDamageCondition().get("type").toString();
 
@@ -83,6 +86,7 @@ public class DamageCondition {
 
         if (type.equalsIgnoreCase("origins:from_falling")) {
             if (e.getCause().equals(DamageCause.FALL)) {
+                p.sendMessage("231");
                 return true;
 
             }
