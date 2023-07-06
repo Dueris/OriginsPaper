@@ -207,9 +207,16 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 
 
         for (Player p : Bukkit.getOnlinePlayers()) {
-            PlayerHandler.customOriginExistCheck(p);
+            PlayerHandler.layerChecks(p);
             OriginPlayer.assignPowers(p);
             if (p.isOp()) p.sendMessage(Component.text("Origins Reloaded.").color(TextColor.fromHexString(AQUA)));
+            for (OriginContainer origin : OriginPlayer.returnOrigins(p).values()) {
+                //System.out.println(origin.getTag());
+            }
+        }
+
+        for (LayerContainer layer : CraftApoli.getLayers()) {
+           // System.out.println(layer.getTag());
         }
     }
 

@@ -2,21 +2,17 @@ package me.dueris.genesismc.core.entity;
 
 import me.dueris.genesismc.core.GenesisMC;
 import me.dueris.genesismc.core.enums.OriginDataType;
-import me.dueris.genesismc.core.enums.OriginMenu;
 import me.dueris.genesismc.core.events.OriginChooseEvent;
 import me.dueris.genesismc.core.factory.CraftApoli;
 import me.dueris.genesismc.core.utils.LayerContainer;
 import me.dueris.genesismc.core.utils.OriginContainer;
 import me.dueris.genesismc.core.utils.PowerContainer;
 import me.dueris.genesismc.core.utils.SendCharts;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlot;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -25,15 +21,10 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import static me.dueris.genesismc.core.choosing.ChoosingCORE.*;
-import static me.dueris.genesismc.core.choosing.contents.ChooseMenuContents.ChooseMenuContent;
-import static me.dueris.genesismc.core.choosing.contents.MainMenuContents.GenesisMainMenuContents;
 import static me.dueris.genesismc.core.factory.powers.Powers.*;
-import static me.dueris.genesismc.core.utils.BukkitColour.RED;
 import static org.bukkit.Bukkit.getServer;
 import static org.bukkit.ChatColor.GRAY;
 
@@ -256,7 +247,10 @@ public class OriginPlayer {
      */
     public static void removeOrigin(Player player, LayerContainer layer) {
         HashMap<LayerContainer, OriginContainer> origins = getOrigin(player);
-        origins.remove(layer);
+        ArrayList<LayerContainer> layers = new ArrayList<>(origins.keySet());
+        for (LayerContainer playerLayer : layers) {
+            if (playerLayer.getTag().equals(layer.getTag())) origins.remove(playerLayer);
+        }
         player.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origins"), PersistentDataType.BYTE_ARRAY, CraftApoli.toByteArray(origins));
     }
 
@@ -517,6 +511,14 @@ public class OriginPlayer {
                 case "genesis:bioluminescent" -> bioluminescent.remove(player);
             }
         }
+    }
+
+    /**
+     * @param p Player
+     * @return The layers and origins currently assigned to the player
+     */
+    public static HashMap<LayerContainer, OriginContainer> returnOrigins(Player p) {
+        return CraftApoli.toOriginContainer(p.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "origins"), PersistentDataType.BYTE_ARRAY));
     }
 
 }

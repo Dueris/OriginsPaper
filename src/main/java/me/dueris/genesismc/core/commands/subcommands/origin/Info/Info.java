@@ -101,8 +101,7 @@ public class Info extends SubCommand implements Listener {
 
 
         ItemMeta nextMeta = next.getItemMeta();
-        if (playerOrigins.get(p).size() == page)
-            nextMeta.getPersistentDataContainer().set(pageKey, PersistentDataType.INTEGER, page);
+        if (playerOrigins.get(p).size()-1 == page) nextMeta.getPersistentDataContainer().set(pageKey, PersistentDataType.INTEGER, page);
         else nextMeta.getPersistentDataContainer().set(pageKey, PersistentDataType.INTEGER, page + 1);
         next.setItemMeta(nextMeta);
 
@@ -215,7 +214,7 @@ public class Info extends SubCommand implements Listener {
         if (item.getType() == Material.ARROW && (item.getItemMeta().getDisplayName().equals("Back") || item.getItemMeta().getDisplayName().equals("Next"))) {
 
             if (item.getItemMeta().getDisplayName().equals("Back") && playerPage.get(player) > 0) playerPage.put(player, playerPage.get(player)-1);
-            if (item.getItemMeta().getDisplayName().equals("Next") && playerPage.get(player) <= playerOrigins.get(player).size()) playerPage.put(player, playerPage.get(player)+1);
+            if (item.getItemMeta().getDisplayName().equals("Next") && playerPage.get(player) < playerOrigins.get(player).size()-1) playerPage.put(player, playerPage.get(player)+1);
 
             @NotNull Inventory info = Bukkit.createInventory(player, 54, "Info - " + playerOrigins.get(player).get(playerPage.get(player)).getLayerName());
             info.setContents(infoMenu(player, item.getItemMeta().getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "page"), PersistentDataType.INTEGER)));

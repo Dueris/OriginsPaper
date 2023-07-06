@@ -27,5 +27,6 @@
     "origins:human"
   ],
   "allow_random_unchoosable": false,
-  "hidden": false
+  "hidden": false,
+  "name": "Origin"
 }

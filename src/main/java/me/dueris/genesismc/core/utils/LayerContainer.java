@@ -1,7 +1,6 @@
 package me.dueris.genesismc.core.utils;
 
 import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -66,5 +65,12 @@ public class LayerContainer implements Serializable {
         Object array = layerFile.get("origins");
         if (array instanceof JSONArray origins) return new ArrayList<String>(origins);
         return new ArrayList<>();
+    }
+
+    /**
+     * @param originTags Adds the specified originTags to the layer. If you only need to pass in one originTag use an array list with one tag.
+     */
+    public void addOrigin(ArrayList<String> originTags) {
+        this.layerFile.addOrigin(originTags);
     }
 }
