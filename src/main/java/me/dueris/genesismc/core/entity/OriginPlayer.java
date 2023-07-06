@@ -270,7 +270,7 @@ public class OriginPlayer {
         } else if (type.equals(OriginDataType.TOGGLE)) {
             player.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "toggle"), PersistentDataType.INTEGER, 1);
         } else if (type.equals(OriginDataType.IN_PHASING_FORM)) {
-            player.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
+            player.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.BOOLEAN, false);
         }
 
     }
@@ -280,8 +280,12 @@ public class OriginPlayer {
             player.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, value);
         } else if (type.equals(OriginDataType.TOGGLE)) {
             player.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "toggle"), PersistentDataType.INTEGER, value);
-        } else if (type.equals(OriginDataType.IN_PHASING_FORM)) {
-            player.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, value);
+        }
+    }
+
+    public static void setOriginData(Player player, OriginDataType type, boolean value){
+        if (type.equals(OriginDataType.IN_PHASING_FORM)) {
+            player.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.BOOLEAN, value);
         }
     }
 
@@ -291,7 +295,7 @@ public class OriginPlayer {
     }
 
     public static boolean isInPhantomForm(Player player) {
-        return player.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER) != 1;
+        return player.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.BOOLEAN);
     }
 
     public static void assignPowers(Player player) {
