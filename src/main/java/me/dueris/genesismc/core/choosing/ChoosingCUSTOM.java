@@ -216,7 +216,11 @@ public class ChoosingCUSTOM implements Listener {
                 choosing.remove(p);
                 Bukkit.getScheduler().runTaskLater(GenesisMC.getPlugin(), () -> {
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
-                    p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
+                    if(phantomize.contains(p)){
+                        p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.BOOLEAN, true);
+                    }else{
+                        p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.BOOLEAN, false);
+                    }
                     DefaultChoose.DefaultChoose(p);
                     removeItemPhantom(p);
                     removeItemEnder(p);
