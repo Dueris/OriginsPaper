@@ -64,7 +64,7 @@ public class Set extends SubCommand {
 
             for (Player p : players) {
                 OriginPlayer.setOrigin(p, CraftApoli.getLayerFromTag(args[2]), CraftApoli.getOrigin(originTag));
-                OriginPlayer.resetOriginData(p, OriginDataType.IN_PHANTOMIZED_FORM);
+                OriginPlayer.resetOriginData(p, OriginDataType.IN_PHASING_FORM);
                 OriginChangeEvent originChangeEvent = new OriginChangeEvent(p);
                 getServer().getPluginManager().callEvent(originChangeEvent);
             }
