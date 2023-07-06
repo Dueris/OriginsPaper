@@ -144,6 +144,24 @@ public class PowerContainer implements Serializable {
     }
 
     /**
+     * @return String value of render_type for power origins:phasing
+     */
+    public String getRenderType() {
+        Object type = powerFile.get("render_type");
+        if(type == null) return null;
+        return type.toString();
+    }
+
+    /**
+     * @return LONG view_distance value for power origins:phasing
+     */
+    public Long getViewDistance() {
+        Object distance = powerFile.get("view_distance");
+        if(distance == null) return null;
+        return (Long) distance;
+    }
+
+    /**
      * @return The value "tick_rate" from the power file
      */
     public Long getTickRate() {
@@ -416,6 +434,23 @@ public class PowerContainer implements Serializable {
 
     public HashMap<String, Object> getEntityCondition() {
         Object obj = powerFile.get("entity_condition");
+        if (obj == null) return new HashMap<>();
+
+        if (obj instanceof JSONObject modifier) {
+            HashMap<String, Object> result = new HashMap<>();
+            for (Object key : modifier.keySet()) {
+                String string_key = (String) key;
+                Object value = modifier.get(string_key);
+                result.put(string_key, value);
+            }
+            return result;
+        }
+
+        return null;
+    }
+
+    public HashMap<String, Object> getPhaseDownCondition() {
+        Object obj = powerFile.get("phase_down_condition");
         if (obj == null) return new HashMap<>();
 
         if (obj instanceof JSONObject modifier) {
