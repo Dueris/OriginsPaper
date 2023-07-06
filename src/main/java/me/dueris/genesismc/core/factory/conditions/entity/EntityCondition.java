@@ -18,7 +18,8 @@ import java.io.IOException;
 public class EntityCondition {
 
     public static boolean check(Player p, OriginContainer origin, String powerfile, Entity entity){
-        if(origin.getPowerFileFromType(powerfile).getEntityCondition() == null) return true;
+        if(origin.getPowerFileFromType(powerfile).getEntityCondition() == null) return false;
+        if(origin.getPowerFileFromType(powerfile).getEntityCondition().get("type") == null) return false;
         p.sendMessage("entity_start");
         String type = origin.getPowerFileFromType(powerfile).getEntityCondition().get("type").toString();
         if(type.equalsIgnoreCase("origins:ability")){
