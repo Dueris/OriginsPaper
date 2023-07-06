@@ -265,13 +265,11 @@ public class OriginPlayer {
     public static void resetOriginData(Player player, OriginDataType type) {
         if (type.equals(OriginDataType.CAN_EXPLODE)) {
             player.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
-        } else if (type.equals(OriginDataType.PHANTOMIZED_ID)) {
-            player.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "phantomid"), PersistentDataType.INTEGER, 1);
         } else if (type.equals(OriginDataType.SHULKER_BOX_DATA)) {
             player.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "shulker-box"), PersistentDataType.STRING, "");
         } else if (type.equals(OriginDataType.TOGGLE)) {
             player.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "toggle"), PersistentDataType.INTEGER, 1);
-        } else if (type.equals(OriginDataType.IN_PHANTOMIZED_FORM)) {
+        } else if (type.equals(OriginDataType.IN_PHASING_FORM)) {
             player.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
         }
 
@@ -280,11 +278,9 @@ public class OriginPlayer {
     public static void setOriginData(Player player, OriginDataType type, int value) {
         if (type.equals(OriginDataType.CAN_EXPLODE)) {
             player.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, value);
-        } else if (type.equals(OriginDataType.PHANTOMIZED_ID)) {
-            player.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "phantomid"), PersistentDataType.INTEGER, value);
         } else if (type.equals(OriginDataType.TOGGLE)) {
             player.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "toggle"), PersistentDataType.INTEGER, value);
-        } else if (type.equals(OriginDataType.IN_PHANTOMIZED_FORM)) {
+        } else if (type.equals(OriginDataType.IN_PHASING_FORM)) {
             player.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, value);
         }
     }
