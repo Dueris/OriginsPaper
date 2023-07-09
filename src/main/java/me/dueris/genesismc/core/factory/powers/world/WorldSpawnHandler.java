@@ -20,6 +20,41 @@ public class WorldSpawnHandler implements Listener {
         return center.distanceSquared(location) >= (radius * radius);
     }
 
+    /*
+    public void initiate() {
+        this.logger.info("Preparing spawns...");
+
+        var world = Bukkit.getWorld("world");
+        if (world == null) throw new IllegalStateException("The world does not exist");
+
+        var bedrock = Material.BEDROCK.createBlockData();
+        var doneCount = new AtomicInteger();
+        var future = new CompletableFuture<Void>();
+
+        var spawns = this.plugin.getSpawnsConfig().spawns();
+        for (int i = 0; i < spawns.length; ++i) {
+            var vec = spawns[i];
+            var i1 = i;
+            Bukkit.getRegionScheduler().execute(this.plugin, world, vec.x() >> 4, vec.z() >> 4, () -> {
+                var y = world.getHighestBlockYAt(vec.x(), vec.z());
+                world.setBlockData(vec.x(), y, vec.z(), bedrock);
+
+                var spawn = new Location(world, vec.x() + 0.5, y + 1, vec.z() + 0.5);
+                this.spawns[i1] = spawn;
+
+                if (doneCount.incrementAndGet() == spawns.length) {
+                    future.complete(null);
+                }
+            });
+        }
+
+        future.thenAccept((v) -> {
+            this.ready = true;
+            this.logger.info("Spawns prepared");
+        });
+    }
+     */
+
     public static Location NetherSpawn() {
         for (World world : Bukkit.getWorlds()) {
             if (world.getEnvironment() == World.Environment.NETHER) {
