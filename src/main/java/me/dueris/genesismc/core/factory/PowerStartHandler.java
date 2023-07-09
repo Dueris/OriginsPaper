@@ -63,11 +63,11 @@ public class PowerStartHandler {
         BurnInDaylight burnInDaylight = new BurnInDaylight();
         burnInDaylight.runTaskTimer(getPlugin(), 0, 10);
 
-        Phantomized phantomized = new Phantomized();
-        phantomized.runTaskTimer(getPlugin(), 0, 1);
-
-        PhantomizeOverlay phantomizedo = new PhantomizeOverlay();
-        phantomizedo.runTaskTimer(getPlugin(), 0, 2);
+//        Phantomized phantomized = new Phantomized();
+//        phantomized.runTaskTimer(getPlugin(), 0, 1);
+//
+//        PhantomizeOverlay phantomizedo = new PhantomizeOverlay();
+//        phantomizedo.runTaskTimer(getPlugin(), 0, 2);
 
         JumpIncreased jumpIncreased = new JumpIncreased();
         jumpIncreased.runTaskTimer(getPlugin(), 0, 10);
@@ -125,6 +125,9 @@ public class PowerStartHandler {
 
         Bioluminescent Bioluminescent = new Bioluminescent();
         Bioluminescent.runTaskTimer(getPlugin(), 0, 1);
+
+        Phasing phasing = new Phasing();
+        phasing.runTaskTimer(getPlugin(), 0, 1);
     }
 
     public static void StartListeners() {
@@ -151,7 +154,7 @@ public class PowerStartHandler {
         getServer().getPluginManager().registerEvents(new WaterDamage(), getPlugin());
         getServer().getPluginManager().registerEvents(new ProjectileImmune(), getPlugin());
         getServer().getPluginManager().registerEvents(new EnderPearlThrow(), getPlugin());
-        getServer().getPluginManager().registerEvents(new Phantomized(), getPlugin());
+        getServer().getPluginManager().registerEvents(new Phasing(), getPlugin());
         getServer().getPluginManager().registerEvents(new GoldArmourBuff(), getPlugin());
         getServer().getPluginManager().registerEvents(new GoldItemBuff(), getPlugin());
         getServer().getPluginManager().registerEvents(new BigLeap(), getPlugin());
