@@ -247,7 +247,7 @@ public class ChoosingCUSTOM implements Listener {
                         infinpearl.setItemMeta(pearl_meta);
                         p.getInventory().addItem(infinpearl);
                     }
-                    if (phantomize.contains(p)) {
+                    if (phasing.contains(p)) {
                         ItemStack spectatorswitch = new ItemStack(Material.PHANTOM_MEMBRANE);
                         ItemMeta switch_meta = spectatorswitch.getItemMeta();
                         switch_meta.setDisplayName(GRAY + "Phantom Form");
