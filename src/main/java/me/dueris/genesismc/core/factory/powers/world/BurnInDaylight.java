@@ -16,8 +16,8 @@ public class BurnInDaylight extends BukkitRunnable {
     public void run() {
         for (Player p : Bukkit.getOnlinePlayers()) {
             PersistentDataContainer data = p.getPersistentDataContainer();
-            int phantomid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER);
-            if (burn_in_daylight.contains(p) && phantomid != 2) {
+            boolean phantomid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.BOOLEAN);
+            if (burn_in_daylight.contains(p) && phantomid != true) {
                 if ((p.getLocation().getBlockY() + 1 > p.getWorld().getHighestBlockYAt(p.getLocation()))) {
                     if (p.getGameMode() == GameMode.SURVIVAL || p.getGameMode() == GameMode.ADVENTURE) {
                         if (p.getWorld().isDayTime() && !p.isInWaterOrRainOrBubbleColumn()) {
