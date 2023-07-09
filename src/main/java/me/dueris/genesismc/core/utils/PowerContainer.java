@@ -112,7 +112,7 @@ public class PowerContainer implements Serializable {
      */
     public Boolean getShouldRender() {
         Object render = powerFile.get("render_elytra");
-        if (render == null) return false;
+        if (render == null) return true;
         return (Boolean) render;
     }
 
@@ -130,7 +130,7 @@ public class PowerContainer implements Serializable {
      */
     public Long getInterval() {
         Object render = powerFile.get("interval");
-        if (render == null) return null;
+        if (render == null) return 10L;
         return (long) render;
     }
 
@@ -139,7 +139,7 @@ public class PowerContainer implements Serializable {
      */
     public Long getBurnDuration() {
         Object render = powerFile.get("burn_duration");
-        if (render == null) return null;
+        if (render == null) return 100L;
         return (long) render;
     }
 
@@ -148,7 +148,7 @@ public class PowerContainer implements Serializable {
      */
     public String getRenderType() {
         Object type = powerFile.get("render_type");
-        if(type == null) return null;
+        if(type == null) return "blindness";
         return type.toString();
     }
 
@@ -157,7 +157,7 @@ public class PowerContainer implements Serializable {
      */
     public Long getViewDistance() {
         Object distance = powerFile.get("view_distance");
-        if(distance == null) return null;
+        if(distance == null) return 10L;
         return (Long) distance;
     }
 
@@ -166,7 +166,7 @@ public class PowerContainer implements Serializable {
      */
     public Long getTickRate() {
         Object render = powerFile.get("tick_rate");
-        if (render == null) return null;
+        if (render == null) return 10L;
         return (long) render;
     }
 
