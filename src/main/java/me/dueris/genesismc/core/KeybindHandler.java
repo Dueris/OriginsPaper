@@ -47,14 +47,14 @@ public class KeybindHandler implements Listener {
             p.openInventory(vault);
 
         }
-        if (phantomize.contains(p)) {
+        if (phasing.contains(p)) {
             e.setCancelled(true);
-            int phantomid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER);
-            if (phantomid == 1) {
+            boolean phantomid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.BOOLEAN);
+            if (phantomid == false) {
                 if (p.getGameMode() != GameMode.SPECTATOR) {
 
                     if (p.getFoodLevel() > 6) {
-                        p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 2);
+                        p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.BOOLEAN, true);
                         p.sendActionBar(DARK_AQUA + "Activated Phantom Form");
                         p.setSilent(true);
                         p.setCollidable(false);
@@ -66,10 +66,10 @@ public class KeybindHandler implements Listener {
                 } else {
                     p.sendMessage(ChatColor.RED + "You are unable to switch forms while inside a block or in spectator mode.");
                 }
-            } else if (phantomid == 2) {
+            } else if (phantomid == true) {
                 if (p.getGameMode() != GameMode.SPECTATOR) {
 
-                    p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.INTEGER, 1);
+                    p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.BOOLEAN, false);
                     p.sendActionBar(DARK_AQUA + "Deactivated Phantom Form");
                     p.setSilent(false);
                     p.setCollidable(true);
