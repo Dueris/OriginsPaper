@@ -216,7 +216,7 @@ public class ChoosingCUSTOM implements Listener {
                 choosing.remove(p);
                 Bukkit.getScheduler().runTaskLater(GenesisMC.getPlugin(), () -> {
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
-                    if(phantomize.contains(p)){
+                    if(phasing.contains(p)){
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.BOOLEAN, true);
                     }else{
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.BOOLEAN, false);
@@ -250,7 +250,7 @@ public class ChoosingCUSTOM implements Listener {
                     if (phasing.contains(p)) {
                         ItemStack spectatorswitch = new ItemStack(Material.PHANTOM_MEMBRANE);
                         ItemMeta switch_meta = spectatorswitch.getItemMeta();
-                        switch_meta.setDisplayName(GRAY + "Phantom Form");
+                        switch_meta.setDisplayName(GRAY + "Phasing Form");
                         ArrayList<String> pearl_lore = new ArrayList();
                         switch_meta.setUnbreakable(true);
                         switch_meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
