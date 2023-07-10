@@ -47,40 +47,40 @@ public class KeybindHandler implements Listener {
             p.openInventory(vault);
 
         }
-        if (phasing.contains(p)) {
-            e.setCancelled(true);
-            boolean phantomid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.BOOLEAN);
-            if (phantomid == false) {
-                if (p.getGameMode() != GameMode.SPECTATOR) {
-
-                    if (p.getFoodLevel() > 6) {
-                        p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.BOOLEAN, true);
-                        p.sendActionBar(DARK_AQUA + "Activated Phantom Form");
-                        p.setSilent(true);
-                        p.setCollidable(false);
-
-                    } else {
-                        p.sendMessage(RED + "You must be able to sprint to switch forms");
-                    }
-
-                } else {
-                    p.sendMessage(ChatColor.RED + "You are unable to switch forms while inside a block or in spectator mode.");
-                }
-            } else if (phantomid == true) {
-                if (p.getGameMode() != GameMode.SPECTATOR) {
-
-                    p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.BOOLEAN, false);
-                    p.sendActionBar(DARK_AQUA + "Deactivated Phantom Form");
-                    p.setSilent(false);
-                    p.setCollidable(true);
-
-                } else {
-                    p.sendMessage(ChatColor.RED + "You are unable to switch forms while inside a block or in spectator mode.");
-                }
-            } else {
-                p.sendMessage(RED + "Error: Switching could not be executed");
-            }
-        }
+//        if (phasing.contains(p)) {
+//            e.setCancelled(true);
+//            boolean phantomid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.BOOLEAN);
+//            if (phantomid == false) {
+//                if (p.getGameMode() != GameMode.SPECTATOR) {
+//
+//                    if (p.getFoodLevel() > 6) {
+//                        p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.BOOLEAN, true);
+//                        p.sendActionBar(DARK_AQUA + "Activated Phasing Form");
+//                        p.setSilent(true);
+//                        p.setCollidable(false);
+//
+//                    } else {
+//                        p.sendMessage(RED + "You must be able to sprint to switch forms");
+//                    }
+//
+//                } else {
+//                    p.sendMessage(ChatColor.RED + "You are unable to switch forms while inside a block or in spectator mode.");
+//                }
+//            } else if (phantomid == true) {
+//                if (p.getGameMode() != GameMode.SPECTATOR) {
+//
+//                    p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.BOOLEAN, false);
+//                    p.sendActionBar(DARK_AQUA + "Deactivated Phasing Form");
+//                    p.setSilent(false);
+//                    p.setCollidable(true);
+//
+//                } else {
+//                    p.sendMessage(ChatColor.RED + "You are unable to switch forms while inside a block or in spectator mode.");
+//                }
+//            } else {
+//                p.sendMessage(RED + "Error: Switching could not be executed");
+//            }
+//        }
         if (launch_into_air.contains(p)) {
             if (p.isSneaking()) return;
             if (cooldownAfterElytrian.containsKey(p.getUniqueId())) return;
