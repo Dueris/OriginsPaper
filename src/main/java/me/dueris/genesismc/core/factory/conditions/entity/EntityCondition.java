@@ -7,6 +7,7 @@ import org.bukkit.GameMode;
 import org.bukkit.World;
 import org.bukkit.advancement.Advancement;
 import org.bukkit.attribute.Attribute;
+import org.bukkit.block.Biome;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.json.simple.JSONObject;
@@ -103,6 +104,13 @@ public class EntityCondition {
         }
 
         // TODO: continue entity_condition to use biome condition for origins:biome in some cases. see https://origins.readthedocs.io/en/latest/types/entity_condition_types/biome/
+
+        if(type.equalsIgnoreCase("origins:biome")){
+            String biomeString = origin.getPowerFileFromType(powerfile).getEntityCondition().get("biome").toString().split(":")[1].replace(".", "_").toUpperCase();
+            if(entity.getLocation().getBlock().getBiome().equals(Biome.valueOf(biomeString))){
+                return "true";
+            }
+        }
 
         return "false";
     }
