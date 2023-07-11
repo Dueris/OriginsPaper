@@ -17,9 +17,9 @@ import java.io.IOException;
 
 public class EntityCondition {
 
-    public static boolean check(Player p, OriginContainer origin, String powerfile, Entity entity){
-        if(origin.getPowerFileFromType(powerfile).getEntityCondition() == null) return false;
-        if(origin.getPowerFileFromType(powerfile).getEntityCondition().get("type") == null) return false;
+    public static String check(Player p, OriginContainer origin, String powerfile, Entity entity){
+        if(origin.getPowerFileFromType(powerfile).getEntityCondition() == null) return "null";
+        if(origin.getPowerFileFromType(powerfile).getEntityCondition().get("type") == null) return "null";
         p.sendMessage("entity_start");
         String type = origin.getPowerFileFromType(powerfile).getEntityCondition().get("type").toString();
         if(type.equalsIgnoreCase("origins:ability")){
@@ -27,28 +27,28 @@ public class EntityCondition {
             if(ability.equalsIgnoreCase("minecraft:flying")){
                 if(entity instanceof Player){
                     Player player = (Player) entity;
-                    if(player.isFlying()) return true;
+                    if(player.isFlying()) return "true";
                 }
             }
             if(ability.equalsIgnoreCase("minecraft:instabuild")){
                 if(entity instanceof Player){
                     Player player = (Player) entity;
-                    if(player.getGameMode().equals(GameMode.CREATIVE)) return true;
+                    if(player.getGameMode().equals(GameMode.CREATIVE)) return "true";
                 }
             }
             if(ability.equalsIgnoreCase("minecraft:invuln" +
                     "rable")){
-                if(entity.isInvulnerable()) return true;
+                if(entity.isInvulnerable()) return "true";
             }
             if(ability.equalsIgnoreCase("minecraft:maybuild")){
                 if(entity.hasPermission("minecraft.build")){
-                    return true;
+                    return "true";
                 }
             }
             if(ability.equalsIgnoreCase("minecraft:mayfly")){
                 if(entity instanceof Player){
                     Player player = (Player) entity;
-                    if(player.getAllowFlight() == true) return true;
+                    if(player.getAllowFlight() == true) return "true";
                 }
             }
         }
@@ -77,16 +77,16 @@ public class EntityCondition {
                                 player.sendMessage("notnull");
                                 player.sendMessage(done.toString());
                                 if(done.toString() == "true"){
-                                    return true;
+                                    return "true";
                                 }
-                            }else{return false;}
-                        }else{return false;}
+                            }else{return "false";}
+                        }else{return "false";}
                     } catch (IOException | ParseException e) {
                         e.printStackTrace();
                     }
-                }else{return false;}
+                }else{return "false";}
             }
         }
-        return false;
+        return "false";
     }
 }

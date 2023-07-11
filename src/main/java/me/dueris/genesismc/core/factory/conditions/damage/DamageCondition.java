@@ -15,9 +15,9 @@ import static org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 
 public class DamageCondition extends Condition {
 
-    public static boolean check(Player p, OriginContainer origin, String powerfile, EntityDamageEvent e) {
-        if(origin.getPowerFileFromType(powerfile).getDamageCondition() == null) return false;
-        if(origin.getPowerFileFromType(powerfile).getDamageCondition().get("type") == null) return false;
+    public static String check(Player p, OriginContainer origin, String powerfile, EntityDamageEvent e) {
+        if(origin.getPowerFileFromType(powerfile).getDamageCondition() == null) return "null";
+        if(origin.getPowerFileFromType(powerfile).getDamageCondition().get("type") == null) return "null";
 
         String type = origin.getPowerFileFromType(powerfile).getDamageCondition().get("type").toString();
 
@@ -26,7 +26,7 @@ public class DamageCondition extends Condition {
             Long compare_to = (Long) origin.getPowerFileFromType(powerfile).getDamageCondition().get("compare_to");
 
             if (RestrictArmor.compareValues(e.getDamage(), comparison, compare_to)) {
-                return true;
+                return "true";
 
             }
 
@@ -41,45 +41,45 @@ public class DamageCondition extends Condition {
 
         if (type.equalsIgnoreCase("origins:bypasses_armor")) {
             if (e.getCause().equals(DamageCause.CUSTOM)) {
-                return true;
+                return "true";
 
             }
             if (e.getCause().equals(DamageCause.FIRE)) {
-                return true;
+                return "true";
 
             }
             if (e.getCause().equals(DamageCause.CRAMMING)) {
-                return true;
+                return "true";
 
             }
             if (e.getCause().equals(DamageCause.KILL)) {
-                return true;
+                return "true";
 
             }
             if (e.getCause().equals(DamageCause.MAGIC)) {
-                return true;
+                return "true";
 
             }
             if (e.getCause().equals(DamageCause.POISON)) {
-                return true;
+                return "true";
 
             }
             if (e.getCause().equals(DamageCause.VOID)) {
-                return true;
+                return "true";
 
             }
         }
 
         if (type.equalsIgnoreCase("origins:explosive")) {
             if (e.getCause().equals(DamageCause.BLOCK_EXPLOSION) || e.getCause().equals(DamageCause.ENTITY_EXPLOSION)) {
-                return true;
+                return "true";
 
             }
         }
 
         if (type.equalsIgnoreCase("origins:fire")) {
             if (e.getCause().equals(DamageCause.FIRE)) {
-                return true;
+                return "true";
 
             }
         }
@@ -87,7 +87,7 @@ public class DamageCondition extends Condition {
         if (type.equalsIgnoreCase("origins:from_falling")) {
             if (e.getCause().equals(DamageCause.FALL)) {
                 p.sendMessage("231");
-                return true;
+                return "true";
 
             }
         }
@@ -105,7 +105,7 @@ public class DamageCondition extends Condition {
                     FallingBlock fallingBlock = getFallingBlockDamager(e);
                     if (fallingBlock != null) {
                         if (fallingBlock.getMaterial().toString().contains("ANVIL")) {
-                            return true;
+                            return "true";
                         }
                     }
                 }
@@ -117,7 +117,7 @@ public class DamageCondition extends Condition {
                         if (fallingBlock.getMaterial().toString().contains("ANVIL")) {
                             if (e instanceof EntityDamageByEntityEvent ev) {
                                 if (ev.getDamager() instanceof Entity) {
-                                    return true;
+                                    return "true";
                                 }
                             }
                         }
@@ -129,7 +129,7 @@ public class DamageCondition extends Condition {
                     EntityDamageByEntityEvent ev = (EntityDamageByEntityEvent) e;
                     if (ev.getDamager() instanceof Projectile projectile) {
                         if (projectile.getShooter() instanceof Player || projectile.getShooter() instanceof Mob) {
-                            return true;
+                            return "true";
 
                         }
                     }
@@ -141,11 +141,11 @@ public class DamageCondition extends Condition {
                     if (ev.getDamager() instanceof Projectile projectile) {
                         if (projectile.getShooter() instanceof Player || projectile.getShooter() instanceof Mob) {
                             if (!((LivingEntity) projectile.getShooter()).getActiveItem().getItemMeta().getDisplayName().equalsIgnoreCase("Bow")) {
-                                return true;
+                                return "true";
 
                             }
                             if (!((LivingEntity) projectile.getShooter()).getActiveItem().getItemMeta().getDisplayName().equalsIgnoreCase("Crossbow")) {
-                                return true;
+                                return "true";
 
                             }
                         }
@@ -155,7 +155,7 @@ public class DamageCondition extends Condition {
             if (name.equalsIgnoreCase("bedRespawnPoint")) {
                 if (e.getCause().equals(DamageCause.BLOCK_EXPLOSION)) {
                     if (isBedExplosionRestrictedDimension(p)) {
-                        return true;
+                        return "true";
 
                     }
                 }
@@ -163,7 +163,7 @@ public class DamageCondition extends Condition {
             if (name.equalsIgnoreCase("cactus")) {
                 if (e instanceof EntityDamageByBlockEvent eb) {
                     if (eb.getDamager().getType().equals(Material.CACTUS)) {
-                        return true;
+                        return "true";
                     }
                 }
             }
@@ -172,7 +172,7 @@ public class DamageCondition extends Condition {
                     if (eb.getDamager().getType().equals(Material.CACTUS)) {
                         if (e instanceof EntityDamageByEntityEvent ev) {
                             if (ev.getDamager() instanceof Entity) {
-                                return true;
+                                return "true";
                             }
                         }
                     }
@@ -180,98 +180,98 @@ public class DamageCondition extends Condition {
             }
             if (name.equalsIgnoreCase("cramming")) {
                 if (e.getCause().equals(DamageCause.CRAMMING)) {
-                    return true;
+                    return "true";
                 }
             }
             if (name.equalsIgnoreCase("cramming.player")) {
                 if (e.getCause().equals(DamageCause.CRAMMING)) {
                     if (e instanceof EntityDamageByEntityEvent ev) {
                         if (ev.getDamager() instanceof Entity) {
-                            return true;
+                            return "true";
                         }
                     }
                 }
             }
             if (name.equalsIgnoreCase("dragonBreath")) {
                 if (e.getCause().equals(DamageCause.DRAGON_BREATH)) {
-                    return true;
+                    return "true";
                 }
             }
             if (name.equalsIgnoreCase("dragonBreath.player")) {
                 if (e.getCause().equals(DamageCause.DRAGON_BREATH)) {
                     if (e instanceof EntityDamageByEntityEvent ev) {
                         if (ev.getDamager() instanceof Entity) {
-                            return true;
+                            return "true";
                         }
                     }
                 }
             }
             if (name.equalsIgnoreCase("drown")) {
                 if (e.getCause().equals(DamageCause.DROWNING)) {
-                    return true;
+                    return "true";
                 }
             }
             if (name.equalsIgnoreCase("drown.player")) {
                 if (e.getCause().equals(DamageCause.DROWNING)) {
                     if (e instanceof EntityDamageByEntityEvent ev) {
                         if (ev.getDamager() instanceof Entity) {
-                            return true;
+                            return "true";
                         }
                     }
                 }
             }
             if (name.equalsIgnoreCase("dryout")) {
                 if (e.getCause().equals(DamageCause.DRYOUT)) {
-                    return true;
+                    return "true";
                 }
             }
             if (name.equalsIgnoreCase("dryout.player")) {
                 if (e.getCause().equals(DamageCause.DRYOUT)) {
                     if (e instanceof EntityDamageByEntityEvent ev) {
                         if (ev.getDamager() instanceof Entity) {
-                            return true;
+                            return "true";
                         }
                     }
                 }
             }
             if (name.equalsIgnoreCase("explosion")) {
                 if (e.getCause().equals(DamageCause.ENTITY_EXPLOSION) || e.getCause().equals(DamageCause.BLOCK_EXPLOSION)) {
-                    return true;
+                    return "true";
                 }
             }
             if (name.equalsIgnoreCase("explosion.player")) {
                 if (e.getCause().equals(DamageCause.ENTITY_EXPLOSION) || e.getCause().equals(DamageCause.BLOCK_EXPLOSION)) {
                     if (e instanceof EntityDamageByEntityEvent ev) {
                         if (ev.getDamager() instanceof Entity) {
-                            return true;
+                            return "true";
                         }
                     }
                 }
             }
             if (name.equalsIgnoreCase("fall")) {
                 if (e.getCause().equals(DamageCause.FALL)) {
-                    return true;
+                    return "true";
                 }
             }
             if (name.equalsIgnoreCase("fall.player")) {
                 if (e.getCause().equals(DamageCause.FALL)) {
                     if (e instanceof EntityDamageByEntityEvent ev) {
                         if (ev.getDamager() instanceof Entity) {
-                            return true;
+                            return "true";
                         }
                     }
                 }
             }
             if (name.equalsIgnoreCase("fallingBlock")) {
                 if (e.getCause().equals(DamageCause.FALLING_BLOCK)) {
-                    return true;
+                    return "true";
                 }
             }
             if (name.equalsIgnoreCase("fallingBlock.player")) {
                 if (e.getCause().equals(DamageCause.FALLING_BLOCK)) {
                     if (e instanceof EntityDamageByEntityEvent ev) {
                         if (ev.getDamager() instanceof Entity) {
-                            return true;
+                            return "true";
                         }
                     }
                 }
@@ -279,7 +279,7 @@ public class DamageCondition extends Condition {
             if (name.equalsIgnoreCase("fallingStalactite")) {
                 if (e instanceof EntityDamageByBlockEvent eb) {
                     if (eb.getDamager().getType().equals(Material.POINTED_DRIPSTONE)) {
-                        return true;
+                        return "true";
                     }
                 }
             }
@@ -288,7 +288,7 @@ public class DamageCondition extends Condition {
                     if (eb.getDamager().getType().equals(Material.POINTED_DRIPSTONE)) {
                         if (e instanceof EntityDamageByEntityEvent ev) {
                             if (ev.getDamager() instanceof Entity) {
-                                return true;
+                                return "true";
                             }
                         }
                     }
@@ -297,7 +297,7 @@ public class DamageCondition extends Condition {
             if (name.equalsIgnoreCase("fireball")) {
                 if (e instanceof EntityDamageByEntityEvent ev) {
                     if (ev.getDamager() instanceof Fireball) {
-                        return true;
+                        return "true";
                     }
                 }
             }
@@ -306,7 +306,7 @@ public class DamageCondition extends Condition {
                     if (ev.getDamager() instanceof Fireball) {
                         if (e instanceof EntityDamageByEntityEvent) {
                             if (ev.getDamager() instanceof Entity) {
-                                return true;
+                                return "true";
                             }
                         }
                     }
@@ -315,48 +315,48 @@ public class DamageCondition extends Condition {
             if (name.contains("fireworks")) {
                 if (e instanceof EntityDamageByEntityEvent ev) {
                     if (ev.getDamager() instanceof Firework) {
-                        return true;
+                        return "true";
                     }
                 }
             }
             if (name.equalsIgnoreCase("flyIntoWall")) {
                 if (e.getCause().equals(DamageCause.FLY_INTO_WALL)) {
-                    return true;
+                    return "true";
                 }
             }
             if (name.equalsIgnoreCase("flyIntoWall.player")) {
                 if (e.getCause().equals(DamageCause.FLY_INTO_WALL)) {
                     if (e instanceof EntityDamageByEntityEvent ev) {
                         if (ev.getDamager() instanceof Entity) {
-                            return true;
+                            return "true";
                         }
                     }
                 }
             }
             if (name.equalsIgnoreCase("freeze")) {
                 if (e.getCause().equals(DamageCause.FREEZE)) {
-                    return true;
+                    return "true";
                 }
             }
             if (name.equalsIgnoreCase("freeze.player")) {
                 if (e.getCause().equals(DamageCause.FREEZE)) {
                     if (e instanceof EntityDamageByEntityEvent ev) {
                         if (ev.getDamager() instanceof Entity) {
-                            return true;
+                            return "true";
                         }
                     }
                 }
             }
             if (name.equalsIgnoreCase("generic")) {
                 if (e.getCause().equals(DamageCause.CUSTOM)) {
-                    return true;
+                    return "true";
                 }
             }
             if (name.equalsIgnoreCase("generic.player")) {
                 if (e.getCause().equals(DamageCause.CUSTOM)) {
                     if (e instanceof EntityDamageByEntityEvent ev) {
                         if (ev.getDamager() instanceof Entity) {
-                            return true;
+                            return "true";
                         }
                     }
                 }
@@ -364,7 +364,7 @@ public class DamageCondition extends Condition {
             if (name.equalsIgnoreCase("hotFloor")) {
                 if (e.getCause().equals(DamageCause.FIRE)) {
                     if (p.getLocation().getBlock().getRelative(BlockFace.DOWN).getType().equals(Material.MAGMA_BLOCK)) {
-                        return true;
+                        return "true";
                     }
                 }
             }
@@ -373,7 +373,7 @@ public class DamageCondition extends Condition {
                     if (p.getLocation().getBlock().getRelative(BlockFace.DOWN).getType().equals(Material.MAGMA_BLOCK)) {
                         if (e instanceof EntityDamageByEntityEvent ev) {
                             if (ev.getDamager() instanceof Entity) {
-                                return true;
+                                return "true";
                             }
                         }
                     }
@@ -381,81 +381,81 @@ public class DamageCondition extends Condition {
             }
             if (name.contains("indirectMagic")) {
                 if (e.getCause().equals(DamageCause.MAGIC)) {
-                    return true;
+                    return "true";
                 }
             }
             if (name.contains("inFire") || name.equalsIgnoreCase("onFire")) {
                 if (e.getCause().equals(DamageCause.FIRE)) {
-                    return true;
+                    return "true";
                 }
                 if (e.getCause().equals(DamageCause.FIRE_TICK)) {
-                    return true;
+                    return "true";
                 }
             }
             if (name.equalsIgnoreCase("inWall")) {
                 if (e.getCause().equals(DamageCause.SUFFOCATION)) {
-                    return true;
+                    return "true";
                 }
             }
             if (name.equalsIgnoreCase("inWall.player")) {
                 if (e.getCause().equals(DamageCause.SUFFOCATION)) {
                     if (e instanceof EntityDamageByEntityEvent ev) {
                         if (ev.getDamager() instanceof Entity) {
-                            return true;
+                            return "true";
                         }
                     }
                 }
             }
             if (name.equalsIgnoreCase("lava")) {
                 if (e.getCause().equals(DamageCause.LAVA)) {
-                    return true;
+                    return "true";
                 }
             }
             if (name.equalsIgnoreCase("lava.player")) {
                 if (e.getCause().equals(DamageCause.SUFFOCATION)) {
                     if (e instanceof EntityDamageByEntityEvent ev) {
                         if (ev.getDamager() instanceof Entity) {
-                            return true;
+                            return "true";
                         }
                     }
                 }
             }
             if (name.equalsIgnoreCase("lightningBolt")) {
                 if (e.getCause().equals(DamageCause.LIGHTNING)) {
-                    return true;
+                    return "true";
                 }
             }
             if (name.equalsIgnoreCase("lightningBolt.player")) {
                 if (e.getCause().equals(DamageCause.LIGHTNING)) {
                     if (e instanceof EntityDamageByEntityEvent ev) {
                         if (ev.getDamager() instanceof Entity) {
-                            return true;
+                            return "true";
                         }
                     }
                 }
             }
             if (name.equalsIgnoreCase("magic")) {
                 if (e.getCause().equals(DamageCause.MAGIC)) {
-                    return true;
+                    return "true";
                 }
             }
             if (name.equalsIgnoreCase("magic.player")) {
                 if (e.getCause().equals(DamageCause.MAGIC)) {
                     if (e instanceof EntityDamageByEntityEvent ev) {
                         if (ev.getDamager() instanceof Entity) {
-                            return true;
+                            return "true";
                         }
                     }
                 }
             }
             if (name.equalsIgnoreCase("mob")) {
                 if (e.getCause().equals(DamageCause.ENTITY_ATTACK)) {
-                    return true;
+                    return "true";
                 }
             }
             if (name.equalsIgnoreCase("outOfWorld")) {
                 if (e.getCause().equals(DamageCause.WORLD_BORDER)) {
-                    return true;
+                    return "true";
                 }
             }
             if (name.equalsIgnoreCase("outOfWorld.player")) {
@@ -463,7 +463,7 @@ public class DamageCondition extends Condition {
                     if (e.getCause().equals(DamageCause.WORLD_BORDER)) {
                         if (e instanceof EntityDamageByEntityEvent ev) {
                             if (ev.getDamager() instanceof Entity) {
-                                return true;
+                                return "true";
                             }
                         }
                     }
@@ -472,27 +472,27 @@ public class DamageCondition extends Condition {
             if (name.equalsIgnoreCase("player")) {
                 if (e instanceof EntityDamageByEntityEvent ev) {
                     if (ev.getDamager() instanceof Player) {
-                        return true;
+                        return "true";
                     }
                 }
             }
             if (name.equalsIgnoreCase("player.item")) {
                 if (e instanceof EntityDamageByEntityEvent ev) {
                     if (ev.getDamager() instanceof Player) {
-                        return true;
+                        return "true";
                     }
                 }
             }
             if (name.equalsIgnoreCase("sonic_boom")) {
                 if (e.getCause().equals(DamageCause.SONIC_BOOM)) {
-                    return true;
+                    return "true";
                 }
             }
             if (name.equalsIgnoreCase("sonic_boom.player")) {
                 if (e.getCause().equals(DamageCause.SONIC_BOOM)) {
                     if (e instanceof EntityDamageByEntityEvent ev) {
                         if (ev.getDamager() instanceof Entity) {
-                            return true;
+                            return "true";
                         }
                     }
                 }
@@ -501,7 +501,7 @@ public class DamageCondition extends Condition {
                 if (e instanceof EntityDamageByBlockEvent eb) {
                     if (eb.getDamager().getType().equals(Material.POINTED_DRIPSTONE)) {
                         if (e.getEntity().getLocation().getBlock().getRelative(BlockFace.DOWN).getType().equals(Material.POINTED_DRIPSTONE)) {
-                            return true;
+                            return "true";
                         }
                     }
                 }
@@ -512,7 +512,7 @@ public class DamageCondition extends Condition {
                         if (e.getEntity().getLocation().getBlock().getRelative(BlockFace.DOWN).getType().equals(Material.POINTED_DRIPSTONE)) {
                             if (e instanceof EntityDamageByEntityEvent ev) {
                                 if (ev.getDamager() instanceof Entity) {
-                                    return true;
+                                    return "true";
                                 }
                             }
                         }
@@ -521,14 +521,14 @@ public class DamageCondition extends Condition {
             }
             if (name.equalsIgnoreCase("starve")) {
                 if (e.getCause().equals(DamageCause.STARVATION)) {
-                    return true;
+                    return "true";
                 }
             }
             if (name.equalsIgnoreCase("starve.player")) {
                 if (e.getCause().equals(DamageCause.STARVATION)) {
                     if (e instanceof EntityDamageByEntityEvent ev) {
                         if (ev.getDamager() instanceof Entity) {
-                            return true;
+                            return "true";
                         }
                     }
                 }
@@ -536,7 +536,7 @@ public class DamageCondition extends Condition {
             if (name.equalsIgnoreCase("sting")) {
                 if (e instanceof EntityDamageByEntityEvent ev) {
                     if (ev.getDamager() instanceof Bee) {
-                        return true;
+                        return "true";
                     }
                 }
             }
@@ -545,7 +545,7 @@ public class DamageCondition extends Condition {
                     if (ev.getDamager() instanceof Bee) {
                         if (e instanceof EntityDamageByEntityEvent) {
                             if (ev.getDamager() instanceof Entity) {
-                                return true;
+                                return "true";
                             }
                         }
                     }
@@ -555,7 +555,7 @@ public class DamageCondition extends Condition {
                 if (e instanceof EntityDamageByBlockEvent) {
                     EntityDamageByEntityEvent ev = (EntityDamageByEntityEvent) e;
                     if (ev.getDamager().getType().equals(Material.SWEET_BERRY_BUSH)) {
-                        return true;
+                        return "true";
                     }
                 }
             }
@@ -565,7 +565,7 @@ public class DamageCondition extends Condition {
                     if (ev.getDamager().getType().equals(Material.SWEET_BERRY_BUSH)) {
                         if (e instanceof EntityDamageByEntityEvent) {
                             if (ev.getDamager() instanceof Entity) {
-                                return true;
+                                return "true";
                             }
                         }
                     }
@@ -573,14 +573,14 @@ public class DamageCondition extends Condition {
             }
             if (name.equalsIgnoreCase("thorns")) {
                 if (e.getCause().equals(DamageCause.THORNS)) {
-                    return true;
+                    return "true";
                 }
             }
             if (name.equalsIgnoreCase("thorns.player")) {
                 if (e.getCause().equals(DamageCause.THORNS)) {
                     if (e instanceof EntityDamageByEntityEvent ev) {
                         if (ev.getDamager() instanceof Entity) {
-                            return true;
+                            return "true";
                         }
                     }
                 }
@@ -589,21 +589,21 @@ public class DamageCondition extends Condition {
                 if (e.getCause().equals(DamageCause.PROJECTILE)) {
                     if (e instanceof EntityDamageByEntityEvent ev) {
                         if (ev.getDamager() instanceof Trident) {
-                            return true;
+                            return "true";
                         }
                     }
                 }
             }
             if (name.equalsIgnoreCase("wither")) {
                 if (e.getCause().equals(DamageCause.WITHER)) {
-                    return true;
+                    return "true";
                 }
             }
             if (name.equalsIgnoreCase("wither.player")) {
                 if (e.getCause().equals(DamageCause.WITHER)) {
                     if (e instanceof EntityDamageByEntityEvent ev) {
                         if (ev.getDamager() instanceof Entity) {
-                            return true;
+                            return "true";
                         }
                     }
                 }
@@ -612,7 +612,7 @@ public class DamageCondition extends Condition {
                 if (e.getCause().equals(DamageCause.ENTITY_EXPLOSION)) {
                     if (e instanceof EntityDamageByEntityEvent ev) {
                         if (ev.getDamager() instanceof WitherSkull) {
-                            return true;
+                            return "true";
                         }
                     }
                 }
@@ -621,47 +621,49 @@ public class DamageCondition extends Condition {
 
         if (type.equalsIgnoreCase("origins:out_of_world")) {
             if (e.getCause().equals(DamageCause.VOID)) {
-                return true;
+                return "true";
             }
         }
 
         if (type.equalsIgnoreCase("origins:projectile")) {
             if (e.getCause().equals(DamageCause.PROJECTILE)) {
-                return true;
+                return "true";
             }
         }
 
         if (type.equalsIgnoreCase("origins:unblockable")) {
             if (e.getCause().equals(DamageCause.FALL)) {
-                return true;
+                return "true";
             }
             if (e.getCause().equals(DamageCause.FALLING_BLOCK)) {
 
             }
             if (e.getCause().equals(DamageCause.MAGIC)) {
-                return true;
+                return "true";
             }
             if (e.getCause().equals(DamageCause.LAVA)) {
-                return true;
+                return "true";
             }
             if (e.getCause().equals(DamageCause.DROWNING)) {
-                return true;
+                return "true";
             }
             if (e.getCause().equals(DamageCause.SUFFOCATION)) {
-                return true;
+                return "true";
             }
             if (e.getCause().equals(DamageCause.VOID)) {
-                return true;
+                return "true";
             }
             if (e.getCause().equals(DamageCause.FIRE)) {
-                return true;
+                return "true";
             }
             if (e.getCause().equals(DamageCause.POISON)) {
-                return true;
+                return "true";
             }
-            return e.getCause().equals(DamageCause.WITHER);
+            if (e.getCause().equals(DamageCause.WITHER)){
+                return "true";
+            }
         }
-        return false;
+        return "false";
     }
 
     private static FallingBlock getFallingBlockDamager(EntityDamageEvent event) {

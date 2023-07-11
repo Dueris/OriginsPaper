@@ -12,17 +12,17 @@ import java.awt.*;
 public class ConditionExecutor {
     public static boolean check(Player p, OriginContainer origin, String powerfile, EntityDamageEvent dmgevent, Entity entity){
         if(dmgevent != null){
-            p.sendMessage("dmgeventnnull");
-            if(DamageCondition.check(p, origin, powerfile, dmgevent) != false) return true;
+            if(DamageCondition.check(p, origin, powerfile, dmgevent) == "true") return true;
         }
         if(entity != null){
-            p.sendMessage("entitynnull");
-            if(EntityCondition.check(p, origin, powerfile, entity) != false) return true;
+            if(EntityCondition.check(p, origin, powerfile, entity) == "true") return true;
         }
 
         //final check
         if(origin.getPowerFileFromType(powerfile).getEntityCondition() == null && origin.getPowerFileFromType(powerfile).getDamageCondition() == null) return true;
-        return true;
+        if(DamageCondition.check(p, origin, powerfile, dmgevent) == "null" && EntityCondition.check(p, origin, powerfile, entity) == "null") return true;
+
+        return false;
     }
 }
 
