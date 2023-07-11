@@ -152,49 +152,35 @@ public class Phasing extends BukkitRunnable implements Listener {
                                 }
 
                             } else {
-                        if (p.getGameMode().equals(GameMode.SPECTATOR)) {
-                            if (p.getPreviousGameMode().equals(GameMode.CREATIVE)) {
-                                p.setGameMode(p.getPreviousGameMode());
-                                p.setFlying(false);
-                            } else {
-                                p.setGameMode(p.getPreviousGameMode());
-                                if (p.isOnGround()) ;
-                                p.setFlying(false);
-                            }
-                            p.setFlySpeed(0.1F);
+                                if (p.getGameMode().equals(GameMode.SPECTATOR)) {
+                                    if (p.getPreviousGameMode().equals(GameMode.CREATIVE)) {
+                                        p.setGameMode(p.getPreviousGameMode());
+                                        p.setFlying(false);
+                                    } else {
+                                        p.setGameMode(p.getPreviousGameMode());
+                                        if (p.isOnGround()) ;
+                                        p.setFlying(false);
+                                    }
+                                    p.setFlySpeed(0.1F);
 
-                        }
-                            }
-                        } else {
-                        if (p.getGameMode().equals(GameMode.SPECTATOR)) {
-                            if (p.getPreviousGameMode().equals(GameMode.CREATIVE)) {
-                                p.setGameMode(p.getPreviousGameMode());
-                                p.setFlying(false);
-                            } else {
-                                p.setGameMode(p.getPreviousGameMode());
-                                if (p.isOnGround()) ;
-                                p.setFlying(false);
+                                }
                             }
 
                         }
-                            deactivatePhantomOverlay(p);
-                            p.setFlySpeed(0.1F);
-                        }
-                    } else {
-                        if (p.getGameMode().equals(GameMode.SPECTATOR)) {
-                            if (p.getPreviousGameMode().equals(GameMode.CREATIVE)) {
-                                p.setGameMode(p.getPreviousGameMode());
-                                p.setFlying(false);
-                            } else {
-                                p.setGameMode(p.getPreviousGameMode());
-                                if (p.isOnGround()) ;
-                                p.setFlying(false);
-                            }
-
-                        }
-                        deactivatePhantomOverlay(p);
-                        p.setFlySpeed(0.1F);
                     }
+                }
+            } else {
+                if (p.getGameMode().equals(GameMode.SPECTATOR)) {
+                    if (p.getPreviousGameMode().equals(GameMode.CREATIVE)) {
+                        p.setGameMode(p.getPreviousGameMode());
+                        p.setFlying(false);
+                    } else {
+                        p.setGameMode(p.getPreviousGameMode());
+                        if (p.isOnGround()) ;
+                        p.setFlying(false);
+                    }
+                    p.setFlySpeed(0.1F);
+
                 }
             }
         }
