@@ -6,6 +6,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.World;
 import org.bukkit.advancement.Advancement;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.json.simple.JSONObject;
@@ -85,8 +86,19 @@ public class EntityCondition {
         }
 
         if(type.equalsIgnoreCase("origins:air")){
-            if(RestrictArmor.compareValues(p.getRemainingAir(), origin.getPowerFileFromType(powerfile).getEntityCondition().get("comparison").toString(), Integer.valueOf(origin.getPowerFileFromType(powerfile).getEntityCondition().get("compare_to").toString())) == true){
-                return "true";
+            if(entity instanceof Player player){
+                if(RestrictArmor.compareValues(player.getRemainingAir(), origin.getPowerFileFromType(powerfile).getEntityCondition().get("comparison").toString(), Integer.valueOf(origin.getPowerFileFromType(powerfile).getEntityCondition().get("compare_to").toString())) == true){
+                    return "true";
+                }
+            }
+        }
+
+        if(type.equalsIgnoreCase("origins:attribute")){
+            if(entity instanceof Player player){
+                String attributeString = origin.getPowerFileFromType(powerfile).getEntityCondition().get("attribute").toString().split(":")[1].replace(".", "_").toUpperCase();
+                if(RestrictArmor.compareValues(player.getAttribute(Attribute.valueOf(attributeString)).getValue(), origin.getPowerFileFromType(powerfile).getEntityCondition().get("comparison").toString(), Integer.valueOf(origin.getPowerFileFromType(powerfile).getEntityCondition().get("compare_to").toString())) == true){
+                    return "true";
+                }
             }
         }
 
