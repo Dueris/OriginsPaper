@@ -116,6 +116,12 @@ public class PowerContainer implements Serializable {
         return (Boolean) render;
     }
 
+    public Boolean getOverlay() {
+        Object render = powerFile.get("overlay");
+        if (render == null) return true;
+        return (Boolean) render;
+    }
+
     /**
      * @return The value "strength" from the power file
      */
