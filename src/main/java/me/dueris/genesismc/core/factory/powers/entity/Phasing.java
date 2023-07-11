@@ -99,7 +99,7 @@ public class Phasing extends BukkitRunnable implements Listener {
                                 Location currentLocation = p.getLocation();
                                 Location targetLocation = currentLocation.getBlock().getRelative(BlockFace.DOWN).getLocation();
                                 Location loc = new Location(targetLocation.getWorld(), targetLocation.getX(), targetLocation.getY(), targetLocation.getZ(), p.getEyeLocation().getYaw(), p.getEyeLocation().getPitch());
-                                if(EntityCondition.check(p, origin, "origins:phasing", p)){
+                                if(EntityCondition.check(p, origin, "origins:phasing", p) == "true" || EntityCondition.check(p, origin, "origins:phasing", p) == "null"){
                                     p.teleport(loc);
                                 }
                             }
