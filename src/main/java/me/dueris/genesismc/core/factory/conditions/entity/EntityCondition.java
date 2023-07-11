@@ -1,5 +1,6 @@
 package me.dueris.genesismc.core.factory.conditions.entity;
 
+import me.dueris.genesismc.core.factory.powers.armour.RestrictArmor;
 import me.dueris.genesismc.core.utils.OriginContainer;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -57,25 +58,20 @@ public class EntityCondition {
             String advancementString = origin.getPowerFileFromType(powerfile).getEntityCondition().get("advancement").toString();
             if(entity instanceof Player){
                 Player player = (Player) entity;
-                player.sendMessage(advancementString);
                 World world = player.getWorld();
                 File worldFolder = world.getWorldFolder();
                 File advancementsFolder = new File(worldFolder, "advancements");
                 File playerAdvancementFile = new File(advancementsFolder, player.getUniqueId() + ".json");
 
                 if (playerAdvancementFile.exists()) {
-                    player.sendMessage("exists");
                     try {
                         JSONParser parser = new JSONParser();
                         JSONObject jsonObject = (JSONObject) parser.parse(new FileReader(playerAdvancementFile));
                         JSONObject advancementJson = (JSONObject) jsonObject.get(advancementString);
 
                         if (advancementJson != null) {
-                            player.sendMessage("json");
                             Boolean done = (Boolean) advancementJson.get("done");
                             if (done != null) {
-                                player.sendMessage("notnull");
-                                player.sendMessage(done.toString());
                                 if(done.toString() == "true"){
                                     return "true";
                                 }
@@ -87,6 +83,13 @@ public class EntityCondition {
                 }else{return "false";}
             }
         }
+
+        if(type.equalsIgnoreCase("origins:air")){
+            if(RestrictArmor.compareValues(p.getRemainingAir(), origin.getPowerFileFromType(powerfile).getEntityCondition().get("comparison").toString(), Integer.valueOf(origin.getPowerFileFromType(powerfile).getEntityCondition().get("compare_to").toString())) == true){
+                return "true";
+            }
+        }
+
         return "false";
     }
 }
