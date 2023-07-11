@@ -102,6 +102,8 @@ public class EntityCondition {
             }
         }
 
+        // TODO: continue entity_condition to use biome condition for origins:biome in some cases. see https://origins.readthedocs.io/en/latest/types/entity_condition_types/biome/
+
         return "false";
     }
 }
