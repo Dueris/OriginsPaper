@@ -4,6 +4,7 @@ import me.dueris.genesismc.core.GenesisMC;
 import me.dueris.genesismc.core.commands.PlayerSelector;
 import me.dueris.genesismc.core.commands.subcommands.SubCommand;
 import me.dueris.genesismc.core.entity.OriginPlayer;
+import me.dueris.genesismc.core.enums.OriginDataType;
 import me.dueris.genesismc.core.factory.CraftApoli;
 import me.dueris.genesismc.core.utils.LayerContainer;
 import me.dueris.genesismc.core.utils.OriginContainer;
@@ -49,6 +50,7 @@ public class Gui extends SubCommand {
                 for (LayerContainer layer : CraftApoli.getLayers()) {
                     OriginPlayer.unassignPowers(p, layer);
                     OriginPlayer.setOrigin(p, layer, CraftApoli.nullOrigin());
+                    OriginPlayer.resetOriginData(p, OriginDataType.IN_PHASING_FORM);
                     String skinData = p.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "original-skin-url"), PersistentDataType.STRING).toString();
                     if(p.getPlayerProfile().getTextures().getSkinModel() == PlayerTextures.SkinModel.CLASSIC){
                         try {
