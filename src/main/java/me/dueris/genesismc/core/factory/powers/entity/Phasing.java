@@ -17,6 +17,7 @@ import net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket;
 import net.minecraft.world.level.chunk.LevelChunkSection;
 import net.minecraft.world.phys.Vec3;
 import org.bukkit.*;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.BlockData;
@@ -141,6 +142,8 @@ public class Phasing extends BukkitRunnable implements Listener {
                                     initializePhantomOverlay(p);
                                 }
 
+                                p.setFlySpeed(0.04F);
+
                                 if(origin.getPowerFileFromType("origins:phasing").getRenderType().equalsIgnoreCase("blindness")){
                                     Float viewD = origin.getPowerFileFromType("origins:phasing").getViewDistance().floatValue();
 
@@ -152,12 +155,13 @@ public class Phasing extends BukkitRunnable implements Listener {
                         if (p.getGameMode().equals(GameMode.SPECTATOR)) {
                             if (p.getPreviousGameMode().equals(GameMode.CREATIVE)) {
                                 p.setGameMode(p.getPreviousGameMode());
-                                p.setFlying(true);
+                                p.setFlying(false);
                             } else {
                                 p.setGameMode(p.getPreviousGameMode());
                                 if (p.isOnGround()) ;
                                 p.setFlying(false);
                             }
+                            p.setFlySpeed(0.1F);
 
                         }
                             }
@@ -165,7 +169,7 @@ public class Phasing extends BukkitRunnable implements Listener {
                         if (p.getGameMode().equals(GameMode.SPECTATOR)) {
                             if (p.getPreviousGameMode().equals(GameMode.CREATIVE)) {
                                 p.setGameMode(p.getPreviousGameMode());
-                                p.setFlying(true);
+                                p.setFlying(false);
                             } else {
                                 p.setGameMode(p.getPreviousGameMode());
                                 if (p.isOnGround()) ;
@@ -174,12 +178,13 @@ public class Phasing extends BukkitRunnable implements Listener {
 
                         }
                             deactivatePhantomOverlay(p);
+                            p.setFlySpeed(0.1F);
                         }
                     } else {
                         if (p.getGameMode().equals(GameMode.SPECTATOR)) {
                             if (p.getPreviousGameMode().equals(GameMode.CREATIVE)) {
                                 p.setGameMode(p.getPreviousGameMode());
-                                p.setFlying(true);
+                                p.setFlying(false);
                             } else {
                                 p.setGameMode(p.getPreviousGameMode());
                                 if (p.isOnGround()) ;
@@ -188,6 +193,7 @@ public class Phasing extends BukkitRunnable implements Listener {
 
                         }
                         deactivatePhantomOverlay(p);
+                        p.setFlySpeed(0.1F);
                     }
                 }
             }
