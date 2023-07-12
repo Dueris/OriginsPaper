@@ -31,44 +31,83 @@ public class AttributeHandler implements Listener {
             p.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(18);
         }
         if (attribute.contains(p)) {
-            Map<String, BinaryOperator<Integer>> operationMap = new HashMap<>();
-            //base value = a
-            //modifier value = b
-            operationMap.put("addition", Integer::sum);
-            operationMap.put("subtraction", (a, b) -> a - b);
-            operationMap.put("multiplication", (a, b) -> a * b);
-            operationMap.put("division", (a, b) -> a / b);
-            operationMap.put("multiply_base", (a, b) -> a + (a * b));
-            operationMap.put("multiply_total", (a, b) -> a * (1 + b));
-            operationMap.put("set_total", (a, b) -> b);
-
-            Random random = new Random();
-
-            operationMap.put("add_random_max", (a, b) -> a + random.nextInt(b));
-            operationMap.put("subtract_random_max", (a, b) -> a - random.nextInt(b));
-            operationMap.put("multiply_random_max", (a, b) -> a * random.nextInt(b));
-            operationMap.put("divide_random_max", (a, b) -> a / random.nextInt(b));
 
             for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
 
                 PowerContainer power = origin.getPowerFileFromType("origins:attribute");
                 if (power == null) continue;
 
-
                 Attribute attribute_modifier = Attribute.valueOf(power.getModifier().get("attribute").toString().split(":")[1].replace(".", "_").toUpperCase());
-                int value = Integer.valueOf(power.getModifier().get("value").toString());
-                String operation = String.valueOf(power.getModifier().get("operation"));
-                int base_value = (int) p.getAttribute(Attribute.valueOf(attribute_modifier.toString())).getBaseValue();
-
-                BinaryOperator mathOperator = operationMap.get(operation);
-                if (mathOperator != null) {
-                    int result = (int) mathOperator.apply(base_value, value);
-                    p.getAttribute(Attribute.valueOf(attribute_modifier.toString())).setBaseValue(result);
-                } else {
-                    Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.RED + "Unable to parse origins:attribute, unable to get result");
+                if(power.getModifier().get("value") instanceof Integer){
+                    int value = Integer.valueOf(power.getModifier().get("value").toString());
+                    int base_value = (int) p.getAttribute(Attribute.valueOf(attribute_modifier.toString())).getBaseValue();
+                    String operation = String.valueOf(power.getModifier().get("operation"));
+                    executeAttributeModify(operation, attribute_modifier, base_value, p, value);
+                } else if (power.getModifier().get("value") instanceof Double) {
+                    Double value = Double.valueOf(power.getModifier().get("value").toString());
+                    int base_value = (int) p.getAttribute(Attribute.valueOf(attribute_modifier.toString())).getBaseValue();
+                    String operation = String.valueOf(power.getModifier().get("operation"));
+                    executeAttributeModify(operation, attribute_modifier, base_value, p, value);
                 }
+
             }
 
+        }
+    }
+
+    public static void executeAttributeModify(String operation, Attribute attribute_modifier, int base_value, Player p, int value){
+        Map<String, BinaryOperator<Integer>> operationMap = new HashMap<>();
+        //base value = a
+        //modifier value = b
+        operationMap.put("addition", Integer::sum);
+        operationMap.put("subtraction", (a, b) -> a - b);
+        operationMap.put("multiplication", (a, b) -> a * b);
+        operationMap.put("division", (a, b) -> a / b);
+        operationMap.put("multiply_base", (a, b) -> a + (a * b));
+        operationMap.put("multiply_total", (a, b) -> a * (1 + b));
+        operationMap.put("set_total", (a, b) -> b);
+
+        Random random = new Random();
+
+        operationMap.put("add_random_max", (a, b) -> a + random.nextInt(b));
+        operationMap.put("subtract_random_max", (a, b) -> a - random.nextInt(b));
+        operationMap.put("multiply_random_max", (a, b) -> a * random.nextInt(b));
+        operationMap.put("divide_random_max", (a, b) -> a / random.nextInt(b));
+
+        BinaryOperator mathOperator = operationMap.get(operation);
+        if (mathOperator != null) {
+            int result = (int) mathOperator.apply(base_value, value);
+            p.getAttribute(Attribute.valueOf(attribute_modifier.toString())).setBaseValue(result);
+        } else {
+            Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.RED + "Unable to parse origins:attribute, unable to get result");
+        }
+    }
+
+    public static void executeAttributeModify(String operation, Attribute attribute_modifier, int base_value, Player p, Double value){
+        Map<String, BinaryOperator<Integer>> operationMap = new HashMap<>();
+        //base value = a
+        //modifier value = b
+        operationMap.put("addition", Integer::sum);
+        operationMap.put("subtraction", (a, b) -> a - b);
+        operationMap.put("multiplication", (a, b) -> a * b);
+        operationMap.put("division", (a, b) -> a / b);
+        operationMap.put("multiply_base", (a, b) -> a + (a * b));
+        operationMap.put("multiply_total", (a, b) -> a * (1 + b));
+        operationMap.put("set_total", (a, b) -> b);
+
+        Random random = new Random();
+
+        operationMap.put("add_random_max", (a, b) -> a + random.nextInt(b));
+        operationMap.put("subtract_random_max", (a, b) -> a - random.nextInt(b));
+        operationMap.put("multiply_random_max", (a, b) -> a * random.nextInt(b));
+        operationMap.put("divide_random_max", (a, b) -> a / random.nextInt(b));
+
+        BinaryOperator mathOperator = operationMap.get(operation);
+        if (mathOperator != null) {
+            double result = (Double) mathOperator.apply(base_value, value);
+            p.getAttribute(Attribute.valueOf(attribute_modifier.toString())).setBaseValue(result);
+        } else {
+            Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.RED + "Unable to parse origins:attribute, unable to get result");
         }
     }
 }
