@@ -315,7 +315,7 @@ public class CraftApoli {
             oos.flush();
             return bos.toByteArray();
         } catch (Exception e) {
-            Bukkit.getLogger().warning("CRUCIAL ERROR, PLEASE REPORTING THIS IMMEDIATELY TO THE DEVS!!");
+            Bukkit.getLogger().warning("[GenesisMC] CRUCIAL ERROR, PLEASE REPORTING THIS IMMEDIATELY TO THE DEVS!!");
             e.printStackTrace();
             return toByteArray(new HashMap<>(Map.of(CraftApoli.getLayers().get(0), CraftApoli.nullOrigin())));
         }
@@ -324,7 +324,7 @@ public class CraftApoli {
     /**
      * @return The byte array deserialized into the origin specified by the layer.
      **/
-    public static OriginContainer toOriginContainer(byte[] origin, LayerContainer originLayer) {
+    public static OriginContainer toOrigin(byte[] origin, LayerContainer originLayer) {
         ByteArrayInputStream bis = new ByteArrayInputStream(origin);
         try {
             ObjectInput oi = new ObjectInputStream(bis);
@@ -333,25 +333,29 @@ public class CraftApoli {
                 if (layer.getTag().equals(originLayer.getTag())) return originData.get(layer);
             }
         } catch (Exception e) {
+            Bukkit.getLogger().warning("[GenesisMC] CRUCIAL ERROR, PLEASE REPORTING THIS IMMEDIATELY TO THE DEVS!!");
             e.printStackTrace();
             return nullOrigin();
         }
-        Bukkit.getLogger().warning("CRUCIAL ERROR, PLEASE REPORTING THIS IMMEDIATELY TO THE DEVS!!");
         return nullOrigin();
     }
 
     /**
      * @return The byte array deserialized into a HashMap of the originLayer and the OriginContainer.
      **/
-    public static HashMap<LayerContainer, OriginContainer> toOriginContainer(byte[] origin) {
+    public static HashMap<LayerContainer, OriginContainer> toOrigin(byte[] origin) {
         ByteArrayInputStream bis = new ByteArrayInputStream(origin);
         try {
             ObjectInput oi = new ObjectInputStream(bis);
             return (HashMap<LayerContainer, OriginContainer>) oi.readObject();
         } catch (Exception e) {
-            Bukkit.getLogger().warning("CRUCIAL ERROR, PLEASE REPORTING THIS IMMEDIATELY TO THE DEVS!!");
+            Bukkit.getLogger().warning("[GenesisMC] CRUCIAL ERROR, PLEASE REPORTING THIS IMMEDIATELY TO THE DEVS!!");
             e.printStackTrace();
-            return new HashMap<>(Map.of(CraftApoli.getLayers().get(0), CraftApoli.nullOrigin()));
+            HashMap<LayerContainer, OriginContainer> origins = new HashMap<>();
+            for (LayerContainer layer : CraftApoli.getLayers()) {
+                origins.put(layer, CraftApoli.nullOrigin());
+            }
+            return origins;
         }
     }
 

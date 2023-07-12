@@ -129,26 +129,12 @@ public class PlayerHandler implements Listener {
         OriginPlayer.unassignPowers(e.getPlayer());
     }
 
-
-    public static void customOriginExistCheck(Player p) {
-        HashMap<LayerContainer, OriginContainer> origins = OriginPlayer.getOrigin(p);
-        for (OriginContainer origin : origins.values()) {
-            if (origin.getTag().equals(CraftApoli.nullOrigin().getTag())) continue;
-            if (CraftApoli.getOriginTags().contains(origin.getTag())) continue;
-            NamespacedKey key = new NamespacedKey(GenesisMC.getPlugin(), "origins");
-            HashMap<LayerContainer, OriginContainer> playerOrigins = CraftApoli.toOriginContainer(p.getPersistentDataContainer().get(key, PersistentDataType.BYTE_ARRAY));
-            playerOrigins.replace(OriginPlayer.getLayer(p, origin), CraftApoli.nullOrigin());
-            p.getPersistentDataContainer().set(key, PersistentDataType.BYTE_ARRAY, CraftApoli.toByteArray(playerOrigins));
-            p.sendMessage(Component.text("Your origin has been removed! Please select a new one.").color(TextColor.fromHexString(RED)));
-            p.sendMessage(Component.text("If you believe this is a mistake please contact your server admin(s).").color(TextColor.fromHexString(RED)));
-        }
-    }
-
     public static void layerChecks(Player p) {
         HashMap<LayerContainer, OriginContainer> origins = OriginPlayer.getOrigin(p);
         for (LayerContainer layer : origins.keySet()) {
             if (!CraftApoli.layerExists(layer)) {
                 OriginPlayer.removeOrigin(p, layer);
+                origins.replace(layer, CraftApoli.nullOrigin());
                 p.sendMessage(Component.text("The layer \""+layer.getName()+"\" has been removed!\nIf you believe this is a mistake please contact your server admin(s).").color(TextColor.fromHexString(RED)));
                 continue;
             }
@@ -156,6 +142,13 @@ public class PlayerHandler implements Listener {
                 origins.replace(layer, CraftApoli.nullOrigin());
                 p.sendMessage(Component.text("Your selected origin has been removed from the \""+layer.getName()+"\" layer!\nIf you believe this is a mistake please contact your server admin(s).").color(TextColor.fromHexString(RED)));
             }
+        }
+        layerLoop:
+        for (LayerContainer layer : CraftApoli.getLayers()) {
+            for (LayerContainer playerLayer : origins.keySet()) {
+                if (layer.getTag().equals(playerLayer.getTag())) continue layerLoop;
+            }
+            origins.put(layer, CraftApoli.nullOrigin());
         }
         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origins"), PersistentDataType.BYTE_ARRAY, CraftApoli.toByteArray(origins));
     }
