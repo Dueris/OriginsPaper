@@ -133,7 +133,7 @@ public class PowerContainer implements Serializable {
 
     public String getModelRenderType(){
         Object type = powerFile.get("render_type");
-        if (type == null) return "";
+        if (type == null) return "original";
         return (String) type;
     }
 
