@@ -76,9 +76,18 @@ public class OriginPlayer {
         player.setVelocity(velocity);
     }
 
+    /**
+     * @param originTag The tag of the origin.
+     * @return true if the player has the origin.
+     */
     public static boolean hasOrigin(Player player, String originTag) {
-        HashMap<LayerContainer, OriginContainer> origins = CraftApoli.toOriginContainer(player.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "origins"), PersistentDataType.BYTE_ARRAY));
-        assert origins != null;
+        HashMap<LayerContainer, OriginContainer> origins = CraftApoli.toOrigin(player.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "origins"), PersistentDataType.BYTE_ARRAY));
+//        System.out.println(originTag);
+//        System.out.println(originTag.getClass());
+//        for (OriginContainer origin : origins.values()) {
+//            System.out.println(origin.getTag());
+//            System.out.println(origin.getTag().getClass());
+//        }
         for (OriginContainer origin : origins.values()) if (origin.getTag().equals(originTag)) return true;
         return false;
     }
@@ -94,7 +103,7 @@ public class OriginPlayer {
             setOrigin(player, layer, CraftApoli.nullOrigin());
             return CraftApoli.nullOrigin();
         }
-        return CraftApoli.toOriginContainer(data.get(new NamespacedKey(GenesisMC.getPlugin(), "origins"), PersistentDataType.BYTE_ARRAY), layer);
+        return CraftApoli.toOrigin(data.get(new NamespacedKey(GenesisMC.getPlugin(), "origins"), PersistentDataType.BYTE_ARRAY), layer);
     }
 
     /**
@@ -110,7 +119,7 @@ public class OriginPlayer {
                 return new HashMap<>(Map.of(layer, CraftApoli.nullOrigin()));
             }
         }
-        return CraftApoli.toOriginContainer(data.get(new NamespacedKey(GenesisMC.getPlugin(), "origins"), PersistentDataType.BYTE_ARRAY));
+        return CraftApoli.toOrigin(data.get(new NamespacedKey(GenesisMC.getPlugin(), "origins"), PersistentDataType.BYTE_ARRAY));
     }
 
     public static boolean hasCoreOrigin(Player player, LayerContainer layer) {
@@ -155,7 +164,7 @@ public class OriginPlayer {
 
     public static void setOrigin(Player player, LayerContainer layer, OriginContainer origin) {
         NamespacedKey key = new NamespacedKey(GenesisMC.getPlugin(), "origins");
-        HashMap<LayerContainer, OriginContainer> origins = CraftApoli.toOriginContainer(player.getPersistentDataContainer().get(key, PersistentDataType.BYTE_ARRAY));
+        HashMap<LayerContainer, OriginContainer> origins = CraftApoli.toOrigin(player.getPersistentDataContainer().get(key, PersistentDataType.BYTE_ARRAY));
         assert origins != null;
         if (!CraftApoli.getLayers().contains(layer)) {
             //player.sendMessage(Component.text("[GenesisMC] The layer specified doesn't exist.").color(TextColor.fromHexString(RED)));
@@ -235,8 +244,7 @@ public class OriginPlayer {
             player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(24);
         } else {
         }
-
-        SendCharts.originPopularity(player);
+        if (!originTag.equals(CraftApoli.nullOrigin().getTag())) SendCharts.originPopularity(player);
         assignPowers(player, layer);
     }
 
@@ -518,7 +526,7 @@ public class OriginPlayer {
      * @return The layers and origins currently assigned to the player
      */
     public static HashMap<LayerContainer, OriginContainer> returnOrigins(Player p) {
-        return CraftApoli.toOriginContainer(p.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "origins"), PersistentDataType.BYTE_ARRAY));
+        return CraftApoli.toOrigin(p.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "origins"), PersistentDataType.BYTE_ARRAY));
     }
 
 }
