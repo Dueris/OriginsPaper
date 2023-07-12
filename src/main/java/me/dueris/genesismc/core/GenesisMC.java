@@ -19,7 +19,7 @@ import me.dueris.genesismc.core.factory.powers.entity.PlayerRender;
 import me.dueris.genesismc.core.files.GenesisDataFiles;
 import me.dueris.genesismc.core.generation.WaterProtBookGen;
 import me.dueris.genesismc.core.items.InfinPearl;
-import me.dueris.genesismc.core.items.Items;
+import me.dueris.genesismc.core.items.GenesisItems;
 import me.dueris.genesismc.core.items.OrbOfOrigins;
 import me.dueris.genesismc.core.items.WaterProtItem;
 import me.dueris.genesismc.core.utils.*;
@@ -165,7 +165,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         getServer().getPluginManager().registerEvents(new Info(), this);
         getServer().getPluginManager().registerEvents(new Listeners(), this);
         getServer().getPluginManager().registerEvents(new DataContainer(), this);
-        getServer().getPluginManager().registerEvents(new Items(), this);
+        getServer().getPluginManager().registerEvents(new GenesisItems(), this);
                 if(getServer().getPluginManager().isPluginEnabled("SkinsRestorer")){
                     getServer().getPluginManager().registerEvents(new PlayerRender.ModelColor(), GenesisMC.getPlugin());
                     getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] SkinRestorer detected, enabling ModelColor").color(TextColor.fromHexString(AQUA)));
@@ -183,7 +183,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         ChoosingForced forced = new ChoosingForced();
         forced.runTaskTimer(this, 0, 2);
 
-        Items items = new Items();
+        GenesisItems items = new GenesisItems();
         items.runTaskTimer(this, 0, 5);
 
         PowerStartHandler.StartRunnables();

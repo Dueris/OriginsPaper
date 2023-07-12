@@ -19,7 +19,7 @@ import static org.bukkit.ChatColor.GRAY;
 import static org.bukkit.Material.ENDER_PEARL;
 
 
-public class Items extends BukkitRunnable implements Listener {
+public class GenesisItems extends BukkitRunnable implements Listener {
 
     Particle.DustTransition whitedust = new Particle.DustTransition(Color.fromRGB(139, 243, 252), Color.fromRGB(224, 253, 255), 0.7F);
 
@@ -60,16 +60,7 @@ public class Items extends BukkitRunnable implements Listener {
         pearl_meta.setLore(pearl_lore);
         infinpearl.setItemMeta(pearl_meta);
 
-        ItemStack spectatorswitch = new ItemStack(Material.PHANTOM_MEMBRANE);
-        ItemMeta switch_meta = spectatorswitch.getItemMeta();
-        switch_meta.setDisplayName(GRAY + "Phantom Form");
-        ArrayList<String> phanlore = new ArrayList();
-        switch_meta.setUnbreakable(true);
-        switch_meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
-        switch_meta.addItemFlags(ItemFlag.HIDE_ITEM_SPECIFICS);
-        switch_meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-        switch_meta.setLore(phanlore);
-        spectatorswitch.setItemMeta(switch_meta);
+        ItemStack spectatorswitch = getPhasingKey();
 
         ItemStack launchitem = new ItemStack(Material.FEATHER);
         ItemMeta launchmeta = launchitem.getItemMeta();
@@ -84,6 +75,20 @@ public class Items extends BukkitRunnable implements Listener {
                 return;
             }
         }
+    }
+
+    public static ItemStack getPhasingKey(){
+        ItemStack spectatorswitch = new ItemStack(Material.PHANTOM_MEMBRANE);
+        ItemMeta switch_meta = spectatorswitch.getItemMeta();
+        switch_meta.setDisplayName(GRAY + "Phantom Form");
+        ArrayList<String> phanlore = new ArrayList();
+        switch_meta.setUnbreakable(true);
+        switch_meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
+        switch_meta.addItemFlags(ItemFlag.HIDE_ITEM_SPECIFICS);
+        switch_meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+        switch_meta.setLore(phanlore);
+        spectatorswitch.setItemMeta(switch_meta);
+        return spectatorswitch;
     }
 
 }
