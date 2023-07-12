@@ -144,7 +144,7 @@ public class PlayerRender extends BukkitRunnable {
                             Long alphaTint = (long) origin.getPowerFileFromType("origins:model_color").getModifier().get("alpha");
                             String savePath = Bukkit.getServer().getPluginManager().getPlugin("genesismc").getDataFolder().getPath() + File.separator + "skins";
                             skinsRestorerAPI = SkinsRestorerAPI.getApi();
-                            ModelColor.modifyPlayerSkin(player, red, green, blue, savePath, alphaTint, skinsRestorerAPI, false);
+                            ModelColor.modifyPlayerSkin(player, red, green, blue, savePath, alphaTint, skinsRestorerAPI, false, origin);
                             if (model_color.contains(player)) {
                                 if(player.getPlayerProfile().getTextures().getSkinModel() == PlayerTextures.SkinModel.CLASSIC){
                                     Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "skin set " + player.getName() + " " + player.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "modified-skin-url"), PersistentDataType.STRING).toString() + " CLASSIC");
@@ -161,7 +161,7 @@ public class PlayerRender extends BukkitRunnable {
                             Long alphaTint = 0L;
                             String savePath = Bukkit.getServer().getPluginManager().getPlugin("genesismc").getDataFolder().getPath() + File.separator + "skins";
                             skinsRestorerAPI = SkinsRestorerAPI.getApi();
-                            ModelColor.modifyPlayerSkin(player, red, green, blue, savePath, alphaTint, skinsRestorerAPI, true);
+                            ModelColor.modifyPlayerSkin(player, red, green, blue, savePath, alphaTint, skinsRestorerAPI, true, origin);
                             if (!model_color.contains(player)) {
                                 if(player.getPlayerProfile().getTextures().getSkinModel() == PlayerTextures.SkinModel.CLASSIC){
                                     Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "skin set " + player.getName() + " " + player.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "original-skin-url"), PersistentDataType.STRING).toString() + " CLASSIC");
@@ -200,7 +200,7 @@ public class PlayerRender extends BukkitRunnable {
             }.runTaskTimer(GenesisMC.getPlugin(), 4L, 1L);
         }
 
-        public static void modifyPlayerSkin(Player player, Double redTint, Double greenTint, Double blueTint, String savePath, Long alphaTint, SkinsRestorerAPI skinsRestorerAPI, boolean applyOriginal) {
+        public static void modifyPlayerSkin(Player player, Double redTint, Double greenTint, Double blueTint, String savePath, Long alphaTint, SkinsRestorerAPI skinsRestorerAPI, boolean applyOriginal, OriginContainer origin) {
             PlayerProfile gameProfile = ((CraftPlayer) player).getPlayerProfile();
             String textureProperty = skinsRestorerAPI.getSkinTextureUrl(SkinsRestorerAPI.getApi().getSkinData(player.getName()));
             String imageUrl = textureProperty;
@@ -210,7 +210,7 @@ public class PlayerRender extends BukkitRunnable {
 
             try {
                 BufferedImage originalImage = downloadImage(imageUrl, savePath, originalFileName);
-                BufferedImage modifiedImage = modifyImage(originalImage, redTint, greenTint, blueTint, alphaTint, player);
+                BufferedImage modifiedImage = modifyImage(originalImage, redTint, greenTint, blueTint, alphaTint, player, origin);
                 saveImage(modifiedImage, savePath, modifiedFileName);
                 MineskinClient mineskinClient = new MineskinClient();
 
@@ -292,32 +292,110 @@ public class PlayerRender extends BukkitRunnable {
             return image;
         }
 
-        private static BufferedImage modifyImage(BufferedImage originalImage, double redTint, double greenTint, double blueTint, double alphaTint, Player player) {
+        private static BufferedImage modifyImage(BufferedImage originalImage, double redTint, double greenTint, double blueTint, double alphaTint, Player player, OriginContainer origin) {
             if (redTint > 1 || greenTint > 1 || blueTint > 1 || alphaTint > 1) {
-                // Throw an error if any of the color values are greater than 1
                 throw new IllegalArgumentException("Color values must be between 0 and 1.");
             }
 
             BufferedImage modifiedImage = new BufferedImage(originalImage.getWidth(), originalImage.getHeight(), BufferedImage.TYPE_INT_ARGB);
 
-            for (int x = 0; x < modifiedImage.getWidth(); x++) {
-                for (int y = 0; y < modifiedImage.getHeight(); y++) {
-                    int rgb = originalImage.getRGB(x, y);
-                    int alpha = (rgb >> 24) & 0xFF;
-                    int red = (rgb >> 16) & 0xFF;
-                    int green = (rgb >> 8) & 0xFF;
-                    int blue = rgb & 0xFF;
+            if (origin.getPowerFileFromType("origins:model_color").getModelRenderType().equalsIgnoreCase("add")) {
+                for (int x = 0; x < modifiedImage.getWidth(); x++) {
+                    for (int y = 0; y < modifiedImage.getHeight(); y++) {
+                        // Get the original RGB values of the pixel
+                        int rgb = originalImage.getRGB(x, y);
 
-                    // Apply tint as an overlay
-                    red = blendColorComponent(red, redTint);
-                    green = blendColorComponent(green, greenTint);
-                    blue = blendColorComponent(blue, blueTint);
+                        // Extract the color components (alpha, red, green, blue)
+                        int alpha = (rgb >> 24) & 0xFF;
+                        int red = (rgb >> 16) & 0xFF;
+                        int green = (rgb >> 8) & 0xFF;
+                        int blue = rgb & 0xFF;
 
-                    int modifiedRGB = (alpha << 24) | (red << 16) | (green << 8) | blue;
-                    modifiedImage.setRGB(x, y, modifiedRGB);
+                        // Apply additive blending to the color components
+                        red = blendColorComponentAdditive(red, (int) (redTint));
+                        green = blendColorComponentAdditive(green, (int) (greenTint));
+                        blue = blendColorComponentAdditive(blue, (int) (blueTint));
+
+                        // Create the modified RGB value with the updated color components
+                        int modifiedRGB = (alpha << 24) | (red << 16) | (green << 8) | blue;
+
+                        // Set the modified pixel value in the modified image
+                        modifiedImage.setRGB(x, y, modifiedRGB);
+                    }
+                }
+            } else if (origin.getPowerFileFromType("origins:model_color").getModelRenderType().equalsIgnoreCase("subtract")) {
+                for (int x = 0; x < modifiedImage.getWidth(); x++) {
+                    for (int y = 0; y < modifiedImage.getHeight(); y++) {
+                        int rgb = originalImage.getRGB(x, y);
+                        int alpha = (rgb >> 24) & 0xFF;
+                        int red = (rgb >> 16) & 0xFF;
+                        int green = (rgb >> 8) & 0xFF;
+                        int blue = rgb & 0xFF;
+
+                        // Apply tint as an overlay
+                        red = blendColorComponentSubtractive(red, (int) redTint);
+                        green = blendColorComponentSubtractive(green, (int) greenTint);
+                        blue = blendColorComponentSubtractive(blue, (int) blueTint);
+
+                        int modifiedRGB = (alpha << 24) | (red << 16) | (green << 8) | blue;
+                        modifiedImage.setRGB(x, y, modifiedRGB);
+                    }
+                }
+            } else if (origin.getPowerFileFromType("origins:model_color").getModelRenderType().equalsIgnoreCase("multiply")) {
+                for (int x = 0; x < modifiedImage.getWidth(); x++) {
+                    for (int y = 0; y < modifiedImage.getHeight(); y++) {
+                        int rgb = originalImage.getRGB(x, y);
+                        int alpha = (rgb >> 24) & 0xFF;
+                        int red = (rgb >> 16) & 0xFF;
+                        int green = (rgb >> 8) & 0xFF;
+                        int blue = rgb & 0xFF;
+
+                        // Apply tint as an overlay
+                        red = blendColorComponentMultiply(red, (int) redTint);
+                        green = blendColorComponentMultiply(green, (int) greenTint);
+                        blue = blendColorComponentMultiply(blue, (int) blueTint);
+
+                        int modifiedRGB = (alpha << 24) | (red << 16) | (green << 8) | blue;
+                        modifiedImage.setRGB(x, y, modifiedRGB);
+                    }
+                }
+            } else if (origin.getPowerFileFromType("origins:model_color").getModelRenderType().equalsIgnoreCase("divide")) {
+                for (int x = 0; x < modifiedImage.getWidth(); x++) {
+                    for (int y = 0; y < modifiedImage.getHeight(); y++) {
+                        int rgb = originalImage.getRGB(x, y);
+                        int alpha = (rgb >> 24) & 0xFF;
+                        int red = (rgb >> 16) & 0xFF;
+                        int green = (rgb >> 8) & 0xFF;
+                        int blue = rgb & 0xFF;
+
+                        // Apply tint as an overlay
+                        red = blendColorComponentDivide(red, (int) redTint);
+                        green = blendColorComponentDivide(green, (int) greenTint);
+                        blue = blendColorComponentDivide(blue, (int) blueTint);
+
+                        int modifiedRGB = (alpha << 24) | (red << 16) | (green << 8) | blue;
+                        modifiedImage.setRGB(x, y, modifiedRGB);
+                    }
+                }
+            } else if(origin.getPowerFileFromType("origins:model_color").getModelRenderType().equalsIgnoreCase("original")){
+                for (int x = 0; x < modifiedImage.getWidth(); x++) {
+                    for (int y = 0; y < modifiedImage.getHeight(); y++) {
+                        int rgb = originalImage.getRGB(x, y);
+                        int alpha = (rgb >> 24) & 0xFF;
+                        int red = (rgb >> 16) & 0xFF;
+                        int green = (rgb >> 8) & 0xFF;
+                        int blue = rgb & 0xFF;
+
+                        // Apply tint as an overlay
+                        red = blendColorComponent(red, redTint);
+                        green = blendColorComponent(green, greenTint);
+                        blue = blendColorComponent(blue, blueTint);
+
+                        int modifiedRGB = (alpha << 24) | (red << 16) | (green << 8) | blue;
+                        modifiedImage.setRGB(x, y, modifiedRGB);
+                    }
                 }
             }
-
             return modifiedImage;
         }
 
@@ -325,6 +403,30 @@ public class PlayerRender extends BukkitRunnable {
             double blended = original * tint;
             int clamped = (int) Math.min(Math.max(blended, 0), 255);
             return clamped;
+        }
+
+        private static int blendColorComponentAdditive(int baseColor, int tint) {
+            int blendedColor = baseColor + tint;
+            return Math.min(blendedColor, 255);
+        }
+
+        private static int blendColorComponentSubtractive(int baseColor, int tint) {
+            int blendedColor = baseColor - tint;
+            return Math.max(blendedColor, 0);
+        }
+
+        private static int blendColorComponentMultiply(int baseColor, int tint) {
+            int blendedColor = (int) ((baseColor / 255.0) * tint);
+            return Math.min(blendedColor, 255);
+        }
+
+        private static int blendColorComponentDivide(int baseColor, int tint) {
+            if (tint == 0) {
+                return 0;
+            }
+
+            int blendedColor = (int) ((baseColor / 255.0) / (tint / 255.0) * 255);
+            return Math.min(blendedColor, 255);
         }
 
         private static void saveImage(BufferedImage image, String savePath, String fileName) throws IOException {
