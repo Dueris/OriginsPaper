@@ -131,6 +131,12 @@ public class PowerContainer implements Serializable {
         return (long) render;
     }
 
+    public String getModelRenderType(){
+        Object type = powerFile.get("render_type");
+        if (type == null) return "";
+        return (String) type;
+    }
+
     /**
      * @return The value "interval" from the power file
      */
