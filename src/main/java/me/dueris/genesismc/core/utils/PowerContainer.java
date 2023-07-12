@@ -1,13 +1,10 @@
 package me.dueris.genesismc.core.utils;
 
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 public class PowerContainer implements Serializable {
     @Serial

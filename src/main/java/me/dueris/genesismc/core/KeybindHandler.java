@@ -3,9 +3,6 @@ package me.dueris.genesismc.core;
 import me.dueris.genesismc.core.events.OriginKeybindExecuteEvent;
 import me.dueris.genesismc.core.utils.ShulkUtils;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.GameMode;
-import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -14,18 +11,16 @@ import org.bukkit.event.player.PlayerSwapHandItemsEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
-import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 import org.geysermc.geyser.api.GeyserApi;
 
 import java.util.ArrayList;
 
-import static me.dueris.genesismc.core.factory.powers.Powers.*;
+import static me.dueris.genesismc.core.factory.powers.Powers.launch_into_air;
+import static me.dueris.genesismc.core.factory.powers.Powers.shulker_inventory;
 import static me.dueris.genesismc.core.factory.powers.item.LaunchAir.*;
 import static org.bukkit.Bukkit.getServer;
-import static org.bukkit.ChatColor.DARK_AQUA;
-import static org.bukkit.ChatColor.RED;
 
 public class KeybindHandler implements Listener {
 

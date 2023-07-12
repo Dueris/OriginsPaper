@@ -1,26 +1,15 @@
 package me.dueris.genesismc.core.factory.powers.entity;
 
 import com.destroystokyo.paper.event.player.PlayerStartSpectatingEntityEvent;
-import io.papermc.paper.math.BlockPosition;
-import io.papermc.paper.math.Position;
 import me.dueris.genesismc.core.GenesisMC;
 import me.dueris.genesismc.core.entity.OriginPlayer;
 import me.dueris.genesismc.core.enums.OriginDataType;
-import me.dueris.genesismc.core.events.OriginChangeEvent;
 import me.dueris.genesismc.core.factory.conditions.ConditionExecutor;
-import me.dueris.genesismc.core.factory.conditions.block.BlockCondition;
 import me.dueris.genesismc.core.factory.conditions.entity.EntityCondition;
 import me.dueris.genesismc.core.utils.OriginContainer;
 import net.minecraft.network.protocol.game.ClientboundGameEventPacket;
-import net.minecraft.network.protocol.game.ClientboundSetChunkCacheRadiusPacket;
-import net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket;
-import net.minecraft.world.level.chunk.LevelChunkSection;
-import net.minecraft.world.phys.Vec3;
 import org.bukkit.*;
-import org.bukkit.attribute.Attribute;
-import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.block.data.BlockData;
 import org.bukkit.craftbukkit.v1_20_R1.CraftWorldBorder;
 import org.bukkit.craftbukkit.v1_20_R1.entity.CraftPlayer;
 import org.bukkit.enchantments.Enchantment;
@@ -29,26 +18,23 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryInteractEvent;
 import org.bukkit.event.inventory.InventoryType;
-import org.bukkit.event.player.*;
+import org.bukkit.event.player.PlayerDropItemEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.event.player.PlayerToggleSneakEvent;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import javax.lang.model.util.Elements;
-import java.util.*;
+import java.util.ArrayList;
 
-import static me.dueris.genesismc.core.GenesisMC.getPlugin;
-import static me.dueris.genesismc.core.factory.powers.Powers.phantomize;
 import static me.dueris.genesismc.core.factory.powers.Powers.phasing;
-import static me.dueris.genesismc.core.utils.BukkitColour.RED;
 import static org.bukkit.ChatColor.DARK_AQUA;
 import static org.bukkit.ChatColor.GRAY;
 
@@ -138,7 +124,7 @@ public class Phasing extends BukkitRunnable implements Listener {
                             p.getEyeLocation().add(-0.55F, 0, 0.55F).getBlock().isSolid())
                         ) {
                                 setInPhasingBlockForm(p);
-                                if(origin.getPowerFileFromType("origins:phasing").getOverlay() == true){
+                                if(origin.getPowerFileFromType("origins:phasing").getOverlay()){
                                     initializePhantomOverlay(p);
                                 }
 

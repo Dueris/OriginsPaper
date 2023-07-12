@@ -2,10 +2,8 @@ package me.dueris.genesismc.core.factory.conditions.entity;
 
 import me.dueris.genesismc.core.factory.powers.armour.RestrictArmor;
 import me.dueris.genesismc.core.utils.OriginContainer;
-import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.World;
-import org.bukkit.advancement.Advancement;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Biome;
 import org.bukkit.entity.Entity;
@@ -28,14 +26,12 @@ public class EntityCondition {
         if(type.equalsIgnoreCase("origins:ability")){
             String ability = origin.getPowerFileFromType(powerfile).getEntityCondition().get("ability").toString();
             if(ability.equalsIgnoreCase("minecraft:flying")){
-                if(entity instanceof Player){
-                    Player player = (Player) entity;
+                if(entity instanceof Player player){
                     if(player.isFlying()) return "true";
                 }
             }
             if(ability.equalsIgnoreCase("minecraft:instabuild")){
-                if(entity instanceof Player){
-                    Player player = (Player) entity;
+                if(entity instanceof Player player){
                     if(player.getGameMode().equals(GameMode.CREATIVE)) return "true";
                 }
             }
@@ -49,17 +45,15 @@ public class EntityCondition {
                 }
             }
             if(ability.equalsIgnoreCase("minecraft:mayfly")){
-                if(entity instanceof Player){
-                    Player player = (Player) entity;
-                    if(player.getAllowFlight() == true) return "true";
+                if(entity instanceof Player player){
+                    if(player.getAllowFlight()) return "true";
                 }
             }
         }
 
         if(type.equalsIgnoreCase("origins:advancement")){
             String advancementString = origin.getPowerFileFromType(powerfile).getEntityCondition().get("advancement").toString();
-            if(entity instanceof Player){
-                Player player = (Player) entity;
+            if(entity instanceof Player player){
                 World world = player.getWorld();
                 File worldFolder = world.getWorldFolder();
                 File advancementsFolder = new File(worldFolder, "advancements");
@@ -88,7 +82,7 @@ public class EntityCondition {
 
         if(type.equalsIgnoreCase("origins:air")){
             if(entity instanceof Player player){
-                if(RestrictArmor.compareValues(player.getRemainingAir(), origin.getPowerFileFromType(powerfile).getEntityCondition().get("comparison").toString(), Integer.valueOf(origin.getPowerFileFromType(powerfile).getEntityCondition().get("compare_to").toString())) == true){
+                if(RestrictArmor.compareValues(player.getRemainingAir(), origin.getPowerFileFromType(powerfile).getEntityCondition().get("comparison").toString(), Integer.valueOf(origin.getPowerFileFromType(powerfile).getEntityCondition().get("compare_to").toString()))){
                     return "true";
                 }
             }
@@ -97,7 +91,7 @@ public class EntityCondition {
         if(type.equalsIgnoreCase("origins:attribute")){
             if(entity instanceof Player player){
                 String attributeString = origin.getPowerFileFromType(powerfile).getEntityCondition().get("attribute").toString().split(":")[1].replace(".", "_").toUpperCase();
-                if(RestrictArmor.compareValues(player.getAttribute(Attribute.valueOf(attributeString)).getValue(), origin.getPowerFileFromType(powerfile).getEntityCondition().get("comparison").toString(), Integer.valueOf(origin.getPowerFileFromType(powerfile).getEntityCondition().get("compare_to").toString())) == true){
+                if(RestrictArmor.compareValues(player.getAttribute(Attribute.valueOf(attributeString)).getValue(), origin.getPowerFileFromType(powerfile).getEntityCondition().get("comparison").toString(), Integer.valueOf(origin.getPowerFileFromType(powerfile).getEntityCondition().get("compare_to").toString()))){
                     return "true";
                 }
             }

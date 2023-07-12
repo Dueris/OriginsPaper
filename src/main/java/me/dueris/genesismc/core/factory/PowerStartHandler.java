@@ -21,11 +21,11 @@ import me.dueris.genesismc.core.factory.powers.food.CarrotOnly;
 import me.dueris.genesismc.core.factory.powers.food.MoreExhaustion;
 import me.dueris.genesismc.core.factory.powers.food.Vegitarian;
 import me.dueris.genesismc.core.factory.powers.genesis.*;
-import me.dueris.genesismc.core.factory.powers.genesis.CreeperDeathDrop;
 import me.dueris.genesismc.core.factory.powers.item.EnderPearlThrow;
-import me.dueris.genesismc.core.factory.powers.genesis.GoldItemBuff;
 import me.dueris.genesismc.core.factory.powers.item.LaunchAir;
-import me.dueris.genesismc.core.factory.powers.world.*;
+import me.dueris.genesismc.core.factory.powers.world.Burn;
+import me.dueris.genesismc.core.factory.powers.world.BurnInDaylight;
+import me.dueris.genesismc.core.factory.powers.world.WorldSpawnHandler;
 import me.dueris.genesismc.core.origins.OriginHandler;
 import me.dueris.genesismc.core.utils.ShulkInv;
 
