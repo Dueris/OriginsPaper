@@ -7,7 +7,6 @@ import me.dueris.genesismc.core.entity.OriginPlayer;
 import me.dueris.genesismc.core.enums.OriginDataType;
 import me.dueris.genesismc.core.factory.CraftApoli;
 import me.dueris.genesismc.core.utils.LayerContainer;
-import me.dueris.genesismc.core.utils.OriginContainer;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.command.CommandSender;
@@ -18,10 +17,6 @@ import org.bukkit.profile.PlayerTextures;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Set;
-
-import static me.dueris.genesismc.core.factory.powers.Powers.translucent;
 
 
 public class Gui extends SubCommand {
@@ -51,7 +46,7 @@ public class Gui extends SubCommand {
                     OriginPlayer.unassignPowers(p, layer);
                     OriginPlayer.setOrigin(p, layer, CraftApoli.nullOrigin());
                     OriginPlayer.resetOriginData(p, OriginDataType.IN_PHASING_FORM);
-                    String skinData = p.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "original-skin-url"), PersistentDataType.STRING).toString();
+                    String skinData = p.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "original-skin-url"), PersistentDataType.STRING);
                     if(p.getPlayerProfile().getTextures().getSkinModel() == PlayerTextures.SkinModel.CLASSIC){
                         try {
                             p.getPlayerProfile().getTextures().setSkin(new URL(skinData), PlayerTextures.SkinModel.CLASSIC);

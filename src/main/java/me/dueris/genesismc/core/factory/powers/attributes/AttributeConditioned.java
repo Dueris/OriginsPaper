@@ -3,8 +3,6 @@ package me.dueris.genesismc.core.factory.powers.attributes;
 import me.dueris.genesismc.core.entity.OriginPlayer;
 import me.dueris.genesismc.core.utils.OriginContainer;
 import me.dueris.genesismc.core.utils.PowerContainer;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.attribute.Attribute;
@@ -22,7 +20,6 @@ import java.util.Random;
 import java.util.function.BinaryOperator;
 
 import static me.dueris.genesismc.core.factory.powers.Powers.conditioned_attribute;
-import static me.dueris.genesismc.core.utils.BukkitColour.RED;
 
 public class AttributeConditioned implements Listener {
 

@@ -1,21 +1,16 @@
 package me.dueris.genesismc.core.commands.subcommands.origin;
 
-import me.dueris.genesismc.core.GenesisMC;
 import me.dueris.genesismc.core.commands.PlayerSelector;
 import me.dueris.genesismc.core.commands.subcommands.SubCommand;
 import me.dueris.genesismc.core.entity.OriginPlayer;
 import me.dueris.genesismc.core.factory.CraftApoli;
 import me.dueris.genesismc.core.utils.LayerContainer;
-import me.dueris.genesismc.core.utils.OriginContainer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
-import org.bukkit.NamespacedKey;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.persistence.PersistentDataType;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import static me.dueris.genesismc.core.utils.BukkitColour.RED;
 

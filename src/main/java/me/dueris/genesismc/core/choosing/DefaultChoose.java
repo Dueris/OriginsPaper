@@ -1,7 +1,6 @@
 package me.dueris.genesismc.core.choosing;
 
 import me.dueris.genesismc.core.entity.OriginPlayer;
-import me.dueris.genesismc.core.events.OriginChangeEvent;
 import me.dueris.genesismc.core.events.OriginChooseEvent;
 import me.dueris.genesismc.core.factory.CraftApoli;
 import me.dueris.genesismc.core.items.OrbOfOrigins;

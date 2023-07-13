@@ -1,12 +1,6 @@
 package me.dueris.genesismc.core.factory.powers;
 
-import me.dueris.genesismc.core.entity.OriginPlayer;
-import org.bukkit.Bukkit;
-import org.bukkit.GameMode;
-import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
-
-import static me.dueris.genesismc.core.factory.powers.Powers.creative_flight;
 
 public class FlightHandler extends BukkitRunnable {
     @Override

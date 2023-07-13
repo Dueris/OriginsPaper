@@ -33,8 +33,7 @@ public class DamageCondition extends Condition {
         }
 
         if (type.equalsIgnoreCase("origins:attacker")) {
-            if(e instanceof EntityDamageByEntityEvent){
-                EntityDamageByEntityEvent event = (EntityDamageByEntityEvent) e;
+            if(e instanceof EntityDamageByEntityEvent event){
                 EntityCondition.check(p, origin, powerfile, event.getDamager());
             }
         }
