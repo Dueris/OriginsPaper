@@ -94,15 +94,13 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         GenesisDataFiles.loadLangConfig();
         GenesisDataFiles.setup();
 
-
-                //start
-        Bukkit.getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC]    ___       _       _           ").color(TextColor.fromHexString("#b9362f")));
-        Bukkit.getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC]   / _ \\ _ __(_) __ _(_)_ __  ___ ").color(TextColor.fromHexString("#f2f218")));
-        Bukkit.getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC]  | | | | '__| |/ _` | | '_ \\/ __|").color(TextColor.fromHexString("#4fec4f")));
-        Bukkit.getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC]  | |_| | |  | | (_| | | | | \\__ \\").color(TextColor.fromHexString("#4de4e4")));
-        Bukkit.getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC]   \\___/|_|  |_|\\__, |_|_| |_|___/").color(TextColor.fromHexString("#333fb7")));
-        Bukkit.getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC]                |___/             ").color(TextColor.fromHexString("#dd50ff")));
-        Bukkit.getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC]  GenesisMC -- Created by The Genesis Team").color(TextColor.fromHexString("")));
+        //start
+        Bukkit.getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC]    ____                               _         __  __    ____ ").color(TextColor.fromHexString("#b9362f")));
+        Bukkit.getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC]   / ___|   ___   _ __     ___   ___  (_)  ___  |  \\/  |  / ___|").color(TextColor.fromHexString("#bebe42")));
+        Bukkit.getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC]  | |  _   / _ \\ | '_ \\   / _ \\ / __| | | / __| | |\\/| | | |    ").color(TextColor.fromHexString("#4fec4f")));
+        Bukkit.getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC]  | |_| | |  __/ | | | | |  __/ \\__ \\ | | \\__ \\ | |  | | | |___ ").color(TextColor.fromHexString("#4de4e4")));
+        Bukkit.getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC]   \\____|  \\___| |_| |_|  \\___| |___/ |_| |___/ |_|  |_|  \\____|").color(TextColor.fromHexString("#333fb7")));
+        Bukkit.getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC]  GenesisMC -- Created by The Genesis Team").color(TextColor.fromHexString("#dd50ff")));
         Bukkit.getServer().getConsoleSender().sendMessage(Component.text("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"));
         //lang check
 
