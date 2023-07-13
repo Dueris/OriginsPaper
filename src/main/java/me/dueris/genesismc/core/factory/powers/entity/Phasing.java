@@ -52,10 +52,15 @@ public class Phasing extends BukkitRunnable implements Listener {
 
     public static void setInPhasingBlockForm(Player p) {
         //camera client renderer
+        if(p.getGameMode().equals(GameMode.CREATIVE)){
+            p.setGameMode(GameMode.SPECTATOR);
+            ((CraftPlayer) p).getHandle().connection.send(new ClientboundGameEventPacket(ClientboundGameEventPacket.CHANGE_GAME_MODE, 1));
+        } else if (p.getGameMode() != GameMode.SPECTATOR) {
+            p.setGameMode(GameMode.SPECTATOR);
+            ((CraftPlayer) p).getHandle().connection.send(new ClientboundGameEventPacket(ClientboundGameEventPacket.CHANGE_GAME_MODE, 0));
+        }
         p.setCollidable(false);
-        p.setGameMode(GameMode.SPECTATOR);
         IN_PHANTOM_FORM_BLOCKS.add(p);
-        ((CraftPlayer) p).getHandle().connection.send(new ClientboundGameEventPacket(ClientboundGameEventPacket.CHANGE_GAME_MODE, 0));
         p.setAllowFlight(true);
         p.setFlying(true);
     }
