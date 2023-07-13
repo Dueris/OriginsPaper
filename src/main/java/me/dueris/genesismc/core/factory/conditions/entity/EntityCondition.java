@@ -3,9 +3,12 @@ package me.dueris.genesismc.core.factory.conditions.entity;
 import me.dueris.genesismc.core.factory.powers.armour.RestrictArmor;
 import me.dueris.genesismc.core.utils.OriginContainer;
 import org.bukkit.GameMode;
+import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Biome;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.json.simple.JSONObject;
@@ -103,6 +106,27 @@ public class EntityCondition {
             String biomeString = origin.getPowerFileFromType(powerfile).getEntityCondition().get("biome").toString().split(":")[1].replace(".", "_").toUpperCase();
             if(entity.getLocation().getBlock().getBiome().equals(Biome.valueOf(biomeString))){
                 return "true";
+            }
+        }
+
+        if(type.equalsIgnoreCase("origins:block_collision")){
+            // TODO: add block_condition check for origins:block_collision. see https://origins.readthedocs.io/en/latest/types/entity_condition_types/block_collision/
+            String offsetX = origin.getPowerFileFromType(powerfile).getEntityCondition().get("offset_x").toString();
+            String offsetY = origin.getPowerFileFromType(powerfile).getEntityCondition().get("offset_y").toString();
+            String offsetZ = origin.getPowerFileFromType(powerfile).getEntityCondition().get("offset_z").toString();
+            if(entity instanceof Player player){
+                Location playerLocation = player.getLocation();
+                World world = player.getWorld();
+
+                int blockX = playerLocation.getBlockX() + Integer.parseInt(offsetX);
+                int blockY = playerLocation.getBlockY() + Integer.parseInt(offsetY);
+                int blockZ = playerLocation.getBlockZ() + Integer.parseInt(offsetZ);
+
+                Block block = world.getBlockAt(blockX, blockY, blockZ);
+
+                if (block.getType() != Material.AIR) {
+                    return "true";
+                }
             }
         }
 
