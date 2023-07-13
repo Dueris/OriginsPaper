@@ -3,7 +3,7 @@
   "hidden": false,
   "name": "menu.expanded.rabbit.leap.title",
   "description": "menu.expanded.rabbit.leap.description",
-  "modifiers": {
+  "modifier": {
     "cooldown_millis": 10000,
     "tick_charge": 10
   }
