@@ -231,11 +231,16 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 
     @Override
     public void onDisable() {
-        // Disable enchantments
         for (Player p : Bukkit.getOnlinePlayers()) {
             p.getScoreboard().getTeam("origin-players").removeEntity(p);
             Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), "skin clear " + p.getName());
+
+            //closes all open menus, they would cause errors if not closed
+            if (p.getOpenInventory().getTitle().startsWith("Choosing Menu") && p.getOpenInventory().getTitle().startsWith("Custom Origins") && p.getOpenInventory().getTitle().startsWith("Expanded Origins") && p.getOpenInventory().getTitle().startsWith("Custom Origin") && p.getOpenInventory().getTitle().startsWith("Origin")) {
+                p.closeInventory();
+            }
         }
+        // Disable enchantments
         try {
             Field keyField = Enchantment.class.getDeclaredField("byKey");
 
