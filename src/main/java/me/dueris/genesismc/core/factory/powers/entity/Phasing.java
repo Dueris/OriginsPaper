@@ -138,7 +138,6 @@ public class Phasing extends BukkitRunnable implements Listener {
                                     Float viewD = origin.getPowerFileFromType("origins:phasing").getViewDistance().floatValue();
 
                                     p.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, viewD.intValue() * 2, 255, false, false, false));
-                                    p.addPotionEffect(new PotionEffect(PotionEffectType.DARKNESS, 10, 255, false, false, false));
                                 }
 
                             } else {
