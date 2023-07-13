@@ -7,7 +7,6 @@ folia-supported: true
 description: Bringing the life and fun of the Origins mod to PaperMC
 website: https://genesismc.duckdns.org/
 softdepend: [SkinRestorer]
-load: STARTUP
 prefix: Origins
 commands:
   origin:
