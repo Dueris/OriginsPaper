@@ -299,6 +299,8 @@ public class PlayerRender extends BukkitRunnable {
 
             BufferedImage modifiedImage = new BufferedImage(originalImage.getWidth(), originalImage.getHeight(), BufferedImage.TYPE_INT_ARGB);
 
+            if (origin.getPowerFileFromType("origins:model_color").getModelRenderType() == null) return modifiedImage;
+
             if (origin.getPowerFileFromType("origins:model_color").getModelRenderType().equalsIgnoreCase("add")) {
                 for (int x = 0; x < modifiedImage.getWidth(); x++) {
                     for (int y = 0; y < modifiedImage.getHeight(); y++) {
