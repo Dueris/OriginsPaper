@@ -108,7 +108,6 @@ public class Phasing extends BukkitRunnable implements Listener {
                 for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
                     if (ConditionExecutor.check(p, origin, "origins:phasing", null, p)) {
                         if (OriginPlayer.isInPhantomForm(p)) {
-
                             if ((p.getLocation().add(0.55F, 0, 0.55F).getBlock().isSolid() ||
                             p.getLocation().add(0.55F, 0, 0).getBlock().isSolid() ||
                             p.getLocation().add(0, 0, 0.55F).getBlock().isSolid() ||
@@ -239,6 +238,18 @@ public class Phasing extends BukkitRunnable implements Listener {
                             if (ConditionExecutor.check(p, origin, "origins:phasing", null, p)) {
                                 OriginPlayer.setOriginData(p, OriginDataType.IN_PHASING_FORM, false);
                                 p.sendActionBar(DARK_AQUA + "Deactivated Phasing Form");
+                                if (p.getGameMode().equals(GameMode.SPECTATOR)) {
+                                    if (p.getPreviousGameMode().equals(GameMode.CREATIVE)) {
+                                        p.setGameMode(p.getPreviousGameMode());
+                                        p.setFlying(false);
+                                    } else {
+                                        p.setGameMode(p.getPreviousGameMode());
+                                        if (p.isOnGround()) ;
+                                        p.setFlying(false);
+                                    }
+                                    p.setFlySpeed(0.1F);
+
+                                }
                             }
                         }else{
                             if (ConditionExecutor.check(p, origin, "origins:phasing", null, p)) {
