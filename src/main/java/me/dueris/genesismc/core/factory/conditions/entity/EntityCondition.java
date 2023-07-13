@@ -162,6 +162,25 @@ public class EntityCondition {
             }
         }
 
+        if(type.equalsIgnoreCase("origins:brightness")){
+            String comparison = origin.getPowerFileFromType(powerfile).getEntityCondition().get("comparison").toString();
+            Double compare_to = Double.valueOf(origin.getPowerFileFromType(powerfile).getEntityCondition().get("compare_to").toString());
+            double brightness = 0;
+            int lightLevel = entity.getLocation().getBlock().getLightLevel();
+            int ambientLight = 0;
+
+            //calculate ambient light
+            if(entity.getWorld() == Bukkit.getServer().getWorlds().get(0)){ //is overworld
+                ambientLight = 0;
+            } else if (entity.getWorld() == Bukkit.getServer().getWorlds().get(2)) {
+                ambientLight = 1;
+            }
+            brightness = ambientLight + (1 - ambientLight) * lightLevel / (60 - 3 * lightLevel);
+
+            if(RestrictArmor.compareValues(brightness, comparison, compare_to)){
+                return "true";
+            }
+        }
 
         return "false";
     }
