@@ -8,6 +8,7 @@ import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.util.BoundingBox;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -185,6 +186,26 @@ public class EntityCondition {
         if(type.equalsIgnoreCase("origins:climbing")){
             if(entity instanceof Player player){
                 if(player.isClimbing()){
+                    return "true";
+                }
+            }
+        }
+
+        if(type.equalsIgnoreCase("origins:collided_horizontally")){
+            if(entity instanceof Player player){
+                Block block = player.getLocation().getBlock();
+                BoundingBox playerBoundingBox = player.getBoundingBox();
+                BoundingBox blockBoundingBox = block.getBoundingBox();
+
+                Location center = player.getLocation();
+
+                World world = center.getWorld();
+                double x = center.getX();
+                double y = center.getY();
+                double z = center.getZ();
+
+                BoundingBox boundingBox = block.getBoundingBox();
+                if(boundingBox.overlaps(playerBoundingBox)){
                     return "true";
                 }
             }
