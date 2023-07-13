@@ -15,7 +15,7 @@ import me.dueris.genesismc.core.enchantments.WaterProtection;
 import me.dueris.genesismc.core.entity.OriginPlayer;
 import me.dueris.genesismc.core.factory.CraftApoli;
 import me.dueris.genesismc.core.factory.PowerStartHandler;
-import me.dueris.genesismc.core.factory.powers.entity.PlayerRender;
+import me.dueris.genesismc.core.factory.powers.OriginsMod.player.PlayerRender;
 import me.dueris.genesismc.core.files.GenesisDataFiles;
 import me.dueris.genesismc.core.generation.WaterProtBookGen;
 import me.dueris.genesismc.core.items.InfinPearl;

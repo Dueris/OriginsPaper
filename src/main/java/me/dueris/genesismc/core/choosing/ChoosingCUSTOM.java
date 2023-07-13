@@ -4,7 +4,7 @@ import me.dueris.genesismc.core.GenesisMC;
 import me.dueris.genesismc.core.entity.OriginPlayer;
 import me.dueris.genesismc.core.events.OriginChangeEvent;
 import me.dueris.genesismc.core.factory.CraftApoli;
-import me.dueris.genesismc.core.factory.powers.world.WorldSpawnHandler;
+import me.dueris.genesismc.core.factory.powers.OriginsMod.world.WorldSpawnHandler;
 import me.dueris.genesismc.core.utils.OriginContainer;
 import me.dueris.genesismc.core.utils.PowerContainer;
 import org.bukkit.*;

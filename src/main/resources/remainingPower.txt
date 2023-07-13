@@ -1,0 +1,35 @@
+Attribute Modify Transfer
+Cooldown
+Damage Over Time
+Disable Regen
+Entity Glow
+Entity Group
+Exhaust
+Fire Projectile
+Freeze
+Grounded
+Ignore Water
+Inventory
+Invisibility
+Item On Item
+Keep Inventory
+Launch
+Lava Vision
+Multiple
+Overlay
+Particle
+Recipe
+Replace Loot Table
+Resource
+Self Glow
+Shader
+Shaking
+Simple
+Stacking Status Effect
+Starting Equipment
+Status Bar Texture
+Swimming
+Toggle Night Vision
+Toggle
+Tooltip
+Walk On Fluid

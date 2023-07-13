@@ -5,6 +5,7 @@ import org.json.simple.JSONObject;
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.List;
 
 public class PowerContainer implements Serializable {
     @Serial
@@ -291,7 +292,7 @@ public class PowerContainer implements Serializable {
     /**
      * @return Effects in the power file or null if not found
      */
-    public HashMap<String, Object> getEffects() {
+    public List<String> getEffects() {
         Object obj = powerFile.get("effects");
         if (obj == null) return new HashMap<>();
 

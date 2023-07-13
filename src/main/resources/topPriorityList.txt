@@ -1,0 +1,4 @@
+// TODO: finish conditions
+// TODO: make actions
+// TODO: finish layers
+// TODO: finish powers

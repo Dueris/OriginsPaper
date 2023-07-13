@@ -1,0 +1,11 @@
+genesis = namespacekey
+
+genesis:jump_boost
+genesis:player_overlay
+genesis:bow_inability
+genesis:silk_touch
+genesis:play_sound
+genesis:swap_effect
+genesis:bioluminescent
+genesis:leap
+genesis:explode_tick
