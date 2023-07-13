@@ -161,7 +161,6 @@ public class WaterDamage extends BukkitRunnable implements Listener {
             if (p.isInWaterOrRainOrBubbleColumn()) {
                 e.setDeathMessage(p.getName() + " took a bath for too long");
             }
-            p.getLocation().getWorld().dropItem(p.getLocation(), new ItemStack(Material.ENDER_PEARL, r));
         }
     }
 
