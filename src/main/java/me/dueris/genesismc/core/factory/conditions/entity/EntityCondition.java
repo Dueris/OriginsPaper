@@ -2,10 +2,7 @@ package me.dueris.genesismc.core.factory.conditions.entity;
 
 import me.dueris.genesismc.core.factory.powers.armour.RestrictArmor;
 import me.dueris.genesismc.core.utils.OriginContainer;
-import org.bukkit.GameMode;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
@@ -130,6 +127,106 @@ public class EntityCondition {
             }
         }
 
+        if(type.equalsIgnoreCase("origins:block_in_radius")){
+            // TODO: add block_condition check for origins:block_collision. see https://origins.readthedocs.io/en/latest/types/entity_condition_types/block_collision/
+            Integer radius = (Integer) origin.getPowerFileFromType(powerfile).getEntityCondition().get("radius");
+            String shape = origin.getPowerFileFromType(powerfile).getEntityCondition().get("shape").toString();
+            String comparison = origin.getPowerFileFromType(powerfile).getEntityCondition().get("comparison").toString();
+            Integer compare_to = Integer.valueOf(origin.getPowerFileFromType(powerfile).getEntityCondition().get("compare_to").toString());
+
+            Location center = entity.getLocation();
+            int centerX = center.getBlockX();
+            int centerY = center.getBlockY();
+            int centerZ = center.getBlockZ();
+            World world = center.getWorld();
+
+            int minX = center.getBlockX() - radius;
+            int minY = center.getBlockY() - radius;
+            int minZ = center.getBlockZ() - radius;
+            int maxX = center.getBlockX() + radius;
+            int maxY = center.getBlockY() + radius;
+            int maxZ = center.getBlockZ() + radius;
+
+            int blockCount = 0;
+
+            if (shape.equalsIgnoreCase("sphere")) {
+                blockCount = countBlocksInSphere(centerX, centerY, centerZ, radius, world);
+            } else if (shape.equalsIgnoreCase("star")) {
+                blockCount = countBlocksInStar(centerX, centerY, centerZ, radius, world);
+            } else if (shape.equalsIgnoreCase("cube")) {
+                blockCount = countBlocksInCube(minX, minY, minZ, maxX, maxY, maxZ, world);
+            }
+
+            if(RestrictArmor.compareValues(blockCount, comparison, compare_to)){
+                return "true";
+            }
+        }
+
+
         return "false";
     }
+
+    private static int countBlocksInCube(int minX, int minY, int minZ, int maxX, int maxY, int maxZ, World world) {
+        int blockCount = 0;
+
+        for (int x = minX; x <= maxX; x++) {
+            for (int y = minY; y <= maxY; y++) {
+                for (int z = minZ; z <= maxZ; z++) {
+                    Location location = new Location(world, x, y, z);
+                    Block block = location.getBlock();
+                    if (block.getType() != Material.AIR) {
+                        blockCount++;
+                    }
+                }
+            }
+        }
+
+        return blockCount;
+    }
+
+    private static int countBlocksInStar(int centerX, int centerY, int centerZ, int radius, World world) {
+        int blockCount = 0;
+
+        for (int x = centerX - radius; x <= centerX + radius; x++) {
+            for (int y = centerY - radius; y <= centerY + radius; y++) {
+                for (int z = centerZ - radius; z <= centerZ + radius; z++) {
+                    double distance = Math.sqrt(Math.pow(x - centerX, 2) + Math.pow(y - centerY, 2) + Math.pow(z - centerZ, 2));
+
+                    if (distance <= radius && distance >= radius / 2) {
+                        Location location = new Location(world, x, y, z);
+                        Block block = location.getBlock();
+
+                        if (block.getType() != Material.AIR) {
+                            blockCount++;
+                        }
+                    }
+                }
+            }
+        }
+
+        return blockCount;
+    }
+
+    public static int countBlocksInSphere(int centerX, int centerY, int centerZ, int radius, World world) {
+        int blockCount = 0;
+        int squaredRadius = radius * radius;
+
+        for (int x = centerX - radius; x <= centerX + radius; x++) {
+            for (int y = centerY - radius; y <= centerY + radius; y++) {
+                for (int z = centerZ - radius; z <= centerZ + radius; z++) {
+                    if ((x - centerX) * (x - centerX) + (y - centerY) * (y - centerY) + (z - centerZ) * (z - centerZ) <= squaredRadius) {
+                        Location location = new Location(world, x, y, z);
+                        if (location.getBlock().getType() != Material.AIR) {
+                            blockCount++;
+                        }
+                    }
+                }
+            }
+        }
+
+        return blockCount;
+    }
+
+
+
 }
