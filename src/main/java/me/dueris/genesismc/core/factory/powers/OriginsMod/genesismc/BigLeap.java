@@ -1,6 +1,8 @@
 package me.dueris.genesismc.core.factory.powers.OriginsMod.genesismc;
 
 import me.dueris.genesismc.core.GenesisMC;
+import me.dueris.genesismc.core.entity.OriginPlayer;
+import me.dueris.genesismc.core.utils.OriginContainer;
 import org.bukkit.ChatColor;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Sound;
@@ -39,95 +41,94 @@ public class BigLeap implements Listener {
         return true;
     }
 
-    //This solved "java.lang.NoClassDefFoundError"
-    public static void doLeap(Player p) {
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                if (cooldownAfter.containsKey(p.getUniqueId())) {
-                    if (System.currentTimeMillis() - cooldownAfter.get(p.getUniqueId()) >= 0) {
-                        p.sendActionBar(ChatColor.RED + "|||||||||");
-                    }
-                    if (System.currentTimeMillis() - cooldownAfter.get(p.getUniqueId()) >= 2500) {
-                        p.sendActionBar(ChatColor.RED + "|||||||");
-                    }
-                    if (System.currentTimeMillis() - cooldownAfter.get(p.getUniqueId()) >= 5000) {
-                        p.sendActionBar(ChatColor.YELLOW + "|||||");
-                    }
-                    if (System.currentTimeMillis() - cooldownAfter.get(p.getUniqueId()) >= 7500) {
-                        p.sendActionBar(ChatColor.YELLOW + "|||");
-                    }
-                    if (System.currentTimeMillis() - cooldownAfter.get(p.getUniqueId()) >= 10000) {
-                        cooldownAfter.remove(p.getUniqueId());
-                        p.sendActionBar(ChatColor.GREEN + "-");
-                        inAir.remove(p.getUniqueId());
-                        p.playSound(p.getLocation(), Sound.ENTITY_ARROW_HIT_PLAYER, 1, 2);
-
-                    }
-                } else {
-                    this.cancel();
-                }
-            }
-        }.runTaskTimer(GenesisMC.getPlugin(), 0L, 10L);
-
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                if (cooldownAfter.containsKey(p.getUniqueId())) {
-                    p.playSound(p.getLocation(), Sound.BLOCK_SCAFFOLDING_HIT, 1, 2);
-                } else {
-                    this.cancel();
-                }
-            }
-        }.runTaskTimer(GenesisMC.getPlugin(), 0L, 50L);
-    }
-
     @EventHandler
     public void onRabbitLeap(PlayerToggleSneakEvent e) {
         PersistentDataContainer data = e.getPlayer().getPersistentDataContainer();
         if (big_leap_tick.contains(e.getPlayer())) {
-            Player p = e.getPlayer();
-            int toggleState = data.get(new NamespacedKey(GenesisMC.getPlugin(), "toggle"), PersistentDataType.INTEGER);
-            if (p.isSneaking()) return;
-            if (!p.isOnGround()) return;
-            if (cooldownAfter.containsKey(p.getUniqueId())) return;
-            if (toggleState == 2) return;
+            for(OriginContainer origin : OriginPlayer.getOrigin(e.getPlayer()).values()){
+                Player p = e.getPlayer();
+                int cooldownTicks = Integer.parseInt(origin.getPowerFileFromType("genesis:leap").get("cooldown_millis").toString());
+                int tickCharge = Integer.valueOf(origin.getPowerFileFromType("genesis:leap").get("tick_charge"));
+                int toggleState = data.get(new NamespacedKey(GenesisMC.getPlugin(), "toggle"), PersistentDataType.INTEGER);
+                if (p.isSneaking()) return;
+                if (!p.isOnGround()) return;
+                if (cooldownAfter.containsKey(p.getUniqueId())) return;
+                if (toggleState == 2) return;
 
-            cooldownBefore.put(p.getUniqueId(), 0);
-            playSound.put(p.getUniqueId(), Boolean.TRUE);
+                cooldownBefore.put(p.getUniqueId(), 0);
+                playSound.put(p.getUniqueId(), Boolean.TRUE);
 
-            new BukkitRunnable() {
-                @Override
-                public void run() {
-                    if (p.isSneaking()) {
-                        if (cooldownBefore.get(p.getUniqueId()) == 2) {
-                            p.sendActionBar(ChatColor.RED + "|||");
-                        } else if (cooldownBefore.get(p.getUniqueId()) == 4) {
-                            p.sendActionBar(ChatColor.RED + "|||||");
-                        } else if (cooldownBefore.get(p.getUniqueId()) == 6) {
-                            p.sendActionBar(ChatColor.YELLOW + "|||||||");
-                        } else if (cooldownBefore.get(p.getUniqueId()) == 8) {
-                            p.sendActionBar(ChatColor.YELLOW + "|||||||||");
-                        } else if (cooldownBefore.get(p.getUniqueId()) >= 10) {
-                            p.sendActionBar(ChatColor.GREEN + "|||||||||||");
-                            cooldownBefore.replace(p.getUniqueId(), 9);
-                            if (playSound.get(p.getUniqueId())) {
-                                p.playSound(p.getLocation(), Sound.ENTITY_ARROW_HIT_PLAYER, 1, 2);
-                                playSound.replace(p.getUniqueId(), Boolean.FALSE);
+                new BukkitRunnable() {
+                    @Override
+                    public void run() {
+                        if (p.isSneaking()) {
+                            if (cooldownBefore.get(p.getUniqueId()) == tickCharge * 1/5) {
+                                p.sendActionBar(ChatColor.RED + "|||");
+                            } else if (cooldownBefore.get(p.getUniqueId()) == tickCharge * 2/5) {
+                                p.sendActionBar(ChatColor.RED + "|||||");
+                            } else if (cooldownBefore.get(p.getUniqueId()) == tickCharge * 3/5) {
+                                p.sendActionBar(ChatColor.YELLOW + "|||||||");
+                            } else if (cooldownBefore.get(p.getUniqueId()) == tickCharge * 4/5) {
+                                p.sendActionBar(ChatColor.YELLOW + "|||||||||");
+                            } else if (cooldownBefore.get(p.getUniqueId()) >= tickCharge) {
+                                p.sendActionBar(ChatColor.GREEN + "|||||||||||");
+                                cooldownBefore.replace(p.getUniqueId(), 9);
+                                if (playSound.get(p.getUniqueId())) {
+                                    p.playSound(p.getLocation(), Sound.ENTITY_ARROW_HIT_PLAYER, 1, 2);
+                                    playSound.replace(p.getUniqueId(), Boolean.FALSE);
+                                }
                             }
+                            cooldownBefore.replace(p.getUniqueId(), cooldownBefore.get(p.getUniqueId()) + 1);
+                        } else {
+                            cooldownAfter.put(p.getUniqueId(), System.currentTimeMillis());
+                            inAir.add(p.getUniqueId());
+                            p.setVelocity(p.getLocation().getDirection().multiply(1.5 + cooldownBefore.get(p.getUniqueId()) / 10));
+                            cooldownBefore.remove(p.getUniqueId());
+                            playSound.remove(p.getUniqueId());
+                            new BukkitRunnable() {
+                                @Override
+                                public void run() {
+                                    if (cooldownAfter.containsKey(p.getUniqueId())) {
+                                        if (System.currentTimeMillis() - cooldownAfter.get(p.getUniqueId()) >= cooldownTicks * 1/5) {
+                                            p.sendActionBar(ChatColor.RED + "|||||||||");
+                                        }
+                                        if (System.currentTimeMillis() - cooldownAfter.get(p.getUniqueId()) >= cooldownTicks * 2/5) {
+                                            p.sendActionBar(ChatColor.RED + "|||||||");
+                                        }
+                                        if (System.currentTimeMillis() - cooldownAfter.get(p.getUniqueId()) >= cooldownTicks * 3/5) {
+                                            p.sendActionBar(ChatColor.YELLOW + "|||||");
+                                        }
+                                        if (System.currentTimeMillis() - cooldownAfter.get(p.getUniqueId()) >= cooldownTicks * 4/5) {
+                                            p.sendActionBar(ChatColor.YELLOW + "|||");
+                                        }
+                                        if (System.currentTimeMillis() - cooldownAfter.get(p.getUniqueId()) >= cooldownTicks) {
+                                            cooldownAfter.remove(p.getUniqueId());
+                                            p.sendActionBar(ChatColor.GREEN + "-");
+                                            inAir.remove(p.getUniqueId());
+                                            p.playSound(p.getLocation(), Sound.ENTITY_ARROW_HIT_PLAYER, 1, 2);
+
+                                        }
+                                    } else {
+                                        this.cancel();
+                                    }
+                                }
+                            }.runTaskTimer(GenesisMC.getPlugin(), 0L, 10L);
+
+                            new BukkitRunnable() {
+                                @Override
+                                public void run() {
+                                    if (cooldownAfter.containsKey(p.getUniqueId())) {
+                                        p.playSound(p.getLocation(), Sound.BLOCK_SCAFFOLDING_HIT, 1, 2);
+                                    } else {
+                                        this.cancel();
+                                    }
+                                }
+                            }.runTaskTimer(GenesisMC.getPlugin(), 0L, 50L);
+                            this.cancel();
                         }
-                        cooldownBefore.replace(p.getUniqueId(), cooldownBefore.get(p.getUniqueId()) + 1);
-                    } else {
-                        cooldownAfter.put(p.getUniqueId(), System.currentTimeMillis());
-                        inAir.add(p.getUniqueId());
-                        p.setVelocity(p.getLocation().getDirection().multiply(1.5 + cooldownBefore.get(p.getUniqueId()) / 10));
-                        cooldownBefore.remove(p.getUniqueId());
-                        playSound.remove(p.getUniqueId());
-                        doLeap(p);
-                        this.cancel();
                     }
-                }
-            }.runTaskTimer(GenesisMC.getPlugin(), 0L, 2L);
+                }.runTaskTimer(GenesisMC.getPlugin(), 0L, 2L);
+            }
         }
     }
 
