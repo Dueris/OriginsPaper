@@ -60,20 +60,11 @@ public class PowerStartHandler {
         FelinePhobia felinePhobia = new FelinePhobia();
         felinePhobia.runTaskTimer(getPlugin(), 0, 20);
 
-        MineSpeed mineSpeed = new MineSpeed();
-        mineSpeed.runTaskTimer(getPlugin(), 0, 10);
-
         PlayerRender transparency = new PlayerRender();
         transparency.runTaskTimer(getPlugin(), 0, 5);
 
         BurnInDaylight burnInDaylight = new BurnInDaylight();
         burnInDaylight.runTaskTimer(getPlugin(), 0, 10);
-
-//        Phantomized phantomized = new Phantomized();
-//        phantomized.runTaskTimer(getPlugin(), 0, 1);
-//
-//        PhantomizeOverlay phantomizedo = new PhantomizeOverlay();
-//        phantomizedo.runTaskTimer(getPlugin(), 0, 2);
 
         JumpIncreased jumpIncreased = new JumpIncreased();
         jumpIncreased.runTaskTimer(getPlugin(), 0, 10);
@@ -116,9 +107,6 @@ public class PowerStartHandler {
 
         OverworldPiglinZombified piglinZombified = new OverworldPiglinZombified();
         piglinZombified.runTaskTimer(getPlugin(), 0, 40);
-
-        LikeWater likeWater = new LikeWater();
-        likeWater.runTaskTimer(getPlugin(), 0, 3);
 
         NightVision nightVision = new NightVision();
         nightVision.runTaskTimer(getPlugin(), 0, 10);
