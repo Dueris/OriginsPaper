@@ -1,6 +1,10 @@
 {
-  "type": "genesis:big_leap_charge",
+  "type": "genesis:leap",
   "hidden": false,
   "name": "menu.expanded.rabbit.leap.title",
-  "description": "menu.expanded.rabbit.leap.description"
+  "description": "menu.expanded.rabbit.leap.description",
+  "modifiers": {
+    "cooldown_millis": 10000,
+    "tick_charge": 10
+  }
 }
