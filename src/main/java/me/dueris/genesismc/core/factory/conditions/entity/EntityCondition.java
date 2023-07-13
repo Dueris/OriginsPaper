@@ -182,6 +182,14 @@ public class EntityCondition {
             }
         }
 
+        if(type.equalsIgnoreCase("origins:climbing")){
+            if(entity instanceof Player player){
+                if(player.isClimbing()){
+                    return "true";
+                }
+            }
+        }
+
         return "false";
     }
 
