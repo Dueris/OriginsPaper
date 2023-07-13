@@ -162,8 +162,11 @@ public class PowerContainer implements Serializable {
         return type.toString();
     }
 
-        //THERE IS A SYSTEM!!!!!!!!!!!!!!!
-// FOLLOW IT
+    public String get(String idk) {
+        Object type = powerFile.get(idk);
+        if(type == null) return null;
+        return type.toString();
+    }
 
     /**
      * @return LONG view_distance value for power origins:phasing
