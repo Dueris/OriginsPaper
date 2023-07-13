@@ -331,7 +331,7 @@ public class OriginPlayer {
                 case "genesis:blue_fire_weak" -> fire_weak.add(player);
                 case "genesis:gold_armour_buff" -> gold_armour_buff.add(player);
                 case "genesis:gold_item_buff" -> gold_item_buff.add(player);
-                case "genesis:big_leap_charge" -> big_leap_tick.add(player);
+                case "genesis:leap" -> big_leap_tick.add(player);
                 case "genesis:carrots_only" -> carrot_only.add(player);
                 case "genesis:jump_boost" -> jump_increased.add(player);
                 case "genesis:drop_rabbit_foot_damage" -> rabbit_drop_foot.add(player);
