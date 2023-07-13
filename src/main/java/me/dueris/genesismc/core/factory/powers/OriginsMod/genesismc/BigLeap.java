@@ -47,7 +47,7 @@ public class BigLeap implements Listener {
         if (big_leap_tick.contains(e.getPlayer())) {
             for(OriginContainer origin : OriginPlayer.getOrigin(e.getPlayer()).values()){
                 Player p = e.getPlayer();
-                int cooldownTicks = Integer.parseInt(origin.getPowerFileFromType("genesis:leap").getModifier().get("cooldown_millis").toString());
+                int cooldownTicks = Integer.valueOf(origin.getPowerFileFromType("genesis:leap").getModifier().get("cooldown").toString());
                 int tickCharge = Integer.valueOf(origin.getPowerFileFromType("genesis:leap").getModifier().get("tick_charge").toString());
                 int toggleState = data.get(new NamespacedKey(GenesisMC.getPlugin(), "toggle"), PersistentDataType.INTEGER);
                 if (p.isSneaking()) return;
