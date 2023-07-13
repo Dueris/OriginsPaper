@@ -115,7 +115,7 @@ public class PowerContainer implements Serializable {
 
     public Boolean getOverlay() {
         Object render = powerFile.get("overlay");
-        if (render == null) return true;
+        if (render == null) return false;
         return (Boolean) render;
     }
 
