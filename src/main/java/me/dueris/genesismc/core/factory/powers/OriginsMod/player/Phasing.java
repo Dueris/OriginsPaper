@@ -133,10 +133,10 @@ public class Phasing extends BukkitRunnable implements Listener {
                                 }
 
                                 p.setFlySpeed(0.04F);
+                                p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "insideBlock"), PersistentDataType.BOOLEAN, true);
 
                                 if(origin.getPowerFileFromType("origins:phasing").getRenderType().equalsIgnoreCase("blindness")){
                                     Float viewD = origin.getPowerFileFromType("origins:phasing").getViewDistance().floatValue();
-
                                     p.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, viewD.intValue() * 2, 255, false, false, false));
                                 }
 
@@ -151,6 +151,7 @@ public class Phasing extends BukkitRunnable implements Listener {
                                         p.setFlying(false);
                                     }
                                     p.setFlySpeed(0.1F);
+                                    p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "insideBlock"), PersistentDataType.BOOLEAN, false);
 
                                 }
                             }
