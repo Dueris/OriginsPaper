@@ -2,5 +2,19 @@
   "type": "genesis:explode_tick",
   "hidden": false,
   "name": "menu.expanded.creep.boom.title",
-  "description": "menu.expanded.creep.boom.description"
+  "description": "menu.expanded.creep.boom.description",
+  "modifier": {
+    "power": 3,
+    "resistance": 2,
+    "charge": 2300,
+    "fire": false,
+    "break_blocks": true,
+    "thunder_modifier": {
+      "power": 6,
+      "fire": true,
+      "break_blocks": true,
+      "charge": 1900,
+      "resistance": 3
+    }
+  }
 }
