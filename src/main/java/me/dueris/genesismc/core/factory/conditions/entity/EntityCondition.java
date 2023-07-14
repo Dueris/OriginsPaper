@@ -230,6 +230,19 @@ public class EntityCondition {
             }
         }
 
+        if(type.equalsIgnoreCase("origins:dimension")){
+            if(origin.getPowerFileFromType(powerfile).getEntityCondition().get("inverted").toString() == "true"){
+                if(!entity.getWorld().getEnvironment().equals(origin.getPowerFileFromType(powerfile).getEntityCondition().get("dimension").toString().split(":")[1].replace("the_", "").toUpperCase())){
+                    return "true";
+                }
+            }else{
+                if(entity.getWorld().getEnvironment().equals(origin.getPowerFileFromType(powerfile).getEntityCondition().get("dimension").toString().split(":")[1].replace("the_", "").toUpperCase())){
+                    return "true";
+                }
+            }
+
+        }
+
         return "false";
     }
 
