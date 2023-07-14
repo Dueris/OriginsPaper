@@ -1,6 +1,6 @@
 package me.dueris.genesismc.core;
 
-import me.dueris.genesismc.core.utils.ShulkUtils;
+import me.dueris.genesismc.core.factory.powers.OriginsMod.player.inventory.InventoryUtils;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -27,7 +27,7 @@ public class DataContainer implements Listener {
                     })
                     .forEach(itemStack -> prunedItems.add(itemStack));
 
-            ShulkUtils.storeItems(prunedItems, p);
+            InventoryUtils.storeItems(prunedItems, p);
 
         }
 

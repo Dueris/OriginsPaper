@@ -1,7 +1,7 @@
 package me.dueris.genesismc.core;
 
 import me.dueris.genesismc.core.events.OriginKeybindExecuteEvent;
-import me.dueris.genesismc.core.utils.ShulkUtils;
+import me.dueris.genesismc.core.factory.powers.OriginsMod.player.inventory.InventoryUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -32,7 +32,7 @@ public class KeybindHandler implements Listener {
         if (shulker_inventory.contains(p)) {
             e.setCancelled(true);
 
-            ArrayList<ItemStack> vaultItems = ShulkUtils.getItems(p);
+            ArrayList<ItemStack> vaultItems = InventoryUtils.getItems(p);
 
             Inventory vault = Bukkit.createInventory(p, InventoryType.DROPPER, "Shulker Inventory");
 

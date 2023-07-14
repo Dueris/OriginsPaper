@@ -15,6 +15,7 @@ import me.dueris.genesismc.core.enchantments.WaterProtection;
 import me.dueris.genesismc.core.entity.OriginPlayer;
 import me.dueris.genesismc.core.factory.CraftApoli;
 import me.dueris.genesismc.core.factory.PowerStartHandler;
+import me.dueris.genesismc.core.factory.powers.OriginsMod.player.inventory.Inventory;
 import me.dueris.genesismc.core.factory.powers.OriginsMod.player.PlayerRender;
 import me.dueris.genesismc.core.files.GenesisDataFiles;
 import me.dueris.genesismc.core.generation.WaterProtBookGen;
@@ -150,7 +151,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         getCommand("origin").setExecutor(new GenesisCommandManager());
         getCommand("origin").setTabCompleter(new TabAutoComplete());
         getCommand("shulker").setTabCompleter(new TabAutoComplete());
-        getCommand("shulker").setExecutor(new ShulkInv());
+        getCommand("shulker").setExecutor(new Inventory());
         getCommand("toggle").setExecutor(new ToggleCommand());
     //Event Handler Register
         getServer().getPluginManager().registerEvents(new PlayerHandler(), this);

@@ -1,4 +1,4 @@
-package me.dueris.genesismc.core.utils;
+package me.dueris.genesismc.core.factory.powers.OriginsMod.player.inventory;
 
 import me.dueris.genesismc.core.GenesisMC;
 import org.bukkit.Material;
@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 
-public class ShulkUtils {
+public class InventoryUtils {
     public static void storeItems(List<ItemStack> items, Player p) {
         PersistentDataContainer data = p.getPersistentDataContainer();
 

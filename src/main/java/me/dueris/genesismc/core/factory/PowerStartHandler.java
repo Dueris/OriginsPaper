@@ -32,7 +32,7 @@ import me.dueris.genesismc.core.factory.powers.item.LaunchAir;
 import me.dueris.genesismc.core.factory.powers.OriginsMod.player.damage.Burn;
 import me.dueris.genesismc.core.factory.powers.world.BurnInDaylight;
 import me.dueris.genesismc.core.factory.powers.OriginsMod.world.WorldSpawnHandler;
-import me.dueris.genesismc.core.utils.ShulkInv;
+import me.dueris.genesismc.core.factory.powers.OriginsMod.player.inventory.Inventory;
 
 import static me.dueris.genesismc.core.GenesisMC.getPlugin;
 import static org.bukkit.Bukkit.getServer;
@@ -170,7 +170,7 @@ public class PowerStartHandler {
         getServer().getPluginManager().registerEvents(new StrongArmsBreakSpeed(), getPlugin());
         getServer().getPluginManager().registerEvents(new AttributeConditioned(), getPlugin());
         getServer().getPluginManager().registerEvents(new CreeperScare(), getPlugin());
-        getServer().getPluginManager().registerEvents(new ShulkInv(), getPlugin());
+        getServer().getPluginManager().registerEvents(new Inventory(), getPlugin());
         getServer().getPluginManager().registerEvents(new InvulnerabilityDamage(), getPlugin());
     }
 }
