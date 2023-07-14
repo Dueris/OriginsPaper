@@ -401,6 +401,26 @@ public class PowerContainer implements Serializable {
         return null;
     }
 
+    public HashMap<String, Object> getThunderModifier() {
+        Object obj = powerFile.get("modifier");
+        if (obj == null) return new HashMap<>();
+
+        if (obj instanceof JSONObject modifierThing) {
+            Object entityConditionObj = modifierThing.get("thunder_modifier");
+            if (entityConditionObj instanceof JSONObject thunderThing) {
+                HashMap<String, Object> result = new HashMap<>();
+                for (Object key : thunderThing.keySet()) {
+                    String stringKey = (String) key;
+                    Object value = thunderThing.get(stringKey);
+                    result.put(stringKey, value);
+                }
+                return result;
+            }
+        }
+
+        return new HashMap<>();
+    }
+
     public HashMap<String, Object> getEntityConditionFromDamageCondition() {
         Object obj = powerFile.get("damage_condition");
         if (obj == null) return new HashMap<>();
