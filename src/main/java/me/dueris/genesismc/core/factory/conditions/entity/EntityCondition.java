@@ -224,6 +224,12 @@ public class EntityCondition {
             }
         }
 
+        if(type.equalsIgnoreCase("origins:daytime")){
+            if(entity.getWorld().isDayTime()){
+                return "true";
+            }
+        }
+
         return "false";
     }
 
