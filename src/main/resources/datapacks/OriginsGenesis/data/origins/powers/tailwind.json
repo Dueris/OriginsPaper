@@ -5,7 +5,7 @@
   "description": "menu.original.avian.tailwind.description",
   "modifier": {
     "attribute": "minecraft:generic.movement_speed",
-    "value": 0.17,
-    "operation": "set_total"
+    "value": 0.2,
+    "operation": "multiply_base"
   }
 }
