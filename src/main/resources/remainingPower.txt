@@ -9,7 +9,7 @@ Fire Projectile
 Freeze
 Grounded
 Ignore Water
-Inventory
+Inventory -- must adapt, needs toggles for main and secondary power keys
 Invisibility
 Item On Item
 Keep Inventory
