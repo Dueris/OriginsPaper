@@ -38,16 +38,23 @@ public class AttributeHandler implements Listener {
                 if (power == null) continue;
 
                 Attribute attribute_modifier = Attribute.valueOf(power.getModifier().get("attribute").toString().split(":")[1].replace(".", "_").toUpperCase());
+
                 if(power.getModifier().get("value") instanceof Integer){
                     int value = Integer.valueOf(power.getModifier().get("value").toString());
                     int base_value = (int) p.getAttribute(Attribute.valueOf(attribute_modifier.toString())).getBaseValue();
                     String operation = String.valueOf(power.getModifier().get("operation"));
                     executeAttributeModify(operation, attribute_modifier, base_value, p, value);
+                    if(power.getModifier().get("update_health").toString() != null){
+                        if(power.getModifier().get("update_health").toString().equalsIgnoreCase("true")) p.sendHealthUpdate();
+                    }
                 } else if (power.getModifier().get("value") instanceof Double) {
                     Double value = Double.valueOf(power.getModifier().get("value").toString());
                     int base_value = (int) p.getAttribute(Attribute.valueOf(attribute_modifier.toString())).getBaseValue();
                     String operation = String.valueOf(power.getModifier().get("operation"));
                     executeAttributeModify(operation, attribute_modifier, base_value, p, value);
+                    if(power.getModifier().get("update_health").toString() != null){
+                        if(power.getModifier().get("update_health").toString().equalsIgnoreCase("true")) p.sendHealthUpdate();
+                    }
                 }
 
             }
