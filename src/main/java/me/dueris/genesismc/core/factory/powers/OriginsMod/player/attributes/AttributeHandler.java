@@ -38,7 +38,10 @@ public class AttributeHandler implements Listener {
                 if (power == null) continue;
 
                 Attribute attribute_modifier = Attribute.valueOf(power.getModifier().get("attribute").toString().split(":")[1].replace(".", "_").toUpperCase());
-
+                if(attribute_modifier.toString().equalsIgnoreCase("reach-entity-attributes:reach")){
+                    extra_reach.add(p);
+                    return;
+                }
                 if(power.getModifier().get("value") instanceof Integer){
                     int value = Integer.valueOf(power.getModifier().get("value").toString());
                     int base_value = (int) p.getAttribute(Attribute.valueOf(attribute_modifier.toString())).getBaseValue();
