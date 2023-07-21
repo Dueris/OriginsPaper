@@ -4,7 +4,10 @@ import me.dueris.genesismc.core.GenesisMC;
 import me.dueris.genesismc.core.commands.subcommands.SubCommand;
 import me.dueris.genesismc.core.entity.OriginPlayer;
 import me.dueris.genesismc.core.events.OriginChangeEvent;
+import me.dueris.genesismc.core.utils.BukkitColour;
 import me.dueris.genesismc.core.utils.OriginContainer;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -72,33 +75,24 @@ public class Inventory implements CommandExecutor, Listener {
 
         if (sender instanceof Player p) {
 
-            if (shulker_inventory.contains((Player) sender)) {
-                if (args.length > 0) {
-                    if (args[0].equalsIgnoreCase("open")) {
-
-                        ArrayList<ItemStack> vaultItems = InventoryUtils.getItems(p);
-
-                        org.bukkit.inventory.Inventory vault = Bukkit.createInventory(p, InventoryType.DROPPER, "Shulker Inventory");
-
-                        vaultItems.stream()
-                                .forEach(itemStack -> vault.addItem(itemStack));
-
-                        p.openInventory(vault);
-
-                    }
-                } else if (args.length == 0) {
-                    ArrayList<ItemStack> vaultItems = InventoryUtils.getItems(p);
-
-                    org.bukkit.inventory.Inventory vault = Bukkit.createInventory(p, InventoryType.DROPPER, "Shulker Inventory");
-
-                    vaultItems.stream()
-                            .forEach(itemStack -> vault.addItem(itemStack));
-
+            if (args.length >= 2 || p.hasPermission("genesism.origins.cmd.othershulk")) {
+                Player target = Bukkit.getPlayer(args[1]);
+                if (target != null) {
+                    ArrayList<ItemStack> vaultItems = InventoryUtils.getItems(target);
+                    org.bukkit.inventory.Inventory vault = Bukkit.createInventory(p, InventoryType.DROPPER, "Shulker Inventory: " + target.getName());
+                    vaultItems.stream().forEach(itemStack -> vault.addItem(itemStack));
                     p.openInventory(vault);
-
+                    return true;
                 }
+            }
+
+            if (shulker_inventory.contains((Player) sender)) {
+                    ArrayList<ItemStack> vaultItems = InventoryUtils.getItems(p);
+                    org.bukkit.inventory.Inventory vault = Bukkit.createInventory(p, InventoryType.DROPPER, "Shulker Inventory: "+p.getName());
+                    vaultItems.stream().forEach(itemStack -> vault.addItem(itemStack));
+                    p.openInventory(vault);
             } else {
-                p.sendMessage(ChatColor.RED + "You must have the Shulker Inventory power to access this command");
+                p.sendMessage(Component.text("You must have the Shulker Inventory power to access this command").color(TextColor.fromHexString(BukkitColour.RED)));
             }
         }
 

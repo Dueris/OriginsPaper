@@ -146,8 +146,12 @@ public class TabAutoComplete implements TabCompleter {
                 List<String> arguments = new ArrayList<>();
                 arguments.add("open");
                 return arguments;
-            } else if (args.length >= 2) {
-                return new ArrayList<>();
+            } else if (args.length == 2) {
+                if (sender.hasPermission("genesism.origins.cmd.othershulk")) {
+                    ArrayList<String> playerNames = new ArrayList<>();
+                    for (Player player : Bukkit.getOnlinePlayers()) playerNames.add(player.getName());
+                    return playerNames;
+                } else return new ArrayList<>();
             }
         }
         return null;

@@ -94,3 +94,5 @@ permissions:
     default: true
   genesismc.origins.cmd.bug:
     default: true
+  genesism.origins.cmd.othershulk:
+    default: op
