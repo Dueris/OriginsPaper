@@ -123,7 +123,7 @@ public class PowerStartHandler {
         Bioluminescent.runTaskTimerAsynchronously(getPlugin(), 0, 1);
 
         Phasing phasing = new Phasing();
-        phasing.runTaskTimerAsynchronously(getPlugin(), 0, 1);
+        phasing.runTaskTimer(getPlugin(), 0, 1);
 
         EffectImmunity effectImmunity = new EffectImmunity();
         effectImmunity.runTaskTimerAsynchronously(getPlugin(), 0, 1);
