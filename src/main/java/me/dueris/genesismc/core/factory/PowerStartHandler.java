@@ -10,6 +10,7 @@ import me.dueris.genesismc.core.factory.powers.OriginsMod.effects.NightVision;
 import me.dueris.genesismc.core.factory.powers.OriginsMod.genesismc.*;
 import me.dueris.genesismc.core.factory.powers.OriginsMod.player.*;
 import me.dueris.genesismc.core.factory.powers.OriginsMod.player.damage.WaterDamage;
+import me.dueris.genesismc.core.factory.powers.OriginsMod.world.EntityGlow;
 import me.dueris.genesismc.core.factory.powers.Powers;
 import me.dueris.genesismc.core.factory.powers.armour.FlightElytra;
 import me.dueris.genesismc.core.factory.powers.armour.GoldAmourBellow;
@@ -125,6 +126,9 @@ public class PowerStartHandler {
 
         EffectImmunity effectImmunity = new EffectImmunity();
         effectImmunity.runTaskTimer(getPlugin(), 0, 1);
+
+        EntityGlow entityGlow = new EntityGlow();
+        entityGlow.runTaskTimer(getPlugin(), 0, 1);
     }
 
     public static void StartListeners() {
