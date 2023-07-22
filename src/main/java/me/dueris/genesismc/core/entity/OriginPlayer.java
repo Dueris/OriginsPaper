@@ -415,6 +415,7 @@ public class OriginPlayer {
                 case "origins:invulnerability" -> dmg_invulnerable.add(player);
                 case "origins:model_color" -> model_color.add(player);
                 case "genesis:bioluminescent" -> bioluminescent.add(player);
+                case "origins:entity_glow" -> entity_glow.add(player);
 
             }
         }
@@ -523,6 +524,7 @@ public class OriginPlayer {
                 case "origins:invulnerability" -> dmg_invulnerable.remove(player);
                 case "origins:model_color" -> model_color.remove(player);
                 case "genesis:bioluminescent" -> bioluminescent.remove(player);
+                case "origins:entity_glow" -> entity_glow.remove(player);
             }
         }
     }
