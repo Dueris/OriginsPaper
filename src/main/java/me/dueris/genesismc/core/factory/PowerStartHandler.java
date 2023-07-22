@@ -133,6 +133,9 @@ public class PowerStartHandler {
 
         EntityGroupManager entityGroupManager = new EntityGroupManager();
         entityGroupManager.runTaskTimer(getPlugin(), 0, 10);
+
+        Exhaust exhaust = new Exhaust();
+        exhaust.runTaskTimer(getPlugin(), 0, 1);
     }
 
     public static void StartListeners() {
