@@ -133,7 +133,7 @@ public class PowerStartHandler {
         getServer().getPluginManager().registerEvents(new LayEggs(), getPlugin());
         getServer().getPluginManager().registerEvents(new Vegitarian(), getPlugin());
         getServer().getPluginManager().registerEvents(new FreshAir(), getPlugin());
-        getServer().getPluginManager().registerEvents(new Reach(), getPlugin());
+        getServer().getPluginManager().registerEvents(new AttributeHandler.Reach(), getPlugin());
         //getServer().getPluginManager().registerEvents(new NoCobwebSlowdown(), GenesisMC.getPlugin()); -- removed do to anti-cheat triggers
         getServer().getPluginManager().registerEvents(new HotHands(), getPlugin());
         getServer().getPluginManager().registerEvents(new FallImmunity(), getPlugin());
@@ -143,7 +143,7 @@ public class PowerStartHandler {
         getServer().getPluginManager().registerEvents(new SilkTouch(), getPlugin());
         getServer().getPluginManager().registerEvents(new BowInability(), getPlugin());
         getServer().getPluginManager().registerEvents(new PumpkinHate(), getPlugin());
-        getServer().getPluginManager().registerEvents(new Reach(), getPlugin());
+        getServer().getPluginManager().registerEvents(new AttributeHandler(), getPlugin());
         getServer().getPluginManager().registerEvents(new WaterDamage(), getPlugin());
         getServer().getPluginManager().registerEvents(new ProjectileImmune(), getPlugin());
         getServer().getPluginManager().registerEvents(new EnderPearlThrow(), getPlugin());
