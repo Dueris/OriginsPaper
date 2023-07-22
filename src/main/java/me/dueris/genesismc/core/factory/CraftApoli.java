@@ -288,7 +288,7 @@ public class CraftApoli {
      **/
     public static OriginContainer getOrigin(String originTag) {
         for (OriginContainer origin : getOrigins()) if (origin.getTag().equals(originTag)) return origin;
-        return null;
+        return nullOrigin();
     }
 
     public static void unloadData(){

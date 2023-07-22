@@ -81,7 +81,7 @@ public class Debug {
             if (p.isOp()) {
                 p.sendMessage(ChatColor.BLUE + "Origins Reloaded.");
             }
-            PlayerHandler.layerChecks(p);
+            PlayerHandler.originValidCheck(p);
         }
     }
 
