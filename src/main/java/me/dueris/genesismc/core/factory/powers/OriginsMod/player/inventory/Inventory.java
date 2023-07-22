@@ -77,7 +77,7 @@ public class Inventory implements CommandExecutor, Listener {
 
             System.out.println(args.length);
 
-            if (args.length >= 2) {
+//            if (args.length >= 2) {
                 Player target = (Player) sender;
                 if (target != null) {
                     ArrayList<ItemStack> vaultItems = InventoryUtils.getItems(target);
@@ -86,7 +86,7 @@ public class Inventory implements CommandExecutor, Listener {
                     p.openInventory(vault);
                     return true;
                 }
-            }
+//            }
 
             if (shulker_inventory.contains((Player) sender)) {
                     ArrayList<ItemStack> vaultItems = InventoryUtils.getItems(p);
