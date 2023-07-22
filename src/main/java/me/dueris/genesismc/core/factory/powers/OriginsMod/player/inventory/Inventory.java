@@ -76,8 +76,8 @@ public class Inventory implements CommandExecutor, Listener {
         if (sender instanceof Player p) {
 
             //opens target players shulk inventory
-            if (args.length >= 2 && p.hasPermission("genesism.origins.cmd.othershulk")) {
-                Player target = Bukkit.getPlayer(args[1]);
+//            if (args.length >= 2 && p.hasPermission("genesism.origins.cmd.othershulk")) {
+                Player target = (Player) sender;
                 if (target != null) {
                     ArrayList<ItemStack> vaultItems = InventoryUtils.getItems(target);
                     org.bukkit.inventory.Inventory vault = Bukkit.createInventory(p, InventoryType.DROPPER, "Shulker Inventory: " + target.getName());
@@ -85,7 +85,7 @@ public class Inventory implements CommandExecutor, Listener {
                     p.openInventory(vault);
                     return true;
                 }
-            }
+//            }
 
             //opens own shulk inventory
             if (shulker_inventory.contains((Player) sender)) {
