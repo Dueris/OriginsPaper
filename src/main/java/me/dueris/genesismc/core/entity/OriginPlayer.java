@@ -418,6 +418,7 @@ public class OriginPlayer {
                 case "origins:entity_group" -> entity_group.add(player);
                 case "origins:exhaust" -> more_exhaustion.add(player);
                 case "origins:damage_over_time" -> damage_over_time.add(player);
+                case "origins:disable_regen" -> disable_regen.add(player);
 
             }
         }
@@ -529,6 +530,7 @@ public class OriginPlayer {
                 case "origins:entity_glow" -> entity_glow.remove(player);
                 case "origins:entity_group" -> entity_group.remove(player);
                 case "origins:damage_over_time" -> damage_over_time.remove(player);
+                case "origins:disable_regen" -> disable_regen.remove(player);
             }
         }
     }
