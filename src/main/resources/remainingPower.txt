@@ -2,9 +2,6 @@ Attribute Modify Transfer
 Cooldown
 Damage Over Time
 Disable Regen
-Entity Glow
-Entity Group
-Exhaust
 Fire Projectile
 Freeze
 Grounded
