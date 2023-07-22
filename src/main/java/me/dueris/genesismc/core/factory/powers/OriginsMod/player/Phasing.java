@@ -155,7 +155,11 @@ public class Phasing extends BukkitRunnable implements Listener {
 
                                 }
                             }
+                        } else {
+                            p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "insideBlock"), PersistentDataType.BOOLEAN, false);
                         }
+                    } else {
+                        p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "insideBlock"), PersistentDataType.BOOLEAN, false);
                     }
                 }
             }
