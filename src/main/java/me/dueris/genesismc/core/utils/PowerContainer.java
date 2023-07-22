@@ -25,6 +25,10 @@ public class PowerContainer implements Serializable {
         this.powerSource = powerSource;
     }
 
+    public FileContainer getPowerFile(){
+        return powerFile;
+    }
+
     /**
      * @return The power tag.
      */
