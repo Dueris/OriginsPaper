@@ -132,7 +132,7 @@ public class PowerStartHandler {
         entityGlow.runTaskTimerAsynchronously(getPlugin(), 0, 1);
 
         EntityGroupManager entityGroupManager = new EntityGroupManager();
-        entityGroupManager.runTaskTimerAsynchronously(getPlugin(), 0, 10);
+        entityGroupManager.runTaskTimer(getPlugin(), 0, 10);
     }
 
     public static void StartListeners() {
