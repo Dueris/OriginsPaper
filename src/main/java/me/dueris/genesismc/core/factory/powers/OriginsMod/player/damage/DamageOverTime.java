@@ -13,6 +13,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.util.Random;
 
 import static me.dueris.genesismc.core.factory.powers.Powers.burn;
+import static me.dueris.genesismc.core.factory.powers.Powers.damage_over_time;
 
 public class DamageOverTime extends BukkitRunnable {
 
@@ -35,7 +36,7 @@ public class DamageOverTime extends BukkitRunnable {
     @Override
     public void run() {
         for (Player p : Bukkit.getOnlinePlayers()) {
-            if (burn.contains(p)) {
+            if (damage_over_time.contains(p)) {
                 for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
                     PowerContainer power = origin.getPowerFileFromType("origins:damage_over_time");
                     if (power == null) continue;
