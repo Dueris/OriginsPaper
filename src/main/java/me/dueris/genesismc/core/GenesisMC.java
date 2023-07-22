@@ -208,6 +208,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         Bukkit.getServer().getConsoleSender().sendMessage(Component.text("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"));
 
         for (Player p : Bukkit.getOnlinePlayers()) {
+            PlayerHandler.ReapplyEntityReachPowers(p);
             PlayerHandler.layerChecks(p);
             OriginPlayer.assignPowers(p);
             if (p.isOp()) p.sendMessage(Component.text("Origins Reloaded.").color(TextColor.fromHexString(AQUA)));
