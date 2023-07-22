@@ -44,91 +44,91 @@ public class PowerStartHandler {
     public static void StartRunnables() {
 
         Climbing climb = new Climbing();
-        climb.runTaskTimer(getPlugin(), 0, 5);
+        climb.runTaskTimerAsynchronously(getPlugin(), 0, 5);
 
         WaterDamage waterdamage = new WaterDamage();
-        waterdamage.runTaskTimer(getPlugin(), 0, 20);
+        waterdamage.runTaskTimerAsynchronously(getPlugin(), 0, 20);
 
         BurningWrath burningWrath = new BurningWrath();
-        burningWrath.runTaskTimer(getPlugin(), 0, 5);
+        burningWrath.runTaskTimerAsynchronously(getPlugin(), 0, 5);
 
         SlowFalling slowFalling = new SlowFalling();
-        slowFalling.runTaskTimer(getPlugin(), 0, 5);
+        slowFalling.runTaskTimerAsynchronously(getPlugin(), 0, 5);
 
         Charged charged = new Charged();
-        charged.runTaskTimer(getPlugin(), 0, 5);
+        charged.runTaskTimerAsynchronously(getPlugin(), 0, 5);
 
         FelinePhobia felinePhobia = new FelinePhobia();
-        felinePhobia.runTaskTimer(getPlugin(), 0, 20);
+        felinePhobia.runTaskTimerAsynchronously(getPlugin(), 0, 20);
 
         PlayerRender transparency = new PlayerRender();
-        transparency.runTaskTimer(getPlugin(), 0, 5);
+        transparency.runTaskTimerAsynchronously(getPlugin(), 0, 5);
 
         BurnInDaylight burnInDaylight = new BurnInDaylight();
-        burnInDaylight.runTaskTimer(getPlugin(), 0, 10);
+        burnInDaylight.runTaskTimerAsynchronously(getPlugin(), 0, 10);
 
         JumpIncreased jumpIncreased = new JumpIncreased();
-        jumpIncreased.runTaskTimer(getPlugin(), 0, 10);
+        jumpIncreased.runTaskTimerAsynchronously(getPlugin(), 0, 10);
 
         NoShield shield = new NoShield();
-        shield.runTaskTimer(getPlugin(), 0, 10);
+        shield.runTaskTimerAsynchronously(getPlugin(), 0, 10);
 
         WaterBreathe waterBreathe = new WaterBreathe();
-        waterBreathe.runTaskTimer(getPlugin(), 0, 1);
+        waterBreathe.runTaskTimerAsynchronously(getPlugin(), 0, 1);
 
         FlightHandler flightHandler = new FlightHandler();
-        flightHandler.runTaskTimer(getPlugin(), 0, 2);
+        flightHandler.runTaskTimerAsynchronously(getPlugin(), 0, 2);
 
         TailWind tailWind = new TailWind();
-        tailWind.runTaskTimer(getPlugin(), 0, 1);
+        tailWind.runTaskTimerAsynchronously(getPlugin(), 0, 1);
 
         WeakBiomeCold weakBiomeCold = new WeakBiomeCold();
-        weakBiomeCold.runTaskTimer(getPlugin(), 0, 5);
+        weakBiomeCold.runTaskTimerAsynchronously(getPlugin(), 0, 5);
 
         CeilingWeak ceilingWeak = new CeilingWeak();
-        ceilingWeak.runTaskTimer(getPlugin(), 0, 2);
+        ceilingWeak.runTaskTimerAsynchronously(getPlugin(), 0, 2);
 
         GoldAmourBellow goldAmourBellow = new GoldAmourBellow();
-        goldAmourBellow.runTaskTimer(getPlugin(), 0, 1);
+        goldAmourBellow.runTaskTimerAsynchronously(getPlugin(), 0, 1);
 
         HotBlooded hotBlooded = new HotBlooded();
-        hotBlooded.runTaskTimer(getPlugin(), 0, 2);
+        hotBlooded.runTaskTimerAsynchronously(getPlugin(), 0, 2);
 
         FireWeak fireWeak = new FireWeak();
-        fireWeak.runTaskTimer(getPlugin(), 0, 3);
+        fireWeak.runTaskTimerAsynchronously(getPlugin(), 0, 3);
 
         AquaAffinity aquaAffinity = new AquaAffinity();
-        aquaAffinity.runTaskTimer(getPlugin(), 5, 0);
+        aquaAffinity.runTaskTimerAsynchronously(getPlugin(), 5, 0);
 
         WaterVision waterVision = new WaterVision();
-        waterVision.runTaskTimer(getPlugin(), 5, 0);
+        waterVision.runTaskTimerAsynchronously(getPlugin(), 5, 0);
 
         SwimSpeed swimSpeed = new SwimSpeed();
-        swimSpeed.runTaskTimer(getPlugin(), 5, 0);
+        swimSpeed.runTaskTimerAsynchronously(getPlugin(), 5, 0);
 
         OverworldPiglinZombified piglinZombified = new OverworldPiglinZombified();
-        piglinZombified.runTaskTimer(getPlugin(), 0, 40);
+        piglinZombified.runTaskTimerAsynchronously(getPlugin(), 0, 40);
 
         NightVision nightVision = new NightVision();
-        nightVision.runTaskTimer(getPlugin(), 0, 10);
+        nightVision.runTaskTimerAsynchronously(getPlugin(), 0, 10);
 
         Burn burn = new Burn();
-        burn.runTaskTimer(getPlugin(), 0, 1);
+        burn.runTaskTimerAsynchronously(getPlugin(), 0, 1);
 
         RestrictArmor restrictArmor = new RestrictArmor();
-        restrictArmor.runTaskTimer(getPlugin(), 0, 1);
+        restrictArmor.runTaskTimerAsynchronously(getPlugin(), 0, 1);
 
         Bioluminescent Bioluminescent = new Bioluminescent();
-        Bioluminescent.runTaskTimer(getPlugin(), 0, 1);
+        Bioluminescent.runTaskTimerAsynchronously(getPlugin(), 0, 1);
 
         Phasing phasing = new Phasing();
-        phasing.runTaskTimer(getPlugin(), 0, 1);
+        phasing.runTaskTimerAsynchronously(getPlugin(), 0, 1);
 
         EffectImmunity effectImmunity = new EffectImmunity();
-        effectImmunity.runTaskTimer(getPlugin(), 0, 1);
+        effectImmunity.runTaskTimerAsynchronously(getPlugin(), 0, 1);
 
         EntityGlow entityGlow = new EntityGlow();
-        entityGlow.runTaskTimer(getPlugin(), 0, 1);
+        entityGlow.runTaskTimerAsynchronously(getPlugin(), 0, 1);
     }
 
     public static void StartListeners() {
