@@ -8,9 +8,9 @@ import me.dueris.genesismc.core.utils.OriginContainer;
 import me.dueris.genesismc.core.utils.PowerContainer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
+import net.minecraft.world.level.levelgen.feature.configurations.BlockColumnConfiguration;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
-import org.bukkit.entity.Panda;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -19,13 +19,13 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
-import org.checkerframework.checker.units.qual.N;
 import org.geysermc.floodgate.api.FloodgateApi;
 import org.geysermc.geyser.api.GeyserApi;
 
 import java.io.ByteArrayInputStream;
 import java.io.ObjectInput;
 import java.io.ObjectInputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -86,6 +86,7 @@ public class PlayerHandler implements Listener {
                 OriginContainer origin = (OriginContainer) oi.readObject();
                 p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origins"), PersistentDataType.BYTE_ARRAY, CraftApoli.toByteArray(new HashMap<>(Map.of(CraftApoli.getLayerFromTag("origins:origin"), origin))));
             } catch (Exception er) {
+                er.printStackTrace();
                 Bukkit.getLogger().warning("[GenesisMC] Error converting old origin container");
             }
         }
@@ -138,10 +139,8 @@ public class PlayerHandler implements Listener {
             }
         }
 
-        layerChecks(p);
-        //customOriginExistCheck(p);
+        originValidCheck(p);
         OriginPlayer.assignPowers(p);
-
         p.sendMessage(Component.text("GenesisMC is in beta and still has lots of bugs, use /origin bug and notify us about any issues!").color(TextColor.fromHexString(AQUA)));
 
     }
@@ -151,20 +150,24 @@ public class PlayerHandler implements Listener {
         OriginPlayer.unassignPowers(e.getPlayer());
     }
 
-    public static void layerChecks(Player p) {
+    public static void originValidCheck(Player p) {
         HashMap<LayerContainer, OriginContainer> origins = OriginPlayer.getOrigin(p);
+        ArrayList<LayerContainer> deletedLayers = new ArrayList<>();
         for (LayerContainer layer : origins.keySet()) {
+            //check if the player layer exists
             if (!CraftApoli.layerExists(layer)) {
-                OriginPlayer.removeOrigin(p, layer);
-                origins.replace(layer, CraftApoli.nullOrigin());
+                deletedLayers.add(layer);
                 p.sendMessage(Component.text("The layer \""+layer.getName()+"\" has been removed!\nIf you believe this is a mistake please contact your server admin(s).").color(TextColor.fromHexString(RED)));
                 continue;
             }
+            //origin check
             if (!CraftApoli.getLayerFromTag(layer.getTag()).getOrigins().contains(origins.get(layer).getTag())) {
                 origins.replace(layer, CraftApoli.nullOrigin());
                 p.sendMessage(Component.text("Your selected origin has been removed from the \""+layer.getName()+"\" layer!\nIf you believe this is a mistake please contact your server admin(s).").color(TextColor.fromHexString(RED)));
             }
         }
+
+        //check if the player has all the existing layers
         layerLoop:
         for (LayerContainer layer : CraftApoli.getLayers()) {
             for (LayerContainer playerLayer : origins.keySet()) {
@@ -173,5 +176,8 @@ public class PlayerHandler implements Listener {
             origins.put(layer, CraftApoli.nullOrigin());
         }
         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origins"), PersistentDataType.BYTE_ARRAY, CraftApoli.toByteArray(origins));
+
+        //removes deleted layer from the players data
+        for (LayerContainer layer : deletedLayers) OriginPlayer.removeOrigin(p, layer);
     }
 }
