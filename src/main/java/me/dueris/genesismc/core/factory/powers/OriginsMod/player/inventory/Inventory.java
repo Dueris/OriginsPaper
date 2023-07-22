@@ -75,8 +75,6 @@ public class Inventory implements CommandExecutor, Listener {
 
         if (sender instanceof Player p) {
 
-            System.out.println(args.length);
-
             //opens target players shulk inventory
             if (args.length >= 2 && p.hasPermission("genesism.origins.cmd.othershulk")) {
                 Player target = Bukkit.getPlayer(args[1]);
