@@ -1,5 +1,7 @@
 package me.dueris.genesismc.core.factory.powers.OriginsMod.world;
 
+import me.dueris.genesismc.core.entity.OriginPlayer;
+import me.dueris.genesismc.core.utils.OriginContainer;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
@@ -10,6 +12,8 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import static me.dueris.genesismc.core.factory.powers.Powers.entity_group;
 
 public class EntityGroupManager extends BukkitRunnable {
     @Override
@@ -26,13 +30,47 @@ public class EntityGroupManager extends BukkitRunnable {
                 if(entity.getType() == EntityType.DROPPED_ITEM) {
                     continue;
                 }
+                if(entity instanceof Player){
+                    //Player case, check for power
+                    for (OriginContainer origin : OriginPlayer.getOrigin(((Player) entity).getPlayer()).values()){
+                        if(entity_group.contains(entity)){
+                            if(origin.getPowerFileFromType("origins:entity_group").get("group").equalsIgnoreCase("undead")){
+                                undead.put(entity.getEntityId(), entity.getType().name());
+                            } else if (origin.getPowerFileFromType("origins:entity_group").get("group").equalsIgnoreCase("arthropod")){
+                                arthropod.put(entity.getEntityId(), entity.getType().name());
+                            } else if (origin.getPowerFileFromType("origins:entity_group").get("group").equalsIgnoreCase("illager")){
+                                illager.put(entity.getEntityId(), entity.getType().name());
+                            } else if (origin.getPowerFileFromType("origins:entity_group").get("group").equalsIgnoreCase("aquatic")){
+                                aquatic.put(entity.getEntityId(), entity.getType().name());
+                            } else if (origin.getPowerFileFromType("origins:entity_group").get("group").equalsIgnoreCase("default")){
+                                default_group.put(entity.getEntityId(), entity.getType().name());
+                            }
+                        }
+                    }
+                }
 
-                System.out.print(sortEntity(entity.getType()));
+                //Sort into array groups
+                if(sortEntity(entity.getType()).split("%")[1].equalsIgnoreCase("undead")){
+                    undead.put(entity.getEntityId(), entity.getType().name());
+                } else if (sortEntity(entity.getType()).split("%")[1].equalsIgnoreCase("arthropod")){
+                    arthropod.put(entity.getEntityId(), entity.getType().name());
+                } else if (sortEntity(entity.getType()).split("%")[1].equalsIgnoreCase("illager")){
+                    illager.put(entity.getEntityId(), entity.getType().name());
+                } else if (sortEntity(entity.getType()).split("%")[1].equalsIgnoreCase("aquatic")){
+                    aquatic.put(entity.getEntityId(), entity.getType().name());
+                } else if (sortEntity(entity.getType()).split("%")[1].equalsIgnoreCase("default")){
+                    default_group.put(entity.getEntityId(), entity.getType().name());
+                }
             }
         }
     }
 
     private static final Map<String, String> entityCategories = new HashMap<>();
+    public static final Map<Integer, String> undead = new HashMap<>();
+    public static final Map<Integer, String> arthropod = new HashMap<>();
+    public static final Map<Integer, String> illager = new HashMap<>();
+    public static final Map<Integer, String> aquatic = new HashMap<>();
+    public static final Map<Integer, String> default_group = new HashMap<>();
 
     static {
         // Undead

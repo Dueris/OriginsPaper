@@ -207,6 +207,12 @@ public class PowerContainer implements Serializable {
         return (boolean) render;
     }
 
+    public String get(String thing){
+        Object type = powerFile.get(thing);
+        if(type == null) return thing;
+        return type.toString();
+    }
+
     /**
      * @return Modifiers in the power file or null if not found
      */
