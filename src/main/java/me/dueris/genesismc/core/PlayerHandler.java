@@ -5,6 +5,7 @@ import me.dueris.genesismc.core.factory.CraftApoli;
 import me.dueris.genesismc.core.factory.powers.OriginsMod.player.attributes.AttributeHandler;
 import me.dueris.genesismc.core.utils.LayerContainer;
 import me.dueris.genesismc.core.utils.OriginContainer;
+import me.dueris.genesismc.core.utils.PowerContainer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.Bukkit;
@@ -29,15 +30,36 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import static me.dueris.genesismc.core.factory.powers.Powers.extra_reach;
+import static me.dueris.genesismc.core.factory.powers.Powers.extra_reach_attack;
 import static me.dueris.genesismc.core.utils.BukkitColour.AQUA;
 import static me.dueris.genesismc.core.utils.BukkitColour.RED;
 import static org.bukkit.Bukkit.getServer;
 
 public class PlayerHandler implements Listener {
+
+    public static void ReapplyEntityReachPowers(Player player){
+        for(OriginContainer origin : OriginPlayer.getOrigin(player).values()){
+            PowerContainer power = origin.getPowerFileFromType("origins:attribute");
+            if (power == null) continue;
+
+            if(power.getModifier().get("attribute").toString().equalsIgnoreCase("reach-entity-attributes:reach")){
+                extra_reach.add(player);
+                return;
+            } else if (power.getModifier().get("attribute").toString().equalsIgnoreCase("reach-entity-attributes:attack_range")) {
+                extra_reach_attack.add(player);
+                return;
+            } else {
+                AttributeHandler.Reach.setFinalReach(player, AttributeHandler.Reach.getDefaultReach(player));}
+        }
+    }
+
     @EventHandler(priority = EventPriority.HIGHEST)
     public void playerJoin(PlayerJoinEvent e) {
         Player p = e.getPlayer();
         p.setMaximumAir(300);
+
+        ReapplyEntityReachPowers(p);
 
         //set origins to null if none present
         if (p.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "origins"), PersistentDataType.BYTE_ARRAY) == null) {
