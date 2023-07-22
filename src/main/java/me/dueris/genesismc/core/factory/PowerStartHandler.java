@@ -5,6 +5,7 @@ import me.dueris.genesismc.core.factory.powers.FlightHandler;
 import me.dueris.genesismc.core.factory.powers.OriginsMod.block.AirFromPotions;
 import me.dueris.genesismc.core.factory.powers.OriginsMod.block.WaterBreathe;
 import me.dueris.genesismc.core.factory.powers.OriginsMod.block.WaterVision;
+import me.dueris.genesismc.core.factory.powers.OriginsMod.effects.EffectImmunity;
 import me.dueris.genesismc.core.factory.powers.OriginsMod.effects.NightVision;
 import me.dueris.genesismc.core.factory.powers.OriginsMod.genesismc.*;
 import me.dueris.genesismc.core.factory.powers.OriginsMod.player.*;
@@ -121,6 +122,9 @@ public class PowerStartHandler {
 
         Phasing phasing = new Phasing();
         phasing.runTaskTimer(getPlugin(), 0, 1);
+
+        EffectImmunity effectImmunity = new EffectImmunity();
+        effectImmunity.runTaskTimer(getPlugin(), 0, 1);
     }
 
     public static void StartListeners() {
