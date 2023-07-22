@@ -5,6 +5,7 @@ import org.json.simple.JSONArray;
 import java.io.Serializable;
 import java.util.HashMap;
 
+@Deprecated
 public class LegacyPowerContainer implements Serializable {
 
     String powerTag;

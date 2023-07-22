@@ -3,6 +3,7 @@ package me.dueris.genesismc.core.utils.legacy;
 import java.util.ArrayList;
 import java.io.Serializable;
 
+@Deprecated
 public class LegacyPowerFileContainer implements Serializable {
 
     ArrayList<String> keys;

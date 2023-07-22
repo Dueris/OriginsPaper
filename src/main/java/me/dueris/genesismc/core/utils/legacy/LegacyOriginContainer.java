@@ -7,6 +7,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+@Deprecated
 public class LegacyOriginContainer implements Serializable {
     String tag;
     HashMap<String, Object> originLayerFile;
