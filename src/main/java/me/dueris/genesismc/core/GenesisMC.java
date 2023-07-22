@@ -226,6 +226,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 
     @Override
     public void onDisable() {
+        CraftApoli.unloadData();
         for (Player p : Bukkit.getOnlinePlayers()) {
             p.getScoreboard().getTeam("origin-players").removeEntity(p);
             Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), "skin clear " + p.getName());
