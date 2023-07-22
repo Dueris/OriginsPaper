@@ -46,6 +46,7 @@ public class Powers implements Listener {
     public static ArrayList<Player> phantomize_overlay = new ArrayList<>();
     public static ArrayList<Player> pumpkin_hate = new ArrayList<>();
     public static ArrayList<Player> extra_reach = new ArrayList<>();
+    public static ArrayList<Player> extra_reach_attack = new ArrayList<>();
     public static ArrayList<Player> sprint_jump = new ArrayList<>();
     public static ArrayList<Player> strong_arms = new ArrayList<>();
     public static ArrayList<Player> natural_armor = new ArrayList<>();
