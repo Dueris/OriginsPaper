@@ -58,7 +58,7 @@ public class CraftApoli {
     /**
      * Parses a JSON file into a PowerFIleContainer.
      **/
-    private static FileContainer fileToFileContainer(JSONObject JSONFileParser) {
+    public static FileContainer fileToFileContainer(JSONObject JSONFileParser) {
         ArrayList<String> keys = new ArrayList<>();
         ArrayList<Object> values = new ArrayList<>();
         for (Object key : JSONFileParser.keySet()) {
