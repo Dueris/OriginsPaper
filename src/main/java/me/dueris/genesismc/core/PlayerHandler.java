@@ -6,6 +6,7 @@ import me.dueris.genesismc.core.factory.powers.OriginsMod.player.attributes.Attr
 import me.dueris.genesismc.core.utils.LayerContainer;
 import me.dueris.genesismc.core.utils.OriginContainer;
 import me.dueris.genesismc.core.utils.PowerContainer;
+import me.dueris.genesismc.core.utils.legacy.LegacyOriginContainer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import net.minecraft.world.level.levelgen.feature.configurations.BlockColumnConfiguration;
@@ -83,13 +84,15 @@ public class PlayerHandler implements Listener {
             ByteArrayInputStream bis = new ByteArrayInputStream(p.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "origin"), PersistentDataType.BYTE_ARRAY));
             try {
                 ObjectInput oi = new ObjectInputStream(bis);
-                OriginContainer origin = (OriginContainer) oi.readObject();
-                p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origins"), PersistentDataType.BYTE_ARRAY, CraftApoli.toByteArray(new HashMap<>(Map.of(CraftApoli.getLayerFromTag("origins:origin"), origin))));
+                LegacyOriginContainer legacyOrigin = (LegacyOriginContainer) oi.readObject(); //this errors because it tries to read it as the current origin container before casting it to the old one
+                p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origins"), PersistentDataType.BYTE_ARRAY, CraftApoli.toByteArray(new HashMap<>(Map.of(CraftApoli.getLayerFromTag("origins:origin"), CraftApoli.getOrigin(legacyOrigin.getTag())))));
+                p.getPersistentDataContainer().remove(new NamespacedKey(GenesisMC.getPlugin(), "origin"));
             } catch (Exception er) {
                 er.printStackTrace();
                 Bukkit.getLogger().warning("[GenesisMC] Error converting old origin container");
             }
         }
+        Bukkit.getLogger().warning("[GenesisMC] Reminder to devs - fix old origin container translation");
 
         if(p.getPersistentDataContainer().has(new NamespacedKey(GenesisMC.getPlugin(), "insideBlock"), PersistentDataType.BOOLEAN)){
             p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "insideBlock"), PersistentDataType.BOOLEAN, false);
