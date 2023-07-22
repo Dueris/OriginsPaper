@@ -132,7 +132,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 
         //origin load
         BukkitUtils.CopyOriginDatapack();
-        Bukkit.getScheduler().runTaskAsynchronously(this, () -> CraftApoli.loadOrigins());
+        CraftApoli.loadOrigins();
         for (OriginContainer origins : CraftApoli.getOrigins()) {
             if (GenesisDataFiles.getMainConfig().getString("console-startup-debug").equalsIgnoreCase("true")) {
                 getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] Loaded \"" + origins.getName() + "\"").color(TextColor.fromHexString(GREEN)));
