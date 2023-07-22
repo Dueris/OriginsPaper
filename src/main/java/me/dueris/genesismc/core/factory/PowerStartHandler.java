@@ -9,6 +9,7 @@ import me.dueris.genesismc.core.factory.powers.OriginsMod.effects.EffectImmunity
 import me.dueris.genesismc.core.factory.powers.OriginsMod.effects.NightVision;
 import me.dueris.genesismc.core.factory.powers.OriginsMod.genesismc.*;
 import me.dueris.genesismc.core.factory.powers.OriginsMod.player.*;
+import me.dueris.genesismc.core.factory.powers.OriginsMod.player.damage.DamageOverTime;
 import me.dueris.genesismc.core.factory.powers.OriginsMod.player.damage.WaterDamage;
 import me.dueris.genesismc.core.factory.powers.OriginsMod.world.EntityGlow;
 import me.dueris.genesismc.core.factory.powers.OriginsMod.world.EntityGroupManager;
@@ -136,6 +137,9 @@ public class PowerStartHandler {
 
         Exhaust exhaust = new Exhaust();
         exhaust.runTaskTimer(getPlugin(), 0, 1);
+
+        DamageOverTime damageOverTime = new DamageOverTime();
+        damageOverTime.runTaskTimer(getPlugin(), 0, 1);
     }
 
     public static void StartListeners() {
