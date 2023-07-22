@@ -1,9 +1,11 @@
 package me.dueris.genesismc.core.utils;
 
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -166,6 +168,12 @@ public class PowerContainer implements Serializable {
         return type.toString();
     }
 
+    public String getEffect() {
+        Object type = powerFile.get("effect");
+        if(type == null) return "blindness";
+        return type.toString();
+    }
+
     /**
      * @return LONG view_distance value for power origins:phasing
      */
@@ -212,6 +220,26 @@ public class PowerContainer implements Serializable {
 
         return null;
     }
+
+    public List<String> getEffects() {
+        Object obj = powerFile.get("effects");
+        if (obj == null) return new ArrayList<>();
+
+        List<String> effectStrings = new ArrayList<>();
+
+        if (obj instanceof JSONArray array) {
+            for (Object value : array) {
+                if (value instanceof String) {
+                    effectStrings.add((String) value);
+                }
+            }
+        } else if (obj instanceof String) {
+            effectStrings.add((String) obj);
+        }
+
+        return effectStrings;
+    }
+
 
     /**
      * @return Head value in the power file or null if not found
