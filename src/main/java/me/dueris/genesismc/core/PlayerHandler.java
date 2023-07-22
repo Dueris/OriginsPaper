@@ -2,6 +2,7 @@ package me.dueris.genesismc.core;
 
 import me.dueris.genesismc.core.entity.OriginPlayer;
 import me.dueris.genesismc.core.factory.CraftApoli;
+import me.dueris.genesismc.core.factory.powers.OriginsMod.player.attributes.AttributeHandler;
 import me.dueris.genesismc.core.utils.LayerContainer;
 import me.dueris.genesismc.core.utils.OriginContainer;
 import net.kyori.adventure.text.Component;
@@ -70,17 +71,10 @@ public class PlayerHandler implements Listener {
         if(p.getPersistentDataContainer().has(new NamespacedKey(GenesisMC.getPlugin(), "insideBlock"), PersistentDataType.BOOLEAN)){
             p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "insideBlock"), PersistentDataType.BOOLEAN, false);
         }
-        // --- end ---
 
-        if (p.getClientBrandName() != null && p.getClientBrandName().equalsIgnoreCase("Immersions")) {
-            p.setDisplayName(AQUA + p.getName());
-            p.setPlayerListName(AQUA + p.getName());
+        if(p.getPersistentDataContainer().has(new NamespacedKey(GenesisMC.getPlugin(), "reach"), PersistentDataType.INTEGER)){
+            p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "reach"), PersistentDataType.INTEGER, AttributeHandler.Reach.getDefaultReach(p));
         }
-
-        if (p.getScoreboardTags().contains("texture_pack")) {
-            p.setTexturePack("https://drive.google.com/uc?export=download&id=1mLpqQ233C7ZbMIjrdY13ZpFI8tcUTBH2");
-        }
-
 
         //default playerdata values
         PersistentDataContainer data = p.getPersistentDataContainer();
