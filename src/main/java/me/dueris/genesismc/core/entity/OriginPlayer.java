@@ -365,7 +365,6 @@ public class OriginPlayer {
                 case "origins:hotblooded" -> hotblooded.add(player);
                 case "origins:water_vulnerability" -> water_vulnerability.add(player);
                 case "origins:invisibility" -> invisibility.add(player);
-                case "origins:more_exhaustion" -> more_exhaustion.add(player);
                 case "origins:like_air" -> like_air.add(player);
                 case "origins:like_water" -> like_water.add(player);
                 case "origins:master_of_webs" -> master_of_webs.add(player);
@@ -417,6 +416,7 @@ public class OriginPlayer {
                 case "genesis:bioluminescent" -> bioluminescent.add(player);
                 case "origins:entity_glow" -> entity_glow.add(player);
                 case "origins:entity_group" -> entity_group.add(player);
+                case "origins:exhaust" -> more_exhaustion.add(player);
 
             }
         }
