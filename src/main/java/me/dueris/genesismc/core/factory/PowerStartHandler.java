@@ -11,6 +11,7 @@ import me.dueris.genesismc.core.factory.powers.OriginsMod.genesismc.*;
 import me.dueris.genesismc.core.factory.powers.OriginsMod.player.*;
 import me.dueris.genesismc.core.factory.powers.OriginsMod.player.damage.WaterDamage;
 import me.dueris.genesismc.core.factory.powers.OriginsMod.world.EntityGlow;
+import me.dueris.genesismc.core.factory.powers.OriginsMod.world.EntityGroupManager;
 import me.dueris.genesismc.core.factory.powers.Powers;
 import me.dueris.genesismc.core.factory.powers.armour.FlightElytra;
 import me.dueris.genesismc.core.factory.powers.armour.GoldAmourBellow;
@@ -129,6 +130,9 @@ public class PowerStartHandler {
 
         EntityGlow entityGlow = new EntityGlow();
         entityGlow.runTaskTimerAsynchronously(getPlugin(), 0, 1);
+
+        EntityGroupManager entityGroupManager = new EntityGroupManager();
+        entityGroupManager.runTaskTimerAsynchronously(getPlugin(), 0, 10);
     }
 
     public static void StartListeners() {
