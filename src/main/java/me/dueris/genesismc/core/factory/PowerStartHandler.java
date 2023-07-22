@@ -71,7 +71,7 @@ public class PowerStartHandler {
         jumpIncreased.runTaskTimerAsynchronously(getPlugin(), 0, 10);
 
         NoShield shield = new NoShield();
-        shield.runTaskTimerAsynchronously(getPlugin(), 0, 10);
+        shield.runTaskTimer(getPlugin(), 0, 10);
 
         WaterBreathe waterBreathe = new WaterBreathe();
         waterBreathe.runTaskTimerAsynchronously(getPlugin(), 0, 1);
