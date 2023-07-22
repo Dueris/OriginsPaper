@@ -92,13 +92,11 @@ public class AttributeHandler implements Listener {
 
                 if(power.getModifier().get("attribute").toString().equalsIgnoreCase("reach-entity-attributes:reach")){
                     extra_reach.add(p);
-                    p.sendMessage("YEE");
                     return;
                 } else if (power.getModifier().get("attribute").toString().equalsIgnoreCase("reach-entity-attributes:attack_range")) {
                     extra_reach_attack.add(p);
-                    p.sendMessage("YEE");
                     return;
-                } else {Reach.setFinalReachInteger(p, Reach.getDefaultReach(p)); p.sendMessage("NOPE");}
+                } else {Reach.setFinalReachInteger(p, Reach.getDefaultReach(p));}
 
                 Attribute attribute_modifier = Attribute.valueOf(power.getModifier().get("attribute").toString().split(":")[1].replace(".", "_").toUpperCase());
 
@@ -275,7 +273,6 @@ public class AttributeHandler implements Listener {
                     if (!e.getAction().isLeftClick()) return;
                     String operation = String.valueOf(power.getModifier().get("operation"));
                     int base = getDefaultReach(p);
-                    p.sendMessage("pass1");
 
                     BinaryOperator mathOperator = getOperationMappingsInt().get(operation);
                     if(power.getModifier().get("value") instanceof Integer){
@@ -283,13 +280,11 @@ public class AttributeHandler implements Listener {
                             if(power.getModifier().get("update_health").toString().equalsIgnoreCase("true")) p.sendHealthUpdate();
                         }
                         DamageReachExecute(p, (int) power.getModifier().get("value"), base, operation, e);
-                        p.sendMessage("32");
                     } else if (power.getModifier().get("value") instanceof Double) {
                         if(power.getModifier().get("update_health").toString() != null){
                             if(power.getModifier().get("update_health").toString().equalsIgnoreCase("true")) p.sendHealthUpdate();
                         }
                         DamageReachExecute(p, (Double) power.getModifier().get("value"), base, operation, e);
-                        p.sendMessage("32233322");
                     }
 
                 }
