@@ -50,7 +50,6 @@ dependencies {
     compileOnly "org.mineskin:java-client:1.2.4-SNAPSHOT"
     compileOnly("com.mojang:authlib:1.11")
     shade("org.mineskin:java-client:1.2.4-SNAPSHOT")
-    shade("com.github.Dueris:GlowAPI:1.5.6-SNAPSHOT")
     implementation("com.github.Dueris:GlowAPI:1.5.6-SNAPSHOT")
 }
 
