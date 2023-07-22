@@ -27,6 +27,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import static me.dueris.genesismc.core.choosing.ChoosingCORE.*;
 import static me.dueris.genesismc.core.factory.powers.Powers.*;
@@ -130,41 +131,41 @@ public class OriginPlayer {
     public static boolean hasCoreOrigin(Player player, LayerContainer layer) {
         PersistentDataContainer data = player.getPersistentDataContainer();
         String originTag = OriginPlayer.getOrigin(player, layer).getTag();
-        if (originTag.contains("genesis:origin-human")) {
+        if (originTag.contains("origins:human")) {
             return true;
-        } else if (originTag.contains("genesis:origin-enderian")) {
+        } else if (originTag.contains("origins:enderian")) {
             return true;
-        } else if (originTag.contains("genesis:origin-merling")) {
+        } else if (originTag.contains("origins:merling")) {
             return true;
-        } else if (originTag.contains("genesis:origin-phantom")) {
+        } else if (originTag.contains("origins:phantom")) {
             return true;
-        } else if (originTag.contains("genesis:origin-elytrian")) {
+        } else if (originTag.contains("origins:elytrian")) {
             return true;
-        } else if (originTag.contains("genesis:origin-blazeborn")) {
+        } else if (originTag.contains("origins:blazeborn")) {
             return true;
-        } else if (originTag.contains("genesis:origin-avian")) {
+        } else if (originTag.contains("origins:avian")) {
             return true;
-        } else if (originTag.contains("genesis:origin-arachnid")) {
+        } else if (originTag.contains("origins:arachnid")) {
             return true;
-        } else if (originTag.contains("genesis:origin-shulk")) {
+        } else if (originTag.contains("origins:shulk")) {
             return true;
-        } else if (originTag.contains("genesis:origin-feline")) {
+        } else if (originTag.contains("origins:feline")) {
             return true;
-        } else if (originTag.contains("genesis:origin-starborne")) {
+        } else if (originTag.contains("origins:starborne")) {
             return true;
-        } else if (originTag.contains("genesis:origin-allay")) {
+        } else if (originTag.contains("origins:allay")) {
             return true;
-        } else if (originTag.contains("genesis:origin-rabbit")) {
+        } else if (originTag.contains("origins:rabbit")) {
             return true;
-        } else if (originTag.contains("genesis:origin-bee")) {
+        } else if (originTag.contains("origins:bee")) {
             return true;
-        } else if (originTag.contains("genesis:origin-sculkling")) {
+        } else if (originTag.contains("origins:sculkling")) {
             return true;
-        } else if (originTag.contains("genesis:origin-creep")) {
+        } else if (originTag.contains("origins:creep")) {
             return true;
-        } else if (originTag.contains("genesis:origin-slimeling")) {
+        } else if (originTag.contains("origins:slimeling")) {
             return true;
-        } else return originTag.contains("genesis:origin-piglin");
+        } else return originTag.contains("origins:piglin");
     }
 
     public static void setOrigin(Player player, LayerContainer layer, OriginContainer origin) {
