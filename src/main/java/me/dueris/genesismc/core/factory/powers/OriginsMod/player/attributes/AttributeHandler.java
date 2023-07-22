@@ -230,10 +230,5 @@ public class AttributeHandler implements Listener {
                 }
             }
         }
-
-        public class Type {
-
-        }
-
     }
 }
