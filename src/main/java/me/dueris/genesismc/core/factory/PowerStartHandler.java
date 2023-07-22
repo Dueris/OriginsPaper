@@ -191,5 +191,6 @@ public class PowerStartHandler {
         getServer().getPluginManager().registerEvents(new CreeperScare(), getPlugin());
         getServer().getPluginManager().registerEvents(new Inventory(), getPlugin());
         getServer().getPluginManager().registerEvents(new InvulnerabilityDamage(), getPlugin());
+        getServer().getPluginManager().registerEvents(new DisableRegen(), getPlugin());
     }
 }
