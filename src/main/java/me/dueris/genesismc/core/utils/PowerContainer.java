@@ -201,6 +201,12 @@ public class PowerContainer implements Serializable {
         return (boolean) render;
     }
 
+    public boolean isInverted() {
+        Object render = powerFile.get("inverted");
+        if (render == null) return false;
+        return (boolean) render;
+    }
+
     /**
      * @return Modifiers in the power file or null if not found
      */
