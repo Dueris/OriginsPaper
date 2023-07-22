@@ -291,6 +291,14 @@ public class CraftApoli {
         return null;
     }
 
+    public static void unloadData(){
+        originContainers.clear();
+        originLayers.clear();
+        getOrigins().clear();
+        getCoreOrigins().clear();
+        getOriginTags().clear();
+    }
+
     /**
      * @return An ArrayList of all loaded originTags.
      **/
