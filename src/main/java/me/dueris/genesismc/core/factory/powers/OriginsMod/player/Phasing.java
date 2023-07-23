@@ -150,7 +150,6 @@ public class Phasing extends BukkitRunnable implements Listener {
                                         if (p.isOnGround()) ;
                                         p.setFlying(false);
                                     }
-                                    p.setFlySpeed(0.1F);
                                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "insideBlock"), PersistentDataType.BOOLEAN, false);
 
                                 }
