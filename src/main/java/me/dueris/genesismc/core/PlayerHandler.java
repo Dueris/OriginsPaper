@@ -20,6 +20,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.geysermc.floodgate.api.FloodgateApi;
 import org.geysermc.geyser.api.GeyserApi;
 
@@ -59,8 +60,6 @@ public class PlayerHandler implements Listener {
     public void playerJoin(PlayerJoinEvent e) {
         Player p = e.getPlayer();
         p.setMaximumAir(300);
-
-        ReapplyEntityReachPowers(p);
 
         //set origins to null if none present
         if (p.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "origins"), PersistentDataType.BYTE_ARRAY) == null) {
@@ -146,6 +145,12 @@ public class PlayerHandler implements Listener {
         OriginPlayer.assignPowers(p);
         p.sendMessage(Component.text("GenesisMC is in beta and still has lots of bugs, use /origin bug and notify us about any issues!").color(TextColor.fromHexString(AQUA)));
 
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                ReapplyEntityReachPowers(p);
+            }
+        }.runTaskTimer(GenesisMC.getPlugin(), 3, 0);
     }
 
     @EventHandler

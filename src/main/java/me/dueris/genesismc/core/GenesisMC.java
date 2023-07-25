@@ -36,12 +36,14 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.HashMap;
 
+import static me.dueris.genesismc.core.PlayerHandler.ReapplyEntityReachPowers;
 import static me.dueris.genesismc.core.utils.BukkitColour.*;
 
 public final class GenesisMC extends JavaPlugin implements Listener {
@@ -208,7 +210,12 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         Bukkit.getServer().getConsoleSender().sendMessage(Component.text("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"));
 
         for (Player p : Bukkit.getOnlinePlayers()) {
-            PlayerHandler.ReapplyEntityReachPowers(p);
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    ReapplyEntityReachPowers(p);
+                }
+            }.runTaskTimer(GenesisMC.getPlugin(), 3, 0);
             PlayerHandler.originValidCheck(p);
             OriginPlayer.assignPowers(p);
             if (p.isOp()) p.sendMessage(Component.text("Origins Reloaded.").color(TextColor.fromHexString(AQUA)));
