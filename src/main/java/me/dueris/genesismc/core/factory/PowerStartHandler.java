@@ -140,6 +140,9 @@ public class PowerStartHandler {
 
         DamageOverTime damageOverTime = new DamageOverTime();
         damageOverTime.runTaskTimer(getPlugin(), 0, 1);
+
+        Freeze freeze = new Freeze();
+        freeze.runTaskTimer(getPlugin(), 0, 1);
     }
 
     public static void StartListeners() {

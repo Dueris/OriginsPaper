@@ -251,7 +251,6 @@ public class Phasing extends BukkitRunnable implements Listener {
                                         if (p.isOnGround()) ;
                                         p.setFlying(false);
                                     }
-                                    p.setFlySpeed(0.1F);
 
                                 }
                             }
