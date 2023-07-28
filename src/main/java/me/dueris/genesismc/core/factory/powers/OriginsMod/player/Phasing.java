@@ -50,6 +50,9 @@ public class Phasing extends BukkitRunnable implements Listener {
         this.ticksE = 0;
     }
 
+//TODO: make bedrock Phasing work by disabling merge and setting into spectator only instead of merging gamemodes
+    //TODO: fix blindness flickers bc mc renderer sucks
+    
     public static void setInPhasingBlockForm(Player p) {
         //camera client renderer
         if(p.getGameMode().equals(GameMode.CREATIVE)){
