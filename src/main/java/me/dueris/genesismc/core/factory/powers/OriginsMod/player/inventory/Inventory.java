@@ -74,7 +74,6 @@ public class Inventory implements CommandExecutor, Listener {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
         if (sender instanceof Player p) {
-            ///
             //opens target players shulk inventory
             if (args.length >= 2 && p.hasPermission("genesism.origins.cmd.othershulk")) {
                 Player target = Bukkit.getPlayer(args[1]);
@@ -89,10 +88,10 @@ public class Inventory implements CommandExecutor, Listener {
 
             //opens own shulk inventory
             if (shulker_inventory.contains((Player) sender)) {
-                    ArrayList<ItemStack> vaultItems = InventoryUtils.getItems(p);
-                    org.bukkit.inventory.Inventory vault = Bukkit.createInventory(p, InventoryType.DROPPER, "Shulker Inventory: "+p.getName());
-                    vaultItems.stream().forEach(itemStack -> vault.addItem(itemStack));
-                    p.openInventory(vault);
+                ArrayList<ItemStack> vaultItems = InventoryUtils.getItems(p);
+                org.bukkit.inventory.Inventory vault = Bukkit.createInventory(p, InventoryType.DROPPER, "Shulker Inventory: "+p.getName());
+                vaultItems.stream().forEach(itemStack -> vault.addItem(itemStack));
+                p.openInventory(vault);
             } else {
                 p.sendMessage(Component.text("You must have the Shulker Inventory power to access this command").color(TextColor.fromHexString(BukkitColour.RED)));
             }

@@ -113,7 +113,7 @@ public class MainMenuContents {
             starborne = itemProperties(starborne, LIGHT_PURPLE + originDetails.get("origins:starborne"), null, null, originDescriptions.get("origins:starborne"));
         else starborne = itemProperties(starborne, RED + "Origin not found", null, null, RED + "Origin not found");
         if (originDetails.containsKey("origins:merling"))
-            merling = itemProperties(merling, BLUE + originDetails.get("origins:merling"), null, null, originDescriptions.get("origins:merling"));
+            merling = itemPropertiesMultipleLore(merling, BLUE + originDetails.get("origins:merling"), null, null, cutStringIntoLists(originDescriptions.get("origins:merling")));
         else merling = itemProperties(merling, RED + "Origin not found", null, null, RED + "Origin not found");
         if (originDetails.containsKey("origins:allay"))
             allay = itemProperties(allay, AQUA + originDetails.get("origins:allay"), null, null, originDescriptions.get("origins:allay"));
