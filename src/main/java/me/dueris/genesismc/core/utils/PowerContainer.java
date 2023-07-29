@@ -156,6 +156,12 @@ public class PowerContainer implements Serializable {
         return (Boolean) render;
     }
 
+    public Double getColor(String thing){
+        Object color = powerFile.get(thing);
+        if (color == null) return 0.0;
+        return (Double) color;
+    }
+
     /**
      * @return The value "burn_duration" from the power file
      */
