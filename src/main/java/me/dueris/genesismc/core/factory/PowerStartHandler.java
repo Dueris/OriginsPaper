@@ -143,6 +143,9 @@ public class PowerStartHandler {
 
         Freeze freeze = new Freeze();
         freeze.runTaskTimer(getPlugin(), 0, 1);
+
+        Grounded grounded = new Grounded();
+        grounded.runTaskTimer(getPlugin(), 0, 1);
     }
 
     public static void StartListeners() {
