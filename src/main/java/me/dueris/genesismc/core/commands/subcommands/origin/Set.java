@@ -6,6 +6,7 @@ import me.dueris.genesismc.core.entity.OriginPlayer;
 import me.dueris.genesismc.core.enums.OriginDataType;
 import me.dueris.genesismc.core.events.OriginChangeEvent;
 import me.dueris.genesismc.core.factory.CraftApoli;
+import me.dueris.genesismc.core.utils.Lang;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.command.CommandSender;
@@ -24,7 +25,7 @@ public class Set extends SubCommand {
 
     @Override
     public String getDescription() {
-        return "sets origin of given player";
+        return Lang.getLocalizedString("command.origin.set.description");
     }
 
     @Override
@@ -36,15 +37,15 @@ public class Set extends SubCommand {
     public void perform(CommandSender sender, String[] args) {
         if (!sender.hasPermission("genesismc.origins.cmd.set")) return;
         if (args.length == 1) {
-            sender.sendMessage(Component.text("No player specified!").color(TextColor.fromHexString(RED)));
+            sender.sendMessage(Component.text(Lang.getLocalizedString("command.origin.set.noPlayer")).color(TextColor.fromHexString(RED)));
             return;
         }
         if (args.length == 2) {
-            sender.sendMessage(Component.text("No layer specified!").color(TextColor.fromHexString(RED)));
+            sender.sendMessage(Component.text(Lang.getLocalizedString("command.origin.set.noLayer")).color(TextColor.fromHexString(RED)));
             return;
         }
         if (args.length == 3) {
-            sender.sendMessage(Component.text("No origin specified!").color(TextColor.fromHexString(RED)));
+            sender.sendMessage(Component.text(Lang.getLocalizedString("command.origin.set.noOrigin")).color(TextColor.fromHexString(RED)));
             return;
         }
         if (args.length > 3) {
@@ -52,13 +53,13 @@ public class Set extends SubCommand {
             if (players.size() == 0) return;
 
             if (!CraftApoli.getLayers().contains(CraftApoli.getLayerFromTag(args[2]))) {
-                sender.sendMessage(Component.text("Invalid layer!").color(TextColor.fromHexString(RED)));
+                sender.sendMessage(Component.text(Lang.getLocalizedString("command.origin.set.invalidLayer")).color(TextColor.fromHexString(RED)));
                 return;
             }
 
             String originTag = args[3];
             if (!CraftApoli.getOriginTags().contains(originTag)) {
-                sender.sendMessage(Component.text("Invalid origin!").color(TextColor.fromHexString(RED)));
+                sender.sendMessage(Component.text(Lang.getLocalizedString("command.origin.set.invalidOrigin")).color(TextColor.fromHexString(RED)));
                 return;
             }
 

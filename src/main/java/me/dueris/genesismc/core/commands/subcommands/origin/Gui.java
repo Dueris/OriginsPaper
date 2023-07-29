@@ -6,6 +6,7 @@ import me.dueris.genesismc.core.commands.subcommands.SubCommand;
 import me.dueris.genesismc.core.entity.OriginPlayer;
 import me.dueris.genesismc.core.enums.OriginDataType;
 import me.dueris.genesismc.core.factory.CraftApoli;
+import me.dueris.genesismc.core.utils.Lang;
 import me.dueris.genesismc.core.utils.LayerContainer;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
@@ -27,7 +28,7 @@ public class Gui extends SubCommand {
 
     @Override
     public String getDescription() {
-        return "opens origin choosing screen";
+        return Lang.getLocalizedString("command.origin.gui.description");
     }
 
     @Override
@@ -72,20 +73,6 @@ public class Gui extends SubCommand {
             for (LayerContainer layer : CraftApoli.getLayers()) {
                 OriginPlayer.unassignPowers(p, layer);
                 OriginPlayer.setOrigin(p, layer, CraftApoli.nullOrigin());
-//                String skinData = p.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "original-skin-url"), PersistentDataType.STRING).toString();
-//                if(p.getPlayerProfile().getTextures().getSkinModel() == PlayerTextures.SkinModel.CLASSIC){
-//                    try {
-//                        p.getPlayerProfile().getTextures().setSkin(new URL(skinData), PlayerTextures.SkinModel.CLASSIC);
-//                    } catch (MalformedURLException e) {
-//                        e.printStackTrace();
-//                    }
-//                }else{
-//                    try {
-//                        p.getPlayerProfile().getTextures().setSkin(new URL(skinData), PlayerTextures.SkinModel.SLIM);
-//                    } catch (MalformedURLException e) {
-//                        e.printStackTrace();
-//                    }
-//                }
                 for(Player pls : Bukkit.getOnlinePlayers()){
                     pls.hidePlayer(GenesisMC.getPlugin(), p);
                 }

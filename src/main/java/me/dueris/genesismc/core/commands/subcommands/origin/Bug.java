@@ -1,6 +1,7 @@
 package me.dueris.genesismc.core.commands.subcommands.origin;
 
 import me.dueris.genesismc.core.commands.subcommands.SubCommand;
+import me.dueris.genesismc.core.utils.Lang;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.ClickEvent;
@@ -18,7 +19,7 @@ public class Bug extends SubCommand {
 
     @Override
     public String getDescription() {
-        return "returns the links to submit any bugs found to.";
+        return Lang.getLocalizedString("command.origin.bug.description");
     }
 
     @Override
@@ -28,7 +29,7 @@ public class Bug extends SubCommand {
 
     @Override
     public void perform(CommandSender sender, String[] args) {
-        sender.sendMessage(Component.text("To report a bug either open an issue on github or join our discord server and open a post in the bug-reports channel!").color(TextColor.fromHexString(YELLOW)));
+        sender.sendMessage(Component.text(Lang.getLocalizedString("command.origin.bug.message")).color(TextColor.fromHexString(YELLOW)));
 
         TextComponent git = Component.text("GitHub: https://github.com/Dueris/GenesisMC-Minecraft_Plugin/issues").color(TextColor.fromHexString(YELLOW)).decorate(TextDecoration.UNDERLINED);
         git = git.clickEvent(ClickEvent.clickEvent(ClickEvent.Action.OPEN_URL, "https://github.com/Dueris/GenesisMC-Minecraft_Plugin/issues"));

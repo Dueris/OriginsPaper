@@ -2,6 +2,7 @@ package me.dueris.genesismc.core.commands.subcommands.origin;
 
 import me.dueris.genesismc.core.commands.subcommands.SubCommand;
 import me.dueris.genesismc.core.files.GenesisDataFiles;
+import me.dueris.genesismc.core.utils.Lang;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.Bukkit;
@@ -35,12 +36,12 @@ public class Recipe extends SubCommand implements Listener {
 
     @Override
     public String getDescription() {
-        return "Shows the recipe for the orb of origin";
+        return Lang.getLocalizedString("command.origin.recipe.description");
     }
 
     @Override
     public String getSyntax() {
-        return "/origins recipe";
+        return "/origin recipe";
     }
 
     @Override
@@ -48,7 +49,7 @@ public class Recipe extends SubCommand implements Listener {
         if (sender instanceof Player p) {
             if (!p.hasPermission("genesismc.origins.cmd.recipe")) return;
             if (getMainConfig().get("orb-of-origins") == null || getOrbCon().get("orb-of-origins-enabled").toString() != "true") {
-                p.sendMessage(Component.text("Orb of origin crafting has been disabled by a server admin!").color(TextColor.fromHexString(RED)));
+                p.sendMessage(Component.text(Lang.getLocalizedString("command.origin.recipe.disabled")).color(TextColor.fromHexString(RED)));
                 return;
             }
             @NotNull Inventory custommenu = Bukkit.createInventory(p, 54, "Orb Recipe");
@@ -99,11 +100,10 @@ public class Recipe extends SubCommand implements Listener {
                 p.openInventory(custommenu);
                 p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 10, 9);
             } catch (Exception exception) {
-                sender.sendMessage(Component.text("Failed to load custom origin orb recipe!").color(TextColor.fromHexString(RED)));
-                sender.sendMessage(Component.text("If you are an admin: Either delete the file, or add a valid material/path.").color(TextColor.fromHexString(RED)));
+                sender.sendMessage(Component.text(Lang.getLocalizedString("command.origin.recipe.error")).color(TextColor.fromHexString(RED)));
             }
         } else
-            sender.sendMessage(Component.text("You must be a player to use this command!").color(TextColor.fromHexString(RED)));
+            sender.sendMessage(Component.text(Lang.getLocalizedString("command.origin.recipe.playerOnly")).color(TextColor.fromHexString(RED)));
     }
 
     @EventHandler

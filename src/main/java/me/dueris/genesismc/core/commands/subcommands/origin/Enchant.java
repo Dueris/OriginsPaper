@@ -2,6 +2,7 @@ package me.dueris.genesismc.core.commands.subcommands.origin;
 
 import me.dueris.genesismc.core.commands.PlayerSelector;
 import me.dueris.genesismc.core.commands.subcommands.SubCommand;
+import me.dueris.genesismc.core.utils.Lang;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.ChatColor;
@@ -32,7 +33,7 @@ public class Enchant extends SubCommand {
 
     @Override
     public String getDescription() {
-        return "enchants item with genesis enchantment";
+        return Lang.getLocalizedString("command.origin.enchant.description");
     }
 
     @Override
@@ -44,11 +45,11 @@ public class Enchant extends SubCommand {
     public void perform(CommandSender sender, String[] args) {
         if (sender.hasPermission("genesismc.origins.cmd.enchant")) {
             if (args.length == 1) {
-                sender.sendMessage(Component.text("No player specified!").color(TextColor.fromHexString(RED)));
+                sender.sendMessage(Component.text(Lang.getLocalizedString("command.origin.enchant.noPlayer")).color(TextColor.fromHexString(RED)));
                 return;
             }
             if (args.length == 2) {
-                sender.sendMessage(Component.text("No enchantment specified!").color(TextColor.fromHexString(RED)));
+                sender.sendMessage(Component.text(Lang.getLocalizedString("command.origin.enchant.noEnchant")).color(TextColor.fromHexString(RED)));
                 return;
             }
             ArrayList<Player> players = PlayerSelector.playerSelector(sender, args[1]);
@@ -57,7 +58,7 @@ public class Enchant extends SubCommand {
 
             for (Player p : players) {
                 if (!wearable.contains(p.getInventory().getItemInMainHand().getType())) {
-                    sender.sendMessage(Component.text(p.getName() + " Is not holding an enchant-able item!").color(TextColor.fromHexString(RED)));
+                    sender.sendMessage(Component.text(Lang.getLocalizedString("command.origin.enchant.badItem").replace("%player%", p.getName())).color(TextColor.fromHexString(RED)));
                     continue;
                 }
 
@@ -66,13 +67,13 @@ public class Enchant extends SubCommand {
                     try {
                         level = Integer.parseInt(args[3]);
                     } catch (NumberFormatException e) {
-                        sender.sendMessage(Component.text("Please enter a valid number!").color(TextColor.fromHexString(RED)));
+                        sender.sendMessage(Component.text(Lang.getLocalizedString("command.origin.enchant.wrongNumber")).color(TextColor.fromHexString(RED)));
                     }
                 }
 
                 if (args[2].equals("genesis:water_protection")) {
                     if (level > 4 || level < 1) {
-                        sender.sendMessage(Component.text("The level for water protection must be between 1 and 4!").color(TextColor.fromHexString(RED)));
+                        sender.sendMessage(Component.text(Lang.getLocalizedString("command.origin.enchant.waterProtLevelLimit")).color(TextColor.fromHexString(RED)));
                         return;
                     }
 
@@ -86,49 +87,6 @@ public class Enchant extends SubCommand {
                     p.getInventory().getItemInMainHand().addUnsafeEnchantment(waterProtectionEnchant, level);
                 }
             }
-
-//            if (args.length != 1 && wearable.contains(p.getInventory().getItemInMainHand().getType())) {
-//                if (args[1].equalsIgnoreCase("genesis:water_protection") && args.length == 2) {
-//                    String level = "I";
-//                    ItemMeta meta = p.getInventory().getItemInMainHand().getItemMeta();
-//                    meta.setCustomModelData(1);
-//                    p.getInventory().getItemInMainHand().setLore(List.of(ChatColor.GRAY + "Water Protection " + level));
-//                    p.getInventory().getItemInMainHand().addUnsafeEnchantment(waterProtectionEnchant, 1);
-//                } else if (args.length == 3) {
-//                    if (args[2].equalsIgnoreCase("1")) {
-//                        String level = "I";
-//                        ItemMeta meta = p.getInventory().getItemInMainHand().getItemMeta();
-//                        meta.setCustomModelData(1);
-//                        p.getInventory().getItemInMainHand().setLore(List.of(ChatColor.GRAY + "Water Protection " + level));
-//                        p.getInventory().getItemInMainHand().addUnsafeEnchantment(waterProtectionEnchant, 1);
-//                    } else if (args[2].equalsIgnoreCase("2")) {
-//                        String level = "II";
-//                        ItemMeta meta = p.getInventory().getItemInMainHand().getItemMeta();
-//                        meta.setCustomModelData(2);
-//                        p.getInventory().getItemInMainHand().setLore(List.of(ChatColor.GRAY + "Water Protection " + level));
-//                        p.getInventory().getItemInMainHand().addUnsafeEnchantment(waterProtectionEnchant, 2);
-//                    } else if (args[2].equalsIgnoreCase("3")) {
-//                        String level = "III";
-//                        ItemMeta meta = p.getInventory().getItemInMainHand().getItemMeta();
-//                        meta.setCustomModelData(3);
-//                        p.getInventory().getItemInMainHand().setLore(List.of(ChatColor.GRAY + "Water Protection " + level));
-//                        p.getInventory().getItemInMainHand().addUnsafeEnchantment(waterProtectionEnchant, 3);
-//                    } else if (args[2].equalsIgnoreCase("4")) {
-//                        String level = "IV";
-//                        ItemMeta meta = p.getInventory().getItemInMainHand().getItemMeta();
-//                        meta.setCustomModelData(4);
-//                        p.getInventory().getItemInMainHand().setLore(List.of(ChatColor.GRAY + "Water Protection " + level));
-//                        p.getInventory().getItemInMainHand().addUnsafeEnchantment(waterProtectionEnchant, 4);
-//                    } else {
-//                        p.sendMessage(ChatColor.RED + "Unable to add " + args[1] + " to item because the level is too big.");
-//                    }
-//                } else {
-//                    p.sendMessage(ChatColor.RED + "Unable to add " + args[1] + " to item.");
-//                }
-//
-//            } else {
-//                p.sendMessage(ChatColor.RED + "Invalid Args! Please hold a wearable item");
-//            }
         }
     }
 }
