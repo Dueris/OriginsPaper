@@ -1,9 +1,12 @@
 package me.dueris.genesismc.core.factory.powers.OriginsMod.player.inventory;
 
 import me.dueris.genesismc.core.GenesisMC;
+import me.dueris.genesismc.core.KeybindHandler;
 import me.dueris.genesismc.core.commands.subcommands.SubCommand;
 import me.dueris.genesismc.core.entity.OriginPlayer;
+import me.dueris.genesismc.core.events.KeybindTriggerEvent;
 import me.dueris.genesismc.core.events.OriginChangeEvent;
+import me.dueris.genesismc.core.events.OriginKeybindExecuteEvent;
 import me.dueris.genesismc.core.utils.BukkitColour;
 import me.dueris.genesismc.core.utils.OriginContainer;
 import net.kyori.adventure.text.Component;
@@ -24,6 +27,8 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import static me.dueris.genesismc.core.KeybindHandler.isKeyBeingPressed;
+import static me.dueris.genesismc.core.factory.powers.Powers.particle;
 import static me.dueris.genesismc.core.factory.powers.Powers.shulker_inventory;
 
 public class Inventory implements CommandExecutor, Listener {
@@ -70,6 +75,21 @@ public class Inventory implements CommandExecutor, Listener {
 
     }
 
+    @EventHandler
+    public void keytrigger(KeybindTriggerEvent e){
+        for(OriginContainer origin : OriginPlayer.getOrigin(e.getPlayer()).values()){
+            if(shulker_inventory.contains(e.getPlayer())) {
+                if (isKeyBeingPressed(e.getPlayer(), origin.getPowerFileFromType("origins:inventory").getKey().get("key").toString(), true)) {
+                    ArrayList<ItemStack> vaultItems = InventoryUtils.getItems(e.getPlayer());
+                    org.bukkit.inventory.Inventory vault = Bukkit.createInventory(e.getPlayer(), InventoryType.DROPPER, "Shulker Inventory: " + e.getPlayer().getName());
+                    vaultItems.stream().forEach(itemStack -> vault.addItem(itemStack));
+                    e.getPlayer().openInventory(vault);
+
+                }
+            }
+        }
+    }
+
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
@@ -89,7 +109,7 @@ public class Inventory implements CommandExecutor, Listener {
             //opens own shulk inventory
             if (shulker_inventory.contains((Player) sender)) {
                 ArrayList<ItemStack> vaultItems = InventoryUtils.getItems(p);
-                org.bukkit.inventory.Inventory vault = Bukkit.createInventory(p, InventoryType.DROPPER, "Shulker Inventory: "+p.getName());
+                org.bukkit.inventory.Inventory vault = Bukkit.createInventory(p, InventoryType.DROPPER, "Shulker Inventory: "+ p.getName());
                 vaultItems.stream().forEach(itemStack -> vault.addItem(itemStack));
                 p.openInventory(vault);
             } else {
