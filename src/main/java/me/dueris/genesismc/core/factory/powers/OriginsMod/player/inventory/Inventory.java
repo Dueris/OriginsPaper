@@ -7,6 +7,7 @@ import me.dueris.genesismc.core.entity.OriginPlayer;
 import me.dueris.genesismc.core.events.KeybindTriggerEvent;
 import me.dueris.genesismc.core.events.OriginChangeEvent;
 import me.dueris.genesismc.core.events.OriginKeybindExecuteEvent;
+import me.dueris.genesismc.core.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.core.utils.BukkitColour;
 import me.dueris.genesismc.core.utils.OriginContainer;
 import net.kyori.adventure.text.Component;
@@ -20,6 +21,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -47,7 +49,7 @@ public class Inventory implements CommandExecutor, Listener {
                 public void run() {
                     if (!shulker_inventory.contains(p)) {
                         ArrayList<ItemStack> vaultItems = InventoryUtils.getItems(p);
-                        org.bukkit.inventory.Inventory vault = Bukkit.createInventory(p, InventoryType.DROPPER, "Shulker Inventory");
+                        org.bukkit.inventory.Inventory vault = Bukkit.createInventory(p, InventoryType.CHEST, "origin.getPowerFileFromType(origins:inventory).get(title)");
 
                         vaultItems.stream()
                                 .forEach(itemStack -> vault.addItem(itemStack));
@@ -81,10 +83,42 @@ public class Inventory implements CommandExecutor, Listener {
             if(shulker_inventory.contains(e.getPlayer())) {
                 if (isKeyBeingPressed(e.getPlayer(), origin.getPowerFileFromType("origins:inventory").getKey().get("key").toString(), true)) {
                     ArrayList<ItemStack> vaultItems = InventoryUtils.getItems(e.getPlayer());
-                    org.bukkit.inventory.Inventory vault = Bukkit.createInventory(e.getPlayer(), InventoryType.DROPPER, "Shulker Inventory: " + e.getPlayer().getName());
+                    org.bukkit.inventory.Inventory vault = Bukkit.createInventory(e.getPlayer(), InventoryType.valueOf(origin.getPowerFileFromType("origins:inventory").get("container_type").toUpperCase().split(":")[1]), origin.getPowerFileFromType("origins:inventory").get("title").replace("%player_holder%", e.getPlayer().getName()));
                     vaultItems.stream().forEach(itemStack -> vault.addItem(itemStack));
                     e.getPlayer().openInventory(vault);
 
+                }
+            }
+        }
+    }
+
+    @EventHandler
+    public void deathTIMEEE(PlayerDeathEvent e){
+        for(OriginContainer origin : OriginPlayer.getOrigin(e.getPlayer()).values()){
+            if(shulker_inventory.contains(e.getPlayer())) {
+                Player p = e.getPlayer();
+                if(origin.getPowerFileFromType("origins:inventory").getDropOnDeath()){
+                    ArrayList<ItemStack> vaultItems = InventoryUtils.getItems(p);
+                    org.bukkit.inventory.Inventory vault = Bukkit.createInventory(p, InventoryType.CHEST, "origin.getPowerFileFromType(origins:inventory).get(title)");
+
+                    vaultItems.stream()
+                            .forEach(itemStack -> vault.addItem(itemStack));
+                    for (ItemStack item : vault.getContents()) {
+                        if (item != null && item.getType() != Material.AIR) {
+                            p.getWorld().dropItemNaturally(p.getLocation(), item);
+                            vault.removeItem(item);
+                        }
+                    }
+                    ArrayList<ItemStack> prunedItems = new ArrayList<>();
+
+                    Arrays.stream(vault.getContents())
+                            .filter(itemStack -> {
+                                return itemStack != null;
+                            })
+                            .forEach(itemStack -> prunedItems.add(itemStack));
+
+                    InventoryUtils.storeItems(prunedItems, p);
+                    vault.clear();
                 }
             }
         }
