@@ -1,112 +1,233 @@
 package me.dueris.genesismc.core;
 
+import me.dueris.genesismc.core.events.KeybindTriggerEvent;
 import me.dueris.genesismc.core.events.OriginKeybindExecuteEvent;
 import me.dueris.genesismc.core.factory.powers.OriginsMod.player.inventory.InventoryUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryType;
-import org.bukkit.event.player.PlayerSwapHandItemsEvent;
+import org.bukkit.event.inventory.PrepareItemCraftEvent;
+import org.bukkit.event.player.*;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 import org.geysermc.geyser.api.GeyserApi;
 
-import java.util.ArrayList;
+import java.util.*;
 
-import static me.dueris.genesismc.core.factory.powers.Powers.launch_into_air;
-import static me.dueris.genesismc.core.factory.powers.Powers.shulker_inventory;
+import static me.dueris.genesismc.core.factory.powers.Powers.*;
 import static me.dueris.genesismc.core.factory.powers.item.LaunchAir.*;
+import static org.bukkit.Bukkit.getPlayer;
 import static org.bukkit.Bukkit.getServer;
+import static org.bukkit.ChatColor.GRAY;
+import static org.bukkit.Material.ENDER_PEARL;
 
 public class KeybindHandler implements Listener {
-
-    public static void keybindTriggerMethod(Player p, PlayerSwapHandItemsEvent e) {
-        OriginKeybindExecuteEvent event = new OriginKeybindExecuteEvent(p);
-        getServer().getPluginManager().callEvent(event);
-
-        PersistentDataContainer data = p.getPersistentDataContainer();
-        if (shulker_inventory.contains(p)) {
-            e.setCancelled(true);
-
-            ArrayList<ItemStack> vaultItems = InventoryUtils.getItems(p);
-
-            Inventory vault = Bukkit.createInventory(p, InventoryType.DROPPER, "Shulker Inventory");
-
-            vaultItems.stream()
-                    .forEach(itemStack -> vault.addItem(itemStack));
-
-            p.openInventory(vault);
-
-        }
-//        if (phasing.contains(p)) {
-//            e.setCancelled(true);
-//            boolean phantomid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.BOOLEAN);
-//            if (phantomid == false) {
-//                if (p.getGameMode() != GameMode.SPECTATOR) {
-//
-//                    if (p.getFoodLevel() > 6) {
-//                        p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.BOOLEAN, true);
-//                        p.sendActionBar(DARK_AQUA + "Activated Phasing Form");
-//                        p.setSilent(true);
-//                        p.setCollidable(false);
-//
-//                    } else {
-//                        p.sendMessage(RED + "You must be able to sprint to switch forms");
-//                    }
-//
-//                } else {
-//                    p.sendMessage(ChatColor.RED + "You are unable to switch forms while inside a block or in spectator mode.");
-//                }
-//            } else if (phantomid == true) {
-//                if (p.getGameMode() != GameMode.SPECTATOR) {
-//
-//                    p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.BOOLEAN, false);
-//                    p.sendActionBar(DARK_AQUA + "Deactivated Phasing Form");
-//                    p.setSilent(false);
-//                    p.setCollidable(true);
-//
-//                } else {
-//                    p.sendMessage(ChatColor.RED + "You are unable to switch forms while inside a block or in spectator mode.");
-//                }
-//            } else {
-//                p.sendMessage(RED + "Error: Switching could not be executed");
-//            }
-//        }
-        if (launch_into_air.contains(p)) {
-            if (p.isSneaking()) return;
-            if (cooldownAfterElytrian.containsKey(p.getUniqueId())) return;
-            cooldownBeforeElytrian.put(p.getUniqueId(), 0);
-            new BukkitRunnable() {
+    @EventHandler
+    public void OnPressMainKey(OriginKeybindExecuteEvent e) {
+        if(e.getKey().equals("key.origins.primary_active")){
+            primaryTick.add(e.getPlayer());
+            new BukkitRunnable(){
                 @Override
                 public void run() {
-                    cooldownBeforeElytrian.replace(p.getUniqueId(), cooldownBeforeElytrian.get(p.getUniqueId()) + 1);
-                    cooldownAfterElytrian.put(p.getUniqueId(), System.currentTimeMillis());
-                    canLaunch.remove(p);
-                    doLaunch(p);
-                    p.setVelocity(new Vector(p.getVelocity().getX(), p.getVelocity().getY() + 1.7, p.getVelocity().getZ()));
+                    primaryTick.remove(e.getPlayer());
                     this.cancel();
                 }
-            }.runTaskTimer(GenesisMC.getPlugin(), 0L, 2L);
-            e.setCancelled(true);
+            }.runTaskTimer(GenesisMC.getPlugin(), 1, 1);
+        }
+        if(e.getKey().equals("key.origins.secondary_active")){
+            secondaryTick.add(e.getPlayer());
+            new BukkitRunnable(){
+                @Override
+                public void run() {
+                    secondaryTick.remove(e.getPlayer());
+                    this.cancel();
+                }
+            }.runTaskTimer(GenesisMC.getPlugin(), 1, 1);
         }
     }
 
     @EventHandler
-    public void OnPressMainKey(PlayerSwapHandItemsEvent e) {
-        Player p = e.getPlayer();
-        if (Bukkit.getServer().getPluginManager().isPluginEnabled("Geyser-Spigot")) {
-            if (!GeyserApi.api().isBedrockPlayer(p.getUniqueId())) {
-
-                keybindTriggerMethod(p, e);
-
+    public void EXECUTE_KEYBIND_EVENT(PlayerInteractEvent e){
+        if(e.getItem() != null){
+            if(e.getItem().getItemMeta() != null){
+                if(e.getItem().getItemMeta().getPersistentDataContainer().has(new NamespacedKey(GenesisMC.getPlugin(), "origin_item_data"))){
+                    if(e.getItem().getItemMeta().getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "origin_item_data"), PersistentDataType.STRING).equalsIgnoreCase("key.origins.primary_active")){
+                        OriginKeybindExecuteEvent originKeybindExecuteEvent = new OriginKeybindExecuteEvent(e.getPlayer(), "key.origins.primary_active");
+                        Bukkit.getServer().getPluginManager().callEvent(originKeybindExecuteEvent);
+                        KeybindTriggerEvent KeybindExecuteEvent = new KeybindTriggerEvent(e.getPlayer(), "key.origins.primary_active");
+                        Bukkit.getServer().getPluginManager().callEvent(KeybindExecuteEvent);
+                        e.setCancelled(true);
+                    } else if (e.getItem().getItemMeta().getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "origin_item_data"), PersistentDataType.STRING).equalsIgnoreCase("key.origins.secondary_active")) {
+                        OriginKeybindExecuteEvent originKeybindExecuteEvent = new OriginKeybindExecuteEvent(e.getPlayer(), "key.origins.secondary_active");
+                        Bukkit.getServer().getPluginManager().callEvent(originKeybindExecuteEvent);
+                        KeybindTriggerEvent KeybindExecuteEvent = new KeybindTriggerEvent(e.getPlayer(), "key.origins.secondary_active");
+                        Bukkit.getServer().getPluginManager().callEvent(KeybindExecuteEvent);
+                        e.setCancelled(true);
+                    }
+                }
             }
-        } else {
-            keybindTriggerMethod(p, e);
         }
     }
 
+    @EventHandler
+    public void OnCraftAttempt(PrepareItemCraftEvent e) {
+
+        for (ItemStack ingredient : e.getInventory().getMatrix()) {
+            if(ingredient.getItemMeta().getPersistentDataContainer().has(new NamespacedKey(GenesisMC.getPlugin(), "origins_item_data"))){
+                e.getInventory().setResult(null);
+            }
+        }
+    }
+
+    public static boolean hasOriginDataTriggerPrimary(Inventory inventory) {
+        for (ItemStack item : inventory.getContents()) {
+            if (item != null) {
+                if (item.hasItemMeta() && item.getItemMeta().getPersistentDataContainer().has(new NamespacedKey(GenesisMC.getPlugin(), "origin_item_data"))) {
+                    if(item.getItemMeta().getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "origin_item_data"), PersistentDataType.STRING).equalsIgnoreCase("key.origins.primary_active")){
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    public static boolean hasOriginDataTriggerSecondary(Inventory inventory) {
+        for (ItemStack item : inventory.getContents()) {
+            if (item != null) {
+                if (item.hasItemMeta() && item.getItemMeta().getPersistentDataContainer().has(new NamespacedKey(GenesisMC.getPlugin(), "origin_item_data"))) {
+                    if(item.getItemMeta().getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "origin_item_data"), PersistentDataType.STRING).equalsIgnoreCase("key.origins.secondary_active")){
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    public static ItemStack createKeybindItem(String keybindType, String valueKEY){
+        ItemStack itemStack = new ItemStack(Material.GOLD_INGOT);
+        ItemMeta itemMeta = itemStack.getItemMeta();
+        itemMeta.setDisplayName(ChatColor.GRAY + "Keybind : " + keybindType);
+        itemMeta.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origin_item_data"), PersistentDataType.STRING, valueKEY);
+        itemStack.setItemMeta(itemMeta);
+        return itemStack;
+    }
+
+    public static void addPrimaryItem(Player p){
+        p.getInventory().addItem(createKeybindItem("Primary", "key.origins.primary_active"));
+    }
+
+    public static void addSecondaryItem(Player p){
+        p.getInventory().addItem(createKeybindItem("Secondary", "key.origins.secondary_active"));
+    }
+
+    public static void addItems(Player p){
+        addPrimaryItem(p);
+        addSecondaryItem(p);
+    }
+
+    @EventHandler
+    public void jointhing(PlayerJoinEvent e){
+        if(e.getPlayer().getInventory().getContents() == null){
+            addItems(e.getPlayer());
+        }else{
+            if(!hasOriginDataTriggerPrimary(e.getPlayer().getInventory())){
+                addPrimaryItem(e.getPlayer());
+            }
+            if(!hasOriginDataTriggerSecondary(e.getPlayer().getInventory())){
+                addSecondaryItem(e.getPlayer());
+            }
+        }
+    }
+
+    @EventHandler
+    public void dropFix(PlayerDropItemEvent e){
+        if(e.getItemDrop().getItemStack().getItemMeta().getPersistentDataContainer().has(new NamespacedKey(GenesisMC.getPlugin(), "origins_item_data"))){
+            e.setCancelled(true);
+        }
+    }
+
+    private static final Set<String> heldKeys = new HashSet<>();
+    private static final Set<Player> spawnHandsTick = new HashSet<>();
+    private static final Set<Player> primaryTick = new HashSet<>();
+    private static final Set<Player> secondaryTick = new HashSet<>();
+    private static final Map<Player, Integer> hotbarSlotTick = new HashMap();
+
+    @EventHandler
+    public void onPlayerToggleSprint(PlayerToggleSprintEvent event) {
+        isKeyBeingPressed(event.getPlayer(), "key.sprint", event.isSprinting());
+    }
+
+    @EventHandler
+    public void onPlayerToggleSneak(PlayerToggleSneakEvent event) {
+        isKeyBeingPressed(event.getPlayer(), "key.sneak", event.isSneaking());
+    }
+
+    @EventHandler
+    public void onPlayerSwapHandItems(PlayerSwapHandItemsEvent event) {
+        spawnHandsTick.add(event.getPlayer());
+        new BukkitRunnable(){
+            @Override
+            public void run() {
+                spawnHandsTick.remove(event.getPlayer());
+                this.cancel();
+            }
+        }.runTaskTimer(GenesisMC.getPlugin(), 1, 1);
+    }
+
+    @EventHandler
+    public void onPlayerItemHeld(PlayerItemHeldEvent event) {
+        int hotbarSlot = event.getNewSlot() + 1; // Hotbar slots are 1-indexed
+        String keyName = "key.hotbar." + hotbarSlot;
+        hotbarSlotTick.put(event.getPlayer(), hotbarSlot);
+        new BukkitRunnable(){
+            @Override
+            public void run() {
+                hotbarSlotTick.remove(event.getPlayer());
+                this.cancel();
+            }
+        }.runTaskTimer(GenesisMC.getPlugin(), 1, 1);
+    }
+
+    public static boolean isKeyBeingPressed(Player player, String keyName, boolean isKeyPressed) {
+        if (isKeyPressed) {
+
+            heldKeys.add(keyName);
+
+            if (keyName.equals("key.sprint")) {
+                return player.isSprinting();
+            } else if (keyName.equals("key.sneak")) {
+                return player.isSneaking();
+            } else if (keyName.equals("key.swapOffhand")) {
+                return spawnHandsTick.contains(player);
+            } else if (keyName.startsWith("key.hotbar.")) {
+                return hotbarSlotTick.containsValue(Integer.parseInt(keyName.split("hotbar.")[1])) && hotbarSlotTick.containsKey(player);
+            }
+
+            if(keyName.equals("key.origins.primary_active")){
+                return primaryTick.contains(player);
+            }
+            if(keyName.equals("key.origins.secondary_active")){
+                return secondaryTick.contains(player);
+            }
+        } else {
+
+            heldKeys.remove(keyName);
+
+        }
+        return false;
+    }
 }

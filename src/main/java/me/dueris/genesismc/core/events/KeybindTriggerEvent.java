@@ -5,12 +5,12 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.event.player.PlayerEvent;
 import org.jetbrains.annotations.NotNull;
 
-public class OriginKeybindExecuteEvent extends PlayerEvent {
+public class KeybindTriggerEvent extends PlayerEvent {
     private static final HandlerList handlers = new HandlerList();
 
     static String key_type;
 
-    public OriginKeybindExecuteEvent(@NotNull Player who, String key_type) {
+    public KeybindTriggerEvent(@NotNull Player who, String key_type) {
         super(who);
         this.key_type = key_type;
     }

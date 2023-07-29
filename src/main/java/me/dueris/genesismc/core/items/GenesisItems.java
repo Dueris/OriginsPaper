@@ -48,34 +48,7 @@ public class GenesisItems extends BukkitRunnable implements Listener {
         }
     }
 
-    @EventHandler
-    public void OnCraftAttempt(PrepareItemCraftEvent e) {
-        ItemStack infinpearl = new ItemStack(ENDER_PEARL);
 
-        ItemMeta pearl_meta = infinpearl.getItemMeta();
-        pearl_meta.setDisplayName(ChatColor.LIGHT_PURPLE + "Teleport");
-        ArrayList<String> pearl_lore = new ArrayList<>();
-        pearl_meta.setUnbreakable(true);
-        pearl_meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
-        pearl_meta.setLore(pearl_lore);
-        infinpearl.setItemMeta(pearl_meta);
-
-        ItemStack spectatorswitch = getPhasingKey();
-
-        ItemStack launchitem = new ItemStack(Material.FEATHER);
-        ItemMeta launchmeta = launchitem.getItemMeta();
-        launchmeta.setDisplayName(GRAY + "Launch");
-        launchmeta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
-        launchitem.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-        launchitem.setItemMeta(launchmeta);
-
-        for (ItemStack ingredient : e.getInventory().getMatrix()) {
-            if ((ingredient != null && ingredient.isSimilar(infinpearl)) || (ingredient != null && ingredient.isSimilar(spectatorswitch)) || (ingredient != null && ingredient.isSimilar(launchitem))) {
-                e.getInventory().setResult(null); // Set the crafting result to null
-                return;
-            }
-        }
-    }
 
     public static ItemStack getPhasingKey(){
         ItemStack spectatorswitch = new ItemStack(Material.PHANTOM_MEMBRANE);

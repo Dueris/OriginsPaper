@@ -333,6 +333,23 @@ public class PowerContainer implements Serializable {
         return null;
     }
 
+    public HashMap<String, Object> getKey() {
+        Object obj = powerFile.get("key");
+        if (obj == null) return new HashMap<>();
+
+        if (obj instanceof JSONObject modifier) {
+            HashMap<String, Object> result = new HashMap<>();
+            for (Object key : modifier.keySet()) {
+                String string_key = (String) key;
+                Object value = modifier.get(string_key);
+                result.put(string_key, value);
+            }
+            return result;
+        }
+
+        return null;
+    }
+
     /**
      * Checks the powerfile for the "condition" tag
      *
