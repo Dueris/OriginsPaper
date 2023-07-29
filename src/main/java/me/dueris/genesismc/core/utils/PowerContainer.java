@@ -150,6 +150,12 @@ public class PowerContainer implements Serializable {
         return (long) render;
     }
 
+    public boolean getDropOnDeath(){
+        Object render = powerFile.get("drop_on_death");
+        if (render == null) return false;
+        return (Boolean) render;
+    }
+
     /**
      * @return The value "burn_duration" from the power file
      */
