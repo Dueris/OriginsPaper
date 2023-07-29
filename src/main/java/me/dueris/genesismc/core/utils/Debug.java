@@ -85,14 +85,6 @@ public class Debug {
         }
     }
 
-    public static void testIncompatiblePlugins() {
-        if (Bukkit.getServer().getPluginManager().isPluginEnabled("Origins-Bukkit")) {
-            getServer().getConsoleSender().sendMessage(ChatColor.RED + "[GenesisMC] Unable to start plugin due to Origins Bukkit being present. Using both will cause errors.");
-            getServer().getConsoleSender().sendMessage(ChatColor.GRAY + "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-            Bukkit.getServer().getPluginManager().disablePlugin(getPlugin());
-        }
-    }
-
     public static void versionTest() {
         boolean isCraftBukkit = false;
         boolean isSpigot = false;
