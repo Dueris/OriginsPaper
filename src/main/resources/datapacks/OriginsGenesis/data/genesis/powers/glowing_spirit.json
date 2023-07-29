@@ -1,7 +1,7 @@
 {
   "type": "genesis:bioluminescent",
   "hidden": false,
-  "name": "menu.expanded.allay.blue_spirit.title",
-  "description": "menu.expanded.allay.blue_spirit.description",
+  "name": "menu.allay.blue_spirit.title",
+  "description": "menu.allay.blue_spirit.description",
   "brightness": 6
 }

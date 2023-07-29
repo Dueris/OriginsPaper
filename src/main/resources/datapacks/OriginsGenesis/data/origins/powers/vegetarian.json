@@ -1,6 +1,6 @@
 {
   "type": "origins:vegetarian",
   "hidden": false,
-  "name": "menu.original.avian.vegetarian.title",
-  "description": "menu.original.avian.vegetarian.description"
+  "name": "menu.avian.vegetarian.title",
+  "description": "menu.avian.vegetarian.description"
 }

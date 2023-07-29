@@ -1,6 +1,6 @@
 {
   "type": "genesis:fire_double_damage",
   "hidden": false,
-  "name": "menu.expanded.starborne.cold_vacuum.title",
-  "description": "menu.expanded.starborne.cold_vacuum.description"
+  "name": "menu.starborne.cold_vacuum.title",
+  "description": "menu.starborne.cold_vacuum.description"
 }

@@ -1,6 +1,6 @@
 {
   "type": "genesis:jump_boost",
   "hidden": false,
-  "name": "menu.expanded.rabbit.strong_hopper.title",
-  "description": "menu.expanded.rabbit.strong_hopper.description"
+  "name": "menu.rabbit.strong_hopper.title",
+  "description": "menu.rabbit.strong_hopper.description"
 }

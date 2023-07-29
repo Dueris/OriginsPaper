@@ -1,6 +1,6 @@
 {
   "type": "origins:no_shield",
   "hidden": false,
-  "name": "menu.original.shulk.unweildy.title",
-  "description": "menu.original.shulk.unweildy.description"
+  "name": "menu.shulk.unweildy.title",
+  "description": "menu.shulk.unweildy.description"
 }

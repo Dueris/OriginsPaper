@@ -1,6 +1,6 @@
 {
   "type": "origins:claustrophobia",
   "hidden": false,
-  "name": "menu.original.elytrian.claustrophobia.title",
-  "description": "menu.original.elytrian.claustrophobia.description"
+  "name": "menu.elytrian.claustrophobia.title",
+  "description": "menu.elytrian.claustrophobia.description"
 }

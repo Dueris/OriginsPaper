@@ -1,8 +1,8 @@
 {
   "type": "genesis:leap",
   "hidden": false,
-  "name": "menu.expanded.rabbit.leap.title",
-  "description": "menu.expanded.rabbit.leap.description",
+  "name": "menu.rabbit.leap.title",
+  "description": "menu.rabbit.leap.description",
   "modifier": {
     "cooldown": "origins:name",
     "tick_charge": "fall"

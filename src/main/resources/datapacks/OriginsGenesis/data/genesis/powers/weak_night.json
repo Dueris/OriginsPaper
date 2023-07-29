@@ -1,6 +1,6 @@
 {
   "type": "genesis:night_weaker",
   "hidden": false,
-  "name": "menu.expanded.bee.nighttime.title",
-  "description": "menu.expanded.bee.nighttime.description"
+  "name": "menu.bee.nighttime.title",
+  "description": "menu.bee.nighttime.description"
 }

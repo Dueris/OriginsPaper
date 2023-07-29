@@ -1,6 +1,6 @@
 {
   "type": "origins:climbing",
   "hidden": false,
-  "name": "menu.original.arachnid.spiderman.title",
-  "description": "menu.original.arachnid.spiderman.description"
+  "name": "menu.arachnid.spiderman.title",
+  "description": "menu.arachnid.spiderman.description"
 }

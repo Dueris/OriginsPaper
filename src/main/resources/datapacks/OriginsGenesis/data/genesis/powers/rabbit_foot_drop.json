@@ -1,6 +1,6 @@
 {
-  "type": "genesis:drop_rabbit_foot_damage"
+  "type": "genesis:drop_rabbit_foot_damage",
   "hidden": false,
-  "name": "menu.expanded.rabbit.delicious.title",
-  "description": "menu.expanded.rabbit.delicious.description"
+  "name": "menu.rabbit.delicious.title",
+  "description": "menu.rabbit.delicious.description"
 }

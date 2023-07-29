@@ -1,6 +1,6 @@
 {
   "type": "origins:aerial_combatant",
   "hidden": false,
-  "name": "menu.original.elytrian.aerial_combatant.title",
-  "description": "menu.original.elytrian.aerial_combatant.description"
+  "name": "menu.elytrian.aerial_combatant.title",
+  "description": "menu.elytrian.aerial_combatant.description"
 }

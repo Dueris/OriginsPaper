@@ -1,8 +1,8 @@
 {
   "type": "origins:natural_armor",
   "hidden": false,
-  "name": "menu.original.shulk.sturdy_skin.title",
-  "description": "menu.original.shulk.sturdy_skin.description",
+  "name": "menu.shulk.sturdy_skin.title",
+  "description": "menu.shulk.sturdy_skin.description",
   "modifier": {
     "attribute": "minecraft:generic.armor",
     "value": 8,

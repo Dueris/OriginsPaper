@@ -1,6 +1,6 @@
 {
   "type": "origins:lay_eggs",
   "hidden": false,
-  "name": "menu.original.avian.oviparous.title",
-  "description": "menu.original.avian.oviparous.description"
+  "name": "menu.avian.oviparous.title",
+  "description": "menu.avian.oviparous.description"
 }

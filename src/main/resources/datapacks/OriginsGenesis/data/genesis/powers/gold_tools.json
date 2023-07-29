@@ -1,6 +1,6 @@
 {
   "type": "genesis:gold_item_buff",
   "hidden": false,
-  "name": "menu.expanded.piglin.shiny.title",
-  "description": "menu.expanded.piglin.shiny.description"
+  "name": "menu.piglin.shiny.title",
+  "description": "menu.piglin.shiny.description"
 }

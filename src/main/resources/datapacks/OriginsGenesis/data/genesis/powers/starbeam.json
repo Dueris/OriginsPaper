@@ -1,6 +1,6 @@
 {
   "type": "genesis:starbeam",
   "hidden": false,
-  "name": "menu.expanded.starborne.starbeam.title",
-  "description": "menu.expanded.starborne.starbeam.description"
+  "name": "menu.starborne.starbeam.title",
+  "description": "menu.starborne.starbeam.description"
 }

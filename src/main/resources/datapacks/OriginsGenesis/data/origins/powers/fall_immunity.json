@@ -1,7 +1,7 @@
 {
   "hidden": false,
-  "name": "menu.original.feline.acrobatics.title",
-  "description": "menu.original.feline.acrobatics.description",
+  "name": "menu.feline.acrobatics.title",
+  "description": "menu.feline.acrobatics.description",
   "type": "origins:invulnerability",
   "damage_condition": {
     "type": "origins:name",

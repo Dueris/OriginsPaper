@@ -1,6 +1,6 @@
 {
   "type": "genesis:overworld_piglin_zombified",
   "hidden": false,
-  "name": "menu.expanded.piglin.colder_realms.title",
-  "description": "menu.expanded.piglin.colder_realms.description"
+  "name": "menu.piglin.colder_realms.title",
+  "description": "menu.piglin.colder_realms.description"
 }

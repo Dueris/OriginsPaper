@@ -1,6 +1,6 @@
 {
   "type": "genesis:jukebox_anchor",
   "hidden": false,
-  "name": "menu.expanded.allay.sound_of_music.title",
-  "description": "menu.expanded.allay.sound_of_music.description"
+  "name": "menu.allay.sound_of_music.title",
+  "description": "menu.allay.sound_of_music.description"
 }

@@ -1,8 +1,8 @@
 {
   "type": "genesis:explode_tick",
   "hidden": false,
-  "name": "menu.expanded.creep.boom.title",
-  "description": "menu.expanded.creep.boom.description",
+  "name": "menu.creep.boom.title",
+  "description": "menu.creep.boom.description",
   "modifier": {
     "power": 3,
     "resistance": 2,

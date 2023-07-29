@@ -1,6 +1,6 @@
 {
   "type": "origins:webbing",
   "hidden": false,
-  "name": "menu.original.arachnid.weaver.title",
-  "description": "menu.original.arachnid.weaver.description"
+  "name": "menu.arachnid.weaver.title",
+  "description": "menu.arachnid.weaver.description"
 }

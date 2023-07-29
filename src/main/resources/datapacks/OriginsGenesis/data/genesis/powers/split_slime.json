@@ -1,6 +1,6 @@
 {
   "type": "genesis:split_slime",
   "hidden": false,
-  "name": "menu.expanded.slimeling.not_very_solid.title",
-  "description": "menu.expanded.slimeling.not_very_solid.description"
+  "name": "menu.slimeling.not_very_solid.title",
+  "description": "menu.slimeling.not_very_solid.description"
 }

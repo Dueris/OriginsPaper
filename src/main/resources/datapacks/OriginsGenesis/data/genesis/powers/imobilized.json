@@ -1,6 +1,6 @@
 {
   "type": "genesis:imobilized",
   "hidden": false,
-  "name": "menu.expanded.starborne.nonviolent.title",
-  "description": "menu.expanded.starborne.nonviolent.description"
+  "name": "menu.starborne.nonviolent.title",
+  "description": "menu.starborne.nonviolent.description"
 }

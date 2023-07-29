@@ -1,7 +1,7 @@
 {
   "type": "origins:night_vision",
   "hidden": false,
-  "name": "menu.original.feline.nocturnal.title",
-  "description": "menu.original.feline.nocturnal.description",
+  "name": "menu.feline.nocturnal.title",
+  "description": "menu.feline.nocturnal.description",
   "strength": 1
 }

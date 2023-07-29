@@ -2,6 +2,6 @@
   "type": "origins:elytra_flight",
   "render_elytra": true,
   "hidden": false,
-  "name": "menu.original.elytrian.winged.title",
-  "description": "menu.original.elytrian.winged.description"
+  "name": "menu.elytrian.winged.title",
+  "description": "menu.elytrian.winged.description"
 }

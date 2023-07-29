@@ -1,6 +1,6 @@
 {
   "type": "genesis:piglin_ignore_brute_exception",
   "hidden": false,
-  "name": "menu.expanded.piglin.friendly_frenemies.title",
-  "description": "menu.expanded.piglin.friendly_frenemies.description"
+  "name": "menu.piglin.friendly_frenemies.title",
+  "description": "menu.piglin.friendly_frenemies.description"
 }

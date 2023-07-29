@@ -1,6 +1,6 @@
 {
   "type": "genesis:charged",
   "hidden": false,
-  "name": "menu.expanded.creep.charged.title",
-  "description": "menu.expanded.creep.charged.description"
+  "name": "menu.creep.charged.title",
+  "description": "menu.creep.charged.description"
 }

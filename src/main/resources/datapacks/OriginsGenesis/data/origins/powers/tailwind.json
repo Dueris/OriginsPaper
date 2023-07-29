@@ -1,8 +1,8 @@
 {
   "type": "origins:attribute",
   "hidden": false,
-  "name": "menu.original.avian.tailwind.title",
-  "description": "menu.original.avian.tailwind.description",
+  "name": "menu.avian.tailwind.title",
+  "description": "menu.avian.tailwind.description",
   "modifier": {
     "attribute": "minecraft:generic.movement_speed",
     "value": 0.2,

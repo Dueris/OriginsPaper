@@ -21,6 +21,6 @@
     "compare_to": 1
   },
   "hidden": false,
-  "name": "menu.original.elytrian.need_for_mobility.title",
-  "description": "menu.original.elytrian.need_for_mobility.description"
+  "name": "menu.elytrian.need_for_mobility.title",
+  "description": "menu.elytrian.need_for_mobility.description"
 }

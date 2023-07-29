@@ -1,6 +1,6 @@
 {
   "type": "genesis:scare_creepers",
   "hidden": false,
-  "name": "menu.original.feline.catlike_appearance.title",
-  "description": "menu.original.feline.catlike_appearance.description"
+  "name": "menu.feline.catlike_appearance.title",
+  "description": "menu.feline.catlike_appearance.description"
 }
