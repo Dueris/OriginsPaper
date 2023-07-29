@@ -19,6 +19,8 @@ lang:
 
 command:
   origin:
+    empty: "You did not provide any args. Here is a list of commands:"
+
     bug:
       description: "Returns the links to submit any bugs found to."
       message: "To report a bug either open an issue on github or join our discord server and open a post in the bug-reports channel!"
