@@ -421,6 +421,7 @@ public class OriginPlayer {
                 case "origins:disable_regen" -> disable_regen.add(player);
                 case "origins:freeze" -> freeze.add(player);
                 case "origins:fire_projectile" -> fire_projectile.add(player);
+                case "origins:grounded" -> grounded.add(player);
 
             }
         }
@@ -535,6 +536,7 @@ public class OriginPlayer {
                 case "origins:disable_regen" -> disable_regen.remove(player);
                 case "origins:freeze" -> freeze.remove(player);
                 case "origins:fire_projectile" -> fire_projectile.remove(player);
+                case "origins:grounded" -> grounded.remove(player);
             }
         }
     }
