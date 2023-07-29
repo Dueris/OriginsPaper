@@ -83,7 +83,7 @@ public class Inventory implements CommandExecutor, Listener {
             if(shulker_inventory.contains(e.getPlayer())) {
                 if (isKeyBeingPressed(e.getPlayer(), origin.getPowerFileFromType("origins:inventory").getKey().get("key").toString(), true)) {
                     ArrayList<ItemStack> vaultItems = InventoryUtils.getItems(e.getPlayer());
-                    org.bukkit.inventory.Inventory vault = Bukkit.createInventory(e.getPlayer(), InventoryType.valueOf(origin.getPowerFileFromType("origins:inventory").get("container_type").toUpperCase().split(":")[1]), origin.getPowerFileFromType("origins:inventory").get("title").replace("%player_holder%", e.getPlayer().getName()));
+                    org.bukkit.inventory.Inventory vault = Bukkit.createInventory(e.getPlayer(), InventoryType.valueOf(origin.getPowerFileFromType("origins:inventory").get("container_type").toUpperCase().split(":")[1]), origin.getPowerFileFromType("origins:inventory").get("title").replace("%player%", e.getPlayer().getName()));
                     vaultItems.stream().forEach(itemStack -> vault.addItem(itemStack));
                     e.getPlayer().openInventory(vault);
 
