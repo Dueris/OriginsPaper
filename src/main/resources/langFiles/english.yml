@@ -1,21 +1,56 @@
-# GenesisMC - created by Genesis Team
-# The LANG files should never be renamed, it may cause many errors in the plugin
+# GenesisMC - created by Genesis Team.
+# The LANG files should never be renamed, it may cause many errors in the plugin.
 #
-# To change languages, please change the value in  "origin-server.yml " to one of the names of these files
+# To change languages, please change the value in  "origin-server.yml " to one of the names of these files.
 #
-# If you would like to contribute to languages provided by Genesis, please join the discord server for a language file
-# to be translated
+# If you would like to contribute to languages provided by Genesis, please join the discord server for a language file to be translated.
 #
 # Syntax
-# %player% - replaced with the player that is sending or receiving, handled plugin-sided
-# %origin% - replaced with the selected originTag of the player
-# %layer% - replaced with the selected layerTag layer of the player
+# %player% - replaced with the player that is sending or receiving, handled plugin-sided.
+# %origin% - replaced with the selected originTag of the player.
+# %layer% - replaced with the selected layerTag layer of the player.
+# %pluginVersion% - replaced with the version of the plugin.
+# %APIVersion% - replaced with the version of the API.
+# %originName% - replaced with the name of the origins.
+# %originAmount% - replaced with the amount of origins loaded.
 #
 # Note: The placeholders will only work with fields they are in before any editing.
 # You can remove them if desired, just not add them to places they didn't exist before.
 
 lang:
   test: "Lang file loaded."
+
+
+startup:
+  credit: "GenesisMC -- Created by The Genesis Team"
+
+  versionCheck:
+    behind: "You are running a version of the plugin that is %versionsBehind% versions out of date!\n    Please install the latest version from https://modrinth.com/plugin/genesismc/versions"
+    current: "You are running the latest version of the plugin!"
+    ahead: "You are running a dev build! Join our discord server at https://discord.gg/RKmQnU6SRt or open an issue on github for any feedback :)"
+    fail: "Failed to connect to version control website!\n    You may be using an outdated version of the plugin!\n    You can install the latest version from https://modrinth.com/plugin/genesismc/versions"
+    skip: "Skipping version check"
+
+  debug:
+    start: "Executing Genesis Debug.."
+    dump: "Executing Server-data dump"
+    server: "Please use a PaperMC server."
+    pluginVersion: "Successfully loaded version %pluginVersion%"
+    APIVersion: "Successfully loaded API version %APIVersion%"
+    allOrigins: "Loaded \"%originName%\""
+
+  originAmount: "Loaded %originAmount% origins"
+
+  skinRestorer:
+    present: "SkinRestorer detected, enabling ModelColor"
+    absent: "SkinRestorer not detected, disabling ModelColor"
+
+
+reloadMessage: "Origins Reloaded."
+
+
+disable: "GenesisMC disabled."
+
 
 command:
   origin:

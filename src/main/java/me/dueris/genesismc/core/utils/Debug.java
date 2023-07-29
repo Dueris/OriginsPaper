@@ -22,7 +22,7 @@ import static org.bukkit.Bukkit.getServer;
 public class Debug {
 
     public static void executeGenesisDebug() {
-        getServer().getConsoleSender().sendMessage("Executing Genesis Debug..");
+        getServer().getConsoleSender().sendMessage(Lang.getLocalizedString("startup.debug.start"));
 
         FileConfiguration mainConfig = GenesisDataFiles.getMainConfig();
         ConfigurationSection mainRootSection = mainConfig.getConfigurationSection("");
@@ -34,7 +34,7 @@ public class Debug {
 
         GenesisDataFiles.getOrbCon().getValues(Boolean.parseBoolean("all"));
         getServer().getConsoleSender().sendMessage(Lang.getLangFile().toString());
-        getServer().getConsoleSender().sendMessage("Executing Server-data dump" +
+        getServer().getConsoleSender().sendMessage(Lang.getLocalizedString("startup.debug.dump") +
                 Bukkit.getAllowEnd() +
                 Bukkit.getAllowNether() +
                 Bukkit.getTPS() +
@@ -50,7 +50,7 @@ public class Debug {
                 try {
                     Lang.getLangFile();
                 } catch (Exception e) {
-                    Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.RED + "ERROR: Couldnt load lang file. Disabling GenesisMC...");
+                    Bukkit.getServer().getLogger().warning("Couldn't load lang file. Disabling GenesisMC...");
                     Bukkit.getServer().getPluginManager().disablePlugin(GenesisMC.getPlugin());
                 }
 
@@ -124,17 +124,8 @@ public class Debug {
         } catch (ClassNotFoundException e) {
             // PaperConfig class not found, not a Paper server
         }
-        if (isCraftBukkit) {
-            // CraftBukkit server
-            Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.RED + "Please use a PaperMC server. CraftBukkit server found");
-        } else if (isSpigot) {
-            // Spigot server
-            Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.RED + "Please use a PaperMC server. SpigotMC server found");
-        } else if (isPaper) {
-            // Paper server
-        } else if (isFolia) {
-            //Folia server
-            Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.RED + "Please use a PaperMC server. There is a Folia build on the modrinth page, please use that");
+        if (isCraftBukkit || isSpigot || isFolia) {
+            Bukkit.getServer().getLogger().warning(Lang.getLocalizedString("startup.debug.server"));
         }
     }
 }

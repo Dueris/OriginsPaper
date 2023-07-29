@@ -1,5 +1,6 @@
 package me.dueris.genesismc.core;
 
+import me.dueris.genesismc.core.utils.Lang;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.Bukkit;
@@ -62,15 +63,15 @@ public class VersionControl {
             int diff = latestId - pluginId;
 
             if (diff > 0)
-                Bukkit.getLogger().warning("[GenesisMC] You are running a version of the plugin that is " + diff + " versions out of date!\n    Please install the latest version from https://modrinth.com/plugin/genesismc/versions");
+                Bukkit.getLogger().warning("[GenesisMC] " + Lang.getLocalizedString("startup.versionCheck").replace("%versionsBehind%", String.valueOf(diff)));
             if (diff == 0)
-                Bukkit.getConsoleSender().sendMessage(Component.text("[GenesisMC] You are running the latest version of the plugin!").color(TextColor.fromHexString(GREEN)));
+                Bukkit.getConsoleSender().sendMessage(Component.text("[GenesisMC] " + Lang.getLocalizedString("startup.versionCheck.current")).color(TextColor.fromHexString(GREEN)));
             if (diff < 0)
-                Bukkit.getConsoleSender().sendMessage(Component.text("[GenesisMC] You are running a dev build! Join our discord server at https://discord.gg/RKmQnU6SRt or open an issue on github for any feedback :)").color(TextColor.fromHexString(GREEN)));
+                Bukkit.getConsoleSender().sendMessage(Component.text("[GenesisMC] " + Lang.getLocalizedString("startup.versionCheck.ahead")).color(TextColor.fromHexString(GREEN)));
 
         } catch (Exception e) {
             e.printStackTrace();
-            Bukkit.getLogger().warning("[GenesisMC] Failed to connect to version control website!\n    You may be using an outdated version of the plugin!\n    You can install the latest version from https://modrinth.com/plugin/genesismc/versions");
+            Bukkit.getLogger().warning("[GenesisMC] " + Lang.getLocalizedString("startup.versionCheck.fail"));
         }
     }
 
