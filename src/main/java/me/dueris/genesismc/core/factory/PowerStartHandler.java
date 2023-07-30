@@ -202,5 +202,6 @@ public class PowerStartHandler {
         getServer().getPluginManager().registerEvents(new InvulnerabilityDamage(), getPlugin());
         getServer().getPluginManager().registerEvents(new DisableRegen(), getPlugin());
         getServer().getPluginManager().registerEvents(new FireProjectile(), getPlugin());
+        getServer().getPluginManager().registerEvents(new Gravity(), getPlugin());
     }
 }
