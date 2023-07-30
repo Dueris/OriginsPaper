@@ -8,11 +8,21 @@
 # Syntax
 # %player% - replaced with the player that is sending or receiving, handled plugin-sided.
 # %origin% - replaced with the selected originTag of the player.
+# %originName% - replaced with the name of the origin.
+# %originAmount% - replaced with the amount of origins loaded.
 # %layer% - replaced with the selected layerTag layer of the player.
 # %pluginVersion% - replaced with the version of the plugin.
 # %APIVersion% - replaced with the version of the API.
-# %originName% - replaced with the name of the origins.
-# %originAmount% - replaced with the amount of origins loaded.
+# %versionsBehind% - replaced with how many versions behind the latest release the version of the plugin running is.
+# %powerFolder% - replaced with the folder for powers.
+# %powerFileName% - replaced with the name of the power file.
+# %originFolder% - replaced with the name of the origin folder.
+# %originFileName% - replaced with the name of the origin file.
+# %datapack% - replaced with the name of the datapack.
+# %sep% - replaced with the file separator. E.G "\" on Windows.
+# %namespace% - replaced with the namespace of the custom origin - The name of the folder at "yourCustomOriginFolder/data/"
+# %layerName% - replaced with the name of the layer.
+# %fileName% - replaced with the name of the file.
 #
 # Note: The placeholders will only work with fields they are in before any editing.
 # You can remove them if desired, just not add them to places they didn't exist before.
@@ -113,6 +123,43 @@ command:
       noOrigin: "No origin specified!"
       invalidLayer: "Invalid layer!"
       invalidOrigin: "Invalid origin!"
+
+
+powers:
+  bathForTooLong: "%player% took a bath for too long!"
+  inventoryOpenPower: "You must have the inventory power to access this command"
+  phasing:
+    activated: "Activated Phasing Form"
+    deactivated: "Deactivated Phasing Form"
+  modelColour: "%player% setting model colour skin..."
+  errors:
+    exhaust: "[GenesisMC] Unable to parse interval for origins:exhaust"
+    damageOverTime: "[GenesisMC] Unable to parse interval for origins:damage_over_time"
+    burn: "[GenesisMC] Unable to parse interval for origins:burn"
+    attribute: "[GenesisMC] Unable to parse origins:attribute, unable to get result"
+    silkTouch: "[GenesisMC] Silk touch error!"
+    effectImmunity: "[GenesisMC] Unable to get PowerEffectType enum for power \"origins:effect_immunity\""
+    modelColourValue: "[GenesisMC] Color values must be between 0 and 1 for model colour!"
+
+misc:
+  orbOfOrigins: "§dOrb of Origins"
+  requiredChoose: "You are required to choose an origin!"
+  randomOrigins: "Your random origin(s) are %layer% : %originName%!"
+  joinText: "GenesisMC is in beta and still has lots of bugs, use /origin bug and notify us about any issues!"
+  layerRemoved: "The layer \"%layerName%\" has been removed!\nIf you believe this is a mistake please contact your server admin(s)."
+  originRemoved: "Your \"%originName%\" origin has been removed from the \"%layerName%\" layer!\nIf you believe this is a mistake please contact your server admin(s)."
+
+
+errors:
+  orbLoad: "[GenesisMC] Failed to load custom origin orb recipe!\n    Either delete the file, or add a valid material/path."
+  craftApoli:
+    powerParsing: "[GenesisMC] Error parsing \"%powerFolder%:%powerFileName%\" for \"%originFolder%:%originFileName%\""
+    layerParsing: "[GenesisMC] Error parsing \"%datapack%%sep%data%sep%%namespace%%sep%origin_layers%sep%%layerName%.json\""
+    originFile: "[GenesisMC] Error parsing \"%datapack%%sep%data%sep%%originFolder%%sep%origins%sep%%originFileName%.json\""
+  containerConversion: "[GenesisMC] CRUCIAL ERROR, PLEASE REPORTING THIS IMMEDIATELY TO THE DEVS!!"
+  configCreation: "[GenesisMC] Failed to create the \"%fileName%\" config file."
+  inventorySaveFail: "[GenesisMC] Failed to save inventory!\n\"%player%\" could not be found!"
+  oldContainerConversion: "[GenesisMC] Error converting old origin container."
 
 
 menu:
@@ -483,34 +530,3 @@ menu:
       burnable:
         title: "Burnable"
         description: "You burn when in hotter biomes."
-
-
-powers:
-  bathForTooLong: "%player% took a bath for too long!"
-  inventoryOpenPower: "You must have the inventory power to access this command"
-  phasing:
-    activated: "Activated Phasing Form"
-    deactivated: "Deactivated Phasing Form"
-  modelColour: "%player% setting model colour skin..."
-  errors:
-    exhaust: "[GenesisMC] Unable to parse interval for origins:exhaust"
-    damageOverTime: "[GenesisMC] Unable to parse interval for origins:damage_over_time"
-    burn: "[GenesisMC] Unable to parse interval for origins:burn"
-    attribute: "[GenesisMC] Unable to parse origins:attribute, unable to get result"
-    silkTouch: "[GenesisMC] Silk touch error!"
-    effectImmunity: "[GenesisMC] Unable to get PowerEffectType enum for power \"origins:effect_immunity\""
-    modelColourValue: "[GenesisMC] Color values must be between 0 and 1 for model colour!"
-
-misc:
-  orbOfOrigins: "§dOrb of Origins"
-  requiredChoose: "You are required to choose an origin!"
-  randomOrigins: "Your random origin(s) are %layer% : %originName%!"
-
-
-errors:
-  orbLoad: "[GenesisMC] Failed to load custom origin orb recipe!\n    Either delete the file, or add a valid material/path."
-  craftApoli:
-    powerParsing: "[GenesisMC] Error parsing \"%powerFolder%:%powerFileName%\" for \"%originFolder%:%originFileName%\""
-    layerParsing: "[GenesisMC] Error parsing \"%datapack%%sep%data%sep%%namespace%%sep%origin_layers%sep%%layerName%.json\""
-    originFile: "[GenesisMC] Error parsing \"%datapack%%sep%data%sep%%originFolder%%sep%origins%sep%%originFileName%.json\""
-  containerConversion: "[GenesisMC] CRUCIAL ERROR, PLEASE REPORTING THIS IMMEDIATELY TO THE DEVS!!"

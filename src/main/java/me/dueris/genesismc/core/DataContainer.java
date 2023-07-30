@@ -2,6 +2,7 @@ package me.dueris.genesismc.core;
 
 import me.dueris.genesismc.core.factory.powers.OriginsMod.player.inventory.InventoryUtils;
 import me.dueris.genesismc.core.utils.BukkitColour;
+import me.dueris.genesismc.core.utils.Lang;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.Bukkit;
@@ -33,7 +34,7 @@ public class DataContainer implements Listener {
 
             Player target = Bukkit.getPlayer(e.getView().getTitle().split(":")[1].substring(1));
             if (target == null) {
-                p.sendMessage(Component.text("GenesisMC - Failed to save inventory! \n\""+e.getView().getTitle().split(":")[1].substring(1)+"\" could not be found!").color(TextColor.fromHexString(BukkitColour.RED)));
+                p.sendMessage(Component.text(Lang.getLocalizedString("errors.inventorySaveFail").replace("%player%", e.getView().getTitle().split(":")[1].substring(1))).color(TextColor.fromHexString(BukkitColour.RED)));
                 return;
             }
             InventoryUtils.storeItems(prunedItems, target);
