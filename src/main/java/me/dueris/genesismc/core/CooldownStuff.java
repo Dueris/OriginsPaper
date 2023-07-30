@@ -11,42 +11,7 @@ import java.util.HashMap;
 
 public class CooldownStuff {
 
-//    public static HashMap<Player, String> coodlowns = new HashMap<>();
-//
-//    public static void addCooldown(Player player, String title, int max, String cooldownKeybindType){
-//        BossBar bar = createCooldownBar(player, BarColor.WHITE, BarStyle.SEGMENTED_20, title, max);
-//        player.showBossBar((net.kyori.adventure.bossbar.BossBar) bar);
-//        startTickingCooldown(bar, player, cooldownKeybindType);
-//        coodlowns.put(player, cooldownKeybindType);
-//        player.sendMessage("coodlwondasdsasd");
-//    }
-//
-//    public static boolean isPlayerInCooldown(Player player, String cooldownKeybindType){
-//        player.sendMessage("incooldonw");
-//        return coodlowns.containsKey(player) && coodlowns.containsValue(cooldownKeybindType);
-//    }
-//
-//    public static BossBar createCooldownBar(Player player, BarColor color, BarStyle style, String title, int max){
-//        BossBar bossBar;
-//        bossBar = Bukkit.createBossBar(title, color, style);
-//        bossBar.setProgress(max);
-//        player.sendMessage("created");
-//        return bossBar;
-//    }
-//
-//    public static void startTickingCooldown(BossBar bar, Player player, String cooldownKeybindType){
-//        new BukkitRunnable(){
-//            @Override
-//            public void run() {
-//                bar.setProgress(bar.getProgress() - 1);
-//                player.sendMessage(String.valueOf(bar.getProgress()));
-//                if(bar.getProgress() == 0){
-//                    coodlowns.remove(player, cooldownKeybindType);
-//                    player.hideBossBar((net.kyori.adventure.bossbar.BossBar) bar);
-//                }
-//            }
-//        }.runTaskTimer(GenesisMC.getPlugin(), 0, 1);
-//    }
+    //TODO: ADD COOLDOWN POWER WHEN ACTIONS ARE DONE
 
     public static HashMap<Player, String> cooldowns = new HashMap<>();
     public static HashMap<Player, BossBar> cooldownBars = new HashMap<>();
