@@ -1,4 +1,4 @@
-package me.dueris.genesismc.core.factory.powers.armour;
+package me.dueris.genesismc.core.factory.powers.OriginsMod.player;
 
 import me.dueris.genesismc.core.GenesisMC;
 import me.dueris.genesismc.core.entity.OriginPlayer;

@@ -14,10 +14,10 @@ import me.dueris.genesismc.core.factory.powers.OriginsMod.player.damage.WaterDam
 import me.dueris.genesismc.core.factory.powers.OriginsMod.world.EntityGlow;
 import me.dueris.genesismc.core.factory.powers.OriginsMod.world.EntityGroupManager;
 import me.dueris.genesismc.core.factory.powers.Powers;
-import me.dueris.genesismc.core.factory.powers.armour.FlightElytra;
+import me.dueris.genesismc.core.factory.powers.OriginsMod.player.FlightElytra;
 import me.dueris.genesismc.core.factory.powers.armour.GoldAmourBellow;
 import me.dueris.genesismc.core.factory.powers.armour.GoldArmourBuff;
-import me.dueris.genesismc.core.factory.powers.armour.RestrictArmor;
+import me.dueris.genesismc.core.factory.powers.OriginsMod.player.RestrictArmor;
 import me.dueris.genesismc.core.factory.powers.OriginsMod.player.attributes.AttributeConditioned;
 import me.dueris.genesismc.core.factory.powers.OriginsMod.player.attributes.AttributeHandler;
 import me.dueris.genesismc.core.factory.powers.block.CeilingWeak;

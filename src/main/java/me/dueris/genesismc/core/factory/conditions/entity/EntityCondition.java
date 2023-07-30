@@ -1,15 +1,11 @@
 package me.dueris.genesismc.core.factory.conditions.entity;
 
-import com.mojang.brigadier.context.CommandContext;
-import me.dueris.genesismc.core.factory.powers.armour.RestrictArmor;
+import me.dueris.genesismc.core.factory.powers.OriginsMod.player.RestrictArmor;
 import me.dueris.genesismc.core.utils.OriginContainer;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandException;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.BoundingBox;
@@ -17,7 +13,6 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;

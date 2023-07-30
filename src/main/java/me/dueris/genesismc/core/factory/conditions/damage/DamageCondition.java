@@ -2,7 +2,7 @@ package me.dueris.genesismc.core.factory.conditions.damage;
 
 import me.dueris.genesismc.core.factory.conditions.Condition;
 import me.dueris.genesismc.core.factory.conditions.entity.EntityCondition;
-import me.dueris.genesismc.core.factory.powers.armour.RestrictArmor;
+import me.dueris.genesismc.core.factory.powers.OriginsMod.player.RestrictArmor;
 import me.dueris.genesismc.core.utils.OriginContainer;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
