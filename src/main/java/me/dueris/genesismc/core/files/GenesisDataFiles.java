@@ -1,5 +1,6 @@
 package me.dueris.genesismc.core.files;
 
+import me.dueris.genesismc.core.utils.Lang;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -49,86 +50,48 @@ public class GenesisDataFiles {
         if (!mainConfigFile.exists()) {
             try {
                 mainConfigFile.createNewFile();
-            } catch (IOException var3) {
-                Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.RED + "Unable to create origin-server.yml. Please reload or restart server. If that doesn't work, contact Dueris on her Discord server");
+            } catch (IOException e) {
+                Bukkit.getLogger().warning(Lang.getLocalizedString("errors.configCreation").replace("%fileName%", "origin-server.yml"));
             }
         }
 
         if (!orbConfigFile.exists()) {
             try {
                 orbConfigFile.createNewFile();
-            } catch (IOException var2) {
-                Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.RED + "Unable to create orboforigins.yml. Please reload or restart server. If that doesn't work, contact Dueris on her Discord server");
+            } catch (IOException e) {
+                Bukkit.getLogger().warning(Lang.getLocalizedString("errors.configCreation").replace("%fileName%", "orboforigins.yml"));
             }
         }
 
         if (!englishLangFile.exists()) {
             try {
                 englishLangFile.createNewFile();
-            } catch (IOException var21) {
-                Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.RED + "Unable to create english.yml. Please reload or restart server. If that doesn't work, contact Dueris on her Discord server");
+            } catch (IOException e) {
+                Bukkit.getLogger().warning(Lang.getLocalizedString("errors.configCreation").replace("%fileName%", "english.yml"));
             }
         }
 
         if (!germanLangFile.exists()) {
             try {
                 germanLangFile.createNewFile();
-            } catch (IOException var28) {
-                Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.RED + "Unable to create german.yml. Please reload or restart server. If that doesn't work, contact Dueris on her Discord server");
+            } catch (IOException e) {
+                Bukkit.getLogger().warning(Lang.getLocalizedString("errors.configCreation").replace("%fileName%", "german.yml"));
             }
         }
 
         if (!russianLangFile.exists()) {
             try {
                 russianLangFile.createNewFile();
-            } catch (IOException var7) {
-                Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.RED + "Unable to create russian.yml. Please reload or restart server. If that doesn't work, contact Dueris on her Discord server");
+            } catch (IOException e) {
+                Bukkit.getLogger().warning(Lang.getLocalizedString("errors.configCreation").replace("%fileName%", "russian.yml"));
             }
         }
         if (!chineseLangFile.exists()) {
             try {
                 chineseLangFile.createNewFile();
-            } catch (IOException var6) {
-                Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.RED + "Unable to create trad-chinese.yml. Please reload or restart server. If that doesn't work, contact Dueris on her Discord server");
+            } catch (IOException e) {
+                Bukkit.getLogger().warning(Lang.getLocalizedString("errors.configCreation").replace("%fileName%", "trad-chinese.yml"));
             }
-        }
-
-    }
-
-    public static void save() {
-        try {
-            mainConfig.save(mainConfigFile);
-        } catch (IOException var2) {
-            Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.RED + "Couldn't save yml file: " + var2.getMessage());
-        }
-
-        try {
-            orbconfig.save(orbConfigFile);
-        } catch (IOException var1) {
-            Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.RED + "Couldn't save yml file: " + var1.getMessage());
-        }
-
-        try {
-            englishLang.save(englishLangFile);
-        } catch (IOException e) {
-            Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.RED + "Couldn't save yml file: " + e.getMessage());
-        }
-
-        try {
-            russianLang.save(russianLangFile);
-        } catch (IOException e) {
-            Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.RED + "Couldn't save yml file: " + e.getMessage());
-        }
-
-        try {
-            germanLang.save(germanLangFile);
-        } catch (IOException e) {
-            Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.RED + "Couldn't save yml file: " + e.getMessage());
-        }
-        try {
-            chineseLang.save(chineseLangFile);
-        } catch (IOException e) {
-            Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.RED + "Couldn't save yml file: " + e.getMessage());
         }
 
     }
@@ -166,7 +129,7 @@ public class GenesisDataFiles {
             try (InputStream inputStream = Bukkit.getServer().getPluginManager().getPlugin("GenesisMC").getResource("origin-server.yml")) {
                 Files.copy(inputStream, mainConfigFile.toPath());
             } catch (Exception e) {
-                getLogger().severe("Failed to create custom configuration file: " + e.getMessage());
+                getLogger().severe(Lang.getLocalizedString("errors.configCreation").replace("%fileName%", "origin-server.yml"));
             }
         }
 
@@ -182,7 +145,7 @@ public class GenesisDataFiles {
             try (InputStream inputStream = Bukkit.getServer().getPluginManager().getPlugin("GenesisMC").getResource("orboforigins.yml")) {
                 Files.copy(inputStream, orbConfigFile.toPath());
             } catch (Exception e) {
-                getLogger().severe("Failed to create custom configuration file: " + e.getMessage());
+                getLogger().severe(Lang.getLocalizedString("errors.configCreation").replace("%fileName%", "orboforigins.yml"));
             }
         }
 
@@ -198,7 +161,7 @@ public class GenesisDataFiles {
             try (InputStream inputStream = Bukkit.getServer().getPluginManager().getPlugin("GenesisMC").getResource("langFiles/english.yml")) {
                 Files.copy(inputStream, englishLangFile.toPath());
             } catch (Exception e) {
-                getLogger().severe("Failed to create custom configuration file: " + e.getMessage());
+                getLogger().severe(Lang.getLocalizedString("errors.configCreation").replace("%fileName%", "english.yml"));
             }
         }
 
@@ -212,7 +175,7 @@ public class GenesisDataFiles {
             try (InputStream inputStream = Bukkit.getServer().getPluginManager().getPlugin("GenesisMC").getResource("langFiles/russian.yml")) {
                 Files.copy(inputStream, russianLangFile.toPath());
             } catch (Exception e) {
-                getLogger().severe("Failed to create custom configuration file: " + e.getMessage());
+                getLogger().severe(Lang.getLocalizedString("errors.configCreation").replace("%fileName%", "russian.yml"));
             }
         }
 
@@ -226,7 +189,7 @@ public class GenesisDataFiles {
             try (InputStream inputStream = Bukkit.getServer().getPluginManager().getPlugin("GenesisMC").getResource("langFiles/german.yml")) {
                 Files.copy(inputStream, germanLangFile.toPath());
             } catch (Exception e) {
-                getLogger().severe("Failed to create custom configuration file: " + e.getMessage());
+                getLogger().severe(Lang.getLocalizedString("errors.configCreation").replace("%fileName%", "german.yml"));
             }
         }
 
@@ -240,7 +203,7 @@ public class GenesisDataFiles {
             try (InputStream inputStream = Bukkit.getServer().getPluginManager().getPlugin("GenesisMC").getResource("langFiles/trad-chinese.yml")) {
                 Files.copy(inputStream, chineseLangFile.toPath());
             } catch (Exception e) {
-                getLogger().severe("Failed to create custom configuration file: " + e.getMessage());
+                getLogger().severe(Lang.getLocalizedString("errors.configCreation").replace("%fileName%", "trad-chinese.yml"));
             }
         }
 

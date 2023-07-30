@@ -61,28 +61,28 @@ public class Debug {
     }
 
     public static void executeGenesisReload() {
-        try {
-            getServer().getConsoleSender().sendMessage(ChatColor.GREEN + Lang.lang_test);
-        } catch (Exception e) {
-            getServer().getConsoleSender().sendMessage(ChatColor.RED + "A fatal error has occurred, lang could not be loaded. Disabling GenesisMC....");
-            getServer().getPluginManager().disablePlugin(getPlugin());
-        }
-        CraftApoli.loadOrigins();
-        for (OriginContainer origins : CraftApoli.getOrigins()) {
-            if (GenesisDataFiles.getMainConfig().getString("console-startup-debug").equalsIgnoreCase("true")) {
-                getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] Loaded \"" + origins.getName() + "\"").color(TextColor.color(0, 200, 0)));
-            }
-        }
-        if (CraftApoli.getOrigins().size() > 0) {
-            getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] Loaded (" + CraftApoli.getOrigins().size() + ") Origins").color(TextColor.color(0, 200, 0)));
-        }
-        for (Player p : Bukkit.getOnlinePlayers()) {
-            Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.BLUE + "Origins Reloaded.");
-            if (p.isOp()) {
-                p.sendMessage(ChatColor.BLUE + "Origins Reloaded.");
-            }
-            PlayerHandler.originValidCheck(p);
-        }
+//        try {
+//            getServer().getConsoleSender().sendMessage(ChatColor.GREEN + Lang.lang_test);
+//        } catch (Exception e) {
+//            getServer().getConsoleSender().sendMessage(ChatColor.RED + "A fatal error has occurred, lang could not be loaded. Disabling GenesisMC....");
+//            getServer().getPluginManager().disablePlugin(getPlugin());
+//        }
+//        CraftApoli.loadOrigins();
+//        for (OriginContainer origins : CraftApoli.getOrigins()) {
+//            if (GenesisDataFiles.getMainConfig().getString("console-startup-debug").equalsIgnoreCase("true")) {
+//                getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] Loaded \"" + origins.getName() + "\"").color(TextColor.color(0, 200, 0)));
+//            }
+//        }
+//        if (CraftApoli.getOrigins().size() > 0) {
+//            getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] Loaded (" + CraftApoli.getOrigins().size() + ") Origins").color(TextColor.color(0, 200, 0)));
+//        }
+//        for (Player p : Bukkit.getOnlinePlayers()) {
+//            Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.BLUE + "Origins Reloaded.");
+//            if (p.isOp()) {
+//                p.sendMessage(ChatColor.BLUE + "Origins Reloaded.");
+//            }
+//            PlayerHandler.originValidCheck(p);
+//        }
     }
 
     public static void versionTest() {

@@ -159,7 +159,7 @@ public class CraftApoli {
                                             powerContainers.add(new PowerContainer(powerFolder + ":" + powerFileName, fileToFileContainer(powerParser), originFolder.get(0) + ":" + originFileName.get(0)));
                                         } catch (NullPointerException nullPointerException) {
                                             if (showErrors)
-                                               Bukkit.getServer().getConsoleSender().sendMessage(Component.text(Lang.getLocalizedString("errors.craftApoli.powerParsing").replace("%powerFolder", powerFolder).replace("%powerFileName", powerFileName).replace("%originFolder%", originFolder.get(0)).replace("%originFileName%", originFileName.get(0))).color(TextColor.color(255, 0, 0)));
+                                               Bukkit.getServer().getConsoleSender().sendMessage(Component.text(Lang.getLocalizedString("errors.craftApoli.powerParsing").replace("%powerFolder%", powerFolder).replace("%powerFileName%", powerFileName).replace("%originFolder%", originFolder.get(0)).replace("%originFileName%", originFileName.get(0))).color(TextColor.color(255, 0, 0)));
                                         }
                                     }
                                 }

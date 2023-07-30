@@ -3,6 +3,7 @@ package me.dueris.genesismc.core;
 import me.dueris.genesismc.core.entity.OriginPlayer;
 import me.dueris.genesismc.core.factory.CraftApoli;
 import me.dueris.genesismc.core.factory.powers.OriginsMod.player.attributes.AttributeHandler;
+import me.dueris.genesismc.core.utils.Lang;
 import me.dueris.genesismc.core.utils.LayerContainer;
 import me.dueris.genesismc.core.utils.OriginContainer;
 import me.dueris.genesismc.core.utils.PowerContainer;
@@ -88,7 +89,7 @@ public class PlayerHandler implements Listener {
                 p.getPersistentDataContainer().remove(new NamespacedKey(GenesisMC.getPlugin(), "origin"));
             } catch (Exception er) {
                 er.printStackTrace();
-                Bukkit.getLogger().warning("[GenesisMC] Error converting old origin container");
+                Bukkit.getLogger().warning(Lang.getLocalizedString("errors.oldContainerConversion"));
             }
         }
         Bukkit.getLogger().warning("[GenesisMC] Reminder to devs - fix old origin container translation");
@@ -143,7 +144,7 @@ public class PlayerHandler implements Listener {
 
         originValidCheck(p);
         OriginPlayer.assignPowers(p);
-        p.sendMessage(Component.text("GenesisMC is in beta and still has lots of bugs, use /origin bug and notify us about any issues!").color(TextColor.fromHexString(AQUA)));
+        p.sendMessage(Component.text(Lang.getLocalizedString("misc.joinText")).color(TextColor.fromHexString(AQUA)));
 
         new BukkitRunnable() {
             @Override
@@ -165,13 +166,13 @@ public class PlayerHandler implements Listener {
             //check if the player layer exists
             if (!CraftApoli.layerExists(layer)) {
                 deletedLayers.add(layer);
-                p.sendMessage(Component.text("The layer \""+layer.getName()+"\" has been removed!\nIf you believe this is a mistake please contact your server admin(s).").color(TextColor.fromHexString(RED)));
+                p.sendMessage(Component.text(Lang.getLocalizedString("misc.layerRemoved").replace("%layerName%", layer.getName())).color(TextColor.fromHexString(RED)));
                 continue;
             }
             //origin check
             if (!CraftApoli.getLayerFromTag(layer.getTag()).getOrigins().contains(origins.get(layer).getTag())) {
                 origins.replace(layer, CraftApoli.nullOrigin());
-                p.sendMessage(Component.text("Your selected origin has been removed from the \""+layer.getName()+"\" layer!\nIf you believe this is a mistake please contact your server admin(s).").color(TextColor.fromHexString(RED)));
+                p.sendMessage(Component.text(Lang.getLocalizedString("misc.originRemoved").replace("%originName", origins.get(layer).getName()).replace("%layerName%", layer.getName())).color(TextColor.fromHexString(RED)));
             }
         }
 
