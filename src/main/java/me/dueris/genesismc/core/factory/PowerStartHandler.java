@@ -2,6 +2,7 @@ package me.dueris.genesismc.core.factory;
 
 import me.dueris.genesismc.core.factory.handlers.CustomOriginExistCheck;
 import me.dueris.genesismc.core.factory.powers.FlightHandler;
+import me.dueris.genesismc.core.factory.powers.OriginsMod.Toggle;
 import me.dueris.genesismc.core.factory.powers.OriginsMod.block.AirFromPotions;
 import me.dueris.genesismc.core.factory.powers.OriginsMod.block.WaterBreathe;
 import me.dueris.genesismc.core.factory.powers.OriginsMod.block.WaterVision;
@@ -203,5 +204,6 @@ public class PowerStartHandler {
         getServer().getPluginManager().registerEvents(new DisableRegen(), getPlugin());
         getServer().getPluginManager().registerEvents(new FireProjectile(), getPlugin());
         getServer().getPluginManager().registerEvents(new Gravity(), getPlugin());
+        getServer().getPluginManager().registerEvents(new Toggle(), getPlugin());
     }
 }

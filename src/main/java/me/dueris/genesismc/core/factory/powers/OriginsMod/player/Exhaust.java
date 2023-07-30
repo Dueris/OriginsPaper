@@ -42,7 +42,7 @@ public class Exhaust extends BukkitRunnable {
                         return;
                     } else {
                         if(ConditionExecutor.check(p, origin, "origins:exhaust", null, p)){
-                            p.setExhaustion(p.getExhaustion() - Float.parseFloat(origin.getPowerFileFromType("origins:exhaust").get("exhaustion")));
+                            p.setExhaustion(p.getExhaustion() - Float.parseFloat(origin.getPowerFileFromType("origins:exhaust").get("exhaustion", "1")));
                         }
                         ticksE = 0;
                     }
