@@ -146,6 +146,9 @@ public class PowerStartHandler {
 
         Grounded grounded = new Grounded();
         grounded.runTaskTimer(getPlugin(), 0, 1);
+
+        Gravity gravity = new Gravity();
+        gravity.runTaskTimer(getPlugin(), 0, 1);
     }
 
     public static void StartListeners() {
