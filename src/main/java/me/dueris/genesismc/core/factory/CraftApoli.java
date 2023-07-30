@@ -159,7 +159,7 @@ public class CraftApoli {
                                             powerContainers.add(new PowerContainer(powerFolder + ":" + powerFileName, fileToFileContainer(powerParser), originFolder.get(0) + ":" + originFileName.get(0)));
                                         } catch (NullPointerException nullPointerException) {
                                             if (showErrors)
-                                               Bukkit.getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] Error parsing \"" + powerFolder + ":" + powerFileName + "\" for \"" + originFolder.get(0) + ":" + originFileName.get(0) + "\"").color(TextColor.color(255, 0, 0)));
+                                               Bukkit.getServer().getConsoleSender().sendMessage(Component.text(Lang.getLocalizedString("errors.craftApoli.powerParsing").replace("%powerFolder", powerFolder).replace("%powerFileName", powerFileName).replace("%originFolder%", originFolder.get(0)).replace("%originFileName%", originFileName.get(0))).color(TextColor.color(255, 0, 0)));
                                         }
                                     }
                                 }
@@ -215,7 +215,7 @@ public class CraftApoli {
                         origin_layer = new File(datapack.getName() + File.separator + "data" + File.separator + namespace.getName() + File.separator + "origin_layers" + File.separator + layerName + ".json");
                     } catch (Exception e) {
                         if (showErrors) {
-                            Bukkit.getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] Error parsing \"" + datapack.getName() + File.separator + "data" + File.separator + namespace.getName() + File.separator + "origin_layers" + File.separator + layerName + ".json" + "\"").color(TextColor.color(255, 0, 0)));
+                            Bukkit.getServer().getConsoleSender().sendMessage(Component.text(Lang.getLocalizedString("errors.craftApoli.layerParsing").replace("%datapack%", datapack.getName()).replace("%sep%", File.separator).replace("%namespace%", namespace.getName()).replace("%layerName%", layerName)).color(TextColor.color(255, 0, 0)));
                         }
                     }
                 }
@@ -259,7 +259,7 @@ public class CraftApoli {
                                     powerContainers.add(new PowerContainer(powerFolder + ":" + powerFileName, fileToFileContainer(powerParser), originFolder.get(0) + ":" + originFileName.get(0)));
                                 } catch (FileNotFoundException fileNotFoundException) {
                                     if (showErrors)
-                                        Bukkit.getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] Error parsing \"" + powerFolder + ":" + powerFileName + "\" for \"" + originFolder.get(0) + ":" + originFileName.get(0) + "\"").color(TextColor.color(255, 0, 0)));
+                                        Bukkit.getServer().getConsoleSender().sendMessage(Component.text(Lang.getLocalizedString("errors.craftApoli.powerParsing").replace("%powerFolder", powerFolder).replace("%powerFileName", powerFileName).replace("%originFolder%", originFolder.get(0)).replace("%originFileName%", originFileName.get(0))).color(TextColor.color(255, 0, 0)));
                                 }
                             }
                         }
@@ -268,7 +268,8 @@ public class CraftApoli {
 
                     } catch (FileNotFoundException fileNotFoundException) {
                         if (showErrors)
-                            Bukkit.getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] Error parsing \"" + datapack.getName() + File.separator + "data" + File.separator + originFolder.get(0) + File.separator + "origins" + File.separator + originFileName.get(0) + ".json" + "\"").color(TextColor.color(255, 0, 0)));
+                            //Bukkit.getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] Error parsing \"" + datapack.getName() + File.separator + "data" + File.separator + originFolder.get(0) + File.separator + "origins" + File.separator + originFileName.get(0) + ".json" + "\"").color(TextColor.color(255, 0, 0)));
+                            Bukkit.getServer().getConsoleSender().sendMessage(Component.text(Lang.getLocalizedString("errors.craftApoli.originFile").replace("%datapack%", datapack.getName()).replace("%originFolder", originFolder.get(0)).replace("%sep%", File.separator).replace("%originFileName%", originFileName.get(0))).color(TextColor.color(255, 0, 0)));
                     }
                     originFolder.remove(0);
                     originFileName.remove(0);
@@ -319,7 +320,7 @@ public class CraftApoli {
             oos.flush();
             return bos.toByteArray();
         } catch (Exception e) {
-            Bukkit.getLogger().warning("[GenesisMC] CRUCIAL ERROR, PLEASE REPORTING THIS IMMEDIATELY TO THE DEVS!!");
+            Bukkit.getLogger().warning(Lang.getLocalizedString("errors.containerConversion"));
             e.printStackTrace();
             return toByteArray(new HashMap<>(Map.of(CraftApoli.getLayers().get(0), CraftApoli.nullOrigin())));
         }
@@ -337,7 +338,7 @@ public class CraftApoli {
                 if (layer.getTag().equals(originLayer.getTag())) return originData.get(layer);
             }
         } catch (Exception e) {
-            Bukkit.getLogger().warning("[GenesisMC] CRUCIAL ERROR, PLEASE REPORTING THIS IMMEDIATELY TO THE DEVS!!");
+            Bukkit.getLogger().warning(Lang.getLocalizedString("errors.containerConversion"));
             e.printStackTrace();
             return nullOrigin();
         }
@@ -353,7 +354,7 @@ public class CraftApoli {
             ObjectInput oi = new ObjectInputStream(bis);
             return (HashMap<LayerContainer, OriginContainer>) oi.readObject();
         } catch (Exception e) {
-            Bukkit.getLogger().warning("[GenesisMC] CRUCIAL ERROR, PLEASE REPORTING THIS IMMEDIATELY TO THE DEVS!!");
+            Bukkit.getLogger().warning(Lang.getLocalizedString("errors.containerConversion"));
             e.printStackTrace();
             HashMap<LayerContainer, OriginContainer> origins = new HashMap<>();
             for (LayerContainer layer : CraftApoli.getLayers()) {

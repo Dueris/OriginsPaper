@@ -2,6 +2,7 @@ package me.dueris.genesismc.core.factory.powers.OriginsMod.player.damage;
 
 import me.dueris.genesismc.core.entity.OriginPlayer;
 import me.dueris.genesismc.core.factory.conditions.ConditionExecutor;
+import me.dueris.genesismc.core.utils.Lang;
 import me.dueris.genesismc.core.utils.OriginContainer;
 import me.dueris.genesismc.core.utils.PowerContainer;
 import org.bukkit.Bukkit;
@@ -31,7 +32,7 @@ public class Burn extends BukkitRunnable {
                     PowerContainer power = origin.getPowerFileFromType("origins:burn");
                     if (power == null) continue;
                     if (power.getInterval() == null) {
-                        Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "Unable to parse interval for origins:burn");
+                        Bukkit.getLogger().warning(Lang.getLocalizedString("powers.errors.burn"));
                         return;
                     }
                     interval = power.getInterval();

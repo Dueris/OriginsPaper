@@ -2,6 +2,7 @@ package me.dueris.genesismc.core.items;
 
 import me.dueris.genesismc.core.GenesisMC;
 import me.dueris.genesismc.core.files.GenesisDataFiles;
+import me.dueris.genesismc.core.utils.Lang;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -32,7 +33,7 @@ public class OrbOfOrigins {
         meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
         meta.addItemFlags(ItemFlag.HIDE_PLACED_ON);
         meta.setCustomModelData(00002);
-        meta.setDisplayName(GenesisDataFiles.getOrbCon().getString("name"));
+        meta.setDisplayName(Lang.getLocalizedString("misc.orbOfOrigins"));
         meta.setUnbreakable(true);
         meta.getCustomTagContainer().setCustomTag(new NamespacedKey(GenesisMC.getPlugin(), "origins"), ItemTagType.STRING, "orb_of_origin");
         meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
@@ -58,8 +59,7 @@ public class OrbOfOrigins {
                 Bukkit.getServer().addRecipe(sr);
             }
         } catch (Exception exception) {
-            Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.RED + "[GenesisMC] Failed to load custom origin orb recipe!");
-            Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.RED + "[GenesisMC] Either delete the file, or add a valid material/path.");
+            Bukkit.getServer().getLogger().warning(Lang.getLocalizedString("errors.orbLoad"));
         }
     }
 }

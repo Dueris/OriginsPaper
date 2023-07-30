@@ -4,6 +4,7 @@ import com.destroystokyo.paper.profile.PlayerProfile;
 import me.dueris.genesismc.core.GenesisMC;
 import me.dueris.genesismc.core.entity.OriginPlayer;
 import me.dueris.genesismc.core.events.OriginChangeEvent;
+import me.dueris.genesismc.core.utils.Lang;
 import me.dueris.genesismc.core.utils.OriginContainer;
 import net.skinsrestorer.api.PlayerWrapper;
 import net.skinsrestorer.api.SkinsRestorerAPI;
@@ -171,14 +172,14 @@ public class PlayerRender extends BukkitRunnable {
                 public void run() {
                     if (model_color.contains(player)) {
                         if(player.getPlayerProfile().getTextures().getSkinModel() == PlayerTextures.SkinModel.CLASSIC){
-                            Bukkit.getConsoleSender().sendMessage(player.getName() + " setting MODEL_COLOR skin...");
+                            Bukkit.getConsoleSender().sendMessage(Lang.getLocalizedString("powers.modelColour"));
                             Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "skin set " + player.getName() + " " + player.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "modified-skin-url"), PersistentDataType.STRING) + " CLASSIC");
                         }else{
                             Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "skin set " + player.getName() + " " + player.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "modified-skin-url"), PersistentDataType.STRING) + " SLIM");
                         }
                     } else {
                         if(player.getPlayerProfile().getTextures().getSkinModel() == PlayerTextures.SkinModel.CLASSIC){
-                            Bukkit.getConsoleSender().sendMessage(player.getName() + " setting MODEL_COLOR skin...");
+                            Bukkit.getConsoleSender().sendMessage(Lang.getLocalizedString("powers.modelColour"));
                             Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "skin set " + player.getName() + " " + player.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "original-skin-url"), PersistentDataType.STRING) + " CLASSIC");
                         }else{
                             Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "skin set " + player.getName() + " " + player.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "original-skin-url"), PersistentDataType.STRING) + " SLIM");
@@ -212,13 +213,8 @@ public class PlayerRender extends BukkitRunnable {
                         future.cancel(true);
                         return;
                     }
-                    PlayerProfile playerProfile = player.getPlayerProfile();
-
 
                     Skin skin = skinData;
-
-                    System.out.print("MODIFIED_SKIN_URL: " + skin.data.texture.url);
-
                     String url = skin.data.texture.url;
                     player.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "modified-skin-url"), PersistentDataType.STRING, url);
                     IProperty platformprop = skinsRestorerAPI.createPlatformProperty(player.getUniqueId() + "_modified", skin.data.texture.value, skin.data.texture.signature);
@@ -251,8 +247,6 @@ public class PlayerRender extends BukkitRunnable {
                     }
 
                     Skin skin = skinData;
-
-                    System.out.print("ORIGINAL_SKIN_URL: " + skin.data.texture.url);
 
                     String url = skin.data.texture.url;
                     player.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "original-skin-url"), PersistentDataType.STRING, url);
@@ -294,7 +288,7 @@ public class PlayerRender extends BukkitRunnable {
 
         private static BufferedImage modifyImage(BufferedImage originalImage, double redTint, double greenTint, double blueTint, double alphaTint, Player player, OriginContainer origin) {
             if (redTint > 1 || greenTint > 1 || blueTint > 1 || alphaTint > 1) {
-                throw new IllegalArgumentException("Color values must be between 0 and 1.");
+                throw new IllegalArgumentException(Lang.getLocalizedString("powers.errors.modelColourValue"));
             }
 
             BufferedImage modifiedImage = new BufferedImage(originalImage.getWidth(), originalImage.getHeight(), BufferedImage.TYPE_INT_ARGB);

@@ -1,6 +1,7 @@
 package me.dueris.genesismc.core.factory.powers.OriginsMod.player.attributes;
 
 import me.dueris.genesismc.core.entity.OriginPlayer;
+import me.dueris.genesismc.core.utils.Lang;
 import me.dueris.genesismc.core.utils.OriginContainer;
 import me.dueris.genesismc.core.utils.PowerContainer;
 import org.bukkit.Bukkit;
@@ -25,8 +26,6 @@ public class AttributeConditioned implements Listener {
 
     public static void executeAttributeModify(String operation, Attribute attribute_modifier, int base_value, Player p, int value){
         Map<String, BinaryOperator<Integer>> operationMap = new HashMap<>();
-        //base value = a
-        //modifier value = b
         operationMap.put("addition", Integer::sum);
         operationMap.put("subtraction", (a, b) -> a - b);
         operationMap.put("multiplication", (a, b) -> a * b);
@@ -47,14 +46,12 @@ public class AttributeConditioned implements Listener {
             int result = (int) mathOperator.apply(base_value, value);
             p.getAttribute(Attribute.valueOf(attribute_modifier.toString())).setBaseValue(result);
         } else {
-            Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.RED + "Unable to parse origins:attribute, unable to get result");
+            Bukkit.getLogger().warning(Lang.getLocalizedString("powers.errors.attribute"));
         }
     }
 
     public static void executeAttributeModify(String operation, Attribute attribute_modifier, int base_value, Player p, Double value){
         Map<String, BinaryOperator<Double>> operationMap = new HashMap<>();
-        //base value = a
-        //modifier value = b
         operationMap.put("addition", Double::sum);
         operationMap.put("subtraction", (a, b) -> a - b);
         operationMap.put("multiplication", (a, b) -> a * b);
@@ -75,14 +72,12 @@ public class AttributeConditioned implements Listener {
             double result = (Double) mathOperator.apply(base_value, value);
             p.getAttribute(Attribute.valueOf(attribute_modifier.toString())).setBaseValue(result);
         } else {
-            Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.RED + "Unable to parse origins:attribute, unable to get result");
+            Bukkit.getLogger().warning(Lang.getLocalizedString("powers.errors.attribute"));
         }
     }
 
     public static void executeConditionAttribute(Player p) {
         Map<String, BinaryOperator<Integer>> operationMap = new HashMap<>();
-        //base value = a
-        //modifier value = b
         operationMap.put("addition", Integer::sum);
         operationMap.put("subtraction", (a, b) -> a - b);
         operationMap.put("multiplication", (a, b) -> a * b);
@@ -121,8 +116,6 @@ public class AttributeConditioned implements Listener {
 
     public static void inverseConditionAttribute(Player p) {
         Map<String, BinaryOperator<Integer>> operationMap = new HashMap<>();
-        //base value = a
-        //modifier value = b
         operationMap.put("addition", (a, b) -> a - b);
         operationMap.put("subtraction", Integer::sum);
         operationMap.put("multiplication", (a, b) -> a / b);

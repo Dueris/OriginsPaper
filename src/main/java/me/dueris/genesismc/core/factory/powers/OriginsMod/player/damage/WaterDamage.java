@@ -1,6 +1,8 @@
 package me.dueris.genesismc.core.factory.powers.OriginsMod.player.damage;
 
 import io.papermc.paper.event.entity.WaterBottleSplashEvent;
+import me.dueris.genesismc.core.utils.Lang;
+import net.kyori.adventure.text.Component;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -155,10 +157,8 @@ public class WaterDamage extends BukkitRunnable implements Listener {
     public void OnDeathWater(PlayerDeathEvent e) {
         Player p = e.getEntity();
         if (water_vulnerability.contains(e.getPlayer())) {
-            Random random = new Random();
-            int r = random.nextInt(2);
             if (p.isInWaterOrRainOrBubbleColumn()) {
-                e.setDeathMessage(p.getName() + " took a bath for too long");
+                e.deathMessage(Component.text(Lang.getLocalizedString("powers.bathForTooLong")));
             }
         }
     }

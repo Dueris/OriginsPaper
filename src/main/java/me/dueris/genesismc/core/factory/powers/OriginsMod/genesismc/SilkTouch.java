@@ -1,6 +1,8 @@
 package me.dueris.genesismc.core.factory.powers.OriginsMod.genesismc;
 
 
+import me.dueris.genesismc.core.utils.Lang;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
@@ -51,9 +53,9 @@ public class SilkTouch implements Listener {
 
                             try {
                                 p.getLocation().getWorld().dropItemNaturally(e.getBlock().getLocation(), i);
-                            } catch (Exception var6) {
-                                getServer().getConsoleSender().sendMessage(ChatColor.RED + "Send to Dueris: Error with Enderian Silk Touch");
-
+                            } catch (Exception exception) {
+                                Bukkit.getLogger().warning(Lang.getLocalizedString("powers.errors.silkTouch"));
+                                exception.printStackTrace();
                             }
                         }
 

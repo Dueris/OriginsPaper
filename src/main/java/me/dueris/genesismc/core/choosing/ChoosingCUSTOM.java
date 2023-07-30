@@ -5,6 +5,7 @@ import me.dueris.genesismc.core.entity.OriginPlayer;
 import me.dueris.genesismc.core.events.OriginChangeEvent;
 import me.dueris.genesismc.core.factory.CraftApoli;
 import me.dueris.genesismc.core.factory.powers.OriginsMod.world.WorldSpawnHandler;
+import me.dueris.genesismc.core.utils.Lang;
 import me.dueris.genesismc.core.utils.OriginContainer;
 import me.dueris.genesismc.core.utils.PowerContainer;
 import org.bukkit.*;
@@ -102,11 +103,11 @@ public class ChoosingCUSTOM implements Listener {
             ItemStack originIcon = new ItemStack(Material.valueOf(item.toUpperCase()));
 
             //making the items to display in the menu
-            ItemStack close = itemProperties(new ItemStack(Material.BARRIER), RED + "Close", null, null, RED + "Cancel Choosing");
-            ItemStack back = itemProperties(new ItemStack(Material.SPECTRAL_ARROW), ChatColor.AQUA + "Return", ItemFlag.HIDE_ENCHANTS, null, null);
-            ItemStack lowImpact = itemProperties(new ItemStack(Material.GREEN_STAINED_GLASS_PANE), ChatColor.WHITE + "Impact: " + ChatColor.GREEN + "Low", null, null, null);
-            ItemStack mediumImpact = itemProperties(new ItemStack(Material.YELLOW_STAINED_GLASS_PANE), ChatColor.WHITE + "Impact: " + ChatColor.YELLOW + "Medium", null, null, null);
-            ItemStack highImpact = itemProperties(new ItemStack(Material.RED_STAINED_GLASS_PANE), ChatColor.WHITE + "Impact: " + ChatColor.RED + "High", null, null, null);
+            ItemStack close = itemProperties(new ItemStack(Material.BARRIER), RED + Lang.getLocalizedString("menu.originSelect.close"), null, null, RED + "Cancel Choosing");
+            ItemStack back = itemProperties(new ItemStack(Material.SPECTRAL_ARROW), ChatColor.AQUA + Lang.getLocalizedString("menu.originSelect.return"), ItemFlag.HIDE_ENCHANTS, null, null);
+            ItemStack lowImpact = itemProperties(new ItemStack(Material.GREEN_STAINED_GLASS_PANE), ChatColor.WHITE + Lang.getLocalizedString("menu.originSelect.impact.impact") + ChatColor.GREEN + Lang.getLocalizedString("menu.originSelect.impact.low"), null, null, null);
+            ItemStack mediumImpact = itemProperties(new ItemStack(Material.YELLOW_STAINED_GLASS_PANE), ChatColor.WHITE + Lang.getLocalizedString("menu.originSelect.impact.impact") + ChatColor.YELLOW + Lang.getLocalizedString("menu.originSelect.impact.medium"), null, null, null);
+            ItemStack highImpact = itemProperties(new ItemStack(Material.RED_STAINED_GLASS_PANE), ChatColor.WHITE + Lang.getLocalizedString("menu.originSelect.impact.impact") + ChatColor.RED + Lang.getLocalizedString("menu.originSelect.impact.high"), null, null, null);
 
             //adds a key to the item that will be used later to get the origin from it
             ItemMeta originIconmeta = originIcon.getItemMeta();
@@ -209,7 +210,6 @@ public class ChoosingCUSTOM implements Listener {
                 String originTag = e.getCurrentItem().getItemMeta().getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "originTag"), PersistentDataType.STRING);
                 OriginContainer origin = CraftApoli.getOrigin(originTag);
                 Player p = (Player) e.getWhoClicked();
-                assert origin != null;
 
                 setAttributesToDefault(p);
                 OriginPlayer.setOrigin(p, choosing.get(p), origin);
@@ -315,7 +315,7 @@ public class ChoosingCUSTOM implements Listener {
         if (e.getCurrentItem() != null) {
             if (e.getView().getTitle().startsWith("Custom Origins")) {
                 ItemStack item = e.getCurrentItem();
-                if (item.getType().equals(Material.ARROW) && (e.getCurrentItem().getItemMeta().getDisplayName().equals("Back") || e.getCurrentItem().getItemMeta().getDisplayName().equals("Next"))) {
+                if (item.getType().equals(Material.ARROW) && (e.getCurrentItem().getItemMeta().getDisplayName().equals(Lang.getLocalizedString("menu.customChoose.back")) || e.getCurrentItem().getItemMeta().getDisplayName().equals(Lang.getLocalizedString("menu.customChoose.next")))) {
                     Player p = (Player) e.getWhoClicked();
                     @NotNull Inventory custommenu = Bukkit.createInventory(e.getWhoClicked(), 54, "Custom Origins - "+choosing.get(p).getName());
                     NamespacedKey key = new NamespacedKey(GenesisMC.getPlugin(), "page");

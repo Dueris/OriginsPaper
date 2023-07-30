@@ -3,6 +3,7 @@ package me.dueris.genesismc.core.factory.powers.OriginsMod.player.attributes;
 import me.dueris.genesismc.core.GenesisMC;
 import me.dueris.genesismc.core.entity.OriginPlayer;
 import me.dueris.genesismc.core.events.OriginChangeEvent;
+import me.dueris.genesismc.core.utils.Lang;
 import me.dueris.genesismc.core.utils.OriginContainer;
 import me.dueris.genesismc.core.utils.PowerContainer;
 import org.bukkit.*;
@@ -33,8 +34,6 @@ import static me.dueris.genesismc.core.factory.powers.Powers.*;
 public class AttributeHandler implements Listener {
     public static Map<String, BinaryOperator<Double>> getOperationMappingsDouble(){
         Map<String, BinaryOperator<Double>> operationMap = new HashMap<>();
-        //base value = a
-        //modifier value = b
         operationMap.put("addition", Double::sum);
         operationMap.put("subtraction", (a, b) -> a - b);
         operationMap.put("multiplication", (a, b) -> a * b);
@@ -92,7 +91,7 @@ public class AttributeHandler implements Listener {
                     } else if (valueObj instanceof Long) {
                         value = ((Number) valueObj).longValue();
                     } else {
-                        Objects.requireNonNull(valueObj, "VALUE OBJECT CANNOT BE NULL(or whatever it is)");
+                        Objects.requireNonNull(valueObj);
                         continue;
                     }
 
@@ -101,12 +100,8 @@ public class AttributeHandler implements Listener {
                     executeAttributeModify(operation, attribute_modifier, base_value, p, value);
 
                     p.sendHealthUpdate();
-                } else {
-                    p.sendMessage("SOMETHING WENT WRONG, FIX IT BOI, ITS 3 FUCKING AM");
                 }
-
             }
-
         }
     }
 
@@ -117,7 +112,7 @@ public class AttributeHandler implements Listener {
             double result = (Double) mathOperator.apply(base_value, value);
             p.getAttribute(Attribute.valueOf(attribute_modifier.toString())).setBaseValue(result);
         } else {
-            Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.RED + "Unable to parse origins:attribute, unable to get result");
+            Bukkit.getLogger().warning(Lang.getLocalizedString("powers.errors.attribute"));
         }
     }
 
@@ -188,7 +183,7 @@ public class AttributeHandler implements Listener {
                         } else if (valueObj instanceof Long) {
                             value = ((Number) valueObj).longValue();
                         } else {
-                            Objects.requireNonNull(valueObj, "VALUE OBJECT CANNOT BE NULL(or whatever it is)");
+                            Objects.requireNonNull(valueObj);
                             continue;
                         }
 
@@ -196,11 +191,10 @@ public class AttributeHandler implements Listener {
                             double result = (double) mathOperator.apply(base, value);
                             setFinalReach(p, result);
                         } else {
-                            Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.RED + "Unable to parse origins:attribute, unable to get result");
+                            Bukkit.getLogger().warning(Lang.getLocalizedString("powers.errors.attribute"));
                         }
 
                         Location eyeloc = p.getEyeLocation();
-                        @NotNull Vector direction = eyeloc.getDirection();
                         Predicate<Entity> filter = (entity) -> !entity.equals(p);
 
                         RayTraceResult traceResult4_5F = p.getWorld().rayTrace(eyeloc, eyeloc.getDirection(), getFinalReach(p), FluidCollisionMode.NEVER, false, 0, filter);
@@ -224,8 +218,6 @@ public class AttributeHandler implements Listener {
                             }
                         }
 
-                    } else {
-                        p.sendMessage("SOMETHING WENT WRONG, FIX IT BOI, ITS 3 FUCKING AM");
                     }
                 }
             }

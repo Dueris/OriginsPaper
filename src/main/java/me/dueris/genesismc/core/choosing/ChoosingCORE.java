@@ -8,6 +8,7 @@ import me.dueris.genesismc.core.events.OriginChooseEvent;
 import me.dueris.genesismc.core.factory.CraftApoli;
 import me.dueris.genesismc.core.files.GenesisDataFiles;
 import me.dueris.genesismc.core.items.OrbOfOrigins;
+import me.dueris.genesismc.core.utils.Lang;
 import me.dueris.genesismc.core.utils.LayerContainer;
 import me.dueris.genesismc.core.utils.OriginContainer;
 import me.dueris.genesismc.core.utils.SendCharts;
@@ -168,7 +169,7 @@ public class ChoosingCORE implements Listener {
                     Player p = (Player) e.getWhoClicked();
                     p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 10, 2);
                     if (OriginPlayer.hasOrigin(p, "genesis:origin-null"))
-                        p.kick(Component.text("You are forced to choose an origin!"));
+                        p.kick(Component.text(Lang.getLocalizedString("misc.requiredChoose")));
                     e.getWhoClicked().closeInventory();
                 } else {
                     e.setCancelled(true);
@@ -195,7 +196,7 @@ public class ChoosingCORE implements Listener {
             for (LayerContainer layer : layers) {
                 OriginContainer origin = origins.get(random.nextInt(origins.size()));
                 OriginPlayer.setOrigin(p, layer, origin);
-                p.sendMessage(Component.text("Your random origin(s) are " + layer + " : " + origin.getName() + "!").color(TextColor.fromHexString(AQUA)));
+                p.sendMessage(Component.text(Lang.getLocalizedString("misc.randomOrigins").replace("%layer%", layer.getTag()).replace("%originName%", origin.getName())).color(TextColor.fromHexString(AQUA)));
             }
 
             e.setCancelled(true);
