@@ -6,6 +6,7 @@ import me.dueris.genesismc.core.entity.OriginPlayer;
 import me.dueris.genesismc.core.enums.OriginDataType;
 import me.dueris.genesismc.core.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.core.factory.conditions.entity.EntityCondition;
+import me.dueris.genesismc.core.utils.Lang;
 import me.dueris.genesismc.core.utils.OriginContainer;
 import net.minecraft.network.protocol.game.ClientboundGameEventPacket;
 import org.bukkit.*;
@@ -187,7 +188,6 @@ public class Phasing extends BukkitRunnable implements Listener {
     @EventHandler
     public void CancelSpectate(PlayerStartSpectatingEntityEvent e) {
         Player p = e.getPlayer();
-        PersistentDataContainer data = p.getPersistentDataContainer();
         if (phasing.contains(p)) {
             if (OriginPlayer.isInPhantomForm(p)) {
                 e.setCancelled(true);
@@ -217,7 +217,7 @@ public class Phasing extends BukkitRunnable implements Listener {
         if(OriginPlayer.isInPhantomForm(e.getPlayer())){
             e.getPlayer().setGameMode(GameMode.SURVIVAL);
             OriginPlayer.setOriginData(p, OriginDataType.IN_PHASING_FORM, false);
-            p.sendActionBar(DARK_AQUA + "Deactivated Phasing Form");
+            p.sendActionBar(DARK_AQUA + Lang.getLocalizedString("powers.phasing.deactivated"));
         }
     }
 
@@ -244,7 +244,7 @@ public class Phasing extends BukkitRunnable implements Listener {
                         if(phantomid){
                             if (ConditionExecutor.check(p, origin, "origins:phasing", null, p)) {
                                 OriginPlayer.setOriginData(p, OriginDataType.IN_PHASING_FORM, false);
-                                p.sendActionBar(DARK_AQUA + "Deactivated Phasing Form");
+                                p.sendActionBar(DARK_AQUA + Lang.getLocalizedString("powers.phasing.deactivated"));
                                 if (p.getGameMode().equals(GameMode.SPECTATOR)) {
                                     if (p.getPreviousGameMode().equals(GameMode.CREATIVE)) {
                                         p.setGameMode(p.getPreviousGameMode());
@@ -261,7 +261,7 @@ public class Phasing extends BukkitRunnable implements Listener {
                             if (ConditionExecutor.check(p, origin, "origins:phasing", null, p)) {
                                 p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.BOOLEAN, true);
                                 OriginPlayer.setOriginData(p, OriginDataType.IN_PHASING_FORM, true);
-                                p.sendActionBar(DARK_AQUA + "Activated Phasing Form");
+                                p.sendActionBar(DARK_AQUA + Lang.getLocalizedString("powers.phasing.activated"));
                             }
                         }
                         e.setCancelled(true);

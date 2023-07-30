@@ -147,7 +147,7 @@ public class Inventory implements CommandExecutor, Listener {
                 vaultItems.stream().forEach(itemStack -> vault.addItem(itemStack));
                 p.openInventory(vault);
             } else {
-                p.sendMessage(Component.text("You must have the Shulker Inventory power to access this command").color(TextColor.fromHexString(BukkitColour.RED)));
+                p.sendMessage(Component.text("powers.inventoryOpenPower").color(TextColor.fromHexString(BukkitColour.RED)));
             }
         }
 

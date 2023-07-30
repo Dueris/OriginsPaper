@@ -2,6 +2,7 @@ package me.dueris.genesismc.core.choosing.contents;
 
 import me.dueris.genesismc.core.GenesisMC;
 import me.dueris.genesismc.core.factory.CraftApoli;
+import me.dueris.genesismc.core.utils.Lang;
 import me.dueris.genesismc.core.utils.LayerContainer;
 import me.dueris.genesismc.core.utils.OriginContainer;
 import org.bukkit.ChatColor;
@@ -23,9 +24,9 @@ public class ChooseMenuContents {
 
     public static @Nullable ItemStack @NotNull [] ChooseMenuContent(int pageNumber, LayerContainer choosingLayer) {
         ItemStack sides = itemProperties(new ItemStack(Material.BLACK_STAINED_GLASS_PANE), "", ItemFlag.HIDE_ENCHANTS, null, null);
-        ItemStack menu = itemProperties(new ItemStack(Material.SPECTRAL_ARROW), ChatColor.AQUA + "Return", ItemFlag.HIDE_ENCHANTS, null, null);
-        ItemStack back = itemProperties(new ItemStack(Material.ARROW), "Back", ItemFlag.HIDE_ENCHANTS, null, null);
-        ItemStack next = itemProperties(new ItemStack(Material.ARROW), "Next", ItemFlag.HIDE_ENCHANTS, null, null);
+        ItemStack menu = itemProperties(new ItemStack(Material.SPECTRAL_ARROW), ChatColor.AQUA + Lang.getLocalizedString("menu.customChoose.return"), ItemFlag.HIDE_ENCHANTS, null, null);
+        ItemStack back = itemProperties(new ItemStack(Material.ARROW), Lang.getLocalizedString("menu.customChoose.back"), ItemFlag.HIDE_ENCHANTS, null, null);
+        ItemStack next = itemProperties(new ItemStack(Material.ARROW), Lang.getLocalizedString("menu.customChoose.next"), ItemFlag.HIDE_ENCHANTS, null, null);
 
         ArrayList<ItemStack> contents = new ArrayList<>();
         ArrayList<OriginContainer> originContainers = new ArrayList<>(CraftApoli.getOrigins());

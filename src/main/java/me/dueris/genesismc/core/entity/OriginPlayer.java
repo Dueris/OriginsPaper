@@ -88,12 +88,6 @@ public class OriginPlayer {
      */
     public static boolean hasOrigin(Player player, String originTag) {
         HashMap<LayerContainer, OriginContainer> origins = CraftApoli.toOrigin(player.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "origins"), PersistentDataType.BYTE_ARRAY));
-//        System.out.println(originTag);
-//        System.out.println(originTag.getClass());
-//        for (OriginContainer origin : origins.values()) {
-//            System.out.println(origin.getTag());
-//            System.out.println(origin.getTag().getClass());
-//        }
         for (OriginContainer origin : origins.values()) if (origin.getTag().equals(originTag)) return true;
         return false;
     }
@@ -173,7 +167,6 @@ public class OriginPlayer {
         HashMap<LayerContainer, OriginContainer> origins = CraftApoli.toOrigin(player.getPersistentDataContainer().get(key, PersistentDataType.BYTE_ARRAY));
         assert origins != null;
         if (!CraftApoli.getLayers().contains(layer)) {
-            //player.sendMessage(Component.text("[GenesisMC] The layer specified doesn't exist.").color(TextColor.fromHexString(RED)));
             return;
         }
 

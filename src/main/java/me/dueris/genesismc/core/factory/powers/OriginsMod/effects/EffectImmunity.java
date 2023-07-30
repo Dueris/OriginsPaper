@@ -1,6 +1,7 @@
 package me.dueris.genesismc.core.factory.powers.OriginsMod.effects;
 
 import me.dueris.genesismc.core.entity.OriginPlayer;
+import me.dueris.genesismc.core.utils.Lang;
 import me.dueris.genesismc.core.utils.OriginContainer;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -28,7 +29,7 @@ public class EffectImmunity extends BukkitRunnable {
                                     p.removePotionEffect(effectType);
                                 }
                             } else {
-                                Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "[GenesisMC] UNABLE TO GET PowerEffectType ENUM FOR POWER origins:effect_immunity");
+                                Bukkit.getLogger().warning(Lang.getLocalizedString("powers.errors.effectImmunity"));
                             }
                         } else {
                             if(effectType != null){
@@ -36,7 +37,7 @@ public class EffectImmunity extends BukkitRunnable {
                                     p.addPotionEffect(new PotionEffect(effectType, 25, 1));
                                 }
                             } else {
-                                Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "[GenesisMC] UNABLE TO GET PowerEffectType ENUM FOR POWER origins:effect_immunity");
+                                Bukkit.getLogger().warning(Lang.getLocalizedString("powers.errors.effectImmunity"));
                             }
                         }
 
@@ -51,7 +52,7 @@ public class EffectImmunity extends BukkitRunnable {
                             }
                         }
                     } else {
-                        Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "[GenesisMC] UNABLE TO GET EFFECT FOR POWER origins:effect_immunity");
+                        Bukkit.getLogger().warning(Lang.getLocalizedString("powers.errors.effectImmunity"));
                     }
                 }
             }

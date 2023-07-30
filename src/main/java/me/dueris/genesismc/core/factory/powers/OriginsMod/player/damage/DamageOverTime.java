@@ -2,6 +2,7 @@ package me.dueris.genesismc.core.factory.powers.OriginsMod.player.damage;
 
 import me.dueris.genesismc.core.entity.OriginPlayer;
 import me.dueris.genesismc.core.factory.conditions.ConditionExecutor;
+import me.dueris.genesismc.core.utils.Lang;
 import me.dueris.genesismc.core.utils.OriginContainer;
 import me.dueris.genesismc.core.utils.PowerContainer;
 import net.minecraft.world.damagesource.DamageSource;
@@ -41,7 +42,7 @@ public class DamageOverTime extends BukkitRunnable {
                     PowerContainer power = origin.getPowerFileFromType("origins:damage_over_time");
                     if (power == null) continue;
                     if (power.getInterval() == null) {
-                        Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "Unable to parse interval for origins:damage_over_time");
+                        Bukkit.getLogger().warning(Lang.getLocalizedString("powers.errors.damageOverTime"));
                         return;
                     }
                     interval = power.getInterval();
@@ -64,7 +65,6 @@ public class DamageOverTime extends BukkitRunnable {
                         if(!ConditionExecutor.check(p, origin, "origins:damage_over_time", null, p)) return;
 
                         if (p.getGameMode().equals(GameMode.SURVIVAL) || p.getGameMode().equals(GameMode.ADVENTURE)) {
-                            float curhealth = (float) p.getHealth();
                             float helemt_modifier = 0;
                             float chestplate_modifier = 0;
                             float leggins_modifier = 0;

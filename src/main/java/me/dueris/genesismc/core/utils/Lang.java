@@ -43,7 +43,9 @@ public class Lang {
 
         File engLang = new File(GenesisMC.getPlugin().getDataFolder() + File.separator + "lang" + File.separator + "english.yml");
         YamlConfiguration langConfig = YamlConfiguration.loadConfiguration(engLang);
-        return langConfig.getString(key);
+        String response = langConfig.getString(key);
+        if (response == null) return "Lang Error!";
+        return response;
     }
 
 }
