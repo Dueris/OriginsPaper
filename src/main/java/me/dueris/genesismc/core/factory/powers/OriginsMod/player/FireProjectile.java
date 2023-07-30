@@ -89,11 +89,11 @@ public class FireProjectile implements Listener {
                             int start_delay;
                             int interval;
 
-                            if (origin.getPowerFileFromType("origins:fire_projectile").get("sound") == null) {
-                                sound = Sound.ENTITY_EGG_THROW;
-                            } else {
-                                sound = Sound.valueOf(origin.getPowerFileFromType("origins:fire_projectile").get("sound").toUpperCase().split(":")[1].replaceAll("\\.", "_"));
-                            }
+//                            if (origin.getPowerFileFromType("origins:fire_projectile").get("sound") == null) {
+//                                sound = Sound.ENTITY_EGG_THROW;
+//                            } else {
+//                                sound = Sound.valueOf(origin.getPowerFileFromType("origins:fire_projectile").get("sound").toUpperCase().split(":")[1].replaceAll("\\.", "_"));
+//                            }
 
                             if (origin.getPowerFileFromType("origins:fire_projectile").get("cooldown") == null) {
                                 cooldown = 1;
@@ -159,7 +159,7 @@ public class FireProjectile implements Listener {
                                         return;
                                     }
 
-                                    p.playSound(p.getLocation(), sound, 5, 1);
+//                                    p.playSound(p.getLocation(), 5, 1);
                                     p.setCooldown(KeybindHandler.getKeybindItem(e.getKey(), p.getInventory()).getType(), cooldown);
 
                                     if (type.getEntityClass() != null && Projectile.class.isAssignableFrom(type.getEntityClass())) {
