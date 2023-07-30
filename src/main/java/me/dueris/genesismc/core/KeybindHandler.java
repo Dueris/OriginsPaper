@@ -39,24 +39,20 @@ public class KeybindHandler implements Listener {
     public void OnPressMainKey(OriginKeybindExecuteEvent e) {
         if(e.getKey().equals("key.origins.primary_active")){
             primaryTick.add(e.getPlayer());
-            e.getPlayer().sendMessage("add_primary");
             new BukkitRunnable(){
                 @Override
                 public void run() {
                     primaryTick.remove(e.getPlayer());
-                    e.getPlayer().sendMessage("remove_primary");
                     this.cancel();
                 }
             }.runTaskTimer(GenesisMC.getPlugin(), 1, 1);
         }
         if(e.getKey().equals("key.origins.secondary_active")){
             secondaryTick.add(e.getPlayer());
-            e.getPlayer().sendMessage("add_primary");
             new BukkitRunnable(){
                 @Override
                 public void run() {
                     secondaryTick.remove(e.getPlayer());
-                    e.getPlayer().sendMessage("remove_primary");
                     this.cancel();
                 }
             }.runTaskTimer(GenesisMC.getPlugin(), 1, 1);
