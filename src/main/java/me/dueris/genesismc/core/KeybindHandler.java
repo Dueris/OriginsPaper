@@ -34,6 +34,7 @@ import static org.bukkit.ChatColor.GRAY;
 import static org.bukkit.Material.ENDER_PEARL;
 
 public class KeybindHandler implements Listener {
+
     @EventHandler
     public void OnPressMainKey(OriginKeybindExecuteEvent e) {
         if(e.getKey().equals("key.origins.primary_active")){
@@ -79,6 +80,19 @@ public class KeybindHandler implements Listener {
                 }
             }
         }
+    }
+
+    public static ItemStack getKeybindItem(String type, Inventory inventory){
+        for (ItemStack item : inventory.getContents()) {
+            if (item != null) {
+                if (item.hasItemMeta() && item.getItemMeta().getPersistentDataContainer().has(new NamespacedKey(GenesisMC.getPlugin(), "origin_item_data"))) {
+                    if(item.getItemMeta().getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "origin_item_data"), PersistentDataType.STRING).equalsIgnoreCase(type)){
+                        return item;
+                    }
+                }
+            }
+        }
+        return null;
     }
 
     @EventHandler
@@ -223,6 +237,9 @@ public class KeybindHandler implements Listener {
             if(keyName.equals("key.origins.secondary_active")){
                 return secondaryTick.contains(player);
             }
+
+            KeybindTriggerEvent keybindTriggerEvent = new KeybindTriggerEvent(player, keyName);
+
         } else {
 
             heldKeys.remove(keyName);

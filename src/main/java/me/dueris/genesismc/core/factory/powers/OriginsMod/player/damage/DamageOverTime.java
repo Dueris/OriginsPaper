@@ -60,7 +60,7 @@ public class DamageOverTime extends BukkitRunnable {
                             damage = Integer.parseInt(origin.getPowerFileFromType("origins:damage_over_time").get("damage"));
                         }
 
-                        protection_effectiveness = Double.parseDouble(origin.getPowerFileFromType("origins:damage_over_time").get("protection_effectviveness"));
+                        protection_effectiveness = Double.parseDouble(origin.getPowerFileFromType("origins:damage_over_time").get("protection_effectiveness"));
 
                         if(!ConditionExecutor.check(p, origin, "origins:damage_over_time", null, p)) return;
 

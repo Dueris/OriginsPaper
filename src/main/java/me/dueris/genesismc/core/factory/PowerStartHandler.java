@@ -146,6 +146,9 @@ public class PowerStartHandler {
 
         Grounded grounded = new Grounded();
         grounded.runTaskTimer(getPlugin(), 0, 1);
+
+        Gravity gravity = new Gravity();
+        gravity.runTaskTimer(getPlugin(), 0, 1);
     }
 
     public static void StartListeners() {
@@ -198,5 +201,6 @@ public class PowerStartHandler {
         getServer().getPluginManager().registerEvents(new Inventory(), getPlugin());
         getServer().getPluginManager().registerEvents(new InvulnerabilityDamage(), getPlugin());
         getServer().getPluginManager().registerEvents(new DisableRegen(), getPlugin());
+        getServer().getPluginManager().registerEvents(new FireProjectile(), getPlugin());
     }
 }

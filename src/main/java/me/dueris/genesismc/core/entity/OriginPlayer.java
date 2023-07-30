@@ -415,6 +415,7 @@ public class OriginPlayer {
                 case "origins:freeze" -> freeze.add(player);
                 case "origins:fire_projectile" -> fire_projectile.add(player);
                 case "origins:grounded" -> grounded.add(player);
+                case "genesis:no_gravity" -> no_gravity.add(player);
 
             }
         }
