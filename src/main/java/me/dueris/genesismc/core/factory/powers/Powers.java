@@ -131,5 +131,6 @@ public class Powers implements Listener {
     public static ArrayList<Player> weak_biome_cold = new ArrayList<>();
     public static ArrayList<Player> overworld_piglin_zombified = new ArrayList<>();
     public static ArrayList<Player> attribute_modify_transfer = new ArrayList<>();
+    public static ArrayList<Player> no_gravity = new ArrayList<>();
 
 }
