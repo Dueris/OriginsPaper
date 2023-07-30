@@ -110,6 +110,9 @@ public final class GenesisMC extends JavaPlugin implements Listener {
             Bukkit.getServer().getPluginManager().disablePlugin(this);
             return;
         }
+        for(Player p : Bukkit.getOnlinePlayers()){
+            p.setGravity(true);
+        }
         Bukkit.getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] " + Lang.lang_test).color(TextColor.fromHexString(GREEN)));
 
         //version check
@@ -173,7 +176,6 @@ public final class GenesisMC extends JavaPlugin implements Listener {
                     getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] " + Lang.getLocalizedString("startup.skinRestorer.absent")).color(TextColor.fromHexString(AQUA)));
                 }
         plugin = this;
-
 
         OrbOfOrigins.init();
         InfinPearl.init();
