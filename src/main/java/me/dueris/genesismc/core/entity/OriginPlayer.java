@@ -416,6 +416,7 @@ public class OriginPlayer {
                 case "origins:fire_projectile" -> fire_projectile.add(player);
                 case "origins:grounded" -> grounded.add(player);
                 case "genesis:no_gravity" -> no_gravity.add(player);
+                case "origins:toggle" -> toggle_power.add(player);
 
             }
         }
@@ -531,6 +532,7 @@ public class OriginPlayer {
                 case "origins:freeze" -> freeze.remove(player);
                 case "origins:fire_projectile" -> fire_projectile.remove(player);
                 case "origins:grounded" -> grounded.remove(player);
+                case "origins:toggle" -> toggle_power.remove(player);
             }
         }
     }

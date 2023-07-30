@@ -34,15 +34,15 @@ public class EntityGroupManager extends BukkitRunnable {
                     //Player case, check for power
                     for (OriginContainer origin : OriginPlayer.getOrigin(((Player) entity).getPlayer()).values()){
                         if(entity_group.contains(entity)){
-                            if(origin.getPowerFileFromType("origins:entity_group").get("group").equalsIgnoreCase("undead")){
+                            if(origin.getPowerFileFromType("origins:entity_group").get("group", null).equalsIgnoreCase("undead")){
                                 undead.put(entity.getEntityId(), entity.getType().name());
-                            } else if (origin.getPowerFileFromType("origins:entity_group").get("group").equalsIgnoreCase("arthropod")){
+                            } else if (origin.getPowerFileFromType("origins:entity_group").get("group", null).equalsIgnoreCase("arthropod")){
                                 arthropod.put(entity.getEntityId(), entity.getType().name());
-                            } else if (origin.getPowerFileFromType("origins:entity_group").get("group").equalsIgnoreCase("illager")){
+                            } else if (origin.getPowerFileFromType("origins:entity_group").get("group", null).equalsIgnoreCase("illager")){
                                 illager.put(entity.getEntityId(), entity.getType().name());
-                            } else if (origin.getPowerFileFromType("origins:entity_group").get("group").equalsIgnoreCase("aquatic")){
+                            } else if (origin.getPowerFileFromType("origins:entity_group").get("group", null).equalsIgnoreCase("aquatic")){
                                 aquatic.put(entity.getEntityId(), entity.getType().name());
-                            } else if (origin.getPowerFileFromType("origins:entity_group").get("group").equalsIgnoreCase("default")){
+                            } else if (origin.getPowerFileFromType("origins:entity_group").get("group", null).equalsIgnoreCase("default")){
                                 default_group.put(entity.getEntityId(), entity.getType().name());
                             }
                         }

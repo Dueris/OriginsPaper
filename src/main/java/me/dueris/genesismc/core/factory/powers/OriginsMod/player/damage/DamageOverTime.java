@@ -51,16 +51,16 @@ public class DamageOverTime extends BukkitRunnable {
                         return;
                     } else {
                         if(p.getWorld().getDifficulty().equals(Difficulty.EASY)){
-                            if(origin.getPowerFileFromType("origins:damage_over_time").get("damage_easy") == null){
-                                damage = Integer.parseInt(origin.getPowerFileFromType("origins:damage_over_time").get("damage"));
+                            if(origin.getPowerFileFromType("origins:damage_over_time").get("damage_easy", origin.getPowerFileFromType("origins:damage_over_time").get("damage", "1")) == null){
+                                damage = Integer.parseInt(origin.getPowerFileFromType("origins:damage_over_time").get("damage", "1"));
                             }else{
-                                damage = Integer.parseInt(origin.getPowerFileFromType("origins:damage_over_time").get("damage_easy"));
+                                damage = Integer.parseInt(origin.getPowerFileFromType("origins:damage_over_time").get("damage_easy", origin.getPowerFileFromType("origins:damage_over_time").get("damage", "1")));
                             }
                         }else{
-                            damage = Integer.parseInt(origin.getPowerFileFromType("origins:damage_over_time").get("damage"));
+                            damage = Integer.parseInt(origin.getPowerFileFromType("origins:damage_over_time").get("damage", "1"));
                         }
 
-                        protection_effectiveness = Double.parseDouble(origin.getPowerFileFromType("origins:damage_over_time").get("protection_effectiveness"));
+                        protection_effectiveness = Double.parseDouble(origin.getPowerFileFromType("origins:damage_over_time").get("protection_effectiveness", "1"));
 
                         if(!ConditionExecutor.check(p, origin, "origins:damage_over_time", null, p)) return;
 

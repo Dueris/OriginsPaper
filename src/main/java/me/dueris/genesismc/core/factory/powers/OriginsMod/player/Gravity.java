@@ -36,11 +36,14 @@ public class Gravity extends BukkitRunnable implements Listener {
                 @Override
                 public void run() {
                     if(e.getPlayer().isSneaking()){
-                        e.getPlayer().setVelocity(new Vector(e.getPlayer().getVelocity().getX(), 0.1, e.getPlayer().getVelocity().getZ()));
+                        if(e.getPlayer().getVelocity().getY() < -0.2) {
+                            //nah
+                        }else{
+                            e.getPlayer().setVelocity(new Vector(e.getPlayer().getVelocity().getX(), e.getPlayer().getVelocity().getY() - 0.1, e.getPlayer().getVelocity().getZ()));
+                        }
                     }else{
                         this.cancel();
                     }
-
                 }
             }.runTaskTimer(GenesisMC.getPlugin(), 0, 1);
         }
