@@ -35,7 +35,7 @@ startup:
   credit: "GenesisMC -- Created by The Genesis Team"
 
   versionCheck:
-    behind: "You are running a version of the plugin that is %versionsBehind% versions out of date!\n    Please install the latest version from https://modrinth.com/plugin/genesismc/versions"
+    behind: "You are running a version of the plugin that is %versionsBehind% version(s) out of date!\n    Please install the latest version from https://modrinth.com/plugin/genesismc/versions"
     current: "You are running the latest version of the plugin!"
     ahead: "You are running a dev build! Join our discord server at https://discord.gg/RKmQnU6SRt or open an issue on github for any feedback :)"
     fail: "Failed to connect to version control website!\n    You may be using an outdated version of the plugin!\n    You can install the latest version from https://modrinth.com/plugin/genesismc/versions"
