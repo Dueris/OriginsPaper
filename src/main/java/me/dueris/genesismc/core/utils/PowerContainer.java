@@ -219,14 +219,10 @@ public class PowerContainer implements Serializable {
         return (boolean) render;
     }
 
-    public String get(String thing, String defaulT){
+    public String get(String thing, String defaultValue){
         Object type = powerFile.get(thing);
         if(type == null) {
-            if(defaulT == null){
-                return null;
-            }else{
-                return defaulT;
-            }
+            return defaultValue;
         }
         return type.toString();
     }
