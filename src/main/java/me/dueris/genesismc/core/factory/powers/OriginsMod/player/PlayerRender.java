@@ -4,6 +4,7 @@ import com.destroystokyo.paper.profile.PlayerProfile;
 import me.dueris.genesismc.core.GenesisMC;
 import me.dueris.genesismc.core.entity.OriginPlayer;
 import me.dueris.genesismc.core.events.OriginChangeEvent;
+import me.dueris.genesismc.core.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.core.utils.Lang;
 import me.dueris.genesismc.core.utils.OriginContainer;
 import net.skinsrestorer.api.PlayerWrapper;
@@ -107,7 +108,26 @@ public class PlayerRender extends BukkitRunnable {
                     }
                 }
             }
+
+            if(invisibility.contains(p)){
+                for(OriginContainer origin : OriginPlayer.getOrigin(p).values()){
+                    if(ConditionExecutor.check(p, origin, "origins:invisibility", null, p)){
+                        if(origin.getPowerFileFromType("origins:invisibility").get("render_armor", "false").equalsIgnoreCase("true")){
+                            for(Player players : Bukkit.getOnlinePlayers()){
+                                players.hidePlayer(p);
+                            }
+                        }else{
+                            p.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 15, 1, false, false, false));
+                        }
+
+                        if(origin.getPowerFileFromType("origins:invisibility").get("render_outline", "false").equalsIgnoreCase("true")){
+                            p.addPotionEffect(new PotionEffect(PotionEffectType.GLOWING, 15, 1, false, false, false));
+                        }
+                    }
+                }
+            }
         }
+
     }
     public static class ModelColor extends BukkitRunnable implements Listener {
         private SkinsRestorerAPI skinsRestorerAPI = null;

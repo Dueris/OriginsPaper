@@ -6,6 +6,7 @@ import me.dueris.genesismc.core.KeybindHandler;
 import me.dueris.genesismc.core.entity.OriginPlayer;
 import me.dueris.genesismc.core.events.KeybindTriggerEvent;
 import me.dueris.genesismc.core.events.OriginKeybindExecuteEvent;
+import me.dueris.genesismc.core.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.core.utils.OriginContainer;
 import net.minecraft.nbt.CompoundTag;
 import org.bukkit.NamespacedKey;
@@ -78,18 +79,19 @@ public class FireProjectile implements Listener {
         Player p = e.getPlayer();
         for(OriginContainer origin : OriginPlayer.getOrigin(p).values()){
             if(fire_projectile.contains(p)) {
-                if (!CooldownStuff.isPlayerInCooldown(p, origin.getPowerFileFromType("origins:fire_projectile").getKey().get("key").toString())) {
-                    if (isKeyBeingPressed(e.getPlayer(), origin.getPowerFileFromType("origins:fire_projectile").getKey().get("key").toString(), true)) {
-                        new BukkitRunnable() {
-                            @Override
-                            public void run() {
-                                Sound sound;
-                                int cooldown;
-                                String tag;
-                                int speed;
-                                int amt;
-                                int start_delay;
-                                int interval;
+                if(ConditionExecutor.check(p, origin, "origins:fire_projectile", null, p)){
+                    if (!CooldownStuff.isPlayerInCooldown(p, origin.getPowerFileFromType("origins:fire_projectile").getKey().get("key").toString())) {
+                        if (isKeyBeingPressed(e.getPlayer(), origin.getPowerFileFromType("origins:fire_projectile").getKey().get("key").toString(), true)) {
+                            new BukkitRunnable() {
+                                @Override
+                                public void run() {
+                                    Sound sound;
+                                    int cooldown;
+                                    String tag;
+                                    int speed;
+                                    int amt;
+                                    int start_delay;
+                                    int interval;
 
 //                            if (origin.getPowerFileFromType("origins:fire_projectile").get("sound") == null) {
 //                                sound = Sound.ENTITY_EGG_THROW;
@@ -97,106 +99,105 @@ public class FireProjectile implements Listener {
 //                                sound = Sound.valueOf(origin.getPowerFileFromType("origins:fire_projectile").get("sound").toUpperCase().split(":")[1].replaceAll("\\.", "_"));
 //                            }
 
-                                if (origin.getPowerFileFromType("origins:fire_projectile").get("cooldown", "0") == null) {
-                                    cooldown = 1;
-                                } else {
-                                    cooldown = Integer.parseInt(origin.getPowerFileFromType("origins:fire_projectile").get("cooldown", "0"));
-                                }
+                                    if (origin.getPowerFileFromType("origins:fire_projectile").get("cooldown", "0") == null) {
+                                        cooldown = 1;
+                                    } else {
+                                        cooldown = Integer.parseInt(origin.getPowerFileFromType("origins:fire_projectile").get("cooldown", "0"));
+                                    }
 
-                                if (origin.getPowerFileFromType("origins:fire_projectile").get("tag", null) == null) {
-                                    tag = null;
-                                } else {
-                                    tag = origin.getPowerFileFromType("origins:fire_projectile").get("tag", null);
-                                }
+                                    if (origin.getPowerFileFromType("origins:fire_projectile").get("tag", null) == null) {
+                                        tag = null;
+                                    } else {
+                                        tag = origin.getPowerFileFromType("origins:fire_projectile").get("tag", null);
+                                    }
 
-                                if (origin.getPowerFileFromType("origins:fire_projectile").get("count", "1") == null) {
-                                    amt = 1;
-                                } else {
-                                    amt = parseOrDefault(origin.getPowerFileFromType("origins:fire_projectile").get("count", "1"), 1);
-                                }
+                                    if (origin.getPowerFileFromType("origins:fire_projectile").get("count", "1") == null) {
+                                        amt = 1;
+                                    } else {
+                                        amt = parseOrDefault(origin.getPowerFileFromType("origins:fire_projectile").get("count", "1"), 1);
+                                    }
 
-                                if (origin.getPowerFileFromType("origins:fire_projectile").get("start_delay", "0") == null) {
-                                    start_delay = 0;
-                                } else {
-                                    start_delay = parseOrDefault(origin.getPowerFileFromType("origins:fire_projectile").get("start_delay", "0"), 0);
-                                }
+                                    if (origin.getPowerFileFromType("origins:fire_projectile").get("start_delay", "0") == null) {
+                                        start_delay = 0;
+                                    } else {
+                                        start_delay = parseOrDefault(origin.getPowerFileFromType("origins:fire_projectile").get("start_delay", "0"), 0);
+                                    }
 
-                                if (origin.getPowerFileFromType("origins:fire_projectile").get("speed", "1") == null) {
-                                    speed = 1;
-                                } else {
-                                    speed = parseOrDefault(origin.getPowerFileFromType("origins:fire_projectile").get("speed", "1"), 1);
-                                }
+                                    if (origin.getPowerFileFromType("origins:fire_projectile").get("speed", "1") == null) {
+                                        speed = 1;
+                                    } else {
+                                        speed = parseOrDefault(origin.getPowerFileFromType("origins:fire_projectile").get("speed", "1"), 1);
+                                    }
 
-                                if (origin.getPowerFileFromType("origins:fire_projectile").get("interval", "1") == null) {
-                                    interval = 1;
-                                } else {
-                                    interval = parseOrDefault(origin.getPowerFileFromType("origins:fire_projectile").get("interval", "1"), 1);
-                                }
+                                    if (origin.getPowerFileFromType("origins:fire_projectile").get("interval", "1") == null) {
+                                        interval = 1;
+                                    } else {
+                                        interval = parseOrDefault(origin.getPowerFileFromType("origins:fire_projectile").get("interval", "1"), 1);
+                                    }
 
-                                EntityType type;
-                                if (origin.getPowerFileFromType("origins:fire_projectile").get("entity_type", null).equalsIgnoreCase("origins:enderian_pearl")) {
-                                    type = EntityType.ENDER_PEARL;
-                                    enderian_pearl.add(p);
-                                } else {
-                                    type = EntityType.valueOf(origin.getPowerFileFromType("origins:fire_projectile").get("entity_type", null).split(":")[1].toUpperCase());
-                                    enderian_pearl.remove(p);
-                                }
+                                    EntityType type;
+                                    if (origin.getPowerFileFromType("origins:fire_projectile").get("entity_type", null).equalsIgnoreCase("origins:enderian_pearl")) {
+                                        type = EntityType.ENDER_PEARL;
+                                        enderian_pearl.add(p);
+                                    } else {
+                                        type = EntityType.valueOf(origin.getPowerFileFromType("origins:fire_projectile").get("entity_type", null).split(":")[1].toUpperCase());
+                                        enderian_pearl.remove(p);
+                                    }
 
-                                String key = (String) origin.getPowerFileFromType("origins:fire_projectile").getKey().get("key");
-                                if (!CooldownStuff.isPlayerInCooldown(p, key)) {
-                                    KeybindHandler.runKeyChangeTrigger(KeybindHandler.getTriggerFromOriginKey(p, key));
+                                    String key = (String) origin.getPowerFileFromType("origins:fire_projectile").getKey().get("key");
+                                    if (!CooldownStuff.isPlayerInCooldown(p, key)) {
+                                        KeybindHandler.runKeyChangeTrigger(KeybindHandler.getTriggerFromOriginKey(p, key));
 
-                                    new BukkitRunnable() {
-                                        int shotsLeft = amt - amt - amt;
+                                        new BukkitRunnable() {
+                                            int shotsLeft = amt - amt - amt;
 
-                                        @Override
-                                        public void run() {
-                                            if (!CooldownStuff.isPlayerInCooldown(p, key)) {
-                                                if (shotsLeft >= 0) {
-                                                    if (origin.getPowerFileFromType("origins:fire_projectile").getKey().get("continuous").toString().equalsIgnoreCase("false")) {
-                                                        KeybindHandler.runKeyChangeTriggerReturn(KeybindHandler.getTriggerFromOriginKey(p, key), p, key);
-                                                        this.cancel();
-                                                    } else {
-                                                        if (!in_continuous.contains(p)) {
+                                            @Override
+                                            public void run() {
+                                                if (!CooldownStuff.isPlayerInCooldown(p, key)) {
+                                                    if (shotsLeft >= 0) {
+                                                        if (origin.getPowerFileFromType("origins:fire_projectile").getKey().get("continuous").toString().equalsIgnoreCase("false")) {
                                                             KeybindHandler.runKeyChangeTriggerReturn(KeybindHandler.getTriggerFromOriginKey(p, key), p, key);
                                                             this.cancel();
                                                         } else {
-                                                            shotsLeft = amt - amt - amt;
+                                                            if (!in_continuous.contains(p)) {
+                                                                KeybindHandler.runKeyChangeTriggerReturn(KeybindHandler.getTriggerFromOriginKey(p, key), p, key);
+                                                                this.cancel();
+                                                            } else {
+                                                                shotsLeft = amt - amt - amt;
+                                                            }
                                                         }
+                                                        return;
                                                     }
-                                                    return;
-                                                }
 
 //                                    p.playSound(p.getLocation(), 5, 1);
-                                                p.setCooldown(KeybindHandler.getKeybindItem(e.getKey(), p.getInventory()).getType(), cooldown);
+                                                    p.setCooldown(KeybindHandler.getKeybindItem(e.getKey(), p.getInventory()).getType(), cooldown);
 
-                                                if (type.getEntityClass() != null && Projectile.class.isAssignableFrom(type.getEntityClass())) {
-                                                    Projectile projectile = (Projectile) p.getWorld().spawnEntity(p.getEyeLocation(), type);
-                                                    projectile.setShooter(p);
+                                                    if (type.getEntityClass() != null && Projectile.class.isAssignableFrom(type.getEntityClass())) {
+                                                        Projectile projectile = (Projectile) p.getWorld().spawnEntity(p.getEyeLocation(), type);
+                                                        projectile.setShooter(p);
 
-                                                    projectile.setVelocity((p.getEyeLocation().getDirection().multiply(speed)));
-
-                                                    projectile.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "custom_data"), PersistentDataType.STRING, tag);
+                                                        projectile.setVelocity((p.getEyeLocation().getDirection().multiply(speed)));
 //                                        p.sendMessage(String.valueOf(amt));
 //                                        p.sendMessage(String.valueOf(shotsLeft));
+                                                    }
+
+                                                    shotsLeft++;// Decrement the remaining shots
+                                                    CooldownStuff.addCooldown(p, "origins:fire_projectile", cooldown, key);
                                                 }
-
-                                                shotsLeft++;// Decrement the remaining shots
-                                                CooldownStuff.addCooldown(p, "origins:fire_projectile", cooldown, key);
                                             }
-                                        }
-                                    }.runTaskTimer(GenesisMC.getPlugin(), start_delay, interval);
+                                        }.runTaskTimer(GenesisMC.getPlugin(), start_delay, interval);
 
-                                    if (origin.getPowerFileFromType("origins:fire_projectile").getKey().get("continuous").toString().equalsIgnoreCase("false")) {
-                                        this.cancel();
-                                    } else {
-                                        if (isKeyBeingPressed(e.getPlayer(), origin.getPowerFileFromType("origins:fire_projectile").getKey().get("key").toString(), true)) {
+                                        if (origin.getPowerFileFromType("origins:fire_projectile").getKey().get("continuous").toString().equalsIgnoreCase("false")) {
                                             this.cancel();
+                                        } else {
+                                            if (isKeyBeingPressed(e.getPlayer(), origin.getPowerFileFromType("origins:fire_projectile").getKey().get("key").toString(), true)) {
+                                                this.cancel();
+                                            }
                                         }
                                     }
                                 }
-                            }
-                        }.runTaskTimer(GenesisMC.getPlugin(), 0, 1);
+                            }.runTaskTimer(GenesisMC.getPlugin(), 0, 1);
+                        }
                     }
                 }
             }
