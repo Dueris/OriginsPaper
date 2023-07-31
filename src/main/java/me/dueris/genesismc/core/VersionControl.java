@@ -49,7 +49,7 @@ public class VersionControl {
             int diff = latestId - pluginId;
 
             if (diff > 0)
-                Bukkit.getLogger().warning("[GenesisMC] " + Lang.getLocalizedString("startup.versionCheck").replace("%versionsBehind%", String.valueOf(diff)));
+                Bukkit.getLogger().warning("[GenesisMC] " + Lang.getLocalizedString("startup.versionCheck.behind").replace("%versionsBehind%", String.valueOf(diff)));
             if (diff == 0)
                 Bukkit.getConsoleSender().sendMessage(Component.text("[GenesisMC] " + Lang.getLocalizedString("startup.versionCheck.current")).color(TextColor.fromHexString(GREEN)));
             if (diff < 0)
