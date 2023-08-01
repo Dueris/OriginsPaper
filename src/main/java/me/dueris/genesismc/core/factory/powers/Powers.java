@@ -130,6 +130,8 @@ public class Powers implements Listener {
     public static ArrayList<Player> self_action_when_hit = new ArrayList<>();
     public static ArrayList<Player> target_action_on_hit = new ArrayList<>();
 
+    //TODO: yeah gotta come back to Attribute Modifier, and Item on Item(*crys*)
+
     //genesis
     public static ArrayList<Player> hot_hands = new ArrayList<>();
     public static ArrayList<Player> extra_fire = new ArrayList<>();
