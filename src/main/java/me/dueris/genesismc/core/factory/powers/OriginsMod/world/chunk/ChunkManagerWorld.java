@@ -27,6 +27,31 @@ public class ChunkManagerWorld {
         this.world = world;
     }
 
+    @Override
+    protected void finalize() throws Throwable {
+        super.finalize();
+    }
+
+    @Override
+    protected Object clone() throws CloneNotSupportedException {
+        return super.clone();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return super.equals(obj);
+    }
+
+    @Override
+    public String toString() {
+        return super.toString();
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
+
     public ChunkManagerWorld(World world){
         this.world = world;
     }
@@ -39,8 +64,8 @@ public class ChunkManagerWorld {
         return world.getChunkAt(x, z);
     }
 
-    public ChunkManagerPlayer getPlayerChunkManager(Player player){
-        return new ChunkManagerPlayer(player);
+    public ChunkManagerPlayer getPlayerChunkManager(Player player, String shape){
+        return new ChunkManagerPlayer(player, shape);
     }
 
     public Block getBlockAtChunkPos(Chunk chunk, int x, int y, int z){
