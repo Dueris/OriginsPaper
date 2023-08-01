@@ -68,17 +68,21 @@ public class KeybindHandler implements Listener {
             if(e.getItem().getItemMeta() != null){
                 if(e.getItem().getItemMeta().getPersistentDataContainer().has(new NamespacedKey(GenesisMC.getPlugin(), "origin_item_data"))){
                     if(e.getItem().getItemMeta().getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "origin_item_data"), PersistentDataType.STRING).equalsIgnoreCase("key.origins.primary_active")){
-                        OriginKeybindExecuteEvent originKeybindExecuteEvent = new OriginKeybindExecuteEvent(e.getPlayer(), "key.origins.primary_active", e.getItem());
-                        Bukkit.getServer().getPluginManager().callEvent(originKeybindExecuteEvent);
-                        KeybindTriggerEvent KeybindExecuteEvent = new KeybindTriggerEvent(e.getPlayer(), "key.origins.primary_active");
-                        Bukkit.getServer().getPluginManager().callEvent(KeybindExecuteEvent);
-                        e.setCancelled(true);
+                        if(!e.getItem().getType().equals(Material.LIME_DYE)){
+                            OriginKeybindExecuteEvent originKeybindExecuteEvent = new OriginKeybindExecuteEvent(e.getPlayer(), "key.origins.primary_active", e.getItem());
+                            Bukkit.getServer().getPluginManager().callEvent(originKeybindExecuteEvent);
+                            KeybindTriggerEvent KeybindExecuteEvent = new KeybindTriggerEvent(e.getPlayer(), "key.origins.primary_active");
+                            Bukkit.getServer().getPluginManager().callEvent(KeybindExecuteEvent);
+                            e.setCancelled(true);
+                        }
                     } else if (e.getItem().getItemMeta().getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "origin_item_data"), PersistentDataType.STRING).equalsIgnoreCase("key.origins.secondary_active")) {
-                        OriginKeybindExecuteEvent originKeybindExecuteEvent = new OriginKeybindExecuteEvent(e.getPlayer(), "key.origins.secondary_active", e.getItem());
-                        Bukkit.getServer().getPluginManager().callEvent(originKeybindExecuteEvent);
-                        KeybindTriggerEvent KeybindExecuteEvent = new KeybindTriggerEvent(e.getPlayer(), "key.origins.secondary_active");
-                        Bukkit.getServer().getPluginManager().callEvent(KeybindExecuteEvent);
-                        e.setCancelled(true);
+                        if(!e.getItem().getType().equals(Material.LIME_DYE)){
+                            OriginKeybindExecuteEvent originKeybindExecuteEvent = new OriginKeybindExecuteEvent(e.getPlayer(), "key.origins.secondary_active", e.getItem());
+                            Bukkit.getServer().getPluginManager().callEvent(originKeybindExecuteEvent);
+                            KeybindTriggerEvent KeybindExecuteEvent = new KeybindTriggerEvent(e.getPlayer(), "key.origins.secondary_active");
+                            Bukkit.getServer().getPluginManager().callEvent(KeybindExecuteEvent);
+                            e.setCancelled(true);
+                        }
                     }
                 }
             }
