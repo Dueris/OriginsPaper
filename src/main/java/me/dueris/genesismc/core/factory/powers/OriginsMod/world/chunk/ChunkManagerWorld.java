@@ -64,8 +64,8 @@ public class ChunkManagerWorld {
         return world.getChunkAt(x, z);
     }
 
-    public ChunkManagerPlayer getPlayerChunkManager(Player player, String shape){
-        return new ChunkManagerPlayer(player, shape);
+    public ChunkManagerPlayer getPlayerChunkManager(Player player, String shape, boolean usetoppybottom){
+        return new ChunkManagerPlayer(player, shape, usetoppybottom);
     }
 
     public Block getBlockAtChunkPos(Chunk chunk, int x, int y, int z){
