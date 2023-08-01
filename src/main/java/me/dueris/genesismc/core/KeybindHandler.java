@@ -174,15 +174,7 @@ public class KeybindHandler implements Listener {
 
     @EventHandler
     public void deathDropCancel(PlayerDeathEvent e){
-        if(e.getDrops() == null){
-            //do nothin
-        }else{
-            for(ItemStack itemStack : e.getDrops()){
-                if(itemStack.getItemMeta().getPersistentDataContainer().has(new NamespacedKey(GenesisMC.getPlugin(), "origin_item_data"))){
-                    e.getDrops().remove(itemStack);
-                }
-            }
-        }
+        e.getDrops().removeIf(itemStack -> itemStack.getItemMeta().getPersistentDataContainer().has(new NamespacedKey(GenesisMC.getPlugin(), "origin_item_data")));
     }
 
     @EventHandler
