@@ -418,6 +418,26 @@ public class OriginPlayer {
                 case "genesis:no_gravity" -> no_gravity.add(player);
                 case "origins:toggle" -> toggle_power.add(player);
 
+                //actions
+                case "origins:action_on_being_used" -> action_on_being_used.add(player);
+                case "origins:action_on_being_hit" -> action_on_being_hit.add(player);
+                case "origins:action_on_block_break" -> action_on_block_break.add(player);
+                case "origins:action_on_block_use" -> action_on_block_use.add(player);
+                case "origins:action_on_callback" -> action_on_callback.add(player);
+                case "origins:action_on_entity_use" -> action_on_entity_use.add(player);
+                case "origins:action_on_hit" -> action_on_hit.add(player);
+                case "origins:action_on_item_use" -> action_on_item_use.add(player);
+                case "origins:action_on_land" -> action_on_land.add(player);
+                case "origins:action_on_wake_up" -> action_on_wake_up.add(player);
+                case "origins:action_ove_time"-> action_ove_time.add(player);
+                case "origins:action_when_damage_taken" -> action_when_damage_taken.add(player);
+                case "origins:action_when_hit" -> action_when_hit.add(player);
+                case "origins:active_self" -> active_self.add(player);
+                case "origins:attacker_action_when_hit" -> attacker_action_when_hit.add(player);
+                case "origins:self_action_on_hit" -> self_action_on_hit.add(player);
+                case "origins:self_action_on_kill" -> self_action_on_kill.add(player);
+                case "origins:self_action_when_hit" -> self_action_when_hit.add(player);
+                case "origins:target_action_on_hit" -> target_action_on_hit.add(player);
             }
         }
     }
@@ -533,6 +553,27 @@ public class OriginPlayer {
                 case "origins:fire_projectile" -> fire_projectile.remove(player);
                 case "origins:grounded" -> grounded.remove(player);
                 case "origins:toggle" -> toggle_power.remove(player);
+
+                //actions
+                case "origins:action_on_being_used" -> action_on_being_used.remove(player);
+                case "origins:action_on_being_hit" -> action_on_being_hit.remove(player);
+                case "origins:action_on_block_break" -> action_on_block_break.remove(player);
+                case "origins:action_on_block_use" -> action_on_block_use.remove(player);
+                case "origins:action_on_callback" -> action_on_callback.remove(player);
+                case "origins:action_on_entity_use" -> action_on_entity_use.remove(player);
+                case "origins:action_on_hit" -> action_on_hit.remove(player);
+                case "origins:action_on_item_use" -> action_on_item_use.remove(player);
+                case "origins:action_on_land" -> action_on_land.remove(player);
+                case "origins:action_on_wake_up" -> action_on_wake_up.remove(player);
+                case "origins:action_ove_time"-> action_ove_time.remove(player);
+                case "origins:action_when_damage_taken" -> action_when_damage_taken.remove(player);
+                case "origins:action_when_hit" -> action_when_hit.remove(player);
+                case "origins:active_self" -> active_self.remove(player);
+                case "origins:attacker_action_when_hit" -> attacker_action_when_hit.remove(player);
+                case "origins:self_action_on_hit" -> self_action_on_hit.remove(player);
+                case "origins:self_action_on_kill" -> self_action_on_kill.remove(player);
+                case "origins:self_action_when_hit" -> self_action_when_hit.remove(player);
+                case "origins:target_action_on_hit" -> target_action_on_hit.remove(player);
             }
         }
     }

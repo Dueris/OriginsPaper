@@ -108,6 +108,28 @@ public class Powers implements Listener {
     public static ArrayList<Player> walk_on_fluid = new ArrayList<>();
     public static ArrayList<Player> bioluminescent = new ArrayList<>();
     public static ArrayList<Player> damage_over_time = new ArrayList<>();
+
+    //actions
+    public static ArrayList<Player> action_on_being_used = new ArrayList<>();
+    public static ArrayList<Player> action_on_being_hit = new ArrayList<>();
+    public static ArrayList<Player> action_on_block_break = new ArrayList<>();
+    public static ArrayList<Player> action_on_block_use = new ArrayList<>();
+    public static ArrayList<Player> action_on_callback = new ArrayList<>();
+    public static ArrayList<Player> action_on_entity_use = new ArrayList<>();
+    public static ArrayList<Player> action_on_hit = new ArrayList<>();
+    public static ArrayList<Player> action_on_item_use = new ArrayList<>();
+    public static ArrayList<Player> action_on_land = new ArrayList<>();
+    public static ArrayList<Player> action_on_wake_up = new ArrayList<>();
+    public static ArrayList<Player> action_ove_time = new ArrayList<>();
+    public static ArrayList<Player> action_when_damage_taken = new ArrayList<>();
+    public static ArrayList<Player> action_when_hit = new ArrayList<>();
+    public static ArrayList<Player> active_self = new ArrayList<>();
+    public static ArrayList<Player> attacker_action_when_hit = new ArrayList<>();
+    public static ArrayList<Player> self_action_on_hit = new ArrayList<>();
+    public static ArrayList<Player> self_action_on_kill = new ArrayList<>();
+    public static ArrayList<Player> self_action_when_hit = new ArrayList<>();
+    public static ArrayList<Player> target_action_on_hit = new ArrayList<>();
+
     //genesis
     public static ArrayList<Player> hot_hands = new ArrayList<>();
     public static ArrayList<Player> extra_fire = new ArrayList<>();
