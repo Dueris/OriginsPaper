@@ -62,7 +62,7 @@ public class DamageOverTime extends BukkitRunnable {
 
                         protection_effectiveness = Double.parseDouble(origin.getPowerFileFromType("origins:damage_over_time").get("protection_effectiveness", "1"));
 
-                        if(!ConditionExecutor.check(p, origin, "origins:damage_over_time", null, p)) return;
+                        if(!ConditionExecutor.check("condition", p, origin, "origins:damage_over_time", null, p)) return;
 
                         if (p.getGameMode().equals(GameMode.SURVIVAL) || p.getGameMode().equals(GameMode.ADVENTURE)) {
                             float helemt_modifier = 0;
