@@ -19,7 +19,7 @@ public class FireImmunity implements Listener {
         if (e.getEntity() instanceof Player p) {
             for(OriginContainer origin : OriginPlayer.getOrigin(p).values()){
                 if (fire_immunity.contains(p)) {
-                    if(ConditionExecutor.check(p, origin, "origins:fire_immunity", null, p)) {
+                    if(ConditionExecutor.check("condition", p, origin, "origins:fire_immunity", null, p)) {
                         if (e.getCause().equals(EntityDamageEvent.DamageCause.FIRE) || e.getCause().equals(EntityDamageEvent.DamageCause.HOT_FLOOR) || e.getCause().equals(EntityDamageEvent.DamageCause.FIRE_TICK) || e.getCause().equals(EntityDamageEvent.DamageCause.LAVA)) {
                             e.setCancelled(true);
                             e.setDamage(0);

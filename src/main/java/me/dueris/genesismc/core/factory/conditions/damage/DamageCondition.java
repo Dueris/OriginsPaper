@@ -15,15 +15,15 @@ import static org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 
 public class DamageCondition extends Condition {
 
-    public static String check(Player p, OriginContainer origin, String powerfile, EntityDamageEvent e) {
-        if(origin.getPowerFileFromType(powerfile).getDamageCondition() == null) return "null";
-        if(origin.getPowerFileFromType(powerfile).getDamageCondition().get("type") == null) return "null";
+    public static String check(String thinger, Player p, OriginContainer origin, String powerfile, EntityDamageEvent e) {
+        if(origin.getPowerFileFromType(powerfile).getConditionFromString(thinger) == null) return "null";
+        if(origin.getPowerFileFromType(powerfile).getConditionFromString(thinger).get("type") == null) return "null";
 
-        String type = origin.getPowerFileFromType(powerfile).getDamageCondition().get("type").toString();
+        String type = origin.getPowerFileFromType(powerfile).getConditionFromString(thinger).get("type").toString();
 
         if (type.equalsIgnoreCase("origins:amount")) {
-            String comparison = origin.getPowerFileFromType(powerfile).getDamageCondition().get("comparison").toString();
-            Long compare_to = (Long) origin.getPowerFileFromType(powerfile).getDamageCondition().get("compare_to");
+            String comparison = origin.getPowerFileFromType(powerfile).getConditionFromString(thinger).get("comparison").toString();
+            Long compare_to = (Long) origin.getPowerFileFromType(powerfile).getConditionFromString(thinger).get("compare_to");
 
             if (RestrictArmor.compareValues(e.getDamage(), comparison, compare_to)) {
                 return "true";
@@ -34,7 +34,7 @@ public class DamageCondition extends Condition {
 
         if (type.equalsIgnoreCase("origins:attacker")) {
             if(e instanceof EntityDamageByEntityEvent event){
-                EntityCondition.check(p, origin, powerfile, event.getDamager());
+                EntityCondition.check(thinger, p, origin, powerfile, event.getDamager());
             }
         }
 
@@ -92,12 +92,12 @@ public class DamageCondition extends Condition {
         }
 
         if (type.equalsIgnoreCase("origins:in_tag")) {
-            String tag = origin.getPowerFileFromType(powerfile).getDamageCondition().get("tag").toString();
+            String tag = origin.getPowerFileFromType(powerfile).getConditionFromString(thinger).get("tag").toString();
             //need to parse tag folder
         }
 
         if (type.equalsIgnoreCase("origins:name")) {
-            String name = origin.getPowerFileFromType(powerfile).getDamageCondition().get("name").toString();
+            String name = origin.getPowerFileFromType(powerfile).getConditionFromString(thinger).get("name").toString();
 
             if (name.equalsIgnoreCase("anvil")) {
                 if (e.getCause().equals(DamageCause.FALLING_BLOCK)) {

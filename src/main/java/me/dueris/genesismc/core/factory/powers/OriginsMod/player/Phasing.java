@@ -94,7 +94,7 @@ public class Phasing extends BukkitRunnable implements Listener {
                                 Location currentLocation = p.getLocation();
                                 Location targetLocation = currentLocation.getBlock().getRelative(BlockFace.DOWN).getLocation();
                                 Location loc = new Location(targetLocation.getWorld(), targetLocation.getX(), targetLocation.getY(), targetLocation.getZ(), p.getEyeLocation().getYaw(), p.getEyeLocation().getPitch());
-                                if(EntityCondition.check(p, origin, "origins:phasing", p) == "true" || EntityCondition.check(p, origin, "origins:phasing", p) == "null"){
+                                if(EntityCondition.check("phase_down_condition", p, origin, "origins:phasing", p) == "true" || EntityCondition.check("phase_down_condition", p, origin, "origins:phasing", p) == "null"){
                                     p.teleport(loc);
                                 }
                             }
@@ -110,7 +110,7 @@ public class Phasing extends BukkitRunnable implements Listener {
         for (Player p : Bukkit.getOnlinePlayers()) {
             if (phasing.contains(p)) {
                 for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
-                    if (ConditionExecutor.check(p, origin, "origins:phasing", null, p)) {
+                    if (ConditionExecutor.check("block_condition", p, origin, "origins:phasing", null, p)) {
                         if (OriginPlayer.isInPhantomForm(p)) {
                             if ((p.getLocation().add(0.55F, 0, 0.55F).getBlock().isSolid() ||
                             p.getLocation().add(0.55F, 0, 0).getBlock().isSolid() ||
@@ -242,7 +242,7 @@ public class Phasing extends BukkitRunnable implements Listener {
                 if (e.getItem() != null) {
                     if (e.getItem().isSimilar(spectatorswitch)) {
                         if(phantomid){
-                            if (ConditionExecutor.check(p, origin, "origins:phasing", null, p)) {
+                            if (ConditionExecutor.check("condition", p, origin, "origins:phasing", null, p)) {
                                 OriginPlayer.setOriginData(p, OriginDataType.IN_PHASING_FORM, false);
                                 p.sendActionBar(DARK_AQUA + Lang.getLocalizedString("powers.phasing.deactivated"));
                                 if (p.getGameMode().equals(GameMode.SPECTATOR)) {
@@ -258,7 +258,7 @@ public class Phasing extends BukkitRunnable implements Listener {
                                 }
                             }
                         }else{
-                            if (ConditionExecutor.check(p, origin, "origins:phasing", null, p)) {
+                            if (ConditionExecutor.check("condition", p, origin, "origins:phasing", null, p)) {
                                 p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.BOOLEAN, true);
                                 OriginPlayer.setOriginData(p, OriginDataType.IN_PHASING_FORM, true);
                                 p.sendActionBar(DARK_AQUA + Lang.getLocalizedString("powers.phasing.activated"));

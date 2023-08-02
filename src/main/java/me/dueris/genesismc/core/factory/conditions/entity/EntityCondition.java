@@ -19,13 +19,13 @@ import java.io.IOException;
 
 public class EntityCondition {
 
-    public static String check(Player p, OriginContainer origin, String powerfile, Entity entity){
-        if(origin.getPowerFileFromType(powerfile).getEntityCondition() == null) return "null";
-        if(origin.getPowerFileFromType(powerfile).getEntityCondition().get("type") == null) return "null";
+    public static String check(String thinger, Player p, OriginContainer origin, String powerfile, Entity entity){
+        if(origin.getPowerFileFromType(powerfile).getConditionFromString(thinger) == null) return "null";
+        if(origin.getPowerFileFromType(powerfile).getConditionFromString(thinger).get("type") == null) return "null";
         p.sendMessage("entity_start");
-        String type = origin.getPowerFileFromType(powerfile).getEntityCondition().get("type").toString();
+        String type = origin.getPowerFileFromType(powerfile).getConditionFromString(thinger).get("type").toString();
         if(type.equalsIgnoreCase("origins:ability")){
-            String ability = origin.getPowerFileFromType(powerfile).getEntityCondition().get("ability").toString();
+            String ability = origin.getPowerFileFromType(powerfile).getConditionFromString(thinger).get("ability").toString();
             if(ability.equalsIgnoreCase("minecraft:flying")){
                 if(entity instanceof Player player){
                     if(player.isFlying()) return "true";
@@ -53,7 +53,7 @@ public class EntityCondition {
         }
 
         if(type.equalsIgnoreCase("origins:advancement")){
-            String advancementString = origin.getPowerFileFromType(powerfile).getEntityCondition().get("advancement").toString();
+            String advancementString = origin.getPowerFileFromType(powerfile).getConditionFromString(thinger).get("advancement").toString();
             if(entity instanceof Player player){
                 World world = player.getWorld();
                 File worldFolder = world.getWorldFolder();
@@ -83,7 +83,7 @@ public class EntityCondition {
 
         if(type.equalsIgnoreCase("origins:air")){
             if(entity instanceof Player player){
-                if(RestrictArmor.compareValues(player.getRemainingAir(), origin.getPowerFileFromType(powerfile).getEntityCondition().get("comparison").toString(), Integer.valueOf(origin.getPowerFileFromType(powerfile).getEntityCondition().get("compare_to").toString()))){
+                if(RestrictArmor.compareValues(player.getRemainingAir(), origin.getPowerFileFromType(powerfile).getConditionFromString(thinger).get("comparison").toString(), Integer.valueOf(origin.getPowerFileFromType(powerfile).getConditionFromString(thinger).get("compare_to").toString()))){
                     return "true";
                 }
             }
@@ -91,8 +91,8 @@ public class EntityCondition {
 
         if(type.equalsIgnoreCase("origins:attribute")){
             if(entity instanceof Player player){
-                String attributeString = origin.getPowerFileFromType(powerfile).getEntityCondition().get("attribute").toString().split(":")[1].replace(".", "_").toUpperCase();
-                if(RestrictArmor.compareValues(player.getAttribute(Attribute.valueOf(attributeString)).getValue(), origin.getPowerFileFromType(powerfile).getEntityCondition().get("comparison").toString(), Integer.valueOf(origin.getPowerFileFromType(powerfile).getEntityCondition().get("compare_to").toString()))){
+                String attributeString = origin.getPowerFileFromType(powerfile).getConditionFromString(thinger).get("attribute").toString().split(":")[1].replace(".", "_").toUpperCase();
+                if(RestrictArmor.compareValues(player.getAttribute(Attribute.valueOf(attributeString)).getValue(), origin.getPowerFileFromType(powerfile).getConditionFromString(thinger).get("comparison").toString(), Integer.valueOf(origin.getPowerFileFromType(powerfile).getConditionFromString(thinger).get("compare_to").toString()))){
                     return "true";
                 }
             }
@@ -101,7 +101,7 @@ public class EntityCondition {
         // TODO: continue entity_condition to use biome condition for origins:biome in some cases. see https://origins.readthedocs.io/en/latest/types/entity_condition_types/biome/
 
         if(type.equalsIgnoreCase("origins:biome")){
-            String biomeString = origin.getPowerFileFromType(powerfile).getEntityCondition().get("biome").toString().split(":")[1].replace(".", "_").toUpperCase();
+            String biomeString = origin.getPowerFileFromType(powerfile).getConditionFromString(thinger).get("biome").toString().split(":")[1].replace(".", "_").toUpperCase();
             if(entity.getLocation().getBlock().getBiome().equals(Biome.valueOf(biomeString))){
                 return "true";
             }
@@ -109,9 +109,9 @@ public class EntityCondition {
 
         if(type.equalsIgnoreCase("origins:block_collision")){
             // TODO: add block_condition check for origins:block_collision. see https://origins.readthedocs.io/en/latest/types/entity_condition_types/block_collision/
-            String offsetX = origin.getPowerFileFromType(powerfile).getEntityCondition().get("offset_x").toString();
-            String offsetY = origin.getPowerFileFromType(powerfile).getEntityCondition().get("offset_y").toString();
-            String offsetZ = origin.getPowerFileFromType(powerfile).getEntityCondition().get("offset_z").toString();
+            String offsetX = origin.getPowerFileFromType(powerfile).getConditionFromString(thinger).get("offset_x").toString();
+            String offsetY = origin.getPowerFileFromType(powerfile).getConditionFromString(thinger).get("offset_y").toString();
+            String offsetZ = origin.getPowerFileFromType(powerfile).getConditionFromString(thinger).get("offset_z").toString();
             if(entity instanceof Player player){
                 Location playerLocation = player.getLocation();
                 World world = player.getWorld();
@@ -130,10 +130,10 @@ public class EntityCondition {
 
         if(type.equalsIgnoreCase("origins:block_in_radius")){
             // TODO: add block_condition check for origins:block_collision. see https://origins.readthedocs.io/en/latest/types/entity_condition_types/block_collision/
-            Integer radius = (Integer) origin.getPowerFileFromType(powerfile).getEntityCondition().get("radius");
-            String shape = origin.getPowerFileFromType(powerfile).getEntityCondition().get("shape").toString();
-            String comparison = origin.getPowerFileFromType(powerfile).getEntityCondition().get("comparison").toString();
-            Integer compare_to = Integer.valueOf(origin.getPowerFileFromType(powerfile).getEntityCondition().get("compare_to").toString());
+            Integer radius = (Integer) origin.getPowerFileFromType(powerfile).getConditionFromString(thinger).get("radius");
+            String shape = origin.getPowerFileFromType(powerfile).getConditionFromString(thinger).get("shape").toString();
+            String comparison = origin.getPowerFileFromType(powerfile).getConditionFromString(thinger).get("comparison").toString();
+            Integer compare_to = Integer.valueOf(origin.getPowerFileFromType(powerfile).getConditionFromString(thinger).get("compare_to").toString());
 
             Location center = entity.getLocation();
             int centerX = center.getBlockX();
@@ -164,8 +164,8 @@ public class EntityCondition {
         }
 
         if(type.equalsIgnoreCase("origins:brightness")){
-            String comparison = origin.getPowerFileFromType(powerfile).getEntityCondition().get("comparison").toString();
-            Double compare_to = Double.valueOf(origin.getPowerFileFromType(powerfile).getEntityCondition().get("compare_to").toString());
+            String comparison = origin.getPowerFileFromType(powerfile).getConditionFromString(thinger).get("comparison").toString();
+            Double compare_to = Double.valueOf(origin.getPowerFileFromType(powerfile).getConditionFromString(thinger).get("compare_to").toString());
             double brightness = 0;
             int lightLevel = entity.getLocation().getBlock().getLightLevel();
             int ambientLight = 0;
@@ -226,12 +226,12 @@ public class EntityCondition {
         }
 
         if(type.equalsIgnoreCase("origins:dimension")){
-            if(origin.getPowerFileFromType(powerfile).getEntityCondition().get("inverted").toString() == "true"){
-                if(!entity.getWorld().getEnvironment().equals(origin.getPowerFileFromType(powerfile).getEntityCondition().get("dimension").toString().split(":")[1].replace("the_", "").toUpperCase())){
+            if(origin.getPowerFileFromType(powerfile).getConditionFromString(thinger).get("inverted").toString() == "true"){
+                if(!entity.getWorld().getEnvironment().equals(origin.getPowerFileFromType(powerfile).getConditionFromString(thinger).get("dimension").toString().split(":")[1].replace("the_", "").toUpperCase())){
                     return "true";
                 }
             }else{
-                if(entity.getWorld().getEnvironment().equals(origin.getPowerFileFromType(powerfile).getEntityCondition().get("dimension").toString().split(":")[1].replace("the_", "").toUpperCase())){
+                if(entity.getWorld().getEnvironment().equals(origin.getPowerFileFromType(powerfile).getConditionFromString(thinger).get("dimension").toString().split(":")[1].replace("the_", "").toUpperCase())){
                     return "true";
                 }
             }

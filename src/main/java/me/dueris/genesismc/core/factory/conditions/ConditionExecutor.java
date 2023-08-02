@@ -8,17 +8,16 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;
 
 public class ConditionExecutor {
-    public static boolean check(Player p, OriginContainer origin, String powerfile, EntityDamageEvent dmgevent, Entity entity){
+    public static boolean check(String keythingerthatineedtogetforthethingeridkwhyimadethissolonglmao, Player p, OriginContainer origin, String powerfile, EntityDamageEvent dmgevent, Entity entity){
         if(dmgevent != null){
-            if(DamageCondition.check(p, origin, powerfile, dmgevent) == "true") return true;
+            if(DamageCondition.check(keythingerthatineedtogetforthethingeridkwhyimadethissolonglmao, p, origin, powerfile, dmgevent) == "true") return true;
         }
         if(entity != null){
-            if(EntityCondition.check(p, origin, powerfile, entity) == "true") return true;
+            if(EntityCondition.check(keythingerthatineedtogetforthethingeridkwhyimadethissolonglmao, p, origin, powerfile, entity) == "true") return true;
         }
 
         //final check
         if(origin.getPowerFileFromType(powerfile).getEntityCondition() == null && origin.getPowerFileFromType(powerfile).getDamageCondition() == null) return true;
-        return DamageCondition.check(p, origin, powerfile, dmgevent) == "null" && EntityCondition.check(p, origin, powerfile, entity) == "null";
+        return DamageCondition.check(keythingerthatineedtogetforthethingeridkwhyimadethissolonglmao, p, origin, powerfile, dmgevent) == "null" && EntityCondition.check(keythingerthatineedtogetforthethingeridkwhyimadethissolonglmao, p, origin, powerfile, entity) == "null";
     }
 }
-
