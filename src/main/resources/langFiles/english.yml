@@ -20,7 +20,7 @@
 # %originFileName% - replaced with the name of the origin file.
 # %datapack% - replaced with the name of the datapack.
 # %sep% - replaced with the file separator. E.G "\" on Windows.
-# %namespace% - replaced with the namespace of the custom origin - The name of the folder at "yourCustomOriginFolder/data/"
+# %namespace% - replaced with the namespace of the custom origin - The name of the folder at "yourCustomOriginFolder/data/".
 # %layerName% - replaced with the name of the layer.
 # %fileName% - replaced with the name of the file.
 #

@@ -6,7 +6,7 @@
 # ~~~~~~~~~~~~~~~~~
 
 # Determines language file to read, replace with the second word in the options list for your language.
-# Options: english = english, deutsch = german, русский = russian, 繁体中文 = trad-chinese
+# Options: english = english
 lang: english
 
 # Enables debug information, when making a bug report, please include a screenshot of the startup while this is "true".
