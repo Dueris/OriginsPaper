@@ -19,6 +19,7 @@ import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerTeleportEvent;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
@@ -162,6 +163,7 @@ public class FireProjectile implements Listener {
 
                                             float finalDivergence = divergence;
                                             float finalDivergence1 = divergence;
+                                            final boolean[] thing = new boolean[1];
                                             new BukkitRunnable() {
                                                 int shotsLeft = amt - amt - amt;
 
@@ -173,16 +175,27 @@ public class FireProjectile implements Listener {
                                                                 KeybindHandler.runKeyChangeTriggerReturn(KeybindHandler.getTriggerFromOriginKey(p, key), p, key);
                                                                 CooldownStuff.addCooldown(p, "origins:fire_projectile", cooldown, key);
                                                                 peopladf.remove(p);
+                                                                ItemMeta met = KeybindHandler.getKeybindItem(key, p.getInventory()).getItemMeta();
+                                                                met.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "contin"), PersistentDataType.BOOLEAN, false);
+                                                                KeybindHandler.getKeybindItem(key, p.getInventory()).setItemMeta(met);
                                                                 shotsLeft = 0;
+                                                                thing[0] = true;
                                                                 this.cancel();
                                                             } else {
                                                                 if (!in_continuous.contains(p)) {
                                                                     KeybindHandler.runKeyChangeTriggerReturn(KeybindHandler.getTriggerFromOriginKey(p, key), p, key);
                                                                     CooldownStuff.addCooldown(p, "origins:fire_projectile", cooldown, key);
                                                                     peopladf.remove(p);
+                                                                    ItemMeta met = KeybindHandler.getKeybindItem(key, p.getInventory()).getItemMeta();
+                                                                    met.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "contin"), PersistentDataType.BOOLEAN, false);
+                                                                    KeybindHandler.getKeybindItem(key, p.getInventory()).setItemMeta(met);
                                                                     shotsLeft = 0;
+                                                                    thing[0] = true;
                                                                     this.cancel();
                                                                 } else {
+                                                                    ItemMeta met = KeybindHandler.getKeybindItem(key, p.getInventory()).getItemMeta();
+                                                                    met.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "contin"), PersistentDataType.BOOLEAN, true);
+                                                                    KeybindHandler.getKeybindItem(key, p.getInventory()).setItemMeta(met);
                                                                     shotsLeft = amt - amt - amt;
                                                                 }
                                                             }
@@ -218,10 +231,21 @@ public class FireProjectile implements Listener {
                                                 }
                                             }.runTaskTimer(GenesisMC.getPlugin(), start_delay, interval);
 
+                                            if(thing[0] == true){
+                                                thing[0] = false;
+                                                this.cancel();
+                                            }
+
                                             if (origin.getPowerFileFromType("origins:fire_projectile").getKey().get("continuous").toString().equalsIgnoreCase("false")) {
+                                                ItemMeta met = KeybindHandler.getKeybindItem(key, p.getInventory()).getItemMeta();
+                                                met.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "contin"), PersistentDataType.BOOLEAN, false);
+                                                KeybindHandler.getKeybindItem(key, p.getInventory()).setItemMeta(met);
                                                 this.cancel();
                                             } else {
                                                 if (isKeyBeingPressed(e.getPlayer(), origin.getPowerFileFromType("origins:fire_projectile").getKey().get("key").toString(), true)) {
+                                                    ItemMeta met = KeybindHandler.getKeybindItem(key, p.getInventory()).getItemMeta();
+                                                    met.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "contin"), PersistentDataType.BOOLEAN, false);
+                                                    KeybindHandler.getKeybindItem(key, p.getInventory()).setItemMeta(met);
                                                     this.cancel();
                                                 }
                                             }

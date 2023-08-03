@@ -74,6 +74,14 @@ public class KeybindHandler implements Listener {
                             KeybindTriggerEvent KeybindExecuteEvent = new KeybindTriggerEvent(e.getPlayer(), "key.origins.primary_active");
                             Bukkit.getServer().getPluginManager().callEvent(KeybindExecuteEvent);
                             e.setCancelled(true);
+                        }else{
+                            if(e.getItem().getItemMeta().getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "contin"), PersistentDataType.BOOLEAN)){
+                                OriginKeybindExecuteEvent originKeybindExecuteEvent = new OriginKeybindExecuteEvent(e.getPlayer(), "key.origins.primary_active", e.getItem());
+                                Bukkit.getServer().getPluginManager().callEvent(originKeybindExecuteEvent);
+                                KeybindTriggerEvent KeybindExecuteEvent = new KeybindTriggerEvent(e.getPlayer(), "key.origins.primary_active");
+                                Bukkit.getServer().getPluginManager().callEvent(KeybindExecuteEvent);
+                                e.setCancelled(true);
+                            }
                         }
                     } else if (e.getItem().getItemMeta().getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "origin_item_data"), PersistentDataType.STRING).equalsIgnoreCase("key.origins.secondary_active")) {
                         if(!e.getItem().getType().equals(Material.LIME_DYE)){
@@ -82,6 +90,14 @@ public class KeybindHandler implements Listener {
                             KeybindTriggerEvent KeybindExecuteEvent = new KeybindTriggerEvent(e.getPlayer(), "key.origins.secondary_active");
                             Bukkit.getServer().getPluginManager().callEvent(KeybindExecuteEvent);
                             e.setCancelled(true);
+                        }else{
+                            if(e.getItem().getItemMeta().getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "contin"), PersistentDataType.BOOLEAN)){
+                                OriginKeybindExecuteEvent originKeybindExecuteEvent = new OriginKeybindExecuteEvent(e.getPlayer(), "key.origins.secondary_active", e.getItem());
+                                Bukkit.getServer().getPluginManager().callEvent(originKeybindExecuteEvent);
+                                KeybindTriggerEvent KeybindExecuteEvent = new KeybindTriggerEvent(e.getPlayer(), "key.origins.secondary_active");
+                                Bukkit.getServer().getPluginManager().callEvent(KeybindExecuteEvent);
+                                e.setCancelled(true);
+                            }
                         }
                     }
                 }
@@ -104,7 +120,6 @@ public class KeybindHandler implements Listener {
 
     @EventHandler
     public void OnCraftAttempt(PrepareItemCraftEvent e) {
-
         for (ItemStack ingredient : e.getInventory().getMatrix()) {
             if(ingredient.getItemMeta().getPersistentDataContainer().has(new NamespacedKey(GenesisMC.getPlugin(), "origins_item_data"))){
                 e.getInventory().setResult(null);
@@ -145,6 +160,7 @@ public class KeybindHandler implements Listener {
         itemMeta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
         itemMeta.setDisplayName(ChatColor.GRAY + "Keybind : " + keybindType);
         itemMeta.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origin_item_data"), PersistentDataType.STRING, valueKEY);
+        itemMeta.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "contin"), PersistentDataType.BOOLEAN, false);
         itemStack.setItemMeta(itemMeta);
         return itemStack;
     }
