@@ -23,6 +23,7 @@ import java.util.ArrayList;
 
 import static me.dueris.genesismc.core.KeybindHandler.isKeyBeingPressed;
 import static me.dueris.genesismc.core.factory.powers.Powers.fire_projectile;
+import static me.dueris.genesismc.core.factory.powers.Powers.launch_into_air;
 
 public class Launch implements Listener {
     @EventHandler
@@ -31,7 +32,7 @@ public class Launch implements Listener {
         ArrayList<Player> peopladf = new ArrayList<>();
         if(!peopladf.contains(p)) {
             for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
-                if (fire_projectile.contains(p)) {
+                if (launch_into_air.contains(p)) {
                     if (ConditionExecutor.check("condition", p, origin, "origins:launch", null, p)) {
                         if (!CooldownStuff.isPlayerInCooldown(p, origin.getPowerFileFromType("origins:launch").getKey().get("key").toString())) {
                             if (isKeyBeingPressed(e.getPlayer(), origin.getPowerFileFromType("origins:launch").getKey().get("key").toString(), true)) {
