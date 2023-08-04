@@ -208,6 +208,7 @@ public class PowerStartHandler {
         getServer().getPluginManager().registerEvents(new Gravity(), getPlugin());
         getServer().getPluginManager().registerEvents(new Toggle(), getPlugin());
         getServer().getPluginManager().registerEvents(new KeepInventory(), getPlugin());
+        getServer().getPluginManager().registerEvents(new Launch(), getPlugin());
 
         //actions
         getServer().getPluginManager().registerEvents(new ActionOnBeingUsed(), getPlugin());
