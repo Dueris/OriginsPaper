@@ -61,6 +61,12 @@ public class PowerContainer implements Serializable {
         return "powerTag: " + this.powerTag + ", PowerFile: " + this.powerFile.toString() + ", PowerSource: " + this.powerSource;
     }
 
+    public ArrayList<Long> getSlots() {
+        ArrayList<Long> slots = (ArrayList<Long>) this.powerFile.get("slots");
+        if (slots == null) return new ArrayList<>();
+        return slots;
+    }
+
     /**
      * Changes the name of the power.
      */
