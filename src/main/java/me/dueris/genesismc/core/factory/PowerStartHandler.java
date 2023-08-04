@@ -13,6 +13,7 @@ import me.dueris.genesismc.core.factory.powers.OriginsMod.genesismc.*;
 import me.dueris.genesismc.core.factory.powers.OriginsMod.player.*;
 import me.dueris.genesismc.core.factory.powers.OriginsMod.player.damage.DamageOverTime;
 import me.dueris.genesismc.core.factory.powers.OriginsMod.player.damage.WaterDamage;
+import me.dueris.genesismc.core.factory.powers.OriginsMod.player.inventory.KeepInventory;
 import me.dueris.genesismc.core.factory.powers.OriginsMod.world.EntityGlow;
 import me.dueris.genesismc.core.factory.powers.OriginsMod.world.EntityGroupManager;
 import me.dueris.genesismc.core.factory.powers.Powers;
@@ -206,6 +207,7 @@ public class PowerStartHandler {
         getServer().getPluginManager().registerEvents(new FireProjectile(), getPlugin());
         getServer().getPluginManager().registerEvents(new Gravity(), getPlugin());
         getServer().getPluginManager().registerEvents(new Toggle(), getPlugin());
+        getServer().getPluginManager().registerEvents(new KeepInventory(), getPlugin());
 
         //actions
         getServer().getPluginManager().registerEvents(new ActionOnBeingUsed(), getPlugin());
