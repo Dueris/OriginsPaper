@@ -417,6 +417,7 @@ public class OriginPlayer {
                 case "origins:grounded" -> grounded.add(player);
                 case "genesis:no_gravity" -> no_gravity.add(player);
                 case "origins:toggle" -> toggle_power.add(player);
+                case "origins:keep_inventory" -> keep_inventory.add(player);
 
                 //actions
                 case "origins:action_on_being_used" -> action_on_being_used.add(player);
@@ -553,6 +554,7 @@ public class OriginPlayer {
                 case "origins:fire_projectile" -> fire_projectile.remove(player);
                 case "origins:grounded" -> grounded.remove(player);
                 case "origins:toggle" -> toggle_power.remove(player);
+                case "origins:keep_inventory" -> keep_inventory.remove(player);
 
                 //actions
                 case "origins:action_on_being_used" -> action_on_being_used.remove(player);
