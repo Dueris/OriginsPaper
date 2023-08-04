@@ -89,64 +89,16 @@ public class FireProjectile implements Listener {
                                     @Override
                                     public void run() {
                                         Sound sound;
-                                        int cooldown;
-                                        String tag;
-                                        float divergence;
-                                        int speed;
-                                        int amt;
-                                        int start_delay;
-                                        int interval;
-
-//                                    if (origin.getPowerFileFromType("origins:fire_projectile").get("sound") == null) {
-//                                        sound = Sound.ENTITY_EGG_THROW;
-//                                    } else {
-//                                        sound = Sound.valueOf(origin.getPowerFileFromType("origins:fire_projectile").get("sound").toUpperCase().split(":")[1].replaceAll("\\.", "_"));
-//                                    }
-
-                                        if (origin.getPowerFileFromType("origins:fire_projectile").get("cooldown", "0") == null) {
-                                            cooldown = 1;
-                                        } else {
-                                            cooldown = Integer.parseInt(origin.getPowerFileFromType("origins:fire_projectile").get("cooldown", "0"));
-                                        }
-
-                                        if (origin.getPowerFileFromType("origins:fire_projectile").get("tag", null) == null) {
-                                            tag = null;
-                                        } else {
-                                            tag = origin.getPowerFileFromType("origins:fire_projectile").get("tag", null);
-                                        }
-
-                                        if (origin.getPowerFileFromType("origins:fire_projectile").get("count", "1") == null) {
-                                            amt = 1;
-                                        } else {
-                                            amt = parseOrDefault(origin.getPowerFileFromType("origins:fire_projectile").get("count", "1"), 1);
-                                        }
-
-                                        if (origin.getPowerFileFromType("origins:fire_projectile").get("start_delay", "0") == null) {
-                                            start_delay = 0;
-                                        } else {
-                                            start_delay = parseOrDefault(origin.getPowerFileFromType("origins:fire_projectile").get("start_delay", "0"), 0);
-                                        }
-
-                                        if (origin.getPowerFileFromType("origins:fire_projectile").get("speed", "1") == null) {
-                                            speed = 1;
-                                        } else {
-                                            speed = parseOrDefault(origin.getPowerFileFromType("origins:fire_projectile").get("speed", "1"), 1);
-                                        }
-
-                                        if (origin.getPowerFileFromType("origins:fire_projectile").get("divergence", "1.0") == null) {
-                                            divergence = 1;
-                                        } else {
-                                            divergence = parseOrDefault(origin.getPowerFileFromType("origins:fire_projectile").get("speed", "1.0"), 1);
-                                        }
+                                        int cooldown = Integer.parseInt(origin.getPowerFileFromType("origins:fire_projectile").get("cooldown", "1"));
+                                        String tag = origin.getPowerFileFromType("origins:fire_projectile").get("tag", null);
+                                        float divergence = Float.parseFloat(origin.getPowerFileFromType("origins:fire_projectile").get("divergence", "1.0"));
+                                        int speed = Integer.parseInt(origin.getPowerFileFromType("origins:fire_projectile").get("speed", "1"));
+                                        int amt = Integer.parseInt(origin.getPowerFileFromType("origins:fire_projectile").get("count", "1"));
+                                        int start_delay = Integer.parseInt(origin.getPowerFileFromType("origins:fire_projectile").get("start_delay", "0"));
+                                        int interval = Integer.parseInt(origin.getPowerFileFromType("origins:fire_projectile").get("interval", "1"));
 
                                         // Introduce a slight random divergence
                                         divergence += (float) ((Math.random() - 0.5) * 0.05); // Adjust the 0.05 value to control the randomness level
-
-                                        if (origin.getPowerFileFromType("origins:fire_projectile").get("interval", "1") == null) {
-                                            interval = 1;
-                                        } else {
-                                            interval = parseOrDefault(origin.getPowerFileFromType("origins:fire_projectile").get("interval", "1"), 1);
-                                        }
 
                                         EntityType type;
                                         if (origin.getPowerFileFromType("origins:fire_projectile").get("entity_type", null).equalsIgnoreCase("origins:enderian_pearl")) {
