@@ -352,7 +352,7 @@ public class OriginPlayer {
                 case "origins:fire_immunity" -> fire_immunity.add(player);
                 case "origins:fragile" -> fragile.add(player);
                 case "origins:fresh_air" -> fresh_air.add(player);
-                case "origins:launch_into_air" -> launch_into_air.add(player);
+                case "origins:launch" -> launch_into_air.add(player);
                 case "origins:water_breathing" -> water_breathing.add(player);
                 case "origins:inventory" -> shulker_inventory.add(player);
                 case "origins:hotblooded" -> hotblooded.add(player);
@@ -491,7 +491,7 @@ public class OriginPlayer {
                 case "origins:fire_immunity" -> fire_immunity.remove(player);
                 case "origins:fragile" -> fragile.remove(player);
                 case "origins:fresh_air" -> fresh_air.remove(player);
-                case "origins:launch_into_air" -> launch_into_air.remove(player);
+                case "origins:launch" -> launch_into_air.remove(player);
                 case "origins:water_breathing" -> water_breathing.remove(player);
                 case "origins:inventory" -> shulker_inventory.remove(player);
                 case "origins:hotblooded" -> hotblooded.remove(player);
