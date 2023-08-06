@@ -78,11 +78,11 @@ public class ExplodeTick implements Listener {
                                 cancel();
 
                                 if(origin.getPowerFileFromType("genesis:explode_tick").getThunderModifier() != null){
-                                    int power_thunder = (int) origin.getPowerFileFromType("genesis:explode_tick").getThunderModifier().get("power");
-                                    int resistance_thunder = (int) origin.getPowerFileFromType("genesis:explode_tick").getThunderModifier().get("resistance");
-                                    boolean fire_thunder = (boolean) origin.getPowerFileFromType("genesis:explode_tick").getThunderModifier().get("fire");
-                                    boolean break_blocks_thunder = (boolean) origin.getPowerFileFromType("genesis:explode_tick").getThunderModifier().get("break_blocks");
                                     if (p.getWorld().isThundering()) {
+                                        int power_thunder = Math.toIntExact((Long) origin.getPowerFileFromType("genesis:explode_tick").getThunderModifier().get("power"));
+                                        int resistance_thunder = Math.toIntExact((Long) origin.getPowerFileFromType("genesis:explode_tick").getThunderModifier().get("resistance"));
+                                        boolean fire_thunder = (boolean) origin.getPowerFileFromType("genesis:explode_tick").getThunderModifier().get("fire");
+                                        boolean break_blocks_thunder = (boolean) origin.getPowerFileFromType("genesis:explode_tick").getThunderModifier().get("break_blocks");
                                         p.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 10, resistance_thunder, true, false, false));
                                         p.getWorld().createExplosion(p.getLocation(), power_thunder, fire_thunder, break_blocks_thunder, p);
                                         p.teleportAsync(p.getLocation());
