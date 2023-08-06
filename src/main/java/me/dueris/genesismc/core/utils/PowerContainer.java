@@ -272,6 +272,41 @@ public class PowerContainer implements Serializable {
         return effectStrings;
     }
 
+    public List<HashMap<String, Object>> getEffectData() {
+        List<HashMap<String, Object>> result = new ArrayList<>();
+
+        Object obj = powerFile.get("effect");
+        if (obj == null) {
+            obj = powerFile.get("effects");
+        }
+
+        if (obj == null) return result;
+
+        if (obj instanceof JSONArray effects) {
+            for (Object effect : effects) {
+                if (effect instanceof JSONObject) {
+                    HashMap<String, Object> effectData = new HashMap<>();
+                    JSONObject effectObj = (JSONObject) effect;
+                    for (Object key : effectObj.keySet()) {
+                        String stringKey = (String) key;
+                        Object value = effectObj.get(stringKey);
+                        effectData.put(stringKey, value);
+                    }
+                    result.add(effectData);
+                }
+            }
+        } else if (obj instanceof JSONObject effectObj) {
+            HashMap<String, Object> effectData = new HashMap<>();
+            for (Object key : effectObj.keySet()) {
+                String stringKey = (String) key;
+                Object value = effectObj.get(stringKey);
+                effectData.put(stringKey, value);
+            }
+            result.add(effectData);
+        }
+
+        return result;
+    }
 
     /**
      * @return Head value in the power file or null if not found

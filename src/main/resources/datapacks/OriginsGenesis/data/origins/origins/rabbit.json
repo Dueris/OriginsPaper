@@ -5,7 +5,8 @@
     "genesis:leap_velocity",
     "genesis:rabbit_foot_drop",
     "genesis:shock_absoption",
-    "origins:fragile"
+    "origins:fragile",
+    "genesis:leap_velocity_toggle"
   ],
   "icon": {
     "item": "minecraft:carrot"

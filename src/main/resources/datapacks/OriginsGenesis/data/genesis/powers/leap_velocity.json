@@ -6,5 +6,9 @@
   "modifier": {
     "cooldown": 40,
     "tick_charge": 20
+  },
+  "condition": {
+    "type": "origins:power_active",
+    "power": "*:leap_velocity_toggle"
   }
 }

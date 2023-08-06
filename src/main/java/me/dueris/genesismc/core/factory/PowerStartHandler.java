@@ -7,6 +7,7 @@ import me.dueris.genesismc.core.factory.powers.OriginsMod.actions.ActionOnBeingU
 import me.dueris.genesismc.core.factory.powers.OriginsMod.block.AirFromPotions;
 import me.dueris.genesismc.core.factory.powers.OriginsMod.block.WaterBreathe;
 import me.dueris.genesismc.core.factory.powers.OriginsMod.block.WaterVision;
+import me.dueris.genesismc.core.factory.powers.OriginsMod.effects.ApplyEffect;
 import me.dueris.genesismc.core.factory.powers.OriginsMod.effects.EffectImmunity;
 import me.dueris.genesismc.core.factory.powers.OriginsMod.effects.NightVision;
 import me.dueris.genesismc.core.factory.powers.OriginsMod.genesismc.*;
@@ -40,6 +41,7 @@ import me.dueris.genesismc.core.factory.powers.OriginsMod.player.damage.Burn;
 import me.dueris.genesismc.core.factory.powers.world.BurnInDaylight;
 import me.dueris.genesismc.core.factory.powers.OriginsMod.world.WorldSpawnHandler;
 import me.dueris.genesismc.core.factory.powers.OriginsMod.player.inventory.Inventory;
+import org.checkerframework.checker.units.qual.A;
 
 import static me.dueris.genesismc.core.GenesisMC.getPlugin;
 import static org.bukkit.Bukkit.getServer;
@@ -152,6 +154,9 @@ public class PowerStartHandler {
 
         Gravity gravity = new Gravity();
         gravity.runTaskTimer(getPlugin(), 0, 1);
+
+        ApplyEffect applyEffect = new ApplyEffect();
+        applyEffect.runTaskTimer(getPlugin(), 0, 1);
     }
 
     public static void StartListeners() {

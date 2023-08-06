@@ -2,5 +2,9 @@
   "type": "origins:creative_flight",
   "hidden": false,
   "name": "menu.bee.flight.title",
-  "description": "menu.bee.flight.description"
+  "description": "menu.bee.flight.description",
+  "condition": {
+    "type": "origins:in_water",
+    "inverted": true
+  }
 }

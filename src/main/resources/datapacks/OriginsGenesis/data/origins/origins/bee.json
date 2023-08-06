@@ -1,7 +1,6 @@
 {
   "powers": [
     "genesis:creative_flight",
-    "genesis:creative_flight_rain_cancel",
     "genesis:flower_boost_health",
     "origins:slow_falling",
     "origins:fragile",
