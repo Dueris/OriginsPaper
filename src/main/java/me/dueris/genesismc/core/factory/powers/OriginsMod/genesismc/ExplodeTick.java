@@ -53,9 +53,9 @@ public class ExplodeTick implements Listener {
 
                             }
 
-                            int power = (int) origin.getPowerFileFromType("genesis:explode_tick").getModifier().get("power");
-                            int resistance = (int) origin.getPowerFileFromType("genesis:explode_tick").getModifier().get("resistance");
-                            int charge = (int) origin.getPowerFileFromType("genesis:explode_tick").getModifier().get("charge");
+                            int power = Math.toIntExact((Long) origin.getPowerFileFromType("genesis:explode_tick").getModifier().get("power"));
+                            int resistance = Math.toIntExact((Long) origin.getPowerFileFromType("genesis:explode_tick").getModifier().get("resistance"));
+                            int charge = Math.toIntExact((Long) origin.getPowerFileFromType("genesis:explode_tick").getModifier().get("charge"));
                             boolean fire = (boolean) origin.getPowerFileFromType("genesis:explode_tick").getModifier().get("fire");
                             boolean break_blocks = (boolean) origin.getPowerFileFromType("genesis:explode_tick").getModifier().get("break_blocks");
 
@@ -91,7 +91,7 @@ public class ExplodeTick implements Listener {
                                         this.cancel();
                                     } else {
                                         p.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 10, resistance, true, false, false));
-                                        p.getWorld().createExplosion(p.getLocation(), power, fire, break_blocks, p);
+                                        p.getWorld().createExplosion(p.getLocation(), (float) power, fire, break_blocks, p);
                                         cooldown.put(p.getUniqueId(), System.currentTimeMillis());
                                         p.teleportAsync(p.getLocation());
                                         p.damage(10);
