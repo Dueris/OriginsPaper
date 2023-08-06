@@ -130,7 +130,7 @@ public class EntityCondition {
 
         if(type.equalsIgnoreCase("origins:block_in_radius")){
             // TODO: add block_condition check for origins:block_collision. see https://origins.readthedocs.io/en/latest/types/entity_condition_types/block_collision/
-            Integer radius = (Integer) origin.getPowerFileFromType(powerfile).getConditionFromString(thinger).get("radius");
+            Integer radius = Math.toIntExact((Long) origin.getPowerFileFromType(powerfile).getConditionFromString(thinger).get("radius"));
             String shape = origin.getPowerFileFromType(powerfile).getConditionFromString(thinger).get("shape").toString();
             String comparison = origin.getPowerFileFromType(powerfile).getConditionFromString(thinger).get("comparison").toString();
             Integer compare_to = Integer.valueOf(origin.getPowerFileFromType(powerfile).getConditionFromString(thinger).get("compare_to").toString());
