@@ -4,7 +4,7 @@
   "name": "menu.rabbit.leap.title",
   "description": "menu.rabbit.leap.description",
   "modifier": {
-    "cooldown": "origins:name",
-    "tick_charge": "fall"
+    "cooldown": 40,
+    "tick_charge": 20
   }
 }
