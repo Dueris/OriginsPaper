@@ -1,7 +1,9 @@
 package me.dueris.genesismc.core.factory.powers.OriginsMod.actions;
 
-import me.dueris.genesismc.core.factory.powers.OriginsMod.OriginMethods;
-import me.dueris.genesismc.core.utils.PowerContainer;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.entity.*;
 import org.bukkit.util.Vector;
 import org.json.simple.JSONObject;
@@ -12,8 +14,7 @@ import static me.dueris.genesismc.core.factory.powers.OriginsMod.OriginMethods.s
 
 public class ActionTypes {
 
-    public static void biEntityActionType(Entity actor, Entity target, PowerContainer power) {
-        JSONObject biEntityAction = power.getBiEntityAction();
+    public static void biEntityActionType(Entity actor, Entity target, JSONObject biEntityAction) {
         String type = biEntityAction.get("type").toString();
         if (type.equals("origins:add_velocity")) {
             //TODO: make this align to the actor entity
@@ -98,6 +99,66 @@ public class ActionTypes {
                 statusEffectInstance(player, entityAction);
             }
         }
+        if (type.equals("origins:area_of_effect")) {
+            float radius = 15f;
+            JSONObject bientity_action = new JSONObject();
+            JSONObject bientity_condition = new JSONObject();
+            boolean include_target = false;
+
+            if (entityAction.containsKey("radius")) radius = Float.parseFloat(entityAction.get("radius").toString());
+            if (entityAction.containsKey("bientity_action")) bientity_action = (JSONObject) entityAction.get("bientity_action");
+            if (entityAction.containsKey("bientity_condition")) bientity_condition = (JSONObject) entityAction.get("bientity_condition");
+            if (entityAction.containsKey("include_target")) include_target = Boolean.parseBoolean(entityAction.get("include_target").toString());
+
+            for (Entity nearbyEntity : entity.getNearbyEntities(radius, radius, radius)) {
+                biEntityActionType(entity, nearbyEntity, bientity_action);
+            }
+            if (include_target) biEntityActionType(entity, entity, bientity_action);
+        }
+        if (type.equals("origins:block_action_at")) {
+            BlockActionType(entity.getLocation(), entityAction);
+        }
+    }
+
+
+    public static void BlockActionType(Location location, JSONObject power) {
+         JSONObject blockAction = (JSONObject) power.get("block_action");
+         String type = blockAction.get("type").toString();
+
+         if (type.equals("origins:add_block")) {
+             if (blockAction.containsKey("block")) {
+                 Material block;
+                 System.out.println(blockAction.get("block").toString().split(":")[1].toUpperCase());
+                 block = Material.getMaterial(blockAction.get("block").toString().split(":")[1].toUpperCase());
+                 if (block == null) return;
+
+                 //i experimented with it, and it seemed that it just set it one block above?
+                 //still unsure about this one tho
+                 location.add(0d, 1d, 0d);
+                 location.getWorld().getBlockAt(location).setType(block);
+             }
+         }
+         if (type.equals("origins:bonemeal")) {
+             Block block = location.getWorld().getBlockAt(location);
+             block.applyBoneMeal(BlockFace.SELF);
+         }
+         if (type.equals("origins:explode")) {
+
+             //TODO make custom explosion code for block conditions
+             float explosionPower = 1f;
+             String destruction_type = "break";
+             JSONObject indestructible = new JSONObject();
+             JSONObject destructible = new JSONObject();
+             boolean create_fire = false;
+
+             if (blockAction.containsKey("power")) explosionPower = Float.parseFloat(blockAction.get("power").toString());
+             if (blockAction.containsKey("destruction_type")) destruction_type = blockAction.get("destruction_type").toString();
+             if (blockAction.containsKey("indestructible")) indestructible = (JSONObject) blockAction.get("indestructible");
+             if (blockAction.containsKey("destructible")) destructible = (JSONObject) blockAction.get("destructible");
+             if (blockAction.containsKey("create_fire")) create_fire = Boolean.parseBoolean(blockAction.get("create_fire").toString());
+
+             location.createExplosion(explosionPower, create_fire);
+         }
     }
 
 }
