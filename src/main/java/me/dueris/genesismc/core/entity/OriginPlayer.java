@@ -177,74 +177,13 @@ public class OriginPlayer {
         player.getPersistentDataContainer().set(key, PersistentDataType.BYTE_ARRAY, CraftApoli.toByteArray(origins));
 
         String originTag = origin.getTag();
-        setAttributesToDefault(player);
-        removeItemPhantom(player);
-        removeItemEnder(player);
-        removeItemElytrian(player);
-
-        if (originTag.contains("origins:human")) {
-        } else if (originTag.contains("origins:enderian")) {
-            ItemStack infinpearl = new ItemStack(Material.ENDER_PEARL);
-            ItemMeta pearl_meta = infinpearl.getItemMeta();
-            pearl_meta.setDisplayName(ChatColor.LIGHT_PURPLE + "Teleport");
-            ArrayList<String> pearl_lore = new ArrayList();
-            pearl_meta.setUnbreakable(true);
-            pearl_meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
-            pearl_meta.setLore(pearl_lore);
-            infinpearl.setItemMeta(pearl_meta);
-            player.getInventory().addItem(infinpearl);
-        } else if (originTag.contains("origins:shulk")) {
-            float walk = 0.185F;
-            player.getAttribute(Attribute.GENERIC_ARMOR).setBaseValue(8.0);
-            player.setWalkSpeed(walk);
-            player.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE).setBaseValue(0.45F);
-            player.getAttribute(Attribute.GENERIC_ARMOR_TOUGHNESS).setBaseValue(2.2);
-        } else if (originTag.contains("origins:arachnid")) {
-            player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(14);
-        } else if (originTag.contains("origins:creep")) {
-            player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(18);
-        } else if (originTag.contains("origins:phantom")) {
-            player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(14);
-            player.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0.11);
-            ItemStack spectatorswitch = new ItemStack(Material.PHANTOM_MEMBRANE);
-            ItemMeta switch_meta = spectatorswitch.getItemMeta();
-            switch_meta.setDisplayName(GRAY + "Phantom Form");
-            ArrayList<String> pearl_lore = new ArrayList();
-            switch_meta.setUnbreakable(true);
-            switch_meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
-            switch_meta.addItemFlags(ItemFlag.HIDE_ITEM_SPECIFICS);
-            switch_meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-            switch_meta.setLore(pearl_lore);
-            spectatorswitch.setItemMeta(switch_meta);
-            player.getInventory().addItem(spectatorswitch);
-        } else if (originTag.contains("origins:slimeling")) {
-        } else if (originTag.contains("origins:feline")) {
-            player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(18);
-        } else if (originTag.contains("origins:blaze")) {
-        } else if (originTag.contains("origins:starborne")) {
-        } else if (originTag.contains("origins:merling")) {
-        } else if (originTag.contains("origins:allay")) {
-        } else if (originTag.contains("origins:rabbit")) {
-            player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(14);
-        } else if (originTag.contains("origins:bee")) {
-            player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(14);
-        } else if (originTag.contains("origins:elytrian")) {
-            ItemStack launchitem = new ItemStack(Material.FEATHER);
-            ItemMeta launchmeta = launchitem.getItemMeta();
-            launchmeta.setDisplayName(GRAY + "Launch");
-            launchmeta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
-            launchitem.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-            launchitem.setItemMeta(launchmeta);
-            player.getInventory().addItem(launchitem);
-        } else if (originTag.contains("origins:avian")) {
-            player.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0.17);
-        } else if (originTag.contains("origins:piglin")) {
-        } else if (originTag.contains("origins:sculkling")) {
-            player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(24);
-        } else {
-        }
         if (!originTag.equals(CraftApoli.nullOrigin().getTag())) SendCharts.originPopularity(player);
-        assignPowers(player, layer);
+        new BukkitRunnable() {
+          @Override
+            public void run(){
+                assignPowers(player, layer);
+            }
+        }.runTaskLater(GenesisMC.getPlugin(), 2l);
     }
 
     /**
