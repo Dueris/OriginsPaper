@@ -80,6 +80,13 @@ public class Toggle implements Listener {
                                             ItemMeta met = KeybindHandler.getKeybindItem(key, p.getInventory()).getItemMeta();
                                             met.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "contin"), PersistentDataType.BOOLEAN, false);
                                             KeybindHandler.getKeybindItem(key, p.getInventory()).setItemMeta(met);
+                                            in_continuous.add(p);
+                                            new BukkitRunnable(){
+                                                @Override
+                                                public void run() {
+                                                    in_continuous.remove(p);
+                                                }
+                                            }.runTaskLater(GenesisMC.getPlugin(),1l);
                                             this.cancel();
                                         } else {
                                             if (isKeyBeingPressed(e.getPlayer(), origin.getPowerFileFromType("origins:toggle").getKey().get("key").toString(), true)) {
