@@ -41,11 +41,9 @@ public class ParticlePower extends BukkitRunnable {
                     boolean visible_while_invis = Boolean.parseBoolean(origin.getPowerFileFromType("origins:particle").get("visible_while_invisible", "false"));
                     Particle final_particle = particle.builder().count(count).force(true).location(player.getLocation()).particle(particle).source(player).offset(offset_x, offset_y + offset_y_no_vector, offset_z).particle();
                     if(visible_while_invis){
-                        player.sendMessage("13");
                         player.getWorld().spawnParticle(particle, new Location(player.getWorld(), player.getLocation().getX(), player.getLocation().getY(), player.getLocation().getZ()), count, offset_x, offset_y, offset_z, 0);
                     }else{
                         if(!player.isInvisible()){
-                            player.sendMessage("1222222222");
                             player.getWorld().spawnParticle(particle, new Location(player.getWorld(), player.getLocation().getX(), player.getLocation().getY(), player.getLocation().getZ()), count, offset_x, offset_y, offset_z, 0);
                         }
                     }
