@@ -1,7 +1,9 @@
 package me.dueris.genesismc.core.factory;
 
+import me.dueris.genesismc.core.GenesisMC;
 import me.dueris.genesismc.core.factory.handlers.CustomOriginExistCheck;
 import me.dueris.genesismc.core.factory.powers.FlightHandler;
+import me.dueris.genesismc.core.factory.powers.OriginsMod.Overlay;
 import me.dueris.genesismc.core.factory.powers.OriginsMod.Toggle;
 import me.dueris.genesismc.core.factory.powers.OriginsMod.actions.ActionOnBeingUsed;
 import me.dueris.genesismc.core.factory.powers.OriginsMod.block.AirFromPotions;
@@ -153,6 +155,9 @@ public class PowerStartHandler {
 
         ApplyEffect applyEffect = new ApplyEffect();
         applyEffect.runTaskTimer(getPlugin(), 0, 1);
+
+        Overlay overlay = new Overlay();
+        overlay.runTaskTimer(GenesisMC.getPlugin(), 0, 1);
     }
 
     public static void StartListeners() {
