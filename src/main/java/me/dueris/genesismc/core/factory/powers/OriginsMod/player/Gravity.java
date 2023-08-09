@@ -33,6 +33,7 @@ public class Gravity extends BukkitRunnable implements Listener {
             new BukkitRunnable() {
                 @Override
                 public void run() {
+                    if(e.getPlayer().isFlying()) return;
                     if (e.getPlayer().isSneaking()) {
                         if (e.getPlayer().getVelocity().getY() < -0.2) {
                             //nah
