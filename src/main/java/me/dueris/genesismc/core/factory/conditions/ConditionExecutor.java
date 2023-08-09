@@ -9,6 +9,7 @@ import org.bukkit.event.entity.EntityDamageEvent;
 
 public class ConditionExecutor {
     public static boolean check(String keythingerthatineedtogetforthethingeridkwhyimadethissolonglmao, Player p, OriginContainer origin, String powerfile, EntityDamageEvent dmgevent, Entity entity) {
+        if(origin.getPowerFileFromType(powerfile) == null) return false;
         if (origin.getPowerFileFromType(powerfile).getConditionFromString(keythingerthatineedtogetforthethingeridkwhyimadethissolonglmao) == null)
             return true;
 
