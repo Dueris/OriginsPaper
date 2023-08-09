@@ -18,15 +18,14 @@ public class CooldownStuff {
 
     public static void addCooldown(Player player, String title, int cooldownTicks, String cooldownKeybindType) {
         if (isPlayerInCooldown(player, cooldownKeybindType)) {
-            resetCooldown(player, cooldownKeybindType); // Reset existing cooldown
+            resetCooldown(player, cooldownKeybindType);
         }
 
         BossBar bar = createCooldownBar(player, BarColor.WHITE, BarStyle.SEGMENTED_20, title);
         bar.addPlayer(player);
         startTickingCooldown(bar, player, cooldownTicks, cooldownKeybindType);
-        cooldownBars.put(player, bar); // Store the boss bar for the player
-        cooldowns.put(player, cooldownKeybindType); // Add the player to the cooldowns map
-        player.sendMessage("Cooldown started for " + cooldownTicks + " ticks.");
+        cooldownBars.put(player, bar);
+        cooldowns.put(player, cooldownKeybindType);
     }
 
     public static boolean isPlayerInCooldown(Player player, String cooldownKeybindType) {
@@ -40,14 +39,12 @@ public class CooldownStuff {
             bar.removePlayer(player);
             cooldownBars.remove(player);
             cooldowns.remove(player);
-            player.sendMessage("Cooldown reset.");
         }
     }
 
     public static BossBar createCooldownBar(Player player, BarColor color, BarStyle style, String title) {
         BossBar bossBar = Bukkit.createBossBar(title, color, style);
-        bossBar.setProgress(1.0); // Set the initial progress to full
-        player.sendMessage("Cooldown bar created.");
+        bossBar.setProgress(1.0);
         return bossBar;
     }
 
@@ -64,7 +61,6 @@ public class CooldownStuff {
                 bar.setProgress(progress);
 
                 int remainingTicks = cooldownTicks - ticksElapsed;
-                // player.sendMessage("Cooldown remaining: " + remainingTicks + " ticks."); // DEBUG
 
                 if (ticksElapsed >= cooldownTicks) {
                     resetCooldown(player, cooldownKeybindType);
