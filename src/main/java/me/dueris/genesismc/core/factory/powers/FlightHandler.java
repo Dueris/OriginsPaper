@@ -22,14 +22,18 @@ public class FlightHandler extends BukkitRunnable {
             } else {
                 if (p.getGameMode().equals(GameMode.CREATIVE)) {
                     p.setAllowFlight(true);
-                } else p.setAllowFlight(p.getGameMode().equals(GameMode.SPECTATOR));
-            }
-            if (creative_flight.contains(p) || OriginPlayer.isInPhantomForm(p)) {
-                p.setAllowFlight(true);
-            } else {
-                if (p.getGameMode().equals(GameMode.CREATIVE)) {
-                    p.setAllowFlight(true);
-                } else p.setAllowFlight(p.getGameMode().equals(GameMode.SPECTATOR));
+                } else {
+                    if (creative_flight.contains(p) || OriginPlayer.isInPhantomForm(p)) {
+                        p.setAllowFlight(true);
+                        if(p.isFlying()){
+                            p.setFlying(true);
+                        }
+                    } else {
+                        if (p.getGameMode().equals(GameMode.CREATIVE)) {
+                            p.setAllowFlight(true);
+                        } else p.setAllowFlight(p.getGameMode().equals(GameMode.SPECTATOR));
+                    }
+                }
             }
 
             if (p.getEyeLocation().getBlock().isCollidable()) {
