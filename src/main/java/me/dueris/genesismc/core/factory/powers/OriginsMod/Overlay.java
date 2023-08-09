@@ -18,8 +18,12 @@ public class Overlay extends BukkitRunnable {
                 for(OriginContainer origin : OriginPlayer.getOrigin(player).values()){
                     if(ConditionExecutor.check("condition", player, origin, "origins:overlay", null, player)){
                         Phasing.initializePhantomOverlay(player);
+                    }else{
+                        Phasing.deactivatePhantomOverlay(player);
                     }
                 }
+            }else{
+                Phasing.deactivatePhantomOverlay(player);
             }
         }
     }
