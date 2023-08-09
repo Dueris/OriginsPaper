@@ -311,7 +311,9 @@ public class PlayerRender extends BukkitRunnable {
 
         private static BufferedImage modifyImage(BufferedImage originalImage, double redTint, double greenTint, double blueTint, double alphaTint, Player player, OriginContainer origin) {
             if (redTint > 1 || greenTint > 1 || blueTint > 1 || alphaTint > 1) {
-                throw new IllegalArgumentException(Lang.getLocalizedString("powers.errors.modelColourValue"));
+                if(origin.getPowerFileFromType("origins:model_color").getModelRenderType() == "original"){
+                    throw new IllegalArgumentException(Lang.getLocalizedString("powers.errors.modelColourValue"));
+                }
             }
 
             BufferedImage modifiedImage = new BufferedImage(originalImage.getWidth(), originalImage.getHeight(), BufferedImage.TYPE_INT_ARGB);
