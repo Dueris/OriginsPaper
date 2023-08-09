@@ -8,10 +8,6 @@ import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
-import org.bukkit.inventory.EquipmentSlot;
-import org.bukkit.util.Vector;
-
-import java.util.HashMap;
 
 public class ActionOnBeingUsed implements Listener {
 
@@ -27,7 +23,7 @@ public class ActionOnBeingUsed implements Listener {
             PowerContainer power = OriginPlayer.getOrigin(player, layer).getPowerFileFromType("origins:action_on_being_used");
             if (power == null) continue;
 
-            ActionTypes.biEntityActionType(actor, target, power);
+            ActionTypes.biEntityActionType(actor, target, power.getBiEntityAction());
         }
 
 //        if (e.getHand() == EquipmentSlot.HAND) System.out.println("main");
