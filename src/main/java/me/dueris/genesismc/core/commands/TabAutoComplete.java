@@ -117,7 +117,8 @@ public class TabAutoComplete implements TabCompleter {
                             layers.remove(layers.get(i));
                             continue;
                         }
-                        if (!tag.equals(layers.get(i).getTag().substring(0, tag.length()))) layers.remove(layers.get(i));
+                        if (!tag.equals(layers.get(i).getTag().substring(0, tag.length())))
+                            layers.remove(layers.get(i));
                     }
                     ArrayList<String> layerTags = new ArrayList<>();
                     for (LayerContainer layer : layers) layerTags.add(layer.getTag());

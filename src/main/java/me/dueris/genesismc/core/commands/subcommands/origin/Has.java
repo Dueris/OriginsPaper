@@ -61,8 +61,10 @@ public class Has extends SubCommand {
         for (Player p : players) {
             for (LayerContainer layer : CraftApoli.getLayers()) {
                 if (!layer.getTag().equals(args[2])) continue;
-                if (OriginPlayer.hasOrigin(p, args[3])) sender.sendMessage(Component.text(Lang.getLocalizedString("command.origin.has.pass").replace("%player%", p.getName())));
-                else sender.sendMessage(Component.text(Lang.getLocalizedString("command.origin.has.fail").replace("%player%", p.getName())));
+                if (OriginPlayer.hasOrigin(p, args[3]))
+                    sender.sendMessage(Component.text(Lang.getLocalizedString("command.origin.has.pass").replace("%player%", p.getName())));
+                else
+                    sender.sendMessage(Component.text(Lang.getLocalizedString("command.origin.has.fail").replace("%player%", p.getName())));
             }
         }
     }

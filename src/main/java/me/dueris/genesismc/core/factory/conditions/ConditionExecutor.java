@@ -8,14 +8,17 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;
 
 public class ConditionExecutor {
-    public static boolean check(String keythingerthatineedtogetforthethingeridkwhyimadethissolonglmao, Player p, OriginContainer origin, String powerfile, EntityDamageEvent dmgevent, Entity entity){
-        if(origin.getPowerFileFromType(powerfile).getConditionFromString(keythingerthatineedtogetforthethingeridkwhyimadethissolonglmao) == null) return true;
+    public static boolean check(String keythingerthatineedtogetforthethingeridkwhyimadethissolonglmao, Player p, OriginContainer origin, String powerfile, EntityDamageEvent dmgevent, Entity entity) {
+        if (origin.getPowerFileFromType(powerfile).getConditionFromString(keythingerthatineedtogetforthethingeridkwhyimadethissolonglmao) == null)
+            return true;
 
-        if(dmgevent != null){
-            if(DamageCondition.check(keythingerthatineedtogetforthethingeridkwhyimadethissolonglmao, p, origin, powerfile, dmgevent) == "true") return true;
+        if (dmgevent != null) {
+            if (DamageCondition.check(keythingerthatineedtogetforthethingeridkwhyimadethissolonglmao, p, origin, powerfile, dmgevent) == "true")
+                return true;
         }
-        if(entity != null){
-            if(EntityCondition.check(keythingerthatineedtogetforthethingeridkwhyimadethissolonglmao, p, origin, powerfile, entity) == "true") return true;
+        if (entity != null) {
+            if (EntityCondition.check(keythingerthatineedtogetforthethingeridkwhyimadethissolonglmao, p, origin, powerfile, entity) == "true")
+                return true;
         }
 
         //final check

@@ -42,7 +42,7 @@ public class CraftApoli {
      * @return A copy of The null origin.
      **/
     public static OriginContainer nullOrigin() {
-        return new OriginContainer("genesis:origin-null", new FileContainer(new ArrayList<>(List.of("hidden", "origins")), new ArrayList<>(List.of(true, "genesis:origin-null"))) , new HashMap<String, Object>(Map.of("impact", "0", "icon", "minecraft:player_head", "powers", "genesis:null", "order", "0", "unchooseable", true)), new ArrayList<>(List.of(new PowerContainer("genesis:null", new FileContainer(new ArrayList<>(), new ArrayList<>()), "genesis:origin-null"))));
+        return new OriginContainer("genesis:origin-null", new FileContainer(new ArrayList<>(List.of("hidden", "origins")), new ArrayList<>(List.of(true, "genesis:origin-null"))), new HashMap<String, Object>(Map.of("impact", "0", "icon", "minecraft:player_head", "powers", "genesis:null", "order", "0", "unchooseable", true)), new ArrayList<>(List.of(new PowerContainer("genesis:null", new FileContainer(new ArrayList<>(), new ArrayList<>()), "genesis:origin-null"))));
     }
 
 
@@ -159,7 +159,7 @@ public class CraftApoli {
                                             powerContainers.add(new PowerContainer(powerFolder + ":" + powerFileName, fileToFileContainer(powerParser), originFolder.get(0) + ":" + originFileName.get(0)));
                                         } catch (NullPointerException nullPointerException) {
                                             if (showErrors)
-                                               Bukkit.getServer().getConsoleSender().sendMessage(Component.text(Lang.getLocalizedString("errors.craftApoli.powerParsing").replace("%powerFolder%", powerFolder).replace("%powerFileName%", powerFileName).replace("%originFolder%", originFolder.get(0)).replace("%originFileName%", originFileName.get(0))).color(TextColor.color(255, 0, 0)));
+                                                Bukkit.getServer().getConsoleSender().sendMessage(Component.text(Lang.getLocalizedString("errors.craftApoli.powerParsing").replace("%powerFolder%", powerFolder).replace("%powerFileName%", powerFileName).replace("%originFolder%", originFolder.get(0)).replace("%originFileName%", originFileName.get(0))).color(TextColor.color(255, 0, 0)));
                                         }
                                     }
                                 }
@@ -175,7 +175,7 @@ public class CraftApoli {
 
                 } catch (Exception e) {
                     if (showErrors)
-                       e.printStackTrace();
+                        e.printStackTrace();
                 }
 
             } else {
@@ -197,7 +197,7 @@ public class CraftApoli {
                     if (!FilenameUtils.getExtension(originLayer.getName()).equals("json")) continue;
                     String layerName = FilenameUtils.getBaseName(originLayer.getName());
                     try {
-                        LayerContainer layer = new LayerContainer(layerNamespace+":"+layerName, fileToFileContainer((JSONObject) new JSONParser().parse(new FileReader(originLayer))));
+                        LayerContainer layer = new LayerContainer(layerNamespace + ":" + layerName, fileToFileContainer((JSONObject) new JSONParser().parse(new FileReader(originLayer))));
 
                         if (layer.getReplace() && layerExists(layer)) {
                             //removes an origin layer if a layer with the same namespace has the replace key set to true
@@ -228,7 +228,7 @@ public class CraftApoli {
             ArrayList<String> originFileName = new ArrayList<>();
 
             try {
-                JSONObject originLayerParser = (JSONObject) new JSONParser().parse(new FileReader(Bukkit.getServer().getPluginManager().getPlugin("GenesisMC").getDataFolder() + File.separator + ".." + File.separator + ".." + File.separator + Bukkit.getServer().getWorlds().get(0).getName() + File.separator + "datapacks"+ File.separator + origin_layer.getPath()));
+                JSONObject originLayerParser = (JSONObject) new JSONParser().parse(new FileReader(Bukkit.getServer().getPluginManager().getPlugin("GenesisMC").getDataFolder() + File.separator + ".." + File.separator + ".." + File.separator + Bukkit.getServer().getWorlds().get(0).getName() + File.separator + "datapacks" + File.separator + origin_layer.getPath()));
                 JSONArray originLayer_origins = ((JSONArray) originLayerParser.get("origins"));
 
                 //gets every origin from the layer
@@ -292,7 +292,7 @@ public class CraftApoli {
         return nullOrigin();
     }
 
-    public static void unloadData(){
+    public static void unloadData() {
         originContainers.clear();
         originLayers.clear();
         getOrigins().clear();

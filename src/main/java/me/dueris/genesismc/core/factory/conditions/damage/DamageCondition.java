@@ -16,8 +16,8 @@ import static org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 public class DamageCondition extends Condition {
 
     public static String check(String thinger, Player p, OriginContainer origin, String powerfile, EntityDamageEvent e) {
-        if(origin.getPowerFileFromType(powerfile).getConditionFromString(thinger) == null) return "null";
-        if(origin.getPowerFileFromType(powerfile).getConditionFromString(thinger).get("type") == null) return "null";
+        if (origin.getPowerFileFromType(powerfile).getConditionFromString(thinger) == null) return "null";
+        if (origin.getPowerFileFromType(powerfile).getConditionFromString(thinger).get("type") == null) return "null";
 
         String type = origin.getPowerFileFromType(powerfile).getConditionFromString(thinger).get("type").toString();
 
@@ -33,7 +33,7 @@ public class DamageCondition extends Condition {
         }
 
         if (type.equalsIgnoreCase("origins:attacker")) {
-            if(e instanceof EntityDamageByEntityEvent event){
+            if (e instanceof EntityDamageByEntityEvent event) {
                 EntityCondition.check(thinger, p, origin, powerfile, event.getDamager());
             }
         }
@@ -658,7 +658,7 @@ public class DamageCondition extends Condition {
             if (e.getCause().equals(DamageCause.POISON)) {
                 return "true";
             }
-            if (e.getCause().equals(DamageCause.WITHER)){
+            if (e.getCause().equals(DamageCause.WITHER)) {
                 return "true";
             }
         }

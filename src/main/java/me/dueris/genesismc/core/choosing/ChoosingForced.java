@@ -21,7 +21,7 @@ public class ChoosingForced extends BukkitRunnable {
                     for (LayerContainer layer : CraftApoli.getLayers()) {
                         if (OriginPlayer.getOrigin(p, layer).getTag().equals(CraftApoli.nullOrigin().getTag())) {
                             choosing.put(p, layer);
-                            @NotNull Inventory mainmenu = Bukkit.createInventory(p, 54, "Choosing Menu - "+layer.getName());
+                            @NotNull Inventory mainmenu = Bukkit.createInventory(p, 54, "Choosing Menu - " + layer.getName());
                             mainmenu.setContents(GenesisMainMenuContents(p));
                             p.openInventory(mainmenu);
                         }

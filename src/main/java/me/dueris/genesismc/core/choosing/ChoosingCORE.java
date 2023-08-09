@@ -136,7 +136,8 @@ public class ChoosingCORE implements Listener {
                 item.setItemMeta(meta);
                 if (e.getItem() != null) {
                     if (e.getItem().isSimilar(item)) {
-                        for (LayerContainer layer : CraftApoli.getLayers()) OriginPlayer.setOrigin(p, layer, CraftApoli.nullOrigin());
+                        for (LayerContainer layer : CraftApoli.getLayers())
+                            OriginPlayer.setOrigin(p, layer, CraftApoli.nullOrigin());
                         OrbInteractEvent event = new OrbInteractEvent(p);
                         getServer().getPluginManager().callEvent(event);
                     }
@@ -152,7 +153,7 @@ public class ChoosingCORE implements Listener {
                 if (e.getCurrentItem().getType().equals(Material.SPECTRAL_ARROW)) {
                     Player p = (Player) e.getWhoClicked();
                     p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 10, 2);
-                    @NotNull Inventory mainmenu = Bukkit.createInventory(e.getWhoClicked(), 54, "Choosing Menu - "+choosing.get(p).getName());
+                    @NotNull Inventory mainmenu = Bukkit.createInventory(e.getWhoClicked(), 54, "Choosing Menu - " + choosing.get(p).getName());
                     mainmenu.setContents(GenesisMainMenuContents((Player) e.getWhoClicked()));
                     e.getWhoClicked().openInventory(mainmenu);
                 }
@@ -216,12 +217,12 @@ public class ChoosingCORE implements Listener {
             getServer().getPluginManager().callEvent(Event);
 
             if (p.getInventory().getItemInMainHand().isSimilar(OrbOfOrigins.orb) && !OriginPlayer.hasOrigin(p, CraftApoli.nullOrigin().getTag())) {
-                if(p.getGameMode() == GameMode.CREATIVE) return;
+                if (p.getGameMode() == GameMode.CREATIVE) return;
                 int amt = p.getInventory().getItemInMainHand().getAmount();
                 p.getInventory().getItemInMainHand().setAmount(amt - 1);
             } else {
                 if (p.getInventory().getItemInOffHand().isSimilar(orb) && !OriginPlayer.hasOrigin(p, CraftApoli.nullOrigin().getTag())) {
-                    if(p.getGameMode() == GameMode.CREATIVE) return;
+                    if (p.getGameMode() == GameMode.CREATIVE) return;
                     int amt = p.getInventory().getItemInOffHand().getAmount();
                     p.getInventory().getItemInOffHand().setAmount(amt - 1);
                 }

@@ -19,42 +19,42 @@ import java.io.IOException;
 
 public class EntityCondition {
 
-    public static String check(String thinger, Player p, OriginContainer origin, String powerfile, Entity entity){
-        if(origin.getPowerFileFromType(powerfile).getConditionFromString(thinger) == null) return "null";
-        if(origin.getPowerFileFromType(powerfile).getConditionFromString(thinger).get("type") == null) return "null";
+    public static String check(String thinger, Player p, OriginContainer origin, String powerfile, Entity entity) {
+        if (origin.getPowerFileFromType(powerfile).getConditionFromString(thinger) == null) return "null";
+        if (origin.getPowerFileFromType(powerfile).getConditionFromString(thinger).get("type") == null) return "null";
         p.sendMessage("entity_start");
         String type = origin.getPowerFileFromType(powerfile).getConditionFromString(thinger).get("type").toString();
-        if(type.equalsIgnoreCase("origins:ability")){
+        if (type.equalsIgnoreCase("origins:ability")) {
             String ability = origin.getPowerFileFromType(powerfile).getConditionFromString(thinger).get("ability").toString();
-            if(ability.equalsIgnoreCase("minecraft:flying")){
-                if(entity instanceof Player player){
-                    if(player.isFlying()) return "true";
+            if (ability.equalsIgnoreCase("minecraft:flying")) {
+                if (entity instanceof Player player) {
+                    if (player.isFlying()) return "true";
                 }
             }
-            if(ability.equalsIgnoreCase("minecraft:instabuild")){
-                if(entity instanceof Player player){
-                    if(player.getGameMode().equals(GameMode.CREATIVE)) return "true";
+            if (ability.equalsIgnoreCase("minecraft:instabuild")) {
+                if (entity instanceof Player player) {
+                    if (player.getGameMode().equals(GameMode.CREATIVE)) return "true";
                 }
             }
-            if(ability.equalsIgnoreCase("minecraft:invuln" +
-                    "rable")){
-                if(entity.isInvulnerable()) return "true";
+            if (ability.equalsIgnoreCase("minecraft:invuln" +
+                    "rable")) {
+                if (entity.isInvulnerable()) return "true";
             }
-            if(ability.equalsIgnoreCase("minecraft:maybuild")){
-                if(entity.hasPermission("minecraft.build")){
+            if (ability.equalsIgnoreCase("minecraft:maybuild")) {
+                if (entity.hasPermission("minecraft.build")) {
                     return "true";
                 }
             }
-            if(ability.equalsIgnoreCase("minecraft:mayfly")){
-                if(entity instanceof Player player){
-                    if(player.getAllowFlight()) return "true";
+            if (ability.equalsIgnoreCase("minecraft:mayfly")) {
+                if (entity instanceof Player player) {
+                    if (player.getAllowFlight()) return "true";
                 }
             }
         }
 
-        if(type.equalsIgnoreCase("origins:advancement")){
+        if (type.equalsIgnoreCase("origins:advancement")) {
             String advancementString = origin.getPowerFileFromType(powerfile).getConditionFromString(thinger).get("advancement").toString();
-            if(entity instanceof Player player){
+            if (entity instanceof Player player) {
                 World world = player.getWorld();
                 File worldFolder = world.getWorldFolder();
                 File advancementsFolder = new File(worldFolder, "advancements");
@@ -69,30 +69,36 @@ public class EntityCondition {
                         if (advancementJson != null) {
                             Boolean done = (Boolean) advancementJson.get("done");
                             if (done != null) {
-                                if(done.toString() == "true"){
+                                if (done.toString() == "true") {
                                     return "true";
                                 }
-                            }else{return "false";}
-                        }else{return "false";}
+                            } else {
+                                return "false";
+                            }
+                        } else {
+                            return "false";
+                        }
                     } catch (IOException | ParseException e) {
                         e.printStackTrace();
                     }
-                }else{return "false";}
+                } else {
+                    return "false";
+                }
             }
         }
 
-        if(type.equalsIgnoreCase("origins:air")){
-            if(entity instanceof Player player){
-                if(RestrictArmor.compareValues(player.getRemainingAir(), origin.getPowerFileFromType(powerfile).getConditionFromString(thinger).get("comparison").toString(), Integer.valueOf(origin.getPowerFileFromType(powerfile).getConditionFromString(thinger).get("compare_to").toString()))){
+        if (type.equalsIgnoreCase("origins:air")) {
+            if (entity instanceof Player player) {
+                if (RestrictArmor.compareValues(player.getRemainingAir(), origin.getPowerFileFromType(powerfile).getConditionFromString(thinger).get("comparison").toString(), Integer.valueOf(origin.getPowerFileFromType(powerfile).getConditionFromString(thinger).get("compare_to").toString()))) {
                     return "true";
                 }
             }
         }
 
-        if(type.equalsIgnoreCase("origins:attribute")){
-            if(entity instanceof Player player){
+        if (type.equalsIgnoreCase("origins:attribute")) {
+            if (entity instanceof Player player) {
                 String attributeString = origin.getPowerFileFromType(powerfile).getConditionFromString(thinger).get("attribute").toString().split(":")[1].replace(".", "_").toUpperCase();
-                if(RestrictArmor.compareValues(player.getAttribute(Attribute.valueOf(attributeString)).getValue(), origin.getPowerFileFromType(powerfile).getConditionFromString(thinger).get("comparison").toString(), Integer.valueOf(origin.getPowerFileFromType(powerfile).getConditionFromString(thinger).get("compare_to").toString()))){
+                if (RestrictArmor.compareValues(player.getAttribute(Attribute.valueOf(attributeString)).getValue(), origin.getPowerFileFromType(powerfile).getConditionFromString(thinger).get("comparison").toString(), Integer.valueOf(origin.getPowerFileFromType(powerfile).getConditionFromString(thinger).get("compare_to").toString()))) {
                     return "true";
                 }
             }
@@ -100,19 +106,19 @@ public class EntityCondition {
 
         // TODO: continue entity_condition to use biome condition for origins:biome in some cases. see https://origins.readthedocs.io/en/latest/types/entity_condition_types/biome/
 
-        if(type.equalsIgnoreCase("origins:biome")){
+        if (type.equalsIgnoreCase("origins:biome")) {
             String biomeString = origin.getPowerFileFromType(powerfile).getConditionFromString(thinger).get("biome").toString().split(":")[1].replace(".", "_").toUpperCase();
-            if(entity.getLocation().getBlock().getBiome().equals(Biome.valueOf(biomeString))){
+            if (entity.getLocation().getBlock().getBiome().equals(Biome.valueOf(biomeString))) {
                 return "true";
             }
         }
 
-        if(type.equalsIgnoreCase("origins:block_collision")){
+        if (type.equalsIgnoreCase("origins:block_collision")) {
             // TODO: add block_condition check for origins:block_collision. see https://origins.readthedocs.io/en/latest/types/entity_condition_types/block_collision/
             String offsetX = origin.getPowerFileFromType(powerfile).getConditionFromString(thinger).get("offset_x").toString();
             String offsetY = origin.getPowerFileFromType(powerfile).getConditionFromString(thinger).get("offset_y").toString();
             String offsetZ = origin.getPowerFileFromType(powerfile).getConditionFromString(thinger).get("offset_z").toString();
-            if(entity instanceof Player player){
+            if (entity instanceof Player player) {
                 Location playerLocation = player.getLocation();
                 World world = player.getWorld();
 
@@ -128,7 +134,7 @@ public class EntityCondition {
             }
         }
 
-        if(type.equalsIgnoreCase("origins:block_in_radius")){
+        if (type.equalsIgnoreCase("origins:block_in_radius")) {
             // TODO: add block_condition check for origins:block_collision. see https://origins.readthedocs.io/en/latest/types/entity_condition_types/block_collision/
             Integer radius = Math.toIntExact((Long) origin.getPowerFileFromType(powerfile).getConditionFromString(thinger).get("radius"));
             String shape = origin.getPowerFileFromType(powerfile).getConditionFromString(thinger).get("shape").toString();
@@ -158,12 +164,12 @@ public class EntityCondition {
                 blockCount = countBlocksInCube(minX, minY, minZ, maxX, maxY, maxZ, world);
             }
 
-            if(RestrictArmor.compareValues(blockCount, comparison, compare_to)){
+            if (RestrictArmor.compareValues(blockCount, comparison, compare_to)) {
                 return "true";
             }
         }
 
-        if(type.equalsIgnoreCase("origins:brightness")){
+        if (type.equalsIgnoreCase("origins:brightness")) {
             String comparison = origin.getPowerFileFromType(powerfile).getConditionFromString(thinger).get("comparison").toString();
             Double compare_to = Double.valueOf(origin.getPowerFileFromType(powerfile).getConditionFromString(thinger).get("compare_to").toString());
             double brightness = 0;
@@ -171,28 +177,28 @@ public class EntityCondition {
             int ambientLight = 0;
 
             //calculate ambient light
-            if(entity.getWorld() == Bukkit.getServer().getWorlds().get(0)){ //is overworld
+            if (entity.getWorld() == Bukkit.getServer().getWorlds().get(0)) { //is overworld
                 ambientLight = 0;
             } else if (entity.getWorld() == Bukkit.getServer().getWorlds().get(2)) {
                 ambientLight = 1;
             }
             brightness = ambientLight + (1 - ambientLight) * lightLevel / (60 - 3 * lightLevel);
 
-            if(RestrictArmor.compareValues(brightness, comparison, compare_to)){
+            if (RestrictArmor.compareValues(brightness, comparison, compare_to)) {
                 return "true";
             }
         }
 
-        if(type.equalsIgnoreCase("origins:climbing")){
-            if(entity instanceof Player player){
-                if(player.isClimbing()){
+        if (type.equalsIgnoreCase("origins:climbing")) {
+            if (entity instanceof Player player) {
+                if (player.isClimbing()) {
                     return "true";
                 }
             }
         }
 
-        if(type.equalsIgnoreCase("origins:collided_horizontally")){
-            if(entity instanceof Player player){
+        if (type.equalsIgnoreCase("origins:collided_horizontally")) {
+            if (entity instanceof Player player) {
                 Block block = player.getLocation().getBlock();
                 BoundingBox playerBoundingBox = player.getBoundingBox();
                 BoundingBox blockBoundingBox = block.getBoundingBox();
@@ -205,33 +211,33 @@ public class EntityCondition {
                 double z = center.getZ();
 
                 BoundingBox boundingBox = block.getBoundingBox();
-                if(boundingBox.overlaps(playerBoundingBox)){
+                if (boundingBox.overlaps(playerBoundingBox)) {
                     return "true";
                 }
             }
         }
 
-        if(type.equalsIgnoreCase("origins:creative_flying")){
-            if(entity instanceof Player player){
-                if(player.isFlying()){
+        if (type.equalsIgnoreCase("origins:creative_flying")) {
+            if (entity instanceof Player player) {
+                if (player.isFlying()) {
                     return "true";
                 }
             }
         }
 
-        if(type.equalsIgnoreCase("origins:daytime")){
-            if(entity.getWorld().isDayTime()){
+        if (type.equalsIgnoreCase("origins:daytime")) {
+            if (entity.getWorld().isDayTime()) {
                 return "true";
             }
         }
 
-        if(type.equalsIgnoreCase("origins:dimension")){
-            if(origin.getPowerFileFromType(powerfile).getConditionFromString(thinger).get("inverted").toString() == "true"){
-                if(!entity.getWorld().getEnvironment().equals(origin.getPowerFileFromType(powerfile).getConditionFromString(thinger).get("dimension").toString().split(":")[1].replace("the_", "").toUpperCase())){
+        if (type.equalsIgnoreCase("origins:dimension")) {
+            if (origin.getPowerFileFromType(powerfile).getConditionFromString(thinger).get("inverted").toString() == "true") {
+                if (!entity.getWorld().getEnvironment().equals(origin.getPowerFileFromType(powerfile).getConditionFromString(thinger).get("dimension").toString().split(":")[1].replace("the_", "").toUpperCase())) {
                     return "true";
                 }
-            }else{
-                if(entity.getWorld().getEnvironment().equals(origin.getPowerFileFromType(powerfile).getConditionFromString(thinger).get("dimension").toString().split(":")[1].replace("the_", "").toUpperCase())){
+            } else {
+                if (entity.getWorld().getEnvironment().equals(origin.getPowerFileFromType(powerfile).getConditionFromString(thinger).get("dimension").toString().split(":")[1].replace("the_", "").toUpperCase())) {
                     return "true";
                 }
             }
@@ -301,7 +307,6 @@ public class EntityCondition {
 
         return blockCount;
     }
-
 
 
 }

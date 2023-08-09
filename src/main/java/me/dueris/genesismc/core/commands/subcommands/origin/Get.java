@@ -44,6 +44,7 @@ public class Get extends SubCommand {
 
         ArrayList<Player> players = PlayerSelector.playerSelector(sender, args[1]);
         if (players.size() == 0) return;
-        for (Player p : players) sender.sendMessage(Component.text(Lang.getLocalizedString("command.origin.get.output").replace("%player%", p.getName()).replace("%layer%", args[2]).replace("%origin", OriginPlayer.getOrigin(p, CraftApoli.getLayerFromTag(args[2])).getTag())));
+        for (Player p : players)
+            sender.sendMessage(Component.text(Lang.getLocalizedString("command.origin.get.output").replace("%player%", p.getName()).replace("%layer%", args[2]).replace("%origin", OriginPlayer.getOrigin(p, CraftApoli.getLayerFromTag(args[2])).getTag())));
     }
 }
