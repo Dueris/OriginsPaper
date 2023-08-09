@@ -233,6 +233,25 @@ public class PowerContainer implements Serializable {
         return type.toString();
     }
 
+    public List<String> getPatternLine() {
+        List<String> patternLines = new ArrayList<>();
+
+        Object obj = powerFile.get("recipe");
+        if (obj instanceof JSONObject recipeObject) {
+            Object patternObj = recipeObject.get("pattern");
+
+            if (patternObj instanceof JSONArray patternArray) {
+                for (Object lineObj : patternArray) {
+                    if (lineObj instanceof String line) {
+                        patternLines.add(line);
+                    }
+                }
+            }
+        }
+
+        return patternLines;
+    }
+
     /**
      * @return Modifiers in the power file or null if not found
      */
@@ -268,6 +287,78 @@ public class PowerContainer implements Serializable {
         }
 
         return null;
+    }
+
+    public HashMap<String, Object> getRecipe() {
+        Object obj = powerFile.get("recipe");
+        if (obj == null) return new HashMap<>();
+
+        if (obj instanceof JSONObject modifier) {
+            HashMap<String, Object> result = new HashMap<>();
+            for (Object key : modifier.keySet()) {
+                String string_key = (String) key;
+                Object value = modifier.get(string_key);
+                result.put(string_key, value);
+            }
+            return result;
+        }
+
+        return null;
+    }
+
+    public HashMap<String, Object> getRecipeResult() {
+        Object obj = powerFile.get("recipe");
+        if (obj == null) return new HashMap<>();
+
+        if (obj instanceof JSONObject damageCondition) {
+            Object entityConditionObj = damageCondition.get("result");
+            if (entityConditionObj instanceof JSONObject entityCondition) {
+                HashMap<String, Object> result = new HashMap<>();
+                for (Object key : entityCondition.keySet()) {
+                    String stringKey = (String) key;
+                    Object value = entityCondition.get(stringKey);
+                    result.put(stringKey, value);
+                }
+                return result;
+            }
+        }
+
+        return new HashMap<>();
+    }
+
+    public List<String> getRecipeIngredients() {
+        Object obj = powerFile.get("recipe");
+        List<String> ingredientsList = new ArrayList<>();
+
+        if (obj instanceof JSONObject recipeObject) {
+            Object ingredientsObj = recipeObject.get("ingredients");
+
+            if (ingredientsObj instanceof JSONArray ingredientsArray) {
+                for (Object ingredient : ingredientsArray) {
+                    if (ingredient instanceof JSONObject singleIngredient) {
+                        if (singleIngredient.containsKey("item")) {
+                            String item = singleIngredient.get("item").toString();
+                            if (!item.isEmpty()) {
+                                ingredientsList.add(item);
+                            }
+                        }
+                    } else if (ingredient instanceof JSONArray nestedIngredientsArray) {
+                        for (Object nestedIngredient : nestedIngredientsArray) {
+                            if (nestedIngredient instanceof JSONObject nestedSingleIngredient) {
+                                if (nestedSingleIngredient.containsKey("item")) {
+                                    String nestedItem = nestedSingleIngredient.get("item").toString();
+                                    if (!nestedItem.isEmpty()) {
+                                        ingredientsList.add(nestedItem);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return ingredientsList;
     }
 
     public List<String> getEffects() {
