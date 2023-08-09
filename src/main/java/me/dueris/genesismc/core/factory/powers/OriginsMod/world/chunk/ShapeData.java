@@ -4,8 +4,8 @@ public class ShapeData {
     String shape;
     boolean useTopBottomThinger;
 
-    public ShapeData(String shape, boolean useTopToBottom){
-        this.useTopBottomThinger= useTopToBottom;
+    public ShapeData(String shape, boolean useTopToBottom) {
+        this.useTopBottomThinger = useTopToBottom;
         this.shape = shape;
     }
 

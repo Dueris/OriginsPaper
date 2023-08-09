@@ -1,19 +1,15 @@
 package me.dueris.genesismc.core.factory.powers.OriginsMod.player.inventory;
 
 import me.dueris.genesismc.core.GenesisMC;
-import me.dueris.genesismc.core.KeybindHandler;
 import me.dueris.genesismc.core.commands.subcommands.SubCommand;
 import me.dueris.genesismc.core.entity.OriginPlayer;
 import me.dueris.genesismc.core.events.KeybindTriggerEvent;
 import me.dueris.genesismc.core.events.OriginChangeEvent;
-import me.dueris.genesismc.core.events.OriginKeybindExecuteEvent;
-import me.dueris.genesismc.core.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.core.utils.BukkitColour;
 import me.dueris.genesismc.core.utils.OriginContainer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -30,7 +26,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import static me.dueris.genesismc.core.KeybindHandler.isKeyBeingPressed;
-import static me.dueris.genesismc.core.factory.powers.Powers.particle;
 import static me.dueris.genesismc.core.factory.powers.Powers.shulker_inventory;
 
 public class Inventory implements CommandExecutor, Listener {
@@ -43,7 +38,7 @@ public class Inventory implements CommandExecutor, Listener {
     @EventHandler
     public void MoveBackChange(OriginChangeEvent e) {
         Player p = e.getPlayer();
-        for(OriginContainer origin : OriginPlayer.getOrigin(p).values()){
+        for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
             new BukkitRunnable() {
                 @Override
                 public void run() {
@@ -78,9 +73,9 @@ public class Inventory implements CommandExecutor, Listener {
     }
 
     @EventHandler
-    public void keytrigger(KeybindTriggerEvent e){
-        for(OriginContainer origin : OriginPlayer.getOrigin(e.getPlayer()).values()){
-            if(shulker_inventory.contains(e.getPlayer())) {
+    public void keytrigger(KeybindTriggerEvent e) {
+        for (OriginContainer origin : OriginPlayer.getOrigin(e.getPlayer()).values()) {
+            if (shulker_inventory.contains(e.getPlayer())) {
                 if (isKeyBeingPressed(e.getPlayer(), origin.getPowerFileFromType("origins:inventory").getKey().get("key").toString(), true)) {
                     ArrayList<ItemStack> vaultItems = InventoryUtils.getItems(e.getPlayer());
                     org.bukkit.inventory.Inventory vault = Bukkit.createInventory(e.getPlayer(), InventoryType.valueOf(origin.getPowerFileFromType("origins:inventory").get("container_type", "chest").toUpperCase()), origin.getPowerFileFromType("origins:inventory").get("title", "inventory.container.title").replace("%player%", e.getPlayer().getName()));
@@ -93,11 +88,11 @@ public class Inventory implements CommandExecutor, Listener {
     }
 
     @EventHandler
-    public void deathTIMEEE(PlayerDeathEvent e){
-        for(OriginContainer origin : OriginPlayer.getOrigin(e.getPlayer()).values()){
-            if(shulker_inventory.contains(e.getPlayer())) {
+    public void deathTIMEEE(PlayerDeathEvent e) {
+        for (OriginContainer origin : OriginPlayer.getOrigin(e.getPlayer()).values()) {
+            if (shulker_inventory.contains(e.getPlayer())) {
                 Player p = e.getPlayer();
-                if(origin.getPowerFileFromType("origins:inventory").getDropOnDeath()){
+                if (origin.getPowerFileFromType("origins:inventory").getDropOnDeath()) {
                     ArrayList<ItemStack> vaultItems = InventoryUtils.getItems(p);
                     org.bukkit.inventory.Inventory vault = Bukkit.createInventory(p, InventoryType.CHEST, "origin.getPowerFileFromType(origins:inventory).get(title)");
 
@@ -143,7 +138,7 @@ public class Inventory implements CommandExecutor, Listener {
             //opens own shulk inventory
             if (shulker_inventory.contains((Player) sender)) {
                 ArrayList<ItemStack> vaultItems = InventoryUtils.getItems(p);
-                org.bukkit.inventory.Inventory vault = Bukkit.createInventory(p, InventoryType.DROPPER, "Shulker Inventory: "+ p.getName());
+                org.bukkit.inventory.Inventory vault = Bukkit.createInventory(p, InventoryType.DROPPER, "Shulker Inventory: " + p.getName());
                 vaultItems.stream().forEach(itemStack -> vault.addItem(itemStack));
                 p.openInventory(vault);
             } else {

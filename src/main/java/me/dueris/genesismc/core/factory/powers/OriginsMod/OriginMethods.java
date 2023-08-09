@@ -34,7 +34,8 @@ public class OriginMethods {
             if (effect.containsKey("duration")) duration = Integer.parseInt(effect.get("duration").toString());
             if (effect.containsKey("amplifier")) amplifier = Integer.parseInt(effect.get("amplifier").toString());
             if (effect.containsKey("is_ambient")) isAmbient = Boolean.parseBoolean(effect.get("is_ambient").toString());
-            if (effect.containsKey("show_particles")) showParticles = Boolean.parseBoolean(effect.get("show_particles").toString());
+            if (effect.containsKey("show_particles"))
+                showParticles = Boolean.parseBoolean(effect.get("show_particles").toString());
             if (effect.containsKey("show_icon")) showIcon = Boolean.parseBoolean(effect.get("show_icon").toString());
 
             System.out.println(PotionEffectType.getByKey(new NamespacedKey(potionEffect.split(":")[0], potionEffect.split(":")[1])));

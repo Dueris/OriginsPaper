@@ -7,7 +7,6 @@ import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.Warden;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.HashMap;
@@ -18,31 +17,31 @@ import static me.dueris.genesismc.core.factory.powers.Powers.entity_group;
 public class EntityGroupManager extends BukkitRunnable {
     @Override
     public void run() {
-        for (World world : Bukkit.getWorlds()){
+        for (World world : Bukkit.getWorlds()) {
             for (Entity entity : world.getEntities()) {
                 //Begin entity cases for removal
-                if(!entity.getType().isAlive()) {
+                if (!entity.getType().isAlive()) {
                     continue;
                 }
-                if(!entity.getType().isSpawnable()) {
+                if (!entity.getType().isSpawnable()) {
                     continue;
                 }
-                if(entity.getType() == EntityType.DROPPED_ITEM) {
+                if (entity.getType() == EntityType.DROPPED_ITEM) {
                     continue;
                 }
-                if(entity instanceof Player){
+                if (entity instanceof Player) {
                     //Player case, check for power
-                    for (OriginContainer origin : OriginPlayer.getOrigin(((Player) entity).getPlayer()).values()){
-                        if(entity_group.contains(entity)){
-                            if(origin.getPowerFileFromType("origins:entity_group").get("group", null).equalsIgnoreCase("undead")){
+                    for (OriginContainer origin : OriginPlayer.getOrigin(((Player) entity).getPlayer()).values()) {
+                        if (entity_group.contains(entity)) {
+                            if (origin.getPowerFileFromType("origins:entity_group").get("group", null).equalsIgnoreCase("undead")) {
                                 undead.put(entity.getEntityId(), entity.getType().name());
-                            } else if (origin.getPowerFileFromType("origins:entity_group").get("group", null).equalsIgnoreCase("arthropod")){
+                            } else if (origin.getPowerFileFromType("origins:entity_group").get("group", null).equalsIgnoreCase("arthropod")) {
                                 arthropod.put(entity.getEntityId(), entity.getType().name());
-                            } else if (origin.getPowerFileFromType("origins:entity_group").get("group", null).equalsIgnoreCase("illager")){
+                            } else if (origin.getPowerFileFromType("origins:entity_group").get("group", null).equalsIgnoreCase("illager")) {
                                 illager.put(entity.getEntityId(), entity.getType().name());
-                            } else if (origin.getPowerFileFromType("origins:entity_group").get("group", null).equalsIgnoreCase("aquatic")){
+                            } else if (origin.getPowerFileFromType("origins:entity_group").get("group", null).equalsIgnoreCase("aquatic")) {
                                 aquatic.put(entity.getEntityId(), entity.getType().name());
-                            } else if (origin.getPowerFileFromType("origins:entity_group").get("group", null).equalsIgnoreCase("default")){
+                            } else if (origin.getPowerFileFromType("origins:entity_group").get("group", null).equalsIgnoreCase("default")) {
                                 default_group.put(entity.getEntityId(), entity.getType().name());
                             }
                         }
@@ -50,15 +49,15 @@ public class EntityGroupManager extends BukkitRunnable {
                 }
 
                 //Sort into array groups
-                if(sortEntity(entity.getType()).split("%")[1].equalsIgnoreCase("undead")){
+                if (sortEntity(entity.getType()).split("%")[1].equalsIgnoreCase("undead")) {
                     undead.put(entity.getEntityId(), entity.getType().name());
-                } else if (sortEntity(entity.getType()).split("%")[1].equalsIgnoreCase("arthropod")){
+                } else if (sortEntity(entity.getType()).split("%")[1].equalsIgnoreCase("arthropod")) {
                     arthropod.put(entity.getEntityId(), entity.getType().name());
-                } else if (sortEntity(entity.getType()).split("%")[1].equalsIgnoreCase("illager")){
+                } else if (sortEntity(entity.getType()).split("%")[1].equalsIgnoreCase("illager")) {
                     illager.put(entity.getEntityId(), entity.getType().name());
-                } else if (sortEntity(entity.getType()).split("%")[1].equalsIgnoreCase("aquatic")){
+                } else if (sortEntity(entity.getType()).split("%")[1].equalsIgnoreCase("aquatic")) {
                     aquatic.put(entity.getEntityId(), entity.getType().name());
-                } else if (sortEntity(entity.getType()).split("%")[1].equalsIgnoreCase("default")){
+                } else if (sortEntity(entity.getType()).split("%")[1].equalsIgnoreCase("default")) {
                     default_group.put(entity.getEntityId(), entity.getType().name());
                 }
             }

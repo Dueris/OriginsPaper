@@ -2,7 +2,6 @@ package me.dueris.genesismc.core.files;
 
 import me.dueris.genesismc.core.utils.Lang;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 

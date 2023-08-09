@@ -12,14 +12,16 @@ public class KeybindTriggerEvent extends PlayerEvent {
 
     public KeybindTriggerEvent(@NotNull Player who, String key_type) {
         super(who);
-        this.key_type = key_type;
+        KeybindTriggerEvent.key_type = key_type;
     }
 
     public static HandlerList getHandlerList() {
         return handlers;
     }
 
-    public String getKey(){return key_type;}
+    public String getKey() {
+        return key_type;
+    }
 
     @Override
     public HandlerList getHandlers() {

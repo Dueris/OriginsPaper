@@ -15,13 +15,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
-import org.jetbrains.annotations.NotNull;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -32,7 +29,7 @@ import java.util.function.Predicate;
 import static me.dueris.genesismc.core.factory.powers.Powers.*;
 
 public class AttributeHandler implements Listener {
-    public static Map<String, BinaryOperator<Double>> getOperationMappingsDouble(){
+    public static Map<String, BinaryOperator<Double>> getOperationMappingsDouble() {
         Map<String, BinaryOperator<Double>> operationMap = new HashMap<>();
         operationMap.put("addition", Double::sum);
         operationMap.put("subtraction", (a, b) -> a - b);
@@ -68,13 +65,15 @@ public class AttributeHandler implements Listener {
                 PowerContainer power = origin.getPowerFileFromType("origins:attribute");
                 if (power == null) continue;
 
-                if(power.getModifier().get("attribute").toString().equalsIgnoreCase("reach-entity-attributes:reach")){
+                if (power.getModifier().get("attribute").toString().equalsIgnoreCase("reach-entity-attributes:reach")) {
                     extra_reach.add(p);
                     return;
                 } else if (power.getModifier().get("attribute").toString().equalsIgnoreCase("reach-entity-attributes:attack_range")) {
                     extra_reach_attack.add(p);
                     return;
-                } else {Reach.setFinalReach(p, Reach.getDefaultReach(p));}
+                } else {
+                    Reach.setFinalReach(p, Reach.getDefaultReach(p));
+                }
 
                 Attribute attribute_modifier = Attribute.valueOf(power.getModifier().get("attribute").toString().split(":")[1].replace(".", "_").toUpperCase());
 
@@ -105,7 +104,7 @@ public class AttributeHandler implements Listener {
         }
     }
 
-    public static void executeAttributeModify(String operation, Attribute attribute_modifier, double base_value, Player p, Double value){
+    public static void executeAttributeModify(String operation, Attribute attribute_modifier, double base_value, Player p, Double value) {
 
         BinaryOperator mathOperator = getOperationMappingsDouble().get(operation);
         if (mathOperator != null) {
@@ -140,18 +139,18 @@ public class AttributeHandler implements Listener {
             return null; // No block in sight within the range
         }
 
-        public static int getDefaultReach(Player player){
-            if(player.getGameMode().equals(GameMode.CREATIVE)){
+        public static int getDefaultReach(Player player) {
+            if (player.getGameMode().equals(GameMode.CREATIVE)) {
                 return 5;
             }
             return 3;
         }
 
-        public static void setFinalReach(Player p, double value){
+        public static void setFinalReach(Player p, double value) {
             p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "reach"), PersistentDataType.DOUBLE, value);
         }
 
-        public static double getFinalReach(Player p){
+        public static double getFinalReach(Player p) {
             return p.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "reach"), PersistentDataType.DOUBLE);
         }
 
@@ -213,7 +212,7 @@ public class AttributeHandler implements Listener {
                                     LivingEntity ent = (LivingEntity) entity;
                                     p.attack(ent);
                                 }
-                            }else{
+                            } else {
                                 e.setCancelled(true);
                             }
                         }

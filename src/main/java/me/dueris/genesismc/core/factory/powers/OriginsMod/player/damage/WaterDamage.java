@@ -3,7 +3,10 @@ package me.dueris.genesismc.core.factory.powers.OriginsMod.player.damage;
 import io.papermc.paper.event.entity.WaterBottleSplashEvent;
 import me.dueris.genesismc.core.utils.Lang;
 import net.kyori.adventure.text.Component;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -14,9 +17,9 @@ import java.util.HashMap;
 import java.util.Random;
 import java.util.UUID;
 
+import static me.dueris.genesismc.core.factory.powers.OriginsMod.block.WaterBreathe.outofAIR;
 import static me.dueris.genesismc.core.factory.powers.Powers.water_breathing;
 import static me.dueris.genesismc.core.factory.powers.Powers.water_vulnerability;
-import static me.dueris.genesismc.core.factory.powers.OriginsMod.block.WaterBreathe.outofAIR;
 
 public class WaterDamage extends BukkitRunnable implements Listener {
     private final HashMap<UUID, Long> cooldown;

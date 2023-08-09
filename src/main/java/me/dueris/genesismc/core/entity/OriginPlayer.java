@@ -8,32 +8,24 @@ import me.dueris.genesismc.core.utils.LayerContainer;
 import me.dueris.genesismc.core.utils.OriginContainer;
 import me.dueris.genesismc.core.utils.PowerContainer;
 import me.dueris.genesismc.core.utils.SendCharts;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.NamespacedKey;
-import org.bukkit.attribute.Attribute;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlot;
-import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
-import static me.dueris.genesismc.core.choosing.ChoosingCORE.*;
 import static me.dueris.genesismc.core.factory.powers.Powers.*;
 import static org.bukkit.Bukkit.getServer;
-import static org.bukkit.ChatColor.GRAY;
 
 public class OriginPlayer {
 
@@ -180,17 +172,18 @@ public class OriginPlayer {
         String originTag = origin.getTag();
         if (!originTag.equals(CraftApoli.nullOrigin().getTag())) SendCharts.originPopularity(player);
         new BukkitRunnable() {
-          @Override
-            public void run(){
+            @Override
+            public void run() {
                 assignPowers(player, layer);
             }
-        }.runTaskLater(GenesisMC.getPlugin(), 2l);
+        }.runTaskLater(GenesisMC.getPlugin(), 2L);
     }
 
     /**
      * WARNING: will remove the layer containing the origin from the playerdata. If you need to make a player re choose an origin use setOrigin and pass in CraftApoli.nullOrigin().
+     *
      * @param player player.
-     * @param layer the layer to remove from playerdata.
+     * @param layer  the layer to remove from playerdata.
      */
     public static void removeOrigin(Player player, LayerContainer layer) {
         HashMap<LayerContainer, OriginContainer> origins = getOrigin(player);
@@ -230,7 +223,7 @@ public class OriginPlayer {
         }
     }
 
-    public static void setOriginData(Player player, OriginDataType type, boolean value){
+    public static void setOriginData(Player player, OriginDataType type, boolean value) {
         if (type.equals(OriginDataType.IN_PHASING_FORM)) {
             player.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.BOOLEAN, value);
         }
@@ -370,7 +363,7 @@ public class OriginPlayer {
                 case "origins:action_on_item_use" -> action_on_item_use.add(player);
                 case "origins:action_on_land" -> action_on_land.add(player);
                 case "origins:action_on_wake_up" -> action_on_wake_up.add(player);
-                case "origins:action_ove_time"-> action_ove_time.add(player);
+                case "origins:action_ove_time" -> action_ove_time.add(player);
                 case "origins:action_when_damage_taken" -> action_when_damage_taken.add(player);
                 case "origins:action_when_hit" -> action_when_hit.add(player);
                 case "origins:active_self" -> active_self.add(player);
@@ -507,7 +500,7 @@ public class OriginPlayer {
                 case "origins:action_on_item_use" -> action_on_item_use.remove(player);
                 case "origins:action_on_land" -> action_on_land.remove(player);
                 case "origins:action_on_wake_up" -> action_on_wake_up.remove(player);
-                case "origins:action_ove_time"-> action_ove_time.remove(player);
+                case "origins:action_ove_time" -> action_ove_time.remove(player);
                 case "origins:action_when_damage_taken" -> action_when_damage_taken.remove(player);
                 case "origins:action_when_hit" -> action_when_hit.remove(player);
                 case "origins:active_self" -> active_self.remove(player);

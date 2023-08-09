@@ -15,12 +15,12 @@ import me.dueris.genesismc.core.enchantments.WaterProtection;
 import me.dueris.genesismc.core.entity.OriginPlayer;
 import me.dueris.genesismc.core.factory.CraftApoli;
 import me.dueris.genesismc.core.factory.PowerStartHandler;
-import me.dueris.genesismc.core.factory.powers.OriginsMod.player.inventory.Inventory;
 import me.dueris.genesismc.core.factory.powers.OriginsMod.player.PlayerRender;
+import me.dueris.genesismc.core.factory.powers.OriginsMod.player.inventory.Inventory;
 import me.dueris.genesismc.core.files.GenesisDataFiles;
 import me.dueris.genesismc.core.generation.WaterProtBookGen;
-import me.dueris.genesismc.core.items.InfinPearl;
 import me.dueris.genesismc.core.items.GenesisItems;
+import me.dueris.genesismc.core.items.InfinPearl;
 import me.dueris.genesismc.core.items.OrbOfOrigins;
 import me.dueris.genesismc.core.items.WaterProtItem;
 import me.dueris.genesismc.core.utils.*;
@@ -52,6 +52,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
     public static ArrayList<Enchantment> custom_enchants = new ArrayList<>();
     public static WaterProtection waterProtectionEnchant;
     private static GenesisMC plugin;
+
     static {
         tool = EnumSet.of(Material.DIAMOND_AXE, Material.DIAMOND_HOE, Material.DIAMOND_PICKAXE, Material.DIAMOND_SHOVEL, Material.DIAMOND_SWORD, Material.GOLDEN_AXE, Material.GOLDEN_HOE, Material.GOLDEN_PICKAXE, Material.GOLDEN_SHOVEL, Material.GOLDEN_SWORD, Material.NETHERITE_AXE, Material.NETHERITE_HOE, Material.NETHERITE_PICKAXE, Material.NETHERITE_SHOVEL, Material.NETHERITE_SWORD, Material.IRON_AXE, Material.IRON_HOE, Material.IRON_PICKAXE, Material.IRON_SHOVEL, Material.IRON_SWORD, Material.WOODEN_AXE, Material.WOODEN_HOE, Material.WOODEN_PICKAXE, Material.WOODEN_SHOVEL, Material.WOODEN_SWORD, Material.SHEARS);
     }
@@ -110,7 +111,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
             Bukkit.getServer().getPluginManager().disablePlugin(this);
             return;
         }
-        for(Player p : Bukkit.getOnlinePlayers()){
+        for (Player p : Bukkit.getOnlinePlayers()) {
             p.setGravity(true);
         }
         Bukkit.getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] " + Lang.lang_test).color(TextColor.fromHexString(GREEN)));
@@ -149,13 +150,13 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 
 
         getServer().getPluginManager().registerEvents(this, this);
-    //Commands
+        //Commands
         getCommand("origin").setExecutor(new GenesisCommandManager());
         getCommand("origin").setTabCompleter(new TabAutoComplete());
         getCommand("shulker").setTabCompleter(new TabAutoComplete());
         getCommand("shulker").setExecutor(new Inventory());
         getCommand("toggle").setExecutor(new ToggleCommand());
-    //Event Handler Register
+        //Event Handler Register
         getServer().getPluginManager().registerEvents(new PlayerHandler(), this);
         getServer().getPluginManager().registerEvents(new EnchantProtEvent(), this);
         getServer().getPluginManager().registerEvents(new WaterProtAnvil(), this);
@@ -169,12 +170,12 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         getServer().getPluginManager().registerEvents(new Listeners(), this);
         getServer().getPluginManager().registerEvents(new DataContainer(), this);
         getServer().getPluginManager().registerEvents(new GenesisItems(), this);
-                if(getServer().getPluginManager().isPluginEnabled("SkinsRestorer")){
-                    getServer().getPluginManager().registerEvents(new PlayerRender.ModelColor(), GenesisMC.getPlugin());
-                    getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] " + Lang.getLocalizedString("startup.skinRestorer.present")).color(TextColor.fromHexString(AQUA)));
-                }else{
-                    getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] " + Lang.getLocalizedString("startup.skinRestorer.absent")).color(TextColor.fromHexString(AQUA)));
-                }
+        if (getServer().getPluginManager().isPluginEnabled("SkinsRestorer")) {
+            getServer().getPluginManager().registerEvents(new PlayerRender.ModelColor(), GenesisMC.getPlugin());
+            getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] " + Lang.getLocalizedString("startup.skinRestorer.present")).color(TextColor.fromHexString(AQUA)));
+        } else {
+            getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] " + Lang.getLocalizedString("startup.skinRestorer.absent")).color(TextColor.fromHexString(AQUA)));
+        }
         plugin = this;
 
         OrbOfOrigins.init();
@@ -217,7 +218,8 @@ public final class GenesisMC extends JavaPlugin implements Listener {
             }.runTaskTimer(GenesisMC.getPlugin(), 3, 0);
             PlayerHandler.originValidCheck(p);
             OriginPlayer.assignPowers(p);
-            if (p.isOp()) p.sendMessage(Component.text(Lang.getLocalizedString("reloadMessage")).color(TextColor.fromHexString(AQUA)));
+            if (p.isOp())
+                p.sendMessage(Component.text(Lang.getLocalizedString("reloadMessage")).color(TextColor.fromHexString(AQUA)));
         }
 
     }

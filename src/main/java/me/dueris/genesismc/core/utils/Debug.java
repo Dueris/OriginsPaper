@@ -1,21 +1,14 @@
 package me.dueris.genesismc.core.utils;
 
 import me.dueris.genesismc.core.GenesisMC;
-import me.dueris.genesismc.core.PlayerHandler;
-import me.dueris.genesismc.core.factory.CraftApoli;
 import me.dueris.genesismc.core.files.GenesisDataFiles;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.Arrays;
 
-import static me.dueris.genesismc.core.GenesisMC.getPlugin;
 import static me.dueris.genesismc.core.utils.BukkitUtils.printValues;
 import static org.bukkit.Bukkit.getServer;
 

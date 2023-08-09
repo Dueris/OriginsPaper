@@ -13,8 +13,8 @@ public class LegacyPowerContainer implements Serializable {
     String powerSource;
 
     /**
-     * @param powerTag The power tag.
-     * @param powerFile The data within a power file.
+     * @param powerTag    The power tag.
+     * @param powerFile   The data within a power file.
      * @param powerSource What applied the power to the origin.
      */
     public LegacyPowerContainer(String powerTag, LegacyPowerFileContainer powerFile, String powerSource) {
@@ -129,7 +129,7 @@ public class LegacyPowerContainer implements Serializable {
         Object obj = powerFile.get("modifier");
         if (obj == null) return new HashMap<>();
         JSONArray modifier = (JSONArray) obj;
-        for (int i = 0;i < modifier.size(); i++) {
+        for (int i = 0; i < modifier.size(); i++) {
             modifier.get(i);
             System.out.println(modifier.get(i));
         }

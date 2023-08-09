@@ -5,8 +5,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 
-import static me.dueris.genesismc.core.factory.powers.Powers.aerial_combatant;
 import static me.dueris.genesismc.core.factory.powers.OriginsMod.player.FlightElytra.glidingPlayers;
+import static me.dueris.genesismc.core.factory.powers.Powers.aerial_combatant;
 
 public class ArielCombat implements Listener {
     @EventHandler

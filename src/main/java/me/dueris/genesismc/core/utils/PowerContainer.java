@@ -27,7 +27,7 @@ public class PowerContainer implements Serializable {
         this.powerSource = powerSource;
     }
 
-    public FileContainer getPowerFile(){
+    public FileContainer getPowerFile() {
         return powerFile;
     }
 
@@ -141,7 +141,7 @@ public class PowerContainer implements Serializable {
         return (long) render;
     }
 
-    public String getModelRenderType(){
+    public String getModelRenderType() {
         Object type = powerFile.get("render_type");
         if (type == null) return "original";
         return (String) type;
@@ -156,13 +156,13 @@ public class PowerContainer implements Serializable {
         return (long) render;
     }
 
-    public boolean getDropOnDeath(){
+    public boolean getDropOnDeath() {
         Object render = powerFile.get("drop_on_death");
         if (render == null) return false;
         return (Boolean) render;
     }
 
-    public Double getColor(String thing){
+    public Double getColor(String thing) {
         Object color = powerFile.get(thing);
         if (color == null) return 0.0;
         return (Double) color;
@@ -182,13 +182,13 @@ public class PowerContainer implements Serializable {
      */
     public String getRenderType() {
         Object type = powerFile.get("render_type");
-        if(type == null) return "blindness";
+        if (type == null) return "blindness";
         return type.toString();
     }
 
     public String getEffect() {
         Object type = powerFile.get("effect");
-        if(type == null) return "blindness";
+        if (type == null) return "blindness";
         return type.toString();
     }
 
@@ -197,7 +197,7 @@ public class PowerContainer implements Serializable {
      */
     public Long getViewDistance() {
         Object distance = powerFile.get("view_distance");
-        if(distance == null) return 10L;
+        if (distance == null) return 10L;
         return (Long) distance;
     }
 
@@ -225,9 +225,9 @@ public class PowerContainer implements Serializable {
         return (boolean) render;
     }
 
-    public String get(String thing, String defaultValue){
+    public String get(String thing, String defaultValue) {
         Object type = powerFile.get(thing);
-        if(type == null) {
+        if (type == null) {
             return defaultValue;
         }
         return type.toString();
@@ -284,9 +284,8 @@ public class PowerContainer implements Serializable {
 
         if (obj instanceof JSONArray effects) {
             for (Object effect : effects) {
-                if (effect instanceof JSONObject) {
+                if (effect instanceof JSONObject effectObj) {
                     HashMap<String, Object> effectData = new HashMap<>();
-                    JSONObject effectObj = (JSONObject) effect;
                     for (Object key : effectObj.keySet()) {
                         String stringKey = (String) key;
                         Object value = effectObj.get(stringKey);

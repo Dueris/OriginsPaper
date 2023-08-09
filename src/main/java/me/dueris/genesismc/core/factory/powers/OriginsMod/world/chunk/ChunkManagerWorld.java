@@ -1,18 +1,15 @@
 package me.dueris.genesismc.core.factory.powers.OriginsMod.world.chunk;
 
 import io.papermc.paper.math.Position;
-import net.minecraft.world.level.ChunkPos;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
-import org.bukkit.block.TileState;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
-import org.checkerframework.checker.units.qual.C;
 
 import java.util.HashMap;
 
@@ -52,49 +49,49 @@ public class ChunkManagerWorld {
         return super.hashCode();
     }
 
-    public ChunkManagerWorld(World world){
+    public ChunkManagerWorld(World world) {
         this.world = world;
     }
 
-    public Chunk getChunkAt(Location location){
+    public Chunk getChunkAt(Location location) {
         return location.getChunk();
     }
 
-    public Chunk getChunkAt(int x, int z, World world){
+    public Chunk getChunkAt(int x, int z, World world) {
         return world.getChunkAt(x, z);
     }
 
-    public ChunkManagerPlayer getPlayerChunkManager(Player player, String shape, boolean usetoppybottom){
+    public ChunkManagerPlayer getPlayerChunkManager(Player player, String shape, boolean usetoppybottom) {
         return new ChunkManagerPlayer(player, shape);
     }
 
-    public Block getBlockAtChunkPos(Chunk chunk, int x, int y, int z){
+    public Block getBlockAtChunkPos(Chunk chunk, int x, int y, int z) {
         return chunk.getBlock(x, y, z);
     }
 
-    public Block getBlockAtChunkPos(Chunk chunk, Position position){
-        return chunk.getBlock((int) position.blockX(), (int) position.blockY(), (int) position.blockZ());
+    public Block getBlockAtChunkPos(Chunk chunk, Position position) {
+        return chunk.getBlock(position.blockX(), position.blockY(), position.blockZ());
     }
 
-    public Material getBlockTypeAtChunkPos(Chunk chunk, int x, int y, int z){
+    public Material getBlockTypeAtChunkPos(Chunk chunk, int x, int y, int z) {
         return chunk.getBlock(x, y, z).getType();
     }
 
-    public Location getCenter(Chunk chunk){
+    public Location getCenter(Chunk chunk) {
         return chunk.getBlock(0, 0, 0).getLocation();
     }
 
-    public void replaceBlocks(Chunk chunk, Material oldBlock, Material newBlock, boolean updateFullServer, Player player){
-        for(Block block : getAllBlocksInChunk(chunk)){
-            if(block.getType() == oldBlock){
+    public void replaceBlocks(Chunk chunk, Material oldBlock, Material newBlock, boolean updateFullServer, Player player) {
+        for (Block block : getAllBlocksInChunk(chunk)) {
+            if (block.getType() == oldBlock) {
                 HashMap<Position, BlockData> blocksToChange = new HashMap<>();
                 blocksToChange.put(block.getLocation(), newBlock.createBlockData());
-                if(updateFullServer){
-                    for(Position pos : blocksToChange.keySet()){
+                if (updateFullServer) {
+                    for (Position pos : blocksToChange.keySet()) {
                         getBlockAtChunkPos(chunk, pos).setType(newBlock);
                     }
-                }else{
-                    if(player != null){
+                } else {
+                    if (player != null) {
                         player.sendMultiBlockChange(blocksToChange);
                     }
                 }
@@ -125,17 +122,17 @@ public class ChunkManagerWorld {
         return blocks;
     }
 
-    public Entity[] getAllEntitiesInChunk(Chunk chunk){
+    public Entity[] getAllEntitiesInChunk(Chunk chunk) {
         return chunk.getEntities();
     }
 
-    public void killAllEntitiesInChunk(Chunk chunk){
-        for(Entity entity : getAllEntitiesInChunk(chunk)){
+    public void killAllEntitiesInChunk(Chunk chunk) {
+        for (Entity entity : getAllEntitiesInChunk(chunk)) {
             entity.setFallDistance(1000000);
         }
     }
 
-    public Biome getBiome(Chunk chunk, int x, int y, int z){
+    public Biome getBiome(Chunk chunk, int x, int y, int z) {
         return chunk.getBlock(x, y, z).getBiome();
     }
 
@@ -168,25 +165,25 @@ public class ChunkManagerWorld {
         }
     }
 
-    public void setChunkBiome(Chunk chunk, Biome biome){
-        for(Block block : this.getAllBlocksInChunk(chunk)){
+    public void setChunkBiome(Chunk chunk, Biome biome) {
+        for (Block block : this.getAllBlocksInChunk(chunk)) {
             block.setBiome(biome);
         }
     }
 
-    public void setChunkBlockData(Chunk chunk, BlockData data){
-        for(Block block : this.getAllBlocksInChunk(chunk)){
+    public void setChunkBlockData(Chunk chunk, BlockData data) {
+        for (Block block : this.getAllBlocksInChunk(chunk)) {
             block.setBlockData(data);
         }
     }
 
-    public void setChunkBlockData(Chunk chunk, BlockData data, boolean updatePhysics){
-        for(Block block : this.getAllBlocksInChunk(chunk)){
+    public void setChunkBlockData(Chunk chunk, BlockData data, boolean updatePhysics) {
+        for (Block block : this.getAllBlocksInChunk(chunk)) {
             block.setBlockData(data, updatePhysics);
         }
     }
 
-    public boolean isSlimeChunk(Chunk chunk){
+    public boolean isSlimeChunk(Chunk chunk) {
         return chunk.isSlimeChunk();
     }
 

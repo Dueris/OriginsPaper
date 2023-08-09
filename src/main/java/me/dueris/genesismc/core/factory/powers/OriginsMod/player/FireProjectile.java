@@ -5,14 +5,10 @@ import me.dueris.genesismc.core.GenesisMC;
 import me.dueris.genesismc.core.KeybindHandler;
 import me.dueris.genesismc.core.entity.OriginPlayer;
 import me.dueris.genesismc.core.events.KeybindTriggerEvent;
-import me.dueris.genesismc.core.events.OriginKeybindExecuteEvent;
 import me.dueris.genesismc.core.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.core.utils.OriginContainer;
-import net.minecraft.nbt.CompoundTag;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Sound;
-import org.bukkit.craftbukkit.v1_20_R1.entity.CraftEntity;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
@@ -48,14 +44,14 @@ public class FireProjectile implements Listener {
     public static ArrayList<Player> in_continuous = new ArrayList<>();
 
     @EventHandler
-    public void keybindCONTINUOUSDF(KeybindTriggerEvent e){
+    public void keybindCONTINUOUSDF(KeybindTriggerEvent e) {
         Player p = e.getPlayer();
-        for(OriginContainer origin : OriginPlayer.getOrigin(p).values()){
-            if(fire_projectile.contains(p)) {
+        for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
+            if (fire_projectile.contains(p)) {
                 if (isKeyBeingPressed(e.getPlayer(), origin.getPowerFileFromType("origins:fire_projectile").getKey().get("key").toString(), true)) {
-                    if(in_continuous.contains(p)){
+                    if (in_continuous.contains(p)) {
                         in_continuous.remove(p);
-                    }else{
+                    } else {
                         in_continuous.add(p);
                     }
                 }
@@ -79,7 +75,7 @@ public class FireProjectile implements Listener {
     public void keybindPress(KeybindTriggerEvent e) {
         Player p = e.getPlayer();
         ArrayList<Player> peopladf = new ArrayList<>();
-        if(!peopladf.contains(p)) {
+        if (!peopladf.contains(p)) {
             for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
                 if (fire_projectile.contains(p)) {
                     if (ConditionExecutor.check("condition", p, origin, "origins:fire_projectile", null, p)) {
@@ -117,7 +113,7 @@ public class FireProjectile implements Listener {
                                             float finalDivergence1 = divergence;
                                             final boolean[] thing = new boolean[1];
                                             new BukkitRunnable() {
-                                                int shotsLeft = amt - amt - amt;
+                                                int shotsLeft = -amt;
 
                                                 @Override
                                                 public void run() {
@@ -148,7 +144,7 @@ public class FireProjectile implements Listener {
                                                                     ItemMeta met = KeybindHandler.getKeybindItem(key, p.getInventory()).getItemMeta();
                                                                     met.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "contin"), PersistentDataType.BOOLEAN, true);
                                                                     KeybindHandler.getKeybindItem(key, p.getInventory()).setItemMeta(met);
-                                                                    shotsLeft = amt - amt - amt;
+                                                                    shotsLeft = -amt;
                                                                 }
                                                             }
                                                             return;
@@ -183,7 +179,7 @@ public class FireProjectile implements Listener {
                                                 }
                                             }.runTaskTimer(GenesisMC.getPlugin(), start_delay, interval);
 
-                                            if(thing[0] == true){
+                                            if (thing[0]) {
                                                 thing[0] = false;
                                                 this.cancel();
                                             }

@@ -5,7 +5,6 @@ import me.dueris.genesismc.core.utils.Lang;
 import me.dueris.genesismc.core.utils.OriginContainer;
 import me.dueris.genesismc.core.utils.PowerContainer;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -24,7 +23,7 @@ import static me.dueris.genesismc.core.factory.powers.Powers.conditioned_attribu
 
 public class AttributeConditioned implements Listener {
 
-    public static void executeAttributeModify(String operation, Attribute attribute_modifier, int base_value, Player p, int value){
+    public static void executeAttributeModify(String operation, Attribute attribute_modifier, int base_value, Player p, int value) {
         Map<String, BinaryOperator<Integer>> operationMap = new HashMap<>();
         operationMap.put("addition", Integer::sum);
         operationMap.put("subtraction", (a, b) -> a - b);
@@ -50,7 +49,7 @@ public class AttributeConditioned implements Listener {
         }
     }
 
-    public static void executeAttributeModify(String operation, Attribute attribute_modifier, int base_value, Player p, Double value){
+    public static void executeAttributeModify(String operation, Attribute attribute_modifier, int base_value, Player p, Double value) {
         Map<String, BinaryOperator<Double>> operationMap = new HashMap<>();
         operationMap.put("addition", Double::sum);
         operationMap.put("subtraction", (a, b) -> a - b);
@@ -99,7 +98,7 @@ public class AttributeConditioned implements Listener {
             if (power == null) continue;
 
             Attribute attribute_modifier = Attribute.valueOf(power.getModifier().get("attribute").toString().split(":")[1].replace(".", "_").toUpperCase());
-            if(power.getModifier().get("value") instanceof Integer){
+            if (power.getModifier().get("value") instanceof Integer) {
                 int value = Integer.valueOf(power.getModifier().get("value").toString());
                 int base_value = (int) p.getAttribute(Attribute.valueOf(attribute_modifier.toString())).getBaseValue();
                 String operation = String.valueOf(power.getModifier().get("operation"));
@@ -137,7 +136,7 @@ public class AttributeConditioned implements Listener {
             if (power == null) continue;
 
             Attribute attribute_modifier = Attribute.valueOf(power.getModifier().get("attribute").toString().split(":")[1].replace(".", "_").toUpperCase());
-            if(power.getModifier().get("value") instanceof Integer){
+            if (power.getModifier().get("value") instanceof Integer) {
                 int value = Integer.valueOf(power.getModifier().get("value").toString());
                 int base_value = (int) p.getAttribute(Attribute.valueOf(attribute_modifier.toString())).getBaseValue();
                 String operation = String.valueOf(power.getModifier().get("operation"));

@@ -1,12 +1,8 @@
 package me.dueris.genesismc.core.factory.powers.OriginsMod.world.chunk;
 
-import net.minecraft.world.level.block.Blocks;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
-import org.bukkit.generator.ChunkGenerator;
-
-import java.awt.*;
 
 public class ChunkManagerPlayer {
     Player player;
@@ -14,7 +10,7 @@ public class ChunkManagerPlayer {
     ShapeData shapeData;
     boolean thing;
 
-    public ChunkManagerPlayer(Player player, String shape){
+    public ChunkManagerPlayer(Player player, String shape) {
         this.player = player;
         this.shape = shape;
         //generateShapeData
@@ -79,9 +75,9 @@ public class ChunkManagerPlayer {
         this.thing = thing;
     }
 
-    public Block[] getPlayerChunkBlocks(ShapeData shapeData, Player player){
+    public Block[] getPlayerChunkBlocks(ShapeData shapeData, Player player) {
         int radius = 8;
-        if(shapeData.getShape().equalsIgnoreCase("sphere")){
+        if (shapeData.getShape().equalsIgnoreCase("sphere")) {
             Location centerLocation = player.getLocation();
             int centerX = centerLocation.getBlockX();
             int centerY = centerLocation.getBlockY();

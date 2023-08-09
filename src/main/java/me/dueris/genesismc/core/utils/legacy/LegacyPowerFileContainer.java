@@ -1,7 +1,7 @@
 package me.dueris.genesismc.core.utils.legacy;
 
-import java.util.ArrayList;
 import java.io.Serializable;
+import java.util.ArrayList;
 
 @Deprecated
 public class LegacyPowerFileContainer implements Serializable {

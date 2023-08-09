@@ -6,12 +6,9 @@ import me.dueris.genesismc.core.utils.Lang;
 import me.dueris.genesismc.core.utils.OriginContainer;
 import me.dueris.genesismc.core.utils.PowerContainer;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import static me.dueris.genesismc.core.factory.powers.Powers.burn;
 import static me.dueris.genesismc.core.factory.powers.Powers.more_exhaustion;
 
 public class Exhaust extends BukkitRunnable {
@@ -41,7 +38,7 @@ public class Exhaust extends BukkitRunnable {
                         ticksE++;
                         return;
                     } else {
-                        if(ConditionExecutor.check("condition", p, origin, "origins:exhaust", null, p)){
+                        if (ConditionExecutor.check("condition", p, origin, "origins:exhaust", null, p)) {
                             p.setExhaustion(p.getExhaustion() - Float.parseFloat(origin.getPowerFileFromType("origins:exhaust").get("exhaustion", "1")));
                         }
                         ticksE = 0;

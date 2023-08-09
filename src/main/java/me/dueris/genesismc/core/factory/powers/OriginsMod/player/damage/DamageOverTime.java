@@ -13,7 +13,6 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.Random;
 
-import static me.dueris.genesismc.core.factory.powers.Powers.burn;
 import static me.dueris.genesismc.core.factory.powers.Powers.damage_over_time;
 
 public class DamageOverTime extends BukkitRunnable {
@@ -21,7 +20,7 @@ public class DamageOverTime extends BukkitRunnable {
     private Long interval;
     private int damage;
     private DamageSource damage_source;
-    private String damage_type;
+    private final String damage_type;
     private String protection_enchantment;
     private double protection_effectiveness;
 
@@ -50,19 +49,20 @@ public class DamageOverTime extends BukkitRunnable {
                         ticksE++;
                         return;
                     } else {
-                        if(p.getWorld().getDifficulty().equals(Difficulty.EASY)){
-                            if(origin.getPowerFileFromType("origins:damage_over_time").get("damage_easy", origin.getPowerFileFromType("origins:damage_over_time").get("damage", "1")) == null){
+                        if (p.getWorld().getDifficulty().equals(Difficulty.EASY)) {
+                            if (origin.getPowerFileFromType("origins:damage_over_time").get("damage_easy", origin.getPowerFileFromType("origins:damage_over_time").get("damage", "1")) == null) {
                                 damage = Integer.parseInt(origin.getPowerFileFromType("origins:damage_over_time").get("damage", "1"));
-                            }else{
+                            } else {
                                 damage = Integer.parseInt(origin.getPowerFileFromType("origins:damage_over_time").get("damage_easy", origin.getPowerFileFromType("origins:damage_over_time").get("damage", "1")));
                             }
-                        }else{
+                        } else {
                             damage = Integer.parseInt(origin.getPowerFileFromType("origins:damage_over_time").get("damage", "1"));
                         }
 
                         protection_effectiveness = Double.parseDouble(origin.getPowerFileFromType("origins:damage_over_time").get("protection_effectiveness", "1"));
 
-                        if(!ConditionExecutor.check("condition", p, origin, "origins:damage_over_time", null, p)) return;
+                        if (!ConditionExecutor.check("condition", p, origin, "origins:damage_over_time", null, p))
+                            return;
 
                         if (p.getGameMode().equals(GameMode.SURVIVAL) || p.getGameMode().equals(GameMode.ADVENTURE)) {
                             float helemt_modifier = 0;

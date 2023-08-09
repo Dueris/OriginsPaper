@@ -6,8 +6,8 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import static me.dueris.genesismc.core.factory.powers.Powers.aqua_affinity;
 import static me.dueris.genesismc.core.factory.powers.OriginsMod.block.WaterBreathe.isInBreathableWater;
+import static me.dueris.genesismc.core.factory.powers.Powers.aqua_affinity;
 
 public class AquaAffinity extends BukkitRunnable {
     @Override

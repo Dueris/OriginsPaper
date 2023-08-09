@@ -10,8 +10,6 @@ import java.io.InputStreamReader;
 import java.net.URL;
 
 import static me.dueris.genesismc.core.utils.BukkitColour.GREEN;
-import static org.bukkit.Bukkit.getLogger;
-import static org.bukkit.Bukkit.getServer;
 
 public class VersionControl {
     public static final String REQUIRED_VERSION = "1.20";

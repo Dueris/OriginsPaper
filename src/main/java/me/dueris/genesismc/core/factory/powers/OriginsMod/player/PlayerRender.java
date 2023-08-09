@@ -109,18 +109,18 @@ public class PlayerRender extends BukkitRunnable {
                 }
             }
 
-            if(invisibility.contains(p)){
-                for(OriginContainer origin : OriginPlayer.getOrigin(p).values()){
-                    if(ConditionExecutor.check("condition", p, origin, "origins:invisibility", null, p)){
-                        if(origin.getPowerFileFromType("origins:invisibility").get("render_armor", "false").equalsIgnoreCase("true")){
-                            for(Player players : Bukkit.getOnlinePlayers()){
+            if (invisibility.contains(p)) {
+                for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
+                    if (ConditionExecutor.check("condition", p, origin, "origins:invisibility", null, p)) {
+                        if (origin.getPowerFileFromType("origins:invisibility").get("render_armor", "false").equalsIgnoreCase("true")) {
+                            for (Player players : Bukkit.getOnlinePlayers()) {
                                 players.hidePlayer(p);
                             }
-                        }else{
+                        } else {
                             p.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 15, 1, false, false, false));
                         }
 
-                        if(origin.getPowerFileFromType("origins:invisibility").get("render_outline", "false").equalsIgnoreCase("true")){
+                        if (origin.getPowerFileFromType("origins:invisibility").get("render_outline", "false").equalsIgnoreCase("true")) {
                             p.addPotionEffect(new PotionEffect(PotionEffectType.GLOWING, 15, 1, false, false, false));
                         }
                     }
@@ -129,8 +129,10 @@ public class PlayerRender extends BukkitRunnable {
         }
 
     }
+
     public static class ModelColor extends BukkitRunnable implements Listener {
         private SkinsRestorerAPI skinsRestorerAPI = null;
+
         @SuppressWarnings("null")
         @EventHandler
         public void onPlayerChoose(OriginChangeEvent event) {
@@ -145,23 +147,23 @@ public class PlayerRender extends BukkitRunnable {
                             Double blue;
                             Double green;
 
-                            if(origin.getPowerFileFromType("origins:model_color") == null){
+                            if (origin.getPowerFileFromType("origins:model_color") == null) {
                                 model_color.remove(player);
                             }
-                            if(origin.getPowerFileFromType("origins:model_color").getColor("red") == null){
+                            if (origin.getPowerFileFromType("origins:model_color").getColor("red") == null) {
                                 red = 0.0;
-                            }else{
-                                red = Double.valueOf(origin.getPowerFileFromType("origins:model_color").getColor("red"));
+                            } else {
+                                red = origin.getPowerFileFromType("origins:model_color").getColor("red");
                             }
-                            if(origin.getPowerFileFromType("origins:model_color").getColor("blue") == null){
+                            if (origin.getPowerFileFromType("origins:model_color").getColor("blue") == null) {
                                 blue = 0.0;
-                            }else{
-                                blue = Double.valueOf(origin.getPowerFileFromType("origins:model_color").getColor("blue"));
+                            } else {
+                                blue = origin.getPowerFileFromType("origins:model_color").getColor("blue");
                             }
-                            if(origin.getPowerFileFromType("origins:model_color").getColor("green") == null){
+                            if (origin.getPowerFileFromType("origins:model_color").getColor("green") == null) {
                                 green = 0.0;
-                            }else{
-                                green = Double.valueOf(origin.getPowerFileFromType("origins:model_color").getColor("green"));
+                            } else {
+                                green = origin.getPowerFileFromType("origins:model_color").getColor("green");
                             }
 
                             String savePath = Bukkit.getServer().getPluginManager().getPlugin("genesismc").getDataFolder().getPath() + File.separator + "skins";
@@ -185,23 +187,23 @@ public class PlayerRender extends BukkitRunnable {
         }
 
         @EventHandler
-        public void JoinApplyTest(PlayerJoinEvent e){
+        public void JoinApplyTest(PlayerJoinEvent e) {
             Player player = e.getPlayer();
             new BukkitRunnable() {
                 @Override
                 public void run() {
                     if (model_color.contains(player)) {
-                        if(player.getPlayerProfile().getTextures().getSkinModel() == PlayerTextures.SkinModel.CLASSIC){
+                        if (player.getPlayerProfile().getTextures().getSkinModel() == PlayerTextures.SkinModel.CLASSIC) {
                             Bukkit.getConsoleSender().sendMessage(Lang.getLocalizedString("powers.modelColour"));
                             Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "skin set " + player.getName() + " " + player.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "modified-skin-url"), PersistentDataType.STRING) + " CLASSIC");
-                        }else{
+                        } else {
                             Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "skin set " + player.getName() + " " + player.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "modified-skin-url"), PersistentDataType.STRING) + " SLIM");
                         }
                     } else {
-                        if(player.getPlayerProfile().getTextures().getSkinModel() == PlayerTextures.SkinModel.CLASSIC){
+                        if (player.getPlayerProfile().getTextures().getSkinModel() == PlayerTextures.SkinModel.CLASSIC) {
                             Bukkit.getConsoleSender().sendMessage(Lang.getLocalizedString("powers.modelColour"));
                             Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "skin set " + player.getName() + " " + player.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "original-skin-url"), PersistentDataType.STRING) + " CLASSIC");
-                        }else{
+                        } else {
                             Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "skin set " + player.getName() + " " + player.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "original-skin-url"), PersistentDataType.STRING) + " SLIM");
                         }
                     }
@@ -246,7 +248,7 @@ public class PlayerRender extends BukkitRunnable {
 
                     try {
                         // /api custom
-                            skinsRestorerAPI.setSkinData(player.getUniqueId() + "_modified", skinsRestorerAPI.createPlatformProperty(player.getUniqueId() + "_modified", skin.data.texture.value, skin.data.texture.signature), 0);
+                        skinsRestorerAPI.setSkinData(player.getUniqueId() + "_modified", skinsRestorerAPI.createPlatformProperty(player.getUniqueId() + "_modified", skin.data.texture.value, skin.data.texture.signature), 0);
                         // #setSkin() for player skin
                         skinsRestorerAPI.setSkin(player.getName(), player.getUniqueId() + "_modified");
 
@@ -275,7 +277,7 @@ public class PlayerRender extends BukkitRunnable {
                     ModelColor modelColor = new ModelColor();
                     modelColor.runTaskTimer(GenesisMC.getPlugin(), 2, 1);
 
-                    if(applyOriginal){
+                    if (applyOriginal) {
                         try {
                             // /api custom
                             skinsRestorerAPI.setSkinData(player.getUniqueId().toString(), skinsRestorerAPI.createPlatformProperty(player.getUniqueId().toString(), skin.data.texture.value, skin.data.texture.signature), 0);
@@ -293,6 +295,7 @@ public class PlayerRender extends BukkitRunnable {
                 //rip
             }
         }
+
         @SuppressWarnings("javax.imageio.IIOException")
         private static BufferedImage downloadImage(String imageUrl, String savePath, String fileName) throws IOException {
             URL url = new URL(imageUrl);
@@ -312,7 +315,7 @@ public class PlayerRender extends BukkitRunnable {
             }
 
             BufferedImage modifiedImage = new BufferedImage(originalImage.getWidth(), originalImage.getHeight(), BufferedImage.TYPE_INT_ARGB);
-            if(origin.getPowerFileFromType("origins:model_color") == null) return modifiedImage;
+            if (origin.getPowerFileFromType("origins:model_color") == null) return modifiedImage;
             if (origin.getPowerFileFromType("origins:model_color").getModelRenderType().equalsIgnoreCase("add")) {
                 for (int x = 0; x < modifiedImage.getWidth(); x++) {
                     for (int y = 0; y < modifiedImage.getHeight(); y++) {
@@ -391,7 +394,7 @@ public class PlayerRender extends BukkitRunnable {
                         modifiedImage.setRGB(x, y, modifiedRGB);
                     }
                 }
-            } else if(origin.getPowerFileFromType("origins:model_color").getModelRenderType().equalsIgnoreCase("original")){
+            } else if (origin.getPowerFileFromType("origins:model_color").getModelRenderType().equalsIgnoreCase("original")) {
                 for (int x = 0; x < modifiedImage.getWidth(); x++) {
                     for (int y = 0; y < modifiedImage.getHeight(); y++) {
                         int rgb = originalImage.getRGB(x, y);
@@ -453,15 +456,15 @@ public class PlayerRender extends BukkitRunnable {
 
         @Override
         public void run() {
-            for(Player player : Bukkit.getOnlinePlayers()){
+            for (Player player : Bukkit.getOnlinePlayers()) {
                 Bukkit.getConsoleSender().sendMessage(player.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "modified-skin-url"), PersistentDataType.STRING));
                 Bukkit.getConsoleSender().sendMessage(player.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "original-skin-url"), PersistentDataType.STRING));
                 if (model_color.contains(player)) {
                     for (OriginContainer origin : OriginPlayer.getOrigin(player).values()) {
                         if (model_color.contains(player)) {
-                            if(player.getPlayerProfile().getTextures().getSkinModel() == PlayerTextures.SkinModel.CLASSIC){
+                            if (player.getPlayerProfile().getTextures().getSkinModel() == PlayerTextures.SkinModel.CLASSIC) {
                                 Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "skin set " + player.getName() + " " + player.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "modified-skin-url"), PersistentDataType.STRING) + " CLASSIC");
-                            }else{
+                            } else {
                                 Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "skin set " + player.getName() + " " + player.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "modified-skin-url"), PersistentDataType.STRING) + " SLIM");
                             }
                         }
@@ -469,9 +472,9 @@ public class PlayerRender extends BukkitRunnable {
                 } else {
                     for (OriginContainer origin : OriginPlayer.getOrigin(player).values()) {
                         if (!model_color.contains(player)) {
-                            if(player.getPlayerProfile().getTextures().getSkinModel() == PlayerTextures.SkinModel.CLASSIC){
+                            if (player.getPlayerProfile().getTextures().getSkinModel() == PlayerTextures.SkinModel.CLASSIC) {
                                 Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "skin set " + player.getName() + " " + player.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "original-skin-url"), PersistentDataType.STRING) + " CLASSIC");
-                            }else{
+                            } else {
                                 Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "skin set " + player.getName() + " " + player.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "original-skin-url"), PersistentDataType.STRING) + " SLIM");
                             }
                         }

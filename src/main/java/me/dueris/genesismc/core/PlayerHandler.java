@@ -10,7 +10,6 @@ import me.dueris.genesismc.core.utils.PowerContainer;
 import me.dueris.genesismc.core.utils.legacy.LegacyOriginContainer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
-import net.minecraft.world.level.levelgen.feature.configurations.BlockColumnConfiguration;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
@@ -41,19 +40,20 @@ import static org.bukkit.Bukkit.getServer;
 
 public class PlayerHandler implements Listener {
 
-    public static void ReapplyEntityReachPowers(Player player){
-        for(OriginContainer origin : OriginPlayer.getOrigin(player).values()){
+    public static void ReapplyEntityReachPowers(Player player) {
+        for (OriginContainer origin : OriginPlayer.getOrigin(player).values()) {
             PowerContainer power = origin.getPowerFileFromType("origins:attribute");
             if (power == null) continue;
 
-            if(power.getModifier().get("attribute").toString().equalsIgnoreCase("reach-entity-attributes:reach")){
+            if (power.getModifier().get("attribute").toString().equalsIgnoreCase("reach-entity-attributes:reach")) {
                 extra_reach.add(player);
                 return;
             } else if (power.getModifier().get("attribute").toString().equalsIgnoreCase("reach-entity-attributes:attack_range")) {
                 extra_reach_attack.add(player);
                 return;
             } else {
-                AttributeHandler.Reach.setFinalReach(player, AttributeHandler.Reach.getDefaultReach(player));}
+                AttributeHandler.Reach.setFinalReach(player, AttributeHandler.Reach.getDefaultReach(player));
+            }
         }
     }
 
@@ -94,11 +94,11 @@ public class PlayerHandler implements Listener {
         }
         Bukkit.getLogger().warning("[GenesisMC] Reminder to devs - fix old origin container translation");
 
-        if(p.getPersistentDataContainer().has(new NamespacedKey(GenesisMC.getPlugin(), "insideBlock"), PersistentDataType.BOOLEAN)){
+        if (p.getPersistentDataContainer().has(new NamespacedKey(GenesisMC.getPlugin(), "insideBlock"), PersistentDataType.BOOLEAN)) {
             p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "insideBlock"), PersistentDataType.BOOLEAN, false);
         }
 
-        if(p.getPersistentDataContainer().has(new NamespacedKey(GenesisMC.getPlugin(), "reach"), PersistentDataType.INTEGER)){
+        if (p.getPersistentDataContainer().has(new NamespacedKey(GenesisMC.getPlugin(), "reach"), PersistentDataType.INTEGER)) {
             p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "reach"), PersistentDataType.INTEGER, AttributeHandler.Reach.getDefaultReach(p));
         }
 

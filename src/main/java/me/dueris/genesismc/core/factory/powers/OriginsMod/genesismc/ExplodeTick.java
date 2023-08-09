@@ -20,7 +20,6 @@ import java.util.List;
 import java.util.UUID;
 
 import static me.dueris.genesismc.core.factory.powers.Powers.explode_tick;
-import static me.dueris.genesismc.core.factory.powers.Powers.particle;
 
 public class ExplodeTick implements Listener {
     private final HashMap<UUID, Long> cooldown;
@@ -32,7 +31,7 @@ public class ExplodeTick implements Listener {
 
     @EventHandler
     public void onShiftCreep(PlayerToggleSneakEvent e) {
-        for (OriginContainer origin : OriginPlayer.getOrigin(e.getPlayer()).values()){
+        for (OriginContainer origin : OriginPlayer.getOrigin(e.getPlayer()).values()) {
             Player p = e.getPlayer();
             if (explode_tick.contains(e.getPlayer()) && !p.isFlying() && !p.isGliding()) {
 
@@ -77,7 +76,7 @@ public class ExplodeTick implements Listener {
                                 e.setCancelled(true);
                                 cancel();
 
-                                if(origin.getPowerFileFromType("genesis:explode_tick").getThunderModifier() != null){
+                                if (origin.getPowerFileFromType("genesis:explode_tick").getThunderModifier() != null) {
                                     if (p.getWorld().isThundering()) {
                                         int power_thunder = Math.toIntExact((Long) origin.getPowerFileFromType("genesis:explode_tick").getThunderModifier().get("power"));
                                         int resistance_thunder = Math.toIntExact((Long) origin.getPowerFileFromType("genesis:explode_tick").getThunderModifier().get("resistance"));
@@ -98,7 +97,7 @@ public class ExplodeTick implements Listener {
                                         e.setCancelled(true);
                                         this.cancel();
                                     }
-                                }else{
+                                } else {
                                     p.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 10, resistance, true, false, false));
                                     p.getWorld().createExplosion(p.getLocation(), power, fire, break_blocks, p);
                                     cooldown.put(p.getUniqueId(), System.currentTimeMillis());
@@ -111,13 +110,13 @@ public class ExplodeTick implements Listener {
                             } else if (!cooldown.containsKey(p.getUniqueId()) || ((System.currentTimeMillis() - cooldown.get(p.getUniqueId())) >= charge)) {
                                 p.sendActionBar(ChatColor.RED + "[]");
                                 p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 6, 4, false, false, false));
-                            } else if (!cooldown.containsKey(p.getUniqueId()) || ((System.currentTimeMillis() - cooldown.get(p.getUniqueId())) >= (charge * 3/4))) {
+                            } else if (!cooldown.containsKey(p.getUniqueId()) || ((System.currentTimeMillis() - cooldown.get(p.getUniqueId())) >= (charge * 3L / 4))) {
                                 p.sendActionBar(ChatColor.YELLOW + "----");
                                 p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 6, 3, false, false, false));
-                            } else if (!cooldown.containsKey(p.getUniqueId()) || ((System.currentTimeMillis() - cooldown.get(p.getUniqueId())) >= (charge * 2/4))) {
+                            } else if (!cooldown.containsKey(p.getUniqueId()) || ((System.currentTimeMillis() - cooldown.get(p.getUniqueId())) >= (charge * 2L / 4))) {
                                 p.sendActionBar(ChatColor.GREEN + "------");
                                 p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 6, 2, false, false, false));
-                            } else if (!cooldown.containsKey(p.getUniqueId()) || ((System.currentTimeMillis() - cooldown.get(p.getUniqueId())) <= (charge * 1/4))) {
+                            } else if (!cooldown.containsKey(p.getUniqueId()) || ((System.currentTimeMillis() - cooldown.get(p.getUniqueId())) <= (charge / 4))) {
                                 p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 6, 1, false, false, false));
                                 p.sendActionBar(ChatColor.BLUE + "--------");
                             }

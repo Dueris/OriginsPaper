@@ -45,8 +45,8 @@ public class BigLeap implements Listener {
     public void onRabbitLeap(PlayerToggleSneakEvent e) {
         PersistentDataContainer data = e.getPlayer().getPersistentDataContainer();
         if (big_leap_tick.contains(e.getPlayer())) {
-            for(OriginContainer origin : OriginPlayer.getOrigin(e.getPlayer()).values()){
-                if(origin.getPowerFileFromType("genesis:leap") != null){
+            for (OriginContainer origin : OriginPlayer.getOrigin(e.getPlayer()).values()) {
+                if (origin.getPowerFileFromType("genesis:leap") != null) {
                     Player p = e.getPlayer();
                     int cooldownTicks = Integer.valueOf(origin.getPowerFileFromType("genesis:leap").getModifier().get("cooldown").toString());
                     int tickCharge = Integer.valueOf(origin.getPowerFileFromType("genesis:leap").getModifier().get("tick_charge").toString());
@@ -63,13 +63,13 @@ public class BigLeap implements Listener {
                         @Override
                         public void run() {
                             if (p.isSneaking()) {
-                                if (cooldownBefore.get(p.getUniqueId()) == tickCharge * 1/5) {
+                                if (cooldownBefore.get(p.getUniqueId()) == tickCharge / 5) {
                                     p.sendActionBar(ChatColor.RED + "|||");
-                                } else if (cooldownBefore.get(p.getUniqueId()) == tickCharge * 2/5) {
+                                } else if (cooldownBefore.get(p.getUniqueId()) == tickCharge * 2 / 5) {
                                     p.sendActionBar(ChatColor.RED + "|||||");
-                                } else if (cooldownBefore.get(p.getUniqueId()) == tickCharge * 3/5) {
+                                } else if (cooldownBefore.get(p.getUniqueId()) == tickCharge * 3 / 5) {
                                     p.sendActionBar(ChatColor.YELLOW + "|||||||");
-                                } else if (cooldownBefore.get(p.getUniqueId()) == tickCharge * 4/5) {
+                                } else if (cooldownBefore.get(p.getUniqueId()) == tickCharge * 4 / 5) {
                                     p.sendActionBar(ChatColor.YELLOW + "|||||||||");
                                 } else if (cooldownBefore.get(p.getUniqueId()) >= tickCharge) {
                                     p.sendActionBar(ChatColor.GREEN + "|||||||||||");
@@ -90,16 +90,16 @@ public class BigLeap implements Listener {
                                     @Override
                                     public void run() {
                                         if (cooldownAfter.containsKey(p.getUniqueId())) {
-                                            if (System.currentTimeMillis() - cooldownAfter.get(p.getUniqueId()) >= cooldownTicks * 1/5) {
+                                            if (System.currentTimeMillis() - cooldownAfter.get(p.getUniqueId()) >= cooldownTicks / 5) {
                                                 p.sendActionBar(ChatColor.RED + "|||||||||");
                                             }
-                                            if (System.currentTimeMillis() - cooldownAfter.get(p.getUniqueId()) >= cooldownTicks * 2/5) {
+                                            if (System.currentTimeMillis() - cooldownAfter.get(p.getUniqueId()) >= cooldownTicks * 2L / 5) {
                                                 p.sendActionBar(ChatColor.RED + "|||||||");
                                             }
-                                            if (System.currentTimeMillis() - cooldownAfter.get(p.getUniqueId()) >= cooldownTicks * 3/5) {
+                                            if (System.currentTimeMillis() - cooldownAfter.get(p.getUniqueId()) >= cooldownTicks * 3L / 5) {
                                                 p.sendActionBar(ChatColor.YELLOW + "|||||");
                                             }
-                                            if (System.currentTimeMillis() - cooldownAfter.get(p.getUniqueId()) >= cooldownTicks * 4/5) {
+                                            if (System.currentTimeMillis() - cooldownAfter.get(p.getUniqueId()) >= cooldownTicks * 4L / 5) {
                                                 p.sendActionBar(ChatColor.YELLOW + "|||");
                                             }
                                             if (System.currentTimeMillis() - cooldownAfter.get(p.getUniqueId()) >= cooldownTicks) {

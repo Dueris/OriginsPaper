@@ -46,17 +46,18 @@ public class Phasing extends BukkitRunnable implements Listener {
     public static ArrayList<Player> IN_PHANTOM_FORM_BLOCKS = new ArrayList<>();
 
     private final int ticksE;
-    public Phasing(){
+
+    public Phasing() {
         this.interval = 100L;
         this.ticksE = 0;
     }
 
 //TODO: make bedrock Phasing work by disabling merge and setting into spectator only instead of merging gamemodes
     //TODO: fix blindness flickers bc mc renderer sucks
-    
+
     public static void setInPhasingBlockForm(Player p) {
         //camera client renderer
-        if(p.getGameMode().equals(GameMode.CREATIVE)){
+        if (p.getGameMode().equals(GameMode.CREATIVE)) {
             p.setGameMode(GameMode.SPECTATOR);
             ((CraftPlayer) p).getHandle().connection.send(new ClientboundGameEventPacket(ClientboundGameEventPacket.CHANGE_GAME_MODE, 1));
         } else if (p.getGameMode() != GameMode.SPECTATOR) {
@@ -89,12 +90,12 @@ public class Phasing extends BukkitRunnable implements Listener {
             if (OriginPlayer.isInPhantomForm(p)) {
                 if (phasing.contains(p)) {
                     if (!p.getLocation().getBlock().isCollidable()) {
-                        for(OriginContainer origin : OriginPlayer.getOrigin(p).values()){
+                        for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
                             if (p.getLocation().getBlock().getRelative(BlockFace.DOWN).isCollidable()) {
                                 Location currentLocation = p.getLocation();
                                 Location targetLocation = currentLocation.getBlock().getRelative(BlockFace.DOWN).getLocation();
                                 Location loc = new Location(targetLocation.getWorld(), targetLocation.getX(), targetLocation.getY(), targetLocation.getZ(), p.getEyeLocation().getYaw(), p.getEyeLocation().getPitch());
-                                if(EntityCondition.check("phase_down_condition", p, origin, "origins:phasing", p) == "true" || EntityCondition.check("phase_down_condition", p, origin, "origins:phasing", p) == "null"){
+                                if (EntityCondition.check("phase_down_condition", p, origin, "origins:phasing", p) == "true" || EntityCondition.check("phase_down_condition", p, origin, "origins:phasing", p) == "null") {
                                     p.teleport(loc);
                                 }
                             }
@@ -113,33 +114,33 @@ public class Phasing extends BukkitRunnable implements Listener {
                     if (ConditionExecutor.check("block_condition", p, origin, "origins:phasing", null, p)) {
                         if (OriginPlayer.isInPhantomForm(p)) {
                             if ((p.getLocation().add(0.55F, 0, 0.55F).getBlock().isSolid() ||
-                            p.getLocation().add(0.55F, 0, 0).getBlock().isSolid() ||
-                            p.getLocation().add(0, 0, 0.55F).getBlock().isSolid() ||
-                            p.getLocation().add(-0.55F, 0, -0.55F).getBlock().isSolid() ||
-                            p.getLocation().add(0, 0, -0.55F).getBlock().isSolid() ||
-                            p.getLocation().add(-0.55F, 0, 0).getBlock().isSolid() ||
-                            p.getLocation().add(0.55F, 0, -0.55F).getBlock().isSolid() ||
-                            p.getLocation().add(-0.55F, 0, 0.55F).getBlock().isSolid() ||
-                            p.getLocation().add(0, 0.5, 0).getBlock().isSolid() ||
+                                    p.getLocation().add(0.55F, 0, 0).getBlock().isSolid() ||
+                                    p.getLocation().add(0, 0, 0.55F).getBlock().isSolid() ||
+                                    p.getLocation().add(-0.55F, 0, -0.55F).getBlock().isSolid() ||
+                                    p.getLocation().add(0, 0, -0.55F).getBlock().isSolid() ||
+                                    p.getLocation().add(-0.55F, 0, 0).getBlock().isSolid() ||
+                                    p.getLocation().add(0.55F, 0, -0.55F).getBlock().isSolid() ||
+                                    p.getLocation().add(-0.55F, 0, 0.55F).getBlock().isSolid() ||
+                                    p.getLocation().add(0, 0.5, 0).getBlock().isSolid() ||
 
-                            p.getEyeLocation().add(0.55F, 0, 0.55F).getBlock().isSolid() ||
-                            p.getEyeLocation().add(0.55F, 0, 0).getBlock().isSolid() ||
-                            p.getEyeLocation().add(0, 0, 0.55F).getBlock().isSolid() ||
-                            p.getEyeLocation().add(-0.55F, 0, -0.55F).getBlock().isSolid() ||
-                            p.getEyeLocation().add(0, 0, -0.55F).getBlock().isSolid() ||
-                            p.getEyeLocation().add(-0.55F, 0, 0).getBlock().isSolid() ||
-                            p.getEyeLocation().add(0.55F, 0, -0.55F).getBlock().isSolid() ||
-                            p.getEyeLocation().add(-0.55F, 0, 0.55F).getBlock().isSolid())
-                        ) {
+                                    p.getEyeLocation().add(0.55F, 0, 0.55F).getBlock().isSolid() ||
+                                    p.getEyeLocation().add(0.55F, 0, 0).getBlock().isSolid() ||
+                                    p.getEyeLocation().add(0, 0, 0.55F).getBlock().isSolid() ||
+                                    p.getEyeLocation().add(-0.55F, 0, -0.55F).getBlock().isSolid() ||
+                                    p.getEyeLocation().add(0, 0, -0.55F).getBlock().isSolid() ||
+                                    p.getEyeLocation().add(-0.55F, 0, 0).getBlock().isSolid() ||
+                                    p.getEyeLocation().add(0.55F, 0, -0.55F).getBlock().isSolid() ||
+                                    p.getEyeLocation().add(-0.55F, 0, 0.55F).getBlock().isSolid())
+                            ) {
                                 setInPhasingBlockForm(p);
-                                if(origin.getPowerFileFromType("origins:phasing").getOverlay()){
+                                if (origin.getPowerFileFromType("origins:phasing").getOverlay()) {
                                     initializePhantomOverlay(p);
                                 }
 
                                 p.setFlySpeed(0.04F);
                                 p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "insideBlock"), PersistentDataType.BOOLEAN, true);
 
-                                if(origin.getPowerFileFromType("origins:phasing").getRenderType().equalsIgnoreCase("blindness")){
+                                if (origin.getPowerFileFromType("origins:phasing").getRenderType().equalsIgnoreCase("blindness")) {
                                     Float viewD = origin.getPowerFileFromType("origins:phasing").getViewDistance().floatValue();
                                     p.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, viewD.intValue() * 2, 255, false, false, false));
                                 }
@@ -214,7 +215,7 @@ public class Phasing extends BukkitRunnable implements Listener {
             e.getPlayer().getInventory().addItem(spectatorswitch);
         }
 
-        if(OriginPlayer.isInPhantomForm(e.getPlayer())){
+        if (OriginPlayer.isInPhantomForm(e.getPlayer())) {
             e.getPlayer().setGameMode(GameMode.SURVIVAL);
             OriginPlayer.setOriginData(p, OriginDataType.IN_PHASING_FORM, false);
             p.sendActionBar(DARK_AQUA + Lang.getLocalizedString("powers.phasing.deactivated"));
@@ -237,11 +238,11 @@ public class Phasing extends BukkitRunnable implements Listener {
         Player p = e.getPlayer();
         PersistentDataContainer data = p.getPersistentDataContainer();
         boolean phantomid = data.get(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.BOOLEAN);
-        for(OriginContainer origin : OriginPlayer.getOrigin(p).values()){
+        for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
             if (phasing.contains(p)) {
                 if (e.getItem() != null) {
                     if (e.getItem().isSimilar(spectatorswitch)) {
-                        if(phantomid){
+                        if (phantomid) {
                             if (ConditionExecutor.check("condition", p, origin, "origins:phasing", null, p)) {
                                 OriginPlayer.setOriginData(p, OriginDataType.IN_PHASING_FORM, false);
                                 p.sendActionBar(DARK_AQUA + Lang.getLocalizedString("powers.phasing.deactivated"));
@@ -257,7 +258,7 @@ public class Phasing extends BukkitRunnable implements Listener {
 
                                 }
                             }
-                        }else{
+                        } else {
                             if (ConditionExecutor.check("condition", p, origin, "origins:phasing", null, p)) {
                                 p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.BOOLEAN, true);
                                 OriginPlayer.setOriginData(p, OriginDataType.IN_PHASING_FORM, true);
@@ -380,7 +381,6 @@ public class Phasing extends BukkitRunnable implements Listener {
 //                                        }
 //                                    }
 //                                }
-
 
 
 // regen all the blocks

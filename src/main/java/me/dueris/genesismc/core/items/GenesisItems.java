@@ -3,9 +3,7 @@ package me.dueris.genesismc.core.items;
 import org.bukkit.*;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.PrepareItemCraftEvent;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -16,7 +14,6 @@ import java.util.ArrayList;
 
 import static me.dueris.genesismc.core.items.OrbOfOrigins.orb;
 import static org.bukkit.ChatColor.GRAY;
-import static org.bukkit.Material.ENDER_PEARL;
 
 
 public class GenesisItems extends BukkitRunnable implements Listener {
@@ -49,8 +46,7 @@ public class GenesisItems extends BukkitRunnable implements Listener {
     }
 
 
-
-    public static ItemStack getPhasingKey(){
+    public static ItemStack getPhasingKey() {
         ItemStack spectatorswitch = new ItemStack(Material.PHANTOM_MEMBRANE);
         ItemMeta switch_meta = spectatorswitch.getItemMeta();
         switch_meta.setDisplayName(GRAY + "Phantom Form");

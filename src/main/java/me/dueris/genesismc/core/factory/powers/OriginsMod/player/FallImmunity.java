@@ -9,7 +9,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
 
 import static me.dueris.genesismc.core.factory.powers.Powers.fall_immunity;
-import static me.dueris.genesismc.core.factory.powers.Powers.resist_fall;
 
 public class FallImmunity implements Listener {
 
@@ -17,8 +16,8 @@ public class FallImmunity implements Listener {
     public void acrobatics(EntityDamageEvent e) {
         if (!(e.getEntity() instanceof Player p)) return;
         if (fall_immunity.contains(p)) {
-            for(OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
-                if(ConditionExecutor.check("condition", p, origin, "origins:fall_immunity", e, p)){
+            for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
+                if (ConditionExecutor.check("condition", p, origin, "origins:fall_immunity", e, p)) {
                     if (e.getCause() == EntityDamageEvent.DamageCause.FALL) {
                         e.setCancelled(true);
                     }

@@ -75,7 +75,7 @@ public class Toggle implements Listener {
                                             this.cancel();
                                         }
 
-                                        if (origin.getPowerFileFromType("origins:toggle").get("retain_state", "false").toString().equalsIgnoreCase("false")) {
+                                        if (origin.getPowerFileFromType("origins:toggle").get("retain_state", "false").equalsIgnoreCase("false")) {
                                             ItemMeta met = KeybindHandler.getKeybindItem(key, p.getInventory()).getItemMeta();
                                             met.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "contin"), PersistentDataType.BOOLEAN, false);
                                             KeybindHandler.getKeybindItem(key, p.getInventory()).setItemMeta(met);

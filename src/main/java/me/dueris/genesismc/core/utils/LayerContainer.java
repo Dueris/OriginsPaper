@@ -23,7 +23,7 @@ public class LayerContainer implements Serializable {
      */
     @Override
     public String toString() {
-        return "Tag = "+tag+" LayerFile = "+layerFile.toString();
+        return "Tag = " + tag + " LayerFile = " + layerFile.toString();
     }
 
     /**

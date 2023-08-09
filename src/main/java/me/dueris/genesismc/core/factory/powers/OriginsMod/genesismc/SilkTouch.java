@@ -3,7 +3,6 @@ package me.dueris.genesismc.core.factory.powers.OriginsMod.genesismc;
 
 import me.dueris.genesismc.core.utils.Lang;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.block.CreatureSpawner;
@@ -17,7 +16,6 @@ import org.bukkit.inventory.ItemStack;
 import java.util.EnumSet;
 
 import static me.dueris.genesismc.core.factory.powers.Powers.silk_touch;
-import static org.bukkit.Bukkit.getServer;
 
 public class SilkTouch implements Listener {
     private static final EnumSet<Material> m;

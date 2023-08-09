@@ -21,10 +21,10 @@ public class OriginContainer implements Serializable {
     /**
      * An object that stores an origin and all the details about it.
      *
-     * @param tag             The origin tag.
-     * @param layerFile       The origin layer file data.
-     * @param originFile      The origin file, parsed into a HashMap.
-     * @param powerContainer  An array of powers that the origin has.
+     * @param tag            The origin tag.
+     * @param layerFile      The origin layer file data.
+     * @param originFile     The origin file, parsed into a HashMap.
+     * @param powerContainer An array of powers that the origin has.
      */
     public OriginContainer(String tag, FileContainer layerFile, HashMap<String, Object> originFile, ArrayList<PowerContainer> powerContainer) {
         this.tag = tag;

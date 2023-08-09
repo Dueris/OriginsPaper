@@ -1,7 +1,6 @@
 package me.dueris.genesismc.core.factory.powers.OriginsMod.player;
 
 import me.dueris.genesismc.core.entity.OriginPlayer;
-import me.dueris.genesismc.core.utils.Lang;
 import me.dueris.genesismc.core.utils.OriginContainer;
 import me.dueris.genesismc.core.utils.PowerContainer;
 import org.bukkit.Bukkit;
