@@ -64,6 +64,7 @@ public class Toggle implements Listener {
                                                 if (in_continuous.contains(p)) {
                                                     //run code here for things that happen when toggled
                                                     //power is active
+                                                    //dont change any other settings in this other than the powertype and the "retain_state"
                                                 } else {
                                                     this.cancel();
                                                 }
