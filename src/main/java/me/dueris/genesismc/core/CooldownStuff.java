@@ -21,11 +21,25 @@ public class CooldownStuff {
             resetCooldown(player, cooldownKeybindType);
         }
 
-        BossBar bar = createCooldownBar(player, BarColor.WHITE, BarStyle.SEGMENTED_20, title);
+        BossBar bar = createCooldownBar(player, BarColor.WHITE, getCooldownPegAMT(cooldownTicks), title);
         bar.addPlayer(player);
         startTickingCooldown(bar, player, cooldownTicks, cooldownKeybindType);
         cooldownBars.put(player, bar);
         cooldowns.put(player, cooldownKeybindType);
+    }
+
+    private static BarStyle getCooldownPegAMT(int ticks){
+        if(ticks >= 20){
+            return BarStyle.SEGMENTED_20;
+        } else if (ticks >= 12) {
+            return BarStyle.SEGMENTED_12;
+        } else if (ticks >= 10) {
+            return BarStyle.SEGMENTED_10;
+        } else if (ticks >= 6) {
+            return BarStyle.SEGMENTED_6;
+        }else{
+            return BarStyle.SOLID;
+        }
     }
 
     public static boolean isPlayerInCooldown(Player player, String cooldownKeybindType) {
