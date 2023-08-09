@@ -353,6 +353,7 @@ public class OriginPlayer {
                 case "origins:keep_inventory" -> keep_inventory.add(player);
                 case "origins:overlay" -> overlay.add(player);
                 case "origins:particle" -> particle.add(player);
+                case "origins:recipe" -> recipe.add(player);
 
                 //actions
                 case "origins:action_on_being_used" -> action_on_being_used.add(player);
@@ -492,6 +493,7 @@ public class OriginPlayer {
                 case "origins:keep_inventory" -> keep_inventory.remove(player);
                 case "origins:overlay" -> overlay.remove(player);
                 case "origins:particle" -> particle.remove(player);
+                case "origins:recipe" -> recipe.remove(player);
 
                 //actions
                 case "origins:action_on_being_used" -> action_on_being_used.remove(player);
