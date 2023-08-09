@@ -192,9 +192,6 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         PowerStartHandler.StartRunnables();
         PowerStartHandler.StartListeners();
 
-        ParticleHandler handler = new ParticleHandler();
-        handler.runTaskTimer(this, 0, 5);
-
         ScoreboardRunnable scorebo = new ScoreboardRunnable();
         scorebo.runTaskTimer(this, 0, 5);
 
