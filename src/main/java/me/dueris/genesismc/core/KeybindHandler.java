@@ -14,8 +14,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
-import org.bukkit.event.inventory.InventoryType;
-import org.bukkit.event.inventory.PrepareItemCraftEvent;
+import org.bukkit.event.inventory.*;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
@@ -121,6 +120,7 @@ public class KeybindHandler implements Listener {
     @EventHandler
     public void OnCraftAttempt(PrepareItemCraftEvent e) {
         for (ItemStack ingredient : e.getInventory().getMatrix()) {
+            if(ingredient == null) return;
             if(ingredient.getItemMeta().getPersistentDataContainer().has(new NamespacedKey(GenesisMC.getPlugin(), "origins_item_data"))){
                 e.getInventory().setResult(null);
             }
@@ -208,6 +208,25 @@ public class KeybindHandler implements Listener {
             if(!hasOriginDataTriggerSecondary(e.getPlayer().getInventory())){
                 addSecondaryItem(e.getPlayer());
             }
+        }
+    }
+
+    @EventHandler
+    public void onInventoryMoveItem(InventoryMoveItemEvent event) {
+        if (event.getSource().equals(event.getDestination())) {
+            return;
+        } else if (event.getItem().getItemMeta().getPersistentDataContainer().has(new NamespacedKey(GenesisMC.getPlugin(), "origin_item_data"))) {
+            event.setCancelled(true);
+        }
+    }
+
+    @EventHandler
+    public void onPlayerCommandPreprocess(PlayerCommandPreprocessEvent event) {
+        Player player = event.getPlayer();
+        String command = event.getMessage().toLowerCase();
+
+        if (command.startsWith("/clear")) {
+            addItems(player);
         }
     }
 
