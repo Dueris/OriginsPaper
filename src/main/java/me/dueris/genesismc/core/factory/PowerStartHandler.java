@@ -40,6 +40,7 @@ import me.dueris.genesismc.core.factory.powers.food.Vegitarian;
 import me.dueris.genesismc.core.factory.powers.genesis.*;
 import me.dueris.genesismc.core.factory.powers.item.LaunchAir;
 import me.dueris.genesismc.core.factory.powers.world.BurnInDaylight;
+import org.bukkit.Particle;
 
 import static me.dueris.genesismc.core.GenesisMC.getPlugin;
 import static org.bukkit.Bukkit.getServer;
@@ -158,6 +159,9 @@ public class PowerStartHandler {
 
         Overlay overlay = new Overlay();
         overlay.runTaskTimer(GenesisMC.getPlugin(), 0, 1);
+
+        ParticlePower particlePower = new ParticlePower();
+        particlePower.runTaskTimer(getPlugin(), 0, 1);
     }
 
     public static void StartListeners() {
