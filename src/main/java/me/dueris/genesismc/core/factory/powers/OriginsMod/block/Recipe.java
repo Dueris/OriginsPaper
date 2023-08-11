@@ -1,6 +1,7 @@
 package me.dueris.genesismc.core.factory.powers.OriginsMod.block;
 
 import me.dueris.genesismc.core.GenesisMC;
+import me.dueris.genesismc.core.entity.OriginPlayer;
 import me.dueris.genesismc.core.events.OriginChangeEvent;
 import me.dueris.genesismc.core.utils.OriginContainer;
 import me.dueris.genesismc.core.utils.PowerContainer;
@@ -74,16 +75,28 @@ public class Recipe implements Listener {
 
     @EventHandler
     public void load(ServerLoadEvent e){
-
+        for(Player player : Bukkit.getOnlinePlayers()){
+            for(OriginContainer origin : OriginPlayer.getOrigin(player).values()){
+                loadRecipe(player, origin, "origins:recipe");
+            }
+        }
     }
 
     @EventHandler
     public void load(PlayerJoinEvent e){
-
+        for(Player player : Bukkit.getOnlinePlayers()){
+            for(OriginContainer origin : OriginPlayer.getOrigin(player).values()){
+                loadRecipe(player, origin, "origins:recipe");
+            }
+        }
     }
 
     @EventHandler
     public void load(OriginChangeEvent e){
-
+        for(Player player : Bukkit.getOnlinePlayers()){
+            for(OriginContainer origin : OriginPlayer.getOrigin(player).values()){
+                loadRecipe(player, origin, "origins:recipe");
+            }
+        }
     }
 }
