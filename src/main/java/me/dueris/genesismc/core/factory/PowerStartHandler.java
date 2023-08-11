@@ -7,6 +7,7 @@ import me.dueris.genesismc.core.factory.powers.OriginsMod.Overlay;
 import me.dueris.genesismc.core.factory.powers.OriginsMod.Toggle;
 import me.dueris.genesismc.core.factory.powers.OriginsMod.actions.ActionOnBeingUsed;
 import me.dueris.genesismc.core.factory.powers.OriginsMod.block.AirFromPotions;
+import me.dueris.genesismc.core.factory.powers.OriginsMod.block.Recipe;
 import me.dueris.genesismc.core.factory.powers.OriginsMod.block.WaterBreathe;
 import me.dueris.genesismc.core.factory.powers.OriginsMod.block.WaterVision;
 import me.dueris.genesismc.core.factory.powers.OriginsMod.effects.ApplyEffect;
@@ -40,7 +41,6 @@ import me.dueris.genesismc.core.factory.powers.food.Vegitarian;
 import me.dueris.genesismc.core.factory.powers.genesis.*;
 import me.dueris.genesismc.core.factory.powers.item.LaunchAir;
 import me.dueris.genesismc.core.factory.powers.world.BurnInDaylight;
-import org.bukkit.Particle;
 
 import static me.dueris.genesismc.core.GenesisMC.getPlugin;
 import static org.bukkit.Bukkit.getServer;
@@ -219,6 +219,7 @@ public class PowerStartHandler {
         getServer().getPluginManager().registerEvents(new Toggle(), getPlugin());
         getServer().getPluginManager().registerEvents(new KeepInventory(), getPlugin());
         getServer().getPluginManager().registerEvents(new Launch(), getPlugin());
+        getServer().getPluginManager().registerEvents(new Recipe(), getPlugin());
 
         //actions
         getServer().getPluginManager().registerEvents(new ActionOnBeingUsed(), getPlugin());
