@@ -134,8 +134,9 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         }
 
         //origin load
-        BukkitUtils.CopyOriginDatapack();
-        CraftApoli.loadOrigins();
+        Bukkit.getServer().getConsoleSender().sendMessage("[Origins] origin-thread starting");
+                BukkitUtils.CopyOriginDatapack();
+                CraftApoli.loadOrigins();
         for (OriginContainer origins : CraftApoli.getOrigins()) {
             if (GenesisDataFiles.getMainConfig().getString("console-startup-debug").equalsIgnoreCase("true")) {
                 getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] " + Lang.getLocalizedString("startup.debug.allOrigins").replace("%originNames%", origins.getName())).color(TextColor.fromHexString(GREEN)));
@@ -189,8 +190,15 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         GenesisItems items = new GenesisItems();
         items.runTaskTimer(this, 0, 5);
 
-        PowerStartHandler.StartRunnables();
-        PowerStartHandler.StartListeners();
+        Bukkit.getServer().getConsoleSender().sendMessage("[Origins] power-thread starting");
+
+        Thread separateThread = new Thread(() -> {
+            Bukkit.getScheduler().runTaskAsynchronously(Bukkit.getPluginManager().getPlugin("GenesisMC"), () -> {
+                PowerStartHandler.StartRunnables();
+                PowerStartHandler.StartListeners();
+            });
+        });
+        separateThread.start();
 
         ScoreboardRunnable scorebo = new ScoreboardRunnable();
         scorebo.runTaskTimer(this, 0, 5);

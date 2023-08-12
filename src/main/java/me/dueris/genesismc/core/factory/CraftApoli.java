@@ -1,5 +1,6 @@
 package me.dueris.genesismc.core.factory;
 
+import io.netty.util.internal.ConcurrentSet;
 import me.dueris.genesismc.core.files.GenesisDataFiles;
 import me.dueris.genesismc.core.utils.*;
 import net.kyori.adventure.text.Component;
@@ -21,7 +22,7 @@ public class CraftApoli {
     @SuppressWarnings("FieldMayBeFinal")
     private static ArrayList<LayerContainer> originLayers = new ArrayList<>();
     @SuppressWarnings("FieldMayBeFinal")
-    private static ArrayList<OriginContainer> originContainers = new ArrayList<>();
+    private static ConcurrentSet<OriginContainer> originContainers = new ConcurrentSet<>();
 
 
     /**
@@ -35,7 +36,8 @@ public class CraftApoli {
      * @return A copy of the CustomOrigin object array for all the origins that are loaded.
      **/
     public static ArrayList<OriginContainer> getOrigins() {
-        return (ArrayList<OriginContainer>) originContainers.clone();
+        List<OriginContainer> originContainersD = new ArrayList<>(originContainers);
+        return (ArrayList<OriginContainer>) originContainersD;
     }
 
     /**
