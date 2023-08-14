@@ -149,7 +149,6 @@ public final class GenesisMC extends JavaPlugin implements Listener {
             getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] " + Lang.getLocalizedString("startup.originAmount").replace("%originAmount%", String.valueOf(CraftApoli.getOrigins().size()))).color(TextColor.fromHexString(GREEN)));
         }
 
-
         getServer().getPluginManager().registerEvents(this, this);
         //Commands
         getCommand("origin").setExecutor(new GenesisCommandManager());
