@@ -52,6 +52,7 @@ public class ModifyBreakSpeedPower implements Listener {
             } catch (Exception ev){
                 ErrorSystem errorSystem = new ErrorSystem();
                 errorSystem.throwError("unable to set modifier", "origins:modify_break_speed", p, origin, OriginPlayer.getLayer(p, origin));
+                ev.printStackTrace();
             }
         }
     }

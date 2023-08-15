@@ -42,6 +42,7 @@ public class ModifyBlockRenderPower extends BukkitRunnable {
                     } catch (Exception e) {
                         ErrorSystem errorSystem = new ErrorSystem();
                         errorSystem.throwError("unable to send block_render_change", "origins:modify_block_render", player, origin, OriginPlayer.getLayer(player, origin));
+                        e.printStackTrace();
                     }
 
                 Material targetMaterial = Material.AIR;
