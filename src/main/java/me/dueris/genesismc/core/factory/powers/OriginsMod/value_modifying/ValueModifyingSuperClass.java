@@ -29,6 +29,7 @@ public class ValueModifyingSuperClass implements Listener {
         Bukkit.getServer().getPluginManager().registerEvents(new ModifyExhaustionPower(), GenesisMC.getPlugin());
         Bukkit.getServer().getPluginManager().registerEvents(new ModifyFallingPower(), GenesisMC.getPlugin());
         Bukkit.getServer().getPluginManager().registerEvents(new ModifyFoodPower(), GenesisMC.getPlugin());
+        Bukkit.getServer().getPluginManager().registerEvents(new ModifyHarvestPower(), GenesisMC.getPlugin());
     }
 
     public void runModifierChanges(Player p){
@@ -101,4 +102,5 @@ public class ValueModifyingSuperClass implements Listener {
     public static ArrayList<Player> modify_exhaustion = new ArrayList<>();
     public static ArrayList<Player> modify_falling = new ArrayList<>();
     public static ArrayList<Player> modify_food = new ArrayList<>();
+    public static ArrayList<Player> modify_harvest = new ArrayList<>();
 }
