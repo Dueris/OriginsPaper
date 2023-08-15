@@ -365,6 +365,7 @@ public class OriginPlayer {
                 case "origins:modify_falling" -> modify_falling.add(player);
                 case "origins:modify_food" -> modify_food.add(player);
                 case "origins:modify_harvest" -> modify_harvest.add(player);
+                case "origins:modify_healing" -> modify_healing.add(player);
                 //actions
                 case "origins:action_on_being_used" -> action_on_being_used.add(player);
                 case "origins:action_on_being_hit" -> action_on_being_hit.add(player);
@@ -514,6 +515,7 @@ public class OriginPlayer {
                 case "origins:modify_falling" -> modify_falling.remove(player);
                 case "origins:modify_food" -> modify_food.remove(player);
                 case "origins:modify_harvest" -> modify_harvest.remove(player);
+                case "origins:modify_healing" -> modify_healing.remove(player);
 
                 //actions
                 case "origins:action_on_being_used" -> action_on_being_used.remove(player);
