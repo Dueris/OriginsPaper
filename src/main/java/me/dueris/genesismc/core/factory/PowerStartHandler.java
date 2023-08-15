@@ -26,7 +26,6 @@ import me.dueris.genesismc.core.factory.powers.OriginsMod.player.inventory.KeepI
 import me.dueris.genesismc.core.factory.powers.OriginsMod.value_modifying.ValueModifyingSuperClass;
 import me.dueris.genesismc.core.factory.powers.OriginsMod.world.EntityGlow;
 import me.dueris.genesismc.core.factory.powers.OriginsMod.world.EntityGroupManager;
-import me.dueris.genesismc.core.factory.powers.OriginsMod.world.WorldSpawnHandler;
 import me.dueris.genesismc.core.factory.powers.Powers;
 import me.dueris.genesismc.core.factory.powers.armour.GoldAmourBellow;
 import me.dueris.genesismc.core.factory.powers.armour.GoldArmourBuff;
@@ -183,7 +182,6 @@ public class PowerStartHandler {
         getServer().getPluginManager().registerEvents(new HotHands(), getPlugin());
         getServer().getPluginManager().registerEvents(new FallImmunity(), getPlugin());
         getServer().getPluginManager().registerEvents(new HotBlooded(), getPlugin());
-        getServer().getPluginManager().registerEvents(new WorldSpawnHandler(), getPlugin());
         getServer().getPluginManager().registerEvents(new ExtraFireTick(), getPlugin());
         getServer().getPluginManager().registerEvents(new SilkTouch(), getPlugin());
         getServer().getPluginManager().registerEvents(new BowInability(), getPlugin());
