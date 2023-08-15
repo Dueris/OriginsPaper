@@ -104,4 +104,5 @@ public class ValueModifyingSuperClass implements Listener {
     public static ArrayList<Player> modify_food = new ArrayList<>();
     public static ArrayList<Player> modify_harvest = new ArrayList<>();
     public static ArrayList<Player> modify_healing = new ArrayList<>();
+    public static ArrayList<Player> modify_jump = new ArrayList<>();
 }
