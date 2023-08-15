@@ -65,7 +65,7 @@ public class ModifyBreakSpeedPower implements Listener {
                 String operation = origin.getPowerFileFromType("origins:modify_break_speed").getModifier().get("operation").toString();
                 BinaryOperator mathOperator = getOperationMappingsFloat().get(operation);
                 if (mathOperator != null) {
-                    float result = (float) mathOperator.apply(valueModifyingSuperClass.getDefaultValue(MODIFYING_KEY), value);
+                    float result = (float) mathOperator.apply(valueModifyingSuperClass.getPersistentAttributeContainer(p, MODIFYING_KEY), value);
                     valueModifyingSuperClass.saveValueInPDC(p, MODIFYING_KEY, result);
                 } else {
                     Bukkit.getLogger().warning(Lang.getLocalizedString("powers.errors.value_modifier_save").replace("%modifier%", MODIFYING_KEY));
