@@ -359,6 +359,9 @@ public class OriginPlayer {
                 case "origins:modify_break_speed" -> modify_break_speed.add(player);
                 case "origins:modify_block_render" -> modify_block_render.add(player);
                 case "origins:modify_crafting" -> modify_crafting.add(player);
+                case "origins:modify_damage_taken" -> modify_damage_taken.add(player);
+                case "origins:modify_damage_dealt" -> modify_damage_dealt.add(player);
+                case "origins:modify_exhaustion" -> modify_exhaustion.add(player);
 
                 //actions
                 case "origins:action_on_being_used" -> action_on_being_used.add(player);
@@ -503,6 +506,9 @@ public class OriginPlayer {
                 case "origins:modify_block_render" -> modify_block_render.remove(player);
                 case "origins:modify_break_speed" -> modify_break_speed.remove(player);
                 case "origins:modify_crafting" -> modify_crafting.remove(player);
+                case "origins:modify_damage_taken" -> modify_damage_taken.remove(player);
+                case "origins:modify_damage_dealt" -> modify_damage_dealt.remove(player);
+                case "origins:modify_exhaustion" -> modify_exhaustion.remove(player);
 
                 //actions
                 case "origins:action_on_being_used" -> action_on_being_used.remove(player);
