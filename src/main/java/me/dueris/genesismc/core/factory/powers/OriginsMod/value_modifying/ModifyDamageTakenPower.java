@@ -12,14 +12,14 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import java.util.function.BinaryOperator;
 
 import static me.dueris.genesismc.core.factory.powers.OriginsMod.player.attributes.AttributeHandler.getOperationMappingsFloat;
-import static me.dueris.genesismc.core.factory.powers.OriginsMod.value_modifying.ValueModifyingSuperClass.modify_damage_dealt;
+import static me.dueris.genesismc.core.factory.powers.OriginsMod.value_modifying.ValueModifyingSuperClass.modify_damage_taken;
 
 public class ModifyDamageTakenPower implements Listener {
     @EventHandler
     public void damageEVENT(EntityDamageByEntityEvent e){
         if(e.getEntity() instanceof Player){
             Player p = (Player) e.getEntity();
-            if(modify_damage_dealt.contains(p)){
+            if(modify_damage_taken.contains(p)){
                 for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
                     ValueModifyingSuperClass valueModifyingSuperClass = new ValueModifyingSuperClass();
                     try {
