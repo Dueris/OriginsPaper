@@ -24,6 +24,7 @@ public class ValueModifyingSuperClass implements Listener {
         modifyBlockRender.runTaskTimer(GenesisMC.getPlugin(), 0, 1);
 
         Bukkit.getServer().getPluginManager().registerEvents(new ModifyBreakSpeedPower(), GenesisMC.getPlugin());
+        Bukkit.getServer().getPluginManager().registerEvents(new ModifyCraftingPower(), GenesisMC.getPlugin());
     }
 
     public void runModifierChanges(Player p){
@@ -90,4 +91,5 @@ public class ValueModifyingSuperClass implements Listener {
     public static ArrayList<Player> modify_air_speed = new ArrayList<>();
     public static ArrayList<Player> modify_block_render = new ArrayList<>();
     public static ArrayList<Player> modify_break_speed = new ArrayList<>();
+    public static ArrayList<Player> modify_crafting = new ArrayList<>();
 }
