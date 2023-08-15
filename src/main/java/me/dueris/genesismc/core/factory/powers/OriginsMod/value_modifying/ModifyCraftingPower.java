@@ -39,7 +39,7 @@ public class ModifyCraftingPower implements Listener {
                     }
                 } catch (Exception ev) {
                     ErrorSystem errorSystem = new ErrorSystem();
-                    errorSystem.throwError("unable to set modifier", "origins:modify_crafting", p, origin, OriginPlayer.getLayer(p, origin));
+                    errorSystem.throwError("unable to get recipe or result", "origins:modify_crafting", p, origin, OriginPlayer.getLayer(p, origin));
                     ev.printStackTrace();
                 }
             }
