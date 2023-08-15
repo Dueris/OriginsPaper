@@ -358,6 +358,7 @@ public class OriginPlayer {
                 case "origins:modify_air_speed" -> modify_air_speed.add(player);
                 case "origins:modify_break_speed" -> modify_break_speed.add(player);
                 case "origins:modify_block_render" -> modify_block_render.add(player);
+                case "origins:modify_crafting" -> modify_crafting.add(player);
 
                 //actions
                 case "origins:action_on_being_used" -> action_on_being_used.add(player);
@@ -501,6 +502,7 @@ public class OriginPlayer {
                 case "origins:modify_air_speed" -> modify_air_speed.remove(player);
                 case "origins:modify_block_render" -> modify_block_render.remove(player);
                 case "origins:modify_break_speed" -> modify_break_speed.remove(player);
+                case "origins:modify_crafting" -> modify_crafting.remove(player);
 
                 //actions
                 case "origins:action_on_being_used" -> action_on_being_used.remove(player);
