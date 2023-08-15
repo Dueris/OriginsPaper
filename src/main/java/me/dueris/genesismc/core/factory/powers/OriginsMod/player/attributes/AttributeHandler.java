@@ -49,6 +49,26 @@ public class AttributeHandler implements Listener {
         return operationMap;
     }
 
+    public static Map<String, BinaryOperator<Float>> getOperationMappingsFloat() {
+        Map<String, BinaryOperator<Float>> operationMap = new HashMap<>();
+        operationMap.put("addition", Float::sum);
+        operationMap.put("subtraction", (a, b) -> a - b);
+        operationMap.put("multiplication", (a, b) -> a * b);
+        operationMap.put("division", (a, b) -> a / b);
+        operationMap.put("multiply_base", (a, b) -> a + (a * b));
+        operationMap.put("multiply_total", (a, b) -> a * (1 + b));
+        operationMap.put("set_total", (a, b) -> b);
+
+        Random random = new Random();
+
+        operationMap.put("add_random_max", (a, b) -> a + random.nextFloat(b));
+        operationMap.put("subtract_random_max", (a, b) -> a - random.nextFloat(b));
+        operationMap.put("multiply_random_max", (a, b) -> a * random.nextFloat(b));
+        operationMap.put("divide_random_max", (a, b) -> a / random.nextFloat(b));
+
+        return operationMap;
+    }
+
     @EventHandler
     public void ExecuteAttributeModification(OriginChangeEvent e) {
         Player p = e.getPlayer();
