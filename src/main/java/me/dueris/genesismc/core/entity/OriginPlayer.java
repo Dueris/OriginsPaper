@@ -363,6 +363,7 @@ public class OriginPlayer {
                 case "origins:modify_damage_dealt" -> modify_damage_dealt.add(player);
                 case "origins:modify_exhaustion" -> modify_exhaustion.add(player);
                 case "origins:modify_falling" -> modify_falling.add(player);
+                case "origins:modify_food" -> modify_food.add(player);
 
                 //actions
                 case "origins:action_on_being_used" -> action_on_being_used.add(player);
@@ -511,6 +512,7 @@ public class OriginPlayer {
                 case "origins:modify_damage_dealt" -> modify_damage_dealt.remove(player);
                 case "origins:modify_exhaustion" -> modify_exhaustion.remove(player);
                 case "origins:modify_falling" -> modify_falling.remove(player);
+                case "origins:modify_food" -> modify_food.remove(player);
 
                 //actions
                 case "origins:action_on_being_used" -> action_on_being_used.remove(player);
