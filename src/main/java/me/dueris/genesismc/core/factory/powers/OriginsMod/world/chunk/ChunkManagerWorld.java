@@ -99,6 +99,29 @@ public class ChunkManagerWorld {
         }
     }
 
+    public Chunk[] getChunksInPlayerViewDistance(Player player) {
+        int viewDistance = player.getClientViewDistance();
+        int playerChunkX = player.getLocation().getChunk().getX();
+        int playerChunkZ = player.getLocation().getChunk().getZ();
+
+        int startChunkX = playerChunkX - viewDistance;
+        int endChunkX = playerChunkX + viewDistance;
+        int startChunkZ = playerChunkZ - viewDistance;
+        int endChunkZ = playerChunkZ + viewDistance;
+
+        Chunk[] chunksInPlayerView = new Chunk[(endChunkX - startChunkX + 1) * (endChunkZ - startChunkZ + 1)];
+        int index = 0;
+
+        for (int x = startChunkX; x <= endChunkX; x++) {
+            for (int z = startChunkZ; z <= endChunkZ; z++) {
+                chunksInPlayerView[index] = player.getWorld().getChunkAt(x, z);
+                index++;
+            }
+        }
+
+        return chunksInPlayerView;
+    }
+
     public Block[] getAllBlocksInChunk(Chunk chunk) {
         World world = chunk.getWorld();
         int chunkX = chunk.getX();
