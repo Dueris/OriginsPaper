@@ -23,7 +23,7 @@ public class ModifyDamageTakenPower implements Listener {
                 for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
                     ValueModifyingSuperClass valueModifyingSuperClass = new ValueModifyingSuperClass();
                     try {
-                        if (ConditionExecutor.check("bientity_condition", p, origin, "origins:modify_damage_taken", null, e.getDamager())) {
+                        if (ConditionExecutor.check("bientity_condition", p, origin, "origins:modify_damage_taken", e, e.getDamager())) {
                             Float value = Float.valueOf(origin.getPowerFileFromType("origins:modify_damage_taken").getModifier().get("value").toString());
                             String operation = origin.getPowerFileFromType("origins:modify_damage_taken").getModifier().get("operation").toString();
                             BinaryOperator mathOperator = getOperationMappingsFloat().get(operation);
