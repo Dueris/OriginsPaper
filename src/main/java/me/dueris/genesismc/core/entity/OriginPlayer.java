@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import static me.dueris.genesismc.core.factory.powers.OriginsMod.value_modifying.ValueModifyingSuperClass.*;
 import static me.dueris.genesismc.core.factory.powers.Powers.*;
 import static org.bukkit.Bukkit.getServer;
 
@@ -354,6 +355,9 @@ public class OriginPlayer {
                 case "origins:overlay" -> overlay.add(player);
                 case "origins:particle" -> particle.add(player);
                 case "origins:recipe" -> recipe.add(player);
+                case "origins:modify_air_speed" -> modify_air_speed.add(player);
+                case "origins:modify_break_speed" -> modify_break_speed.add(player);
+                case "origins:modify_block_render" -> modify_block_render.add(player);
 
                 //actions
                 case "origins:action_on_being_used" -> action_on_being_used.add(player);
@@ -494,6 +498,9 @@ public class OriginPlayer {
                 case "origins:overlay" -> overlay.remove(player);
                 case "origins:particle" -> particle.remove(player);
                 case "origins:recipe" -> recipe.remove(player);
+                case "origins:modify_air_speed" -> modify_air_speed.remove(player);
+                case "origins:modify_block_render" -> modify_block_render.remove(player);
+                case "origins:modify_break_speed" -> modify_break_speed.remove(player);
 
                 //actions
                 case "origins:action_on_being_used" -> action_on_being_used.remove(player);
