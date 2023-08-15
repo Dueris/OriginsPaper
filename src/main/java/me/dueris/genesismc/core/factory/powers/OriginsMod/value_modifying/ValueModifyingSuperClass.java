@@ -30,6 +30,9 @@ public class ValueModifyingSuperClass implements Listener {
         Bukkit.getServer().getPluginManager().registerEvents(new ModifyFallingPower(), GenesisMC.getPlugin());
         Bukkit.getServer().getPluginManager().registerEvents(new ModifyFoodPower(), GenesisMC.getPlugin());
         Bukkit.getServer().getPluginManager().registerEvents(new ModifyHarvestPower(), GenesisMC.getPlugin());
+
+        ModifyLavaSpeed modifyLavaSpeed = new ModifyLavaSpeed();
+        modifyLavaSpeed.runTaskTimer(GenesisMC.getPlugin(), 0, 1);
     }
 
     public void runModifierChanges(Player p){
@@ -105,4 +108,5 @@ public class ValueModifyingSuperClass implements Listener {
     public static ArrayList<Player> modify_harvest = new ArrayList<>();
     public static ArrayList<Player> modify_healing = new ArrayList<>();
     public static ArrayList<Player> modify_jump = new ArrayList<>();
+    public static ArrayList<Player> modify_lava_speed = new ArrayList<>();
 }
