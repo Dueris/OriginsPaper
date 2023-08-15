@@ -23,6 +23,7 @@ import me.dueris.genesismc.core.factory.powers.OriginsMod.player.damage.Invulner
 import me.dueris.genesismc.core.factory.powers.OriginsMod.player.damage.WaterDamage;
 import me.dueris.genesismc.core.factory.powers.OriginsMod.player.inventory.Inventory;
 import me.dueris.genesismc.core.factory.powers.OriginsMod.player.inventory.KeepInventory;
+import me.dueris.genesismc.core.factory.powers.OriginsMod.value_modifying.ValueModifyingSuperClass;
 import me.dueris.genesismc.core.factory.powers.OriginsMod.world.EntityGlow;
 import me.dueris.genesismc.core.factory.powers.OriginsMod.world.EntityGroupManager;
 import me.dueris.genesismc.core.factory.powers.OriginsMod.world.WorldSpawnHandler;
@@ -162,6 +163,9 @@ public class PowerStartHandler {
 
         ParticlePower particlePower = new ParticlePower();
         particlePower.runTaskTimer(getPlugin(), 0, 1);
+
+        ValueModifyingSuperClass valueModifyingSuperClass = new ValueModifyingSuperClass();
+        valueModifyingSuperClass.runTasks();
     }
 
     public static void StartListeners() {
@@ -220,6 +224,7 @@ public class PowerStartHandler {
         getServer().getPluginManager().registerEvents(new KeepInventory(), getPlugin());
         getServer().getPluginManager().registerEvents(new Launch(), getPlugin());
         getServer().getPluginManager().registerEvents(new Recipe(), getPlugin());
+        getServer().getPluginManager().registerEvents(new ValueModifyingSuperClass(), getPlugin());
 
         //actions
         getServer().getPluginManager().registerEvents(new ActionOnBeingUsed(), getPlugin());
