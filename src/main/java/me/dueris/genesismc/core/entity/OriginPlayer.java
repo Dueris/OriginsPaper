@@ -370,6 +370,8 @@ public class OriginPlayer {
                 case "origins:modify_lava_speed" -> modify_lava_speed.add(player);
                 case "origins:modify_player_spawn" -> modify_world_spawn.add(player);
                 case "origins:modify_projectile_damage" -> modify_projectile_damage.add(player);
+                case "origins:modify_status_effect_duration" -> modify_effect_duration.add(player);
+                case "origins:modify_status_effect_amplifier" -> modify_effect_amplifier.add(player);
 
                 //actions
                 case "origins:action_on_being_used" -> action_on_being_used.add(player);
@@ -525,6 +527,8 @@ public class OriginPlayer {
                 case "origins:modify_lava_speed" -> modify_lava_speed.remove(player);
                 case "origins:modify_player_spawn" -> modify_world_spawn.remove(player);
                 case "origins:modify_projectile_damage" -> modify_projectile_damage.remove(player);
+                case "origins:modify_status_effect_duration" -> modify_effect_duration.remove(player);
+                case "origins:modify_status_effect_amplifier" -> modify_effect_amplifier.remove(player);
 
                 //actions
                 case "origins:action_on_being_used" -> action_on_being_used.remove(player);
