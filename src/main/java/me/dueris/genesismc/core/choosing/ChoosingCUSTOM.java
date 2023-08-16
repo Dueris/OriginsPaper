@@ -4,7 +4,7 @@ import me.dueris.genesismc.core.GenesisMC;
 import me.dueris.genesismc.core.entity.OriginPlayer;
 import me.dueris.genesismc.core.events.OriginChangeEvent;
 import me.dueris.genesismc.core.factory.CraftApoli;
-import me.dueris.genesismc.core.factory.powers.OriginsMod.world.WorldSpawnHandler;
+import me.dueris.genesismc.core.factory.powers.OriginsMod.value_modifying.ModifyPlayerSpawnPower;
 import me.dueris.genesismc.core.utils.Lang;
 import me.dueris.genesismc.core.utils.OriginContainer;
 import me.dueris.genesismc.core.utils.PowerContainer;
@@ -30,6 +30,7 @@ import java.util.Objects;
 import static me.dueris.genesismc.core.choosing.ChoosingCORE.*;
 import static me.dueris.genesismc.core.choosing.contents.ChooseMenuContents.ChooseMenuContent;
 import static me.dueris.genesismc.core.choosing.contents.MainMenuContents.GenesisMainMenuContents;
+import static me.dueris.genesismc.core.factory.powers.OriginsMod.value_modifying.ValueModifyingSuperClass.modify_world_spawn;
 import static me.dueris.genesismc.core.factory.powers.Powers.*;
 import static me.dueris.genesismc.core.items.OrbOfOrigins.orb;
 import static org.bukkit.Bukkit.getServer;
@@ -260,8 +261,16 @@ public class ChoosingCUSTOM implements Listener {
                         spectatorswitch.setItemMeta(switch_meta);
                         p.getInventory().addItem(spectatorswitch);
                     }
-                    if (nether_spawn.contains(p) && p.getBedSpawnLocation() == null)
-                        p.teleport(WorldSpawnHandler.NetherSpawn());
+                    if(modify_world_spawn.contains(p)){
+                        ModifyPlayerSpawnPower modifyPlayerSpawnPower = new ModifyPlayerSpawnPower();
+                            if(origin.getPowerFileFromType("origins:modify_player_spawn").get("dimension", null).equals("minecraft:nether")){
+                                p.teleportAsync(modifyPlayerSpawnPower.NetherSpawn(origin.getPowerFileFromType("origins:modify_player_spawn").get("spawn_strategy", "default")));
+                            } else if (origin.getPowerFileFromType("origins:modify_player_spawn").get("dimension", null).equals("minecraft:the_end")) {
+                                p.teleportAsync(modifyPlayerSpawnPower.EndSpawn(origin.getPowerFileFromType("origins:modify_player_spawn").get("spawn_strategy", "default")));
+                            } else {
+                                p.teleportAsync(modifyPlayerSpawnPower.OverworldSpawn(origin.getPowerFileFromType("origins:modify_player_spawn").get("spawn_strategy", "default")));
+                            }
+                    }
                 }, 2);
                 OriginChangeEvent Event = new OriginChangeEvent(p);
                 getServer().getPluginManager().callEvent(Event);
