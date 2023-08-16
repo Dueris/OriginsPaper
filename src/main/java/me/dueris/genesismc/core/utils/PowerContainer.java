@@ -323,6 +323,25 @@ public class PowerContainer implements Serializable {
         return null;
     }
 
+    public List<String> getJsonArray(String thing) {
+        Object obj = powerFile.get(thing);
+        if (obj == null) return new ArrayList<>();
+
+        List<String> effectStrings = new ArrayList<>();
+
+        if (obj instanceof JSONArray array) {
+            for (Object value : array) {
+                if (value instanceof String) {
+                    effectStrings.add((String) value);
+                }
+            }
+        } else if (obj instanceof String) {
+            effectStrings.add((String) obj);
+        }
+
+        return effectStrings;
+    }
+
     public HashMap<String, Object> getRecipeResult() {
         Object obj = powerFile.get("recipe");
         if (obj == null) return new HashMap<>();
