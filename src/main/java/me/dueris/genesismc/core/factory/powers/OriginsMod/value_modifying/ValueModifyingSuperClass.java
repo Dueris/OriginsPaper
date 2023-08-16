@@ -37,6 +37,8 @@ public class ValueModifyingSuperClass implements Listener {
 
         Bukkit.getServer().getPluginManager().registerEvents(new ModifyPlayerSpawnPower(), GenesisMC.getPlugin());
         Bukkit.getServer().getPluginManager().registerEvents(new ModifyProjectileDamagePower(), GenesisMC.getPlugin());
+        Bukkit.getServer().getPluginManager().registerEvents(new ModifyStatusEffectDurationPower(), GenesisMC.getPlugin());
+        Bukkit.getServer().getPluginManager().registerEvents(new ModifyStatusEffectAmplifierPower(), GenesisMC.getPlugin());
     }
 
     public void runModifierChanges(Player p){
@@ -115,4 +117,6 @@ public class ValueModifyingSuperClass implements Listener {
     public static ArrayList<Player> modify_lava_speed = new ArrayList<>();
     public static ArrayList<Player> modify_world_spawn = new ArrayList<>();
     public static ArrayList<Player> modify_projectile_damage = new ArrayList<>();
+    public static ArrayList<Player> modify_effect_amplifier = new ArrayList<>();
+    public static ArrayList<Player> modify_effect_duration = new ArrayList<>();
 }
