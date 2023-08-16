@@ -368,6 +368,7 @@ public class OriginPlayer {
                 case "origins:modify_healing" -> modify_healing.add(player);
                 case "origins:modify_jump" -> modify_jump.add(player);
                 case "origins:modify_lava_speed" -> modify_lava_speed.add(player);
+                case "origins:modify_player_spawn" -> modify_world_spawn.add(player);
 
                 //actions
                 case "origins:action_on_being_used" -> action_on_being_used.add(player);
@@ -521,6 +522,7 @@ public class OriginPlayer {
                 case "origins:modify_healing" -> modify_healing.remove(player);
                 case "origins:modify_jump" -> modify_jump.remove(player);
                 case "origins:modify_lava_speed" -> modify_lava_speed.remove(player);
+                case "origins:modify_player_spawn" -> modify_world_spawn.remove(player);
 
                 //actions
                 case "origins:action_on_being_used" -> action_on_being_used.remove(player);
