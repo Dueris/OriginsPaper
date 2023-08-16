@@ -39,23 +39,28 @@ public class ValueModifyingSuperClass implements Listener {
         Bukkit.getServer().getPluginManager().registerEvents(new ModifyProjectileDamagePower(), GenesisMC.getPlugin());
         Bukkit.getServer().getPluginManager().registerEvents(new ModifyStatusEffectDurationPower(), GenesisMC.getPlugin());
         Bukkit.getServer().getPluginManager().registerEvents(new ModifyStatusEffectAmplifierPower(), GenesisMC.getPlugin());
+
+        ModifySwimSpeedPower modifySwimSpeedPower = new ModifySwimSpeedPower();
+        modifySwimSpeedPower.runTaskTimer(GenesisMC.getPlugin(), 0, 1);
     }
 
     public void runModifierChanges(Player p){
         ModifyAirSpeedPower modifyAirSpeedPower = new ModifyAirSpeedPower();
         ModifyBreakSpeedPower modifyBreakSpeedPower = new ModifyBreakSpeedPower();
+        ModifySwimSpeedPower modifySwimSpeedPower = new ModifySwimSpeedPower();
         new BukkitRunnable(){
             @Override
             public void run() {
                 if(modify_air_speed.contains(p)){
                     modifyAirSpeedPower.apply(p);
-                    p.sendMessage("apply");
                 }else if(modify_break_speed.contains(p)){
                     modifyBreakSpeedPower.apply(p);
-                    p.sendMessage("apply");
+                }else if(modify_swim_speed.contains(p)){
+                    modifySwimSpeedPower.apply(p);
                 }else{
                     saveValueInPDC(p, "modify_air_speed", 0.1f);
-                    p.sendMessage("esle");
+                    saveValueInPDC(p, "modify_break_speed", 0.1f);
+                    saveValueInPDC(p, "modify_swim_speed", -1f);
                 }
             }
         }.runTaskLater(GenesisMC.getPlugin(), 4);
@@ -64,7 +69,6 @@ public class ValueModifyingSuperClass implements Listener {
     @EventHandler
     public void ORIGINCHANGE(OriginChangeEvent e){
             runModifierChanges(e.getPlayer());
-            e.getPlayer().sendMessage("run_modify");
     }
 
     public Float getPersistentAttributeContainer(Player player, String key){
@@ -88,6 +92,8 @@ public class ValueModifyingSuperClass implements Listener {
                 return 0.1f;
             case "modify_break_speed":
                 return 0.1f;
+            case "modify_swim_speed":
+                return -1f;
             default:
                 return 0f;
         }
@@ -119,4 +125,5 @@ public class ValueModifyingSuperClass implements Listener {
     public static ArrayList<Player> modify_projectile_damage = new ArrayList<>();
     public static ArrayList<Player> modify_effect_amplifier = new ArrayList<>();
     public static ArrayList<Player> modify_effect_duration = new ArrayList<>();
+    public static ArrayList<Player> modify_swim_speed = new ArrayList<>();
 }
