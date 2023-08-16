@@ -39,6 +39,7 @@ public class ValueModifyingSuperClass implements Listener {
         Bukkit.getServer().getPluginManager().registerEvents(new ModifyProjectileDamagePower(), GenesisMC.getPlugin());
         Bukkit.getServer().getPluginManager().registerEvents(new ModifyStatusEffectDurationPower(), GenesisMC.getPlugin());
         Bukkit.getServer().getPluginManager().registerEvents(new ModifyStatusEffectAmplifierPower(), GenesisMC.getPlugin());
+        Bukkit.getServer().getPluginManager().registerEvents(new ModifyExperienceGainPower(), GenesisMC.getPlugin());
 
         ModifySwimSpeedPower modifySwimSpeedPower = new ModifySwimSpeedPower();
         modifySwimSpeedPower.runTaskTimer(GenesisMC.getPlugin(), 0, 1);
@@ -126,4 +127,5 @@ public class ValueModifyingSuperClass implements Listener {
     public static ArrayList<Player> modify_effect_amplifier = new ArrayList<>();
     public static ArrayList<Player> modify_effect_duration = new ArrayList<>();
     public static ArrayList<Player> modify_swim_speed = new ArrayList<>();
+    public static ArrayList<Player> modify_xp_gain = new ArrayList<>();
 }
