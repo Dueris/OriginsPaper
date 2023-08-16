@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import static me.dueris.genesismc.core.factory.powers.OriginsMod.prevent.PreventSuperClass.*;
 import static me.dueris.genesismc.core.factory.powers.OriginsMod.value_modifying.ValueModifyingSuperClass.*;
 import static me.dueris.genesismc.core.factory.powers.Powers.*;
 import static org.bukkit.Bukkit.getServer;
@@ -374,6 +375,16 @@ public class OriginPlayer {
                 case "origins:modify_status_effect_amplifier" -> modify_effect_amplifier.add(player);
                 case "origins:modify_swim_speed" -> modify_swim_speed.add(player);
                 case "origins:modify_xp_gain" -> modify_xp_gain.add(player);
+                case "origins:prevent_being_used" -> prevent_being_used.add(player);
+                case "origins:prevent_block_selection" -> prevent_block_selection.add(player);
+                case "origins:prevent_block_use" -> prevent_block_use.add(player);
+                case "origins:prevent_death" -> prevent_death.add(player);
+                case "origins:prevent_elytra_flight" -> prevent_elytra_flight.add(player);
+                case "origins:prevent_entity_collision" -> prevent_entity_collision.add(player);
+                case "origins:prevent_entity_render" -> prevent_entity_render.add(player);
+                case "origins:prevent_entity_use" -> prevent_entity_use.add(player);
+                case "origins:prevent_item_use" -> prevent_item_use.add(player);
+                case "origins:prevent_sleep" -> prevent_sleep.add(player);
 
                 //actions
                 case "origins:action_on_being_used" -> action_on_being_used.add(player);
@@ -533,6 +544,16 @@ public class OriginPlayer {
                 case "origins:modify_status_effect_amplifier" -> modify_effect_amplifier.remove(player);
                 case "origins:modify_swim_speed" -> modify_swim_speed.remove(player);
                 case "origins:modify_xp_gain" -> modify_xp_gain.remove(player);
+                case "origins:prevent_being_used" -> prevent_being_used.remove(player);
+                case "origins:prevent_block_selection" -> prevent_block_selection.remove(player);
+                case "origins:prevent_block_use" -> prevent_block_use.remove(player);
+                case "origins:prevent_death" -> prevent_death.remove(player);
+                case "origins:prevent_elytra_flight" -> prevent_elytra_flight.remove(player);
+                case "origins:prevent_entity_collision" -> prevent_entity_collision.remove(player);
+                case "origins:prevent_entity_render" -> prevent_entity_render.remove(player);
+                case "origins:prevent_entity_use" -> prevent_entity_use.remove(player);
+                case "origins:prevent_item_use" -> prevent_item_use.remove(player);
+                case "origins:prevent_sleep" -> prevent_sleep.remove(player);
 
                 //actions
                 case "origins:action_on_being_used" -> action_on_being_used.remove(player);
