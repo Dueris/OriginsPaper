@@ -12,6 +12,7 @@ import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class ValueModifyingSuperClass implements Listener {
@@ -35,6 +36,7 @@ public class ValueModifyingSuperClass implements Listener {
         modifyLavaSpeed.runTaskTimer(GenesisMC.getPlugin(), 0, 1);
 
         Bukkit.getServer().getPluginManager().registerEvents(new ModifyPlayerSpawnPower(), GenesisMC.getPlugin());
+        Bukkit.getServer().getPluginManager().registerEvents(new ModifyProjectileDamagePower(), GenesisMC.getPlugin());
     }
 
     public void runModifierChanges(Player p){
@@ -112,4 +114,5 @@ public class ValueModifyingSuperClass implements Listener {
     public static ArrayList<Player> modify_jump = new ArrayList<>();
     public static ArrayList<Player> modify_lava_speed = new ArrayList<>();
     public static ArrayList<Player> modify_world_spawn = new ArrayList<>();
+    public static ArrayList<Player> modify_projectile_damage = new ArrayList<>();
 }
