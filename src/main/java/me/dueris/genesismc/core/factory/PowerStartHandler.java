@@ -23,6 +23,7 @@ import me.dueris.genesismc.core.factory.powers.OriginsMod.player.damage.Invulner
 import me.dueris.genesismc.core.factory.powers.OriginsMod.player.damage.WaterDamage;
 import me.dueris.genesismc.core.factory.powers.OriginsMod.player.inventory.Inventory;
 import me.dueris.genesismc.core.factory.powers.OriginsMod.player.inventory.KeepInventory;
+import me.dueris.genesismc.core.factory.powers.OriginsMod.prevent.PreventSuperClass;
 import me.dueris.genesismc.core.factory.powers.OriginsMod.value_modifying.ValueModifyingSuperClass;
 import me.dueris.genesismc.core.factory.powers.OriginsMod.world.EntityGlow;
 import me.dueris.genesismc.core.factory.powers.OriginsMod.world.EntityGroupManager;
@@ -164,6 +165,8 @@ public class PowerStartHandler {
         particlePower.runTaskTimer(getPlugin(), 0, 1);
 
         ValueModifyingSuperClass valueModifyingSuperClass = new ValueModifyingSuperClass();
+        PreventSuperClass preventSuperClass = new PreventSuperClass();
+        preventSuperClass.runTasks();
         valueModifyingSuperClass.runTasks();
     }
 
