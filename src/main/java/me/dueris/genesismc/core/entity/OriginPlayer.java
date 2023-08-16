@@ -178,7 +178,7 @@ public class OriginPlayer {
             public void run() {
                 assignPowers(player, layer);
             }
-        }.runTaskLater(GenesisMC.getPlugin(), 2L);
+        }.runTaskLater(GenesisMC.getPlugin(), 3L);
     }
 
     /**
