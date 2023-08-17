@@ -9,6 +9,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.util.HashMap;
 import java.util.function.BinaryOperator;
 
 import static me.dueris.genesismc.core.factory.powers.OriginsMod.player.attributes.AttributeHandler.getOperationMappingsFloat;
@@ -24,10 +25,12 @@ public class ModifyAirSpeedPower extends BukkitRunnable {
             for(OriginContainer origin : OriginPlayer.getOrigin(p).values()){
                 ValueModifyingSuperClass valueModifyingSuperClass = new ValueModifyingSuperClass();
                 try{
-                    if(ConditionExecutor.check("condition", p, origin, "origins:modify_air_speed", null, p)){
+                    if(ConditionExecutor.check("condition", "conditions", p, origin, "origins:modify_air_speed", null, p)){
                         p.setFlySpeed(valueModifyingSuperClass.getPersistentAttributeContainer(p, MODIFYING_KEY));
+                        p.sendMessage(MODIFYING_KEY);
                     }else{
                         p.setFlySpeed(valueModifyingSuperClass.getDefaultValue(MODIFYING_KEY));
+                        p.sendMessage("12222");
                     }
                 } catch (Exception e){
                     ErrorSystem errorSystem = new ErrorSystem();
@@ -41,14 +44,17 @@ public class ModifyAirSpeedPower extends BukkitRunnable {
         ValueModifyingSuperClass valueModifyingSuperClass = new ValueModifyingSuperClass();
             if(modify_air_speed.contains(p)){
                 for(OriginContainer origin : OriginPlayer.getOrigin(p).values()){
-                    Float value = Float.valueOf(origin.getPowerFileFromType("origins:modify_air_speed").getModifier().get("value").toString());
-                    String operation = origin.getPowerFileFromType("origins:modify_air_speed").getModifier().get("operation").toString();
-                    BinaryOperator mathOperator = getOperationMappingsFloat().get(operation);
-                    if (mathOperator != null) {
-                        float result = (float) mathOperator.apply(valueModifyingSuperClass.getDefaultValue(MODIFYING_KEY), value);
-                        valueModifyingSuperClass.saveValueInPDC(p, MODIFYING_KEY, result);
-                    } else {
-                        Bukkit.getLogger().warning(Lang.getLocalizedString("powers.errors.value_modifier_save").replace("%modifier%", MODIFYING_KEY));
+                    for(HashMap<String, Object> modifier : origin.getPowerFileFromType("origins:modify_air_speed").getConditionFromString("modifier", "modifiers")){
+                        Float value = Float.valueOf(modifier.get("value").toString());
+                        String operation = modifier.get("operation").toString();
+                        BinaryOperator mathOperator = getOperationMappingsFloat().get(operation);
+                        if (mathOperator != null) {
+                            float result = (float) mathOperator.apply(valueModifyingSuperClass.getDefaultValue(MODIFYING_KEY), value);
+                            valueModifyingSuperClass.saveValueInPDC(p, MODIFYING_KEY, result);
+                            p.sendMessage(String.valueOf(result));
+                        } else {
+                            Bukkit.getLogger().warning(Lang.getLocalizedString("powers.errors.value_modifier_save").replace("%modifier%", MODIFYING_KEY));
+                        }
                     }
                 }
             }else{

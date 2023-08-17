@@ -41,7 +41,7 @@ public class Burn extends BukkitRunnable {
                     } else {
                         if (p.isInWaterOrRainOrBubbleColumn()) return;
                         if (p.getGameMode() == GameMode.CREATIVE) return;
-                        if (!ConditionExecutor.check("condition", p, origin, "origins:burn", null, p)) return;
+                        if (!ConditionExecutor.check("condition", "conditions", p, origin, "origins:burn", null, p)) return;
                         Long burn_duration = power.getBurnDuration();
                         p.setFireTicks(burn_duration.intValue());
 

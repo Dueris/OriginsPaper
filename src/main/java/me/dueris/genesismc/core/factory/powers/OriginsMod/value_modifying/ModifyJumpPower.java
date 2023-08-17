@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
+import java.util.HashMap;
 import java.util.function.BinaryOperator;
 
 import static me.dueris.genesismc.core.factory.powers.OriginsMod.player.attributes.AttributeHandler.getOperationMappingsFloat;
@@ -19,14 +20,17 @@ public class ModifyJumpPower implements Listener {
         Player p = e.getPlayer();
         if(modify_jump.contains(p)){
             for(OriginContainer origin : OriginPlayer.getOrigin(p).values()){
-                if(ConditionExecutor.check("condition", p, origin, "origins:modify_jump", null, p)){
-                    Float value = Float.valueOf(origin.getPowerFileFromType("origins:modify_jump").getModifier().get("value").toString());
-                    String operation = origin.getPowerFileFromType("origins:modify_jump").getModifier().get("operation").toString();
-                    BinaryOperator mathOperator = getOperationMappingsFloat().get(operation);
-                    if (mathOperator != null) {
-                        float result = (float) mathOperator.apply(e.getPlayer().getVelocity().getY(), value);
-                        e.getPlayer().getVelocity().setY(result);
+                if(ConditionExecutor.check("condition", "conditions", p, origin, "origins:modify_jump", null, p)){
+                    for(HashMap<String, Object> modifier : origin.getPowerFileFromType("origins:modify_jump").getPossibleModifiers("modifier", "modifiers")){
+                        Float value = Float.valueOf(modifier.get("value").toString());
+                        String operation = modifier.get("operation").toString();
+                        BinaryOperator mathOperator = getOperationMappingsFloat().get(operation);
+                        if (mathOperator != null) {
+                            float result = (float) mathOperator.apply(e.getPlayer().getVelocity().getY(), value);
+                            e.getPlayer().getVelocity().setY(result);
+                        }
                     }
+
                 }
             }
         }

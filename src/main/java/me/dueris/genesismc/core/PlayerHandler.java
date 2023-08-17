@@ -44,15 +44,16 @@ public class PlayerHandler implements Listener {
         for (OriginContainer origin : OriginPlayer.getOrigin(player).values()) {
             PowerContainer power = origin.getPowerFileFromType("origins:attribute");
             if (power == null) continue;
-
-            if (power.getModifier().get("attribute").toString().equalsIgnoreCase("reach-entity-attributes:reach")) {
-                extra_reach.add(player);
-                return;
-            } else if (power.getModifier().get("attribute").toString().equalsIgnoreCase("reach-entity-attributes:attack_range")) {
-                extra_reach_attack.add(player);
-                return;
-            } else {
-                AttributeHandler.Reach.setFinalReach(player, AttributeHandler.Reach.getDefaultReach(player));
+            for(HashMap<String, Object> modifier : origin.getPowerFileFromType("origins:attribute").getPossibleModifiers("modifier", "modifier")){
+                if (modifier.get("attribute").toString().equalsIgnoreCase("reach-entity-attributes:reach")) {
+                    extra_reach.add(player);
+                    return;
+                } else if (modifier.get("attribute").toString().equalsIgnoreCase("reach-entity-attributes:attack_range")) {
+                    extra_reach_attack.add(player);
+                    return;
+                } else {
+                    AttributeHandler.Reach.setFinalReach(player, AttributeHandler.Reach.getDefaultReach(player));
+                }
             }
         }
     }

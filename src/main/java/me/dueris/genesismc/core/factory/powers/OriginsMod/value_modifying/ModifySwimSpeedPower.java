@@ -10,10 +10,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
+import java.util.HashMap;
 import java.util.function.BinaryOperator;
 
 import static me.dueris.genesismc.core.factory.powers.OriginsMod.player.attributes.AttributeHandler.getOperationMappingsFloat;
-import static me.dueris.genesismc.core.factory.powers.OriginsMod.value_modifying.ValueModifyingSuperClass.modify_air_speed;
 import static me.dueris.genesismc.core.factory.powers.OriginsMod.value_modifying.ValueModifyingSuperClass.modify_swim_speed;
 
 public class ModifySwimSpeedPower extends BukkitRunnable {
@@ -26,7 +26,7 @@ public class ModifySwimSpeedPower extends BukkitRunnable {
             for(OriginContainer origin : OriginPlayer.getOrigin(p).values()){
                 ValueModifyingSuperClass valueModifyingSuperClass = new ValueModifyingSuperClass();
                 try{
-                    if(ConditionExecutor.check("condition", p, origin, "origins:modify_swim_speed", null, p)){
+                    if(ConditionExecutor.check("condition", "conditions", p, origin, "origins:modify_swim_speed", null, p)){
                         if(valueModifyingSuperClass.getPersistentAttributeContainer(p, MODIFYING_KEY) == -1) return;
                         if(!p.isSwimming()) return;
                         Vector swimVelocity = p.getLocation().getDirection().normalize().multiply(valueModifyingSuperClass.getPersistentAttributeContainer(p, MODIFYING_KEY));
@@ -44,14 +44,16 @@ public class ModifySwimSpeedPower extends BukkitRunnable {
         ValueModifyingSuperClass valueModifyingSuperClass = new ValueModifyingSuperClass();
         if(modify_swim_speed.contains(p)){
             for(OriginContainer origin : OriginPlayer.getOrigin(p).values()){
-                Float value = Float.valueOf(origin.getPowerFileFromType("origins:modify_swim_speed").getModifier().get("value").toString());
-                String operation = origin.getPowerFileFromType("origins:modify_swim_speed").getModifier().get("operation").toString();
-                BinaryOperator mathOperator = getOperationMappingsFloat().get(operation);
-                if (mathOperator != null) {
-                    float result = (float) mathOperator.apply(valueModifyingSuperClass.getDefaultValue(MODIFYING_KEY), value);
-                    valueModifyingSuperClass.saveValueInPDC(p, MODIFYING_KEY, result);
-                } else {
-                    Bukkit.getLogger().warning(Lang.getLocalizedString("powers.errors.value_modifier_save").replace("%modifier%", MODIFYING_KEY));
+                for(HashMap<String, Object> modifier : origin.getPowerFileFromType("origins:modify_swim_speed").getPossibleModifiers("modifier", "modifiers")){
+                    Float value = Float.valueOf(modifier.get("value").toString());
+                    String operation = modifier.get("operation").toString();
+                    BinaryOperator mathOperator = getOperationMappingsFloat().get(operation);
+                    if (mathOperator != null) {
+                        float result = (float) mathOperator.apply(valueModifyingSuperClass.getDefaultValue(MODIFYING_KEY), value);
+                        valueModifyingSuperClass.saveValueInPDC(p, MODIFYING_KEY, result);
+                    } else {
+                        Bukkit.getLogger().warning(Lang.getLocalizedString("powers.errors.value_modifier_save").replace("%modifier%", MODIFYING_KEY));
+                    }
                 }
             }
         }else{

@@ -12,13 +12,11 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-import org.bukkit.scheduler.BukkitRunnable;
 
-import java.net.http.WebSocket;
+import java.util.HashMap;
 import java.util.function.BinaryOperator;
 
 import static me.dueris.genesismc.core.factory.powers.OriginsMod.player.attributes.AttributeHandler.getOperationMappingsFloat;
-import static me.dueris.genesismc.core.factory.powers.OriginsMod.value_modifying.ValueModifyingSuperClass.modify_air_speed;
 import static me.dueris.genesismc.core.factory.powers.OriginsMod.value_modifying.ValueModifyingSuperClass.modify_break_speed;
 
 public class ModifyBreakSpeedPower implements Listener {
@@ -43,7 +41,7 @@ public class ModifyBreakSpeedPower implements Listener {
         for(OriginContainer origin : OriginPlayer.getOrigin(p).values()){
             ValueModifyingSuperClass valueModifyingSuperClass = new ValueModifyingSuperClass();
             try{
-                if(ConditionExecutor.check("condition", p, origin, "origins:modify_air_speed", null, p)){
+                if(ConditionExecutor.check("condition", "condition", p, origin, "origins:modify_air_speed", null, p)){
                     //TODO: add block condition
                     if(modify_break_speed.contains(p)){
                         p.addPotionEffect(new PotionEffect(PotionEffectType.FAST_DIGGING, 50, calculateHasteAmplifier(valueModifyingSuperClass.getPersistentAttributeContainer(p, MODIFYING_KEY)), false, false, false));
@@ -61,14 +59,16 @@ public class ModifyBreakSpeedPower implements Listener {
         ValueModifyingSuperClass valueModifyingSuperClass = new ValueModifyingSuperClass();
         if(modify_break_speed.contains(p)){
             for(OriginContainer origin : OriginPlayer.getOrigin(p).values()){
-                Float value = Float.valueOf(origin.getPowerFileFromType("origins:modify_break_speed").getModifier().get("value").toString());
-                String operation = origin.getPowerFileFromType("origins:modify_break_speed").getModifier().get("operation").toString();
-                BinaryOperator mathOperator = getOperationMappingsFloat().get(operation);
-                if (mathOperator != null) {
-                    float result = (float) mathOperator.apply(valueModifyingSuperClass.getPersistentAttributeContainer(p, MODIFYING_KEY), value);
-                    valueModifyingSuperClass.saveValueInPDC(p, MODIFYING_KEY, result);
-                } else {
-                    Bukkit.getLogger().warning(Lang.getLocalizedString("powers.errors.value_modifier_save").replace("%modifier%", MODIFYING_KEY));
+                for(HashMap<String, Object> modifier : origin.getPowerFileFromType("origins:modify_break_speed").getConditionFromString("modifier", "modifiers")){
+                    Float value = Float.valueOf(modifier.get("value").toString());
+                    String operation = modifier.get("operation").toString();
+                    BinaryOperator mathOperator = getOperationMappingsFloat().get(operation);
+                    if (mathOperator != null) {
+                        float result = (float) mathOperator.apply(valueModifyingSuperClass.getPersistentAttributeContainer(p, MODIFYING_KEY), value);
+                        valueModifyingSuperClass.saveValueInPDC(p, MODIFYING_KEY, result);
+                    } else {
+                        Bukkit.getLogger().warning(Lang.getLocalizedString("powers.errors.value_modifier_save").replace("%modifier%", MODIFYING_KEY));
+                    }
                 }
             }
         }else{

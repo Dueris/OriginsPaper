@@ -85,40 +85,42 @@ public class AttributeHandler implements Listener {
                 PowerContainer power = origin.getPowerFileFromType("origins:attribute");
                 if (power == null) continue;
 
-                if (power.getModifier().get("attribute").toString().equalsIgnoreCase("reach-entity-attributes:reach")) {
-                    extra_reach.add(p);
-                    return;
-                } else if (power.getModifier().get("attribute").toString().equalsIgnoreCase("reach-entity-attributes:attack_range")) {
-                    extra_reach_attack.add(p);
-                    return;
-                } else {
-                    Reach.setFinalReach(p, Reach.getDefaultReach(p));
-                }
-
-                Attribute attribute_modifier = Attribute.valueOf(power.getModifier().get("attribute").toString().split(":")[1].replace(".", "_").toUpperCase());
-
-                Object valueObj = power.getModifier().get("value");
-
-                if (valueObj instanceof Number) {
-                    double value;
-                    if (valueObj instanceof Integer) {
-                        value = ((Number) valueObj).intValue();
-                    } else if (valueObj instanceof Double) {
-                        value = ((Number) valueObj).doubleValue();
-                    } else if (valueObj instanceof Float) {
-                        value = ((Number) valueObj).floatValue();
-                    } else if (valueObj instanceof Long) {
-                        value = ((Number) valueObj).longValue();
+                for(HashMap<String, Object> modifier : power.getPossibleModifiers("modifier", "modifiers")){
+                    if (modifier.get("attribute").toString().equalsIgnoreCase("reach-entity-attributes:reach")) {
+                        extra_reach.add(p);
+                        return;
+                    } else if (modifier.get("attribute").toString().equalsIgnoreCase("reach-entity-attributes:attack_range")) {
+                        extra_reach_attack.add(p);
+                        return;
                     } else {
-                        Objects.requireNonNull(valueObj);
-                        continue;
+                        Reach.setFinalReach(p, Reach.getDefaultReach(p));
                     }
 
-                    double base_value = p.getAttribute(attribute_modifier).getBaseValue();
-                    String operation = String.valueOf(power.getModifier().get("operation"));
-                    executeAttributeModify(operation, attribute_modifier, base_value, p, value);
+                    Attribute attribute_modifier = Attribute.valueOf(modifier.get("attribute").toString().split(":")[1].replace(".", "_").toUpperCase());
 
-                    p.sendHealthUpdate();
+                    Object valueObj = modifier.get("value");
+
+                    if (valueObj instanceof Number) {
+                        double value;
+                        if (valueObj instanceof Integer) {
+                            value = ((Number) valueObj).intValue();
+                        } else if (valueObj instanceof Double) {
+                            value = ((Number) valueObj).doubleValue();
+                        } else if (valueObj instanceof Float) {
+                            value = ((Number) valueObj).floatValue();
+                        } else if (valueObj instanceof Long) {
+                            value = ((Number) valueObj).longValue();
+                        } else {
+                            Objects.requireNonNull(valueObj);
+                            continue;
+                        }
+
+                        double base_value = p.getAttribute(attribute_modifier).getBaseValue();
+                        String operation = String.valueOf(modifier.get("operation"));
+                        executeAttributeModify(operation, attribute_modifier, base_value, p, value);
+
+                        p.sendHealthUpdate();
+                    }
                 }
             }
         }
@@ -181,62 +183,63 @@ public class AttributeHandler implements Listener {
                 for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
 
                     PowerContainer power = origin.getPowerFileFromType("origins:attribute");
+                    for(HashMap<String, Object> modifier : power.getPossibleModifiers("modifier", "modifiers")){
+                        if (!e.getAction().isLeftClick()) return;
+                        String operation = String.valueOf(modifier.get("operation"));
 
-                    if (!e.getAction().isLeftClick()) return;
-                    String operation = String.valueOf(power.getModifier().get("operation"));
+                        BinaryOperator mathOperator = getOperationMappingsDouble().get(operation);
 
-                    BinaryOperator mathOperator = getOperationMappingsDouble().get(operation);
+                        Object valueObj = modifier.get("value");
 
-                    Object valueObj = power.getModifier().get("value");
+                        double base = getDefaultReach(p);
 
-                    double base = getDefaultReach(p);
-
-                    if (valueObj instanceof Number) {
-                        double value;
-                        if (valueObj instanceof Integer) {
-                            value = ((Number) valueObj).intValue();
-                        } else if (valueObj instanceof Double) {
-                            value = ((Number) valueObj).doubleValue();
-                        } else if (valueObj instanceof Float) {
-                            value = ((Number) valueObj).floatValue();
-                        } else if (valueObj instanceof Long) {
-                            value = ((Number) valueObj).longValue();
-                        } else {
-                            Objects.requireNonNull(valueObj);
-                            continue;
-                        }
-
-                        if (mathOperator != null) {
-                            double result = (double) mathOperator.apply(base, value);
-                            setFinalReach(p, result);
-                        } else {
-                            Bukkit.getLogger().warning(Lang.getLocalizedString("powers.errors.attribute"));
-                        }
-
-                        Location eyeloc = p.getEyeLocation();
-                        Predicate<Entity> filter = (entity) -> !entity.equals(p);
-
-                        RayTraceResult traceResult4_5F = p.getWorld().rayTrace(eyeloc, eyeloc.getDirection(), getFinalReach(p), FluidCollisionMode.NEVER, false, 0, filter);
-
-                        if (traceResult4_5F != null) {
-                            Entity entity = traceResult4_5F.getHitEntity();
-                            //entity code -- pvp
-                            if (entity == null) return;
-                            Player attacker = p;
-                            if (entity.isDead() || !(entity instanceof LivingEntity)) return;
-                            if (entity.isInvulnerable()) return;
-                            LivingEntity victim = (LivingEntity) traceResult4_5F.getHitEntity();
-                            if (attacker.getLocation().distance(victim.getLocation()) <= getFinalReach(p)) {
-                                if (entity.getPassengers().contains(p)) return;
-                                if (!entity.isDead()) {
-                                    LivingEntity ent = (LivingEntity) entity;
-                                    p.attack(ent);
-                                }
+                        if (valueObj instanceof Number) {
+                            double value;
+                            if (valueObj instanceof Integer) {
+                                value = ((Number) valueObj).intValue();
+                            } else if (valueObj instanceof Double) {
+                                value = ((Number) valueObj).doubleValue();
+                            } else if (valueObj instanceof Float) {
+                                value = ((Number) valueObj).floatValue();
+                            } else if (valueObj instanceof Long) {
+                                value = ((Number) valueObj).longValue();
                             } else {
-                                e.setCancelled(true);
+                                Objects.requireNonNull(valueObj);
+                                continue;
                             }
-                        }
 
+                            if (mathOperator != null) {
+                                double result = (double) mathOperator.apply(base, value);
+                                setFinalReach(p, result);
+                            } else {
+                                Bukkit.getLogger().warning(Lang.getLocalizedString("powers.errors.attribute"));
+                            }
+
+                            Location eyeloc = p.getEyeLocation();
+                            Predicate<Entity> filter = (entity) -> !entity.equals(p);
+
+                            RayTraceResult traceResult4_5F = p.getWorld().rayTrace(eyeloc, eyeloc.getDirection(), getFinalReach(p), FluidCollisionMode.NEVER, false, 0, filter);
+
+                            if (traceResult4_5F != null) {
+                                Entity entity = traceResult4_5F.getHitEntity();
+                                //entity code -- pvp
+                                if (entity == null) return;
+                                Player attacker = p;
+                                if (entity.isDead() || !(entity instanceof LivingEntity)) return;
+                                if (entity.isInvulnerable()) return;
+                                LivingEntity victim = (LivingEntity) traceResult4_5F.getHitEntity();
+                                if (attacker.getLocation().distance(victim.getLocation()) <= getFinalReach(p)) {
+                                    if (entity.getPassengers().contains(p)) return;
+                                    if (!entity.isDead()) {
+                                        LivingEntity ent = (LivingEntity) entity;
+                                        p.attack(ent);
+                                    }
+                                } else {
+                                    e.setCancelled(true);
+                                }
+                            }
+
+                        }
                     }
                 }
             }

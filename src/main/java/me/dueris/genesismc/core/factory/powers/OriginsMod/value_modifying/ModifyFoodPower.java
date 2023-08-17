@@ -22,7 +22,7 @@ public class ModifyFoodPower implements Listener {
     public void saturationorwhateverRUN(PlayerItemConsumeEvent e){
         Player player = e.getPlayer();
         for(OriginContainer origin : OriginPlayer.getOrigin(player).values()){
-            if(ConditionExecutor.check("item_condition", player, origin, "origins:modify_food", null, player)) {
+            if(ConditionExecutor.check("item_condition", "item_condition", player, origin, "origins:modify_food", null, player)) {
                 if (modify_food.contains(player)) {
                     if (origin.getPowerFileFromType("origins:modify_food").getJsonHashMap("food_modifier") != null) {
                         Map.Entry<Double, Double> modifiers = getModifiers(player, origin);
@@ -46,14 +46,17 @@ public class ModifyFoodPower implements Listener {
     }
 
     private Map.Entry<Double, Double> getModifiers(Player player, OriginContainer origin) {
-        float value = Float.valueOf(origin.getPowerFileFromType("origins:modify_food").getModifier().get("value").toString());
-        String operation = origin.getPowerFileFromType("origins:modify_food").getModifier().get("operation").toString();
-        BinaryOperator<Float> mathOperator = getOperationMappingsFloat().get(operation);
+        for(HashMap<String, Object> modifier : origin.getPowerFileFromType("origins:modify_food").getPossibleModifiers("modifier", "modifiers")){
+            float value = Float.valueOf(modifier.get("value").toString());
+            String operation = modifier.get("operation").toString();
+            BinaryOperator<Float> mathOperator = getOperationMappingsFloat().get(operation);
 
-        double foodModifier = (double) (mathOperator != null ? mathOperator.apply(Float.valueOf(player.getFoodLevel()), value) : player.getFoodLevel());
-        double saturationModifier = (double) (mathOperator != null ? mathOperator.apply(player.getSaturation(), value) : player.getSaturation());
+            double foodModifier = (double) (mathOperator != null ? mathOperator.apply(Float.valueOf(player.getFoodLevel()), value) : player.getFoodLevel());
+            double saturationModifier = (double) (mathOperator != null ? mathOperator.apply(player.getSaturation(), value) : player.getSaturation());
 
-        return new AbstractMap.SimpleEntry<>(foodModifier, saturationModifier);
+            return new AbstractMap.SimpleEntry<>(foodModifier, saturationModifier);
+        }
+        return null;
     }
 
     private static final Map<Material, Double> foodModifiers = new HashMap<>();

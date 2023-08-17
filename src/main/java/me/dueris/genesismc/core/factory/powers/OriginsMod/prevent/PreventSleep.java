@@ -17,7 +17,7 @@ public class PreventSleep implements Listener {
         if(beds.contains(e.getClickedBlock().getType())){
             if(!prevent_sleep.contains(e.getPlayer())) return;
             for(OriginContainer origin : OriginPlayer.getOrigin(e.getPlayer()).values()){
-                if(ConditionExecutor.check("block_condition", e.getPlayer(), origin, "origins:prevent_sleep", null, e.getPlayer())){
+                if(ConditionExecutor.check("block_condition", "block_conditions", e.getPlayer(), origin, "origins:prevent_sleep", null, e.getPlayer())){
                     if(origin.getPowerFileFromType("origins:prevent_sleep").get("set_spawn_point", "false").toString() == "true"){
                         e.getPlayer().setBedSpawnLocation(e.getClickedBlock().getLocation());
                     }

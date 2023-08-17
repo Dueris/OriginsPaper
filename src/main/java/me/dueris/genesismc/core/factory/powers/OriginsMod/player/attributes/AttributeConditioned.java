@@ -1,6 +1,7 @@
 package me.dueris.genesismc.core.factory.powers.OriginsMod.player.attributes;
 
 import me.dueris.genesismc.core.entity.OriginPlayer;
+import me.dueris.genesismc.core.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.core.utils.Lang;
 import me.dueris.genesismc.core.utils.OriginContainer;
 import me.dueris.genesismc.core.utils.PowerContainer;
@@ -97,19 +98,21 @@ public class AttributeConditioned implements Listener {
             PowerContainer power = origin.getPowerFileFromType("origins:attribute");
             if (power == null) continue;
 
-            Attribute attribute_modifier = Attribute.valueOf(power.getModifier().get("attribute").toString().split(":")[1].replace(".", "_").toUpperCase());
-            if (power.getModifier().get("value") instanceof Integer) {
-                int value = Integer.valueOf(power.getModifier().get("value").toString());
-                int base_value = (int) p.getAttribute(Attribute.valueOf(attribute_modifier.toString())).getBaseValue();
-                String operation = String.valueOf(power.getModifier().get("operation"));
-                executeAttributeModify(operation, attribute_modifier, base_value, p, value);
-            } else if (power.getModifier().get("value") instanceof Double) {
-                Double value = Double.valueOf(power.getModifier().get("value").toString());
-                int base_value = (int) p.getAttribute(Attribute.valueOf(attribute_modifier.toString())).getBaseValue();
-                String operation = String.valueOf(power.getModifier().get("operation"));
-                executeAttributeModify(operation, attribute_modifier, base_value, p, value);
+            for(HashMap<String, Object> modifier : origin.getPowerFileFromType("origins:attribute_conditioned").getConditionFromString("modifier", "modifiers")){
+                if(!ConditionExecutor.check("condition", "conditions", p, origin, "origins:attribute_conditioned", null, p)) return;
+                Attribute attribute_modifier = Attribute.valueOf(modifier.get("attribute").toString().split(":")[1].replace(".", "_").toUpperCase());
+                if (modifier.get("value") instanceof Integer) {
+                    int value = Integer.valueOf(modifier.get("value").toString());
+                    int base_value = (int) p.getAttribute(Attribute.valueOf(attribute_modifier.toString())).getBaseValue();
+                    String operation = String.valueOf(modifier.get("operation"));
+                    executeAttributeModify(operation, attribute_modifier, base_value, p, value);
+                } else if (modifier.get("value") instanceof Double) {
+                    Double value = Double.valueOf(modifier.get("value").toString());
+                    int base_value = (int) p.getAttribute(Attribute.valueOf(attribute_modifier.toString())).getBaseValue();
+                    String operation = String.valueOf(modifier.get("operation"));
+                    executeAttributeModify(operation, attribute_modifier, base_value, p, value);
+                }
             }
-
         }
     }
 
@@ -132,21 +135,24 @@ public class AttributeConditioned implements Listener {
 
         for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
 
-            PowerContainer power = origin.getPowerFileFromType("origins:attribute");
+            PowerContainer power = origin.getPowerFileFromType("origins:attribute_conditioned");
             if (power == null) continue;
 
-            Attribute attribute_modifier = Attribute.valueOf(power.getModifier().get("attribute").toString().split(":")[1].replace(".", "_").toUpperCase());
-            if (power.getModifier().get("value") instanceof Integer) {
-                int value = Integer.valueOf(power.getModifier().get("value").toString());
-                int base_value = (int) p.getAttribute(Attribute.valueOf(attribute_modifier.toString())).getBaseValue();
-                String operation = String.valueOf(power.getModifier().get("operation"));
-                executeAttributeModify(operation, attribute_modifier, base_value, p, value);
-            } else if (power.getModifier().get("value") instanceof Double) {
-                Double value = Double.valueOf(power.getModifier().get("value").toString());
-                int base_value = (int) p.getAttribute(Attribute.valueOf(attribute_modifier.toString())).getBaseValue();
-                String operation = String.valueOf(power.getModifier().get("operation"));
-                executeAttributeModify(operation, attribute_modifier, base_value, p, value);
+            for(HashMap<String, Object> modifier : origin.getPowerFileFromType("origins:attribute_conditioned").getConditionFromString("modifier", "modifiers")){
+                Attribute attribute_modifier = Attribute.valueOf(modifier.get("attribute").toString().split(":")[1].replace(".", "_").toUpperCase());
+                if (modifier.get("value") instanceof Integer) {
+                    int value = Integer.valueOf(modifier.get("value").toString());
+                    int base_value = (int) p.getAttribute(Attribute.valueOf(attribute_modifier.toString())).getBaseValue();
+                    String operation = String.valueOf(modifier.get("operation"));
+                    executeAttributeModify(operation, attribute_modifier, base_value, p, value);
+                } else if (modifier.get("value") instanceof Double) {
+                    Double value = Double.valueOf(modifier.get("value").toString());
+                    int base_value = (int) p.getAttribute(Attribute.valueOf(attribute_modifier.toString())).getBaseValue();
+                    String operation = String.valueOf(modifier.get("operation"));
+                    executeAttributeModify(operation, attribute_modifier, base_value, p, value);
+                }
             }
+
 
         }
     }

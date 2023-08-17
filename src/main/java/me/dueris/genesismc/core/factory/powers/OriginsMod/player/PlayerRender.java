@@ -111,7 +111,7 @@ public class PlayerRender extends BukkitRunnable {
 
             if (invisibility.contains(p)) {
                 for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
-                    if (ConditionExecutor.check("condition", p, origin, "origins:invisibility", null, p)) {
+                    if (ConditionExecutor.check("condition", "conditions", p, origin, "origins:invisibility", null, p)) {
                         if (origin.getPowerFileFromType("origins:invisibility").get("render_armor", "false").equalsIgnoreCase("true")) {
                             for (Player players : Bukkit.getOnlinePlayers()) {
                                 players.hidePlayer(p);

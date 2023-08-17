@@ -15,7 +15,7 @@ public class Freeze extends BukkitRunnable {
         for (Player p : Bukkit.getOnlinePlayers()) {
             for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
                 if (freeze.contains(p)) {
-                    if (ConditionExecutor.check("condition", p, origin, "origins:freeze", null, p)) {
+                    if (ConditionExecutor.check("condition", "conditions", p, origin, "origins:freeze", null, p)) {
                         p.setFreezeTicks(300);
                     }
                 }

@@ -31,7 +31,7 @@ public class Launch implements Listener {
         Player p = e.getPlayer();
         if (launch_into_air.contains(e.getPlayer())) {
             for (OriginContainer origin : OriginPlayer.getOrigin(e.getPlayer()).values()) {
-                if (ConditionExecutor.check("condition", p, origin, "origins:launch", null, p)) {
+                if (ConditionExecutor.check("condition", "conditions", p, origin, "origins:launch", null, p)) {
                     if (!CooldownStuff.isPlayerInCooldown(p, origin.getPowerFileFromType("origins:launch").getKey().get("key").toString())) {
                         if (isKeyBeingPressed(e.getPlayer(), origin.getPowerFileFromType("origins:launch").getKey().get("key").toString(), true)) {
                             new BukkitRunnable() {
@@ -49,7 +49,6 @@ public class Launch implements Listener {
                                                 if (!CooldownStuff.isPlayerInCooldown(p, key)) {
                                                     if (origin.getPowerFileFromType("origins:launch").getKey().get("continuous").toString() == "false") {
                                                         //continousus - false
-                                                        p.sendMessage("no continuous");
                                                         KeybindHandler.runKeyChangeTriggerReturn(KeybindHandler.getTriggerFromOriginKey(p, key), p, key);
                                                         ItemMeta met = KeybindHandler.getKeybindItem(key, p.getInventory()).getItemMeta();
                                                         met.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "contin"), PersistentDataType.BOOLEAN, false);
@@ -58,18 +57,15 @@ public class Launch implements Listener {
                                                         this.cancel();
                                                     } else {
                                                         //yes continuouous
-                                                        p.sendMessage("yes continuous");
                                                         ItemMeta met = KeybindHandler.getKeybindItem(key, p.getInventory()).getItemMeta();
                                                         met.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "contin"), PersistentDataType.BOOLEAN, true);
                                                         KeybindHandler.getKeybindItem(key, p.getInventory()).setItemMeta(met);
                                                     }
                                                 }
-                                                p.sendMessage("check CONTIN_ARRAY");
                                                 if (in_continuous.contains(p)) {
                                                     //run code here for things that happen when toggled
                                                     //power is active
                                                     //dont change any other settings in this other than the powertype and the "retain_state"
-                                                    p.sendMessage("execute");
                                                     int speed = Integer.parseInt(origin.getPowerFileFromType("origins:launch").get("speed", null));
                                                     CooldownStuff.addCooldown(p, "origins:launch", cooldown, key);
                                                     p.setVelocity(new Vector(p.getVelocity().getX(), p.getVelocity().getY() + speed, p.getVelocity().getZ()));
@@ -89,7 +85,6 @@ public class Launch implements Listener {
                                             met.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "contin"), PersistentDataType.BOOLEAN, false);
                                             KeybindHandler.getKeybindItem(key, p.getInventory()).setItemMeta(met);
                                             in_continuous.add(p);
-                                            p.sendMessage("update_boolean_PDC");
                                             new BukkitRunnable(){
                                                 @Override
                                                 public void run() {
@@ -103,7 +98,6 @@ public class Launch implements Listener {
                                                 met.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "contin"), PersistentDataType.BOOLEAN, false);
                                                 KeybindHandler.getKeybindItem(key, p.getInventory()).setItemMeta(met);
                                                 if (in_continuous.contains(p)) {
-                                                    p.sendMessage("RETURN");
                                                     KeybindHandler.runKeyChangeTriggerReturn(KeybindHandler.getKeybindItem(key, p.getInventory()), p, key);
                                                     KeybindHandler.getKeybindItem(key, p.getInventory()).setType(Material.GRAY_DYE);
                                                     met.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "contin"), PersistentDataType.BOOLEAN, false);
@@ -111,7 +105,6 @@ public class Launch implements Listener {
                                                     in_continuous.remove(p);
                                                     this.cancel();
                                                 } else {
-                                                    p.sendMessage("ACTIVATE");
                                                     KeybindHandler.runKeyChangeTrigger(KeybindHandler.getKeybindItem(key, p.getInventory()));
                                                     KeybindHandler.getKeybindItem(key, p.getInventory()).setType(Material.LIME_DYE);
                                                     met.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "contin"), PersistentDataType.BOOLEAN, true);

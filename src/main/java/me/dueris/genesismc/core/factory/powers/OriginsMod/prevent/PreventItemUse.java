@@ -14,7 +14,7 @@ public class PreventItemUse implements Listener {
     public void run(PlayerInteractEvent e){
         if(prevent_item_use.contains(e.getPlayer())){
             for(OriginContainer origin : OriginPlayer.getOrigin(e.getPlayer()).values()){
-                if(ConditionExecutor.check("item_condition", e.getPlayer(), origin, "origins:prevent_item_use", null, e.getPlayer())){
+                if(ConditionExecutor.check("item_condition", "item_conditions", e.getPlayer(), origin, "origins:prevent_item_use", null, e.getPlayer())){
                     e.setCancelled(true);
                 }
             }

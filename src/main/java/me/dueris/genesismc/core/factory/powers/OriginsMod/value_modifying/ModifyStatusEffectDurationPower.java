@@ -9,6 +9,7 @@ import org.bukkit.event.entity.EntityPotionEffectEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
+import java.util.HashMap;
 import java.util.function.BinaryOperator;
 
 import static me.dueris.genesismc.core.factory.powers.OriginsMod.player.attributes.AttributeHandler.getOperationMappingsFloat;
@@ -23,22 +24,27 @@ public class ModifyStatusEffectDurationPower implements Listener {
                 if(origin.getPowerFileFromType("origins:modify_status_effect_duration").get("status_effect", null) != null){
                     if(e.getNewEffect().getType().equals(PotionEffectType.getByName(origin.getPowerFileFromType("origins:modify_status_effect_duration").get("status_effect", null)))){
                         PotionEffect effect = e.getNewEffect();
-                        Float value = Float.valueOf(origin.getPowerFileFromType("origins:modify_status_effect_duration").getModifier().get("value").toString());
-                        String operation = origin.getPowerFileFromType("origins:modify_status_effect_duration").getModifier().get("operation").toString();
-                        BinaryOperator mathOperator = getOperationMappingsFloat().get(operation);
-                        if (mathOperator != null) {
-                            float result = (float) mathOperator.apply(effect.getDuration(), value);
-                            effect.withDuration(Math.toIntExact(Long.valueOf(String.valueOf(result))));
+                        for(HashMap<String, Object> modifier : origin.getPowerFileFromType("origins:modify_status_effect_duration").getPossibleModifiers("modifier", "modifiers")){
+                            Float value = Float.valueOf(modifier.get("value").toString());
+                            String operation = modifier.get("operation").toString();
+                            BinaryOperator mathOperator = getOperationMappingsFloat().get(operation);
+                            if (mathOperator != null) {
+                                float result = (float) mathOperator.apply(effect.getDuration(), value);
+                                effect.withDuration(Math.toIntExact(Long.valueOf(String.valueOf(result))));
+                            }
                         }
+
                     }
                 }else{
                     for(PotionEffect effect : p.getActivePotionEffects()){
-                        Float value = Float.valueOf(origin.getPowerFileFromType("origins:modify_status_effect_duration").getModifier().get("value").toString());
-                        String operation = origin.getPowerFileFromType("origins:modify_status_effect_duration").getModifier().get("operation").toString();
-                        BinaryOperator mathOperator = getOperationMappingsFloat().get(operation);
-                        if (mathOperator != null) {
-                            float result = (float) mathOperator.apply(effect.getDuration(), value);
-                            effect.withDuration(Math.toIntExact(Long.valueOf(String.valueOf(result))));
+                        for(HashMap<String, Object> modifier : origin.getPowerFileFromType("origins:modify_status_effect_duration").getPossibleModifiers("modifier", "modifiers")) {
+                            Float value = Float.valueOf(modifier.get("value").toString());
+                            String operation = modifier.get("operation").toString();
+                            BinaryOperator mathOperator = getOperationMappingsFloat().get(operation);
+                            if (mathOperator != null) {
+                                float result = (float) mathOperator.apply(effect.getDuration(), value);
+                                effect.withDuration(Math.toIntExact(Long.valueOf(String.valueOf(result))));
+                            }
                         }
                     }
                 }

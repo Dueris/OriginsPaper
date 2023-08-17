@@ -272,21 +272,39 @@ public class PowerContainer implements Serializable {
     /**
      * @return Modifiers in the power file or null if not found
      */
-    public HashMap<String, Object> getModifier() {
-        Object obj = powerFile.get("modifier");
-        if (obj == null) return new HashMap<>();
-
-        if (obj instanceof JSONObject modifier) {
-            HashMap<String, Object> result = new HashMap<>();
-            for (Object key : modifier.keySet()) {
-                String string_key = (String) key;
-                Object value = modifier.get(string_key);
-                result.put(string_key, value);
-            }
-            return result;
+    public List<HashMap<String, Object>> getPossibleModifiers(String singular, String plural) {
+        Object obj = powerFile.get(singular);
+        if(obj == null){
+            obj = powerFile.get(plural);
         }
 
-        return null;
+        List<HashMap<String, Object>> result = new ArrayList<>();
+
+        if(obj instanceof JSONArray){
+            JSONArray jsonArray = (JSONArray) obj;
+            for(Object item : jsonArray){
+                if(item instanceof JSONObject){
+                    JSONObject jsonObject = (JSONObject) item;
+                    HashMap<String, Object> itemMap = new HashMap<>();
+                    for(Object innerKey : jsonObject.keySet()){
+                        String string_key = (String) innerKey;
+                        Object value = jsonObject.get(string_key);
+                        itemMap.put(string_key, value);
+                    }
+                    result.add(itemMap);
+                }
+            }
+        } else if (obj instanceof JSONObject) {
+            JSONObject jsonObject = (JSONObject) obj;
+            HashMap<String, Object> itemMap = new HashMap<>();
+            for(Object innerKey : jsonObject.keySet()){
+                String string_key = (String) innerKey;
+                Object value = jsonObject.get(string_key);
+                itemMap.put(string_key, value);
+            }
+            result.add(itemMap);
+        }
+        return result;
     }
 
     public HashMap<String, Object> getSpread() {
@@ -553,21 +571,39 @@ public class PowerContainer implements Serializable {
      *
      * @return Conditions in the power file or null if not found
      */
-    public HashMap<String, Object> getConditionFromString(String getThatThingBecauseIdkWhatImDoingPleaseHelpImTired) {
-        Object obj = powerFile.get(getThatThingBecauseIdkWhatImDoingPleaseHelpImTired);
-        if (obj == null) return new HashMap<>();
-
-        if (obj instanceof JSONObject modifier) {
-            HashMap<String, Object> result = new HashMap<>();
-            for (Object key : modifier.keySet()) {
-                String string_key = (String) key;
-                Object value = modifier.get(string_key);
-                result.put(string_key, value);
-            }
-            return result;
+    public List<HashMap<String, Object>> getConditionFromString(String singular, String plural) {
+        Object obj = powerFile.get(singular);
+        if(obj == null){
+            obj = powerFile.get(plural);
         }
 
-        return null;
+        List<HashMap<String, Object>> result = new ArrayList<>();
+
+        if(obj instanceof JSONArray){
+            JSONArray jsonArray = (JSONArray) obj;
+            for(Object item : jsonArray){
+                if(item instanceof JSONObject){
+                    JSONObject jsonObject = (JSONObject) item;
+                    HashMap<String, Object> itemMap = new HashMap<>();
+                    for(Object innerKey : jsonObject.keySet()){
+                        String string_key = (String) innerKey;
+                        Object value = jsonObject.get(string_key);
+                        itemMap.put(string_key, value);
+                    }
+                    result.add(itemMap);
+                }
+            }
+        } else if (obj instanceof JSONObject) {
+            JSONObject jsonObject = (JSONObject) obj;
+            HashMap<String, Object> itemMap = new HashMap<>();
+            for(Object innerKey : jsonObject.keySet()){
+                String string_key = (String) innerKey;
+                Object value = jsonObject.get(string_key);
+                itemMap.put(string_key, value);
+            }
+            result.add(itemMap);
+        }
+        return result;
     }
 
     public HashMap<String, Object> getCondition() {

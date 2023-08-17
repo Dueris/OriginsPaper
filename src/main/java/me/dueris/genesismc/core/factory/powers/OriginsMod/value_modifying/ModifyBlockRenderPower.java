@@ -35,7 +35,7 @@ public class ModifyBlockRenderPower extends BukkitRunnable {
 
                 for (OriginContainer origin : OriginPlayer.getOrigin(player).values()) {
                     try {
-                        if (ConditionExecutor.check("block_condition", player, origin, "origins:modify_block_render", null, player)) {
+                        if (ConditionExecutor.check("block_condition", "block_conditions", player, origin, "origins:modify_block_render", null, player)) {
                             conditionMet = true;
                             break;
                         }

@@ -8,6 +8,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityExhaustionEvent;
 
+import java.util.HashMap;
 import java.util.function.BinaryOperator;
 
 import static me.dueris.genesismc.core.factory.powers.OriginsMod.player.attributes.AttributeHandler.getOperationMappingsFloat;
@@ -19,14 +20,17 @@ public class ModifyExhaustionPower implements Listener {
         Player p = (Player) e.getEntity();
         if(modify_exhaustion.contains(p)){
             for(OriginContainer origin : OriginPlayer.getOrigin(p).values()){
-                if(ConditionExecutor.check("condition", p, origin, "origins:modify_exhaustion", null, p)){
-                    Float value = Float.valueOf(origin.getPowerFileFromType("origins:modify_damage_taken").getModifier().get("value").toString());
-                    String operation = origin.getPowerFileFromType("origins:modify_damage_taken").getModifier().get("operation").toString();
-                    BinaryOperator mathOperator = getOperationMappingsFloat().get(operation);
-                    if (mathOperator != null) {
-                        float result = (float) mathOperator.apply(e.getExhaustion(), value);
-                        e.setExhaustion(result);
+                if(ConditionExecutor.check("condition", "conditions", p, origin, "origins:modify_exhaustion", null, p)){
+                    for(HashMap<String, Object> modifier : origin.getPowerFileFromType("origins:modify_exhaustion").getConditionFromString("modifier", "modifiers")){
+                        Float value = Float.valueOf(modifier.get("value").toString());
+                        String operation = modifier.get("operation").toString();
+                        BinaryOperator mathOperator = getOperationMappingsFloat().get(operation);
+                        if (mathOperator != null) {
+                            float result = (float) mathOperator.apply(e.getExhaustion(), value);
+                            e.setExhaustion(result);
+                        }
                     }
+
                 }
             }
         }

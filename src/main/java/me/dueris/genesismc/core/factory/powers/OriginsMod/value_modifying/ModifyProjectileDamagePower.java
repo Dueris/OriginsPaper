@@ -4,13 +4,12 @@ import me.dueris.genesismc.core.entity.OriginPlayer;
 import me.dueris.genesismc.core.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.core.utils.ErrorSystem;
 import me.dueris.genesismc.core.utils.OriginContainer;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 
+import java.util.HashMap;
 import java.util.function.BinaryOperator;
 
 import static me.dueris.genesismc.core.factory.powers.OriginsMod.player.attributes.AttributeHandler.getOperationMappingsFloat;
@@ -24,13 +23,15 @@ public class ModifyProjectileDamagePower implements Listener {
                 for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
                     ValueModifyingSuperClass valueModifyingSuperClass = new ValueModifyingSuperClass();
                     try {
-                        if (ConditionExecutor.check("target_condition", p, origin, "origins:modify_projectile_damage", e, e.getEntity()) && ConditionExecutor.check("damage_condition", p, origin, "origins:modify_projectile_damage", e, e.getEntity())) {
-                            Float value = Float.valueOf(origin.getPowerFileFromType("origins:modify_projectile_damage").getModifier().get("value").toString());
-                            String operation = origin.getPowerFileFromType("origins:modify_projectile_damage").getModifier().get("operation").toString();
-                            BinaryOperator mathOperator = getOperationMappingsFloat().get(operation);
-                            if (mathOperator != null) {
-                                float result = (float) mathOperator.apply(e.getDamage(), value);
-                                e.setDamage(result);
+                        if (ConditionExecutor.check("target_condition", "target_conditions", p, origin, "origins:modify_projectile_damage", e, e.getEntity()) && ConditionExecutor.check("damage_condition", "damage_conditions", p, origin, "origins:modify_projectile_damage", e, e.getEntity())) {
+                            for(HashMap<String, Object> modifier : origin.getPowerFileFromType("origins:modify_projectile_damage").getPossibleModifiers("modifier", "modifiers")){
+                                Float value = Float.valueOf(modifier.get("value").toString());
+                                String operation = modifier.get("operation").toString();
+                                BinaryOperator mathOperator = getOperationMappingsFloat().get(operation);
+                                if (mathOperator != null) {
+                                    float result = (float) mathOperator.apply(e.getDamage(), value);
+                                    e.setDamage(result);
+                                }
                             }
                         }
                     } catch (Exception ev) {

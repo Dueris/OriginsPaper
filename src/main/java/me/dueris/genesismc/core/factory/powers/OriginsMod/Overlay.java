@@ -16,7 +16,7 @@ public class Overlay extends BukkitRunnable {
         for(Player player : Bukkit.getOnlinePlayers()){
             if(overlay.contains(player)){
                 for(OriginContainer origin : OriginPlayer.getOrigin(player).values()){
-                    if(ConditionExecutor.check("condition", player, origin, "origins:overlay", null, player)){
+                    if(ConditionExecutor.check("condition", "conditions", player, origin, "origins:overlay", null, player)){
                         Phasing.initializePhantomOverlay(player);
                     }else{
                         Phasing.deactivatePhantomOverlay(player);

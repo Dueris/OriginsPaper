@@ -19,8 +19,8 @@ public class PreventEntityRender extends BukkitRunnable {
             if(prevent_entity_render.contains(p)){
                 for(OriginContainer origin : OriginPlayer.getOrigin(p).values()){
                     for(Entity entity : p.getWorld().getEntities()){
-                        if(ConditionExecutor.check("entity_condition", p, origin, "origins:prevent_entity_render", null, p)){
-                            if(ConditionExecutor.check("bientity_condition", p, origin, "origins:prevent_entity_render", null, p)){
+                        if(ConditionExecutor.check("entity_condition", "entity_condition", p, origin, "origins:prevent_entity_render", null, p)){
+                            if(ConditionExecutor.check("bientity_condition", "bientity_condition", p, origin, "origins:prevent_entity_render", null, p)){
                                 p.hideEntity(GenesisMC.getPlugin(), entity);
                             }else{
                                 p.showEntity(GenesisMC.getPlugin(), entity);

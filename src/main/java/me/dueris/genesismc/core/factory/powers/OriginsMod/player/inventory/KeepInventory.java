@@ -19,7 +19,7 @@ public class KeepInventory implements Listener {
         Player player = e.getEntity();
         for (OriginContainer origin : OriginPlayer.getOrigin(player).values()) {
             if (keep_inventory.contains(player)) {
-                if (ConditionExecutor.check("item_condition", player, origin, "origins:keep_inventory", null, player)) {
+                if (ConditionExecutor.check("item_condition", "item_conditions", player, origin, "origins:keep_inventory", null, player)) {
                     ArrayList<Long> slots = new ArrayList<>();
                     if (origin.getPowerFileFromType("origins:keep_inventory").getSlots() != null) {
                         for (long slot : origin.getPowerFileFromType("origins:keep_inventory").getSlots()) {

@@ -15,7 +15,7 @@ public class PreventBlockSelection implements Listener {
     public void run(PlayerInteractEvent e){
         if(prevent_block_selection.contains(e.getPlayer())){
             for(OriginContainer origin : OriginPlayer.getOrigin(e.getPlayer()).values()){
-                if(ConditionExecutor.check("block_condition", e.getPlayer(), origin, "origins:prevent_block_selection", null, e.getPlayer())){
+                if(ConditionExecutor.check("block_condition", "block_condition", e.getPlayer(), origin, "origins:prevent_block_selection", null, e.getPlayer())){
                     if(e.getClickedBlock() != null) e.setCancelled(true);
                 }
             }

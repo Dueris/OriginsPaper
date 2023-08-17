@@ -21,7 +21,7 @@ public class ApplyEffect extends BukkitRunnable implements Listener {
         for (Player p : Bukkit.getOnlinePlayers()) {
             if (apply_effect.contains(p)) {
                 for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
-                    if (ConditionExecutor.check("condition", p, origin, "origins:apply_effect", null, p)) {
+                    if (ConditionExecutor.check("condition", "conditions", p, origin, "origins:apply_effect", null, p)) {
                         List<HashMap<String, Object>> effectDataList = origin.getPowerFileFromType("origins:apply_effect").getEffectData();
                         for (HashMap<String, Object> effectData : effectDataList) {
                             p.addPotionEffect(new PotionEffect(PotionEffectType.getByName(effectData.get("effect").toString().split(":")[1].toUpperCase()), Integer.valueOf(effectData.get("duration").toString()), Integer.valueOf(effectData.get("amplifier").toString())));

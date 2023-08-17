@@ -16,8 +16,8 @@ public class PreventBeingUsed implements Listener {
         if(prevent_being_used.contains(e.getPlayer())){
             Player p = e.getPlayer();
             for(OriginContainer origin : OriginPlayer.getOrigin(p).values()){
-                if(ConditionExecutor.check("bientity_condition", p, origin, "origins:prevent_being_used", null, p)){
-                    if(ConditionExecutor.check("item_condition", p, origin, "origins:prevent_being_used", null, p)){
+                if(ConditionExecutor.check("bientity_condition", "bientity_conditions", p, origin, "origins:prevent_being_used", null, p)){
+                    if(ConditionExecutor.check("item_condition", "item_conditions", p, origin, "origins:prevent_being_used", null, p)){
                         e.setCancelled(true);
                     }
                 }

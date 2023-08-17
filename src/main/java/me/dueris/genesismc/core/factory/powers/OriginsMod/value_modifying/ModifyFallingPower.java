@@ -22,7 +22,7 @@ public class ModifyFallingPower implements Listener {
             if(p.getVelocity().getY() < 0){
                 @NotNull Vector velocity = p.getVelocity();
                 for(OriginContainer origin : OriginPlayer.getOrigin(p).values()){
-                    if(ConditionExecutor.check("condition", p, origin, "origins:modify_falling", null, p)){
+                    if(ConditionExecutor.check("condition", "conditions", p, origin, "origins:modify_falling", null, p)){
                         velocity.setY(Integer.parseInt(origin.getPowerFileFromType("origins:modify_falling").get("velocity", null).toString()));
                     }
                 }
@@ -36,7 +36,7 @@ public class ModifyFallingPower implements Listener {
             Player p = (Player) e.getEntity();
             if(modify_falling.contains(p)){
                 for(OriginContainer origin : OriginPlayer.getOrigin(p).values()){
-                    if(ConditionExecutor.check("condition", p, origin, "origins:modify_falling", e, p)){
+                    if(ConditionExecutor.check("condition", "conditions", p, origin, "origins:modify_falling", e, p)){
                         if(Boolean.getBoolean(origin.getPowerFileFromType("origins:modify_falling").get("take_fall_damage", "true").toString())){
                             if(e.getCause() == EntityDamageEvent.DamageCause.FALL){
                                 e.setDamage(0);

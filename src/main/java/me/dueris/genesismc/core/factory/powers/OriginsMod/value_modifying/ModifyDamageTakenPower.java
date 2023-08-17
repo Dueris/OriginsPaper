@@ -9,6 +9,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 
+import java.util.HashMap;
 import java.util.function.BinaryOperator;
 
 import static me.dueris.genesismc.core.factory.powers.OriginsMod.player.attributes.AttributeHandler.getOperationMappingsFloat;
@@ -23,14 +24,17 @@ public class ModifyDamageTakenPower implements Listener {
                 for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
                     ValueModifyingSuperClass valueModifyingSuperClass = new ValueModifyingSuperClass();
                     try {
-                        if (ConditionExecutor.check("bientity_condition", p, origin, "origins:modify_damage_taken", e, e.getDamager())) {
-                            Float value = Float.valueOf(origin.getPowerFileFromType("origins:modify_damage_taken").getModifier().get("value").toString());
-                            String operation = origin.getPowerFileFromType("origins:modify_damage_taken").getModifier().get("operation").toString();
-                            BinaryOperator mathOperator = getOperationMappingsFloat().get(operation);
-                            if (mathOperator != null) {
-                                float result = (float) mathOperator.apply(e.getDamage(), value);
-                                e.setDamage(result);
+                        if (ConditionExecutor.check("bientity_condition", "bientity_conditions", p, origin, "origins:modify_damage_taken", e, e.getDamager())) {
+                            for(HashMap<String, Object> modifier : origin.getPowerFileFromType("origins:modify_damage_taken").getConditionFromString("modifier", "modifiers")){
+                                Float value = Float.valueOf(modifier.get("value").toString());
+                                String operation = modifier.get("operation").toString();
+                                BinaryOperator mathOperator = getOperationMappingsFloat().get(operation);
+                                if (mathOperator != null) {
+                                    float result = (float) mathOperator.apply(e.getDamage(), value);
+                                    e.setDamage(result);
+                                }
                             }
+
                         }
                     } catch (Exception ev) {
                         ErrorSystem errorSystem = new ErrorSystem();
