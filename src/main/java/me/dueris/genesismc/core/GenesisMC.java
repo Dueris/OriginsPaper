@@ -60,6 +60,8 @@ public final class GenesisMC extends JavaPlugin implements Listener {
     public GenesisMC() {
     }
 
+    //OMG HIIII
+
     //Load custom enchantments
     public static void registerEnchantment(Enchantment enchantment) {
         boolean registered = true;
