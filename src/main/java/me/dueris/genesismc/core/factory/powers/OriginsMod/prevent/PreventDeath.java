@@ -14,7 +14,8 @@ public class PreventDeath implements Listener {
     public void run(PlayerDeathEvent e){
         if(prevent_death.contains(e.getPlayer())){
             for(OriginContainer origin : OriginPlayer.getOrigin(e.getPlayer()).values()){
-                if(ConditionExecutor.check("damage_condition", "damage_conditions", e.getPlayer(), origin, "origins:prevent_death", e.getPlayer().getLastDamageCause(), e.getPlayer())){
+                ConditionExecutor conditionExecutor = new ConditionExecutor();
+                if(conditionExecutor.check("damage_condition", "damage_conditions", e.getPlayer(), origin, "origins:prevent_death", e.getPlayer().getLastDamageCause(), e.getPlayer())){
                     e.setCancelled(true);
                 }
             }

@@ -16,7 +16,8 @@ public class ModifyHarvestPower implements Listener {
         Player p = e.getPlayer();
         if(modify_harvest.contains(p)){
             for(OriginContainer origin : OriginPlayer.getOrigin(p).values()){
-                if(ConditionExecutor.check("block_condition", "block_conditions", p, origin, "origins:modify_harvest", null, p)){
+                ConditionExecutor conditionExecutor = new ConditionExecutor();
+                if(conditionExecutor.check("block_condition", "block_conditions", p, origin, "origins:modify_harvest", null, p)){
                     if(origin.getPowerFileFromType("origins:modify_harvest").get("allow", null) == "true"){
                         e.setDropItems(false);
                     }

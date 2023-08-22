@@ -24,7 +24,8 @@ public class ModifyDamageDealtPower implements Listener {
                 for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
                     ValueModifyingSuperClass valueModifyingSuperClass = new ValueModifyingSuperClass();
                     try {
-                        if (ConditionExecutor.check("bientity_condition", "bientity_condition", p, origin, "origins:modify_damage_dealt", e, e.getEntity())) {
+                        ConditionExecutor conditionExecutor = new ConditionExecutor();
+                        if (conditionExecutor.check("bientity_condition", "bientity_condition", p, origin, "origins:modify_damage_dealt", e, e.getEntity())) {
                             for(HashMap<String, Object> modifier : origin.getPowerFileFromType("origins:modify_damage_dealt").getConditionFromString("modifier", "modifiers")){
                                 Float value = Float.valueOf(modifier.get("value").toString());
                                 String operation = modifier.get("operation").toString();

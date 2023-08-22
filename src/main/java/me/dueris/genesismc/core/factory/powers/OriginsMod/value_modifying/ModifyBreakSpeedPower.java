@@ -41,7 +41,8 @@ public class ModifyBreakSpeedPower implements Listener {
         for(OriginContainer origin : OriginPlayer.getOrigin(p).values()){
             ValueModifyingSuperClass valueModifyingSuperClass = new ValueModifyingSuperClass();
             try{
-                if(ConditionExecutor.check("condition", "condition", p, origin, "origins:modify_air_speed", null, p)){
+                ConditionExecutor conditionExecutor = new ConditionExecutor();
+                if(conditionExecutor.check("condition", "condition", p, origin, "origins:modify_air_speed", null, p)){
                     //TODO: add block condition
                     if(modify_break_speed.contains(p)){
                         p.addPotionEffect(new PotionEffect(PotionEffectType.FAST_DIGGING, 50, calculateHasteAmplifier(valueModifyingSuperClass.getPersistentAttributeContainer(p, MODIFYING_KEY)), false, false, false));

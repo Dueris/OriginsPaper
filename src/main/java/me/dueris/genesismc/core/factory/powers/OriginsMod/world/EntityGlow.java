@@ -37,7 +37,8 @@ public class EntityGlow extends BukkitRunnable {
                 if (entity_glow.contains(p)) {
                     Collection<Entity> entitiesWithinRadius = getEntitiesInRadius(p, 10);
                     for (Entity entity : entitiesWithinRadius) {
-                        if (ConditionExecutor.check("condition", "conditions", p, origin, "origins:entity_glow", null, entity)) {
+                        ConditionExecutor conditionExecutor = new ConditionExecutor();
+                        if (conditionExecutor.check("condition", "conditions", p, origin, "origins:entity_glow", null, entity)) {
                             CraftPlayer craftPlayer = (CraftPlayer) p;
                             MobEffect effect = MobEffects.GLOWING;
                             craftPlayer.getHandle().connection.send(new ClientboundUpdateMobEffectPacket(entity.getEntityId(), new MobEffectInstance(effect, 60, 2, false, false, false)));

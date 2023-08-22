@@ -26,8 +26,8 @@ public class Grounded extends BukkitRunnable {
                 for (OriginContainer origin : OriginPlayer.getOrigin(player).values()) {
                     Location location = player.getLocation();
                     Location current_block_platform_pos = location.add(0, -1, 0);
-
-                    if (ConditionExecutor.check("condition", "conditions", player, origin, "origins:grounded", null, player)) {
+                    ConditionExecutor conditionExecutor = new ConditionExecutor();
+                    if (conditionExecutor.check("condition", "conditions", player, origin, "origins:grounded", null, player)) {
                         if (current_block_platform_pos.getBlock().getType().equals(Material.AIR)) {
                             platform_pos.add(current_block_platform_pos);
                             CraftPlayer craftPlayer = (CraftPlayer) player;

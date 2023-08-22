@@ -49,8 +49,9 @@ public class PreventEntityUse implements Listener {
                             if (entity.getPassengers().contains(p)) return;
                             if (!entity.isDead()) {
                                 LivingEntity ent = (LivingEntity) entity;
-                                if(ConditionExecutor.check("bientity_condition", "bientity_condition", p, origin, "origins:prevent_entity_use", null, ent)){
-                                    if(ConditionExecutor.check("item_condition", "item_condition", p, origin, "origins:prevent_entity_use", null, ent)){
+                                ConditionExecutor conditionExecutor = new ConditionExecutor();
+                                if(conditionExecutor.check("bientity_condition", "bientity_condition", p, origin, "origins:prevent_entity_use", null, ent)){
+                                    if(conditionExecutor.check("item_condition", "item_condition", p, origin, "origins:prevent_entity_use", null, ent)){
                                         e.setCancelled(true);
                                     }
                                 }

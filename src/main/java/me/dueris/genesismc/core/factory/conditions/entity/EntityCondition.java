@@ -1,5 +1,6 @@
 package me.dueris.genesismc.core.factory.conditions.entity;
 
+import me.dueris.genesismc.core.factory.powers.OriginsMod.player.Climbing;
 import me.dueris.genesismc.core.factory.powers.OriginsMod.player.RestrictArmor;
 import me.dueris.genesismc.core.utils.OriginContainer;
 import org.bukkit.*;
@@ -9,6 +10,7 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.BoundingBox;
+import org.checkerframework.checker.units.qual.C;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -21,10 +23,12 @@ import java.util.HashMap;
 public class EntityCondition {
 
     public static String check(String thinger, String plural, Player p, OriginContainer origin, String powerfile, Entity entity) {
-        if (origin.getPowerFileFromType(powerfile).getConditionFromString(thinger, plural) == null) return "null";
-        for(HashMap<String, Object> condition : origin.getPowerFileFromType(powerfile).getConditionFromString(thinger, plural)){
+        if (origin.getPowerFileFromType(powerfile).getConditionFromString(thinger, plural) == null) {
+            return "null";
+        }
+        if(origin.getPowerFileFromType(powerfile).getPossibleModifiers(thinger, plural).isEmpty()) return "null";
+        for(HashMap<String, Object> condition : origin.getPowerFileFromType(powerfile).getPossibleModifiers(thinger, plural)){
             if (condition.get("type") == null) return "null";
-            p.sendMessage("entity_start");
             String type = condition.get("type").toString();
             if (type.equalsIgnoreCase("origins:ability")) {
                 String ability = condition.get("ability").toString();
@@ -38,8 +42,7 @@ public class EntityCondition {
                         if (player.getGameMode().equals(GameMode.CREATIVE)) return "true";
                     }
                 }
-                if (ability.equalsIgnoreCase("minecraft:invuln" +
-                        "rable")) {
+                if (ability.equalsIgnoreCase("minecraft:invulnerable")) {
                     if (entity.isInvulnerable()) return "true";
                 }
                 if (ability.equalsIgnoreCase("minecraft:maybuild")) {
@@ -222,6 +225,10 @@ public class EntityCondition {
             if (type.equalsIgnoreCase("origins:creative_flying")) {
                 if (entity instanceof Player player) {
                     if (player.isFlying()) {
+                        return "true";
+                    }
+                    Climbing climbing = new Climbing();
+                    if(climbing.isActiveClimbing(player)){
                         return "true";
                     }
                 }

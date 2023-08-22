@@ -23,7 +23,8 @@ public class ModifyExperienceGainPower implements Listener {
             for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
                 ValueModifyingSuperClass valueModifyingSuperClass = new ValueModifyingSuperClass();
                 try {
-                    if (ConditionExecutor.check("condition", "conditions", p, origin, "origins:modify_xp_gain", null, e.getPlayer())) {
+                    ConditionExecutor conditionExecutor = new ConditionExecutor();
+                    if (conditionExecutor.check("condition", "conditions", p, origin, "origins:modify_xp_gain", null, e.getPlayer())) {
                         for(HashMap<String, Object> modifier : origin.getPowerFileFromType("origins:modify_xp_gain").getConditionFromString("modifier", "modifiers")){
                             Float value = Float.valueOf(modifier.get("value").toString());
                             String operation = modifier.get("operation").toString();

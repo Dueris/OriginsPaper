@@ -30,8 +30,9 @@ public class ModifyCraftingPower implements Listener {
             for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
                 ValueModifyingSuperClass valueModifyingSuperClass = new ValueModifyingSuperClass();
                 try {
-                    if (ConditionExecutor.check("condition", "condition", p, origin, "origins:modify_crafting", null, p)) {
-                        if (ConditionExecutor.check("item_condition", "item_condition", p, origin, "origins:modify_crafting", null, p)) {
+                    ConditionExecutor conditionExecutor = new ConditionExecutor();
+                    if (conditionExecutor.check("condition", "condition", p, origin, "origins:modify_crafting", null, p)) {
+                        if (conditionExecutor.check("item_condition", "item_condition", p, origin, "origins:modify_crafting", null, p)) {
                                 if (e.getInventory().getResult().getType() == Material.valueOf(origin.getPowerFileFromType("origins:modify_crafting").get("recipe", null).toString().split(":")[1].toUpperCase())) {
                                     e.getInventory().setResult(new ItemStack(Material.valueOf(origin.getPowerFileFromType("origins:modify_crafting").getJsonHashMap("result").get("item").toString().toUpperCase().split(":")[1])));
                                 }

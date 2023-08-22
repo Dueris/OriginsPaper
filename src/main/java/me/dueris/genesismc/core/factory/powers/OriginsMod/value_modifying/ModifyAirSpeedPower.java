@@ -25,12 +25,11 @@ public class ModifyAirSpeedPower extends BukkitRunnable {
             for(OriginContainer origin : OriginPlayer.getOrigin(p).values()){
                 ValueModifyingSuperClass valueModifyingSuperClass = new ValueModifyingSuperClass();
                 try{
-                    if(ConditionExecutor.check("condition", "conditions", p, origin, "origins:modify_air_speed", null, p)){
+                    ConditionExecutor conditionExecutor = new ConditionExecutor();
+                    if(conditionExecutor.check("condition", "conditions", p, origin, "origins:modify_air_speed", null, p)){
                         p.setFlySpeed(valueModifyingSuperClass.getPersistentAttributeContainer(p, MODIFYING_KEY));
-                        p.sendMessage(MODIFYING_KEY);
                     }else{
                         p.setFlySpeed(valueModifyingSuperClass.getDefaultValue(MODIFYING_KEY));
-                        p.sendMessage("12222");
                     }
                 } catch (Exception e){
                     ErrorSystem errorSystem = new ErrorSystem();
@@ -51,7 +50,6 @@ public class ModifyAirSpeedPower extends BukkitRunnable {
                         if (mathOperator != null) {
                             float result = (float) mathOperator.apply(valueModifyingSuperClass.getDefaultValue(MODIFYING_KEY), value);
                             valueModifyingSuperClass.saveValueInPDC(p, MODIFYING_KEY, result);
-                            p.sendMessage(String.valueOf(result));
                         } else {
                             Bukkit.getLogger().warning(Lang.getLocalizedString("powers.errors.value_modifier_save").replace("%modifier%", MODIFYING_KEY));
                         }

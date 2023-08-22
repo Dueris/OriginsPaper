@@ -23,7 +23,8 @@ public class ModifyProjectileDamagePower implements Listener {
                 for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
                     ValueModifyingSuperClass valueModifyingSuperClass = new ValueModifyingSuperClass();
                     try {
-                        if (ConditionExecutor.check("target_condition", "target_conditions", p, origin, "origins:modify_projectile_damage", e, e.getEntity()) && ConditionExecutor.check("damage_condition", "damage_conditions", p, origin, "origins:modify_projectile_damage", e, e.getEntity())) {
+                        ConditionExecutor conditionExecutor = new ConditionExecutor();
+                        if (conditionExecutor.check("target_condition", "target_conditions", p, origin, "origins:modify_projectile_damage", e, e.getEntity()) && conditionExecutor.check("damage_condition", "damage_conditions", p, origin, "origins:modify_projectile_damage", e, e.getEntity())) {
                             for(HashMap<String, Object> modifier : origin.getPowerFileFromType("origins:modify_projectile_damage").getPossibleModifiers("modifier", "modifiers")){
                                 Float value = Float.valueOf(modifier.get("value").toString());
                                 String operation = modifier.get("operation").toString();

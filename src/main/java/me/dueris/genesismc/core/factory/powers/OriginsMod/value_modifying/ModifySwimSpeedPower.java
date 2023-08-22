@@ -26,7 +26,8 @@ public class ModifySwimSpeedPower extends BukkitRunnable {
             for(OriginContainer origin : OriginPlayer.getOrigin(p).values()){
                 ValueModifyingSuperClass valueModifyingSuperClass = new ValueModifyingSuperClass();
                 try{
-                    if(ConditionExecutor.check("condition", "conditions", p, origin, "origins:modify_swim_speed", null, p)){
+                    ConditionExecutor conditionExecutor = new ConditionExecutor();
+                    if(conditionExecutor.check("condition", "conditions", p, origin, "origins:modify_swim_speed", null, p)){
                         if(valueModifyingSuperClass.getPersistentAttributeContainer(p, MODIFYING_KEY) == -1) return;
                         if(!p.isSwimming()) return;
                         Vector swimVelocity = p.getLocation().getDirection().normalize().multiply(valueModifyingSuperClass.getPersistentAttributeContainer(p, MODIFYING_KEY));

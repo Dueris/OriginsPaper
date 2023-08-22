@@ -99,7 +99,8 @@ public class AttributeConditioned implements Listener {
             if (power == null) continue;
 
             for(HashMap<String, Object> modifier : origin.getPowerFileFromType("origins:attribute_conditioned").getConditionFromString("modifier", "modifiers")){
-                if(!ConditionExecutor.check("condition", "conditions", p, origin, "origins:attribute_conditioned", null, p)) return;
+                ConditionExecutor conditionExecutor = new ConditionExecutor();
+                if(!conditionExecutor.check("condition", "conditions", p, origin, "origins:attribute_conditioned", null, p)) return;
                 Attribute attribute_modifier = Attribute.valueOf(modifier.get("attribute").toString().split(":")[1].replace(".", "_").toUpperCase());
                 if (modifier.get("value") instanceof Integer) {
                     int value = Integer.valueOf(modifier.get("value").toString());

@@ -19,6 +19,7 @@ public class DamageCondition extends Condition {
 
     public static String check(String thinger, String plural, Player p, OriginContainer origin, String powerfile, EntityDamageEvent e) {
         if (origin.getPowerFileFromType(powerfile).getConditionFromString(thinger, plural) == null) return "null";
+        if(origin.getPowerFileFromType(powerfile).getPossibleModifiers(thinger, plural).isEmpty()) return "null";
         for(HashMap<String, Object> condition : origin.getPowerFileFromType(powerfile).getConditionFromString(thinger, plural)){
             if (condition.get("type") == null) return "null";
 

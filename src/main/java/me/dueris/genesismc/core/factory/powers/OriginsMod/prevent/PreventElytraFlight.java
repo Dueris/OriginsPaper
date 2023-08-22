@@ -17,7 +17,8 @@ public class PreventElytraFlight implements Listener {
         if(e.getEntity() instanceof Player p){
             if(prevent_elytra_flight.contains(p)){
                 for(OriginContainer origin : OriginPlayer.getOrigin(p).values()){
-                    if(ConditionExecutor.check("condition", "conditions", p, origin, "origins:prevent_elytra_flight", null, p)){
+                    ConditionExecutor conditionExecutor = new ConditionExecutor();
+                    if(conditionExecutor.check("condition", "conditions", p, origin, "origins:prevent_elytra_flight", null, p)){
                         e.setCancelled(true);
                     }
                 }
