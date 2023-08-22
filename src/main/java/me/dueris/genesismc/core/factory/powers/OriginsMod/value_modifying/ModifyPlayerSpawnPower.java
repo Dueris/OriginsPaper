@@ -14,7 +14,7 @@ import java.util.Random;
 import static me.dueris.genesismc.core.factory.powers.OriginsMod.value_modifying.ValueModifyingSuperClass.modify_world_spawn;
 import static org.bukkit.Material.*;
 
-public class ModifyPlayerSpawnPower implements Listener {
+public class ModifyPlayerSpawnPower extends ValueModifyingSuperClass implements Listener {
 
     @EventHandler
     public void run(PlayerSpawnLocationEvent e){

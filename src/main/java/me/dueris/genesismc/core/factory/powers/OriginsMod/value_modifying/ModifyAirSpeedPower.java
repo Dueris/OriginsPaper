@@ -15,7 +15,7 @@ import java.util.function.BinaryOperator;
 import static me.dueris.genesismc.core.factory.powers.OriginsMod.player.attributes.AttributeHandler.getOperationMappingsFloat;
 import static me.dueris.genesismc.core.factory.powers.OriginsMod.value_modifying.ValueModifyingSuperClass.modify_air_speed;
 
-public class ModifyAirSpeedPower extends BukkitRunnable {
+public class ModifyAirSpeedPower extends ValueModifyingSuperClass {
 
     String MODIFYING_KEY = "modify_air_speed";
 

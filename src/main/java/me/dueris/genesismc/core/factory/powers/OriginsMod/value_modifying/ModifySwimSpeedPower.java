@@ -16,7 +16,7 @@ import java.util.function.BinaryOperator;
 import static me.dueris.genesismc.core.factory.powers.OriginsMod.player.attributes.AttributeHandler.getOperationMappingsFloat;
 import static me.dueris.genesismc.core.factory.powers.OriginsMod.value_modifying.ValueModifyingSuperClass.modify_swim_speed;
 
-public class ModifySwimSpeedPower extends BukkitRunnable {
+public class ModifySwimSpeedPower extends ValueModifyingSuperClass {
 
     String MODIFYING_KEY = "modify_swim_speed";
 

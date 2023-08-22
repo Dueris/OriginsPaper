@@ -14,7 +14,7 @@ import java.util.function.BinaryOperator;
 import static me.dueris.genesismc.core.factory.powers.OriginsMod.player.attributes.AttributeHandler.getOperationMappingsFloat;
 import static me.dueris.genesismc.core.factory.powers.OriginsMod.value_modifying.ValueModifyingSuperClass.modify_exhaustion;
 
-public class ModifyExhaustionPower implements Listener {
+public class ModifyExhaustionPower extends ValueModifyingSuperClass implements Listener {
     @EventHandler
     public void run(EntityExhaustionEvent e){
         Player p = (Player) e.getEntity();

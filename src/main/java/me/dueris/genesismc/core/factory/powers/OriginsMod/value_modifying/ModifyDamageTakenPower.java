@@ -15,7 +15,7 @@ import java.util.function.BinaryOperator;
 import static me.dueris.genesismc.core.factory.powers.OriginsMod.player.attributes.AttributeHandler.getOperationMappingsFloat;
 import static me.dueris.genesismc.core.factory.powers.OriginsMod.value_modifying.ValueModifyingSuperClass.modify_damage_taken;
 
-public class ModifyDamageTakenPower implements Listener {
+public class ModifyDamageTakenPower extends ValueModifyingSuperClass implements Listener {
     @EventHandler
     public void damageEVENT(EntityDamageByEntityEvent e){
         if(e.getEntity() instanceof Player){

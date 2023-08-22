@@ -14,7 +14,7 @@ import java.util.function.BinaryOperator;
 import static me.dueris.genesismc.core.factory.powers.OriginsMod.player.attributes.AttributeHandler.getOperationMappingsFloat;
 import static me.dueris.genesismc.core.factory.powers.OriginsMod.value_modifying.ValueModifyingSuperClass.modify_jump;
 
-public class ModifyJumpPower implements Listener {
+public class ModifyJumpPower extends ValueModifyingSuperClass implements Listener {
     @EventHandler
     public void run(PlayerJumpEvent e){
         Player p = e.getPlayer();

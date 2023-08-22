@@ -17,7 +17,7 @@ import java.util.function.BinaryOperator;
 import static me.dueris.genesismc.core.factory.powers.OriginsMod.player.attributes.AttributeHandler.getOperationMappingsFloat;
 import static me.dueris.genesismc.core.factory.powers.OriginsMod.value_modifying.ValueModifyingSuperClass.modify_food;
 
-public class ModifyFoodPower implements Listener {
+public class ModifyFoodPower extends ValueModifyingSuperClass implements Listener {
     @EventHandler
     public void saturationorwhateverRUN(PlayerItemConsumeEvent e){
         Player player = e.getPlayer();

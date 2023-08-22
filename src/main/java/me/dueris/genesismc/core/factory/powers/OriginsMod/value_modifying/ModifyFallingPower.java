@@ -14,7 +14,7 @@ import org.jetbrains.annotations.NotNull;
 
 import static me.dueris.genesismc.core.factory.powers.OriginsMod.value_modifying.ValueModifyingSuperClass.modify_falling;
 
-public class ModifyFallingPower implements Listener {
+public class ModifyFallingPower extends ValueModifyingSuperClass implements Listener {
     @EventHandler
     public void run(PlayerMoveEvent e){
         Player p = e.getPlayer();

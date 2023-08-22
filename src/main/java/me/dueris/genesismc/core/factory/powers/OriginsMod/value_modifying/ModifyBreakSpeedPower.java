@@ -19,7 +19,7 @@ import java.util.function.BinaryOperator;
 import static me.dueris.genesismc.core.factory.powers.OriginsMod.player.attributes.AttributeHandler.getOperationMappingsFloat;
 import static me.dueris.genesismc.core.factory.powers.OriginsMod.value_modifying.ValueModifyingSuperClass.modify_break_speed;
 
-public class ModifyBreakSpeedPower implements Listener {
+public class ModifyBreakSpeedPower extends ValueModifyingSuperClass implements Listener {
     String MODIFYING_KEY = "modify_break_speed";
 
     public int calculateHasteAmplifier(float value) {

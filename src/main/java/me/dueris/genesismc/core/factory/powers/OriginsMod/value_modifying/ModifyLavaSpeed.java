@@ -16,7 +16,7 @@ import java.util.function.BinaryOperator;
 import static me.dueris.genesismc.core.factory.powers.OriginsMod.player.attributes.AttributeHandler.getOperationMappingsFloat;
 import static me.dueris.genesismc.core.factory.powers.OriginsMod.value_modifying.ValueModifyingSuperClass.modify_lava_speed;
 
-public class ModifyLavaSpeed extends BukkitRunnable {
+public class ModifyLavaSpeed extends ValueModifyingSuperClass {
     @Override
     public void run() {
         for(Player p : Bukkit.getOnlinePlayers()){

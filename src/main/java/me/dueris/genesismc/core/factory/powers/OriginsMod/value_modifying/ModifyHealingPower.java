@@ -13,7 +13,7 @@ import java.util.function.BinaryOperator;
 import static me.dueris.genesismc.core.factory.powers.OriginsMod.player.attributes.AttributeHandler.getOperationMappingsFloat;
 import static me.dueris.genesismc.core.factory.powers.OriginsMod.value_modifying.ValueModifyingSuperClass.modify_healing;
 
-public class ModifyHealingPower implements Listener {
+public class ModifyHealingPower extends ValueModifyingSuperClass implements Listener {
     @EventHandler
     public void run(EntityRegainHealthEvent e){
         if(e.getEntity() instanceof Player){

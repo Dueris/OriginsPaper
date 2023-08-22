@@ -15,7 +15,7 @@ import java.util.function.BinaryOperator;
 import static me.dueris.genesismc.core.factory.powers.OriginsMod.player.attributes.AttributeHandler.getOperationMappingsFloat;
 import static me.dueris.genesismc.core.factory.powers.OriginsMod.value_modifying.ValueModifyingSuperClass.modify_effect_duration;
 
-public class ModifyStatusEffectDurationPower implements Listener {
+public class ModifyStatusEffectDurationPower extends ValueModifyingSuperClass implements Listener {
     @EventHandler
     public void run(EntityPotionEffectEvent e){
         if(e.getEntity() instanceof Player p){

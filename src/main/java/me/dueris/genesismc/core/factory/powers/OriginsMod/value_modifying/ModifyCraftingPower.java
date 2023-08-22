@@ -20,7 +20,7 @@ import org.bukkit.potion.PotionEffectType;
 import static me.dueris.genesismc.core.factory.powers.OriginsMod.value_modifying.ValueModifyingSuperClass.modify_break_speed;
 import static me.dueris.genesismc.core.factory.powers.OriginsMod.value_modifying.ValueModifyingSuperClass.modify_crafting;
 
-public class ModifyCraftingPower implements Listener {
+public class ModifyCraftingPower extends ValueModifyingSuperClass implements Listener {
     @EventHandler
     public void run(PrepareItemCraftEvent e){
         Player p = (Player) e.getInventory().getHolder();

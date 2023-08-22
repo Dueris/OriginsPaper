@@ -19,7 +19,7 @@ import java.util.List;
 
 import static me.dueris.genesismc.core.factory.powers.OriginsMod.value_modifying.ValueModifyingSuperClass.modify_block_render;
 
-public class ModifyBlockRenderPower extends BukkitRunnable {
+public class ModifyBlockRenderPower extends ValueModifyingSuperClass {
 
     String MODIFYING_KEY = "modify_block_render";
 

@@ -15,7 +15,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 
-public class ValueModifyingSuperClass implements Listener {
+public class ValueModifyingSuperClass extends BukkitRunnable implements Listener {
 
     public void runTasks(){
         ModifyAirSpeedPower modifyAirSpeedPower = new ModifyAirSpeedPower();
@@ -128,4 +128,9 @@ public class ValueModifyingSuperClass implements Listener {
     public static ArrayList<Player> modify_effect_duration = new ArrayList<>();
     public static ArrayList<Player> modify_swim_speed = new ArrayList<>();
     public static ArrayList<Player> modify_xp_gain = new ArrayList<>();
+
+    @Override
+    public void run() {
+
+    }
 }
