@@ -20,7 +20,8 @@ public class ModifyJumpPower implements Listener {
         Player p = e.getPlayer();
         if(modify_jump.contains(p)){
             for(OriginContainer origin : OriginPlayer.getOrigin(p).values()){
-                if(ConditionExecutor.check("condition", "conditions", p, origin, "origins:modify_jump", null, p)){
+                ConditionExecutor conditionExecutor = new ConditionExecutor();
+                if(conditionExecutor.check("condition", "conditions", p, origin, "origins:modify_jump", null, p)){
                     for(HashMap<String, Object> modifier : origin.getPowerFileFromType("origins:modify_jump").getPossibleModifiers("modifier", "modifiers")){
                         Float value = Float.valueOf(modifier.get("value").toString());
                         String operation = modifier.get("operation").toString();

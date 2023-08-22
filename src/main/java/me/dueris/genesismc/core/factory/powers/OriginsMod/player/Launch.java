@@ -31,7 +31,8 @@ public class Launch implements Listener {
         Player p = e.getPlayer();
         if (launch_into_air.contains(e.getPlayer())) {
             for (OriginContainer origin : OriginPlayer.getOrigin(e.getPlayer()).values()) {
-                if (ConditionExecutor.check("condition", "conditions", p, origin, "origins:launch", null, p)) {
+                ConditionExecutor conditionExecutor = new ConditionExecutor();
+                if (conditionExecutor.check("condition", "conditions", p, origin, "origins:launch", null, p)) {
                     if (!CooldownStuff.isPlayerInCooldown(p, origin.getPowerFileFromType("origins:launch").getKey().get("key").toString())) {
                         if (isKeyBeingPressed(e.getPlayer(), origin.getPowerFileFromType("origins:launch").getKey().get("key").toString(), true)) {
                             new BukkitRunnable() {

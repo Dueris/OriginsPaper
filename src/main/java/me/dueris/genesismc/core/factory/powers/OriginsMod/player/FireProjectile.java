@@ -78,7 +78,8 @@ public class FireProjectile implements Listener {
         if (!peopladf.contains(p)) {
             for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
                 if (fire_projectile.contains(p)) {
-                    if (ConditionExecutor.check("condition", "conditions", p, origin, "origins:fire_projectile", null, p)) {
+                    ConditionExecutor conditionExecutor = new ConditionExecutor();
+                    if (conditionExecutor.check("condition", "conditions", p, origin, "origins:fire_projectile", null, p)) {
                         if (!CooldownStuff.isPlayerInCooldown(p, origin.getPowerFileFromType("origins:fire_projectile").getKey().get("key").toString())) {
                             if (isKeyBeingPressed(e.getPlayer(), origin.getPowerFileFromType("origins:fire_projectile").getKey().get("key").toString(), true)) {
                                 new BukkitRunnable() {

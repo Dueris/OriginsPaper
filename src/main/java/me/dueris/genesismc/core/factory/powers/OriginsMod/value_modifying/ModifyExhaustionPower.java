@@ -20,7 +20,8 @@ public class ModifyExhaustionPower implements Listener {
         Player p = (Player) e.getEntity();
         if(modify_exhaustion.contains(p)){
             for(OriginContainer origin : OriginPlayer.getOrigin(p).values()){
-                if(ConditionExecutor.check("condition", "conditions", p, origin, "origins:modify_exhaustion", null, p)){
+                ConditionExecutor conditionExecutor = new ConditionExecutor();
+                if(conditionExecutor.check("condition", "conditions", p, origin, "origins:modify_exhaustion", null, p)){
                     for(HashMap<String, Object> modifier : origin.getPowerFileFromType("origins:modify_exhaustion").getConditionFromString("modifier", "modifiers")){
                         Float value = Float.valueOf(modifier.get("value").toString());
                         String operation = modifier.get("operation").toString();

@@ -24,7 +24,8 @@ public class ModifyLavaSpeed extends BukkitRunnable {
                 for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
                     ValueModifyingSuperClass valueModifyingSuperClass = new ValueModifyingSuperClass();
                     try {
-                        if (ConditionExecutor.check("bientity_condition", "bientity_conditions", p, origin, "origins:modify_lava_speed", null, p)) {
+                        ConditionExecutor conditionExecutor = new ConditionExecutor();
+                        if (conditionExecutor.check("bientity_condition", "bientity_conditions", p, origin, "origins:modify_lava_speed", null, p)) {
                             for(HashMap<String, Object> modifier : origin.getPowerFileFromType("origins:modify_lava_speed").getPossibleModifiers("modifier", "modifiers")){
                                 Float value = Float.valueOf(modifier.get("value").toString());
                                 String operation = modifier.get("operation").toString();

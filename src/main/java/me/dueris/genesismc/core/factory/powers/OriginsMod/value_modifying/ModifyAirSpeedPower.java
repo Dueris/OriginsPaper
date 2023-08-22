@@ -25,7 +25,8 @@ public class ModifyAirSpeedPower extends BukkitRunnable {
             for(OriginContainer origin : OriginPlayer.getOrigin(p).values()){
                 ValueModifyingSuperClass valueModifyingSuperClass = new ValueModifyingSuperClass();
                 try{
-                    if(ConditionExecutor.check("condition", "conditions", p, origin, "origins:modify_air_speed", null, p)){
+                    ConditionExecutor conditionExecutor = new ConditionExecutor();
+                    if(conditionExecutor.check("condition", "conditions", p, origin, "origins:modify_air_speed", null, p)){
                         p.setFlySpeed(valueModifyingSuperClass.getPersistentAttributeContainer(p, MODIFYING_KEY));
                     }else{
                         p.setFlySpeed(valueModifyingSuperClass.getDefaultValue(MODIFYING_KEY));

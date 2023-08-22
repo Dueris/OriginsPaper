@@ -30,7 +30,8 @@ public class Toggle implements Listener {
         Player p = e.getPlayer();
         if (toggle_power.contains(e.getPlayer())) {
             for (OriginContainer origin : OriginPlayer.getOrigin(e.getPlayer()).values()) {
-                if (ConditionExecutor.check("condition", "conditions", p, origin, "origins:toggle", null, p)) {
+                ConditionExecutor conditionExecutor = new ConditionExecutor();
+                if (conditionExecutor.check("condition", "conditions", p, origin, "origins:toggle", null, p)) {
                     if (!CooldownStuff.isPlayerInCooldown(p, origin.getPowerFileFromType("origins:toggle").getKey().get("key").toString())) {
                         if (isKeyBeingPressed(e.getPlayer(), origin.getPowerFileFromType("origins:toggle").getKey().get("key").toString(), true)) {
                             new BukkitRunnable() {

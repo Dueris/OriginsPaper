@@ -15,7 +15,8 @@ public class PreventEntityCollision extends BukkitRunnable {
         for(Player p : Bukkit.getOnlinePlayers()){
             for(OriginContainer origin : OriginPlayer.getOrigin(p).values()){
                 if(prevent_entity_collision.contains(p)){
-                    if(ConditionExecutor.check("bientity_condition", "bientity_condition", p, origin, "origins:prevent_entity_collision", null, p)){
+                    ConditionExecutor conditionExecutor = new ConditionExecutor();
+                    if(conditionExecutor.check("bientity_condition", "bientity_condition", p, origin, "origins:prevent_entity_collision", null, p)){
                         p.setCollidable(false);
                     }else{
                         p.setCollidable(true);

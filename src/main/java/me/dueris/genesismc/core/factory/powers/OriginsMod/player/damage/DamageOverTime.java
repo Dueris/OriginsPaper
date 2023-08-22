@@ -60,8 +60,8 @@ public class DamageOverTime extends BukkitRunnable {
                         }
 
                         protection_effectiveness = Double.parseDouble(origin.getPowerFileFromType("origins:damage_over_time").get("protection_effectiveness", "1"));
-
-                        if (!ConditionExecutor.check("condition", "conditions", p, origin, "origins:damage_over_time", null, p))
+                        ConditionExecutor conditionExecutor = new ConditionExecutor();
+                        if (!conditionExecutor.check("condition", "conditions", p, origin, "origins:damage_over_time", null, p))
                             return;
 
                         if (p.getGameMode().equals(GameMode.SURVIVAL) || p.getGameMode().equals(GameMode.ADVENTURE)) {

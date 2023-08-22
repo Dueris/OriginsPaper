@@ -17,7 +17,8 @@ public class FallImmunity implements Listener {
         if (!(e.getEntity() instanceof Player p)) return;
         if (fall_immunity.contains(p)) {
             for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
-                if (ConditionExecutor.check("condition", "conditions", p, origin, "origins:fall_immunity", e, p)) {
+                ConditionExecutor conditionExecutor = new ConditionExecutor();
+                if (conditionExecutor.check("condition", "conditions", p, origin, "origins:fall_immunity", e, p)) {
                     if (e.getCause() == EntityDamageEvent.DamageCause.FALL) {
                         e.setCancelled(true);
                     }

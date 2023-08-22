@@ -19,7 +19,8 @@ public class PreventSprinting extends BukkitRunnable {
         for(Player p : Bukkit.getOnlinePlayers()){
             if(prevent_sprinting.contains(p)){
                 for(OriginContainer origin : OriginPlayer.getOrigin(p).values()){
-                    if(ConditionExecutor.check("condition", "conditions", p, origin, "origins:prevent_sprinting", null, p)){
+                    ConditionExecutor conditionExecutor = new ConditionExecutor();
+                    if(conditionExecutor.check("condition", "conditions", p, origin, "origins:prevent_sprinting", null, p)){
                         p.setSprinting(false);
                     }
                 }

@@ -42,7 +42,8 @@ public class ExplodeTick implements Listener {
 
                     @Override
                     public void run() {
-                        if(!ConditionExecutor.check("condition", "conditions", p, origin, "genesis:explode_tick", null, p)) return;
+                        ConditionExecutor conditionExecutor = new ConditionExecutor();
+//                        if(!conditionExecutor.check("condition", "conditions", p, origin, "genesis:explode_tick", null, p)) return;
                         if (p.isSneaking()) {
                             if (!cooldown.containsKey(p.getUniqueId()) || ((System.currentTimeMillis() - cooldown.get(p.getUniqueId())) > 3300)) {
                                 if (p.isSneaking()) {

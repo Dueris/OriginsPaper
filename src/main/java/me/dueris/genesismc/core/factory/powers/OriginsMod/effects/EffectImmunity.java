@@ -1,6 +1,7 @@
 package me.dueris.genesismc.core.factory.powers.OriginsMod.effects;
 
 import me.dueris.genesismc.core.entity.OriginPlayer;
+import me.dueris.genesismc.core.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.core.utils.Lang;
 import me.dueris.genesismc.core.utils.OriginContainer;
 import org.bukkit.Bukkit;
@@ -19,7 +20,8 @@ public class EffectImmunity extends BukkitRunnable {
         for (Player p : Bukkit.getOnlinePlayers()) {
             if (effect_immunity.contains(p)) {
                 for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
-
+                    ConditionExecutor conditionExecutor = new ConditionExecutor();
+                    if(!conditionExecutor.check("condition", "conditions", p, origin, "origins:effect_immunity", null, p)) return;
                     if (origin.getPowerFileFromType("origins:effect_immunity").getEffect() != null) {
                         PotionEffectType effectType = PotionEffectType.getByName(origin.getPowerFileFromType("origins:effect_immunity").getEffect());
                         if (origin.getPowerFileFromType("origins:effect_immunity").isInverted()) {

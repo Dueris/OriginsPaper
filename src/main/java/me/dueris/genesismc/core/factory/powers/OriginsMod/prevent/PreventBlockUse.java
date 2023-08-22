@@ -16,7 +16,8 @@ public class PreventBlockUse implements Listener {
     public void run(PlayerInteractEvent e){
         if(prevent_block_use.contains(e.getPlayer())){
             for(OriginContainer origin : OriginPlayer.getOrigin(e.getPlayer()).values()){
-                if(ConditionExecutor.check("block_condition", "block_conditions", e.getPlayer(), origin, "origins:prevent_block_used", null, e.getPlayer())){
+                ConditionExecutor conditionExecutor = new ConditionExecutor();
+                if(conditionExecutor.check("block_condition", "block_conditions", e.getPlayer(), origin, "origins:prevent_block_used", null, e.getPlayer())){
                     if(e.getClickedBlock() != null) e.setCancelled(true);
                 }
             }
@@ -27,7 +28,8 @@ public class PreventBlockUse implements Listener {
     public void run(BlockPlaceEvent e){
         if(prevent_block_use.contains(e.getPlayer())){
             for(OriginContainer origin : OriginPlayer.getOrigin(e.getPlayer()).values()){
-                if(ConditionExecutor.check("block_condition", "block_conditions", e.getPlayer(), origin, "origins:prevent_block_used", null, e.getPlayer())){
+                ConditionExecutor conditionExecutor = new ConditionExecutor();
+                if(conditionExecutor.check("block_condition", "block_conditions", e.getPlayer(), origin, "origins:prevent_block_used", null, e.getPlayer())){
                     e.setCancelled(true);
                 }
             }
