@@ -1,0 +1,22 @@
+package me.dueris.genesismc.factory.powers.entity;
+
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageEvent;
+
+import static me.dueris.genesismc.factory.powers.Power.extra_fire;
+
+public class ExtraFireTick implements Listener {
+    @EventHandler
+    public void onFireDamage(EntityDamageEvent e) {
+        if (e.getEntity() instanceof Player p) {
+            if (extra_fire.contains(p)) {
+                if (e.getCause().equals(EntityDamageEvent.DamageCause.FIRE) || e.getCause().equals(EntityDamageEvent.DamageCause.FIRE_TICK)) {
+                    e.setDamage(e.getDamage() * 1.5);
+                }
+            }
+        }
+    }
+
+}

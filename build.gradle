@@ -51,6 +51,8 @@ dependencies {
     compileOnly("com.mojang:authlib:1.11")
     shade("org.mineskin:java-client:1.2.4-SNAPSHOT")
     implementation("com.github.Dueris:GlowAPI:1.5.6-SNAPSHOT")
+    implementation("org.reflections:reflections:0.9.12")
+    shade("org.reflections:reflections:0.9.12")
 }
 
 jar {
@@ -61,6 +63,7 @@ jar {
         configurations.shade.collect { it.isDirectory() ? it : zipTree(it) }
     }
 }
+
 
 tasks {
     // Configure reobfJar to run when invoking the build task
