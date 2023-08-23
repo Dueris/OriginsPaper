@@ -3,11 +3,12 @@ package me.dueris.genesismc;
 import me.dueris.genesismc.entity.OriginPlayer;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.powers.OriginsMod.player.attributes.AttributeHandler;
-import me.dueris.genesismc.utils.Lang;
+import me.dueris.genesismc.utils.translation.LangConfig;
 import me.dueris.genesismc.utils.LayerContainer;
 import me.dueris.genesismc.utils.OriginContainer;
 import me.dueris.genesismc.utils.PowerContainer;
 import me.dueris.genesismc.utils.legacy.LegacyOriginContainer;
+import me.dueris.genesismc.utils.translation.Translation;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.Bukkit;
@@ -62,7 +63,7 @@ public class PlayerHandler implements Listener {
     public void playerJoin(PlayerJoinEvent e) {
         Player p = e.getPlayer();
         p.setMaximumAir(300);
-
+        Bukkit.getLogger().info("PlayerLocale saved as[" + Translation.getPlayerLocale(p) + "] for player[%player%]".replace("%player%", p.getName()));
         //set origins to null if none present
         if (p.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "origins"), PersistentDataType.BYTE_ARRAY) == null) {
             HashMap<LayerContainer, OriginContainer> origins = new HashMap<>();
@@ -90,7 +91,7 @@ public class PlayerHandler implements Listener {
                 p.getPersistentDataContainer().remove(new NamespacedKey(GenesisMC.getPlugin(), "origin"));
             } catch (Exception er) {
                 er.printStackTrace();
-                Bukkit.getLogger().warning(Lang.getLocalizedString("errors.oldContainerConversion"));
+                Bukkit.getLogger().warning(LangConfig.getLocalizedString("errors.oldContainerConversion"));
             }
         }
         Bukkit.getLogger().warning("[GenesisMC] Reminder to devs - fix old origin container translation");
@@ -145,7 +146,7 @@ public class PlayerHandler implements Listener {
 
         originValidCheck(p);
         OriginPlayer.assignPowers(p);
-        p.sendMessage(Component.text(Lang.getLocalizedString("misc.joinText")).color(TextColor.fromHexString(AQUA)));
+        p.sendMessage(Component.text(LangConfig.getLocalizedString("misc.joinText")).color(TextColor.fromHexString(AQUA)));
 
         new BukkitRunnable() {
             @Override
@@ -167,13 +168,13 @@ public class PlayerHandler implements Listener {
             //check if the player layer exists
             if (!CraftApoli.layerExists(layer)) {
                 deletedLayers.add(layer);
-                p.sendMessage(Component.text(Lang.getLocalizedString("misc.layerRemoved").replace("%layerName%", layer.getName())).color(TextColor.fromHexString(RED)));
+                p.sendMessage(Component.text(LangConfig.getLocalizedString("misc.layerRemoved").replace("%layerName%", layer.getName())).color(TextColor.fromHexString(RED)));
                 continue;
             }
             //origin check
             if (!CraftApoli.getLayerFromTag(layer.getTag()).getOrigins().contains(origins.get(layer).getTag())) {
                 origins.replace(layer, CraftApoli.nullOrigin());
-                p.sendMessage(Component.text(Lang.getLocalizedString("misc.originRemoved").replace("%originName", origins.get(layer).getName()).replace("%layerName%", layer.getName())).color(TextColor.fromHexString(RED)));
+                p.sendMessage(Component.text(LangConfig.getLocalizedString("misc.originRemoved").replace("%originName", origins.get(layer).getName()).replace("%layerName%", layer.getName())).color(TextColor.fromHexString(RED)));
             }
         }
 

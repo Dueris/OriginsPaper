@@ -3,7 +3,7 @@ package me.dueris.genesismc.factory.powers.OriginsMod.effects;
 import me.dueris.genesismc.entity.OriginPlayer;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.utils.Lang;
+import me.dueris.genesismc.utils.translation.LangConfig;
 import me.dueris.genesismc.utils.OriginContainer;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -29,7 +29,7 @@ public class EffectImmunity extends CraftPower {
                                     p.removePotionEffect(effectType);
                                 }
                             } else {
-                                Bukkit.getLogger().warning(Lang.getLocalizedString("powers.errors.effectImmunity"));
+                                Bukkit.getLogger().warning(LangConfig.getLocalizedString("powers.errors.effectImmunity"));
                             }
                         } else {
                             if (effectType != null) {
@@ -37,7 +37,7 @@ public class EffectImmunity extends CraftPower {
                                     p.addPotionEffect(new PotionEffect(effectType, 25, 1));
                                 }
                             } else {
-                                Bukkit.getLogger().warning(Lang.getLocalizedString("powers.errors.effectImmunity"));
+                                Bukkit.getLogger().warning(LangConfig.getLocalizedString("powers.errors.effectImmunity"));
                             }
                         }
 
@@ -52,7 +52,7 @@ public class EffectImmunity extends CraftPower {
                             }
                         }
                     } else {
-                        Bukkit.getLogger().warning(Lang.getLocalizedString("powers.errors.effectImmunity"));
+                        Bukkit.getLogger().warning(LangConfig.getLocalizedString("powers.errors.effectImmunity"));
                     }
                 }
             }

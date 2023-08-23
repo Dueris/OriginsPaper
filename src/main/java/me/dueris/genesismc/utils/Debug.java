@@ -2,6 +2,7 @@ package me.dueris.genesismc.utils;
 
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.files.GenesisDataFiles;
+import me.dueris.genesismc.utils.translation.LangConfig;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -15,7 +16,7 @@ import static org.bukkit.Bukkit.getServer;
 public class Debug {
 
     public static void executeGenesisDebug() {
-        getServer().getConsoleSender().sendMessage(Lang.getLocalizedString("startup.debug.start"));
+        getServer().getConsoleSender().sendMessage(LangConfig.getLocalizedString("startup.debug.start"));
 
         FileConfiguration mainConfig = GenesisDataFiles.getMainConfig();
         ConfigurationSection mainRootSection = mainConfig.getConfigurationSection("");
@@ -26,8 +27,8 @@ public class Debug {
         printValues(orbRootSection, "");
 
         GenesisDataFiles.getOrbCon().getValues(Boolean.parseBoolean("all"));
-        getServer().getConsoleSender().sendMessage(Lang.getLangFile().toString());
-        getServer().getConsoleSender().sendMessage(Lang.getLocalizedString("startup.debug.dump") +
+        getServer().getConsoleSender().sendMessage(LangConfig.getLangFile().toString());
+        getServer().getConsoleSender().sendMessage(LangConfig.getLocalizedString("startup.debug.dump") +
                 Bukkit.getAllowEnd() +
                 Bukkit.getAllowNether() +
                 Bukkit.getTPS() +
@@ -41,7 +42,7 @@ public class Debug {
             @Override
             public void run() {
                 try {
-                    Lang.getLangFile();
+                    LangConfig.getLangFile();
                 } catch (Exception e) {
                     Bukkit.getServer().getLogger().warning("Couldn't load lang file. Disabling GenesisMC...");
                     Bukkit.getServer().getPluginManager().disablePlugin(GenesisMC.getPlugin());
@@ -110,7 +111,7 @@ public class Debug {
             // PaperConfig class not found, not a Paper server
         }
         if (isCraftBukkit || isSpigot || isFolia) {
-            Bukkit.getServer().getLogger().warning(Lang.getLocalizedString("startup.debug.server"));
+            Bukkit.getServer().getLogger().warning(LangConfig.getLocalizedString("startup.debug.server"));
         }
     }
 }

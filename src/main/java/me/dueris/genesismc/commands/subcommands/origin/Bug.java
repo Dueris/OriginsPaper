@@ -1,7 +1,7 @@
 package me.dueris.genesismc.commands.subcommands.origin;
 
 import me.dueris.genesismc.commands.subcommands.SubCommand;
-import me.dueris.genesismc.utils.Lang;
+import me.dueris.genesismc.utils.translation.LangConfig;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.ClickEvent;
@@ -19,7 +19,7 @@ public class Bug extends SubCommand {
 
     @Override
     public String getDescription() {
-        return Lang.getLocalizedString("command.origin.bug.description");
+        return LangConfig.getLocalizedString("command.origin.bug.description");
     }
 
     @Override
@@ -29,7 +29,7 @@ public class Bug extends SubCommand {
 
     @Override
     public void perform(CommandSender sender, String[] args) {
-        sender.sendMessage(Component.text(Lang.getLocalizedString("command.origin.bug.message")).color(TextColor.fromHexString(YELLOW)));
+        sender.sendMessage(Component.text(LangConfig.getLocalizedString("command.origin.bug.message")).color(TextColor.fromHexString(YELLOW)));
 
         TextComponent git = Component.text("GitHub: https://github.com/Dueris/GenesisMC-Minecraft_Plugin/issues").color(TextColor.fromHexString(YELLOW)).decorate(TextDecoration.UNDERLINED);
         git = git.clickEvent(ClickEvent.clickEvent(ClickEvent.Action.OPEN_URL, "https://github.com/Dueris/GenesisMC-Minecraft_Plugin/issues"));

@@ -6,7 +6,7 @@ import me.dueris.genesismc.entity.OriginPlayer;
 import me.dueris.genesismc.events.OriginChangeEvent;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.utils.Lang;
+import me.dueris.genesismc.utils.translation.LangConfig;
 import me.dueris.genesismc.utils.OriginContainer;
 import net.skinsrestorer.api.PlayerWrapper;
 import net.skinsrestorer.api.SkinsRestorerAPI;
@@ -205,14 +205,14 @@ public class PlayerRender extends CraftPower {
                 public void run() {
                     if (model_color.contains(player)) {
                         if (player.getPlayerProfile().getTextures().getSkinModel() == PlayerTextures.SkinModel.CLASSIC) {
-                            Bukkit.getConsoleSender().sendMessage(Lang.getLocalizedString("powers.modelColour"));
+                            Bukkit.getConsoleSender().sendMessage(LangConfig.getLocalizedString("powers.modelColour"));
                             Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "skin set " + player.getName() + " " + player.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "modified-skin-url"), PersistentDataType.STRING) + " CLASSIC");
                         } else {
                             Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "skin set " + player.getName() + " " + player.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "modified-skin-url"), PersistentDataType.STRING) + " SLIM");
                         }
                     } else {
                         if (player.getPlayerProfile().getTextures().getSkinModel() == PlayerTextures.SkinModel.CLASSIC) {
-                            Bukkit.getConsoleSender().sendMessage(Lang.getLocalizedString("powers.modelColour"));
+                            Bukkit.getConsoleSender().sendMessage(LangConfig.getLocalizedString("powers.modelColour"));
                             Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "skin set " + player.getName() + " " + player.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "original-skin-url"), PersistentDataType.STRING) + " CLASSIC");
                         } else {
                             Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "skin set " + player.getName() + " " + player.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "original-skin-url"), PersistentDataType.STRING) + " SLIM");
@@ -323,7 +323,7 @@ public class PlayerRender extends CraftPower {
         private static BufferedImage modifyImage(BufferedImage originalImage, double redTint, double greenTint, double blueTint, double alphaTint, Player player, OriginContainer origin) {
             if (redTint > 1 || greenTint > 1 || blueTint > 1 || alphaTint > 1) {
                 if(origin.getPowerFileFromType("origins:model_color").getModelRenderType() == "original"){
-                    throw new IllegalArgumentException(Lang.getLocalizedString("powers.errors.modelColourValue"));
+                    throw new IllegalArgumentException(LangConfig.getLocalizedString("powers.errors.modelColourValue"));
                 }
             }
 

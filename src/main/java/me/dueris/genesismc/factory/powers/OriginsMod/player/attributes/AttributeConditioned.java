@@ -3,7 +3,7 @@ package me.dueris.genesismc.factory.powers.OriginsMod.player.attributes;
 import me.dueris.genesismc.entity.OriginPlayer;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.utils.Lang;
+import me.dueris.genesismc.utils.translation.LangConfig;
 import me.dueris.genesismc.utils.OriginContainer;
 import me.dueris.genesismc.utils.PowerContainer;
 import org.bukkit.Bukkit;
@@ -46,7 +46,7 @@ public class AttributeConditioned extends CraftPower implements Listener {
             int result = (int) mathOperator.apply(base_value, value);
             p.getAttribute(Attribute.valueOf(attribute_modifier.toString())).setBaseValue(result);
         } else {
-            Bukkit.getLogger().warning(Lang.getLocalizedString("powers.errors.attribute"));
+            Bukkit.getLogger().warning(LangConfig.getLocalizedString("powers.errors.attribute"));
         }
     }
 
@@ -72,7 +72,7 @@ public class AttributeConditioned extends CraftPower implements Listener {
             double result = (Double) mathOperator.apply(base_value, value);
             p.getAttribute(Attribute.valueOf(attribute_modifier.toString())).setBaseValue(result);
         } else {
-            Bukkit.getLogger().warning(Lang.getLocalizedString("powers.errors.attribute"));
+            Bukkit.getLogger().warning(LangConfig.getLocalizedString("powers.errors.attribute"));
         }
     }
 

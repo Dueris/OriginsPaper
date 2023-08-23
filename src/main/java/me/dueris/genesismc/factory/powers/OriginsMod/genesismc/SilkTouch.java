@@ -2,7 +2,7 @@ package me.dueris.genesismc.factory.powers.OriginsMod.genesismc;
 
 
 import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.utils.Lang;
+import me.dueris.genesismc.utils.translation.LangConfig;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
@@ -52,7 +52,7 @@ public class SilkTouch extends CraftPower implements Listener {
                             try {
                                 p.getLocation().getWorld().dropItemNaturally(e.getBlock().getLocation(), i);
                             } catch (Exception exception) {
-                                Bukkit.getLogger().warning(Lang.getLocalizedString("powers.errors.silkTouch"));
+                                Bukkit.getLogger().warning(LangConfig.getLocalizedString("powers.errors.silkTouch"));
                                 exception.printStackTrace();
                             }
                         }

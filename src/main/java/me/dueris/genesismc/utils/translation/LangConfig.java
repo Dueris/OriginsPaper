@@ -1,15 +1,17 @@
-package me.dueris.genesismc.utils;
+package me.dueris.genesismc.utils.translation;
 
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.files.GenesisDataFiles;
+import me.dueris.genesismc.utils.BukkitColour;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 
 import java.io.File;
 
-public class Lang {
+public class LangConfig {
     public static String lang_test = getLocalizedString("lang.test");
 
     public static File getLangFile() {
@@ -32,6 +34,10 @@ public class Lang {
 
     }
 
+    public static File getFile(String string){
+        return GenesisDataFiles.getFile(string);
+    }
+
     public static String getLocalizedString(String key) {
         File langFile = getLangFile();
 
@@ -40,7 +46,7 @@ public class Lang {
             return langConfig.getString(key);
         }
 
-        File engLang = new File(GenesisMC.getPlugin().getDataFolder() + File.separator + "lang" + File.separator + "english.yml");
+        File engLang = new File(GenesisMC.getPlugin().getDataFolder() + File.separator + "lang" + File.separator + "en_us.yml");
         YamlConfiguration langConfig = YamlConfiguration.loadConfiguration(engLang);
         String response = langConfig.getString(key);
         if (response == null) return "Lang Error!";

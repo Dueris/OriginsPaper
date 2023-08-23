@@ -24,6 +24,7 @@ import me.dueris.genesismc.items.InfinPearl;
 import me.dueris.genesismc.items.OrbOfOrigins;
 import me.dueris.genesismc.items.WaterProtItem;
 import me.dueris.genesismc.utils.*;
+import me.dueris.genesismc.utils.translation.LangConfig;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.Bukkit;
@@ -104,11 +105,11 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         Bukkit.getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC]  | |  _   / _ \\ | '_ \\   / _ \\ / __| | | / __| | |\\/| | | |    ").color(TextColor.fromHexString("#4fec4f")));
         Bukkit.getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC]  | |_| | |  __/ | | | | |  __/ \\__ \\ | | \\__ \\ | |  | | | |___ ").color(TextColor.fromHexString("#4de4e4")));
         Bukkit.getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC]   \\____|  \\___| |_| |_|  \\___| |___/ |_| |___/ |_|  |_|  \\____|").color(TextColor.fromHexString("#333fb7")));
-        Bukkit.getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] " + Lang.getLocalizedString("startup.credit")).color(TextColor.fromHexString("#dd50ff")));
+        Bukkit.getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] " + LangConfig.getLocalizedString("startup.credit")).color(TextColor.fromHexString("#dd50ff")));
         Bukkit.getServer().getConsoleSender().sendMessage(Component.text("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"));
 
         //lang check
-        if (Lang.lang_test == null) {
+        if (LangConfig.lang_test == null) {
             getLogger().warning("[GenesisMC] Lang could not be loaded! Disabling plugin.");
             Bukkit.getServer().getPluginManager().disablePlugin(this);
             return;
@@ -116,23 +117,23 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         for (Player p : Bukkit.getOnlinePlayers()) {
             p.setGravity(true);
         }
-        Bukkit.getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] " + Lang.lang_test).color(TextColor.fromHexString(GREEN)));
+        Bukkit.getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] " + LangConfig.lang_test).color(TextColor.fromHexString(GREEN)));
 
         //version check
         if (GenesisDataFiles.getMainConfig().getString("version-check") == null || GenesisDataFiles.getMainConfig().getString("version-check").equalsIgnoreCase("true")) {
             VersionControl.pluginVersionCheck();
         } else {
-            getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] " + Lang.getLocalizedString("startup.versionCheck.skip")).color(TextColor.fromHexString(YELLOW)));
+            getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] " + LangConfig.getLocalizedString("startup.versionCheck.skip")).color(TextColor.fromHexString(YELLOW)));
         }
 
         //debug check
         if (GenesisDataFiles.getMainConfig().getString("console-startup-debug").equalsIgnoreCase("true")) {
             Debug.executeGenesisDebug();
             Debug.versionTest();
-            getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] " + Lang.getLocalizedString("startup.debug.pluginVersion").replace("%pluginVersion%", "mc1.20-v0.2.1")).color(TextColor.fromHexString(GREEN)));
-            getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] " + Lang.getLocalizedString("startup.debug.APIVersion").replace("%APIVersion%", "1.0.15")).color(TextColor.fromHexString(GREEN)));
+            getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] " + LangConfig.getLocalizedString("startup.debug.pluginVersion").replace("%pluginVersion%", "mc1.20-v0.2.1")).color(TextColor.fromHexString(GREEN)));
+            getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] " + LangConfig.getLocalizedString("startup.debug.APIVersion").replace("%APIVersion%", "1.0.15")).color(TextColor.fromHexString(GREEN)));
         } else {
-            getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] " + Lang.getLocalizedString("startup.debug.pluginVersion").replace("%pluginVersion%", "mc1.20-v0.2.1")).color(TextColor.fromHexString(GREEN)));
+            getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] " + LangConfig.getLocalizedString("startup.debug.pluginVersion").replace("%pluginVersion%", "mc1.20-v0.2.1")).color(TextColor.fromHexString(GREEN)));
         }
 
         //origin load
@@ -141,14 +142,14 @@ public final class GenesisMC extends JavaPlugin implements Listener {
                 CraftApoli.loadOrigins();
         for (OriginContainer origins : CraftApoli.getOrigins()) {
             if (GenesisDataFiles.getMainConfig().getString("console-startup-debug").equalsIgnoreCase("true")) {
-                getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] " + Lang.getLocalizedString("startup.debug.allOrigins").replace("%originNames%", origins.getName())).color(TextColor.fromHexString(GREEN)));
+                getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] " + LangConfig.getLocalizedString("startup.debug.allOrigins").replace("%originNames%", origins.getName())).color(TextColor.fromHexString(GREEN)));
             }
         }
         for (Player p : Bukkit.getOnlinePlayers()) {
             p.getScoreboard().getTeam("origin-players").addEntity(p);
         }
         if (CraftApoli.getOrigins().size() > 0) {
-            getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] " + Lang.getLocalizedString("startup.originAmount").replace("%originAmount%", String.valueOf(CraftApoli.getOrigins().size()))).color(TextColor.fromHexString(GREEN)));
+            getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] " + LangConfig.getLocalizedString("startup.originAmount").replace("%originAmount%", String.valueOf(CraftApoli.getOrigins().size()))).color(TextColor.fromHexString(GREEN)));
         }
 
         getServer().getPluginManager().registerEvents(this, this);
@@ -174,9 +175,9 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         getServer().getPluginManager().registerEvents(new GenesisItems(), this);
         if (getServer().getPluginManager().isPluginEnabled("SkinsRestorer")) {
             getServer().getPluginManager().registerEvents(new PlayerRender.ModelColor(), GenesisMC.getPlugin());
-            getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] " + Lang.getLocalizedString("startup.skinRestorer.present")).color(TextColor.fromHexString(AQUA)));
+            getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] " + LangConfig.getLocalizedString("startup.skinRestorer.present")).color(TextColor.fromHexString(AQUA)));
         } else {
-            getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] " + Lang.getLocalizedString("startup.skinRestorer.absent")).color(TextColor.fromHexString(AQUA)));
+            getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] " + LangConfig.getLocalizedString("startup.skinRestorer.absent")).color(TextColor.fromHexString(AQUA)));
         }
         plugin = this;
 
@@ -228,7 +229,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
             PlayerHandler.originValidCheck(p);
             OriginPlayer.assignPowers(p);
             if (p.isOp())
-                p.sendMessage(Component.text(Lang.getLocalizedString("reloadMessage")).color(TextColor.fromHexString(AQUA)));
+                p.sendMessage(Component.text(LangConfig.getLocalizedString("reloadMessage")).color(TextColor.fromHexString(AQUA)));
         }
 
     }
@@ -276,6 +277,6 @@ public final class GenesisMC extends JavaPlugin implements Listener {
             }
         } catch (Exception ignored) {
         }
-        getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] " + Lang.getLocalizedString("disable")).color(TextColor.fromHexString(RED)));
+        getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] " + LangConfig.getLocalizedString("disable")).color(TextColor.fromHexString(RED)));
     }
 }

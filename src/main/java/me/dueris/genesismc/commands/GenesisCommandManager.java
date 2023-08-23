@@ -3,7 +3,7 @@ package me.dueris.genesismc.commands;
 import me.dueris.genesismc.commands.subcommands.SubCommand;
 import me.dueris.genesismc.commands.subcommands.origin.*;
 import me.dueris.genesismc.commands.subcommands.origin.Info.Info;
-import me.dueris.genesismc.utils.Lang;
+import me.dueris.genesismc.utils.translation.LangConfig;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.command.Command;
@@ -49,7 +49,7 @@ public class GenesisCommandManager implements CommandExecutor {
 
         }
         if (args.length == 0) {
-            sender.sendMessage(Component.text(Lang.getLocalizedString("command.origin.empty")).color(TextColor.fromHexString(RED)));
+            sender.sendMessage(Component.text(LangConfig.getLocalizedString("command.origin.empty")).color(TextColor.fromHexString(RED)));
             sender.sendMessage(Component.text("-----------------------------------------").color(TextColor.fromHexString(YELLOW)));
             sender.sendMessage(Component.text("/origin get <player> <origin layer>"));
             sender.sendMessage(Component.text("/origin set <player> <origin layer>"));

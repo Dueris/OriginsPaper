@@ -3,7 +3,7 @@ package me.dueris.genesismc.factory.powers.OriginsMod.player;
 import me.dueris.genesismc.entity.OriginPlayer;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.utils.Lang;
+import me.dueris.genesismc.utils.translation.LangConfig;
 import me.dueris.genesismc.utils.OriginContainer;
 import me.dueris.genesismc.utils.PowerContainer;
 import org.bukkit.Bukkit;
@@ -30,7 +30,7 @@ public class Exhaust extends CraftPower {
                     PowerContainer power = origin.getPowerFileFromType("origins:exhaust");
                     if (power == null) continue;
                     if (power.getInterval() == null) {
-                        Bukkit.getLogger().warning(Lang.getLocalizedString("powers.errors.exhaust"));
+                        Bukkit.getLogger().warning(LangConfig.getLocalizedString("powers.errors.exhaust"));
                         return;
                     }
                     interval = power.getInterval();

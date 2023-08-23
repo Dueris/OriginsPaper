@@ -2,7 +2,7 @@ package me.dueris.genesismc.items;
 
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.files.GenesisDataFiles;
-import me.dueris.genesismc.utils.Lang;
+import me.dueris.genesismc.utils.translation.LangConfig;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -32,7 +32,7 @@ public class OrbOfOrigins {
         meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
         meta.addItemFlags(ItemFlag.HIDE_PLACED_ON);
         meta.setCustomModelData(00002);
-        meta.setDisplayName(Lang.getLocalizedString("misc.orbOfOrigins"));
+        meta.setDisplayName(LangConfig.getLocalizedString("misc.orbOfOrigins"));
         meta.setUnbreakable(true);
         meta.getCustomTagContainer().setCustomTag(new NamespacedKey(GenesisMC.getPlugin(), "origins"), ItemTagType.STRING, "orb_of_origin");
         meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
@@ -58,7 +58,7 @@ public class OrbOfOrigins {
                 Bukkit.getServer().addRecipe(sr);
             }
         } catch (Exception exception) {
-            Bukkit.getServer().getLogger().warning(Lang.getLocalizedString("errors.orbLoad"));
+            Bukkit.getServer().getLogger().warning(LangConfig.getLocalizedString("errors.orbLoad"));
         }
     }
 }

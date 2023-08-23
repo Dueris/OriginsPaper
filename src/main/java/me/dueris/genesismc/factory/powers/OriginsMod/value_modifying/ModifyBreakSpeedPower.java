@@ -5,7 +5,7 @@ import me.dueris.genesismc.entity.OriginPlayer;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.ErrorSystem;
-import me.dueris.genesismc.utils.Lang;
+import me.dueris.genesismc.utils.translation.LangConfig;
 import me.dueris.genesismc.utils.OriginContainer;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -70,7 +70,7 @@ public class ModifyBreakSpeedPower extends CraftPower implements Listener {
                         float result = (float) mathOperator.apply(valueModifyingSuperClass.getPersistentAttributeContainer(p, MODIFYING_KEY), value);
                         valueModifyingSuperClass.saveValueInPDC(p, MODIFYING_KEY, result);
                     } else {
-                        Bukkit.getLogger().warning(Lang.getLocalizedString("powers.errors.value_modifier_save").replace("%modifier%", MODIFYING_KEY));
+                        Bukkit.getLogger().warning(LangConfig.getLocalizedString("powers.errors.value_modifier_save").replace("%modifier%", MODIFYING_KEY));
                     }
                 }
             }

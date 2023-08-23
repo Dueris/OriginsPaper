@@ -1,6 +1,6 @@
 package me.dueris.genesismc;
 
-import me.dueris.genesismc.utils.Lang;
+import me.dueris.genesismc.utils.translation.LangConfig;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.Bukkit;
@@ -47,15 +47,15 @@ public class VersionControl {
             int diff = latestId - pluginId;
 
             if (diff > 0)
-                Bukkit.getLogger().warning("[GenesisMC] " + Lang.getLocalizedString("startup.versionCheck.behind").replace("%versionsBehind%", String.valueOf(diff)));
+                Bukkit.getLogger().warning("[GenesisMC] " + LangConfig.getLocalizedString("startup.versionCheck.behind").replace("%versionsBehind%", String.valueOf(diff)));
             if (diff == 0)
-                Bukkit.getConsoleSender().sendMessage(Component.text("[GenesisMC] " + Lang.getLocalizedString("startup.versionCheck.current")).color(TextColor.fromHexString(GREEN)));
+                Bukkit.getConsoleSender().sendMessage(Component.text("[GenesisMC] " + LangConfig.getLocalizedString("startup.versionCheck.current")).color(TextColor.fromHexString(GREEN)));
             if (diff < 0)
-                Bukkit.getConsoleSender().sendMessage(Component.text("[GenesisMC] " + Lang.getLocalizedString("startup.versionCheck.ahead")).color(TextColor.fromHexString(GREEN)));
+                Bukkit.getConsoleSender().sendMessage(Component.text("[GenesisMC] " + LangConfig.getLocalizedString("startup.versionCheck.ahead")).color(TextColor.fromHexString(GREEN)));
 
         } catch (Exception e) {
             e.printStackTrace();
-            Bukkit.getLogger().warning("[GenesisMC] " + Lang.getLocalizedString("startup.versionCheck.fail"));
+            Bukkit.getLogger().warning("[GenesisMC] " + LangConfig.getLocalizedString("startup.versionCheck.fail"));
         }
     }
 

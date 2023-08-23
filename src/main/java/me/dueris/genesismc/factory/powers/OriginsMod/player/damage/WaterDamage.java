@@ -1,7 +1,7 @@
 package me.dueris.genesismc.factory.powers.OriginsMod.player.damage;
 
 import io.papermc.paper.event.entity.WaterBottleSplashEvent;
-import me.dueris.genesismc.utils.Lang;
+import me.dueris.genesismc.utils.translation.LangConfig;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -161,7 +161,7 @@ public class WaterDamage extends BukkitRunnable implements Listener {
         Player p = e.getEntity();
         if (water_vulnerability.contains(e.getPlayer())) {
             if (p.isInWaterOrRainOrBubbleColumn()) {
-                e.deathMessage(Component.text(Lang.getLocalizedString("powers.bathForTooLong")));
+                e.deathMessage(Component.text(LangConfig.getLocalizedString("powers.bathForTooLong")));
             }
         }
     }

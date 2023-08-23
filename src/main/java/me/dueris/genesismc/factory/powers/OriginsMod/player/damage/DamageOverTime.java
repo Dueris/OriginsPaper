@@ -3,7 +3,7 @@ package me.dueris.genesismc.factory.powers.OriginsMod.player.damage;
 import me.dueris.genesismc.entity.OriginPlayer;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.utils.Lang;
+import me.dueris.genesismc.utils.translation.LangConfig;
 import me.dueris.genesismc.utils.OriginContainer;
 import me.dueris.genesismc.utils.PowerContainer;
 import net.minecraft.world.damagesource.DamageSource;
@@ -40,7 +40,7 @@ public class DamageOverTime extends CraftPower {
                     PowerContainer power = origin.getPowerFileFromType("origins:damage_over_time");
                     if (power == null) continue;
                     if (power.getInterval() == null) {
-                        Bukkit.getLogger().warning(Lang.getLocalizedString("powers.errors.damageOverTime"));
+                        Bukkit.getLogger().warning(LangConfig.getLocalizedString("powers.errors.damageOverTime"));
                         return;
                     }
                     interval = power.getInterval();

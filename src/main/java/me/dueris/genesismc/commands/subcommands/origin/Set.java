@@ -6,7 +6,7 @@ import me.dueris.genesismc.entity.OriginPlayer;
 import me.dueris.genesismc.enums.OriginDataType;
 import me.dueris.genesismc.events.OriginChangeEvent;
 import me.dueris.genesismc.factory.CraftApoli;
-import me.dueris.genesismc.utils.Lang;
+import me.dueris.genesismc.utils.translation.LangConfig;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.command.CommandSender;
@@ -25,7 +25,7 @@ public class Set extends SubCommand {
 
     @Override
     public String getDescription() {
-        return Lang.getLocalizedString("command.origin.set.description");
+        return LangConfig.getLocalizedString("command.origin.set.description");
     }
 
     @Override
@@ -37,15 +37,15 @@ public class Set extends SubCommand {
     public void perform(CommandSender sender, String[] args) {
         if (!sender.hasPermission("genesismc.origins.cmd.set")) return;
         if (args.length == 1) {
-            sender.sendMessage(Component.text(Lang.getLocalizedString("command.origin.set.noPlayer")).color(TextColor.fromHexString(RED)));
+            sender.sendMessage(Component.text(LangConfig.getLocalizedString("command.origin.set.noPlayer")).color(TextColor.fromHexString(RED)));
             return;
         }
         if (args.length == 2) {
-            sender.sendMessage(Component.text(Lang.getLocalizedString("command.origin.set.noLayer")).color(TextColor.fromHexString(RED)));
+            sender.sendMessage(Component.text(LangConfig.getLocalizedString("command.origin.set.noLayer")).color(TextColor.fromHexString(RED)));
             return;
         }
         if (args.length == 3) {
-            sender.sendMessage(Component.text(Lang.getLocalizedString("command.origin.set.noOrigin")).color(TextColor.fromHexString(RED)));
+            sender.sendMessage(Component.text(LangConfig.getLocalizedString("command.origin.set.noOrigin")).color(TextColor.fromHexString(RED)));
             return;
         }
         if (args.length > 3) {
@@ -53,13 +53,13 @@ public class Set extends SubCommand {
             if (players.size() == 0) return;
 
             if (!CraftApoli.getLayers().contains(CraftApoli.getLayerFromTag(args[2]))) {
-                sender.sendMessage(Component.text(Lang.getLocalizedString("command.origin.set.invalidLayer")).color(TextColor.fromHexString(RED)));
+                sender.sendMessage(Component.text(LangConfig.getLocalizedString("command.origin.set.invalidLayer")).color(TextColor.fromHexString(RED)));
                 return;
             }
 
             String originTag = args[3];
             if (!CraftApoli.getOriginTags().contains(originTag)) {
-                sender.sendMessage(Component.text(Lang.getLocalizedString("command.origin.set.invalidOrigin")).color(TextColor.fromHexString(RED)));
+                sender.sendMessage(Component.text(LangConfig.getLocalizedString("command.origin.set.invalidOrigin")).color(TextColor.fromHexString(RED)));
                 return;
             }
 

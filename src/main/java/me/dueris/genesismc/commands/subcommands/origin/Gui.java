@@ -6,7 +6,7 @@ import me.dueris.genesismc.commands.subcommands.SubCommand;
 import me.dueris.genesismc.entity.OriginPlayer;
 import me.dueris.genesismc.enums.OriginDataType;
 import me.dueris.genesismc.factory.CraftApoli;
-import me.dueris.genesismc.utils.Lang;
+import me.dueris.genesismc.utils.translation.LangConfig;
 import me.dueris.genesismc.utils.LayerContainer;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
@@ -28,7 +28,7 @@ public class Gui extends SubCommand {
 
     @Override
     public String getDescription() {
-        return Lang.getLocalizedString("command.origin.gui.description");
+        return LangConfig.getLocalizedString("command.origin.gui.description");
     }
 
     @Override
