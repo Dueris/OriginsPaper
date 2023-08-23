@@ -50,7 +50,7 @@ public class GenesisDataFiles {
             try {
                 mainConfigFile.createNewFile();
             } catch (IOException e) {
-                Bukkit.getLogger().warning(LangConfig.getLocalizedString("errors.configCreation").replace("%fileName%", "origin-server.yml"));
+                Bukkit.getLogger().warning(LangConfig.getLocalizedString(Bukkit.getConsoleSender(), "errors.configCreation").replace("%fileName%", "origin-server.yml"));
             }
         }
 
@@ -58,7 +58,7 @@ public class GenesisDataFiles {
             try {
                 orbConfigFile.createNewFile();
             } catch (IOException e) {
-                Bukkit.getLogger().warning(LangConfig.getLocalizedString("errors.configCreation").replace("%fileName%", "orboforigins.yml"));
+                Bukkit.getLogger().warning(LangConfig.getLocalizedString(Bukkit.getConsoleSender(), "errors.configCreation").replace("%fileName%", "orboforigins.yml"));
             }
         }
 
@@ -66,7 +66,7 @@ public class GenesisDataFiles {
             try {
                 englishLangFile.createNewFile();
             } catch (IOException e) {
-                Bukkit.getLogger().warning(LangConfig.getLocalizedString("errors.configCreation").replace("%fileName%", "en_us.yml"));
+                Bukkit.getLogger().warning(LangConfig.getLocalizedString(Bukkit.getConsoleSender(), "errors.configCreation").replace("%fileName%", "en_us.yml"));
             }
         }
 
@@ -74,7 +74,7 @@ public class GenesisDataFiles {
             try {
                 germanLangFile.createNewFile();
             } catch (IOException e) {
-                Bukkit.getLogger().warning(LangConfig.getLocalizedString("errors.configCreation").replace("%fileName%", "de_DE.yml"));
+                Bukkit.getLogger().warning(LangConfig.getLocalizedString(Bukkit.getConsoleSender(), "errors.configCreation").replace("%fileName%", "de_DE.yml"));
             }
         }
 
@@ -82,14 +82,14 @@ public class GenesisDataFiles {
             try {
                 russianLangFile.createNewFile();
             } catch (IOException e) {
-                Bukkit.getLogger().warning(LangConfig.getLocalizedString("errors.configCreation").replace("%fileName%", "ru_RU.yml"));
+                Bukkit.getLogger().warning(LangConfig.getLocalizedString(Bukkit.getConsoleSender(), "errors.configCreation").replace("%fileName%", "ru_RU.yml"));
             }
         }
         if (!chineseLangFile.exists()) {
             try {
                 chineseLangFile.createNewFile();
             } catch (IOException e) {
-                Bukkit.getLogger().warning(LangConfig.getLocalizedString("errors.configCreation").replace("%fileName%", "zh_TW.yml"));
+                Bukkit.getLogger().warning(LangConfig.getLocalizedString(Bukkit.getConsoleSender(), "errors.configCreation").replace("%fileName%", "zh_TW.yml"));
             }
         }
 
@@ -128,7 +128,7 @@ public class GenesisDataFiles {
             try (InputStream inputStream = Bukkit.getServer().getPluginManager().getPlugin("GenesisMC").getResource("origin-server.yml")) {
                 Files.copy(inputStream, mainConfigFile.toPath());
             } catch (Exception e) {
-                getLogger().severe(LangConfig.getLocalizedString("errors.configCreation").replace("%fileName%", "origin-server.yml"));
+                getLogger().severe(LangConfig.getLocalizedString(Bukkit.getConsoleSender(), "errors.configCreation").replace("%fileName%", "origin-server.yml"));
             }
         }
 
@@ -144,7 +144,7 @@ public class GenesisDataFiles {
             try (InputStream inputStream = Bukkit.getServer().getPluginManager().getPlugin("GenesisMC").getResource("orboforigins.yml")) {
                 Files.copy(inputStream, orbConfigFile.toPath());
             } catch (Exception e) {
-                getLogger().severe(LangConfig.getLocalizedString("errors.configCreation").replace("%fileName%", "orboforigins.yml"));
+                getLogger().severe(LangConfig.getLocalizedString(Bukkit.getConsoleSender(), "errors.configCreation").replace("%fileName%", "orboforigins.yml"));
             }
         }
 
@@ -171,7 +171,7 @@ public class GenesisDataFiles {
             try (InputStream inputStream = Bukkit.getServer().getPluginManager().getPlugin("GenesisMC").getResource("langFiles/en_us.yml")) {
                 Files.copy(inputStream, englishLangFile.toPath());
             } catch (Exception e) {
-                getLogger().severe(LangConfig.getLocalizedString("errors.configCreation").replace("%fileName%", "en_us.yml"));
+                getLogger().severe(LangConfig.getLocalizedString(Bukkit.getConsoleSender(), "errors.configCreation").replace("%fileName%", "en_us.yml"));
             }
         }
 
@@ -185,7 +185,7 @@ public class GenesisDataFiles {
             try (InputStream inputStream = Bukkit.getServer().getPluginManager().getPlugin("GenesisMC").getResource("langFiles/ru_RU.yml")) {
                 Files.copy(inputStream, russianLangFile.toPath());
             } catch (Exception e) {
-                getLogger().severe(LangConfig.getLocalizedString("errors.configCreation").replace("%fileName%", "ru_RU.yml"));
+                getLogger().severe(LangConfig.getLocalizedString(Bukkit.getConsoleSender(), "errors.configCreation").replace("%fileName%", "ru_RU.yml"));
             }
         }
 
@@ -199,7 +199,7 @@ public class GenesisDataFiles {
             try (InputStream inputStream = Bukkit.getServer().getPluginManager().getPlugin("GenesisMC").getResource("langFiles/de_DE.yml")) {
                 Files.copy(inputStream, germanLangFile.toPath());
             } catch (Exception e) {
-                getLogger().severe(LangConfig.getLocalizedString("errors.configCreation").replace("%fileName%", "de_DE.yml"));
+                getLogger().severe(LangConfig.getLocalizedString(Bukkit.getConsoleSender(), "errors.configCreation").replace("%fileName%", "de_DE.yml"));
             }
         }
 
@@ -213,7 +213,7 @@ public class GenesisDataFiles {
             try (InputStream inputStream = Bukkit.getServer().getPluginManager().getPlugin("GenesisMC").getResource("langFiles/zh_TW.yml")) {
                 Files.copy(inputStream, chineseLangFile.toPath());
             } catch (Exception e) {
-                getLogger().severe(LangConfig.getLocalizedString("errors.configCreation").replace("%fileName%", "zh_TW.yml"));
+                getLogger().severe(LangConfig.getLocalizedString(Bukkit.getConsoleSender(), "errors.configCreation").replace("%fileName%", "zh_TW.yml"));
             }
         }
 

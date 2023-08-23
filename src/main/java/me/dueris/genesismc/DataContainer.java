@@ -34,7 +34,7 @@ public class DataContainer implements Listener {
 
             Player target = Bukkit.getPlayer(e.getView().getTitle().split(":")[1].substring(1));
             if (target == null) {
-                p.sendMessage(Component.text(LangConfig.getLocalizedString("errors.inventorySaveFail").replace("%player%", e.getView().getTitle().split(":")[1].substring(1))).color(TextColor.fromHexString(BukkitColour.RED)));
+                p.sendMessage(Component.text(LangConfig.getLocalizedString(p, "errors.inventorySaveFail").replace("%player%", e.getView().getTitle().split(":")[1].substring(1))).color(TextColor.fromHexString(BukkitColour.RED)));
                 return;
             }
             InventoryUtils.storeItems(prunedItems, target);

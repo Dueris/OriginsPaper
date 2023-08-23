@@ -70,7 +70,7 @@ public class ModifyBreakSpeedPower extends CraftPower implements Listener {
                         float result = (float) mathOperator.apply(valueModifyingSuperClass.getPersistentAttributeContainer(p, MODIFYING_KEY), value);
                         valueModifyingSuperClass.saveValueInPDC(p, MODIFYING_KEY, result);
                     } else {
-                        Bukkit.getLogger().warning(LangConfig.getLocalizedString("powers.errors.value_modifier_save").replace("%modifier%", MODIFYING_KEY));
+                        Bukkit.getLogger().warning(LangConfig.getLocalizedString(p, "powers.errors.value_modifier_save").replace("%modifier%", MODIFYING_KEY));
                     }
                 }
             }

@@ -52,7 +52,7 @@ public class SilkTouch extends CraftPower implements Listener {
                             try {
                                 p.getLocation().getWorld().dropItemNaturally(e.getBlock().getLocation(), i);
                             } catch (Exception exception) {
-                                Bukkit.getLogger().warning(LangConfig.getLocalizedString("powers.errors.silkTouch"));
+                                Bukkit.getLogger().warning(LangConfig.getLocalizedString(p, "powers.errors.silkTouch"));
                                 exception.printStackTrace();
                             }
                         }

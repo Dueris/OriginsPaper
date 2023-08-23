@@ -129,7 +129,7 @@ public class AttributeHandler extends CraftPower implements Listener {
             double result = (Double) mathOperator.apply(base_value, value);
             p.getAttribute(Attribute.valueOf(attribute_modifier.toString())).setBaseValue(result);
         } else {
-            Bukkit.getLogger().warning(LangConfig.getLocalizedString("powers.errors.attribute"));
+            Bukkit.getLogger().warning(LangConfig.getLocalizedString(p, "powers.errors.attribute"));
         }
     }
 
@@ -223,7 +223,7 @@ public class AttributeHandler extends CraftPower implements Listener {
                                 double result = (double) mathOperator.apply(base, value);
                                 setFinalReach(p, result);
                             } else {
-                                Bukkit.getLogger().warning(LangConfig.getLocalizedString("powers.errors.attribute"));
+                                Bukkit.getLogger().warning(LangConfig.getLocalizedString(p, "powers.errors.attribute"));
                             }
 
                             Location eyeloc = p.getEyeLocation();

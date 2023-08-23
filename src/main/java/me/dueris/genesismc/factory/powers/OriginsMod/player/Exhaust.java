@@ -30,7 +30,7 @@ public class Exhaust extends CraftPower {
                     PowerContainer power = origin.getPowerFileFromType("origins:exhaust");
                     if (power == null) continue;
                     if (power.getInterval() == null) {
-                        Bukkit.getLogger().warning(LangConfig.getLocalizedString("powers.errors.exhaust"));
+                        Bukkit.getLogger().warning(LangConfig.getLocalizedString(p, "powers.errors.exhaust"));
                         return;
                     }
                     interval = power.getInterval();

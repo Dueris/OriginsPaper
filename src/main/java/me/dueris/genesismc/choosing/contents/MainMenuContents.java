@@ -85,7 +85,7 @@ public class MainMenuContents {
         human.setItemMeta(skull_p);
 
         //checks which origins are loaded
-        String notFound = LangConfig.getLocalizedString("menu.mainChoose.originNotFound");
+        String notFound = LangConfig.getLocalizedString(p, "menu.mainChoose.originNotFound");
 
         if (originDetails.containsKey("origins:human"))
             human = itemProperties(human, WHITE + originDetails.get("origins:human"), null, null, originDescriptions.get("origins:human"));
@@ -142,10 +142,10 @@ public class MainMenuContents {
             sculkling = itemProperties(sculkling, BLUE + originDetails.get("origins:sculkling"), null, null, originDescriptions.get("origins:sculkling"));
         else sculkling = itemProperties(sculkling, RED + notFound, null, null, RED + notFound);
 
-        custom_originmenu = itemProperties(custom_originmenu, ChatColor.YELLOW + LangConfig.getLocalizedString("menu.mainChoose.customMenu"), ItemFlag.HIDE_ENCHANTS, null, null);
-        close = itemProperties(close, RED + LangConfig.getLocalizedString("menu.mainChoose.close.name"), null, null, RED + LangConfig.getLocalizedString("menu.mainChoose.close.description"));
+        custom_originmenu = itemProperties(custom_originmenu, ChatColor.YELLOW + LangConfig.getLocalizedString(p, "menu.mainChoose.customMenu"), ItemFlag.HIDE_ENCHANTS, null, null);
+        close = itemProperties(close, RED + LangConfig.getLocalizedString(p, "menu.mainChoose.close.name"), null, null, RED + LangConfig.getLocalizedString(p, "menu.mainChoose.close.description"));
 
-        ItemStack randomOrb = itemProperties(orb.clone(), LIGHT_PURPLE + LangConfig.getLocalizedString("menu.mainChoose.random"), null, null, null);
+        ItemStack randomOrb = itemProperties(orb.clone(), LIGHT_PURPLE + LangConfig.getLocalizedString(p, "menu.mainChoose.random"), null, null, null);
         NamespacedKey key = new NamespacedKey(GenesisMC.getPlugin(), "orb");
         ItemMeta randomOrbMeta = randomOrb.getItemMeta();
         randomOrbMeta.getPersistentDataContainer().set(key, PersistentDataType.STRING, "orb");

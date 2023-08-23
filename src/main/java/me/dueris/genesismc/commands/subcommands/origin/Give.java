@@ -5,6 +5,7 @@ import me.dueris.genesismc.commands.subcommands.SubCommand;
 import me.dueris.genesismc.utils.translation.LangConfig;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -22,7 +23,7 @@ public class Give extends SubCommand {
 
     @Override
     public String getDescription() {
-        return LangConfig.getLocalizedString("command.origin.give.description");
+        return LangConfig.getLocalizedString(Bukkit.getConsoleSender(), "command.origin.give.description");
     }
 
     @Override
@@ -34,11 +35,11 @@ public class Give extends SubCommand {
     public void perform(CommandSender sender, String[] args) {
         if (!sender.hasPermission("genesismc.origins.cmd.give")) return;
         if (args.length == 1) {
-            sender.sendMessage(Component.text(LangConfig.getLocalizedString("command.origin.give.noPlayer")).color(TextColor.fromHexString(RED)));
+            sender.sendMessage(Component.text(LangConfig.getLocalizedString(sender, "command.origin.give.noPlayer")).color(TextColor.fromHexString(RED)));
             return;
         }
         if (args.length == 2) {
-            sender.sendMessage(Component.text(LangConfig.getLocalizedString("command.origin.give.noLayer")).color(TextColor.fromHexString(RED)));
+            sender.sendMessage(Component.text(LangConfig.getLocalizedString(sender, "command.origin.give.noLayer")).color(TextColor.fromHexString(RED)));
             return;
         }
 
@@ -55,7 +56,7 @@ public class Give extends SubCommand {
             try {
                 item.setAmount(Integer.parseInt(args[3].strip()));
             } catch (Exception e) {
-                sender.sendMessage(Component.text(LangConfig.getLocalizedString("command.origin.give.wrongNumber")).color(TextColor.fromHexString(RED)));
+                sender.sendMessage(Component.text(LangConfig.getLocalizedString(sender, "command.origin.give.wrongNumber")).color(TextColor.fromHexString(RED)));
                 return;
             }
         } else {

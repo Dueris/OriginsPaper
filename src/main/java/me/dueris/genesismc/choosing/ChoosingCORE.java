@@ -170,7 +170,7 @@ public class ChoosingCORE implements Listener {
                     Player p = (Player) e.getWhoClicked();
                     p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 10, 2);
                     if (OriginPlayer.hasOrigin(p, "genesis:origin-null"))
-                        p.kick(Component.text(LangConfig.getLocalizedString("misc.requiredChoose")));
+                        p.kick(Component.text(LangConfig.getLocalizedString(p, "misc.requiredChoose")));
                     e.getWhoClicked().closeInventory();
                 } else {
                     e.setCancelled(true);
@@ -197,7 +197,7 @@ public class ChoosingCORE implements Listener {
             for (LayerContainer layer : layers) {
                 OriginContainer origin = origins.get(random.nextInt(origins.size()));
                 OriginPlayer.setOrigin(p, layer, origin);
-                p.sendMessage(Component.text(LangConfig.getLocalizedString("misc.randomOrigins").replace("%layer%", layer.getTag()).replace("%originName%", origin.getName())).color(TextColor.fromHexString(AQUA)));
+                p.sendMessage(Component.text(LangConfig.getLocalizedString(p, "misc.randomOrigins").replace("%layer%", layer.getTag()).replace("%originName%", origin.getName())).color(TextColor.fromHexString(AQUA)));
             }
 
             e.setCancelled(true);

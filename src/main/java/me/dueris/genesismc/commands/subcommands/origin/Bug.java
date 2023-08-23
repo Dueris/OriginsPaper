@@ -7,6 +7,7 @@ import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 
 import static me.dueris.genesismc.utils.BukkitColour.YELLOW;
@@ -19,7 +20,7 @@ public class Bug extends SubCommand {
 
     @Override
     public String getDescription() {
-        return LangConfig.getLocalizedString("command.origin.bug.description");
+        return LangConfig.getLocalizedString(Bukkit.getConsoleSender(), "command.origin.bug.description");
     }
 
     @Override
@@ -29,7 +30,7 @@ public class Bug extends SubCommand {
 
     @Override
     public void perform(CommandSender sender, String[] args) {
-        sender.sendMessage(Component.text(LangConfig.getLocalizedString("command.origin.bug.message")).color(TextColor.fromHexString(YELLOW)));
+        sender.sendMessage(Component.text(LangConfig.getLocalizedString(sender, "command.origin.bug.message")).color(TextColor.fromHexString(YELLOW)));
 
         TextComponent git = Component.text("GitHub: https://github.com/Dueris/GenesisMC-Minecraft_Plugin/issues").color(TextColor.fromHexString(YELLOW)).decorate(TextDecoration.UNDERLINED);
         git = git.clickEvent(ClickEvent.clickEvent(ClickEvent.Action.OPEN_URL, "https://github.com/Dueris/GenesisMC-Minecraft_Plugin/issues"));

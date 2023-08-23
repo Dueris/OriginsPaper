@@ -6,13 +6,14 @@ import me.dueris.genesismc.utils.BukkitColour;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.Bukkit;
+import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
 import java.io.File;
 
 public class LangConfig {
-    public static String lang_test = getLocalizedString("lang.test");
+    public static String lang_test = getLocalizedString(Bukkit.getConsoleSender(), "lang.test");
 
     public static File getLangFile() {
 
@@ -38,8 +39,9 @@ public class LangConfig {
         return GenesisDataFiles.getFile(string);
     }
 
-    public static String getLocalizedString(String key) {
-        File langFile = getLangFile();
+    public static String getLocalizedString(CommandSender P, String key) {
+        Translation translation = new Translation();
+        File langFile = translation.getPlayerLangFromLocale(Translation.getPlayerLocale(P));
 
         if (langFile != null) {
             YamlConfiguration langConfig = YamlConfiguration.loadConfiguration(langFile);

@@ -47,15 +47,15 @@ public class VersionControl {
             int diff = latestId - pluginId;
 
             if (diff > 0)
-                Bukkit.getLogger().warning("[GenesisMC] " + LangConfig.getLocalizedString("startup.versionCheck.behind").replace("%versionsBehind%", String.valueOf(diff)));
+                Bukkit.getLogger().warning("[GenesisMC] " + LangConfig.getLocalizedString(Bukkit.getConsoleSender(), "startup.versionCheck.behind").replace("%versionsBehind%", String.valueOf(diff)));
             if (diff == 0)
-                Bukkit.getConsoleSender().sendMessage(Component.text("[GenesisMC] " + LangConfig.getLocalizedString("startup.versionCheck.current")).color(TextColor.fromHexString(GREEN)));
+                Bukkit.getConsoleSender().sendMessage(Component.text("[GenesisMC] " + LangConfig.getLocalizedString(Bukkit.getConsoleSender(), "startup.versionCheck.current")).color(TextColor.fromHexString(GREEN)));
             if (diff < 0)
-                Bukkit.getConsoleSender().sendMessage(Component.text("[GenesisMC] " + LangConfig.getLocalizedString("startup.versionCheck.ahead")).color(TextColor.fromHexString(GREEN)));
+                Bukkit.getConsoleSender().sendMessage(Component.text("[GenesisMC] " + LangConfig.getLocalizedString(Bukkit.getConsoleSender(), "startup.versionCheck.ahead")).color(TextColor.fromHexString(GREEN)));
 
         } catch (Exception e) {
             e.printStackTrace();
-            Bukkit.getLogger().warning("[GenesisMC] " + LangConfig.getLocalizedString("startup.versionCheck.fail"));
+            Bukkit.getLogger().warning("[GenesisMC] " + LangConfig.getLocalizedString(Bukkit.getConsoleSender(), "startup.versionCheck.fail"));
         }
     }
 

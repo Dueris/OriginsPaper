@@ -29,7 +29,7 @@ public class EffectImmunity extends CraftPower {
                                     p.removePotionEffect(effectType);
                                 }
                             } else {
-                                Bukkit.getLogger().warning(LangConfig.getLocalizedString("powers.errors.effectImmunity"));
+                                Bukkit.getLogger().warning(LangConfig.getLocalizedString(p, "powers.errors.effectImmunity"));
                             }
                         } else {
                             if (effectType != null) {
@@ -37,7 +37,7 @@ public class EffectImmunity extends CraftPower {
                                     p.addPotionEffect(new PotionEffect(effectType, 25, 1));
                                 }
                             } else {
-                                Bukkit.getLogger().warning(LangConfig.getLocalizedString("powers.errors.effectImmunity"));
+                                Bukkit.getLogger().warning(LangConfig.getLocalizedString(p, "powers.errors.effectImmunity"));
                             }
                         }
 
@@ -52,7 +52,7 @@ public class EffectImmunity extends CraftPower {
                             }
                         }
                     } else {
-                        Bukkit.getLogger().warning(LangConfig.getLocalizedString("powers.errors.effectImmunity"));
+                        Bukkit.getLogger().warning(LangConfig.getLocalizedString(p, "powers.errors.effectImmunity"));
                     }
                 }
             }

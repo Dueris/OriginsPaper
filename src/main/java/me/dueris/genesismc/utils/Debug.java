@@ -16,7 +16,7 @@ import static org.bukkit.Bukkit.getServer;
 public class Debug {
 
     public static void executeGenesisDebug() {
-        getServer().getConsoleSender().sendMessage(LangConfig.getLocalizedString("startup.debug.start"));
+        getServer().getConsoleSender().sendMessage(LangConfig.getLocalizedString(Bukkit.getConsoleSender(), "startup.debug.start"));
 
         FileConfiguration mainConfig = GenesisDataFiles.getMainConfig();
         ConfigurationSection mainRootSection = mainConfig.getConfigurationSection("");
@@ -28,7 +28,7 @@ public class Debug {
 
         GenesisDataFiles.getOrbCon().getValues(Boolean.parseBoolean("all"));
         getServer().getConsoleSender().sendMessage(LangConfig.getLangFile().toString());
-        getServer().getConsoleSender().sendMessage(LangConfig.getLocalizedString("startup.debug.dump") +
+        getServer().getConsoleSender().sendMessage(LangConfig.getLocalizedString(Bukkit.getConsoleSender(), "startup.debug.dump") +
                 Bukkit.getAllowEnd() +
                 Bukkit.getAllowNether() +
                 Bukkit.getTPS() +
@@ -111,7 +111,7 @@ public class Debug {
             // PaperConfig class not found, not a Paper server
         }
         if (isCraftBukkit || isSpigot || isFolia) {
-            Bukkit.getServer().getLogger().warning(LangConfig.getLocalizedString("startup.debug.server"));
+            Bukkit.getServer().getLogger().warning(LangConfig.getLocalizedString(Bukkit.getConsoleSender(), "startup.debug.server"));
         }
     }
 }

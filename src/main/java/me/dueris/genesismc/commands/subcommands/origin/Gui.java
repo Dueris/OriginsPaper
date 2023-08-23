@@ -28,7 +28,7 @@ public class Gui extends SubCommand {
 
     @Override
     public String getDescription() {
-        return LangConfig.getLocalizedString("command.origin.gui.description");
+        return LangConfig.getLocalizedString(Bukkit.getConsoleSender(), "command.origin.gui.description");
     }
 
     @Override

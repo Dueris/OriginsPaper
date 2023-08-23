@@ -46,7 +46,7 @@ public class AttributeConditioned extends CraftPower implements Listener {
             int result = (int) mathOperator.apply(base_value, value);
             p.getAttribute(Attribute.valueOf(attribute_modifier.toString())).setBaseValue(result);
         } else {
-            Bukkit.getLogger().warning(LangConfig.getLocalizedString("powers.errors.attribute"));
+            Bukkit.getLogger().warning(LangConfig.getLocalizedString(p,"powers.errors.attribute"));
         }
     }
 
@@ -72,7 +72,7 @@ public class AttributeConditioned extends CraftPower implements Listener {
             double result = (Double) mathOperator.apply(base_value, value);
             p.getAttribute(Attribute.valueOf(attribute_modifier.toString())).setBaseValue(result);
         } else {
-            Bukkit.getLogger().warning(LangConfig.getLocalizedString("powers.errors.attribute"));
+            Bukkit.getLogger().warning(LangConfig.getLocalizedString(p, "powers.errors.attribute"));
         }
     }
 

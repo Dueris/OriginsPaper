@@ -31,7 +31,7 @@ public class Burn extends CraftPower {
                     PowerContainer power = origin.getPowerFileFromType("origins:burn");
                     if (power == null) continue;
                     if (power.getInterval() == null) {
-                        Bukkit.getLogger().warning(LangConfig.getLocalizedString("powers.errors.burn"));
+                        Bukkit.getLogger().warning(LangConfig.getLocalizedString(p, "powers.errors.burn"));
                         return;
                     }
                     interval = power.getInterval();

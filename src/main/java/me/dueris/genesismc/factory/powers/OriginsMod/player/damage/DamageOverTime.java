@@ -40,7 +40,7 @@ public class DamageOverTime extends CraftPower {
                     PowerContainer power = origin.getPowerFileFromType("origins:damage_over_time");
                     if (power == null) continue;
                     if (power.getInterval() == null) {
-                        Bukkit.getLogger().warning(LangConfig.getLocalizedString("powers.errors.damageOverTime"));
+                        Bukkit.getLogger().warning(LangConfig.getLocalizedString(p, "powers.errors.damageOverTime"));
                         return;
                     }
                     interval = power.getInterval();

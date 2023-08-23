@@ -91,7 +91,7 @@ public class PlayerHandler implements Listener {
                 p.getPersistentDataContainer().remove(new NamespacedKey(GenesisMC.getPlugin(), "origin"));
             } catch (Exception er) {
                 er.printStackTrace();
-                Bukkit.getLogger().warning(LangConfig.getLocalizedString("errors.oldContainerConversion"));
+                Bukkit.getLogger().warning(LangConfig.getLocalizedString(p, "errors.oldContainerConversion"));
             }
         }
         Bukkit.getLogger().warning("[GenesisMC] Reminder to devs - fix old origin container translation");
@@ -146,7 +146,7 @@ public class PlayerHandler implements Listener {
 
         originValidCheck(p);
         OriginPlayer.assignPowers(p);
-        p.sendMessage(Component.text(LangConfig.getLocalizedString("misc.joinText")).color(TextColor.fromHexString(AQUA)));
+        p.sendMessage(Component.text(LangConfig.getLocalizedString(p, "misc.joinText")).color(TextColor.fromHexString(AQUA)));
 
         new BukkitRunnable() {
             @Override
@@ -168,13 +168,13 @@ public class PlayerHandler implements Listener {
             //check if the player layer exists
             if (!CraftApoli.layerExists(layer)) {
                 deletedLayers.add(layer);
-                p.sendMessage(Component.text(LangConfig.getLocalizedString("misc.layerRemoved").replace("%layerName%", layer.getName())).color(TextColor.fromHexString(RED)));
+                p.sendMessage(Component.text(LangConfig.getLocalizedString(p, "misc.layerRemoved").replace("%layerName%", layer.getName())).color(TextColor.fromHexString(RED)));
                 continue;
             }
             //origin check
             if (!CraftApoli.getLayerFromTag(layer.getTag()).getOrigins().contains(origins.get(layer).getTag())) {
                 origins.replace(layer, CraftApoli.nullOrigin());
-                p.sendMessage(Component.text(LangConfig.getLocalizedString("misc.originRemoved").replace("%originName", origins.get(layer).getName()).replace("%layerName%", layer.getName())).color(TextColor.fromHexString(RED)));
+                p.sendMessage(Component.text(LangConfig.getLocalizedString(p, "misc.originRemoved").replace("%originName", origins.get(layer).getName()).replace("%layerName%", layer.getName())).color(TextColor.fromHexString(RED)));
             }
         }
 

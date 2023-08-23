@@ -228,7 +228,7 @@ public class Phasing extends CraftPower implements Listener {
         if (OriginPlayer.isInPhantomForm(e.getPlayer())) {
             e.getPlayer().setGameMode(GameMode.SURVIVAL);
             OriginPlayer.setOriginData(p, OriginDataType.IN_PHASING_FORM, false);
-            p.sendActionBar(DARK_AQUA + LangConfig.getLocalizedString("powers.phasing.deactivated"));
+            p.sendActionBar(DARK_AQUA + LangConfig.getLocalizedString(p, "powers.phasing.deactivated"));
         }
     }
 
@@ -256,7 +256,7 @@ public class Phasing extends CraftPower implements Listener {
                             ConditionExecutor conditionExecutor = new ConditionExecutor();
                             if (conditionExecutor.check("condition", "conditions", p, origin, "origins:phasing", null, p)) {
                                 OriginPlayer.setOriginData(p, OriginDataType.IN_PHASING_FORM, false);
-                                p.sendActionBar(DARK_AQUA + LangConfig.getLocalizedString("powers.phasing.deactivated"));
+                                p.sendActionBar(DARK_AQUA + LangConfig.getLocalizedString(p, "powers.phasing.deactivated"));
                                 if (p.getGameMode().equals(GameMode.SPECTATOR)) {
                                     if (p.getPreviousGameMode().equals(GameMode.CREATIVE)) {
                                         p.setGameMode(p.getPreviousGameMode());
@@ -274,7 +274,7 @@ public class Phasing extends CraftPower implements Listener {
                             if (conditionExecutor.check("condition", "conditions", p, origin, "origins:phasing", null, p)) {
                                 p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.BOOLEAN, true);
                                 OriginPlayer.setOriginData(p, OriginDataType.IN_PHASING_FORM, true);
-                                p.sendActionBar(DARK_AQUA + LangConfig.getLocalizedString("powers.phasing.activated"));
+                                p.sendActionBar(DARK_AQUA + LangConfig.getLocalizedString(p, "powers.phasing.activated"));
                             }
                         }
                         e.setCancelled(true);

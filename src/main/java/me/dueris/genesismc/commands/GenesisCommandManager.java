@@ -49,7 +49,7 @@ public class GenesisCommandManager implements CommandExecutor {
 
         }
         if (args.length == 0) {
-            sender.sendMessage(Component.text(LangConfig.getLocalizedString("command.origin.empty")).color(TextColor.fromHexString(RED)));
+            sender.sendMessage(Component.text(LangConfig.getLocalizedString(sender, "command.origin.empty")).color(TextColor.fromHexString(RED)));
             sender.sendMessage(Component.text("-----------------------------------------").color(TextColor.fromHexString(YELLOW)));
             sender.sendMessage(Component.text("/origin get <player> <origin layer>"));
             sender.sendMessage(Component.text("/origin set <player> <origin layer>"));

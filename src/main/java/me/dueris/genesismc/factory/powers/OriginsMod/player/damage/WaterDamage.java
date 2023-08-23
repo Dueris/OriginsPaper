@@ -161,7 +161,7 @@ public class WaterDamage extends BukkitRunnable implements Listener {
         Player p = e.getEntity();
         if (water_vulnerability.contains(e.getPlayer())) {
             if (p.isInWaterOrRainOrBubbleColumn()) {
-                e.deathMessage(Component.text(LangConfig.getLocalizedString("powers.bathForTooLong")));
+                e.deathMessage(Component.text(LangConfig.getLocalizedString(p, "powers.bathForTooLong")));
             }
         }
     }

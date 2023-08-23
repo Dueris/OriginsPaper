@@ -36,7 +36,7 @@ public class Recipe extends SubCommand implements Listener {
 
     @Override
     public String getDescription() {
-        return LangConfig.getLocalizedString("command.origin.recipe.description");
+        return LangConfig.getLocalizedString(Bukkit.getConsoleSender(), "command.origin.recipe.description");
     }
 
     @Override
@@ -49,7 +49,7 @@ public class Recipe extends SubCommand implements Listener {
         if (sender instanceof Player p) {
             if (!p.hasPermission("genesismc.origins.cmd.recipe")) return;
             if (getMainConfig().get("orb-of-origins") == null || getOrbCon().get("orb-of-origins-enabled").toString() != "true") {
-                p.sendMessage(Component.text(LangConfig.getLocalizedString("command.origin.recipe.disabled")).color(TextColor.fromHexString(RED)));
+                p.sendMessage(Component.text(LangConfig.getLocalizedString(p, "command.origin.recipe.disabled")).color(TextColor.fromHexString(RED)));
                 return;
             }
             @NotNull Inventory custommenu = Bukkit.createInventory(p, 54, "Orb Recipe");
@@ -100,10 +100,10 @@ public class Recipe extends SubCommand implements Listener {
                 p.openInventory(custommenu);
                 p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 10, 9);
             } catch (Exception exception) {
-                sender.sendMessage(Component.text(LangConfig.getLocalizedString("command.origin.recipe.error")).color(TextColor.fromHexString(RED)));
+                sender.sendMessage(Component.text(LangConfig.getLocalizedString(p, "command.origin.recipe.error")).color(TextColor.fromHexString(RED)));
             }
         } else
-            sender.sendMessage(Component.text(LangConfig.getLocalizedString("command.origin.recipe.playerOnly")).color(TextColor.fromHexString(RED)));
+            sender.sendMessage(Component.text(LangConfig.getLocalizedString(sender,"command.origin.recipe.playerOnly")).color(TextColor.fromHexString(RED)));
     }
 
     @EventHandler

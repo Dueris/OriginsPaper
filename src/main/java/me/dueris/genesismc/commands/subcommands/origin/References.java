@@ -7,6 +7,7 @@ import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 
 import static me.dueris.genesismc.utils.BukkitColour.YELLOW;
@@ -19,7 +20,7 @@ public class References extends SubCommand {
 
     @Override
     public String getDescription() {
-        return LangConfig.getLocalizedString("command.origin.references.description");
+        return LangConfig.getLocalizedString(Bukkit.getConsoleSender(), "command.origin.references.description");
     }
 
     @Override
@@ -29,19 +30,19 @@ public class References extends SubCommand {
 
     @Override
     public void perform(CommandSender sender, String[] args) {
-        sender.sendMessage(Component.text(LangConfig.getLocalizedString("command.origin.references.Apace")));
+        sender.sendMessage(Component.text(LangConfig.getLocalizedString(sender, "command.origin.references.Apace")));
         TextComponent ApaceLink = Component.text("https://github.com/apace100/origins-fabric").color(TextColor.fromHexString(YELLOW)).decorate(TextDecoration.UNDERLINED);
         sender.sendMessage(ApaceLink.clickEvent(ClickEvent.clickEvent(ClickEvent.Action.OPEN_URL, "https://github.com/apace100/origins-fabric")));
 
-        sender.sendMessage(Component.text(LangConfig.getLocalizedString("command.origin.references.Slayer")));
+        sender.sendMessage(Component.text(LangConfig.getLocalizedString(sender, "command.origin.references.Slayer")));
         TextComponent SlayerLink = Component.text("https://www.curseforge.com/minecraft/customization/origins-starborne").color(TextColor.fromHexString(YELLOW)).decorate(TextDecoration.UNDERLINED);
         sender.sendMessage(SlayerLink.clickEvent(ClickEvent.clickEvent(ClickEvent.Action.OPEN_URL, "https://www.curseforge.com/minecraft/customization/origins-starborne")));
 
-        sender.sendMessage(Component.text(LangConfig.getLocalizedString("command.origin.references.TotalElipse")));
+        sender.sendMessage(Component.text(LangConfig.getLocalizedString(sender, "command.origin.references.TotalElipse")));
         TextComponent TotalElipseLink = Component.text("https://www.curseforge.com/minecraft/mc-mods/slime-origin").color(TextColor.fromHexString(YELLOW)).decorate(TextDecoration.UNDERLINED);
         sender.sendMessage(TotalElipseLink.clickEvent(ClickEvent.clickEvent(ClickEvent.Action.OPEN_URL, "https://www.curseforge.com/minecraft/mc-mods/slime-origin")));
 
-        sender.sendMessage(Component.text(LangConfig.getLocalizedString("command.origin.references.Sakisiil")));
+        sender.sendMessage(Component.text(LangConfig.getLocalizedString(sender, "command.origin.references.Sakisiil")));
         TextComponent SakisiilLink = Component.text("https://github.com/sakisiil/Origin-Datapacks").color(TextColor.fromHexString(YELLOW)).decorate(TextDecoration.UNDERLINED);
         sender.sendMessage(SakisiilLink.clickEvent(ClickEvent.clickEvent(ClickEvent.Action.OPEN_URL, "https://github.com/sakisiil/Origin-Datapacks")));
     }
