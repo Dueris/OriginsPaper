@@ -323,7 +323,7 @@ public class PlayerRender extends CraftPower {
         private static BufferedImage modifyImage(BufferedImage originalImage, double redTint, double greenTint, double blueTint, double alphaTint, Player player, OriginContainer origin) {
             if (redTint > 1 || greenTint > 1 || blueTint > 1 || alphaTint > 1) {
                 if(origin.getPowerFileFromType("origins:model_color").getModelRenderType() == "original"){
-                    throw new IllegalArgumentException(LangConfig.getLocalizedString(p, "powers.errors.modelColourValue"));
+                    throw new IllegalArgumentException(LangConfig.getLocalizedString(Bukkit.getConsoleSender(), "powers.errors.modelColourValue"));
                 }
             }
 
