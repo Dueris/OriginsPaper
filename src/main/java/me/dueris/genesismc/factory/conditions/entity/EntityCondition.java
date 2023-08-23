@@ -21,38 +21,63 @@ import java.util.HashMap;
 
 public class EntityCondition {
 
-    public static String check(String thinger, String plural, Player p, OriginContainer origin, String powerfile, Entity entity) {
-        if (origin.getPowerFileFromType(powerfile).getConditionFromString(thinger, plural) == null) {
-            return "null";
+    public static String check(HashMap<String, Object> condition, Player p, Entity entity) {
+        boolean inverted = false;
+        if(condition.get("inverted") != null){
+            inverted = (boolean) condition.get("inverted");
         }
-        if(origin.getPowerFileFromType(powerfile).getPossibleModifiers(thinger, plural).isEmpty()) return "null";
-        for(HashMap<String, Object> condition : origin.getPowerFileFromType(powerfile).getPossibleModifiers(thinger, plural)){
             if (condition.get("type") == null) return "null";
             String type = condition.get("type").toString();
             if (type.equalsIgnoreCase("origins:ability")) {
                 String ability = condition.get("ability").toString();
                 if (ability.equalsIgnoreCase("minecraft:flying")) {
                     if (entity instanceof Player player) {
-                        if (player.isFlying()) return "true";
+                        if(inverted){
+                            if (!player.isFlying()) return "true";
+                        }else{
+                            if (player.isFlying()) return "true";
+                        }
                     }
                 }
                 if (ability.equalsIgnoreCase("minecraft:instabuild")) {
                     if (entity instanceof Player player) {
-                        if (player.getGameMode().equals(GameMode.CREATIVE)) return "true";
+                        if(inverted){
+                            if (!player.getGameMode().equals(GameMode.CREATIVE)) return "true";
+                        }else{
+                            if (player.getGameMode().equals(GameMode.CREATIVE)) return "true";
+                        }
                     }
                 }
                 if (ability.equalsIgnoreCase("minecraft:invulnerable")) {
-                    if (entity.isInvulnerable()) return "true";
+                    if(inverted){
+                        if (!entity.isInvulnerable()) return "true";
+                    }else{
+                        if (entity.isInvulnerable()) return "true";
+                    }
                 }
                 if (ability.equalsIgnoreCase("minecraft:maybuild")) {
-                    if (entity.hasPermission("minecraft.build")) {
-                        return "true";
+                    if(inverted){
+                        if (!entity.hasPermission("minecraft.build")) {
+                            return "true";
+                        }
+                    }else{
+                        if (entity.hasPermission("minecraft.build")) {
+                            return "true";
+                        }
                     }
+
                 }
                 if (ability.equalsIgnoreCase("minecraft:mayfly")) {
-                    if (entity instanceof Player player) {
-                        if (player.getAllowFlight()) return "true";
+                    if(inverted){
+                        if (entity instanceof Player player) {
+                            if (!player.getAllowFlight()) return "true";
+                        }
+                    }else{
+                        if (entity instanceof Player player) {
+                            if (player.getAllowFlight()) return "true";
+                        }
                     }
+
                 }
             }
 
@@ -73,9 +98,16 @@ public class EntityCondition {
                             if (advancementJson != null) {
                                 Boolean done = (Boolean) advancementJson.get("done");
                                 if (done != null) {
-                                    if (done.toString() == "true") {
-                                        return "true";
+                                    if(inverted){
+                                        if (done.toString() == "false") {
+                                            return "true";
+                                        }
+                                    }else{
+                                        if (done.toString() == "true") {
+                                            return "true";
+                                        }
                                     }
+
                                 } else {
                                     return "false";
                                 }
@@ -93,18 +125,32 @@ public class EntityCondition {
 
             if (type.equalsIgnoreCase("origins:air")) {
                 if (entity instanceof Player player) {
-                    if (RestrictArmor.compareValues(player.getRemainingAir(), condition.get("comparison").toString(), Integer.valueOf(condition.get("compare_to").toString()))) {
-                        return "true";
+                    if(inverted){
+                        if (!RestrictArmor.compareValues(player.getRemainingAir(), condition.get("comparison").toString(), Integer.valueOf(condition.get("compare_to").toString()))) {
+                            return "true";
+                        }
+                    }else{
+                        if (RestrictArmor.compareValues(player.getRemainingAir(), condition.get("comparison").toString(), Integer.valueOf(condition.get("compare_to").toString()))) {
+                            return "true";
+                        }
                     }
+
                 }
             }
 
             if (type.equalsIgnoreCase("origins:attribute")) {
                 if (entity instanceof Player player) {
                     String attributeString = condition.get("attribute").toString().split(":")[1].replace(".", "_").toUpperCase();
-                    if (RestrictArmor.compareValues(player.getAttribute(Attribute.valueOf(attributeString)).getValue(), condition.get("comparison").toString(), Integer.valueOf(condition.get("compare_to").toString()))) {
-                        return "true";
+                    if(inverted){
+                        if (!RestrictArmor.compareValues(player.getAttribute(Attribute.valueOf(attributeString)).getValue(), condition.get("comparison").toString(), Integer.valueOf(condition.get("compare_to").toString()))) {
+                            return "true";
+                        }
+                    }else{
+                        if (RestrictArmor.compareValues(player.getAttribute(Attribute.valueOf(attributeString)).getValue(), condition.get("comparison").toString(), Integer.valueOf(condition.get("compare_to").toString()))) {
+                            return "true";
+                        }
                     }
+
                 }
             }
 
@@ -112,9 +158,16 @@ public class EntityCondition {
 
             if (type.equalsIgnoreCase("origins:biome")) {
                 String biomeString = condition.get("biome").toString().split(":")[1].replace(".", "_").toUpperCase();
-                if (entity.getLocation().getBlock().getBiome().equals(Biome.valueOf(biomeString))) {
-                    return "true";
+                if(inverted){
+                    if (!entity.getLocation().getBlock().getBiome().equals(Biome.valueOf(biomeString))) {
+                        return "true";
+                    }
+                }else{
+                    if (entity.getLocation().getBlock().getBiome().equals(Biome.valueOf(biomeString))) {
+                        return "true";
+                    }
                 }
+
             }
 
             if (type.equalsIgnoreCase("origins:block_collision")) {
@@ -132,9 +185,16 @@ public class EntityCondition {
 
                     Block block = world.getBlockAt(blockX, blockY, blockZ);
 
-                    if (block.getType() != Material.AIR) {
-                        return "true";
+                    if(inverted){
+                        if (block.getType() == Material.AIR) {
+                            return "true";
+                        }
+                    }else{
+                        if (block.getType() != Material.AIR) {
+                            return "true";
+                        }
                     }
+
                 }
             }
 
@@ -167,10 +227,16 @@ public class EntityCondition {
                 } else if (shape.equalsIgnoreCase("cube")) {
                     blockCount = countBlocksInCube(minX, minY, minZ, maxX, maxY, maxZ, world);
                 }
-
-                if (RestrictArmor.compareValues(blockCount, comparison, compare_to)) {
-                    return "true";
+                if(inverted){
+                    if (!RestrictArmor.compareValues(blockCount, comparison, compare_to)) {
+                        return "true";
+                    }
+                }else{
+                    if (RestrictArmor.compareValues(blockCount, comparison, compare_to)) {
+                        return "true";
+                    }
                 }
+
             }
 
             if (type.equalsIgnoreCase("origins:brightness")) {
@@ -187,17 +253,38 @@ public class EntityCondition {
                     ambientLight = 1;
                 }
                 brightness = ambientLight + (1 - ambientLight) * lightLevel / (60 - 3 * lightLevel);
-
-                if (RestrictArmor.compareValues(brightness, comparison, compare_to)) {
-                    return "true";
+                if(inverted){
+                    if (!RestrictArmor.compareValues(brightness, comparison, compare_to)) {
+                        return "true";
+                    }
+                }else{
+                    if (RestrictArmor.compareValues(brightness, comparison, compare_to)) {
+                        return "true";
+                    }
                 }
+
             }
 
             if (type.equalsIgnoreCase("origins:climbing")) {
                 if (entity instanceof Player player) {
-                    if (player.isClimbing()) {
-                        return "true";
+                    if(inverted){
+                        if (!player.isClimbing()) {
+                            return "true";
+                        }
+                        Climbing climbing = new Climbing();
+                        if(!climbing.isActiveClimbing(player)){
+                            return "true";
+                        }
+                    }else{
+                        if (player.isClimbing()) {
+                            return "true";
+                        }
+                        Climbing climbing = new Climbing();
+                        if(climbing.isActiveClimbing(player)){
+                            return "true";
+                        }
                     }
+
                 }
             }
 
@@ -215,28 +302,45 @@ public class EntityCondition {
                     double z = center.getZ();
 
                     BoundingBox boundingBox = block.getBoundingBox();
-                    if (boundingBox.overlaps(playerBoundingBox)) {
-                        return "true";
+                    if(inverted){
+                        if (!boundingBox.overlaps(playerBoundingBox)) {
+                            return "true";
+                        }
+                    }else{
+                        if (boundingBox.overlaps(playerBoundingBox)) {
+                            return "true";
+                        }
                     }
+
                 }
             }
 
             if (type.equalsIgnoreCase("origins:creative_flying")) {
                 if (entity instanceof Player player) {
-                    if (player.isFlying()) {
-                        return "true";
+                    if(inverted){
+                        if (!player.isFlying()) {
+                            return "true";
+                        }
+                    }else{
+                        if (player.isFlying()) {
+                            return "true";
+                        }
                     }
-                    Climbing climbing = new Climbing();
-                    if(climbing.isActiveClimbing(player)){
-                        return "true";
-                    }
+
                 }
             }
 
             if (type.equalsIgnoreCase("origins:daytime")) {
-                if (entity.getWorld().isDayTime()) {
-                    return "true";
+                if(inverted){
+                    if (!entity.getWorld().isDayTime()) {
+                        return "true";
+                    }
+                }else{
+                    if (entity.getWorld().isDayTime()) {
+                        return "true";
+                    }
                 }
+
             }
 
             if (type.equalsIgnoreCase("origins:dimension")) {
@@ -251,8 +355,6 @@ public class EntityCondition {
                 }
 
             }
-
-        }
         return "false";
     }
 

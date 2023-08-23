@@ -34,6 +34,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import static org.bukkit.ChatColor.DARK_AQUA;
 import static org.bukkit.ChatColor.GRAY;
@@ -94,8 +95,10 @@ public class Phasing extends CraftPower implements Listener {
                                 Location currentLocation = p.getLocation();
                                 Location targetLocation = currentLocation.getBlock().getRelative(BlockFace.DOWN).getLocation();
                                 Location loc = new Location(targetLocation.getWorld(), targetLocation.getX(), targetLocation.getY(), targetLocation.getZ(), p.getEyeLocation().getYaw(), p.getEyeLocation().getPitch());
-                                if (EntityCondition.check("phase_down_condition", "phase_down_conditions", p, origin, "origins:phasing", p) == "true" || EntityCondition.check("phase_down_condition", "conditions", p, origin, "origins:phasing", p) == "null") {
-                                    p.teleport(loc);
+                                for(HashMap<String, Object> condition : origin.getPowerFileFromType(getPowerFile()).getConditionFromString("phase_down_condition", "phase_down_conditions")){
+                                    if (EntityCondition.check(condition, p, p) == "true" || EntityCondition.check(condition, p, p) == "null") {
+                                        p.teleport(loc);
+                                    }
                                 }
                             }
                         }
