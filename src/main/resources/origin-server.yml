@@ -9,6 +9,9 @@
 # Options: english = english
 lang: english
 
+# Enables player-region specific lang translations. NOT RECOMMENDED unless your players want to. Disabled by default
+adapt_lang: false
+
 # Enables debug information, when making a bug report, please include a screenshot of the startup while this is "true".
 console-startup-debug: false
 

@@ -23,7 +23,7 @@ public class Translation {
     }
 
     public File getPlayerLangFromLocale(String locale){
-        if(LangConfig.getFile(locale) == null){
+        if(LangConfig.getFile(locale) == null && GenesisDataFiles.getMainConfig().getString("adapt_lang") == "true"){
             return LangConfig.getLangFile();
         }
         return LangConfig.getFile(locale);
