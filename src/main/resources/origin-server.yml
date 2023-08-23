@@ -7,7 +7,7 @@
 
 # Determines language file to read, replace with the second word in the options list for your language.
 # Options: english = english
-lang: english
+lang: en_us
 
 # Enables player-region specific lang translations. NOT RECOMMENDED unless your players want to. Disabled by default
 adapt_lang: false
