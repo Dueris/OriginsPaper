@@ -23,10 +23,13 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
+import org.json.simple.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+
+import static me.dueris.genesismc.factory.CraftApoli.fileToFileContainer;
 import static me.dueris.genesismc.factory.powers.OriginsMod.prevent.PreventSuperClass.*;
 import static me.dueris.genesismc.factory.powers.OriginsMod.value_modifying.ValueModifyingSuperClass.*;
 import static org.bukkit.Bukkit.getServer;
@@ -266,7 +269,10 @@ public class OriginPlayer {
         for (PowerContainer power : origin.getPowerContainers()) {
             for (Class<? extends CraftPower> c : CraftPower.getRegistered()) {
                 CraftPower craftPower = c.newInstance();
+                player.sendMessage(origin.getPowerContainers().toString());
+                player.sendMessage("12");
                 if (power.getType().equals(craftPower.getPowerFile())) {
+                    player.sendMessage("adddedded");
                     craftPower.getPowerArray().add(player);
                     if(GenesisDataFiles.getMainConfig().getString("console-startup-debug").equalsIgnoreCase("true")){
                         Bukkit.getConsoleSender().sendMessage("GenesisMC-Origins assigned power[" + craftPower.getPowerFile() + "] on layer[" + layer.getTag() +"] to player " + player.getName());

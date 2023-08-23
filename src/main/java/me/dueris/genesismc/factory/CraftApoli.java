@@ -85,6 +85,21 @@ public class CraftApoli {
         }
     }
 
+    public static ArrayList<PowerContainer> processNestedPowers(PowerContainer powerContainer) {
+        ArrayList<PowerContainer> newPowerContainers = new ArrayList<>();
+
+        for (String key : powerContainer.getPowerFile().getKeys()) {
+            Object subPowerValue = powerContainer.get(key);
+
+            if (subPowerValue instanceof JSONObject) {
+                JSONObject subPowerJson = (JSONObject) subPowerValue;
+                PowerContainer nestedPowerContainer = new PowerContainer(key, fileToFileContainer(subPowerJson), powerContainer.getSource());
+                newPowerContainers.add(nestedPowerContainer);
+            }
+        }
+
+        return newPowerContainers;
+    }
 
     /**
      * Loads the custom origins from the datapack dir into memory.
@@ -123,19 +138,39 @@ public class CraftApoli {
                     ArrayList<String> originFileName = new ArrayList<>();
 
                     for (Path path : files.keySet()) {
-                        if (path.equals(Path.of("data" + File.separator + "origins" + File.separator + "origin_layers" + File.separator + "origin.json"))) {
-                            originDatapack = true;
+                        Bukkit.getConsoleSender().sendMessage("patj");
+                        Bukkit.getLogger().warning("AHSFD");
+                        if (path.equals(Path.of("data" + File.separator + originFolder.get(0) + File.separator + "origins" + File.separator + originFileName.get(0) + ".json"))) {
+                            JSONObject originParser = (JSONObject) new JSONParser().parse(files.get(path));
+                            ArrayList<String> powersList = (ArrayList<String>) originParser.get("powers");
 
-                            originLayerParser = (JSONObject) new JSONParser().parse(files.get(path));
-                            JSONArray originLayer_origins = ((JSONArray) originLayerParser.get("origins"));
+                            ArrayList<PowerContainer> powerContainers = new ArrayList<>();
 
-                            for (Object o : originLayer_origins) {
-                                String value = (String) o;
-                                String[] valueSplit = value.split(":");
-                                originFolder.add(valueSplit[0]);
-                                originFileName.add(valueSplit[1]);
+                            if (powersList != null) {
+                                for (String string : powersList) {
+                                    String[] powerLocation = string.split(":");
+                                    String powerFolder = powerLocation[0];
+                                    String powerFileName = powerLocation[1];
+
+                                    try {
+                                        JSONObject powerParser = (JSONObject) new JSONParser().parse(files.get(Path.of("data" + File.separator + powerFolder + File.separator + "powers" + File.separator + powerFileName + ".json")));
+
+                                        if (powerParser.containsKey("type") && "origins:multiple".equals(powerParser.get("type"))) {
+                                            PowerContainer powerContainer = new PowerContainer(powerFolder + ":" + powerFileName, fileToFileContainer(powerParser), originFolder.get(0) + ":" + originFileName.get(0));
+                                            for(PowerContainer con : processNestedPowers(powerContainer)){
+                                                powerContainers.add(con);
+                                            }
+                                            powerContainers.add(powerContainer);
+                                            Bukkit.getServer().getConsoleSender().sendMessage("KHSXGVCDFZ");
+                                        } else {
+                                            powerContainers.add(new PowerContainer(powerFolder + ":" + powerFileName, fileToFileContainer(powerParser), originFolder.get(0) + ":" + originFileName.get(0)));
+                                        }
+                                    } catch (NullPointerException nullPointerException) {
+                                    }
+                                }
                             }
 
+                            originContainers.add(new OriginContainer(originFolder.get(0) + ":" + originFileName.get(0), fileToFileContainer(originLayerParser), fileToHashMap(originParser), powerContainers));
                         }
                     }
 
