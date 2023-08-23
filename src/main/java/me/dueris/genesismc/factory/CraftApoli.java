@@ -10,6 +10,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.bukkit.Bukkit;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.json.simple.JSONValue;
 import org.json.simple.parser.JSONParser;
 
 import java.io.*;
@@ -85,20 +86,22 @@ public class CraftApoli {
         }
     }
 
-    public static ArrayList<PowerContainer> processNestedPowers(PowerContainer powerContainer) {
+    public static void processNestedPowers(PowerContainer powerContainer, ArrayList<PowerContainer> powerContainers) {
         ArrayList<PowerContainer> newPowerContainers = new ArrayList<>();
 
         for (String key : powerContainer.getPowerFile().getKeys()) {
-            Object subPowerValue = powerContainer.get(key);
+            Object subPowerValue = powerContainer.getPowerFile().get(key);
 
             if (subPowerValue instanceof JSONObject) {
                 JSONObject subPowerJson = (JSONObject) subPowerValue;
-                PowerContainer nestedPowerContainer = new PowerContainer(key, fileToFileContainer(subPowerJson), powerContainer.getSource());
-                newPowerContainers.add(nestedPowerContainer);
+                FileContainer subPowerFile = fileToFileContainer(subPowerJson);
+                String source = powerContainer.getSource();
+
+                PowerContainer newPower = new PowerContainer(key, subPowerFile, source);
+                newPowerContainers.add(newPower);
             }
         }
-
-        return newPowerContainers;
+        powerContainers.addAll(newPowerContainers);
     }
 
     /**
@@ -106,7 +109,6 @@ public class CraftApoli {
      **/
     public static void loadOrigins() {
         Boolean showErrors = Boolean.valueOf(GenesisDataFiles.getMainConfig().get("console-print-parse-errors").toString());
-
         File DatapackDir = new File(Bukkit.getServer().getPluginManager().getPlugin("GenesisMC").getDataFolder() + File.separator + ".." + File.separator + ".." + File.separator + Bukkit.getServer().getWorlds().get(0).getName() + File.separator + "datapacks");
         File[] datapacks = DatapackDir.listFiles();
         if (datapacks == null) return;
@@ -157,11 +159,8 @@ public class CraftApoli {
 
                                         if (powerParser.containsKey("type") && "origins:multiple".equals(powerParser.get("type"))) {
                                             PowerContainer powerContainer = new PowerContainer(powerFolder + ":" + powerFileName, fileToFileContainer(powerParser), originFolder.get(0) + ":" + originFileName.get(0));
-                                            for(PowerContainer con : processNestedPowers(powerContainer)){
-                                                powerContainers.add(con);
-                                            }
-                                            powerContainers.add(powerContainer);
-                                            Bukkit.getServer().getConsoleSender().sendMessage("KHSXGVCDFZ");
+                                            Bukkit.getConsoleSender().sendMessage(powerContainer.getType());
+                                            processNestedPowers(powerContainer, powerContainers);
                                         } else {
                                             powerContainers.add(new PowerContainer(powerFolder + ":" + powerFileName, fileToFileContainer(powerParser), originFolder.get(0) + ":" + originFileName.get(0)));
                                         }
@@ -194,7 +193,13 @@ public class CraftApoli {
 
                                         try {
                                             JSONObject powerParser = (JSONObject) new JSONParser().parse(files.get(Path.of("data" + File.separator + powerFolder + File.separator + "powers" + File.separator + powerFileName + ".json")));
-                                            powerContainers.add(new PowerContainer(powerFolder + ":" + powerFileName, fileToFileContainer(powerParser), originFolder.get(0) + ":" + originFileName.get(0)));
+                                            if (powerParser.containsKey("type") && "origins:multiple".equals(powerParser.get("type"))) {
+                                                PowerContainer powerContainer = new PowerContainer(powerFolder + ":" + powerFileName, fileToFileContainer(powerParser), originFolder.get(0) + ":" + originFileName.get(0));
+                                                Bukkit.getConsoleSender().sendMessage(powerContainer.getType());
+                                                processNestedPowers(powerContainer, powerContainers);
+                                            } else {
+                                                powerContainers.add(new PowerContainer(powerFolder + ":" + powerFileName, fileToFileContainer(powerParser), originFolder.get(0) + ":" + originFileName.get(0)));
+                                            }
                                         } catch (NullPointerException nullPointerException) {
                                             if (showErrors)
                                                 Bukkit.getServer().getConsoleSender().sendMessage(Component.text(LangConfig.getLocalizedString(Bukkit.getConsoleSender(), "errors.craftApoli.powerParsing").replace("%powerFolder%", powerFolder).replace("%powerFileName%", powerFileName).replace("%originFolder%", originFolder.get(0)).replace("%originFileName%", originFileName.get(0))).color(TextColor.color(255, 0, 0)));
@@ -294,7 +299,13 @@ public class CraftApoli {
 
                                 try {
                                     JSONObject powerParser = (JSONObject) new JSONParser().parse(new FileReader(datapack.getAbsolutePath() + File.separator + "data" + File.separator + powerFolder + File.separator + "powers" + File.separator + powerFileName + ".json"));
-                                    powerContainers.add(new PowerContainer(powerFolder + ":" + powerFileName, fileToFileContainer(powerParser), originFolder.get(0) + ":" + originFileName.get(0)));
+                                    if (powerParser.containsKey("type") && "origins:multiple".equals(powerParser.get("type"))) {
+                                        PowerContainer powerContainer = new PowerContainer(powerFolder + ":" + powerFileName, fileToFileContainer(powerParser), originFolder.get(0) + ":" + originFileName.get(0));
+                                        Bukkit.getConsoleSender().sendMessage(powerContainer.getType());
+                                        processNestedPowers(powerContainer, powerContainers);
+                                    } else {
+                                        powerContainers.add(new PowerContainer(powerFolder + ":" + powerFileName, fileToFileContainer(powerParser), originFolder.get(0) + ":" + originFileName.get(0)));
+                                    }
                                 } catch (FileNotFoundException fileNotFoundException) {
                                     if (showErrors)
                                         Bukkit.getServer().getConsoleSender().sendMessage(Component.text(LangConfig.getLocalizedString(Bukkit.getConsoleSender(), "errors.craftApoli.powerParsing").replace("%powerFolder", powerFolder).replace("%powerFileName", powerFileName).replace("%originFolder%", originFolder.get(0)).replace("%originFileName%", originFileName.get(0))).color(TextColor.color(255, 0, 0)));

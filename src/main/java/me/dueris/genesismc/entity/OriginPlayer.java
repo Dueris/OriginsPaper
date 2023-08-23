@@ -271,6 +271,9 @@ public class OriginPlayer {
                 CraftPower craftPower = c.newInstance();
                 player.sendMessage(origin.getPowerContainers().toString());
                 player.sendMessage("12");
+                if(power.getType() != "origins:multiple"){
+                    player.sendMessage(power.getType());
+                }
                 if (power.getType().equals(craftPower.getPowerFile())) {
                     player.sendMessage("adddedded");
                     craftPower.getPowerArray().add(player);
