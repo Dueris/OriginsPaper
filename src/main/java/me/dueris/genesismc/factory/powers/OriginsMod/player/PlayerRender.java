@@ -40,12 +40,12 @@ import java.util.concurrent.CompletableFuture;
 public class PlayerRender extends CraftPower {
     @Override
     public void run() {
-        ScoreboardManager manager = Bukkit.getScoreboardManager();
-        Scoreboard scoreboard = manager.getMainScoreboard();
-        Team team = scoreboard.getTeam("origin-players");
-        if (team == null) {
-            team = scoreboard.registerNewTeam("origin-players");
-        }
+//        ScoreboardManager manager = Bukkit.getScoreboardManager();
+//        Scoreboard scoreboard = manager.getMainScoreboard();
+//        Team team = scoreboard.getTeam("origin-players");
+//        if (team == null) {
+//            team = scoreboard.registerNewTeam("origin-players");
+//        }
 
         for (Player p : Bukkit.getOnlinePlayers()) {
             boolean isInvisible = p.hasPotionEffect(PotionEffectType.INVISIBILITY);
@@ -58,9 +58,9 @@ public class PlayerRender extends CraftPower {
                         other.hidePlayer(GenesisMC.getPlugin(), p);
                     }
                 }
-                if (!team.getEntries().contains(p)) {
-                    team.addEntry(p.getName());
-                }
+//                if (!team.getEntries().contains(p)) {
+//                    team.addEntry(p.getName());
+//                }
             } else if (isInvisible && !isInTranslucentList) {
                 for (Player other : Bukkit.getOnlinePlayers()) {
                     if (!other.equals(p)) {
@@ -69,18 +69,18 @@ public class PlayerRender extends CraftPower {
                 }
                 Location location = p.getLocation();
                 location.getWorld().spawnParticle(Particle.SPELL_MOB_AMBIENT, location, 2, 0.0, 0.0, 0.0, 1.0, null);
-                if (!team.getEntries().contains(p)) {
-                    team.addEntry(p.getName());
-                }
+//                if (!team.getEntries().contains(p)) {
+//                    team.addEntry(p.getName());
+//                }
             } else {
                 for (Player other : Bukkit.getOnlinePlayers()) {
                     if (!other.equals(p)) {
                         other.showPlayer(GenesisMC.getPlugin(), p);
                     }
                 }
-                if (!team.getEntries().contains(p)) {
-                    team.addEntry(p.getName());
-                }
+//                if (!team.getEntries().contains(p)) {
+//                    team.addEntry(p.getName());
+//                }
             }
 
             if (isInTranslucentList) {
@@ -90,9 +90,9 @@ public class PlayerRender extends CraftPower {
                     }
                 }
                 p.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 15, 255, false, false, false));
-                if (!team.getEntries().contains(p)) {
-                    team.addEntry(p.getName());
-                }
+//                if (!team.getEntries().contains(p)) {
+//                    team.addEntry(p.getName());
+//                }
             }
 
             // Hide player from pumpkin_hate players if wearing a pumpkin

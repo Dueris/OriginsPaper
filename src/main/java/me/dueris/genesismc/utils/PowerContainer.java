@@ -3,6 +3,7 @@ package me.dueris.genesismc.utils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
+import java.awt.*;
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -608,6 +609,56 @@ public class PowerContainer implements Serializable {
                 String string_key = (String) innerKey;
                 Object value = jsonObject.get(string_key);
                 itemMap.put(string_key, value);
+            }
+            result.add(itemMap);
+        }
+        return result;
+    }
+
+    public List<HashMap<String, Object>> getSingularAndPlural(String singular, String plural) {
+        Object obj = powerFile.get(singular);
+        if (obj == null) {
+            obj = powerFile.get(plural);
+        }
+
+        List<HashMap<String, Object>> result = new ArrayList<>();
+
+        if (obj instanceof JSONArray) {
+            JSONArray jsonArray = (JSONArray) obj;
+            for (Object item : jsonArray) {
+                if (item instanceof JSONObject) {
+                    JSONObject jsonObject = (JSONObject) item;
+                    HashMap<String, Object> itemMap = new HashMap<>();
+                    for (Object innerKey : jsonObject.keySet()) {
+                        String stringKey = (String) innerKey;
+                        Object value = jsonObject.get(stringKey);
+
+                        if (value instanceof JSONObject && jsonObject.containsKey(stringKey)) {
+                            // Handle text components here
+                            String textValue = (String) jsonObject.get(stringKey);
+                            Object textComponent = textValue;
+                            itemMap.put(stringKey, textComponent);
+                        } else {
+                            itemMap.put(stringKey, value);
+                        }
+                    }
+                    result.add(itemMap);
+                }
+            }
+        } else if (obj instanceof JSONObject) {
+            JSONObject jsonObject = (JSONObject) obj;
+            HashMap<String, Object> itemMap = new HashMap<>();
+            for (Object innerKey : jsonObject.keySet()) {
+                String stringKey = (String) innerKey;
+                Object value = jsonObject.get(stringKey);
+
+                if (value instanceof JSONObject && jsonObject.containsKey(stringKey)) {
+                    String textValue = (String) jsonObject.get(stringKey);
+                    Object textComponent = textValue;
+                    itemMap.put(stringKey, textComponent);
+                } else {
+                    itemMap.put(stringKey, value);
+                }
             }
             result.add(itemMap);
         }

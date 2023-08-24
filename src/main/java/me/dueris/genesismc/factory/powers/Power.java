@@ -80,27 +80,19 @@ public interface Power {
     public ArrayList<Player> burn = new ArrayList<>();
     public ArrayList<Player> restrict_armor = new ArrayList<>();
     public ArrayList<Player> dmg_invulnerable = new ArrayList<>();
-    public ArrayList<Player> cooldown = new ArrayList<>();
-    public ArrayList<Player> dmg_over_time = new ArrayList<>();
     public ArrayList<Player> disable_regen = new ArrayList<>();
     public ArrayList<Player> entity_glow = new ArrayList<>();
     public ArrayList<Player> entity_group = new ArrayList<>();
     public ArrayList<Player> fire_projectile = new ArrayList<>();
     public ArrayList<Player> freeze = new ArrayList<>();
     public ArrayList<Player> grounded = new ArrayList<>();
-    public ArrayList<Player> ignore_water = new ArrayList<>();
     public ArrayList<Player> keep_inventory = new ArrayList<>();
-    public ArrayList<Player> lava_vision = new ArrayList<>();
     public ArrayList<Player> model_color = new ArrayList<>();
-    public ArrayList<Player> multiple = new ArrayList<>();
     public ArrayList<Player> night_vision = new ArrayList<>();
     public ArrayList<Player> overlay = new ArrayList<>();
     public ArrayList<Player> particle = new ArrayList<>();
     public ArrayList<Player> recipe = new ArrayList<>();
-    public ArrayList<Player> replace_loot_table = new ArrayList<>();
     public ArrayList<Player> self_glow = new ArrayList<>();
-    public ArrayList<Player> shader = new ArrayList<>();
-    public ArrayList<Player> shaking = new ArrayList<>();
     public ArrayList<Player> simple = new ArrayList<>();
     public ArrayList<Player> stacking_status_effect = new ArrayList<>();
     public ArrayList<Player> starting_equip = new ArrayList<>();
@@ -138,7 +130,6 @@ public interface Power {
     //genesis
     public ArrayList<Player> hot_hands = new ArrayList<>();
     public ArrayList<Player> extra_fire = new ArrayList<>();
-    public ArrayList<Player> entity_ignore = new ArrayList<>();
     public ArrayList<Player> bow_nope = new ArrayList<>();
     public ArrayList<Player> silk_touch = new ArrayList<>();
     public ArrayList<Player> explode_tick = new ArrayList<>();

@@ -1,4 +1,4 @@
-package me.dueris.genesismc.factory.powers.OriginsMod;
+package me.dueris.genesismc.factory.powers.OriginsMod.effects;
 
 import me.dueris.genesismc.CooldownStuff;
 import me.dueris.genesismc.GenesisMC;
@@ -15,20 +15,25 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
 
 import static me.dueris.genesismc.KeybindHandler.isKeyBeingPressed;
+import static me.dueris.genesismc.factory.powers.OriginsMod.Toggle.in_continuous;
 
-public class Toggle extends CraftPower implements Listener {
-
-    public static ArrayList<Player> in_continuous = new ArrayList<>();
+public class ToggleNightVision extends CraftPower implements Listener {
+    @Override
+    public void run() {
+        
+    }
 
     @EventHandler
     public void keybindToggle(KeybindTriggerEvent e) {
         Player p = e.getPlayer();
-        if (toggle_power.contains(e.getPlayer())) {
+        if (getPowerArray().contains(e.getPlayer())) {
             for (OriginContainer origin : OriginPlayer.getOrigin(e.getPlayer()).values()) {
                 ConditionExecutor conditionExecutor = new ConditionExecutor();
                 if (conditionExecutor.check("condition", "conditions", p, origin, getPowerFile(), null, p)) {
@@ -46,7 +51,7 @@ public class Toggle extends CraftPower implements Listener {
                                             @Override
                                             public void run() {
                                                 if (!CooldownStuff.isPlayerInCooldown(p, key)) {
-                                                    if (origin.getPowerFileFromType(getPowerFile()).get("retain_state", "false") == "false") {
+                                                    if (origin.getPowerFileFromType(getPowerFile()).get("continuous", "true") == "false") {
                                                         //continousus - false
                                                         KeybindHandler.runKeyChangeTriggerReturn(KeybindHandler.getTriggerFromOriginKey(p, key), p, key);
                                                         ItemMeta met = KeybindHandler.getKeybindItem(key, p.getInventory()).getItemMeta();
@@ -63,10 +68,9 @@ public class Toggle extends CraftPower implements Listener {
                                                 }
 
                                                 if (in_continuous.contains(p)) {
-                                                    //run code here for things that happen when toggled
-                                                    //power is active
-                                                    //dont change any other settings in this other than the powertype and the "retain_state"
+                                                    p.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, 20000, 1, false, false, false));
                                                 } else {
+                                                    p.removePotionEffect(PotionEffectType.NIGHT_VISION);
                                                     this.cancel();
                                                 }
                                             }
@@ -77,7 +81,7 @@ public class Toggle extends CraftPower implements Listener {
                                             this.cancel();
                                         }
 
-                                        if (origin.getPowerFileFromType(getPowerFile()).get("retain_state", "false").equalsIgnoreCase("false")) {
+                                        if (origin.getPowerFileFromType(getPowerFile()).get("continuous", "true").equalsIgnoreCase("false")) {
                                             ItemMeta met = KeybindHandler.getKeybindItem(key, p.getInventory()).getItemMeta();
                                             met.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "contin"), PersistentDataType.BOOLEAN, false);
                                             KeybindHandler.getKeybindItem(key, p.getInventory()).setItemMeta(met);
@@ -100,6 +104,7 @@ public class Toggle extends CraftPower implements Listener {
                                                     met.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "contin"), PersistentDataType.BOOLEAN, false);
                                                     KeybindHandler.getKeybindItem(key, p.getInventory()).setItemMeta(met);
                                                     in_continuous.remove(p);
+                                                    p.removePotionEffect(PotionEffectType.NIGHT_VISION);
                                                     this.cancel();
                                                 } else {
                                                     KeybindHandler.runKeyChangeTrigger(KeybindHandler.getKeybindItem(key, p.getInventory()));
@@ -122,17 +127,12 @@ public class Toggle extends CraftPower implements Listener {
     }
 
     @Override
-    public void run() {
-
-    }
-
-    @Override
     public String getPowerFile() {
-        return "origins:toggle";
+        return "origins:toggle_night_vision";
     }
 
     @Override
     public ArrayList<Player> getPowerArray() {
-        return toggle_power;
+        return toggle_night_vision;
     }
 }
