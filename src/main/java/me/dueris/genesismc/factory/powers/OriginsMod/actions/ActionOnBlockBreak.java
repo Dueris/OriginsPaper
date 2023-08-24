@@ -4,35 +4,38 @@ import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.entity.OriginPlayer;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.factory.powers.Power;
-import me.dueris.genesismc.utils.LayerContainer;
 import me.dueris.genesismc.utils.OriginContainer;
 import me.dueris.genesismc.utils.PowerContainer;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerInteractEntityEvent;
+import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
 
-public class ActionOnBeingUsed extends CraftPower implements Listener {
+public class ActionOnBlockBreak extends CraftPower implements Listener {
+    @Override
+    public void run() {
+
+    }
 
     @EventHandler
-    public void entityRightClickEntity(PlayerInteractEntityEvent e) {
-        Entity actor = e.getPlayer();
-        Entity target = e.getRightClicked();
+    public void brek(BlockBreakEvent e){
+        //TODO: add blockconditon
+        Player actor = e.getPlayer();
 
-        if (!(target instanceof Player player)) return;
-        if (!Power.action_on_being_used.contains(target)) return;
+        if (!getPowerArray().contains(actor)) return;
 
-        for (OriginContainer origin : OriginPlayer.getOrigin(player).values()) {
+        for (OriginContainer origin : OriginPlayer.getOrigin(actor).values()) {
             PowerContainer power = origin.getPowerFileFromType("origins:action_on_being_used");
             if (power == null) continue;
 
             if(!getPowerArray().contains(e.getPlayer())) return;
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
-            ActionTypes.biEntityActionType(actor, target, power.getBiEntityAction());
+            setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
+            ActionTypes.BlockActionType(e.getBlock().getLocation(), power.getBlockAction());
+            ActionTypes.EntityActionType(e.getPlayer(), power.getEntityAction());
             new BukkitRunnable() {
                 @Override
                 public void run() {
@@ -41,24 +44,16 @@ public class ActionOnBeingUsed extends CraftPower implements Listener {
                 }
             }.runTaskLater(GenesisMC.getPlugin(), 2l);
         }
-
-//        if (e.getHand() == EquipmentSlot.HAND) System.out.println("main");
-//        if (e.getHand() == EquipmentSlot.OFF_HAND) System.out.println("off");
-    }
-
-    @Override
-    public void run() {
-
     }
 
     @Override
     public String getPowerFile() {
-        return "origins:action_on_being_used";
+        return "origins:action_on_block_break";
     }
 
     @Override
     public ArrayList<Player> getPowerArray() {
-        return action_on_being_used;
+        return action_on_block_break;
     }
 
     @Override

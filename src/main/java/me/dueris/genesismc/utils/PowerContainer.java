@@ -875,6 +875,30 @@ public class PowerContainer implements Serializable {
         }
         return new JSONObject();
     }
+
+    public JSONObject getItemAction() {
+        Object obj = powerFile.get("bientity_action");
+        if (obj instanceof JSONObject modifier) {
+            return modifier;
+        }
+        return new JSONObject();
+    }
+
+    public JSONObject getEntityAction() {
+        Object obj = powerFile.get("bientity_action");
+        if (obj instanceof JSONObject modifier) {
+            return modifier;
+        }
+        return new JSONObject();
+    }
+
+    public JSONObject getBlockAction() {
+        Object obj = powerFile.get("block_action");
+        if (obj instanceof JSONObject modifier) {
+            return modifier;
+        }
+        return new JSONObject();
+    }
 //            HashMap<String, Object> result = new HashMap<>();
 //            for (Object key : modifier.keySet()) {
 //                String string_key = (String) key;
