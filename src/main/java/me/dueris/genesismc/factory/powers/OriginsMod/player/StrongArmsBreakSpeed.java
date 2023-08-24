@@ -20,18 +20,15 @@ import static org.bukkit.Material.*;
 public class StrongArmsBreakSpeed extends CraftPower implements Listener {
 
     @Override
-    public void setActive(Boolean bool){
-        if(powers_active.containsKey(getPowerFile())){
-            powers_active.replace(getPowerFile(), bool);
+    public void setActive(String tag, Boolean bool){
+        if(powers_active.containsKey(tag)){
+            powers_active.replace(tag, bool);
         }else{
-            powers_active.put(getPowerFile(), bool);
+            powers_active.put(tag, bool);
         }
     }
 
-    @Override
-    public Boolean getActive(){
-        return powers_active.get(getPowerFile());
-    }
+    
 
     public static EnumSet<Material> stones;
     public static EnumSet<Material> tools;
@@ -54,14 +51,14 @@ public class StrongArmsBreakSpeed extends CraftPower implements Listener {
         for(OriginContainer origin : OriginPlayer.getOrigin(p).values()){
             ConditionExecutor executor = new ConditionExecutor();
             if(executor.check("condition", "conditions", p, origin, getPowerFile(), null, p)){
-                setActive(true);
+                setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                 if (e.getClickedBlock() != null && stones.contains(e.getClickedBlock().getType()) && e.getAction().isLeftClick() && !tools.contains(p.getEquipment().getItemInMainHand().getType())) {
                     e.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.FAST_DIGGING, 60, 15, false, false, false));
                 } else if (p.getEquipment().getItemInMainHand().getType() == AIR) { //beacons exist
                     e.getPlayer().removePotionEffect(PotionEffectType.FAST_DIGGING);
                 }
             }else{
-                setActive(false);
+                setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
             }
         }
     }

@@ -24,18 +24,15 @@ import java.util.UUID;
 public class BigLeap extends CraftPower implements Listener {
 
     @Override
-    public void setActive(Boolean bool){
-        if(powers_active.containsKey(getPowerFile())){
-            powers_active.replace(getPowerFile(), bool);
+    public void setActive(String tag, Boolean bool){
+        if(powers_active.containsKey(tag)){
+            powers_active.replace(tag, bool);
         }else{
-            powers_active.put(getPowerFile(), bool);
+            powers_active.put(tag, bool);
         }
     }
 
-    @Override
-    public Boolean getActive(){
-        return powers_active.get(getPowerFile());
-    }
+    
 
     private static final HashMap<UUID, Integer> cooldownBefore = new HashMap<>();
     private static final HashMap<UUID, Long> cooldownAfter = new HashMap<>();
@@ -64,7 +61,7 @@ public class BigLeap extends CraftPower implements Listener {
                     Player p = e.getPlayer();
                     ConditionExecutor executor = new ConditionExecutor();
                     if(executor.check("condition", "conditions", p, origin, getPowerFile(), null, p)){
-                        setActive(true);
+                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                         for(HashMap<String, Object> modifier : origin.getPowerFileFromType("genesis:leap").getPossibleModifiers("modifier", "modifiers")){
                             int cooldownTicks = Integer.valueOf(modifier.get("cooldown").toString());
                             int tickCharge = Integer.valueOf(modifier.get("tick_charge").toString());
@@ -149,7 +146,7 @@ public class BigLeap extends CraftPower implements Listener {
                             }.runTaskTimer(GenesisMC.getPlugin(), 0L, 2L);
                         }
                     }else{
-                        setActive(false);
+                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                     }
                 }
             }

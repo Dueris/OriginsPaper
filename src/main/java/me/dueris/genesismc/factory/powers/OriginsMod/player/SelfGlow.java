@@ -33,18 +33,15 @@ import java.util.Map;
 public class SelfGlow extends CraftPower {
 
     @Override
-    public void setActive(Boolean bool){
-        if(powers_active.containsKey(getPowerFile())){
-            powers_active.replace(getPowerFile(), bool);
+    public void setActive(String tag, Boolean bool){
+        if(powers_active.containsKey(tag)){
+            powers_active.replace(tag, bool);
         }else{
-            powers_active.put(getPowerFile(), bool);
+            powers_active.put(tag, bool);
         }
     }
 
-    @Override
-    public Boolean getActive(){
-        return powers_active.get(getPowerFile());
-    }
+    
 
     @Override
     public void run() {
@@ -55,15 +52,15 @@ public class SelfGlow extends CraftPower {
                     if(entity instanceof Player player){
                         if(conditionExecutor.check("entity_condition", "entity_conditions", p, origin, getPowerFile(), null, entity)){
                             if(conditionExecutor.check("bientity_condition", "bientity_conditions", p, origin, getPowerFile(), null, entity)){
-                                setActive(true);
+                                setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                                 CraftPlayer craftPlayers = (CraftPlayer) player;
                                 craftPlayers.getHandle().connection.send(new ClientboundUpdateMobEffectPacket(p.getEntityId(),
                                         new MobEffectInstance(MobEffect.byId(24), 5, 1, false, false, false)));
                             }else{
-                                setActive(false);
+                                setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                             }
                         }else{
-                            setActive(false);
+                            setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                         }
                     }
                 }

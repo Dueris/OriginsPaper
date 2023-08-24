@@ -22,18 +22,15 @@ import static me.dueris.genesismc.factory.powers.OriginsMod.value_modifying.Valu
 public class ModifyBlockRenderPower extends CraftPower {
 
     @Override
-    public void setActive(Boolean bool){
-        if(powers_active.containsKey(getPowerFile())){
-            powers_active.replace(getPowerFile(), bool);
+    public void setActive(String tag, Boolean bool){
+        if(powers_active.containsKey(tag)){
+            powers_active.replace(tag, bool);
         }else{
-            powers_active.put(getPowerFile(), bool);
+            powers_active.put(tag, bool);
         }
     }
 
-    @Override
-    public Boolean getActive(){
-        return powers_active.get(getPowerFile());
-    }
+    
 
     String MODIFYING_KEY = "modify_block_render";
 
@@ -52,10 +49,10 @@ public class ModifyBlockRenderPower extends CraftPower {
                         ConditionExecutor conditionExecutor = new ConditionExecutor();
                         if (conditionExecutor.check("block_condition", "block_conditions", player, origin, "origins:modify_block_render", null, player)) {
                             conditionMet = true;
-                            setActive(true);
+                            setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                             break;
                         }else{
-                            setActive(false);
+                            setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                         }
                     } catch (Exception e) {
                         ErrorSystem errorSystem = new ErrorSystem();

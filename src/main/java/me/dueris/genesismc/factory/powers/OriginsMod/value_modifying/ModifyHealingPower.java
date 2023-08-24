@@ -19,18 +19,15 @@ import static me.dueris.genesismc.factory.powers.OriginsMod.value_modifying.Valu
 public class ModifyHealingPower extends CraftPower implements Listener {
 
     @Override
-    public void setActive(Boolean bool){
-        if(powers_active.containsKey(getPowerFile())){
-            powers_active.replace(getPowerFile(), bool);
+    public void setActive(String tag, Boolean bool){
+        if(powers_active.containsKey(tag)){
+            powers_active.replace(tag, bool);
         }else{
-            powers_active.put(getPowerFile(), bool);
+            powers_active.put(tag, bool);
         }
     }
 
-    @Override
-    public Boolean getActive(){
-        return powers_active.get(getPowerFile());
-    }
+    
 
     @EventHandler
     public void run(EntityRegainHealthEvent e){
@@ -46,10 +43,10 @@ public class ModifyHealingPower extends CraftPower implements Listener {
                         float result = (float) mathOperator.apply(e.getAmount(), value);
                         ConditionExecutor executor = new ConditionExecutor();
                         if(executor.check("condition", "conditions", p, origin, getPowerFile(), null, p)){
-                            setActive(true);
+                            setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                             e.setAmount(result);
                         }else{
-                            setActive(false);
+                            setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                         }
                     }
                 }

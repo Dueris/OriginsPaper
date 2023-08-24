@@ -17,18 +17,15 @@ import java.util.List;
 public class ApplyEffect extends CraftPower implements Listener {
 
     @Override
-    public void setActive(Boolean bool){
-        if(powers_active.containsKey(getPowerFile())){
-            powers_active.replace(getPowerFile(), bool);
+    public void setActive(String tag, Boolean bool){
+        if(powers_active.containsKey(tag)){
+            powers_active.replace(tag, bool);
         }else{
-            powers_active.put(getPowerFile(), bool);
+            powers_active.put(tag, bool);
         }
     }
 
-    @Override
-    public Boolean getActive(){
-        return powers_active.get(getPowerFile());
-    }
+    
 
     @Override
     public void run() {
@@ -37,13 +34,13 @@ public class ApplyEffect extends CraftPower implements Listener {
                 for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
                     ConditionExecutor conditionExecutor = new ConditionExecutor();
                     if (conditionExecutor.check("condition", "conditions", p, origin, getPowerFile(), null, p)) {
-                        setActive(true);
+                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                         List<HashMap<String, Object>> effectDataList = origin.getPowerFileFromType("origins:apply_effect").getEffectData();
                         for (HashMap<String, Object> effectData : effectDataList) {
                             p.addPotionEffect(new PotionEffect(PotionEffectType.getByName(effectData.get("effect").toString().split(":")[1].toUpperCase()), Integer.valueOf(effectData.get("duration").toString()), Integer.valueOf(effectData.get("amplifier").toString())));
                         }
                     }else{
-                        setActive(false);
+                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                     }
                 }
             }

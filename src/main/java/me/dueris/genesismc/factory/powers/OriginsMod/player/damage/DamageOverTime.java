@@ -17,18 +17,15 @@ import java.util.Random;
 public class DamageOverTime extends CraftPower {
 
     @Override
-    public void setActive(Boolean bool){
-        if(powers_active.containsKey(getPowerFile())){
-            powers_active.replace(getPowerFile(), bool);
+    public void setActive(String tag, Boolean bool){
+        if(powers_active.containsKey(tag)){
+            powers_active.replace(tag, bool);
         }else{
-            powers_active.put(getPowerFile(), bool);
+            powers_active.put(tag, bool);
         }
     }
 
-    @Override
-    public Boolean getActive(){
-        return powers_active.get(getPowerFile());
-    }
+    
 
     private Long interval;
     private int damage;
@@ -75,7 +72,7 @@ public class DamageOverTime extends CraftPower {
                         protection_effectiveness = Double.parseDouble(origin.getPowerFileFromType("origins:damage_over_time").get("protection_effectiveness", "1"));
                         ConditionExecutor executor = new ConditionExecutor();
                         if(executor.check("condition", "conditions", p, origin, getPowerFile(), null, p)){
-                            setActive(true);
+                            setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
 
                             if (p.getGameMode().equals(GameMode.SURVIVAL) || p.getGameMode().equals(GameMode.ADVENTURE)) {
                                 float helemt_modifier = 0;
@@ -181,7 +178,7 @@ public class DamageOverTime extends CraftPower {
                             }
 
                         }else{
-                            setActive(false);
+                            setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                         }
                         ticksE = 0;
                     }

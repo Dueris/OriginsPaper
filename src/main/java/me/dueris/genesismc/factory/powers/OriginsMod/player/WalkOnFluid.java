@@ -16,18 +16,15 @@ import java.util.HashMap;
 public class WalkOnFluid extends CraftPower {
 
     @Override
-    public void setActive(Boolean bool){
-        if(powers_active.containsKey(getPowerFile())){
-            powers_active.replace(getPowerFile(), bool);
+    public void setActive(String tag, Boolean bool){
+        if(powers_active.containsKey(tag)){
+            powers_active.replace(tag, bool);
         }else{
-            powers_active.put(getPowerFile(), bool);
+            powers_active.put(tag, bool);
         }
     }
 
-    @Override
-    public Boolean getActive(){
-        return powers_active.get(getPowerFile());
-    }
+    
 
     HashMap<Player, Location> loc = new HashMap<>();
 
@@ -38,7 +35,7 @@ public class WalkOnFluid extends CraftPower {
                 for(OriginContainer origin : OriginPlayer.getOrigin(p).values()){
                     ConditionExecutor executor = new ConditionExecutor();
                     if(executor.check("condition", "conditions", p, origin, getPowerFile(), null, p)){
-                        setActive(true);
+                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                         if(!p.getLocation().add(0, -1, 0).getBlock().isSolid()){
                             if(p.getLocation().add(0, -1, 0).getBlock().getType() == Material.WATER || p.getLocation().add(0, -1, 0).getBlock().getType() == Material.LAVA){
                                 if(p.getLocation().add(0, -1, 0).getBlock().getType().equals(Material.valueOf(origin.getPowerFileFromType(getPowerFile()).get("fluid").toString().toUpperCase().split(":")[1]))){
@@ -62,7 +59,7 @@ public class WalkOnFluid extends CraftPower {
                             }
                         }
                     }else{
-                        setActive(false);
+                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                     }
                 }
             }

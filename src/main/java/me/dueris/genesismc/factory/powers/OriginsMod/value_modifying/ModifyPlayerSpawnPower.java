@@ -19,18 +19,15 @@ import static org.bukkit.Material.*;
 public class ModifyPlayerSpawnPower extends CraftPower implements Listener {
 
     @Override
-    public void setActive(Boolean bool){
-        if(powers_active.containsKey(getPowerFile())){
-            powers_active.replace(getPowerFile(), bool);
+    public void setActive(String tag, Boolean bool){
+        if(powers_active.containsKey(tag)){
+            powers_active.replace(tag, bool);
         }else{
-            powers_active.put(getPowerFile(), bool);
+            powers_active.put(tag, bool);
         }
     }
 
-    @Override
-    public Boolean getActive(){
-        return powers_active.get(getPowerFile());
-    }
+    
 
     @EventHandler
     public void run(PlayerSpawnLocationEvent e){
@@ -39,7 +36,7 @@ public class ModifyPlayerSpawnPower extends CraftPower implements Listener {
             for(OriginContainer origin : OriginPlayer.getOrigin(p).values()){
                 ConditionExecutor executor = new ConditionExecutor();
                 if(executor.check("condition", "conditions", p, origin, getPowerFile(), null, p)){
-                    setActive(true);
+                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                     if(origin.getPowerFileFromType("origins:modify_player_spawn").get("dimension", null).equals("minecraft:nether")){
                         e.setSpawnLocation(NetherSpawn(origin.getPowerFileFromType("origins:modify_player_spawn").get("spawn_strategy", "default")));
                     } else if (origin.getPowerFileFromType("origins:modify_player_spawn").get("dimension", null).equals("minecraft:the_end")) {
@@ -48,7 +45,7 @@ public class ModifyPlayerSpawnPower extends CraftPower implements Listener {
                         e.setSpawnLocation(OverworldSpawn(origin.getPowerFileFromType("origins:modify_player_spawn").get("spawn_strategy", "default")));
                     }
                 }else{
-                    setActive(false);
+                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                 }
             }
         }

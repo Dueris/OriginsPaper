@@ -24,18 +24,15 @@ import static me.dueris.genesismc.factory.powers.OriginsMod.value_modifying.Valu
 public class ModifyBreakSpeedPower extends CraftPower implements Listener {
 
     @Override
-    public void setActive(Boolean bool){
-        if(powers_active.containsKey(getPowerFile())){
-            powers_active.replace(getPowerFile(), bool);
+    public void setActive(String tag, Boolean bool){
+        if(powers_active.containsKey(tag)){
+            powers_active.replace(tag, bool);
         }else{
-            powers_active.put(getPowerFile(), bool);
+            powers_active.put(tag, bool);
         }
     }
 
-    @Override
-    public Boolean getActive(){
-        return powers_active.get(getPowerFile());
-    }
+    
 
     String MODIFYING_KEY = "modify_break_speed";
 
@@ -62,12 +59,12 @@ public class ModifyBreakSpeedPower extends CraftPower implements Listener {
                     ConditionExecutor conditionExecutor = new ConditionExecutor();
                     if (conditionExecutor.check("condition", "condition", p, origin, "origins:modify_air_speed", null, p)) {
                         //TODO: add block condition
-                        setActive(true);
+                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                         if (modify_break_speed.contains(p)) {
                             p.addPotionEffect(new PotionEffect(PotionEffectType.FAST_DIGGING, 50, calculateHasteAmplifier(valueModifyingSuperClass.getPersistentAttributeContainer(p, MODIFYING_KEY)), false, false, false));
                         }
                     } else {
-                        setActive(false);
+                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                     }
                 } catch (Exception ev) {
                     ErrorSystem errorSystem = new ErrorSystem();

@@ -58,23 +58,23 @@ public class ToggleNightVision extends CraftPower implements Listener {
                                                         met.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "contin"), PersistentDataType.BOOLEAN, false);
                                                         KeybindHandler.getKeybindItem(key, p.getInventory()).setItemMeta(met);
                                                         thing[0] = true;
-                                                        setActive(false);
+                                                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                                                         this.cancel();
                                                     } else {
                                                         //yes continuouous
                                                         ItemMeta met = KeybindHandler.getKeybindItem(key, p.getInventory()).getItemMeta();
                                                         met.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "contin"), PersistentDataType.BOOLEAN, true);
                                                         KeybindHandler.getKeybindItem(key, p.getInventory()).setItemMeta(met);
-                                                        setActive(true);
+                                                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                                                     }
                                                 }
 
                                                 if (in_continuous.contains(p)) {
-                                                    setActive(true);
+                                                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                                                     p.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, 20000, 1, false, false, false));
                                                 } else {
                                                     p.removePotionEffect(PotionEffectType.NIGHT_VISION);
-                                                    setActive(false);
+                                                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                                                     this.cancel();
                                                 }
                                             }
@@ -90,12 +90,12 @@ public class ToggleNightVision extends CraftPower implements Listener {
                                             met.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "contin"), PersistentDataType.BOOLEAN, false);
                                             KeybindHandler.getKeybindItem(key, p.getInventory()).setItemMeta(met);
                                             in_continuous.add(p);
-                                            setActive(true);
+                                            setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                                             new BukkitRunnable(){
                                                 @Override
                                                 public void run() {
                                                     in_continuous.remove(p);
-                                                    setActive(false);
+                                                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                                                 }
                                             }.runTaskLater(GenesisMC.getPlugin(),1l);
                                             this.cancel();
@@ -111,7 +111,7 @@ public class ToggleNightVision extends CraftPower implements Listener {
                                                     KeybindHandler.getKeybindItem(key, p.getInventory()).setItemMeta(met);
                                                     in_continuous.remove(p);
                                                     p.removePotionEffect(PotionEffectType.NIGHT_VISION);
-                                                    setActive(false);
+                                                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                                                     this.cancel();
                                                 } else {
                                                     KeybindHandler.runKeyChangeTrigger(KeybindHandler.getKeybindItem(key, p.getInventory()));
@@ -119,7 +119,7 @@ public class ToggleNightVision extends CraftPower implements Listener {
                                                     met.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "contin"), PersistentDataType.BOOLEAN, true);
                                                     KeybindHandler.getKeybindItem(key, p.getInventory()).setItemMeta(met);
                                                     in_continuous.add(p);
-                                                    setActive(true);
+                                                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                                                 }
                                                 this.cancel();
                                             }
@@ -135,18 +135,15 @@ public class ToggleNightVision extends CraftPower implements Listener {
     }
 
     @Override
-    public void setActive(Boolean bool){
-        if(powers_active.containsKey(getPowerFile())){
-            powers_active.replace(getPowerFile(), bool);
+    public void setActive(String tag, Boolean bool){
+        if(powers_active.containsKey(tag)){
+            powers_active.replace(tag, bool);
         }else{
-            powers_active.put(getPowerFile(), bool);
+            powers_active.put(tag, bool);
         }
     }
 
-    @Override
-    public Boolean getActive(){
-        return powers_active.get(getPowerFile());
-    }
+    
 
     @Override
     public String getPowerFile() {

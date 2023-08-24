@@ -22,18 +22,15 @@ import static me.dueris.genesismc.factory.powers.OriginsMod.value_modifying.Valu
 public class ModifyFoodPower extends CraftPower implements Listener {
 
     @Override
-    public void setActive(Boolean bool){
-        if(powers_active.containsKey(getPowerFile())){
-            powers_active.replace(getPowerFile(), bool);
+    public void setActive(String tag, Boolean bool){
+        if(powers_active.containsKey(tag)){
+            powers_active.replace(tag, bool);
         }else{
-            powers_active.put(getPowerFile(), bool);
+            powers_active.put(tag, bool);
         }
     }
 
-    @Override
-    public Boolean getActive(){
-        return powers_active.get(getPowerFile());
-    }
+    
 
     @EventHandler
     public void saturationorwhateverRUN(PlayerItemConsumeEvent e) {
@@ -50,7 +47,7 @@ public class ModifyFoodPower extends CraftPower implements Listener {
                             modifiedFoodLevel = Math.min(modifiedFoodLevel, 20.0);
 
                             player.setFoodLevel((int) modifiedFoodLevel);
-                            setActive(true);
+                            setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                         }
                         if (origin.getPowerFileFromType("origins:modify_food").getJsonHashMap("saturation_modifier") != null) {
                             Map.Entry<Double, Double> modifiers = getModifiers(player, origin);
@@ -59,11 +56,11 @@ public class ModifyFoodPower extends CraftPower implements Listener {
                             modifiedSaturation = Math.min(modifiedSaturation, 20.0);
 
                             player.setSaturation((float) modifiedSaturation);
-                            setActive(true);
+                            setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                         }
                     }
                 }else{
-                    setActive(false);
+                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                 }
             }
         }

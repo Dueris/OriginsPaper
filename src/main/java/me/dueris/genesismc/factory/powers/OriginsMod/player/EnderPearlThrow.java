@@ -32,18 +32,15 @@ import static org.bukkit.Material.ENDER_PEARL;
 public class EnderPearlThrow extends CraftPower implements Listener {
 
     @Override
-    public void setActive(Boolean bool){
-        if(powers_active.containsKey(getPowerFile())){
-            powers_active.replace(getPowerFile(), bool);
+    public void setActive(String tag, Boolean bool){
+        if(powers_active.containsKey(tag)){
+            powers_active.replace(tag, bool);
         }else{
-            powers_active.put(getPowerFile(), bool);
+            powers_active.put(tag, bool);
         }
     }
 
-    @Override
-    public Boolean getActive(){
-        return powers_active.get(getPowerFile());
-    }
+    
 
     @EventHandler
     public void teleportDamgeOff(PlayerTeleportEvent e) {
@@ -76,14 +73,14 @@ public class EnderPearlThrow extends CraftPower implements Listener {
                             for(OriginContainer origin : OriginPlayer.getOrigin(p).values()){
                                 ConditionExecutor executor = new ConditionExecutor();
                                 if(executor.check("condition", "conditions", p, origin, getPowerFile(), null, p)){
-                                    setActive(true);
+                                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                                     p.getInventory().addItem(infinpearl);
                                     Bukkit.getScheduler().runTaskLater(GenesisMC.getPlugin(), () -> {
                                         if (p.getInventory().getItemInMainHand().isSimilar(infinpearl)) ;
                                         p.getInventory().getItemInMainHand().setAmount(1);
                                     }, 1);
                                 }else{
-                                    setActive(false);
+                                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                                 }
                             }
                         }

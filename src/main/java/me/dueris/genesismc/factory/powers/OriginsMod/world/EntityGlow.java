@@ -20,18 +20,15 @@ import java.util.HashSet;
 public class EntityGlow extends CraftPower {
 
     @Override
-    public void setActive(Boolean bool){
-        if(powers_active.containsKey(getPowerFile())){
-            powers_active.replace(getPowerFile(), bool);
+    public void setActive(String tag, Boolean bool){
+        if(powers_active.containsKey(tag)){
+            powers_active.replace(tag, bool);
         }else{
-            powers_active.put(getPowerFile(), bool);
+            powers_active.put(tag, bool);
         }
     }
 
-    @Override
-    public Boolean getActive(){
-        return powers_active.get(getPowerFile());
-    }
+    
 
     public Collection<Entity> getEntitiesInRadius(Player player, int radius) {
         Collection<Entity> entitiesInRadius = new HashSet<>();
@@ -55,9 +52,9 @@ public class EntityGlow extends CraftPower {
                             CraftPlayer craftPlayer = (CraftPlayer) p;
                             MobEffect effect = MobEffects.GLOWING;
                             craftPlayer.getHandle().connection.send(new ClientboundUpdateMobEffectPacket(entity.getEntityId(), new MobEffectInstance(effect, 60, 2, false, false, false)));
-                            setActive(true);
+                            setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                         }else{
-                            setActive(false);
+                            setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                         }
                     }
                 }

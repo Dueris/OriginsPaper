@@ -19,18 +19,15 @@ import java.util.HashMap;
 public class StartingEquipmentPower extends CraftPower implements Listener {
 
     @Override
-    public void setActive(Boolean bool){
-        if(powers_active.containsKey(getPowerFile())){
-            powers_active.replace(getPowerFile(), bool);
+    public void setActive(String tag, Boolean bool){
+        if(powers_active.containsKey(tag)){
+            powers_active.replace(tag, bool);
         }else{
-            powers_active.put(getPowerFile(), bool);
+            powers_active.put(tag, bool);
         }
     }
 
-    @Override
-    public Boolean getActive(){
-        return powers_active.get(getPowerFile());
-    }
+    
 
     @Override
     public void run() {
@@ -43,10 +40,10 @@ public class StartingEquipmentPower extends CraftPower implements Listener {
             for(OriginContainer origin : OriginPlayer.getOrigin(e.getPlayer()).values()){
                 ConditionExecutor conditionExecutor = new ConditionExecutor();
                 if(conditionExecutor.check("condition", "conditions", e.getPlayer(), origin, getPowerFile(), null, e.getPlayer())) {
-                    setActive(true);
+                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                     runGiveItems(e.getPlayer(), origin);
                 }else{
-                    setActive(false);
+                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                 }
             }
         }
@@ -64,14 +61,14 @@ public class StartingEquipmentPower extends CraftPower implements Listener {
             for(OriginContainer origin : OriginPlayer.getOrigin(e.getPlayer()).values()){
                 ConditionExecutor conditionExecutor = new ConditionExecutor();
                 if(conditionExecutor.check("condition", "conditions", e.getPlayer(), origin, getPowerFile(), null, e.getPlayer())) {
-                    setActive(true);
+                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                     if(origin.getPowerFileFromType(getPowerFile()).get("recurrent", "false") != null){
                         if(origin.getPowerFileFromType(getPowerFile()).get("recurrent") == "true"){
                             runGiveItems(e.getPlayer(), origin);
                         }
                     }
                 }else{
-                    setActive(false);
+                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                 }
 
             }

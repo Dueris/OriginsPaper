@@ -14,18 +14,15 @@ import java.util.ArrayList;
 public class ParticlePower extends CraftPower {
 
     @Override
-    public void setActive(Boolean bool){
-        if(powers_active.containsKey(getPowerFile())){
-            powers_active.replace(getPowerFile(), bool);
+    public void setActive(String tag, Boolean bool){
+        if(powers_active.containsKey(tag)){
+            powers_active.replace(tag, bool);
         }else{
-            powers_active.put(getPowerFile(), bool);
+            powers_active.put(tag, bool);
         }
     }
 
-    @Override
-    public Boolean getActive(){
-        return powers_active.get(getPowerFile());
-    }
+    
 
     @Override
     public void run() {
@@ -34,7 +31,7 @@ public class ParticlePower extends CraftPower {
                 for(OriginContainer origin : OriginPlayer.getOrigin(player).values()){
                     ConditionExecutor executor = new ConditionExecutor();
                     if(executor.check("condition", "conditions", player, origin, getPowerFile(), null, player)){
-                        setActive(true);
+                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                         Particle particle = Particle.valueOf(origin.getPowerFileFromType("origins:particle").get("particle", null).split(":")[1].toUpperCase());
                         int frequency = Integer.parseInt(origin.getPowerFileFromType("origins:particle").get("frequency", "1"));
                         int count = Integer.parseInt(origin.getPowerFileFromType("origins:particle").get("count", "1"));
@@ -63,7 +60,7 @@ public class ParticlePower extends CraftPower {
                             }
                         }
                     }else{
-                        setActive(false);
+                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                     }
 
                 }

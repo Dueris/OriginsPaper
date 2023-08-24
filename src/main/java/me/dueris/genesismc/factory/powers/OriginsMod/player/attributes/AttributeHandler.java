@@ -27,18 +27,15 @@ import java.util.function.Predicate;
 public class AttributeHandler extends CraftPower implements Listener {
 
     @Override
-    public void setActive(Boolean bool){
-        if(powers_active.containsKey(getPowerFile())){
-            powers_active.replace(getPowerFile(), bool);
+    public void setActive(String tag, Boolean bool){
+        if(powers_active.containsKey(tag)){
+            powers_active.replace(tag, bool);
         }else{
-            powers_active.put(getPowerFile(), bool);
+            powers_active.put(tag, bool);
         }
     }
 
-    @Override
-    public Boolean getActive(){
-        return powers_active.get(getPowerFile());
-    }
+    
     public static Map<String, BinaryOperator<Double>> getOperationMappingsDouble() {
         Map<String, BinaryOperator<Double>> operationMap = new HashMap<>();
         operationMap.put("addition", Double::sum);
@@ -128,7 +125,7 @@ public class AttributeHandler extends CraftPower implements Listener {
                         double base_value = p.getAttribute(attribute_modifier).getBaseValue();
                         String operation = String.valueOf(modifier.get("operation"));
                         executeAttributeModify(operation, attribute_modifier, base_value, p, value);
-                        setActive(true);
+                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                         p.sendHealthUpdate();
                     }
                 }

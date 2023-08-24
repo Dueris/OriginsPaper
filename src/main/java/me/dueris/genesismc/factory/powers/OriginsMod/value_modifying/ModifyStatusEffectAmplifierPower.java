@@ -21,18 +21,15 @@ import static me.dueris.genesismc.factory.powers.OriginsMod.value_modifying.Valu
 public class ModifyStatusEffectAmplifierPower extends CraftPower implements Listener {
 
     @Override
-    public void setActive(Boolean bool){
-        if(powers_active.containsKey(getPowerFile())){
-            powers_active.replace(getPowerFile(), bool);
+    public void setActive(String tag, Boolean bool){
+        if(powers_active.containsKey(tag)){
+            powers_active.replace(tag, bool);
         }else{
-            powers_active.put(getPowerFile(), bool);
+            powers_active.put(tag, bool);
         }
     }
 
-    @Override
-    public Boolean getActive(){
-        return powers_active.get(getPowerFile());
-    }
+    
 
     @EventHandler
     public void run(EntityPotionEffectEvent e){
@@ -41,7 +38,7 @@ public class ModifyStatusEffectAmplifierPower extends CraftPower implements List
             for(OriginContainer origin : OriginPlayer.getOrigin(p).values()){
                 ConditionExecutor executor = new ConditionExecutor();
                 if(executor.check("condition", "conditions", p, origin, getPowerFile(), null, p)){
-                    setActive(true);
+                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                     if(origin.getPowerFileFromType("origins:modify_status_effect_amplifier").get("status_effect", null) != null){
                         if(e.getNewEffect().getType().equals(PotionEffectType.getByName(origin.getPowerFileFromType("origins:modify_status_effect_amplifier").get("status_effect", null)))){
                             PotionEffect effect = e.getNewEffect();
@@ -70,7 +67,7 @@ public class ModifyStatusEffectAmplifierPower extends CraftPower implements List
                         }
                     }
                 }else{
-                    setActive(false);
+                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                 }
             }
         }

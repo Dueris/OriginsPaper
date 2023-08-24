@@ -14,18 +14,15 @@ import java.util.ArrayList;
 public class DisableRegen extends CraftPower implements Listener {
 
     @Override
-    public void setActive(Boolean bool){
-        if(powers_active.containsKey(getPowerFile())){
-            powers_active.replace(getPowerFile(), bool);
+    public void setActive(String tag, Boolean bool){
+        if(powers_active.containsKey(tag)){
+            powers_active.replace(tag, bool);
         }else{
-            powers_active.put(getPowerFile(), bool);
+            powers_active.put(tag, bool);
         }
     }
 
-    @Override
-    public Boolean getActive(){
-        return powers_active.get(getPowerFile());
-    }
+    
 
     @EventHandler
     public void disable(EntityRegainHealthEvent e) {
@@ -34,13 +31,13 @@ public class DisableRegen extends CraftPower implements Listener {
                 for (OriginContainer origin : OriginPlayer.getOrigin(p).values()){
                     ConditionExecutor executor = new ConditionExecutor();
                     if(executor.check("condition", "conditions", p, origin, getPowerFile(), null, p)){
-                        setActive(true);
+                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                         if (e.getRegainReason().equals(EntityRegainHealthEvent.RegainReason.SATIATED)) {
                             e.setAmount(0);
                             e.setCancelled(true);
                         }
                     }else{
-                        setActive(false);
+                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                     }
                 }
             }

@@ -25,18 +25,15 @@ import java.util.function.BinaryOperator;
 public class AttributeConditioned extends CraftPower implements Listener {
 
     @Override
-    public void setActive(Boolean bool){
-        if(powers_active.containsKey(getPowerFile())){
-            powers_active.replace(getPowerFile(), bool);
+    public void setActive(String tag, Boolean bool){
+        if(powers_active.containsKey(tag)){
+            powers_active.replace(tag, bool);
         }else{
-            powers_active.put(getPowerFile(), bool);
+            powers_active.put(tag, bool);
         }
     }
 
-    @Override
-    public Boolean getActive(){
-        return powers_active.get(getPowerFile());
-    }
+    
 
     public static void executeAttributeModify(String operation, Attribute attribute_modifier, int base_value, Player p, int value) {
         Map<String, BinaryOperator<Integer>> operationMap = new HashMap<>();
@@ -181,10 +178,10 @@ public class AttributeConditioned extends CraftPower implements Listener {
                     return;
                 if (e.isSprinting()) {
                     executeConditionAttribute(p);
-                    setActive(true);
+                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                 } else {
                     inverseConditionAttribute(p);
-                    setActive(false);
+                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                 }
             }
         }
@@ -199,10 +196,10 @@ public class AttributeConditioned extends CraftPower implements Listener {
                     return;
                 if (e.isFlying()) {
                     executeConditionAttribute(p);
-                    setActive(true);
+                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                 } else {
                     inverseConditionAttribute(p);
-                    setActive(false);
+                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                 }
             }
         }
@@ -217,10 +214,10 @@ public class AttributeConditioned extends CraftPower implements Listener {
                     return;
                 if (e.isGliding()) {
                     executeConditionAttribute(p);
-                    setActive(true);
+                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                 } else {
                     inverseConditionAttribute(p);
-                    setActive(false);
+                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                 }
             }
         }
@@ -235,10 +232,10 @@ public class AttributeConditioned extends CraftPower implements Listener {
                     return;
                 if (e.isSneaking()) {
                     executeConditionAttribute(p);
-                    setActive(true);
+                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                 } else {
                     inverseConditionAttribute(p);
-                    setActive(false);
+                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                 }
             }
         }

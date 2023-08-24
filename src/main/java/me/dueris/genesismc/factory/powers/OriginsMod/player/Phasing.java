@@ -42,18 +42,15 @@ import static org.bukkit.ChatColor.GRAY;
 public class Phasing extends CraftPower implements Listener {
 
     @Override
-    public void setActive(Boolean bool){
-        if(powers_active.containsKey(getPowerFile())){
-            powers_active.replace(getPowerFile(), bool);
+    public void setActive(String tag, Boolean bool){
+        if(powers_active.containsKey(tag)){
+            powers_active.replace(tag, bool);
         }else{
-            powers_active.put(getPowerFile(), bool);
+            powers_active.put(tag, bool);
         }
     }
 
-    @Override
-    public Boolean getActive(){
-        return powers_active.get(getPowerFile());
-    }
+    
 
     private final Long interval;
 
@@ -130,7 +127,7 @@ public class Phasing extends CraftPower implements Listener {
                     ConditionExecutor conditionExecutor = new ConditionExecutor();
                         if (OriginPlayer.isInPhantomForm(p)) {
                             if (conditionExecutor.check("block_condition", "block_conditions", p, origin, "origins:phasing", null, p)) {
-                                setActive(true);
+                                setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                             if ((p.getLocation().add(0.55F, 0, 0.55F).getBlock().isSolid() ||
                                     p.getLocation().add(0.55F, 0, 0).getBlock().isSolid() ||
                                     p.getLocation().add(0, 0, 0.55F).getBlock().isSolid() ||
@@ -180,7 +177,7 @@ public class Phasing extends CraftPower implements Listener {
                             }
                             } else {
                                 p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "insideBlock"), PersistentDataType.BOOLEAN, false);
-                                setActive(false);
+                                setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                             }
                         } else {
                             p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "insideBlock"), PersistentDataType.BOOLEAN, false);

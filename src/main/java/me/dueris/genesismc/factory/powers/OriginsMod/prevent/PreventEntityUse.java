@@ -24,18 +24,15 @@ import static me.dueris.genesismc.factory.powers.OriginsMod.prevent.PreventSuper
 public class PreventEntityUse extends CraftPower implements Listener {
 
     @Override
-    public void setActive(Boolean bool){
-        if(powers_active.containsKey(getPowerFile())){
-            powers_active.replace(getPowerFile(), bool);
+    public void setActive(String tag, Boolean bool){
+        if(powers_active.containsKey(tag)){
+            powers_active.replace(tag, bool);
         }else{
-            powers_active.put(getPowerFile(), bool);
+            powers_active.put(tag, bool);
         }
     }
 
-    @Override
-    public Boolean getActive(){
-        return powers_active.get(getPowerFile());
-    }
+    
 
     @EventHandler
     public void OnClickREACH(PlayerInteractEvent e) {
@@ -62,12 +59,12 @@ public class PreventEntityUse extends CraftPower implements Listener {
                                 if(conditionExecutor.check("bientity_condition", "bientity_condition", p, origin, "origins:prevent_entity_use", null, ent)){
                                     if(conditionExecutor.check("item_condition", "item_condition", p, origin, "origins:prevent_entity_use", null, ent)){
                                         e.setCancelled(true);
-                                        setActive(true);
+                                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                                     }else{
-                                        setActive(false);
+                                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                                     }
                                 }else{
-                                    setActive(false);
+                                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                                 }
                             }
                         } else {

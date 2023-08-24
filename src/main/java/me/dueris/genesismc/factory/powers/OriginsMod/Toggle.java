@@ -24,18 +24,15 @@ import static me.dueris.genesismc.KeybindHandler.isKeyBeingPressed;
 public class Toggle extends CraftPower implements Listener {
 
     @Override
-    public void setActive(Boolean bool){
-        if(powers_active.containsKey(getPowerFile())){
-            powers_active.replace(getPowerFile(), bool);
+    public void setActive(String tag, Boolean bool){
+        if(powers_active.containsKey(tag)){
+            powers_active.replace(tag, bool);
         }else{
-            powers_active.put(getPowerFile(), bool);
+            powers_active.put(tag, bool);
         }
     }
 
-    @Override
-    public Boolean getActive(){
-        return powers_active.get(getPowerFile());
-    }
+    
 
     public static ArrayList<Player> in_continuous = new ArrayList<>();
 
@@ -65,7 +62,7 @@ public class Toggle extends CraftPower implements Listener {
                                                         KeybindHandler.runKeyChangeTriggerReturn(KeybindHandler.getTriggerFromOriginKey(p, key), p, key);
                                                         ItemMeta met = KeybindHandler.getKeybindItem(key, p.getInventory()).getItemMeta();
                                                         met.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "contin"), PersistentDataType.BOOLEAN, false);
-                                                        setActive(false);
+                                                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                                                         KeybindHandler.getKeybindItem(key, p.getInventory()).setItemMeta(met);
                                                         thing[0] = true;
                                                         this.cancel();
@@ -73,7 +70,7 @@ public class Toggle extends CraftPower implements Listener {
                                                         //yes continuouous
                                                         ItemMeta met = KeybindHandler.getKeybindItem(key, p.getInventory()).getItemMeta();
                                                         met.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "contin"), PersistentDataType.BOOLEAN, true);
-                                                        setActive(true);
+                                                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                                                         KeybindHandler.getKeybindItem(key, p.getInventory()).setItemMeta(met);
                                                     }
                                                 }
@@ -82,7 +79,7 @@ public class Toggle extends CraftPower implements Listener {
                                                     //run code here for things that happen when toggled
                                                     //power is active
                                                     //dont change any other settings in this other than the powertype and the "retain_state"
-                                                    setActive(true);
+                                                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                                                 } else {
                                                     this.cancel();
                                                 }
@@ -97,7 +94,7 @@ public class Toggle extends CraftPower implements Listener {
                                         if (origin.getPowerFileFromType(getPowerFile()).get("retain_state", "false").equalsIgnoreCase("false")) {
                                             ItemMeta met = KeybindHandler.getKeybindItem(key, p.getInventory()).getItemMeta();
                                             met.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "contin"), PersistentDataType.BOOLEAN, false);
-                                            setActive(false);
+                                            setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                                             KeybindHandler.getKeybindItem(key, p.getInventory()).setItemMeta(met);
                                             in_continuous.add(p);
                                             new BukkitRunnable(){
@@ -111,13 +108,13 @@ public class Toggle extends CraftPower implements Listener {
                                             if (isKeyBeingPressed(e.getPlayer(), origin.getPowerFileFromType(getPowerFile()).getKey().get("key").toString(), true)) {
                                                 ItemMeta met = KeybindHandler.getKeybindItem(key, p.getInventory()).getItemMeta();
                                                 met.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "contin"), PersistentDataType.BOOLEAN, false);
-                                                setActive(false);
+                                                setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                                                 KeybindHandler.getKeybindItem(key, p.getInventory()).setItemMeta(met);
                                                 if (in_continuous.contains(p)) {
                                                     KeybindHandler.runKeyChangeTriggerReturn(KeybindHandler.getKeybindItem(key, p.getInventory()), p, key);
                                                     KeybindHandler.getKeybindItem(key, p.getInventory()).setType(Material.GRAY_DYE);
                                                     met.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "contin"), PersistentDataType.BOOLEAN, false);
-                                                    setActive(false);
+                                                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                                                     KeybindHandler.getKeybindItem(key, p.getInventory()).setItemMeta(met);
                                                     in_continuous.remove(p);
                                                     this.cancel();
@@ -125,7 +122,7 @@ public class Toggle extends CraftPower implements Listener {
                                                     KeybindHandler.runKeyChangeTrigger(KeybindHandler.getKeybindItem(key, p.getInventory()));
                                                     KeybindHandler.getKeybindItem(key, p.getInventory()).setType(Material.LIME_DYE);
                                                     met.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "contin"), PersistentDataType.BOOLEAN, true);
-                                                    setActive(true);
+                                                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                                                     KeybindHandler.getKeybindItem(key, p.getInventory()).setItemMeta(met);
                                                     in_continuous.add(p);
                                                 }

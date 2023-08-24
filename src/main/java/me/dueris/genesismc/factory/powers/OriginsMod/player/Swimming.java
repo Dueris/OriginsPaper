@@ -14,18 +14,15 @@ import java.util.ArrayList;
 public class Swimming extends CraftPower {
 
     @Override
-    public void setActive(Boolean bool){
-        if(powers_active.containsKey(getPowerFile())){
-            powers_active.replace(getPowerFile(), bool);
+    public void setActive(String tag, Boolean bool){
+        if(powers_active.containsKey(tag)){
+            powers_active.replace(tag, bool);
         }else{
-            powers_active.put(getPowerFile(), bool);
+            powers_active.put(tag, bool);
         }
     }
 
-    @Override
-    public Boolean getActive(){
-        return powers_active.get(getPowerFile());
-    }
+    
 
     @Override
     public void run() {
@@ -34,11 +31,11 @@ public class Swimming extends CraftPower {
                 if(swimming.contains(p)){
                     ConditionExecutor conditionExecutor = new ConditionExecutor();
                     if(!conditionExecutor.check("condition", "conditions", p, origin, getPowerFile(), null, p)){
-                        setActive(false);
+                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                         return;
                     }else{
                         p.setSwimming(true);
-                        setActive(true);
+                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                     }
                 }
             }

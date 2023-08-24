@@ -17,18 +17,15 @@ import static me.dueris.genesismc.factory.powers.entity.FreshAir.beds;
 public class PreventSleep extends CraftPower implements Listener {
 
     @Override
-    public void setActive(Boolean bool){
-        if(powers_active.containsKey(getPowerFile())){
-            powers_active.replace(getPowerFile(), bool);
+    public void setActive(String tag, Boolean bool){
+        if(powers_active.containsKey(tag)){
+            powers_active.replace(tag, bool);
         }else{
-            powers_active.put(getPowerFile(), bool);
+            powers_active.put(tag, bool);
         }
     }
 
-    @Override
-    public Boolean getActive(){
-        return powers_active.get(getPowerFile());
-    }
+    
 
     @EventHandler
     public void run(PlayerInteractEvent e){
@@ -44,10 +41,10 @@ public class PreventSleep extends CraftPower implements Listener {
                     if(origin.getPowerFileFromType("origins:prevent_sleep").get("message", "origins.cant_sleep") != null){
                         e.getPlayer().sendMessage(origin.getPowerFileFromType("origins:prevent_sleep").get("message", "origins.cant_sleep"));
                     }
-                    setActive(true);
+                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                     e.setCancelled(true);
                 }else{
-                    setActive(false);
+                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                 }
             }
         }

@@ -14,18 +14,15 @@ import java.util.ArrayList;
 public class FallImmunity extends CraftPower implements Listener {
 
     @Override
-    public void setActive(Boolean bool){
-        if(powers_active.containsKey(getPowerFile())){
-            powers_active.replace(getPowerFile(), bool);
+    public void setActive(String tag, Boolean bool){
+        if(powers_active.containsKey(tag)){
+            powers_active.replace(tag, bool);
         }else{
-            powers_active.put(getPowerFile(), bool);
+            powers_active.put(tag, bool);
         }
     }
 
-    @Override
-    public Boolean getActive(){
-        return powers_active.get(getPowerFile());
-    }
+    
 
     @EventHandler
     public void acrobatics(EntityDamageEvent e) {
@@ -34,12 +31,12 @@ public class FallImmunity extends CraftPower implements Listener {
             for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
                 ConditionExecutor conditionExecutor = new ConditionExecutor();
                 if (conditionExecutor.check("condition", "conditions", p, origin, "origins:fall_immunity", e, p)) {
-                    setActive(true);
+                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                     if (e.getCause() == EntityDamageEvent.DamageCause.FALL) {
                         e.setCancelled(true);
                     }
                 }else{
-                    setActive(false);
+                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                 }
             }
         }

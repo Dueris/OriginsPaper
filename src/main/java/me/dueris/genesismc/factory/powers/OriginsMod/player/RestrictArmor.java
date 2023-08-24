@@ -18,18 +18,15 @@ import static me.dueris.genesismc.utils.ArmorUtils.getArmorValue;
 public class RestrictArmor extends CraftPower {
 
     @Override
-    public void setActive(Boolean bool){
-        if(powers_active.containsKey(getPowerFile())){
-            powers_active.replace(getPowerFile(), bool);
+    public void setActive(String tag, Boolean bool){
+        if(powers_active.containsKey(tag)){
+            powers_active.replace(tag, bool);
         }else{
-            powers_active.put(getPowerFile(), bool);
+            powers_active.put(tag, bool);
         }
     }
 
-    @Override
-    public Boolean getActive(){
-        return powers_active.get(getPowerFile());
-    }
+    
 
     private Long interval;
 
@@ -47,7 +44,7 @@ public class RestrictArmor extends CraftPower {
                 for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
                     ConditionExecutor executor = new ConditionExecutor();
                     if(executor.check("condition", "conditions", p, origin, getPowerFile(), null, p)){
-                        setActive(true);
+                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                         PowerContainer power = origin.getPowerFileFromType("origins:restrict_armor");
                         if (power == null) continue;
                         interval = power.getTickRate();
@@ -147,7 +144,7 @@ public class RestrictArmor extends CraftPower {
                             }
                         }
                     }else{
-                        setActive(false);
+                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                     }
 
                 }

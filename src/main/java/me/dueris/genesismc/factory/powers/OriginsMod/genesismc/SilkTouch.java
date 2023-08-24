@@ -23,18 +23,15 @@ import java.util.EnumSet;
 public class SilkTouch extends CraftPower implements Listener {
 
     @Override
-    public void setActive(Boolean bool){
-        if(powers_active.containsKey(getPowerFile())){
-            powers_active.replace(getPowerFile(), bool);
+    public void setActive(String tag, Boolean bool){
+        if(powers_active.containsKey(tag)){
+            powers_active.replace(tag, bool);
         }else{
-            powers_active.put(getPowerFile(), bool);
+            powers_active.put(tag, bool);
         }
     }
 
-    @Override
-    public Boolean getActive(){
-        return powers_active.get(getPowerFile());
-    }
+    
 
     private static final EnumSet<Material> m;
 
@@ -50,7 +47,7 @@ public class SilkTouch extends CraftPower implements Listener {
                 ConditionExecutor executor = new ConditionExecutor();
                 for(OriginContainer origin : OriginPlayer.getOrigin(p).values()){
                     if(executor.check("condition", "conditions", p, origin, getPowerFile(), null, p)){
-                        setActive(true);
+                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                         if (p.getGameMode().equals(GameMode.SURVIVAL) && p.getEquipment().getItemInMainHand().getType().equals(Material.AIR)) {
                             if (!e.getBlock().getType().isItem()) {
                                 return;
@@ -82,7 +79,7 @@ public class SilkTouch extends CraftPower implements Listener {
                             }
                         }
                     }else{
-                        setActive(false);
+                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                     }
                 }
             }

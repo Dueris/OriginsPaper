@@ -17,18 +17,15 @@ import java.util.Map;
 public class EntityGroupManager extends CraftPower {
 
     @Override
-    public void setActive(Boolean bool){
-        if(powers_active.containsKey(getPowerFile())){
-            powers_active.replace(getPowerFile(), bool);
+    public void setActive(String tag, Boolean bool){
+        if(powers_active.containsKey(tag)){
+            powers_active.replace(tag, bool);
         }else{
-            powers_active.put(getPowerFile(), bool);
+            powers_active.put(tag, bool);
         }
     }
 
-    @Override
-    public Boolean getActive(){
-        return powers_active.get(getPowerFile());
-    }
+    
 
     @Override
     public void run() {
@@ -49,7 +46,7 @@ public class EntityGroupManager extends CraftPower {
                     for (OriginContainer origin : OriginPlayer.getOrigin(((Player) entity).getPlayer()).values()) {
                         ConditionExecutor executor = new ConditionExecutor();
                         if(executor.check("condition", "conditions", (Player) entity, origin, getPowerFile(), null, entity)){
-                            setActive(true);
+                            setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                             if (entity_group.contains(entity)) {
                                 if (origin.getPowerFileFromType("origins:entity_group").get("group", null).equalsIgnoreCase("undead")) {
                                     undead.put(entity.getEntityId(), entity.getType().name());
@@ -64,7 +61,7 @@ public class EntityGroupManager extends CraftPower {
                                 }
                             }
                         }else{
-                            setActive(false);
+                            setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                         }
                     }
                 }

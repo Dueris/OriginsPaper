@@ -10,18 +10,7 @@ public interface Power {
     public abstract void run();
     public abstract String getPowerFile();
     public abstract ArrayList<Player> getPowerArray();
-    public abstract void setActive(Boolean bool);
-//    {
-//        if(powers_active.containsKey(getPowerFile())){
-//            powers_active.replace(getPowerFile(), bool);
-//        }else{
-//            powers_active.put(getPowerFile(), bool);
-//        }
-//    }
-    public abstract Boolean getActive();
-//    {
-//        return powers_active.get(getPowerFile());
-//    }
+    public abstract void setActive(String tag, Boolean bool);
 
     public HashMap<String, Boolean> powers_active = new HashMap<>();
 

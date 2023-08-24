@@ -23,18 +23,15 @@ import static org.bukkit.Material.AIR;
 public class Climbing extends CraftPower {
 
     @Override
-    public void setActive(Boolean bool){
-        if(powers_active.containsKey(getPowerFile())){
-            powers_active.replace(getPowerFile(), bool);
+    public void setActive(String tag, Boolean bool){
+        if(powers_active.containsKey(tag)){
+            powers_active.replace(tag, bool);
         }else{
-            powers_active.put(getPowerFile(), bool);
+            powers_active.put(tag, bool);
         }
     }
 
-    @Override
-    public Boolean getActive(){
-        return powers_active.get(getPowerFile());
-    }
+    
 
     public ArrayList<Player> active_climbing = new ArrayList<>();
 
@@ -75,7 +72,7 @@ public class Climbing extends CraftPower {
                         boolean cancel_bool = origin.getPowerFileFromType("origins:climbing").getRainCancel();
                         ConditionExecutor executor = new ConditionExecutor();
                         if(executor.check("condition", "conditions", p, origin, getPowerFile(), null, p)){
-                            setActive(true);
+                            setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                             if (!cancel_bool) {
                                 if (!p.isSneaking()) return;
                                 p.addPotionEffect(new PotionEffect(PotionEffectType.LEVITATION, 6, 2, false, false, false));
@@ -99,7 +96,7 @@ public class Climbing extends CraftPower {
                                 }
                             }
                         }else{
-                            setActive(false);
+                            setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                         }
                     }
                 }

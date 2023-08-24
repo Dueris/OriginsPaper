@@ -20,18 +20,15 @@ import static me.dueris.genesismc.factory.powers.OriginsMod.value_modifying.Valu
 public class ModifyLavaSpeed extends CraftPower {
 
     @Override
-    public void setActive(Boolean bool){
-        if(powers_active.containsKey(getPowerFile())){
-            powers_active.replace(getPowerFile(), bool);
+    public void setActive(String tag, Boolean bool){
+        if(powers_active.containsKey(tag)){
+            powers_active.replace(tag, bool);
         }else{
-            powers_active.put(getPowerFile(), bool);
+            powers_active.put(tag, bool);
         }
     }
 
-    @Override
-    public Boolean getActive(){
-        return powers_active.get(getPowerFile());
-    }
+    
 
     @Override
     public void run() {
@@ -48,13 +45,13 @@ public class ModifyLavaSpeed extends CraftPower {
                                 BinaryOperator mathOperator = getOperationMappingsFloat().get(operation);
                                 if (mathOperator != null) {
                                     float result = (float) mathOperator.apply(0.02f, value);
-                                    setActive(true);
+                                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                                     p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 2, calculateSpeedAmplifier(Math.toIntExact(Long.valueOf(String.valueOf(result)))), false, false, false));
                                 }
                             }
 
                         }else{
-                            setActive(false);
+                            setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                         }
                     } catch (Exception ev) {
                         ErrorSystem errorSystem = new ErrorSystem();

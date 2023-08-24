@@ -32,18 +32,15 @@ import static me.dueris.genesismc.KeybindHandler.isKeyBeingPressed;
 public class Inventory extends CraftPower implements CommandExecutor, Listener {
 
     @Override
-    public void setActive(Boolean bool){
-        if(powers_active.containsKey(getPowerFile())){
-            powers_active.replace(getPowerFile(), bool);
+    public void setActive(String tag, Boolean bool){
+        if(powers_active.containsKey(tag)){
+            powers_active.replace(tag, bool);
         }else{
-            powers_active.put(getPowerFile(), bool);
+            powers_active.put(tag, bool);
         }
     }
 
-    @Override
-    public Boolean getActive(){
-        return powers_active.get(getPowerFile());
-    }
+    
 
     private final ArrayList<SubCommand> subCommands = new ArrayList<>();
 
@@ -93,7 +90,7 @@ public class Inventory extends CraftPower implements CommandExecutor, Listener {
             if (shulker_inventory.contains(e.getPlayer())) {
                 ConditionExecutor executor = new ConditionExecutor();
                 if(executor.check("condition", "conditions", e.getPlayer(), origin, getPowerFile(), null, e.getPlayer())){
-                    setActive(true);
+                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                     if (isKeyBeingPressed(e.getPlayer(), origin.getPowerFileFromType("origins:inventory").getKey().get("key").toString(), true)) {
                         ArrayList<ItemStack> vaultItems = InventoryUtils.getItems(e.getPlayer());
                         org.bukkit.inventory.Inventory vault = Bukkit.createInventory(e.getPlayer(), InventoryType.valueOf(origin.getPowerFileFromType("origins:inventory").get("container_type", "chest").toUpperCase()), origin.getPowerFileFromType("origins:inventory").get("title", "inventory.container.title").replace("%player%", e.getPlayer().getName()));
@@ -102,7 +99,7 @@ public class Inventory extends CraftPower implements CommandExecutor, Listener {
 
                     }
                 }else{
-                    setActive(false);
+                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                 }
             }
         }
