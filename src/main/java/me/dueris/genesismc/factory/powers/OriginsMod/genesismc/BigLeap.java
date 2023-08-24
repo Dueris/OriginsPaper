@@ -61,7 +61,8 @@ public class BigLeap extends CraftPower implements Listener {
                     Player p = e.getPlayer();
                     ConditionExecutor executor = new ConditionExecutor();
                     if(executor.check("condition", "conditions", p, origin, getPowerFile(), null, p)){
-                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
+                        if(!getPowerArray().contains(p)) return;
+                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                         for(HashMap<String, Object> modifier : origin.getPowerFileFromType("genesis:leap").getPossibleModifiers("modifier", "modifiers")){
                             int cooldownTicks = Integer.valueOf(modifier.get("cooldown").toString());
                             int tickCharge = Integer.valueOf(modifier.get("tick_charge").toString());
@@ -146,7 +147,8 @@ public class BigLeap extends CraftPower implements Listener {
                             }.runTaskTimer(GenesisMC.getPlugin(), 0L, 2L);
                         }
                     }else{
-                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
+                        if(!getPowerArray().contains(p)) return;
+                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                     }
                 }
             }

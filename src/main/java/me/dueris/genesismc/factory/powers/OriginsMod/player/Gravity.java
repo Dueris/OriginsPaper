@@ -35,6 +35,7 @@ public class Gravity extends CraftPower implements Listener {
             for(OriginContainer origin : OriginPlayer.getOrigin(p).values()){
                 ConditionExecutor executor = new ConditionExecutor();
                 if(executor.check("condition", "conditions", p, origin, getPowerFile(), null, p)){
+                    if(!getPowerArray().contains(p)) return;
                     setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                     if (no_gravity.contains(p)) {
                         p.setGravity(false);
@@ -43,6 +44,7 @@ public class Gravity extends CraftPower implements Listener {
                         p.setGravity(true);
                     }
                 }else{
+                    if(!getPowerArray().contains(p)) return;
                     setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                 }
             }

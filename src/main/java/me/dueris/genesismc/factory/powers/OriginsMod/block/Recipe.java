@@ -80,9 +80,11 @@ public class Recipe extends CraftPower implements Listener {
             for(OriginContainer origin : OriginPlayer.getOrigin(player).values()){
                 ConditionExecutor conditionExecutor = new ConditionExecutor();
                 if(conditionExecutor.check("condition", "conditions", player, origin, getPowerFile(), null, player)) {
+                    if(!getPowerArray().contains(player)) return;
                     setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                     loadRecipe(player, origin, "origins:recipe");
-                }else{setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);}
+                }else{if(!getPowerArray().contains(player)) return;
+                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);}
             }
         }
     }
@@ -93,9 +95,11 @@ public class Recipe extends CraftPower implements Listener {
             for(OriginContainer origin : OriginPlayer.getOrigin(player).values()){
                 ConditionExecutor conditionExecutor = new ConditionExecutor();
                 if(conditionExecutor.check("condition", "conditions", player, origin, getPowerFile(), null, player)) {
+                    if(!getPowerArray().contains(player)) return;
                     setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                     loadRecipe(player, origin, "origins:recipe");
-                }else{setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);}
+                }else{if(!getPowerArray().contains(player)) return;
+                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);}
             }
         }
     }
@@ -106,9 +110,11 @@ public class Recipe extends CraftPower implements Listener {
             for(OriginContainer origin : OriginPlayer.getOrigin(player).values()){
                 ConditionExecutor conditionExecutor = new ConditionExecutor();
                 if(conditionExecutor.check("condition", "conditions", player, origin, getPowerFile(), null, player)) {
+                    if(!getPowerArray().contains(player)) return;
                     setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                     loadRecipe(player, origin, "origins:recipe");
-                }else{setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);}
+                }else{if(!getPowerArray().contains(player)) return;
+                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);}
             }
         }
     }

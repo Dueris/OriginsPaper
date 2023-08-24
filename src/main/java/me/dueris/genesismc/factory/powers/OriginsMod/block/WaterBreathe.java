@@ -42,6 +42,7 @@ public class WaterBreathe extends CraftPower {
             for(OriginContainer origin : OriginPlayer.getOrigin(p).values()){
                 ConditionExecutor conditionExecutor = new ConditionExecutor();
                 if(conditionExecutor.check("condition", "conditions", p, origin, getPowerFile(), null, p)) {
+                    if(!getPowerArray().contains(p)) return;
                     setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                     if (water_breathing.contains(p)) {
                         if (isInBreathableWater(p)) {
@@ -71,6 +72,7 @@ public class WaterBreathe extends CraftPower {
                         }
                     }
                 }else{
+                    if(!getPowerArray().contains(p)) return;
                     setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                 }
             }

@@ -1,5 +1,6 @@
 package me.dueris.genesismc.factory.powers.OriginsMod.player.inventory;
 
+import me.dueris.genesismc.CooldownStuff;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.commands.subcommands.SubCommand;
 import me.dueris.genesismc.entity.OriginPlayer;
@@ -89,16 +90,18 @@ public class Inventory extends CraftPower implements CommandExecutor, Listener {
         for (OriginContainer origin : OriginPlayer.getOrigin(e.getPlayer()).values()) {
             if (shulker_inventory.contains(e.getPlayer())) {
                 ConditionExecutor executor = new ConditionExecutor();
+                if(CooldownStuff.isPlayerInCooldown(e.getPlayer(), e.getKey())) return;
                 if(executor.check("condition", "conditions", e.getPlayer(), origin, getPowerFile(), null, e.getPlayer())){
+                    if(!getPowerArray().contains(e.getPlayer())) return;
                     setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                     if (isKeyBeingPressed(e.getPlayer(), origin.getPowerFileFromType("origins:inventory").getKey().get("key").toString(), true)) {
                         ArrayList<ItemStack> vaultItems = InventoryUtils.getItems(e.getPlayer());
                         org.bukkit.inventory.Inventory vault = Bukkit.createInventory(e.getPlayer(), InventoryType.valueOf(origin.getPowerFileFromType("origins:inventory").get("container_type", "chest").toUpperCase()), origin.getPowerFileFromType("origins:inventory").get("title", "inventory.container.title").replace("%player%", e.getPlayer().getName()));
                         vaultItems.stream().forEach(itemStack -> vault.addItem(itemStack));
                         e.getPlayer().openInventory(vault);
-
                     }
                 }else{
+                    if(!getPowerArray().contains(e.getPlayer())) return;
                     setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                 }
             }

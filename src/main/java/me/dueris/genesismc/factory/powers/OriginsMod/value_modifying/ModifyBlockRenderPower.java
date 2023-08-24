@@ -49,10 +49,12 @@ public class ModifyBlockRenderPower extends CraftPower {
                         ConditionExecutor conditionExecutor = new ConditionExecutor();
                         if (conditionExecutor.check("block_condition", "block_conditions", player, origin, "origins:modify_block_render", null, player)) {
                             conditionMet = true;
-                            setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
+                            if(!getPowerArray().contains(player)) return;
+                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                             break;
                         }else{
-                            setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
+                            if(!getPowerArray().contains(player)) return;
+                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                         }
                     } catch (Exception e) {
                         ErrorSystem errorSystem = new ErrorSystem();

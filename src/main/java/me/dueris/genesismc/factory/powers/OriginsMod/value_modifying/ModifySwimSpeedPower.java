@@ -44,9 +44,11 @@ public class ModifySwimSpeedPower extends CraftPower {
                         if(!p.isSwimming()) return;
                         Vector swimVelocity = p.getLocation().getDirection().normalize().multiply(valueModifyingSuperClass.getPersistentAttributeContainer(p, MODIFYING_KEY));
                         p.setVelocity(swimVelocity);
-                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
+                        if(!getPowerArray().contains(p)) return;
+                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                     }else{
-                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
+                        if(!getPowerArray().contains(p)) return;
+                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                     }
                 } catch (Exception e){
                     ErrorSystem errorSystem = new ErrorSystem();

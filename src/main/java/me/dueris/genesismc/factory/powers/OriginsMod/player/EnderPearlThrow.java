@@ -73,14 +73,16 @@ public class EnderPearlThrow extends CraftPower implements Listener {
                             for(OriginContainer origin : OriginPlayer.getOrigin(p).values()){
                                 ConditionExecutor executor = new ConditionExecutor();
                                 if(executor.check("condition", "conditions", p, origin, getPowerFile(), null, p)){
-                                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
+                                    if(!getPowerArray().contains(p)) return;
+                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                                     p.getInventory().addItem(infinpearl);
                                     Bukkit.getScheduler().runTaskLater(GenesisMC.getPlugin(), () -> {
                                         if (p.getInventory().getItemInMainHand().isSimilar(infinpearl)) ;
                                         p.getInventory().getItemInMainHand().setAmount(1);
                                     }, 1);
                                 }else{
-                                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
+                                    if(!getPowerArray().contains(p)) return;
+                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                                 }
                             }
                         }

@@ -2,7 +2,10 @@ package me.dueris.genesismc.factory.conditions;
 
 import me.dueris.genesismc.factory.conditions.damage.DamageCondition;
 import me.dueris.genesismc.factory.conditions.entity.EntityCondition;
+import me.dueris.genesismc.factory.powers.CraftPower;
+import me.dueris.genesismc.files.GenesisDataFiles;
 import me.dueris.genesismc.utils.OriginContainer;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;
@@ -10,7 +13,12 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import javax.print.attribute.standard.JobKOctets;
+import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
+
+import static me.dueris.genesismc.factory.powers.CraftPower.findCraftPowerClasses;
+import static me.dueris.genesismc.factory.powers.Power.powers_active;
 
 public class ConditionExecutor {
     public boolean check(String singular, String plural, Player p, OriginContainer origin, String powerfile, EntityDamageEvent dmgevent, Entity entity) {
@@ -41,6 +49,44 @@ public class ConditionExecutor {
                 }
             }else if(condition.get("type").equals("origins:constant")){
                 return (boolean) condition.get("value");
+            }else if(condition.get("type").equals("origins:power_active")){
+                for(String string : powers_active.keySet()){
+                    String power = condition.get("power").toString();
+                    if(powers_active.containsKey(power)){
+                        if(powers_active.get(power)){
+                            return true;
+                        }else{
+                            return false;
+                        }
+                    }else{
+                        return false;
+                    }
+                }
+            }else if(condition.get("type").equals("origins:power_type")){
+                List<Class<? extends CraftPower>> craftPowerClasses = null;
+                try {
+                    craftPowerClasses = findCraftPowerClasses();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                for (Class<? extends CraftPower> c : craftPowerClasses) {
+                    String pt = condition.get("power_type").toString();
+                    try {
+                        if(c.newInstance().getPowerFile().equals(pt)){
+                            if(c.newInstance().getPowerArray().contains(p)) {
+                                return true;
+                            }else{
+                                return false;
+                            }
+                        }else{
+                            return false;
+                        }
+                    } catch (InstantiationException e) {
+                        throw new RuntimeException(e);
+                    } catch (IllegalAccessException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
             }else{
                 if (origin.getPowerFileFromType(powerfile).getConditionFromString(singular, plural) == null){
                     return true;

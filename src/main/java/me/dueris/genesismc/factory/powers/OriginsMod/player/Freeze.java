@@ -29,10 +29,12 @@ public class Freeze extends CraftPower {
                 if (freeze.contains(p)) {
                     ConditionExecutor conditionExecutor = new ConditionExecutor();
                     if (conditionExecutor.check("condition", "conditions", p, origin, "origins:freeze", null, p)) {
-                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
+                        if(!getPowerArray().contains(p)) return;
+                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                         p.setFreezeTicks(300);
                     }else{
-                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
+                        if(!getPowerArray().contains(p)) return;
+                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                     }
                 }
             }

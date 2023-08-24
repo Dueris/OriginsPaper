@@ -51,14 +51,16 @@ public class StrongArmsBreakSpeed extends CraftPower implements Listener {
         for(OriginContainer origin : OriginPlayer.getOrigin(p).values()){
             ConditionExecutor executor = new ConditionExecutor();
             if(executor.check("condition", "conditions", p, origin, getPowerFile(), null, p)){
-                setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
+                if(!getPowerArray().contains(p)) return;
+                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                 if (e.getClickedBlock() != null && stones.contains(e.getClickedBlock().getType()) && e.getAction().isLeftClick() && !tools.contains(p.getEquipment().getItemInMainHand().getType())) {
                     e.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.FAST_DIGGING, 60, 15, false, false, false));
                 } else if (p.getEquipment().getItemInMainHand().getType() == AIR) { //beacons exist
                     e.getPlayer().removePotionEffect(PotionEffectType.FAST_DIGGING);
                 }
             }else{
-                setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
+                if(!getPowerArray().contains(p)) return;
+                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
             }
         }
     }

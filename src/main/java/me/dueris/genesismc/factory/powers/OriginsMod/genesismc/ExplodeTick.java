@@ -56,7 +56,8 @@ public class ExplodeTick extends CraftPower implements Listener {
                     public void run() {
                         ConditionExecutor executor = new ConditionExecutor();
                         if(executor.check("condition", "conditions", p, origin, getPowerFile(), null, p)){
-                            setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
+                            if(!getPowerArray().contains(p)) return;
+                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                             if (p.isSneaking()) {
                                 if (!cooldown.containsKey(p.getUniqueId()) || ((System.currentTimeMillis() - cooldown.get(p.getUniqueId())) > 3300)) {
                                     if (p.isSneaking()) {
@@ -140,7 +141,8 @@ public class ExplodeTick extends CraftPower implements Listener {
                                 this.cancel();
                             }
                         }else{
-                            setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
+                            if(!getPowerArray().contains(p)) return;
+                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                         }
                     }
                 }.runTaskTimer(GenesisMC.getPlugin(), 0L, 5L);

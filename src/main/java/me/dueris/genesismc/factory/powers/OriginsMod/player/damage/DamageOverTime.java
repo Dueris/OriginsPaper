@@ -72,7 +72,8 @@ public class DamageOverTime extends CraftPower {
                         protection_effectiveness = Double.parseDouble(origin.getPowerFileFromType("origins:damage_over_time").get("protection_effectiveness", "1"));
                         ConditionExecutor executor = new ConditionExecutor();
                         if(executor.check("condition", "conditions", p, origin, getPowerFile(), null, p)){
-                            setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
+                            if(!getPowerArray().contains(p)) return;
+                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
 
                             if (p.getGameMode().equals(GameMode.SURVIVAL) || p.getGameMode().equals(GameMode.ADVENTURE)) {
                                 float helemt_modifier = 0;
@@ -178,7 +179,8 @@ public class DamageOverTime extends CraftPower {
                             }
 
                         }else{
-                            setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
+                            if(!getPowerArray().contains(p)) return;
+                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                         }
                         ticksE = 0;
                     }

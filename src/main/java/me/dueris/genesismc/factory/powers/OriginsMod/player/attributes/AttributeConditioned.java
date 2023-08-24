@@ -178,9 +178,11 @@ public class AttributeConditioned extends CraftPower implements Listener {
                     return;
                 if (e.isSprinting()) {
                     executeConditionAttribute(p);
+                    if(!getPowerArray().contains(p)) return;
                     setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                 } else {
                     inverseConditionAttribute(p);
+                    if(!getPowerArray().contains(p)) return;
                     setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                 }
             }
@@ -196,9 +198,11 @@ public class AttributeConditioned extends CraftPower implements Listener {
                     return;
                 if (e.isFlying()) {
                     executeConditionAttribute(p);
+                    if(!getPowerArray().contains(p)) return;
                     setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                 } else {
                     inverseConditionAttribute(p);
+                    if(!getPowerArray().contains(p)) return;
                     setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                 }
             }
@@ -214,9 +218,11 @@ public class AttributeConditioned extends CraftPower implements Listener {
                     return;
                 if (e.isGliding()) {
                     executeConditionAttribute(p);
+                    if(!getPowerArray().contains(p)) return;
                     setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                 } else {
                     inverseConditionAttribute(p);
+                    if(!getPowerArray().contains(p)) return;
                     setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                 }
             }
@@ -232,9 +238,11 @@ public class AttributeConditioned extends CraftPower implements Listener {
                     return;
                 if (e.isSneaking()) {
                     executeConditionAttribute(p);
+                    if(!getPowerArray().contains(p)) return;
                     setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                 } else {
                     inverseConditionAttribute(p);
+                    if(!getPowerArray().contains(p)) return;
                     setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                 }
             }

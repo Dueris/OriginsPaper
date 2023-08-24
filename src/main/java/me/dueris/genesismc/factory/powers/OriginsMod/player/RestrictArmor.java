@@ -44,7 +44,8 @@ public class RestrictArmor extends CraftPower {
                 for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
                     ConditionExecutor executor = new ConditionExecutor();
                     if(executor.check("condition", "conditions", p, origin, getPowerFile(), null, p)){
-                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
+                        if(!getPowerArray().contains(p)) return;
+                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                         PowerContainer power = origin.getPowerFileFromType("origins:restrict_armor");
                         if (power == null) continue;
                         interval = power.getTickRate();
@@ -144,7 +145,8 @@ public class RestrictArmor extends CraftPower {
                             }
                         }
                     }else{
-                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
+                        if(!getPowerArray().contains(p)) return;
+                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                     }
 
                 }

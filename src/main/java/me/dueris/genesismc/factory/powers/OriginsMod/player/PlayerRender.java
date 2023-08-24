@@ -125,7 +125,8 @@ public class PlayerRender extends CraftPower {
                 for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
                     ConditionExecutor conditionExecutor = new ConditionExecutor();
                     if (conditionExecutor.check("condition", "conditions", p, origin, "origins:invisibility", null, p)) {
-                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
+                        if(!getPowerArray().contains(p)) return;
+                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                         if (origin.getPowerFileFromType("origins:invisibility").get("render_armor", "false").equalsIgnoreCase("true")) {
                             for (Player players : Bukkit.getOnlinePlayers()) {
                                 players.hidePlayer(p);
@@ -138,7 +139,8 @@ public class PlayerRender extends CraftPower {
                             p.addPotionEffect(new PotionEffect(PotionEffectType.GLOWING, 15, 1, false, false, false));
                         }
                     }else{
-                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
+                        if(!getPowerArray().contains(p)) return;
+                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                     }
                 }
             }

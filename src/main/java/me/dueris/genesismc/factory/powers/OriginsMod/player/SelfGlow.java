@@ -52,15 +52,18 @@ public class SelfGlow extends CraftPower {
                     if(entity instanceof Player player){
                         if(conditionExecutor.check("entity_condition", "entity_conditions", p, origin, getPowerFile(), null, entity)){
                             if(conditionExecutor.check("bientity_condition", "bientity_conditions", p, origin, getPowerFile(), null, entity)){
-                                setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
+                                if(!getPowerArray().contains(p)) return;
+                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                                 CraftPlayer craftPlayers = (CraftPlayer) player;
                                 craftPlayers.getHandle().connection.send(new ClientboundUpdateMobEffectPacket(p.getEntityId(),
                                         new MobEffectInstance(MobEffect.byId(24), 5, 1, false, false, false)));
                             }else{
-                                setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
+                                if(!getPowerArray().contains(p)) return;
+                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                             }
                         }else{
-                            setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
+                            if(!getPowerArray().contains(p)) return;
+                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                         }
                     }
                 }

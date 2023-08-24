@@ -59,12 +59,15 @@ public class PreventEntityUse extends CraftPower implements Listener {
                                 if(conditionExecutor.check("bientity_condition", "bientity_condition", p, origin, "origins:prevent_entity_use", null, ent)){
                                     if(conditionExecutor.check("item_condition", "item_condition", p, origin, "origins:prevent_entity_use", null, ent)){
                                         e.setCancelled(true);
-                                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
+                                        if(!getPowerArray().contains(p)) return;
+                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                                     }else{
-                                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
+                                        if(!getPowerArray().contains(p)) return;
+                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                                     }
                                 }else{
-                                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
+                                    if(!getPowerArray().contains(p)) return;
+                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                                 }
                             }
                         } else {

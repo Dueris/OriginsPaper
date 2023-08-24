@@ -23,10 +23,12 @@ public class StackingStatusEffect extends CraftPower {
                 for(OriginContainer origin : OriginPlayer.getOrigin(p).values()){
                     ConditionExecutor executor = new ConditionExecutor();
                     if(executor.check("condition", "conditions", p, origin, getPowerFile(), null, p)){
-                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
+                        if(!getPowerArray().contains(p)) return;
+                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                         applyStackingEffect(p, calculateStacks(p, 10, origin), origin);
                     }else{
-                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
+                        if(!getPowerArray().contains(p)) return;
+                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                     }
                 }
             }
@@ -62,7 +64,7 @@ public class StackingStatusEffect extends CraftPower {
             PotionEffectType potionEffectType = getPotionEffectType(effect.get("effect").toString());
             if (potionEffectType != null) {
                 try {
-                    player.addPotionEffect(new PotionEffect(potionEffectType, totalDuration, 1, false, false, false));
+                    player.addPotionEffect(new PotionEffect(potionEffectType, 5, 1, false, false, false));
                 } catch (Exception e){
                     //AHHHHHHHHHH
                 }

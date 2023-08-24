@@ -32,6 +32,7 @@ public class KeepInventory extends CraftPower implements Listener {
                 ConditionExecutor conditionExecutor = new ConditionExecutor();
                 if (conditionExecutor.check("item_condition", "item_conditions", player, origin, "origins:keep_inventory", null, player)) {
                     ArrayList<Long> slots = new ArrayList<>();
+                    if(!getPowerArray().contains(player)) return;
                     setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                     if (origin.getPowerFileFromType("origins:keep_inventory").getSlots() != null) {
                         for (long slot : origin.getPowerFileFromType("origins:keep_inventory").getSlots()) {
@@ -49,6 +50,7 @@ public class KeepInventory extends CraftPower implements Listener {
                         e.setKeepInventory(true);
                     }
                 }else{
+                    if(!getPowerArray().contains(player)) return;
                     setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                 }
             }

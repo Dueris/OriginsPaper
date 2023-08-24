@@ -47,7 +47,8 @@ public class ModifyFoodPower extends CraftPower implements Listener {
                             modifiedFoodLevel = Math.min(modifiedFoodLevel, 20.0);
 
                             player.setFoodLevel((int) modifiedFoodLevel);
-                            setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
+                            if(!getPowerArray().contains(player)) return;
+                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                         }
                         if (origin.getPowerFileFromType("origins:modify_food").getJsonHashMap("saturation_modifier") != null) {
                             Map.Entry<Double, Double> modifiers = getModifiers(player, origin);
@@ -56,10 +57,12 @@ public class ModifyFoodPower extends CraftPower implements Listener {
                             modifiedSaturation = Math.min(modifiedSaturation, 20.0);
 
                             player.setSaturation((float) modifiedSaturation);
-                            setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
+                            if(!getPowerArray().contains(player)) return;
+                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                         }
                     }
                 }else{
+                    if(!getPowerArray().contains(player)) return;
                     setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                 }
             }

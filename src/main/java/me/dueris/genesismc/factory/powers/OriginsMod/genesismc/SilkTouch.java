@@ -47,7 +47,8 @@ public class SilkTouch extends CraftPower implements Listener {
                 ConditionExecutor executor = new ConditionExecutor();
                 for(OriginContainer origin : OriginPlayer.getOrigin(p).values()){
                     if(executor.check("condition", "conditions", p, origin, getPowerFile(), null, p)){
-                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
+                        if(!getPowerArray().contains(p)) return;
+                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                         if (p.getGameMode().equals(GameMode.SURVIVAL) && p.getEquipment().getItemInMainHand().getType().equals(Material.AIR)) {
                             if (!e.getBlock().getType().isItem()) {
                                 return;
@@ -79,7 +80,8 @@ public class SilkTouch extends CraftPower implements Listener {
                             }
                         }
                     }else{
-                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
+                        if(!getPowerArray().contains(p)) return;
+                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                     }
                 }
             }

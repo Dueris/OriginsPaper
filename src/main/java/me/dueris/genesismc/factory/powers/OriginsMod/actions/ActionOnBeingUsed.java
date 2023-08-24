@@ -30,11 +30,13 @@ public class ActionOnBeingUsed extends CraftPower implements Listener {
             PowerContainer power = origin.getPowerFileFromType("origins:action_on_being_used");
             if (power == null) continue;
 
-            setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
+            if(!getPowerArray().contains(e.getPlayer())) return;
+                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
             ActionTypes.biEntityActionType(actor, target, power.getBiEntityAction());
             new BukkitRunnable() {
                 @Override
                 public void run() {
+                    if(!getPowerArray().contains(e.getPlayer())) return;
                     setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                 }
             }.runTaskLater(GenesisMC.getPlugin(), 2l);

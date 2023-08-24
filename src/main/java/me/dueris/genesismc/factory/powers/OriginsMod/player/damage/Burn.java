@@ -54,12 +54,14 @@ public class Burn extends CraftPower {
                         if (p.getGameMode() == GameMode.CREATIVE) return;
                         ConditionExecutor executor = new ConditionExecutor();
                         if(executor.check("condition", "conditions", p, origin, getPowerFile(), null, p)){
-                            setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
+                            if(!getPowerArray().contains(p)) return;
+                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
 
                             Long burn_duration = power.getBurnDuration();
                             p.setFireTicks(burn_duration.intValue());
                         }else{
-                            setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
+                            if(!getPowerArray().contains(p)) return;
+                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                         }
                         ticksE = 0;
                     }

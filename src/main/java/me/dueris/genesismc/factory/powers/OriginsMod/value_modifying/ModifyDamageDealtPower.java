@@ -47,12 +47,14 @@ public class ModifyDamageDealtPower extends CraftPower implements Listener {
                                 if (mathOperator != null) {
                                     float result = (float) mathOperator.apply(e.getDamage(), value);
                                     e.setDamage(result);
-                                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
+                                    if(!getPowerArray().contains(p)) return;
+                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                                 }
                             }
 
                         }else{
-                            setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
+                            if(!getPowerArray().contains(p)) return;
+                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                         }
                     } catch (Exception ev) {
                         ErrorSystem errorSystem = new ErrorSystem();

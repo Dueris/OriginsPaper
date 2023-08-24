@@ -45,98 +45,109 @@ public class Toggle extends CraftPower implements Listener {
                 if (conditionExecutor.check("condition", "conditions", p, origin, getPowerFile(), null, p)) {
                     if (!CooldownStuff.isPlayerInCooldown(p, origin.getPowerFileFromType(getPowerFile()).getKey().get("key").toString())) {
                         if (isKeyBeingPressed(e.getPlayer(), origin.getPowerFileFromType(getPowerFile()).getKey().get("key").toString(), true)) {
-                            new BukkitRunnable() {
-                                @Override
-                                public void run() {
-                                    String key = (String) origin.getPowerFileFromType(getPowerFile()).getKey().get("key");
-                                    if (!CooldownStuff.isPlayerInCooldown(p, key)) {
-                                        KeybindHandler.runKeyChangeTrigger(KeybindHandler.getTriggerFromOriginKey(p, key));
-
-                                        final boolean[] thing = new boolean[1];
-                                        new BukkitRunnable() {
-                                            @Override
-                                            public void run() {
-                                                if (!CooldownStuff.isPlayerInCooldown(p, key)) {
-                                                    if (origin.getPowerFileFromType(getPowerFile()).get("retain_state", "false") == "false") {
-                                                        //continousus - false
-                                                        KeybindHandler.runKeyChangeTriggerReturn(KeybindHandler.getTriggerFromOriginKey(p, key), p, key);
-                                                        ItemMeta met = KeybindHandler.getKeybindItem(key, p.getInventory()).getItemMeta();
-                                                        met.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "contin"), PersistentDataType.BOOLEAN, false);
-                                                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
-                                                        KeybindHandler.getKeybindItem(key, p.getInventory()).setItemMeta(met);
-                                                        thing[0] = true;
-                                                        this.cancel();
-                                                    } else {
-                                                        //yes continuouous
-                                                        ItemMeta met = KeybindHandler.getKeybindItem(key, p.getInventory()).getItemMeta();
-                                                        met.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "contin"), PersistentDataType.BOOLEAN, true);
-                                                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
-                                                        KeybindHandler.getKeybindItem(key, p.getInventory()).setItemMeta(met);
-                                                    }
-                                                }
-
-                                                if (in_continuous.contains(p)) {
-                                                    //run code here for things that happen when toggled
-                                                    //power is active
-                                                    //dont change any other settings in this other than the powertype and the "retain_state"
-                                                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
-                                                } else {
-                                                    this.cancel();
-                                                }
-                                            }
-                                        }.runTaskTimer(GenesisMC.getPlugin(), 1L, 1L);
-
-                                        if (thing[0]) {
-                                            thing[0] = false;
-                                            this.cancel();
-                                        }
-
-                                        if (origin.getPowerFileFromType(getPowerFile()).get("retain_state", "false").equalsIgnoreCase("false")) {
-                                            ItemMeta met = KeybindHandler.getKeybindItem(key, p.getInventory()).getItemMeta();
-                                            met.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "contin"), PersistentDataType.BOOLEAN, false);
-                                            setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
-                                            KeybindHandler.getKeybindItem(key, p.getInventory()).setItemMeta(met);
-                                            in_continuous.add(p);
-                                            new BukkitRunnable(){
-                                                @Override
-                                                public void run() {
-                                                    in_continuous.remove(p);
-                                                }
-                                            }.runTaskLater(GenesisMC.getPlugin(),1l);
-                                            this.cancel();
-                                        } else {
-                                            if (isKeyBeingPressed(e.getPlayer(), origin.getPowerFileFromType(getPowerFile()).getKey().get("key").toString(), true)) {
-                                                ItemMeta met = KeybindHandler.getKeybindItem(key, p.getInventory()).getItemMeta();
-                                                met.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "contin"), PersistentDataType.BOOLEAN, false);
-                                                setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
-                                                KeybindHandler.getKeybindItem(key, p.getInventory()).setItemMeta(met);
-                                                if (in_continuous.contains(p)) {
-                                                    KeybindHandler.runKeyChangeTriggerReturn(KeybindHandler.getKeybindItem(key, p.getInventory()), p, key);
-                                                    KeybindHandler.getKeybindItem(key, p.getInventory()).setType(Material.GRAY_DYE);
-                                                    met.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "contin"), PersistentDataType.BOOLEAN, false);
-                                                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
-                                                    KeybindHandler.getKeybindItem(key, p.getInventory()).setItemMeta(met);
-                                                    in_continuous.remove(p);
-                                                    this.cancel();
-                                                } else {
-                                                    KeybindHandler.runKeyChangeTrigger(KeybindHandler.getKeybindItem(key, p.getInventory()));
-                                                    KeybindHandler.getKeybindItem(key, p.getInventory()).setType(Material.LIME_DYE);
-                                                    met.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "contin"), PersistentDataType.BOOLEAN, true);
-                                                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
-                                                    KeybindHandler.getKeybindItem(key, p.getInventory()).setItemMeta(met);
-                                                    in_continuous.add(p);
-                                                }
-                                                this.cancel();
-                                            }
-                                        }
-                                    }
-                                }
-                            }.runTaskTimer(GenesisMC.getPlugin(), 0, 1);
+                            execute(p, origin);
                         }
                     }
                 }
             }
         }
+    }
+
+    public void execute(Player p, OriginContainer origin){
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                String key = (String) origin.getPowerFileFromType(getPowerFile()).getKey().get("key");
+                if (!CooldownStuff.isPlayerInCooldown(p, key)) {
+                    KeybindHandler.runKeyChangeTrigger(KeybindHandler.getTriggerFromOriginKey(p, key));
+
+                    final boolean[] thing = new boolean[1];
+                    new BukkitRunnable() {
+                        @Override
+                        public void run() {
+                            if (!CooldownStuff.isPlayerInCooldown(p, key)) {
+                                if (origin.getPowerFileFromType(getPowerFile()).get("retain_state", "false") == "false") {
+                                    //continousus - false
+                                    KeybindHandler.runKeyChangeTriggerReturn(KeybindHandler.getTriggerFromOriginKey(p, key), p, key);
+                                    ItemMeta met = KeybindHandler.getKeybindItem(key, p.getInventory()).getItemMeta();
+                                    met.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "contin"), PersistentDataType.BOOLEAN, false);
+                                    if(!getPowerArray().contains(p)) return;
+                                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
+                                    KeybindHandler.getKeybindItem(key, p.getInventory()).setItemMeta(met);
+                                    thing[0] = true;
+                                    this.cancel();
+                                } else {
+                                    //yes continuouous
+                                    ItemMeta met = KeybindHandler.getKeybindItem(key, p.getInventory()).getItemMeta();
+                                    met.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "contin"), PersistentDataType.BOOLEAN, true);
+                                    if(!getPowerArray().contains(p)) return;
+                                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
+                                    KeybindHandler.getKeybindItem(key, p.getInventory()).setItemMeta(met);
+                                }
+                            }
+
+                            if (in_continuous.contains(p)) {
+                                //run code here for things that happen when toggled
+                                //power is active
+                                //dont change any other settings in this other than the powertype and the "retain_state"
+                                if(!getPowerArray().contains(p)) return;
+                                setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
+                            } else {
+                                this.cancel();
+                            }
+                        }
+                    }.runTaskTimer(GenesisMC.getPlugin(), 1L, 1L);
+
+                    if (thing[0]) {
+                        thing[0] = false;
+                        this.cancel();
+                    }
+
+                    if (origin.getPowerFileFromType(getPowerFile()).get("retain_state", "false").equalsIgnoreCase("false")) {
+                        ItemMeta met = KeybindHandler.getKeybindItem(key, p.getInventory()).getItemMeta();
+                        met.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "contin"), PersistentDataType.BOOLEAN, false);
+                        if(!getPowerArray().contains(p)) return;
+                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
+                        KeybindHandler.getKeybindItem(key, p.getInventory()).setItemMeta(met);
+                        in_continuous.add(p);
+                        new BukkitRunnable(){
+                            @Override
+                            public void run() {
+                                in_continuous.remove(p);
+                            }
+                        }.runTaskLater(GenesisMC.getPlugin(),1l);
+                        this.cancel();
+                    } else {
+                        if (isKeyBeingPressed(p, origin.getPowerFileFromType(getPowerFile()).getKey().get("key").toString(), true)) {
+                            ItemMeta met = KeybindHandler.getKeybindItem(key, p.getInventory()).getItemMeta();
+                            met.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "contin"), PersistentDataType.BOOLEAN, false);
+                            if(!getPowerArray().contains(p)) return;
+                            setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
+                            KeybindHandler.getKeybindItem(key, p.getInventory()).setItemMeta(met);
+                            if (in_continuous.contains(p)) {
+                                KeybindHandler.runKeyChangeTriggerReturn(KeybindHandler.getKeybindItem(key, p.getInventory()), p, key);
+                                KeybindHandler.getKeybindItem(key, p.getInventory()).setType(Material.GRAY_DYE);
+                                met.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "contin"), PersistentDataType.BOOLEAN, false);
+                                if(!getPowerArray().contains(p)) return;
+                                setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
+                                KeybindHandler.getKeybindItem(key, p.getInventory()).setItemMeta(met);
+                                in_continuous.remove(p);
+                                this.cancel();
+                            } else {
+                                KeybindHandler.runKeyChangeTrigger(KeybindHandler.getKeybindItem(key, p.getInventory()));
+                                KeybindHandler.getKeybindItem(key, p.getInventory()).setType(Material.LIME_DYE);
+                                met.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "contin"), PersistentDataType.BOOLEAN, true);
+                                if(!getPowerArray().contains(p)) return;
+                                setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
+                                KeybindHandler.getKeybindItem(key, p.getInventory()).setItemMeta(met);
+                                in_continuous.add(p);
+                            }
+                            this.cancel();
+                        }
+                    }
+                }
+            }
+        }.runTaskTimer(GenesisMC.getPlugin(), 0, 1);
     }
 
     @Override

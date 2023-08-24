@@ -40,9 +40,11 @@ public class StartingEquipmentPower extends CraftPower implements Listener {
             for(OriginContainer origin : OriginPlayer.getOrigin(e.getPlayer()).values()){
                 ConditionExecutor conditionExecutor = new ConditionExecutor();
                 if(conditionExecutor.check("condition", "conditions", e.getPlayer(), origin, getPowerFile(), null, e.getPlayer())) {
+                    if(!getPowerArray().contains(e.getPlayer())) return;
                     setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                     runGiveItems(e.getPlayer(), origin);
                 }else{
+                    if(!getPowerArray().contains(e.getPlayer())) return;
                     setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                 }
             }
@@ -61,6 +63,7 @@ public class StartingEquipmentPower extends CraftPower implements Listener {
             for(OriginContainer origin : OriginPlayer.getOrigin(e.getPlayer()).values()){
                 ConditionExecutor conditionExecutor = new ConditionExecutor();
                 if(conditionExecutor.check("condition", "conditions", e.getPlayer(), origin, getPowerFile(), null, e.getPlayer())) {
+                    if(!getPowerArray().contains(e.getPlayer())) return;
                     setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                     if(origin.getPowerFileFromType(getPowerFile()).get("recurrent", "false") != null){
                         if(origin.getPowerFileFromType(getPowerFile()).get("recurrent") == "true"){
@@ -68,6 +71,7 @@ public class StartingEquipmentPower extends CraftPower implements Listener {
                         }
                     }
                 }else{
+                    if(!getPowerArray().contains(e.getPlayer())) return;
                     setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                 }
 

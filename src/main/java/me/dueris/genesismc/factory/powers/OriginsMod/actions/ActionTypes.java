@@ -1,9 +1,14 @@
 package me.dueris.genesismc.factory.powers.OriginsMod.actions;
 
+import me.dueris.genesismc.CooldownStuff;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.entity.OriginPlayer;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
+import me.dueris.genesismc.factory.powers.CraftPower;
+import me.dueris.genesismc.factory.powers.OriginsMod.Toggle;
+import me.dueris.genesismc.files.GenesisDataFiles;
 import me.dueris.genesismc.utils.OriginContainer;
+import me.dueris.genesismc.utils.PowerContainer;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -15,9 +20,11 @@ import org.bukkit.util.Vector;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static me.dueris.genesismc.factory.powers.CraftPower.findCraftPowerClasses;
 import static me.dueris.genesismc.factory.powers.OriginsMod.OriginMethods.statusEffectInstance;
 
 public class ActionTypes {
@@ -186,6 +193,56 @@ public class ActionTypes {
         }
         if (type.equals("origins:block_action_at")) {
             BlockActionType(entity.getLocation(), entityAction);
+        }
+        if (type.equals("origins:toggle")){
+                if(entity instanceof Player){
+                    for(OriginContainer origin : OriginPlayer.getOrigin((Player) entity).values()){
+                        if(origin.getPowers().contains(power.get("power"))){
+                            for(PowerContainer powerContainer : origin.getPowerContainers()){
+                                if(powerContainer.getType().equals("origins:toggle")){
+                                    Toggle toggle = new Toggle();
+                                    toggle.execute((Player) entity, origin);
+                                }
+                            }
+                        }
+                    }
+            }
+        }
+        if(type.equals("origins:trigger_cooldown")){
+                if(entity instanceof Player player){
+                    for(OriginContainer origin : OriginPlayer.getOrigin((Player) entity).values()){
+                        if(origin.getPowers().contains(power.get("power"))){
+                            for(PowerContainer powerContainer : origin.getPowerContainers()){
+                                if(powerContainer.get("cooldown") != null){
+                                    String key = "*";
+                                    if(powerContainer.getKey().get("key") != null){
+                                        key = powerContainer.getKey().get("key").toString();
+                                        if(powerContainer.getType().equals("origins:action_on_hit")){
+                                            key = "key.attack";
+                                        } else if (powerContainer.getType().equals("origins:action_when_damage_taken")) {
+                                            key = "key.attack";
+                                        } else if (powerContainer.getType().equals("origins:action_when_hit")) {
+                                            key = "key.attack";
+                                        } else if (powerContainer.getType().equals("origins:action_self")) {
+                                            key = "key.use";
+                                        } else if (powerContainer.getType().equals("origins:attacker_action_when_hit")) {
+                                            key = "key.attack";
+                                        } else if (powerContainer.getType().equals("origins:self_action_on_hit")) {
+                                            key = "key.attack";
+                                        } else if (powerContainer.getType().equals("origins:self_action_on_kill")) {
+                                            key = "key.attack";
+                                        } else if (powerContainer.getType().equals("origins:self_action_when_hit")) {
+                                            key = "key.attack";
+                                        } else if (powerContainer.getType().equals("origins:target_action_on_hit")) {
+                                            key = "key.attack";
+                                        }
+                                    }
+                                CooldownStuff.addCooldown(player, powerContainer.getTag().toString(), Integer.parseInt(powerContainer.get("cooldown").toString()), key);
+                                }
+                            }
+                        }
+                    }
+            }
         }
     }
 

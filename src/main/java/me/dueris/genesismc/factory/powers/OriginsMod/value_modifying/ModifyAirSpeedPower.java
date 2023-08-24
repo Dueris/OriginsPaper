@@ -39,10 +39,12 @@ public class ModifyAirSpeedPower extends CraftPower {
                 try{
                     ConditionExecutor conditionExecutor = new ConditionExecutor();
                     if(conditionExecutor.check("condition", "conditions", p, origin, "origins:modify_air_speed", null, p)){
-                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
+                        if(!getPowerArray().contains(p)) return;
+                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                         p.setFlySpeed(valueModifyingSuperClass.getPersistentAttributeContainer(p, MODIFYING_KEY));
                     }else{
-                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
+                        if(!getPowerArray().contains(p)) return;
+                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                         p.setFlySpeed(valueModifyingSuperClass.getDefaultValue(MODIFYING_KEY));
                     }
                 } catch (Exception e){

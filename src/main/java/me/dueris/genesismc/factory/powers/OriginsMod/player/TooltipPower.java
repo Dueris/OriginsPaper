@@ -39,12 +39,14 @@ public class TooltipPower extends CraftPower {
                 for(OriginContainer origin : OriginPlayer.getOrigin(p).values()){
                     ConditionExecutor conditionExecutor = new ConditionExecutor();
                     if(conditionExecutor.check("item_condition", "item_conditions", p, origin, getPowerFile(), null, p)){
-                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
+                        if(!getPowerArray().contains(p)) return;
+                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                         for(HashMap<String, Object> text : origin.getPowerFileFromType(getPowerFile()).getSingularAndPlural("text", "texts")){
                             applyTooltip(p, p.getItemInHand(), text.get("text").toString());
                         }
                     }else{
-                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
+                        if(!getPowerArray().contains(p)) return;
+                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                         removeTooltip(p, p.getItemInHand());
                     }
                 }

@@ -45,13 +45,15 @@ public class ModifyLavaSpeed extends CraftPower {
                                 BinaryOperator mathOperator = getOperationMappingsFloat().get(operation);
                                 if (mathOperator != null) {
                                     float result = (float) mathOperator.apply(0.02f, value);
-                                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
+                                    if(!getPowerArray().contains(p)) return;
+                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                                     p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 2, calculateSpeedAmplifier(Math.toIntExact(Long.valueOf(String.valueOf(result)))), false, false, false));
                                 }
                             }
 
                         }else{
-                            setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
+                            if(!getPowerArray().contains(p)) return;
+                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                         }
                     } catch (Exception ev) {
                         ErrorSystem errorSystem = new ErrorSystem();

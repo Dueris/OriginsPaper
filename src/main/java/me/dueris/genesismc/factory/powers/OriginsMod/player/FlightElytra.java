@@ -50,6 +50,7 @@ public class FlightElytra extends CraftPower implements Listener {
             for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
                 ConditionExecutor executor = new ConditionExecutor();
                 if(executor.check("condition", "conditions", p, origin, getPowerFile(), null, p)){
+                    if(!getPowerArray().contains(p)) return;
                     setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                     if (origin.getPowerFileFromType("origins:elytra_flight").getShouldRender()) {
                         SendStringPacketPayload.sendCustomPacket(p, "ExecuteGenesisOriginsElytraRenderID:12232285");
@@ -73,6 +74,7 @@ public class FlightElytra extends CraftPower implements Listener {
                         }.runTaskTimer(GenesisMC.getPlugin(), 0L, 1L);
                     }
                 }else{
+                    if(!getPowerArray().contains(p)) return;
                     setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                 }
 

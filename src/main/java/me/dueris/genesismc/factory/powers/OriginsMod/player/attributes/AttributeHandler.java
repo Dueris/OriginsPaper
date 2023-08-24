@@ -125,7 +125,8 @@ public class AttributeHandler extends CraftPower implements Listener {
                         double base_value = p.getAttribute(attribute_modifier).getBaseValue();
                         String operation = String.valueOf(modifier.get("operation"));
                         executeAttributeModify(operation, attribute_modifier, base_value, p, value);
-                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
+                        if(!getPowerArray().contains(p)) return;
+                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                         p.sendHealthUpdate();
                     }
                 }

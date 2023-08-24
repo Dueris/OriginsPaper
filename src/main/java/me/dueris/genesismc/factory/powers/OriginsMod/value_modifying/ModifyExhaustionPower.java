@@ -43,11 +43,13 @@ public class ModifyExhaustionPower extends CraftPower implements Listener {
                         if (mathOperator != null) {
                             float result = (float) mathOperator.apply(e.getExhaustion(), value);
                             e.setExhaustion(result);
-                            setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
+                            if(!getPowerArray().contains(p)) return;
+                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                         }
                     }
 
                 }else{
+                    if(!getPowerArray().contains(p)) return;
                     setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                 }
             }

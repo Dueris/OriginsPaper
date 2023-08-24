@@ -32,10 +32,12 @@ public class PreventSprinting extends CraftPower {
                 for(OriginContainer origin : OriginPlayer.getOrigin(p).values()){
                     ConditionExecutor conditionExecutor = new ConditionExecutor();
                     if(conditionExecutor.check("condition", "conditions", p, origin, "origins:prevent_sprinting", null, p)){
-                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
+                        if(!getPowerArray().contains(p)) return;
+                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                         p.setSprinting(false);
                     }else{
-                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
+                        if(!getPowerArray().contains(p)) return;
+                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                     }
                 }
             }

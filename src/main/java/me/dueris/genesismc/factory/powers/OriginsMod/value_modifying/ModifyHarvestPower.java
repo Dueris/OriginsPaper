@@ -35,9 +35,11 @@ public class ModifyHarvestPower extends CraftPower implements Listener {
                 if(conditionExecutor.check("block_condition", "block_conditions", p, origin, "origins:modify_harvest", null, p)){
                     if(origin.getPowerFileFromType("origins:modify_harvest").get("allow", null) == "true"){
                         e.setDropItems(false);
-                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
+                        if(!getPowerArray().contains(p)) return;
+                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                     }
                 }else{
+                    if(!getPowerArray().contains(p)) return;
                     setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                 }
             }

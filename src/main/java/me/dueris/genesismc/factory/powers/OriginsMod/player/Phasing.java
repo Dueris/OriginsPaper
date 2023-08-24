@@ -127,7 +127,8 @@ public class Phasing extends CraftPower implements Listener {
                     ConditionExecutor conditionExecutor = new ConditionExecutor();
                         if (OriginPlayer.isInPhantomForm(p)) {
                             if (conditionExecutor.check("block_condition", "block_conditions", p, origin, "origins:phasing", null, p)) {
-                                setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
+                                if(!getPowerArray().contains(p)) return;
+                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                             if ((p.getLocation().add(0.55F, 0, 0.55F).getBlock().isSolid() ||
                                     p.getLocation().add(0.55F, 0, 0).getBlock().isSolid() ||
                                     p.getLocation().add(0, 0, 0.55F).getBlock().isSolid() ||
@@ -177,7 +178,8 @@ public class Phasing extends CraftPower implements Listener {
                             }
                             } else {
                                 p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "insideBlock"), PersistentDataType.BOOLEAN, false);
-                                setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
+                                if(!getPowerArray().contains(p)) return;
+                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                             }
                         } else {
                             p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "insideBlock"), PersistentDataType.BOOLEAN, false);

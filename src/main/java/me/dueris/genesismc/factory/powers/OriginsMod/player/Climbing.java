@@ -72,7 +72,8 @@ public class Climbing extends CraftPower {
                         boolean cancel_bool = origin.getPowerFileFromType("origins:climbing").getRainCancel();
                         ConditionExecutor executor = new ConditionExecutor();
                         if(executor.check("condition", "conditions", p, origin, getPowerFile(), null, p)){
-                            setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
+                            if(!getPowerArray().contains(p)) return;
+                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                             if (!cancel_bool) {
                                 if (!p.isSneaking()) return;
                                 p.addPotionEffect(new PotionEffect(PotionEffectType.LEVITATION, 6, 2, false, false, false));
@@ -96,7 +97,8 @@ public class Climbing extends CraftPower {
                                 }
                             }
                         }else{
-                            setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
+                            if(!getPowerArray().contains(p)) return;
+                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                         }
                     }
                 }

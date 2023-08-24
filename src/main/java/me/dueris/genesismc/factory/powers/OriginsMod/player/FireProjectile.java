@@ -122,31 +122,34 @@ public class FireProjectile extends CraftPower implements Listener {
                                                         if (shotsLeft >= 0) {
                                                             if (origin.getPowerFileFromType("origins:fire_projectile").getKey().get("continuous").toString().equalsIgnoreCase("false")) {
                                                                 KeybindHandler.runKeyChangeTriggerReturn(KeybindHandler.getTriggerFromOriginKey(p, key), p, key);
-                                                                CooldownStuff.addCooldown(p, "origins:fire_projectile", cooldown, key);
+                                                                CooldownStuff.addCooldown(p, origin.getPowerFileFromType(getPowerFile()).getTag(), cooldown, key);
                                                                 peopladf.remove(p);
                                                                 ItemMeta met = KeybindHandler.getKeybindItem(key, p.getInventory()).getItemMeta();
                                                                 met.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "contin"), PersistentDataType.BOOLEAN, false);
                                                                 KeybindHandler.getKeybindItem(key, p.getInventory()).setItemMeta(met);
                                                                 shotsLeft = 0;
                                                                 thing[0] = true;
-                                                                setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
+                                                                if(!getPowerArray().contains(p)) return;
+                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                                                                 this.cancel();
                                                             } else {
                                                                 if (!in_continuous.contains(p)) {
                                                                     KeybindHandler.runKeyChangeTriggerReturn(KeybindHandler.getTriggerFromOriginKey(p, key), p, key);
-                                                                    CooldownStuff.addCooldown(p, "origins:fire_projectile", cooldown, key);
+                                                                    CooldownStuff.addCooldown(p, origin.getPowerFileFromType(getPowerFile()).getTag(), cooldown, key);
                                                                     peopladf.remove(p);
                                                                     ItemMeta met = KeybindHandler.getKeybindItem(key, p.getInventory()).getItemMeta();
                                                                     met.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "contin"), PersistentDataType.BOOLEAN, false);
                                                                     KeybindHandler.getKeybindItem(key, p.getInventory()).setItemMeta(met);
                                                                     shotsLeft = 0;
                                                                     thing[0] = true;
-                                                                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
+                                                                    if(!getPowerArray().contains(p)) return;
+                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                                                                     this.cancel();
                                                                 } else {
                                                                     ItemMeta met = KeybindHandler.getKeybindItem(key, p.getInventory()).getItemMeta();
                                                                     met.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "contin"), PersistentDataType.BOOLEAN, true);
-                                                                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
+                                                                    if(!getPowerArray().contains(p)) return;
+                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                                                                     KeybindHandler.getKeybindItem(key, p.getInventory()).setItemMeta(met);
                                                                     shotsLeft = -amt;
                                                                 }
@@ -173,7 +176,8 @@ public class FireProjectile extends CraftPower implements Listener {
                                                             direction.setZ(z);
 
                                                             projectile.setVelocity(direction.normalize().multiply(speed));
-                                                            setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
+                                                            if(!getPowerArray().contains(p)) return;
+                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
 
                                                             peopladf.add(p);
 
@@ -192,14 +196,16 @@ public class FireProjectile extends CraftPower implements Listener {
                                             if (origin.getPowerFileFromType("origins:fire_projectile").getKey().get("continuous").toString().equalsIgnoreCase("false")) {
                                                 ItemMeta met = KeybindHandler.getKeybindItem(key, p.getInventory()).getItemMeta();
                                                 met.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "contin"), PersistentDataType.BOOLEAN, false);
-                                                setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
+                                                if(!getPowerArray().contains(p)) return;
+                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                                                 KeybindHandler.getKeybindItem(key, p.getInventory()).setItemMeta(met);
                                                 this.cancel();
                                             } else {
                                                 if (isKeyBeingPressed(e.getPlayer(), origin.getPowerFileFromType("origins:fire_projectile").getKey().get("key").toString(), true)) {
                                                     ItemMeta met = KeybindHandler.getKeybindItem(key, p.getInventory()).getItemMeta();
                                                     met.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "contin"), PersistentDataType.BOOLEAN, false);
-                                                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
+                                                    if(!getPowerArray().contains(p)) return;
+                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                                                     KeybindHandler.getKeybindItem(key, p.getInventory()).setItemMeta(met);
                                                     this.cancel();
                                                 }

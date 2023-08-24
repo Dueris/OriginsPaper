@@ -31,11 +31,13 @@ public class Swimming extends CraftPower {
                 if(swimming.contains(p)){
                     ConditionExecutor conditionExecutor = new ConditionExecutor();
                     if(!conditionExecutor.check("condition", "conditions", p, origin, getPowerFile(), null, p)){
-                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
+                        if(!getPowerArray().contains(p)) return;
+                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                         return;
                     }else{
                         p.setSwimming(true);
-                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
+                        if(!getPowerArray().contains(p)) return;
+                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                     }
                 }
             }

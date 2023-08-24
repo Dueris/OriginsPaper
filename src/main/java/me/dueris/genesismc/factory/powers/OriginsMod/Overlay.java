@@ -30,10 +30,12 @@ public class Overlay extends CraftPower {
                 for(OriginContainer origin : OriginPlayer.getOrigin(player).values()){
                     ConditionExecutor conditionExecutor = new ConditionExecutor();
                     if(conditionExecutor.check("condition", "conditions", player, origin, "origins:overlay", null, player)){
-                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
+                        if(!getPowerArray().contains(player)) return;
+                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                         Phasing.initializePhantomOverlay(player);
                     }else{
-                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
+                        if(!getPowerArray().contains(player)) return;
+                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                         Phasing.deactivatePhantomOverlay(player);
                     }
                 }

@@ -46,12 +46,14 @@ public class ModifyExperienceGainPower extends CraftPower implements Listener {
                             if (mathOperator != null) {
                                 float result = (float) mathOperator.apply(e.getAmount(), value);
                                 e.setAmount(Math.toIntExact(Long.valueOf(String.valueOf(result))));
-                                setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
+                                if(!getPowerArray().contains(p)) return;
+                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                             }
                         }
 
                     }else{
-                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
+                        if(!getPowerArray().contains(p)) return;
+                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                     }
                 } catch (Exception ev) {
                     ErrorSystem errorSystem = new ErrorSystem();

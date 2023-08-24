@@ -46,7 +46,8 @@ public class EntityGroupManager extends CraftPower {
                     for (OriginContainer origin : OriginPlayer.getOrigin(((Player) entity).getPlayer()).values()) {
                         ConditionExecutor executor = new ConditionExecutor();
                         if(executor.check("condition", "conditions", (Player) entity, origin, getPowerFile(), null, entity)){
-                            setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
+                            if(!getPowerArray().contains(entity)) return;
+                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                             if (entity_group.contains(entity)) {
                                 if (origin.getPowerFileFromType("origins:entity_group").get("group", null).equalsIgnoreCase("undead")) {
                                     undead.put(entity.getEntityId(), entity.getType().name());
@@ -61,7 +62,8 @@ public class EntityGroupManager extends CraftPower {
                                 }
                             }
                         }else{
-                            setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
+                            if(!getPowerArray().contains(entity)) return;
+                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                         }
                     }
                 }

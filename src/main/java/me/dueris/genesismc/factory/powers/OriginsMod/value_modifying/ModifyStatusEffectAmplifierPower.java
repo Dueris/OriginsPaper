@@ -38,6 +38,7 @@ public class ModifyStatusEffectAmplifierPower extends CraftPower implements List
             for(OriginContainer origin : OriginPlayer.getOrigin(p).values()){
                 ConditionExecutor executor = new ConditionExecutor();
                 if(executor.check("condition", "conditions", p, origin, getPowerFile(), null, p)){
+                    if(!getPowerArray().contains(p)) return;
                     setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                     if(origin.getPowerFileFromType("origins:modify_status_effect_amplifier").get("status_effect", null) != null){
                         if(e.getNewEffect().getType().equals(PotionEffectType.getByName(origin.getPowerFileFromType("origins:modify_status_effect_amplifier").get("status_effect", null)))){
@@ -67,6 +68,7 @@ public class ModifyStatusEffectAmplifierPower extends CraftPower implements List
                         }
                     }
                 }else{
+                    if(!getPowerArray().contains(p)) return;
                     setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                 }
             }
