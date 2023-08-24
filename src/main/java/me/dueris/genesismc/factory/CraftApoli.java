@@ -86,7 +86,7 @@ public class CraftApoli {
         }
     }
 
-    public static void processNestedPowers(PowerContainer powerContainer, ArrayList<PowerContainer> powerContainers) {
+    public static void processNestedPowers(PowerContainer powerContainer, ArrayList<PowerContainer> powerContainers, String powerFolder, String powerFileName) {
         ArrayList<PowerContainer> newPowerContainers = new ArrayList<>();
 
         for (String key : powerContainer.getPowerFile().getKeys()) {
@@ -97,7 +97,7 @@ public class CraftApoli {
                 FileContainer subPowerFile = fileToFileContainer(subPowerJson);
                 String source = powerContainer.getSource();
 
-                PowerContainer newPower = new PowerContainer(key, subPowerFile, source);
+                PowerContainer newPower = new PowerContainer(powerFolder + ":" + powerFileName + "_" + key, subPowerFile, source);
                 newPowerContainers.add(newPower);
             }
         }
@@ -160,7 +160,7 @@ public class CraftApoli {
                                         if (powerParser.containsKey("type") && "origins:multiple".equals(powerParser.get("type"))) {
                                             PowerContainer powerContainer = new PowerContainer(powerFolder + ":" + powerFileName, fileToFileContainer(powerParser), originFolder.get(0) + ":" + originFileName.get(0));
                                             Bukkit.getConsoleSender().sendMessage(powerContainer.getType());
-                                            processNestedPowers(powerContainer, powerContainers);
+                                            processNestedPowers(powerContainer, powerContainers, powerFolder, powerFileName);
                                         } else {
                                             powerContainers.add(new PowerContainer(powerFolder + ":" + powerFileName, fileToFileContainer(powerParser), originFolder.get(0) + ":" + originFileName.get(0)));
                                         }
@@ -196,7 +196,7 @@ public class CraftApoli {
                                             if (powerParser.containsKey("type") && "origins:multiple".equals(powerParser.get("type"))) {
                                                 PowerContainer powerContainer = new PowerContainer(powerFolder + ":" + powerFileName, fileToFileContainer(powerParser), originFolder.get(0) + ":" + originFileName.get(0));
                                                 Bukkit.getConsoleSender().sendMessage(powerContainer.getType());
-                                                processNestedPowers(powerContainer, powerContainers);
+                                                processNestedPowers(powerContainer, powerContainers, powerFolder, powerFileName);
                                             } else {
                                                 powerContainers.add(new PowerContainer(powerFolder + ":" + powerFileName, fileToFileContainer(powerParser), originFolder.get(0) + ":" + originFileName.get(0)));
                                             }
@@ -302,7 +302,7 @@ public class CraftApoli {
                                     if (powerParser.containsKey("type") && "origins:multiple".equals(powerParser.get("type"))) {
                                         PowerContainer powerContainer = new PowerContainer(powerFolder + ":" + powerFileName, fileToFileContainer(powerParser), originFolder.get(0) + ":" + originFileName.get(0));
                                         Bukkit.getConsoleSender().sendMessage(powerContainer.getType());
-                                        processNestedPowers(powerContainer, powerContainers);
+                                        processNestedPowers(powerContainer, powerContainers, powerFolder, powerFileName);
                                     } else {
                                         powerContainers.add(new PowerContainer(powerFolder + ":" + powerFileName, fileToFileContainer(powerParser), originFolder.get(0) + ":" + originFileName.get(0)));
                                     }
