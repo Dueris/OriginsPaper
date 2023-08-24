@@ -18,6 +18,21 @@ import static me.dueris.genesismc.factory.powers.OriginsMod.player.attributes.At
 import static me.dueris.genesismc.factory.powers.OriginsMod.value_modifying.ValueModifyingSuperClass.modify_projectile_damage;
 
 public class ModifyProjectileDamagePower extends CraftPower implements Listener {
+
+    @Override
+    public void setActive(Boolean bool){
+        if(powers_active.containsKey(getPowerFile())){
+            powers_active.replace(getPowerFile(), bool);
+        }else{
+            powers_active.put(getPowerFile(), bool);
+        }
+    }
+
+    @Override
+    public Boolean getActive(){
+        return powers_active.get(getPowerFile());
+    }
+
     @EventHandler
     public void run(EntityDamageEvent e){
         if(e.getEntity() instanceof Player p){
@@ -34,8 +49,11 @@ public class ModifyProjectileDamagePower extends CraftPower implements Listener 
                                 if (mathOperator != null) {
                                     float result = (float) mathOperator.apply(e.getDamage(), value);
                                     e.setDamage(result);
+                                    setActive(true);
                                 }
                             }
+                        }else{
+                            setActive(false);
                         }
                     } catch (Exception ev) {
                         ErrorSystem errorSystem = new ErrorSystem();

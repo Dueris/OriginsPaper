@@ -15,17 +15,35 @@ import java.util.HashMap;
 import java.util.List;
 
 public class ApplyEffect extends CraftPower implements Listener {
+
+    @Override
+    public void setActive(Boolean bool){
+        if(powers_active.containsKey(getPowerFile())){
+            powers_active.replace(getPowerFile(), bool);
+        }else{
+            powers_active.put(getPowerFile(), bool);
+        }
+    }
+
+    @Override
+    public Boolean getActive(){
+        return powers_active.get(getPowerFile());
+    }
+
     @Override
     public void run() {
         for (Player p : Bukkit.getOnlinePlayers()) {
             if (apply_effect.contains(p)) {
                 for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
                     ConditionExecutor conditionExecutor = new ConditionExecutor();
-                    if (conditionExecutor.check("condition", "conditions", p, origin, "origins:apply_effect", null, p)) {
+                    if (conditionExecutor.check("condition", "conditions", p, origin, getPowerFile(), null, p)) {
+                        setActive(true);
                         List<HashMap<String, Object>> effectDataList = origin.getPowerFileFromType("origins:apply_effect").getEffectData();
                         for (HashMap<String, Object> effectData : effectDataList) {
                             p.addPotionEffect(new PotionEffect(PotionEffectType.getByName(effectData.get("effect").toString().split(":")[1].toUpperCase()), Integer.valueOf(effectData.get("duration").toString()), Integer.valueOf(effectData.get("amplifier").toString())));
                         }
+                    }else{
+                        setActive(false);
                     }
                 }
             }

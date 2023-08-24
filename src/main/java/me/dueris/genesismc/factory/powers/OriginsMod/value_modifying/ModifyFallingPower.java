@@ -17,6 +17,21 @@ import java.util.ArrayList;
 import static me.dueris.genesismc.factory.powers.OriginsMod.value_modifying.ValueModifyingSuperClass.modify_falling;
 
 public class ModifyFallingPower extends CraftPower implements Listener {
+
+    @Override
+    public void setActive(Boolean bool){
+        if(powers_active.containsKey(getPowerFile())){
+            powers_active.replace(getPowerFile(), bool);
+        }else{
+            powers_active.put(getPowerFile(), bool);
+        }
+    }
+
+    @Override
+    public Boolean getActive(){
+        return powers_active.get(getPowerFile());
+    }
+
     @EventHandler
     public void run(PlayerMoveEvent e){
         Player p = e.getPlayer();
@@ -27,6 +42,9 @@ public class ModifyFallingPower extends CraftPower implements Listener {
                     ConditionExecutor conditionExecutor = new ConditionExecutor();
                     if(conditionExecutor.check("condition", "conditions", p, origin, "origins:modify_falling", null, p)){
                         velocity.setY(Integer.parseInt(origin.getPowerFileFromType("origins:modify_falling").get("velocity", null).toString()));
+                        setActive(true);
+                    }else{
+                        setActive(false);
                     }
                 }
             }

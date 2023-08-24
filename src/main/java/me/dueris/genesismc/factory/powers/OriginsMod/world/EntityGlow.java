@@ -19,6 +19,20 @@ import java.util.HashSet;
 
 public class EntityGlow extends CraftPower {
 
+    @Override
+    public void setActive(Boolean bool){
+        if(powers_active.containsKey(getPowerFile())){
+            powers_active.replace(getPowerFile(), bool);
+        }else{
+            powers_active.put(getPowerFile(), bool);
+        }
+    }
+
+    @Override
+    public Boolean getActive(){
+        return powers_active.get(getPowerFile());
+    }
+
     public Collection<Entity> getEntitiesInRadius(Player player, int radius) {
         Collection<Entity> entitiesInRadius = new HashSet<>();
         for (Entity entity : player.getLocation().getWorld().getEntities()) {
@@ -41,6 +55,9 @@ public class EntityGlow extends CraftPower {
                             CraftPlayer craftPlayer = (CraftPlayer) p;
                             MobEffect effect = MobEffects.GLOWING;
                             craftPlayer.getHandle().connection.send(new ClientboundUpdateMobEffectPacket(entity.getEntityId(), new MobEffectInstance(effect, 60, 2, false, false, false)));
+                            setActive(true);
+                        }else{
+                            setActive(false);
                         }
                     }
                 }

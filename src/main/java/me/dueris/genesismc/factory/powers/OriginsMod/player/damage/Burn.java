@@ -14,6 +14,20 @@ import java.util.ArrayList;
 
 public class Burn extends CraftPower {
 
+    @Override
+    public void setActive(Boolean bool){
+        if(powers_active.containsKey(getPowerFile())){
+            powers_active.replace(getPowerFile(), bool);
+        }else{
+            powers_active.put(getPowerFile(), bool);
+        }
+    }
+
+    @Override
+    public Boolean getActive(){
+        return powers_active.get(getPowerFile());
+    }
+
     private Long interval;
 
     private int ticksE;
@@ -41,11 +55,15 @@ public class Burn extends CraftPower {
                     } else {
                         if (p.isInWaterOrRainOrBubbleColumn()) return;
                         if (p.getGameMode() == GameMode.CREATIVE) return;
-                        ConditionExecutor conditionExecutor = new ConditionExecutor();
-                        if (!conditionExecutor.check("condition", "conditions", p, origin, "origins:burn", null, p)) return;
-                        Long burn_duration = power.getBurnDuration();
-                        p.setFireTicks(burn_duration.intValue());
+                        ConditionExecutor executor = new ConditionExecutor();
+                        if(executor.check("condition", "conditions", p, origin, getPowerFile(), null, p)){
+                            setActive(true);
 
+                            Long burn_duration = power.getBurnDuration();
+                            p.setFireTicks(burn_duration.intValue());
+                        }else{
+                            setActive(false);
+                        }
                         ticksE = 0;
                     }
                 }

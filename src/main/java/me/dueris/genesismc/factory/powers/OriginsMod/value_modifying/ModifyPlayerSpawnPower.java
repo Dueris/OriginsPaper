@@ -1,6 +1,7 @@
 package me.dueris.genesismc.factory.powers.OriginsMod.value_modifying;
 
 import me.dueris.genesismc.entity.OriginPlayer;
+import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.OriginContainer;
 import org.bukkit.*;
@@ -17,17 +18,37 @@ import static org.bukkit.Material.*;
 
 public class ModifyPlayerSpawnPower extends CraftPower implements Listener {
 
+    @Override
+    public void setActive(Boolean bool){
+        if(powers_active.containsKey(getPowerFile())){
+            powers_active.replace(getPowerFile(), bool);
+        }else{
+            powers_active.put(getPowerFile(), bool);
+        }
+    }
+
+    @Override
+    public Boolean getActive(){
+        return powers_active.get(getPowerFile());
+    }
+
     @EventHandler
     public void run(PlayerSpawnLocationEvent e){
         Player p = e.getPlayer();
         if(modify_world_spawn.contains(p)){
             for(OriginContainer origin : OriginPlayer.getOrigin(p).values()){
-                if(origin.getPowerFileFromType("origins:modify_player_spawn").get("dimension", null).equals("minecraft:nether")){
-                    e.setSpawnLocation(NetherSpawn(origin.getPowerFileFromType("origins:modify_player_spawn").get("spawn_strategy", "default")));
-                } else if (origin.getPowerFileFromType("origins:modify_player_spawn").get("dimension", null).equals("minecraft:the_end")) {
-                    e.setSpawnLocation(EndSpawn(origin.getPowerFileFromType("origins:modify_player_spawn").get("spawn_strategy", "default")));
-                } else {
-                    e.setSpawnLocation(OverworldSpawn(origin.getPowerFileFromType("origins:modify_player_spawn").get("spawn_strategy", "default")));
+                ConditionExecutor executor = new ConditionExecutor();
+                if(executor.check("condition", "conditions", p, origin, getPowerFile(), null, p)){
+                    setActive(true);
+                    if(origin.getPowerFileFromType("origins:modify_player_spawn").get("dimension", null).equals("minecraft:nether")){
+                        e.setSpawnLocation(NetherSpawn(origin.getPowerFileFromType("origins:modify_player_spawn").get("spawn_strategy", "default")));
+                    } else if (origin.getPowerFileFromType("origins:modify_player_spawn").get("dimension", null).equals("minecraft:the_end")) {
+                        e.setSpawnLocation(EndSpawn(origin.getPowerFileFromType("origins:modify_player_spawn").get("spawn_strategy", "default")));
+                    } else {
+                        e.setSpawnLocation(OverworldSpawn(origin.getPowerFileFromType("origins:modify_player_spawn").get("spawn_strategy", "default")));
+                    }
+                }else{
+                    setActive(false);
                 }
             }
         }

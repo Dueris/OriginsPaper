@@ -14,6 +14,21 @@ import java.util.ArrayList;
 import static me.dueris.genesismc.factory.powers.OriginsMod.prevent.PreventSuperClass.prevent_entity_render;
 
 public class PreventEntityRender extends CraftPower {
+
+    @Override
+    public void setActive(Boolean bool){
+        if(powers_active.containsKey(getPowerFile())){
+            powers_active.replace(getPowerFile(), bool);
+        }else{
+            powers_active.put(getPowerFile(), bool);
+        }
+    }
+
+    @Override
+    public Boolean getActive(){
+        return powers_active.get(getPowerFile());
+    }
+
     @Override
     public void run() {
         for(Player p : Bukkit.getOnlinePlayers()){
@@ -24,10 +39,13 @@ public class PreventEntityRender extends CraftPower {
                         if(conditionExecutor.check("entity_condition", "entity_condition", p, origin, "origins:prevent_entity_render", null, p)){
                             if(conditionExecutor.check("bientity_condition", "bientity_condition", p, origin, "origins:prevent_entity_render", null, p)){
                                 p.hideEntity(GenesisMC.getPlugin(), entity);
+                                setActive(true);
                             }else{
+                                setActive(false);
                                 p.showEntity(GenesisMC.getPlugin(), entity);
                             }
                         }else{
+                            setActive(false);
                             p.showEntity(GenesisMC.getPlugin(), entity);
                         }
                     }

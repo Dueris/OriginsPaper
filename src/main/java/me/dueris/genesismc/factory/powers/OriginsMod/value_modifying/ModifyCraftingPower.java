@@ -21,6 +21,21 @@ import java.util.ArrayList;
 import static me.dueris.genesismc.factory.powers.OriginsMod.value_modifying.ValueModifyingSuperClass.modify_crafting;
 
 public class ModifyCraftingPower extends CraftPower implements Listener {
+
+    @Override
+    public void setActive(Boolean bool){
+        if(powers_active.containsKey(getPowerFile())){
+            powers_active.replace(getPowerFile(), bool);
+        }else{
+            powers_active.put(getPowerFile(), bool);
+        }
+    }
+
+    @Override
+    public Boolean getActive(){
+        return powers_active.get(getPowerFile());
+    }
+
     @EventHandler
     public void run(PrepareItemCraftEvent e){
         Player p = (Player) e.getInventory().getHolder();
@@ -35,8 +50,13 @@ public class ModifyCraftingPower extends CraftPower implements Listener {
                         if (conditionExecutor.check("item_condition", "item_condition", p, origin, "origins:modify_crafting", null, p)) {
                                 if (e.getInventory().getResult().getType() == Material.valueOf(origin.getPowerFileFromType("origins:modify_crafting").get("recipe", null).toString().split(":")[1].toUpperCase())) {
                                     e.getInventory().setResult(new ItemStack(Material.valueOf(origin.getPowerFileFromType("origins:modify_crafting").getJsonHashMap("result").get("item").toString().toUpperCase().split(":")[1])));
+                                    setActive(true);
                                 }
+                        }else{
+                            setActive(false);
                         }
+                    }else{
+                        setActive(false);
                     }
                 } catch (Exception ev) {
                     ErrorSystem errorSystem = new ErrorSystem();

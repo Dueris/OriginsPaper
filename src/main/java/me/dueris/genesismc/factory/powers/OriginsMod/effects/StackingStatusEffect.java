@@ -1,6 +1,7 @@
 package me.dueris.genesismc.factory.powers.OriginsMod.effects;
 
 import me.dueris.genesismc.entity.OriginPlayer;
+import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.OriginContainer;
 import net.minecraft.world.effect.MobEffect;
@@ -20,7 +21,13 @@ public class StackingStatusEffect extends CraftPower {
         for(Player p : Bukkit.getOnlinePlayers()){
             if(getPowerArray().contains(p)){
                 for(OriginContainer origin : OriginPlayer.getOrigin(p).values()){
-                    applyStackingEffect(p, calculateStacks(p, 10, origin), origin);
+                    ConditionExecutor executor = new ConditionExecutor();
+                    if(executor.check("condition", "conditions", p, origin, getPowerFile(), null, p)){
+                        setActive(true);
+                        applyStackingEffect(p, calculateStacks(p, 10, origin), origin);
+                    }else{
+                        setActive(false);
+                    }
                 }
             }
         }
@@ -63,6 +70,20 @@ public class StackingStatusEffect extends CraftPower {
                 Bukkit.getLogger().warning("Unknown effect ID: " + effect.get("effect").toString());
             }
         }
+    }
+
+    @Override
+    public void setActive(Boolean bool){
+        if(powers_active.containsKey(getPowerFile())){
+            powers_active.replace(getPowerFile(), bool);
+        }else{
+            powers_active.put(getPowerFile(), bool);
+        }
+    }
+
+    @Override
+    public Boolean getActive(){
+        return powers_active.get(getPowerFile());
     }
 
     public static PotionEffectType getPotionEffectType(String effectString) {

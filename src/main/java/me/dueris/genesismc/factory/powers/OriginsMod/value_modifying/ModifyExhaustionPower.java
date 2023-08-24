@@ -17,6 +17,21 @@ import static me.dueris.genesismc.factory.powers.OriginsMod.player.attributes.At
 import static me.dueris.genesismc.factory.powers.OriginsMod.value_modifying.ValueModifyingSuperClass.modify_exhaustion;
 
 public class ModifyExhaustionPower extends CraftPower implements Listener {
+
+    @Override
+    public void setActive(Boolean bool){
+        if(powers_active.containsKey(getPowerFile())){
+            powers_active.replace(getPowerFile(), bool);
+        }else{
+            powers_active.put(getPowerFile(), bool);
+        }
+    }
+
+    @Override
+    public Boolean getActive(){
+        return powers_active.get(getPowerFile());
+    }
+
     @EventHandler
     public void run(EntityExhaustionEvent e){
         Player p = (Player) e.getEntity();
@@ -31,9 +46,12 @@ public class ModifyExhaustionPower extends CraftPower implements Listener {
                         if (mathOperator != null) {
                             float result = (float) mathOperator.apply(e.getExhaustion(), value);
                             e.setExhaustion(result);
+                            setActive(true);
                         }
                     }
 
+                }else{
+                    setActive(false);
                 }
             }
         }

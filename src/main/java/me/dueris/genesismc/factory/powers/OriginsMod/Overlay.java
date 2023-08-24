@@ -11,6 +11,21 @@ import org.bukkit.entity.Player;
 import java.util.ArrayList;
 
 public class Overlay extends CraftPower {
+
+    @Override
+    public void setActive(Boolean bool){
+        if(powers_active.containsKey(getPowerFile())){
+            powers_active.replace(getPowerFile(), bool);
+        }else{
+            powers_active.put(getPowerFile(), bool);
+        }
+    }
+
+    @Override
+    public Boolean getActive(){
+        return powers_active.get(getPowerFile());
+    }
+
     @Override
     public void run() {
         for(Player player : Bukkit.getOnlinePlayers()){
@@ -18,8 +33,10 @@ public class Overlay extends CraftPower {
                 for(OriginContainer origin : OriginPlayer.getOrigin(player).values()){
                     ConditionExecutor conditionExecutor = new ConditionExecutor();
                     if(conditionExecutor.check("condition", "conditions", player, origin, "origins:overlay", null, player)){
+                        setActive(true);
                         Phasing.initializePhantomOverlay(player);
                     }else{
+                        setActive(false);
                         Phasing.deactivatePhantomOverlay(player);
                     }
                 }

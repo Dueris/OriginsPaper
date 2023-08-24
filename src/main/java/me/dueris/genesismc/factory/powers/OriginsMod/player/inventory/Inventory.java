@@ -5,6 +5,7 @@ import me.dueris.genesismc.commands.subcommands.SubCommand;
 import me.dueris.genesismc.entity.OriginPlayer;
 import me.dueris.genesismc.events.KeybindTriggerEvent;
 import me.dueris.genesismc.events.OriginChangeEvent;
+import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.BukkitColour;
 import me.dueris.genesismc.utils.OriginContainer;
@@ -29,6 +30,20 @@ import java.util.Arrays;
 import static me.dueris.genesismc.KeybindHandler.isKeyBeingPressed;
 
 public class Inventory extends CraftPower implements CommandExecutor, Listener {
+
+    @Override
+    public void setActive(Boolean bool){
+        if(powers_active.containsKey(getPowerFile())){
+            powers_active.replace(getPowerFile(), bool);
+        }else{
+            powers_active.put(getPowerFile(), bool);
+        }
+    }
+
+    @Override
+    public Boolean getActive(){
+        return powers_active.get(getPowerFile());
+    }
 
     private final ArrayList<SubCommand> subCommands = new ArrayList<>();
 
@@ -76,12 +91,18 @@ public class Inventory extends CraftPower implements CommandExecutor, Listener {
     public void keytrigger(KeybindTriggerEvent e) {
         for (OriginContainer origin : OriginPlayer.getOrigin(e.getPlayer()).values()) {
             if (shulker_inventory.contains(e.getPlayer())) {
-                if (isKeyBeingPressed(e.getPlayer(), origin.getPowerFileFromType("origins:inventory").getKey().get("key").toString(), true)) {
-                    ArrayList<ItemStack> vaultItems = InventoryUtils.getItems(e.getPlayer());
-                    org.bukkit.inventory.Inventory vault = Bukkit.createInventory(e.getPlayer(), InventoryType.valueOf(origin.getPowerFileFromType("origins:inventory").get("container_type", "chest").toUpperCase()), origin.getPowerFileFromType("origins:inventory").get("title", "inventory.container.title").replace("%player%", e.getPlayer().getName()));
-                    vaultItems.stream().forEach(itemStack -> vault.addItem(itemStack));
-                    e.getPlayer().openInventory(vault);
+                ConditionExecutor executor = new ConditionExecutor();
+                if(executor.check("condition", "conditions", e.getPlayer(), origin, getPowerFile(), null, e.getPlayer())){
+                    setActive(true);
+                    if (isKeyBeingPressed(e.getPlayer(), origin.getPowerFileFromType("origins:inventory").getKey().get("key").toString(), true)) {
+                        ArrayList<ItemStack> vaultItems = InventoryUtils.getItems(e.getPlayer());
+                        org.bukkit.inventory.Inventory vault = Bukkit.createInventory(e.getPlayer(), InventoryType.valueOf(origin.getPowerFileFromType("origins:inventory").get("container_type", "chest").toUpperCase()), origin.getPowerFileFromType("origins:inventory").get("title", "inventory.container.title").replace("%player%", e.getPlayer().getName()));
+                        vaultItems.stream().forEach(itemStack -> vault.addItem(itemStack));
+                        e.getPlayer().openInventory(vault);
 
+                    }
+                }else{
+                    setActive(false);
                 }
             }
         }

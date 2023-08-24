@@ -1,6 +1,9 @@
 package me.dueris.genesismc.factory.powers.OriginsMod.player;
 
+import me.dueris.genesismc.entity.OriginPlayer;
+import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
+import me.dueris.genesismc.utils.OriginContainer;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -15,6 +18,20 @@ import java.util.EnumSet;
 import static org.bukkit.Material.*;
 
 public class StrongArmsBreakSpeed extends CraftPower implements Listener {
+
+    @Override
+    public void setActive(Boolean bool){
+        if(powers_active.containsKey(getPowerFile())){
+            powers_active.replace(getPowerFile(), bool);
+        }else{
+            powers_active.put(getPowerFile(), bool);
+        }
+    }
+
+    @Override
+    public Boolean getActive(){
+        return powers_active.get(getPowerFile());
+    }
 
     public static EnumSet<Material> stones;
     public static EnumSet<Material> tools;
@@ -34,10 +51,18 @@ public class StrongArmsBreakSpeed extends CraftPower implements Listener {
     public void breakBlock(PlayerInteractEvent e) {
         Player p = e.getPlayer();
         if (!strong_arms_break_speed.contains(p)) return;
-        if (e.getClickedBlock() != null && stones.contains(e.getClickedBlock().getType()) && e.getAction().isLeftClick() && !tools.contains(p.getEquipment().getItemInMainHand().getType())) {
-            e.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.FAST_DIGGING, 60, 15, false, false, false));
-        } else if (p.getEquipment().getItemInMainHand().getType() == AIR) { //beacons exist
-            e.getPlayer().removePotionEffect(PotionEffectType.FAST_DIGGING);
+        for(OriginContainer origin : OriginPlayer.getOrigin(p).values()){
+            ConditionExecutor executor = new ConditionExecutor();
+            if(executor.check("condition", "conditions", p, origin, getPowerFile(), null, p)){
+                setActive(true);
+                if (e.getClickedBlock() != null && stones.contains(e.getClickedBlock().getType()) && e.getAction().isLeftClick() && !tools.contains(p.getEquipment().getItemInMainHand().getType())) {
+                    e.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.FAST_DIGGING, 60, 15, false, false, false));
+                } else if (p.getEquipment().getItemInMainHand().getType() == AIR) { //beacons exist
+                    e.getPlayer().removePotionEffect(PotionEffectType.FAST_DIGGING);
+                }
+            }else{
+                setActive(false);
+            }
         }
     }
 

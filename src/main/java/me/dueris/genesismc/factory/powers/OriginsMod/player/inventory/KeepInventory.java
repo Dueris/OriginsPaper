@@ -13,6 +13,20 @@ import java.util.ArrayList;
 
 public class KeepInventory extends CraftPower implements Listener {
 
+    @Override
+    public void setActive(Boolean bool){
+        if(powers_active.containsKey(getPowerFile())){
+            powers_active.replace(getPowerFile(), bool);
+        }else{
+            powers_active.put(getPowerFile(), bool);
+        }
+    }
+
+    @Override
+    public Boolean getActive(){
+        return powers_active.get(getPowerFile());
+    }
+
     @EventHandler
     public void keepinv(PlayerDeathEvent e) {
         Player player = e.getEntity();
@@ -21,6 +35,7 @@ public class KeepInventory extends CraftPower implements Listener {
                 ConditionExecutor conditionExecutor = new ConditionExecutor();
                 if (conditionExecutor.check("item_condition", "item_conditions", player, origin, "origins:keep_inventory", null, player)) {
                     ArrayList<Long> slots = new ArrayList<>();
+                    setActive(true);
                     if (origin.getPowerFileFromType("origins:keep_inventory").getSlots() != null) {
                         for (long slot : origin.getPowerFileFromType("origins:keep_inventory").getSlots()) {
                             slots.add(slot);
@@ -36,6 +51,8 @@ public class KeepInventory extends CraftPower implements Listener {
                     } else {
                         e.setKeepInventory(true);
                     }
+                }else{
+                    setActive(false);
                 }
             }
         }

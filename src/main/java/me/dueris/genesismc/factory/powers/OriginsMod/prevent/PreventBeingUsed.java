@@ -14,6 +14,21 @@ import java.util.ArrayList;
 import static me.dueris.genesismc.factory.powers.OriginsMod.prevent.PreventSuperClass.prevent_being_used;
 
 public class PreventBeingUsed extends CraftPower implements Listener {
+
+    @Override
+    public void setActive(Boolean bool){
+        if(powers_active.containsKey(getPowerFile())){
+            powers_active.replace(getPowerFile(), bool);
+        }else{
+            powers_active.put(getPowerFile(), bool);
+        }
+    }
+
+    @Override
+    public Boolean getActive(){
+        return powers_active.get(getPowerFile());
+    }
+
     @EventHandler
     public void run(PlayerInteractEvent e){
         if(prevent_being_used.contains(e.getPlayer())){
@@ -22,8 +37,13 @@ public class PreventBeingUsed extends CraftPower implements Listener {
                 ConditionExecutor conditionExecutor = new ConditionExecutor();
                 if(conditionExecutor.check("bientity_condition", "bientity_conditions", p, origin, "origins:prevent_being_used", null, p)){
                     if(conditionExecutor.check("item_condition", "item_conditions", p, origin, "origins:prevent_being_used", null, p)){
+                        setActive(true);
                         e.setCancelled(true);
+                    }else{
+                        setActive(false);
                     }
+                }else{
+                    setActive(false);
                 }
             }
         }

@@ -24,6 +24,20 @@ import static me.dueris.genesismc.KeybindHandler.isKeyBeingPressed;
 
 public class Launch extends CraftPower implements Listener {
 
+    @Override
+    public void setActive(Boolean bool){
+        if(powers_active.containsKey(getPowerFile())){
+            powers_active.replace(getPowerFile(), bool);
+        }else{
+            powers_active.put(getPowerFile(), bool);
+        }
+    }
+
+    @Override
+    public Boolean getActive(){
+        return powers_active.get(getPowerFile());
+    }
+
     public static ArrayList<Player> in_continuous = new ArrayList<>();
     
     @EventHandler
@@ -55,12 +69,14 @@ public class Launch extends CraftPower implements Listener {
                                                         met.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "contin"), PersistentDataType.BOOLEAN, false);
                                                         KeybindHandler.getKeybindItem(key, p.getInventory()).setItemMeta(met);
                                                         thing[0] = true;
+                                                        setActive(false);
                                                         this.cancel();
                                                     } else {
                                                         //yes continuouous
                                                         ItemMeta met = KeybindHandler.getKeybindItem(key, p.getInventory()).getItemMeta();
                                                         met.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "contin"), PersistentDataType.BOOLEAN, true);
                                                         KeybindHandler.getKeybindItem(key, p.getInventory()).setItemMeta(met);
+                                                        setActive(true);
                                                     }
                                                 }
                                                 if (in_continuous.contains(p)) {
@@ -70,6 +86,7 @@ public class Launch extends CraftPower implements Listener {
                                                     int speed = Integer.parseInt(origin.getPowerFileFromType("origins:launch").get("speed", null));
                                                     CooldownStuff.addCooldown(p, "origins:launch", cooldown, key);
                                                     p.setVelocity(new Vector(p.getVelocity().getX(), p.getVelocity().getY() + speed, p.getVelocity().getZ()));
+                                                    setActive(true);
                                                 } else {
                                                     this.cancel();
                                                 }
@@ -84,6 +101,7 @@ public class Launch extends CraftPower implements Listener {
                                         if (origin.getPowerFileFromType("origins:launch").getKey().get("continuous").toString().equalsIgnoreCase("false")) {
                                             ItemMeta met = KeybindHandler.getKeybindItem(key, p.getInventory()).getItemMeta();
                                             met.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "contin"), PersistentDataType.BOOLEAN, false);
+                                            setActive(false);
                                             KeybindHandler.getKeybindItem(key, p.getInventory()).setItemMeta(met);
                                             in_continuous.add(p);
                                             new BukkitRunnable(){
@@ -97,11 +115,13 @@ public class Launch extends CraftPower implements Listener {
                                             if (isKeyBeingPressed(e.getPlayer(), origin.getPowerFileFromType("origins:launch").getKey().get("key").toString(), true)) {
                                                 ItemMeta met = KeybindHandler.getKeybindItem(key, p.getInventory()).getItemMeta();
                                                 met.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "contin"), PersistentDataType.BOOLEAN, false);
+                                                setActive(false);
                                                 KeybindHandler.getKeybindItem(key, p.getInventory()).setItemMeta(met);
                                                 if (in_continuous.contains(p)) {
                                                     KeybindHandler.runKeyChangeTriggerReturn(KeybindHandler.getKeybindItem(key, p.getInventory()), p, key);
                                                     KeybindHandler.getKeybindItem(key, p.getInventory()).setType(Material.GRAY_DYE);
                                                     met.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "contin"), PersistentDataType.BOOLEAN, false);
+                                                    setActive(false);
                                                     KeybindHandler.getKeybindItem(key, p.getInventory()).setItemMeta(met);
                                                     in_continuous.remove(p);
                                                     this.cancel();
@@ -109,6 +129,7 @@ public class Launch extends CraftPower implements Listener {
                                                     KeybindHandler.runKeyChangeTrigger(KeybindHandler.getKeybindItem(key, p.getInventory()));
                                                     KeybindHandler.getKeybindItem(key, p.getInventory()).setType(Material.LIME_DYE);
                                                     met.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "contin"), PersistentDataType.BOOLEAN, true);
+                                                    setActive(true);
                                                     KeybindHandler.getKeybindItem(key, p.getInventory()).setItemMeta(met);
                                                     in_continuous.add(p);
                                                 }

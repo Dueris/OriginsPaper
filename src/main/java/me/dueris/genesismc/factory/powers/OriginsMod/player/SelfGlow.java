@@ -31,6 +31,21 @@ import java.util.ArrayList;
 import java.util.Map;
 
 public class SelfGlow extends CraftPower {
+
+    @Override
+    public void setActive(Boolean bool){
+        if(powers_active.containsKey(getPowerFile())){
+            powers_active.replace(getPowerFile(), bool);
+        }else{
+            powers_active.put(getPowerFile(), bool);
+        }
+    }
+
+    @Override
+    public Boolean getActive(){
+        return powers_active.get(getPowerFile());
+    }
+
     @Override
     public void run() {
         for(Player p : Bukkit.getOnlinePlayers()){
@@ -40,10 +55,15 @@ public class SelfGlow extends CraftPower {
                     if(entity instanceof Player player){
                         if(conditionExecutor.check("entity_condition", "entity_conditions", p, origin, getPowerFile(), null, entity)){
                             if(conditionExecutor.check("bientity_condition", "bientity_conditions", p, origin, getPowerFile(), null, entity)){
+                                setActive(true);
                                 CraftPlayer craftPlayers = (CraftPlayer) player;
                                 craftPlayers.getHandle().connection.send(new ClientboundUpdateMobEffectPacket(p.getEntityId(),
                                         new MobEffectInstance(MobEffect.byId(24), 5, 1, false, false, false)));
+                            }else{
+                                setActive(false);
                             }
+                        }else{
+                            setActive(false);
                         }
                     }
                 }

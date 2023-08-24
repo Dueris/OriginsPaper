@@ -19,6 +19,20 @@ import static me.dueris.genesismc.factory.powers.OriginsMod.value_modifying.Valu
 
 public class ModifySwimSpeedPower extends CraftPower {
 
+    @Override
+    public void setActive(Boolean bool){
+        if(powers_active.containsKey(getPowerFile())){
+            powers_active.replace(getPowerFile(), bool);
+        }else{
+            powers_active.put(getPowerFile(), bool);
+        }
+    }
+
+    @Override
+    public Boolean getActive(){
+        return powers_active.get(getPowerFile());
+    }
+
     String MODIFYING_KEY = "modify_swim_speed";
 
     @Override
@@ -33,6 +47,9 @@ public class ModifySwimSpeedPower extends CraftPower {
                         if(!p.isSwimming()) return;
                         Vector swimVelocity = p.getLocation().getDirection().normalize().multiply(valueModifyingSuperClass.getPersistentAttributeContainer(p, MODIFYING_KEY));
                         p.setVelocity(swimVelocity);
+                        setActive(true);
+                    }else{
+                        setActive(false);
                     }
                 } catch (Exception e){
                     ErrorSystem errorSystem = new ErrorSystem();

@@ -13,6 +13,20 @@ import java.util.ArrayList;
 
 public class Exhaust extends CraftPower {
 
+    @Override
+    public void setActive(Boolean bool){
+        if(powers_active.containsKey(getPowerFile())){
+            powers_active.replace(getPowerFile(), bool);
+        }else{
+            powers_active.put(getPowerFile(), bool);
+        }
+    }
+
+    @Override
+    public Boolean getActive(){
+        return powers_active.get(getPowerFile());
+    }
+
     private Long interval;
 
     private int ticksE;
@@ -40,7 +54,10 @@ public class Exhaust extends CraftPower {
                     } else {
                         ConditionExecutor conditionExecutor = new ConditionExecutor();
                         if (conditionExecutor.check("condition", "conditions", p, origin, "origins:exhaust", null, p)) {
+                            setActive(true);
                             p.setExhaustion(p.getExhaustion() - Float.parseFloat(origin.getPowerFileFromType("origins:exhaust").get("exhaustion", "1")));
+                        }else{
+                            setActive(false);
                         }
                         ticksE = 0;
                     }

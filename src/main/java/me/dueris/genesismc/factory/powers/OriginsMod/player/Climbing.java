@@ -2,6 +2,7 @@ package me.dueris.genesismc.factory.powers.OriginsMod.player;
 
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.entity.OriginPlayer;
+import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.LayerContainer;
 import me.dueris.genesismc.utils.OriginContainer;
@@ -20,6 +21,20 @@ import java.util.Set;
 import static org.bukkit.Material.AIR;
 
 public class Climbing extends CraftPower {
+
+    @Override
+    public void setActive(Boolean bool){
+        if(powers_active.containsKey(getPowerFile())){
+            powers_active.replace(getPowerFile(), bool);
+        }else{
+            powers_active.put(getPowerFile(), bool);
+        }
+    }
+
+    @Override
+    public Boolean getActive(){
+        return powers_active.get(getPowerFile());
+    }
 
     public ArrayList<Player> active_climbing = new ArrayList<>();
 
@@ -56,31 +71,35 @@ public class Climbing extends CraftPower {
                                 p.getEyeLocation().getBlock().getRelative(BlockFace.SOUTH).getType().isCollidable()
                 )) {
                     Block block = p.getTargetBlock(null, 2);
-                    HashMap<LayerContainer, OriginContainer> origins = OriginPlayer.getOrigin(p);
-                    Set<LayerContainer> layers = origins.keySet();
-                    for (LayerContainer layer : layers) {
-                        boolean cancel_bool = OriginPlayer.getOrigin(p, layer).getPowerFileFromType("origins:climbing").getRainCancel();
-                        if (!cancel_bool) {
-                            if (!p.isSneaking()) return;
-                            p.addPotionEffect(new PotionEffect(PotionEffectType.LEVITATION, 6, 2, false, false, false));
-                            active_climbing.add(p);
-                            new BukkitRunnable(){
-                                @Override
-                                public void run() {
-                                    active_climbing.remove(p);
-                                }
-                            }.runTaskLater(GenesisMC.getPlugin(), 1l);
-                        } else {
-                            if (block.getType() != AIR && p.isSneaking() && !p.isInRain()) {
+                    for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
+                        boolean cancel_bool = origin.getPowerFileFromType("origins:climbing").getRainCancel();
+                        ConditionExecutor executor = new ConditionExecutor();
+                        if(executor.check("condition", "conditions", p, origin, getPowerFile(), null, p)){
+                            setActive(true);
+                            if (!cancel_bool) {
+                                if (!p.isSneaking()) return;
                                 p.addPotionEffect(new PotionEffect(PotionEffectType.LEVITATION, 6, 2, false, false, false));
-                                active_climbing.add(p);
+                                getActiveClimbingMap().add(p);
                                 new BukkitRunnable(){
                                     @Override
                                     public void run() {
-                                        active_climbing.remove(p);
+                                        getActiveClimbingMap().remove(p);
                                     }
                                 }.runTaskLater(GenesisMC.getPlugin(), 1l);
+                            } else {
+                                if (block.getType() != AIR && p.isSneaking() && !p.isInRain()) {
+                                    p.addPotionEffect(new PotionEffect(PotionEffectType.LEVITATION, 6, 2, false, false, false));
+                                    getActiveClimbingMap().add(p);
+                                    new BukkitRunnable(){
+                                        @Override
+                                        public void run() {
+                                            getActiveClimbingMap().remove(p);
+                                        }
+                                    }.runTaskLater(GenesisMC.getPlugin(), 1l);
+                                }
                             }
+                        }else{
+                            setActive(false);
                         }
                     }
                 }

@@ -12,6 +12,21 @@ import java.util.ArrayList;
 import static me.dueris.genesismc.factory.powers.OriginsMod.prevent.PreventSuperClass.prevent_entity_collision;
 
 public class PreventEntityCollision extends CraftPower {
+
+    @Override
+    public void setActive(Boolean bool){
+        if(powers_active.containsKey(getPowerFile())){
+            powers_active.replace(getPowerFile(), bool);
+        }else{
+            powers_active.put(getPowerFile(), bool);
+        }
+    }
+
+    @Override
+    public Boolean getActive(){
+        return powers_active.get(getPowerFile());
+    }
+
     @Override
     public void run() {
         for(Player p : Bukkit.getOnlinePlayers()){
@@ -20,7 +35,9 @@ public class PreventEntityCollision extends CraftPower {
                     ConditionExecutor conditionExecutor = new ConditionExecutor();
                     if(conditionExecutor.check("bientity_condition", "bientity_condition", p, origin, "origins:prevent_entity_collision", null, p)){
                         p.setCollidable(false);
+                        setActive(false);
                     }else{
+                        setActive(false);
                         p.setCollidable(true);
                     }
                 }else{

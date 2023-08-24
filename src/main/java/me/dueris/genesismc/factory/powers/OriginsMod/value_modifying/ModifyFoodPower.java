@@ -20,29 +20,50 @@ import static me.dueris.genesismc.factory.powers.OriginsMod.player.attributes.At
 import static me.dueris.genesismc.factory.powers.OriginsMod.value_modifying.ValueModifyingSuperClass.modify_food;
 
 public class ModifyFoodPower extends CraftPower implements Listener {
+
+    @Override
+    public void setActive(Boolean bool){
+        if(powers_active.containsKey(getPowerFile())){
+            powers_active.replace(getPowerFile(), bool);
+        }else{
+            powers_active.put(getPowerFile(), bool);
+        }
+    }
+
+    @Override
+    public Boolean getActive(){
+        return powers_active.get(getPowerFile());
+    }
+
     @EventHandler
-    public void saturationorwhateverRUN(PlayerItemConsumeEvent e){
+    public void saturationorwhateverRUN(PlayerItemConsumeEvent e) {
         Player player = e.getPlayer();
-        for(OriginContainer origin : OriginPlayer.getOrigin(player).values()){
-            ConditionExecutor conditionExecutor = new ConditionExecutor();
-            if(conditionExecutor.check("item_condition", "item_condition", player, origin, "origins:modify_food", null, player)) {
-                if (modify_food.contains(player)) {
-                    if (origin.getPowerFileFromType("origins:modify_food").getJsonHashMap("food_modifier") != null) {
-                        Map.Entry<Double, Double> modifiers = getModifiers(player, origin);
+        for (OriginContainer origin : OriginPlayer.getOrigin(player).values()) {
+            if (modify_food.contains(player)) {
+                ConditionExecutor conditionExecutor = new ConditionExecutor();
+                if (conditionExecutor.check("item_condition", "item_condition", player, origin, "origins:modify_food", null, player)) {
+                    if (modify_food.contains(player)) {
+                        if (origin.getPowerFileFromType("origins:modify_food").getJsonHashMap("food_modifier") != null) {
+                            Map.Entry<Double, Double> modifiers = getModifiers(player, origin);
 
-                        double modifiedFoodLevel = player.getFoodLevel() * modifiers.getKey();
-                        modifiedFoodLevel = Math.min(modifiedFoodLevel, 20.0);
+                            double modifiedFoodLevel = player.getFoodLevel() * modifiers.getKey();
+                            modifiedFoodLevel = Math.min(modifiedFoodLevel, 20.0);
 
-                        player.setFoodLevel((int) modifiedFoodLevel);
+                            player.setFoodLevel((int) modifiedFoodLevel);
+                            setActive(true);
+                        }
+                        if (origin.getPowerFileFromType("origins:modify_food").getJsonHashMap("saturation_modifier") != null) {
+                            Map.Entry<Double, Double> modifiers = getModifiers(player, origin);
+
+                            double modifiedSaturation = player.getSaturation() * modifiers.getValue();
+                            modifiedSaturation = Math.min(modifiedSaturation, 20.0);
+
+                            player.setSaturation((float) modifiedSaturation);
+                            setActive(true);
+                        }
                     }
-                    if (origin.getPowerFileFromType("origins:modify_food").getJsonHashMap("saturation_modifier") != null) {
-                        Map.Entry<Double, Double> modifiers = getModifiers(player, origin);
-
-                        double modifiedSaturation = player.getSaturation() * modifiers.getValue();
-                        modifiedSaturation = Math.min(modifiedSaturation, 20.0);
-
-                        player.setSaturation((float) modifiedSaturation);
-                    }
+                }else{
+                    setActive(false);
                 }
             }
         }

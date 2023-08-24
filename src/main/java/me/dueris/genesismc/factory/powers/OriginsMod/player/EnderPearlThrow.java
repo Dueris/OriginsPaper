@@ -1,7 +1,10 @@
 package me.dueris.genesismc.factory.powers.OriginsMod.player;
 
 import me.dueris.genesismc.GenesisMC;
+import me.dueris.genesismc.entity.OriginPlayer;
+import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
+import me.dueris.genesismc.utils.OriginContainer;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
@@ -27,6 +30,20 @@ import java.util.ArrayList;
 import static org.bukkit.Material.ENDER_PEARL;
 
 public class EnderPearlThrow extends CraftPower implements Listener {
+
+    @Override
+    public void setActive(Boolean bool){
+        if(powers_active.containsKey(getPowerFile())){
+            powers_active.replace(getPowerFile(), bool);
+        }else{
+            powers_active.put(getPowerFile(), bool);
+        }
+    }
+
+    @Override
+    public Boolean getActive(){
+        return powers_active.get(getPowerFile());
+    }
 
     @EventHandler
     public void teleportDamgeOff(PlayerTeleportEvent e) {
@@ -56,11 +73,19 @@ public class EnderPearlThrow extends CraftPower implements Listener {
                 if (e.getItem() != null) {
                     if (e.getItem().equals(infinpearl)) {
                         if (p.getCooldown(ENDER_PEARL) == 0 && p.getGameMode() != GameMode.CREATIVE) {
-                            p.getInventory().addItem(infinpearl);
-                            Bukkit.getScheduler().runTaskLater(GenesisMC.getPlugin(), () -> {
-                                if (p.getInventory().getItemInMainHand().isSimilar(infinpearl)) ;
-                                p.getInventory().getItemInMainHand().setAmount(1);
-                            }, 1);
+                            for(OriginContainer origin : OriginPlayer.getOrigin(p).values()){
+                                ConditionExecutor executor = new ConditionExecutor();
+                                if(executor.check("condition", "conditions", p, origin, getPowerFile(), null, p)){
+                                    setActive(true);
+                                    p.getInventory().addItem(infinpearl);
+                                    Bukkit.getScheduler().runTaskLater(GenesisMC.getPlugin(), () -> {
+                                        if (p.getInventory().getItemInMainHand().isSimilar(infinpearl)) ;
+                                        p.getInventory().getItemInMainHand().setAmount(1);
+                                    }, 1);
+                                }else{
+                                    setActive(false);
+                                }
+                            }
                         }
                     }
                 }

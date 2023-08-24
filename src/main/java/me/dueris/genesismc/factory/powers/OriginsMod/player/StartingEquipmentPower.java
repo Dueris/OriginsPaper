@@ -17,6 +17,21 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class StartingEquipmentPower extends CraftPower implements Listener {
+
+    @Override
+    public void setActive(Boolean bool){
+        if(powers_active.containsKey(getPowerFile())){
+            powers_active.replace(getPowerFile(), bool);
+        }else{
+            powers_active.put(getPowerFile(), bool);
+        }
+    }
+
+    @Override
+    public Boolean getActive(){
+        return powers_active.get(getPowerFile());
+    }
+
     @Override
     public void run() {
 
@@ -27,8 +42,12 @@ public class StartingEquipmentPower extends CraftPower implements Listener {
         if(starting_equip.contains(e.getPlayer())){
             for(OriginContainer origin : OriginPlayer.getOrigin(e.getPlayer()).values()){
                 ConditionExecutor conditionExecutor = new ConditionExecutor();
-                if(!conditionExecutor.check("condition", "conditions", e.getPlayer(), origin, getPowerFile(), null, e.getPlayer())) return;
-                runGiveItems(e.getPlayer(), origin);
+                if(conditionExecutor.check("condition", "conditions", e.getPlayer(), origin, getPowerFile(), null, e.getPlayer())) {
+                    setActive(true);
+                    runGiveItems(e.getPlayer(), origin);
+                }else{
+                    setActive(false);
+                }
             }
         }
     }
@@ -44,12 +63,17 @@ public class StartingEquipmentPower extends CraftPower implements Listener {
         if(starting_equip.contains(e.getPlayer())){
             for(OriginContainer origin : OriginPlayer.getOrigin(e.getPlayer()).values()){
                 ConditionExecutor conditionExecutor = new ConditionExecutor();
-                if(!conditionExecutor.check("condition", "conditions", e.getPlayer(), origin, getPowerFile(), null, e.getPlayer())) return;
-                if(origin.getPowerFileFromType(getPowerFile()).get("recurrent", "false") != null){
-                    if(origin.getPowerFileFromType(getPowerFile()).get("recurrent") == "true"){
-                        runGiveItems(e.getPlayer(), origin);
+                if(conditionExecutor.check("condition", "conditions", e.getPlayer(), origin, getPowerFile(), null, e.getPlayer())) {
+                    setActive(true);
+                    if(origin.getPowerFileFromType(getPowerFile()).get("recurrent", "false") != null){
+                        if(origin.getPowerFileFromType(getPowerFile()).get("recurrent") == "true"){
+                            runGiveItems(e.getPlayer(), origin);
+                        }
                     }
+                }else{
+                    setActive(false);
                 }
+
             }
         }
     }

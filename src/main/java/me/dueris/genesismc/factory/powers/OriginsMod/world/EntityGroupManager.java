@@ -1,6 +1,7 @@
 package me.dueris.genesismc.factory.powers.OriginsMod.world;
 
 import me.dueris.genesismc.entity.OriginPlayer;
+import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.OriginContainer;
 import org.bukkit.Bukkit;
@@ -14,6 +15,21 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class EntityGroupManager extends CraftPower {
+
+    @Override
+    public void setActive(Boolean bool){
+        if(powers_active.containsKey(getPowerFile())){
+            powers_active.replace(getPowerFile(), bool);
+        }else{
+            powers_active.put(getPowerFile(), bool);
+        }
+    }
+
+    @Override
+    public Boolean getActive(){
+        return powers_active.get(getPowerFile());
+    }
+
     @Override
     public void run() {
         for (World world : Bukkit.getWorlds()) {
@@ -31,18 +47,24 @@ public class EntityGroupManager extends CraftPower {
                 if (entity instanceof Player) {
                     //Player case, check for power
                     for (OriginContainer origin : OriginPlayer.getOrigin(((Player) entity).getPlayer()).values()) {
-                        if (entity_group.contains(entity)) {
-                            if (origin.getPowerFileFromType("origins:entity_group").get("group", null).equalsIgnoreCase("undead")) {
-                                undead.put(entity.getEntityId(), entity.getType().name());
-                            } else if (origin.getPowerFileFromType("origins:entity_group").get("group", null).equalsIgnoreCase("arthropod")) {
-                                arthropod.put(entity.getEntityId(), entity.getType().name());
-                            } else if (origin.getPowerFileFromType("origins:entity_group").get("group", null).equalsIgnoreCase("illager")) {
-                                illager.put(entity.getEntityId(), entity.getType().name());
-                            } else if (origin.getPowerFileFromType("origins:entity_group").get("group", null).equalsIgnoreCase("aquatic")) {
-                                aquatic.put(entity.getEntityId(), entity.getType().name());
-                            } else if (origin.getPowerFileFromType("origins:entity_group").get("group", null).equalsIgnoreCase("default")) {
-                                default_group.put(entity.getEntityId(), entity.getType().name());
+                        ConditionExecutor executor = new ConditionExecutor();
+                        if(executor.check("condition", "conditions", (Player) entity, origin, getPowerFile(), null, entity)){
+                            setActive(true);
+                            if (entity_group.contains(entity)) {
+                                if (origin.getPowerFileFromType("origins:entity_group").get("group", null).equalsIgnoreCase("undead")) {
+                                    undead.put(entity.getEntityId(), entity.getType().name());
+                                } else if (origin.getPowerFileFromType("origins:entity_group").get("group", null).equalsIgnoreCase("arthropod")) {
+                                    arthropod.put(entity.getEntityId(), entity.getType().name());
+                                } else if (origin.getPowerFileFromType("origins:entity_group").get("group", null).equalsIgnoreCase("illager")) {
+                                    illager.put(entity.getEntityId(), entity.getType().name());
+                                } else if (origin.getPowerFileFromType("origins:entity_group").get("group", null).equalsIgnoreCase("aquatic")) {
+                                    aquatic.put(entity.getEntityId(), entity.getType().name());
+                                } else if (origin.getPowerFileFromType("origins:entity_group").get("group", null).equalsIgnoreCase("default")) {
+                                    default_group.put(entity.getEntityId(), entity.getType().name());
+                                }
                             }
+                        }else{
+                            setActive(false);
                         }
                     }
                 }

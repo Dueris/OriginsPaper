@@ -38,6 +38,21 @@ import java.util.ArrayList;
 import java.util.concurrent.CompletableFuture;
 
 public class PlayerRender extends CraftPower {
+
+    @Override
+    public void setActive(Boolean bool){
+        if(powers_active.containsKey(getPowerFile())){
+            powers_active.replace(getPowerFile(), bool);
+        }else{
+            powers_active.put(getPowerFile(), bool);
+        }
+    }
+
+    @Override
+    public Boolean getActive(){
+        return powers_active.get(getPowerFile());
+    }
+
     @Override
     public void run() {
 //        ScoreboardManager manager = Bukkit.getScoreboardManager();
@@ -113,6 +128,7 @@ public class PlayerRender extends CraftPower {
                 for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
                     ConditionExecutor conditionExecutor = new ConditionExecutor();
                     if (conditionExecutor.check("condition", "conditions", p, origin, "origins:invisibility", null, p)) {
+                        setActive(true);
                         if (origin.getPowerFileFromType("origins:invisibility").get("render_armor", "false").equalsIgnoreCase("true")) {
                             for (Player players : Bukkit.getOnlinePlayers()) {
                                 players.hidePlayer(p);
@@ -124,6 +140,8 @@ public class PlayerRender extends CraftPower {
                         if (origin.getPowerFileFromType("origins:invisibility").get("render_outline", "false").equalsIgnoreCase("true")) {
                             p.addPotionEffect(new PotionEffect(PotionEffectType.GLOWING, 15, 1, false, false, false));
                         }
+                    }else{
+                        setActive(false);
                     }
                 }
             }
@@ -142,6 +160,21 @@ public class PlayerRender extends CraftPower {
     }
 
     public static class ModelColor extends CraftPower implements Listener {
+
+        @Override
+        public void setActive(Boolean bool){
+            if(powers_active.containsKey(getPowerFile())){
+                powers_active.replace(getPowerFile(), bool);
+            }else{
+                powers_active.put(getPowerFile(), bool);
+            }
+        }
+
+        @Override
+        public Boolean getActive(){
+            return powers_active.get(getPowerFile());
+        }
+
         private SkinsRestorerAPI skinsRestorerAPI = null;
 
         @SuppressWarnings("null")

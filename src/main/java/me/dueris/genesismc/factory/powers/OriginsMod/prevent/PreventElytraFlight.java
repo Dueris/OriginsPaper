@@ -14,6 +14,21 @@ import java.util.ArrayList;
 import static me.dueris.genesismc.factory.powers.OriginsMod.prevent.PreventSuperClass.prevent_elytra_flight;
 
 public class PreventElytraFlight extends CraftPower implements Listener {
+
+    @Override
+    public void setActive(Boolean bool){
+        if(powers_active.containsKey(getPowerFile())){
+            powers_active.replace(getPowerFile(), bool);
+        }else{
+            powers_active.put(getPowerFile(), bool);
+        }
+    }
+
+    @Override
+    public Boolean getActive(){
+        return powers_active.get(getPowerFile());
+    }
+
     @EventHandler
     public void run(EntityToggleGlideEvent e){
         if(e.getEntity() instanceof Player p){
@@ -22,6 +37,9 @@ public class PreventElytraFlight extends CraftPower implements Listener {
                     ConditionExecutor conditionExecutor = new ConditionExecutor();
                     if(conditionExecutor.check("condition", "conditions", p, origin, "origins:prevent_elytra_flight", null, p)){
                         e.setCancelled(true);
+                        setActive(true);
+                    }else{
+                        setActive(false);
                     }
                 }
             }

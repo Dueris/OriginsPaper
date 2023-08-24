@@ -15,6 +15,21 @@ import java.util.EnumSet;
 import static org.bukkit.Material.*;
 
 public class StrongArms extends CraftPower implements Listener {
+
+    @Override
+    public void setActive(Boolean bool){
+        if(powers_active.containsKey(getPowerFile())){
+            powers_active.replace(getPowerFile(), bool);
+        }else{
+            powers_active.put(getPowerFile(), bool);
+        }
+    }
+
+    @Override
+    public Boolean getActive(){
+        return powers_active.get(getPowerFile());
+    }
+
     public static EnumSet<Material> tools;
     public static EnumSet<Material> nat_stones;
 

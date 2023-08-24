@@ -13,6 +13,20 @@ import java.util.ArrayList;
 
 public class FireImmunity extends CraftPower implements Listener {
 
+    @Override
+    public void setActive(Boolean bool){
+        if(powers_active.containsKey(getPowerFile())){
+            powers_active.replace(getPowerFile(), bool);
+        }else{
+            powers_active.put(getPowerFile(), bool);
+        }
+    }
+
+    @Override
+    public Boolean getActive(){
+        return powers_active.get(getPowerFile());
+    }
+
     @EventHandler
     public void OnDamageFire(EntityDamageEvent e) {
         if (e.getEntity().isDead()) return;
@@ -22,10 +36,13 @@ public class FireImmunity extends CraftPower implements Listener {
                 if (fire_immunity.contains(p)) {
                     ConditionExecutor conditionExecutor = new ConditionExecutor();
                     if (conditionExecutor.check("condition", "conditions", p, origin, "origins:fire_immunity", null, p)) {
+                        setActive(true);
                         if (e.getCause().equals(EntityDamageEvent.DamageCause.FIRE) || e.getCause().equals(EntityDamageEvent.DamageCause.HOT_FLOOR) || e.getCause().equals(EntityDamageEvent.DamageCause.FIRE_TICK) || e.getCause().equals(EntityDamageEvent.DamageCause.LAVA)) {
                             e.setCancelled(true);
                             e.setDamage(0);
                         }
+                    }else{
+                        setActive(false);
                     }
                 }
             }

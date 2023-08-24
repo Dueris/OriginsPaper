@@ -17,6 +17,21 @@ import static me.dueris.genesismc.factory.powers.OriginsMod.player.attributes.At
 import static me.dueris.genesismc.factory.powers.OriginsMod.value_modifying.ValueModifyingSuperClass.modify_jump;
 
 public class ModifyJumpPower extends CraftPower implements Listener {
+
+    @Override
+    public void setActive(Boolean bool){
+        if(powers_active.containsKey(getPowerFile())){
+            powers_active.replace(getPowerFile(), bool);
+        }else{
+            powers_active.put(getPowerFile(), bool);
+        }
+    }
+
+    @Override
+    public Boolean getActive(){
+        return powers_active.get(getPowerFile());
+    }
+
     @EventHandler
     public void run(PlayerJumpEvent e){
         Player p = e.getPlayer();
@@ -30,7 +45,13 @@ public class ModifyJumpPower extends CraftPower implements Listener {
                         BinaryOperator mathOperator = getOperationMappingsFloat().get(operation);
                         if (mathOperator != null) {
                             float result = (float) mathOperator.apply(e.getPlayer().getVelocity().getY(), value);
-                            e.getPlayer().getVelocity().setY(result);
+                            ConditionExecutor executor = new ConditionExecutor();
+                            if(executor.check("condition", "conditions", p, origin, getPowerFile(), null, p)){
+                                setActive(true);
+                                e.getPlayer().getVelocity().setY(result);
+                            }else{
+                                setActive(false);
+                            }
                         }
                     }
 

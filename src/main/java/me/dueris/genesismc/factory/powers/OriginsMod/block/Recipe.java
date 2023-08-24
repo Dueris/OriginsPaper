@@ -3,6 +3,7 @@ package me.dueris.genesismc.factory.powers.OriginsMod.block;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.entity.OriginPlayer;
 import me.dueris.genesismc.events.OriginChangeEvent;
+import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.OriginContainer;
 import me.dueris.genesismc.utils.PowerContainer;
@@ -77,7 +78,11 @@ public class Recipe extends CraftPower implements Listener {
     public void load(ServerLoadEvent e){
         for(Player player : Bukkit.getOnlinePlayers()){
             for(OriginContainer origin : OriginPlayer.getOrigin(player).values()){
-                loadRecipe(player, origin, "origins:recipe");
+                ConditionExecutor conditionExecutor = new ConditionExecutor();
+                if(conditionExecutor.check("condition", "conditions", player, origin, getPowerFile(), null, player)) {
+                    setActive(true);
+                    loadRecipe(player, origin, "origins:recipe");
+                }else{setActive(false);}
             }
         }
     }
@@ -86,7 +91,11 @@ public class Recipe extends CraftPower implements Listener {
     public void load(PlayerJoinEvent e){
         for(Player player : Bukkit.getOnlinePlayers()){
             for(OriginContainer origin : OriginPlayer.getOrigin(player).values()){
-                loadRecipe(player, origin, "origins:recipe");
+                ConditionExecutor conditionExecutor = new ConditionExecutor();
+                if(conditionExecutor.check("condition", "conditions", player, origin, getPowerFile(), null, player)) {
+                    setActive(true);
+                    loadRecipe(player, origin, "origins:recipe");
+                }else{setActive(false);}
             }
         }
     }
@@ -95,7 +104,11 @@ public class Recipe extends CraftPower implements Listener {
     public void load(OriginChangeEvent e){
         for(Player player : Bukkit.getOnlinePlayers()){
             for(OriginContainer origin : OriginPlayer.getOrigin(player).values()){
-                loadRecipe(player, origin, "origins:recipe");
+                ConditionExecutor conditionExecutor = new ConditionExecutor();
+                if(conditionExecutor.check("condition", "conditions", player, origin, getPowerFile(), null, player)) {
+                    setActive(true);
+                    loadRecipe(player, origin, "origins:recipe");
+                }else{setActive(false);}
             }
         }
     }
@@ -113,5 +126,19 @@ public class Recipe extends CraftPower implements Listener {
     @Override
     public ArrayList<Player> getPowerArray() {
         return recipe;
+    }
+
+    @Override
+    public void setActive(Boolean bool){
+        if(powers_active.containsKey(getPowerFile())){
+            powers_active.replace(getPowerFile(), bool);
+        }else{
+            powers_active.put(getPowerFile(), bool);
+        }
+    }
+
+    @Override
+    public Boolean getActive(){
+        return powers_active.get(getPowerFile());
     }
 }

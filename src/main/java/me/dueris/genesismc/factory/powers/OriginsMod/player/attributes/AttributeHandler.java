@@ -25,6 +25,20 @@ import java.util.function.BinaryOperator;
 import java.util.function.Predicate;
 
 public class AttributeHandler extends CraftPower implements Listener {
+
+    @Override
+    public void setActive(Boolean bool){
+        if(powers_active.containsKey(getPowerFile())){
+            powers_active.replace(getPowerFile(), bool);
+        }else{
+            powers_active.put(getPowerFile(), bool);
+        }
+    }
+
+    @Override
+    public Boolean getActive(){
+        return powers_active.get(getPowerFile());
+    }
     public static Map<String, BinaryOperator<Double>> getOperationMappingsDouble() {
         Map<String, BinaryOperator<Double>> operationMap = new HashMap<>();
         operationMap.put("addition", Double::sum);
@@ -114,7 +128,7 @@ public class AttributeHandler extends CraftPower implements Listener {
                         double base_value = p.getAttribute(attribute_modifier).getBaseValue();
                         String operation = String.valueOf(modifier.get("operation"));
                         executeAttributeModify(operation, attribute_modifier, base_value, p, value);
-
+                        setActive(true);
                         p.sendHealthUpdate();
                     }
                 }
@@ -123,7 +137,6 @@ public class AttributeHandler extends CraftPower implements Listener {
     }
 
     public static void executeAttributeModify(String operation, Attribute attribute_modifier, double base_value, Player p, Double value) {
-
         BinaryOperator mathOperator = getOperationMappingsDouble().get(operation);
         if (mathOperator != null) {
             double result = (Double) mathOperator.apply(base_value, value);

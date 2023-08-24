@@ -3,12 +3,27 @@ package me.dueris.genesismc.factory.powers;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public interface Power {
 
     public abstract void run();
     public abstract String getPowerFile();
     public abstract ArrayList<Player> getPowerArray();
+    public abstract void setActive(Boolean bool);
+//    {
+//        if(powers_active.containsKey(getPowerFile())){
+//            powers_active.replace(getPowerFile(), bool);
+//        }else{
+//            powers_active.put(getPowerFile(), bool);
+//        }
+//    }
+    public abstract Boolean getActive();
+//    {
+//        return powers_active.get(getPowerFile());
+//    }
+
+    public HashMap<String, Boolean> powers_active = new HashMap<>();
 
     public ArrayList<Player> fall_immunity = new ArrayList<>();
     public ArrayList<Player> aerial_combatant = new ArrayList<>();

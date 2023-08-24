@@ -22,6 +22,21 @@ import static me.dueris.genesismc.factory.powers.OriginsMod.player.attributes.At
 import static me.dueris.genesismc.factory.powers.OriginsMod.value_modifying.ValueModifyingSuperClass.modify_break_speed;
 
 public class ModifyBreakSpeedPower extends CraftPower implements Listener {
+
+    @Override
+    public void setActive(Boolean bool){
+        if(powers_active.containsKey(getPowerFile())){
+            powers_active.replace(getPowerFile(), bool);
+        }else{
+            powers_active.put(getPowerFile(), bool);
+        }
+    }
+
+    @Override
+    public Boolean getActive(){
+        return powers_active.get(getPowerFile());
+    }
+
     String MODIFYING_KEY = "modify_break_speed";
 
     public int calculateHasteAmplifier(float value) {
@@ -40,20 +55,25 @@ public class ModifyBreakSpeedPower extends CraftPower implements Listener {
     @EventHandler
     public void run(PlayerArmSwingEvent e){
         Player p = e.getPlayer();
-        for(OriginContainer origin : OriginPlayer.getOrigin(p).values()){
-            ValueModifyingSuperClass valueModifyingSuperClass = new ValueModifyingSuperClass();
-            try{
-                ConditionExecutor conditionExecutor = new ConditionExecutor();
-                if(conditionExecutor.check("condition", "condition", p, origin, "origins:modify_air_speed", null, p)){
-                    //TODO: add block condition
-                    if(modify_break_speed.contains(p)){
-                        p.addPotionEffect(new PotionEffect(PotionEffectType.FAST_DIGGING, 50, calculateHasteAmplifier(valueModifyingSuperClass.getPersistentAttributeContainer(p, MODIFYING_KEY)), false, false, false));
+        if(modify_break_speed.contains(p)) {
+            for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
+                ValueModifyingSuperClass valueModifyingSuperClass = new ValueModifyingSuperClass();
+                try {
+                    ConditionExecutor conditionExecutor = new ConditionExecutor();
+                    if (conditionExecutor.check("condition", "condition", p, origin, "origins:modify_air_speed", null, p)) {
+                        //TODO: add block condition
+                        setActive(true);
+                        if (modify_break_speed.contains(p)) {
+                            p.addPotionEffect(new PotionEffect(PotionEffectType.FAST_DIGGING, 50, calculateHasteAmplifier(valueModifyingSuperClass.getPersistentAttributeContainer(p, MODIFYING_KEY)), false, false, false));
+                        }
+                    } else {
+                        setActive(false);
                     }
+                } catch (Exception ev) {
+                    ErrorSystem errorSystem = new ErrorSystem();
+                    errorSystem.throwError("unable to set modifier", "origins:modify_break_speed", p, origin, OriginPlayer.getLayer(p, origin));
+                    ev.printStackTrace();
                 }
-            } catch (Exception ev){
-                ErrorSystem errorSystem = new ErrorSystem();
-                errorSystem.throwError("unable to set modifier", "origins:modify_break_speed", p, origin, OriginPlayer.getLayer(p, origin));
-                ev.printStackTrace();
             }
         }
     }

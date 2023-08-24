@@ -15,6 +15,21 @@ import java.util.ArrayList;
 import static me.dueris.genesismc.factory.powers.OriginsMod.prevent.PreventSuperClass.prevent_block_use;
 
 public class PreventBlockUse extends CraftPower implements Listener {
+
+    @Override
+    public void setActive(Boolean bool){
+        if(powers_active.containsKey(getPowerFile())){
+            powers_active.replace(getPowerFile(), bool);
+        }else{
+            powers_active.put(getPowerFile(), bool);
+        }
+    }
+
+    @Override
+    public Boolean getActive(){
+        return powers_active.get(getPowerFile());
+    }
+
     @EventHandler
     public void run(PlayerInteractEvent e){
         if(prevent_block_use.contains(e.getPlayer())){
@@ -22,6 +37,9 @@ public class PreventBlockUse extends CraftPower implements Listener {
                 ConditionExecutor conditionExecutor = new ConditionExecutor();
                 if(conditionExecutor.check("block_condition", "block_conditions", e.getPlayer(), origin, "origins:prevent_block_used", null, e.getPlayer())){
                     if(e.getClickedBlock() != null) e.setCancelled(true);
+                    setActive(true);
+                }else{
+                    setActive(false);
                 }
             }
         }

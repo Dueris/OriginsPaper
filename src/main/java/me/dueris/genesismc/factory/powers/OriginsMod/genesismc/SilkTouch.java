@@ -1,7 +1,10 @@
 package me.dueris.genesismc.factory.powers.OriginsMod.genesismc;
 
 
+import me.dueris.genesismc.entity.OriginPlayer;
+import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
+import me.dueris.genesismc.utils.OriginContainer;
 import me.dueris.genesismc.utils.translation.LangConfig;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -18,6 +21,21 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 
 public class SilkTouch extends CraftPower implements Listener {
+
+    @Override
+    public void setActive(Boolean bool){
+        if(powers_active.containsKey(getPowerFile())){
+            powers_active.replace(getPowerFile(), bool);
+        }else{
+            powers_active.put(getPowerFile(), bool);
+        }
+    }
+
+    @Override
+    public Boolean getActive(){
+        return powers_active.get(getPowerFile());
+    }
+
     private static final EnumSet<Material> m;
 
     static {
@@ -29,34 +47,42 @@ public class SilkTouch extends CraftPower implements Listener {
         if (!e.getBlock().getType().equals(Material.AIR)) {
             Player p = e.getPlayer();
             if (silk_touch.contains(e.getPlayer())) {
-                if (p.getGameMode().equals(GameMode.SURVIVAL) && p.getEquipment().getItemInMainHand().getType().equals(Material.AIR)) {
-                    if (!e.getBlock().getType().isItem()) {
-                        return;
-                    }
-                    if (!m.contains(e.getBlock().getType())) {
-                        if (e.getBlock().getState() instanceof ShulkerBox) {
-                            return;
-                        }
-                        if (!m.contains(e.getBlock().getType())) {
-                            if (e.getBlock().getState() instanceof CreatureSpawner) {
+                ConditionExecutor executor = new ConditionExecutor();
+                for(OriginContainer origin : OriginPlayer.getOrigin(p).values()){
+                    if(executor.check("condition", "conditions", p, origin, getPowerFile(), null, p)){
+                        setActive(true);
+                        if (p.getGameMode().equals(GameMode.SURVIVAL) && p.getEquipment().getItemInMainHand().getType().equals(Material.AIR)) {
+                            if (!e.getBlock().getType().isItem()) {
                                 return;
                             }
+                            if (!m.contains(e.getBlock().getType())) {
+                                if (e.getBlock().getState() instanceof ShulkerBox) {
+                                    return;
+                                }
+                                if (!m.contains(e.getBlock().getType())) {
+                                    if (e.getBlock().getState() instanceof CreatureSpawner) {
+                                        return;
+                                    }
 
-                            if (e.getBlock().getType().toString().endsWith("BANNER")) {
-                                return;
-                            }
+                                    if (e.getBlock().getType().toString().endsWith("BANNER")) {
+                                        return;
+                                    }
 
-                            e.setDropItems(false);
-                            ItemStack i = new ItemStack(e.getBlock().getType(), 1);
+                                    e.setDropItems(false);
+                                    ItemStack i = new ItemStack(e.getBlock().getType(), 1);
 
-                            try {
-                                p.getLocation().getWorld().dropItemNaturally(e.getBlock().getLocation(), i);
-                            } catch (Exception exception) {
-                                Bukkit.getLogger().warning(LangConfig.getLocalizedString(p, "powers.errors.silkTouch"));
-                                exception.printStackTrace();
+                                    try {
+                                        p.getLocation().getWorld().dropItemNaturally(e.getBlock().getLocation(), i);
+                                    } catch (Exception exception) {
+                                        Bukkit.getLogger().warning(LangConfig.getLocalizedString(p, "powers.errors.silkTouch"));
+                                        exception.printStackTrace();
+                                    }
+                                }
+
                             }
                         }
-
+                    }else{
+                        setActive(false);
                     }
                 }
             }

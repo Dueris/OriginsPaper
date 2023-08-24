@@ -2,6 +2,7 @@ package me.dueris.genesismc.factory.powers.OriginsMod.player;
 
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.entity.OriginPlayer;
+import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.protocol.SendStringPacketPayload;
 import me.dueris.genesismc.utils.OriginContainer;
@@ -30,32 +31,54 @@ import static me.dueris.genesismc.entity.OriginPlayer.launchElytra;
 public class FlightElytra extends CraftPower implements Listener {
     public static ArrayList<UUID> glidingPlayers = new ArrayList<>();
 
+    @Override
+    public void setActive(Boolean bool){
+        if(powers_active.containsKey(getPowerFile())){
+            powers_active.replace(getPowerFile(), bool);
+        }else{
+            powers_active.put(getPowerFile(), bool);
+        }
+    }
+
+    @Override
+    public Boolean getActive(){
+        return powers_active.get(getPowerFile());
+    }
+
     @EventHandler
     @SuppressWarnings("unchecked")
     public void ExecuteFlight(PlayerToggleSneakEvent e) {
         Player p = e.getPlayer();
         if (elytra.contains(e.getPlayer())) {
-            for (OriginContainer origin : OriginPlayer.getOrigin(p).values())
-                if (origin.getPowerFileFromType("origins:elytra_flight").getShouldRender()) {
-                    SendStringPacketPayload.sendCustomPacket(p, "ExecuteGenesisOriginsElytraRenderID:12232285");
-                    CraftPlayer player = (CraftPlayer) p;
-                    player.getWorld().setGameRule(GameRule.DISABLE_ELYTRA_MOVEMENT_CHECK, false);
-                }
-            if (!p.isOnGround() && !p.isGliding()) {
-                glidingPlayers.add(p.getUniqueId());
-                if (p.getGameMode() == GameMode.SPECTATOR) return;
-                new BukkitRunnable() {
-                    @Override
-                    public void run() {
-                        if (p.isOnGround() || p.isFlying()) {
-                            this.cancel();
-                            glidingPlayers.remove(p.getUniqueId());
-                        }
-                        p.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 5, 3, false, false, false));
-                        p.setGliding(true);
-                        p.setFallDistance(0);
+            for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
+                ConditionExecutor executor = new ConditionExecutor();
+                if(executor.check("condition", "conditions", p, origin, getPowerFile(), null, p)){
+                    setActive(true);
+                    if (origin.getPowerFileFromType("origins:elytra_flight").getShouldRender()) {
+                        SendStringPacketPayload.sendCustomPacket(p, "ExecuteGenesisOriginsElytraRenderID:12232285");
+                        CraftPlayer player = (CraftPlayer) p;
+                        player.getWorld().setGameRule(GameRule.DISABLE_ELYTRA_MOVEMENT_CHECK, false);
                     }
-                }.runTaskTimer(GenesisMC.getPlugin(), 0L, 1L);
+                    if (!p.isOnGround() && !p.isGliding()) {
+                        glidingPlayers.add(p.getUniqueId());
+                        if (p.getGameMode() == GameMode.SPECTATOR) return;
+                        new BukkitRunnable() {
+                            @Override
+                            public void run() {
+                                if (p.isOnGround() || p.isFlying()) {
+                                    this.cancel();
+                                    glidingPlayers.remove(p.getUniqueId());
+                                }
+                                p.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 5, 3, false, false, false));
+                                p.setGliding(true);
+                                p.setFallDistance(0);
+                            }
+                        }.runTaskTimer(GenesisMC.getPlugin(), 0L, 1L);
+                    }
+                }else{
+                    setActive(false);
+                }
+
             }
         }
     }

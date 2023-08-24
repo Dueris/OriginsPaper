@@ -16,6 +16,20 @@ import java.util.ArrayList;
 public class Grounded extends CraftPower {
 
     @Override
+    public void setActive(Boolean bool){
+        if(powers_active.containsKey(getPowerFile())){
+            powers_active.replace(getPowerFile(), bool);
+        }else{
+            powers_active.put(getPowerFile(), bool);
+        }
+    }
+
+    @Override
+    public Boolean getActive(){
+        return powers_active.get(getPowerFile());
+    }
+
+    @Override
     public void run() {
         ArrayList<Location> platform_pos = new ArrayList<>();
 
@@ -26,6 +40,7 @@ public class Grounded extends CraftPower {
                     Location current_block_platform_pos = location.add(0, -1, 0);
                     ConditionExecutor conditionExecutor = new ConditionExecutor();
                     if (conditionExecutor.check("condition", "conditions", player, origin, "origins:grounded", null, player)) {
+                        setActive(true);
                         if (current_block_platform_pos.getBlock().getType().equals(Material.AIR)) {
                             platform_pos.add(current_block_platform_pos);
                             CraftPlayer craftPlayer = (CraftPlayer) player;
@@ -43,6 +58,8 @@ public class Grounded extends CraftPower {
                                 craftPlayer.sendBlockChange(thing, block.getBlockData());
                             }
                         }
+                    }else{
+                        setActive(false);
                     }
                 }
             }

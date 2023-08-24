@@ -18,6 +18,20 @@ import static me.dueris.genesismc.factory.powers.OriginsMod.value_modifying.Valu
 
 public class ModifyAirSpeedPower extends CraftPower {
 
+    @Override
+    public void setActive(Boolean bool){
+        if(powers_active.containsKey(getPowerFile())){
+            powers_active.replace(getPowerFile(), bool);
+        }else{
+            powers_active.put(getPowerFile(), bool);
+        }
+    }
+
+    @Override
+    public Boolean getActive(){
+        return powers_active.get(getPowerFile());
+    }
+
     String MODIFYING_KEY = "modify_air_speed";
 
     @Override
@@ -28,8 +42,10 @@ public class ModifyAirSpeedPower extends CraftPower {
                 try{
                     ConditionExecutor conditionExecutor = new ConditionExecutor();
                     if(conditionExecutor.check("condition", "conditions", p, origin, "origins:modify_air_speed", null, p)){
+                        setActive(true);
                         p.setFlySpeed(valueModifyingSuperClass.getPersistentAttributeContainer(p, MODIFYING_KEY));
                     }else{
+                        setActive(false);
                         p.setFlySpeed(valueModifyingSuperClass.getDefaultValue(MODIFYING_KEY));
                     }
                 } catch (Exception e){
