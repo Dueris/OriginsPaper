@@ -29,7 +29,7 @@ public class ActionOnBlockUse extends CraftPower implements Listener {
         if (!getPowerArray().contains(actor)) return;
 
         for (OriginContainer origin : OriginPlayer.getOrigin(actor).values()) {
-            PowerContainer power = origin.getPowerFileFromType("origins:action_on_being_used");
+            PowerContainer power = origin.getPowerFileFromType(getPowerFile());
             if (power == null) continue;
             //todo: item block and entity condition
             if(!getPowerArray().contains(e.getPlayer())) return;
@@ -37,6 +37,8 @@ public class ActionOnBlockUse extends CraftPower implements Listener {
             ActionTypes.BlockActionType(e.getClickedBlock().getLocation(), power.getBlockAction());
             ActionTypes.EntityActionType(e.getPlayer(), power.getEntityAction());
             ActionTypes.ItemActionType(e.getPlayer().getActiveItem(), power.getItemAction());
+            ActionTypes.ItemActionType(e.getPlayer().getActiveItem(), power.getAction("held_item_action"));
+            ActionTypes.ItemActionType(e.getPlayer().getActiveItem(), power.getAction("result_item_action"));
             new BukkitRunnable() {
                 @Override
                 public void run() {
@@ -59,6 +61,10 @@ public class ActionOnBlockUse extends CraftPower implements Listener {
 
     @Override
     public void setActive(String tag, Boolean bool) {
-
+        if(powers_active.containsKey(tag)){
+            powers_active.replace(tag, bool);
+        }else{
+            powers_active.put(tag, bool);
+        }
     }
 }

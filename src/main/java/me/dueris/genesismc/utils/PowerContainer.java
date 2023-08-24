@@ -884,6 +884,14 @@ public class PowerContainer implements Serializable {
         return new JSONObject();
     }
 
+    public JSONObject getAction(String string) {
+        Object obj = powerFile.get(string);
+        if (obj instanceof JSONObject modifier) {
+            return modifier;
+        }
+        return new JSONObject();
+    }
+
     public JSONObject getEntityAction() {
         Object obj = powerFile.get("bientity_action");
         if (obj instanceof JSONObject modifier) {

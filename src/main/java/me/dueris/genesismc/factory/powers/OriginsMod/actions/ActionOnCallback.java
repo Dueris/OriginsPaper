@@ -3,27 +3,26 @@ package me.dueris.genesismc.factory.powers.OriginsMod.actions;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.entity.OriginPlayer;
 import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.factory.powers.Power;
 import me.dueris.genesismc.utils.OriginContainer;
 import me.dueris.genesismc.utils.PowerContainer;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.player.PlayerEvent;
+import org.bukkit.event.player.PlayerPortalEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
 
-public class ActionOnBlockBreak extends CraftPower implements Listener {
+public class ActionOnCallback extends CraftPower implements Listener {
     @Override
     public void run() {
 
     }
 
     @EventHandler
-    public void brek(BlockBreakEvent e){
-        //TODO: add blockconditon
+    public void event(PlayerEvent e){
         Player actor = e.getPlayer();
 
         if (!getPowerArray().contains(actor)) return;
@@ -31,11 +30,11 @@ public class ActionOnBlockBreak extends CraftPower implements Listener {
         for (OriginContainer origin : OriginPlayer.getOrigin(actor).values()) {
             PowerContainer power = origin.getPowerFileFromType(getPowerFile());
             if (power == null) continue;
-
+            //todo: item block and entity condition
             if(!getPowerArray().contains(e.getPlayer())) return;
             setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
-            ActionTypes.BlockActionType(e.getBlock().getLocation(), power.getBlockAction());
             ActionTypes.EntityActionType(e.getPlayer(), power.getEntityAction());
+            //todo:make more events for it, see origins.readthedocs.io/en/latest/power_types/action_on_callback
             new BukkitRunnable() {
                 @Override
                 public void run() {
@@ -48,12 +47,12 @@ public class ActionOnBlockBreak extends CraftPower implements Listener {
 
     @Override
     public String getPowerFile() {
-        return "origins:action_on_block_break";
+        return "origins:action_on_callback";
     }
 
     @Override
     public ArrayList<Player> getPowerArray() {
-        return action_on_block_break;
+        return action_on_callback;
     }
 
     @Override
