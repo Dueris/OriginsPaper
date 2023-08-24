@@ -1,5 +1,10 @@
 package me.dueris.genesismc.factory.powers.OriginsMod.actions;
 
+import me.dueris.genesismc.GenesisMC;
+import me.dueris.genesismc.entity.OriginPlayer;
+import me.dueris.genesismc.factory.conditions.ConditionExecutor;
+import me.dueris.genesismc.utils.OriginContainer;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -9,6 +14,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static me.dueris.genesismc.factory.powers.OriginsMod.OriginMethods.statusEffectInstance;
 
@@ -63,9 +71,10 @@ public class ActionTypes {
     }
 
     public static void biEntityActionType(Entity actor, Entity target, JSONObject biEntityAction) {
-        JSONObject entityAction;
-        entityAction = (JSONObject) biEntityAction.get("action");
-        if (entityAction == null) entityAction = (JSONObject) biEntityAction.get("bientity_action");
+        JSONObject entityAction = (JSONObject) biEntityAction.get("action");
+        if (entityAction == null) {
+            entityAction = (JSONObject) biEntityAction.get("bientity_action");
+        }
         String type = entityAction.get("type").toString();
 
         if (type.equals("origins:and")) {
@@ -74,6 +83,46 @@ public class ActionTypes {
                 JSONObject action = (JSONObject) actionObj;
                 runbiEntity(actor, target, action);
             }
+        } else if (type.equals("origins:chance")) {
+            double chance = Double.parseDouble(entityAction.get("chance").toString());
+            double randomValue = Math.random();
+
+            if (randomValue <= chance) {
+                JSONObject action = (JSONObject) entityAction.get("action");
+                runbiEntity(actor, target, action);
+            }
+        } else if (type.equals("origins:choice")) {
+            JSONArray actionsArray = (JSONArray) entityAction.get("actions");
+            List<JSONObject> actionsList = new ArrayList<>();
+
+            for (Object actionObj : actionsArray) {
+                JSONObject action = (JSONObject) actionObj;
+                JSONObject element = (JSONObject) action.get("element");
+                int weight = Integer.parseInt(action.get("weight").toString());
+                for (int i = 0; i < weight; i++) {
+                    actionsList.add(element);
+                }
+            }
+
+            if (!actionsList.isEmpty()) {
+                int randomIndex = (int) (Math.random() * actionsList.size());
+                JSONObject chosenAction = actionsList.get(randomIndex);
+                runbiEntity(actor, target, chosenAction);
+            }
+        } else if (type.equals("origins:delay")) {
+            int ticks = Integer.parseInt(entityAction.get("ticks").toString());
+            JSONObject delayedAction = (JSONObject) entityAction.get("action");
+
+            Bukkit.getScheduler().runTaskLater(GenesisMC.getPlugin(), () -> {
+                runbiEntity(actor, target, delayedAction);
+            }, ticks);
+        } else if (type.equals("origins:nothing")) {
+            // Literally does nothing
+        } else if (type.equals("origins:side")) {
+            String side = entityAction.get("side").toString();
+            JSONObject action = (JSONObject) entityAction.get("action");
+                runbiEntity(actor, target, action);
+
         } else {
             runbiEntity(actor, target, biEntityAction);
         }
@@ -82,8 +131,7 @@ public class ActionTypes {
     private static void runEntity(Entity entity, JSONObject power){
         JSONObject entityAction;
         System.out.println(power);
-        entityAction = (JSONObject) power.get("action");
-        if (entityAction == null) entityAction = (JSONObject) power.get("entity_action");
+        entityAction = power;
         String type = entityAction.get("type").toString();
 
         if (type.equals("origins:add_velocity")) {
@@ -153,6 +201,47 @@ public class ActionTypes {
                 JSONObject action = (JSONObject) actionObj;
                 runEntity(entity, action);
             }
+        } else if (type.equals("origins:chance")) {
+            double chance = Double.parseDouble(entityAction.get("chance").toString());
+            double randomValue = Math.random();
+
+            if (randomValue <= chance) {
+                JSONObject action = (JSONObject) entityAction.get("action");
+                runEntity(entity, action);
+            } else if (entityAction.containsKey("fail_action")) {
+                JSONObject failAction = (JSONObject) entityAction.get("fail_action");
+                runEntity(entity, failAction);
+            }
+        } else if (type.equals("origins:choice")) {
+            JSONArray actionsArray = (JSONArray) entityAction.get("actions");
+            List<JSONObject> actionsList = new ArrayList<>();
+
+            for (Object actionObj : actionsArray) {
+                JSONObject action = (JSONObject) actionObj;
+                JSONObject element = (JSONObject) action.get("element");
+                int weight = Integer.parseInt(action.get("weight").toString());
+                for (int i = 0; i < weight; i++) {
+                    actionsList.add(element);
+                }
+            }
+
+            if (!actionsList.isEmpty()) {
+                int randomIndex = (int) (Math.random() * actionsList.size());
+                JSONObject chosenAction = actionsList.get(randomIndex);
+                runEntity(entity, chosenAction);
+            }
+        } else if (type.equals("origins:delay")) {
+            int ticks = Integer.parseInt(entityAction.get("ticks").toString());
+            JSONObject delayedAction = (JSONObject) entityAction.get("action");
+
+            Bukkit.getScheduler().runTaskLater(GenesisMC.getPlugin(), () -> {
+                runEntity(entity, delayedAction);
+            }, ticks);
+        } else if (type.equals("origins:nothing")) {
+            //literally does nothin
+        } else if (type.equals("origins:side")) {
+            JSONObject action = (JSONObject) entityAction.get("action");
+            runEntity(entity, action);
         } else {
             runEntity(entity, power);
         }
@@ -160,9 +249,10 @@ public class ActionTypes {
 
 
     public static void BlockActionType(Location location, JSONObject power) {
-        JSONObject entityAction;
-        entityAction = (JSONObject) power.get("action");
-        if (entityAction == null) entityAction = (JSONObject) power.get("block_action");
+        JSONObject entityAction = (JSONObject) power.get("action");
+        if (entityAction == null) {
+            entityAction = (JSONObject) power.get("block_action");
+        }
         String type = entityAction.get("type").toString();
 
         if (type.equals("origins:and")) {
@@ -171,6 +261,47 @@ public class ActionTypes {
                 JSONObject action = (JSONObject) actionObj;
                 runBlock(location, action);
             }
+        } else if (type.equals("origins:chance")) {
+            double chance = Double.parseDouble(entityAction.get("chance").toString());
+            double randomValue = Math.random();
+
+            if (randomValue <= chance) {
+                JSONObject action = (JSONObject) entityAction.get("action");
+                runBlock(location, action);
+            } else if (entityAction.containsKey("fail_action")) {
+                JSONObject failAction = (JSONObject) entityAction.get("fail_action");
+                runBlock(location, failAction);
+            }
+        } else if (type.equals("origins:choice")) {
+            JSONArray actionsArray = (JSONArray) entityAction.get("actions");
+            List<JSONObject> actionsList = new ArrayList<>();
+
+            for (Object actionObj : actionsArray) {
+                JSONObject action = (JSONObject) actionObj;
+                JSONObject element = (JSONObject) action.get("element");
+                int weight = Integer.parseInt(action.get("weight").toString());
+                for (int i = 0; i < weight; i++) {
+                    actionsList.add(element);
+                }
+            }
+
+            if (!actionsList.isEmpty()) {
+                int randomIndex = (int) (Math.random() * actionsList.size());
+                JSONObject chosenAction = actionsList.get(randomIndex);
+                runBlock(location, chosenAction);
+            }
+        } else if (type.equals("origins:delay")) {
+            int ticks = Integer.parseInt(entityAction.get("ticks").toString());
+            JSONObject delayedAction = (JSONObject) entityAction.get("action");
+
+            Bukkit.getScheduler().runTaskLater(GenesisMC.getPlugin(), () -> {
+                runBlock(location, delayedAction);
+            }, ticks);
+        } else if (type.equals("origins:nothing")) {
+            // Literally does nothing
+        } else if (type.equals("origins:side")) {
+            JSONObject action = (JSONObject) entityAction.get("action");
+            runBlock(location, action);
         } else {
             runBlock(location, power);
         }
@@ -221,9 +352,10 @@ public class ActionTypes {
     }
 
     public static void ItemActionType(ItemStack item, JSONObject power) {
-        JSONObject entityAction;
-        entityAction = (JSONObject) power.get("action");
-        if (entityAction == null) entityAction = (JSONObject) power.get("item_action");
+        JSONObject entityAction = (JSONObject) power.get("action");
+        if (entityAction == null) {
+            entityAction = (JSONObject) power.get("item_action");
+        }
         String type = entityAction.get("type").toString();
 
         if (type.equals("origins:and")) {
@@ -232,6 +364,47 @@ public class ActionTypes {
                 JSONObject action = (JSONObject) actionObj;
                 runItem(item, action);
             }
+        } else if (type.equals("origins:chance")) {
+            double chance = Double.parseDouble(entityAction.get("chance").toString());
+            double randomValue = Math.random();
+
+            if (randomValue <= chance) {
+                JSONObject action = (JSONObject) entityAction.get("action");
+                runItem(item, action);
+            } else if (entityAction.containsKey("fail_action")) {
+                JSONObject failAction = (JSONObject) entityAction.get("fail_action");
+                runItem(item, failAction);
+            }
+        } else if (type.equals("origins:choice")) {
+            JSONArray actionsArray = (JSONArray) entityAction.get("actions");
+            List<JSONObject> actionsList = new ArrayList<>();
+
+            for (Object actionObj : actionsArray) {
+                JSONObject action = (JSONObject) actionObj;
+                JSONObject element = (JSONObject) action.get("element");
+                int weight = Integer.parseInt(action.get("weight").toString());
+                for (int i = 0; i < weight; i++) {
+                    actionsList.add(element);
+                }
+            }
+
+            if (!actionsList.isEmpty()) {
+                int randomIndex = (int) (Math.random() * actionsList.size());
+                JSONObject chosenAction = actionsList.get(randomIndex);
+                runItem(item, chosenAction);
+            }
+        } else if (type.equals("origins:delay")) {
+            int ticks = Integer.parseInt(entityAction.get("ticks").toString());
+            JSONObject delayedAction = (JSONObject) entityAction.get("action");
+
+            Bukkit.getScheduler().runTaskLater(GenesisMC.getPlugin(), () -> {
+                runItem(item, delayedAction);
+            }, ticks);
+        } else if (type.equals("origins:nothing")) {
+            // Literally does nothing
+        } else if (type.equals("origins:side")) {
+            JSONObject action = (JSONObject) entityAction.get("action");
+            runItem(item, action);
         } else {
             runItem(item, power);
         }
