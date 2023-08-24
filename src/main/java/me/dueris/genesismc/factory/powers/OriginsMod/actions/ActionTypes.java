@@ -5,14 +5,16 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.*;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import static me.dueris.genesismc.factory.powers.OriginsMod.OriginMethods.statusEffectInstance;
 
 public class ActionTypes {
 
-    public static void biEntityActionType(Entity actor, Entity target, JSONObject biEntityAction) {
+    public static void runbiEntity(Entity actor, Entity target, JSONObject biEntityAction){
         String type = biEntityAction.get("type").toString();
         if (type.equals("origins:add_velocity")) {
             //TODO: make this align to the actor entity
@@ -60,7 +62,24 @@ public class ActionTypes {
         }
     }
 
-    public static void EntityActionType(Entity entity, JSONObject power) {
+    public static void biEntityActionType(Entity actor, Entity target, JSONObject biEntityAction) {
+        JSONObject entityAction;
+        entityAction = (JSONObject) biEntityAction.get("action");
+        if (entityAction == null) entityAction = (JSONObject) biEntityAction.get("bientity_action");
+        String type = entityAction.get("type").toString();
+
+        if (type.equals("origins:and")) {
+            JSONArray andActions = (JSONArray) entityAction.get("actions");
+            for (Object actionObj : andActions) {
+                JSONObject action = (JSONObject) actionObj;
+                runbiEntity(actor, target, action);
+            }
+        } else {
+            runbiEntity(actor, target, biEntityAction);
+        }
+    }
+
+    private static void runEntity(Entity entity, JSONObject power){
         JSONObject entityAction;
         System.out.println(power);
         entityAction = (JSONObject) power.get("action");
@@ -122,8 +141,42 @@ public class ActionTypes {
         }
     }
 
+    public static void EntityActionType(Entity entity, JSONObject power) {
+        JSONObject entityAction;
+        entityAction = (JSONObject) power.get("action");
+        if (entityAction == null) entityAction = (JSONObject) power.get("entity_action");
+        String type = entityAction.get("type").toString();
+
+        if (type.equals("origins:and")) {
+            JSONArray andActions = (JSONArray) entityAction.get("actions");
+            for (Object actionObj : andActions) {
+                JSONObject action = (JSONObject) actionObj;
+                runEntity(entity, action);
+            }
+        } else {
+            runEntity(entity, power);
+        }
+    }
+
 
     public static void BlockActionType(Location location, JSONObject power) {
+        JSONObject entityAction;
+        entityAction = (JSONObject) power.get("action");
+        if (entityAction == null) entityAction = (JSONObject) power.get("block_action");
+        String type = entityAction.get("type").toString();
+
+        if (type.equals("origins:and")) {
+            JSONArray andActions = (JSONArray) entityAction.get("actions");
+            for (Object actionObj : andActions) {
+                JSONObject action = (JSONObject) actionObj;
+                runBlock(location, action);
+            }
+        } else {
+            runBlock(location, power);
+        }
+    }
+
+    private static void runBlock(Location location, JSONObject power){
         JSONObject blockAction = (JSONObject) power.get("block_action");
         String type = blockAction.get("type").toString();
 
@@ -165,6 +218,27 @@ public class ActionTypes {
 
             location.createExplosion(explosionPower, create_fire);
         }
+    }
+
+    public static void ItemActionType(ItemStack item, JSONObject power) {
+        JSONObject entityAction;
+        entityAction = (JSONObject) power.get("action");
+        if (entityAction == null) entityAction = (JSONObject) power.get("item_action");
+        String type = entityAction.get("type").toString();
+
+        if (type.equals("origins:and")) {
+            JSONArray andActions = (JSONArray) entityAction.get("actions");
+            for (Object actionObj : andActions) {
+                JSONObject action = (JSONObject) actionObj;
+                runItem(item, action);
+            }
+        } else {
+            runItem(item, power);
+        }
+    }
+
+    private static void runItem(ItemStack item, JSONObject power){
+
     }
 
 }
