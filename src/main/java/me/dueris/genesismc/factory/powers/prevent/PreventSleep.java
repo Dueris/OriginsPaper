@@ -4,15 +4,17 @@ import me.dueris.genesismc.entity.OriginPlayer;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.OriginContainer;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 import java.util.ArrayList;
+import java.util.EnumSet;
 
 import static me.dueris.genesismc.factory.powers.prevent.PreventSuperClass.prevent_sleep;
-import static me.dueris.genesismc.factory.powers.entity.FreshAir.beds;
+import static org.bukkit.Material.*;
 
 public class PreventSleep extends CraftPower implements Listener {
 
@@ -25,7 +27,12 @@ public class PreventSleep extends CraftPower implements Listener {
         }
     }
 
-    
+    public static EnumSet<Material> beds;
+
+    static {
+        beds = EnumSet.of(WHITE_BED, LIGHT_GRAY_BED, GRAY_BED, BLACK_BED, BROWN_BED, RED_BED, ORANGE_BED, YELLOW_BED, LIME_BED, GREEN_BED,
+                CYAN_BED, LIGHT_BLUE_BED, BLUE_BED, PURPLE_BED, MAGENTA_BED, PINK_BED);
+    }
 
     @EventHandler
     public void run(PlayerInteractEvent e){
