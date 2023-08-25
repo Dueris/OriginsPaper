@@ -40,7 +40,7 @@ public class AttackerActionWhenHit extends CraftPower implements Listener {
                     if(!getPowerArray().contains(actor)) return;
                     setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                 }
-            }.runTaskLater(GenesisMC.getPlugin(), 2l);
+            }.runTaskLater(GenesisMC.getPlugin(), 2L);
         }
     }
 

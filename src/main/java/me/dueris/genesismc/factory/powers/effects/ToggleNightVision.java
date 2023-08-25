@@ -103,7 +103,7 @@ public class ToggleNightVision extends CraftPower implements Listener {
                                                     if(!getPowerArray().contains(p)) return;
                     setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                                                 }
-                                            }.runTaskLater(GenesisMC.getPlugin(),1l);
+                                            }.runTaskLater(GenesisMC.getPlugin(), 1L);
                                             this.cancel();
                                         } else {
                                             if (isKeyBeingPressed(e.getPlayer(), origin.getPowerFileFromType(getPowerFile()).getKey().get("key").toString(), true)) {

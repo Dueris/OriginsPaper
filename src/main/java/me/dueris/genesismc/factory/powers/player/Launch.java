@@ -110,7 +110,7 @@ public class Launch extends CraftPower implements Listener {
                                                 public void run() {
                                                     in_continuous.remove(p);
                                                 }
-                                            }.runTaskLater(GenesisMC.getPlugin(),1l);
+                                            }.runTaskLater(GenesisMC.getPlugin(), 1L);
                                             this.cancel();
                                         } else {
                                             if (isKeyBeingPressed(e.getPlayer(), origin.getPowerFileFromType("origins:launch").getKey().get("key").toString(), true)) {

@@ -31,9 +31,8 @@ public class ModifyHealingPower extends CraftPower implements Listener {
 
     @EventHandler
     public void run(EntityRegainHealthEvent e){
-        if(e.getEntity() instanceof Player){
+        if(e.getEntity() instanceof Player p){
             if(!modify_healing.contains(e.getEntity())) return;
-            Player p = (Player) e.getEntity();
             for(OriginContainer origin : OriginPlayer.getOrigin(p).values()){
                 for(HashMap<String, Object> modifier : origin.getPowerFileFromType("origins:modify_healing").getPossibleModifiers("modifier", "modifiers")){
                     Float value = Float.valueOf(modifier.get("value").toString());

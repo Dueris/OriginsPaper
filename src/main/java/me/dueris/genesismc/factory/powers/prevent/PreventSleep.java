@@ -42,7 +42,7 @@ public class PreventSleep extends CraftPower implements Listener {
             for(OriginContainer origin : OriginPlayer.getOrigin(e.getPlayer()).values()){
                 ConditionExecutor conditionExecutor = new ConditionExecutor();
                 if(conditionExecutor.check("block_condition", "block_conditions", e.getPlayer(), origin, "origins:prevent_sleep", null, e.getPlayer())){
-                    if(origin.getPowerFileFromType("origins:prevent_sleep").get("set_spawn_point", "false").toString() == "true"){
+                    if(origin.getPowerFileFromType("origins:prevent_sleep").get("set_spawn_point", "false") == "true"){
                         e.getPlayer().setBedSpawnLocation(e.getClickedBlock().getLocation());
                     }
                     if(origin.getPowerFileFromType("origins:prevent_sleep").get("message", "origins.cant_sleep") != null){

@@ -32,7 +32,7 @@ public class ModifyExperienceGainPower extends CraftPower implements Listener {
 
     @EventHandler
     public void run(PlayerExpChangeEvent e){
-        Player p = (Player) e.getPlayer();
+        Player p = e.getPlayer();
         if(modify_xp_gain.contains(p)){
             for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
                 ValueModifyingSuperClass valueModifyingSuperClass = new ValueModifyingSuperClass();

@@ -80,7 +80,7 @@ public class Climbing extends CraftPower {
                                     public void run() {
                                         getActiveClimbingMap().remove(p);
                                     }
-                                }.runTaskLater(GenesisMC.getPlugin(), 1l);
+                                }.runTaskLater(GenesisMC.getPlugin(), 1L);
                             } else {
                                 if (block.getType() != AIR && p.isSneaking() && !p.isInRain()) {
                                     p.addPotionEffect(new PotionEffect(PotionEffectType.LEVITATION, 6, 2, false, false, false));
@@ -90,7 +90,7 @@ public class Climbing extends CraftPower {
                                         public void run() {
                                             getActiveClimbingMap().remove(p);
                                         }
-                                    }.runTaskLater(GenesisMC.getPlugin(), 1l);
+                                    }.runTaskLater(GenesisMC.getPlugin(), 1L);
                                 }
                             }
                         }else{

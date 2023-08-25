@@ -75,8 +75,8 @@ public class ModifyFoodPower extends CraftPower implements Listener {
             String operation = modifier.get("operation").toString();
             BinaryOperator<Float> mathOperator = getOperationMappingsFloat().get(operation);
 
-            double foodModifier = (double) (mathOperator != null ? mathOperator.apply(Float.valueOf(player.getFoodLevel()), value) : player.getFoodLevel());
-            double saturationModifier = (double) (mathOperator != null ? mathOperator.apply(player.getSaturation(), value) : player.getSaturation());
+            double foodModifier = mathOperator != null ? mathOperator.apply(Float.valueOf(player.getFoodLevel()), value) : player.getFoodLevel();
+            double saturationModifier = mathOperator != null ? mathOperator.apply(player.getSaturation(), value) : player.getSaturation();
 
             return new AbstractMap.SimpleEntry<>(foodModifier, saturationModifier);
         }

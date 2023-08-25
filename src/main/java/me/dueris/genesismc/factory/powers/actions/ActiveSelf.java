@@ -32,7 +32,7 @@ public class ActiveSelf extends CraftPower implements Listener {
                     if (isKeyBeingPressed(e.getPlayer(), origin.getPowerFileFromType(getPowerFile()).getKey().get("key").toString(), true)) {
                         ActionTypes.EntityActionType(e.getPlayer(), origin.getPowerFileFromType(getPowerFile()).getEntityAction());
                         if(origin.getPowerFileFromType(getPowerFile()).get("cooldown", "1") != null){
-                            CooldownStuff.addCooldown(e.getPlayer(), origin.getPowerFileFromType(getPowerFile()).getTag(),Integer.parseInt(origin.getPowerFileFromType(getPowerFile()).get("cooldown", "1").toString()), e.getKey());
+                            CooldownStuff.addCooldown(e.getPlayer(), origin.getPowerFileFromType(getPowerFile()).getTag(),Integer.parseInt(origin.getPowerFileFromType(getPowerFile()).get("cooldown", "1")), e.getKey());
                         }
                     }
                 }else{

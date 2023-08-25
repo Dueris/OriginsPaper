@@ -232,7 +232,7 @@ public class ActionTypes {
                                             key = "key.attack";
                                         }
                                     }
-                                CooldownStuff.addCooldown(player, powerContainer.getTag().toString(), Integer.parseInt(powerContainer.get("cooldown").toString()), key);
+                                CooldownStuff.addCooldown(player, powerContainer.getTag(), Integer.parseInt(powerContainer.get("cooldown")), key);
                                 }
                             }
                         }

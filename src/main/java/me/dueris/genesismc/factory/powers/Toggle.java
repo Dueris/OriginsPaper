@@ -115,7 +115,7 @@ public class Toggle extends CraftPower implements Listener {
                             public void run() {
                                 in_continuous.remove(p);
                             }
-                        }.runTaskLater(GenesisMC.getPlugin(),1l);
+                        }.runTaskLater(GenesisMC.getPlugin(), 1L);
                         this.cancel();
                     } else {
                         if (isKeyBeingPressed(p, origin.getPowerFileFromType(getPowerFile()).getKey().get("key").toString(), true)) {

@@ -48,8 +48,8 @@ public class StackingStatusEffect extends CraftPower {
     }
 
     private void applyStackingEffect(Player player, int stacks, OriginContainer origin) {
-        int minStacks = Integer.parseInt(origin.getPowerFileFromType(getPowerFile()).get("min_stacks").toString());
-        int maxStacks = Integer.parseInt(origin.getPowerFileFromType(getPowerFile()).get("max_stacks").toString());
+        int minStacks = Integer.parseInt(origin.getPowerFileFromType(getPowerFile()).get("min_stacks"));
+        int maxStacks = Integer.parseInt(origin.getPowerFileFromType(getPowerFile()).get("max_stacks"));
         int durationPerStack = 100;
 
         int clampedStacks = Math.max(minStacks, Math.min(stacks, maxStacks));

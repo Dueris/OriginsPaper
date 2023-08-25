@@ -45,7 +45,7 @@ public class ModifyCraftingPower extends CraftPower implements Listener {
                     ConditionExecutor conditionExecutor = new ConditionExecutor();
                     if (conditionExecutor.check("condition", "condition", p, origin, "origins:modify_crafting", null, p)) {
                         if (conditionExecutor.check("item_condition", "item_condition", p, origin, "origins:modify_crafting", null, p)) {
-                                if (e.getInventory().getResult().getType() == Material.valueOf(origin.getPowerFileFromType("origins:modify_crafting").get("recipe", null).toString().split(":")[1].toUpperCase())) {
+                                if (e.getInventory().getResult().getType() == Material.valueOf(origin.getPowerFileFromType("origins:modify_crafting").get("recipe", null).split(":")[1].toUpperCase())) {
                                     e.getInventory().setResult(new ItemStack(Material.valueOf(origin.getPowerFileFromType("origins:modify_crafting").getJsonHashMap("result").get("item").toString().toUpperCase().split(":")[1])));
                                     if(!getPowerArray().contains(p)) return;
                     setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);

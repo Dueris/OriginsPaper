@@ -32,8 +32,7 @@ public class ModifyDamageTakenPower extends CraftPower implements Listener {
 
     @EventHandler
     public void damageEVENT(EntityDamageByEntityEvent e){
-        if(e.getEntity() instanceof Player){
-            Player p = (Player) e.getEntity();
+        if(e.getEntity() instanceof Player p){
             if(modify_damage_taken.contains(p)){
                 for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
                     ValueModifyingSuperClass valueModifyingSuperClass = new ValueModifyingSuperClass();

@@ -37,7 +37,7 @@ public class TargetActionOnHit extends CraftPower implements Listener {
                 setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                 ActionTypes.EntityActionType(actor, origin.getPowerFileFromType(getPowerFile()).getEntityAction());
                 if(origin.getPowerFileFromType(getPowerFile()).get("cooldown", "1") != null){
-                    CooldownStuff.addCooldown((Player) target, origin.getPowerFileFromType(getPowerFile()).getTag(),Integer.parseInt(origin.getPowerFileFromType(getPowerFile()).get("cooldown", "1").toString()), "key.attack");
+                    CooldownStuff.addCooldown((Player) target, origin.getPowerFileFromType(getPowerFile()).getTag(),Integer.parseInt(origin.getPowerFileFromType(getPowerFile()).get("cooldown", "1")), "key.attack");
                 }
             }else{
                 if(!getPowerArray().contains(target)) return;

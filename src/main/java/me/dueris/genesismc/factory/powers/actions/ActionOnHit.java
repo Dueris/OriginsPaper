@@ -39,7 +39,7 @@ public class ActionOnHit extends CraftPower {
                             if(!getPowerArray().contains(p)) return;
                             setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                         }
-                    }.runTaskLater(GenesisMC.getPlugin(), 2l);
+                    }.runTaskLater(GenesisMC.getPlugin(), 2L);
                 }
             }
         }
