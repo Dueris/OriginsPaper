@@ -2,9 +2,7 @@ package me.dueris.genesismc.factory;
 
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.factory.powers.OriginsMod.effects.ApplyEffect;
-import me.dueris.genesismc.factory.powers.OriginsMod.effects.NightVision;
-import me.dueris.genesismc.factory.powers.OriginsMod.player.attributes.AttributeHandler;
+import me.dueris.genesismc.factory.powers.player.attributes.AttributeHandler;
 import me.dueris.genesismc.files.GenesisDataFiles;
 import org.bukkit.Bukkit;
 

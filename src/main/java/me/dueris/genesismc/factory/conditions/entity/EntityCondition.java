@@ -1,8 +1,7 @@
 package me.dueris.genesismc.factory.conditions.entity;
 
-import me.dueris.genesismc.factory.powers.OriginsMod.player.Climbing;
-import me.dueris.genesismc.factory.powers.OriginsMod.player.RestrictArmor;
-import me.dueris.genesismc.utils.OriginContainer;
+import me.dueris.genesismc.factory.powers.player.Climbing;
+import me.dueris.genesismc.factory.powers.player.RestrictArmor;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Biome;

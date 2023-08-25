@@ -23,15 +23,13 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
-import org.json.simple.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import static me.dueris.genesismc.factory.CraftApoli.fileToFileContainer;
-import static me.dueris.genesismc.factory.powers.OriginsMod.prevent.PreventSuperClass.*;
-import static me.dueris.genesismc.factory.powers.OriginsMod.value_modifying.ValueModifyingSuperClass.*;
+import static me.dueris.genesismc.factory.powers.prevent.PreventSuperClass.*;
+import static me.dueris.genesismc.factory.powers.value_modifying.ValueModifyingSuperClass.*;
 import static org.bukkit.Bukkit.getServer;
 
 public class OriginPlayer {

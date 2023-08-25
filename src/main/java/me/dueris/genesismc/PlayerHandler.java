@@ -2,7 +2,7 @@ package me.dueris.genesismc;
 
 import me.dueris.genesismc.entity.OriginPlayer;
 import me.dueris.genesismc.factory.CraftApoli;
-import me.dueris.genesismc.factory.powers.OriginsMod.player.attributes.AttributeHandler;
+import me.dueris.genesismc.factory.powers.player.attributes.AttributeHandler;
 import me.dueris.genesismc.utils.translation.LangConfig;
 import me.dueris.genesismc.utils.LayerContainer;
 import me.dueris.genesismc.utils.OriginContainer;
