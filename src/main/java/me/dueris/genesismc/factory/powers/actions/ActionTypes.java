@@ -14,6 +14,7 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.NotNull;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -137,9 +138,20 @@ public class ActionTypes {
         String type = entityAction.get("type").toString();
 
         if (type.equals("origins:add_velocity")) {
+            float y = 0.0f;
+            boolean set = false;
+
+            if (entityAction.containsKey("y")) y = Float.parseFloat(entityAction.get("y").toString());
+
             if (entity instanceof Player player) {
-                OriginPlayer.launchElytra(player, Float.parseFloat(entityAction.get("y").toString()));
+                Location location = player.getEyeLocation();
+                @NotNull Vector direction = location.getDirection().normalize();
+                Vector velocity = direction.multiply(y + 1.5);
+                player.setVelocity(velocity);
             }
+        }
+        if (type.equals("origins:execute_command")){
+            Bukkit.dispatchCommand(entity, power.get("command").toString());
         }
         if (type.equals("origins:add_xp")) {
             int points = 0;
