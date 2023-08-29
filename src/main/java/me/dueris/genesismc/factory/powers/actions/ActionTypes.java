@@ -303,6 +303,7 @@ public class ActionTypes {
 
 
     public static void BlockActionType(Location location, JSONObject power) {
+        if(power == null) return;
         JSONObject entityAction = (JSONObject) power.get("action");
         if (entityAction == null) {
             entityAction = (JSONObject) power.get("block_action");
