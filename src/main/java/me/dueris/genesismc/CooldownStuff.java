@@ -90,6 +90,10 @@ public class CooldownStuff {
             @Override
             public void run() {
                 ticksElapsed++;
+                if(cooldownTicks <= 0){
+                    resetCooldown(player, cooldownKeybindType);
+                    this.cancel();
+                }
                 double progress = 1.0 - (ticksElapsed * decreasePerTick);
                 bar.setProgress(progress);
 
