@@ -14,6 +14,7 @@ import org.json.simple.JSONObject;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 
 import static me.dueris.genesismc.factory.powers.CraftPower.findCraftPowerClasses;
 import static me.dueris.genesismc.factory.powers.Power.powers_active;
@@ -38,9 +39,16 @@ public class ConditionExecutor {
         } else {
             boolean subConditionResult = false;
             if (dmgevent != null) {
-                subConditionResult = DamageCondition.check(subCondition, p, dmgevent, powerFile).equals("true");
+                var check = DamageCondition.check(subCondition, p, dmgevent, powerFile);
+                if (check.isPresent()) {
+                    subConditionResult = (boolean) check.get();
+                }
+
             } else if (entity != null) {
-                subConditionResult = EntityCondition.check(subCondition, p, entity, powerFile).equals("true");
+                var check = EntityCondition.check(subCondition, p, entity, powerFile);
+                if (check.isPresent()) {
+                    subConditionResult = (boolean) check.get();
+                }
             }
             return (boolean) subCondition.getOrDefault("inverted", false) != subConditionResult;
         }
@@ -69,9 +77,8 @@ public class ConditionExecutor {
         for (HashMap<String, Object> condition : origin.getPowerFileFromType(powerfile).getConditionFromString(singular, plural)) {
             if (condition.get("type").equals("origins:and")) {
                 JSONArray conditionsArray = (JSONArray) condition.get("conditions");
-                boolean allConditionsTrue = checkConditions(conditionsArray, p, entity, dmgevent, powerfile);
 
-                return allConditionsTrue;
+                return checkConditions(conditionsArray, p, entity, dmgevent, powerfile);
             } else if (condition.get("type").equals("origins:or")) {
                 JSONArray conditionsArray = (JSONArray) condition.get("conditions");
                 boolean anyConditionTrue = false;
@@ -110,7 +117,7 @@ public class ConditionExecutor {
             } else if (condition.get("type").equals("origins:origin")) {
                 if (OriginPlayer.hasOrigin(p, condition.get("origin").toString())) return true;
             } else if (condition.get("type").equals("origins:power_type")) {
-                List<Class<? extends CraftPower>> craftPowerClasses = null;
+                List<Class<? extends CraftPower>> craftPowerClasses;
                 try {
                     craftPowerClasses = findCraftPowerClasses();
                 } catch (IOException e) {
@@ -124,9 +131,7 @@ public class ConditionExecutor {
                         } else {
                             return false;
                         }
-                    } catch (InstantiationException e) {
-                        throw new RuntimeException(e);
-                    } catch (IllegalAccessException e) {
+                    } catch (InstantiationException | IllegalAccessException e) {
                         throw new RuntimeException(e);
                     }
                 }
@@ -135,17 +140,19 @@ public class ConditionExecutor {
                     return true;
                 }
                 if (dmgevent != null) {
-                    if (DamageCondition.check(condition, p, dmgevent, powerfile) == "true") {
+                    Optional<Boolean> check = DamageCondition.check(condition, p, dmgevent, powerfile);
+                    if (check.isPresent() && check.get()) {
                         return true;
                     }
                 }
                 if (entity != null) {
-                    if (EntityCondition.check(condition, p, entity, powerfile) == "true") {
+                    Optional<Boolean> check = EntityCondition.check(condition, p, entity, powerfile);
+                    if (check.isPresent() && check.get()) {
                         return true;
                     }
                 }
             }
-            return DamageCondition.check(condition, p, dmgevent, powerfile) == "null" && EntityCondition.check(condition, p, entity, powerfile) == "null";
+            return DamageCondition.check(condition, p, dmgevent, powerfile).isEmpty() && EntityCondition.check(condition, p, entity, powerfile).isEmpty();
         }
         return true;
     }

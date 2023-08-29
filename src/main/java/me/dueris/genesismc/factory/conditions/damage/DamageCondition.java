@@ -11,659 +11,556 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 
 import java.util.HashMap;
+import java.util.Optional;
 
 import static org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 
 public class DamageCondition extends Condition {
 
-    public static String check(HashMap<String, Object> condition, Player p, EntityDamageEvent e, String powerFile) {
-        if (condition.get("type") == null) return "null";
+    public static Optional<Boolean> check(HashMap<String, Object> condition, Player p, EntityDamageEvent entityDamageEvent, String powerFile) {
+        if (condition.get("type") == null) return Optional.empty();
 
-        String type = condition.get("type").toString();
+        String type = condition.get("type").toString().toLowerCase();
 
-        if (type.equalsIgnoreCase("origins:amount")) {
-            String comparison = condition.get("comparison").toString();
-            Long compare_to = (Long) condition.get("compare_to");
+        switch (type) {
+            case "origins:amount" -> {
+                String comparison = condition.get("comparison").toString();
+                Long compare_to = (Long) condition.get("compare_to");
 
-            if (RestrictArmor.compareValues(e.getDamage(), comparison, compare_to)) {
-                return "true";
-
+                if (RestrictArmor.compareValues(entityDamageEvent.getDamage(), comparison, compare_to)) {
+                    return Optional.of(true);
+                }
             }
-
-        }
-
-        if (type.equalsIgnoreCase("origins:attacker")) {
-            if (e instanceof EntityDamageByEntityEvent event) {
-                EntityCondition.check(condition, p, event.getDamager(), powerFile);
+            case "origins:attacker" -> {
+                if (entityDamageEvent instanceof EntityDamageByEntityEvent event) {
+                    return EntityCondition.check(condition, p, event.getDamager(), powerFile);
+                }
             }
-        }
-
-        if (type.equalsIgnoreCase("origins:bypasses_armor")) {
-            if (e.getCause().equals(DamageCause.CUSTOM)) {
-                return "true";
-
-            }
-            if (e.getCause().equals(DamageCause.FIRE)) {
-                return "true";
-
-            }
-            if (e.getCause().equals(DamageCause.CRAMMING)) {
-                return "true";
-
-            }
-            if (e.getCause().equals(DamageCause.KILL)) {
-                return "true";
-
-            }
-            if (e.getCause().equals(DamageCause.MAGIC)) {
-                return "true";
-
-            }
-            if (e.getCause().equals(DamageCause.POISON)) {
-                return "true";
-
-            }
-            if (e.getCause().equals(DamageCause.VOID)) {
-                return "true";
-
-            }
-        }
-
-        if (type.equalsIgnoreCase("origins:explosive")) {
-            if (e.getCause().equals(DamageCause.BLOCK_EXPLOSION) || e.getCause().equals(DamageCause.ENTITY_EXPLOSION)) {
-                return "true";
-
-            }
-        }
-
-        if (type.equalsIgnoreCase("origins:fire")) {
-            if (e.getCause().equals(DamageCause.FIRE)) {
-                return "true";
-
-            }
-        }
-
-        if (type.equalsIgnoreCase("origins:from_falling")) {
-            if (e.getCause().equals(DamageCause.FALL)) {
-                p.sendMessage("231");
-                return "true";
-
-            }
-        }
-
-        if (type.equalsIgnoreCase("origins:in_tag")) {
-            String tag = condition.get("tag").toString();
-            //need to parse tag folder
-        }
-
-        if (type.equalsIgnoreCase("origins:name")) {
-            String name = condition.get("name").toString();
-
-            if (name.equalsIgnoreCase("anvil")) {
-                if (e.getCause().equals(DamageCause.FALLING_BLOCK)) {
-                    FallingBlock fallingBlock = getFallingBlockDamager(e);
-                    if (fallingBlock != null) {
-                        if (fallingBlock.getMaterial().toString().contains("ANVIL")) {
-                            return "true";
-                        }
+            case "origins:bypasses_armor" -> {
+                switch (entityDamageEvent.getCause()) {
+                    case CUSTOM, FIRE, CRAMMING, KILL, MAGIC, POISON, VOID -> {
+                        return Optional.of(true);
                     }
                 }
             }
-            if (name.equalsIgnoreCase("anvil.player")) {
-                if (e.getCause().equals(DamageCause.FALLING_BLOCK)) {
-                    FallingBlock fallingBlock = getFallingBlockDamager(e);
-                    if (fallingBlock != null) {
-                        if (fallingBlock.getMaterial().toString().contains("ANVIL")) {
-                            if (e instanceof EntityDamageByEntityEvent ev) {
-                                if (ev.getDamager() instanceof Entity) {
-                                    return "true";
+            case "origins:explosive" -> {
+                if (entityDamageEvent.getCause().equals(DamageCause.BLOCK_EXPLOSION) || entityDamageEvent.getCause().equals(DamageCause.ENTITY_EXPLOSION)) {
+                    return Optional.of(true);
+                }
+            }
+            case "origins:fire" -> {
+                if (entityDamageEvent.getCause().equals(DamageCause.FIRE)) {
+                    return Optional.of(true);
+                }
+            }
+            case "origins:from_falling" -> {
+                if (entityDamageEvent.getCause().equals(DamageCause.FALL)) {
+                    return Optional.of(true);
+                }
+            }
+            case "origins:in_tag" -> {
+                String tag = condition.get("tag").toString();
+                //TODO: need to parse tag folder
+            }
+            case "origins:name" -> {
+                String name = condition.get("name").toString().toLowerCase();
+
+                switch (name) {
+                    case "anvil" -> {
+                        if (entityDamageEvent.getCause().equals(DamageCause.FALLING_BLOCK)) {
+                            FallingBlock fallingBlock = getFallingBlockDamager(entityDamageEvent);
+                            if (fallingBlock != null) {
+                                if (fallingBlock.getBlockData().getMaterial().equals(Material.ANVIL)
+                                        || fallingBlock.getBlockData().getMaterial().equals(Material.CHIPPED_ANVIL)
+                                        || fallingBlock.getBlockData().getMaterial().equals(Material.DAMAGED_ANVIL)) {
+                                    return Optional.of(true);
+                                }
+                            }
+                        }
+                    }
+                    case "anvil.player" -> {
+                        if (entityDamageEvent.getCause().equals(DamageCause.FALLING_BLOCK)) {
+                            FallingBlock fallingBlock = getFallingBlockDamager(entityDamageEvent);
+                            if (fallingBlock != null) {
+                                if (fallingBlock.getBlockData().getMaterial().equals(Material.ANVIL)
+                                        || fallingBlock.getBlockData().getMaterial().equals(Material.CHIPPED_ANVIL)
+                                        || fallingBlock.getBlockData().getMaterial().equals(Material.DAMAGED_ANVIL)) {
+                                    if (entityDamageEvent instanceof EntityDamageByEntityEvent ev) {
+                                        return Optional.of(true);
+                                    }
+                                    return Optional.of(entityDamageEvent.getEntity().getLastDamageCause() instanceof EntityDamageByEntityEvent event
+                                            && event.getDamager() instanceof Player);
+                                }
+                            }
+                        }
+                    }
+                    case "arrow" -> {
+                        if (entityDamageEvent.getEntity() instanceof Player && entityDamageEvent.getCause() == DamageCause.PROJECTILE) {
+                            EntityDamageByEntityEvent ev = (EntityDamageByEntityEvent) entityDamageEvent;
+                            if (ev.getDamager() instanceof Projectile projectile) {
+                                if (projectile.getShooter() instanceof Player || projectile.getShooter() instanceof Mob) {
+                                    return Optional.of(true);
+
+                                }
+                            }
+                        }
+                    }
+                    case "arrow.item" -> {
+                        if (entityDamageEvent.getEntity() instanceof Player && entityDamageEvent.getCause() == DamageCause.PROJECTILE) {
+                            EntityDamageByEntityEvent ev = (EntityDamageByEntityEvent) entityDamageEvent;
+                            if (ev.getDamager() instanceof Projectile projectile) {
+                                if (projectile.getShooter() instanceof Player || projectile.getShooter() instanceof Mob) {
+                                    if (!((LivingEntity) projectile.getShooter()).getActiveItem().getType().equals(Material.BOW)) {
+                                        return Optional.of(true);
+
+                                    }
+                                    if (!((LivingEntity) projectile.getShooter()).getActiveItem().getType().equals(Material.CROSSBOW)) {
+                                        return Optional.of(true);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    case "bedrespawnpoint" -> {
+                        if (entityDamageEvent.getCause().equals(DamageCause.BLOCK_EXPLOSION)) {
+                            if (isBedExplosionRestrictedDimension(p)) {
+                                return Optional.of(true);
+                            }
+                        }
+                    }
+                    case "cactus" -> {
+                        if (entityDamageEvent instanceof EntityDamageByBlockEvent eb) {
+                            if (eb.getDamager()!= null & eb.getDamager().getType().equals(Material.CACTUS)) {
+                                return Optional.of(true);
+                            }
+                        }
+                    }
+                    case "cactus.player" -> {
+                        if (entityDamageEvent instanceof EntityDamageByBlockEvent eb) {
+                            if (eb.getDamager() != null && eb.getDamager().getType().equals(Material.CACTUS)) {
+                                if (entityDamageEvent.getEntity().getLastDamageCause() instanceof EntityDamageByEntityEvent damageByEntityEvent
+                                        && damageByEntityEvent.getDamager() instanceof Player) {
+                                    return Optional.of(true);
+                                }
+                            }
+                        }
+                    }
+                    case "cramming" -> {
+                        if (entityDamageEvent.getCause().equals(DamageCause.CRAMMING)) {
+                            return Optional.of(true);
+                        }
+                    }
+                    case "cramming.player" -> {
+                        if (entityDamageEvent.getCause().equals(DamageCause.CRAMMING)) {
+                            if (entityDamageEvent.getEntity().getLastDamageCause() instanceof EntityDamageByEntityEvent damageByEntityEvent
+                                    && damageByEntityEvent.getDamager() instanceof Player) {
+                                return Optional.of(true);
+                            }
+                        }
+                    }
+                    case "dragonbreath" -> {
+                        if (entityDamageEvent.getCause().equals(DamageCause.DRAGON_BREATH)) {
+                            return Optional.of(true);
+                        }
+                    }
+                    case "dragonbreath.player" -> {
+                        if (entityDamageEvent.getCause().equals(DamageCause.DRAGON_BREATH)) {
+                            if (entityDamageEvent.getEntity().getLastDamageCause() instanceof EntityDamageByEntityEvent damageByEntityEvent
+                                    && damageByEntityEvent.getDamager() instanceof Player) {
+                                return Optional.of(true);
+                            }
+                        }
+                    }
+                    case "drown" -> {
+                        if (entityDamageEvent.getCause().equals(DamageCause.DROWNING)) {
+                            return Optional.of(true);
+                        }
+                    }
+                    case "drown.player" -> {
+                        if (entityDamageEvent.getCause().equals(DamageCause.DROWNING)) {
+                            if (entityDamageEvent.getEntity().getLastDamageCause() instanceof EntityDamageByEntityEvent damageByEntityEvent
+                                    && damageByEntityEvent.getDamager() instanceof Player) {
+                                return Optional.of(true);
+                            }
+                        }
+                    }
+                    case "dryout" -> {
+                        if (entityDamageEvent.getCause().equals(DamageCause.DRYOUT)) {
+                            return Optional.of(true);
+                        }
+                    }
+                    case "dryout.player" -> {
+                        if (entityDamageEvent.getCause().equals(DamageCause.DRYOUT)) {
+                            if (entityDamageEvent.getEntity().getLastDamageCause() instanceof EntityDamageByEntityEvent damageByEntityEvent
+                                    && damageByEntityEvent.getDamager() instanceof Player) {
+                                return Optional.of(true);
+                            }
+                        }
+                    }
+                    case "explosion" -> {
+                        if (entityDamageEvent.getCause().equals(DamageCause.ENTITY_EXPLOSION) || entityDamageEvent.getCause().equals(DamageCause.BLOCK_EXPLOSION)) {
+                            return Optional.of(true);
+                        }
+                    }
+                    case "explosion.player" -> {
+                        if (entityDamageEvent.getCause().equals(DamageCause.ENTITY_EXPLOSION) || entityDamageEvent.getCause().equals(DamageCause.BLOCK_EXPLOSION)) {
+                            if (entityDamageEvent.getEntity().getLastDamageCause() instanceof EntityDamageByEntityEvent damageByEntityEvent
+                                    && damageByEntityEvent.getDamager() instanceof Player) {
+                                return Optional.of(true);
+                            }
+                        }
+                    }
+                    case "fall" -> {
+                        if (entityDamageEvent.getCause().equals(DamageCause.FALL)) {
+                            return Optional.of(true);
+                        }
+                    }
+                    case "fall.player" -> {
+                        if (entityDamageEvent.getCause().equals(DamageCause.FALL)) {
+                            if (entityDamageEvent.getEntity().getLastDamageCause() instanceof EntityDamageByEntityEvent damageByEntityEvent
+                                    && damageByEntityEvent.getDamager() instanceof Player) {
+                                return Optional.of(true);
+                            }
+                        }
+                    }
+                    case "fallingblock" -> {
+                        if (entityDamageEvent.getCause().equals(DamageCause.FALLING_BLOCK)) {
+                            return Optional.of(true);
+                        }
+                    }
+                    case "fallingblock.player" -> {
+                        if (entityDamageEvent.getCause().equals(DamageCause.FALLING_BLOCK)) {
+                            if (entityDamageEvent.getEntity().getLastDamageCause() instanceof EntityDamageByEntityEvent damageByEntityEvent
+                                    && damageByEntityEvent.getDamager() instanceof Player) {
+                                return Optional.of(true);
+                            }
+                        }
+                    }
+                    case "fallingstalactite" -> {
+                        if (entityDamageEvent instanceof EntityDamageByBlockEvent eb) {
+                            if (eb.getDamager().getType().equals(Material.POINTED_DRIPSTONE)) {
+                                return Optional.of(true);
+                            }
+                        }
+                    }
+                    case "fallingstalactite.player" -> {
+                        if (entityDamageEvent instanceof EntityDamageByBlockEvent eb) {
+                            if (eb.getDamager()!= null && eb.getDamager().getType().equals(Material.POINTED_DRIPSTONE)) {
+                                if (entityDamageEvent.getEntity().getLastDamageCause() instanceof EntityDamageByEntityEvent damageByEntityEvent
+                                        && damageByEntityEvent.getDamager() instanceof Player) {
+                                    return Optional.of(true);
+                                }
+                            }
+                        }
+                    }
+                    case "fireball" -> {
+                        if (entityDamageEvent instanceof EntityDamageByEntityEvent ev) {
+                            if (ev.getDamager() instanceof Fireball) {
+                                return Optional.of(true);
+                            }
+                        }
+                    }
+                    case "fireball.player" -> {
+                        if (entityDamageEvent instanceof EntityDamageByEntityEvent ev) {
+                            if (ev.getDamager() instanceof Fireball) {
+                                if (entityDamageEvent.getEntity().getLastDamageCause() instanceof EntityDamageByEntityEvent damageByEntityEvent
+                                        && damageByEntityEvent.getDamager() instanceof Player) {
+                                    return Optional.of(true);
+                                }
+                            }
+                        }
+                    }
+                    case "fireworks" -> {
+                        if (entityDamageEvent instanceof EntityDamageByEntityEvent ev) {
+                            if (ev.getDamager() instanceof Firework) {
+                                return Optional.of(true);
+                            }
+                        }
+                    }
+                    case "flyintowall" -> {
+                        if (entityDamageEvent.getCause().equals(DamageCause.FLY_INTO_WALL)) {
+                            return Optional.of(true);
+                        }
+                    }
+                    case "flyintowall.player" -> {
+                        if (entityDamageEvent.getCause().equals(DamageCause.FLY_INTO_WALL)) {
+                            if (entityDamageEvent.getEntity().getLastDamageCause() instanceof EntityDamageByEntityEvent damageByEntityEvent
+                                    && damageByEntityEvent.getDamager() instanceof Player) {
+                                return Optional.of(true);
+                            }
+                        }
+                    }
+                    case "freeze" -> {
+                        if (entityDamageEvent.getCause().equals(DamageCause.FREEZE)) {
+                            return Optional.of(true);
+                        }
+                    }
+                    case "freeze.player" -> {
+                        if (entityDamageEvent.getCause().equals(DamageCause.FREEZE)) {
+                            if (entityDamageEvent.getEntity().getLastDamageCause() instanceof EntityDamageByEntityEvent damageByEntityEvent
+                                    && damageByEntityEvent.getDamager() instanceof Player) {
+                                return Optional.of(true);
+                            }
+                        }
+                    }
+                    case "generic" -> {
+                        if (entityDamageEvent.getCause().equals(DamageCause.CUSTOM)) {
+                            return Optional.of(true);
+                        }
+                    }
+                    case "generic.player" -> {
+                        if (entityDamageEvent.getCause().equals(DamageCause.CUSTOM)) {
+                            if (entityDamageEvent.getEntity().getLastDamageCause() instanceof EntityDamageByEntityEvent damageByEntityEvent
+                                    && damageByEntityEvent.getDamager() instanceof Player) {
+                                return Optional.of(true);
+                            }
+                        }
+                    }
+                    case "hotfloor" -> {
+                        if (entityDamageEvent.getCause().equals(DamageCause.HOT_FLOOR)) {
+                            return Optional.of(true);
+                        }
+                    }
+                    case "hotfloor.player" -> {
+                        if (entityDamageEvent.getCause().equals(DamageCause.FIRE)) {
+                            if (p.getLocation().getBlock().getRelative(BlockFace.DOWN).getType().equals(Material.MAGMA_BLOCK)) {
+                                if (entityDamageEvent.getEntity().getLastDamageCause() instanceof EntityDamageByEntityEvent damageByEntityEvent
+                                        && damageByEntityEvent.getDamager() instanceof Player) {
+                                    return Optional.of(true);
+                                }
+                            }
+                        }
+                    }
+                    case "indirectmagic", "magic" -> {
+                        if (entityDamageEvent.getCause().equals(DamageCause.MAGIC)) {
+                            return Optional.of(true);
+                        }
+                    }
+                    case "infire", "onfire" -> {
+                        if (entityDamageEvent.getCause().equals(DamageCause.FIRE) || entityDamageEvent.getCause().equals(DamageCause.FIRE_TICK)) {
+                            return Optional.of(true);
+                        }
+                    }
+                    case "inwall" -> {
+                        if (entityDamageEvent.getCause().equals(DamageCause.SUFFOCATION)) {
+                            return Optional.of(true);
+                        }
+                    }
+                    case "inwall.player" -> {
+                        if (entityDamageEvent.getCause().equals(DamageCause.SUFFOCATION)) {
+                            if (entityDamageEvent.getEntity().getLastDamageCause() instanceof EntityDamageByEntityEvent damageByEntityEvent
+                                    && damageByEntityEvent.getDamager() instanceof Player) {
+                                return Optional.of(true);
+                            }
+                        }
+                    }
+                    case "lava" -> {
+                        if (entityDamageEvent.getCause().equals(DamageCause.LAVA)) {
+                            return Optional.of(true);
+                        }
+                    }
+                    case "lava.player" -> {
+                        if (entityDamageEvent.getCause().equals(DamageCause.LAVA)) {
+                            if (entityDamageEvent.getEntity().getLastDamageCause() instanceof EntityDamageByEntityEvent damageByEntityEvent
+                                    && damageByEntityEvent.getDamager() instanceof Player) {
+                                return Optional.of(true);
+                            }
+                        }
+                    }
+                    case "lightningbolt" -> {
+                        if (entityDamageEvent.getCause().equals(DamageCause.LIGHTNING)) {
+                            return Optional.of(true);
+                        }
+                    }
+                    case "lightningbolt.player" -> {
+                        if (entityDamageEvent.getCause().equals(DamageCause.LIGHTNING)) {
+                            if (entityDamageEvent.getEntity().getLastDamageCause() instanceof EntityDamageByEntityEvent damageByEntityEvent
+                                    && damageByEntityEvent.getDamager() instanceof Player) {
+                                return Optional.of(true);
+                            }
+                        }
+                    }
+                    case "magic.player" -> {
+                        if (entityDamageEvent.getCause().equals(DamageCause.MAGIC)) {
+                            if (entityDamageEvent.getEntity().getLastDamageCause() instanceof EntityDamageByEntityEvent damageByEntityEvent
+                                    && damageByEntityEvent.getDamager() instanceof Player) {
+                                return Optional.of(true);
+                            }
+                        }
+                    }
+                    case "mob" -> {
+                        if (entityDamageEvent.getCause().equals(DamageCause.ENTITY_ATTACK)) {
+                            return Optional.of(true);
+                        }
+                    }
+                    case "outofworld" -> {
+                        if (entityDamageEvent.getCause().equals(DamageCause.WORLD_BORDER)) {
+                            return Optional.of(true);
+                        }
+                    }
+                    case "outofworld.player" -> {
+                        if (entityDamageEvent.getCause().equals(DamageCause.WORLD_BORDER)) {
+                            if (entityDamageEvent.getEntity().getLastDamageCause() instanceof EntityDamageByEntityEvent damageByEntityEvent
+                                    && damageByEntityEvent.getDamager() instanceof Player) {
+                                return Optional.of(true);
+                            }
+                        }
+                    }
+                    case "player", "player.item" -> {
+                        if (entityDamageEvent instanceof EntityDamageByEntityEvent ev) {
+                            if (ev.getDamager() instanceof Player) {
+                                return Optional.of(true);
+                            }
+                        }
+                    }
+                    case "sonic_boom" -> {
+                        if (entityDamageEvent.getCause().equals(DamageCause.SONIC_BOOM)) {
+                            return Optional.of(true);
+                        }
+                    }
+                    case "sonic_boom.player" -> {
+                        if (entityDamageEvent.getCause().equals(DamageCause.SONIC_BOOM)) {
+                            if (entityDamageEvent instanceof EntityDamageByEntityEvent ev) {
+                                if (entityDamageEvent.getEntity().getLastDamageCause() instanceof EntityDamageByEntityEvent damageByEntityEvent
+                                        && damageByEntityEvent.getDamager() instanceof Player) {
+                                    return Optional.of(true);
+                                }
+                            }
+                        }
+                    }
+                    case "stalagmite" -> {
+                        if (entityDamageEvent instanceof EntityDamageByBlockEvent eb) {
+                            if (eb.getDamager()!= null && eb.getDamager().getType().equals(Material.POINTED_DRIPSTONE)) {
+                                if (entityDamageEvent.getEntity().getLocation().getBlock().getRelative(BlockFace.DOWN).getType().equals(Material.POINTED_DRIPSTONE)) {
+                                    return Optional.of(true);
+                                }
+                            }
+                        }
+                    }
+                    case "stalagmite.player" -> {
+                        if (entityDamageEvent instanceof EntityDamageByBlockEvent eb) {
+                            if (eb.getDamager()!= null && eb.getDamager().getType().equals(Material.POINTED_DRIPSTONE)) {
+                                if (entityDamageEvent.getEntity().getLocation().getBlock().getRelative(BlockFace.DOWN).getType().equals(Material.POINTED_DRIPSTONE)) {
+                                    if (entityDamageEvent.getEntity().getLastDamageCause() instanceof EntityDamageByEntityEvent damageByEntityEvent
+                                            && damageByEntityEvent.getDamager() instanceof Player) {
+                                        return Optional.of(true);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    case "starve" -> {
+                        if (entityDamageEvent.getCause().equals(DamageCause.STARVATION)) {
+                            return Optional.of(true);
+                        }
+                    }
+                    case "starve.player" -> {
+                        if (entityDamageEvent.getCause().equals(DamageCause.STARVATION)) {
+                            if (entityDamageEvent.getEntity().getLastDamageCause() instanceof EntityDamageByEntityEvent damageByEntityEvent
+                                    && damageByEntityEvent.getDamager() instanceof Player) {
+                                return Optional.of(true);
+                            }
+                        }
+                    }
+                    case "sting" -> {
+                        if (entityDamageEvent instanceof EntityDamageByEntityEvent ev) {
+                            if (ev.getDamager() instanceof Bee) {
+                                return Optional.of(true);
+                            }
+                        }
+                    }
+                    case "sting.player" -> {
+                        if (entityDamageEvent instanceof EntityDamageByEntityEvent ev) {
+                            if (ev.getDamager() instanceof Bee) {
+                                if (ev.getEntity().getLastDamageCause() instanceof EntityDamageByEntityEvent damageByEntityEvent
+                                        && damageByEntityEvent.getDamager() instanceof Player) {
+                                    return Optional.of(true);
+                                }
+                            }
+                        }
+                    }
+                    case "sweetberrybush" -> {
+                        if (entityDamageEvent instanceof EntityDamageByBlockEvent ev) {
+                            if (ev.getDamager() != null && ev.getDamager().getType().equals(Material.SWEET_BERRY_BUSH)) {
+                                return Optional.of(true);
+                            }
+                        }
+                    }
+                    case "sweetberrybush.player" -> {
+                        if (entityDamageEvent instanceof EntityDamageByBlockEvent ev) {
+                            if (ev.getDamager() != null && ev.getDamager().getType().equals(Material.SWEET_BERRY_BUSH)) {
+                                if (ev.getEntity().getLastDamageCause() instanceof EntityDamageByEntityEvent damageByEntityEvent
+                                    && damageByEntityEvent.getDamager() instanceof Player) {
+                                    return Optional.of(true);
+                                }
+                            }
+                        }
+                    }
+                    case "thorns" -> {
+                        if (entityDamageEvent.getCause().equals(DamageCause.THORNS)) {
+                            return Optional.of(true);
+                        }
+                    }
+                    case "thorns.player" -> {
+                        if (entityDamageEvent.getCause().equals(DamageCause.THORNS)) {
+                            if (entityDamageEvent.getEntity().getLastDamageCause() instanceof EntityDamageByEntityEvent damageByEntityEvent
+                                    && damageByEntityEvent.getDamager() instanceof Player) {
+                                return Optional.of(true);
+                            }
+                        }
+                    }
+                    case "trident" -> {
+                        if (entityDamageEvent.getCause().equals(DamageCause.PROJECTILE)) {
+                            if (entityDamageEvent instanceof EntityDamageByEntityEvent ev) {
+                                if (ev.getDamager() instanceof Trident) {
+                                    return Optional.of(true);
+                                }
+                            }
+                        }
+                    }
+                    case "wither" -> {
+                        if (entityDamageEvent.getCause().equals(DamageCause.WITHER)) {
+                            return Optional.of(true);
+                        }
+                    }
+                    case "wither.player" -> {
+                        if (entityDamageEvent.getCause().equals(DamageCause.WITHER)) {
+                            if (entityDamageEvent.getEntity().getLastDamageCause() instanceof EntityDamageByEntityEvent damageByEntityEvent
+                                    && damageByEntityEvent.getDamager() instanceof Player) {
+                                return Optional.of(true);
+                            }
+                        }
+                    }
+                    case "witherskull" -> {
+                        if (entityDamageEvent.getCause().equals(DamageCause.ENTITY_EXPLOSION)) {
+                            if (entityDamageEvent instanceof EntityDamageByEntityEvent ev) {
+                                if (ev.getDamager() instanceof WitherSkull) {
+                                    return Optional.of(true);
                                 }
                             }
                         }
                     }
                 }
             }
-            if (name.equalsIgnoreCase("arrow")) {
-                if (e.getEntity() instanceof Player player && e.getCause() == DamageCause.PROJECTILE) {
-                    EntityDamageByEntityEvent ev = (EntityDamageByEntityEvent) e;
-                    if (ev.getDamager() instanceof Projectile projectile) {
-                        if (projectile.getShooter() instanceof Player || projectile.getShooter() instanceof Mob) {
-                            return "true";
-
-                        }
-                    }
+            case "origins:out_of_world" -> {
+                if (entityDamageEvent.getCause().equals(DamageCause.VOID)) {
+                    return Optional.of(true);
                 }
             }
-            if (name.equalsIgnoreCase("arrow.item")) {
-                if (e.getEntity() instanceof Player player && e.getCause() == DamageCause.PROJECTILE) {
-                    EntityDamageByEntityEvent ev = (EntityDamageByEntityEvent) e;
-                    if (ev.getDamager() instanceof Projectile projectile) {
-                        if (projectile.getShooter() instanceof Player || projectile.getShooter() instanceof Mob) {
-                            if (!((LivingEntity) projectile.getShooter()).getActiveItem().getItemMeta().getDisplayName().equalsIgnoreCase("Bow")) {
-                                return "true";
-
-                            }
-                            if (!((LivingEntity) projectile.getShooter()).getActiveItem().getItemMeta().getDisplayName().equalsIgnoreCase("Crossbow")) {
-                                return "true";
-
-                            }
-                        }
-                    }
+            case "origins:projectile" -> {
+                if (entityDamageEvent.getCause().equals(DamageCause.PROJECTILE)) {
+                    return Optional.of(true);
                 }
             }
-            if (name.equalsIgnoreCase("bedRespawnPoint")) {
-                if (e.getCause().equals(DamageCause.BLOCK_EXPLOSION)) {
-                    if (isBedExplosionRestrictedDimension(p)) {
-                        return "true";
-
-                    }
-                }
-            }
-            if (name.equalsIgnoreCase("cactus")) {
-                if (e instanceof EntityDamageByBlockEvent eb) {
-                    if (eb.getDamager().getType().equals(Material.CACTUS)) {
-                        return "true";
-                    }
-                }
-            }
-            if (name.equalsIgnoreCase("cactus.player")) {
-                if (e instanceof EntityDamageByBlockEvent eb) {
-                    if (eb.getDamager().getType().equals(Material.CACTUS)) {
-                        if (e instanceof EntityDamageByEntityEvent ev) {
-                            if (ev.getDamager() instanceof Entity) {
-                                return "true";
-                            }
-                        }
-                    }
-                }
-            }
-            if (name.equalsIgnoreCase("cramming")) {
-                if (e.getCause().equals(DamageCause.CRAMMING)) {
-                    return "true";
-                }
-            }
-            if (name.equalsIgnoreCase("cramming.player")) {
-                if (e.getCause().equals(DamageCause.CRAMMING)) {
-                    if (e instanceof EntityDamageByEntityEvent ev) {
-                        if (ev.getDamager() instanceof Entity) {
-                            return "true";
-                        }
-                    }
-                }
-            }
-            if (name.equalsIgnoreCase("dragonBreath")) {
-                if (e.getCause().equals(DamageCause.DRAGON_BREATH)) {
-                    return "true";
-                }
-            }
-            if (name.equalsIgnoreCase("dragonBreath.player")) {
-                if (e.getCause().equals(DamageCause.DRAGON_BREATH)) {
-                    if (e instanceof EntityDamageByEntityEvent ev) {
-                        if (ev.getDamager() instanceof Entity) {
-                            return "true";
-                        }
-                    }
-                }
-            }
-            if (name.equalsIgnoreCase("drown")) {
-                if (e.getCause().equals(DamageCause.DROWNING)) {
-                    return "true";
-                }
-            }
-            if (name.equalsIgnoreCase("drown.player")) {
-                if (e.getCause().equals(DamageCause.DROWNING)) {
-                    if (e instanceof EntityDamageByEntityEvent ev) {
-                        if (ev.getDamager() instanceof Entity) {
-                            return "true";
-                        }
-                    }
-                }
-            }
-            if (name.equalsIgnoreCase("dryout")) {
-                if (e.getCause().equals(DamageCause.DRYOUT)) {
-                    return "true";
-                }
-            }
-            if (name.equalsIgnoreCase("dryout.player")) {
-                if (e.getCause().equals(DamageCause.DRYOUT)) {
-                    if (e instanceof EntityDamageByEntityEvent ev) {
-                        if (ev.getDamager() instanceof Entity) {
-                            return "true";
-                        }
-                    }
-                }
-            }
-            if (name.equalsIgnoreCase("explosion")) {
-                if (e.getCause().equals(DamageCause.ENTITY_EXPLOSION) || e.getCause().equals(DamageCause.BLOCK_EXPLOSION)) {
-                    return "true";
-                }
-            }
-            if (name.equalsIgnoreCase("explosion.player")) {
-                if (e.getCause().equals(DamageCause.ENTITY_EXPLOSION) || e.getCause().equals(DamageCause.BLOCK_EXPLOSION)) {
-                    if (e instanceof EntityDamageByEntityEvent ev) {
-                        if (ev.getDamager() instanceof Entity) {
-                            return "true";
-                        }
-                    }
-                }
-            }
-            if (name.equalsIgnoreCase("fall")) {
-                if (e.getCause().equals(DamageCause.FALL)) {
-                    return "true";
-                }
-            }
-            if (name.equalsIgnoreCase("fall.player")) {
-                if (e.getCause().equals(DamageCause.FALL)) {
-                    if (e instanceof EntityDamageByEntityEvent ev) {
-                        if (ev.getDamager() instanceof Entity) {
-                            return "true";
-                        }
-                    }
-                }
-            }
-            if (name.equalsIgnoreCase("fallingBlock")) {
-                if (e.getCause().equals(DamageCause.FALLING_BLOCK)) {
-                    return "true";
-                }
-            }
-            if (name.equalsIgnoreCase("fallingBlock.player")) {
-                if (e.getCause().equals(DamageCause.FALLING_BLOCK)) {
-                    if (e instanceof EntityDamageByEntityEvent ev) {
-                        if (ev.getDamager() instanceof Entity) {
-                            return "true";
-                        }
-                    }
-                }
-            }
-            if (name.equalsIgnoreCase("fallingStalactite")) {
-                if (e instanceof EntityDamageByBlockEvent eb) {
-                    if (eb.getDamager().getType().equals(Material.POINTED_DRIPSTONE)) {
-                        return "true";
-                    }
-                }
-            }
-            if (name.equalsIgnoreCase("fallingStalactite.player")) {
-                if (e instanceof EntityDamageByBlockEvent eb) {
-                    if (eb.getDamager().getType().equals(Material.POINTED_DRIPSTONE)) {
-                        if (e instanceof EntityDamageByEntityEvent ev) {
-                            if (ev.getDamager() instanceof Entity) {
-                                return "true";
-                            }
-                        }
-                    }
-                }
-            }
-            if (name.equalsIgnoreCase("fireball")) {
-                if (e instanceof EntityDamageByEntityEvent ev) {
-                    if (ev.getDamager() instanceof Fireball) {
-                        return "true";
-                    }
-                }
-            }
-            if (name.equalsIgnoreCase("fireball.player")) {
-                if (e instanceof EntityDamageByEntityEvent ev) {
-                    if (ev.getDamager() instanceof Fireball) {
-                        if (e instanceof EntityDamageByEntityEvent) {
-                            if (ev.getDamager() instanceof Entity) {
-                                return "true";
-                            }
-                        }
-                    }
-                }
-            }
-            if (name.contains("fireworks")) {
-                if (e instanceof EntityDamageByEntityEvent ev) {
-                    if (ev.getDamager() instanceof Firework) {
-                        return "true";
-                    }
-                }
-            }
-            if (name.equalsIgnoreCase("flyIntoWall")) {
-                if (e.getCause().equals(DamageCause.FLY_INTO_WALL)) {
-                    return "true";
-                }
-            }
-            if (name.equalsIgnoreCase("flyIntoWall.player")) {
-                if (e.getCause().equals(DamageCause.FLY_INTO_WALL)) {
-                    if (e instanceof EntityDamageByEntityEvent ev) {
-                        if (ev.getDamager() instanceof Entity) {
-                            return "true";
-                        }
-                    }
-                }
-            }
-            if (name.equalsIgnoreCase("freeze")) {
-                if (e.getCause().equals(DamageCause.FREEZE)) {
-                    return "true";
-                }
-            }
-            if (name.equalsIgnoreCase("freeze.player")) {
-                if (e.getCause().equals(DamageCause.FREEZE)) {
-                    if (e instanceof EntityDamageByEntityEvent ev) {
-                        if (ev.getDamager() instanceof Entity) {
-                            return "true";
-                        }
-                    }
-                }
-            }
-            if (name.equalsIgnoreCase("generic")) {
-                if (e.getCause().equals(DamageCause.CUSTOM)) {
-                    return "true";
-                }
-            }
-            if (name.equalsIgnoreCase("generic.player")) {
-                if (e.getCause().equals(DamageCause.CUSTOM)) {
-                    if (e instanceof EntityDamageByEntityEvent ev) {
-                        if (ev.getDamager() instanceof Entity) {
-                            return "true";
-                        }
-                    }
-                }
-            }
-            if (name.equalsIgnoreCase("hotFloor")) {
-                if (e.getCause().equals(DamageCause.FIRE)) {
-                    if (p.getLocation().getBlock().getRelative(BlockFace.DOWN).getType().equals(Material.MAGMA_BLOCK)) {
-                        return "true";
-                    }
-                }
-            }
-            if (name.equalsIgnoreCase("hotFloor.player")) {
-                if (e.getCause().equals(DamageCause.FIRE)) {
-                    if (p.getLocation().getBlock().getRelative(BlockFace.DOWN).getType().equals(Material.MAGMA_BLOCK)) {
-                        if (e instanceof EntityDamageByEntityEvent ev) {
-                            if (ev.getDamager() instanceof Entity) {
-                                return "true";
-                            }
-                        }
-                    }
-                }
-            }
-            if (name.contains("indirectMagic")) {
-                if (e.getCause().equals(DamageCause.MAGIC)) {
-                    return "true";
-                }
-            }
-            if (name.contains("inFire") || name.equalsIgnoreCase("onFire")) {
-                if (e.getCause().equals(DamageCause.FIRE)) {
-                    return "true";
-                }
-                if (e.getCause().equals(DamageCause.FIRE_TICK)) {
-                    return "true";
-                }
-            }
-            if (name.equalsIgnoreCase("inWall")) {
-                if (e.getCause().equals(DamageCause.SUFFOCATION)) {
-                    return "true";
-                }
-            }
-            if (name.equalsIgnoreCase("inWall.player")) {
-                if (e.getCause().equals(DamageCause.SUFFOCATION)) {
-                    if (e instanceof EntityDamageByEntityEvent ev) {
-                        if (ev.getDamager() instanceof Entity) {
-                            return "true";
-                        }
-                    }
-                }
-            }
-            if (name.equalsIgnoreCase("lava")) {
-                if (e.getCause().equals(DamageCause.LAVA)) {
-                    return "true";
-                }
-            }
-            if (name.equalsIgnoreCase("lava.player")) {
-                if (e.getCause().equals(DamageCause.SUFFOCATION)) {
-                    if (e instanceof EntityDamageByEntityEvent ev) {
-                        if (ev.getDamager() instanceof Entity) {
-                            return "true";
-                        }
-                    }
-                }
-            }
-            if (name.equalsIgnoreCase("lightningBolt")) {
-                if (e.getCause().equals(DamageCause.LIGHTNING)) {
-                    p.sendMessage(String.valueOf(e.getCause().equals(DamageCause.LIGHTNING)));
-                    return "true";
-                }
-            }
-            if (name.equalsIgnoreCase("lightningBolt.player")) {
-                if (e.getCause().equals(DamageCause.LIGHTNING)) {
-                    if (e instanceof EntityDamageByEntityEvent ev) {
-                        if (ev.getDamager() instanceof Entity) {
-                            return "true";
-                        }
-                    }
-                }
-            }
-            if (name.equalsIgnoreCase("magic")) {
-                if (e.getCause().equals(DamageCause.MAGIC)) {
-                    return "true";
-                }
-            }
-            if (name.equalsIgnoreCase("magic.player")) {
-                if (e.getCause().equals(DamageCause.MAGIC)) {
-                    if (e instanceof EntityDamageByEntityEvent ev) {
-                        if (ev.getDamager() instanceof Entity) {
-                            return "true";
-                        }
-                    }
-                }
-            }
-            if (name.equalsIgnoreCase("mob")) {
-                if (e.getCause().equals(DamageCause.ENTITY_ATTACK)) {
-                    return "true";
-                }
-            }
-            if (name.equalsIgnoreCase("outOfWorld")) {
-                if (e.getCause().equals(DamageCause.WORLD_BORDER)) {
-                    return "true";
-                }
-            }
-            if (name.equalsIgnoreCase("outOfWorld.player")) {
-                if (name.equalsIgnoreCase("outOfWorld")) {
-                    if (e.getCause().equals(DamageCause.WORLD_BORDER)) {
-                        if (e instanceof EntityDamageByEntityEvent ev) {
-                            if (ev.getDamager() instanceof Entity) {
-                                return "true";
-                            }
-                        }
-                    }
-                }
-            }
-            if (name.equalsIgnoreCase("player")) {
-                if (e instanceof EntityDamageByEntityEvent ev) {
-                    if (ev.getDamager() instanceof Player) {
-                        return "true";
-                    }
-                }
-            }
-            if (name.equalsIgnoreCase("player.item")) {
-                if (e instanceof EntityDamageByEntityEvent ev) {
-                    if (ev.getDamager() instanceof Player) {
-                        return "true";
-                    }
-                }
-            }
-            if (name.equalsIgnoreCase("sonic_boom")) {
-                if (e.getCause().equals(DamageCause.SONIC_BOOM)) {
-                    return "true";
-                }
-            }
-            if (name.equalsIgnoreCase("sonic_boom.player")) {
-                if (e.getCause().equals(DamageCause.SONIC_BOOM)) {
-                    if (e instanceof EntityDamageByEntityEvent ev) {
-                        if (ev.getDamager() instanceof Entity) {
-                            return "true";
-                        }
-                    }
-                }
-            }
-            if (name.equalsIgnoreCase("stalagmite")) {
-                if (e instanceof EntityDamageByBlockEvent eb) {
-                    if (eb.getDamager().getType().equals(Material.POINTED_DRIPSTONE)) {
-                        if (e.getEntity().getLocation().getBlock().getRelative(BlockFace.DOWN).getType().equals(Material.POINTED_DRIPSTONE)) {
-                            return "true";
-                        }
-                    }
-                }
-            }
-            if (name.equalsIgnoreCase("stalagmite.player")) {
-                if (e instanceof EntityDamageByBlockEvent eb) {
-                    if (eb.getDamager().getType().equals(Material.POINTED_DRIPSTONE)) {
-                        if (e.getEntity().getLocation().getBlock().getRelative(BlockFace.DOWN).getType().equals(Material.POINTED_DRIPSTONE)) {
-                            if (e instanceof EntityDamageByEntityEvent ev) {
-                                if (ev.getDamager() instanceof Entity) {
-                                    return "true";
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            if (name.equalsIgnoreCase("starve")) {
-                if (e.getCause().equals(DamageCause.STARVATION)) {
-                    return "true";
-                }
-            }
-            if (name.equalsIgnoreCase("starve.player")) {
-                if (e.getCause().equals(DamageCause.STARVATION)) {
-                    if (e instanceof EntityDamageByEntityEvent ev) {
-                        if (ev.getDamager() instanceof Entity) {
-                            return "true";
-                        }
-                    }
-                }
-            }
-            if (name.equalsIgnoreCase("sting")) {
-                if (e instanceof EntityDamageByEntityEvent ev) {
-                    if (ev.getDamager() instanceof Bee) {
-                        return "true";
-                    }
-                }
-            }
-            if (name.equalsIgnoreCase("sting.player")) {
-                if (e instanceof EntityDamageByEntityEvent ev) {
-                    if (ev.getDamager() instanceof Bee) {
-                        if (e instanceof EntityDamageByEntityEvent) {
-                            if (ev.getDamager() instanceof Entity) {
-                                return "true";
-                            }
-                        }
-                    }
-                }
-            }
-            if (name.equalsIgnoreCase("sweetBerryBush")) {
-                if (e instanceof EntityDamageByBlockEvent) {
-                    EntityDamageByEntityEvent ev = (EntityDamageByEntityEvent) e;
-                    if (ev.getDamager().getType().equals(Material.SWEET_BERRY_BUSH)) {
-                        return "true";
-                    }
-                }
-            }
-            if (name.equalsIgnoreCase("sweetBerryBush.player")) {
-                if (e instanceof EntityDamageByBlockEvent) {
-                    EntityDamageByEntityEvent ev = (EntityDamageByEntityEvent) e;
-                    if (ev.getDamager().getType().equals(Material.SWEET_BERRY_BUSH)) {
-                        if (e instanceof EntityDamageByEntityEvent) {
-                            if (ev.getDamager() instanceof Entity) {
-                                return "true";
-                            }
-                        }
-                    }
-                }
-            }
-            if (name.equalsIgnoreCase("thorns")) {
-                if (e.getCause().equals(DamageCause.THORNS)) {
-                    return "true";
-                }
-            }
-            if (name.equalsIgnoreCase("thorns.player")) {
-                if (e.getCause().equals(DamageCause.THORNS)) {
-                    if (e instanceof EntityDamageByEntityEvent ev) {
-                        if (ev.getDamager() instanceof Entity) {
-                            return "true";
-                        }
-                    }
-                }
-            }
-            if (name.equalsIgnoreCase("trident")) {
-                if (e.getCause().equals(DamageCause.PROJECTILE)) {
-                    if (e instanceof EntityDamageByEntityEvent ev) {
-                        if (ev.getDamager() instanceof Trident) {
-                            return "true";
-                        }
-                    }
-                }
-            }
-            if (name.equalsIgnoreCase("wither")) {
-                if (e.getCause().equals(DamageCause.WITHER)) {
-                    return "true";
-                }
-            }
-            if (name.equalsIgnoreCase("wither.player")) {
-                if (e.getCause().equals(DamageCause.WITHER)) {
-                    if (e instanceof EntityDamageByEntityEvent ev) {
-                        if (ev.getDamager() instanceof Entity) {
-                            return "true";
-                        }
-                    }
-                }
-            }
-            if (name.equalsIgnoreCase("witherSkull")) {
-                if (e.getCause().equals(DamageCause.ENTITY_EXPLOSION)) {
-                    if (e instanceof EntityDamageByEntityEvent ev) {
-                        if (ev.getDamager() instanceof WitherSkull) {
-                            return "true";
-                        }
+            case "origins:unblockable" -> {
+                switch (entityDamageEvent.getCause()) {
+                    case FALL, FALLING_BLOCK, MAGIC, LAVA, DROWNING, SUFFOCATION, VOID, FIRE, POISON, WITHER -> {
+                        return Optional.of(true);
                     }
                 }
             }
         }
-
-        if (type.equalsIgnoreCase("origins:out_of_world")) {
-            if (e.getCause().equals(DamageCause.VOID)) {
-                return "true";
-            }
-        }
-
-        if (type.equalsIgnoreCase("origins:projectile")) {
-            if (e.getCause().equals(DamageCause.PROJECTILE)) {
-                return "true";
-            }
-        }
-
-        if (type.equalsIgnoreCase("origins:unblockable")) {
-            if (e.getCause().equals(DamageCause.FALL)) {
-                return "true";
-            }
-            if (e.getCause().equals(DamageCause.FALLING_BLOCK)) {
-
-            }
-            if (e.getCause().equals(DamageCause.MAGIC)) {
-                return "true";
-            }
-            if (e.getCause().equals(DamageCause.LAVA)) {
-                return "true";
-            }
-            if (e.getCause().equals(DamageCause.DROWNING)) {
-                return "true";
-            }
-            if (e.getCause().equals(DamageCause.SUFFOCATION)) {
-                return "true";
-            }
-            if (e.getCause().equals(DamageCause.VOID)) {
-                return "true";
-            }
-            if (e.getCause().equals(DamageCause.FIRE)) {
-                return "true";
-            }
-            if (e.getCause().equals(DamageCause.POISON)) {
-                return "true";
-            }
-            if (e.getCause().equals(DamageCause.WITHER)) {
-                return "true";
-            }
-        }
-        return "false";
+        return Optional.of(false);
     }
 
     private static FallingBlock getFallingBlockDamager(EntityDamageEvent event) {
@@ -676,8 +573,7 @@ public class DamageCondition extends Condition {
     }
 
     private static boolean isBedExplosionRestrictedDimension(Player player) {
-        String worldName = player.getWorld().getName().toLowerCase();
-        return worldName.contains("end") || worldName.contains("nether");
+        return !player.getWorld().isBedWorks();
     }
 
 }
