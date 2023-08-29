@@ -241,6 +241,14 @@ public class PowerContainer implements Serializable {
         return type.toString();
     }
 
+    public Object getObject(String thing){
+        Object type = powerFile.get(thing);
+        if (type == null) {
+            return null;
+        }
+        return type;
+    }
+
     public HashMap<String, Object> getJsonHashMap(String thing) {
         Object obj = powerFile.get(thing);
         if (obj == null) return new HashMap<>();

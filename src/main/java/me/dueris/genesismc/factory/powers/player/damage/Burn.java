@@ -59,7 +59,7 @@ public class Burn extends CraftPower {
                             setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
 
                             Long burn_duration = power.getBurnDuration();
-                            p.setFireTicks(burn_duration.intValue());
+                            p.setFireTicks(burn_duration.intValue() * 20);
                         } else {
                             if (origin.getPowerFileFromType(getPowerFile()) == null) {
                                 getPowerArray().remove(p);

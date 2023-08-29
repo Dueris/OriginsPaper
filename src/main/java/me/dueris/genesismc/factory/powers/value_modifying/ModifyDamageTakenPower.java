@@ -9,14 +9,14 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 
 import java.awt.geom.Arc2D;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.function.BinaryOperator;
 
-import static me.dueris.genesismc.factory.powers.player.attributes.AttributeHandler.getOperationMappingsDouble;
-import static me.dueris.genesismc.factory.powers.player.attributes.AttributeHandler.getOperationMappingsFloat;
+import static me.dueris.genesismc.factory.powers.player.attributes.AttributeHandler.*;
 import static me.dueris.genesismc.factory.powers.value_modifying.ValueModifyingSuperClass.modify_damage_taken;
 
 public class ModifyDamageTakenPower extends CraftPower implements Listener {
@@ -30,54 +30,74 @@ public class ModifyDamageTakenPower extends CraftPower implements Listener {
         }
     }
 
-
     @EventHandler
-    public void damageEVENT(EntityDamageByEntityEvent e) {
+    public void dmgEvent(EntityDamageEvent e){
         if (e.getEntity() instanceof Player p) {
-            if (modify_damage_taken.contains(p)) {
+            if (getPowerArray().contains(p)) {
                 for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
-                    ValueModifyingSuperClass valueModifyingSuperClass = new ValueModifyingSuperClass();
                     try {
                         ConditionExecutor conditionExecutor = new ConditionExecutor();
-                        if (conditionExecutor.check("bientity_condition", "bientity_conditions", p, origin, "origins:modify_damage_taken", e, e.getDamager())) {
+                        p.sendMessage("1");
+                        if (conditionExecutor.check("damage_condition", "damage_conditions", p, origin, "origins:modify_damage_taken", e, e.getEntity())) {
+                            p.sendMessage("2");
                             for (HashMap<String, Object> modifier : origin.getPowerFileFromType("origins:modify_damage_taken").getConditionFromString("modifier", "modifiers")) {
+                                p.sendMessage("3");
                                 if(modifier.get("value") instanceof Float){
+                                    p.sendMessage("4");
                                     Float value = Float.valueOf(modifier.get("value").toString());
                                     String operation = modifier.get("operation").toString();
                                     BinaryOperator mathOperator = getOperationMappingsFloat().get(operation);
                                     if (mathOperator != null) {
+                                        p.sendMessage(String.valueOf(e.getDamage()));
                                         float result = (float) mathOperator.apply(e.getDamage(), value);
                                         e.setDamage(result);
-                                        if (origin.getPowerFileFromType(getPowerFile()) == null) {
-                                            getPowerArray().remove(p);
-                                            return;
-                                        }
-                                        if (!getPowerArray().contains(p)) return;
+                                        p.sendMessage(String.valueOf(result));
+                                        p.sendMessage(String.valueOf(value));
                                         setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                                     }
                                 } else if (modifier.get("value") instanceof Double) {
+                                    p.sendMessage("5");
                                     Double value = Double.valueOf(modifier.get("value").toString());
                                     String operation = modifier.get("operation").toString();
                                     BinaryOperator mathOperator = getOperationMappingsDouble().get(operation);
                                     if (mathOperator != null) {
+                                        p.sendMessage(String.valueOf(e.getDamage()));
                                         double result = (double) mathOperator.apply(e.getDamage(), value);
                                         e.setDamage(result);
-                                        if (origin.getPowerFileFromType(getPowerFile()) == null) {
-                                            getPowerArray().remove(p);
-                                            return;
-                                        }
-                                        if (!getPowerArray().contains(p)) return;
+                                        p.sendMessage(String.valueOf(result));
+                                        p.sendMessage(String.valueOf(value));
+                                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
+                                    }
+                                } else if (modifier.get("value") instanceof Integer) {
+                                    p.sendMessage("6");
+                                    Integer value = Integer.valueOf(modifier.get("value").toString());
+                                    String operation = modifier.get("operation").toString();
+                                    BinaryOperator mathOperator = getOperationMappingsInteger().get(operation);
+                                    if (mathOperator != null) {
+                                        p.sendMessage(String.valueOf(e.getDamage()));
+                                        int result = (int) mathOperator.apply(e.getDamage(), value);
+                                        e.setDamage(result);
+                                        p.sendMessage(String.valueOf(result));
+                                        p.sendMessage(String.valueOf(value));
+                                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
+                                    }
+                                } else if (modifier.get("value") instanceof Long) {
+                                    p.sendMessage("6");
+                                    Long value = Long.valueOf(modifier.get("value").toString());
+                                    String operation = modifier.get("operation").toString();
+                                    BinaryOperator mathOperator = getOperationMappingsLong().get(operation);
+                                    if (mathOperator != null) {
+                                        p.sendMessage(String.valueOf(e.getDamage()));
+                                        long result = (long) mathOperator.apply(e.getDamage(), value);
+                                        e.setDamage(result);
+                                        p.sendMessage(String.valueOf(result));
+                                        p.sendMessage(String.valueOf(value));
                                         setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                                     }
                                 }
                             }
 
                         } else {
-                            if (origin.getPowerFileFromType(getPowerFile()) == null) {
-                                getPowerArray().remove(p);
-                                return;
-                            }
-                            if (!getPowerArray().contains(p)) return;
                             setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                         }
                     } catch (Exception ev) {
@@ -88,6 +108,11 @@ public class ModifyDamageTakenPower extends CraftPower implements Listener {
                 }
             }
         }
+    }
+
+    @EventHandler
+    public void damageEVENT(EntityDamageByEntityEvent e) {
+
     }
 
     @Override
