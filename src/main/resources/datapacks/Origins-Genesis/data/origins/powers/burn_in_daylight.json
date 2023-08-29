@@ -1,7 +1,7 @@
 {
   "type": "origins:burn",
-  "interval": 20,
-  "burn_duration": 6,
+  "interval": 5,
+  "burn_duration": 7,
   "condition": {
     "type": "origins:and",
     "conditions": [
