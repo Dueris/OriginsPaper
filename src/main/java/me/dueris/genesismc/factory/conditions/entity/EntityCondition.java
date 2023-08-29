@@ -279,7 +279,7 @@ public class EntityCondition {
 
         if(type.equalsIgnoreCase("origins:resource")){
             for(OriginContainer origin : OriginPlayer.getOrigin(p).values()){
-                return String.valueOf(CooldownStuff.isPlayerInCooldownFromTag(p, origin.getPowerFileFromType(powerfile).getTag()));
+                return String.valueOf(!CooldownStuff.isPlayerInCooldownFromTag(p, origin.getPowerFileFromType(powerfile).getTag()));
             }
         }
         return "false";
