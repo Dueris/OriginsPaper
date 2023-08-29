@@ -273,6 +273,16 @@ public class EntityCondition {
             }
         }
 
+        if(type.equalsIgnoreCase("origins:exposed_to_sun")){
+            if ((p.getLocation().getBlockY() + 1 > p.getWorld().getHighestBlockYAt(p.getLocation()))) {
+                if (p.getGameMode() == GameMode.SURVIVAL || p.getGameMode() == GameMode.ADVENTURE) {
+                    if (p.getWorld().isDayTime()) {
+                        return "true";
+                    }
+                }
+            }
+        }
+
         if(type.equalsIgnoreCase("origins:sneaking")){
             return String.valueOf(entity.isSneaking());
         }
