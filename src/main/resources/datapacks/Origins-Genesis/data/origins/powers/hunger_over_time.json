@@ -1,0 +1,12 @@
+{
+  "type": "origins:exhaust",
+  "interval": 20,
+  "exhaustion": 0.812,
+  "condition": {
+    "type": "origins:power_active",
+    "power": "*:phantomize"
+  },
+  "name": "Fast Metabolism",
+  "description": "Being phantomized causes you to become hungry",
+  "hidden": false
+}

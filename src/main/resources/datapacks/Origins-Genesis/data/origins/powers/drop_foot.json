@@ -1,0 +1,17 @@
+{
+  "type": "origins:action_when_damage_taken",
+  "entity_action": {
+    "type": "origins:chance",
+    "action": {
+      "type": "origins:give",
+      "stack": {
+        "item": "minecraft:rabbit_foot",
+        "amount": 1
+      }
+    },
+    "chance": 0.3
+  },
+  "name": "Delicious",
+  "description": "You may drop a rabbit's foot when hit",
+  "hidden": false
+}

@@ -1,0 +1,16 @@
+{
+  "type": "origins:mimic",
+  "mob": "minecraft:warden",
+  "name": "Carrier of Echos",
+  "description": "You can emmit a sonic boom every 60 seconds, only if you have enough energy to sprint",
+  "hidden": false,
+  "cooldown": 120,
+  "key": {
+    "key": "key.origins.primary_active"
+  },
+  "condition": {
+    "type": "origins:food_level",
+    "comparison": ">=",
+    "compare_to": 6
+  }
+}

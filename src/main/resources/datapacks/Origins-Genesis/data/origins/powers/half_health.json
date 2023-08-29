@@ -1,0 +1,23 @@
+{
+  "type": "origins:multiple",
+  "hidden": false,
+  "health": {
+    "type": "origins_attribute",
+    "modifier": {
+      "attribute": "minecraft:generic.max_health",
+      "value": -0.5,
+      "operation": "multiply_base"
+    },
+    "hidden": true
+  },
+  "fire": {
+    "type": "origins:modify_damage_taken",
+    "hidden": true,
+    "modifier": {
+      "operation": "multiply_total",
+      "value": 1.5
+    }
+  },
+  "name": "Kinda Flammable",
+  "description": "You burn easily, you take extra fire damage, and you have half health"
+}

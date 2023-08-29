@@ -1,0 +1,22 @@
+{
+  "type": "origins:stacking_status_effect",
+  "min_stacks": 0,
+  "max_stacks": 1,
+  "duration_per_stack": 10,
+  "duration_per_stack": 10,
+  "effects": [
+    {
+      "effect": "minecraft:luck",
+      "amplifier": 2,
+      "duration": 10
+    },
+    {
+      "effect": "minecraft:hero_of_the_village",
+      "amplifier": 1,
+      "duration": 10
+    }
+  ],
+  "name": "Treasure Finder",
+  "description": "You have increased chances of getting treasure loot, and villagers will lower their prices for you",
+  "hidden": false
+}

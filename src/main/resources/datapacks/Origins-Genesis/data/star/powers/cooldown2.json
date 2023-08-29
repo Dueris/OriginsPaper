@@ -1,0 +1,29 @@
+{
+  "type": "origins:action_over_time",
+  "interval": 1,
+  "entity_action": {
+    "type": "origins:change_resource",
+    "resource": "star:cooldown",
+    "change": -1
+  },
+  "condition": {
+    "type": "origins:and",
+    "conditions": [
+      {
+        "type": "origins:health",
+        "comparison": "==",
+        "compare_to": 0,
+        "inverted": true
+      },
+      {
+        "type": "origins:exposed_to_sky",
+        "inverted": false
+      },
+      {
+        "type": "origins:daytime",
+        "inverted": true
+      }
+    ]
+  },
+  "hidden": true
+}

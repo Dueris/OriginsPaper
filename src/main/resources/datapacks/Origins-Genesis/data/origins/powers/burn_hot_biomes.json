@@ -1,0 +1,13 @@
+{
+  "type": "origins:burn",
+  "condition": {
+    "type": "origins:biome",
+    "condition": {
+      "type": "origins:temperature",
+      "comparison": ">=",
+      "compare_to": 2
+    }
+  },
+  "interval": 20,
+  "burn_duration": 6
+}

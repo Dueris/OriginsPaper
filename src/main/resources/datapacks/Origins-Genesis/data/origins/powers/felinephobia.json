@@ -1,0 +1,16 @@
+{
+  "type": "origins:damage_over_time",
+  "interval": 14,
+  "onset_delay": 1,
+  "damage": 2,
+  "damage_easy": 1,
+  "condition": {
+    "type": "origins:distance",
+    "comparison": "<=",
+    "compare_to": 7,
+    "entity_condition": {
+      "type": "entity_type",
+      "entity_type": "minecraft:cat"
+    }
+  }
+}

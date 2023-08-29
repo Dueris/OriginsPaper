@@ -1,0 +1,20 @@
+{
+  "type": "origins:action_over_time",
+  "interval": 1,
+  "entity_action": {
+    "type": "origins:and",
+    "actions": [
+      {
+        "type": "origins:add_velocity",
+        "y": 1.65,
+        "space": "world"
+      },
+      {
+        "type": "origins:execute_command",
+        "command": "power revoke @s star:fling",
+        "permission": 4
+      }
+    ]
+  },
+  "hidden": true
+}
