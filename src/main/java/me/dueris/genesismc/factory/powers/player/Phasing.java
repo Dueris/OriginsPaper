@@ -144,6 +144,8 @@ public class Phasing extends CraftPower implements Listener {
         }
     }
 
+    public boolean test = false;
+
     @Override
     public void run() {
         for (Player p : Bukkit.getOnlinePlayers()) {
@@ -177,6 +179,8 @@ public class Phasing extends CraftPower implements Listener {
                                 initializePhantomOverlay(p);
                             }
 
+                            test = true;
+
                             p.setFlySpeed(0.04F);
                             p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "insideBlock"), PersistentDataType.BOOLEAN, true);
 
@@ -204,6 +208,22 @@ public class Phasing extends CraftPower implements Listener {
                         }
                     } else {
                         setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
+                        if(test){
+                            if (p.getGameMode().equals(GameMode.SPECTATOR)) {
+                                if (p.getPreviousGameMode().equals(GameMode.CREATIVE)) {
+                                    p.setGameMode(p.getPreviousGameMode());
+                                    p.setFlying(false);
+                                } else {
+                                    p.setGameMode(p.getPreviousGameMode());
+                                    if (p.isOnGround()) ;
+                                    p.setFlying(false);
+                                }
+                                p.setFlySpeed(0.1F);
+                                p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "insideBlock"), PersistentDataType.BOOLEAN, false);
+
+                            }
+                            test = false;
+                        }
                     }
                 }
             }
