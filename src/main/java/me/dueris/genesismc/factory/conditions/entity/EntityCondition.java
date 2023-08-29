@@ -24,6 +24,7 @@ public class EntityCondition {
     public static String check(HashMap<String, Object> condition, Player p, Entity entity) {
         boolean inverted = (boolean) condition.getOrDefault("inverted", false);
         if (condition.get("type") == null) return "null";
+        if (condition == null) return "null";
         String type = condition.get("type").toString();
         if (type.equalsIgnoreCase("origins:ability")) {
             String ability = condition.get("ability").toString();

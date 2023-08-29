@@ -65,6 +65,7 @@ public class ConditionExecutor {
     public boolean check(String singular, String plural, Player p, OriginContainer origin, String powerfile, EntityDamageEvent dmgevent, Entity entity) {
         if (origin == null) return true;
         if (origin.getPowerFileFromType(powerfile) == null) return true;
+        if (origin.getPowerFileFromType(powerfile).getConditionFromString(singular, plural) == null) return true;
         for (HashMap<String, Object> condition : origin.getPowerFileFromType(powerfile).getConditionFromString(singular, plural)) {
             if (condition.get("type").equals("origins:and")) {
                 JSONArray conditionsArray = (JSONArray) condition.get("conditions");
