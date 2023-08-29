@@ -421,6 +421,7 @@ public class DamageCondition extends Condition {
             }
             if (name.equalsIgnoreCase("lightningBolt")) {
                 if (e.getCause().equals(DamageCause.LIGHTNING)) {
+                    p.sendMessage(String.valueOf(e.getCause().equals(DamageCause.LIGHTNING)));
                     return "true";
                 }
             }
