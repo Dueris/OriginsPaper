@@ -22,7 +22,7 @@ public class ActionOnWakeUp extends CraftPower implements Listener {
         for (OriginContainer origin : OriginPlayer.getOrigin(e.getPlayer()).values()) {
             setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
             ActionTypes.EntityActionType(e.getPlayer(), origin.getPowerFileFromType(getPowerFile()).getEntityAction());
-            ActionTypes.BlockActionType(e.getBed().getLocation(), origin.getPowerFileFromType(getPowerFile()).getEntityAction());
+            ActionTypes.BlockActionType(e.getBed().getLocation(), origin.getPowerFileFromType(getPowerFile()).getBlockAction());
         }
     }
 
