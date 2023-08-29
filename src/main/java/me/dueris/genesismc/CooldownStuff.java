@@ -1,5 +1,6 @@
 package me.dueris.genesismc;
 
+import me.dueris.genesismc.events.OriginChangeEvent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import org.bukkit.Bukkit;
@@ -9,6 +10,8 @@ import org.bukkit.boss.BossBar;
 import org.bukkit.boss.KeyedBossBar;
 import org.bukkit.craftbukkit.v1_20_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 
@@ -76,6 +79,26 @@ public class CooldownStuff {
         BossBar bossBar = Bukkit.createBossBar(title, color, style);
         bossBar.setProgress(1.0);
         return bossBar;
+    }
+
+    @EventHandler
+    public void orig(OriginChangeEvent e){
+        if(isPlayerInCooldown(e.getPlayer(), "key.origins.primary_active")){
+            resetCooldown(e.getPlayer(), "key.origins.primary_active");
+        }
+        if(isPlayerInCooldown(e.getPlayer(), "key.origins.secondary_active")){
+            resetCooldown(e.getPlayer(), "key.origins.primary_active");
+        }
+    }
+
+    @EventHandler
+    public void org(PlayerQuitEvent e){
+        if(isPlayerInCooldown(e.getPlayer(), "key.origins.primary_active")){
+            resetCooldown(e.getPlayer(), "key.origins.primary_active");
+        }
+        if(isPlayerInCooldown(e.getPlayer(), "key.origins.secondary_active")){
+            resetCooldown(e.getPlayer(), "key.origins.primary_active");
+        }
     }
 
     public static void startTickingCooldown(BossBar bar, Player player, int cooldownTicks, String cooldownKeybindType) {
