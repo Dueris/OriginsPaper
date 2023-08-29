@@ -35,7 +35,7 @@ public class PreventSleep extends CraftPower implements Listener {
     }
 
     @EventHandler
-    public void run(PlayerInteractEvent e) {
+    public void runD(PlayerInteractEvent e) {
         if (e.getClickedBlock() == null) return;
         if (beds.contains(e.getClickedBlock().getType())) {
             if (!prevent_sleep.contains(e.getPlayer())) return;
