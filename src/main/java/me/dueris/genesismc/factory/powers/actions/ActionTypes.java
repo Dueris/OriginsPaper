@@ -146,7 +146,7 @@ public class ActionTypes {
             if (entity instanceof Player player) {
                 Location location = player.getEyeLocation();
                 @NotNull Vector direction = location.getDirection().normalize();
-                Vector velocity = direction.multiply(y + 1.5);
+                Vector velocity = direction.multiply(y + 1.8);
                 player.setVelocity(velocity);
             }
         }
