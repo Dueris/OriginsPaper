@@ -6,11 +6,14 @@ import org.bukkit.Bukkit;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
+import org.bukkit.boss.KeyedBossBar;
 import org.bukkit.craftbukkit.v1_20_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
+import java.util.Iterator;
 
 public class CooldownStuff {
 
@@ -48,6 +51,16 @@ public class CooldownStuff {
     public static boolean isPlayerInCooldown(Player player, String cooldownKeybindType) {
         return cooldowns.containsKey(player) && cooldownKeybindType.equals(cooldowns.get(player))
                 && cooldownBars.containsKey(player);
+    }
+
+    public static boolean isPlayerInCooldownFromTag(Player player, String tag) {
+        for (@NotNull Iterator<KeyedBossBar> it = Bukkit.getBossBars(); it.hasNext(); ) {
+            KeyedBossBar active = it.next();
+            if(active.getTitle().equalsIgnoreCase(tag)){
+                if(active.getPlayers().contains(player)) return true;
+            }
+        }
+        return false;
     }
 
     public static void resetCooldown(Player player, String cooldownKeybindType) {
