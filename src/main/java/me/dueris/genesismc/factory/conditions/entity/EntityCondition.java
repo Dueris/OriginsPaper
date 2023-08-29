@@ -1,6 +1,10 @@
 package me.dueris.genesismc.factory.conditions.entity;
 
+import me.dueris.genesismc.CooldownStuff;
+import me.dueris.genesismc.entity.OriginPlayer;
 import me.dueris.genesismc.factory.powers.player.Climbing;
+import me.dueris.genesismc.factory.powers.player.RestrictArmor;
+import me.dueris.genesismc.utils.OriginContainer;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Biome;
@@ -21,7 +25,7 @@ import static me.dueris.genesismc.factory.powers.player.RestrictArmor.compareVal
 
 public class EntityCondition {
 
-    public static String check(HashMap<String, Object> condition, Player p, Entity entity) {
+    public static String check(HashMap<String, Object> condition, Player p, Entity entity, String powerfile) {
         boolean inverted = (boolean) condition.getOrDefault("inverted", false);
         if (condition.get("type") == null) return "null";
         if (condition == null) return "null";
@@ -261,6 +265,22 @@ public class EntityCondition {
 
         if (type.equalsIgnoreCase("origins:in_rain")) {
             return String.valueOf(entity.isInRain());
+        }
+
+        if(type.equalsIgnoreCase("origins:health")){
+            if(RestrictArmor.compareValues(p.getHealth(), condition.get("comparison").toString(), Double.parseDouble(condition.get("compare_to").toString()))){
+                return "true";
+            }
+        }
+
+        if(type.equalsIgnoreCase("origins:sneaking")){
+            return String.valueOf(entity.isSneaking());
+        }
+
+        if(type.equalsIgnoreCase("origins:resource")){
+            for(OriginContainer origin : OriginPlayer.getOrigin(p).values()){
+                return String.valueOf(CooldownStuff.isPlayerInCooldownFromTag(p, origin.getPowerFileFromType(powerfile).getTag()));
+            }
         }
         return "false";
     }

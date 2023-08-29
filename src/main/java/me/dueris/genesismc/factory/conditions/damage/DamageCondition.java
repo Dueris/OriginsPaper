@@ -16,7 +16,7 @@ import static org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 
 public class DamageCondition extends Condition {
 
-    public static String check(HashMap<String, Object> condition, Player p, EntityDamageEvent e) {
+    public static String check(HashMap<String, Object> condition, Player p, EntityDamageEvent e, String powerFile) {
         if (condition.get("type") == null) return "null";
 
         String type = condition.get("type").toString();
@@ -34,7 +34,7 @@ public class DamageCondition extends Condition {
 
         if (type.equalsIgnoreCase("origins:attacker")) {
             if (e instanceof EntityDamageByEntityEvent event) {
-                EntityCondition.check(condition, p, event.getDamager());
+                EntityCondition.check(condition, p, event.getDamager(), powerFile);
             }
         }
 
