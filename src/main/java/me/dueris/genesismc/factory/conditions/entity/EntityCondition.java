@@ -262,7 +262,7 @@ public class EntityCondition {
         if (type.equalsIgnoreCase("origins:in_rain")) {
             return String.valueOf(entity.isInRain());
         }
-        return "null";
+        return "false";
     }
 
     private static int countBlocksInCube(int minX, int minY, int minZ, int maxX, int maxY, int maxZ, World world) {

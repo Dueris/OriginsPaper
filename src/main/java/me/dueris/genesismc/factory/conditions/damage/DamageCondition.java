@@ -662,7 +662,7 @@ public class DamageCondition extends Condition {
                 return "true";
             }
         }
-        return "null";
+        return "false";
     }
 
     private static FallingBlock getFallingBlockDamager(EntityDamageEvent event) {
