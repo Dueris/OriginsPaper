@@ -20,15 +20,14 @@ import java.util.HashSet;
 public class EntityGlow extends CraftPower {
 
     @Override
-    public void setActive(String tag, Boolean bool){
-        if(powers_active.containsKey(tag)){
+    public void setActive(String tag, Boolean bool) {
+        if (powers_active.containsKey(tag)) {
             powers_active.replace(tag, bool);
-        }else{
+        } else {
             powers_active.put(tag, bool);
         }
     }
 
-    
 
     public Collection<Entity> getEntitiesInRadius(Player player, int radius) {
         Collection<Entity> entitiesInRadius = new HashSet<>();
@@ -52,11 +51,19 @@ public class EntityGlow extends CraftPower {
                             CraftPlayer craftPlayer = (CraftPlayer) p;
                             MobEffect effect = MobEffects.GLOWING;
                             craftPlayer.getHandle().connection.send(new ClientboundUpdateMobEffectPacket(entity.getEntityId(), new MobEffectInstance(effect, 60, 2, false, false, false)));
-                            if(!getPowerArray().contains(p)) return;
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
-                        }else{
-                            if(!getPowerArray().contains(p)) return;
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
+                            if (origin.getPowerFileFromType(getPowerFile()) == null) {
+                                getPowerArray().remove(p);
+                                return;
+                            }
+                            if (!getPowerArray().contains(p)) return;
+                            setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
+                        } else {
+                            if (origin.getPowerFileFromType(getPowerFile()) == null) {
+                                getPowerArray().remove(p);
+                                return;
+                            }
+                            if (!getPowerArray().contains(p)) return;
+                            setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                         }
                     }
                 }

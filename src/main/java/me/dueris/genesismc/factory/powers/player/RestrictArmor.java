@@ -17,24 +17,40 @@ import static me.dueris.genesismc.utils.ArmorUtils.getArmorValue;
 
 public class RestrictArmor extends CraftPower {
 
-    @Override
-    public void setActive(String tag, Boolean bool){
-        if(powers_active.containsKey(tag)){
-            powers_active.replace(tag, bool);
-        }else{
-            powers_active.put(tag, bool);
-        }
-    }
-
-    
-
     private Long interval;
-
     private int ticksE;
 
     public RestrictArmor() {
         this.interval = 1L;
         this.ticksE = 0;
+    }
+
+    public static boolean compareValues(double value1, String comparison, double value2) {
+        switch (comparison) {
+            case ">":
+                return value1 > value2;
+            case ">=":
+                return value1 >= value2;
+            case "<":
+                return value1 < value2;
+            case "<=":
+                return value1 <= value2;
+            case "==":
+                return value1 == value2;
+            case "=":
+                return value1 == value2;
+            default:
+                return false;
+        }
+    }
+
+    @Override
+    public void setActive(String tag, Boolean bool) {
+        if (powers_active.containsKey(tag)) {
+            powers_active.replace(tag, bool);
+        } else {
+            powers_active.put(tag, bool);
+        }
     }
 
     @Override
@@ -43,9 +59,13 @@ public class RestrictArmor extends CraftPower {
             if (restrict_armor.contains(p)) {
                 for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
                     ConditionExecutor executor = new ConditionExecutor();
-                    if(executor.check("condition", "conditions", p, origin, getPowerFile(), null, p)){
-                        if(!getPowerArray().contains(p)) return;
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
+                    if (executor.check("condition", "conditions", p, origin, getPowerFile(), null, p)) {
+                        if (origin.getPowerFileFromType(getPowerFile()) == null) {
+                            getPowerArray().remove(p);
+                            return;
+                        }
+                        if (!getPowerArray().contains(p)) return;
+                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                         PowerContainer power = origin.getPowerFileFromType("origins:restrict_armor");
                         if (power == null) continue;
                         interval = power.getTickRate();
@@ -144,9 +164,13 @@ public class RestrictArmor extends CraftPower {
                                 //need to code some methods for that
                             }
                         }
-                    }else{
-                        if(!getPowerArray().contains(p)) return;
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
+                    } else {
+                        if (origin.getPowerFileFromType(getPowerFile()) == null) {
+                            getPowerArray().remove(p);
+                            return;
+                        }
+                        if (!getPowerArray().contains(p)) return;
+                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                     }
 
                 }
@@ -162,24 +186,5 @@ public class RestrictArmor extends CraftPower {
     @Override
     public ArrayList<Player> getPowerArray() {
         return restrict_armor;
-    }
-
-    public static boolean compareValues(double value1, String comparison, double value2) {
-        switch (comparison) {
-            case ">":
-                return value1 > value2;
-            case ">=":
-                return value1 >= value2;
-            case "<":
-                return value1 < value2;
-            case "<=":
-                return value1 <= value2;
-            case "==":
-                return value1 == value2;
-            case "=":
-                return value1 == value2;
-            default:
-                return false;
-        }
     }
 }

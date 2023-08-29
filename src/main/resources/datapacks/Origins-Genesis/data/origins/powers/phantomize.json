@@ -1,0 +1,16 @@
+{
+  "type": "origins:toggle",
+  "key": {
+    "key": "key.origins.primary_active",
+    "continuous": true
+  },
+  "retain_state": true,
+  "condition": {
+    "type": "origins:food_level",
+    "comparison": ">",
+    "compare_to": 6
+  },
+  "name": "Phantom Form",
+  "description": "You can switch between human and phantom form at will, but only while you are saturated enough to sprint",
+  "hidden": false
+}

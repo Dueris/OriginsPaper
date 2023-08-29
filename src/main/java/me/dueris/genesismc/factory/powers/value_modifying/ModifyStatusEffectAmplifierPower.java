@@ -21,29 +21,32 @@ import static me.dueris.genesismc.factory.powers.value_modifying.ValueModifyingS
 public class ModifyStatusEffectAmplifierPower extends CraftPower implements Listener {
 
     @Override
-    public void setActive(String tag, Boolean bool){
-        if(powers_active.containsKey(tag)){
+    public void setActive(String tag, Boolean bool) {
+        if (powers_active.containsKey(tag)) {
             powers_active.replace(tag, bool);
-        }else{
+        } else {
             powers_active.put(tag, bool);
         }
     }
 
-    
 
     @EventHandler
-    public void run(EntityPotionEffectEvent e){
-        if(e.getEntity() instanceof Player p){
-            if(!modify_effect_amplifier.contains(p)) return;
-            for(OriginContainer origin : OriginPlayer.getOrigin(p).values()){
+    public void run(EntityPotionEffectEvent e) {
+        if (e.getEntity() instanceof Player p) {
+            if (!modify_effect_amplifier.contains(p)) return;
+            for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
                 ConditionExecutor executor = new ConditionExecutor();
-                if(executor.check("condition", "conditions", p, origin, getPowerFile(), null, p)){
-                    if(!getPowerArray().contains(p)) return;
+                if (executor.check("condition", "conditions", p, origin, getPowerFile(), null, p)) {
+                    if (origin.getPowerFileFromType(getPowerFile()) == null) {
+                        getPowerArray().remove(p);
+                        return;
+                    }
+                    if (!getPowerArray().contains(p)) return;
                     setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
-                    if(origin.getPowerFileFromType("origins:modify_status_effect_amplifier").get("status_effect", null) != null){
-                        if(e.getNewEffect().getType().equals(PotionEffectType.getByName(origin.getPowerFileFromType("origins:modify_status_effect_amplifier").get("status_effect", null)))){
+                    if (origin.getPowerFileFromType("origins:modify_status_effect_amplifier").get("status_effect", null) != null) {
+                        if (e.getNewEffect().getType().equals(PotionEffectType.getByName(origin.getPowerFileFromType("origins:modify_status_effect_amplifier").get("status_effect", null)))) {
                             PotionEffect effect = e.getNewEffect();
-                            for(HashMap<String, Object> modifier : origin.getPowerFileFromType("origins:modify_status_effect_amplifier").getPossibleModifiers("modifier", "modifiers")){
+                            for (HashMap<String, Object> modifier : origin.getPowerFileFromType("origins:modify_status_effect_amplifier").getPossibleModifiers("modifier", "modifiers")) {
                                 Float value = Float.valueOf(modifier.get("value").toString());
                                 String operation = modifier.get("operation").toString();
                                 BinaryOperator mathOperator = getOperationMappingsFloat().get(operation);
@@ -54,9 +57,9 @@ public class ModifyStatusEffectAmplifierPower extends CraftPower implements List
                             }
 
                         }
-                    }else{
-                        for(PotionEffect effect : p.getActivePotionEffects()){
-                            for(HashMap<String, Object> modifier : origin.getPowerFileFromType("origins:modify_status_effect_amplifier").getPossibleModifiers("modifier", "modifiers")){
+                    } else {
+                        for (PotionEffect effect : p.getActivePotionEffects()) {
+                            for (HashMap<String, Object> modifier : origin.getPowerFileFromType("origins:modify_status_effect_amplifier").getPossibleModifiers("modifier", "modifiers")) {
                                 Float value = Float.valueOf(modifier.get("value").toString());
                                 String operation = modifier.get("operation").toString();
                                 BinaryOperator mathOperator = getOperationMappingsFloat().get(operation);
@@ -67,8 +70,12 @@ public class ModifyStatusEffectAmplifierPower extends CraftPower implements List
                             }
                         }
                     }
-                }else{
-                    if(!getPowerArray().contains(p)) return;
+                } else {
+                    if (origin.getPowerFileFromType(getPowerFile()) == null) {
+                        getPowerArray().remove(p);
+                        return;
+                    }
+                    if (!getPowerArray().contains(p)) return;
                     setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                 }
             }

@@ -32,15 +32,14 @@ public class FlightElytra extends CraftPower implements Listener {
     public static ArrayList<UUID> glidingPlayers = new ArrayList<>();
 
     @Override
-    public void setActive(String tag, Boolean bool){
-        if(powers_active.containsKey(tag)){
+    public void setActive(String tag, Boolean bool) {
+        if (powers_active.containsKey(tag)) {
             powers_active.replace(tag, bool);
-        }else{
+        } else {
             powers_active.put(tag, bool);
         }
     }
 
-    
 
     @EventHandler
     @SuppressWarnings("unchecked")
@@ -49,8 +48,12 @@ public class FlightElytra extends CraftPower implements Listener {
         if (elytra.contains(e.getPlayer())) {
             for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
                 ConditionExecutor executor = new ConditionExecutor();
-                if(executor.check("condition", "conditions", p, origin, getPowerFile(), null, p)){
-                    if(!getPowerArray().contains(p)) return;
+                if (executor.check("condition", "conditions", p, origin, getPowerFile(), null, p)) {
+                    if (origin.getPowerFileFromType(getPowerFile()) == null) {
+                        getPowerArray().remove(p);
+                        return;
+                    }
+                    if (!getPowerArray().contains(p)) return;
                     setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                     if (origin.getPowerFileFromType("origins:elytra_flight").getShouldRender()) {
                         SendStringPacketPayload.sendCustomPacket(p, "ExecuteGenesisOriginsElytraRenderID:12232285");
@@ -73,8 +76,12 @@ public class FlightElytra extends CraftPower implements Listener {
                             }
                         }.runTaskTimer(GenesisMC.getPlugin(), 0L, 1L);
                     }
-                }else{
-                    if(!getPowerArray().contains(p)) return;
+                } else {
+                    if (origin.getPowerFileFromType(getPowerFile()) == null) {
+                        getPowerArray().remove(p);
+                        return;
+                    }
+                    if (!getPowerArray().contains(p)) return;
                     setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                 }
 
@@ -91,7 +98,7 @@ public class FlightElytra extends CraftPower implements Listener {
             if (e.getItem() != null) {
                 ItemStack rocket = new ItemStack(Material.FIREWORK_ROCKET);
                 if (e.getItem().isSimilar(rocket)) {
-                    launchElytra(p);
+                    launchElytra(p, 2.0F);
                     e.getItem().setAmount(e.getItem().getAmount() - 1);
                     p.playSound(p.getLocation(), Sound.ENTITY_FIREWORK_ROCKET_LAUNCH, 10, 1);
                     e.setCancelled(true);

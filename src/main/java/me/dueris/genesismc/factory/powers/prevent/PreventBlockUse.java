@@ -17,27 +17,26 @@ import static me.dueris.genesismc.factory.powers.prevent.PreventSuperClass.preve
 public class PreventBlockUse extends CraftPower implements Listener {
 
     @Override
-    public void setActive(String tag, Boolean bool){
-        if(powers_active.containsKey(tag)){
+    public void setActive(String tag, Boolean bool) {
+        if (powers_active.containsKey(tag)) {
             powers_active.replace(tag, bool);
-        }else{
+        } else {
             powers_active.put(tag, bool);
         }
     }
 
-    
 
     @EventHandler
-    public void run(PlayerInteractEvent e){
-        if(prevent_block_use.contains(e.getPlayer())){
-            for(OriginContainer origin : OriginPlayer.getOrigin(e.getPlayer()).values()){
+    public void run(PlayerInteractEvent e) {
+        if (prevent_block_use.contains(e.getPlayer())) {
+            for (OriginContainer origin : OriginPlayer.getOrigin(e.getPlayer()).values()) {
                 ConditionExecutor conditionExecutor = new ConditionExecutor();
-                if(conditionExecutor.check("block_condition", "block_conditions", e.getPlayer(), origin, "origins:prevent_block_used", null, e.getPlayer())){
-                    if(e.getClickedBlock() != null) e.setCancelled(true);
-                    if(!getPowerArray().contains(e.getPlayer())) return;
+                if (conditionExecutor.check("block_condition", "block_conditions", e.getPlayer(), origin, "origins:prevent_block_used", null, e.getPlayer())) {
+                    if (e.getClickedBlock() != null) e.setCancelled(true);
+                    if (!getPowerArray().contains(e.getPlayer())) return;
                     setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
-                }else{
-                    if(!getPowerArray().contains(e.getPlayer())) return;
+                } else {
+                    if (!getPowerArray().contains(e.getPlayer())) return;
                     setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                 }
             }
@@ -45,11 +44,11 @@ public class PreventBlockUse extends CraftPower implements Listener {
     }
 
     @EventHandler
-    public void run(BlockPlaceEvent e){
-        if(prevent_block_use.contains(e.getPlayer())){
-            for(OriginContainer origin : OriginPlayer.getOrigin(e.getPlayer()).values()){
+    public void run(BlockPlaceEvent e) {
+        if (prevent_block_use.contains(e.getPlayer())) {
+            for (OriginContainer origin : OriginPlayer.getOrigin(e.getPlayer()).values()) {
                 ConditionExecutor conditionExecutor = new ConditionExecutor();
-                if(conditionExecutor.check("block_condition", "block_conditions", e.getPlayer(), origin, "origins:prevent_block_used", null, e.getPlayer())){
+                if (conditionExecutor.check("block_condition", "block_conditions", e.getPlayer(), origin, "origins:prevent_block_used", null, e.getPlayer())) {
                     e.setCancelled(true);
                 }
             }

@@ -1,9 +1,12 @@
 package me.dueris.genesismc;
 
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import org.bukkit.Bukkit;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
+import org.bukkit.craftbukkit.v1_20_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -28,8 +31,8 @@ public class CooldownStuff {
         cooldowns.put(player, cooldownKeybindType);
     }
 
-    private static BarStyle getCooldownPegAMT(int ticks){
-        if(ticks >= 20){
+    private static BarStyle getCooldownPegAMT(int ticks) {
+        if (ticks >= 20) {
             return BarStyle.SEGMENTED_20;
         } else if (ticks >= 12) {
             return BarStyle.SEGMENTED_12;
@@ -37,7 +40,7 @@ public class CooldownStuff {
             return BarStyle.SEGMENTED_10;
         } else if (ticks >= 6) {
             return BarStyle.SEGMENTED_6;
-        }else{
+        } else {
             return BarStyle.SOLID;
         }
     }
@@ -64,6 +67,9 @@ public class CooldownStuff {
 
     public static void startTickingCooldown(BossBar bar, Player player, int cooldownTicks, String cooldownKeybindType) {
         final double decreasePerTick = 1.0 / cooldownTicks;
+        CraftPlayer craftPlayer = (CraftPlayer) player;
+        ServerPlayer serverPlayer = craftPlayer.getHandle();
+        final ServerGamePacketListenerImpl connection = serverPlayer.connection;
 
         new BukkitRunnable() {
             int ticksElapsed = -1;

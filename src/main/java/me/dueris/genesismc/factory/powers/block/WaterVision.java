@@ -13,15 +13,14 @@ import static me.dueris.genesismc.factory.powers.block.WaterBreathe.isInBreathab
 public class WaterVision extends CraftPower {
 
     @Override
-    public void setActive(String tag, Boolean bool){
-        if(powers_active.containsKey(tag)){
+    public void setActive(String tag, Boolean bool) {
+        if (powers_active.containsKey(tag)) {
             powers_active.replace(tag, bool);
-        }else{
+        } else {
             powers_active.put(tag, bool);
         }
     }
 
-    
 
     @Override
     public void run() {

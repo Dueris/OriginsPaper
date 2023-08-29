@@ -16,30 +16,37 @@ import static me.dueris.genesismc.factory.powers.value_modifying.ValueModifyingS
 public class ModifyHarvestPower extends CraftPower implements Listener {
 
     @Override
-    public void setActive(String tag, Boolean bool){
-        if(powers_active.containsKey(tag)){
+    public void setActive(String tag, Boolean bool) {
+        if (powers_active.containsKey(tag)) {
             powers_active.replace(tag, bool);
-        }else{
+        } else {
             powers_active.put(tag, bool);
         }
     }
 
-    
 
     @EventHandler
-    public void run(BlockBreakEvent e){
+    public void run(BlockBreakEvent e) {
         Player p = e.getPlayer();
-        if(modify_harvest.contains(p)){
-            for(OriginContainer origin : OriginPlayer.getOrigin(p).values()){
+        if (modify_harvest.contains(p)) {
+            for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
                 ConditionExecutor conditionExecutor = new ConditionExecutor();
-                if(conditionExecutor.check("block_condition", "block_conditions", p, origin, "origins:modify_harvest", null, p)){
-                    if(origin.getPowerFileFromType("origins:modify_harvest").get("allow", null) == "true"){
+                if (conditionExecutor.check("block_condition", "block_conditions", p, origin, "origins:modify_harvest", null, p)) {
+                    if (origin.getPowerFileFromType("origins:modify_harvest").get("allow", null) == "true") {
                         e.setDropItems(false);
-                        if(!getPowerArray().contains(p)) return;
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
+                        if (origin.getPowerFileFromType(getPowerFile()) == null) {
+                            getPowerArray().remove(p);
+                            return;
+                        }
+                        if (!getPowerArray().contains(p)) return;
+                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                     }
-                }else{
-                    if(!getPowerArray().contains(p)) return;
+                } else {
+                    if (origin.getPowerFileFromType(getPowerFile()) == null) {
+                        getPowerArray().remove(p);
+                        return;
+                    }
+                    if (!getPowerArray().contains(p)) return;
                     setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                 }
             }

@@ -32,9 +32,9 @@ import static me.dueris.genesismc.utils.BukkitColour.RED;
 
 public class Info extends SubCommand implements Listener {
 
+    public static final HashMap<Player, Integer> playerPage = new HashMap<>();
     @SuppressWarnings("FieldMayBeFinal")
     public static HashMap<Player, ArrayList<OriginContainer>> playerOrigins = new HashMap<>();
-    public static final HashMap<Player, Integer> playerPage = new HashMap<>();
 
     @Override
     public String getName() {

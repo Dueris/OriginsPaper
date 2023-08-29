@@ -17,17 +17,6 @@ import java.util.ArrayList;
 public class WaterBreathe extends CraftPower {
     public static ArrayList<Player> outofAIR = new ArrayList<>();
 
-    @Override
-    public void setActive(String tag, Boolean bool){
-        if(powers_active.containsKey(tag)){
-            powers_active.replace(tag, bool);
-        }else{
-            powers_active.put(tag, bool);
-        }
-    }
-
-    
-
     public static boolean isInBreathableWater(Player player) {
         Block block = player.getEyeLocation().getBlock();
         Material material = block.getType();
@@ -37,12 +26,25 @@ public class WaterBreathe extends CraftPower {
     }
 
     @Override
+    public void setActive(String tag, Boolean bool) {
+        if (powers_active.containsKey(tag)) {
+            powers_active.replace(tag, bool);
+        } else {
+            powers_active.put(tag, bool);
+        }
+    }
+
+    @Override
     public void run() {
         for (Player p : Bukkit.getOnlinePlayers()) {
-            for(OriginContainer origin : OriginPlayer.getOrigin(p).values()){
+            for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
                 ConditionExecutor conditionExecutor = new ConditionExecutor();
-                if(conditionExecutor.check("condition", "conditions", p, origin, getPowerFile(), null, p)) {
-                    if(!getPowerArray().contains(p)) return;
+                if (conditionExecutor.check("condition", "conditions", p, origin, getPowerFile(), null, p)) {
+                    if (origin.getPowerFileFromType(getPowerFile()) == null) {
+                        getPowerArray().remove(p);
+                        return;
+                    }
+                    if (!getPowerArray().contains(p)) return;
                     setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                     if (water_breathing.contains(p)) {
                         if (isInBreathableWater(p)) {
@@ -54,7 +56,8 @@ public class WaterBreathe extends CraftPower {
                             p.addPotionEffect(new PotionEffect(PotionEffectType.WATER_BREATHING, 3, 1, false, false, false));
                             outofAIR.remove(p);
                         } else {
-                            if (p.getGameMode().equals(GameMode.CREATIVE) || p.getGameMode().equals(GameMode.SPECTATOR)) return;
+                            if (p.getGameMode().equals(GameMode.CREATIVE) || p.getGameMode().equals(GameMode.SPECTATOR))
+                                return;
                             int remainingAir = p.getRemainingAir();
                             if (remainingAir <= 5) {
                                 p.setRemainingAir(0);
@@ -71,8 +74,12 @@ public class WaterBreathe extends CraftPower {
                             }
                         }
                     }
-                }else{
-                    if(!getPowerArray().contains(p)) return;
+                } else {
+                    if (origin.getPowerFileFromType(getPowerFile()) == null) {
+                        getPowerArray().remove(p);
+                        return;
+                    }
+                    if (!getPowerArray().contains(p)) return;
                     setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                 }
             }

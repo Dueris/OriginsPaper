@@ -19,33 +19,41 @@ import java.util.ArrayList;
 public class Gravity extends CraftPower implements Listener {
 
     @Override
-    public void setActive(String tag, Boolean bool){
-        if(powers_active.containsKey(tag)){
+    public void setActive(String tag, Boolean bool) {
+        if (powers_active.containsKey(tag)) {
             powers_active.replace(tag, bool);
-        }else{
+        } else {
             powers_active.put(tag, bool);
         }
     }
 
-    
 
     @Override
     public void run() {
         for (Player p : Bukkit.getOnlinePlayers()) {
-            for(OriginContainer origin : OriginPlayer.getOrigin(p).values()){
-                ConditionExecutor executor = new ConditionExecutor();
-                if(executor.check("condition", "conditions", p, origin, getPowerFile(), null, p)){
-                    if(!getPowerArray().contains(p)) return;
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
-                    if (no_gravity.contains(p)) {
-                        p.setGravity(false);
-                        p.setFallDistance(0.1f);
+            for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
+                if (no_gravity.contains(p)) {
+                    ConditionExecutor executor = new ConditionExecutor();
+                    if (executor.check("condition", "conditions", p, origin, getPowerFile(), null, p)) {
+                        if (origin.getPowerFileFromType(getPowerFile()) == null) getPowerArray().remove(p);
+                        if (!getPowerArray().contains(p)) return;
+                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
+                        if (no_gravity.contains(p)) {
+                            p.setGravity(false);
+                            p.setFallDistance(0.1f);
+                        } else {
+                            p.setGravity(true);
+                        }
                     } else {
-                        p.setGravity(true);
+                        if (origin.getPowerFileFromType(getPowerFile()) == null) {
+                            getPowerArray().remove(p);
+                            return;
+                        }
+                        if (!getPowerArray().contains(p)) return;
+                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                     }
-                }else{
-                    if(!getPowerArray().contains(p)) return;
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
+                } else {
+                    p.setGravity(true);
                 }
             }
 
@@ -70,7 +78,7 @@ public class Gravity extends CraftPower implements Listener {
             new BukkitRunnable() {
                 @Override
                 public void run() {
-                    if(e.getPlayer().isFlying()) return;
+                    if (e.getPlayer().isFlying()) return;
                     if (e.getPlayer().isSneaking()) {
                         if (e.getPlayer().getVelocity().getY() < -0.2) {
                             //nah

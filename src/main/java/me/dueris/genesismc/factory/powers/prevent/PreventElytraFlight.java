@@ -16,29 +16,36 @@ import static me.dueris.genesismc.factory.powers.prevent.PreventSuperClass.preve
 public class PreventElytraFlight extends CraftPower implements Listener {
 
     @Override
-    public void setActive(String tag, Boolean bool){
-        if(powers_active.containsKey(tag)){
+    public void setActive(String tag, Boolean bool) {
+        if (powers_active.containsKey(tag)) {
             powers_active.replace(tag, bool);
-        }else{
+        } else {
             powers_active.put(tag, bool);
         }
     }
 
-    
 
     @EventHandler
-    public void run(EntityToggleGlideEvent e){
-        if(e.getEntity() instanceof Player p){
-            if(prevent_elytra_flight.contains(p)){
-                for(OriginContainer origin : OriginPlayer.getOrigin(p).values()){
+    public void run(EntityToggleGlideEvent e) {
+        if (e.getEntity() instanceof Player p) {
+            if (prevent_elytra_flight.contains(p)) {
+                for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
                     ConditionExecutor conditionExecutor = new ConditionExecutor();
-                    if(conditionExecutor.check("condition", "conditions", p, origin, "origins:prevent_elytra_flight", null, p)){
+                    if (conditionExecutor.check("condition", "conditions", p, origin, "origins:prevent_elytra_flight", null, p)) {
                         e.setCancelled(true);
-                        if(!getPowerArray().contains(p)) return;
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
-                    }else{
-                        if(!getPowerArray().contains(p)) return;
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
+                        if (origin.getPowerFileFromType(getPowerFile()) == null) {
+                            getPowerArray().remove(p);
+                            return;
+                        }
+                        if (!getPowerArray().contains(p)) return;
+                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
+                    } else {
+                        if (origin.getPowerFileFromType(getPowerFile()) == null) {
+                            getPowerArray().remove(p);
+                            return;
+                        }
+                        if (!getPowerArray().contains(p)) return;
+                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                     }
                 }
             }

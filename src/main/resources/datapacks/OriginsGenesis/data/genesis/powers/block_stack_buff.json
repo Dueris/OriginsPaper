@@ -1,7 +1,0 @@
-{
-  "type": "genesis:block_stack_buff",
-  "block-type": "minecraft:sculk_block",
-  "hidden": false,
-  "name": "menu.sculk.amongst_people.title",
-  "description": "menu.sculk.amongst_people.description"
-}

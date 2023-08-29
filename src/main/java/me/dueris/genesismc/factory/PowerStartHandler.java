@@ -8,7 +8,6 @@ import org.bukkit.Bukkit;
 
 import java.util.List;
 
-import static me.dueris.genesismc.GenesisMC.getPlugin;
 import static me.dueris.genesismc.factory.powers.CraftPower.findCraftPowerClasses;
 
 public class PowerStartHandler {
@@ -18,7 +17,7 @@ public class PowerStartHandler {
         List<Class<? extends CraftPower>> craftPowerClasses = findCraftPowerClasses();
         for (Class<? extends CraftPower> c : craftPowerClasses) {
             CraftPower.register(c);
-            if(GenesisDataFiles.getMainConfig().getString("console-startup-debug").equalsIgnoreCase("true")){
+            if (GenesisDataFiles.getMainConfig().getString("console-startup-debug").equalsIgnoreCase("true")) {
                 Bukkit.getConsoleSender().sendMessage(c.getSimpleName() + " has been registered with power of " + c.newInstance().getPowerFile());
             }
         }

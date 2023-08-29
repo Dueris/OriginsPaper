@@ -17,10 +17,31 @@ import java.util.zip.ZipInputStream;
 
 public class BukkitUtils {
 
+    public static void deleteDirectory(Path directory) throws IOException {
+        if (Files.exists(directory)) {
+            Files.walk(directory)
+                    .sorted((a, b) -> b.compareTo(a)) // Sort in reverse order for correct deletion
+                    .forEach(path -> {
+                        try {
+                            Files.deleteIfExists(path);
+                        } catch (IOException e) {
+                            System.err.println("Error deleting: " + path);
+                        }
+                    });
+        }
+    }
+
     public static void CopyOriginDatapack() {
+        if (Files.exists(Path.of(Bukkit.getWorlds().get(0).getName() + File.separator + "datapacks" + File.separator + "OriginsGenesis"))) {
+            String path = Path.of(Bukkit.getWorlds().get(0).getName() + File.separator + "datapacks" + File.separator + "OriginsGenesis").toAbsolutePath().toString();
+            try {
+                deleteDirectory(Path.of(path));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
         if (Files.exists(Path.of(Bukkit.getWorlds().get(0).getName() + File.separator + "datapacks" + File.separator + "OriginsGenesis")))
             return;
-
         try {
             CodeSource src = BukkitUtils.class.getProtectionDomain().getCodeSource();
             URL jar = src.getLocation();

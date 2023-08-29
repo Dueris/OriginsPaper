@@ -23,22 +23,10 @@ import java.util.UUID;
 
 public class BigLeap extends CraftPower implements Listener {
 
-    @Override
-    public void setActive(String tag, Boolean bool){
-        if(powers_active.containsKey(tag)){
-            powers_active.replace(tag, bool);
-        }else{
-            powers_active.put(tag, bool);
-        }
-    }
-
-    
-
     private static final HashMap<UUID, Integer> cooldownBefore = new HashMap<>();
     private static final HashMap<UUID, Long> cooldownAfter = new HashMap<>();
     private static final HashMap<UUID, Boolean> playSound = new HashMap<>();
     private static final ArrayList<UUID> inAir = new ArrayList<>();
-
 
     public static boolean leapToggle(Player p) {
         PersistentDataContainer data = p.getPersistentDataContainer();
@@ -52,6 +40,15 @@ public class BigLeap extends CraftPower implements Listener {
         return true;
     }
 
+    @Override
+    public void setActive(String tag, Boolean bool) {
+        if (powers_active.containsKey(tag)) {
+            powers_active.replace(tag, bool);
+        } else {
+            powers_active.put(tag, bool);
+        }
+    }
+
     @EventHandler
     public void onRabbitLeap(PlayerToggleSneakEvent e) {
         PersistentDataContainer data = e.getPlayer().getPersistentDataContainer();
@@ -60,10 +57,14 @@ public class BigLeap extends CraftPower implements Listener {
                 if (origin.getPowerFileFromType("genesis:leap") != null) {
                     Player p = e.getPlayer();
                     ConditionExecutor executor = new ConditionExecutor();
-                    if(executor.check("condition", "conditions", p, origin, getPowerFile(), null, p)){
-                        if(!getPowerArray().contains(p)) return;
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
-                        for(HashMap<String, Object> modifier : origin.getPowerFileFromType("genesis:leap").getPossibleModifiers("modifier", "modifiers")){
+                    if (executor.check("condition", "conditions", p, origin, getPowerFile(), null, p)) {
+                        if (origin.getPowerFileFromType(getPowerFile()) == null) {
+                            getPowerArray().remove(p);
+                            return;
+                        }
+                        if (!getPowerArray().contains(p)) return;
+                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
+                        for (HashMap<String, Object> modifier : origin.getPowerFileFromType("genesis:leap").getPossibleModifiers("modifier", "modifiers")) {
                             int cooldownTicks = Integer.valueOf(modifier.get("cooldown").toString());
                             int tickCharge = Integer.valueOf(modifier.get("tick_charge").toString());
                             int toggleState = data.get(new NamespacedKey(GenesisMC.getPlugin(), "toggle"), PersistentDataType.INTEGER);
@@ -146,9 +147,13 @@ public class BigLeap extends CraftPower implements Listener {
                                 }
                             }.runTaskTimer(GenesisMC.getPlugin(), 0L, 2L);
                         }
-                    }else{
-                        if(!getPowerArray().contains(p)) return;
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
+                    } else {
+                        if (origin.getPowerFileFromType(getPowerFile()) == null) {
+                            getPowerArray().remove(p);
+                            return;
+                        }
+                        if (!getPowerArray().contains(p)) return;
+                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                     }
                 }
             }

@@ -1,7 +1,0 @@
-{
-  "type": "genesis:supernova",
-  "hidden": false,
-  "explosion_radius": 6,
-  "name": "menu.starborne.supernova.title",
-  "description": "menu.starborne.supernova.description"
-}

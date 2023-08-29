@@ -32,20 +32,19 @@ import static me.dueris.genesismc.KeybindHandler.isKeyBeingPressed;
 
 public class Inventory extends CraftPower implements CommandExecutor, Listener {
 
-    @Override
-    public void setActive(String tag, Boolean bool){
-        if(powers_active.containsKey(tag)){
-            powers_active.replace(tag, bool);
-        }else{
-            powers_active.put(tag, bool);
-        }
-    }
-
-    
-
     private final ArrayList<SubCommand> subCommands = new ArrayList<>();
 
+
     public Inventory() {
+    }
+
+    @Override
+    public void setActive(String tag, Boolean bool) {
+        if (powers_active.containsKey(tag)) {
+            powers_active.replace(tag, bool);
+        } else {
+            powers_active.put(tag, bool);
+        }
     }
 
     @EventHandler
@@ -88,11 +87,11 @@ public class Inventory extends CraftPower implements CommandExecutor, Listener {
     @EventHandler
     public void keytrigger(KeybindTriggerEvent e) {
         for (OriginContainer origin : OriginPlayer.getOrigin(e.getPlayer()).values()) {
-            if (shulker_inventory.contains(e.getPlayer())) {
+            if (getPowerArray().contains(e.getPlayer())) {
                 ConditionExecutor executor = new ConditionExecutor();
-                if(CooldownStuff.isPlayerInCooldown(e.getPlayer(), e.getKey())) return;
-                if(executor.check("condition", "conditions", e.getPlayer(), origin, getPowerFile(), null, e.getPlayer())){
-                    if(!getPowerArray().contains(e.getPlayer())) return;
+                if (CooldownStuff.isPlayerInCooldown(e.getPlayer(), e.getKey())) return;
+                if (executor.check("condition", "conditions", e.getPlayer(), origin, getPowerFile(), null, e.getPlayer())) {
+                    if (!getPowerArray().contains(e.getPlayer())) return;
                     setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                     if (isKeyBeingPressed(e.getPlayer(), origin.getPowerFileFromType("origins:inventory").getKey().get("key").toString(), true)) {
                         ArrayList<ItemStack> vaultItems = InventoryUtils.getItems(e.getPlayer());
@@ -100,8 +99,8 @@ public class Inventory extends CraftPower implements CommandExecutor, Listener {
                         vaultItems.stream().forEach(itemStack -> vault.addItem(itemStack));
                         e.getPlayer().openInventory(vault);
                     }
-                }else{
-                    if(!getPowerArray().contains(e.getPlayer())) return;
+                } else {
+                    if (!getPowerArray().contains(e.getPlayer())) return;
                     setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                 }
             }

@@ -26,17 +26,17 @@ import java.util.List;
 
 public class Recipe extends CraftPower implements Listener {
 
-    private static void loadRecipe(Player player, OriginContainer origin, String powerfile){
-        if(recipe.contains(player)){
-            if(origin.getPowerFileFromType(powerfile).getRecipe().get("type").toString() == "minecraft:crafting_shapeless"){
+    private static void loadRecipe(Player player, OriginContainer origin, String powerfile) {
+        if (recipe.contains(player)) {
+            if (origin.getPowerFileFromType(powerfile).getRecipe().get("type").toString() == "minecraft:crafting_shapeless") {
                 //uses shapeless recipe
                 ShapelessRecipe SHAPELESS_RECIPE = new ShapelessRecipe(NamespacedKey.minecraft(origin.getPowerFileFromType(powerfile).getRecipe().get("id").toString()), new ItemStack(Material.valueOf(origin.getPowerFileFromType(powerfile).getRecipeResult().get("item").toString().toUpperCase().split(":")[1])));
                 SHAPELESS_RECIPE.setCategory(CraftingBookCategory.MISC);
-                for(String ingredString : origin.getPowerFileFromType(powerfile).getRecipeIngredients()){
+                for (String ingredString : origin.getPowerFileFromType(powerfile).getRecipeIngredients()) {
                     SHAPELESS_RECIPE.addIngredient(Material.valueOf(ingredString.toUpperCase().split(":")[1]));
                 }
                 Bukkit.addRecipe(SHAPELESS_RECIPE);
-            }else{
+            } else {
                 //uses shaped recipe
                 ShapedRecipe SHAPED_RECIPE = new ShapedRecipe(NamespacedKey.minecraft(origin.getPowerFileFromType(powerfile).getRecipe().get("id").toString()), new ItemStack(Material.valueOf(origin.getPowerFileFromType(powerfile).getRecipeResult().get("item").toString().toUpperCase().split(":")[1])));
                 SHAPED_RECIPE.setCategory(CraftingBookCategory.MISC);
@@ -75,46 +75,52 @@ public class Recipe extends CraftPower implements Listener {
     }
 
     @EventHandler
-    public void load(ServerLoadEvent e){
-        for(Player player : Bukkit.getOnlinePlayers()){
-            for(OriginContainer origin : OriginPlayer.getOrigin(player).values()){
+    public void load(ServerLoadEvent e) {
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            for (OriginContainer origin : OriginPlayer.getOrigin(player).values()) {
                 ConditionExecutor conditionExecutor = new ConditionExecutor();
-                if(conditionExecutor.check("condition", "conditions", player, origin, getPowerFile(), null, player)) {
-                    if(!getPowerArray().contains(player)) return;
+                if (conditionExecutor.check("condition", "conditions", player, origin, getPowerFile(), null, player)) {
+                    if (!getPowerArray().contains(player)) return;
                     setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                     loadRecipe(player, origin, "origins:recipe");
-                }else{if(!getPowerArray().contains(player)) return;
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);}
+                } else {
+                    if (!getPowerArray().contains(player)) return;
+                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
+                }
             }
         }
     }
 
     @EventHandler
-    public void load(PlayerJoinEvent e){
-        for(Player player : Bukkit.getOnlinePlayers()){
-            for(OriginContainer origin : OriginPlayer.getOrigin(player).values()){
+    public void load(PlayerJoinEvent e) {
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            for (OriginContainer origin : OriginPlayer.getOrigin(player).values()) {
                 ConditionExecutor conditionExecutor = new ConditionExecutor();
-                if(conditionExecutor.check("condition", "conditions", player, origin, getPowerFile(), null, player)) {
-                    if(!getPowerArray().contains(player)) return;
+                if (conditionExecutor.check("condition", "conditions", player, origin, getPowerFile(), null, player)) {
+                    if (!getPowerArray().contains(player)) return;
                     setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                     loadRecipe(player, origin, "origins:recipe");
-                }else{if(!getPowerArray().contains(player)) return;
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);}
+                } else {
+                    if (!getPowerArray().contains(player)) return;
+                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
+                }
             }
         }
     }
 
     @EventHandler
-    public void load(OriginChangeEvent e){
-        for(Player player : Bukkit.getOnlinePlayers()){
-            for(OriginContainer origin : OriginPlayer.getOrigin(player).values()){
+    public void load(OriginChangeEvent e) {
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            for (OriginContainer origin : OriginPlayer.getOrigin(player).values()) {
                 ConditionExecutor conditionExecutor = new ConditionExecutor();
-                if(conditionExecutor.check("condition", "conditions", player, origin, getPowerFile(), null, player)) {
-                    if(!getPowerArray().contains(player)) return;
+                if (conditionExecutor.check("condition", "conditions", player, origin, getPowerFile(), null, player)) {
+                    if (!getPowerArray().contains(player)) return;
                     setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                     loadRecipe(player, origin, "origins:recipe");
-                }else{if(!getPowerArray().contains(player)) return;
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);}
+                } else {
+                    if (!getPowerArray().contains(player)) return;
+                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
+                }
             }
         }
     }
@@ -135,13 +141,13 @@ public class Recipe extends CraftPower implements Listener {
     }
 
     @Override
-    public void setActive(String tag, Boolean bool){
-        if(powers_active.containsKey(tag)){
+    public void setActive(String tag, Boolean bool) {
+        if (powers_active.containsKey(tag)) {
             powers_active.replace(tag, bool);
-        }else{
+        } else {
             powers_active.put(tag, bool);
         }
     }
 
-    
+
 }

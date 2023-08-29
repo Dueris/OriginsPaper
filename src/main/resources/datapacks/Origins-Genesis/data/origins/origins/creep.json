@@ -1,0 +1,17 @@
+{
+  "powers": [
+    "origins:felinephobia",
+    "origins:explode_tick",
+    "origins:stronger_thunderstorm",
+    "origins:blast_resistance",
+    "origins:explode_on_fire",
+    "origins:explode_tick_toggle"
+  ],
+  "icon": {
+    "item": "minecraft:gunpowder"
+  },
+  "name": "Creep",
+  "description": "Silent but deadly, the Creep are skilled in the arts of stealth, however they are TERRIBLY allergic to cats",
+  "order": 0,
+  "impact": 2
+}

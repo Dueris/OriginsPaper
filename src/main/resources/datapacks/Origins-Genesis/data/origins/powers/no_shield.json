@@ -1,0 +1,12 @@
+{
+  "type": "origins:prevent_item_use",
+  "item_condition": {
+    "type": "origins:ingredient",
+    "ingredient": {
+      "tag": "origins:shields"
+    }
+  },
+  "name": "Unwieldy",
+  "description": "The way your hands are formed provide no way of holding a shield upright",
+  "hidden": false
+}

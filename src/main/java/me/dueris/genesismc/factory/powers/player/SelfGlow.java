@@ -17,37 +17,48 @@ import java.util.ArrayList;
 public class SelfGlow extends CraftPower {
 
     @Override
-    public void setActive(String tag, Boolean bool){
-        if(powers_active.containsKey(tag)){
+    public void setActive(String tag, Boolean bool) {
+        if (powers_active.containsKey(tag)) {
             powers_active.replace(tag, bool);
-        }else{
+        } else {
             powers_active.put(tag, bool);
         }
     }
 
-    
 
     @Override
     public void run() {
-        for(Player p : Bukkit.getOnlinePlayers()){
-            for(OriginContainer origin : OriginPlayer.getOrigin(p).values()){
+        for (Player p : Bukkit.getOnlinePlayers()) {
+            for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
                 ConditionExecutor conditionExecutor = new ConditionExecutor();
-                for(Entity entity : Bukkit.getServer().getWorld(p.getWorld().getKey()).getEntities()){
-                    if(entity instanceof Player player){
-                        if(conditionExecutor.check("entity_condition", "entity_conditions", p, origin, getPowerFile(), null, entity)){
-                            if(conditionExecutor.check("bientity_condition", "bientity_conditions", p, origin, getPowerFile(), null, entity)){
-                                if(!getPowerArray().contains(p)) return;
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
+                for (Entity entity : Bukkit.getServer().getWorld(p.getWorld().getKey()).getEntities()) {
+                    if (entity instanceof Player player) {
+                        if (conditionExecutor.check("entity_condition", "entity_conditions", p, origin, getPowerFile(), null, entity)) {
+                            if (conditionExecutor.check("bientity_condition", "bientity_conditions", p, origin, getPowerFile(), null, entity)) {
+                                if (origin.getPowerFileFromType(getPowerFile()) == null) {
+                                    getPowerArray().remove(p);
+                                    return;
+                                }
+                                if (!getPowerArray().contains(p)) return;
+                                setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                                 CraftPlayer craftPlayers = (CraftPlayer) player;
                                 craftPlayers.getHandle().connection.send(new ClientboundUpdateMobEffectPacket(p.getEntityId(),
                                         new MobEffectInstance(MobEffect.byId(24), 5, 1, false, false, false)));
-                            }else{
-                                if(!getPowerArray().contains(p)) return;
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
+                            } else {
+                                if (origin.getPowerFileFromType(getPowerFile()) == null) {
+                                    getPowerArray().remove(p);
+                                    return;
+                                }
+                                if (!getPowerArray().contains(p)) return;
+                                setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                             }
-                        }else{
-                            if(!getPowerArray().contains(p)) return;
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
+                        } else {
+                            if (origin.getPowerFileFromType(getPowerFile()) == null) {
+                                getPowerArray().remove(p);
+                                return;
+                            }
+                            if (!getPowerArray().contains(p)) return;
+                            setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                         }
                     }
                 }

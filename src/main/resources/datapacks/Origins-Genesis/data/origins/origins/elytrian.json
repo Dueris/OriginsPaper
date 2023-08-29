@@ -1,0 +1,17 @@
+{
+  "powers": [
+    "origins:elytra",
+    "origins:launch_into_air",
+    "origins:aerial_combatant",
+    "origins:light_armor",
+    "origins:claustrophobia",
+    "origins:more_kinetic_damage"
+  ],
+  "icon": {
+    "item": "minecraft:elytra"
+  },
+  "order": 3,
+  "impact": 1,
+  "name": "Elytrian",
+  "description": "Often flying around in the winds, Elytrians are uncomfortable when they dont have enough space above their head"
+}

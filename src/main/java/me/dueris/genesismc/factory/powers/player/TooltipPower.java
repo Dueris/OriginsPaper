@@ -15,41 +15,6 @@ import java.util.HashMap;
 
 public class TooltipPower extends CraftPower {
 
-    @Override
-    public void setActive(String tag, Boolean bool){
-        if(powers_active.containsKey(tag)){
-            powers_active.replace(tag, bool);
-        }else{
-            powers_active.put(tag, bool);
-        }
-    }
-
-    
-
-    @Override
-    public void run() {
-        for(Player p : Bukkit.getOnlinePlayers()){
-            if(getPowerArray().contains(p)){
-                for(OriginContainer origin : OriginPlayer.getOrigin(p).values()){
-                    ConditionExecutor conditionExecutor = new ConditionExecutor();
-                    if(conditionExecutor.check("item_condition", "item_conditions", p, origin, getPowerFile(), null, p)){
-                        if(!getPowerArray().contains(p)) return;
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
-                        for(HashMap<String, Object> text : origin.getPowerFileFromType(getPowerFile()).getSingularAndPlural("text", "texts")){
-                            applyTooltip(p, p.getItemInHand(), text.get("text").toString());
-                        }
-                    }else{
-                        if(!getPowerArray().contains(p)) return;
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
-                        removeTooltip(p, p.getItemInHand());
-                    }
-                }
-            }else{
-                removeTooltip(p, p.getItemInHand());
-            }
-        }
-    }
-
     public static void applyTooltip(Player player, ItemStack itemStack, String tooltip) {
         if (player == null || itemStack == null) {
             return;
@@ -73,11 +38,52 @@ public class TooltipPower extends CraftPower {
         if (itemMeta == null) {
             return;
         }
-        if(itemMeta.getLore() == null) return;
-        for(String lore : itemMeta.getLore()){
+        if (itemMeta.getLore() == null) return;
+        for (String lore : itemMeta.getLore()) {
             itemMeta.getLore().remove(lore);
         }
         itemStack.setItemMeta(itemMeta);
+    }
+
+    @Override
+    public void setActive(String tag, Boolean bool) {
+        if (powers_active.containsKey(tag)) {
+            powers_active.replace(tag, bool);
+        } else {
+            powers_active.put(tag, bool);
+        }
+    }
+
+    @Override
+    public void run() {
+        for (Player p : Bukkit.getOnlinePlayers()) {
+            if (getPowerArray().contains(p)) {
+                for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
+                    ConditionExecutor conditionExecutor = new ConditionExecutor();
+                    if (conditionExecutor.check("item_condition", "item_conditions", p, origin, getPowerFile(), null, p)) {
+                        if (origin.getPowerFileFromType(getPowerFile()) == null) {
+                            getPowerArray().remove(p);
+                            return;
+                        }
+                        if (!getPowerArray().contains(p)) return;
+                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
+                        for (HashMap<String, Object> text : origin.getPowerFileFromType(getPowerFile()).getSingularAndPlural("text", "texts")) {
+                            applyTooltip(p, p.getItemInHand(), text.get("text").toString());
+                        }
+                    } else {
+                        if (origin.getPowerFileFromType(getPowerFile()) == null) {
+                            getPowerArray().remove(p);
+                            return;
+                        }
+                        if (!getPowerArray().contains(p)) return;
+                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
+                        removeTooltip(p, p.getItemInHand());
+                    }
+                }
+            } else {
+                removeTooltip(p, p.getItemInHand());
+            }
+        }
     }
 
     @Override

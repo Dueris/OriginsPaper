@@ -17,9 +17,9 @@ import java.util.HashMap;
 import java.util.Random;
 import java.util.UUID;
 
-import static me.dueris.genesismc.factory.powers.block.WaterBreathe.outofAIR;
 import static me.dueris.genesismc.factory.powers.Power.water_breathing;
 import static me.dueris.genesismc.factory.powers.Power.water_vulnerability;
+import static me.dueris.genesismc.factory.powers.block.WaterBreathe.outofAIR;
 
 public class WaterDamage extends BukkitRunnable implements Listener {
     private final HashMap<UUID, Long> cooldown;

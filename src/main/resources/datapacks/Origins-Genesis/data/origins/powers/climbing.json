@@ -1,0 +1,21 @@
+{
+  "type": "origins:multiple",
+  "toggle": {
+    "type": "origins:toggle",
+    "retain_state": true,
+    "key": {
+      "key": "key.origins.primary_active",
+      "continuous": true
+    }
+  },
+  "climbing": {
+    "type": "origins:climbing",
+    "condition": {
+      "type": "origins:power_active",
+      "power": "origins:climbing_toggle"
+    }
+  },
+  "name": "Climbing",
+  "description": "You are able to climb up any kind of wall, just not ladders",
+  "hidden": false
+}

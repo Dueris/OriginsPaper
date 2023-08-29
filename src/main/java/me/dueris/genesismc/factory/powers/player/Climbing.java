@@ -19,18 +19,16 @@ import static org.bukkit.Material.AIR;
 
 public class Climbing extends CraftPower {
 
+    public ArrayList<Player> active_climbing = new ArrayList<>();
+
     @Override
-    public void setActive(String tag, Boolean bool){
-        if(powers_active.containsKey(tag)){
+    public void setActive(String tag, Boolean bool) {
+        if (powers_active.containsKey(tag)) {
             powers_active.replace(tag, bool);
-        }else{
+        } else {
             powers_active.put(tag, bool);
         }
     }
-
-    
-
-    public ArrayList<Player> active_climbing = new ArrayList<>();
 
     public boolean isActiveClimbing(Player player) {
         return active_climbing.contains(player);
@@ -68,14 +66,18 @@ public class Climbing extends CraftPower {
                     for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
                         boolean cancel_bool = origin.getPowerFileFromType("origins:climbing").getRainCancel();
                         ConditionExecutor executor = new ConditionExecutor();
-                        if(executor.check("condition", "conditions", p, origin, getPowerFile(), null, p)){
-                            if(!getPowerArray().contains(p)) return;
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
+                        if (executor.check("condition", "conditions", p, origin, getPowerFile(), null, p)) {
+                            if (origin.getPowerFileFromType(getPowerFile()) == null) {
+                                getPowerArray().remove(p);
+                                return;
+                            }
+                            if (!getPowerArray().contains(p)) return;
+                            setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                             if (!cancel_bool) {
                                 if (!p.isSneaking()) return;
                                 p.addPotionEffect(new PotionEffect(PotionEffectType.LEVITATION, 6, 2, false, false, false));
                                 getActiveClimbingMap().add(p);
-                                new BukkitRunnable(){
+                                new BukkitRunnable() {
                                     @Override
                                     public void run() {
                                         getActiveClimbingMap().remove(p);
@@ -85,7 +87,7 @@ public class Climbing extends CraftPower {
                                 if (block.getType() != AIR && p.isSneaking() && !p.isInRain()) {
                                     p.addPotionEffect(new PotionEffect(PotionEffectType.LEVITATION, 6, 2, false, false, false));
                                     getActiveClimbingMap().add(p);
-                                    new BukkitRunnable(){
+                                    new BukkitRunnable() {
                                         @Override
                                         public void run() {
                                             getActiveClimbingMap().remove(p);
@@ -93,9 +95,13 @@ public class Climbing extends CraftPower {
                                     }.runTaskLater(GenesisMC.getPlugin(), 1L);
                                 }
                             }
-                        }else{
-                            if(!getPowerArray().contains(p)) return;
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
+                        } else {
+                            if (origin.getPowerFileFromType(getPowerFile()) == null) {
+                                getPowerArray().remove(p);
+                                return;
+                            }
+                            if (!getPowerArray().contains(p)) return;
+                            setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                         }
                     }
                 }

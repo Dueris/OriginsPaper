@@ -1,9 +1,0 @@
-{
-  "type": "origins:phasing",
-  "hidden": false,
-  "name": "menu.phantom.phasing.title",
-  "description": "menu.phantom.phasing.description",
-  "blacklist": true,
-  "render_type": "blindness",
-  "view_distance": 10
-}

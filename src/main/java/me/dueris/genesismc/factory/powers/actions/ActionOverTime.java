@@ -37,12 +37,20 @@ public class ActionOverTime extends CraftPower {
                         return;
                     } else {
                         ConditionExecutor executor = new ConditionExecutor();
-                        if(executor.check("condition", "conditions", p, origin, getPowerFile(), null, p)){
-                            if(!getPowerArray().contains(p)) return;
+                        if (executor.check("condition", "conditions", p, origin, getPowerFile(), null, p)) {
+                            if (origin.getPowerFileFromType(getPowerFile()) == null) {
+                                getPowerArray().remove(p);
+                                return;
+                            }
+                            if (!getPowerArray().contains(p)) return;
                             setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                             ActionTypes.EntityActionType(p, power.getEntityAction());
-                        }else{
-                            if(!getPowerArray().contains(p)) return;
+                        } else {
+                            if (origin.getPowerFileFromType(getPowerFile()) == null) {
+                                getPowerArray().remove(p);
+                                return;
+                            }
+                            if (!getPowerArray().contains(p)) return;
                             setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                         }
                         ticksE = 0;
@@ -64,9 +72,9 @@ public class ActionOverTime extends CraftPower {
 
     @Override
     public void setActive(String tag, Boolean bool) {
-        if(powers_active.containsKey(tag)){
+        if (powers_active.containsKey(tag)) {
             powers_active.replace(tag, bool);
-        }else{
+        } else {
             powers_active.put(tag, bool);
         }
     }

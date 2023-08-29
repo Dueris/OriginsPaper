@@ -17,9 +17,9 @@ public class ActionOnWakeUp extends CraftPower implements Listener {
     }
 
     @EventHandler
-    public void w(PlayerBedLeaveEvent e){
-        if(!getPowerArray().contains(e.getPlayer())) return;
-        for(OriginContainer origin : OriginPlayer.getOrigin(e.getPlayer()).values()){
+    public void w(PlayerBedLeaveEvent e) {
+        if (!getPowerArray().contains(e.getPlayer())) return;
+        for (OriginContainer origin : OriginPlayer.getOrigin(e.getPlayer()).values()) {
             setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
             ActionTypes.EntityActionType(e.getPlayer(), origin.getPowerFileFromType(getPowerFile()).getEntityAction());
             ActionTypes.BlockActionType(e.getBed().getLocation(), origin.getPowerFileFromType(getPowerFile()).getEntityAction());
@@ -38,9 +38,9 @@ public class ActionOnWakeUp extends CraftPower implements Listener {
 
     @Override
     public void setActive(String tag, Boolean bool) {
-        if(powers_active.containsKey(tag)){
+        if (powers_active.containsKey(tag)) {
             powers_active.replace(tag, bool);
-        }else{
+        } else {
             powers_active.put(tag, bool);
         }
     }

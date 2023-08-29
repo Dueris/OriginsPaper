@@ -12,30 +12,37 @@ import java.util.ArrayList;
 public class Swimming extends CraftPower {
 
     @Override
-    public void setActive(String tag, Boolean bool){
-        if(powers_active.containsKey(tag)){
+    public void setActive(String tag, Boolean bool) {
+        if (powers_active.containsKey(tag)) {
             powers_active.replace(tag, bool);
-        }else{
+        } else {
             powers_active.put(tag, bool);
         }
     }
 
-    
 
     @Override
     public void run() {
-        for(Player p : Bukkit.getOnlinePlayers()){
-            for(OriginContainer origin : OriginPlayer.getOrigin(p).values()){
-                if(swimming.contains(p)){
+        for (Player p : Bukkit.getOnlinePlayers()) {
+            for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
+                if (swimming.contains(p)) {
                     ConditionExecutor conditionExecutor = new ConditionExecutor();
-                    if(!conditionExecutor.check("condition", "conditions", p, origin, getPowerFile(), null, p)){
-                        if(!getPowerArray().contains(p)) return;
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
+                    if (!conditionExecutor.check("condition", "conditions", p, origin, getPowerFile(), null, p)) {
+                        if (origin.getPowerFileFromType(getPowerFile()) == null) {
+                            getPowerArray().remove(p);
+                            return;
+                        }
+                        if (!getPowerArray().contains(p)) return;
+                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                         return;
-                    }else{
+                    } else {
                         p.setSwimming(true);
-                        if(!getPowerArray().contains(p)) return;
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
+                        if (origin.getPowerFileFromType(getPowerFile()) == null) {
+                            getPowerArray().remove(p);
+                            return;
+                        }
+                        if (!getPowerArray().contains(p)) return;
+                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                     }
                 }
             }

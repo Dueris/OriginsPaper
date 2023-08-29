@@ -16,15 +16,14 @@ import java.util.ArrayList;
 public class Grounded extends CraftPower {
 
     @Override
-    public void setActive(String tag, Boolean bool){
-        if(powers_active.containsKey(tag)){
+    public void setActive(String tag, Boolean bool) {
+        if (powers_active.containsKey(tag)) {
             powers_active.replace(tag, bool);
-        }else{
+        } else {
             powers_active.put(tag, bool);
         }
     }
 
-    
 
     @Override
     public void run() {
@@ -37,8 +36,8 @@ public class Grounded extends CraftPower {
                     Location current_block_platform_pos = location.add(0, -1, 0);
                     ConditionExecutor conditionExecutor = new ConditionExecutor();
                     if (conditionExecutor.check("condition", "conditions", player, origin, "origins:grounded", null, player)) {
-                        if(!getPowerArray().contains(player)) return;
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
+                        if (!getPowerArray().contains(player)) return;
+                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                         if (current_block_platform_pos.getBlock().getType().equals(Material.AIR)) {
                             platform_pos.add(current_block_platform_pos);
                             CraftPlayer craftPlayer = (CraftPlayer) player;
@@ -56,9 +55,9 @@ public class Grounded extends CraftPower {
                                 craftPlayer.sendBlockChange(thing, block.getBlockData());
                             }
                         }
-                    }else{
-                        if(!getPowerArray().contains(player)) return;
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
+                    } else {
+                        if (!getPowerArray().contains(player)) return;
+                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                     }
                 }
             }

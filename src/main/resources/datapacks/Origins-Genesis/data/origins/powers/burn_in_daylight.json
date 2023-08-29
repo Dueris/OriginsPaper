@@ -1,0 +1,20 @@
+{
+  "type": "origins:burn",
+  "interval": 20,
+  "burn_duration": 6,
+  "condition": {
+    "type": "origins:and",
+    "conditions": [
+      {
+        "type": "origins:exposed_to_sun"
+      },
+      {
+        "type": "origins:invisible",
+        "inverted": true
+      }
+    ]
+  },
+  "name": "Photoallergic",
+  "description": "You begin to burn in daylight if you are not invisible",
+  "hidden": false
+}

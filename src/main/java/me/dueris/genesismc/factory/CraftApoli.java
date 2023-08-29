@@ -2,7 +2,10 @@ package me.dueris.genesismc.factory;
 
 import io.netty.util.internal.ConcurrentSet;
 import me.dueris.genesismc.files.GenesisDataFiles;
-import me.dueris.genesismc.utils.*;
+import me.dueris.genesismc.utils.FileContainer;
+import me.dueris.genesismc.utils.LayerContainer;
+import me.dueris.genesismc.utils.OriginContainer;
+import me.dueris.genesismc.utils.PowerContainer;
 import me.dueris.genesismc.utils.translation.LangConfig;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
@@ -10,7 +13,6 @@ import org.apache.commons.io.FilenameUtils;
 import org.bukkit.Bukkit;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import org.json.simple.JSONValue;
 import org.json.simple.parser.JSONParser;
 
 import java.io.*;
@@ -92,8 +94,7 @@ public class CraftApoli {
         for (String key : powerContainer.getPowerFile().getKeys()) {
             Object subPowerValue = powerContainer.getPowerFile().get(key);
 
-            if (subPowerValue instanceof JSONObject) {
-                JSONObject subPowerJson = (JSONObject) subPowerValue;
+            if (subPowerValue instanceof JSONObject subPowerJson) {
                 FileContainer subPowerFile = fileToFileContainer(subPowerJson);
                 String source = powerContainer.getSource();
 
@@ -332,6 +333,7 @@ public class CraftApoli {
         //if an origin is a core one checks if there are translations for the powers
         translateOrigins();
     }
+
 
     /**
      * @return The origin that has the specified tag.

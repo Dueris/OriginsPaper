@@ -1,0 +1,12 @@
+{
+  "type": "origins:attribute",
+  "modifier": {
+    "name": "Natural Armor health bonus",
+    "attribute": "minecraft:generic.armor",
+    "value": 8.0,
+    "operation": "addition"
+  },
+  "name": "Sturdy Skin",
+  "description": "Even without wearing armor, your skin provides natural protection",
+  "hidden": false
+}

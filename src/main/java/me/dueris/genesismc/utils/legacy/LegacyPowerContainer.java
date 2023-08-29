@@ -54,20 +54,6 @@ public class LegacyPowerContainer implements Serializable {
     }
 
     /**
-     * Changes the name of the power.
-     */
-    public void setName(String newName) {
-        this.powerFile.replace("name", newName);
-    }
-
-    /**
-     * Changes the description of the power.
-     */
-    public void setDescription(String newDescription) {
-        this.powerFile.replace("description", newDescription);
-    }
-
-    /**
      * @return The name of the power. Will return "No Name" if there is no power name present.
      */
     public String getName() {
@@ -77,12 +63,26 @@ public class LegacyPowerContainer implements Serializable {
     }
 
     /**
+     * Changes the name of the power.
+     */
+    public void setName(String newName) {
+        this.powerFile.replace("name", newName);
+    }
+
+    /**
      * @return The description of the power. Will return "No Description" if there is no description present.
      */
     public String getDescription() {
         Object description = this.powerFile.get("description");
         if (description == null) return "No Description.";
         return (String) description;
+    }
+
+    /**
+     * Changes the description of the power.
+     */
+    public void setDescription(String newDescription) {
+        this.powerFile.replace("description", newDescription);
     }
 
     /**

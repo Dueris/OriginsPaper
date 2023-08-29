@@ -23,40 +23,51 @@ import static me.dueris.genesismc.factory.powers.value_modifying.ValueModifyingS
 public class ModifyCraftingPower extends CraftPower implements Listener {
 
     @Override
-    public void setActive(String tag, Boolean bool){
-        if(powers_active.containsKey(tag)){
+    public void setActive(String tag, Boolean bool) {
+        if (powers_active.containsKey(tag)) {
             powers_active.replace(tag, bool);
-        }else{
+        } else {
             powers_active.put(tag, bool);
         }
     }
 
-    
 
     @EventHandler
-    public void run(PrepareItemCraftEvent e){
+    public void run(PrepareItemCraftEvent e) {
         Player p = (Player) e.getInventory().getHolder();
-        if(modify_crafting.contains(p)) {
-            if(e.getRecipe() == null) return;
-            if(e.getInventory().getResult() == null) return;
+        if (modify_crafting.contains(p)) {
+            if (e.getRecipe() == null) return;
+            if (e.getInventory().getResult() == null) return;
             for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
                 ValueModifyingSuperClass valueModifyingSuperClass = new ValueModifyingSuperClass();
                 try {
                     ConditionExecutor conditionExecutor = new ConditionExecutor();
                     if (conditionExecutor.check("condition", "condition", p, origin, "origins:modify_crafting", null, p)) {
                         if (conditionExecutor.check("item_condition", "item_condition", p, origin, "origins:modify_crafting", null, p)) {
-                                if (e.getInventory().getResult().getType() == Material.valueOf(origin.getPowerFileFromType("origins:modify_crafting").get("recipe", null).split(":")[1].toUpperCase())) {
-                                    e.getInventory().setResult(new ItemStack(Material.valueOf(origin.getPowerFileFromType("origins:modify_crafting").getJsonHashMap("result").get("item").toString().toUpperCase().split(":")[1])));
-                                    if(!getPowerArray().contains(p)) return;
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
+                            if (e.getInventory().getResult().getType() == Material.valueOf(origin.getPowerFileFromType("origins:modify_crafting").get("recipe", null).split(":")[1].toUpperCase())) {
+                                e.getInventory().setResult(new ItemStack(Material.valueOf(origin.getPowerFileFromType("origins:modify_crafting").getJsonHashMap("result").get("item").toString().toUpperCase().split(":")[1])));
+                                if (origin.getPowerFileFromType(getPowerFile()) == null) {
+                                    getPowerArray().remove(p);
+                                    return;
                                 }
-                        }else{
-                            if(!getPowerArray().contains(p)) return;
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
+                                if (!getPowerArray().contains(p)) return;
+                                setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
+                            }
+                        } else {
+                            if (origin.getPowerFileFromType(getPowerFile()) == null) {
+                                getPowerArray().remove(p);
+                                return;
+                            }
+                            if (!getPowerArray().contains(p)) return;
+                            setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                         }
-                    }else{
-                        if(!getPowerArray().contains(p)) return;
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
+                    } else {
+                        if (origin.getPowerFileFromType(getPowerFile()) == null) {
+                            getPowerArray().remove(p);
+                            return;
+                        }
+                        if (!getPowerArray().contains(p)) return;
+                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                     }
                 } catch (Exception ev) {
                     ErrorSystem errorSystem = new ErrorSystem();

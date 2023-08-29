@@ -1,0 +1,9 @@
+{
+  "type": "origins:invulnerability",
+  "damage_condition": {
+    "type": "origins:fire"
+  },
+  "name": "Fire Immunity",
+  "description": "You are immune to all types of fire damage",
+  "hidden": false
+}

@@ -3,9 +3,9 @@ package me.dueris.genesismc.factory.powers.player.attributes;
 import me.dueris.genesismc.entity.OriginPlayer;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.utils.translation.LangConfig;
 import me.dueris.genesismc.utils.OriginContainer;
 import me.dueris.genesismc.utils.PowerContainer;
+import me.dueris.genesismc.utils.translation.LangConfig;
 import org.bukkit.Bukkit;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
@@ -23,17 +23,6 @@ import java.util.Random;
 import java.util.function.BinaryOperator;
 
 public class AttributeConditioned extends CraftPower implements Listener {
-
-    @Override
-    public void setActive(String tag, Boolean bool){
-        if(powers_active.containsKey(tag)){
-            powers_active.replace(tag, bool);
-        }else{
-            powers_active.put(tag, bool);
-        }
-    }
-
-    
 
     public static void executeAttributeModify(String operation, Attribute attribute_modifier, int base_value, Player p, int value) {
         Map<String, BinaryOperator<Integer>> operationMap = new HashMap<>();
@@ -57,7 +46,7 @@ public class AttributeConditioned extends CraftPower implements Listener {
             int result = (int) mathOperator.apply(base_value, value);
             p.getAttribute(Attribute.valueOf(attribute_modifier.toString())).setBaseValue(result);
         } else {
-            Bukkit.getLogger().warning(LangConfig.getLocalizedString(p,"powers.errors.attribute"));
+            Bukkit.getLogger().warning(LangConfig.getLocalizedString(p, "powers.errors.attribute"));
         }
     }
 
@@ -109,9 +98,10 @@ public class AttributeConditioned extends CraftPower implements Listener {
             PowerContainer power = origin.getPowerFileFromType("origins:attribute");
             if (power == null) continue;
 
-            for(HashMap<String, Object> modifier : origin.getPowerFileFromType("origins:attribute_conditioned").getConditionFromString("modifier", "modifiers")){
+            for (HashMap<String, Object> modifier : origin.getPowerFileFromType("origins:attribute_conditioned").getConditionFromString("modifier", "modifiers")) {
                 ConditionExecutor conditionExecutor = new ConditionExecutor();
-                if(!conditionExecutor.check("condition", "conditions", p, origin, "origins:attribute_conditioned", null, p)) return;
+                if (!conditionExecutor.check("condition", "conditions", p, origin, "origins:attribute_conditioned", null, p))
+                    return;
                 Attribute attribute_modifier = Attribute.valueOf(modifier.get("attribute").toString().split(":")[1].replace(".", "_").toUpperCase());
                 if (modifier.get("value") instanceof Integer) {
                     int value = Integer.valueOf(modifier.get("value").toString());
@@ -150,7 +140,7 @@ public class AttributeConditioned extends CraftPower implements Listener {
             PowerContainer power = origin.getPowerFileFromType("origins:attribute_conditioned");
             if (power == null) continue;
 
-            for(HashMap<String, Object> modifier : origin.getPowerFileFromType("origins:attribute_conditioned").getConditionFromString("modifier", "modifiers")){
+            for (HashMap<String, Object> modifier : origin.getPowerFileFromType("origins:attribute_conditioned").getConditionFromString("modifier", "modifiers")) {
                 Attribute attribute_modifier = Attribute.valueOf(modifier.get("attribute").toString().split(":")[1].replace(".", "_").toUpperCase());
                 if (modifier.get("value") instanceof Integer) {
                     int value = Integer.valueOf(modifier.get("value").toString());
@@ -169,6 +159,15 @@ public class AttributeConditioned extends CraftPower implements Listener {
         }
     }
 
+    @Override
+    public void setActive(String tag, Boolean bool) {
+        if (powers_active.containsKey(tag)) {
+            powers_active.replace(tag, bool);
+        } else {
+            powers_active.put(tag, bool);
+        }
+    }
+
     @EventHandler
     public void ExecuteSprintCondition(PlayerToggleSprintEvent e) {
         Player p = e.getPlayer();
@@ -178,11 +177,19 @@ public class AttributeConditioned extends CraftPower implements Listener {
                     return;
                 if (e.isSprinting()) {
                     executeConditionAttribute(p);
-                    if(!getPowerArray().contains(p)) return;
+                    if (origin.getPowerFileFromType(getPowerFile()) == null) {
+                        getPowerArray().remove(p);
+                        return;
+                    }
+                    if (!getPowerArray().contains(p)) return;
                     setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                 } else {
                     inverseConditionAttribute(p);
-                    if(!getPowerArray().contains(p)) return;
+                    if (origin.getPowerFileFromType(getPowerFile()) == null) {
+                        getPowerArray().remove(p);
+                        return;
+                    }
+                    if (!getPowerArray().contains(p)) return;
                     setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                 }
             }
@@ -198,11 +205,19 @@ public class AttributeConditioned extends CraftPower implements Listener {
                     return;
                 if (e.isFlying()) {
                     executeConditionAttribute(p);
-                    if(!getPowerArray().contains(p)) return;
+                    if (origin.getPowerFileFromType(getPowerFile()) == null) {
+                        getPowerArray().remove(p);
+                        return;
+                    }
+                    if (!getPowerArray().contains(p)) return;
                     setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                 } else {
                     inverseConditionAttribute(p);
-                    if(!getPowerArray().contains(p)) return;
+                    if (origin.getPowerFileFromType(getPowerFile()) == null) {
+                        getPowerArray().remove(p);
+                        return;
+                    }
+                    if (!getPowerArray().contains(p)) return;
                     setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                 }
             }
@@ -218,11 +233,19 @@ public class AttributeConditioned extends CraftPower implements Listener {
                     return;
                 if (e.isGliding()) {
                     executeConditionAttribute(p);
-                    if(!getPowerArray().contains(p)) return;
+                    if (origin.getPowerFileFromType(getPowerFile()) == null) {
+                        getPowerArray().remove(p);
+                        return;
+                    }
+                    if (!getPowerArray().contains(p)) return;
                     setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                 } else {
                     inverseConditionAttribute(p);
-                    if(!getPowerArray().contains(p)) return;
+                    if (origin.getPowerFileFromType(getPowerFile()) == null) {
+                        getPowerArray().remove(p);
+                        return;
+                    }
+                    if (!getPowerArray().contains(p)) return;
                     setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                 }
             }
@@ -238,11 +261,19 @@ public class AttributeConditioned extends CraftPower implements Listener {
                     return;
                 if (e.isSneaking()) {
                     executeConditionAttribute(p);
-                    if(!getPowerArray().contains(p)) return;
+                    if (origin.getPowerFileFromType(getPowerFile()) == null) {
+                        getPowerArray().remove(p);
+                        return;
+                    }
+                    if (!getPowerArray().contains(p)) return;
                     setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                 } else {
                     inverseConditionAttribute(p);
-                    if(!getPowerArray().contains(p)) return;
+                    if (origin.getPowerFileFromType(getPowerFile()) == null) {
+                        getPowerArray().remove(p);
+                        return;
+                    }
+                    if (!getPowerArray().contains(p)) return;
                     setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                 }
             }

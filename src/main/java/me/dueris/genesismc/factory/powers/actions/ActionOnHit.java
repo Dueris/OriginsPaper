@@ -20,23 +20,31 @@ public class ActionOnHit extends CraftPower {
     }
 
     @EventHandler
-    public void action(EntityDamageByEntityEvent e){
-        if(e.getEntity() instanceof Player p){
+    public void action(EntityDamageByEntityEvent e) {
+        if (e.getEntity() instanceof Player p) {
             Entity actor = e.getDamager();
             Entity target = p;
-            for(OriginContainer origin : OriginPlayer.getOrigin(p).values()){
-                if(getPowerArray().contains(p)){
+            for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
+                if (getPowerArray().contains(p)) {
                     PowerContainer power = origin.getPowerFileFromType(getPowerFile());
                     if (power == null) continue;
 
-                    if(!getPowerArray().contains(p)) return;
+                    if (origin.getPowerFileFromType(getPowerFile()) == null) {
+                        getPowerArray().remove(p);
+                        return;
+                    }
+                    if (!getPowerArray().contains(p)) return;
                     setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                     ActionTypes.biEntityActionType(actor, target, power.getBiEntityAction());
                     //todo: bientity condition and damage condition
                     new BukkitRunnable() {
                         @Override
                         public void run() {
-                            if(!getPowerArray().contains(p)) return;
+                            if (origin.getPowerFileFromType(getPowerFile()) == null) {
+                                getPowerArray().remove(p);
+                                return;
+                            }
+                            if (!getPowerArray().contains(p)) return;
                             setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                         }
                     }.runTaskLater(GenesisMC.getPlugin(), 2L);
@@ -57,9 +65,9 @@ public class ActionOnHit extends CraftPower {
 
     @Override
     public void setActive(String tag, Boolean bool) {
-        if(powers_active.containsKey(tag)){
+        if (powers_active.containsKey(tag)) {
             powers_active.replace(tag, bool);
-        }else{
+        } else {
             powers_active.put(tag, bool);
         }
     }

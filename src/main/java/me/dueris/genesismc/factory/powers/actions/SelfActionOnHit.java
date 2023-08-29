@@ -20,7 +20,7 @@ public class SelfActionOnHit extends CraftPower implements Listener {
     }
 
     @EventHandler
-    public void s(EntityDamageByEntityEvent e){
+    public void s(EntityDamageByEntityEvent e) {
         Entity actor = e.getEntity();
         Entity target = e.getDamager();
 
@@ -29,16 +29,16 @@ public class SelfActionOnHit extends CraftPower implements Listener {
 
         for (OriginContainer origin : OriginPlayer.getOrigin(player).values()) {
             ConditionExecutor executor = new ConditionExecutor();
-            if(CooldownStuff.isPlayerInCooldown((Player) target, "key.attack")) return;
-            if(executor.check("condition", "conditions", (Player) target, origin, getPowerFile(), null, target)){
-                if(!getPowerArray().contains(target)) return;
+            if (CooldownStuff.isPlayerInCooldown((Player) target, "key.attack")) return;
+            if (executor.check("condition", "conditions", (Player) target, origin, getPowerFile(), null, target)) {
+                if (!getPowerArray().contains(target)) return;
                 setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
-                    ActionTypes.EntityActionType(target, origin.getPowerFileFromType(getPowerFile()).getEntityAction());
-                    if(origin.getPowerFileFromType(getPowerFile()).get("cooldown", "1") != null){
-                        CooldownStuff.addCooldown((Player) target, origin.getPowerFileFromType(getPowerFile()).getTag(),Integer.parseInt(origin.getPowerFileFromType(getPowerFile()).get("cooldown", "1")), "key.attack");
-                    }
-            }else{
-                if(!getPowerArray().contains(target)) return;
+                ActionTypes.EntityActionType(target, origin.getPowerFileFromType(getPowerFile()).getEntityAction());
+                if (origin.getPowerFileFromType(getPowerFile()).get("cooldown", "1") != null) {
+                    CooldownStuff.addCooldown((Player) target, origin.getPowerFileFromType(getPowerFile()).getTag(), Integer.parseInt(origin.getPowerFileFromType(getPowerFile()).get("cooldown", "1")), "key.attack");
+                }
+            } else {
+                if (!getPowerArray().contains(target)) return;
                 setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
             }
         }
@@ -56,9 +56,9 @@ public class SelfActionOnHit extends CraftPower implements Listener {
 
     @Override
     public void setActive(String tag, Boolean bool) {
-        if(powers_active.containsKey(tag)){
+        if (powers_active.containsKey(tag)) {
             powers_active.replace(tag, bool);
-        }else{
+        } else {
             powers_active.put(tag, bool);
         }
     }

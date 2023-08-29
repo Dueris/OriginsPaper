@@ -30,6 +30,20 @@ public class GenesisItems extends BukkitRunnable implements Listener {
         return location.clone().add(new Vector(Math.cos(angle), 0, Math.sin(angle)).normalize().multiply(distance));
     }
 
+    public static ItemStack getPhasingKey() {
+        ItemStack spectatorswitch = new ItemStack(Material.PHANTOM_MEMBRANE);
+        ItemMeta switch_meta = spectatorswitch.getItemMeta();
+        switch_meta.setDisplayName(GRAY + "Phantom Form");
+        ArrayList<String> phanlore = new ArrayList();
+        switch_meta.setUnbreakable(true);
+        switch_meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
+        switch_meta.addItemFlags(ItemFlag.HIDE_ITEM_SPECIFICS);
+        switch_meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+        switch_meta.setLore(phanlore);
+        spectatorswitch.setItemMeta(switch_meta);
+        return spectatorswitch;
+    }
+
     @Override
     public void run() {
         for (Player p : Bukkit.getOnlinePlayers()) {
@@ -43,21 +57,6 @@ public class GenesisItems extends BukkitRunnable implements Listener {
                 p.getWorld().spawnParticle(Particle.DUST_COLOR_TRANSITION, leftHand, 1, 0.25F, -0.5, 0.25F, whitedust);
             }
         }
-    }
-
-
-    public static ItemStack getPhasingKey() {
-        ItemStack spectatorswitch = new ItemStack(Material.PHANTOM_MEMBRANE);
-        ItemMeta switch_meta = spectatorswitch.getItemMeta();
-        switch_meta.setDisplayName(GRAY + "Phantom Form");
-        ArrayList<String> phanlore = new ArrayList();
-        switch_meta.setUnbreakable(true);
-        switch_meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
-        switch_meta.addItemFlags(ItemFlag.HIDE_ITEM_SPECIFICS);
-        switch_meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-        switch_meta.setLore(phanlore);
-        spectatorswitch.setItemMeta(switch_meta);
-        return spectatorswitch;
     }
 
 }

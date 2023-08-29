@@ -2,7 +2,6 @@ package me.dueris.genesismc.factory.powers;
 
 import me.dueris.genesismc.entity.OriginPlayer;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
-import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.factory.powers.player.Phasing;
 import me.dueris.genesismc.utils.OriginContainer;
 import org.bukkit.Bukkit;
@@ -13,33 +12,36 @@ import java.util.ArrayList;
 public class Overlay extends CraftPower {
 
     @Override
-    public void setActive(String tag, Boolean bool){
-        if(powers_active.containsKey(tag)){
+    public void setActive(String tag, Boolean bool) {
+        if (powers_active.containsKey(tag)) {
             powers_active.replace(tag, bool);
-        }else{
+        } else {
             powers_active.put(tag, bool);
         }
     }
 
-    
 
     @Override
     public void run() {
-        for(Player player : Bukkit.getOnlinePlayers()){
-            if(overlay.contains(player)){
-                for(OriginContainer origin : OriginPlayer.getOrigin(player).values()){
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            if (getPowerArray().contains(player)) {
+                for (OriginContainer origin : OriginPlayer.getOrigin(player).values()) {
+                    if (origin.getPowerFileFromType(getPowerFile()) == null) {
+                        getPowerArray().remove(player);
+                        return;
+                    }
                     ConditionExecutor conditionExecutor = new ConditionExecutor();
-                    if(conditionExecutor.check("condition", "conditions", player, origin, "origins:overlay", null, player)){
-                        if(!getPowerArray().contains(player)) return;
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
+                    if (conditionExecutor.check("condition", "conditions", player, origin, "origins:overlay", null, player)) {
+                        if (!getPowerArray().contains(player)) return;
+                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                         Phasing.initializePhantomOverlay(player);
-                    }else{
-                        if(!getPowerArray().contains(player)) return;
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
+                    } else {
+                        if (!getPowerArray().contains(player)) return;
+                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                         Phasing.deactivatePhantomOverlay(player);
                     }
                 }
-            }else{
+            } else {
                 Phasing.deactivatePhantomOverlay(player);
             }
         }

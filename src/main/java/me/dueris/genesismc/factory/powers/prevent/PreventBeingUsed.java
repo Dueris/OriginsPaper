@@ -16,33 +16,44 @@ import static me.dueris.genesismc.factory.powers.prevent.PreventSuperClass.preve
 public class PreventBeingUsed extends CraftPower implements Listener {
 
     @Override
-    public void setActive(String tag, Boolean bool){
-        if(powers_active.containsKey(tag)){
+    public void setActive(String tag, Boolean bool) {
+        if (powers_active.containsKey(tag)) {
             powers_active.replace(tag, bool);
-        }else{
+        } else {
             powers_active.put(tag, bool);
         }
     }
 
-    
 
     @EventHandler
-    public void run(PlayerInteractEvent e){
-        if(prevent_being_used.contains(e.getPlayer())){
+    public void run(PlayerInteractEvent e) {
+        if (prevent_being_used.contains(e.getPlayer())) {
             Player p = e.getPlayer();
-            for(OriginContainer origin : OriginPlayer.getOrigin(p).values()){
+            for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
                 ConditionExecutor conditionExecutor = new ConditionExecutor();
-                if(conditionExecutor.check("bientity_condition", "bientity_conditions", p, origin, "origins:prevent_being_used", null, p)){
-                    if(conditionExecutor.check("item_condition", "item_conditions", p, origin, "origins:prevent_being_used", null, p)){
-                        if(!getPowerArray().contains(p)) return;
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
+                if (conditionExecutor.check("bientity_condition", "bientity_conditions", p, origin, "origins:prevent_being_used", null, p)) {
+                    if (conditionExecutor.check("item_condition", "item_conditions", p, origin, "origins:prevent_being_used", null, p)) {
+                        if (origin.getPowerFileFromType(getPowerFile()) == null) {
+                            getPowerArray().remove(p);
+                            return;
+                        }
+                        if (!getPowerArray().contains(p)) return;
+                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                         e.setCancelled(true);
-                    }else{
-                        if(!getPowerArray().contains(p)) return;
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
+                    } else {
+                        if (origin.getPowerFileFromType(getPowerFile()) == null) {
+                            getPowerArray().remove(p);
+                            return;
+                        }
+                        if (!getPowerArray().contains(p)) return;
+                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                     }
-                }else{
-                    if(!getPowerArray().contains(p)) return;
+                } else {
+                    if (origin.getPowerFileFromType(getPowerFile()) == null) {
+                        getPowerArray().remove(p);
+                        return;
+                    }
+                    if (!getPowerArray().contains(p)) return;
                     setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                 }
             }

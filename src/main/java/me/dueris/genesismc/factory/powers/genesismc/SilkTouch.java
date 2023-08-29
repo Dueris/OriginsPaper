@@ -22,21 +22,19 @@ import java.util.EnumSet;
 
 public class SilkTouch extends CraftPower implements Listener {
 
-    @Override
-    public void setActive(String tag, Boolean bool){
-        if(powers_active.containsKey(tag)){
-            powers_active.replace(tag, bool);
-        }else{
-            powers_active.put(tag, bool);
-        }
-    }
-
-    
-
     private static final EnumSet<Material> m;
 
     static {
         m = EnumSet.of(Material.PISTON_HEAD, Material.VINE, Material.WHEAT, Material.MELON_STEM, Material.ATTACHED_MELON_STEM, Material.PUMPKIN_STEM, Material.ATTACHED_PUMPKIN_STEM, Material.BEETROOTS, Material.CARROTS, Material.POTATOES, Material.END_PORTAL, Material.NETHER_PORTAL, Material.FIRE, Material.SOUL_FIRE);
+    }
+
+    @Override
+    public void setActive(String tag, Boolean bool) {
+        if (powers_active.containsKey(tag)) {
+            powers_active.replace(tag, bool);
+        } else {
+            powers_active.put(tag, bool);
+        }
     }
 
     @EventHandler
@@ -45,10 +43,14 @@ public class SilkTouch extends CraftPower implements Listener {
             Player p = e.getPlayer();
             if (silk_touch.contains(e.getPlayer())) {
                 ConditionExecutor executor = new ConditionExecutor();
-                for(OriginContainer origin : OriginPlayer.getOrigin(p).values()){
-                    if(executor.check("condition", "conditions", p, origin, getPowerFile(), null, p)){
-                        if(!getPowerArray().contains(p)) return;
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
+                for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
+                    if (executor.check("condition", "conditions", p, origin, getPowerFile(), null, p)) {
+                        if (origin.getPowerFileFromType(getPowerFile()) == null) {
+                            getPowerArray().remove(p);
+                            return;
+                        }
+                        if (!getPowerArray().contains(p)) return;
+                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                         if (p.getGameMode().equals(GameMode.SURVIVAL) && p.getEquipment().getItemInMainHand().getType().equals(Material.AIR)) {
                             if (!e.getBlock().getType().isItem()) {
                                 return;
@@ -79,9 +81,13 @@ public class SilkTouch extends CraftPower implements Listener {
 
                             }
                         }
-                    }else{
-                        if(!getPowerArray().contains(p)) return;
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
+                    } else {
+                        if (origin.getPowerFileFromType(getPowerFile()) == null) {
+                            getPowerArray().remove(p);
+                            return;
+                        }
+                        if (!getPowerArray().contains(p)) return;
+                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                     }
                 }
             }

@@ -24,23 +24,21 @@ import java.util.UUID;
 
 public class ExplodeTick extends CraftPower implements Listener {
 
-    @Override
-    public void setActive(String tag, Boolean bool){
-        if(powers_active.containsKey(tag)){
-            powers_active.replace(tag, bool);
-        }else{
-            powers_active.put(tag, bool);
-        }
-    }
-
-    
-
     private final HashMap<UUID, Long> cooldown;
+
 
     public ExplodeTick() {
         this.cooldown = new HashMap<>();
     }
 
+    @Override
+    public void setActive(String tag, Boolean bool) {
+        if (powers_active.containsKey(tag)) {
+            powers_active.replace(tag, bool);
+        } else {
+            powers_active.put(tag, bool);
+        }
+    }
 
     @EventHandler
     public void onShiftCreep(PlayerToggleSneakEvent e) {
@@ -55,9 +53,13 @@ public class ExplodeTick extends CraftPower implements Listener {
                     @Override
                     public void run() {
                         ConditionExecutor executor = new ConditionExecutor();
-                        if(executor.check("condition", "conditions", p, origin, getPowerFile(), null, p)){
-                            if(!getPowerArray().contains(p)) return;
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
+                        if (executor.check("condition", "conditions", p, origin, getPowerFile(), null, p)) {
+                            if (origin.getPowerFileFromType(getPowerFile()) == null) {
+                                getPowerArray().remove(p);
+                                return;
+                            }
+                            if (!getPowerArray().contains(p)) return;
+                            setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                             if (p.isSneaking()) {
                                 if (!cooldown.containsKey(p.getUniqueId()) || ((System.currentTimeMillis() - cooldown.get(p.getUniqueId())) > 3300)) {
                                     if (p.isSneaking()) {
@@ -67,7 +69,7 @@ public class ExplodeTick extends CraftPower implements Listener {
                                     }
 
                                 }
-                                for(HashMap<String, Object> modifier : origin.getPowerFileFromType("genesis:explode_tick").getConditionFromString("modifier", "modifiers")){
+                                for (HashMap<String, Object> modifier : origin.getPowerFileFromType("genesis:explode_tick").getConditionFromString("modifier", "modifiers")) {
                                     int power = Math.toIntExact((Long) modifier.get("power"));
                                     int resistance = Math.toIntExact((Long) modifier.get("resistance"));
                                     int charge = Math.toIntExact((Long) modifier.get("charge"));
@@ -140,9 +142,13 @@ public class ExplodeTick extends CraftPower implements Listener {
                             } else {
                                 this.cancel();
                             }
-                        }else{
-                            if(!getPowerArray().contains(p)) return;
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
+                        } else {
+                            if (origin.getPowerFileFromType(getPowerFile()) == null) {
+                                getPowerArray().remove(p);
+                                return;
+                            }
+                            if (!getPowerArray().contains(p)) return;
+                            setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                         }
                     }
                 }.runTaskTimer(GenesisMC.getPlugin(), 0L, 5L);

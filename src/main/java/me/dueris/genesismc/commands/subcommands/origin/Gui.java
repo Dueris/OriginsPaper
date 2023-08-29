@@ -6,8 +6,8 @@ import me.dueris.genesismc.commands.subcommands.SubCommand;
 import me.dueris.genesismc.entity.OriginPlayer;
 import me.dueris.genesismc.enums.OriginDataType;
 import me.dueris.genesismc.factory.CraftApoli;
-import me.dueris.genesismc.utils.translation.LangConfig;
 import me.dueris.genesismc.utils.LayerContainer;
+import me.dueris.genesismc.utils.translation.LangConfig;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.command.CommandSender;
@@ -44,7 +44,7 @@ public class Gui extends SubCommand {
             if (players.size() == 0) return;
             for (Player p : players) {
                 for (LayerContainer layer : CraftApoli.getLayers()) {
-                    OriginPlayer.unassignPowers(p, layer);
+                    OriginPlayer.unassignPowers(p);
                     OriginPlayer.setOrigin(p, layer, CraftApoli.nullOrigin());
                     OriginPlayer.resetOriginData(p, OriginDataType.IN_PHASING_FORM);
                     String skinData = p.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "original-skin-url"), PersistentDataType.STRING);
@@ -71,7 +71,7 @@ public class Gui extends SubCommand {
             }
         } else if (args.length == 1 && sender instanceof Player p) {
             for (LayerContainer layer : CraftApoli.getLayers()) {
-                OriginPlayer.unassignPowers(p, layer);
+                OriginPlayer.unassignPowers(p);
                 OriginPlayer.setOrigin(p, layer, CraftApoli.nullOrigin());
                 for (Player pls : Bukkit.getOnlinePlayers()) {
                     pls.hidePlayer(GenesisMC.getPlugin(), p);

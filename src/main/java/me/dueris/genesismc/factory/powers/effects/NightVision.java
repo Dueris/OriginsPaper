@@ -17,15 +17,14 @@ import java.util.Set;
 public class NightVision extends CraftPower {
 
     @Override
-    public void setActive(String tag, Boolean bool){
-        if(powers_active.containsKey(tag)){
+    public void setActive(String tag, Boolean bool) {
+        if (powers_active.containsKey(tag)) {
             powers_active.replace(tag, bool);
-        }else{
+        } else {
             powers_active.put(tag, bool);
         }
     }
 
-    
 
     @Override
     public void run() {
@@ -34,22 +33,41 @@ public class NightVision extends CraftPower {
             Set<LayerContainer> layers = origins.keySet();
             for (LayerContainer layer : layers) {
                 if (night_vision.contains(p)) {
-                    for(OriginContainer origin : OriginPlayer.getOrigin(p).values()){
+                    for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
                         ConditionExecutor executor = new ConditionExecutor();
-                        if(executor.check("condition", "conditions", p, origin, getPowerFile(), null, p)){
-                            if(!getPowerArray().contains(p)) return;
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
-                            Long strength = OriginPlayer.getOrigin(p, layer).getPowerFileFromType("origins:night_vision").getStrength();
-                            p.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, 400, Math.toIntExact(strength), false, false, false));
-                        }else{
-                            if(!getPowerArray().contains(p)) return;
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
+                        if (executor.check("condition", "conditions", p, origin, getPowerFile(), null, p)) {
+                            if (origin.getPowerFileFromType(getPowerFile()) == null) {
+                                getPowerArray().remove(p);
+                                return;
+                            }
+                            if (!getPowerArray().contains(p)) return;
+                            setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
+                            Float strength = OriginPlayer.getOrigin(p, layer).getPowerFileFromType("origins:night_vision").getStrength();
+                            p.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, 400, roundNumber(origin.getPowerFileFromType(getPowerFile()).getStrength()), false, false, false));
+                        } else {
+                            if (origin.getPowerFileFromType(getPowerFile()) == null) {
+                                getPowerArray().remove(p);
+                                return;
+                            }
+                            if (!getPowerArray().contains(p)) return;
+                            setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                         }
                     }
                 }
 
             }
         }
+    }
+
+    public int roundNumber(float num) {
+        if (String.valueOf(num).contains(".")) {
+            if (Integer.valueOf(String.valueOf(num).split(".")[1]) >= 5) {
+                return Integer.valueOf(String.valueOf(num).split(".")[0]) + 1;
+            } else {
+                return Integer.valueOf(String.valueOf(num).split(".")[0]);
+            }
+        }
+        return 0;
     }
 
     @Override

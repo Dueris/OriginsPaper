@@ -1,0 +1,18 @@
+{
+  "powers": [
+    "origins:phantomize",
+    "origins:phasing",
+    "origins:invisibility",
+    "origins:burn_in_daylight",
+    "origins:hunger_over_time",
+    "origins:fragile",
+    "origins:phantomize_overlay"
+  ],
+  "icon": {
+    "item": "minecraft:phantom_membrane"
+  },
+  "order": 2,
+  "impact": 3,
+  "name": "Phantom",
+  "description": "As half-human and half-phantom beings, these creatures can switch between a Phantom and a normal form"
+}

@@ -13,43 +13,50 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.function.BinaryOperator;
 
-import static me.dueris.genesismc.factory.powers.player.attributes.AttributeHandler.getOperationMappingsFloat;
+import static me.dueris.genesismc.factory.powers.player.attributes.AttributeHandler.getOperationMappingsDouble;
 import static me.dueris.genesismc.factory.powers.value_modifying.ValueModifyingSuperClass.modify_jump;
 
 public class ModifyJumpPower extends CraftPower implements Listener {
 
     @Override
-    public void setActive(String tag, Boolean bool){
-        if(powers_active.containsKey(tag)){
+    public void setActive(String tag, Boolean bool) {
+        if (powers_active.containsKey(tag)) {
             powers_active.replace(tag, bool);
-        }else{
+        } else {
             powers_active.put(tag, bool);
         }
     }
 
-    
 
     @EventHandler
-    public void run(PlayerJumpEvent e){
+    public void run(PlayerJumpEvent e) {
         Player p = e.getPlayer();
-        if(modify_jump.contains(p)){
-            for(OriginContainer origin : OriginPlayer.getOrigin(p).values()){
+        if (modify_jump.contains(p)) {
+            for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
                 ConditionExecutor conditionExecutor = new ConditionExecutor();
-                if(conditionExecutor.check("condition", "conditions", p, origin, "origins:modify_jump", null, p)){
-                    for(HashMap<String, Object> modifier : origin.getPowerFileFromType("origins:modify_jump").getPossibleModifiers("modifier", "modifiers")){
+                if (conditionExecutor.check("condition", "conditions", p, origin, "origins:modify_jump", null, p)) {
+                    for (HashMap<String, Object> modifier : origin.getPowerFileFromType("origins:modify_jump").getPossibleModifiers("modifier", "modifiers")) {
                         Float value = Float.valueOf(modifier.get("value").toString());
                         String operation = modifier.get("operation").toString();
-                        BinaryOperator mathOperator = getOperationMappingsFloat().get(operation);
+                        BinaryOperator mathOperator = getOperationMappingsDouble().get(operation);
                         if (mathOperator != null) {
-                            float result = (float) mathOperator.apply(e.getPlayer().getVelocity().getY(), value);
+                            double result = (double) mathOperator.apply(e.getPlayer().getVelocity().getY(), value);
                             ConditionExecutor executor = new ConditionExecutor();
-                            if(executor.check("condition", "conditions", p, origin, getPowerFile(), null, p)){
-                                if(!getPowerArray().contains(p)) return;
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
+                            if (executor.check("condition", "conditions", p, origin, getPowerFile(), null, p)) {
+                                if (origin.getPowerFileFromType(getPowerFile()) == null) {
+                                    getPowerArray().remove(p);
+                                    return;
+                                }
+                                if (!getPowerArray().contains(p)) return;
+                                setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                                 e.getPlayer().getVelocity().setY(result);
-                            }else{
-                                if(!getPowerArray().contains(p)) return;
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
+                            } else {
+                                if (origin.getPowerFileFromType(getPowerFile()) == null) {
+                                    getPowerArray().remove(p);
+                                    return;
+                                }
+                                if (!getPowerArray().contains(p)) return;
+                                setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                             }
                         }
                     }

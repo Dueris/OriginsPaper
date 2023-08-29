@@ -20,40 +20,47 @@ import static me.dueris.genesismc.factory.powers.value_modifying.ValueModifyingS
 public class ModifyDamageTakenPower extends CraftPower implements Listener {
 
     @Override
-    public void setActive(String tag, Boolean bool){
-        if(powers_active.containsKey(tag)){
+    public void setActive(String tag, Boolean bool) {
+        if (powers_active.containsKey(tag)) {
             powers_active.replace(tag, bool);
-        }else{
+        } else {
             powers_active.put(tag, bool);
         }
     }
 
-    
 
     @EventHandler
-    public void damageEVENT(EntityDamageByEntityEvent e){
-        if(e.getEntity() instanceof Player p){
-            if(modify_damage_taken.contains(p)){
+    public void damageEVENT(EntityDamageByEntityEvent e) {
+        if (e.getEntity() instanceof Player p) {
+            if (modify_damage_taken.contains(p)) {
                 for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
                     ValueModifyingSuperClass valueModifyingSuperClass = new ValueModifyingSuperClass();
                     try {
                         ConditionExecutor conditionExecutor = new ConditionExecutor();
                         if (conditionExecutor.check("bientity_condition", "bientity_conditions", p, origin, "origins:modify_damage_taken", e, e.getDamager())) {
-                            for(HashMap<String, Object> modifier : origin.getPowerFileFromType("origins:modify_damage_taken").getConditionFromString("modifier", "modifiers")){
+                            for (HashMap<String, Object> modifier : origin.getPowerFileFromType("origins:modify_damage_taken").getConditionFromString("modifier", "modifiers")) {
                                 Float value = Float.valueOf(modifier.get("value").toString());
                                 String operation = modifier.get("operation").toString();
                                 BinaryOperator mathOperator = getOperationMappingsFloat().get(operation);
                                 if (mathOperator != null) {
                                     float result = (float) mathOperator.apply(e.getDamage(), value);
                                     e.setDamage(result);
-                                    if(!getPowerArray().contains(p)) return;
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
+                                    if (origin.getPowerFileFromType(getPowerFile()) == null) {
+                                        getPowerArray().remove(p);
+                                        return;
+                                    }
+                                    if (!getPowerArray().contains(p)) return;
+                                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                                 }
                             }
 
-                        }else{
-                            if(!getPowerArray().contains(p)) return;
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
+                        } else {
+                            if (origin.getPowerFileFromType(getPowerFile()) == null) {
+                                getPowerArray().remove(p);
+                                return;
+                            }
+                            if (!getPowerArray().contains(p)) return;
+                            setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                         }
                     } catch (Exception ev) {
                         ErrorSystem errorSystem = new ErrorSystem();

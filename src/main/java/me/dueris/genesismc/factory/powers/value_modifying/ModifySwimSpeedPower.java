@@ -4,8 +4,8 @@ import me.dueris.genesismc.entity.OriginPlayer;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.ErrorSystem;
-import me.dueris.genesismc.utils.translation.LangConfig;
 import me.dueris.genesismc.utils.OriginContainer;
+import me.dueris.genesismc.utils.translation.LangConfig;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
@@ -19,38 +19,44 @@ import static me.dueris.genesismc.factory.powers.value_modifying.ValueModifyingS
 
 public class ModifySwimSpeedPower extends CraftPower {
 
+    String MODIFYING_KEY = "modify_swim_speed";
+
     @Override
-    public void setActive(String tag, Boolean bool){
-        if(powers_active.containsKey(tag)){
+    public void setActive(String tag, Boolean bool) {
+        if (powers_active.containsKey(tag)) {
             powers_active.replace(tag, bool);
-        }else{
+        } else {
             powers_active.put(tag, bool);
         }
     }
 
-    
-
-    String MODIFYING_KEY = "modify_swim_speed";
-
     @Override
     public void run() {
-        for (Player p : Bukkit.getOnlinePlayers()){
-            for(OriginContainer origin : OriginPlayer.getOrigin(p).values()){
+        for (Player p : Bukkit.getOnlinePlayers()) {
+            for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
                 ValueModifyingSuperClass valueModifyingSuperClass = new ValueModifyingSuperClass();
-                try{
+                try {
                     ConditionExecutor conditionExecutor = new ConditionExecutor();
-                    if(conditionExecutor.check("condition", "conditions", p, origin, "origins:modify_swim_speed", null, p)){
-                        if(valueModifyingSuperClass.getPersistentAttributeContainer(p, MODIFYING_KEY) == -1) return;
-                        if(!p.isSwimming()) return;
+                    if (conditionExecutor.check("condition", "conditions", p, origin, "origins:modify_swim_speed", null, p)) {
+                        if (valueModifyingSuperClass.getPersistentAttributeContainer(p, MODIFYING_KEY) == -1) return;
+                        if (!p.isSwimming()) return;
                         Vector swimVelocity = p.getLocation().getDirection().normalize().multiply(valueModifyingSuperClass.getPersistentAttributeContainer(p, MODIFYING_KEY));
                         p.setVelocity(swimVelocity);
-                        if(!getPowerArray().contains(p)) return;
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
-                    }else{
-                        if(!getPowerArray().contains(p)) return;
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
+                        if (origin.getPowerFileFromType(getPowerFile()) == null) {
+                            getPowerArray().remove(p);
+                            return;
+                        }
+                        if (!getPowerArray().contains(p)) return;
+                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
+                    } else {
+                        if (origin.getPowerFileFromType(getPowerFile()) == null) {
+                            getPowerArray().remove(p);
+                            return;
+                        }
+                        if (!getPowerArray().contains(p)) return;
+                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                     }
-                } catch (Exception e){
+                } catch (Exception e) {
                     ErrorSystem errorSystem = new ErrorSystem();
                     errorSystem.throwError("unable to set modifier", "origins:modify_swim_speed", p, origin, OriginPlayer.getLayer(p, origin));
                 }
@@ -68,11 +74,11 @@ public class ModifySwimSpeedPower extends CraftPower {
         return modify_swim_speed;
     }
 
-    public void apply(Player p){
+    public void apply(Player p) {
         ValueModifyingSuperClass valueModifyingSuperClass = new ValueModifyingSuperClass();
-        if(modify_swim_speed.contains(p)){
-            for(OriginContainer origin : OriginPlayer.getOrigin(p).values()){
-                for(HashMap<String, Object> modifier : origin.getPowerFileFromType("origins:modify_swim_speed").getPossibleModifiers("modifier", "modifiers")){
+        if (modify_swim_speed.contains(p)) {
+            for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
+                for (HashMap<String, Object> modifier : origin.getPowerFileFromType("origins:modify_swim_speed").getPossibleModifiers("modifier", "modifiers")) {
                     Float value = Float.valueOf(modifier.get("value").toString());
                     String operation = modifier.get("operation").toString();
                     BinaryOperator mathOperator = getOperationMappingsFloat().get(operation);
@@ -84,7 +90,7 @@ public class ModifySwimSpeedPower extends CraftPower {
                     }
                 }
             }
-        }else{
+        } else {
             valueModifyingSuperClass.saveValueInPDC(p, MODIFYING_KEY, valueModifyingSuperClass.getDefaultValue(MODIFYING_KEY));
         }
     }

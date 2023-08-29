@@ -21,22 +21,22 @@ public class ActiveSelf extends CraftPower implements Listener {
     }
 
     @EventHandler
-    public void k(KeybindTriggerEvent e){
+    public void k(KeybindTriggerEvent e) {
         for (OriginContainer origin : OriginPlayer.getOrigin(e.getPlayer()).values()) {
             if (getPowerArray().contains(e.getPlayer())) {
                 ConditionExecutor executor = new ConditionExecutor();
-                if(CooldownStuff.isPlayerInCooldown(e.getPlayer(), e.getKey())) return;
-                if(executor.check("condition", "conditions", e.getPlayer(), origin, getPowerFile(), null, e.getPlayer())){
-                    if(!getPowerArray().contains(e.getPlayer())) return;
+                if (CooldownStuff.isPlayerInCooldown(e.getPlayer(), e.getKey())) return;
+                if (executor.check("condition", "conditions", e.getPlayer(), origin, getPowerFile(), null, e.getPlayer())) {
+                    if (!getPowerArray().contains(e.getPlayer())) return;
                     setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                     if (isKeyBeingPressed(e.getPlayer(), origin.getPowerFileFromType(getPowerFile()).getKey().get("key").toString(), true)) {
                         ActionTypes.EntityActionType(e.getPlayer(), origin.getPowerFileFromType(getPowerFile()).getEntityAction());
-                        if(origin.getPowerFileFromType(getPowerFile()).get("cooldown", "1") != null){
-                            CooldownStuff.addCooldown(e.getPlayer(), origin.getPowerFileFromType(getPowerFile()).getTag(),Integer.parseInt(origin.getPowerFileFromType(getPowerFile()).get("cooldown", "1")), e.getKey());
+                        if (origin.getPowerFileFromType(getPowerFile()).get("cooldown", "1") != null) {
+                            CooldownStuff.addCooldown(e.getPlayer(), origin.getPowerFileFromType(getPowerFile()).getTag(), Integer.parseInt(origin.getPowerFileFromType(getPowerFile()).get("cooldown", "1")), e.getKey());
                         }
                     }
-                }else{
-                    if(!getPowerArray().contains(e.getPlayer())) return;
+                } else {
+                    if (!getPowerArray().contains(e.getPlayer())) return;
                     setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                 }
             }
@@ -55,9 +55,9 @@ public class ActiveSelf extends CraftPower implements Listener {
 
     @Override
     public void setActive(String tag, Boolean bool) {
-        if(powers_active.containsKey(tag)){
+        if (powers_active.containsKey(tag)) {
             powers_active.replace(tag, bool);
-        }else{
+        } else {
             powers_active.put(tag, bool);
         }
     }

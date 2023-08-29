@@ -1,5 +1,6 @@
 package me.dueris.genesismc;
 
+import io.papermc.paper.event.player.PlayerFailMoveEvent;
 import me.dueris.genesismc.choosing.ChoosingCORE;
 import me.dueris.genesismc.choosing.ChoosingCUSTOM;
 import me.dueris.genesismc.choosing.ChoosingForced;
@@ -94,10 +95,29 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         getServer().getPluginManager().registerEvents(this, this);
 
         //configs
+
         GenesisDataFiles.loadOrbConfig();
         GenesisDataFiles.loadMainConfig();
         GenesisDataFiles.loadLangConfig();
         GenesisDataFiles.setup();
+        Bukkit.getServer().getConsoleSender().sendMessage("[GenesisMC] origin-thread starting asynchronously");
+        BukkitUtils.CopyOriginDatapack();
+        if (LangConfig.lang_test == null) {
+            getLogger().warning("[GenesisMC] Lang could not be loaded! Disabling plugin.");
+            Bukkit.getServer().getPluginManager().disablePlugin(this);
+            return;
+        }
+        try {
+            CraftApoli.loadOrigins();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        Bukkit.getServer().getConsoleSender().sendMessage("[Origins] power-thread starting asynchronously");
+        try {
+            PowerStartHandler.startPowers();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
 
         //start
         Bukkit.getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC]    ____                               _         __  __    ____ ").color(TextColor.fromHexString("#b9362f")));
@@ -108,12 +128,6 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         Bukkit.getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] " + LangConfig.getLocalizedString(Bukkit.getConsoleSender(), "startup.credit")).color(TextColor.fromHexString("#dd50ff")));
         Bukkit.getServer().getConsoleSender().sendMessage(Component.text("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"));
 
-        //lang check
-        if (LangConfig.lang_test == null) {
-            getLogger().warning("[GenesisMC] Lang could not be loaded! Disabling plugin.");
-            Bukkit.getServer().getPluginManager().disablePlugin(this);
-            return;
-        }
         for (Player p : Bukkit.getOnlinePlayers()) {
             p.setGravity(true);
         }
@@ -138,15 +152,10 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 
         //origin load
         Bukkit.getServer().getConsoleSender().sendMessage("[Origins] origin-thread starting");
-                BukkitUtils.CopyOriginDatapack();
-                CraftApoli.loadOrigins();
         for (OriginContainer origins : CraftApoli.getOrigins()) {
             if (GenesisDataFiles.getMainConfig().getString("console-startup-debug").equalsIgnoreCase("true")) {
                 getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] " + LangConfig.getLocalizedString(Bukkit.getConsoleSender(), "startup.debug.allOrigins").replace("%originName%", origins.getName())).color(TextColor.fromHexString(GREEN)));
             }
-        }
-        for (Player p : Bukkit.getOnlinePlayers()) {
-            p.getScoreboard().getTeam("origin-players").addEntity(p);
         }
         if (CraftApoli.getOrigins().size() > 0) {
             getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] " + LangConfig.getLocalizedString(Bukkit.getConsoleSender(), "startup.originAmount").replace("%originAmount%", String.valueOf(CraftApoli.getOrigins().size()))).color(TextColor.fromHexString(GREEN)));
@@ -192,18 +201,8 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         GenesisItems items = new GenesisItems();
         items.runTaskTimer(this, 0, 5);
 
-        Bukkit.getServer().getConsoleSender().sendMessage("[Origins] power-thread starting");
 
-        Thread separateThread = new Thread(() -> {
-            Bukkit.getScheduler().runTaskAsynchronously(Bukkit.getPluginManager().getPlugin("GenesisMC"), () -> {
-                try {
-                    PowerStartHandler.startPowers();
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
-                }
-            });
-        });
-        separateThread.start();
+        Bukkit.getServer().getPluginManager().registerEvents(new KeybindHandler(), GenesisMC.getPlugin());
 
         ScoreboardRunnable scorebo = new ScoreboardRunnable();
         scorebo.runTaskTimer(this, 0, 5);
@@ -231,7 +230,6 @@ public final class GenesisMC extends JavaPlugin implements Listener {
             if (p.isOp())
                 p.sendMessage(Component.text(LangConfig.getLocalizedString(Bukkit.getConsoleSender(), "reloadMessage")).color(TextColor.fromHexString(AQUA)));
         }
-
     }
 
     @EventHandler
@@ -240,6 +238,12 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         if (!p.isInvulnerable() && p.getGameMode() != GameMode.CREATIVE && p.getGameMode() != GameMode.SPECTATOR)
             return;
         p.setInvulnerable(false);
+    }
+
+    @EventHandler
+    public void lagBackPatch(PlayerFailMoveEvent e) {
+        e.setAllowed(true);
+        e.setLogWarning(false);
     }
 
     @Override

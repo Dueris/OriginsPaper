@@ -24,19 +24,17 @@ import static me.dueris.genesismc.KeybindHandler.isKeyBeingPressed;
 
 public class Launch extends CraftPower implements Listener {
 
+    public static ArrayList<Player> in_continuous = new ArrayList<>();
+
     @Override
-    public void setActive(String tag, Boolean bool){
-        if(powers_active.containsKey(tag)){
+    public void setActive(String tag, Boolean bool) {
+        if (powers_active.containsKey(tag)) {
             powers_active.replace(tag, bool);
-        }else{
+        } else {
             powers_active.put(tag, bool);
         }
     }
 
-    
-
-    public static ArrayList<Player> in_continuous = new ArrayList<>();
-    
     @EventHandler
     public void keybindToggle(KeybindTriggerEvent e) {
         Player p = e.getPlayer();
@@ -66,16 +64,24 @@ public class Launch extends CraftPower implements Listener {
                                                         met.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "contin"), PersistentDataType.BOOLEAN, false);
                                                         KeybindHandler.getKeybindItem(key, p.getInventory()).setItemMeta(met);
                                                         thing[0] = true;
-                                                        if(!getPowerArray().contains(p)) return;
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
+                                                        if (origin.getPowerFileFromType(getPowerFile()) == null) {
+                                                            getPowerArray().remove(p);
+                                                            return;
+                                                        }
+                                                        if (!getPowerArray().contains(p)) return;
+                                                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                                                         this.cancel();
                                                     } else {
                                                         //yes continuouous
                                                         ItemMeta met = KeybindHandler.getKeybindItem(key, p.getInventory()).getItemMeta();
                                                         met.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "contin"), PersistentDataType.BOOLEAN, true);
                                                         KeybindHandler.getKeybindItem(key, p.getInventory()).setItemMeta(met);
-                                                        if(!getPowerArray().contains(p)) return;
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
+                                                        if (origin.getPowerFileFromType(getPowerFile()) == null) {
+                                                            getPowerArray().remove(p);
+                                                            return;
+                                                        }
+                                                        if (!getPowerArray().contains(p)) return;
+                                                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                                                     }
                                                 }
                                                 if (in_continuous.contains(p)) {
@@ -85,8 +91,12 @@ public class Launch extends CraftPower implements Listener {
                                                     int speed = Integer.parseInt(origin.getPowerFileFromType("origins:launch").get("speed", null));
                                                     CooldownStuff.addCooldown(p, origin.getPowerFileFromType(getPowerFile()).getTag(), cooldown, key);
                                                     p.setVelocity(new Vector(p.getVelocity().getX(), p.getVelocity().getY() + speed, p.getVelocity().getZ()));
-                                                    if(!getPowerArray().contains(p)) return;
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
+                                                    if (origin.getPowerFileFromType(getPowerFile()) == null) {
+                                                        getPowerArray().remove(p);
+                                                        return;
+                                                    }
+                                                    if (!getPowerArray().contains(p)) return;
+                                                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                                                 } else {
                                                     this.cancel();
                                                 }
@@ -101,11 +111,15 @@ public class Launch extends CraftPower implements Listener {
                                         if (origin.getPowerFileFromType("origins:launch").getKey().get("continuous").toString().equalsIgnoreCase("false")) {
                                             ItemMeta met = KeybindHandler.getKeybindItem(key, p.getInventory()).getItemMeta();
                                             met.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "contin"), PersistentDataType.BOOLEAN, false);
-                                            if(!getPowerArray().contains(p)) return;
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
+                                            if (origin.getPowerFileFromType(getPowerFile()) == null) {
+                                                getPowerArray().remove(p);
+                                                return;
+                                            }
+                                            if (!getPowerArray().contains(p)) return;
+                                            setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                                             KeybindHandler.getKeybindItem(key, p.getInventory()).setItemMeta(met);
                                             in_continuous.add(p);
-                                            new BukkitRunnable(){
+                                            new BukkitRunnable() {
                                                 @Override
                                                 public void run() {
                                                     in_continuous.remove(p);
@@ -116,15 +130,23 @@ public class Launch extends CraftPower implements Listener {
                                             if (isKeyBeingPressed(e.getPlayer(), origin.getPowerFileFromType("origins:launch").getKey().get("key").toString(), true)) {
                                                 ItemMeta met = KeybindHandler.getKeybindItem(key, p.getInventory()).getItemMeta();
                                                 met.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "contin"), PersistentDataType.BOOLEAN, false);
-                                                if(!getPowerArray().contains(p)) return;
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
+                                                if (origin.getPowerFileFromType(getPowerFile()) == null) {
+                                                    getPowerArray().remove(p);
+                                                    return;
+                                                }
+                                                if (!getPowerArray().contains(p)) return;
+                                                setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                                                 KeybindHandler.getKeybindItem(key, p.getInventory()).setItemMeta(met);
                                                 if (in_continuous.contains(p)) {
                                                     KeybindHandler.runKeyChangeTriggerReturn(KeybindHandler.getKeybindItem(key, p.getInventory()), p, key);
                                                     KeybindHandler.getKeybindItem(key, p.getInventory()).setType(Material.GRAY_DYE);
                                                     met.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "contin"), PersistentDataType.BOOLEAN, false);
-                                                    if(!getPowerArray().contains(p)) return;
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
+                                                    if (origin.getPowerFileFromType(getPowerFile()) == null) {
+                                                        getPowerArray().remove(p);
+                                                        return;
+                                                    }
+                                                    if (!getPowerArray().contains(p)) return;
+                                                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                                                     KeybindHandler.getKeybindItem(key, p.getInventory()).setItemMeta(met);
                                                     in_continuous.remove(p);
                                                     this.cancel();
@@ -132,8 +154,12 @@ public class Launch extends CraftPower implements Listener {
                                                     KeybindHandler.runKeyChangeTrigger(KeybindHandler.getKeybindItem(key, p.getInventory()));
                                                     KeybindHandler.getKeybindItem(key, p.getInventory()).setType(Material.LIME_DYE);
                                                     met.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "contin"), PersistentDataType.BOOLEAN, true);
-                                                    if(!getPowerArray().contains(p)) return;
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
+                                                    if (origin.getPowerFileFromType(getPowerFile()) == null) {
+                                                        getPowerArray().remove(p);
+                                                        return;
+                                                    }
+                                                    if (!getPowerArray().contains(p)) return;
+                                                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                                                     KeybindHandler.getKeybindItem(key, p.getInventory()).setItemMeta(met);
                                                     in_continuous.add(p);
                                                 }

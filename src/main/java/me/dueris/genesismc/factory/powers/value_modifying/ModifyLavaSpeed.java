@@ -20,40 +20,47 @@ import static me.dueris.genesismc.factory.powers.value_modifying.ValueModifyingS
 public class ModifyLavaSpeed extends CraftPower {
 
     @Override
-    public void setActive(String tag, Boolean bool){
-        if(powers_active.containsKey(tag)){
+    public void setActive(String tag, Boolean bool) {
+        if (powers_active.containsKey(tag)) {
             powers_active.replace(tag, bool);
-        }else{
+        } else {
             powers_active.put(tag, bool);
         }
     }
 
-    
 
     @Override
     public void run() {
-        for(Player p : Bukkit.getOnlinePlayers()){
-            if(modify_lava_speed.contains(p)){
+        for (Player p : Bukkit.getOnlinePlayers()) {
+            if (modify_lava_speed.contains(p)) {
                 for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
                     ValueModifyingSuperClass valueModifyingSuperClass = new ValueModifyingSuperClass();
                     try {
                         ConditionExecutor conditionExecutor = new ConditionExecutor();
                         if (conditionExecutor.check("bientity_condition", "bientity_conditions", p, origin, "origins:modify_lava_speed", null, p)) {
-                            for(HashMap<String, Object> modifier : origin.getPowerFileFromType("origins:modify_lava_speed").getPossibleModifiers("modifier", "modifiers")){
+                            for (HashMap<String, Object> modifier : origin.getPowerFileFromType("origins:modify_lava_speed").getPossibleModifiers("modifier", "modifiers")) {
                                 Float value = Float.valueOf(modifier.get("value").toString());
                                 String operation = modifier.get("operation").toString();
                                 BinaryOperator mathOperator = getOperationMappingsFloat().get(operation);
                                 if (mathOperator != null) {
                                     float result = (float) mathOperator.apply(0.02f, value);
-                                    if(!getPowerArray().contains(p)) return;
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
+                                    if (origin.getPowerFileFromType(getPowerFile()) == null) {
+                                        getPowerArray().remove(p);
+                                        return;
+                                    }
+                                    if (!getPowerArray().contains(p)) return;
+                                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                                     p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 2, calculateSpeedAmplifier(Math.toIntExact(Long.valueOf(String.valueOf(result)))), false, false, false));
                                 }
                             }
 
-                        }else{
-                            if(!getPowerArray().contains(p)) return;
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
+                        } else {
+                            if (origin.getPowerFileFromType(getPowerFile()) == null) {
+                                getPowerArray().remove(p);
+                                return;
+                            }
+                            if (!getPowerArray().contains(p)) return;
+                            setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                         }
                     } catch (Exception ev) {
                         ErrorSystem errorSystem = new ErrorSystem();

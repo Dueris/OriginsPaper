@@ -1,0 +1,7 @@
+{
+  "type": "origins:elytra_flight",
+  "render_elytra": true,
+  "name": "Winged",
+  "description": "You have Elytra wings without needing to equip any",
+  "hidden": false
+}

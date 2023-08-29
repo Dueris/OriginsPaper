@@ -27,14 +27,14 @@ public class ActionOnItemUse extends CraftPower implements Listener {
             PowerContainer power = origin.getPowerFileFromType(getPowerFile());
             if (power == null) continue;
 
-            if(!getPowerArray().contains(e.getPlayer())) return;
+            if (!getPowerArray().contains(e.getPlayer())) return;
             setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
             ActionTypes.EntityActionType(actor, power.getEntityAction());
             ActionTypes.ItemActionType(actor.getActiveItem(), power.getItemAction());
             new BukkitRunnable() {
                 @Override
                 public void run() {
-                    if(!getPowerArray().contains(e.getPlayer())) return;
+                    if (!getPowerArray().contains(e.getPlayer())) return;
                     setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                 }
             }.runTaskLater(GenesisMC.getPlugin(), 2L);
@@ -56,9 +56,9 @@ public class ActionOnItemUse extends CraftPower implements Listener {
 
     @Override
     public void setActive(String tag, Boolean bool) {
-        if(powers_active.containsKey(tag)){
+        if (powers_active.containsKey(tag)) {
             powers_active.replace(tag, bool);
-        }else{
+        } else {
             powers_active.put(tag, bool);
         }
     }

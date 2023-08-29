@@ -14,39 +14,46 @@ import org.spigotmc.event.player.PlayerSpawnLocationEvent;
 import java.util.ArrayList;
 
 import static me.dueris.genesismc.factory.powers.value_modifying.ValueModifyingSuperClass.modify_world_spawn;
-import static org.bukkit.Material.*;
+import static org.bukkit.Material.OBSIDIAN;
 
 public class ModifyPlayerSpawnPower extends CraftPower implements Listener {
 
     @Override
-    public void setActive(String tag, Boolean bool){
-        if(powers_active.containsKey(tag)){
+    public void setActive(String tag, Boolean bool) {
+        if (powers_active.containsKey(tag)) {
             powers_active.replace(tag, bool);
-        }else{
+        } else {
             powers_active.put(tag, bool);
         }
     }
 
-    
 
     @EventHandler
-    public void run(PlayerSpawnLocationEvent e){
+    public void run(PlayerSpawnLocationEvent e) {
         Player p = e.getPlayer();
-        if(modify_world_spawn.contains(p)){
-            for(OriginContainer origin : OriginPlayer.getOrigin(p).values()){
+        if (modify_world_spawn.contains(p)) {
+            for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
                 ConditionExecutor executor = new ConditionExecutor();
-                if(executor.check("condition", "conditions", p, origin, getPowerFile(), null, p)){
-                    if(!getPowerArray().contains(p)) return;
+                if (executor.check("condition", "conditions", p, origin, getPowerFile(), null, p)) {
+                    if (origin.getPowerFileFromType(getPowerFile()) == null) {
+                        getPowerArray().remove(p);
+                        return;
+                    }
+                    if (!getPowerArray().contains(p)) return;
                     setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
-                    if(origin.getPowerFileFromType("origins:modify_player_spawn").get("dimension", null).equals("minecraft:nether")){
+                    if (origin.getPowerFileFromType("origins:modify_player_spawn").get("dimension", null).equals("minecraft:nether")) {
                         e.setSpawnLocation(NetherSpawn(origin.getPowerFileFromType("origins:modify_player_spawn").get("spawn_strategy", "default")));
                     } else if (origin.getPowerFileFromType("origins:modify_player_spawn").get("dimension", null).equals("minecraft:the_end")) {
                         e.setSpawnLocation(EndSpawn(origin.getPowerFileFromType("origins:modify_player_spawn").get("spawn_strategy", "default")));
                     } else {
                         e.setSpawnLocation(OverworldSpawn(origin.getPowerFileFromType("origins:modify_player_spawn").get("spawn_strategy", "default")));
                     }
-                }else{
-                    if(!getPowerArray().contains(p)) return;
+                } else {
+                    if (origin.getPowerFileFromType(getPowerFile()) == null) {
+                        getPowerArray().remove(p);
+                        return;
+                    }
+                    if (!getPowerArray().contains(p)) return;
                     setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                 }
             }
@@ -64,7 +71,7 @@ public class ModifyPlayerSpawnPower extends CraftPower implements Listener {
     public Location NetherSpawn(String spawn_strategy) {
         for (World world : Bukkit.getWorlds()) {
             if (world.getEnvironment() == World.Environment.NETHER) {
-                if(spawn_strategy == "default") {
+                if (spawn_strategy == "default") {
                     World overworld = Bukkit.getWorlds().get(0);
                     if (overworld.getEnvironment() != World.Environment.NORMAL) {
                         return null;
@@ -147,7 +154,7 @@ public class ModifyPlayerSpawnPower extends CraftPower implements Listener {
     public Location EndSpawn(String spawn_strategy) {
         for (World world : Bukkit.getWorlds()) {
             if (world.getEnvironment() == World.Environment.THE_END) {
-                if(spawn_strategy == "default") {
+                if (spawn_strategy == "default") {
                     Location end_location_spawn = Bukkit.getWorlds().get(2).getSpawnLocation();
                     return end_location_spawn;
                 } else if (spawn_strategy == "center") {
@@ -209,7 +216,7 @@ public class ModifyPlayerSpawnPower extends CraftPower implements Listener {
     public Location OverworldSpawn(String spawn_strategy) {
         for (World world : Bukkit.getWorlds()) {
             if (world.getEnvironment() == World.Environment.NORMAL) {
-                if(spawn_strategy == "default") {
+                if (spawn_strategy == "default") {
                     Location overworld_location_spawn = Bukkit.getWorlds().get(0).getSpawnLocation();
                     return overworld_location_spawn;
                 } else if (spawn_strategy == "center") {

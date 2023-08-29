@@ -1,6 +1,0 @@
-{
-  "type": "genesis:echo_pulse",
-  "hidden": false,
-  "name": "menu.sculk.echo_pulse.title",
-  "description": "menu.sculk.echo_pulse.description"
-}

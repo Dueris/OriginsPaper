@@ -1,0 +1,16 @@
+{
+  "powers": [
+    "origins:jump_boost",
+    "origins:fall_immunity",
+    "origins:slime_block_bounce",
+    "origins:burn_hot_biomes",
+    "origins:slime_skin"
+  ],
+  "icon": {
+    "item": "minecraft:slime_ball"
+  },
+  "name": "Slimeling",
+  "description": "Part Human, part Slime. Very unpleasant to touch",
+  "order": 0,
+  "impact": 2
+}

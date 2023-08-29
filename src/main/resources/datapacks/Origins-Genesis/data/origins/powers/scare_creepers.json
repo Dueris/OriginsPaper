@@ -1,0 +1,6 @@
+{
+  "type": "origins:simple",
+  "name": "Catlike Appearance",
+  "description": "Creepers are scared of you and will only explode if you attack them first",
+  "hidden": false
+}

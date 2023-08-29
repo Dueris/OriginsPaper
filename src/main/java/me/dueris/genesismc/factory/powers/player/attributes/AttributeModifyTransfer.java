@@ -16,15 +16,14 @@ import java.util.ArrayList;
 public class AttributeModifyTransfer extends CraftPower implements Listener {
 
     @Override
-    public void setActive(String tag, Boolean bool){
-        if(powers_active.containsKey(tag)){
+    public void setActive(String tag, Boolean bool) {
+        if (powers_active.containsKey(tag)) {
             powers_active.replace(tag, bool);
-        }else{
+        } else {
             powers_active.put(tag, bool);
         }
     }
 
-    
 
     @Override
     public void run() {
@@ -32,17 +31,17 @@ public class AttributeModifyTransfer extends CraftPower implements Listener {
     }
 
     @EventHandler
-    public void runChange(OriginChangeEvent e){
-        if(getPowerArray().contains(e.getPlayer())){
-            for(OriginContainer origin : OriginPlayer.getOrigin(e.getPlayer()).values()){
+    public void runChange(OriginChangeEvent e) {
+        if (getPowerArray().contains(e.getPlayer())) {
+            for (OriginContainer origin : OriginPlayer.getOrigin(e.getPlayer()).values()) {
                 ConditionExecutor executor = new ConditionExecutor();
-                if(executor.check("condition", "conditions", e.getPlayer(), origin, getPowerFile(), null, e.getPlayer())){
-                    if(!getPowerArray().contains(e.getPlayer())) return;
+                if (executor.check("condition", "conditions", e.getPlayer(), origin, getPowerFile(), null, e.getPlayer())) {
+                    if (!getPowerArray().contains(e.getPlayer())) return;
                     setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                     ValueModifyingSuperClass valueModifyingSuperClass = new ValueModifyingSuperClass();
                     applyAttribute(e.getPlayer(), valueModifyingSuperClass.getDefaultValue(origin.getPowerFileFromType(getPowerFile()).get("class")), Float.parseFloat(origin.getPowerFileFromType(getPowerFile()).get("multiplier", "1.0")), origin.getPowerFileFromType(getPowerFile()).get("attribute").toUpperCase().split(":")[1].replace("\\.", "_"));
-                }else{
-                    if(!getPowerArray().contains(e.getPlayer())) return;
+                } else {
+                    if (!getPowerArray().contains(e.getPlayer())) return;
                     setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                 }
 
@@ -50,7 +49,7 @@ public class AttributeModifyTransfer extends CraftPower implements Listener {
         }
     }
 
-    public void applyAttribute(Player p, float value, float multiplier, String attribute){
+    public void applyAttribute(Player p, float value, float multiplier, String attribute) {
         p.getAttribute(Attribute.valueOf(attribute)).setBaseValue(value * multiplier);
     }
 

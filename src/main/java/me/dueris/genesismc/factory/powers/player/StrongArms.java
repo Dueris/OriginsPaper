@@ -16,17 +16,6 @@ import static org.bukkit.Material.*;
 
 public class StrongArms extends CraftPower implements Listener {
 
-    @Override
-    public void setActive(String tag, Boolean bool){
-        if(powers_active.containsKey(tag)){
-            powers_active.replace(tag, bool);
-        }else{
-            powers_active.put(tag, bool);
-        }
-    }
-
-    
-
     public static EnumSet<Material> tools;
     public static EnumSet<Material> nat_stones;
 
@@ -39,6 +28,15 @@ public class StrongArms extends CraftPower implements Listener {
                 WOODEN_AXE, STONE_AXE, GOLDEN_AXE, IRON_AXE, DIAMOND_AXE, NETHERITE_AXE,
                 WOODEN_SHOVEL, STONE_SHOVEL, GOLDEN_SHOVEL, IRON_SHOVEL, DIAMOND_SHOVEL, NETHERITE_SHOVEL,
                 SHEARS);
+    }
+
+    @Override
+    public void setActive(String tag, Boolean bool) {
+        if (powers_active.containsKey(tag)) {
+            powers_active.replace(tag, bool);
+        } else {
+            powers_active.put(tag, bool);
+        }
     }
 
     @EventHandler

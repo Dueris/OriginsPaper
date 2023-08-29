@@ -14,32 +14,39 @@ import static me.dueris.genesismc.factory.powers.prevent.PreventSuperClass.preve
 public class PreventEntityCollision extends CraftPower {
 
     @Override
-    public void setActive(String tag, Boolean bool){
-        if(powers_active.containsKey(tag)){
+    public void setActive(String tag, Boolean bool) {
+        if (powers_active.containsKey(tag)) {
             powers_active.replace(tag, bool);
-        }else{
+        } else {
             powers_active.put(tag, bool);
         }
     }
 
-    
 
     @Override
     public void run() {
-        for(Player p : Bukkit.getOnlinePlayers()){
-            for(OriginContainer origin : OriginPlayer.getOrigin(p).values()){
-                if(prevent_entity_collision.contains(p)){
+        for (Player p : Bukkit.getOnlinePlayers()) {
+            for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
+                if (prevent_entity_collision.contains(p)) {
                     ConditionExecutor conditionExecutor = new ConditionExecutor();
-                    if(conditionExecutor.check("bientity_condition", "bientity_condition", p, origin, "origins:prevent_entity_collision", null, p)){
+                    if (conditionExecutor.check("bientity_condition", "bientity_condition", p, origin, "origins:prevent_entity_collision", null, p)) {
                         p.setCollidable(false);
-                        if(!getPowerArray().contains(p)) return;
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
-                    }else{
-                        if(!getPowerArray().contains(p)) return;
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
+                        if (origin.getPowerFileFromType(getPowerFile()) == null) {
+                            getPowerArray().remove(p);
+                            return;
+                        }
+                        if (!getPowerArray().contains(p)) return;
+                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
+                    } else {
+                        if (origin.getPowerFileFromType(getPowerFile()) == null) {
+                            getPowerArray().remove(p);
+                            return;
+                        }
+                        if (!getPowerArray().contains(p)) return;
+                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                         p.setCollidable(true);
                     }
-                }else{
+                } else {
                     p.setCollidable(true);
                 }
             }

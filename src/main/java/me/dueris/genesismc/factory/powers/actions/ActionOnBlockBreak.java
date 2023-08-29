@@ -20,7 +20,7 @@ public class ActionOnBlockBreak extends CraftPower implements Listener {
     }
 
     @EventHandler
-    public void brek(BlockBreakEvent e){
+    public void brek(BlockBreakEvent e) {
         //TODO: add blockconditon
         Player actor = e.getPlayer();
 
@@ -30,14 +30,14 @@ public class ActionOnBlockBreak extends CraftPower implements Listener {
             PowerContainer power = origin.getPowerFileFromType(getPowerFile());
             if (power == null) continue;
 
-            if(!getPowerArray().contains(e.getPlayer())) return;
+            if (!getPowerArray().contains(e.getPlayer())) return;
             setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
             ActionTypes.BlockActionType(e.getBlock().getLocation(), power.getBlockAction());
             ActionTypes.EntityActionType(e.getPlayer(), power.getEntityAction());
             new BukkitRunnable() {
                 @Override
                 public void run() {
-                    if(!getPowerArray().contains(e.getPlayer())) return;
+                    if (!getPowerArray().contains(e.getPlayer())) return;
                     setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                 }
             }.runTaskLater(GenesisMC.getPlugin(), 2L);
@@ -56,9 +56,9 @@ public class ActionOnBlockBreak extends CraftPower implements Listener {
 
     @Override
     public void setActive(String tag, Boolean bool) {
-        if(powers_active.containsKey(tag)){
+        if (powers_active.containsKey(tag)) {
             powers_active.replace(tag, bool);
-        }else{
+        } else {
             powers_active.put(tag, bool);
         }
     }

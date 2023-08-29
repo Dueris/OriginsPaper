@@ -3,11 +3,11 @@ package me.dueris.genesismc;
 import me.dueris.genesismc.entity.OriginPlayer;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.powers.player.attributes.AttributeHandler;
-import me.dueris.genesismc.utils.translation.LangConfig;
 import me.dueris.genesismc.utils.LayerContainer;
 import me.dueris.genesismc.utils.OriginContainer;
 import me.dueris.genesismc.utils.PowerContainer;
 import me.dueris.genesismc.utils.legacy.LegacyOriginContainer;
+import me.dueris.genesismc.utils.translation.LangConfig;
 import me.dueris.genesismc.utils.translation.Translation;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
@@ -45,7 +45,7 @@ public class PlayerHandler implements Listener {
         for (OriginContainer origin : OriginPlayer.getOrigin(player).values()) {
             PowerContainer power = origin.getPowerFileFromType("origins:attribute");
             if (power == null) continue;
-            for(HashMap<String, Object> modifier : origin.getPowerFileFromType("origins:attribute").getPossibleModifiers("modifier", "modifier")){
+            for (HashMap<String, Object> modifier : origin.getPowerFileFromType("origins:attribute").getPossibleModifiers("modifier", "modifier")) {
                 if (modifier.get("attribute").toString().equalsIgnoreCase("reach-entity-attributes:reach")) {
                     extra_reach.add(player);
                     return;
@@ -57,6 +57,37 @@ public class PlayerHandler implements Listener {
                 }
             }
         }
+    }
+
+    public static void originValidCheck(Player p) {
+        HashMap<LayerContainer, OriginContainer> origins = OriginPlayer.getOrigin(p);
+        ArrayList<LayerContainer> deletedLayers = new ArrayList<>();
+        for (LayerContainer layer : origins.keySet()) {
+            //check if the player layer exists
+            if (!CraftApoli.layerExists(layer)) {
+                deletedLayers.add(layer);
+                p.sendMessage(Component.text(LangConfig.getLocalizedString(p, "misc.layerRemoved").replace("%layerName%", layer.getName())).color(TextColor.fromHexString(RED)));
+                continue;
+            }
+            //origin check
+            if (!CraftApoli.getLayerFromTag(layer.getTag()).getOrigins().contains(origins.get(layer).getTag())) {
+                origins.replace(layer, CraftApoli.nullOrigin());
+                p.sendMessage(Component.text(LangConfig.getLocalizedString(p, "misc.originRemoved").replace("%originName", origins.get(layer).getName()).replace("%layerName%", layer.getName())).color(TextColor.fromHexString(RED)));
+            }
+        }
+
+        //check if the player has all the existing layers
+        layerLoop:
+        for (LayerContainer layer : CraftApoli.getLayers()) {
+            for (LayerContainer playerLayer : origins.keySet()) {
+                if (layer.getTag().equals(playerLayer.getTag())) continue layerLoop;
+            }
+            origins.put(layer, CraftApoli.nullOrigin());
+        }
+        p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origins"), PersistentDataType.BYTE_ARRAY, CraftApoli.toByteArray(origins));
+
+        //removes deleted layer from the players data
+        for (LayerContainer layer : deletedLayers) OriginPlayer.removeOrigin(p, layer);
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
@@ -159,36 +190,5 @@ public class PlayerHandler implements Listener {
     @EventHandler
     public void playerQuitHandler(PlayerQuitEvent e) {
         OriginPlayer.unassignPowers(e.getPlayer());
-    }
-
-    public static void originValidCheck(Player p) {
-        HashMap<LayerContainer, OriginContainer> origins = OriginPlayer.getOrigin(p);
-        ArrayList<LayerContainer> deletedLayers = new ArrayList<>();
-        for (LayerContainer layer : origins.keySet()) {
-            //check if the player layer exists
-            if (!CraftApoli.layerExists(layer)) {
-                deletedLayers.add(layer);
-                p.sendMessage(Component.text(LangConfig.getLocalizedString(p, "misc.layerRemoved").replace("%layerName%", layer.getName())).color(TextColor.fromHexString(RED)));
-                continue;
-            }
-            //origin check
-            if (!CraftApoli.getLayerFromTag(layer.getTag()).getOrigins().contains(origins.get(layer).getTag())) {
-                origins.replace(layer, CraftApoli.nullOrigin());
-                p.sendMessage(Component.text(LangConfig.getLocalizedString(p, "misc.originRemoved").replace("%originName", origins.get(layer).getName()).replace("%layerName%", layer.getName())).color(TextColor.fromHexString(RED)));
-            }
-        }
-
-        //check if the player has all the existing layers
-        layerLoop:
-        for (LayerContainer layer : CraftApoli.getLayers()) {
-            for (LayerContainer playerLayer : origins.keySet()) {
-                if (layer.getTag().equals(playerLayer.getTag())) continue layerLoop;
-            }
-            origins.put(layer, CraftApoli.nullOrigin());
-        }
-        p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origins"), PersistentDataType.BYTE_ARRAY, CraftApoli.toByteArray(origins));
-
-        //removes deleted layer from the players data
-        for (LayerContainer layer : deletedLayers) OriginPlayer.removeOrigin(p, layer);
     }
 }

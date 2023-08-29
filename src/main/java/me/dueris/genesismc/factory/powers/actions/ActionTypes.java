@@ -24,7 +24,7 @@ import static me.dueris.genesismc.factory.powers.OriginMethods.statusEffectInsta
 
 public class ActionTypes {
 
-    public static void runbiEntity(Entity actor, Entity target, JSONObject biEntityAction){
+    public static void runbiEntity(Entity actor, Entity target, JSONObject biEntityAction) {
         String type = biEntityAction.get("type").toString();
         if (type.equals("origins:add_velocity")) {
             //TODO: make this align to the actor entity
@@ -123,32 +123,23 @@ public class ActionTypes {
         } else if (type.equals("origins:side")) {
             String side = entityAction.get("side").toString();
             JSONObject action = (JSONObject) entityAction.get("action");
-                runbiEntity(actor, target, action);
+            runbiEntity(actor, target, action);
 
         } else {
             runbiEntity(actor, target, biEntityAction);
         }
     }
 
-    private static void runEntity(Entity entity, JSONObject power){
+    private static void runEntity(Entity entity, JSONObject power) {
         JSONObject entityAction;
         System.out.println(power);
         entityAction = power;
         String type = entityAction.get("type").toString();
 
         if (type.equals("origins:add_velocity")) {
-            float x = 0.0f;
-            float y = 0.0f;
-            float z = 0.0f;
-            boolean set = false;
-
-            if (entityAction.containsKey("x")) x = Float.parseFloat(entityAction.get("x").toString());
-            if (entityAction.containsKey("y")) y = Float.parseFloat(entityAction.get("y").toString());
-            if (entityAction.containsKey("z")) z = Float.parseFloat(entityAction.get("z").toString());
-            if (entityAction.containsKey("set")) set = Boolean.parseBoolean(entityAction.get("set").toString());
-
-            if (set) entity.setVelocity(new Vector(x, y, z));
-            else entity.setVelocity(entity.getVelocity().add(new Vector(x, y, z)));
+            if (entity instanceof Player player) {
+                OriginPlayer.launchElytra(player, Float.parseFloat(entityAction.get("y").toString()));
+            }
         }
         if (type.equals("origins:add_xp")) {
             int points = 0;
@@ -189,62 +180,61 @@ public class ActionTypes {
         if (type.equals("origins:block_action_at")) {
             BlockActionType(entity.getLocation(), entityAction);
         }
-        if (type.equals("origins:toggle")){
-                if(entity instanceof Player){
-                    for(OriginContainer origin : OriginPlayer.getOrigin((Player) entity).values()){
-                        if(origin.getPowers().contains(power.get("power"))){
-                            for(PowerContainer powerContainer : origin.getPowerContainers()){
-                                if(powerContainer.getType().equals("origins:toggle")){
-                                    Toggle toggle = new Toggle();
-                                    toggle.execute((Player) entity, origin);
-                                }
+        if (type.equals("origins:toggle")) {
+            if (entity instanceof Player) {
+                for (OriginContainer origin : OriginPlayer.getOrigin((Player) entity).values()) {
+                    if (origin.getPowers().contains(power.get("power"))) {
+                        for (PowerContainer powerContainer : origin.getPowerContainers()) {
+                            if (powerContainer.getType().equals("origins:toggle")) {
+                                Toggle toggle = new Toggle();
+                                toggle.execute((Player) entity, origin);
                             }
                         }
                     }
+                }
             }
         }
-        if(type.equals("origins:trigger_cooldown")){
-                if(entity instanceof Player player){
-                    for(OriginContainer origin : OriginPlayer.getOrigin((Player) entity).values()){
-                        if(origin.getPowers().contains(power.get("power"))){
-                            for(PowerContainer powerContainer : origin.getPowerContainers()){
-                                if(powerContainer.get("cooldown") != null){
-                                    String key = "*";
-                                    if(powerContainer.getKey().get("key") != null){
-                                        key = powerContainer.getKey().get("key").toString();
-                                        if(powerContainer.getType().equals("origins:action_on_hit")){
-                                            key = "key.attack";
-                                        } else if (powerContainer.getType().equals("origins:action_when_damage_taken")) {
-                                            key = "key.attack";
-                                        } else if (powerContainer.getType().equals("origins:action_when_hit")) {
-                                            key = "key.attack";
-                                        } else if (powerContainer.getType().equals("origins:action_self")) {
-                                            key = "key.use";
-                                        } else if (powerContainer.getType().equals("origins:attacker_action_when_hit")) {
-                                            key = "key.attack";
-                                        } else if (powerContainer.getType().equals("origins:self_action_on_hit")) {
-                                            key = "key.attack";
-                                        } else if (powerContainer.getType().equals("origins:self_action_on_kill")) {
-                                            key = "key.attack";
-                                        } else if (powerContainer.getType().equals("origins:self_action_when_hit")) {
-                                            key = "key.attack";
-                                        } else if (powerContainer.getType().equals("origins:target_action_on_hit")) {
-                                            key = "key.attack";
-                                        }
+        if (type.equals("origins:trigger_cooldown")) {
+            if (entity instanceof Player player) {
+                for (OriginContainer origin : OriginPlayer.getOrigin((Player) entity).values()) {
+                    if (origin.getPowers().contains(power.get("power"))) {
+                        for (PowerContainer powerContainer : origin.getPowerContainers()) {
+                            if (powerContainer.get("cooldown") != null) {
+                                String key = "*";
+                                if (powerContainer.getKey().get("key") != null) {
+                                    key = powerContainer.getKey().get("key").toString();
+                                    if (powerContainer.getType().equals("origins:action_on_hit")) {
+                                        key = "key.attack";
+                                    } else if (powerContainer.getType().equals("origins:action_when_damage_taken")) {
+                                        key = "key.attack";
+                                    } else if (powerContainer.getType().equals("origins:action_when_hit")) {
+                                        key = "key.attack";
+                                    } else if (powerContainer.getType().equals("origins:action_self")) {
+                                        key = "key.use";
+                                    } else if (powerContainer.getType().equals("origins:attacker_action_when_hit")) {
+                                        key = "key.attack";
+                                    } else if (powerContainer.getType().equals("origins:self_action_on_hit")) {
+                                        key = "key.attack";
+                                    } else if (powerContainer.getType().equals("origins:self_action_on_kill")) {
+                                        key = "key.attack";
+                                    } else if (powerContainer.getType().equals("origins:self_action_when_hit")) {
+                                        key = "key.attack";
+                                    } else if (powerContainer.getType().equals("origins:target_action_on_hit")) {
+                                        key = "key.attack";
                                     }
-                                CooldownStuff.addCooldown(player, powerContainer.getTag(), Integer.parseInt(powerContainer.get("cooldown")), key);
                                 }
+                                CooldownStuff.addCooldown(player, powerContainer.getTag(), Integer.parseInt(powerContainer.get("cooldown")), key);
                             }
                         }
                     }
+                }
             }
         }
     }
 
     public static void EntityActionType(Entity entity, JSONObject power) {
         JSONObject entityAction;
-        entityAction = (JSONObject) power.get("action");
-        if (entityAction == null) entityAction = (JSONObject) power.get("entity_action");
+        entityAction = power;
         String type = entityAction.get("type").toString();
 
         if (type.equals("origins:and")) {
@@ -359,7 +349,7 @@ public class ActionTypes {
         }
     }
 
-    private static void runBlock(Location location, JSONObject power){
+    private static void runBlock(Location location, JSONObject power) {
         JSONObject blockAction = (JSONObject) power.get("block_action");
         String type = blockAction.get("type").toString();
 
@@ -403,11 +393,81 @@ public class ActionTypes {
         }
     }
 
+    private static void runBlockEntity(Entity entity, Location location, JSONObject power) {
+        JSONObject blockAction = (JSONObject) power.get("block_entity_action");
+        String type = blockAction.get("type").toString();
+        if (type.equals("genesis:set_spawn")) {
+            if (entity instanceof Player p) {
+                p.setBedSpawnLocation(location);
+            }
+        }
+    }
+
+    public static void BlockEntityType(Entity entity, Location location, JSONObject power) {
+        JSONObject entityAction;
+        entityAction = (JSONObject) power.get("action");
+        if (entityAction == null) entityAction = (JSONObject) power.get("entity_action");
+        String type = entityAction.get("type").toString();
+
+        if (type.equals("origins:and")) {
+            JSONArray andActions = (JSONArray) entityAction.get("actions");
+            for (Object actionObj : andActions) {
+                JSONObject action = (JSONObject) actionObj;
+                runBlockEntity(entity, location, action);
+            }
+        } else if (type.equals("origins:chance")) {
+            double chance = Double.parseDouble(entityAction.get("chance").toString());
+            double randomValue = Math.random();
+
+            if (randomValue <= chance) {
+                JSONObject action = (JSONObject) entityAction.get("action");
+                runBlockEntity(entity, location, action);
+            } else if (entityAction.containsKey("fail_action")) {
+                JSONObject failAction = (JSONObject) entityAction.get("fail_action");
+                runBlockEntity(entity, location, failAction);
+            }
+        } else if (type.equals("origins:choice")) {
+            JSONArray actionsArray = (JSONArray) entityAction.get("actions");
+            List<JSONObject> actionsList = new ArrayList<>();
+
+            for (Object actionObj : actionsArray) {
+                JSONObject action = (JSONObject) actionObj;
+                JSONObject element = (JSONObject) action.get("element");
+                int weight = Integer.parseInt(action.get("weight").toString());
+                for (int i = 0; i < weight; i++) {
+                    actionsList.add(element);
+                }
+            }
+
+            if (!actionsList.isEmpty()) {
+                int randomIndex = (int) (Math.random() * actionsList.size());
+                JSONObject chosenAction = actionsList.get(randomIndex);
+                runBlockEntity(entity, location, chosenAction);
+            }
+        } else if (type.equals("origins:delay")) {
+            int ticks = Integer.parseInt(entityAction.get("ticks").toString());
+            JSONObject delayedAction = (JSONObject) entityAction.get("action");
+
+            Bukkit.getScheduler().runTaskLater(GenesisMC.getPlugin(), () -> {
+                runBlockEntity(entity, location, delayedAction);
+            }, ticks);
+        } else if (type.equals("origins:nothing")) {
+            //literally does nothin
+        } else if (type.equals("origins:side")) {
+            JSONObject action = (JSONObject) entityAction.get("action");
+            runBlockEntity(entity, location, action);
+        } else {
+            runBlockEntity(entity, location, power);
+        }
+    }
+
     public static void ItemActionType(ItemStack item, JSONObject power) {
-        JSONObject entityAction = (JSONObject) power.get("action");
+        if (power == null) return;
+        JSONObject entityAction = power;
         if (entityAction == null) {
             entityAction = (JSONObject) power.get("item_action");
         }
+        if (entityAction.get("type") == null) return;
         String type = entityAction.get("type").toString();
 
         if (type.equals("origins:and")) {
@@ -462,7 +522,7 @@ public class ActionTypes {
         }
     }
 
-    private static void runItem(ItemStack item, JSONObject power){
+    private static void runItem(ItemStack item, JSONObject power) {
 
     }
 

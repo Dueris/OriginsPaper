@@ -1,0 +1,10 @@
+{
+  "type": "origins:prevent_item_use",
+  "item_condition": {
+    "type": "origins:meat",
+    "inverted": true
+  },
+  "name": "Carnivore",
+  "description": "You diet is restricted to meat, you can't eat vegetables",
+  "hidden": false
+}

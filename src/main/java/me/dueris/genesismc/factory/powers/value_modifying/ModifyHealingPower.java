@@ -19,35 +19,42 @@ import static me.dueris.genesismc.factory.powers.value_modifying.ValueModifyingS
 public class ModifyHealingPower extends CraftPower implements Listener {
 
     @Override
-    public void setActive(String tag, Boolean bool){
-        if(powers_active.containsKey(tag)){
+    public void setActive(String tag, Boolean bool) {
+        if (powers_active.containsKey(tag)) {
             powers_active.replace(tag, bool);
-        }else{
+        } else {
             powers_active.put(tag, bool);
         }
     }
 
-    
 
     @EventHandler
-    public void run(EntityRegainHealthEvent e){
-        if(e.getEntity() instanceof Player p){
-            if(!modify_healing.contains(e.getEntity())) return;
-            for(OriginContainer origin : OriginPlayer.getOrigin(p).values()){
-                for(HashMap<String, Object> modifier : origin.getPowerFileFromType("origins:modify_healing").getPossibleModifiers("modifier", "modifiers")){
+    public void run(EntityRegainHealthEvent e) {
+        if (e.getEntity() instanceof Player p) {
+            if (!modify_healing.contains(e.getEntity())) return;
+            for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
+                for (HashMap<String, Object> modifier : origin.getPowerFileFromType("origins:modify_healing").getPossibleModifiers("modifier", "modifiers")) {
                     Float value = Float.valueOf(modifier.get("value").toString());
                     String operation = modifier.get("operation").toString();
                     BinaryOperator mathOperator = getOperationMappingsFloat().get(operation);
                     if (mathOperator != null) {
                         float result = (float) mathOperator.apply(e.getAmount(), value);
                         ConditionExecutor executor = new ConditionExecutor();
-                        if(executor.check("condition", "conditions", p, origin, getPowerFile(), null, p)){
-                            if(!getPowerArray().contains(p)) return;
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
+                        if (executor.check("condition", "conditions", p, origin, getPowerFile(), null, p)) {
+                            if (origin.getPowerFileFromType(getPowerFile()) == null) {
+                                getPowerArray().remove(p);
+                                return;
+                            }
+                            if (!getPowerArray().contains(p)) return;
+                            setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                             e.setAmount(result);
-                        }else{
-                            if(!getPowerArray().contains(p)) return;
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
+                        } else {
+                            if (origin.getPowerFileFromType(getPowerFile()) == null) {
+                                getPowerArray().remove(p);
+                                return;
+                            }
+                            if (!getPowerArray().contains(p)) return;
+                            setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                         }
                     }
                 }

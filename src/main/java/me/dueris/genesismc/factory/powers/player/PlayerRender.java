@@ -6,8 +6,8 @@ import me.dueris.genesismc.entity.OriginPlayer;
 import me.dueris.genesismc.events.OriginChangeEvent;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.utils.translation.LangConfig;
 import me.dueris.genesismc.utils.OriginContainer;
+import me.dueris.genesismc.utils.translation.LangConfig;
 import net.skinsrestorer.api.PlayerWrapper;
 import net.skinsrestorer.api.SkinsRestorerAPI;
 import net.skinsrestorer.api.exception.SkinRequestException;
@@ -37,15 +37,14 @@ import java.util.concurrent.CompletableFuture;
 public class PlayerRender extends CraftPower {
 
     @Override
-    public void setActive(String tag, Boolean bool){
-        if(powers_active.containsKey(tag)){
+    public void setActive(String tag, Boolean bool) {
+        if (powers_active.containsKey(tag)) {
             powers_active.replace(tag, bool);
-        }else{
+        } else {
             powers_active.put(tag, bool);
         }
     }
 
-    
 
     @Override
     public void run() {
@@ -122,8 +121,12 @@ public class PlayerRender extends CraftPower {
                 for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
                     ConditionExecutor conditionExecutor = new ConditionExecutor();
                     if (conditionExecutor.check("condition", "conditions", p, origin, "origins:invisibility", null, p)) {
-                        if(!getPowerArray().contains(p)) return;
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
+                        if (origin.getPowerFileFromType(getPowerFile()) == null) {
+                            getPowerArray().remove(p);
+                            return;
+                        }
+                        if (!getPowerArray().contains(p)) return;
+                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                         if (origin.getPowerFileFromType("origins:invisibility").get("render_armor", "false").equalsIgnoreCase("true")) {
                             for (Player players : Bukkit.getOnlinePlayers()) {
                                 players.hidePlayer(p);
@@ -135,9 +138,13 @@ public class PlayerRender extends CraftPower {
                         if (origin.getPowerFileFromType("origins:invisibility").get("render_outline", "false").equalsIgnoreCase("true")) {
                             p.addPotionEffect(new PotionEffect(PotionEffectType.GLOWING, 15, 1, false, false, false));
                         }
-                    }else{
-                        if(!getPowerArray().contains(p)) return;
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
+                    } else {
+                        if (origin.getPowerFileFromType(getPowerFile()) == null) {
+                            getPowerArray().remove(p);
+                            return;
+                        }
+                        if (!getPowerArray().contains(p)) return;
+                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                     }
                 }
             }
@@ -157,95 +164,7 @@ public class PlayerRender extends CraftPower {
 
     public static class ModelColor extends CraftPower implements Listener {
 
-        @Override
-        public void setActive(String tag, Boolean bool){
-            if(powers_active.containsKey(getPowerFile())){
-                powers_active.replace(getPowerFile(), bool);
-            }else{
-                powers_active.put(getPowerFile(), bool);
-            }
-        }
-
         private SkinsRestorerAPI skinsRestorerAPI = null;
-
-        @SuppressWarnings("null")
-        @EventHandler
-        public void onPlayerChoose(OriginChangeEvent event) {
-            Player player = event.getPlayer();
-            new BukkitRunnable() {
-                @Override
-                public void run() {
-                    if (model_color.contains(player)) {
-                        for (OriginContainer origin : OriginPlayer.getOrigin(player).values()) {
-
-                            Double red;
-                            Double blue;
-                            Double green;
-
-                            if (origin.getPowerFileFromType("origins:model_color") == null) {
-                                model_color.remove(player);
-                            }
-                            if (origin.getPowerFileFromType("origins:model_color").getColor("red") == null) {
-                                red = 0.0;
-                            } else {
-                                red = origin.getPowerFileFromType("origins:model_color").getColor("red");
-                            }
-                            if (origin.getPowerFileFromType("origins:model_color").getColor("blue") == null) {
-                                blue = 0.0;
-                            } else {
-                                blue = origin.getPowerFileFromType("origins:model_color").getColor("blue");
-                            }
-                            if (origin.getPowerFileFromType("origins:model_color").getColor("green") == null) {
-                                green = 0.0;
-                            } else {
-                                green = origin.getPowerFileFromType("origins:model_color").getColor("green");
-                            }
-
-                            String savePath = Bukkit.getServer().getPluginManager().getPlugin("genesismc").getDataFolder().getPath() + File.separator + "skins";
-                            skinsRestorerAPI = SkinsRestorerAPI.getApi();
-                            ModelColor.modifyPlayerSkin(player, red, green, blue, savePath, 1L, skinsRestorerAPI, false, origin);
-                        }
-                    } else {
-                        for (OriginContainer origin : OriginPlayer.getOrigin(player).values()) {
-                            Double red = Double.valueOf(0);
-                            Double blue = Double.valueOf(0);
-                            Double green = Double.valueOf(0);
-                            Long alphaTint = 0L;
-                            String savePath = Bukkit.getServer().getPluginManager().getPlugin("genesismc").getDataFolder().getPath() + File.separator + "skins";
-                            skinsRestorerAPI = SkinsRestorerAPI.getApi();
-                            ModelColor.modifyPlayerSkin(player, red, green, blue, savePath, alphaTint, skinsRestorerAPI, true, origin);
-                        }
-                    }
-                    this.cancel();
-                }
-            }.runTaskTimer(GenesisMC.getPlugin(), 20L, 1L);
-        }
-
-        @EventHandler
-        public void JoinApplyTest(PlayerJoinEvent e) {
-            Player player = e.getPlayer();
-            new BukkitRunnable() {
-                @Override
-                public void run() {
-                    if (model_color.contains(player)) {
-                        if (player.getPlayerProfile().getTextures().getSkinModel() == PlayerTextures.SkinModel.CLASSIC) {
-                            Bukkit.getConsoleSender().sendMessage(LangConfig.getLocalizedString(Bukkit.getConsoleSender(), "powers.modelColour"));
-                            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "skin set " + player.getName() + " " + player.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "modified-skin-url"), PersistentDataType.STRING) + " CLASSIC");
-                        } else {
-                            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "skin set " + player.getName() + " " + player.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "modified-skin-url"), PersistentDataType.STRING) + " SLIM");
-                        }
-                    } else {
-                        if (player.getPlayerProfile().getTextures().getSkinModel() == PlayerTextures.SkinModel.CLASSIC) {
-                            Bukkit.getConsoleSender().sendMessage(LangConfig.getLocalizedString(Bukkit.getConsoleSender(), "powers.modelColour"));
-                            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "skin set " + player.getName() + " " + player.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "original-skin-url"), PersistentDataType.STRING) + " CLASSIC");
-                        } else {
-                            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "skin set " + player.getName() + " " + player.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "original-skin-url"), PersistentDataType.STRING) + " SLIM");
-                        }
-                    }
-                    this.cancel();
-                }
-            }.runTaskTimer(GenesisMC.getPlugin(), 4L, 1L);
-        }
 
         public static void modifyPlayerSkin(Player player, Double redTint, Double greenTint, Double blueTint, String savePath, Long alphaTint, SkinsRestorerAPI skinsRestorerAPI, boolean applyOriginal, OriginContainer origin) {
             PlayerProfile gameProfile = player.getPlayerProfile();
@@ -346,7 +265,7 @@ public class PlayerRender extends CraftPower {
 
         private static BufferedImage modifyImage(BufferedImage originalImage, double redTint, double greenTint, double blueTint, double alphaTint, Player player, OriginContainer origin) {
             if (redTint > 1 || greenTint > 1 || blueTint > 1 || alphaTint > 1) {
-                if(origin.getPowerFileFromType("origins:model_color").getModelRenderType() == "original"){
+                if (origin.getPowerFileFromType("origins:model_color").getModelRenderType() == "original") {
                     throw new IllegalArgumentException(LangConfig.getLocalizedString(Bukkit.getConsoleSender(), "powers.errors.modelColourValue"));
                 }
             }
@@ -489,6 +408,94 @@ public class PlayerRender extends CraftPower {
 
             File outputFile = new File(savePath, fileName);
             ImageIO.write(image, "png", outputFile);
+        }
+
+        @Override
+        public void setActive(String tag, Boolean bool) {
+            if (powers_active.containsKey(getPowerFile())) {
+                powers_active.replace(getPowerFile(), bool);
+            } else {
+                powers_active.put(getPowerFile(), bool);
+            }
+        }
+
+        @SuppressWarnings("null")
+        @EventHandler
+        public void onPlayerChoose(OriginChangeEvent event) {
+            Player player = event.getPlayer();
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    if (model_color.contains(player)) {
+                        for (OriginContainer origin : OriginPlayer.getOrigin(player).values()) {
+
+                            Double red;
+                            Double blue;
+                            Double green;
+
+                            if (origin.getPowerFileFromType("origins:model_color") == null) {
+                                model_color.remove(player);
+                            }
+                            if (origin.getPowerFileFromType("origins:model_color").getColor("red") == null) {
+                                red = 0.0;
+                            } else {
+                                red = origin.getPowerFileFromType("origins:model_color").getColor("red");
+                            }
+                            if (origin.getPowerFileFromType("origins:model_color").getColor("blue") == null) {
+                                blue = 0.0;
+                            } else {
+                                blue = origin.getPowerFileFromType("origins:model_color").getColor("blue");
+                            }
+                            if (origin.getPowerFileFromType("origins:model_color").getColor("green") == null) {
+                                green = 0.0;
+                            } else {
+                                green = origin.getPowerFileFromType("origins:model_color").getColor("green");
+                            }
+
+                            String savePath = Bukkit.getServer().getPluginManager().getPlugin("genesismc").getDataFolder().getPath() + File.separator + "skins";
+                            skinsRestorerAPI = SkinsRestorerAPI.getApi();
+                            ModelColor.modifyPlayerSkin(player, red, green, blue, savePath, 1L, skinsRestorerAPI, false, origin);
+                        }
+                    } else {
+                        for (OriginContainer origin : OriginPlayer.getOrigin(player).values()) {
+                            Double red = Double.valueOf(0);
+                            Double blue = Double.valueOf(0);
+                            Double green = Double.valueOf(0);
+                            Long alphaTint = 0L;
+                            String savePath = Bukkit.getServer().getPluginManager().getPlugin("genesismc").getDataFolder().getPath() + File.separator + "skins";
+                            skinsRestorerAPI = SkinsRestorerAPI.getApi();
+                            ModelColor.modifyPlayerSkin(player, red, green, blue, savePath, alphaTint, skinsRestorerAPI, true, origin);
+                        }
+                    }
+                    this.cancel();
+                }
+            }.runTaskTimer(GenesisMC.getPlugin(), 20L, 1L);
+        }
+
+        @EventHandler
+        public void JoinApplyTest(PlayerJoinEvent e) {
+            Player player = e.getPlayer();
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    if (model_color.contains(player)) {
+                        if (player.getPlayerProfile().getTextures().getSkinModel() == PlayerTextures.SkinModel.CLASSIC) {
+                            Bukkit.getConsoleSender().sendMessage(LangConfig.getLocalizedString(Bukkit.getConsoleSender(), "powers.modelColour"));
+                            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "skin set " + player.getName() + " " + player.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "modified-skin-url"), PersistentDataType.STRING) + " CLASSIC");
+                        } else {
+                            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "skin set " + player.getName() + " " + player.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "modified-skin-url"), PersistentDataType.STRING) + " SLIM");
+                        }
+                    } else {
+                        if (player.getPlayerProfile().getTextures().getSkinModel() == PlayerTextures.SkinModel.CLASSIC) {
+                            Bukkit.getConsoleSender().sendMessage(LangConfig.getLocalizedString(Bukkit.getConsoleSender(), "powers.modelColour"));
+                            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "skin set " + player.getName() + " " + player.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "original-skin-url"), PersistentDataType.STRING) + " CLASSIC");
+                        } else {
+                            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "skin set " + player.getName() + " " + player.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "original-skin-url"), PersistentDataType.STRING) + " SLIM");
+                        }
+                    }
+                    this.cancel();
+                }
+            }.runTaskTimer(GenesisMC.getPlugin(), 4L, 1L);
         }
 
 //        @Override

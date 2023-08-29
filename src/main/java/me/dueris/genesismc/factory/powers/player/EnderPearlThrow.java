@@ -32,15 +32,14 @@ import static org.bukkit.Material.ENDER_PEARL;
 public class EnderPearlThrow extends CraftPower implements Listener {
 
     @Override
-    public void setActive(String tag, Boolean bool){
-        if(powers_active.containsKey(tag)){
+    public void setActive(String tag, Boolean bool) {
+        if (powers_active.containsKey(tag)) {
             powers_active.replace(tag, bool);
-        }else{
+        } else {
             powers_active.put(tag, bool);
         }
     }
 
-    
 
     @EventHandler
     public void teleportDamgeOff(PlayerTeleportEvent e) {
@@ -70,19 +69,27 @@ public class EnderPearlThrow extends CraftPower implements Listener {
                 if (e.getItem() != null) {
                     if (e.getItem().equals(infinpearl)) {
                         if (p.getCooldown(ENDER_PEARL) == 0 && p.getGameMode() != GameMode.CREATIVE) {
-                            for(OriginContainer origin : OriginPlayer.getOrigin(p).values()){
+                            for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
                                 ConditionExecutor executor = new ConditionExecutor();
-                                if(executor.check("condition", "conditions", p, origin, getPowerFile(), null, p)){
-                                    if(!getPowerArray().contains(p)) return;
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
+                                if (executor.check("condition", "conditions", p, origin, getPowerFile(), null, p)) {
+                                    if (origin.getPowerFileFromType(getPowerFile()) == null) {
+                                        getPowerArray().remove(p);
+                                        return;
+                                    }
+                                    if (!getPowerArray().contains(p)) return;
+                                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                                     p.getInventory().addItem(infinpearl);
                                     Bukkit.getScheduler().runTaskLater(GenesisMC.getPlugin(), () -> {
                                         if (p.getInventory().getItemInMainHand().isSimilar(infinpearl)) ;
                                         p.getInventory().getItemInMainHand().setAmount(1);
                                     }, 1);
-                                }else{
-                                    if(!getPowerArray().contains(p)) return;
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
+                                } else {
+                                    if (origin.getPowerFileFromType(getPowerFile()) == null) {
+                                        getPowerArray().remove(p);
+                                        return;
+                                    }
+                                    if (!getPowerArray().contains(p)) return;
+                                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                                 }
                             }
                         }

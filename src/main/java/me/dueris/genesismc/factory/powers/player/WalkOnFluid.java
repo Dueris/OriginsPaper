@@ -15,53 +15,61 @@ import java.util.HashMap;
 
 public class WalkOnFluid extends CraftPower {
 
+    HashMap<Player, Location> loc = new HashMap<>();
+
     @Override
-    public void setActive(String tag, Boolean bool){
-        if(powers_active.containsKey(tag)){
+    public void setActive(String tag, Boolean bool) {
+        if (powers_active.containsKey(tag)) {
             powers_active.replace(tag, bool);
-        }else{
+        } else {
             powers_active.put(tag, bool);
         }
     }
 
-    
-
-    HashMap<Player, Location> loc = new HashMap<>();
-
     @Override
     public void run() {
-        for(Player p : Bukkit.getOnlinePlayers()){
-            if(getPowerArray().contains(p)){
-                for(OriginContainer origin : OriginPlayer.getOrigin(p).values()){
+        for (Player p : Bukkit.getOnlinePlayers()) {
+            if (getPowerArray().contains(p)) {
+                for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
                     ConditionExecutor executor = new ConditionExecutor();
-                    if(executor.check("condition", "conditions", p, origin, getPowerFile(), null, p)){
-                        if(!getPowerArray().contains(p)) return;
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
-                        if(!p.getLocation().add(0, -1, 0).getBlock().isSolid()){
-                            if(p.getLocation().add(0, -1, 0).getBlock().getType() == Material.WATER || p.getLocation().add(0, -1, 0).getBlock().getType() == Material.LAVA){
-                                if(p.getLocation().add(0, -1, 0).getBlock().getType().equals(Material.valueOf(origin.getPowerFileFromType(getPowerFile()).get("fluid").toUpperCase().split(":")[1]))){
+                    if (executor.check("condition", "conditions", p, origin, getPowerFile(), null, p)) {
+                        if (origin.getPowerFileFromType(getPowerFile()) == null) {
+                            getPowerArray().remove(p);
+                            return;
+                        }
+                        if (!getPowerArray().contains(p)) return;
+                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
+                        if (!p.getLocation().add(0, -1, 0).getBlock().isSolid()) {
+                            if (p.getLocation().add(0, -1, 0).getBlock().getType() == Material.WATER || p.getLocation().add(0, -1, 0).getBlock().getType() == Material.LAVA) {
+                                if (p.getLocation().add(0, -1, 0).getBlock().getType().equals(Material.valueOf(origin.getPowerFileFromType(getPowerFile()).get("fluid").toUpperCase().split(":")[1]))) {
                                     CraftPlayer craftPlayer = (CraftPlayer) p;
-                                    if(p.getLocation().add(0, -1, 0).getBlock().getType() == Material.WATER){
+                                    if (p.getLocation().add(0, -1, 0).getBlock().getType() == Material.WATER) {
                                         loc.put(p, p.getLocation().add(0, -1, 0).getBlock().getLocation());
                                         craftPlayer.sendBlockChange(p.getLocation().add(0, -1, 0).getBlock().getLocation(), Material.ICE.createBlockData());
-                                        for(Location location : loc.values()){
-                                            if(location != p.getLocation().add(0, -1, 0).getBlock().getLocation()) loc.remove(p, location);
+                                        for (Location location : loc.values()) {
+                                            if (location != p.getLocation().add(0, -1, 0).getBlock().getLocation())
+                                                loc.remove(p, location);
                                             craftPlayer.sendBlockChange(location, location.getBlock().getBlockData());
                                         }
-                                    }else{
+                                    } else {
                                         loc.put(p, p.getLocation().add(0, -1, 0).getBlock().getLocation());
                                         craftPlayer.sendBlockChange(p.getLocation().add(0, -1, 0).getBlock().getLocation(), Material.OBSIDIAN.createBlockData());
-                                        for(Location location : loc.values()){
-                                            if(location != p.getLocation().add(0, -1, 0).getBlock().getLocation()) loc.remove(p, location);
+                                        for (Location location : loc.values()) {
+                                            if (location != p.getLocation().add(0, -1, 0).getBlock().getLocation())
+                                                loc.remove(p, location);
                                             craftPlayer.sendBlockChange(location, location.getBlock().getBlockData());
                                         }
                                     }
                                 }
                             }
                         }
-                    }else{
-                        if(!getPowerArray().contains(p)) return;
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
+                    } else {
+                        if (origin.getPowerFileFromType(getPowerFile()) == null) {
+                            getPowerArray().remove(p);
+                            return;
+                        }
+                        if (!getPowerArray().contains(p)) return;
+                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                     }
                 }
             }

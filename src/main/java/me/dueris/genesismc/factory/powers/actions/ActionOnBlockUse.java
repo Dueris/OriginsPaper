@@ -2,6 +2,7 @@ package me.dueris.genesismc.factory.powers.actions;
 
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.entity.OriginPlayer;
+import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.OriginContainer;
 import me.dueris.genesismc.utils.PowerContainer;
@@ -20,8 +21,8 @@ public class ActionOnBlockUse extends CraftPower implements Listener {
     }
 
     @EventHandler
-    public void execute(PlayerInteractEvent e){
-        if(e.getClickedBlock() == null) return;
+    public void execute(PlayerInteractEvent e) {
+        if (e.getClickedBlock() == null) return;
         Player actor = e.getPlayer();
 
         if (!getPowerArray().contains(actor)) return;
@@ -30,20 +31,28 @@ public class ActionOnBlockUse extends CraftPower implements Listener {
             PowerContainer power = origin.getPowerFileFromType(getPowerFile());
             if (power == null) continue;
             //todo: item block and entity condition
-            if(!getPowerArray().contains(e.getPlayer())) return;
-            setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
-            ActionTypes.BlockActionType(e.getClickedBlock().getLocation(), power.getBlockAction());
-            ActionTypes.EntityActionType(e.getPlayer(), power.getEntityAction());
-            ActionTypes.ItemActionType(e.getPlayer().getActiveItem(), power.getItemAction());
-            ActionTypes.ItemActionType(e.getPlayer().getActiveItem(), power.getAction("held_item_action"));
-            ActionTypes.ItemActionType(e.getPlayer().getActiveItem(), power.getAction("result_item_action"));
-            new BukkitRunnable() {
-                @Override
-                public void run() {
-                    if(!getPowerArray().contains(e.getPlayer())) return;
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
+            ConditionExecutor conditionExecutor = new ConditionExecutor();
+            if (conditionExecutor.check("condition", "conditions", actor, origin, getPowerFile(), null, actor)) {
+                if (conditionExecutor.check("entity_condition", "entity_conditions", actor, origin, getPowerFile(), null, actor)) {
+                    if (conditionExecutor.check("block_condition", "block_conditions", actor, origin, getPowerFile(), null, actor)) {
+                        if (!getPowerArray().contains(e.getPlayer())) return;
+                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
+                        ActionTypes.BlockActionType(e.getClickedBlock().getLocation(), power.getBlockAction());
+                        ActionTypes.EntityActionType(e.getPlayer(), power.getEntityAction());
+                        ActionTypes.ItemActionType(e.getPlayer().getActiveItem(), power.getItemAction());
+                        ActionTypes.ItemActionType(e.getPlayer().getActiveItem(), power.getAction("held_item_action"));
+                        ActionTypes.ItemActionType(e.getPlayer().getActiveItem(), power.getAction("result_item_action"));
+                        ActionTypes.BlockEntityType(e.getPlayer(), e.getClickedBlock().getLocation(), power.getAction("block_entity_action"));
+                        new BukkitRunnable() {
+                            @Override
+                            public void run() {
+                                if (!getPowerArray().contains(e.getPlayer())) return;
+                                setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
+                            }
+                        }.runTaskLater(GenesisMC.getPlugin(), 2L);
+                    }
                 }
-            }.runTaskLater(GenesisMC.getPlugin(), 2L);
+            }
         }
     }
 
@@ -59,9 +68,9 @@ public class ActionOnBlockUse extends CraftPower implements Listener {
 
     @Override
     public void setActive(String tag, Boolean bool) {
-        if(powers_active.containsKey(tag)){
+        if (powers_active.containsKey(tag)) {
             powers_active.replace(tag, bool);
-        }else{
+        } else {
             powers_active.put(tag, bool);
         }
     }

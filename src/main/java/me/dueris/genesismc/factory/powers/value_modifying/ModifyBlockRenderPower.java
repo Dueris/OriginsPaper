@@ -21,18 +21,16 @@ import static me.dueris.genesismc.factory.powers.value_modifying.ValueModifyingS
 
 public class ModifyBlockRenderPower extends CraftPower {
 
+    String MODIFYING_KEY = "modify_block_render";
+
     @Override
-    public void setActive(String tag, Boolean bool){
-        if(powers_active.containsKey(tag)){
+    public void setActive(String tag, Boolean bool) {
+        if (powers_active.containsKey(tag)) {
             powers_active.replace(tag, bool);
-        }else{
+        } else {
             powers_active.put(tag, bool);
         }
     }
-
-    
-
-    String MODIFYING_KEY = "modify_block_render";
 
     @Override
     public void run() {
@@ -49,12 +47,12 @@ public class ModifyBlockRenderPower extends CraftPower {
                         ConditionExecutor conditionExecutor = new ConditionExecutor();
                         if (conditionExecutor.check("block_condition", "block_conditions", player, origin, "origins:modify_block_render", null, player)) {
                             conditionMet = true;
-                            if(!getPowerArray().contains(player)) return;
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
+                            if (!getPowerArray().contains(player)) return;
+                            setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                             break;
-                        }else{
-                            if(!getPowerArray().contains(player)) return;
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
+                        } else {
+                            if (!getPowerArray().contains(player)) return;
+                            setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                         }
                     } catch (Exception e) {
                         ErrorSystem errorSystem = new ErrorSystem();
@@ -62,23 +60,23 @@ public class ModifyBlockRenderPower extends CraftPower {
                         e.printStackTrace();
                     }
 
-                Material targetMaterial = Material.AIR;
-                if (conditionMet) {
-                    targetMaterial = Material.getMaterial(origin.getPowerFileFromType("origins:modify_block_render").get("block", null).toUpperCase());
-                }
+                    Material targetMaterial = Material.AIR;
+                    if (conditionMet) {
+                        targetMaterial = Material.getMaterial(origin.getPowerFileFromType("origins:modify_block_render").get("block", null).toUpperCase());
+                    }
 
-                for (Chunk chunk : chunkManagerWorld.getChunksInPlayerViewDistance(craftPlayer)) {
-                    for (Block block : chunkManagerWorld.getAllBlocksInChunk(chunk)) {
-                        if (block.getType() != Material.AIR) {
-                            //TODO: add blcok condityion for the materail
-                            BlockState blockState = block.getState();
-                            blockState.setType(targetMaterial);
-                            blockChanges.add(blockState);
+                    for (Chunk chunk : chunkManagerWorld.getChunksInPlayerViewDistance(craftPlayer)) {
+                        for (Block block : chunkManagerWorld.getAllBlocksInChunk(chunk)) {
+                            if (block.getType() != Material.AIR) {
+                                //TODO: add blcok condityion for the materail
+                                BlockState blockState = block.getState();
+                                blockState.setType(targetMaterial);
+                                blockChanges.add(blockState);
+                            }
                         }
                     }
-                }
 
-                craftPlayer.sendBlockChanges(blockChanges);
+                    craftPlayer.sendBlockChanges(blockChanges);
                 }
             }
         }

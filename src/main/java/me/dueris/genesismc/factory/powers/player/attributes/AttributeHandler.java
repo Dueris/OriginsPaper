@@ -4,9 +4,9 @@ import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.entity.OriginPlayer;
 import me.dueris.genesismc.events.OriginChangeEvent;
 import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.utils.translation.LangConfig;
 import me.dueris.genesismc.utils.OriginContainer;
 import me.dueris.genesismc.utils.PowerContainer;
+import me.dueris.genesismc.utils.translation.LangConfig;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Block;
@@ -26,16 +26,6 @@ import java.util.function.Predicate;
 
 public class AttributeHandler extends CraftPower implements Listener {
 
-    @Override
-    public void setActive(String tag, Boolean bool){
-        if(powers_active.containsKey(tag)){
-            powers_active.replace(tag, bool);
-        }else{
-            powers_active.put(tag, bool);
-        }
-    }
-
-    
     public static Map<String, BinaryOperator<Double>> getOperationMappingsDouble() {
         Map<String, BinaryOperator<Double>> operationMap = new HashMap<>();
         operationMap.put("addition", Double::sum);
@@ -76,6 +66,25 @@ public class AttributeHandler extends CraftPower implements Listener {
         return operationMap;
     }
 
+    public static void executeAttributeModify(String operation, Attribute attribute_modifier, double base_value, Player p, Double value) {
+        BinaryOperator mathOperator = getOperationMappingsDouble().get(operation);
+        if (mathOperator != null) {
+            double result = (Double) mathOperator.apply(base_value, value);
+            p.getAttribute(Attribute.valueOf(attribute_modifier.toString())).setBaseValue(result);
+        } else {
+            Bukkit.getLogger().warning(LangConfig.getLocalizedString(p, "powers.errors.attribute"));
+        }
+    }
+
+    @Override
+    public void setActive(String tag, Boolean bool) {
+        if (powers_active.containsKey(tag)) {
+            powers_active.replace(tag, bool);
+        } else {
+            powers_active.put(tag, bool);
+        }
+    }
+
     @EventHandler
     public void ExecuteAttributeModification(OriginChangeEvent e) {
         Player p = e.getPlayer();
@@ -92,7 +101,7 @@ public class AttributeHandler extends CraftPower implements Listener {
                 PowerContainer power = origin.getPowerFileFromType("origins:attribute");
                 if (power == null) continue;
 
-                for(HashMap<String, Object> modifier : power.getPossibleModifiers("modifier", "modifiers")){
+                for (HashMap<String, Object> modifier : power.getPossibleModifiers("modifier", "modifiers")) {
                     if (modifier.get("attribute").toString().equalsIgnoreCase("reach-entity-attributes:reach")) {
                         extra_reach.add(p);
                         return;
@@ -103,44 +112,42 @@ public class AttributeHandler extends CraftPower implements Listener {
                         Reach.setFinalReach(p, Reach.getDefaultReach(p));
                     }
 
-                    Attribute attribute_modifier = Attribute.valueOf(modifier.get("attribute").toString().split(":")[1].replace(".", "_").toUpperCase());
+                    try {
+                        Attribute attribute_modifier = Attribute.valueOf(modifier.get("attribute").toString().split(":")[1].replace(".", "_").toUpperCase());
 
-                    Object valueObj = modifier.get("value");
+                        Object valueObj = modifier.get("value");
 
-                    if (valueObj instanceof Number) {
-                        double value;
-                        if (valueObj instanceof Integer) {
-                            value = ((Number) valueObj).intValue();
-                        } else if (valueObj instanceof Double) {
-                            value = ((Number) valueObj).doubleValue();
-                        } else if (valueObj instanceof Float) {
-                            value = ((Number) valueObj).floatValue();
-                        } else if (valueObj instanceof Long) {
-                            value = ((Number) valueObj).longValue();
-                        } else {
-                            Objects.requireNonNull(valueObj);
-                            continue;
+                        if (valueObj instanceof Number) {
+                            double value;
+                            if (valueObj instanceof Integer) {
+                                value = ((Number) valueObj).intValue();
+                            } else if (valueObj instanceof Double) {
+                                value = ((Number) valueObj).doubleValue();
+                            } else if (valueObj instanceof Float) {
+                                value = ((Number) valueObj).floatValue();
+                            } else if (valueObj instanceof Long) {
+                                value = ((Number) valueObj).longValue();
+                            } else {
+                                Objects.requireNonNull(valueObj);
+                                continue;
+                            }
+
+                            double base_value = p.getAttribute(attribute_modifier).getBaseValue();
+                            String operation = String.valueOf(modifier.get("operation"));
+                            executeAttributeModify(operation, attribute_modifier, base_value, p, value);
+                            if (origin.getPowerFileFromType(getPowerFile()) == null) {
+                                getPowerArray().remove(p);
+                                return;
+                            }
+                            if (!getPowerArray().contains(p)) return;
+                            setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
+                            p.sendHealthUpdate();
                         }
-
-                        double base_value = p.getAttribute(attribute_modifier).getBaseValue();
-                        String operation = String.valueOf(modifier.get("operation"));
-                        executeAttributeModify(operation, attribute_modifier, base_value, p, value);
-                        if(!getPowerArray().contains(p)) return;
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
-                        p.sendHealthUpdate();
+                    } catch (Exception ev) {
+                        //yeah nope
                     }
                 }
             }
-        }
-    }
-
-    public static void executeAttributeModify(String operation, Attribute attribute_modifier, double base_value, Player p, Double value) {
-        BinaryOperator mathOperator = getOperationMappingsDouble().get(operation);
-        if (mathOperator != null) {
-            double result = (Double) mathOperator.apply(base_value, value);
-            p.getAttribute(Attribute.valueOf(attribute_modifier.toString())).setBaseValue(result);
-        } else {
-            Bukkit.getLogger().warning(LangConfig.getLocalizedString(p, "powers.errors.attribute"));
         }
     }
 
@@ -205,7 +212,7 @@ public class AttributeHandler extends CraftPower implements Listener {
                 for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
 
                     PowerContainer power = origin.getPowerFileFromType("origins:attribute");
-                    for(HashMap<String, Object> modifier : power.getPossibleModifiers("modifier", "modifiers")){
+                    for (HashMap<String, Object> modifier : power.getPossibleModifiers("modifier", "modifiers")) {
                         if (!e.getAction().isLeftClick()) return;
                         String operation = String.valueOf(modifier.get("operation"));
 

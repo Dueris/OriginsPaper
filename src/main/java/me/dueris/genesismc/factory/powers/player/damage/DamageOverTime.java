@@ -3,9 +3,9 @@ package me.dueris.genesismc.factory.powers.player.damage;
 import me.dueris.genesismc.entity.OriginPlayer;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.utils.translation.LangConfig;
 import me.dueris.genesismc.utils.OriginContainer;
 import me.dueris.genesismc.utils.PowerContainer;
+import me.dueris.genesismc.utils.translation.LangConfig;
 import net.minecraft.world.damagesource.DamageSource;
 import org.bukkit.*;
 import org.bukkit.enchantments.Enchantment;
@@ -16,24 +16,12 @@ import java.util.Random;
 
 public class DamageOverTime extends CraftPower {
 
-    @Override
-    public void setActive(String tag, Boolean bool){
-        if(powers_active.containsKey(tag)){
-            powers_active.replace(tag, bool);
-        }else{
-            powers_active.put(tag, bool);
-        }
-    }
-
-    
-
+    private final String damage_type;
     private Long interval;
     private int damage;
     private DamageSource damage_source;
-    private final String damage_type;
     private String protection_enchantment;
     private double protection_effectiveness;
-
     private int ticksE;
 
     public DamageOverTime() {
@@ -41,6 +29,15 @@ public class DamageOverTime extends CraftPower {
         this.ticksE = 0;
         this.damage_type = "apoli:damage_over_time";
         this.protection_effectiveness = 1.0;
+    }
+
+    @Override
+    public void setActive(String tag, Boolean bool) {
+        if (powers_active.containsKey(tag)) {
+            powers_active.replace(tag, bool);
+        } else {
+            powers_active.put(tag, bool);
+        }
     }
 
     @Override
@@ -71,9 +68,13 @@ public class DamageOverTime extends CraftPower {
 
                         protection_effectiveness = Double.parseDouble(origin.getPowerFileFromType("origins:damage_over_time").get("protection_effectiveness", "1"));
                         ConditionExecutor executor = new ConditionExecutor();
-                        if(executor.check("condition", "conditions", p, origin, getPowerFile(), null, p)){
-                            if(!getPowerArray().contains(p)) return;
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
+                        if (executor.check("condition", "conditions", p, origin, getPowerFile(), null, p)) {
+                            if (origin.getPowerFileFromType(getPowerFile()) == null) {
+                                getPowerArray().remove(p);
+                                return;
+                            }
+                            if (!getPowerArray().contains(p)) return;
+                            setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
 
                             if (p.getGameMode().equals(GameMode.SURVIVAL) || p.getGameMode().equals(GameMode.ADVENTURE)) {
                                 float helemt_modifier = 0;
@@ -178,9 +179,13 @@ public class DamageOverTime extends CraftPower {
                                 }
                             }
 
-                        }else{
-                            if(!getPowerArray().contains(p)) return;
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
+                        } else {
+                            if (origin.getPowerFileFromType(getPowerFile()) == null) {
+                                getPowerArray().remove(p);
+                                return;
+                            }
+                            if (!getPowerArray().contains(p)) return;
+                            setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                         }
                         ticksE = 0;
                     }

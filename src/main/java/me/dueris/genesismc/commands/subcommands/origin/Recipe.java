@@ -103,7 +103,7 @@ public class Recipe extends SubCommand implements Listener {
                 sender.sendMessage(Component.text(LangConfig.getLocalizedString(p, "command.origin.recipe.error")).color(TextColor.fromHexString(RED)));
             }
         } else
-            sender.sendMessage(Component.text(LangConfig.getLocalizedString(sender,"command.origin.recipe.playerOnly")).color(TextColor.fromHexString(RED)));
+            sender.sendMessage(Component.text(LangConfig.getLocalizedString(sender, "command.origin.recipe.playerOnly")).color(TextColor.fromHexString(RED)));
     }
 
     @EventHandler

@@ -18,15 +18,14 @@ import java.util.HashMap;
 public class StartingEquipmentPower extends CraftPower implements Listener {
 
     @Override
-    public void setActive(String tag, Boolean bool){
-        if(powers_active.containsKey(tag)){
+    public void setActive(String tag, Boolean bool) {
+        if (powers_active.containsKey(tag)) {
             powers_active.replace(tag, bool);
-        }else{
+        } else {
             powers_active.put(tag, bool);
         }
     }
 
-    
 
     @Override
     public void run() {
@@ -34,43 +33,43 @@ public class StartingEquipmentPower extends CraftPower implements Listener {
     }
 
     @EventHandler
-    public void runGive(OriginChangeEvent e){
-        if(starting_equip.contains(e.getPlayer())){
-            for(OriginContainer origin : OriginPlayer.getOrigin(e.getPlayer()).values()){
+    public void runGive(OriginChangeEvent e) {
+        if (starting_equip.contains(e.getPlayer())) {
+            for (OriginContainer origin : OriginPlayer.getOrigin(e.getPlayer()).values()) {
                 ConditionExecutor conditionExecutor = new ConditionExecutor();
-                if(conditionExecutor.check("condition", "conditions", e.getPlayer(), origin, getPowerFile(), null, e.getPlayer())) {
-                    if(!getPowerArray().contains(e.getPlayer())) return;
+                if (conditionExecutor.check("condition", "conditions", e.getPlayer(), origin, getPowerFile(), null, e.getPlayer())) {
+                    if (!getPowerArray().contains(e.getPlayer())) return;
                     setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                     runGiveItems(e.getPlayer(), origin);
-                }else{
-                    if(!getPowerArray().contains(e.getPlayer())) return;
+                } else {
+                    if (!getPowerArray().contains(e.getPlayer())) return;
                     setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                 }
             }
         }
     }
 
-    public void runGiveItems(Player p, OriginContainer origin){
-        for(HashMap<String, Object> stack : origin.getPowerFileFromType(getPowerFile()).getSingularAndPlural("stack", "stacks")){
+    public void runGiveItems(Player p, OriginContainer origin) {
+        for (HashMap<String, Object> stack : origin.getPowerFileFromType(getPowerFile()).getSingularAndPlural("stack", "stacks")) {
             p.getInventory().addItem(new ItemStack(Material.valueOf(stack.get("item").toString().toUpperCase().split(":")[1]), Integer.valueOf(origin.getPowerFileFromType(getPowerFile()).get("amount", "1"))));
         }
     }
 
     @EventHandler
-    public void runRespawn(PlayerRespawnEvent e){
-        if(starting_equip.contains(e.getPlayer())){
-            for(OriginContainer origin : OriginPlayer.getOrigin(e.getPlayer()).values()){
+    public void runRespawn(PlayerRespawnEvent e) {
+        if (starting_equip.contains(e.getPlayer())) {
+            for (OriginContainer origin : OriginPlayer.getOrigin(e.getPlayer()).values()) {
                 ConditionExecutor conditionExecutor = new ConditionExecutor();
-                if(conditionExecutor.check("condition", "conditions", e.getPlayer(), origin, getPowerFile(), null, e.getPlayer())) {
-                    if(!getPowerArray().contains(e.getPlayer())) return;
+                if (conditionExecutor.check("condition", "conditions", e.getPlayer(), origin, getPowerFile(), null, e.getPlayer())) {
+                    if (!getPowerArray().contains(e.getPlayer())) return;
                     setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
-                    if(origin.getPowerFileFromType(getPowerFile()).get("recurrent", "false") != null){
-                        if(origin.getPowerFileFromType(getPowerFile()).get("recurrent") == "true"){
+                    if (origin.getPowerFileFromType(getPowerFile()).get("recurrent", "false") != null) {
+                        if (origin.getPowerFileFromType(getPowerFile()).get("recurrent") == "true") {
                             runGiveItems(e.getPlayer(), origin);
                         }
                     }
-                }else{
-                    if(!getPowerArray().contains(e.getPlayer())) return;
+                } else {
+                    if (!getPowerArray().contains(e.getPlayer())) return;
                     setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                 }
 
