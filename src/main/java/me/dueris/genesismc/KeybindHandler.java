@@ -1,6 +1,7 @@
 package me.dueris.genesismc;
 
 import me.dueris.genesismc.events.KeybindTriggerEvent;
+import me.dueris.genesismc.events.OriginChangeEvent;
 import me.dueris.genesismc.events.OriginKeybindExecuteEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -99,6 +100,18 @@ public class KeybindHandler implements Listener {
     public static void addItems(Player p) {
         addPrimaryItem(p);
         addSecondaryItem(p);
+    }
+
+    @EventHandler
+    public void resetKeybinding(OriginChangeEvent e){
+        for(ItemStack item : e.getPlayer().getInventory()){
+            if(item.equals(getPrimaryTrigger(e.getPlayer()))){
+                runKeyChangeTriggerReturn(item, e.getPlayer(), "key.origins.primary_active");
+            }
+            if(item.equals(getSecondaryTrigger(e.getPlayer()))){
+                runKeyChangeTriggerReturn(item, e.getPlayer(), "key.origins.secondary_active");
+            }
+        }
     }
 
     public static ItemStack getPrimaryTrigger(Player player) {
