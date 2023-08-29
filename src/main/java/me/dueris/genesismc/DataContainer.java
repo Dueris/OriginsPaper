@@ -22,7 +22,7 @@ public class DataContainer implements Listener {
 
         Player p = (Player) e.getPlayer();
 
-        if (e.getView().getTitle().startsWith("Shulker Inventory")) {
+        if (e.getView().getTitle().startsWith("Shulk Inventory")) {
 
             ArrayList<ItemStack> prunedItems = new ArrayList<>();
 

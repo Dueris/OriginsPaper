@@ -32,9 +32,6 @@ import static me.dueris.genesismc.KeybindHandler.isKeyBeingPressed;
 
 public class Inventory extends CraftPower implements CommandExecutor, Listener {
 
-    private final ArrayList<SubCommand> subCommands = new ArrayList<>();
-
-
     public Inventory() {
     }
 
@@ -96,7 +93,8 @@ public class Inventory extends CraftPower implements CommandExecutor, Listener {
                     if (isKeyBeingPressed(e.getPlayer(), origin.getPowerFileFromType("origins:inventory").getKey().get("key").toString(), true)) {
                         ArrayList<ItemStack> vaultItems = InventoryUtils.getItems(e.getPlayer());
                         org.bukkit.inventory.Inventory vault = Bukkit.createInventory(e.getPlayer(), InventoryType.valueOf(origin.getPowerFileFromType("origins:inventory").get("container_type", "chest").toUpperCase()), origin.getPowerFileFromType("origins:inventory").get("title", "inventory.container.title").replace("%player%", e.getPlayer().getName()));
-                        vaultItems.stream().forEach(itemStack -> vault.addItem(itemStack));
+                        vaultItems.stream()
+                                .forEach(itemStack -> vault.addItem(itemStack));
                         e.getPlayer().openInventory(vault);
                     }
                 } else {
