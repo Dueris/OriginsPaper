@@ -10,10 +10,12 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 
+import java.awt.geom.Arc2D;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.function.BinaryOperator;
 
+import static me.dueris.genesismc.factory.powers.player.attributes.AttributeHandler.getOperationMappingsDouble;
 import static me.dueris.genesismc.factory.powers.player.attributes.AttributeHandler.getOperationMappingsFloat;
 import static me.dueris.genesismc.factory.powers.value_modifying.ValueModifyingSuperClass.modify_damage_taken;
 
@@ -39,18 +41,34 @@ public class ModifyDamageTakenPower extends CraftPower implements Listener {
                         ConditionExecutor conditionExecutor = new ConditionExecutor();
                         if (conditionExecutor.check("bientity_condition", "bientity_conditions", p, origin, "origins:modify_damage_taken", e, e.getDamager())) {
                             for (HashMap<String, Object> modifier : origin.getPowerFileFromType("origins:modify_damage_taken").getConditionFromString("modifier", "modifiers")) {
-                                Float value = Float.valueOf(modifier.get("value").toString());
-                                String operation = modifier.get("operation").toString();
-                                BinaryOperator mathOperator = getOperationMappingsFloat().get(operation);
-                                if (mathOperator != null) {
-                                    float result = (float) mathOperator.apply(e.getDamage(), value);
-                                    e.setDamage(result);
-                                    if (origin.getPowerFileFromType(getPowerFile()) == null) {
-                                        getPowerArray().remove(p);
-                                        return;
+                                if(modifier.get("value") instanceof Float){
+                                    Float value = Float.valueOf(modifier.get("value").toString());
+                                    String operation = modifier.get("operation").toString();
+                                    BinaryOperator mathOperator = getOperationMappingsFloat().get(operation);
+                                    if (mathOperator != null) {
+                                        float result = (float) mathOperator.apply(e.getDamage(), value);
+                                        e.setDamage(result);
+                                        if (origin.getPowerFileFromType(getPowerFile()) == null) {
+                                            getPowerArray().remove(p);
+                                            return;
+                                        }
+                                        if (!getPowerArray().contains(p)) return;
+                                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                                     }
-                                    if (!getPowerArray().contains(p)) return;
-                                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
+                                } else if (modifier.get("value") instanceof Double) {
+                                    Double value = Double.valueOf(modifier.get("value").toString());
+                                    String operation = modifier.get("operation").toString();
+                                    BinaryOperator mathOperator = getOperationMappingsDouble().get(operation);
+                                    if (mathOperator != null) {
+                                        double result = (double) mathOperator.apply(e.getDamage(), value);
+                                        e.setDamage(result);
+                                        if (origin.getPowerFileFromType(getPowerFile()) == null) {
+                                            getPowerArray().remove(p);
+                                            return;
+                                        }
+                                        if (!getPowerArray().contains(p)) return;
+                                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
+                                    }
                                 }
                             }
 
