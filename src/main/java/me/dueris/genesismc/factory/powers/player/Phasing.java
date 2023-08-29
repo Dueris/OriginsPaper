@@ -4,7 +4,6 @@ import com.destroystokyo.paper.event.player.PlayerStartSpectatingEntityEvent;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.entity.OriginPlayer;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
-import me.dueris.genesismc.factory.conditions.entity.EntityCondition;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.OriginContainer;
 import net.minecraft.network.protocol.game.ClientboundGameEventPacket;
@@ -26,18 +25,21 @@ import org.bukkit.potion.PotionEffectType;
 import org.geysermc.geyser.api.GeyserApi;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class Phasing extends CraftPower implements Listener {
 
     public static ArrayList<Player> IN_PHANTOM_FORM_BLOCKS = new ArrayList<>();
     private final Long interval;
     private final int ticksE;
+    public boolean test = false;
 
     public Phasing() {
         this.interval = 100L;
         this.ticksE = 0;
     }
+
+//TODO: make bedrock Phasing work by disabling merge and setting into spectator only instead of merging gamemodes
+    //TODO: fix blindness flickers bc mc renderer sucks
 
     public static void setInPhasingBlockForm(Player p) {
         if (Bukkit.getServer().getPluginManager().isPluginEnabled("Geyser-Spigot")) {
@@ -78,9 +80,6 @@ public class Phasing extends CraftPower implements Listener {
             p.setFlying(true);
         }
     }
-
-//TODO: make bedrock Phasing work by disabling merge and setting into spectator only instead of merging gamemodes
-    //TODO: fix blindness flickers bc mc renderer sucks
 
     public static void initializePhantomOverlay(Player player) {
         CraftWorldBorder border = (CraftWorldBorder) Bukkit.createWorldBorder();
@@ -131,10 +130,9 @@ public class Phasing extends CraftPower implements Listener {
                                 Location currentLocation = p.getLocation();
                                 Location targetLocation = currentLocation.getBlock().getRelative(BlockFace.DOWN).getLocation();
                                 Location loc = new Location(targetLocation.getWorld(), targetLocation.getX(), targetLocation.getY(), targetLocation.getZ(), p.getEyeLocation().getYaw(), p.getEyeLocation().getPitch());
-                                for (HashMap<String, Object> condition : origin.getPowerFileFromType(getPowerFile()).getConditionFromString("phase_down_condition", "phase_down_conditions")) {
-                                    if (EntityCondition.check(condition, p, p) == "true" || EntityCondition.check(condition, p, p) == "null") {
-                                        p.teleport(loc);
-                                    }
+                                ConditionExecutor conditionExecutor = new ConditionExecutor();
+                                if (conditionExecutor.check("phase_down_condition", "phase_down_conditions", p, origin, getPowerFile(), null, p)) {
+                                    p.teleport(loc);
                                 }
                             }
                         }
@@ -143,8 +141,6 @@ public class Phasing extends CraftPower implements Listener {
             }
         }
     }
-
-    public boolean test = false;
 
     @Override
     public void run() {
@@ -173,24 +169,24 @@ public class Phasing extends CraftPower implements Listener {
                                 p.getEyeLocation().add(0.55F, 0, -0.55F).getBlock().isSolid() ||
                                 p.getEyeLocation().add(-0.55F, 0, 0.55F).getBlock().isSolid())
                         ) {
-                        if (conditionExecutor.check("block_condition", "block_conditions", p, origin, getPowerFile(), null, p)) {
-                            setInPhasingBlockForm(p);
-                            if (origin.getPowerFileFromType("origins:phasing").getOverlay()) {
-                                initializePhantomOverlay(p);
+                            if (conditionExecutor.check("block_condition", "block_conditions", p, origin, getPowerFile(), null, p)) {
+                                setInPhasingBlockForm(p);
+                                if (origin.getPowerFileFromType("origins:phasing").getOverlay()) {
+                                    initializePhantomOverlay(p);
+                                }
+
+                                test = true;
+
+                                p.setFlySpeed(0.04F);
+                                p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "insideBlock"), PersistentDataType.BOOLEAN, true);
+
+                                if (origin.getPowerFileFromType("origins:phasing").getRenderType().equalsIgnoreCase("blindness")) {
+                                    Float viewD = origin.getPowerFileFromType("origins:phasing").getViewDistance().floatValue();
+                                    p.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, viewD.intValue() * 2, 255, false, false, false));
+                                }
+                            } else {
+                                setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                             }
-
-                            test = true;
-
-                            p.setFlySpeed(0.04F);
-                            p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "insideBlock"), PersistentDataType.BOOLEAN, true);
-
-                            if (origin.getPowerFileFromType("origins:phasing").getRenderType().equalsIgnoreCase("blindness")) {
-                                Float viewD = origin.getPowerFileFromType("origins:phasing").getViewDistance().floatValue();
-                                p.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, viewD.intValue() * 2, 255, false, false, false));
-                            }
-                        }else{
-                            setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
-                        }
                         } else {
                             if (p.getGameMode().equals(GameMode.SPECTATOR)) {
                                 if (p.getPreviousGameMode().equals(GameMode.CREATIVE)) {
@@ -208,7 +204,7 @@ public class Phasing extends CraftPower implements Listener {
                         }
                     } else {
                         setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
-                        if(test){
+                        if (test) {
                             if (p.getGameMode().equals(GameMode.SPECTATOR)) {
                                 if (p.getPreviousGameMode().equals(GameMode.CREATIVE)) {
                                     p.setGameMode(p.getPreviousGameMode());
