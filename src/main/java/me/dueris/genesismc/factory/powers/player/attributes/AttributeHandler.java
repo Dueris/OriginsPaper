@@ -35,6 +35,10 @@ public class AttributeHandler extends CraftPower implements Listener {
         operationMap.put("multiply_base", (a, b) -> a + (a * b));
         operationMap.put("multiply_total", (a, b) -> a * (1 + b));
         operationMap.put("set_total", (a, b) -> b);
+        operationMap.put("add_base_early", (a, b) -> a + b);
+        operationMap.put("multiply_base_additive", (a, b) -> a + (a * b));
+        operationMap.put("multiply_base_multiplicative", (a, b) -> a * (1 + b));
+        operationMap.put("add_base_late", (a, b) -> a + b);
 
         Random random = new Random();
 
@@ -55,6 +59,10 @@ public class AttributeHandler extends CraftPower implements Listener {
         operationMap.put("multiply_base", (a, b) -> a + (a * b));
         operationMap.put("multiply_total", (a, b) -> a * (1 + b));
         operationMap.put("set_total", (a, b) -> b);
+        operationMap.put("add_base_early", (a, b) -> a + b);
+        operationMap.put("multiply_base_additive", (a, b) -> a + (a * b));
+        operationMap.put("multiply_base_multiplicative", (a, b) -> a * (1 + b));
+        operationMap.put("add_base_late", (a, b) -> a + b);
 
         Random random = new Random();
 
