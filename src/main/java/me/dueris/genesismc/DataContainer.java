@@ -32,7 +32,7 @@ public class DataContainer implements Listener {
                     })
                     .forEach(itemStack -> prunedItems.add(itemStack));
 
-            Player target = Bukkit.getPlayer(e.getView().getTitle().split(":")[1].substring(1));
+            Player target = (Player) e.getPlayer();
             if (target == null) {
                 p.sendMessage(Component.text(LangConfig.getLocalizedString(p, "errors.inventorySaveFail").replace("%player%", e.getView().getTitle().split(":")[1].substring(1))).color(TextColor.fromHexString(BukkitColour.RED)));
                 return;
