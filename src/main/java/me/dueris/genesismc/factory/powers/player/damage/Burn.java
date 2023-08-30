@@ -50,7 +50,7 @@ public class Burn extends CraftPower {
                         if (p.isInWaterOrRainOrBubbleColumn()) return;
                         if (p.getGameMode() == GameMode.CREATIVE) return;
                         ConditionExecutor executor = new ConditionExecutor();
-                        if (executor.check("condition", "conditions", p, origin, getPowerFile(), null, p)) {
+                        if (executor.check("condition", "conditions", p, origin, getPowerFile(), p, null, null, null, p.getItemInHand(), null)) {
                             if (origin.getPowerFileFromType(getPowerFile()) == null) {
                                 getPowerArray().remove(p);
                                 return;

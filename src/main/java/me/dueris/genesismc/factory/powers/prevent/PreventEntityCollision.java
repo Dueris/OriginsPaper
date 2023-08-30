@@ -29,7 +29,7 @@ public class PreventEntityCollision extends CraftPower {
             for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
                 if (prevent_entity_collision.contains(p)) {
                     ConditionExecutor conditionExecutor = new ConditionExecutor();
-                    if (conditionExecutor.check("bientity_condition", "bientity_condition", p, origin, "origins:prevent_entity_collision", null, p)) {
+                    if (conditionExecutor.check("bientity_condition", "bientity_condition", p, origin, "origins:prevent_entity_collision", p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
                         p.setCollidable(false);
                         if (origin.getPowerFileFromType(getPowerFile()) == null) {
                             getPowerArray().remove(p);

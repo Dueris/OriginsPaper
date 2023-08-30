@@ -31,12 +31,10 @@ public class PreventBlockUse extends CraftPower implements Listener {
         if (prevent_block_use.contains(e.getPlayer())) {
             for (OriginContainer origin : OriginPlayer.getOrigin(e.getPlayer()).values()) {
                 ConditionExecutor conditionExecutor = new ConditionExecutor();
-                if (conditionExecutor.check("block_condition", "block_conditions", e.getPlayer(), origin, "origins:prevent_block_used", null, e.getPlayer())) {
-                    if (e.getClickedBlock() != null) e.setCancelled(true);
-                    if (!getPowerArray().contains(e.getPlayer())) return;
+                if (e.getClickedBlock() != null) e.setCancelled(true);
+                if (conditionExecutor.check("block_condition", "block_conditions", e.getPlayer(), origin, "origins:prevent_block_used", e.getPlayer(), null, e.getClickedBlock(), null, e.getPlayer().getItemInHand(), null)) {
                     setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                 } else {
-                    if (!getPowerArray().contains(e.getPlayer())) return;
                     setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                 }
             }
@@ -48,7 +46,7 @@ public class PreventBlockUse extends CraftPower implements Listener {
         if (prevent_block_use.contains(e.getPlayer())) {
             for (OriginContainer origin : OriginPlayer.getOrigin(e.getPlayer()).values()) {
                 ConditionExecutor conditionExecutor = new ConditionExecutor();
-                if (conditionExecutor.check("block_condition", "block_conditions", e.getPlayer(), origin, "origins:prevent_block_used", null, e.getPlayer())) {
+                if (conditionExecutor.check("block_condition", "block_conditions", e.getPlayer(), origin, "origins:prevent_block_used", e.getPlayer(), null, e.getBlock(), null, e.getPlayer().getItemInHand(), null)) {
                     e.setCancelled(true);
                 }
             }

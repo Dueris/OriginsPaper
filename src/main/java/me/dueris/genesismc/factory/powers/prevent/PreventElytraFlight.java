@@ -31,7 +31,7 @@ public class PreventElytraFlight extends CraftPower implements Listener {
             if (prevent_elytra_flight.contains(p)) {
                 for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
                     ConditionExecutor conditionExecutor = new ConditionExecutor();
-                    if (conditionExecutor.check("condition", "conditions", p, origin, "origins:prevent_elytra_flight", null, p)) {
+                    if (conditionExecutor.check("condition", "conditions", p, origin, "origins:prevent_elytra_flight", p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
                         e.setCancelled(true);
                         if (origin.getPowerFileFromType(getPowerFile()) == null) {
                             getPowerArray().remove(p);

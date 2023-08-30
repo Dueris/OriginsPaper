@@ -36,7 +36,7 @@ public class ModifyStatusEffectDurationPower extends CraftPower implements Liste
             if (!modify_effect_duration.contains(p)) return;
             for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
                 ConditionExecutor executor = new ConditionExecutor();
-                if (executor.check("condition", "conditions", p, origin, getPowerFile(), null, p)) {
+                if (executor.check("condition", "conditions", p, origin, getPowerFile(), p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
                     if (origin.getPowerFileFromType(getPowerFile()) == null) {
                         getPowerArray().remove(p);
                         return;

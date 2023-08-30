@@ -7,6 +7,7 @@ import me.dueris.genesismc.utils.ErrorSystem;
 import me.dueris.genesismc.utils.OriginContainer;
 import me.dueris.genesismc.utils.translation.LangConfig;
 import org.bukkit.Bukkit;
+import org.bukkit.Fluid;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
@@ -37,7 +38,7 @@ public class ModifySwimSpeedPower extends CraftPower {
                 ValueModifyingSuperClass valueModifyingSuperClass = new ValueModifyingSuperClass();
                 try {
                     ConditionExecutor conditionExecutor = new ConditionExecutor();
-                    if (conditionExecutor.check("condition", "conditions", p, origin, "origins:modify_swim_speed", null, p)) {
+                    if (conditionExecutor.check("condition", "conditions", p, origin, "origins:modify_swim_speed", p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
                         if (valueModifyingSuperClass.getPersistentAttributeContainer(p, MODIFYING_KEY) == -1) return;
                         if (!p.isSwimming()) return;
                         Vector swimVelocity = p.getLocation().getDirection().normalize().multiply(valueModifyingSuperClass.getPersistentAttributeContainer(p, MODIFYING_KEY));

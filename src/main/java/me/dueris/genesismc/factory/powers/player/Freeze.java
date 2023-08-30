@@ -27,7 +27,7 @@ public class Freeze extends CraftPower {
             for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
                 if (freeze.contains(p)) {
                     ConditionExecutor conditionExecutor = new ConditionExecutor();
-                    if (conditionExecutor.check("condition", "conditions", p, origin, "origins:freeze", null, p)) {
+                    if (conditionExecutor.check("condition", "conditions", p, origin, "origins:freeze", p, null, null, null, p.getItemInHand(), null)) {
                         if (origin.getPowerFileFromType(getPowerFile()) == null) {
                             getPowerArray().remove(p);
                             return;

@@ -76,7 +76,7 @@ public class FireProjectile extends CraftPower implements Listener {
                 } else {
                     if (fire_projectile.contains(p)) {
                         ConditionExecutor conditionExecutor = new ConditionExecutor();
-                        if (conditionExecutor.check("condition", "conditions", p, origin, "origins:fire_projectile", null, p)) {
+                        if (conditionExecutor.check("condition", "conditions", p, origin, "origins:fire_projectile", p, null, null, null, p.getItemInHand(), null)) {
                             if (!CooldownStuff.isPlayerInCooldown(p, origin.getPowerFileFromType("origins:fire_projectile").getKey().get("key").toString())) {
                                 if (isKeyBeingPressed(e.getPlayer(), origin.getPowerFileFromType("origins:fire_projectile").getKey().get("key").toString(), true)) {
                                     new BukkitRunnable() {

@@ -29,7 +29,7 @@ public class KeepInventory extends CraftPower implements Listener {
         for (OriginContainer origin : OriginPlayer.getOrigin(player).values()) {
             if (keep_inventory.contains(player)) {
                 ConditionExecutor conditionExecutor = new ConditionExecutor();
-                if (conditionExecutor.check("item_condition", "item_conditions", player, origin, "origins:keep_inventory", null, player)) {
+                if (conditionExecutor.check("item_condition", "item_conditions", player, origin, "origins:keep_inventory", player, null, null, null, player.getItemInHand(), null)) {
                     ArrayList<Long> slots = new ArrayList<>();
                     if (!getPowerArray().contains(player)) return;
                     setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);

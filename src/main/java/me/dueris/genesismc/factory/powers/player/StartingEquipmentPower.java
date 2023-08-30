@@ -37,7 +37,7 @@ public class StartingEquipmentPower extends CraftPower implements Listener {
         if (starting_equip.contains(e.getPlayer())) {
             for (OriginContainer origin : OriginPlayer.getOrigin(e.getPlayer()).values()) {
                 ConditionExecutor conditionExecutor = new ConditionExecutor();
-                if (conditionExecutor.check("condition", "conditions", e.getPlayer(), origin, getPowerFile(), null, e.getPlayer())) {
+                if (conditionExecutor.check("condition", "conditions", e.getPlayer(), origin, getPowerFile(), e.getPlayer(), null, null, null, e.getPlayer().getItemInHand(), null)) {
                     if (!getPowerArray().contains(e.getPlayer())) return;
                     setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                     runGiveItems(e.getPlayer(), origin);
@@ -60,7 +60,7 @@ public class StartingEquipmentPower extends CraftPower implements Listener {
         if (starting_equip.contains(e.getPlayer())) {
             for (OriginContainer origin : OriginPlayer.getOrigin(e.getPlayer()).values()) {
                 ConditionExecutor conditionExecutor = new ConditionExecutor();
-                if (conditionExecutor.check("condition", "conditions", e.getPlayer(), origin, getPowerFile(), null, e.getPlayer())) {
+                if (conditionExecutor.check("condition", "conditions", e.getPlayer(), origin, getPowerFile(), e.getPlayer(), null, null, null, e.getPlayer().getItemInHand(), null)) {
                     if (!getPowerArray().contains(e.getPlayer())) return;
                     setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                     if (origin.getPowerFileFromType(getPowerFile()).get("recurrent", "false") != null) {

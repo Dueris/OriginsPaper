@@ -66,7 +66,7 @@ public class Climbing extends CraftPower {
                     for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
                         boolean cancel_bool = origin.getPowerFileFromType("origins:climbing").getRainCancel();
                         ConditionExecutor executor = new ConditionExecutor();
-                        if (executor.check("condition", "conditions", p, origin, getPowerFile(), null, p)) {
+                        if (executor.check("condition", "conditions", p, origin, getPowerFile(), p, null, null, null, p.getItemInHand(), null)) {
                             if (origin.getPowerFileFromType(getPowerFile()) == null) {
                                 getPowerArray().remove(p);
                                 return;

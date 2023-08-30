@@ -41,7 +41,7 @@ public class PreventSleep extends CraftPower implements Listener {
             if (!prevent_sleep.contains(e.getPlayer())) return;
             for (OriginContainer origin : OriginPlayer.getOrigin(e.getPlayer()).values()) {
                 ConditionExecutor conditionExecutor = new ConditionExecutor();
-                if (conditionExecutor.check("block_condition", "block_conditions", e.getPlayer(), origin, "origins:prevent_sleep", null, e.getPlayer())) {
+                if (conditionExecutor.check("block_condition", "block_conditions", e.getPlayer(), origin, "origins:prevent_sleep", e.getPlayer(), null, e.getPlayer().getLocation().getBlock(), null, e.getPlayer().getItemInHand(), null)) {
                     if (origin.getPowerFileFromType("origins:prevent_sleep").get("set_spawn_point", "false") == "true") {
                         e.getPlayer().setBedSpawnLocation(e.getClickedBlock().getLocation());
                     }

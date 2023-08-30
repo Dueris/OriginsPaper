@@ -32,8 +32,8 @@ public class PreventEntityRender extends CraftPower {
                 for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
                     for (Entity entity : p.getWorld().getEntities()) {
                         ConditionExecutor conditionExecutor = new ConditionExecutor();
-                        if (conditionExecutor.check("entity_condition", "entity_condition", p, origin, "origins:prevent_entity_render", null, p)) {
-                            if (conditionExecutor.check("bientity_condition", "bientity_condition", p, origin, "origins:prevent_entity_render", null, p)) {
+                        if (conditionExecutor.check("entity_condition", "entity_condition", p, origin, "origins:prevent_entity_render", p, entity, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
+                            if (conditionExecutor.check("bientity_condition", "bientity_condition", p, origin, "origins:prevent_entity_render", p, entity, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
                                 p.hideEntity(GenesisMC.getPlugin(), entity);
                                 if (origin.getPowerFileFromType(getPowerFile()) == null) {
                                     getPowerArray().remove(p);

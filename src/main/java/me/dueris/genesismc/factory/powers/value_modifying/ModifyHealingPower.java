@@ -40,7 +40,7 @@ public class ModifyHealingPower extends CraftPower implements Listener {
                     if (mathOperator != null) {
                         float result = (float) mathOperator.apply(e.getAmount(), value);
                         ConditionExecutor executor = new ConditionExecutor();
-                        if (executor.check("condition", "conditions", p, origin, getPowerFile(), null, p)) {
+                        if (executor.check("condition", "conditions", p, origin, getPowerFile(), p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
                             if (origin.getPowerFileFromType(getPowerFile()) == null) {
                                 getPowerArray().remove(p);
                                 return;

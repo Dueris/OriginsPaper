@@ -42,31 +42,16 @@ public class ModifyCraftingPower extends CraftPower implements Listener {
                 ValueModifyingSuperClass valueModifyingSuperClass = new ValueModifyingSuperClass();
                 try {
                     ConditionExecutor conditionExecutor = new ConditionExecutor();
-                    if (conditionExecutor.check("condition", "condition", p, origin, "origins:modify_crafting", null, p)) {
-                        if (conditionExecutor.check("item_condition", "item_condition", p, origin, "origins:modify_crafting", null, p)) {
+                    if (conditionExecutor.check("condition", "condition", p, origin, "origins:modify_crafting", p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
+                        if (conditionExecutor.check("item_condition", "item_condition", p, origin, "origins:modify_crafting", p, null, p.getLocation().getBlock(), null, e.getInventory().getResult(), null)) {
                             if (e.getInventory().getResult().getType() == Material.valueOf(origin.getPowerFileFromType("origins:modify_crafting").get("recipe", null).split(":")[1].toUpperCase())) {
                                 e.getInventory().setResult(new ItemStack(Material.valueOf(origin.getPowerFileFromType("origins:modify_crafting").getJsonHashMap("result").get("item").toString().toUpperCase().split(":")[1])));
-                                if (origin.getPowerFileFromType(getPowerFile()) == null) {
-                                    getPowerArray().remove(p);
-                                    return;
-                                }
-                                if (!getPowerArray().contains(p)) return;
                                 setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                             }
                         } else {
-                            if (origin.getPowerFileFromType(getPowerFile()) == null) {
-                                getPowerArray().remove(p);
-                                return;
-                            }
-                            if (!getPowerArray().contains(p)) return;
                             setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                         }
                     } else {
-                        if (origin.getPowerFileFromType(getPowerFile()) == null) {
-                            getPowerArray().remove(p);
-                            return;
-                        }
-                        if (!getPowerArray().contains(p)) return;
                         setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                     }
                 } catch (Exception ev) {

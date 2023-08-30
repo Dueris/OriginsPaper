@@ -47,7 +47,7 @@ public class EntityGlow extends CraftPower {
                     Collection<Entity> entitiesWithinRadius = getEntitiesInRadius(p, 10);
                     for (Entity entity : entitiesWithinRadius) {
                         ConditionExecutor conditionExecutor = new ConditionExecutor();
-                        if (conditionExecutor.check("condition", "conditions", p, origin, "origins:entity_glow", null, entity)) {
+                        if (conditionExecutor.check("condition", "conditions", p, origin, "origins:entity_glow", p, entity, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
                             CraftPlayer craftPlayer = (CraftPlayer) p;
                             MobEffect effect = MobEffects.GLOWING;
                             craftPlayer.getHandle().connection.send(new ClientboundUpdateMobEffectPacket(entity.getEntityId(), new MobEffectInstance(effect, 60, 2, false, false, false)));

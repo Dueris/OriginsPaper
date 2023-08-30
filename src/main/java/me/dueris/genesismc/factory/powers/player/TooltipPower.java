@@ -60,7 +60,7 @@ public class TooltipPower extends CraftPower {
             if (getPowerArray().contains(p)) {
                 for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
                     ConditionExecutor conditionExecutor = new ConditionExecutor();
-                    if (conditionExecutor.check("item_condition", "item_conditions", p, origin, getPowerFile(), null, p)) {
+                    if (conditionExecutor.check("item_condition", "item_conditions", p, origin, getPowerFile(), p, null, null, null, p.getItemInHand(), null)) {
                         if (origin.getPowerFileFromType(getPowerFile()) == null) {
                             getPowerArray().remove(p);
                             return;

@@ -39,7 +39,7 @@ public class Toggle extends CraftPower implements Listener {
         if (toggle_power.contains(e.getPlayer())) {
             for (OriginContainer origin : OriginPlayer.getOrigin(e.getPlayer()).values()) {
                 ConditionExecutor conditionExecutor = new ConditionExecutor();
-                if (conditionExecutor.check("condition", "conditions", p, origin, getPowerFile(), null, p)) {
+                if (conditionExecutor.check("condition", "conditions", p, origin, getPowerFile(), p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
                     if (!CooldownStuff.isPlayerInCooldown(p, origin.getPowerFileFromType(getPowerFile()).getKey().get("key").toString())) {
                         if (isKeyBeingPressed(e.getPlayer(), origin.getPowerFileFromType(getPowerFile()).getKey().get("key").toString(), true)) {
                             execute(p, origin);

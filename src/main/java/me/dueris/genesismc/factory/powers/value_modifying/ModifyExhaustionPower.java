@@ -34,7 +34,7 @@ public class ModifyExhaustionPower extends CraftPower implements Listener {
         if (modify_exhaustion.contains(p)) {
             for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
                 ConditionExecutor conditionExecutor = new ConditionExecutor();
-                if (conditionExecutor.check("condition", "conditions", p, origin, "origins:modify_exhaustion", null, p)) {
+                if (conditionExecutor.check("condition", "conditions", p, origin, "origins:modify_exhaustion", p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
                     for (HashMap<String, Object> modifier : origin.getPowerFileFromType("origins:modify_exhaustion").getConditionFromString("modifier", "modifiers")) {
                         Float value = Float.valueOf(modifier.get("value").toString());
                         String operation = modifier.get("operation").toString();

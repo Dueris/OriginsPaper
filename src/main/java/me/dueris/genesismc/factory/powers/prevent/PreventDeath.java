@@ -30,7 +30,7 @@ public class PreventDeath extends CraftPower implements Listener {
         if (prevent_death.contains(e.getPlayer())) {
             for (OriginContainer origin : OriginPlayer.getOrigin(e.getPlayer()).values()) {
                 ConditionExecutor conditionExecutor = new ConditionExecutor();
-                if (conditionExecutor.check("damage_condition", "damage_conditions", e.getPlayer(), origin, "origins:prevent_death", e.getPlayer().getLastDamageCause(), e.getPlayer())) {
+                if (conditionExecutor.check("damage_condition", "damage_conditions", e.getPlayer(), origin, "origins:prevent_death", e.getPlayer(), null, null, null, e.getPlayer().getItemInHand(), e.getPlayer().getLastDamageCause())) {
                     e.setCancelled(true);
                     if (!getPowerArray().contains(e.getPlayer())) return;
                     setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);

@@ -36,7 +36,7 @@ public class ModifyJumpPower extends CraftPower implements Listener {
         if (modify_jump.contains(p)) {
             for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
                 ConditionExecutor conditionExecutor = new ConditionExecutor();
-                if (conditionExecutor.check("condition", "conditions", p, origin, "origins:modify_jump", null, p)) {
+                if (conditionExecutor.check("condition", "conditions", p, origin, "origins:modify_jump", p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
                     for (HashMap<String, Object> modifier : origin.getPowerFileFromType("origins:modify_jump").getPossibleModifiers("modifier", "modifiers")) {
 
                         if(modifier.get("value") instanceof Float){

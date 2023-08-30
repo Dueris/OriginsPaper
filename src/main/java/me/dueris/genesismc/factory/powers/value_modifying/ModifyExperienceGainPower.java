@@ -37,7 +37,7 @@ public class ModifyExperienceGainPower extends CraftPower implements Listener {
                 ValueModifyingSuperClass valueModifyingSuperClass = new ValueModifyingSuperClass();
                 try {
                     ConditionExecutor conditionExecutor = new ConditionExecutor();
-                    if (conditionExecutor.check("condition", "conditions", p, origin, "origins:modify_xp_gain", null, e.getPlayer())) {
+                    if (conditionExecutor.check("condition", "conditions", p, origin, "origins:modify_xp_gain", p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
                         for (HashMap<String, Object> modifier : origin.getPowerFileFromType("origins:modify_xp_gain").getConditionFromString("modifier", "modifiers")) {
                             Float value = Float.valueOf(modifier.get("value").toString());
                             String operation = modifier.get("operation").toString();

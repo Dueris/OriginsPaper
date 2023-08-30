@@ -101,7 +101,7 @@ public class EntityGroupManager extends CraftPower {
                     //Player case, check for power
                     for (OriginContainer origin : OriginPlayer.getOrigin(((Player) entity).getPlayer()).values()) {
                         ConditionExecutor executor = new ConditionExecutor();
-                        if (executor.check("condition", "conditions", (Player) entity, origin, getPowerFile(), null, entity)) {
+                        if (executor.check("condition", "conditions", (Player) entity, origin, getPowerFile(), entity, null, ((Player) entity).getLocation().getBlock(), null, ((Player) entity).getItemInHand(), null)) {
                             if (!getPowerArray().contains(entity)) return;
                             setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                             if (entity_group.contains(entity)) {

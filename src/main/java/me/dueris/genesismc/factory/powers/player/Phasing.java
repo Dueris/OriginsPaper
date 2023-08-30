@@ -131,7 +131,7 @@ public class Phasing extends CraftPower implements Listener {
                                 Location targetLocation = currentLocation.getBlock().getRelative(BlockFace.DOWN).getLocation();
                                 Location loc = new Location(targetLocation.getWorld(), targetLocation.getX(), targetLocation.getY(), targetLocation.getZ(), p.getEyeLocation().getYaw(), p.getEyeLocation().getPitch());
                                 ConditionExecutor conditionExecutor = new ConditionExecutor();
-                                if (conditionExecutor.check("phase_down_condition", "phase_down_conditions", p, origin, getPowerFile(), null, p)) {
+                                if (conditionExecutor.check("phase_down_condition", "phase_down_conditions", p, origin, getPowerFile(), p, null, loc.getBlock(), null, p.getItemInHand(), null)) {
                                     p.teleport(loc);
                                 }
                             }
@@ -148,7 +148,7 @@ public class Phasing extends CraftPower implements Listener {
             if (getPowerArray().contains(p)) {
                 for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
                     ConditionExecutor conditionExecutor = new ConditionExecutor();
-                    if (conditionExecutor.check("condition", "conditions", p, origin, getPowerFile(), null, p)) {
+                    if (conditionExecutor.check("condition", "conditions", p, origin, getPowerFile(), p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
                         setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                         if ((p.getLocation().add(0.55F, 0, 0.55F).getBlock().isSolid() ||
                                 p.getLocation().add(0.55F, 0, 0).getBlock().isSolid() ||
@@ -169,7 +169,7 @@ public class Phasing extends CraftPower implements Listener {
                                 p.getEyeLocation().add(0.55F, 0, -0.55F).getBlock().isSolid() ||
                                 p.getEyeLocation().add(-0.55F, 0, 0.55F).getBlock().isSolid())
                         ) {
-                            if (conditionExecutor.check("block_condition", "block_conditions", p, origin, getPowerFile(), null, p)) {
+                            if (conditionExecutor.check("block_condition", "block_conditions", p, origin, getPowerFile(), p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
                                 setInPhasingBlockForm(p);
                                 if (origin.getPowerFileFromType("origins:phasing").getOverlay()) {
                                     initializePhantomOverlay(p);

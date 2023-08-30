@@ -35,7 +35,7 @@ public class Grounded extends CraftPower {
                     Location location = player.getLocation();
                     Location current_block_platform_pos = location.add(0, -1, 0);
                     ConditionExecutor conditionExecutor = new ConditionExecutor();
-                    if (conditionExecutor.check("condition", "conditions", player, origin, "origins:grounded", null, player)) {
+                    if (conditionExecutor.check("condition", "conditions", player, origin, "origins:grounded", player, null, null, null, player.getItemInHand(), null)) {
                         if (!getPowerArray().contains(player)) return;
                         setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                         if (current_block_platform_pos.getBlock().getType().equals(Material.AIR)) {

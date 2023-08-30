@@ -37,7 +37,7 @@ public class ModifyProjectileDamagePower extends CraftPower implements Listener 
                     ValueModifyingSuperClass valueModifyingSuperClass = new ValueModifyingSuperClass();
                     try {
                         ConditionExecutor conditionExecutor = new ConditionExecutor();
-                        if (conditionExecutor.check("target_condition", "target_conditions", p, origin, "origins:modify_projectile_damage", e, e.getEntity()) && conditionExecutor.check("damage_condition", "damage_conditions", p, origin, "origins:modify_projectile_damage", e, e.getEntity())) {
+                        if (conditionExecutor.check("target_condition", "target_conditions", p, origin, "origins:modify_projectile_damage", p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null) && conditionExecutor.check("damage_condition", "damage_conditions", p, origin, "origins:modify_projectile_damage", p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
                             for (HashMap<String, Object> modifier : origin.getPowerFileFromType("origins:modify_projectile_damage").getPossibleModifiers("modifier", "modifiers")) {
                                 Float value = Float.valueOf(modifier.get("value").toString());
                                 String operation = modifier.get("operation").toString();

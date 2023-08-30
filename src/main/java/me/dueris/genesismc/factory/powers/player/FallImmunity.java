@@ -29,7 +29,7 @@ public class FallImmunity extends CraftPower implements Listener {
         if (fall_immunity.contains(p)) {
             for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
                 ConditionExecutor conditionExecutor = new ConditionExecutor();
-                if (conditionExecutor.check("condition", "conditions", p, origin, "origins:fall_immunity", e, p)) {
+                if (conditionExecutor.check("condition", "conditions", p, origin, "origins:fall_immunity", p, null, null, null, p.getItemInHand(), e)) {
                     if (origin.getPowerFileFromType(getPowerFile()) == null) {
                         getPowerArray().remove(p);
                         return;

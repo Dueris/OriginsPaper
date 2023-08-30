@@ -4,6 +4,7 @@ import io.papermc.paper.event.player.PlayerArmSwingEvent;
 import me.dueris.genesismc.entity.OriginPlayer;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
+import me.dueris.genesismc.factory.powers.player.attributes.AttributeHandler;
 import me.dueris.genesismc.utils.ErrorSystem;
 import me.dueris.genesismc.utils.OriginContainer;
 import me.dueris.genesismc.utils.translation.LangConfig;
@@ -55,23 +56,16 @@ public class ModifyBreakSpeedPower extends CraftPower implements Listener {
                 ValueModifyingSuperClass valueModifyingSuperClass = new ValueModifyingSuperClass();
                 try {
                     ConditionExecutor conditionExecutor = new ConditionExecutor();
-                    if (conditionExecutor.check("condition", "condition", p, origin, "origins:modify_air_speed", null, p)) {
-                        //TODO: add block condition
-                        if (origin.getPowerFileFromType(getPowerFile()) == null) {
-                            getPowerArray().remove(p);
-                            return;
-                        }
-                        if (!getPowerArray().contains(p)) return;
-                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
-                        if (modify_break_speed.contains(p)) {
-                            p.addPotionEffect(new PotionEffect(PotionEffectType.FAST_DIGGING, 50, calculateHasteAmplifier(valueModifyingSuperClass.getPersistentAttributeContainer(p, MODIFYING_KEY)), false, false, false));
+                    if (conditionExecutor.check("condition", "condition", p, origin, getPowerFile(), p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
+                        if (conditionExecutor.check("block_condition", "block_condition", p, origin, getPowerFile(), p, null, e.getPlayer().getTargetBlockExact(AttributeHandler.Reach.getDefaultReach(p)), null, p.getItemInHand(), null)) {
+                            setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
+                            if (modify_break_speed.contains(p)) {
+                                p.addPotionEffect(new PotionEffect(PotionEffectType.FAST_DIGGING, 50, calculateHasteAmplifier(valueModifyingSuperClass.getPersistentAttributeContainer(p, MODIFYING_KEY)), false, false, false));
+                            }
+                        } else {
+                            setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                         }
                     } else {
-                        if (origin.getPowerFileFromType(getPowerFile()) == null) {
-                            getPowerArray().remove(p);
-                            return;
-                        }
-                        if (!getPowerArray().contains(p)) return;
                         setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                     }
                 } catch (Exception ev) {

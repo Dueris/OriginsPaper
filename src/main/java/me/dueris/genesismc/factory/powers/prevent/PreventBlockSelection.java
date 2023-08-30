@@ -30,12 +30,10 @@ public class PreventBlockSelection extends CraftPower implements Listener {
         if (prevent_block_selection.contains(e.getPlayer())) {
             for (OriginContainer origin : OriginPlayer.getOrigin(e.getPlayer()).values()) {
                 ConditionExecutor conditionExecutor = new ConditionExecutor();
-                if (conditionExecutor.check("block_condition", "block_condition", e.getPlayer(), origin, "origins:prevent_block_selection", null, e.getPlayer())) {
-                    if (e.getClickedBlock() != null) e.setCancelled(true);
-                    if (!getPowerArray().contains(e.getPlayer())) return;
+                if (e.getClickedBlock() != null) e.setCancelled(true);
+                if (conditionExecutor.check("block_condition", "block_condition", e.getPlayer(), origin, "origins:prevent_block_selection", e.getPlayer(), null, e.getClickedBlock(), null, e.getPlayer().getItemInHand(), null)) {
                     setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                 } else {
-                    if (!getPowerArray().contains(e.getPlayer())) return;
                     setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                 }
             }

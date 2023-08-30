@@ -2,6 +2,8 @@ package me.dueris.genesismc.factory.conditions.entity;
 
 import me.dueris.genesismc.CooldownStuff;
 import me.dueris.genesismc.entity.OriginPlayer;
+import me.dueris.genesismc.factory.conditions.biome.BiomeCondition;
+import me.dueris.genesismc.factory.conditions.block.BlockCondition;
 import me.dueris.genesismc.factory.powers.player.Climbing;
 import me.dueris.genesismc.factory.powers.player.RestrictArmor;
 import me.dueris.genesismc.utils.OriginContainer;
@@ -108,18 +110,17 @@ public class EntityCondition {
             }
         }
 
-        // TODO: continue entity_condition to use biome condition for origins:biome in some cases. see https://origins.readthedocs.io/en/latest/types/entity_condition_types/biome/
-
         if (type.equalsIgnoreCase("origins:biome")) {
             if(condition.get("biome") == null) return Optional.empty();
             String biomeString = condition.get("biome").toString().split(":")[1].replace(".", "_").toUpperCase();
-            if (entity.getLocation().getBlock().getBiome().equals(Biome.valueOf(biomeString))) {
-                return Optional.of(true);
+            if (BiomeCondition.check(condition, entity, entity.getLocation().getBlock(), powerfile).equals(Optional.of(true))){
+                if (entity.getLocation().getBlock().getBiome().equals(Biome.valueOf(biomeString))) {
+                    return Optional.of(true);
+                }
             }
         }
 
         if (type.equalsIgnoreCase("origins:block_collision")) {
-            // TODO: add block_condition check for origins:block_collision. see https://origins.readthedocs.io/en/latest/types/entity_condition_types/block_collision/
             String offsetX = condition.get("offset_x").toString();
             String offsetY = condition.get("offset_y").toString();
             String offsetZ = condition.get("offset_z").toString();
@@ -133,15 +134,15 @@ public class EntityCondition {
 
                 Block block = world.getBlockAt(blockX, blockY, blockZ);
 
-                if (block.getType() != Material.AIR) {
-                    return Optional.of(true);
+                if(BlockCondition.check(condition, player, block, powerfile).equals(Optional.of(true))){
+                    if (block.getType() != Material.AIR) {
+                        return Optional.of(true);
+                    }
                 }
-
             }
         }
 
         if (type.equalsIgnoreCase("origins:block_in_radius")) {
-            // TODO: add block_condition check for origins:block_collision. see https://origins.readthedocs.io/en/latest/types/entity_condition_types/block_collision/
             int radius = Math.toIntExact((Long) condition.get("radius"));
             String shape = condition.get("shape").toString();
             String comparison = condition.get("comparison").toString();

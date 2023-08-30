@@ -120,7 +120,7 @@ public class PlayerRender extends CraftPower {
             if (invisibility.contains(p)) {
                 for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
                     ConditionExecutor conditionExecutor = new ConditionExecutor();
-                    if (conditionExecutor.check("condition", "conditions", p, origin, "origins:invisibility", null, p)) {
+                    if (conditionExecutor.check("condition", "conditions", p, origin, "origins:invisibility", p, null, null, null, p.getItemInHand(), null)) {
                         if (origin.getPowerFileFromType(getPowerFile()) == null) {
                             getPowerArray().remove(p);
                             return;

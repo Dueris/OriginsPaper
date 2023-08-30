@@ -37,7 +37,7 @@ public class ModifyLavaSpeed extends CraftPower {
                     ValueModifyingSuperClass valueModifyingSuperClass = new ValueModifyingSuperClass();
                     try {
                         ConditionExecutor conditionExecutor = new ConditionExecutor();
-                        if (conditionExecutor.check("bientity_condition", "bientity_conditions", p, origin, "origins:modify_lava_speed", null, p)) {
+                        if (conditionExecutor.check("bientity_condition", "bientity_conditions", p, origin, "origins:modify_lava_speed", p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
                             for (HashMap<String, Object> modifier : origin.getPowerFileFromType("origins:modify_lava_speed").getPossibleModifiers("modifier", "modifiers")) {
                                 Float value = Float.valueOf(modifier.get("value").toString());
                                 String operation = modifier.get("operation").toString();

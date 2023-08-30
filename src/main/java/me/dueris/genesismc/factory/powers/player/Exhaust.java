@@ -47,7 +47,7 @@ public class Exhaust extends CraftPower {
                         return;
                     } else {
                         ConditionExecutor conditionExecutor = new ConditionExecutor();
-                        if (conditionExecutor.check("condition", "conditions", p, origin, "origins:exhaust", null, p)) {
+                        if (conditionExecutor.check("condition", "conditions", p, origin, "origins:exhaust", p, null, null, null, p.getItemInHand(), null)) {
                             if (origin.getPowerFileFromType(getPowerFile()) == null) {
                                 getPowerArray().remove(p);
                                 return;

@@ -41,7 +41,7 @@ public class Launch extends CraftPower implements Listener {
         if (launch_into_air.contains(e.getPlayer())) {
             for (OriginContainer origin : OriginPlayer.getOrigin(e.getPlayer()).values()) {
                 ConditionExecutor conditionExecutor = new ConditionExecutor();
-                if (conditionExecutor.check("condition", "conditions", p, origin, "origins:launch", null, p)) {
+                if (conditionExecutor.check("condition", "conditions", p, origin, "origins:launch", p, null, null, null, p.getItemInHand(), null)) {
                     if (!CooldownStuff.isPlayerInCooldown(p, origin.getPowerFileFromType("origins:launch").getKey().get("key").toString())) {
                         if (isKeyBeingPressed(e.getPlayer(), origin.getPowerFileFromType("origins:launch").getKey().get("key").toString(), true)) {
                             new BukkitRunnable() {

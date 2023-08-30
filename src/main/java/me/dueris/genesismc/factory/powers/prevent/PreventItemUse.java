@@ -34,7 +34,7 @@ public class PreventItemUse extends CraftPower implements Listener {
                     return;
                 } else {
                     ConditionExecutor conditionExecutor = new ConditionExecutor();
-                    if (conditionExecutor.check("item_condition", "item_conditions", e.getPlayer(), origin, "origins:prevent_item_use", null, e.getPlayer())) {
+                    if (conditionExecutor.check("item_condition", "item_conditions", e.getPlayer(), origin, "origins:prevent_item_use", e.getPlayer(), null, e.getPlayer().getLocation().getBlock(), null, e.getItem(), null)) {
                         e.setCancelled(true);
                         if (!getPowerArray().contains(e.getPlayer())) return;
                         setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);

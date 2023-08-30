@@ -33,8 +33,8 @@ public class SelfGlow extends CraftPower {
                 ConditionExecutor conditionExecutor = new ConditionExecutor();
                 for (Entity entity : Bukkit.getServer().getWorld(p.getWorld().getKey()).getEntities()) {
                     if (entity instanceof Player player) {
-                        if (conditionExecutor.check("entity_condition", "entity_conditions", p, origin, getPowerFile(), null, entity)) {
-                            if (conditionExecutor.check("bientity_condition", "bientity_conditions", p, origin, getPowerFile(), null, entity)) {
+                        if (conditionExecutor.check("entity_condition", "entity_conditions", p, origin, getPowerFile(), p, entity, null, null, p.getItemInHand(), null)) {
+                            if (conditionExecutor.check("bientity_condition", "bientity_conditions", p, origin, getPowerFile(), p, entity, null, null, p.getItemInHand(), null)) {
                                 if (origin.getPowerFileFromType(getPowerFile()) == null) {
                                     getPowerArray().remove(p);
                                     return;

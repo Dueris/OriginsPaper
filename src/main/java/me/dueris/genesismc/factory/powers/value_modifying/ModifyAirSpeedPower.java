@@ -36,7 +36,7 @@ public class ModifyAirSpeedPower extends CraftPower {
                 ValueModifyingSuperClass valueModifyingSuperClass = new ValueModifyingSuperClass();
                 try {
                     ConditionExecutor conditionExecutor = new ConditionExecutor();
-                    if (conditionExecutor.check("condition", "conditions", p, origin, "origins:modify_air_speed", null, p)) {
+                    if (conditionExecutor.check("condition", "conditions", p, origin, "origins:modify_air_speed", p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
                         if (origin.getPowerFileFromType(getPowerFile()) == null) {
                             getPowerArray().remove(p);
                             return;

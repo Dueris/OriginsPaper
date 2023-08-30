@@ -31,7 +31,7 @@ public class FireImmunity extends CraftPower implements Listener {
             for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
                 if (fire_immunity.contains(p)) {
                     ConditionExecutor conditionExecutor = new ConditionExecutor();
-                    if (conditionExecutor.check("condition", "conditions", p, origin, "origins:fire_immunity", null, p)) {
+                    if (conditionExecutor.check("condition", "conditions", p, origin, "origins:fire_immunity", p, null, null, null, p.getItemInHand(), e)) {
                         if (origin.getPowerFileFromType(getPowerFile()) == null) {
                             getPowerArray().remove(p);
                             return;
