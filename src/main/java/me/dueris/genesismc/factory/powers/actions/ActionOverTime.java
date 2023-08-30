@@ -37,7 +37,7 @@ public class ActionOverTime extends CraftPower {
                         return;
                     } else {
                         ConditionExecutor executor = new ConditionExecutor();
-                        if (executor.check("condition", "conditions", p, origin, getPowerFile(), null, p)) {
+                        if (executor.check("condition", "conditions", p, origin, getPowerFile(), p, null, null, null, p.getItemInHand(), null)) {
                             setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                             ActionTypes.EntityActionType(p, power.getEntityAction());
                         } else {

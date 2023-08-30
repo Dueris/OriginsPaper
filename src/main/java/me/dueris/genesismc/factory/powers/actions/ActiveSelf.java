@@ -26,7 +26,7 @@ public class ActiveSelf extends CraftPower implements Listener {
             if (getPowerArray().contains(e.getPlayer())) {
                 ConditionExecutor executor = new ConditionExecutor();
                 if (CooldownStuff.isPlayerInCooldown(e.getPlayer(), e.getKey())) return;
-                if (executor.check("condition", "conditions", e.getPlayer(), origin, getPowerFile(), null, e.getPlayer())) {
+                if (executor.check("condition", "conditions", e.getPlayer(), origin, getPowerFile(), e.getPlayer(), null, null, null,  null, null)) {
                     if (!getPowerArray().contains(e.getPlayer())) return;
                     setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                     if (isKeyBeingPressed(e.getPlayer(), origin.getPowerFileFromType(getPowerFile()).getKey().get("key").toString(), true)) {
