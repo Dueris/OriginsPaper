@@ -20,47 +20,50 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Objects;
+import java.util.Optional;
 
 import static me.dueris.genesismc.factory.powers.player.RestrictArmor.compareValues;
 
 public class EntityCondition {
 
-    public static String check(HashMap<String, Object> condition, Player p, Entity entity, String powerfile) {
+    public static Optional<Boolean> check(HashMap<String, Object> condition, Player p, Entity entity, String powerfile) {
+        // TODO: use inverted
         boolean inverted = (boolean) condition.getOrDefault("inverted", false);
-        if (condition.get("type") == null) return "null";
-        if (condition == null) return "null";
+        if (condition.get("type") == null) return Optional.empty();
         String type = condition.get("type").toString();
+
         if (type.equalsIgnoreCase("origins:ability")) {
-            String ability = condition.get("ability").toString();
-            if (ability.equalsIgnoreCase("minecraft:flying")) {
-                if (entity instanceof Player player) {
-                    if (player.isFlying()) return "true";
-                }
-            }
-            if (ability.equalsIgnoreCase("minecraft:instabuild")) {
-                if (entity instanceof Player player) {
-                    if (player.getGameMode().equals(GameMode.CREATIVE)) return "true";
-                }
-            }
-            if (ability.equalsIgnoreCase("minecraft:invulnerable")) {
-                if (entity.isInvulnerable()) return "true";
-            }
-            if (ability.equalsIgnoreCase("minecraft:maybuild")) {
-                if (entity.hasPermission("minecraft.build")) {
-                    return "true";
-                }
+            String ability = condition.get("ability").toString().toLowerCase();
 
-            }
-            if (ability.equalsIgnoreCase("minecraft:mayfly")) {
-                if (entity instanceof Player player) {
-                    if (player.getAllowFlight()) return "true";
+            switch (ability) {
+                case "minecraft:flying" -> {
+                    if (entity instanceof Player player) {
+                        return Optional.of(player.isFlying());
+                    }
                 }
-
+                case "minecraft:instabuild" -> {
+                    if (entity instanceof Player player) {
+                        return Optional.of(player.getGameMode().equals(GameMode.CREATIVE));
+                    }
+                }
+                case "minecraft:invulnerable" -> {
+                    return Optional.of(entity.isInvulnerable());
+                }
+                case "minecraft:maybuild" -> {
+                    return Optional.of(entity.hasPermission("minecraft.build"));
+                }
+                case "minecraft:mayfly" -> {
+                    if (entity instanceof Player player) {
+                        return Optional.of(player.getAllowFlight());
+                    }
+                }
             }
         }
 
         if (type.equalsIgnoreCase("origins:advancement")) {
             String advancementString = condition.get("advancement").toString();
+
             if (entity instanceof Player player) {
                 World world = player.getWorld();
                 File worldFolder = world.getWorldFolder();
@@ -75,30 +78,23 @@ public class EntityCondition {
 
                         if (advancementJson != null) {
                             Boolean done = (Boolean) advancementJson.get("done");
-                            if (done != null) {
-                                if (done.toString() == "true") {
-                                    return "true";
-                                }
-
-                            } else {
-                                return "false";
-                            }
+                            return Optional.of(Objects.requireNonNullElse(done, false));
                         } else {
-                            return "false";
+                            return Optional.of(false);
                         }
                     } catch (IOException | ParseException e) {
                         e.printStackTrace();
                     }
                 } else {
-                    return "false";
+                    return Optional.of(false);
                 }
             }
         }
 
         if (type.equalsIgnoreCase("origins:air")) {
             if (entity instanceof Player player) {
-                if (compareValues(player.getRemainingAir(), condition.get("comparison").toString(), Integer.valueOf(condition.get("compare_to").toString()))) {
-                    return "true";
+                if (compareValues(player.getRemainingAir(), condition.get("comparison").toString(), Integer.parseInt(condition.get("compare_to").toString()))) {
+                    return Optional.of(true);
                 }
             }
         }
@@ -106,8 +102,8 @@ public class EntityCondition {
         if (type.equalsIgnoreCase("origins:attribute")) {
             if (entity instanceof Player player) {
                 String attributeString = condition.get("attribute").toString().split(":")[1].replace(".", "_").toUpperCase();
-                if (compareValues(player.getAttribute(Attribute.valueOf(attributeString)).getValue(), condition.get("comparison").toString(), Integer.valueOf(condition.get("compare_to").toString()))) {
-                    return "true";
+                if (compareValues(player.getAttribute(Attribute.valueOf(attributeString)).getValue(), condition.get("comparison").toString(), Integer.parseInt(condition.get("compare_to").toString()))) {
+                    return Optional.of(true);
                 }
             }
         }
@@ -117,7 +113,7 @@ public class EntityCondition {
         if (type.equalsIgnoreCase("origins:biome")) {
             String biomeString = condition.get("biome").toString().split(":")[1].replace(".", "_").toUpperCase();
             if (entity.getLocation().getBlock().getBiome().equals(Biome.valueOf(biomeString))) {
-                return "true";
+                return Optional.of(true);
             }
         }
 
@@ -137,7 +133,7 @@ public class EntityCondition {
                 Block block = world.getBlockAt(blockX, blockY, blockZ);
 
                 if (block.getType() != Material.AIR) {
-                    return "true";
+                    return Optional.of(true);
                 }
 
             }
@@ -145,10 +141,10 @@ public class EntityCondition {
 
         if (type.equalsIgnoreCase("origins:block_in_radius")) {
             // TODO: add block_condition check for origins:block_collision. see https://origins.readthedocs.io/en/latest/types/entity_condition_types/block_collision/
-            Integer radius = Math.toIntExact((Long) condition.get("radius"));
+            int radius = Math.toIntExact((Long) condition.get("radius"));
             String shape = condition.get("shape").toString();
             String comparison = condition.get("comparison").toString();
-            Integer compare_to = Integer.valueOf(condition.get("compare_to").toString());
+            int compare_to = Integer.parseInt(condition.get("compare_to").toString());
 
             Location center = entity.getLocation();
             int centerX = center.getBlockX();
@@ -173,15 +169,15 @@ public class EntityCondition {
                 blockCount = countBlocksInCube(minX, minY, minZ, maxX, maxY, maxZ, world);
             }
             if (compareValues(blockCount, comparison, compare_to)) {
-                return "true";
+                return Optional.of(true);
             }
 
         }
 
         if (type.equalsIgnoreCase("origins:brightness")) {
             String comparison = condition.get("comparison").toString();
-            Double compare_to = Double.valueOf(condition.get("compare_to").toString());
-            double brightness = 0;
+            double compare_to = Double.parseDouble(condition.get("compare_to").toString());
+            double brightness;
             int lightLevel = entity.getLocation().getBlock().getLightLevel();
             int ambientLight = 0;
 
@@ -193,7 +189,7 @@ public class EntityCondition {
             }
             brightness = ambientLight + (1 - ambientLight) * lightLevel / (60 - 3 * lightLevel);
             if (compareValues(brightness, comparison, compare_to)) {
-                return "true";
+                return Optional.of(true);
             }
 
         }
@@ -201,11 +197,11 @@ public class EntityCondition {
         if (type.equalsIgnoreCase("origins:climbing")) {
             if (entity instanceof Player player) {
                 if (player.isClimbing()) {
-                    return "true";
+                    return Optional.of(true);
                 }
                 Climbing climbing = new Climbing();
                 if (climbing.isActiveClimbing(player)) {
-                    return "true";
+                    return Optional.of(true);
                 }
 
             }
@@ -217,16 +213,8 @@ public class EntityCondition {
                 BoundingBox playerBoundingBox = player.getBoundingBox();
                 BoundingBox blockBoundingBox = block.getBoundingBox();
 
-                Location center = player.getLocation();
-
-                World world = center.getWorld();
-                double x = center.getX();
-                double y = center.getY();
-                double z = center.getZ();
-
-                BoundingBox boundingBox = block.getBoundingBox();
-                if (boundingBox.overlaps(playerBoundingBox)) {
-                    return "true";
+                if (blockBoundingBox.overlaps(playerBoundingBox)) {
+                    return Optional.of(true);
                 }
 
             }
@@ -235,7 +223,7 @@ public class EntityCondition {
         if (type.equalsIgnoreCase("origins:creative_flying")) {
             if (entity instanceof Player player) {
                 if (player.isFlying()) {
-                    return "true";
+                    return Optional.of(true);
                 }
 
             }
@@ -243,13 +231,13 @@ public class EntityCondition {
 
         if (type.equalsIgnoreCase("origins:daytime")) {
             if (entity.getWorld().isDayTime()) {
-                return "true";
+                return Optional.of(true);
             }
         }
 
         if (type.equalsIgnoreCase("origins:dimension")) {
-            if (entity.getWorld().getEnvironment().equals(condition.get("dimension").toString().split(":")[1].replace("the_", "").toUpperCase())) {
-                return "true";
+            if (entity.getWorld().getEnvironment().toString().equals(condition.get("dimension").toString().split(":")[1].replace("the_", "").toUpperCase())) {
+                return Optional.of(true);
             }
         }
 
@@ -257,42 +245,40 @@ public class EntityCondition {
             String fluid = condition.get("fluid").toString();
 
             if (fluid.equalsIgnoreCase("lava")) {
-                return String.valueOf(entity.isInLava());
+                return Optional.of(entity.isInLava());
             } else if (fluid.equalsIgnoreCase("water")) {
-                return String.valueOf(entity.isInWaterOrBubbleColumn());
+                return Optional.of(entity.isInWaterOrBubbleColumn());
             }
         }
 
         if (type.equalsIgnoreCase("origins:in_rain")) {
-            return String.valueOf(entity.isInRain());
+            return Optional.of(entity.isInRain());
         }
 
-        if(type.equalsIgnoreCase("origins:health")){
-            if(RestrictArmor.compareValues(p.getHealth(), condition.get("comparison").toString(), Double.parseDouble(condition.get("compare_to").toString()))){
-                return "true";
+        if (type.equalsIgnoreCase("origins:health")){
+            if (RestrictArmor.compareValues(p.getHealth(), condition.get("comparison").toString(), Double.parseDouble(condition.get("compare_to").toString()))){
+                return Optional.of(true);
             }
         }
 
-        if(type.equalsIgnoreCase("origins:exposed_to_sun")){
+        if (type.equalsIgnoreCase("origins:exposed_to_sun")){
             if ((p.getLocation().getBlockY() + 1 > p.getWorld().getHighestBlockYAt(p.getLocation()))) {
                 if (p.getGameMode() == GameMode.SURVIVAL || p.getGameMode() == GameMode.ADVENTURE) {
-                    if (p.getWorld().isDayTime()) {
-                        return "true";
-                    }
+                    return Optional.of(p.getWorld().isDayTime());
                 }
             }
         }
 
         if(type.equalsIgnoreCase("origins:sneaking")){
-            return String.valueOf(entity.isSneaking());
+            return Optional.of(entity.isSneaking());
         }
 
         if(type.equalsIgnoreCase("origins:resource")){
             for(OriginContainer origin : OriginPlayer.getOrigin(p).values()){
-                return String.valueOf(!CooldownStuff.isPlayerInCooldownFromTag(p, origin.getPowerFileFromType(powerfile).getTag()));
+                return Optional.of(!CooldownStuff.isPlayerInCooldownFromTag(p, origin.getPowerFileFromType(powerfile).getTag()));
             }
         }
-        return "false";
+        return Optional.of(false);
     }
 
     private static int countBlocksInCube(int minX, int minY, int minZ, int maxX, int maxY, int maxZ, World world) {
