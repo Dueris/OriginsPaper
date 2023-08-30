@@ -27,7 +27,7 @@ public class DamageOverTime extends CraftPower {
     public DamageOverTime() {
         this.interval = 20L;
         this.ticksE = 0;
-        this.damage_type = "apoli:damage_over_time";
+        this.damage_type = "origins:damage_over_time";
         this.protection_effectiveness = 1.0;
     }
 

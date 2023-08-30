@@ -45,7 +45,7 @@ public class ModifyJumpPower extends CraftPower implements Listener {
                             BinaryOperator mathOperator = getOperationMappingsFloat().get(operation);
                             if (mathOperator != null) {
                                 float result = (float) mathOperator.apply(p.getVelocity().getY(), value);
-                                p.setVelocity(new Vector(p.getVelocity().getX(), result, p.getVelocity().getZ()));
+                                p.setVelocity(new Vector(p.getEyeLocation().getDirection().getX(), result, p.getEyeLocation().getDirection().getZ()));
                                 setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                             }
                         }
@@ -55,7 +55,7 @@ public class ModifyJumpPower extends CraftPower implements Listener {
                             BinaryOperator mathOperator = getOperationMappingsDouble().get(operation);
                             if (mathOperator != null) {
                                 double result = (double) mathOperator.apply(p.getVelocity().getY(), value);
-                                p.setVelocity(new Vector(p.getVelocity().getX(), result, p.getVelocity().getZ()));
+                                p.setVelocity(new Vector(p.getEyeLocation().getDirection().getX(), result, p.getEyeLocation().getDirection().getZ()));
                                 setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                             }
                         }
@@ -65,7 +65,7 @@ public class ModifyJumpPower extends CraftPower implements Listener {
                             BinaryOperator mathOperator = getOperationMappingsInteger().get(operation);
                             if (mathOperator != null) {
                                 int result = (int) mathOperator.apply(p.getVelocity().getY(), value);
-                                p.setVelocity(new Vector(p.getVelocity().getX(), result, p.getVelocity().getZ()));
+                                p.setVelocity(new Vector(p.getEyeLocation().getDirection().getX(), result, p.getEyeLocation().getDirection().getZ()));
                                 setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                             }
                         }
@@ -75,7 +75,7 @@ public class ModifyJumpPower extends CraftPower implements Listener {
                             BinaryOperator<Long> mathOperator = getOperationMappingsLong().get(operation);
                             if (mathOperator != null) {
                                 long result = mathOperator.apply((long) p.getVelocity().getY(), value);
-                                p.setVelocity(new Vector(p.getVelocity().getX(), result, p.getVelocity().getZ()));
+                                p.setVelocity(new Vector(p.getEyeLocation().getDirection().getX(), result, p.getVelocity().getZ()));
                                 setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                             }
                         }

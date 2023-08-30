@@ -1,4 +1,24 @@
 package me.dueris.genesismc.factory.conditions.biome;
 
+import org.bukkit.block.Block;
+import org.bukkit.entity.Entity;
+import org.bukkit.block.Biome;
+import org.bukkit.entity.Player;
+import org.bukkit.generator.BiomeProvider;
+
+import java.util.HashMap;
+import java.util.Optional;
+
 public class BiomeCondition {
+    public static Optional<Boolean> check(HashMap<String, Object> condition, Player p, Block block, String powerfile) {
+        if (condition.get("type") == null) return Optional.empty();
+        Biome biome = block.getBiome();
+
+        String type = condition.get("type").toString().toLowerCase();
+
+        switch (type) {
+
+        }
+        return Optional.of(false);
+    }
 }

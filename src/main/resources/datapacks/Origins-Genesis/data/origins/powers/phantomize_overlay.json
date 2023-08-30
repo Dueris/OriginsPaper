@@ -1,8 +1,8 @@
 {
-  "type": "apoli:multiple",
+  "type": "origins:multiple",
   "hidden": true,
   "green": {
-    "type": "apoli:overlay",
+    "type": "origins:overlay",
     "hidden": true,
     "texture": "minecraft:textures/misc/nausea.png",
     "red": 0.2,
@@ -14,14 +14,14 @@
     "visible_in_third_person": true,
     "hide_with_hud": true,
     "condition": {
-      "type": "apoli:and",
+      "type": "origins:and",
       "conditions": [
         {
-          "type": "apoli:power_active",
+          "type": "origins:power_active",
           "power": "origins:phantomize"
         },
         {
-          "type": "apoli:food_level",
+          "type": "origins:food_level",
           "comparison": ">",
           "compare_to": 10
         }
@@ -29,7 +29,7 @@
     }
   },
   "orange": {
-    "type": "apoli:overlay",
+    "type": "origins:overlay",
     "hidden": true,
     "texture": "minecraft:textures/misc/nausea.png",
     "red": 0.3,
@@ -41,7 +41,7 @@
     "visible_in_third_person": true,
     "hide_with_hud": true,
     "condition": {
-      "type": "apoli:and",
+      "type": "origins:and",
       "conditions": [
         {
           "type": "apoli:power_active",
