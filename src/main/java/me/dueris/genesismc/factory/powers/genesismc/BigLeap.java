@@ -59,7 +59,7 @@ public class BigLeap extends CraftPower implements Listener {
                     e.getPlayer().sendMessage("test123");
                     Player p = e.getPlayer();
                     ConditionExecutor executor = new ConditionExecutor();
-                    if (executor.check("condition", "conditions", p, origin, getPowerFile(), null, p)) {
+                    if (executor.check("condition", "conditions", p, origin, getPowerFile(), p, null, null, null, p.getItemInHand(), null)) {
                         e.getPlayer().sendMessage("498sdlkfmcxv");
                         setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                         for (HashMap<String, Object> modifier : origin.getPowerFileFromType("genesis:leap").getPossibleModifiers("modifier", "modifiers")) {

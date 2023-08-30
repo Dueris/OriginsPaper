@@ -44,7 +44,7 @@ public class SilkTouch extends CraftPower implements Listener {
             if (silk_touch.contains(e.getPlayer())) {
                 ConditionExecutor executor = new ConditionExecutor();
                 for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
-                    if (executor.check("condition", "conditions", p, origin, getPowerFile(), null, p)) {
+                    if (executor.check("condition", "conditions", p, origin, getPowerFile(), p, null, e.getBlock(), null, p.getItemInHand(), null)) {
                         if (origin.getPowerFileFromType(getPowerFile()) == null) {
                             getPowerArray().remove(p);
                             return;

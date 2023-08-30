@@ -53,7 +53,7 @@ public class ExplodeTick extends CraftPower implements Listener {
                     @Override
                     public void run() {
                         ConditionExecutor executor = new ConditionExecutor();
-                        if (executor.check("condition", "conditions", p, origin, getPowerFile(), null, p)) {
+                        if (executor.check("condition", "conditions", p, origin, getPowerFile(), p, null, null, null, p.getItemInHand(), null)) {
                             if (origin.getPowerFileFromType(getPowerFile()) == null) {
                                 getPowerArray().remove(p);
                                 return;
@@ -78,21 +78,33 @@ public class ExplodeTick extends CraftPower implements Listener {
 
                                     p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 5, 2, false, false, false));
                                     if (!cooldown.containsKey(p.getUniqueId()) || (System.currentTimeMillis() - cooldown.get(p.getUniqueId()) >= 2900)) {
-
                                         List<Entity> nearby = p.getNearbyEntities(2, 2, 2);
-                                        for (Entity tmp : nearby)
-                                            if (tmp instanceof Damageable && tmp != p)
-                                                ((Damageable) tmp).damage(15);
+                                        for (Entity tmp : nearby){
+                                            if (executor.check("entity_condition", "entity_conditions", p, origin, getPowerFile(), p, null, null, null, p.getItemInHand(), null)) {
+                                                if (executor.check("bientit_condition", "bientity_conditions", p, origin, getPowerFile(), p, null, null, null, p.getItemInHand(), null)) {
+                                                    if (tmp instanceof Damageable && tmp != p)
+                                                        ((Damageable) tmp).damage(15);
+                                                }
+                                            }
+                                        }
                                         List<Entity> nearby2 = p.getNearbyEntities(3, 3, 3);
-                                        for (Entity tmp2 : nearby2)
-                                            if (tmp2 instanceof Damageable && tmp2 != p)
-                                                ((Damageable) tmp2).damage(10);
+                                        for (Entity tmp : nearby2){
+                                            if (executor.check("entity_condition", "entity_conditions", p, origin, getPowerFile(), p, null, null, null, p.getItemInHand(), null)) {
+                                                if (executor.check("bientit_condition", "bientity_conditions", p, origin, getPowerFile(), p, null, null, null, p.getItemInHand(), null)) {
+                                                    if (tmp instanceof Damageable && tmp != p)
+                                                        ((Damageable) tmp).damage(10);
+                                                }
+                                            }
+                                        }
                                         List<Entity> nearby3 = p.getNearbyEntities(5, 5, 5);
-                                        for (Entity tmp3 : nearby3)
-                                            if (tmp3 instanceof Damageable && tmp3 != p)
-                                                ((Damageable) tmp3).damage(5);
-                                        e.setCancelled(true);
-                                        cancel();
+                                        for (Entity tmp : nearby3){
+                                            if (executor.check("entity_condition", "entity_conditions", p, origin, getPowerFile(), p, null, null, null, p.getItemInHand(), null)) {
+                                                if (executor.check("bientit_condition", "bientity_conditions", p, origin, getPowerFile(), p, null, null, null, p.getItemInHand(), null)) {
+                                                    if (tmp instanceof Damageable && tmp != p)
+                                                        ((Damageable) tmp).damage(10);
+                                                }
+                                            }
+                                        }
 
                                         if (origin.getPowerFileFromType("genesis:explode_tick").getThunderModifier() != null) {
                                             if (p.getWorld().isThundering()) {
