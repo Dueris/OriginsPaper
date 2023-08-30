@@ -9,6 +9,6 @@
   },
   "condition": {
     "type": "origins:power_active",
-    "power": "*:tick_leap_toggle"
+    "power": "origins:tick_leap_toggle"
   }
 }
