@@ -8,12 +8,14 @@ import me.dueris.genesismc.utils.OriginContainer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.function.BinaryOperator;
 
-import static me.dueris.genesismc.factory.powers.player.attributes.AttributeHandler.getOperationMappingsDouble;
+import static me.dueris.genesismc.factory.powers.player.attributes.AttributeHandler.*;
+import static me.dueris.genesismc.factory.powers.player.attributes.AttributeHandler.getOperationMappingsLong;
 import static me.dueris.genesismc.factory.powers.value_modifying.ValueModifyingSuperClass.modify_jump;
 
 public class ModifyJumpPower extends CraftPower implements Listener {
@@ -36,31 +38,48 @@ public class ModifyJumpPower extends CraftPower implements Listener {
                 ConditionExecutor conditionExecutor = new ConditionExecutor();
                 if (conditionExecutor.check("condition", "conditions", p, origin, "origins:modify_jump", null, p)) {
                     for (HashMap<String, Object> modifier : origin.getPowerFileFromType("origins:modify_jump").getPossibleModifiers("modifier", "modifiers")) {
-                        Float value = Float.valueOf(modifier.get("value").toString());
-                        String operation = modifier.get("operation").toString();
-                        BinaryOperator mathOperator = getOperationMappingsDouble().get(operation);
-                        if (mathOperator != null) {
-                            double result = (double) mathOperator.apply(e.getPlayer().getVelocity().getY(), value);
-                            ConditionExecutor executor = new ConditionExecutor();
-                            if (executor.check("condition", "conditions", p, origin, getPowerFile(), null, p)) {
-                                if (origin.getPowerFileFromType(getPowerFile()) == null) {
-                                    getPowerArray().remove(p);
-                                    return;
-                                }
-                                if (!getPowerArray().contains(p)) return;
+
+                        if(modifier.get("value") instanceof Float){
+                            Float value = Float.valueOf(modifier.get("value").toString());
+                            String operation = modifier.get("operation").toString();
+                            BinaryOperator mathOperator = getOperationMappingsFloat().get(operation);
+                            if (mathOperator != null) {
+                                float result = (float) mathOperator.apply(p.getVelocity().getY(), value);
+                                p.setVelocity(new Vector(p.getVelocity().getX(), result, p.getVelocity().getZ()));
                                 setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
-                                e.getPlayer().getVelocity().setY(result);
-                            } else {
-                                if (origin.getPowerFileFromType(getPowerFile()) == null) {
-                                    getPowerArray().remove(p);
-                                    return;
-                                }
-                                if (!getPowerArray().contains(p)) return;
-                                setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
+                            }
+                        }
+                        if (modifier.get("value") instanceof Double) {
+                            Double value = Double.valueOf(modifier.get("value").toString());
+                            String operation = modifier.get("operation").toString();
+                            BinaryOperator mathOperator = getOperationMappingsDouble().get(operation);
+                            if (mathOperator != null) {
+                                double result = (double) mathOperator.apply(p.getVelocity().getY(), value);
+                                p.setVelocity(new Vector(p.getVelocity().getX(), result, p.getVelocity().getZ()));
+                                setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
+                            }
+                        }
+                        if (modifier.get("value") instanceof Integer) {
+                            Integer value = Integer.valueOf(modifier.get("value").toString());
+                            String operation = modifier.get("operation").toString();
+                            BinaryOperator mathOperator = getOperationMappingsInteger().get(operation);
+                            if (mathOperator != null) {
+                                int result = (int) mathOperator.apply(p.getVelocity().getY(), value);
+                                p.setVelocity(new Vector(p.getVelocity().getX(), result, p.getVelocity().getZ()));
+                                setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
+                            }
+                        }
+                        if (modifier.get("value") instanceof Long) {
+                            Long value = Long.valueOf(modifier.get("value").toString());
+                            String operation = modifier.get("operation").toString();
+                            BinaryOperator<Long> mathOperator = getOperationMappingsLong().get(operation);
+                            if (mathOperator != null) {
+                                long result = mathOperator.apply((long) p.getVelocity().getY(), value);
+                                p.setVelocity(new Vector(p.getVelocity().getX(), result, p.getVelocity().getZ()));
+                                setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                             }
                         }
                     }
-
                 }
             }
         }

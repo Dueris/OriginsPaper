@@ -37,13 +37,9 @@ public class ModifyDamageTakenPower extends CraftPower implements Listener {
                 for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
                     try {
                         ConditionExecutor conditionExecutor = new ConditionExecutor();
-                        p.sendMessage("1");
                         if (conditionExecutor.check("damage_condition", "damage_conditions", p, origin, "origins:modify_damage_taken", e, e.getEntity())) {
-                            p.sendMessage("2");
                             for (HashMap<String, Object> modifier : origin.getPowerFileFromType("origins:modify_damage_taken").getConditionFromString("modifier", "modifiers")) {
-                                p.sendMessage("3");
                                 if(modifier.get("value") instanceof Float){
-                                    p.sendMessage("4");
                                     Float value = Float.valueOf(modifier.get("value").toString());
                                     String operation = modifier.get("operation").toString();
                                     BinaryOperator mathOperator = getOperationMappingsFloat().get(operation);
@@ -51,47 +47,33 @@ public class ModifyDamageTakenPower extends CraftPower implements Listener {
                                         p.sendMessage(String.valueOf(e.getDamage()));
                                         float result = (float) mathOperator.apply(e.getDamage(), value);
                                         e.setDamage(result);
-                                        p.sendMessage(String.valueOf(result));
-                                        p.sendMessage(String.valueOf(value));
                                         setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                                     }
                                 } else if (modifier.get("value") instanceof Double) {
-                                    p.sendMessage("5");
                                     Double value = Double.valueOf(modifier.get("value").toString());
                                     String operation = modifier.get("operation").toString();
                                     BinaryOperator mathOperator = getOperationMappingsDouble().get(operation);
                                     if (mathOperator != null) {
-                                        p.sendMessage(String.valueOf(e.getDamage()));
                                         double result = (double) mathOperator.apply(e.getDamage(), value);
                                         e.setDamage(result);
-                                        p.sendMessage(String.valueOf(result));
-                                        p.sendMessage(String.valueOf(value));
                                         setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                                     }
                                 } else if (modifier.get("value") instanceof Integer) {
-                                    p.sendMessage("6");
                                     Integer value = Integer.valueOf(modifier.get("value").toString());
                                     String operation = modifier.get("operation").toString();
                                     BinaryOperator mathOperator = getOperationMappingsInteger().get(operation);
                                     if (mathOperator != null) {
-                                        p.sendMessage(String.valueOf(e.getDamage()));
                                         int result = (int) mathOperator.apply(e.getDamage(), value);
                                         e.setDamage(result);
-                                        p.sendMessage(String.valueOf(result));
-                                        p.sendMessage(String.valueOf(value));
                                         setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                                     }
                                 } else if (modifier.get("value") instanceof Long) {
-                                    p.sendMessage("6");
                                     Long value = Long.valueOf(modifier.get("value").toString());
                                     String operation = modifier.get("operation").toString();
                                     BinaryOperator mathOperator = getOperationMappingsLong().get(operation);
                                     if (mathOperator != null) {
-                                        p.sendMessage(String.valueOf(e.getDamage()));
                                         long result = (long) mathOperator.apply(e.getDamage(), value);
                                         e.setDamage(result);
-                                        p.sendMessage(String.valueOf(result));
-                                        p.sendMessage(String.valueOf(value));
                                         setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                                     }
                                 }
