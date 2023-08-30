@@ -52,17 +52,15 @@ public class BigLeap extends CraftPower implements Listener {
     @EventHandler
     public void onRabbitLeap(PlayerToggleSneakEvent e) {
         PersistentDataContainer data = e.getPlayer().getPersistentDataContainer();
-        if (big_leap_tick.contains(e.getPlayer())) {
+        if (getPowerArray().contains(e.getPlayer())) {
+            e.getPlayer().sendMessage("test");
             for (OriginContainer origin : OriginPlayer.getOrigin(e.getPlayer()).values()) {
                 if (origin.getPowerFileFromType("genesis:leap") != null) {
+                    e.getPlayer().sendMessage("test123");
                     Player p = e.getPlayer();
                     ConditionExecutor executor = new ConditionExecutor();
                     if (executor.check("condition", "conditions", p, origin, getPowerFile(), null, p)) {
-                        if (origin.getPowerFileFromType(getPowerFile()) == null) {
-                            getPowerArray().remove(p);
-                            return;
-                        }
-                        if (!getPowerArray().contains(p)) return;
+                        e.getPlayer().sendMessage("498sdlkfmcxv");
                         setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                         for (HashMap<String, Object> modifier : origin.getPowerFileFromType("genesis:leap").getPossibleModifiers("modifier", "modifiers")) {
                             int cooldownTicks = Integer.valueOf(modifier.get("cooldown").toString());
@@ -72,6 +70,7 @@ public class BigLeap extends CraftPower implements Listener {
                             if (!p.isOnGround()) return;
                             if (cooldownAfter.containsKey(p.getUniqueId())) return;
                             if (toggleState == 2) return;
+                            e.getPlayer().sendMessage("dfghjkl");
 
                             cooldownBefore.put(p.getUniqueId(), 0);
                             playSound.put(p.getUniqueId(), Boolean.TRUE);
@@ -80,6 +79,7 @@ public class BigLeap extends CraftPower implements Listener {
                                 @Override
                                 public void run() {
                                     if (p.isSneaking()) {
+                                        e.getPlayer().sendMessage("27187812312312312312312312");
                                         if (cooldownBefore.get(p.getUniqueId()) == tickCharge / 5) {
                                             p.sendActionBar(ChatColor.RED + "|||");
                                         } else if (cooldownBefore.get(p.getUniqueId()) == tickCharge * 2 / 5) {
@@ -95,9 +95,11 @@ public class BigLeap extends CraftPower implements Listener {
                                                 p.playSound(p.getLocation(), Sound.ENTITY_ARROW_HIT_PLAYER, 1, 2);
                                                 playSound.replace(p.getUniqueId(), Boolean.FALSE);
                                             }
+                                            e.getPlayer().sendMessage("0239845jkdsf");
                                         }
                                         cooldownBefore.replace(p.getUniqueId(), cooldownBefore.get(p.getUniqueId()) + 1);
                                     } else {
+                                        e.getPlayer().sendMessage("BOOOOOM");
                                         cooldownAfter.put(p.getUniqueId(), System.currentTimeMillis());
                                         inAir.add(p.getUniqueId());
                                         p.setVelocity(p.getLocation().getDirection().multiply(1.5 + cooldownBefore.get(p.getUniqueId()) / 10));
@@ -124,6 +126,7 @@ public class BigLeap extends CraftPower implements Listener {
                                                         p.sendActionBar(ChatColor.GREEN + "-");
                                                         inAir.remove(p.getUniqueId());
                                                         p.playSound(p.getLocation(), Sound.ENTITY_ARROW_HIT_PLAYER, 1, 2);
+                                                        e.getPlayer().sendMessage("80342jksdfs'fds");
 
                                                     }
                                                 } else {
@@ -185,7 +188,7 @@ public class BigLeap extends CraftPower implements Listener {
 
     @Override
     public String getPowerFile() {
-        return "genesis:big_leap";
+        return "genesis:leap";
     }
 
     @Override
