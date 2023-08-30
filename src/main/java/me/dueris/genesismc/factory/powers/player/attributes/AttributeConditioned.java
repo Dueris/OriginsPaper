@@ -100,7 +100,7 @@ public class AttributeConditioned extends CraftPower implements Listener {
 
             for (HashMap<String, Object> modifier : origin.getPowerFileFromType("origins:attribute_conditioned").getConditionFromString("modifier", "modifiers")) {
                 ConditionExecutor conditionExecutor = new ConditionExecutor();
-                if (!conditionExecutor.check("condition", "conditions", p, origin, "origins:attribute_conditioned", null, p))
+                if (!conditionExecutor.check("condition", "conditions", p, origin, "origins:attribute_conditioned", p, null, null, null, p.getItemInHand(), null))
                     return;
                 Attribute attribute_modifier = Attribute.valueOf(modifier.get("attribute").toString().split(":")[1].replace(".", "_").toUpperCase());
                 if (modifier.get("value") instanceof Integer) {
