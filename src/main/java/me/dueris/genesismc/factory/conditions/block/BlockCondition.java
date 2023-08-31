@@ -1,7 +1,5 @@
 package me.dueris.genesismc.factory.conditions.block;
 
-import org.bukkit.Location;
-import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 

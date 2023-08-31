@@ -3,7 +3,6 @@ package me.dueris.genesismc;
 import me.dueris.genesismc.events.KeybindTriggerEvent;
 import me.dueris.genesismc.events.OriginChangeEvent;
 import me.dueris.genesismc.events.OriginKeybindExecuteEvent;
-import me.dueris.genesismc.factory.powers.Toggle;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;

@@ -11,7 +11,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 
-import java.awt.geom.Arc2D;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.function.BinaryOperator;

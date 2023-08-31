@@ -1,9 +1,8 @@
 package me.dueris.genesismc.factory.conditions.biome;
 
+import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
-import org.bukkit.block.Biome;
-import org.bukkit.entity.Player;
 
 import java.util.HashMap;
 import java.util.Optional;

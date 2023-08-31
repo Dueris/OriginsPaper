@@ -5,7 +5,6 @@ import me.dueris.genesismc.utils.BukkitColour;
 import me.dueris.genesismc.utils.translation.LangConfig;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;

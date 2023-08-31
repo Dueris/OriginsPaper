@@ -1,6 +1,5 @@
 package me.dueris.genesismc.factory.conditions.item;
 
-import org.bukkit.block.Biome;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 

@@ -1,11 +1,9 @@
 package me.dueris.genesismc.factory.powers.value_modifying;
 
-import com.google.common.base.Ticker;
 import me.dueris.genesismc.entity.OriginPlayer;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.OriginContainer;
-import net.minecraft.server.level.TickingTracker;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -16,7 +14,6 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 
-import java.awt.geom.Arc2D;
 import java.util.ArrayList;
 
 import static me.dueris.genesismc.factory.powers.value_modifying.ValueModifyingSuperClass.modify_falling;

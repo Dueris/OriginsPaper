@@ -15,7 +15,6 @@ import java.util.HashMap;
 import java.util.function.BinaryOperator;
 
 import static me.dueris.genesismc.factory.powers.player.attributes.AttributeHandler.*;
-import static me.dueris.genesismc.factory.powers.player.attributes.AttributeHandler.getOperationMappingsLong;
 import static me.dueris.genesismc.factory.powers.value_modifying.ValueModifyingSuperClass.modify_jump;
 
 public class ModifyJumpPower extends CraftPower implements Listener {

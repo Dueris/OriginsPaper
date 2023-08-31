@@ -1,6 +1,5 @@
 package me.dueris.genesismc.factory.conditions.biEntity;
 
-import org.bukkit.block.Biome;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
