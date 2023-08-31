@@ -37,6 +37,7 @@ public class WaterBreathe extends CraftPower {
     @Override
     public void run() {
         for (Player p : Bukkit.getOnlinePlayers()) {
+            if(!getPowerArray().contains(p)) return;
             for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
                 ConditionExecutor conditionExecutor = new ConditionExecutor();
                 if (conditionExecutor.check("condition", "conditions", p, origin, getPowerFile(), p, null, null, null, p.getItemInHand(), null)) {
