@@ -6,10 +6,7 @@ import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.protocol.SendStringPacketPayload;
 import me.dueris.genesismc.utils.OriginContainer;
-import org.bukkit.GameMode;
-import org.bukkit.GameRule;
-import org.bukkit.Material;
-import org.bukkit.Sound;
+import org.bukkit.*;
 import org.bukkit.craftbukkit.v1_20_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -81,21 +78,42 @@ public class FlightElytra extends CraftPower implements Listener {
     }
 
     @EventHandler
-    public void BoostHandler(PlayerInteractEvent e) {
-        Player p = e.getPlayer();
-        if (elytra.contains(e.getPlayer()) && e.getAction().equals(Action.LEFT_CLICK_AIR)) {
-            if (!glidingPlayers.contains(p)) return;
-            if (p.getGameMode() == GameMode.CREATIVE) return;
-            if (e.getItem() != null) {
-                ItemStack rocket = new ItemStack(Material.FIREWORK_ROCKET);
-                if (e.getItem().isSimilar(rocket)) {
-                    launchElytra(p, 2.0F);
-                    e.getItem().setAmount(e.getItem().getAmount() - 1);
-                    p.playSound(p.getLocation(), Sound.ENTITY_FIREWORK_ROCKET_LAUNCH, 10, 1);
-                    e.setCancelled(true);
+    public void onBoost(PlayerInteractEvent event) {
+        Player player = event.getPlayer();
+        Action action = event.getAction();
+
+        if(!player.isGliding()) return;
+
+        if (action != Action.LEFT_CLICK_AIR) {
+            return;
+        }
+
+        ItemStack handItem = player.getInventory().getItemInMainHand();
+        ItemStack rocket = new ItemStack(Material.FIREWORK_ROCKET);
+        if(!handItem.isSimilar(rocket)) return;
+
+        launchElytra(player, 1.75F);
+        if(player.getGameMode() != GameMode.CREATIVE) handItem.setAmount(handItem.getAmount() - 1);
+        player.playSound(player.getLocation(), Sound.ENTITY_FIREWORK_ROCKET_LAUNCH, 10, 1);
+
+        int totalTicks = 10;
+        long interval = 1L;
+
+        new BukkitRunnable() {
+            int ticksRemaining = totalTicks;
+
+            @Override
+            public void run() {
+                if (ticksRemaining > 0) {
+                    player.getWorld().spawnParticle(Particle.FIREWORKS_SPARK, player.getLocation(), 1, 1 , 1, 1);
+                    ticksRemaining--;
+                } else {
+                    cancel();
                 }
             }
-        }
+        }.runTaskTimer(GenesisMC.getPlugin(), 0L, interval);
+
+        event.setCancelled(true);
     }
 
     @EventHandler
