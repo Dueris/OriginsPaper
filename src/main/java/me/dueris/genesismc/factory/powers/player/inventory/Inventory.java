@@ -32,9 +32,6 @@ import static me.dueris.genesismc.KeybindHandler.isKeyBeingPressed;
 
 public class Inventory extends CraftPower implements CommandExecutor, Listener {
 
-    public Inventory() {
-    }
-
     @Override
     public void setActive(String tag, Boolean bool) {
         if (powers_active.containsKey(tag)) {
@@ -48,7 +45,7 @@ public class Inventory extends CraftPower implements CommandExecutor, Listener {
     public void MoveBackChange(OriginChangeEvent e) {
         Player p = e.getPlayer();
         for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
-            new BukkitRunnable() {
+            GenesisMC.getOriginScheduler().runTaskTimer(new BukkitRunnable() {
                 @Override
                 public void run() {
                     if (!shulker_inventory.contains(p)) {
@@ -76,7 +73,7 @@ public class Inventory extends CraftPower implements CommandExecutor, Listener {
                         this.cancel();
                     }
                 }
-            }.runTaskTimer(GenesisMC.getPlugin(), 1L, 1L);
+            }, 1L, 1L);
         }
 
     }
@@ -168,8 +165,14 @@ public class Inventory extends CraftPower implements CommandExecutor, Listener {
         return true;
     }
 
+    Player p;
+
+    public Inventory(){
+        this.p = p;
+    }
+
     @Override
-    public void run() {
+    public void run(Player p) {
 
     }
 

@@ -75,7 +75,7 @@ public class BigLeap extends CraftPower implements Listener {
                             cooldownBefore.put(p.getUniqueId(), 0);
                             playSound.put(p.getUniqueId(), Boolean.TRUE);
 
-                            new BukkitRunnable() {
+                            GenesisMC.getOriginScheduler().runTaskTimer(new BukkitRunnable() {
                                 @Override
                                 public void run() {
                                     if (p.isSneaking()) {
@@ -105,7 +105,7 @@ public class BigLeap extends CraftPower implements Listener {
                                         p.setVelocity(p.getLocation().getDirection().multiply(1.5 + cooldownBefore.get(p.getUniqueId()) / 10));
                                         cooldownBefore.remove(p.getUniqueId());
                                         playSound.remove(p.getUniqueId());
-                                        new BukkitRunnable() {
+                                        GenesisMC.getOriginScheduler().runTaskTimer(new BukkitRunnable() {
                                             @Override
                                             public void run() {
                                                 if (cooldownAfter.containsKey(p.getUniqueId())) {
@@ -133,9 +133,9 @@ public class BigLeap extends CraftPower implements Listener {
                                                     this.cancel();
                                                 }
                                             }
-                                        }.runTaskTimer(GenesisMC.getPlugin(), 0L, 10L);
+                                        }, 0L, 10L);
 
-                                        new BukkitRunnable() {
+                                        GenesisMC.getOriginScheduler().runTaskTimer(new BukkitRunnable() {
                                             @Override
                                             public void run() {
                                                 if (cooldownAfter.containsKey(p.getUniqueId())) {
@@ -144,11 +144,11 @@ public class BigLeap extends CraftPower implements Listener {
                                                     this.cancel();
                                                 }
                                             }
-                                        }.runTaskTimer(GenesisMC.getPlugin(), 0L, 50L);
+                                        }, 0L, 50L);
                                         this.cancel();
                                     }
                                 }
-                            }.runTaskTimer(GenesisMC.getPlugin(), 0L, 2L);
+                            }, 0L, 2L);
                         }
                     } else {
                         if (origin.getPowerFileFromType(getPowerFile()) == null) {
@@ -181,8 +181,14 @@ public class BigLeap extends CraftPower implements Listener {
         }
     }
 
+    Player p;
+
+    public BigLeap(){
+        this.p = p;
+    }
+
     @Override
-    public void run() {
+    public void run(Player p) {
 
     }
 

@@ -15,11 +15,16 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.util.ArrayList;
 
 public class ActionWhenDamageTaken extends CraftPower implements Listener {
-    @Override
-    public void run() {
+    Player p;
 
+    public ActionWhenDamageTaken(){
+        this.p = p;
     }
 
+    @Override
+    public void run(Player p) {
+
+    }
     @EventHandler
     public void d(EntityDamageEvent e) {
         Entity actor = e.getEntity();
@@ -31,13 +36,13 @@ public class ActionWhenDamageTaken extends CraftPower implements Listener {
             if (!getPowerArray().contains(actor)) return;
             setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
             ActionTypes.EntityActionType(actor, power.getEntityAction());
-            new BukkitRunnable() {
+            GenesisMC.getOriginScheduler().runTaskLater(new BukkitRunnable() {
                 @Override
                 public void run() {
                     if (!getPowerArray().contains(actor)) return;
                     setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                 }
-            }.runTaskLater(GenesisMC.getPlugin(), 2L);
+            }, 2L);
         }
     }
 

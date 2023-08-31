@@ -38,7 +38,7 @@ public class ValueModifyingSuperClass extends BukkitRunnable implements Listener
         ModifyAirSpeedPower modifyAirSpeedPower = new ModifyAirSpeedPower();
         ModifyBreakSpeedPower modifyBreakSpeedPower = new ModifyBreakSpeedPower();
         ModifySwimSpeedPower modifySwimSpeedPower = new ModifySwimSpeedPower();
-        new BukkitRunnable() {
+        GenesisMC.getOriginScheduler().runTaskLater(new BukkitRunnable() {
             @Override
             public void run() {
                 if (modify_air_speed.contains(p)) {
@@ -53,7 +53,7 @@ public class ValueModifyingSuperClass extends BukkitRunnable implements Listener
                     saveValueInPDC(p, "modify_swim_speed", -1f);
                 }
             }
-        }.runTaskLater(GenesisMC.getPlugin(), 4);
+        }, 4);
     }
 
     @EventHandler

@@ -201,8 +201,14 @@ public class EnderPearlThrow extends CraftPower implements Listener {
 
     }
 
+    Player p;
+
+    public EnderPearlThrow(){
+        this.p = p;
+    }
+
     @Override
-    public void run() {
+    public void run(Player p) {
 
     }
 

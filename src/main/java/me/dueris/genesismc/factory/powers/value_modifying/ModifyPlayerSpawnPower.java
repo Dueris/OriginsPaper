@@ -27,9 +27,19 @@ public class ModifyPlayerSpawnPower extends CraftPower implements Listener {
         }
     }
 
+    Player p;
+
+    public ModifyPlayerSpawnPower(){
+        this.p = p;
+    }
+
+    @Override
+    public void run(Player p) {
+
+    }
 
     @EventHandler
-    public void run(PlayerSpawnLocationEvent e) {
+    public void runD(PlayerSpawnLocationEvent e) {
         Player p = e.getPlayer();
         if (modify_world_spawn.contains(p)) {
             for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
@@ -284,11 +294,6 @@ public class ModifyPlayerSpawnPower extends CraftPower implements Listener {
                 block.setType(OBSIDIAN);
             }
         }
-    }
-
-    @Override
-    public void run() {
-
     }
 
     @Override

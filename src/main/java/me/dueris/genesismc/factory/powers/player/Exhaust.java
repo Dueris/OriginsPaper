@@ -16,11 +16,6 @@ public class Exhaust extends CraftPower {
     private Long interval;
     private int ticksE;
 
-    public Exhaust() {
-        this.interval = 1L;
-        this.ticksE = 0;
-    }
-
     @Override
     public void setActive(String tag, Boolean bool) {
         if (powers_active.containsKey(tag)) {
@@ -30,41 +25,47 @@ public class Exhaust extends CraftPower {
         }
     }
 
+    Player p;
+
+    public Exhaust(){
+        this.p = p;
+        this.interval = 1L;
+        this.ticksE = 0;
+    }
+
     @Override
-    public void run() {
-        for (Player p : Bukkit.getOnlinePlayers()) {
-            if (more_exhaustion.contains(p)) {
-                for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
-                    PowerContainer power = origin.getPowerFileFromType("origins:exhaust");
-                    if (power == null) continue;
-                    if (power.getInterval() == null) {
-                        Bukkit.getLogger().warning(LangConfig.getLocalizedString(p, "powers.errors.exhaust"));
-                        return;
-                    }
-                    interval = power.getInterval();
-                    if (ticksE < interval) {
-                        ticksE++;
-                        return;
-                    } else {
-                        ConditionExecutor conditionExecutor = new ConditionExecutor();
-                        if (conditionExecutor.check("condition", "conditions", p, origin, "origins:exhaust", p, null, null, null, p.getItemInHand(), null)) {
-                            if (origin.getPowerFileFromType(getPowerFile()) == null) {
-                                getPowerArray().remove(p);
-                                return;
-                            }
-                            if (!getPowerArray().contains(p)) return;
-                            setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
-                            p.setExhaustion(p.getExhaustion() - Float.parseFloat(origin.getPowerFileFromType("origins:exhaust").get("exhaustion", "1")));
-                        } else {
-                            if (origin.getPowerFileFromType(getPowerFile()) == null) {
-                                getPowerArray().remove(p);
-                                return;
-                            }
-                            if (!getPowerArray().contains(p)) return;
-                            setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
+    public void run(Player p) {
+        if (more_exhaustion.contains(p)) {
+            for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
+                PowerContainer power = origin.getPowerFileFromType("origins:exhaust");
+                if (power == null) continue;
+                if (power.getInterval() == null) {
+                    Bukkit.getLogger().warning(LangConfig.getLocalizedString(p, "powers.errors.exhaust"));
+                    return;
+                }
+                interval = power.getInterval();
+                if (ticksE < interval) {
+                    ticksE++;
+                    return;
+                } else {
+                    ConditionExecutor conditionExecutor = new ConditionExecutor();
+                    if (conditionExecutor.check("condition", "conditions", p, origin, "origins:exhaust", p, null, null, null, p.getItemInHand(), null)) {
+                        if (origin.getPowerFileFromType(getPowerFile()) == null) {
+                            getPowerArray().remove(p);
+                            return;
                         }
-                        ticksE = 0;
+                        if (!getPowerArray().contains(p)) return;
+                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
+                        p.setExhaustion(p.getExhaustion() - Float.parseFloat(origin.getPowerFileFromType("origins:exhaust").get("exhaustion", "1")));
+                    } else {
+                        if (origin.getPowerFileFromType(getPowerFile()) == null) {
+                            getPowerArray().remove(p);
+                            return;
+                        }
+                        if (!getPowerArray().contains(p)) return;
+                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                     }
+                    ticksE = 0;
                 }
             }
         }

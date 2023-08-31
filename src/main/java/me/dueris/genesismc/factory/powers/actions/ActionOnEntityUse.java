@@ -15,8 +15,14 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.util.ArrayList;
 
 public class ActionOnEntityUse extends CraftPower implements Listener {
+    Player p;
+
+    public ActionOnEntityUse(){
+        this.p = p;
+    }
+
     @Override
-    public void run() {
+    public void run(Player p) {
 
     }
 
@@ -38,13 +44,13 @@ public class ActionOnEntityUse extends CraftPower implements Listener {
             ActionTypes.ItemActionType(actor.getActiveItem(), power.getAction("held_item_action"));
             ActionTypes.ItemActionType(actor.getActiveItem(), power.getAction("result_item_action"));
             //todo:add conditions for it see https://origins.readthedocs.io/en/latest/types/power_types/action_on_entity_use/
-            new BukkitRunnable() {
+            GenesisMC.getOriginScheduler().runTaskLater(new BukkitRunnable() {
                 @Override
                 public void run() {
                     if (!getPowerArray().contains(e.getPlayer())) return;
                     setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                 }
-            }.runTaskLater(GenesisMC.getPlugin(), 2L);
+            }, 2L);
         }
 
 //        if (e.getHand() == EquipmentSlot.HAND) System.out.println("main");

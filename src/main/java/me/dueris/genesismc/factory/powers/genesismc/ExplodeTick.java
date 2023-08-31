@@ -24,12 +24,7 @@ import java.util.UUID;
 
 public class ExplodeTick extends CraftPower implements Listener {
 
-    private final HashMap<UUID, Long> cooldown;
-
-
-    public ExplodeTick() {
-        this.cooldown = new HashMap<>();
-    }
+    private HashMap<UUID, Long> cooldown;
 
     @Override
     public void setActive(String tag, Boolean bool) {
@@ -47,7 +42,7 @@ public class ExplodeTick extends CraftPower implements Listener {
             if (explode_tick.contains(e.getPlayer()) && !p.isFlying() && !p.isGliding()) {
 
                 cooldown.remove(p.getUniqueId());
-                new BukkitRunnable() {
+                GenesisMC.getOriginScheduler().runTaskTimer(new BukkitRunnable() {
                     final Material block = e.getPlayer().getLocation().getBlock().getType();
 
                     @Override
@@ -163,14 +158,21 @@ public class ExplodeTick extends CraftPower implements Listener {
                             setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                         }
                     }
-                }.runTaskTimer(GenesisMC.getPlugin(), 0L, 5L);
+                }, 0L, 5L);
             }
         }
     }
 
 
+    Player p;
+
+    public ExplodeTick(){
+        this.cooldown = new HashMap<>();
+        this.p = p;
+    }
+
     @Override
-    public void run() {
+    public void run(Player p) {
 
     }
 

@@ -190,8 +190,14 @@ public class ModifyFoodPower extends CraftPower implements Listener {
         return null;
     }
 
+    Player p;
+
+    public ModifyFoodPower(){
+        this.p = p;
+    }
+
     @Override
-    public void run() {
+    public void run(Player p) {
 
     }
 

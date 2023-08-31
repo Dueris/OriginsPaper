@@ -1,5 +1,6 @@
 package me.dueris.genesismc.choosing;
 
+import me.dueris.genesismc.FoliaOriginScheduler;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.entity.OriginPlayer;
 import me.dueris.genesismc.events.OriginChangeEvent;
@@ -215,7 +216,7 @@ public class ChoosingCUSTOM implements Listener {
                 setAttributesToDefault(p);
                 OriginPlayer.setOrigin(p, choosing.get(p), origin);
                 choosing.remove(p);
-                Bukkit.getScheduler().runTaskLater(GenesisMC.getPlugin(), () -> {
+                FoliaOriginScheduler.getGlobalScheduler().runTaskLater(GenesisMC.getPlugin(), () -> {
                     p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
                     if (phasing.contains(p)) {
                         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.BOOLEAN, true);
@@ -227,7 +228,7 @@ public class ChoosingCUSTOM implements Listener {
                     removeItemEnder(p);
                     removeItemElytrian(p);
                 }, 1);
-                Bukkit.getScheduler().runTaskLater(GenesisMC.getPlugin(), () -> {
+                FoliaOriginScheduler.getGlobalScheduler().runTaskLater(GenesisMC.getPlugin(), () -> {
                     if (launch_into_air.contains(p)) {
                         ItemStack launchitem = new ItemStack(Material.FEATHER);
                         ItemMeta launchmeta = launchitem.getItemMeta();

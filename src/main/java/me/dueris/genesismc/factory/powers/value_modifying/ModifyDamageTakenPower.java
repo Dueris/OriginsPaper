@@ -30,6 +30,17 @@ public class ModifyDamageTakenPower extends CraftPower implements Listener {
         }
     }
 
+    Player p;
+
+    public ModifyDamageTakenPower(){
+        this.p = p;
+    }
+
+    @Override
+    public void run(Player p) {
+
+    }
+
     @EventHandler
     public void dmgEvent(EntityDamageEvent e){
         if (e.getEntity() instanceof Player p) {
@@ -94,11 +105,6 @@ public class ModifyDamageTakenPower extends CraftPower implements Listener {
 
     @EventHandler
     public void damageEVENT(EntityDamageByEntityEvent e) {
-
-    }
-
-    @Override
-    public void run() {
 
     }
 

@@ -15,8 +15,14 @@ import java.util.ArrayList;
 public class ActionOnLand extends CraftPower implements Listener {
     private final double MIN_FALL_DISTANCE = 0.5;
 
+    Player p;
+
+    public ActionOnLand(){
+        this.p = p;
+    }
+
     @Override
-    public void run() {
+    public void run(Player p) {
 
     }
 
@@ -27,13 +33,13 @@ public class ActionOnLand extends CraftPower implements Listener {
             if (e.getFrom().getY() > e.getTo().getY() && e.getFrom().getY() - e.getTo().getY() >= MIN_FALL_DISTANCE) {
                 setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                 ActionTypes.EntityActionType(e.getPlayer(), origin.getPowerFileFromType(getPowerFile()).getEntityAction());
-                new BukkitRunnable() {
+                GenesisMC.getOriginScheduler().runTaskLater(new BukkitRunnable() {
                     @Override
                     public void run() {
                         if (!getPowerArray().contains(e.getPlayer())) return;
                         setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                     }
-                }.runTaskLater(GenesisMC.getPlugin(), 2L);
+                }, 2L);
             }
         }
     }

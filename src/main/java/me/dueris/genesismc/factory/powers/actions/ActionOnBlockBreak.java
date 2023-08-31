@@ -14,14 +14,20 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.util.ArrayList;
 
 public class ActionOnBlockBreak extends CraftPower implements Listener {
+
+    Player p;
+
+    public ActionOnBlockBreak(){
+        this.p = p;
+    }
+
     @Override
-    public void run() {
+    public void run(Player p) {
 
     }
 
     @EventHandler
     public void brek(BlockBreakEvent e) {
-        //TODO: add blockconditon
         Player actor = e.getPlayer();
 
         if (!getPowerArray().contains(actor)) return;
@@ -34,13 +40,13 @@ public class ActionOnBlockBreak extends CraftPower implements Listener {
             setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
             ActionTypes.BlockActionType(e.getBlock().getLocation(), power.getBlockAction());
             ActionTypes.EntityActionType(e.getPlayer(), power.getEntityAction());
-            new BukkitRunnable() {
+            GenesisMC.getOriginScheduler().runTaskLater(new BukkitRunnable() {
                 @Override
                 public void run() {
                     if (!getPowerArray().contains(e.getPlayer())) return;
                     setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                 }
-            }.runTaskLater(GenesisMC.getPlugin(), 2L);
+            }, 2L);
         }
     }
 

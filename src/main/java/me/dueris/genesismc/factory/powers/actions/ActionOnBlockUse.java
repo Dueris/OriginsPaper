@@ -15,8 +15,14 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.util.ArrayList;
 
 public class ActionOnBlockUse extends CraftPower implements Listener {
+    Player p;
+
+    public ActionOnBlockUse(){
+        this.p = p;
+    }
+
     @Override
-    public void run() {
+    public void run(Player p) {
 
     }
 
@@ -43,13 +49,13 @@ public class ActionOnBlockUse extends CraftPower implements Listener {
                         ActionTypes.ItemActionType(e.getPlayer().getActiveItem(), power.getAction("held_item_action"));
                         ActionTypes.ItemActionType(e.getPlayer().getActiveItem(), power.getAction("result_item_action"));
                         ActionTypes.BlockEntityType(e.getPlayer(), e.getClickedBlock().getLocation(), power.getAction("block_entity_action"));
-                        new BukkitRunnable() {
+                        GenesisMC.getOriginScheduler().runTaskLater(new BukkitRunnable() {
                             @Override
                             public void run() {
                                 if (!getPowerArray().contains(e.getPlayer())) return;
                                 setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                             }
-                        }.runTaskLater(GenesisMC.getPlugin(), 2L);
+                        }, 2L);
                     }
                 }
             }

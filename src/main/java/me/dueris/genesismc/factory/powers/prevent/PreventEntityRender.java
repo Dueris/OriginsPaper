@@ -24,32 +24,27 @@ public class PreventEntityRender extends CraftPower {
         }
     }
 
+    Player p;
+
+    public PreventEntityRender(){
+        this.p = p;
+    }
 
     @Override
-    public void run() {
-        for (Player p : Bukkit.getOnlinePlayers()) {
-            if (prevent_entity_render.contains(p)) {
-                for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
-                    for (Entity entity : p.getWorld().getEntities()) {
-                        ConditionExecutor conditionExecutor = new ConditionExecutor();
-                        if (conditionExecutor.check("entity_condition", "entity_condition", p, origin, "origins:prevent_entity_render", p, entity, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
-                            if (conditionExecutor.check("bientity_condition", "bientity_condition", p, origin, "origins:prevent_entity_render", p, entity, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
-                                p.hideEntity(GenesisMC.getPlugin(), entity);
-                                if (origin.getPowerFileFromType(getPowerFile()) == null) {
-                                    getPowerArray().remove(p);
-                                    return;
-                                }
-                                if (!getPowerArray().contains(p)) return;
-                                setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
-                            } else {
-                                if (origin.getPowerFileFromType(getPowerFile()) == null) {
-                                    getPowerArray().remove(p);
-                                    return;
-                                }
-                                if (!getPowerArray().contains(p)) return;
-                                setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
-                                p.showEntity(GenesisMC.getPlugin(), entity);
+    public void run(Player p) {
+        if (prevent_entity_render.contains(p)) {
+            for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
+                for (Entity entity : p.getWorld().getEntities()) {
+                    ConditionExecutor conditionExecutor = new ConditionExecutor();
+                    if (conditionExecutor.check("entity_condition", "entity_condition", p, origin, "origins:prevent_entity_render", p, entity, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
+                        if (conditionExecutor.check("bientity_condition", "bientity_condition", p, origin, "origins:prevent_entity_render", p, entity, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
+                            p.hideEntity(GenesisMC.getPlugin(), entity);
+                            if (origin.getPowerFileFromType(getPowerFile()) == null) {
+                                getPowerArray().remove(p);
+                                return;
                             }
+                            if (!getPowerArray().contains(p)) return;
+                            setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                         } else {
                             if (origin.getPowerFileFromType(getPowerFile()) == null) {
                                 getPowerArray().remove(p);
@@ -59,6 +54,14 @@ public class PreventEntityRender extends CraftPower {
                             setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                             p.showEntity(GenesisMC.getPlugin(), entity);
                         }
+                    } else {
+                        if (origin.getPowerFileFromType(getPowerFile()) == null) {
+                            getPowerArray().remove(p);
+                            return;
+                        }
+                        if (!getPowerArray().contains(p)) return;
+                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
+                        p.showEntity(GenesisMC.getPlugin(), entity);
                     }
                 }
             }

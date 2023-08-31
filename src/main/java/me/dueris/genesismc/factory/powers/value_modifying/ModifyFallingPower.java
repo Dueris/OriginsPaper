@@ -32,6 +32,16 @@ public class ModifyFallingPower extends CraftPower implements Listener {
         }
     }
 
+    Player p;
+
+    public ModifyFallingPower(){
+        this.p = p;
+    }
+
+    @Override
+    public void run(Player p) {
+
+    }
 
     @EventHandler
     public void runE(PlayerMoveEvent e) {
@@ -111,12 +121,6 @@ public class ModifyFallingPower extends CraftPower implements Listener {
                 }
             }
         }
-
-    }
-
-    @Override
-    public void run() {
-
     }
 
     @Override

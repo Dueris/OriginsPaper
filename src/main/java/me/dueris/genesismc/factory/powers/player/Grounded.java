@@ -24,41 +24,43 @@ public class Grounded extends CraftPower {
         }
     }
 
+    Player p;
+
+    public Grounded(){
+
+    }
 
     @Override
-    public void run() {
+    public void run(Player player) {
         ArrayList<Location> platform_pos = new ArrayList<>();
-
-        for (Player player : Bukkit.getOnlinePlayers()) {
-            if (grounded.contains(player)) {
-                for (OriginContainer origin : OriginPlayer.getOrigin(player).values()) {
-                    Location location = player.getLocation();
-                    Location current_block_platform_pos = location.add(0, -1, 0);
-                    ConditionExecutor conditionExecutor = new ConditionExecutor();
-                    if (conditionExecutor.check("condition", "conditions", player, origin, "origins:grounded", player, null, null, null, player.getItemInHand(), null)) {
-                        if (!getPowerArray().contains(player)) return;
-                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
-                        if (current_block_platform_pos.getBlock().getType().equals(Material.AIR)) {
-                            platform_pos.add(current_block_platform_pos);
-                            CraftPlayer craftPlayer = (CraftPlayer) player;
-                            craftPlayer.sendBlockChange(current_block_platform_pos, Material.BARRIER.createBlockData());
-                            if (player.isSneaking()) {
-                                craftPlayer.sendBlockChange(current_block_platform_pos, current_block_platform_pos.getBlock().getBlockData());
-                                if (!current_block_platform_pos.add(0, -1, 0).getBlock().isCollidable()) {
-                                    craftPlayer.teleportAsync(current_block_platform_pos.add(0, -1, 0));
-                                }
-                            }
-                        } else {
-                            for (Location thing : platform_pos) {
-                                Block block = thing.getBlock();
-                                CraftPlayer craftPlayer = (CraftPlayer) player;
-                                craftPlayer.sendBlockChange(thing, block.getBlockData());
+        if (grounded.contains(player)) {
+            for (OriginContainer origin : OriginPlayer.getOrigin(player).values()) {
+                Location location = player.getLocation();
+                Location current_block_platform_pos = location.add(0, -1, 0);
+                ConditionExecutor conditionExecutor = new ConditionExecutor();
+                if (conditionExecutor.check("condition", "conditions", player, origin, "origins:grounded", player, null, null, null, player.getItemInHand(), null)) {
+                    if (!getPowerArray().contains(player)) return;
+                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
+                    if (current_block_platform_pos.getBlock().getType().equals(Material.AIR)) {
+                        platform_pos.add(current_block_platform_pos);
+                        CraftPlayer craftPlayer = (CraftPlayer) player;
+                        craftPlayer.sendBlockChange(current_block_platform_pos, Material.BARRIER.createBlockData());
+                        if (player.isSneaking()) {
+                            craftPlayer.sendBlockChange(current_block_platform_pos, current_block_platform_pos.getBlock().getBlockData());
+                            if (!current_block_platform_pos.add(0, -1, 0).getBlock().isCollidable()) {
+                                craftPlayer.teleportAsync(current_block_platform_pos.add(0, -1, 0));
                             }
                         }
                     } else {
-                        if (!getPowerArray().contains(player)) return;
-                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
+                        for (Location thing : platform_pos) {
+                            Block block = thing.getBlock();
+                            CraftPlayer craftPlayer = (CraftPlayer) player;
+                            craftPlayer.sendBlockChange(thing, block.getBlockData());
+                        }
                     }
+                } else {
+                    if (!getPowerArray().contains(player)) return;
+                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                 }
             }
         }

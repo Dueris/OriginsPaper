@@ -31,21 +31,27 @@ public class ActionOnBeingUsed extends CraftPower implements Listener {
             if (!getPowerArray().contains(e.getPlayer())) return;
             setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
             ActionTypes.biEntityActionType(actor, target, power.getBiEntityAction());
-            new BukkitRunnable() {
+            GenesisMC.getOriginScheduler().runTaskLater(new BukkitRunnable() {
                 @Override
                 public void run() {
                     if (!getPowerArray().contains(e.getPlayer())) return;
                     setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                 }
-            }.runTaskLater(GenesisMC.getPlugin(), 2L);
+            }, 2L);
         }
 
 //        if (e.getHand() == EquipmentSlot.HAND) System.out.println("main");
 //        if (e.getHand() == EquipmentSlot.OFF_HAND) System.out.println("off");
     }
 
+    Player p;
+
+    public ActionOnBeingUsed(){
+        this.p = p;
+    }
+
     @Override
-    public void run() {
+    public void run(Player p) {
 
     }
 

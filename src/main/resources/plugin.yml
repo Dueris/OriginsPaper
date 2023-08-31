@@ -20,11 +20,6 @@ commands:
     usage: /<command>
     aliases:
       - s
-  toggle:
-    description: Toggles an ability for your current origin.
-    usage: /<command>
-    aliases:
-      - t
   power:
     permission: genesismc.origins.cmd.power
 permissions:

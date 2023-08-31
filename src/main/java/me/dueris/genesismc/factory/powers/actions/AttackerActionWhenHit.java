@@ -15,8 +15,14 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.util.ArrayList;
 
 public class AttackerActionWhenHit extends CraftPower implements Listener {
+    Player p;
+
+    public AttackerActionWhenHit(){
+        this.p = p;
+    }
+
     @Override
-    public void run() {
+    public void run(Player p) {
 
     }
 
@@ -34,13 +40,13 @@ public class AttackerActionWhenHit extends CraftPower implements Listener {
             if (!getPowerArray().contains(actor)) return;
             setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
             ActionTypes.biEntityActionType(actor, actor, power.getBiEntityAction());
-            new BukkitRunnable() {
+            GenesisMC.getOriginScheduler().runTaskLater(new BukkitRunnable() {
                 @Override
                 public void run() {
                     if (!getPowerArray().contains(actor)) return;
                     setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                 }
-            }.runTaskLater(GenesisMC.getPlugin(), 2L);
+            }, 2L);
         }
     }
 

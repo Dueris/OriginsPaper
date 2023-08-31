@@ -82,9 +82,14 @@ public class EntityGroupManager extends CraftPower {
             powers_active.put(tag, bool);
         }
     }
+    Player p;
+
+    public EntityGroupManager(){
+        this.p = p;
+    }
 
     @Override
-    public void run() {
+    public void run(Player p) {
         for (World world : Bukkit.getWorlds()) {
             for (Entity entity : world.getEntities()) {
                 //Begin entity cases for removal

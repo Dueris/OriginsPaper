@@ -1,5 +1,6 @@
 package me.dueris.genesismc.utils;
 
+import me.dueris.genesismc.FoliaOriginScheduler;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.files.GenesisDataFiles;
 import me.dueris.genesismc.utils.translation.LangConfig;
@@ -38,7 +39,7 @@ public class Debug {
                 Bukkit.getServer().getMaxWorldSize() +
                 Bukkit.getMinecraftVersion()
         );
-        new BukkitRunnable() {
+        FoliaOriginScheduler.getGlobalScheduler().runTaskLater(new BukkitRunnable() {
             @Override
             public void run() {
                 try {
@@ -47,11 +48,8 @@ public class Debug {
                     Bukkit.getServer().getLogger().warning("Couldn't load lang file. Disabling GenesisMC...");
                     Bukkit.getServer().getPluginManager().disablePlugin(GenesisMC.getPlugin());
                 }
-
-                this.cancel();
             }
-        }.runTaskTimer(GenesisMC.getPlugin(), 20L, 1L);
-
+        }, 20);
     }
 
     public static void executeGenesisReload() {
@@ -83,7 +81,6 @@ public class Debug {
         boolean isCraftBukkit = false;
         boolean isSpigot = false;
         boolean isPaper = false;
-        boolean isFolia = false;
         try {
             Class.forName("org.bukkit.craftbukkit.CraftServer");
             isCraftBukkit = true;
@@ -98,19 +95,12 @@ public class Debug {
         }
 
         try {
-            Class.forName("io.papermc.paper.threadedregions.RegionizedServer");
-            isFolia = true;
-        } catch (ClassNotFoundException e) {
-            //not folia
-        }
-
-        try {
             Class.forName("com.destroystokyo.paper.PaperConfig");
             isPaper = true;
         } catch (ClassNotFoundException e) {
             // PaperConfig class not found, not a Paper server
         }
-        if (isCraftBukkit || isSpigot || isFolia) {
+        if (isCraftBukkit || isSpigot) {
             Bukkit.getServer().getLogger().warning(LangConfig.getLocalizedString(Bukkit.getConsoleSender(), "startup.debug.server"));
         }
     }

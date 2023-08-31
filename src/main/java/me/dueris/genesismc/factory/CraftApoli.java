@@ -160,7 +160,6 @@ public class CraftApoli {
 
                                         if (powerParser.containsKey("type") && "origins:multiple".equals(powerParser.get("type"))) {
                                             PowerContainer powerContainer = new PowerContainer(powerFolder + ":" + powerFileName, fileToFileContainer(powerParser), originFolder.get(0) + ":" + originFileName.get(0));
-                                            Bukkit.getConsoleSender().sendMessage(powerContainer.getType());
                                             processNestedPowers(powerContainer, powerContainers, powerFolder, powerFileName);
                                         } else {
                                             powerContainers.add(new PowerContainer(powerFolder + ":" + powerFileName, fileToFileContainer(powerParser), originFolder.get(0) + ":" + originFileName.get(0)));
@@ -196,7 +195,6 @@ public class CraftApoli {
                                             JSONObject powerParser = (JSONObject) new JSONParser().parse(files.get(Path.of("data" + File.separator + powerFolder + File.separator + "powers" + File.separator + powerFileName + ".json")));
                                             if (powerParser.containsKey("type") && "origins:multiple".equals(powerParser.get("type"))) {
                                                 PowerContainer powerContainer = new PowerContainer(powerFolder + ":" + powerFileName, fileToFileContainer(powerParser), originFolder.get(0) + ":" + originFileName.get(0));
-                                                Bukkit.getConsoleSender().sendMessage(powerContainer.getType());
                                                 processNestedPowers(powerContainer, powerContainers, powerFolder, powerFileName);
                                             } else {
                                                 powerContainers.add(new PowerContainer(powerFolder + ":" + powerFileName, fileToFileContainer(powerParser), originFolder.get(0) + ":" + originFileName.get(0)));
@@ -302,7 +300,6 @@ public class CraftApoli {
                                     JSONObject powerParser = (JSONObject) new JSONParser().parse(new FileReader(datapack.getAbsolutePath() + File.separator + "data" + File.separator + powerFolder + File.separator + "powers" + File.separator + powerFileName + ".json"));
                                     if (powerParser.containsKey("type") && "origins:multiple".equals(powerParser.get("type"))) {
                                         PowerContainer powerContainer = new PowerContainer(powerFolder + ":" + powerFileName, fileToFileContainer(powerParser), originFolder.get(0) + ":" + originFileName.get(0));
-                                        Bukkit.getConsoleSender().sendMessage(powerContainer.getType());
                                         processNestedPowers(powerContainer, powerContainers, powerFolder, powerFileName);
                                     } else {
                                         powerContainers.add(new PowerContainer(powerFolder + ":" + powerFileName, fileToFileContainer(powerParser), originFolder.get(0) + ":" + originFileName.get(0)));

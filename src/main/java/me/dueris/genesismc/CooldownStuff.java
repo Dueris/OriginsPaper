@@ -1,5 +1,6 @@
 package me.dueris.genesismc;
 
+import io.papermc.paper.threadedregions.scheduler.GlobalRegionScheduler;
 import me.dueris.genesismc.events.OriginChangeEvent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
@@ -107,7 +108,7 @@ public class CooldownStuff {
         ServerPlayer serverPlayer = craftPlayer.getHandle();
         final ServerGamePacketListenerImpl connection = serverPlayer.connection;
 
-        new BukkitRunnable() {
+        GenesisMC.getOriginScheduler().runTaskTimer(new BukkitRunnable() {
             int ticksElapsed = -1;
 
             @Override
@@ -127,7 +128,7 @@ public class CooldownStuff {
                     cancel();
                 }
             }
-        }.runTaskTimer(GenesisMC.getPlugin(), 0, 1);
+        }, 0, 1);
     }
 
 }

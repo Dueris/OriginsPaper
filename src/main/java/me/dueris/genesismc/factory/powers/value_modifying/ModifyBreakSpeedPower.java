@@ -49,7 +49,7 @@ public class ModifyBreakSpeedPower extends CraftPower implements Listener {
     }
 
     @EventHandler
-    public void run(PlayerArmSwingEvent e) {
+    public void runD(PlayerArmSwingEvent e) {
         Player p = e.getPlayer();
         if (modify_break_speed.contains(p)) {
             for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
@@ -98,8 +98,14 @@ public class ModifyBreakSpeedPower extends CraftPower implements Listener {
         }
     }
 
+    Player p;
+
+    public ModifyBreakSpeedPower(){
+        this.p = p;
+    }
+
     @Override
-    public void run() {
+    public void run(Player p) {
 
     }
 

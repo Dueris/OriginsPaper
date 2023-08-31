@@ -25,33 +25,29 @@ public class SelfGlow extends CraftPower {
         }
     }
 
+    Player p;
+
+    public SelfGlow(){
+        this.p = p;
+    }
 
     @Override
-    public void run() {
-        for (Player p : Bukkit.getOnlinePlayers()) {
-            for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
-                ConditionExecutor conditionExecutor = new ConditionExecutor();
-                for (Entity entity : Bukkit.getServer().getWorld(p.getWorld().getKey()).getEntities()) {
-                    if (entity instanceof Player player) {
-                        if (conditionExecutor.check("entity_condition", "entity_conditions", p, origin, getPowerFile(), p, entity, null, null, p.getItemInHand(), null)) {
-                            if (conditionExecutor.check("bientity_condition", "bientity_conditions", p, origin, getPowerFile(), p, entity, null, null, p.getItemInHand(), null)) {
-                                if (origin.getPowerFileFromType(getPowerFile()) == null) {
-                                    getPowerArray().remove(p);
-                                    return;
-                                }
-                                if (!getPowerArray().contains(p)) return;
-                                setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
-                                CraftPlayer craftPlayers = (CraftPlayer) player;
-                                craftPlayers.getHandle().connection.send(new ClientboundUpdateMobEffectPacket(p.getEntityId(),
-                                        new MobEffectInstance(MobEffect.byId(24), 5, 1, false, false, false)));
-                            } else {
-                                if (origin.getPowerFileFromType(getPowerFile()) == null) {
-                                    getPowerArray().remove(p);
-                                    return;
-                                }
-                                if (!getPowerArray().contains(p)) return;
-                                setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
+    public void run(Player p) {
+        for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
+            ConditionExecutor conditionExecutor = new ConditionExecutor();
+            for (Entity entity : Bukkit.getServer().getWorld(p.getWorld().getKey()).getEntities()) {
+                if (entity instanceof Player player) {
+                    if (conditionExecutor.check("entity_condition", "entity_conditions", p, origin, getPowerFile(), p, entity, null, null, p.getItemInHand(), null)) {
+                        if (conditionExecutor.check("bientity_condition", "bientity_conditions", p, origin, getPowerFile(), p, entity, null, null, p.getItemInHand(), null)) {
+                            if (origin.getPowerFileFromType(getPowerFile()) == null) {
+                                getPowerArray().remove(p);
+                                return;
                             }
+                            if (!getPowerArray().contains(p)) return;
+                            setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
+                            CraftPlayer craftPlayers = (CraftPlayer) player;
+                            craftPlayers.getHandle().connection.send(new ClientboundUpdateMobEffectPacket(p.getEntityId(),
+                                    new MobEffectInstance(MobEffect.byId(24), 5, 1, false, false, false)));
                         } else {
                             if (origin.getPowerFileFromType(getPowerFile()) == null) {
                                 getPowerArray().remove(p);
@@ -60,12 +56,19 @@ public class SelfGlow extends CraftPower {
                             if (!getPowerArray().contains(p)) return;
                             setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                         }
+                    } else {
+                        if (origin.getPowerFileFromType(getPowerFile()) == null) {
+                            getPowerArray().remove(p);
+                            return;
+                        }
+                        if (!getPowerArray().contains(p)) return;
+                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                     }
                 }
-                CraftPlayer craftPlayer = (CraftPlayer) p;
-                craftPlayer.getHandle().connection.send(new ClientboundUpdateMobEffectPacket(craftPlayer.getEntityId(),
-                        new MobEffectInstance(MobEffect.byId(24), 5, 1, false, false, false)));
             }
+            CraftPlayer craftPlayer = (CraftPlayer) p;
+            craftPlayer.getHandle().connection.send(new ClientboundUpdateMobEffectPacket(craftPlayer.getEntityId(),
+                    new MobEffectInstance(MobEffect.byId(24), 5, 1, false, false, false)));
         }
     }
 

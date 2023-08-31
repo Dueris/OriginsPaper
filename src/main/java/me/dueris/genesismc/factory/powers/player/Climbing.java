@@ -38,71 +38,75 @@ public class Climbing extends CraftPower {
         return active_climbing;
     }
 
-    @Override
-    public void run() {
-        for (Player p : Bukkit.getOnlinePlayers()) {
-            if (climbing.contains(p)) {
-                if ((p.getLocation().getBlock().getRelative(BlockFace.EAST).getType().isSolid() ||
-                        p.getLocation().getBlock().getRelative(BlockFace.WEST).getType().isSolid() ||
-                        p.getLocation().getBlock().getRelative(BlockFace.NORTH).getType().isSolid() ||
-                        p.getLocation().getBlock().getRelative(BlockFace.SOUTH).getType().isSolid() ||
-                        p.getEyeLocation().add(0, 1, 0).getBlock().getType().isSolid() ||
-                        p.getEyeLocation().getBlock().getRelative(BlockFace.EAST).getType().isSolid() ||
-                        p.getEyeLocation().getBlock().getRelative(BlockFace.WEST).getType().isSolid() ||
-                        p.getEyeLocation().getBlock().getRelative(BlockFace.NORTH).getType().isSolid() ||
-                        p.getEyeLocation().getBlock().getRelative(BlockFace.SOUTH).getType().isSolid()) && (
+    Player p;
 
-                        p.getLocation().getBlock().getRelative(BlockFace.EAST).getType().isCollidable() ||
-                                p.getLocation().getBlock().getRelative(BlockFace.WEST).getType().isCollidable() ||
-                                p.getLocation().getBlock().getRelative(BlockFace.NORTH).getType().isCollidable() ||
-                                p.getLocation().getBlock().getRelative(BlockFace.SOUTH).getType().isCollidable() ||
-                                p.getEyeLocation().add(0, 1, 0).getBlock().getType().isCollidable() ||
-                                p.getEyeLocation().getBlock().getRelative(BlockFace.EAST).getType().isCollidable() ||
-                                p.getEyeLocation().getBlock().getRelative(BlockFace.WEST).getType().isCollidable() ||
-                                p.getEyeLocation().getBlock().getRelative(BlockFace.NORTH).getType().isCollidable() ||
-                                p.getEyeLocation().getBlock().getRelative(BlockFace.SOUTH).getType().isCollidable()
-                )) {
-                    Block block = p.getTargetBlock(null, 2);
-                    for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
-                        boolean cancel_bool = origin.getPowerFileFromType("origins:climbing").getRainCancel();
-                        ConditionExecutor executor = new ConditionExecutor();
-                        if (executor.check("condition", "conditions", p, origin, getPowerFile(), p, null, null, null, p.getItemInHand(), null)) {
-                            if (origin.getPowerFileFromType(getPowerFile()) == null) {
-                                getPowerArray().remove(p);
-                                return;
-                            }
-                            if (!getPowerArray().contains(p)) return;
-                            setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
-                            if (!cancel_bool) {
-                                if (!p.isSneaking()) return;
+    public Climbing(){
+        this.p = p;
+    }
+
+    @Override
+    public void run(Player p) {
+        if (climbing.contains(p)) {
+            if ((p.getLocation().getBlock().getRelative(BlockFace.EAST).getType().isSolid() ||
+                    p.getLocation().getBlock().getRelative(BlockFace.WEST).getType().isSolid() ||
+                    p.getLocation().getBlock().getRelative(BlockFace.NORTH).getType().isSolid() ||
+                    p.getLocation().getBlock().getRelative(BlockFace.SOUTH).getType().isSolid() ||
+                    p.getEyeLocation().add(0, 1, 0).getBlock().getType().isSolid() ||
+                    p.getEyeLocation().getBlock().getRelative(BlockFace.EAST).getType().isSolid() ||
+                    p.getEyeLocation().getBlock().getRelative(BlockFace.WEST).getType().isSolid() ||
+                    p.getEyeLocation().getBlock().getRelative(BlockFace.NORTH).getType().isSolid() ||
+                    p.getEyeLocation().getBlock().getRelative(BlockFace.SOUTH).getType().isSolid()) && (
+
+                    p.getLocation().getBlock().getRelative(BlockFace.EAST).getType().isCollidable() ||
+                            p.getLocation().getBlock().getRelative(BlockFace.WEST).getType().isCollidable() ||
+                            p.getLocation().getBlock().getRelative(BlockFace.NORTH).getType().isCollidable() ||
+                            p.getLocation().getBlock().getRelative(BlockFace.SOUTH).getType().isCollidable() ||
+                            p.getEyeLocation().add(0, 1, 0).getBlock().getType().isCollidable() ||
+                            p.getEyeLocation().getBlock().getRelative(BlockFace.EAST).getType().isCollidable() ||
+                            p.getEyeLocation().getBlock().getRelative(BlockFace.WEST).getType().isCollidable() ||
+                            p.getEyeLocation().getBlock().getRelative(BlockFace.NORTH).getType().isCollidable() ||
+                            p.getEyeLocation().getBlock().getRelative(BlockFace.SOUTH).getType().isCollidable()
+            )) {
+                Block block = p.getTargetBlock(null, 2);
+                for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
+                    boolean cancel_bool = origin.getPowerFileFromType("origins:climbing").getRainCancel();
+                    ConditionExecutor executor = new ConditionExecutor();
+                    if (executor.check("condition", "conditions", p, origin, getPowerFile(), p, null, null, null, p.getItemInHand(), null)) {
+                        if (origin.getPowerFileFromType(getPowerFile()) == null) {
+                            getPowerArray().remove(p);
+                            return;
+                        }
+                        if (!getPowerArray().contains(p)) return;
+                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
+                        if (!cancel_bool) {
+                            if (!p.isSneaking()) return;
+                            p.addPotionEffect(new PotionEffect(PotionEffectType.LEVITATION, 6, 2, false, false, false));
+                            getActiveClimbingMap().add(p);
+                            GenesisMC.getOriginScheduler().runTaskLater(new BukkitRunnable() {
+                                @Override
+                                public void run() {
+                                    getActiveClimbingMap().remove(p);
+                                }
+                            }, 1L);
+                        } else {
+                            if (block.getType() != AIR && p.isSneaking() && !p.isInRain()) {
                                 p.addPotionEffect(new PotionEffect(PotionEffectType.LEVITATION, 6, 2, false, false, false));
                                 getActiveClimbingMap().add(p);
-                                new BukkitRunnable() {
+                                GenesisMC.getOriginScheduler().runTaskLater(new BukkitRunnable() {
                                     @Override
                                     public void run() {
                                         getActiveClimbingMap().remove(p);
                                     }
-                                }.runTaskLater(GenesisMC.getPlugin(), 1L);
-                            } else {
-                                if (block.getType() != AIR && p.isSneaking() && !p.isInRain()) {
-                                    p.addPotionEffect(new PotionEffect(PotionEffectType.LEVITATION, 6, 2, false, false, false));
-                                    getActiveClimbingMap().add(p);
-                                    new BukkitRunnable() {
-                                        @Override
-                                        public void run() {
-                                            getActiveClimbingMap().remove(p);
-                                        }
-                                    }.runTaskLater(GenesisMC.getPlugin(), 1L);
-                                }
+                                }, 1L);
                             }
-                        } else {
-                            if (origin.getPowerFileFromType(getPowerFile()) == null) {
-                                getPowerArray().remove(p);
-                                return;
-                            }
-                            if (!getPowerArray().contains(p)) return;
-                            setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                         }
+                    } else {
+                        if (origin.getPowerFileFromType(getPowerFile()) == null) {
+                            getPowerArray().remove(p);
+                            return;
+                        }
+                        if (!getPowerArray().contains(p)) return;
+                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                     }
                 }
             }

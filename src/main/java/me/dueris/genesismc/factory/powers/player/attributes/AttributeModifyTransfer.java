@@ -25,8 +25,14 @@ public class AttributeModifyTransfer extends CraftPower implements Listener {
     }
 
 
+    Player p;
+
+    public AttributeModifyTransfer(){
+        this.p = p;
+    }
+
     @Override
-    public void run() {
+    public void run(Player p) {
 
     }
 

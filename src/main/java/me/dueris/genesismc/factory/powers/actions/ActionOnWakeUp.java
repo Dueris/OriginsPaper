@@ -11,8 +11,14 @@ import org.bukkit.event.player.PlayerBedLeaveEvent;
 import java.util.ArrayList;
 
 public class ActionOnWakeUp extends CraftPower implements Listener {
+    Player p;
+
+    public ActionOnWakeUp(){
+        this.p = p;
+    }
+
     @Override
-    public void run() {
+    public void run(Player p) {
 
     }
 

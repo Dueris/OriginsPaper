@@ -21,14 +21,17 @@ public class WaterVision extends CraftPower {
         }
     }
 
+    Player p;
+
+    public WaterVision(){
+        this.p = p;
+    }
 
     @Override
-    public void run() {
-        for (Player p : Bukkit.getOnlinePlayers()) {
-            if (water_vision.contains(p)) {
-                if (isInBreathableWater(p)) {
-                    p.addPotionEffect(new PotionEffect(PotionEffectType.CONDUIT_POWER, 15, 3, false, false));
-                }
+    public void run(Player p) {
+        if (water_vision.contains(p)) {
+            if (isInBreathableWater(p)) {
+                p.addPotionEffect(new PotionEffect(PotionEffectType.CONDUIT_POWER, 15, 3, false, false));
             }
         }
     }

@@ -22,6 +22,16 @@ public class FireImmunity extends CraftPower implements Listener {
         }
     }
 
+    Player p;
+
+    public FireImmunity(){
+        this.p = p;
+    }
+
+    @Override
+    public void run(Player p) {
+
+    }
 
     @EventHandler
     public void OnDamageFire(EntityDamageEvent e) {
@@ -56,13 +66,8 @@ public class FireImmunity extends CraftPower implements Listener {
     }
 
     @Override
-    public void run() {
-
-    }
-
-    @Override
     public String getPowerFile() {
-        return "fire_immunity";
+        return "origins:fire_immunity";
     }
 
     @Override

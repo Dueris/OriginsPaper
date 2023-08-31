@@ -27,8 +27,14 @@ public class StartingEquipmentPower extends CraftPower implements Listener {
     }
 
 
+    Player p;
+
+    public StartingEquipmentPower(){
+        this.p = p;
+    }
+
     @Override
-    public void run() {
+    public void run(Player p) {
 
     }
 

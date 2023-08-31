@@ -15,8 +15,14 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.util.ArrayList;
 
 public class ActionOnDeath extends CraftPower implements Listener {
+    Player p;
+
+    public ActionOnDeath(){
+        this.p = p;
+    }
+
     @Override
-    public void run() {
+    public void run(Player p) {
 
     }
 
@@ -36,7 +42,7 @@ public class ActionOnDeath extends CraftPower implements Listener {
                     if (!getPowerArray().contains(p)) return;
                     setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                     ActionTypes.EntityActionType(p, power.getEntityAction());
-                    new BukkitRunnable() {
+                    GenesisMC.getOriginScheduler().runTaskLater(new BukkitRunnable() {
                         @Override
                         public void run() {
                             if (origin.getPowerFileFromType(getPowerFile()) == null) {
@@ -46,7 +52,7 @@ public class ActionOnDeath extends CraftPower implements Listener {
                             if (!getPowerArray().contains(p)) return;
                             setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                         }
-                    }.runTaskLater(GenesisMC.getPlugin(), 2L);
+                    }, 2L);
                 }
             }
         }

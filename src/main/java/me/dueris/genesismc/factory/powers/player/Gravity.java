@@ -27,37 +27,38 @@ public class Gravity extends CraftPower implements Listener {
         }
     }
 
+    Player p;
+
+    public Gravity(){
+        this.p = p;
+    }
 
     @Override
-    public void run() {
-        for (Player p : Bukkit.getOnlinePlayers()) {
-            for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
-                if (no_gravity.contains(p)) {
-                    ConditionExecutor executor = new ConditionExecutor();
-                    if (executor.check("condition", "conditions", p, origin, getPowerFile(), p, null, null, null, p.getItemInHand(), null)) {
-                        if (origin.getPowerFileFromType(getPowerFile()) == null) getPowerArray().remove(p);
-                        if (!getPowerArray().contains(p)) return;
-                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
-                        if (no_gravity.contains(p)) {
-                            p.setGravity(false);
-                            p.setFallDistance(0.1f);
-                        } else {
-                            p.setGravity(true);
-                        }
+    public void run(Player p) {
+        for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
+            if (no_gravity.contains(p)) {
+                ConditionExecutor executor = new ConditionExecutor();
+                if (executor.check("condition", "conditions", p, origin, getPowerFile(), p, null, null, null, p.getItemInHand(), null)) {
+                    if (origin.getPowerFileFromType(getPowerFile()) == null) getPowerArray().remove(p);
+                    if (!getPowerArray().contains(p)) return;
+                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
+                    if (no_gravity.contains(p)) {
+                        p.setGravity(false);
+                        p.setFallDistance(0.1f);
                     } else {
-                        if (origin.getPowerFileFromType(getPowerFile()) == null) {
-                            getPowerArray().remove(p);
-                            return;
-                        }
-                        if (!getPowerArray().contains(p)) return;
-                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
+                        p.setGravity(true);
                     }
                 } else {
-                    p.setGravity(true);
+                    if (origin.getPowerFileFromType(getPowerFile()) == null) {
+                        getPowerArray().remove(p);
+                        return;
+                    }
+                    if (!getPowerArray().contains(p)) return;
+                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                 }
+            } else {
+                p.setGravity(true);
             }
-
-
         }
     }
 
@@ -75,7 +76,7 @@ public class Gravity extends CraftPower implements Listener {
     public void shiftgodown(PlayerToggleSneakEvent e) {
         if (no_gravity.contains(e.getPlayer())) {
             if (e.getPlayer().isOnGround()) return;
-            new BukkitRunnable() {
+            GenesisMC.getOriginScheduler().runTaskTimer(new BukkitRunnable() {
                 @Override
                 public void run() {
                     if (e.getPlayer().isFlying()) return;
@@ -89,7 +90,7 @@ public class Gravity extends CraftPower implements Listener {
                         this.cancel();
                     }
                 }
-            }.runTaskTimer(GenesisMC.getPlugin(), 0, 1);
+            }, 0, 1);
         }
 
     }

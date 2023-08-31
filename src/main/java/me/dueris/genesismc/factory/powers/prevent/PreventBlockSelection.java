@@ -26,7 +26,7 @@ public class PreventBlockSelection extends CraftPower implements Listener {
 
 
     @EventHandler
-    public void run(PlayerInteractEvent e) {
+    public void runI(PlayerInteractEvent e) {
         if (prevent_block_selection.contains(e.getPlayer())) {
             for (OriginContainer origin : OriginPlayer.getOrigin(e.getPlayer()).values()) {
                 ConditionExecutor conditionExecutor = new ConditionExecutor();
@@ -40,8 +40,14 @@ public class PreventBlockSelection extends CraftPower implements Listener {
         }
     }
 
+    Player p;
+
+    public PreventBlockSelection(){
+        this.p = p;
+    }
+
     @Override
-    public void run() {
+    public void run(Player p) {
 
     }
 

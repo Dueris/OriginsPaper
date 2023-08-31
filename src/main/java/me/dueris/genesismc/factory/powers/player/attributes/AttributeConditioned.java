@@ -280,8 +280,14 @@ public class AttributeConditioned extends CraftPower implements Listener {
         }
     }
 
+    Player p;
+
+    public AttributeConditioned(){
+        this.p = p;
+    }
+
     @Override
-    public void run() {
+    public void run(Player p) {
 
     }
 

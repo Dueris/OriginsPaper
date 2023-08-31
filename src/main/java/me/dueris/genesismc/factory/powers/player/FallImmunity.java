@@ -22,6 +22,16 @@ public class FallImmunity extends CraftPower implements Listener {
         }
     }
 
+    Player p;
+
+    public FallImmunity(){
+        this.p = p;
+    }
+
+    @Override
+    public void run(Player p) {
+
+    }
 
     @EventHandler
     public void acrobatics(EntityDamageEvent e) {
@@ -49,11 +59,6 @@ public class FallImmunity extends CraftPower implements Listener {
                 }
             }
         }
-    }
-
-    @Override
-    public void run() {
-
     }
 
     @Override

@@ -44,7 +44,7 @@ public class Launch extends CraftPower implements Listener {
                 if (conditionExecutor.check("condition", "conditions", p, origin, "origins:launch", p, null, null, null, p.getItemInHand(), null)) {
                     if (!CooldownStuff.isPlayerInCooldown(p, origin.getPowerFileFromType("origins:launch").getKey().get("key").toString())) {
                         if (isKeyBeingPressed(e.getPlayer(), origin.getPowerFileFromType("origins:launch").getKey().get("key").toString(), true)) {
-                            new BukkitRunnable() {
+                            GenesisMC.getOriginScheduler().runTaskTimer(new BukkitRunnable() {
                                 @Override
                                 public void run() {
                                     String key = (String) origin.getPowerFileFromType("origins:launch").getKey().get("key");
@@ -52,7 +52,7 @@ public class Launch extends CraftPower implements Listener {
                                         KeybindHandler.runKeyChangeTrigger(KeybindHandler.getTriggerFromOriginKey(p, key));
 
                                         final boolean[] thing = new boolean[1];
-                                        new BukkitRunnable() {
+                                        GenesisMC.getOriginScheduler().runTaskTimer(new BukkitRunnable() {
                                             @Override
                                             public void run() {
                                                 int cooldown = Integer.parseInt(origin.getPowerFileFromType("origins:launch").get("cooldown", "1"));
@@ -101,7 +101,7 @@ public class Launch extends CraftPower implements Listener {
                                                     this.cancel();
                                                 }
                                             }
-                                        }.runTaskTimer(GenesisMC.getPlugin(), 1L, 1L);
+                                        }, 1L, 1L);
 
                                         if (thing[0]) {
                                             thing[0] = false;
@@ -119,12 +119,12 @@ public class Launch extends CraftPower implements Listener {
                                             setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                                             KeybindHandler.getKeybindItem(key, p.getInventory()).setItemMeta(met);
                                             in_continuous.add(p);
-                                            new BukkitRunnable() {
+                                            GenesisMC.getOriginScheduler().runTaskLater(new BukkitRunnable() {
                                                 @Override
                                                 public void run() {
                                                     in_continuous.remove(p);
                                                 }
-                                            }.runTaskLater(GenesisMC.getPlugin(), 1L);
+                                            }, 1L);
                                             this.cancel();
                                         } else {
                                             if (isKeyBeingPressed(e.getPlayer(), origin.getPowerFileFromType("origins:launch").getKey().get("key").toString(), true)) {
@@ -168,7 +168,7 @@ public class Launch extends CraftPower implements Listener {
                                         }
                                     }
                                 }
-                            }.runTaskTimer(GenesisMC.getPlugin(), 0, 1);
+                            }, 0, 1);
                         }
                     }
                 }
@@ -176,8 +176,14 @@ public class Launch extends CraftPower implements Listener {
         }
     }
 
+    Player p;
+
+    public Launch(){
+        this.p = p;
+    }
+
     @Override
-    public void run() {
+    public void run(Player p) {
 
     }
 

@@ -14,8 +14,14 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.util.ArrayList;
 
 public class ActionOnItemUse extends CraftPower implements Listener {
+    Player p;
+
+    public ActionOnItemUse(){
+        this.p = p;
+    }
+
     @Override
-    public void run() {
+    public void run(Player p) {
 
     }
 
@@ -31,13 +37,13 @@ public class ActionOnItemUse extends CraftPower implements Listener {
             setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
             ActionTypes.EntityActionType(actor, power.getEntityAction());
             ActionTypes.ItemActionType(actor.getActiveItem(), power.getItemAction());
-            new BukkitRunnable() {
+            GenesisMC.getOriginScheduler().runTaskLater(new BukkitRunnable() {
                 @Override
                 public void run() {
                     if (!getPowerArray().contains(e.getPlayer())) return;
                     setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                 }
-            }.runTaskLater(GenesisMC.getPlugin(), 2L);
+            }, 2L);
         }
 
 //        if (e.getHand() == EquipmentSlot.HAND) System.out.println("main");

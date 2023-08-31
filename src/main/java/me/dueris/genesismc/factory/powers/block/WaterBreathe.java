@@ -34,58 +34,60 @@ public class WaterBreathe extends CraftPower {
         }
     }
 
+    Player p;
+
+    public WaterBreathe(){
+        this.p = p;
+    }
+
     @Override
-    public void run() {
-        for (Player p : Bukkit.getOnlinePlayers()) {
-            for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
-                ConditionExecutor conditionExecutor = new ConditionExecutor();
-                if (conditionExecutor.check("condition", "conditions", p, origin, getPowerFile(), p, null, null, null, p.getItemInHand(), null)) {
-                    if (origin.getPowerFileFromType(getPowerFile()) == null) {
-                        getPowerArray().remove(p);
-                        return;
-                    }
-                    if (!getPowerArray().contains(p)) return;
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
-                    if (water_breathing.contains(p)) {
-                        if (isInBreathableWater(p)) {
-                            if (p.getRemainingAir() < 290) {
-                                p.setRemainingAir(p.getRemainingAir() + 7);
-                            } else {
-                                p.setRemainingAir(300);
-                            }
-                            p.addPotionEffect(new PotionEffect(PotionEffectType.WATER_BREATHING, 3, 1, false, false, false));
-                            outofAIR.remove(p);
-                        } else {
-                            if (p.getGameMode().equals(GameMode.CREATIVE) || p.getGameMode().equals(GameMode.SPECTATOR))
-                                return;
-                            int remainingAir = p.getRemainingAir();
-                            if (remainingAir <= 5) {
-                                p.setRemainingAir(0);
-                                outofAIR.add(p);
-                            } else {
-                                p.setRemainingAir(remainingAir - 5);
-
-                                outofAIR.remove(p);
-                            }
-                        }
-                        if (outofAIR.contains(p)) {
-                            if (p.getRemainingAir() > 20) {
-                                outofAIR.remove(p);
-                            }
-                        }
-                    }
-                } else {
-                    if (origin.getPowerFileFromType(getPowerFile()) == null) {
-                        getPowerArray().remove(p);
-                        return;
-                    }
-                    if (!getPowerArray().contains(p)) return;
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
+    public void run(Player p) {
+        for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
+            ConditionExecutor conditionExecutor = new ConditionExecutor();
+            if (conditionExecutor.check("condition", "conditions", p, origin, getPowerFile(), p, null, null, null, p.getItemInHand(), null)) {
+                if (origin.getPowerFileFromType(getPowerFile()) == null) {
+                    getPowerArray().remove(p);
+                    return;
                 }
+                if (!getPowerArray().contains(p)) return;
+                setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
+                if (water_breathing.contains(p)) {
+                    if (isInBreathableWater(p)) {
+                        if (p.getRemainingAir() < 290) {
+                            p.setRemainingAir(p.getRemainingAir() + 7);
+                        } else {
+                            p.setRemainingAir(300);
+                        }
+                        p.addPotionEffect(new PotionEffect(PotionEffectType.WATER_BREATHING, 3, 1, false, false, false));
+                        outofAIR.remove(p);
+                    } else {
+                        if (p.getGameMode().equals(GameMode.CREATIVE) || p.getGameMode().equals(GameMode.SPECTATOR))
+                            return;
+                        int remainingAir = p.getRemainingAir();
+                        if (remainingAir <= 5) {
+                            p.setRemainingAir(0);
+                            outofAIR.add(p);
+                        } else {
+                            p.setRemainingAir(remainingAir - 5);
+
+                            outofAIR.remove(p);
+                        }
+                    }
+                    if (outofAIR.contains(p)) {
+                        if (p.getRemainingAir() > 20) {
+                            outofAIR.remove(p);
+                        }
+                    }
+                }
+            } else {
+                if (origin.getPowerFileFromType(getPowerFile()) == null) {
+                    getPowerArray().remove(p);
+                    return;
+                }
+                if (!getPowerArray().contains(p)) return;
+                setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
             }
-
         }
-
     }
 
     @Override

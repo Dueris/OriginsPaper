@@ -28,45 +28,48 @@ public class ModifyLavaSpeed extends CraftPower {
         }
     }
 
+    Player p;
+
+    public ModifyLavaSpeed(){
+        this.p = p;
+    }
 
     @Override
-    public void run() {
-        for (Player p : Bukkit.getOnlinePlayers()) {
-            if (modify_lava_speed.contains(p)) {
-                for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
-                    ValueModifyingSuperClass valueModifyingSuperClass = new ValueModifyingSuperClass();
-                    try {
-                        ConditionExecutor conditionExecutor = new ConditionExecutor();
-                        if (conditionExecutor.check("bientity_condition", "bientity_conditions", p, origin, "origins:modify_lava_speed", p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
-                            for (HashMap<String, Object> modifier : origin.getPowerFileFromType("origins:modify_lava_speed").getPossibleModifiers("modifier", "modifiers")) {
-                                Float value = Float.valueOf(modifier.get("value").toString());
-                                String operation = modifier.get("operation").toString();
-                                BinaryOperator mathOperator = getOperationMappingsFloat().get(operation);
-                                if (mathOperator != null) {
-                                    float result = (float) mathOperator.apply(0.02f, value);
-                                    if (origin.getPowerFileFromType(getPowerFile()) == null) {
-                                        getPowerArray().remove(p);
-                                        return;
-                                    }
-                                    if (!getPowerArray().contains(p)) return;
-                                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
-                                    p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 2, calculateSpeedAmplifier(Math.toIntExact(Long.valueOf(String.valueOf(result)))), false, false, false));
+    public void run(Player p) {
+        if (modify_lava_speed.contains(p)) {
+            for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
+                ValueModifyingSuperClass valueModifyingSuperClass = new ValueModifyingSuperClass();
+                try {
+                    ConditionExecutor conditionExecutor = new ConditionExecutor();
+                    if (conditionExecutor.check("bientity_condition", "bientity_conditions", p, origin, "origins:modify_lava_speed", p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
+                        for (HashMap<String, Object> modifier : origin.getPowerFileFromType("origins:modify_lava_speed").getPossibleModifiers("modifier", "modifiers")) {
+                            Float value = Float.valueOf(modifier.get("value").toString());
+                            String operation = modifier.get("operation").toString();
+                            BinaryOperator mathOperator = getOperationMappingsFloat().get(operation);
+                            if (mathOperator != null) {
+                                float result = (float) mathOperator.apply(0.02f, value);
+                                if (origin.getPowerFileFromType(getPowerFile()) == null) {
+                                    getPowerArray().remove(p);
+                                    return;
                                 }
+                                if (!getPowerArray().contains(p)) return;
+                                setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
+                                p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 2, calculateSpeedAmplifier(Math.toIntExact(Long.valueOf(String.valueOf(result)))), false, false, false));
                             }
-
-                        } else {
-                            if (origin.getPowerFileFromType(getPowerFile()) == null) {
-                                getPowerArray().remove(p);
-                                return;
-                            }
-                            if (!getPowerArray().contains(p)) return;
-                            setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                         }
-                    } catch (Exception ev) {
-                        ErrorSystem errorSystem = new ErrorSystem();
-                        errorSystem.throwError("unable to get bi-entity", "origins:modify_lava_speed", p, origin, OriginPlayer.getLayer(p, origin));
-                        ev.printStackTrace();
+
+                    } else {
+                        if (origin.getPowerFileFromType(getPowerFile()) == null) {
+                            getPowerArray().remove(p);
+                            return;
+                        }
+                        if (!getPowerArray().contains(p)) return;
+                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                     }
+                } catch (Exception ev) {
+                    ErrorSystem errorSystem = new ErrorSystem();
+                    errorSystem.throwError("unable to get bi-entity", "origins:modify_lava_speed", p, origin, OriginPlayer.getLayer(p, origin));
+                    ev.printStackTrace();
                 }
             }
         }

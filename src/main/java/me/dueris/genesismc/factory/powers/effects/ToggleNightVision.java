@@ -25,8 +25,14 @@ import static me.dueris.genesismc.KeybindHandler.isKeyBeingPressed;
 import static me.dueris.genesismc.factory.powers.Toggle.in_continuous;
 
 public class ToggleNightVision extends CraftPower implements Listener {
+    Player p;
+
+    public ToggleNightVision(){
+        this.p = p;
+    }
+
     @Override
-    public void run() {
+    public void run(Player p) {
 
     }
 
@@ -39,7 +45,7 @@ public class ToggleNightVision extends CraftPower implements Listener {
                 if (conditionExecutor.check("condition", "conditions", p, origin, getPowerFile(), p, null, null, null, p.getItemInHand(), null)) {
                     if (!CooldownStuff.isPlayerInCooldown(p, origin.getPowerFileFromType(getPowerFile()).getKey().get("key").toString())) {
                         if (isKeyBeingPressed(e.getPlayer(), origin.getPowerFileFromType(getPowerFile()).getKey().get("key").toString(), true)) {
-                            new BukkitRunnable() {
+                            GenesisMC.getOriginScheduler().runTaskTimer(new BukkitRunnable() {
                                 @Override
                                 public void run() {
                                     String key = (String) origin.getPowerFileFromType(getPowerFile()).getKey().get("key");
@@ -47,7 +53,7 @@ public class ToggleNightVision extends CraftPower implements Listener {
                                         KeybindHandler.runKeyChangeTrigger(KeybindHandler.getTriggerFromOriginKey(p, key));
 
                                         final boolean[] thing = new boolean[1];
-                                        new BukkitRunnable() {
+                                        GenesisMC.getOriginScheduler().runTaskTimer(new BukkitRunnable() {
                                             @Override
                                             public void run() {
                                                 if (!CooldownStuff.isPlayerInCooldown(p, key)) {
@@ -98,7 +104,7 @@ public class ToggleNightVision extends CraftPower implements Listener {
                                                     this.cancel();
                                                 }
                                             }
-                                        }.runTaskTimer(GenesisMC.getPlugin(), 1L, 1L);
+                                        }, 1L, 1L);
 
                                         if (thing[0]) {
                                             thing[0] = false;
@@ -116,7 +122,7 @@ public class ToggleNightVision extends CraftPower implements Listener {
                                             }
                                             if (!getPowerArray().contains(p)) return;
                                             setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
-                                            new BukkitRunnable() {
+                                            GenesisMC.getOriginScheduler().runTaskLater(new BukkitRunnable() {
                                                 @Override
                                                 public void run() {
                                                     in_continuous.remove(p);
@@ -127,7 +133,7 @@ public class ToggleNightVision extends CraftPower implements Listener {
                                                     if (!getPowerArray().contains(p)) return;
                                                     setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                                                 }
-                                            }.runTaskLater(GenesisMC.getPlugin(), 1L);
+                                            }, 1L);
                                             this.cancel();
                                         } else {
                                             if (isKeyBeingPressed(e.getPlayer(), origin.getPowerFileFromType(getPowerFile()).getKey().get("key").toString(), true)) {
@@ -166,7 +172,7 @@ public class ToggleNightVision extends CraftPower implements Listener {
                                         }
                                     }
                                 }
-                            }.runTaskTimer(GenesisMC.getPlugin(), 0, 1);
+                            }, 0, 1);
                         }
                     }
                 }
