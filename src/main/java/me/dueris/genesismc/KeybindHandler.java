@@ -103,13 +103,13 @@ public class KeybindHandler implements Listener {
     }
 
     @EventHandler
-    public void resetKeybinding(OriginChangeEvent e){
-        for(ItemStack item : e.getPlayer().getInventory()){
-            if(item == null) continue;
-            if(item.equals(getPrimaryTrigger(e.getPlayer()))){
+    public void resetKeybinding(OriginChangeEvent e) {
+        for (ItemStack item : e.getPlayer().getInventory()) {
+            if (item == null) continue;
+            if (item.equals(getPrimaryTrigger(e.getPlayer()))) {
                 runKeyChangeTriggerReturn(item, e.getPlayer(), "key.origins.primary_active");
             }
-            if(item.equals(getSecondaryTrigger(e.getPlayer()))){
+            if (item.equals(getSecondaryTrigger(e.getPlayer()))) {
                 runKeyChangeTriggerReturn(item, e.getPlayer(), "key.origins.secondary_active");
             }
         }
@@ -117,8 +117,8 @@ public class KeybindHandler implements Listener {
 
     public static ItemStack getPrimaryTrigger(Player player) {
         for (ItemStack item : player.getInventory().getContents()) {
-            if(item == null) continue;
-            if(item.getItemMeta() == null) continue;
+            if (item == null) continue;
+            if (item.getItemMeta() == null) continue;
             if (item.getItemMeta().getPersistentDataContainer().has(new NamespacedKey(GenesisMC.getPlugin(), "origin_item_data"))) {
                 if (item.getItemMeta().getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "origin_item_data"), PersistentDataType.STRING).equalsIgnoreCase("key.origins.primary_active")) {
                     return item;
@@ -130,7 +130,7 @@ public class KeybindHandler implements Listener {
 
     public static ItemStack getSecondaryTrigger(Player player) {
         for (ItemStack item : player.getInventory().getContents()) {
-            if(item == null) continue;
+            if (item == null) continue;
             if (item.getItemMeta().getPersistentDataContainer().has(new NamespacedKey(GenesisMC.getPlugin(), "origin_item_data"))) {
                 if (item.getItemMeta().getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "origin_item_data"), PersistentDataType.STRING).equalsIgnoreCase("key.origins.secondary_active")) {
                     return item;
@@ -142,7 +142,7 @@ public class KeybindHandler implements Listener {
 
     public static ItemStack getTriggerFromOriginKey(Player player, String key) {
         for (ItemStack item : player.getInventory().getContents()) {
-            if(item == null) continue;
+            if (item == null) continue;
             if (item.getItemMeta().getPersistentDataContainer().has(new NamespacedKey(GenesisMC.getPlugin(), "origin_item_data"))) {
                 if (item.getItemMeta().getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "origin_item_data"), PersistentDataType.STRING).equalsIgnoreCase(key)) {
                     return item;

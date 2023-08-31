@@ -42,11 +42,7 @@ public class ModifyHarvestPower extends CraftPower implements Listener {
                         setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                     }
                 } else {
-                    if (origin.getPowerFileFromType(getPowerFile()) == null) {
-                        getPowerArray().remove(p);
-                        return;
-                    }
-                    if (!getPowerArray().contains(p)) return;
+
                     setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                 }
             }

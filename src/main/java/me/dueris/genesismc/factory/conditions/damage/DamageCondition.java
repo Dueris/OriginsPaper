@@ -130,7 +130,7 @@ public class DamageCondition extends Condition {
                     }
                     case "cactus" -> {
                         if (entityDamageEvent instanceof EntityDamageByBlockEvent eb) {
-                            if (eb.getDamager()!= null & eb.getDamager().getType().equals(Material.CACTUS)) {
+                            if (eb.getDamager() != null & eb.getDamager().getType().equals(Material.CACTUS)) {
                                 return Optional.of(true);
                             }
                         }
@@ -245,7 +245,7 @@ public class DamageCondition extends Condition {
                     }
                     case "fallingstalactite.player" -> {
                         if (entityDamageEvent instanceof EntityDamageByBlockEvent eb) {
-                            if (eb.getDamager()!= null && eb.getDamager().getType().equals(Material.POINTED_DRIPSTONE)) {
+                            if (eb.getDamager() != null && eb.getDamager().getType().equals(Material.POINTED_DRIPSTONE)) {
                                 if (entityDamageEvent.getEntity().getLastDamageCause() instanceof EntityDamageByEntityEvent damageByEntityEvent
                                         && damageByEntityEvent.getDamager() instanceof Player) {
                                     return Optional.of(true);
@@ -430,7 +430,7 @@ public class DamageCondition extends Condition {
                     }
                     case "stalagmite" -> {
                         if (entityDamageEvent instanceof EntityDamageByBlockEvent eb) {
-                            if (eb.getDamager()!= null && eb.getDamager().getType().equals(Material.POINTED_DRIPSTONE)) {
+                            if (eb.getDamager() != null && eb.getDamager().getType().equals(Material.POINTED_DRIPSTONE)) {
                                 if (entityDamageEvent.getEntity().getLocation().getBlock().getRelative(BlockFace.DOWN).getType().equals(Material.POINTED_DRIPSTONE)) {
                                     return Optional.of(true);
                                 }
@@ -439,7 +439,7 @@ public class DamageCondition extends Condition {
                     }
                     case "stalagmite.player" -> {
                         if (entityDamageEvent instanceof EntityDamageByBlockEvent eb) {
-                            if (eb.getDamager()!= null && eb.getDamager().getType().equals(Material.POINTED_DRIPSTONE)) {
+                            if (eb.getDamager() != null && eb.getDamager().getType().equals(Material.POINTED_DRIPSTONE)) {
                                 if (entityDamageEvent.getEntity().getLocation().getBlock().getRelative(BlockFace.DOWN).getType().equals(Material.POINTED_DRIPSTONE)) {
                                     if (entityDamageEvent.getEntity().getLastDamageCause() instanceof EntityDamageByEntityEvent damageByEntityEvent
                                             && damageByEntityEvent.getDamager() instanceof Player) {
@@ -490,7 +490,7 @@ public class DamageCondition extends Condition {
                         if (entityDamageEvent instanceof EntityDamageByBlockEvent ev) {
                             if (ev.getDamager() != null && ev.getDamager().getType().equals(Material.SWEET_BERRY_BUSH)) {
                                 if (ev.getEntity().getLastDamageCause() instanceof EntityDamageByEntityEvent damageByEntityEvent
-                                    && damageByEntityEvent.getDamager() instanceof Player) {
+                                        && damageByEntityEvent.getDamager() instanceof Player) {
                                     return Optional.of(true);
                                 }
                             }

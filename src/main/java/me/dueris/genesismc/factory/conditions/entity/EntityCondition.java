@@ -111,9 +111,9 @@ public class EntityCondition {
         }
 
         if (type.equalsIgnoreCase("origins:biome")) {
-            if(condition.get("biome") == null) return Optional.empty();
+            if (condition.get("biome") == null) return Optional.empty();
             String biomeString = condition.get("biome").toString().split(":")[1].replace(".", "_").toUpperCase();
-            if (BiomeCondition.check(condition, entity, entity.getLocation().getBlock(), powerfile).equals(Optional.of(true))){
+            if (BiomeCondition.check(condition, entity, entity.getLocation().getBlock(), powerfile).equals(Optional.of(true))) {
                 if (entity.getLocation().getBlock().getBiome().equals(Biome.valueOf(biomeString))) {
                     return Optional.of(true);
                 }
@@ -134,7 +134,7 @@ public class EntityCondition {
 
                 Block block = world.getBlockAt(blockX, blockY, blockZ);
 
-                if(BlockCondition.check(condition, player, block, powerfile).equals(Optional.of(true))){
+                if (BlockCondition.check(condition, player, block, powerfile).equals(Optional.of(true))) {
                     if (block.getType() != Material.AIR) {
                         return Optional.of(true);
                     }
@@ -257,13 +257,13 @@ public class EntityCondition {
             return Optional.of(entity.isInRain());
         }
 
-        if (type.equalsIgnoreCase("origins:health")){
-            if (RestrictArmor.compareValues(p.getHealth(), condition.get("comparison").toString(), Double.parseDouble(condition.get("compare_to").toString()))){
+        if (type.equalsIgnoreCase("origins:health")) {
+            if (RestrictArmor.compareValues(p.getHealth(), condition.get("comparison").toString(), Double.parseDouble(condition.get("compare_to").toString()))) {
                 return Optional.of(true);
             }
         }
 
-        if (type.equalsIgnoreCase("origins:exposed_to_sun")){
+        if (type.equalsIgnoreCase("origins:exposed_to_sun")) {
             if ((p.getLocation().getBlockY() + 1 > p.getWorld().getHighestBlockYAt(p.getLocation()))) {
                 if (p.getGameMode() == GameMode.SURVIVAL || p.getGameMode() == GameMode.ADVENTURE) {
                     return Optional.of(p.getWorld().isDayTime());
@@ -271,12 +271,12 @@ public class EntityCondition {
             }
         }
 
-        if(type.equalsIgnoreCase("origins:sneaking")){
+        if (type.equalsIgnoreCase("origins:sneaking")) {
             return Optional.of(entity.isSneaking());
         }
 
-        if(type.equalsIgnoreCase("origins:resource")){
-            for(OriginContainer origin : OriginPlayer.getOrigin(p).values()){
+        if (type.equalsIgnoreCase("origins:resource")) {
+            for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
                 return Optional.of(!CooldownStuff.isPlayerInCooldownFromTag(p, origin.getPowerFileFromType(powerfile).getTag()));
             }
         }

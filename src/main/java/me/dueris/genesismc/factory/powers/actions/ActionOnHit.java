@@ -29,11 +29,7 @@ public class ActionOnHit extends CraftPower {
                     PowerContainer power = origin.getPowerFileFromType(getPowerFile());
                     if (power == null) continue;
 
-                    if (origin.getPowerFileFromType(getPowerFile()) == null) {
-                        getPowerArray().remove(p);
-                        return;
-                    }
-                    if (!getPowerArray().contains(p)) return;
+
                     setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                     ActionTypes.biEntityActionType(actor, target, power.getBiEntityAction());
                     //todo: bientity condition and damage condition

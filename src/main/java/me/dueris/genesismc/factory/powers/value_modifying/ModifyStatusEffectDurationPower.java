@@ -37,11 +37,7 @@ public class ModifyStatusEffectDurationPower extends CraftPower implements Liste
             for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
                 ConditionExecutor executor = new ConditionExecutor();
                 if (executor.check("condition", "conditions", p, origin, getPowerFile(), p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
-                    if (origin.getPowerFileFromType(getPowerFile()) == null) {
-                        getPowerArray().remove(p);
-                        return;
-                    }
-                    if (!getPowerArray().contains(p)) return;
+
                     setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                     if (origin.getPowerFileFromType("origins:modify_status_effect_duration").get("status_effect", null) != null) {
                         if (e.getNewEffect().getType().equals(PotionEffectType.getByName(origin.getPowerFileFromType("origins:modify_status_effect_duration").get("status_effect", null)))) {
@@ -71,11 +67,7 @@ public class ModifyStatusEffectDurationPower extends CraftPower implements Liste
                         }
                     }
                 } else {
-                    if (origin.getPowerFileFromType(getPowerFile()) == null) {
-                        getPowerArray().remove(p);
-                        return;
-                    }
-                    if (!getPowerArray().contains(p)) return;
+
                     setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                 }
             }
