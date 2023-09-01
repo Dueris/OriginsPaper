@@ -328,6 +328,7 @@ public class EntityCondition {
                             }
                         }
                     } else {
+                        if(compareTo == 0 && comparison == "==") return Optional.of(true);
                         p.sendMessage("Enchantment not found");
                     }
                 }
