@@ -79,7 +79,7 @@ public class Recipe extends CraftPower implements Listener {
         for (Player player : Bukkit.getOnlinePlayers()) {
             for (OriginContainer origin : OriginPlayer.getOrigin(player).values()) {
                 ConditionExecutor conditionExecutor = new ConditionExecutor();
-                if (conditionExecutor.check("condition", "conditions", player, origin, getPowerFile(), player, null, null, null, player.getItemInHand(), null)) {
+                if (conditionExecutor.check("condition", "conditions", player, origin, getPowerFile(), player, null, null, null, player.getInventory().getItemInHand(), null)) {
                     if (!getPowerArray().contains(player)) return;
                     setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                     loadRecipe(player, origin, "origins:recipe");
@@ -96,7 +96,7 @@ public class Recipe extends CraftPower implements Listener {
         for (Player player : Bukkit.getOnlinePlayers()) {
             for (OriginContainer origin : OriginPlayer.getOrigin(player).values()) {
                 ConditionExecutor conditionExecutor = new ConditionExecutor();
-                if (conditionExecutor.check("condition", "conditions", player, origin, getPowerFile(), player, null, null, null, player.getItemInHand(), null)) {
+                if (conditionExecutor.check("condition", "conditions", player, origin, getPowerFile(), player, null, null, null, player.getInventory().getItemInHand(), null)) {
                     if (!getPowerArray().contains(player)) return;
                     setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                     loadRecipe(player, origin, "origins:recipe");
@@ -113,7 +113,7 @@ public class Recipe extends CraftPower implements Listener {
         for (Player player : Bukkit.getOnlinePlayers()) {
             for (OriginContainer origin : OriginPlayer.getOrigin(player).values()) {
                 ConditionExecutor conditionExecutor = new ConditionExecutor();
-                if (conditionExecutor.check("condition", "conditions", player, origin, getPowerFile(), player, null, null, null, player.getItemInHand(), null)) {
+                if (conditionExecutor.check("condition", "conditions", player, origin, getPowerFile(), player, null, null, null, player.getInventory().getItemInHand(), null)) {
                     if (!getPowerArray().contains(player)) return;
                     setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                     loadRecipe(player, origin, "origins:recipe");

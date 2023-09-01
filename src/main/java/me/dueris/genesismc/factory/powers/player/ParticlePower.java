@@ -37,7 +37,7 @@ public class ParticlePower extends CraftPower {
                     return;
                 } else {
                     ConditionExecutor executor = new ConditionExecutor();
-                    if (executor.check("condition", "conditions", player, origin, getPowerFile(), player, null, null, null, player.getItemInHand(), null)) {
+                    if (executor.check("condition", "conditions", player, origin, getPowerFile(), player, null, null, null, player.getInventory().getItemInHand(), null)) {
                         if (!getPowerArray().contains(player)) return;
                         setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                         Particle particle = Particle.valueOf(origin.getPowerFileFromType("origins:particle").get("particle", null).split(":")[1].toUpperCase());

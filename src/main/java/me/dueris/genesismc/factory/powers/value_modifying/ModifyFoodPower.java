@@ -145,7 +145,7 @@ public class ModifyFoodPower extends CraftPower implements Listener {
         for (OriginContainer origin : OriginPlayer.getOrigin(player).values()) {
             if (modify_food.contains(player)) {
                 ConditionExecutor conditionExecutor = new ConditionExecutor();
-                if (conditionExecutor.check("item_condition", "item_condition", player, origin, "origins:modify_food", player, null, player.getLocation().getBlock(), null, player.getItemInHand(), null)) {
+                if (conditionExecutor.check("item_condition", "item_condition", player, origin, "origins:modify_food", player, null, player.getLocation().getBlock(), null, player.getInventory().getItemInHand(), null)) {
                     if (modify_food.contains(player)) {
                         if (origin.getPowerFileFromType("origins:modify_food").getJsonHashMap("food_modifier") != null) {
                             Map.Entry<Double, Double> modifiers = getModifiers(player, origin);
