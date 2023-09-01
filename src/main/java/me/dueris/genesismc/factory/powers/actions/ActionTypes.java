@@ -150,7 +150,7 @@ public class ActionTypes {
                 player.setVelocity(velocity);
             }
         }
-        if (type.equals("origins:execute_command")){
+        if (type.equals("origins:execute_command")) {
             Bukkit.dispatchCommand(entity, power.get("command").toString());
         }
         if (type.equals("origins:add_xp")) {
@@ -303,7 +303,7 @@ public class ActionTypes {
 
 
     public static void BlockActionType(Location location, JSONObject power) {
-        if(power == null) return;
+        if (power == null) return;
         JSONObject entityAction = (JSONObject) power.get("action");
         if (entityAction == null) {
             entityAction = (JSONObject) power.get("block_action");

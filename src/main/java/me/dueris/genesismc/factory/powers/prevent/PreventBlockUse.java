@@ -32,11 +32,7 @@ public class PreventBlockUse extends CraftPower implements Listener {
             for (OriginContainer origin : OriginPlayer.getOrigin(e.getPlayer()).values()) {
                 ConditionExecutor conditionExecutor = new ConditionExecutor();
                 if (e.getClickedBlock() != null) e.setCancelled(true);
-                if (conditionExecutor.check("block_condition", "block_conditions", e.getPlayer(), origin, "origins:prevent_block_used", e.getPlayer(), null, e.getClickedBlock(), null, e.getPlayer().getItemInHand(), null)) {
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
-                } else {
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
-                }
+                setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), conditionExecutor.check("block_condition", "block_conditions", e.getPlayer(), origin, "origins:prevent_block_used", e.getPlayer(), null, e.getClickedBlock(), null, e.getPlayer().getItemInHand(), null));
             }
         }
     }

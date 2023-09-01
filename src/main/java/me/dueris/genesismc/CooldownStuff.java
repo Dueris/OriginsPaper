@@ -60,8 +60,8 @@ public class CooldownStuff {
     public static boolean isPlayerInCooldownFromTag(Player player, String tag) {
         for (@NotNull Iterator<KeyedBossBar> it = Bukkit.getBossBars(); it.hasNext(); ) {
             KeyedBossBar active = it.next();
-            if(active.getTitle().equalsIgnoreCase(tag)){
-                if(active.getPlayers().contains(player)) return true;
+            if (active.getTitle().equalsIgnoreCase(tag)) {
+                if (active.getPlayers().contains(player)) return true;
             }
         }
         return false;
@@ -83,21 +83,21 @@ public class CooldownStuff {
     }
 
     @EventHandler
-    public void orig(OriginChangeEvent e){
-        if(isPlayerInCooldown(e.getPlayer(), "key.origins.primary_active")){
+    public void orig(OriginChangeEvent e) {
+        if (isPlayerInCooldown(e.getPlayer(), "key.origins.primary_active")) {
             resetCooldown(e.getPlayer(), "key.origins.primary_active");
         }
-        if(isPlayerInCooldown(e.getPlayer(), "key.origins.secondary_active")){
+        if (isPlayerInCooldown(e.getPlayer(), "key.origins.secondary_active")) {
             resetCooldown(e.getPlayer(), "key.origins.primary_active");
         }
     }
 
     @EventHandler
-    public void org(PlayerQuitEvent e){
-        if(isPlayerInCooldown(e.getPlayer(), "key.origins.primary_active")){
+    public void org(PlayerQuitEvent e) {
+        if (isPlayerInCooldown(e.getPlayer(), "key.origins.primary_active")) {
             resetCooldown(e.getPlayer(), "key.origins.primary_active");
         }
-        if(isPlayerInCooldown(e.getPlayer(), "key.origins.secondary_active")){
+        if (isPlayerInCooldown(e.getPlayer(), "key.origins.secondary_active")) {
             resetCooldown(e.getPlayer(), "key.origins.primary_active");
         }
     }
@@ -114,7 +114,7 @@ public class CooldownStuff {
             @Override
             public void run() {
                 ticksElapsed++;
-                if(cooldownTicks <= 0){
+                if (cooldownTicks <= 0) {
                     resetCooldown(player, cooldownKeybindType);
                     this.cancel();
                 }

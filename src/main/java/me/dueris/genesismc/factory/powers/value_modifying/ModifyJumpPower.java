@@ -15,7 +15,6 @@ import java.util.HashMap;
 import java.util.function.BinaryOperator;
 
 import static me.dueris.genesismc.factory.powers.player.attributes.AttributeHandler.*;
-import static me.dueris.genesismc.factory.powers.player.attributes.AttributeHandler.getOperationMappingsLong;
 import static me.dueris.genesismc.factory.powers.value_modifying.ValueModifyingSuperClass.modify_jump;
 
 public class ModifyJumpPower extends CraftPower implements Listener {
@@ -39,7 +38,7 @@ public class ModifyJumpPower extends CraftPower implements Listener {
                 if (conditionExecutor.check("condition", "conditions", p, origin, "origins:modify_jump", p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
                     for (HashMap<String, Object> modifier : origin.getPowerFileFromType("origins:modify_jump").getPossibleModifiers("modifier", "modifiers")) {
 
-                        if(modifier.get("value") instanceof Float){
+                        if (modifier.get("value") instanceof Float) {
                             Float value = Float.valueOf(modifier.get("value").toString());
                             String operation = modifier.get("operation").toString();
                             BinaryOperator mathOperator = getOperationMappingsFloat().get(operation);

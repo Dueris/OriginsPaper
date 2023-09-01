@@ -2,7 +2,6 @@ package me.dueris.genesismc.factory.powers.player.inventory;
 
 import me.dueris.genesismc.CooldownStuff;
 import me.dueris.genesismc.GenesisMC;
-import me.dueris.genesismc.commands.subcommands.SubCommand;
 import me.dueris.genesismc.entity.OriginPlayer;
 import me.dueris.genesismc.events.KeybindTriggerEvent;
 import me.dueris.genesismc.events.OriginChangeEvent;

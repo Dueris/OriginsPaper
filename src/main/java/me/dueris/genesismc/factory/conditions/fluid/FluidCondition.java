@@ -1,7 +1,6 @@
 package me.dueris.genesismc.factory.conditions.fluid;
 
 import org.bukkit.Fluid;
-import org.bukkit.block.Biome;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;

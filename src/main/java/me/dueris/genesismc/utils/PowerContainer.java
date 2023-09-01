@@ -241,11 +241,8 @@ public class PowerContainer implements Serializable {
         return type.toString();
     }
 
-    public Object getObject(String thing){
+    public Object getObject(String thing) {
         Object type = powerFile.get(thing);
-        if (type == null) {
-            return null;
-        }
         return type;
     }
 

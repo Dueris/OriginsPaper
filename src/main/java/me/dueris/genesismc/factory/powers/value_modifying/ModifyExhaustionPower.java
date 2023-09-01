@@ -62,11 +62,7 @@ public class ModifyExhaustionPower extends CraftPower implements Listener {
                     }
 
                 } else {
-                    if (origin.getPowerFileFromType(getPowerFile()) == null) {
-                        getPowerArray().remove(p);
-                        return;
-                    }
-                    if (!getPowerArray().contains(p)) return;
+
                     setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                 }
             }

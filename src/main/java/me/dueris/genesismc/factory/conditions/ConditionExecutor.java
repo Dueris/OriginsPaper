@@ -159,13 +159,13 @@ public class ConditionExecutor {
                         return true;
                     }
                 }
-                if(actor != null && target != null){
+                if (actor != null && target != null) {
                     Optional<Boolean> check = BiEntityCondition.check(condition, p, actor, target, powerfile);
                     if (check.isPresent() && check.get()) {
                         return true;
                     }
                 }
-                if(block != null){
+                if (block != null) {
                     Optional<Boolean> check = BlockCondition.check(condition, p, block, powerfile);
                     if (check.isPresent() && check.get()) {
                         return true;
@@ -175,13 +175,13 @@ public class ConditionExecutor {
                         return true;
                     }
                 }
-                if(fluid != null){
+                if (fluid != null) {
                     Optional<Boolean> check = FluidCondition.check(condition, p, fluid, powerfile);
                     if (check.isPresent() && check.get()) {
                         return true;
                     }
                 }
-                if(itemStack != null){
+                if (itemStack != null) {
                     Optional<Boolean> check = ItemCondition.check(condition, p, itemStack, powerfile);
                     if (check.isPresent() && check.get()) {
                         return true;

@@ -45,11 +45,7 @@ public class ModifyPlayerSpawnPower extends CraftPower implements Listener {
             for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
                 ConditionExecutor executor = new ConditionExecutor();
                 if (executor.check("condition", "conditions", p, origin, getPowerFile(), p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
-                    if (origin.getPowerFileFromType(getPowerFile()) == null) {
-                        getPowerArray().remove(p);
-                        return;
-                    }
-                    if (!getPowerArray().contains(p)) return;
+
                     setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                     if (origin.getPowerFileFromType("origins:modify_player_spawn").get("dimension", null).equals("minecraft:nether")) {
                         e.setSpawnLocation(NetherSpawn(origin.getPowerFileFromType("origins:modify_player_spawn").get("spawn_strategy", "default")));
@@ -59,11 +55,7 @@ public class ModifyPlayerSpawnPower extends CraftPower implements Listener {
                         e.setSpawnLocation(OverworldSpawn(origin.getPowerFileFromType("origins:modify_player_spawn").get("spawn_strategy", "default")));
                     }
                 } else {
-                    if (origin.getPowerFileFromType(getPowerFile()) == null) {
-                        getPowerArray().remove(p);
-                        return;
-                    }
-                    if (!getPowerArray().contains(p)) return;
+
                     setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                 }
             }

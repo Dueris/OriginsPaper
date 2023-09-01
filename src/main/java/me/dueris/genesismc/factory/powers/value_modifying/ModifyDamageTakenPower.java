@@ -11,7 +11,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 
-import java.awt.geom.Arc2D;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.function.BinaryOperator;
@@ -42,7 +41,7 @@ public class ModifyDamageTakenPower extends CraftPower implements Listener {
     }
 
     @EventHandler
-    public void dmgEvent(EntityDamageEvent e){
+    public void dmgEvent(EntityDamageEvent e) {
         if (e.getEntity() instanceof Player p) {
             if (getPowerArray().contains(p)) {
                 for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
@@ -50,7 +49,7 @@ public class ModifyDamageTakenPower extends CraftPower implements Listener {
                         ConditionExecutor conditionExecutor = new ConditionExecutor();
                         if (conditionExecutor.check("damage_condition", "damage_conditions", p, origin, "origins:modify_damage_taken", p, e.getEntity(), p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
                             for (HashMap<String, Object> modifier : origin.getPowerFileFromType("origins:modify_damage_taken").getConditionFromString("modifier", "modifiers")) {
-                                if(modifier.get("value") instanceof Float){
+                                if (modifier.get("value") instanceof Float) {
                                     Float value = Float.valueOf(modifier.get("value").toString());
                                     String operation = modifier.get("operation").toString();
                                     BinaryOperator mathOperator = getOperationMappingsFloat().get(operation);

@@ -74,7 +74,7 @@ public class ExplodeTick extends CraftPower implements Listener {
                                     p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 5, 2, false, false, false));
                                     if (!cooldown.containsKey(p.getUniqueId()) || (System.currentTimeMillis() - cooldown.get(p.getUniqueId()) >= 2900)) {
                                         List<Entity> nearby = p.getNearbyEntities(2, 2, 2);
-                                        for (Entity tmp : nearby){
+                                        for (Entity tmp : nearby) {
                                             if (executor.check("entity_condition", "entity_conditions", p, origin, getPowerFile(), p, null, null, null, p.getItemInHand(), null)) {
                                                 if (executor.check("bientit_condition", "bientity_conditions", p, origin, getPowerFile(), p, null, null, null, p.getItemInHand(), null)) {
                                                     if (tmp instanceof Damageable && tmp != p)
@@ -83,7 +83,7 @@ public class ExplodeTick extends CraftPower implements Listener {
                                             }
                                         }
                                         List<Entity> nearby2 = p.getNearbyEntities(3, 3, 3);
-                                        for (Entity tmp : nearby2){
+                                        for (Entity tmp : nearby2) {
                                             if (executor.check("entity_condition", "entity_conditions", p, origin, getPowerFile(), p, null, null, null, p.getItemInHand(), null)) {
                                                 if (executor.check("bientit_condition", "bientity_conditions", p, origin, getPowerFile(), p, null, null, null, p.getItemInHand(), null)) {
                                                     if (tmp instanceof Damageable && tmp != p)
@@ -92,7 +92,7 @@ public class ExplodeTick extends CraftPower implements Listener {
                                             }
                                         }
                                         List<Entity> nearby3 = p.getNearbyEntities(5, 5, 5);
-                                        for (Entity tmp : nearby3){
+                                        for (Entity tmp : nearby3) {
                                             if (executor.check("entity_condition", "entity_conditions", p, origin, getPowerFile(), p, null, null, null, p.getItemInHand(), null)) {
                                                 if (executor.check("bientit_condition", "bientity_conditions", p, origin, getPowerFile(), p, null, null, null, p.getItemInHand(), null)) {
                                                     if (tmp instanceof Damageable && tmp != p)
