@@ -15,6 +15,8 @@ adapt_lang: false
 # Enables debug information, when making a bug report, please include a screenshot of the startup while this is "true".
 console-startup-debug: false
 
+disable-ActionOnItemUse-power: true
+
 # If true then the errors encountered when parsing a file will be displayed.
 console-print-parse-errors: true
 

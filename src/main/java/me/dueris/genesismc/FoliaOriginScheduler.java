@@ -7,7 +7,9 @@ import me.dueris.genesismc.entity.OriginPlayer;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.factory.powers.FlightHandler;
 import me.dueris.genesismc.factory.powers.Overlay;
+import me.dueris.genesismc.factory.powers.actions.ActionOnItemUse;
 import me.dueris.genesismc.factory.powers.player.Gravity;
+import me.dueris.genesismc.files.GenesisDataFiles;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
@@ -81,7 +83,13 @@ public class FoliaOriginScheduler {
                                 throw new RuntimeException(e);
                             }
                             if (instance instanceof Listener) {
-                                Bukkit.getServer().getPluginManager().registerEvents((Listener) instance, GenesisMC.getPlugin());
+                                if(instance instanceof ActionOnItemUse){
+                                    if(GenesisDataFiles.getMainConfig().get("disable-ActionOnItemUse-power").equals(false)){
+                                        Bukkit.getServer().getPluginManager().registerEvents((Listener) instance, GenesisMC.getPlugin());
+                                    }
+                                }else{
+                                    Bukkit.getServer().getPluginManager().registerEvents((Listener) instance, GenesisMC.getPlugin());
+                                }
                             }
                         new BukkitRunnable() {
                             @Override
