@@ -27,14 +27,14 @@ import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static org.bukkit.Bukkit.getServer;
 
 public class OriginPlayer {
-
-    //cache
-    @SuppressWarnings("FieldMayBeFinal") private static HashMap<UUID, HashMap<LayerContainer, OriginContainer>> playerOrigin = new HashMap<>();
 
 //    public static boolean hasChosenOrigin(Player player) {
 //        return !OriginPlayer.getOrigin(player).getTag().equalsIgnoreCase("");
@@ -86,9 +86,7 @@ public class OriginPlayer {
      * @return true if the player has the origin.
      */
     public static boolean hasOrigin(Player player, String originTag) {
-        HashMap<LayerContainer, OriginContainer> origins;
-        if (playerOrigin.containsKey(player.getUniqueId())) origins = playerOrigin.get(player.getUniqueId());
-        else origins = CraftApoli.toOrigin(player.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "origins"), PersistentDataType.BYTE_ARRAY));
+        HashMap<LayerContainer, OriginContainer> origins = CraftApoli.toOrigin(player.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "origins"), PersistentDataType.BYTE_ARRAY));
         for (OriginContainer origin : origins.values()) if (origin.getTag().equals(originTag)) return true;
         return false;
     }
@@ -99,9 +97,6 @@ public class OriginPlayer {
      */
 
     public static OriginContainer getOrigin(Player player, LayerContainer layer) {
-        if (playerOrigin.containsKey(player.getUniqueId())) {
-            return playerOrigin.get(player.getUniqueId()).get(layer);
-        }
         PersistentDataContainer data = player.getPersistentDataContainer();
         if (data.get(new NamespacedKey(GenesisMC.getPlugin(), "origins"), PersistentDataType.BYTE_ARRAY) == null) {
             setOrigin(player, layer, CraftApoli.nullOrigin());
@@ -115,9 +110,6 @@ public class OriginPlayer {
      */
 
     public static HashMap<LayerContainer, OriginContainer> getOrigin(Player player) {
-        if (playerOrigin.containsKey(player.getUniqueId())) {
-            return playerOrigin.get(player.getUniqueId());
-        }
         PersistentDataContainer data = player.getPersistentDataContainer();
         if (data.get(new NamespacedKey(GenesisMC.getPlugin(), "origins"), PersistentDataType.BYTE_ARRAY) == null) {
             ArrayList<LayerContainer> layers = CraftApoli.getLayers();
@@ -181,7 +173,6 @@ public class OriginPlayer {
         for (LayerContainer layers : origins.keySet()) {
             if (layer.getTag().equals(layers.getTag())) origins.replace(layers, origin);
         }
-        playerOrigin.put(player.getUniqueId(), origins);
         player.getPersistentDataContainer().set(key, PersistentDataType.BYTE_ARRAY, CraftApoli.toByteArray(origins));
 
         String originTag = origin.getTag();
