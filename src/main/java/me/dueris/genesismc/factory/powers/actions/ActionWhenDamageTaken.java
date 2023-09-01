@@ -36,13 +36,13 @@ public class ActionWhenDamageTaken extends CraftPower implements Listener {
             if (!getPowerArray().contains(actor)) return;
             setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
             ActionTypes.EntityActionType(actor, power.getEntityAction());
-            GenesisMC.getOriginScheduler().runTaskLater(new BukkitRunnable() {
+            new BukkitRunnable() {
                 @Override
                 public void run() {
                     if (!getPowerArray().contains(actor)) return;
                     setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                 }
-            }, 2L);
+            }.runTaskLater(GenesisMC.getPlugin(), 2L);
         }
     }
 

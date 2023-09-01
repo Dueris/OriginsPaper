@@ -177,7 +177,7 @@ public class OriginPlayer {
 
         String originTag = origin.getTag();
         if (!originTag.equals(CraftApoli.nullOrigin().getTag())) SendCharts.originPopularity(player);
-        GenesisMC.getGlobalScheduler().runTaskLater(new BukkitRunnable() {
+        new BukkitRunnable() {
             @Override
             public void run() {
                 try {
@@ -188,7 +188,7 @@ public class OriginPlayer {
                     throw new RuntimeException(e);
                 }
             }
-        }, 3L);
+        }.runTaskLater(GenesisMC.getPlugin(), 3L);
     }
 
     /**
@@ -271,7 +271,6 @@ public class OriginPlayer {
         List<Class<? extends CraftPower>> array = new ArrayList<>();
         for(Player plc : powersAppliedList.keySet()){
             if(plc.equals(p)){
-                Bukkit.getLogger().info(powersAppliedList.get(plc).getSimpleName());
                 array.add(powersAppliedList.get(plc));
             }
         }

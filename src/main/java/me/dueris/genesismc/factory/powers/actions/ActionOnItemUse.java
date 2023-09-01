@@ -37,13 +37,13 @@ public class ActionOnItemUse extends CraftPower implements Listener {
             setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
             ActionTypes.EntityActionType(actor, power.getEntityAction());
             ActionTypes.ItemActionType(actor.getActiveItem(), power.getItemAction());
-            GenesisMC.getOriginScheduler().runTaskLater(new BukkitRunnable() {
+            new BukkitRunnable() {
                 @Override
                 public void run() {
                     if (!getPowerArray().contains(e.getPlayer())) return;
                     setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                 }
-            }, 2L);
+            }.runTaskLater(GenesisMC.getPlugin(), 2L);
         }
 
 //        if (e.getHand() == EquipmentSlot.HAND) System.out.println("main");

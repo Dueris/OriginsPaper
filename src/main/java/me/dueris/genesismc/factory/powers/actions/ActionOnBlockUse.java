@@ -49,13 +49,13 @@ public class ActionOnBlockUse extends CraftPower implements Listener {
                         ActionTypes.ItemActionType(e.getPlayer().getActiveItem(), power.getAction("held_item_action"));
                         ActionTypes.ItemActionType(e.getPlayer().getActiveItem(), power.getAction("result_item_action"));
                         ActionTypes.BlockEntityType(e.getPlayer(), e.getClickedBlock().getLocation(), power.getAction("block_entity_action"));
-                        GenesisMC.getOriginScheduler().runTaskLater(new BukkitRunnable() {
+                        new BukkitRunnable() {
                             @Override
                             public void run() {
                                 if (!getPowerArray().contains(e.getPlayer())) return;
                                 setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                             }
-                        }, 2L);
+                        }.runTaskLater(GenesisMC.getPlugin(), 2L);
                     }
                 }
             }

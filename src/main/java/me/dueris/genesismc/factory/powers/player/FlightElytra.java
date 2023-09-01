@@ -63,7 +63,7 @@ public class FlightElytra extends CraftPower implements Listener {
                     if (!getPowerArray().contains(p)) return;
                     setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                     if (origin.getPowerFileFromType("origins:elytra_flight").getShouldRender()) {
-                        SendStringPacketPayload.sendCustomPacket(p, "ExecuteGenesisOriginsElytraRenderID:12232285");
+                        SendStringPacketPayload.sendCustomPacket(p, "genesismc-elytra-render[packetID:a354b]");
                         CraftPlayer player = (CraftPlayer) p;
                         Bukkit.getServer().getGlobalRegionScheduler().execute(GenesisMC.getPlugin(), new BukkitRunnable() {
                             @Override
@@ -75,7 +75,7 @@ public class FlightElytra extends CraftPower implements Listener {
                     if (!p.isOnGround() && !p.isGliding()) {
                         glidingPlayers.add(p.getUniqueId());
                         if (p.getGameMode() == GameMode.SPECTATOR) return;
-                        GenesisMC.getGlobalScheduler().runTaskTimer(new BukkitRunnable() {
+                        new BukkitRunnable() {
                             @Override
                             public void run() {
                                 if (p.isOnGround() || p.isFlying()) {
@@ -85,7 +85,7 @@ public class FlightElytra extends CraftPower implements Listener {
                                 p.setGliding(true);
                                 p.setFallDistance(0);
                             }
-                        }, 0L, 1L);
+                        }.runTaskTimer(GenesisMC.getPlugin(), 0L, 1L);
                     }
                 } else {
                     if (origin.getPowerFileFromType(getPowerFile()) == null) {

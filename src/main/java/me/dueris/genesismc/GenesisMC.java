@@ -46,6 +46,8 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitScheduler;
+import org.bukkit.scheduler.BukkitTask;
 
 import java.io.IOException;
 import java.lang.reflect.Constructor;
@@ -94,11 +96,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         return plugin;
     }
 
-    public static FoliaOriginScheduler pluginScheduler;
-
-    public static FoliaOriginScheduler getOriginScheduler() {
-        return pluginScheduler;
-    }
+    public static BukkitScheduler pluginScheduler;
 
     public interface MyScheduledTask {
         void cancel();
@@ -109,9 +107,9 @@ public final class GenesisMC extends JavaPlugin implements Listener {
     }
 
     public static class OriginScheduledTask implements MyScheduledTask {
-        private final ScheduledTask task;
+        private final BukkitTask task;
 
-        public OriginScheduledTask(final ScheduledTask task) {
+        public OriginScheduledTask(final BukkitTask task) {
             this.task = task;
         }
 
@@ -123,28 +121,26 @@ public final class GenesisMC extends JavaPlugin implements Listener {
             return this.task.isCancelled();
         }
 
+        @Override
         public Plugin getOwningPlugin() {
-            return this.task.getOwningPlugin();
+            return null;
         }
 
+        @Override
         public boolean isCurrentlyRunning() {
-            final ScheduledTask.ExecutionState state = this.task.getExecutionState();
-            return state == ScheduledTask.ExecutionState.RUNNING || state == ScheduledTask.ExecutionState.CANCELLED_RUNNING;
+            return false;
         }
 
+        @Override
         public boolean isRepeatingTask() {
-            return this.task.isRepeatingTask();
+            return false;
         }
     }
 
-    public static FoliaOriginScheduler getScheduler(Plugin plugin, Player player) {
-        return new FoliaOriginScheduler(plugin, player);
-    }
-
-    TaskScheduler taskS;
+    static TaskScheduler taskS;
 
     public static TaskScheduler getGlobalScheduler(){
-        return getPlugin().taskS;
+        return taskS;
     }
 
     @Override
@@ -275,19 +271,19 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 
         //runnables
         ChoosingForced forced = new ChoosingForced();
-        getGlobalScheduler().runTaskTimer(forced, 0, 1);
+        forced.runTaskTimer(GenesisMC.getPlugin(), 0, 1);
 
         GenesisItems items = new GenesisItems();
-        getGlobalScheduler().runTaskTimer(items, 0, 1);
+        items.runTaskTimer(GenesisMC.getPlugin(), 0, 1);
 
 
         Bukkit.getServer().getPluginManager().registerEvents(new KeybindHandler(), GenesisMC.getPlugin());
 
         InInfoCheck info = new InInfoCheck();
-        getGlobalScheduler().runTaskTimer(info, 0, 1);
+        info.runTaskTimer(GenesisMC.getPlugin(), 0, 1);
 
         FoliaOriginScheduler.OriginSchedulerTree tree = new FoliaOriginScheduler.OriginSchedulerTree();
-        getGlobalScheduler().runTaskTimer(tree, 0, 1);
+        tree.runTaskTimer(GenesisMC.getPlugin(), 0, 1);
 
         if(Bukkit.getServer().getPluginManager().isPluginEnabled("SkinsRestorer")){
             GlobalRegionScheduler globalRegionScheduler = Bukkit.getGlobalRegionScheduler();
@@ -308,12 +304,12 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         Bukkit.getServer().getConsoleSender().sendMessage(Component.text("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"));
 
         for (Player p : Bukkit.getOnlinePlayers()) {
-        GenesisMC.getOriginScheduler().runTaskLater(new BukkitRunnable() {
+        new BukkitRunnable() {
                 @Override
                 public void run() {
                     ReapplyEntityReachPowers(p);
                 }
-            }, 5l);
+            }.runTaskLater(GenesisMC.getPlugin(), 5l);
             PlayerHandler.originValidCheck(p);
             OriginPlayer.assignPowers(p);
             if (p.isOp())

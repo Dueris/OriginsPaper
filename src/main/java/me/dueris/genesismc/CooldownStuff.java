@@ -108,7 +108,7 @@ public class CooldownStuff {
         ServerPlayer serverPlayer = craftPlayer.getHandle();
         final ServerGamePacketListenerImpl connection = serverPlayer.connection;
 
-        GenesisMC.getOriginScheduler().runTaskTimer(new BukkitRunnable() {
+        new BukkitRunnable() {
             int ticksElapsed = -1;
 
             @Override
@@ -128,7 +128,7 @@ public class CooldownStuff {
                     cancel();
                 }
             }
-        }, 0, 1);
+        }.runTaskTimer(GenesisMC.getPlugin(), 0, 1);
     }
 
 }

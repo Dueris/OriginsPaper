@@ -79,7 +79,7 @@ public class FireProjectile extends CraftPower implements Listener {
                         if (conditionExecutor.check("condition", "conditions", p, origin, "origins:fire_projectile", p, null, null, null, p.getItemInHand(), null)) {
                             if (!CooldownStuff.isPlayerInCooldown(p, origin.getPowerFileFromType("origins:fire_projectile").getKey().get("key").toString())) {
                                 if (isKeyBeingPressed(e.getPlayer(), origin.getPowerFileFromType("origins:fire_projectile").getKey().get("key").toString(), true)) {
-                                    GenesisMC.getOriginScheduler().runTaskTimer(new BukkitRunnable() {
+                                    new BukkitRunnable() {
                                         @Override
                                         public void run() {
                                             Sound sound;
@@ -110,7 +110,7 @@ public class FireProjectile extends CraftPower implements Listener {
                                                 float finalDivergence = divergence;
                                                 float finalDivergence1 = divergence;
                                                 final boolean[] thing = new boolean[1];
-                                                GenesisMC.getOriginScheduler().runTaskTimer(new BukkitRunnable() {
+                                                new BukkitRunnable() {
                                                     int shotsLeft = -amt;
 
                                                     @Override
@@ -194,7 +194,7 @@ public class FireProjectile extends CraftPower implements Listener {
                                                             shotsLeft++; // Decrement the remaining shots
                                                         }
                                                     }
-                                                }, start_delay, interval);
+                                                }.runTaskTimer(GenesisMC.getPlugin(), start_delay, interval);
 
                                                 if (thing[0]) {
                                                     thing[0] = false;
@@ -228,7 +228,7 @@ public class FireProjectile extends CraftPower implements Listener {
                                                 }
                                             }
                                         }
-                                    }, 0, 1);
+                                    }.runTaskTimer(GenesisMC.getPlugin(), 0, 1);
                                 }
                             }
                         }

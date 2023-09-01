@@ -40,13 +40,13 @@ public class AttackerActionWhenHit extends CraftPower implements Listener {
             if (!getPowerArray().contains(actor)) return;
             setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
             ActionTypes.biEntityActionType(actor, actor, power.getBiEntityAction());
-            GenesisMC.getOriginScheduler().runTaskLater(new BukkitRunnable() {
+            new BukkitRunnable() {
                 @Override
                 public void run() {
                     if (!getPowerArray().contains(actor)) return;
                     setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                 }
-            }, 2L);
+            }.runTaskLater(GenesisMC.getPlugin(), 2L);
         }
     }
 

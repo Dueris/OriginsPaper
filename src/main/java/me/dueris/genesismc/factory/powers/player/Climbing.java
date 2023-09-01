@@ -82,22 +82,22 @@ public class Climbing extends CraftPower {
                             if (!p.isSneaking()) return;
                             p.addPotionEffect(new PotionEffect(PotionEffectType.LEVITATION, 6, 2, false, false, false));
                             getActiveClimbingMap().add(p);
-                            GenesisMC.getOriginScheduler().runTaskLater(new BukkitRunnable() {
+                            new BukkitRunnable() {
                                 @Override
                                 public void run() {
                                     getActiveClimbingMap().remove(p);
                                 }
-                            }, 1L);
+                            }.runTaskLater(GenesisMC.getPlugin(), 1L);
                         } else {
                             if (block.getType() != AIR && p.isSneaking() && !p.isInRain()) {
                                 p.addPotionEffect(new PotionEffect(PotionEffectType.LEVITATION, 6, 2, false, false, false));
                                 getActiveClimbingMap().add(p);
-                                GenesisMC.getOriginScheduler().runTaskLater(new BukkitRunnable() {
+                                new BukkitRunnable() {
                                     @Override
                                     public void run() {
                                         getActiveClimbingMap().remove(p);
                                     }
-                                }, 1L);
+                                }.runTaskLater(GenesisMC.getPlugin(), 1L);
                             }
                         }
                     } else {

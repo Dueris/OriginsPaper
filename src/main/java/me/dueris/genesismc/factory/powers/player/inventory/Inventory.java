@@ -45,7 +45,7 @@ public class Inventory extends CraftPower implements CommandExecutor, Listener {
     public void MoveBackChange(OriginChangeEvent e) {
         Player p = e.getPlayer();
         for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
-            GenesisMC.getOriginScheduler().runTaskTimer(new BukkitRunnable() {
+            new BukkitRunnable() {
                 @Override
                 public void run() {
                     if (!shulker_inventory.contains(p)) {
@@ -73,7 +73,7 @@ public class Inventory extends CraftPower implements CommandExecutor, Listener {
                         this.cancel();
                     }
                 }
-            }, 1L, 1L);
+            }.runTaskTimer(GenesisMC.getPlugin(), 1L, 1L);
         }
 
     }

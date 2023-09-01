@@ -71,19 +71,19 @@ public class Toggle extends CraftPower implements Listener {
                     in_continuous.remove(p);
                     active = false;
                     runCancel = true;
-                    GenesisMC.getOriginScheduler().runTaskTimer(new BukkitRunnable() {
+                    new BukkitRunnable() {
                         @Override
                         public void run() {
                             runCancel = false;
                             this.cancel();
                         }
-                    },0, 5);
-                    GenesisMC.getOriginScheduler().runTaskTimer(new BukkitRunnable() {
+                    }.runTaskTimer(GenesisMC.getPlugin(),0, 5);
+                    new BukkitRunnable() {
                         @Override
                         public void run() {
                             //run code for while its disabled
                         }
-                    }, 0, 1);
+                    }.runTaskTimer(GenesisMC.getPlugin(), 0, 1);
                 } else {
                     //nonactive
                     KeybindHandler.runKeyChangeTrigger(KeybindHandler.getKeybindItem(key, p.getInventory()));
@@ -94,25 +94,25 @@ public class Toggle extends CraftPower implements Listener {
                     in_continuous.add(p);
                     active = true;
                     runCancel = true;
-                    GenesisMC.getOriginScheduler().runTaskLater(new BukkitRunnable() {
+                    new BukkitRunnable() {
                         @Override
                         public void run() {
                             runCancel = false;
                             this.cancel();
                         }
-                    }, 5);
-                    GenesisMC.getOriginScheduler().runTaskTimer(new BukkitRunnable() {
+                    }.runTaskLater(GenesisMC.getPlugin(), 5);
+                    new BukkitRunnable() {
                         @Override
                         public void run() {
                             //run code for while its enabled
                         }
-                    }, 0, 1);
+                    }.runTaskTimer(GenesisMC.getPlugin(), 0, 1);
                 }
             } else {
                 KeybindHandler.runKeyChangeTrigger(KeybindHandler.getKeybindItem(key, p.getInventory()));
                 setActive(tag, true);
                 in_continuous.add(p);
-                GenesisMC.getOriginScheduler().runTaskLater(new BukkitRunnable() {
+                new BukkitRunnable() {
                     @Override
                     public void run() {
                         KeybindHandler.runKeyChangeTriggerReturn(KeybindHandler.getTriggerFromOriginKey(p, key), p, key);
@@ -122,21 +122,21 @@ public class Toggle extends CraftPower implements Listener {
                         KeybindHandler.getKeybindItem(key, p.getInventory()).setItemMeta(met);
                         in_continuous.remove(p);
                     }
-                }, 2);
+                }.runTaskLater(GenesisMC.getPlugin(), 2);
             }
         } else {
             //set true
             KeybindHandler.runKeyChangeTrigger(KeybindHandler.getKeybindItem(key, p.getInventory()));
             setActive(tag, true);
             in_continuous.add(p);
-            GenesisMC.getOriginScheduler().runTaskLater(new BukkitRunnable() {
+            new BukkitRunnable() {
                 @Override
                 public void run() {
                     KeybindHandler.runKeyChangeTriggerReturn(KeybindHandler.getTriggerFromOriginKey(p, key), p, key);
                     setActive(tag, false);
                     in_continuous.remove(p);
                 }
-            }, 2);
+            }.runTaskLater(GenesisMC.getPlugin(), 2);
         }
     }
 

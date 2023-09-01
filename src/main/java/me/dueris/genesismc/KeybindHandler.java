@@ -198,21 +198,21 @@ public class KeybindHandler implements Listener {
     public void OnPressMainKey(OriginKeybindExecuteEvent e) {
         if (e.getKey().equals("key.origins.primary_active")) {
             primaryTick.add(e.getPlayer());
-            GenesisMC.getGlobalScheduler().runTaskLater(new BukkitRunnable() {
+            new BukkitRunnable() {
                 @Override
                 public void run() {
                     primaryTick.remove(e.getPlayer());
                 }
-            }, 1);
+            }.runTaskLater(GenesisMC.getPlugin(), 1);
         }
         if (e.getKey().equals("key.origins.secondary_active")) {
             secondaryTick.add(e.getPlayer());
-            GenesisMC.getGlobalScheduler().runTaskLater(new BukkitRunnable() {
+            new BukkitRunnable() {
                 @Override
                 public void run() {
                     secondaryTick.remove(e.getPlayer());
                 }
-            }, 1);
+            }.runTaskLater(GenesisMC.getPlugin(), 1);
         }
     }
 
@@ -364,12 +364,12 @@ public class KeybindHandler implements Listener {
     @EventHandler
     public void onPlayerSwapHandItems(PlayerSwapHandItemsEvent event) {
         spawnHandsTick.add(event.getPlayer());
-        GenesisMC.getGlobalScheduler().runTaskLater(new BukkitRunnable() {
+        new BukkitRunnable() {
             @Override
             public void run() {
                 spawnHandsTick.remove(event.getPlayer());
             }
-        }, 1);
+        }.runTaskLater(GenesisMC.getPlugin(), 1);
     }
 
     @EventHandler
@@ -377,11 +377,11 @@ public class KeybindHandler implements Listener {
         int hotbarSlot = event.getNewSlot() + 1; // Hotbar slots are 1-indexed
         String keyName = "key.hotbar." + hotbarSlot;
         hotbarSlotTick.put(event.getPlayer(), hotbarSlot);
-        GenesisMC.getGlobalScheduler().runTaskLater(new BukkitRunnable() {
+        new BukkitRunnable() {
             @Override
             public void run() {
                 hotbarSlotTick.remove(event.getPlayer());
             }
-        }, 1);
+        }.runTaskLater(GenesisMC.getPlugin(), 1);
     }
 }

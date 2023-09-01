@@ -33,13 +33,13 @@ public class ActionOnLand extends CraftPower implements Listener {
             if (e.getFrom().getY() > e.getTo().getY() && e.getFrom().getY() - e.getTo().getY() >= MIN_FALL_DISTANCE) {
                 setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                 ActionTypes.EntityActionType(e.getPlayer(), origin.getPowerFileFromType(getPowerFile()).getEntityAction());
-                GenesisMC.getOriginScheduler().runTaskLater(new BukkitRunnable() {
+                new BukkitRunnable() {
                     @Override
                     public void run() {
                         if (!getPowerArray().contains(e.getPlayer())) return;
                         setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                     }
-                }, 2L);
+                }.runTaskLater(GenesisMC.getPlugin(), 2L);
             }
         }
     }
