@@ -305,6 +305,7 @@ public class EntityCondition {
         if(type.equalsIgnoreCase("origins:enchantment")){
             if(entity instanceof Player player){
                 for(ItemStack item : player.getInventory().getArmorContents()){
+                    if(item == null) continue;
                     if(condition.get("compare_to").toString() == "0" && condition.get("comparison").toString() == "==") return Optional.of(!item.containsEnchantment(getEnchantmentByNamespace(condition.get("enchantment").toString())));
                     if(item.containsEnchantment(getEnchantmentByNamespace(condition.get("enchantment").toString()))){
                         if(RestrictArmor.compareValues(item.getEnchantmentLevel(getEnchantmentByNamespace(condition.get("enchantment").toString())), condition.get("comparison").toString(), Double.parseDouble(condition.get("compare_to").toString()))){
