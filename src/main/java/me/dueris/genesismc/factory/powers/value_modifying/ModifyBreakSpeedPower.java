@@ -51,24 +51,18 @@ public class ModifyBreakSpeedPower extends CraftPower implements Listener {
     @EventHandler
     public void runD(PlayerArmSwingEvent e) {
         Player p = e.getPlayer();
-        p.sendMessage("eeeeeeeeeeeeeee");
         if (modify_break_speed.contains(p)) {
-            p.sendMessage("OMGt");
             for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
                 ValueModifyingSuperClass valueModifyingSuperClass = new ValueModifyingSuperClass();
                 try {
                     ConditionExecutor conditionExecutor = new ConditionExecutor();
-                    p.sendMessage("sratrt");
                     if (conditionExecutor.check("condition", "condition", p, origin, getPowerFile(), p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
-                        p.sendMessage("y834798ugfoksd");
                         if (conditionExecutor.check("block_condition", "block_condition", p, origin, getPowerFile(), p, null, e.getPlayer().getTargetBlockExact(AttributeHandler.Reach.getDefaultReach(p)), null, p.getItemInHand(), null)) {
                             setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                                 p.addPotionEffect(new PotionEffect(PotionEffectType.FAST_DIGGING, 50, calculateHasteAmplifier(valueModifyingSuperClass.getPersistentAttributeContainer(p, MODIFYING_KEY)), false, false, false));
-                                p.sendMessage("test");
                         } else {
                             setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                         }
-                        p.sendMessage("testdsfwoe");
                     } else {
                         setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                     }
