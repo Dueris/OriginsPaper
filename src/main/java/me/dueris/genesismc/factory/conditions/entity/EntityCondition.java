@@ -12,8 +12,10 @@ import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.BoundingBox;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -299,7 +301,24 @@ public class EntityCondition {
                 if(entity.getLocation().getBlock().getType().equals(Material.LAVA)) return Optional.of(true);
             }
         }
+
+        if(type.equalsIgnoreCase("origins:enchantment")){
+            if(entity instanceof Player player){
+                for(ItemStack item : player.getInventory().getArmorContents()){
+                    if(condition.get("compare_to").toString() == "0" && condition.get("comparison").toString() == "==") return Optional.of(!item.containsEnchantment(getEnchantmentByNamespace(condition.get("enchantment").toString())));
+                    if(item.containsEnchantment(getEnchantmentByNamespace(condition.get("enchantment").toString()))){
+                        if(RestrictArmor.compareValues(item.getEnchantmentLevel(getEnchantmentByNamespace(condition.get("enchantment").toString())), condition.get("comparison").toString(), Double.parseDouble(condition.get("compare_to").toString()))){
+                            return Optional.of(true);
+                        }
+                    }
+                }
+            }
+        }
         return Optional.of(false);
+    }
+
+    public static Enchantment getEnchantmentByNamespace(String namespaceString) {
+        return Enchantment.getByName(namespaceString);
     }
 
     private static int countBlocksInCube(int minX, int minY, int minZ, int maxX, int maxY, int maxZ, World world) {
