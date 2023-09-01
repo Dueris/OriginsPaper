@@ -137,6 +137,12 @@ public class ActionTypes {
         entityAction = power;
         String type = entityAction.get("type").toString();
 
+        if (type.equals("origins:gain_air")){
+            long amt = (long) power.get("value");
+            if(entity instanceof Player p){
+                p.setRemainingAir(p.getRemainingAir() + Math.toIntExact(amt));
+            }
+        }
         if (type.equals("origins:add_velocity")) {
             float y = 0.0f;
             boolean set = false;
