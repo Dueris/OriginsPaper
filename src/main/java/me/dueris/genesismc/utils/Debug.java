@@ -39,7 +39,7 @@ public class Debug {
                 Bukkit.getServer().getMaxWorldSize() +
                 Bukkit.getMinecraftVersion()
         );
-        FoliaOriginScheduler.getGlobalScheduler().runTaskLater(new BukkitRunnable() {
+        new BukkitRunnable() {
             @Override
             public void run() {
                 try {
@@ -49,7 +49,7 @@ public class Debug {
                     Bukkit.getServer().getPluginManager().disablePlugin(GenesisMC.getPlugin());
                 }
             }
-        }, 20);
+        }.runTaskLater(GenesisMC.getPlugin(), 20);
     }
 
     public static void executeGenesisReload() {

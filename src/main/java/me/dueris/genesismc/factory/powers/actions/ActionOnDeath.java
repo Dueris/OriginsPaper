@@ -42,7 +42,7 @@ public class ActionOnDeath extends CraftPower implements Listener {
                     if (!getPowerArray().contains(p)) return;
                     setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                     ActionTypes.EntityActionType(p, power.getEntityAction());
-                    GenesisMC.getOriginScheduler().runTaskLater(new BukkitRunnable() {
+                    new BukkitRunnable() {
                         @Override
                         public void run() {
                             if (origin.getPowerFileFromType(getPowerFile()) == null) {
@@ -52,7 +52,7 @@ public class ActionOnDeath extends CraftPower implements Listener {
                             if (!getPowerArray().contains(p)) return;
                             setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                         }
-                    }, 2L);
+                    }.runTaskLater(GenesisMC.getPlugin(), 2L);
                 }
             }
         }

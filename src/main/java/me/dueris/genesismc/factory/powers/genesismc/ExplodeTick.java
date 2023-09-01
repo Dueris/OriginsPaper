@@ -42,7 +42,7 @@ public class ExplodeTick extends CraftPower implements Listener {
             if (explode_tick.contains(e.getPlayer()) && !p.isFlying() && !p.isGliding()) {
 
                 cooldown.remove(p.getUniqueId());
-                GenesisMC.getOriginScheduler().runTaskTimer(new BukkitRunnable() {
+                new BukkitRunnable() {
                     final Material block = e.getPlayer().getLocation().getBlock().getType();
 
                     @Override
@@ -158,7 +158,7 @@ public class ExplodeTick extends CraftPower implements Listener {
                             setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                         }
                     }
-                }, 0L, 5L);
+                }.runTaskTimer(GenesisMC.getPlugin(), 0L, 5L);
             }
         }
     }

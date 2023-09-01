@@ -39,8 +39,6 @@ public class Gravity extends CraftPower implements Listener {
             if (no_gravity.contains(p)) {
                 ConditionExecutor executor = new ConditionExecutor();
                 if (executor.check("condition", "conditions", p, origin, getPowerFile(), p, null, null, null, p.getItemInHand(), null)) {
-                    if (origin.getPowerFileFromType(getPowerFile()) == null) getPowerArray().remove(p);
-                    if (!getPowerArray().contains(p)) return;
                     setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                     if (no_gravity.contains(p)) {
                         p.setGravity(false);
@@ -49,11 +47,6 @@ public class Gravity extends CraftPower implements Listener {
                         p.setGravity(true);
                     }
                 } else {
-                    if (origin.getPowerFileFromType(getPowerFile()) == null) {
-                        getPowerArray().remove(p);
-                        return;
-                    }
-                    if (!getPowerArray().contains(p)) return;
                     setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                 }
             } else {
@@ -76,7 +69,7 @@ public class Gravity extends CraftPower implements Listener {
     public void shiftgodown(PlayerToggleSneakEvent e) {
         if (no_gravity.contains(e.getPlayer())) {
             if (e.getPlayer().isOnGround()) return;
-            GenesisMC.getOriginScheduler().runTaskTimer(new BukkitRunnable() {
+            new BukkitRunnable() {
                 @Override
                 public void run() {
                     if (e.getPlayer().isFlying()) return;
@@ -90,7 +83,7 @@ public class Gravity extends CraftPower implements Listener {
                         this.cancel();
                     }
                 }
-            }, 0, 1);
+            }.runTaskTimer(GenesisMC.getPlugin(), 0, 1);
         }
 
     }

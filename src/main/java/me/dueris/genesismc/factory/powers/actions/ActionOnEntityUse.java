@@ -44,13 +44,13 @@ public class ActionOnEntityUse extends CraftPower implements Listener {
             ActionTypes.ItemActionType(actor.getActiveItem(), power.getAction("held_item_action"));
             ActionTypes.ItemActionType(actor.getActiveItem(), power.getAction("result_item_action"));
             //todo:add conditions for it see https://origins.readthedocs.io/en/latest/types/power_types/action_on_entity_use/
-            GenesisMC.getOriginScheduler().runTaskLater(new BukkitRunnable() {
+            new BukkitRunnable() {
                 @Override
                 public void run() {
                     if (!getPowerArray().contains(e.getPlayer())) return;
                     setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                 }
-            }, 2L);
+            }.runTaskLater(GenesisMC.getPlugin(), 2L);
         }
 
 //        if (e.getHand() == EquipmentSlot.HAND) System.out.println("main");

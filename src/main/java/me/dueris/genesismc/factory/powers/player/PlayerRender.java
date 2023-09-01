@@ -172,7 +172,7 @@ public class PlayerRender extends CraftPower {
         @EventHandler
         public void onPlayerChoose(OriginChangeEvent event) {
             Player player = event.getPlayer();
-            GenesisMC.getOriginScheduler().runTaskTimer(new BukkitRunnable() {
+            new BukkitRunnable() {
                 @Override
                 public void run() {
                     if (model_color.contains(player)) {
@@ -222,13 +222,13 @@ public class PlayerRender extends CraftPower {
                     }
                     this.cancel();
                 }
-            }, 20L, 1L);
+            }.runTaskTimer(GenesisMC.getPlugin(), 20L, 1L);
         }
 
         @EventHandler
         public void JoinApplyTest(PlayerJoinEvent e) {
             Player player = e.getPlayer();
-            GenesisMC.getOriginScheduler().runTaskTimer(new BukkitRunnable() {
+            new BukkitRunnable() {
                 @Override
                 public void run() {
                     if (model_color.contains(player)) {
@@ -248,7 +248,7 @@ public class PlayerRender extends CraftPower {
                     }
                     this.cancel();
                 }
-            }, 4L, 1L);
+            }.runTaskTimer(GenesisMC.getPlugin(), 4L, 1L);
         }
 
         public static void modifyPlayerSkin(Player player, Double redTint, Double greenTint, Double blueTint, String savePath, Long alphaTint, SkinsRestorerAPI skinsRestorerAPI, boolean applyOriginal, OriginContainer origin) {

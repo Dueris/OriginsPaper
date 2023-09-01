@@ -184,12 +184,12 @@ public class PlayerHandler implements Listener {
         OriginPlayer.assignPowers(p);
         p.sendMessage(Component.text(LangConfig.getLocalizedString(p, "misc.joinText")).color(TextColor.fromHexString(AQUA)));
 
-        GenesisMC.getGlobalScheduler().runTaskLater(new BukkitRunnable() {
+        new BukkitRunnable() {
             @Override
             public void run() {
                 ReapplyEntityReachPowers(p);
             }
-        }, 3);
+        }.runTaskLater(GenesisMC.getPlugin(), 3);
 
         try {
             for (Class<? extends CraftPower> c : CraftPower.findCraftPowerClasses()) {
