@@ -17,11 +17,6 @@ public class Burn extends CraftPower {
     private Long interval;
     private int ticksE;
 
-    public Burn() {
-        this.interval = 1L;
-        this.ticksE = 0;
-    }
-
     @Override
     public void setActive(String tag, Boolean bool) {
         if (powers_active.containsKey(tag)) {
@@ -31,45 +26,51 @@ public class Burn extends CraftPower {
         }
     }
 
-    @Override
-    public void run() {
-        for (Player p : Bukkit.getOnlinePlayers()) {
-            if (burn.contains(p)) {
-                for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
-                    PowerContainer power = origin.getPowerFileFromType("origins:burn");
-                    if (power == null) continue;
-                    if (power.getInterval() == null) {
-                        Bukkit.getLogger().warning(LangConfig.getLocalizedString(p, "powers.errors.burn"));
-                        return;
-                    }
-                    interval = power.getInterval();
-                    if (ticksE < interval) {
-                        ticksE++;
-                        return;
-                    } else {
-                        if (p.isInWaterOrRainOrBubbleColumn()) return;
-                        if (p.getGameMode() == GameMode.CREATIVE) return;
-                        ConditionExecutor executor = new ConditionExecutor();
-                        if (executor.check("condition", "conditions", p, origin, getPowerFile(), p, null, null, null, p.getItemInHand(), null)) {
-                            if (origin.getPowerFileFromType(getPowerFile()) == null) {
-                                getPowerArray().remove(p);
-                                return;
-                            }
-                            if (!getPowerArray().contains(p)) return;
-                            setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
+    Player p;
 
-                            Long burn_duration = power.getBurnDuration();
-                            p.setFireTicks(burn_duration.intValue() * 20);
-                        } else {
-                            if (origin.getPowerFileFromType(getPowerFile()) == null) {
-                                getPowerArray().remove(p);
-                                return;
-                            }
-                            if (!getPowerArray().contains(p)) return;
-                            setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
+    public Burn(){
+        this.p = p;
+        this.interval = 1L;
+        this.ticksE = 0;
+    }
+
+    @Override
+    public void run(Player p) {
+        if (burn.contains(p)) {
+            for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
+                PowerContainer power = origin.getPowerFileFromType("origins:burn");
+                if (power == null) continue;
+                if (power.getInterval() == null) {
+                    Bukkit.getLogger().warning(LangConfig.getLocalizedString(p, "powers.errors.burn"));
+                    return;
+                }
+                interval = power.getInterval();
+                if (ticksE < interval) {
+                    ticksE++;
+                    return;
+                } else {
+                    if (p.isInWaterOrRainOrBubbleColumn()) return;
+                    if (p.getGameMode() == GameMode.CREATIVE) return;
+                    ConditionExecutor executor = new ConditionExecutor();
+                    if (executor.check("condition", "conditions", p, origin, getPowerFile(), p, null, null, null, p.getItemInHand(), null)) {
+                        if (origin.getPowerFileFromType(getPowerFile()) == null) {
+                            getPowerArray().remove(p);
+                            return;
                         }
-                        ticksE = 0;
+                        if (!getPowerArray().contains(p)) return;
+                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
+
+                        Long burn_duration = power.getBurnDuration();
+                        p.setFireTicks(burn_duration.intValue() * 20);
+                    } else {
+                        if (origin.getPowerFileFromType(getPowerFile()) == null) {
+                            getPowerArray().remove(p);
+                            return;
+                        }
+                        if (!getPowerArray().contains(p)) return;
+                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                     }
+                    ticksE = 0;
                 }
             }
         }

@@ -24,12 +24,7 @@ import java.util.UUID;
 
 public class ExplodeTick extends CraftPower implements Listener {
 
-    private final HashMap<UUID, Long> cooldown;
-
-
-    public ExplodeTick() {
-        this.cooldown = new HashMap<>();
-    }
+    private HashMap<UUID, Long> cooldown;
 
     @Override
     public void setActive(String tag, Boolean bool) {
@@ -169,8 +164,15 @@ public class ExplodeTick extends CraftPower implements Listener {
     }
 
 
+    Player p;
+
+    public ExplodeTick(){
+        this.cooldown = new HashMap<>();
+        this.p = p;
+    }
+
     @Override
-    public void run() {
+    public void run(Player p) {
 
     }
 

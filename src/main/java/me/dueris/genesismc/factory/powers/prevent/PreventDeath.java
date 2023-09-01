@@ -42,8 +42,14 @@ public class PreventDeath extends CraftPower implements Listener {
         }
     }
 
+    Player p;
+
+    public PreventDeath(){
+        this.p = p;
+    }
+
     @Override
-    public void run() {
+    public void run(Player p) {
 
     }
 

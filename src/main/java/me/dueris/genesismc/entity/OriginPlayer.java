@@ -1,9 +1,11 @@
 package me.dueris.genesismc.entity;
 
+import me.dueris.genesismc.FoliaOriginScheduler;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.enums.OriginDataType;
 import me.dueris.genesismc.events.OriginChooseEvent;
 import me.dueris.genesismc.factory.CraftApoli;
+import me.dueris.genesismc.factory.PowerStartHandler;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.files.GenesisDataFiles;
 import me.dueris.genesismc.utils.LayerContainer;
@@ -23,8 +25,11 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static org.bukkit.Bukkit.getServer;
@@ -246,6 +251,7 @@ public class OriginPlayer {
     }
 
     public static void assignPowers(Player player) {
+        if(player == null) Bukkit.getServer().getConsoleSender().sendMessage("khhdsfuhdslhfkshgdlkfsdfsdfsdfsdO");
         HashMap<LayerContainer, OriginContainer> origins = getOrigin(player);
         for (LayerContainer layer : origins.keySet()) {
             try {
@@ -258,25 +264,36 @@ public class OriginPlayer {
         }
     }
 
+    public static HashMap<Player, Class<? extends CraftPower>> powersAppliedList = new HashMap<>();
+    public static ArrayList<Player> hasPowers = new ArrayList<>();
+
+    public static List<Class<? extends CraftPower>> getPowersApplied(Player p){
+        List<Class<? extends CraftPower>> array = new ArrayList<>();
+        for(Player plc : powersAppliedList.keySet()){
+            if(plc.equals(p)){
+                array.add(powersAppliedList.get(plc));
+            }
+        }
+        return array;
+    }
+
     public static void assignPowers(Player player, LayerContainer layer) throws InstantiationException, IllegalAccessException {
         OriginContainer origin = getOrigin(player, layer);
+        if(player == null) Bukkit.getServer().getConsoleSender().sendMessage("rip player null");
+        if(origin.getPowerContainers().isEmpty()){
+            player.sendMessage("BRO ITS EMPTY WAHT");
+        }
         for (PowerContainer power : origin.getPowerContainers()) {
             for (Class<? extends CraftPower> c : CraftPower.getRegistered()) {
                 CraftPower craftPower = c.newInstance();
-                player.sendMessage(origin.getPowerContainers().toString());
-                player.sendMessage("12");
-                if (power.getType() != "origins:multiple") {
-                    player.sendMessage(power.getType());
-                }
                 if (power.getType().equals(craftPower.getPowerFile())) {
-                    player.sendMessage("adddedded");
                     craftPower.getPowerArray().add(player);
-                    if (GenesisDataFiles.getMainConfig().getString("console-startup-debug").equalsIgnoreCase("true")) {
-                        Bukkit.getConsoleSender().sendMessage("GenesisMC-Origins assigned power[" + craftPower.getPowerFile() + "] on layer[" + layer.getTag() + "] to player " + player.getName());
-                    }
+                    powersAppliedList.put(player, c);
+                    Bukkit.getConsoleSender().sendMessage("GenesisMC-Origins assigned power[" + craftPower.getPowerFile() + "] on layer[" + layer.getTag() + "] to player " + player.getName());
                 }
             }
         }
+        hasPowers.add(player);
     }
 
     public static void unassignPowers(Player player) {
@@ -306,6 +323,10 @@ public class OriginPlayer {
                 }
             }
         }
+        for(Class<? extends CraftPower> classes : getPowersApplied(player)){
+            powersAppliedList.remove(player, classes);
+        }
+        hasPowers.remove(player);
     }
 
     /**

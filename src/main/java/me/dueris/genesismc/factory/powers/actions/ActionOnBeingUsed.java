@@ -44,8 +44,14 @@ public class ActionOnBeingUsed extends CraftPower implements Listener {
 //        if (e.getHand() == EquipmentSlot.OFF_HAND) System.out.println("off");
     }
 
+    Player p;
+
+    public ActionOnBeingUsed(){
+        this.p = p;
+    }
+
     @Override
-    public void run() {
+    public void run(Player p) {
 
     }
 

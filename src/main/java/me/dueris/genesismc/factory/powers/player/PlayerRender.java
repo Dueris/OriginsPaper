@@ -45,17 +45,20 @@ public class PlayerRender extends CraftPower {
         }
     }
 
+    Player p;
+
+    public PlayerRender(){
+        this.p = p;
+    }
 
     @Override
-    public void run() {
+    public void run(Player p) {
 //        ScoreboardManager manager = Bukkit.getScoreboardManager();
 //        Scoreboard scoreboard = manager.getMainScoreboard();
 //        Team team = scoreboard.getTeam("origin-players");
 //        if (team == null) {
 //            team = scoreboard.registerNewTeam("origin-players");
 //        }
-
-        for (Player p : Bukkit.getOnlinePlayers()) {
             boolean isInvisible = p.hasPotionEffect(PotionEffectType.INVISIBILITY);
             boolean isInTranslucentList = translucent.contains(p);
             boolean isInPhantomForm = OriginPlayer.isInPhantomForm(p);
@@ -148,7 +151,7 @@ public class PlayerRender extends CraftPower {
                     }
                 }
             }
-        }
+
 
     }
 
@@ -162,7 +165,7 @@ public class PlayerRender extends CraftPower {
         return invisibility;
     }
 
-    public static class ModelColor extends CraftPower implements Listener {
+    public static class ModelColor extends BukkitRunnable implements Listener {
         private SkinsRestorerAPI skinsRestorerAPI = null;
 
         @SuppressWarnings("null")
@@ -521,17 +524,14 @@ public class PlayerRender extends CraftPower {
             }
         }
 
-        @Override
         public String getPowerFile() {
             return "origins:model_color";
         }
 
-        @Override
         public ArrayList<Player> getPowerArray() {
             return model_color;
         }
 
-        @Override
         public void setActive(String tag, Boolean bool) {
             if (powers_active.containsKey(tag)) {
                 powers_active.replace(tag, bool);

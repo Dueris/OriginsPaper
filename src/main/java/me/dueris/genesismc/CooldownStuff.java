@@ -1,5 +1,6 @@
 package me.dueris.genesismc;
 
+import io.papermc.paper.threadedregions.scheduler.GlobalRegionScheduler;
 import me.dueris.genesismc.events.OriginChangeEvent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;

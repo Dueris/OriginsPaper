@@ -125,9 +125,15 @@ public class Recipe extends CraftPower implements Listener {
         }
     }
 
+    Player p;
+
+    public Recipe(){
+        this.p = p;
+    }
+
     @Override
-    public void run() {
-        //null
+    public void run(Player p) {
+
     }
 
     @Override

@@ -181,8 +181,14 @@ public class BigLeap extends CraftPower implements Listener {
         }
     }
 
+    Player p;
+
+    public BigLeap(){
+        this.p = p;
+    }
+
     @Override
-    public void run() {
+    public void run(Player p) {
 
     }
 

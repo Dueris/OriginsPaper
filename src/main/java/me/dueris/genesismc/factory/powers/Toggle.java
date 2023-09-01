@@ -77,7 +77,7 @@ public class Toggle extends CraftPower implements Listener {
                             runCancel = false;
                             this.cancel();
                         }
-                    }.runTaskLater(GenesisMC.getPlugin(), 5);
+                    }.runTaskTimer(GenesisMC.getPlugin(),0, 5);
                     new BukkitRunnable() {
                         @Override
                         public void run() {
@@ -140,8 +140,14 @@ public class Toggle extends CraftPower implements Listener {
         }
     }
 
+    Player p;
+
+    public Toggle(){
+        this.p = p;
+    }
+
     @Override
-    public void run() {
+    public void run(Player p) {
 
     }
 

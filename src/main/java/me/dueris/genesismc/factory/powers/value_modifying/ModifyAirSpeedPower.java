@@ -29,34 +29,38 @@ public class ModifyAirSpeedPower extends CraftPower {
         }
     }
 
+    Player p;
+
+    public ModifyAirSpeedPower(){
+        this.p = p;
+    }
+
     @Override
-    public void run() {
-        for (Player p : Bukkit.getOnlinePlayers()) {
-            for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
-                ValueModifyingSuperClass valueModifyingSuperClass = new ValueModifyingSuperClass();
-                try {
-                    ConditionExecutor conditionExecutor = new ConditionExecutor();
-                    if (conditionExecutor.check("condition", "conditions", p, origin, "origins:modify_air_speed", p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
-                        if (origin.getPowerFileFromType(getPowerFile()) == null) {
-                            getPowerArray().remove(p);
-                            return;
-                        }
-                        if (!getPowerArray().contains(p)) return;
-                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
-                        p.setFlySpeed(valueModifyingSuperClass.getPersistentAttributeContainer(p, MODIFYING_KEY));
-                    } else {
-                        if (origin.getPowerFileFromType(getPowerFile()) == null) {
-                            getPowerArray().remove(p);
-                            return;
-                        }
-                        if (!getPowerArray().contains(p)) return;
-                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
-                        p.setFlySpeed(valueModifyingSuperClass.getDefaultValue(MODIFYING_KEY));
+    public void run(Player p) {
+        for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
+            ValueModifyingSuperClass valueModifyingSuperClass = new ValueModifyingSuperClass();
+            try {
+                ConditionExecutor conditionExecutor = new ConditionExecutor();
+                if (conditionExecutor.check("condition", "conditions", p, origin, "origins:modify_air_speed", p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
+                    if (origin.getPowerFileFromType(getPowerFile()) == null) {
+                        getPowerArray().remove(p);
+                        return;
                     }
-                } catch (Exception e) {
-                    ErrorSystem errorSystem = new ErrorSystem();
-                    errorSystem.throwError("unable to set modifier", "origins:modify_air_speed", p, origin, OriginPlayer.getLayer(p, origin));
+                    if (!getPowerArray().contains(p)) return;
+                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
+                    p.setFlySpeed(valueModifyingSuperClass.getPersistentAttributeContainer(p, MODIFYING_KEY));
+                } else {
+                    if (origin.getPowerFileFromType(getPowerFile()) == null) {
+                        getPowerArray().remove(p);
+                        return;
+                    }
+                    if (!getPowerArray().contains(p)) return;
+                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
+                    p.setFlySpeed(valueModifyingSuperClass.getDefaultValue(MODIFYING_KEY));
                 }
+            } catch (Exception e) {
+                ErrorSystem errorSystem = new ErrorSystem();
+                errorSystem.throwError("unable to set modifier", "origins:modify_air_speed", p, origin, OriginPlayer.getLayer(p, origin));
             }
         }
     }

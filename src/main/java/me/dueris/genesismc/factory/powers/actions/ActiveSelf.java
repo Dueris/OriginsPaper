@@ -15,8 +15,14 @@ import java.util.ArrayList;
 import static me.dueris.genesismc.KeybindHandler.isKeyBeingPressed;
 
 public class ActiveSelf extends CraftPower implements Listener {
+    Player p;
+
+    public ActiveSelf(){
+        this.p = p;
+    }
+
     @Override
-    public void run() {
+    public void run(Player p) {
 
     }
 

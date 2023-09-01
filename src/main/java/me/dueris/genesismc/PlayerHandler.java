@@ -2,6 +2,7 @@ package me.dueris.genesismc;
 
 import me.dueris.genesismc.entity.OriginPlayer;
 import me.dueris.genesismc.factory.CraftApoli;
+import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.factory.powers.player.attributes.AttributeHandler;
 import me.dueris.genesismc.utils.LayerContainer;
 import me.dueris.genesismc.utils.OriginContainer;
@@ -26,8 +27,10 @@ import org.geysermc.floodgate.api.FloodgateApi;
 import org.geysermc.geyser.api.GeyserApi;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectInputStream;
+import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -37,6 +40,7 @@ import static me.dueris.genesismc.factory.powers.Power.extra_reach;
 import static me.dueris.genesismc.factory.powers.Power.extra_reach_attack;
 import static me.dueris.genesismc.utils.BukkitColour.AQUA;
 import static me.dueris.genesismc.utils.BukkitColour.RED;
+import static org.bukkit.Bukkit.getPlayer;
 import static org.bukkit.Bukkit.getServer;
 
 public class PlayerHandler implements Listener {
@@ -176,6 +180,7 @@ public class PlayerHandler implements Listener {
         }
 
         originValidCheck(p);
+        if(p == null) Bukkit.getServer().getConsoleSender().sendMessage("BRPO");
         OriginPlayer.assignPowers(p);
         p.sendMessage(Component.text(LangConfig.getLocalizedString(p, "misc.joinText")).color(TextColor.fromHexString(AQUA)));
 
@@ -184,7 +189,25 @@ public class PlayerHandler implements Listener {
             public void run() {
                 ReapplyEntityReachPowers(p);
             }
-        }.runTaskTimer(GenesisMC.getPlugin(), 3, 0);
+        }.runTaskLater(GenesisMC.getPlugin(), 3);
+
+        try {
+            for (Class<? extends CraftPower> c : CraftPower.findCraftPowerClasses()) {
+                if(CraftPower.getRegistered().contains(c)) continue;
+                if (CraftPower.class.isAssignableFrom(c)) {
+                    Constructor<? extends CraftPower> constructor = c.getConstructor(Player.class);
+                    CraftPower instance = constructor.newInstance(p);
+                    CraftPower.getRegistered().add(instance.getClass());
+                    Bukkit.getLogger().info("new CraftPower registered with POWER_TYPE " + instance.getPowerFile() + " with POWER_ARRAY of " + instance.getPowerArray().toString());
+
+                    if (instance instanceof Listener || Listener.class.isAssignableFrom(instance.getClass())) {
+                        Bukkit.getServer().getPluginManager().registerEvents((Listener) instance, GenesisMC.getPlugin());
+                    }
+                }
+            }
+        } catch (IOException | ReflectiveOperationException el) {
+            throw new RuntimeException(el);
+        }
     }
 
     @EventHandler

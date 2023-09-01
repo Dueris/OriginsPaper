@@ -201,9 +201,8 @@ public class KeybindHandler implements Listener {
                 @Override
                 public void run() {
                     primaryTick.remove(e.getPlayer());
-                    this.cancel();
                 }
-            }.runTaskTimer(GenesisMC.getPlugin(), 1, 1);
+            }.runTaskLater(GenesisMC.getPlugin(), 1);
         }
         if (e.getKey().equals("key.origins.secondary_active")) {
             secondaryTick.add(e.getPlayer());
@@ -211,9 +210,8 @@ public class KeybindHandler implements Listener {
                 @Override
                 public void run() {
                     secondaryTick.remove(e.getPlayer());
-                    this.cancel();
                 }
-            }.runTaskTimer(GenesisMC.getPlugin(), 1, 1);
+            }.runTaskLater(GenesisMC.getPlugin(), 1);
         }
     }
 
@@ -369,9 +367,8 @@ public class KeybindHandler implements Listener {
             @Override
             public void run() {
                 spawnHandsTick.remove(event.getPlayer());
-                this.cancel();
             }
-        }.runTaskTimer(GenesisMC.getPlugin(), 1, 1);
+        }.runTaskLater(GenesisMC.getPlugin(), 1);
     }
 
     @EventHandler
@@ -383,8 +380,7 @@ public class KeybindHandler implements Listener {
             @Override
             public void run() {
                 hotbarSlotTick.remove(event.getPlayer());
-                this.cancel();
             }
-        }.runTaskTimer(GenesisMC.getPlugin(), 1, 1);
+        }.runTaskLater(GenesisMC.getPlugin(), 1);
     }
 }

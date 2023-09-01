@@ -37,7 +37,7 @@ public class BukkitUtils {
             try {
                 deleteDirectory(Path.of(path));
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                //SDGFLKSDJFGO
             }
         }
         if (Files.exists(Path.of(Bukkit.getWorlds().get(0).getName() + File.separator + "datapacks" + File.separator + "OriginsGenesis")))
@@ -66,7 +66,7 @@ public class BukkitUtils {
             }
             zip.close();
         } catch (Exception e) {
-            e.printStackTrace();
+            //rip thing still there
         }
     }
 

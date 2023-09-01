@@ -56,8 +56,14 @@ public class PreventBeingUsed extends CraftPower implements Listener {
         }
     }
 
+    Player p;
+
+    public PreventBeingUsed(){
+        this.p = p;
+    }
+
     @Override
-    public void run() {
+    public void run(Player p) {
 
     }
 

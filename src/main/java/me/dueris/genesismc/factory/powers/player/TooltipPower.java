@@ -54,35 +54,39 @@ public class TooltipPower extends CraftPower {
         }
     }
 
+    Player p;
+
+    public TooltipPower(){
+        this.p = p;
+    }
+
     @Override
-    public void run() {
-        for (Player p : Bukkit.getOnlinePlayers()) {
-            if (getPowerArray().contains(p)) {
-                for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
-                    ConditionExecutor conditionExecutor = new ConditionExecutor();
-                    if (conditionExecutor.check("item_condition", "item_conditions", p, origin, getPowerFile(), p, null, null, null, p.getItemInHand(), null)) {
-                        if (origin.getPowerFileFromType(getPowerFile()) == null) {
-                            getPowerArray().remove(p);
-                            return;
-                        }
-                        if (!getPowerArray().contains(p)) return;
-                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
-                        for (HashMap<String, Object> text : origin.getPowerFileFromType(getPowerFile()).getSingularAndPlural("text", "texts")) {
-                            applyTooltip(p, p.getItemInHand(), text.get("text").toString());
-                        }
-                    } else {
-                        if (origin.getPowerFileFromType(getPowerFile()) == null) {
-                            getPowerArray().remove(p);
-                            return;
-                        }
-                        if (!getPowerArray().contains(p)) return;
-                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
-                        removeTooltip(p, p.getItemInHand());
+    public void run(Player p) {
+        if (getPowerArray().contains(p)) {
+            for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
+                ConditionExecutor conditionExecutor = new ConditionExecutor();
+                if (conditionExecutor.check("item_condition", "item_conditions", p, origin, getPowerFile(), p, null, null, null, p.getItemInHand(), null)) {
+                    if (origin.getPowerFileFromType(getPowerFile()) == null) {
+                        getPowerArray().remove(p);
+                        return;
                     }
+                    if (!getPowerArray().contains(p)) return;
+                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
+                    for (HashMap<String, Object> text : origin.getPowerFileFromType(getPowerFile()).getSingularAndPlural("text", "texts")) {
+                        applyTooltip(p, p.getItemInHand(), text.get("text").toString());
+                    }
+                } else {
+                    if (origin.getPowerFileFromType(getPowerFile()) == null) {
+                        getPowerArray().remove(p);
+                        return;
+                    }
+                    if (!getPowerArray().contains(p)) return;
+                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
+                    removeTooltip(p, p.getItemInHand());
                 }
-            } else {
-                removeTooltip(p, p.getItemInHand());
             }
+        } else {
+            removeTooltip(p, p.getItemInHand());
         }
     }
 

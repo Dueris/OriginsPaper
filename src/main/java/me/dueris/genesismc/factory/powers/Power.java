@@ -91,7 +91,7 @@ public interface Power {
     ArrayList<Player> attribute_modify_transfer = new ArrayList<>();
     ArrayList<Player> no_gravity = new ArrayList<>();
 
-    void run();
+    void run(Player p);
 
     String getPowerFile();
 

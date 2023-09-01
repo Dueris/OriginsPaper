@@ -25,32 +25,35 @@ public class ApplyEffect extends CraftPower implements Listener {
         }
     }
 
+    Player p;
+
+    public ApplyEffect(){
+        this.p = p;
+    }
 
     @Override
-    public void run() {
-        for (Player p : Bukkit.getOnlinePlayers()) {
-            if (apply_effect.contains(p)) {
-                for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
-                    ConditionExecutor conditionExecutor = new ConditionExecutor();
-                    if (conditionExecutor.check("condition", "conditions", p, origin, getPowerFile(), p, null, null, null, p.getItemInHand(), null)) {
-                        if (origin.getPowerFileFromType(getPowerFile()) == null) {
-                            getPowerArray().remove(p);
-                            return;
-                        }
-                        if (!getPowerArray().contains(p)) return;
-                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
-                        List<HashMap<String, Object>> effectDataList = origin.getPowerFileFromType("origins:apply_effect").getEffectData();
-                        for (HashMap<String, Object> effectData : effectDataList) {
-                            p.addPotionEffect(new PotionEffect(PotionEffectType.getByName(effectData.get("effect").toString().split(":")[1].toUpperCase()), Integer.valueOf(effectData.get("duration").toString()), Integer.valueOf(effectData.get("amplifier").toString())));
-                        }
-                    } else {
-                        if (origin.getPowerFileFromType(getPowerFile()) == null) {
-                            getPowerArray().remove(p);
-                            return;
-                        }
-                        if (!getPowerArray().contains(p)) return;
-                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
+    public void run(Player p) {
+        if (apply_effect.contains(p)) {
+            for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
+                ConditionExecutor conditionExecutor = new ConditionExecutor();
+                if (conditionExecutor.check("condition", "conditions", p, origin, getPowerFile(), p, null, null, null, p.getItemInHand(), null)) {
+                    if (origin.getPowerFileFromType(getPowerFile()) == null) {
+                        getPowerArray().remove(p);
+                        return;
                     }
+                    if (!getPowerArray().contains(p)) return;
+                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
+                    List<HashMap<String, Object>> effectDataList = origin.getPowerFileFromType("origins:apply_effect").getEffectData();
+                    for (HashMap<String, Object> effectData : effectDataList) {
+                        p.addPotionEffect(new PotionEffect(PotionEffectType.getByName(effectData.get("effect").toString().split(":")[1].toUpperCase()), Integer.valueOf(effectData.get("duration").toString()), Integer.valueOf(effectData.get("amplifier").toString())));
+                    }
+                } else {
+                    if (origin.getPowerFileFromType(getPowerFile()) == null) {
+                        getPowerArray().remove(p);
+                        return;
+                    }
+                    if (!getPowerArray().contains(p)) return;
+                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                 }
             }
         }

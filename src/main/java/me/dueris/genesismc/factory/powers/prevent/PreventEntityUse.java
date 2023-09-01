@@ -32,6 +32,16 @@ public class PreventEntityUse extends CraftPower implements Listener {
         }
     }
 
+    Player p;
+
+    public PreventEntityUse(){
+        this.p = p;
+    }
+
+    @Override
+    public void run(Player p) {
+
+    }
 
     @EventHandler
     public void OnClickREACH(PlayerInteractEvent e) {
@@ -86,11 +96,6 @@ public class PreventEntityUse extends CraftPower implements Listener {
                 }
             }
         }
-    }
-
-    @Override
-    public void run() {
-
     }
 
     @Override

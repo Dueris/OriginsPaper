@@ -7,28 +7,30 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.jetbrains.annotations.NotNull;
 
 import static me.dueris.genesismc.choosing.ChoosingCORE.choosing;
 import static me.dueris.genesismc.choosing.contents.MainMenuContents.GenesisMainMenuContents;
 
-public class ChoosingForced extends BukkitRunnable {
+public class ChoosingGUI extends BukkitRunnable {
     @Override
     public void run() {
         for (Player p : Bukkit.getOnlinePlayers()) {
             if (OriginPlayer.hasOrigin(p, CraftApoli.nullOrigin().getTag())) {
-                if (!p.getOpenInventory().getTitle().startsWith("Choosing Menu") && !p.getOpenInventory().getTitle().startsWith("Custom Origins") && !p.getOpenInventory().getTitle().startsWith("Expanded Origins") && !p.getOpenInventory().getTitle().startsWith("Custom Origin") && !p.getOpenInventory().getTitle().startsWith("Origin")) {
+                String openInventoryTitle = p.getOpenInventory().getTitle();
+                if (!openInventoryTitle.startsWith("Choosing Menu") && !openInventoryTitle.startsWith("Custom Origins") && !openInventoryTitle.startsWith("Custom Origin") && !openInventoryTitle.startsWith("Origin")) {
                     for (LayerContainer layer : CraftApoli.getLayers()) {
                         if (OriginPlayer.getOrigin(p, layer).getTag().equals(CraftApoli.nullOrigin().getTag())) {
                             choosing.put(p, layer);
-                            @NotNull Inventory mainmenu = Bukkit.createInventory(p, 54, "Choosing Menu - " + layer.getName());
+                            Inventory mainmenu = Bukkit.createInventory(p, 54, "Choosing Menu - " + layer.getName());
                             mainmenu.setContents(GenesisMainMenuContents(p));
                             p.openInventory(mainmenu);
                         }
                     }
                 }
             }
-            p.setInvulnerable(p.getOpenInventory().getTitle().startsWith("Choosing Menu") || p.getOpenInventory().getTitle().startsWith("Custom Origins") || p.getOpenInventory().getTitle().startsWith("Expanded Origins") || p.getOpenInventory().getTitle().startsWith("Custom Origin"));
+
+            String openInventoryTitle = p.getOpenInventory().getTitle();
+            p.setInvulnerable(openInventoryTitle.startsWith("Choosing Menu") || openInventoryTitle.startsWith("Custom Origins") || openInventoryTitle.startsWith("Expanded Origins") || openInventoryTitle.startsWith("Custom Origin"));
         }
     }
 }

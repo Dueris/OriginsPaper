@@ -22,33 +22,36 @@ public class PreventEntityCollision extends CraftPower {
         }
     }
 
+    Player p;
+
+    public PreventEntityCollision(){
+        this.p = p;
+    }
 
     @Override
-    public void run() {
-        for (Player p : Bukkit.getOnlinePlayers()) {
-            for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
-                if (prevent_entity_collision.contains(p)) {
-                    ConditionExecutor conditionExecutor = new ConditionExecutor();
-                    if (conditionExecutor.check("bientity_condition", "bientity_condition", p, origin, "origins:prevent_entity_collision", p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
-                        p.setCollidable(false);
-                        if (origin.getPowerFileFromType(getPowerFile()) == null) {
-                            getPowerArray().remove(p);
-                            return;
-                        }
-                        if (!getPowerArray().contains(p)) return;
-                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
-                    } else {
-                        if (origin.getPowerFileFromType(getPowerFile()) == null) {
-                            getPowerArray().remove(p);
-                            return;
-                        }
-                        if (!getPowerArray().contains(p)) return;
-                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
-                        p.setCollidable(true);
+    public void run(Player p) {
+        for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
+            if (prevent_entity_collision.contains(p)) {
+                ConditionExecutor conditionExecutor = new ConditionExecutor();
+                if (conditionExecutor.check("bientity_condition", "bientity_condition", p, origin, "origins:prevent_entity_collision", p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
+                    p.setCollidable(false);
+                    if (origin.getPowerFileFromType(getPowerFile()) == null) {
+                        getPowerArray().remove(p);
+                        return;
                     }
+                    if (!getPowerArray().contains(p)) return;
+                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                 } else {
+                    if (origin.getPowerFileFromType(getPowerFile()) == null) {
+                        getPowerArray().remove(p);
+                        return;
+                    }
+                    if (!getPowerArray().contains(p)) return;
+                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                     p.setCollidable(true);
                 }
+            } else {
+                p.setCollidable(true);
             }
         }
     }

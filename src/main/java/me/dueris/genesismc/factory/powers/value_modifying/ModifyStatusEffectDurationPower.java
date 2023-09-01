@@ -31,7 +31,7 @@ public class ModifyStatusEffectDurationPower extends CraftPower implements Liste
 
 
     @EventHandler
-    public void run(EntityPotionEffectEvent e) {
+    public void runD(EntityPotionEffectEvent e) {
         if (e.getEntity() instanceof Player p) {
             if (!modify_effect_duration.contains(p)) return;
             for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
@@ -74,8 +74,14 @@ public class ModifyStatusEffectDurationPower extends CraftPower implements Liste
         }
     }
 
+    Player p;
+
+    public ModifyStatusEffectDurationPower(){
+        this.p = p;
+    }
+
     @Override
-    public void run() {
+    public void run(Player p) {
 
     }
 

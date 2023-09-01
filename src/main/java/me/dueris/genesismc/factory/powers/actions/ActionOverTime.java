@@ -13,38 +13,37 @@ import java.util.ArrayList;
 public class ActionOverTime extends CraftPower {
 
     private Long interval;
-
+    Player p;
     private int ticksE;
 
     public ActionOverTime() {
         this.interval = 1L;
         this.ticksE = 0;
+        this.p = p;
     }
 
     @Override
-    public void run() {
-        for (Player p : Bukkit.getOnlinePlayers()) {
-            if (getPowerArray().contains(p)) {
-                for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
-                    PowerContainer power = origin.getPowerFileFromType(getPowerFile());
-                    if (power == null) continue;
-                    if (power.getInterval() == null) {
-                        return;
-                    }
-                    interval = power.getInterval();
-                    if (ticksE < interval) {
-                        ticksE++;
-                        return;
+    public void run(Player p) {
+        if (getPowerArray().contains(p)) {
+            for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
+                PowerContainer power = origin.getPowerFileFromType(getPowerFile());
+                if (power == null) continue;
+                if (power.getInterval() == null) {
+                    return;
+                }
+                interval = power.getInterval();
+                if (ticksE < interval) {
+                    ticksE++;
+                    return;
+                } else {
+                    ConditionExecutor executor = new ConditionExecutor();
+                    if (executor.check("condition", "conditions", p, origin, getPowerFile(), p, null, null, null, p.getItemInHand(), null)) {
+                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
+                        ActionTypes.EntityActionType(p, power.getEntityAction());
                     } else {
-                        ConditionExecutor executor = new ConditionExecutor();
-                        if (executor.check("condition", "conditions", p, origin, getPowerFile(), p, null, null, null, p.getItemInHand(), null)) {
-                            setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
-                            ActionTypes.EntityActionType(p, power.getEntityAction());
-                        } else {
-                            setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
-                        }
-                        ticksE = 0;
+                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                     }
+                    ticksE = 0;
                 }
             }
         }

@@ -14,8 +14,14 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import java.util.ArrayList;
 
 public class SelfActionOnHit extends CraftPower implements Listener {
+    Player p;
+
+    public SelfActionOnHit(){
+        this.p = p;
+    }
+
     @Override
-    public void run() {
+    public void run(Player p) {
 
     }
 

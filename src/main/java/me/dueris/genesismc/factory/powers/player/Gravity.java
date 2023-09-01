@@ -27,37 +27,31 @@ public class Gravity extends CraftPower implements Listener {
         }
     }
 
+    Player p;
+
+    public Gravity(){
+        this.p = p;
+    }
 
     @Override
-    public void run() {
-        for (Player p : Bukkit.getOnlinePlayers()) {
-            for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
-                if (no_gravity.contains(p)) {
-                    ConditionExecutor executor = new ConditionExecutor();
-                    if (executor.check("condition", "conditions", p, origin, getPowerFile(), p, null, null, null, p.getItemInHand(), null)) {
-                        if (origin.getPowerFileFromType(getPowerFile()) == null) getPowerArray().remove(p);
-                        if (!getPowerArray().contains(p)) return;
-                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
-                        if (no_gravity.contains(p)) {
-                            p.setGravity(false);
-                            p.setFallDistance(0.1f);
-                        } else {
-                            p.setGravity(true);
-                        }
+    public void run(Player p) {
+        for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
+            if (no_gravity.contains(p)) {
+                ConditionExecutor executor = new ConditionExecutor();
+                if (executor.check("condition", "conditions", p, origin, getPowerFile(), p, null, null, null, p.getItemInHand(), null)) {
+                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
+                    if (no_gravity.contains(p)) {
+                        p.setGravity(false);
+                        p.setFallDistance(0.1f);
                     } else {
-                        if (origin.getPowerFileFromType(getPowerFile()) == null) {
-                            getPowerArray().remove(p);
-                            return;
-                        }
-                        if (!getPowerArray().contains(p)) return;
-                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
+                        p.setGravity(true);
                     }
                 } else {
-                    p.setGravity(true);
+                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                 }
+            } else {
+                p.setGravity(true);
             }
-
-
         }
     }
 

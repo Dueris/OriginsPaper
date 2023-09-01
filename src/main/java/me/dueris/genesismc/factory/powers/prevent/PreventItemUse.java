@@ -24,9 +24,19 @@ public class PreventItemUse extends CraftPower implements Listener {
         }
     }
 
+    Player p;
+
+    public PreventItemUse(){
+        this.p = p;
+    }
+
+    @Override
+    public void run(Player p) {
+
+    }
 
     @EventHandler
-    public void run(PlayerInteractEvent e) {
+    public void runD(PlayerInteractEvent e) {
         if (prevent_item_use.contains(e.getPlayer())) {
             for (OriginContainer origin : OriginPlayer.getOrigin(e.getPlayer()).values()) {
                 if (origin.getPowerFileFromType(getPowerFile()) == null) {
@@ -45,11 +55,6 @@ public class PreventItemUse extends CraftPower implements Listener {
                 }
             }
         }
-    }
-
-    @Override
-    public void run() {
-
     }
 
     @Override

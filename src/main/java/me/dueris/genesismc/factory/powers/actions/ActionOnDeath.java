@@ -15,8 +15,14 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.util.ArrayList;
 
 public class ActionOnDeath extends CraftPower implements Listener {
+    Player p;
+
+    public ActionOnDeath(){
+        this.p = p;
+    }
+
     @Override
-    public void run() {
+    public void run(Player p) {
 
     }
 

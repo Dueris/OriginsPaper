@@ -29,7 +29,7 @@ public class ModifyHealingPower extends CraftPower implements Listener {
 
 
     @EventHandler
-    public void run(EntityRegainHealthEvent e) {
+    public void runD(EntityRegainHealthEvent e) {
         if (e.getEntity() instanceof Player p) {
             if (!modify_healing.contains(e.getEntity())) return;
             for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
@@ -62,8 +62,14 @@ public class ModifyHealingPower extends CraftPower implements Listener {
         }
     }
 
+    Player p;
+
+    public ModifyHealingPower(){
+        this.p = p;
+    }
+
     @Override
-    public void run() {
+    public void run(Player p) {
 
     }
 

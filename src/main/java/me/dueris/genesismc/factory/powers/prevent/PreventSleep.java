@@ -34,6 +34,17 @@ public class PreventSleep extends CraftPower implements Listener {
         }
     }
 
+    Player p;
+
+    public PreventSleep(){
+        this.p = p;
+    }
+
+    @Override
+    public void run(Player p) {
+
+    }
+
     @EventHandler
     public void runD(PlayerInteractEvent e) {
         if (e.getClickedBlock() == null) return;
@@ -57,11 +68,6 @@ public class PreventSleep extends CraftPower implements Listener {
                 }
             }
         }
-    }
-
-    @Override
-    public void run() {
-
     }
 
     @Override

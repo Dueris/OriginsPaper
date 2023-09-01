@@ -25,8 +25,14 @@ import static me.dueris.genesismc.KeybindHandler.isKeyBeingPressed;
 import static me.dueris.genesismc.factory.powers.Toggle.in_continuous;
 
 public class ToggleNightVision extends CraftPower implements Listener {
+    Player p;
+
+    public ToggleNightVision(){
+        this.p = p;
+    }
+
     @Override
-    public void run() {
+    public void run(Player p) {
 
     }
 

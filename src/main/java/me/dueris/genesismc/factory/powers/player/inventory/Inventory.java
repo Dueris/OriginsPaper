@@ -31,9 +31,6 @@ import static me.dueris.genesismc.KeybindHandler.isKeyBeingPressed;
 
 public class Inventory extends CraftPower implements CommandExecutor, Listener {
 
-    public Inventory() {
-    }
-
     @Override
     public void setActive(String tag, Boolean bool) {
         if (powers_active.containsKey(tag)) {
@@ -167,8 +164,14 @@ public class Inventory extends CraftPower implements CommandExecutor, Listener {
         return true;
     }
 
+    Player p;
+
+    public Inventory(){
+        this.p = p;
+    }
+
     @Override
-    public void run() {
+    public void run(Player p) {
 
     }
 

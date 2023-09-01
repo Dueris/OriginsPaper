@@ -20,30 +20,33 @@ public class Swimming extends CraftPower {
         }
     }
 
+    Player p;
+
+    public Swimming(){
+        this.p = p;
+    }
 
     @Override
-    public void run() {
-        for (Player p : Bukkit.getOnlinePlayers()) {
-            for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
-                if (swimming.contains(p)) {
-                    ConditionExecutor conditionExecutor = new ConditionExecutor();
-                    if (!conditionExecutor.check("condition", "conditions", p, origin, getPowerFile(), p, null, null, null, p.getItemInHand(), null)) {
-                        if (origin.getPowerFileFromType(getPowerFile()) == null) {
-                            getPowerArray().remove(p);
-                            return;
-                        }
-                        if (!getPowerArray().contains(p)) return;
-                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
+    public void run(Player p) {
+        for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
+            if (swimming.contains(p)) {
+                ConditionExecutor conditionExecutor = new ConditionExecutor();
+                if (!conditionExecutor.check("condition", "conditions", p, origin, getPowerFile(), p, null, null, null, p.getItemInHand(), null)) {
+                    if (origin.getPowerFileFromType(getPowerFile()) == null) {
+                        getPowerArray().remove(p);
                         return;
-                    } else {
-                        p.setSwimming(true);
-                        if (origin.getPowerFileFromType(getPowerFile()) == null) {
-                            getPowerArray().remove(p);
-                            return;
-                        }
-                        if (!getPowerArray().contains(p)) return;
-                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                     }
+                    if (!getPowerArray().contains(p)) return;
+                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
+                    return;
+                } else {
+                    p.setSwimming(true);
+                    if (origin.getPowerFileFromType(getPowerFile()) == null) {
+                        getPowerArray().remove(p);
+                        return;
+                    }
+                    if (!getPowerArray().contains(p)) return;
+                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                 }
             }
         }

@@ -20,29 +20,32 @@ public class Freeze extends CraftPower {
         }
     }
 
+    Player p;
+
+    public Freeze(){
+        this.p = p;
+    }
 
     @Override
-    public void run() {
-        for (Player p : Bukkit.getOnlinePlayers()) {
-            for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
-                if (freeze.contains(p)) {
-                    ConditionExecutor conditionExecutor = new ConditionExecutor();
-                    if (conditionExecutor.check("condition", "conditions", p, origin, "origins:freeze", p, null, null, null, p.getItemInHand(), null)) {
-                        if (origin.getPowerFileFromType(getPowerFile()) == null) {
-                            getPowerArray().remove(p);
-                            return;
-                        }
-                        if (!getPowerArray().contains(p)) return;
-                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
-                        p.setFreezeTicks(300);
-                    } else {
-                        if (origin.getPowerFileFromType(getPowerFile()) == null) {
-                            getPowerArray().remove(p);
-                            return;
-                        }
-                        if (!getPowerArray().contains(p)) return;
-                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
+    public void run(Player p) {
+        for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
+            if (freeze.contains(p)) {
+                ConditionExecutor conditionExecutor = new ConditionExecutor();
+                if (conditionExecutor.check("condition", "conditions", p, origin, "origins:freeze", p, null, null, null, p.getItemInHand(), null)) {
+                    if (origin.getPowerFileFromType(getPowerFile()) == null) {
+                        getPowerArray().remove(p);
+                        return;
                     }
+                    if (!getPowerArray().contains(p)) return;
+                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
+                    p.setFreezeTicks(300);
+                } else {
+                    if (origin.getPowerFileFromType(getPowerFile()) == null) {
+                        getPowerArray().remove(p);
+                        return;
+                    }
+                    if (!getPowerArray().contains(p)) return;
+                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                 }
             }
         }

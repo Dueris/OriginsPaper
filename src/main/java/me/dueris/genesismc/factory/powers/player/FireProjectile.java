@@ -247,8 +247,14 @@ public class FireProjectile extends CraftPower implements Listener {
         }
     }
 
+    Player p;
+
+    public FireProjectile(){
+        this.p = p;
+    }
+
     @Override
-    public void run() {
+    public void run(Player p) {
 
     }
 

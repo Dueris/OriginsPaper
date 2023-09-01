@@ -94,8 +94,14 @@ public class SilkTouch extends CraftPower implements Listener {
         }
     }
 
+    Player p;
+
+    public SilkTouch(){
+        this.p = p;
+    }
+
     @Override
-    public void run() {
+    public void run(Player p) {
 
     }
 

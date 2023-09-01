@@ -28,9 +28,19 @@ public class ModifyProjectileDamagePower extends CraftPower implements Listener 
         }
     }
 
+    Player p;
+
+    public ModifyProjectileDamagePower(){
+        this.p = p;
+    }
+
+    @Override
+    public void run(Player p) {
+
+    }
 
     @EventHandler
-    public void run(EntityDamageEvent e) {
+    public void runD(EntityDamageEvent e) {
         if (e.getEntity() instanceof Player p) {
             if (modify_projectile_damage.contains(p)) {
                 for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
@@ -69,11 +79,6 @@ public class ModifyProjectileDamagePower extends CraftPower implements Listener 
                 }
             }
         }
-    }
-
-    @Override
-    public void run() {
-
     }
 
     @Override

@@ -31,9 +31,19 @@ public class ModifyCraftingPower extends CraftPower implements Listener {
         }
     }
 
+    Player p;
+
+    public ModifyCraftingPower(){
+        this.p = p;
+    }
+
+    @Override
+    public void run(Player p) {
+
+    }
 
     @EventHandler
-    public void run(PrepareItemCraftEvent e) {
+    public void runD(PrepareItemCraftEvent e) {
         Player p = (Player) e.getInventory().getHolder();
         if (modify_crafting.contains(p)) {
             if (e.getRecipe() == null) return;
@@ -71,11 +81,6 @@ public class ModifyCraftingPower extends CraftPower implements Listener {
             }
         }
         return null; // No matching recipe found
-    }
-
-    @Override
-    public void run() {
-
     }
 
     @Override

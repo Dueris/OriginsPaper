@@ -20,30 +20,33 @@ public class Overlay extends CraftPower {
         }
     }
 
+    Player p;
+
+    public Overlay(){
+        this.p = p;
+    }
 
     @Override
-    public void run() {
-        for (Player player : Bukkit.getOnlinePlayers()) {
-            if (getPowerArray().contains(player)) {
-                for (OriginContainer origin : OriginPlayer.getOrigin(player).values()) {
-                    if (origin.getPowerFileFromType(getPowerFile()) == null) {
-                        getPowerArray().remove(player);
-                        return;
-                    }
-                    ConditionExecutor conditionExecutor = new ConditionExecutor();
-                    if (conditionExecutor.check("condition", "conditions", player, origin, "origins:overlay", player, null, player.getLocation().getBlock(), null, player.getItemInHand(), null)) {
-                        if (!getPowerArray().contains(player)) return;
-                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
-                        Phasing.initializePhantomOverlay(player);
-                    } else {
-                        if (!getPowerArray().contains(player)) return;
-                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
-                        Phasing.deactivatePhantomOverlay(player);
-                    }
+    public void run(Player player) {
+        if (getPowerArray().contains(player)) {
+            for (OriginContainer origin : OriginPlayer.getOrigin(player).values()) {
+                if (origin.getPowerFileFromType(getPowerFile()) == null) {
+                    getPowerArray().remove(player);
+                    return;
                 }
-            } else {
-                Phasing.deactivatePhantomOverlay(player);
+                ConditionExecutor conditionExecutor = new ConditionExecutor();
+                if (conditionExecutor.check("condition", "conditions", player, origin, "origins:overlay", player, null, player.getLocation().getBlock(), null, player.getItemInHand(), null)) {
+                    if (!getPowerArray().contains(player)) return;
+                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
+                    Phasing.initializePhantomOverlay(player);
+                } else {
+                    if (!getPowerArray().contains(player)) return;
+                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
+                    Phasing.deactivatePhantomOverlay(player);
+                }
             }
+        } else {
+            Phasing.deactivatePhantomOverlay(player);
         }
     }
 

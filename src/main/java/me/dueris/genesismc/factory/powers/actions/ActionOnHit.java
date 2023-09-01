@@ -14,8 +14,14 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.util.ArrayList;
 
 public class ActionOnHit extends CraftPower {
+    Player p;
+
+    public ActionOnHit(){
+        this.p = p;
+    }
+
     @Override
-    public void run() {
+    public void run(Player p) {
 
     }
 

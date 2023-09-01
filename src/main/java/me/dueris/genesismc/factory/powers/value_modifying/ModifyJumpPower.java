@@ -30,7 +30,7 @@ public class ModifyJumpPower extends CraftPower implements Listener {
 
 
     @EventHandler
-    public void run(PlayerJumpEvent e) {
+    public void ruDn(PlayerJumpEvent e) {
         Player p = e.getPlayer();
         if (modify_jump.contains(p)) {
             for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
@@ -84,8 +84,14 @@ public class ModifyJumpPower extends CraftPower implements Listener {
         }
     }
 
+    Player p;
+
+    public ModifyJumpPower(){
+        this.p = p;
+    }
+
     @Override
-    public void run() {
+    public void run(Player p) {
 
     }
 

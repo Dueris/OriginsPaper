@@ -26,7 +26,7 @@ public class ModifyHarvestPower extends CraftPower implements Listener {
 
 
     @EventHandler
-    public void run(BlockBreakEvent e) {
+    public void runD(BlockBreakEvent e) {
         Player p = e.getPlayer();
         if (modify_harvest.contains(p)) {
             for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
@@ -49,8 +49,14 @@ public class ModifyHarvestPower extends CraftPower implements Listener {
         }
     }
 
+    Player p;
+
+    public ModifyHarvestPower(){
+        this.p = p;
+    }
+
     @Override
-    public void run() {
+    public void run(Player p) {
 
     }
 

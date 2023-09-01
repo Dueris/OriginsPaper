@@ -19,10 +19,4 @@ public class PreventSuperClass {
     public static ArrayList<Player> prevent_sleep = new ArrayList<>();
     public static ArrayList<Player> prevent_sprinting = new ArrayList<>();
 
-    public void runTasks() {
-        Bukkit.getServer().getPluginManager().registerEvents(new PreventBeingUsed(), GenesisMC.getPlugin());
-        Bukkit.getServer().getPluginManager().registerEvents(new PreventBlockSelection(), GenesisMC.getPlugin());
-        Bukkit.getServer().getPluginManager().registerEvents(new PreventBlockUse(), GenesisMC.getPlugin());
-        Bukkit.getServer().getPluginManager().registerEvents(new PreventDeath(), GenesisMC.getPlugin());
-    }
 }

@@ -1,12 +1,14 @@
 package me.dueris.genesismc;
 
+import com.github.Anon8281.universalScheduler.UniversalScheduler;
+import com.github.Anon8281.universalScheduler.scheduling.schedulers.TaskScheduler;
 import io.papermc.paper.event.player.PlayerFailMoveEvent;
+import io.papermc.paper.threadedregions.scheduler.GlobalRegionScheduler;
 import me.dueris.genesismc.choosing.ChoosingCORE;
 import me.dueris.genesismc.choosing.ChoosingCUSTOM;
-import me.dueris.genesismc.choosing.ChoosingForced;
+import me.dueris.genesismc.choosing.ChoosingGUI;
 import me.dueris.genesismc.commands.GenesisCommandManager;
 import me.dueris.genesismc.commands.TabAutoComplete;
-import me.dueris.genesismc.commands.ToggleCommand;
 import me.dueris.genesismc.commands.subcommands.origin.Info.InInfoCheck;
 import me.dueris.genesismc.commands.subcommands.origin.Info.Info;
 import me.dueris.genesismc.commands.subcommands.origin.Recipe;
@@ -15,7 +17,7 @@ import me.dueris.genesismc.enchantments.WaterProtAnvil;
 import me.dueris.genesismc.enchantments.WaterProtection;
 import me.dueris.genesismc.entity.OriginPlayer;
 import me.dueris.genesismc.factory.CraftApoli;
-import me.dueris.genesismc.factory.PowerStartHandler;
+import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.factory.powers.player.PlayerRender;
 import me.dueris.genesismc.factory.powers.player.inventory.Inventory;
 import me.dueris.genesismc.files.GenesisDataFiles;
@@ -37,9 +39,13 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitScheduler;
+import org.bukkit.scheduler.BukkitTask;
 
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.EnumSet;
@@ -85,6 +91,53 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         return plugin;
     }
 
+    public static BukkitScheduler pluginScheduler;
+
+    public interface MyScheduledTask {
+        void cancel();
+        boolean isCancelled();
+        Plugin getOwningPlugin();
+        boolean isCurrentlyRunning();
+        boolean isRepeatingTask();
+    }
+
+    public static class OriginScheduledTask implements MyScheduledTask {
+        private final BukkitTask task;
+
+        public OriginScheduledTask(final BukkitTask task) {
+            this.task = task;
+        }
+
+        public void cancel() {
+            this.task.cancel();
+        }
+
+        public boolean isCancelled() {
+            return this.task.isCancelled();
+        }
+
+        @Override
+        public Plugin getOwningPlugin() {
+            return null;
+        }
+
+        @Override
+        public boolean isCurrentlyRunning() {
+            return false;
+        }
+
+        @Override
+        public boolean isRepeatingTask() {
+            return false;
+        }
+    }
+
+    static TaskScheduler taskS;
+
+    public static TaskScheduler getGlobalScheduler(){
+        return taskS;
+    }
+
     @Override
     public void onEnable() {
         plugin = this;
@@ -101,23 +154,25 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         GenesisDataFiles.loadLangConfig();
         GenesisDataFiles.setup();
         Bukkit.getServer().getConsoleSender().sendMessage("[GenesisMC] origin-thread starting asynchronously");
-        BukkitUtils.CopyOriginDatapack();
+        try{
+            BukkitUtils.CopyOriginDatapack();
+        }catch(Exception E){
+            //throws an exception that the file already exists
+        }
         if (LangConfig.lang_test == null) {
             getLogger().warning("[GenesisMC] Lang could not be loaded! Disabling plugin.");
             Bukkit.getServer().getPluginManager().disablePlugin(this);
             return;
         }
+
+        taskS = UniversalScheduler.getScheduler(this);
+
         try {
             CraftApoli.loadOrigins();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
         Bukkit.getServer().getConsoleSender().sendMessage("[Origins] power-thread starting asynchronously");
-        try {
-            PowerStartHandler.startPowers();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
 
         //start
         Bukkit.getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC]    ____                               _         __  __    ____ ").color(TextColor.fromHexString("#b9362f")));
@@ -157,22 +212,37 @@ public final class GenesisMC extends JavaPlugin implements Listener {
                 getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] " + LangConfig.getLocalizedString(Bukkit.getConsoleSender(), "startup.debug.allOrigins").replace("%originName%", origins.getName())).color(TextColor.fromHexString(GREEN)));
             }
         }
+            try {
+                for (Class<? extends CraftPower> c : CraftPower.findCraftPowerClasses()) {
+                    if (CraftPower.class.isAssignableFrom(c)) {
+                        CraftPower instance = c.newInstance();
+                        CraftPower.getRegistered().add(instance.getClass());
+                        Bukkit.getLogger().info("new CraftPower registered with POWER_TYPE " + instance.getPowerFile() + " with POWER_ARRAY of " + instance.getPowerArray().toString());
+
+                        if (instance instanceof Listener || Listener.class.isAssignableFrom(instance.getClass())) {
+                            Bukkit.getServer().getPluginManager().registerEvents((Listener) instance, GenesisMC.getPlugin());
+                        }
+                    }
+                }
+            } catch (IOException | ReflectiveOperationException e) {
+                e.printStackTrace();
+//                throw new RuntimeException(e);
+            }
+
+
         if (CraftApoli.getOrigins().size() > 0) {
             getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] " + LangConfig.getLocalizedString(Bukkit.getConsoleSender(), "startup.originAmount").replace("%originAmount%", String.valueOf(CraftApoli.getOrigins().size()))).color(TextColor.fromHexString(GREEN)));
         }
-
         getServer().getPluginManager().registerEvents(this, this);
         //Commands
         getCommand("origin").setExecutor(new GenesisCommandManager());
         getCommand("origin").setTabCompleter(new TabAutoComplete());
         getCommand("shulker").setTabCompleter(new TabAutoComplete());
         getCommand("shulker").setExecutor(new Inventory());
-        getCommand("toggle").setExecutor(new ToggleCommand());
         //Event Handler Register
         getServer().getPluginManager().registerEvents(new PlayerHandler(), this);
         getServer().getPluginManager().registerEvents(new EnchantProtEvent(), this);
         getServer().getPluginManager().registerEvents(new WaterProtAnvil(), this);
-        getServer().getPluginManager().registerEvents(new PlayerAddScoreboard(), this);
         getServer().getPluginManager().registerEvents(new WaterProtBookGen(), this);
         getServer().getPluginManager().registerEvents(new KeybindHandler(), this);
         getServer().getPluginManager().registerEvents(new ChoosingCORE(), this);
@@ -195,21 +265,31 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         WaterProtItem.init();
 
         //runnables
-        ChoosingForced forced = new ChoosingForced();
-        forced.runTaskTimer(this, 0, 2);
+        ChoosingGUI forced = new ChoosingGUI();
+        forced.runTaskTimer(GenesisMC.getPlugin(), 0, 1);
 
         GenesisItems items = new GenesisItems();
-        items.runTaskTimer(this, 0, 5);
+        items.runTaskTimer(GenesisMC.getPlugin(), 0, 1);
 
 
         Bukkit.getServer().getPluginManager().registerEvents(new KeybindHandler(), GenesisMC.getPlugin());
 
-        ScoreboardRunnable scorebo = new ScoreboardRunnable();
-        scorebo.runTaskTimer(this, 0, 5);
-
         InInfoCheck info = new InInfoCheck();
-        info.runTaskTimer(this, 0, 5);
+        info.runTaskTimer(GenesisMC.getPlugin(), 0, 1);
 
+        FoliaOriginScheduler.OriginSchedulerTree tree = new FoliaOriginScheduler.OriginSchedulerTree();
+        tree.runTaskTimer(GenesisMC.getPlugin(), 0, 1);
+
+        if(Bukkit.getServer().getPluginManager().isPluginEnabled("SkinsRestorer")){
+            GlobalRegionScheduler globalRegionScheduler = Bukkit.getGlobalRegionScheduler();
+            try {
+                globalRegionScheduler.execute(GenesisMC.getPlugin(), PlayerRender.ModelColor.class.newInstance());
+            } catch (InstantiationException e) {
+                throw new RuntimeException(e);
+            } catch (IllegalAccessException e) {
+                throw new RuntimeException(e);
+            }
+        }
 
         //enchantments
         waterProtectionEnchant = new WaterProtection("waterprot");
@@ -219,12 +299,12 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         Bukkit.getServer().getConsoleSender().sendMessage(Component.text("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"));
 
         for (Player p : Bukkit.getOnlinePlayers()) {
-            new BukkitRunnable() {
+        new BukkitRunnable() {
                 @Override
                 public void run() {
                     ReapplyEntityReachPowers(p);
                 }
-            }.runTaskTimer(GenesisMC.getPlugin(), 3, 0);
+            }.runTaskLater(GenesisMC.getPlugin(), 5l);
             PlayerHandler.originValidCheck(p);
             OriginPlayer.assignPowers(p);
             if (p.isOp())

@@ -32,48 +32,52 @@ public class ModifyBlockRenderPower extends CraftPower {
         }
     }
 
+    Player p;
+
+    public ModifyBlockRenderPower(){
+        this.p = p;
+    }
+
     @Override
-    public void run() {
-        for (Player player : Bukkit.getOnlinePlayers()) {
-            ChunkManagerWorld chunkManagerWorld = new ChunkManagerWorld(player.getWorld());
-            CraftPlayer craftPlayer = (CraftPlayer) player;
+    public void run(Player player) {
+        ChunkManagerWorld chunkManagerWorld = new ChunkManagerWorld(player.getWorld());
+        CraftPlayer craftPlayer = (CraftPlayer) player;
 
-            if (modify_block_render.contains(player)) {
-                List<BlockState> blockChanges = new ArrayList<>();
-                boolean conditionMet = false;
+        if (modify_block_render.contains(player)) {
+            List<BlockState> blockChanges = new ArrayList<>();
+            boolean conditionMet = false;
 
-                for (OriginContainer origin : OriginPlayer.getOrigin(player).values()) {
-                    Material targetMaterial = Material.AIR;
-                    if (conditionMet) {
-                        targetMaterial = Material.getMaterial(origin.getPowerFileFromType("origins:modify_block_render").get("block", null).toUpperCase());
-                    }
+            for (OriginContainer origin : OriginPlayer.getOrigin(player).values()) {
+                Material targetMaterial = Material.AIR;
+                if (conditionMet) {
+                    targetMaterial = Material.getMaterial(origin.getPowerFileFromType("origins:modify_block_render").get("block", null).toUpperCase());
+                }
 
-                    for (Chunk chunk : chunkManagerWorld.getChunksInPlayerViewDistance(craftPlayer)) {
-                        for (Block block : chunkManagerWorld.getAllBlocksInChunk(chunk)) {
-                            if (block.getType() != Material.AIR) {
-                                try {
-                                    ConditionExecutor conditionExecutor = new ConditionExecutor();
-                                    if (conditionExecutor.check("block_condition", "block_conditions", player, origin, "origins:modify_block_render", player, null, block, null, player.getItemInHand(), null)) {
-                                        conditionMet = true;
-                                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
-                                        BlockState blockState = block.getState();
-                                        blockState.setType(targetMaterial);
-                                        blockChanges.add(blockState);
-                                        break;
-                                    } else {
-                                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
-                                    }
-                                } catch (Exception e) {
-                                    ErrorSystem errorSystem = new ErrorSystem();
-                                    errorSystem.throwError("unable to send block_render_change", "origins:modify_block_render", player, origin, OriginPlayer.getLayer(player, origin));
-                                    e.printStackTrace();
+                for (Chunk chunk : chunkManagerWorld.getChunksInPlayerViewDistance(craftPlayer)) {
+                    for (Block block : chunkManagerWorld.getAllBlocksInChunk(chunk)) {
+                        if (block.getType() != Material.AIR) {
+                            try {
+                                ConditionExecutor conditionExecutor = new ConditionExecutor();
+                                if (conditionExecutor.check("block_condition", "block_conditions", player, origin, "origins:modify_block_render", player, null, block, null, player.getItemInHand(), null)) {
+                                    conditionMet = true;
+                                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
+                                    BlockState blockState = block.getState();
+                                    blockState.setType(targetMaterial);
+                                    blockChanges.add(blockState);
+                                    break;
+                                } else {
+                                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                                 }
+                            } catch (Exception e) {
+                                ErrorSystem errorSystem = new ErrorSystem();
+                                errorSystem.throwError("unable to send block_render_change", "origins:modify_block_render", player, origin, OriginPlayer.getLayer(player, origin));
+                                e.printStackTrace();
                             }
                         }
                     }
-
-                    craftPlayer.sendBlockChanges(blockChanges);
                 }
+
+                craftPlayer.sendBlockChanges(blockChanges);
             }
         }
     }

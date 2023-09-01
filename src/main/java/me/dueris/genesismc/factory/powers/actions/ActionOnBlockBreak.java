@@ -14,14 +14,20 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.util.ArrayList;
 
 public class ActionOnBlockBreak extends CraftPower implements Listener {
+
+    Player p;
+
+    public ActionOnBlockBreak(){
+        this.p = p;
+    }
+
     @Override
-    public void run() {
+    public void run(Player p) {
 
     }
 
     @EventHandler
     public void brek(BlockBreakEvent e) {
-        //TODO: add blockconditon
         Player actor = e.getPlayer();
 
         if (!getPowerArray().contains(actor)) return;

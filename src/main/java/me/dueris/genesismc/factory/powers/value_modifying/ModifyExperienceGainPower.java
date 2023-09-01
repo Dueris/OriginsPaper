@@ -28,6 +28,16 @@ public class ModifyExperienceGainPower extends CraftPower implements Listener {
         }
     }
 
+    Player p;
+
+    public ModifyExperienceGainPower(){
+        this.p = p;
+    }
+
+    @Override
+    public void run(Player p) {
+
+    }
 
     @EventHandler
     public void run(PlayerExpChangeEvent e) {
@@ -69,11 +79,6 @@ public class ModifyExperienceGainPower extends CraftPower implements Listener {
                 }
             }
         }
-    }
-
-    @Override
-    public void run() {
-
     }
 
     @Override

@@ -27,6 +27,16 @@ public class ModifyExhaustionPower extends CraftPower implements Listener {
         }
     }
 
+    Player p;
+
+    public ModifyExhaustionPower(){
+        this.p = p;
+    }
+
+    @Override
+    public void run(Player p) {
+
+    }
 
     @EventHandler
     public void run(EntityExhaustionEvent e) {
@@ -57,11 +67,6 @@ public class ModifyExhaustionPower extends CraftPower implements Listener {
                 }
             }
         }
-    }
-
-    @Override
-    public void run() {
-
     }
 
     @Override

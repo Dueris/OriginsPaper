@@ -37,9 +37,19 @@ public class FlightElytra extends CraftPower implements Listener {
         }
     }
 
+    Player p;
+
+    public FlightElytra(){
+        this.p = p;
+    }
+
+    @Override
+    public void run(Player p) {
+
+    }
 
     @EventHandler
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "Not scheduled yet"})
     public void ExecuteFlight(PlayerToggleSneakEvent e) {
         Player p = e.getPlayer();
         if (elytra.contains(e.getPlayer())) {
@@ -48,9 +58,14 @@ public class FlightElytra extends CraftPower implements Listener {
                 if (executor.check("condition", "conditions", p, origin, getPowerFile(), p, null, null, null, p.getItemInHand(), null)) {
                     setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                     if (origin.getPowerFileFromType("origins:elytra_flight").getShouldRender()) {
-                        SendStringPacketPayload.sendCustomPacket(p, "ExecuteGenesisOriginsElytraRenderID:12232285");
+                        SendStringPacketPayload.sendCustomPacket(p, "genesismc-elytra-render[packetID:a354b]");
                         CraftPlayer player = (CraftPlayer) p;
-                        player.getWorld().setGameRule(GameRule.DISABLE_ELYTRA_MOVEMENT_CHECK, false);
+                        Bukkit.getServer().getGlobalRegionScheduler().execute(GenesisMC.getPlugin(), new BukkitRunnable() {
+                            @Override
+                            public void run() {
+                                player.getWorld().setGameRule(GameRule.DISABLE_ELYTRA_MOVEMENT_CHECK, false);
+                            }
+                        });
                     }
                     if (!p.isOnGround() && !p.isGliding()) {
                         glidingPlayers.add(p.getUniqueId());
@@ -62,7 +77,6 @@ public class FlightElytra extends CraftPower implements Listener {
                                     this.cancel();
                                     glidingPlayers.remove(p.getUniqueId());
                                 }
-                                p.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 5, 3, false, false, false));
                                 p.setGliding(true);
                                 p.setFallDistance(0);
                             }
@@ -134,12 +148,6 @@ public class FlightElytra extends CraftPower implements Listener {
                 }
             }
         }
-    }
-
-
-    @Override
-    public void run() {
-
     }
 
     @Override
