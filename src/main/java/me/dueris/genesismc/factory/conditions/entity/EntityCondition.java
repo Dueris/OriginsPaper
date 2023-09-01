@@ -296,27 +296,46 @@ public class EntityCondition {
 
         if(type.equalsIgnoreCase("origins:submerged_in")){
             if(condition.get("fluid").equals("minecraft:water")){
+                p.sendMessage(String.valueOf(entity.getLocation().getBlock().getType().equals(Material.WATER)) + " waternstff");
                 if(entity.getLocation().getBlock().getType().equals(Material.WATER)) return Optional.of(true);
             }else if (condition.get("fluid").equals("minecraft:lava")) {
                 if(entity.getLocation().getBlock().getType().equals(Material.LAVA)) return Optional.of(true);
             }
         }
 
-        if(type.equalsIgnoreCase("origins:enchantment")){
-            if(entity instanceof Player player){
-                for(ItemStack item : player.getInventory().getArmorContents()){
-                    if(item == null) continue;
-                    if(condition.get("compare_to").toString() == "0" && condition.get("comparison").toString() == "==") return Optional.of(!item.containsEnchantment(getEnchantmentByNamespace(condition.get("enchantment").toString())));
-                    if(item.containsEnchantment(getEnchantmentByNamespace(condition.get("enchantment").toString()))){
-                        if(RestrictArmor.compareValues(item.getEnchantmentLevel(getEnchantmentByNamespace(condition.get("enchantment").toString())), condition.get("comparison").toString(), Double.parseDouble(condition.get("compare_to").toString()))){
-                            return Optional.of(true);
+        if (type.equalsIgnoreCase("origins:enchantment")) {
+            if (entity instanceof Player player) {
+                String enchantmentNamespace = condition.get("enchantment").toString();
+                String comparison = condition.get("comparison").toString();
+                double compareTo = Double.parseDouble(condition.get("compare_to").toString());
+
+                for (ItemStack item : player.getInventory().getArmorContents()) {
+                    if (item == null) continue;
+
+                    Enchantment enchantment = getEnchantmentByNamespace(enchantmentNamespace);
+
+                    if (enchantment != null) {
+                        if (item.containsEnchantment(enchantment)) {
+                            int enchantmentLevel = item.getEnchantmentLevel(enchantment);
+
+                            if (RestrictArmor.compareValues(enchantmentLevel, comparison, compareTo)) {
+                                p.sendMessage("true enchants");
+                                return Optional.of(true);
+                            }
+                        } else {
+                            if (Double.compare(compareTo, 0.0) == 0 && comparison.equals("==")) {
+                                return Optional.of(!item.containsEnchantment(enchantment));
+                            }
                         }
+                    } else {
+                        p.sendMessage("Enchantment not found");
                     }
                 }
             }
         }
 
         if(type.equalsIgnoreCase("origins:on_block")){
+            p.sendMessage(String.valueOf(entity.isOnGround()) + " entity.isOnGround()");
             return Optional.of(entity.isOnGround());
         }
         return Optional.of(false);
