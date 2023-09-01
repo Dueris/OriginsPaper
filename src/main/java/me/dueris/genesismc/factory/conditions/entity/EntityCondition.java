@@ -314,6 +314,10 @@ public class EntityCondition {
                 }
             }
         }
+
+        if(type.equalsIgnoreCase("origins:on_block")){
+            return Optional.of(entity.isOnGround());
+        }
         return Optional.of(false);
     }
 
