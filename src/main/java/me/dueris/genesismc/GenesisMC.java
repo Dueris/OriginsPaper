@@ -3,13 +3,10 @@ package me.dueris.genesismc;
 import com.github.Anon8281.universalScheduler.UniversalScheduler;
 import com.github.Anon8281.universalScheduler.scheduling.schedulers.TaskScheduler;
 import io.papermc.paper.event.player.PlayerFailMoveEvent;
-import io.papermc.paper.threadedregions.scheduler.AsyncScheduler;
 import io.papermc.paper.threadedregions.scheduler.GlobalRegionScheduler;
-import io.papermc.paper.threadedregions.scheduler.RegionScheduler;
-import io.papermc.paper.threadedregions.scheduler.ScheduledTask;
 import me.dueris.genesismc.choosing.ChoosingCORE;
 import me.dueris.genesismc.choosing.ChoosingCUSTOM;
-import me.dueris.genesismc.choosing.ChoosingForced;
+import me.dueris.genesismc.choosing.ChoosingGUI;
 import me.dueris.genesismc.commands.GenesisCommandManager;
 import me.dueris.genesismc.commands.TabAutoComplete;
 import me.dueris.genesismc.commands.subcommands.origin.Info.InInfoCheck;
@@ -20,7 +17,6 @@ import me.dueris.genesismc.enchantments.WaterProtAnvil;
 import me.dueris.genesismc.enchantments.WaterProtection;
 import me.dueris.genesismc.entity.OriginPlayer;
 import me.dueris.genesismc.factory.CraftApoli;
-import me.dueris.genesismc.factory.PowerStartHandler;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.factory.powers.player.PlayerRender;
 import me.dueris.genesismc.factory.powers.player.inventory.Inventory;
@@ -50,7 +46,6 @@ import org.bukkit.scheduler.BukkitScheduler;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.io.IOException;
-import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.EnumSet;
@@ -270,7 +265,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         WaterProtItem.init();
 
         //runnables
-        ChoosingForced forced = new ChoosingForced();
+        ChoosingGUI forced = new ChoosingGUI();
         forced.runTaskTimer(GenesisMC.getPlugin(), 0, 1);
 
         GenesisItems items = new GenesisItems();

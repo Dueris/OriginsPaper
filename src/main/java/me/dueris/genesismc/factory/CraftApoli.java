@@ -397,19 +397,19 @@ public class CraftApoli {
      * @return The byte array deserialized into a HashMap of the originLayer and the OriginContainer.
      **/
     public static HashMap<LayerContainer, OriginContainer> toOrigin(byte[] origin) {
-        ByteArrayInputStream bis = new ByteArrayInputStream(origin);
-        try {
-            ObjectInput oi = new ObjectInputStream(bis);
+        try (ByteArrayInputStream bis = new ByteArrayInputStream(origin);
+             ObjectInput oi = new ObjectInputStream(bis)) {
             return (HashMap<LayerContainer, OriginContainer>) oi.readObject();
-        } catch (Exception e) {
+        } catch (IOException | ClassNotFoundException e) {
             Bukkit.getLogger().warning(LangConfig.getLocalizedString(Bukkit.getConsoleSender(), "errors.containerConversion"));
             e.printStackTrace();
-            HashMap<LayerContainer, OriginContainer> origins = new HashMap<>();
-            for (LayerContainer layer : CraftApoli.getLayers()) {
-                origins.put(layer, CraftApoli.nullOrigin());
-            }
-            return origins;
         }
+
+        HashMap<LayerContainer, OriginContainer> origins = new HashMap<>();
+        for (LayerContainer layer : CraftApoli.getLayers()) {
+            origins.put(layer, CraftApoli.nullOrigin());
+        }
+        return origins;
     }
 
     /**
