@@ -55,11 +55,6 @@ public class ModifyProjectileDamagePower extends CraftPower implements Listener 
                                 if (mathOperator != null) {
                                     float result = (float) mathOperator.apply(e.getDamage(), value);
                                     e.setDamage(result);
-                                    if (origin.getPowerFileFromType(getPowerFile()) == null) {
-                                        getPowerArray().remove(p);
-                                        return;
-                                    }
-                                    if (!getPowerArray().contains(p)) return;
                                     setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                                 }
                             }

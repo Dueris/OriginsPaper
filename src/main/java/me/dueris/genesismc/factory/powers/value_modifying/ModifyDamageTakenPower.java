@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.function.BinaryOperator;
 
 import static me.dueris.genesismc.factory.powers.player.attributes.AttributeHandler.*;
+import static me.dueris.genesismc.factory.powers.value_modifying.ValueModifyingSuperClass.modify_damage_dealt;
 import static me.dueris.genesismc.factory.powers.value_modifying.ValueModifyingSuperClass.modify_damage_taken;
 
 public class ModifyDamageTakenPower extends CraftPower implements Listener {
@@ -41,70 +42,60 @@ public class ModifyDamageTakenPower extends CraftPower implements Listener {
     }
 
     @EventHandler
-    public void dmgEvent(EntityDamageEvent e) {
-        if (e.getEntity() instanceof Player p) {
-            if (getPowerArray().contains(p)) {
-                for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
-                    try {
-                        ConditionExecutor conditionExecutor = new ConditionExecutor();
-                        if (conditionExecutor.check("damage_condition", "damage_conditions", p, origin, "origins:modify_damage_taken", p, e.getEntity(), p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
-                            for (HashMap<String, Object> modifier : origin.getPowerFileFromType("origins:modify_damage_taken").getConditionFromString("modifier", "modifiers")) {
-                                if (modifier.get("value") instanceof Float) {
-                                    Float value = Float.valueOf(modifier.get("value").toString());
-                                    String operation = modifier.get("operation").toString();
-                                    BinaryOperator mathOperator = getOperationMappingsFloat().get(operation);
-                                    if (mathOperator != null) {
-                                        p.sendMessage(String.valueOf(e.getDamage()));
-                                        float result = (float) mathOperator.apply(e.getDamage(), value);
-                                        e.setDamage(result);
-                                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
-                                    }
-                                } else if (modifier.get("value") instanceof Double) {
-                                    Double value = Double.valueOf(modifier.get("value").toString());
-                                    String operation = modifier.get("operation").toString();
-                                    BinaryOperator mathOperator = getOperationMappingsDouble().get(operation);
-                                    if (mathOperator != null) {
-                                        double result = (double) mathOperator.apply(e.getDamage(), value);
-                                        e.setDamage(result);
-                                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
-                                    }
-                                } else if (modifier.get("value") instanceof Integer) {
-                                    Integer value = Integer.valueOf(modifier.get("value").toString());
-                                    String operation = modifier.get("operation").toString();
-                                    BinaryOperator mathOperator = getOperationMappingsInteger().get(operation);
-                                    if (mathOperator != null) {
-                                        int result = (int) mathOperator.apply(e.getDamage(), value);
-                                        e.setDamage(result);
-                                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
-                                    }
-                                } else if (modifier.get("value") instanceof Long) {
-                                    Long value = Long.valueOf(modifier.get("value").toString());
-                                    String operation = modifier.get("operation").toString();
-                                    BinaryOperator mathOperator = getOperationMappingsLong().get(operation);
-                                    if (mathOperator != null) {
-                                        long result = (long) mathOperator.apply(e.getDamage(), value);
-                                        e.setDamage(result);
-                                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
-                                    }
-                                }
+    public void damageEVENT(EntityDamageEvent e) {
+        if (e.getEntity() instanceof Player p && modify_damage_dealt.contains(p)) {
+            for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
+                try {
+                    ConditionExecutor conditionExecutor = new ConditionExecutor();
+                    if (conditionExecutor.check("bientity_condition", "bientity_condition", p, origin, "origins:modify_damage_dealt", p, e.getEntity(), p.getLocation().getBlock(), null, p.getItemInHand(), e)) {
+                        if (conditionExecutor.check("condition", "condition", p, origin, "origins:modify_damage_dealt", p, e.getEntity(), p.getLocation().getBlock(), null, p.getItemInHand(), e)) {
+                            for (HashMap<String, Object> modifier : origin.getPowerFileFromType("origins:modify_damage_dealt").getConditionFromString("modifier", "modifiers")) {
+                                Object value = modifier.get("value");
+                                String operation = modifier.get("operation").toString();
+                                runSetDMG(e, operation, value);
+                                setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                             }
-
-                        } else {
-                            setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                         }
-                    } catch (Exception ev) {
-                        ErrorSystem errorSystem = new ErrorSystem();
-                        errorSystem.throwError("unable to get bi-entity", "origins:modify_damage_taken", p, origin, OriginPlayer.getLayer(p, origin));
-                        ev.printStackTrace();
+                    } else {
+                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                     }
+                } catch (Exception ev) {
+                    throw new RuntimeException();
                 }
             }
         }
     }
 
-    @EventHandler
-    public void damageEVENT(EntityDamageByEntityEvent e) {
+    public void runSetDMG(EntityDamageEvent e, String operation, Object value) {
+        double damage = e.getDamage();
 
+        if (value instanceof Double) {
+            BinaryOperator<Double> doubleOperator = getOperationMappingsDouble().get(operation);
+            if (doubleOperator != null) {
+                double newDamage = doubleOperator.apply(damage, (Double) value);
+                e.setDamage(newDamage);
+            }
+        } else if (value instanceof Long) {
+            BinaryOperator<Long> longOperator = getOperationMappingsLong().get(operation);
+            if (longOperator != null) {
+                long newDamage = longOperator.apply((long) damage, (Long) value);
+                e.setDamage(newDamage);
+            }
+        } else if (value instanceof Integer) {
+            BinaryOperator<Integer> intOperator = getOperationMappingsInteger().get(operation);
+            if (intOperator != null) {
+                int newDamage = intOperator.apply((int) damage, (Integer) value);
+                e.setDamage(newDamage);
+            }
+        } else if (value instanceof Float) {
+            BinaryOperator<Float> floatOperator = getOperationMappingsFloat().get(operation);
+            if (floatOperator != null) {
+                float newDamage = floatOperator.apply((float) damage, (Float) value);
+                e.setDamage(newDamage);
+            }
+        } else {
+            throw new IllegalArgumentException("Unsupported number type: " + value.getClass());
+        }
     }
 
     @Override
