@@ -291,6 +291,14 @@ public class EntityCondition {
                 }
             }
         }
+
+        if(type.equalsIgnoreCase("origins:submerged_in")){
+            if(condition.get("fluid").equals("minecraft:water")){
+                if(entity.getLocation().getBlock().getType().equals(Material.WATER)) return Optional.of(true);
+            }else if (condition.get("fluid").equals("minecraft:lava")) {
+                if(entity.getLocation().getBlock().getType().equals(Material.LAVA)) return Optional.of(true);
+            }
+        }
         return Optional.of(false);
     }
 
