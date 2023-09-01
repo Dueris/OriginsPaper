@@ -5,6 +5,7 @@ import me.dueris.genesismc.entity.OriginPlayer;
 import me.dueris.genesismc.factory.conditions.biome.BiomeCondition;
 import me.dueris.genesismc.factory.conditions.block.BlockCondition;
 import me.dueris.genesismc.factory.powers.player.Climbing;
+import me.dueris.genesismc.factory.powers.player.FlightElytra;
 import me.dueris.genesismc.factory.powers.player.RestrictArmor;
 import me.dueris.genesismc.utils.OriginContainer;
 import org.bukkit.*;
@@ -278,6 +279,16 @@ public class EntityCondition {
         if (type.equalsIgnoreCase("origins:resource")) {
             for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
                 return Optional.of(!CooldownStuff.isPlayerInCooldownFromTag(p, origin.getPowerFileFromType(powerfile).getTag()));
+            }
+        }
+
+        if (type.equalsIgnoreCase("origins:fall_flying")){
+            if(entity instanceof Player player){
+                if(player.isGliding() || FlightElytra.getGlidingPlayers().contains(player)){
+                    if(player.getVelocity().getY() < 0 && !player.isOnGround()){
+                        return Optional.of(true);
+                    }
+                }
             }
         }
         return Optional.of(false);

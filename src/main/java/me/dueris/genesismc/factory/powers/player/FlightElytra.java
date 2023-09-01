@@ -48,6 +48,10 @@ public class FlightElytra extends CraftPower implements Listener {
 
     }
 
+    public static ArrayList<UUID> getGlidingPlayers() {
+        return glidingPlayers;
+    }
+
     @EventHandler
     @SuppressWarnings({"unchecked", "Not scheduled yet"})
     public void ExecuteFlight(PlayerToggleSneakEvent e) {
@@ -77,6 +81,7 @@ public class FlightElytra extends CraftPower implements Listener {
                                     this.cancel();
                                     glidingPlayers.remove(p.getUniqueId());
                                 }
+                                glidingPlayers.add(p.getUniqueId());
                                 p.setGliding(true);
                                 p.setFallDistance(0);
                             }
