@@ -41,6 +41,7 @@ public class ActionOnItemUse extends CraftPower implements Listener {
                     if(conditionExecutor.check("entity_condition", "entity_conditions", actor, origin, getPowerFile(), actor, null, actor.getLocation().getBlock(), null, actor.getInventory().getItemInHand(), null)){
                         ActionTypes.EntityActionType(actor, power.getEntityAction());
                         ActionTypes.ItemActionType(actor.getActiveItem(), power.getItemAction());
+                        e.setCancelled(true);
                         new BukkitRunnable() {
                             @Override
                             public void run() {
