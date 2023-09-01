@@ -58,7 +58,7 @@ public class ModifyBlockRenderPower extends CraftPower {
                         if (block.getType() != Material.AIR) {
                             try {
                                 ConditionExecutor conditionExecutor = new ConditionExecutor();
-                                if (conditionExecutor.check("block_condition", "block_conditions", player, origin, "origins:modify_block_render", player, null, block, null, player.getItemInHand(), null)) {
+                                if (conditionExecutor.check("block_condition", "block_conditions", player, origin, "origins:modify_block_render", player, null, block, null, player.getInventory().getItemInHand(), null)) {
                                     conditionMet = true;
                                     setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                                     BlockState blockState = block.getState();

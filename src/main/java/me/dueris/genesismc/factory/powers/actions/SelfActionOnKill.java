@@ -35,7 +35,7 @@ public class SelfActionOnKill extends CraftPower implements Listener {
         for (OriginContainer origin : OriginPlayer.getOrigin(player).values()) {
             ConditionExecutor executor = new ConditionExecutor();
             if (CooldownStuff.isPlayerInCooldown((Player) target, "key.attack")) return;
-            if (executor.check("condition", "conditions", (Player) target, origin, getPowerFile(), target, null, null, null, player.getItemInHand(), null)) {
+            if (executor.check("condition", "conditions", (Player) target, origin, getPowerFile(), target, null, null, null, player.getInventory().getItemInHand(), null)) {
                 if (!getPowerArray().contains(target)) return;
                 setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                 ActionTypes.EntityActionType(target, origin.getPowerFileFromType(getPowerFile()).getEntityAction());

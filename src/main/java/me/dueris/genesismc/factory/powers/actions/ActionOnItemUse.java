@@ -2,6 +2,7 @@ package me.dueris.genesismc.factory.powers.actions;
 
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.entity.OriginPlayer;
+import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.OriginContainer;
 import me.dueris.genesismc.utils.PowerContainer;
@@ -14,10 +15,9 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.util.ArrayList;
 
 public class ActionOnItemUse extends CraftPower implements Listener {
-    Player p;
 
     public ActionOnItemUse(){
-        this.p = p;
+
     }
 
     @Override
@@ -26,7 +26,7 @@ public class ActionOnItemUse extends CraftPower implements Listener {
     }
 
     @EventHandler
-    public void entityRightClickEntity(PlayerInteractEvent e) {
+    public void entityRightClick(PlayerInteractEvent e) {
         Player actor = e.getPlayer();
 
         for (OriginContainer origin : OriginPlayer.getOrigin(actor).values()) {
@@ -35,15 +35,23 @@ public class ActionOnItemUse extends CraftPower implements Listener {
 
             if (!getPowerArray().contains(e.getPlayer())) return;
             setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
-            ActionTypes.EntityActionType(actor, power.getEntityAction());
-            ActionTypes.ItemActionType(actor.getActiveItem(), power.getItemAction());
-            new BukkitRunnable() {
-                @Override
-                public void run() {
-                    if (!getPowerArray().contains(e.getPlayer())) return;
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
+            ConditionExecutor conditionExecutor = new ConditionExecutor();
+            if(conditionExecutor.check("item_condition", "item_conditions", actor, origin, getPowerFile(), actor, null, actor.getLocation().getBlock(), null, actor.getInventory().getItemInHand(), null)){
+                if(conditionExecutor.check("condition", "conditions", actor, origin, getPowerFile(), actor, null, actor.getLocation().getBlock(), null, actor.getInventory().getItemInHand(), null)){
+                    if(conditionExecutor.check("entity_condition", "entity_conditions", actor, origin, getPowerFile(), actor, null, actor.getLocation().getBlock(), null, actor.getInventory().getItemInHand(), null)){
+                        ActionTypes.EntityActionType(actor, power.getEntityAction());
+                        ActionTypes.ItemActionType(actor.getActiveItem(), power.getItemAction());
+                        new BukkitRunnable() {
+                            @Override
+                            public void run() {
+                                if (!getPowerArray().contains(e.getPlayer())) return;
+                                setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
+                            }
+                        }.runTaskLater(GenesisMC.getPlugin(), 2L);
+                    }
                 }
-            }.runTaskLater(GenesisMC.getPlugin(), 2L);
+            }
+
         }
 
 //        if (e.getHand() == EquipmentSlot.HAND) System.out.println("main");
