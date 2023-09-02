@@ -25,7 +25,6 @@ import java.util.List;
 import java.util.Optional;
 
 import static me.dueris.genesismc.factory.powers.CraftPower.findCraftPowerClasses;
-import static me.dueris.genesismc.factory.powers.Power.keep_inventory;
 import static me.dueris.genesismc.factory.powers.Power.powers_active;
 
 public class ConditionExecutor {
@@ -37,23 +36,15 @@ public class ConditionExecutor {
             for (Object subConditionObj : conditionsArray) {
                 if (subConditionObj instanceof JSONObject subSubCondition) {
                     boolean subSubConditionResult = checkSubCondition(subSubCondition, p, actor, target, block, fluid, itemStack, dmgevent, powerFile);
-                    boolean inverted = (boolean) (subSubCondition).getOrDefault("inverted", false);
-                    if (inverted) {
-                        if (subSubConditionResult) {
-                            allTrue = false;
-                            break;
-                        }
-                    } else {
-                        if (!subSubConditionResult) {
-                            allTrue = false;
-                            break;
-                        }
+                    if (!subSubConditionResult) {
+                        allTrue = false;
+                        break;
                     }
-
                 }
             }
+
+            return allTrue;
         } else {
-            boolean inverted = (boolean) subCondition.getOrDefault("inverted", false);
             boolean subConditionResult = false;
             if (dmgevent != null) {
                 var check = DamageCondition.check(subCondition, p, dmgevent, powerFile);
@@ -80,7 +71,7 @@ public class ConditionExecutor {
                 if (check2.isPresent()) {
                     subConditionResult = (boolean) check.get();
                 }
-            } else if (fluid != null) {
+            } else if (fluid != null){
                 var check = FluidCondition.check(subCondition, p, fluid, powerFile);
                 if (check.isPresent()) {
                     subConditionResult = (boolean) check.get();
@@ -92,13 +83,8 @@ public class ConditionExecutor {
                 }
             }
 
-            if (inverted) {
-                return (boolean) subCondition.getOrDefault("inverted", false) == subConditionResult;
-            } else {
-                return (boolean) subCondition.getOrDefault("inverted", false) != subConditionResult;
-            }
+            return (boolean) subCondition.getOrDefault("inverted", false) != subConditionResult;
         }
-        return true;
     }
 
     public static boolean checkConditions(JSONArray conditionsArray, Player p, Entity actor, Entity target, Block block, Fluid fluid, ItemStack itemStack, EntityDamageEvent dmgevent, String powerFile) {
@@ -139,13 +125,7 @@ public class ConditionExecutor {
                     }
                 }
             } else if (condition.get("type").equals("origins:constant")) {
-                boolean inverted = (boolean) condition.getOrDefault("inverted", false);
-                if(inverted){
-                    return condition.get("value").equals("false");
-                }else{
-                    return (boolean) condition.get("value").equals("true");
-                }
-
+                return (boolean) condition.get("value");
             } else if (condition.get("type").equals("origins:power_active")) {
                 if (condition.get("power").toString().contains("*")) {
                     String[] powerK = condition.get("power").toString().split("\\*");
@@ -156,40 +136,19 @@ public class ConditionExecutor {
                     }
                 } else {
                     String power = condition.get("power").toString();
-                    boolean inverted = (boolean) condition.getOrDefault("inverted", false);
-                    if(inverted){
-                        if (powers_active.containsKey(power)) {
-                            return !powers_active.get(power);
-                        } else {
-                            return true;
-                        }
-                    }else{
-                        if (powers_active.containsKey(power)) {
-                            return powers_active.get(power);
-                        } else {
-                            return false;
-                        }
+                    if (powers_active.containsKey(power)) {
+                        return powers_active.get(power);
+                    } else {
+                        return false;
                     }
                 }
             } else if (condition.get("type").equals("origins:power")) {
                 for (String string : origin.getPowers()) {
                     String power = condition.get("power").toString();
-                    boolean inverted = (boolean) condition.getOrDefault("inverted", false);
-                    if(inverted){
-                        return !string.equalsIgnoreCase(power);
-                    }else{
-                        return string.equalsIgnoreCase(power);
-                    }
+                    return string.equalsIgnoreCase(power);
                 }
             } else if (condition.get("type").equals("origins:origin")) {
-                if (OriginPlayer.hasOrigin(p, condition.get("origin").toString())) {
-                    boolean inverted = (boolean) condition.getOrDefault("inverted", false);
-                    if(inverted){
-                        return false;
-                    }else{
-                        return true;
-                    }
-                }
+                if (OriginPlayer.hasOrigin(p, condition.get("origin").toString())) return true;
             } else if (condition.get("type").equals("origins:power_type")) {
                 List<Class<? extends CraftPower>> craftPowerClasses;
                 try {
@@ -200,102 +159,57 @@ public class ConditionExecutor {
                 for (Class<? extends CraftPower> c : craftPowerClasses) {
                     String pt = condition.get("power_type").toString();
                     try {
-                        boolean inverted = (boolean) condition.getOrDefault("inverted", false);
-                        if(inverted){
-                            if (c.newInstance().getPowerFile().equals(pt)) {
-                                return c.newInstance().getPowerArray().contains(p);
-                            } else {
-                                return false;
-                            }
-                        }else{
-                            if (c.newInstance().getPowerFile().equals(pt)) {
-                                return !c.newInstance().getPowerArray().contains(p);
-                            } else {
-                                return true;
-                            }
+                        if (c.newInstance().getPowerFile().equals(pt)) {
+                            return c.newInstance().getPowerArray().contains(p);
+                        } else {
+                            return false;
                         }
-
                     } catch (InstantiationException | IllegalAccessException e) {
                         throw new RuntimeException(e);
                     }
                 }
             } else {
                 if (origin.getPowerFileFromType(powerfile).getConditionFromString(singular, plural) == null) {
-                    boolean inverted = (boolean) condition.getOrDefault("inverted", false);
-                    if(inverted){
-                        return false;
-                    }else{
-                        return true;
-                    }
-
+                    return true;
                 }
-                boolean inverted = (boolean) condition.getOrDefault("inverted", false);
                 if (dmgevent != null) {
                     Optional<Boolean> check = DamageCondition.check(condition, p, dmgevent, powerfile);
                     if (check.isPresent() && check.get()) {
-                        if(inverted){
-                            return false;
-                        }else{
-                            return true;
-                        }
+                        return true;
                     }
                 }
                 if (actor != null) {
                     Optional<Boolean> check = EntityCondition.check(condition, p, actor, powerfile);
                     if (check.isPresent() && check.get()) {
-                        if(inverted){
-                            return false;
-                        }else{
-                            return true;
-                        }
+                        return true;
                     }
                 }
                 if (actor != null && target != null) {
                     Optional<Boolean> check = BiEntityCondition.check(condition, p, actor, target, powerfile);
                     if (check.isPresent() && check.get()) {
-                        if(inverted){
-                            return false;
-                        }else{
-                            return true;
-                        }
+                        return true;
                     }
                 }
                 if (block != null) {
                     Optional<Boolean> check = BlockCondition.check(condition, p, block, powerfile);
                     if (check.isPresent() && check.get()) {
-                        if(inverted){
-                            return false;
-                        }else{
-                            return true;
-                        }
+                        return true;
                     }
                     Optional<Boolean> checkB = BiomeCondition.check(condition, p, block, powerfile);
                     if (checkB.isPresent() && checkB.get()) {
-                        if(inverted){
-                            return false;
-                        }else{
-                            return true;
-                        }
+                        return true;
                     }
                 }
                 if (fluid != null) {
                     Optional<Boolean> check = FluidCondition.check(condition, p, fluid, powerfile);
                     if (check.isPresent() && check.get()) {
-                        if(inverted){
-                            return false;
-                        }else{
-                            return true;
-                        }
+                        return true;
                     }
                 }
                 if (itemStack != null) {
                     Optional<Boolean> check = ItemCondition.check(condition, p, itemStack, powerfile);
                     if (check.isPresent() && check.get()) {
-                        if(inverted){
-                            return false;
-                        }else{
-                            return true;
-                        }
+                        return true;
                     }
                 }
             }
