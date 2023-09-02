@@ -57,7 +57,32 @@ public class ConditionExecutor {
                 if (check.isPresent()) {
                     subConditionResult = (boolean) check.get();
                 }
+            } else if (actor != null && target != null) {
+                var check = BiEntityCondition.check(subCondition, p, actor, target, powerFile);
+                if (check.isPresent()) {
+                    subConditionResult = (boolean) check.get();
+                }
+            } else if (block != null) {
+                var check = BlockCondition.check(subCondition, p, p.getLocation().getBlock(), powerFile);
+                if (check.isPresent()) {
+                    subConditionResult = (boolean) check.get();
+                }
+                var check2 = BiomeCondition.check(subCondition, p, p.getLocation().getBlock(), powerFile);
+                if (check2.isPresent()) {
+                    subConditionResult = (boolean) check.get();
+                }
+            } else if (fluid != null){
+                var check = FluidCondition.check(subCondition, p, fluid, powerFile);
+                if (check.isPresent()) {
+                    subConditionResult = (boolean) check.get();
+                }
+            } else if (itemStack != null) {
+                var check = ItemCondition.check(subCondition, p, itemStack, powerFile);
+                if (check.isPresent()) {
+                    subConditionResult = (boolean) check.get();
+                }
             }
+
             return (boolean) subCondition.getOrDefault("inverted", false) != subConditionResult;
         }
     }

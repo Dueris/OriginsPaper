@@ -5,7 +5,7 @@
     "condition": {
       "type": "origins:temperature",
       "comparison": ">=",
-      "compare_to": 2
+      "compare_to": 1.75
     }
   },
   "interval": 20,

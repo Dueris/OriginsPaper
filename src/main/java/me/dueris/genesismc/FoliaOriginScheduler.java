@@ -9,6 +9,7 @@ import me.dueris.genesismc.factory.powers.FlightHandler;
 import me.dueris.genesismc.factory.powers.Overlay;
 import me.dueris.genesismc.factory.powers.actions.ActionOnItemUse;
 import me.dueris.genesismc.factory.powers.player.Gravity;
+import me.dueris.genesismc.factory.powers.player.damage.Burn;
 import me.dueris.genesismc.files.GenesisDataFiles;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -18,6 +19,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class FoliaOriginScheduler {
 
@@ -60,6 +62,9 @@ public class FoliaOriginScheduler {
     }
 
     public static class OriginSchedulerTree extends BukkitRunnable {
+
+        private HashMap<Player, Integer> ticksEMap = new HashMap<>();
+
         @Override
         public void run() {
             for(Player p : OriginPlayer.hasPowers){
@@ -95,7 +100,11 @@ public class FoliaOriginScheduler {
                             @Override
                             public void run() {
                                 try {
-                                    c.newInstance().run(p);
+                                    if(c.newInstance() instanceof Burn){
+                                        ((Burn) c.newInstance()).run(p, ticksEMap);
+                                    }else{
+                                        c.newInstance().run(p);
+                                    }
                                 } catch (InstantiationException e) {
                                     //rip
                                 } catch (IllegalAccessException e) {

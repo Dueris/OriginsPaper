@@ -113,16 +113,6 @@ public class EntityCondition {
             }
         }
 
-        if (type.equalsIgnoreCase("origins:biome")) {
-            if (condition.get("biome") == null) return Optional.empty();
-            String biomeString = condition.get("biome").toString().split(":")[1].replace(".", "_").toUpperCase();
-            if (BiomeCondition.check(condition, entity, entity.getLocation().getBlock(), powerfile).equals(Optional.of(true))) {
-                if (entity.getLocation().getBlock().getBiome().equals(Biome.valueOf(biomeString))) {
-                    return Optional.of(true);
-                }
-            }
-        }
-
         if (type.equalsIgnoreCase("origins:block_collision")) {
             String offsetX = condition.get("offset_x").toString();
             String offsetY = condition.get("offset_y").toString();
