@@ -18,16 +18,11 @@ public class ItemCondition {
 
         switch (type) {
             case "origins:ingredient" -> {
-                p.sendMessage("ingredient");
                 if (condition.containsKey("ingredient")) {
                     Map<String, Object> ingredientMap = (Map<String, Object>) condition.get("ingredient");
                     if (ingredientMap.containsKey("item")) {
                         String itemValue = ingredientMap.get("item").toString();
-                        p.sendMessage(itemValue);
-                        p.sendMessage(String.valueOf(Material.valueOf(itemValue.toString().split(":")[1].toUpperCase())));
-                        p.sendMessage(item.getType().toString());
                         if(item.getType().equals(Material.valueOf(itemValue.toString().split(":")[1].toUpperCase()))){
-                            p.sendMessage("test");
                             return Optional.of(true);
                         }
                     }
