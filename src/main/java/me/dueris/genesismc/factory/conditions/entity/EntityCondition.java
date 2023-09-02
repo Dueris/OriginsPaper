@@ -33,7 +33,6 @@ import static me.dueris.genesismc.factory.powers.player.RestrictArmor.compareVal
 public class EntityCondition {
 
     public static Optional<Boolean> check(HashMap<String, Object> condition, Player p, Entity entity, String powerfile) {
-        // TODO: use inverted
         boolean inverted = (boolean) condition.getOrDefault("inverted", false);
         if (condition.get("type") == null) return Optional.empty();
         String type = condition.get("type").toString();
