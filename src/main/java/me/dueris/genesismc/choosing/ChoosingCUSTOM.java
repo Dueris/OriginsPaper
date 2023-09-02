@@ -235,39 +235,6 @@ public class ChoosingCUSTOM implements Listener {
                 new BukkitRunnable() {
                     @Override
                     public void run() {
-                        if (launch_into_air.contains(p)) {
-                            ItemStack launchitem = new ItemStack(Material.FEATHER);
-                            ItemMeta launchmeta = launchitem.getItemMeta();
-                            launchmeta.setDisplayName(GRAY + "Launch");
-                            launchmeta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
-                            launchitem.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-                            launchitem.setItemMeta(launchmeta);
-                            p.getInventory().addItem(launchitem);
-                        }
-                        if (throw_ender_pearl.contains(p)) {
-                            ItemStack infinpearl = new ItemStack(Material.ENDER_PEARL);
-                            ItemMeta pearl_meta = infinpearl.getItemMeta();
-                            pearl_meta.setDisplayName(ChatColor.LIGHT_PURPLE + "Teleport");
-                            ArrayList<String> pearl_lore = new ArrayList();
-                            pearl_meta.setUnbreakable(true);
-                            pearl_meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
-                            pearl_meta.setLore(pearl_lore);
-                            infinpearl.setItemMeta(pearl_meta);
-                            p.getInventory().addItem(infinpearl);
-                        }
-                        if (phasing.contains(p)) {
-                            ItemStack spectatorswitch = new ItemStack(Material.PHANTOM_MEMBRANE);
-                            ItemMeta switch_meta = spectatorswitch.getItemMeta();
-                            switch_meta.setDisplayName(GRAY + "Phasing Form");
-                            ArrayList<String> pearl_lore = new ArrayList();
-                            switch_meta.setUnbreakable(true);
-                            switch_meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
-                            switch_meta.addItemFlags(ItemFlag.HIDE_ITEM_SPECIFICS);
-                            switch_meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-                            switch_meta.setLore(pearl_lore);
-                            spectatorswitch.setItemMeta(switch_meta);
-                            p.getInventory().addItem(spectatorswitch);
-                        }
                         if (modify_world_spawn.contains(p)) {
                             ModifyPlayerSpawnPower modifyPlayerSpawnPower = new ModifyPlayerSpawnPower();
                             if (origin.getPowerFileFromType("origins:modify_player_spawn").get("dimension", null).equals("minecraft:nether")) {
