@@ -10,10 +10,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+import static me.dueris.genesismc.factory.conditions.ConditionExecutor.getResult;
+
 public class ItemCondition {
     public static Optional<Boolean> check(HashMap<String, Object> condition, Player p, ItemStack item, String powerfile) {
         if (condition.get("type") == null) return Optional.empty();
-
+        boolean inverted = (boolean) condition.getOrDefault("inverted", false);
         String type = condition.get("type").toString().toLowerCase();
 
         switch (type) {
@@ -23,12 +25,12 @@ public class ItemCondition {
                     if (ingredientMap.containsKey("item")) {
                         String itemValue = ingredientMap.get("item").toString();
                         if(item.getType().equals(Material.valueOf(itemValue.toString().split(":")[1].toUpperCase()))){
-                            return Optional.of(true);
+                            return getResult(inverted, true);
                         }
                     }
                 }
             }
         }
-        return Optional.of(false);
+        return getResult(inverted, false);
     }
 }

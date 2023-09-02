@@ -217,4 +217,8 @@ public class ConditionExecutor {
         }
         return true;
     }
+
+    public static Optional<Boolean> getResult(boolean inverted, boolean condition) {
+        return Optional.of(inverted ? !condition : condition);
+    }
 }

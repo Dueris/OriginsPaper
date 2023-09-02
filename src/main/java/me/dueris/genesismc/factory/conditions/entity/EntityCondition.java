@@ -28,12 +28,12 @@ import java.util.HashMap;
 import java.util.Objects;
 import java.util.Optional;
 
+import static me.dueris.genesismc.factory.conditions.ConditionExecutor.getResult;
 import static me.dueris.genesismc.factory.powers.player.RestrictArmor.compareValues;
 
 public class EntityCondition {
 
     public static Optional<Boolean> check(HashMap<String, Object> condition, Player p, Entity entity, String powerfile) {
-        // TODO: use inverted
         boolean inverted = (boolean) condition.getOrDefault("inverted", false);
         if (condition.get("type") == null) return Optional.empty();
         String type = condition.get("type").toString();
@@ -44,23 +44,23 @@ public class EntityCondition {
             switch (ability) {
                 case "minecraft:flying" -> {
                     if (entity instanceof Player player) {
-                        return Optional.of(player.isFlying());
+                        return getResult(inverted, player.isFlying());
                     }
                 }
                 case "minecraft:instabuild" -> {
                     if (entity instanceof Player player) {
-                        return Optional.of(player.getGameMode().equals(GameMode.CREATIVE));
+                        return getResult(inverted, player.getGameMode().equals(GameMode.CREATIVE));
                     }
                 }
                 case "minecraft:invulnerable" -> {
-                    return Optional.of(entity.isInvulnerable());
+                    return getResult(inverted, entity.isInvulnerable());
                 }
                 case "minecraft:maybuild" -> {
-                    return Optional.of(entity.hasPermission("minecraft.build"));
+                    return getResult(inverted, entity.hasPermission("minecraft.build"));
                 }
                 case "minecraft:mayfly" -> {
                     if (entity instanceof Player player) {
-                        return Optional.of(player.getAllowFlight());
+                        return getResult(inverted, player.getAllowFlight());
                     }
                 }
             }
@@ -83,15 +83,15 @@ public class EntityCondition {
 
                         if (advancementJson != null) {
                             Boolean done = (Boolean) advancementJson.get("done");
-                            return Optional.of(Objects.requireNonNullElse(done, false));
+                            return getResult(inverted, Objects.requireNonNullElse(done, false));
                         } else {
-                            return Optional.of(false);
+                            return getResult(inverted, false);
                         }
                     } catch (IOException | ParseException e) {
                         e.printStackTrace();
                     }
                 } else {
-                    return Optional.of(false);
+                    return getResult(inverted, false);
                 }
             }
         }
@@ -99,7 +99,7 @@ public class EntityCondition {
         if (type.equalsIgnoreCase("origins:air")) {
             if (entity instanceof Player player) {
                 if (compareValues(player.getRemainingAir(), condition.get("comparison").toString(), Integer.parseInt(condition.get("compare_to").toString()))) {
-                    return Optional.of(true);
+                    return getResult(inverted, true);
                 }
             }
         }
@@ -108,7 +108,7 @@ public class EntityCondition {
             if (entity instanceof Player player) {
                 String attributeString = condition.get("attribute").toString().split(":")[1].replace(".", "_").toUpperCase();
                 if (compareValues(player.getAttribute(Attribute.valueOf(attributeString)).getValue(), condition.get("comparison").toString(), Integer.parseInt(condition.get("compare_to").toString()))) {
-                    return Optional.of(true);
+                    return getResult(inverted, true);
                 }
             }
         }
@@ -129,7 +129,7 @@ public class EntityCondition {
 
                 if (BlockCondition.check(condition, player, block, powerfile).equals(Optional.of(true))) {
                     if (block.getType() != Material.AIR) {
-                        return Optional.of(true);
+                        return getResult(inverted, true);
                     }
                 }
             }
@@ -164,7 +164,7 @@ public class EntityCondition {
                 blockCount = countBlocksInCube(minX, minY, minZ, maxX, maxY, maxZ, world);
             }
             if (compareValues(blockCount, comparison, compare_to)) {
-                return Optional.of(true);
+                return getResult(inverted, true);
             }
 
         }
@@ -184,7 +184,7 @@ public class EntityCondition {
             }
             brightness = ambientLight + (1 - ambientLight) * lightLevel / (60 - 3 * lightLevel);
             if (compareValues(brightness, comparison, compare_to)) {
-                return Optional.of(true);
+                return getResult(inverted, true);
             }
 
         }
@@ -192,11 +192,11 @@ public class EntityCondition {
         if (type.equalsIgnoreCase("origins:climbing")) {
             if (entity instanceof Player player) {
                 if (player.isClimbing()) {
-                    return Optional.of(true);
+                    return getResult(inverted, true);
                 }
                 Climbing climbing = new Climbing();
                 if (climbing.isActiveClimbing(player)) {
-                    return Optional.of(true);
+                    return getResult(inverted, true);
                 }
 
             }
@@ -209,7 +209,7 @@ public class EntityCondition {
                 BoundingBox blockBoundingBox = block.getBoundingBox();
 
                 if (blockBoundingBox.overlaps(playerBoundingBox)) {
-                    return Optional.of(true);
+                    return getResult(inverted, true);
                 }
 
             }
@@ -218,7 +218,7 @@ public class EntityCondition {
         if (type.equalsIgnoreCase("origins:creative_flying")) {
             if (entity instanceof Player player) {
                 if (player.isFlying()) {
-                    return Optional.of(true);
+                    return getResult(inverted, true);
                 }
 
             }
@@ -226,13 +226,13 @@ public class EntityCondition {
 
         if (type.equalsIgnoreCase("origins:daytime")) {
             if (entity.getWorld().isDayTime()) {
-                return Optional.of(true);
+                return getResult(inverted, true);
             }
         }
 
         if (type.equalsIgnoreCase("origins:dimension")) {
             if (entity.getWorld().getEnvironment().toString().equals(condition.get("dimension").toString().split(":")[1].replace("the_", "").toUpperCase())) {
-                return Optional.of(true);
+                return getResult(inverted, true);
             }
         }
 
@@ -240,41 +240,41 @@ public class EntityCondition {
             String fluid = condition.get("fluid").toString();
 
             if (fluid.equalsIgnoreCase("lava")) {
-                return Optional.of(entity.isInLava());
+                return getResult(inverted, entity.isInLava());
             } else if (fluid.equalsIgnoreCase("water")) {
-                return Optional.of(entity.isInWaterOrBubbleColumn());
+                return getResult(inverted, entity.isInWaterOrBubbleColumn());
             }
         }
 
         if(type.equalsIgnoreCase("origins:invisible")){
             if(entity instanceof Player player){
-                return Optional.of(player.isInvisible());
+                return getResult(inverted, player.isInvisible());
             }
         }
 
         if (type.equalsIgnoreCase("origins:in_rain")) {
-            return Optional.of(entity.isInRain());
+            return getResult(inverted, entity.isInRain());
         }
 
         if (type.equalsIgnoreCase("origins:health")) {
             if (RestrictArmor.compareValues(p.getHealth(), condition.get("comparison").toString(), Double.parseDouble(condition.get("compare_to").toString()))) {
-                return Optional.of(true);
+                return getResult(inverted, true);
             }
         }
 
         if (type.equalsIgnoreCase("origins:exposed_to_sun")) {
             if ((p.getLocation().getBlockY() + 1 > p.getWorld().getHighestBlockYAt(p.getLocation()))) {
-                    return Optional.of(p.getWorld().isDayTime());
+                    return getResult(inverted, p.getWorld().isDayTime());
             }
         }
 
         if (type.equalsIgnoreCase("origins:sneaking")) {
-            return Optional.of(entity.isSneaking());
+            return getResult(inverted, entity.isSneaking());
         }
 
         if (type.equalsIgnoreCase("origins:resource")) {
             for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
-                return Optional.of(!CooldownStuff.isPlayerInCooldownFromTag(p, origin.getPowerFileFromType(powerfile).getTag()));
+                return getResult(inverted, !CooldownStuff.isPlayerInCooldownFromTag(p, origin.getPowerFileFromType(powerfile).getTag()));
             }
         }
 
@@ -282,7 +282,7 @@ public class EntityCondition {
             if(entity instanceof Player player){
                 if(player.isGliding() || FlightElytra.getGlidingPlayers().contains(player)){
                     if(player.getVelocity().getY() < 0 && !player.isOnGround()){
-                        return Optional.of(true);
+                        return getResult(inverted, true);
                     }
                 }
             }
@@ -291,9 +291,9 @@ public class EntityCondition {
         if(type.equalsIgnoreCase("origins:submerged_in")){
             if(condition.get("fluid").equals("minecraft:water")){
                 p.sendMessage(String.valueOf(entity.getLocation().getBlock().getType().equals(Material.WATER)) + " waternstff");
-                if(entity.getLocation().getBlock().getType().equals(Material.WATER)) return Optional.of(true);
+                if(entity.getLocation().getBlock().getType().equals(Material.WATER)) return getResult(inverted, true);
             }else if (condition.get("fluid").equals("minecraft:lava")) {
-                if(entity.getLocation().getBlock().getType().equals(Material.LAVA)) return Optional.of(true);
+                if(entity.getLocation().getBlock().getType().equals(Material.LAVA)) return getResult(inverted, true);
             }
         }
 
@@ -314,15 +314,15 @@ public class EntityCondition {
 
                             if (RestrictArmor.compareValues(enchantmentLevel, comparison, compareTo)) {
                                 p.sendMessage("true enchants");
-                                return Optional.of(true);
+                                return getResult(inverted, true);
                             }
                         } else {
                             if (Double.compare(compareTo, 0.0) == 0 && comparison.equals("==")) {
-                                return Optional.of(!item.containsEnchantment(enchantment));
+                                return getResult(inverted, !item.containsEnchantment(enchantment));
                             }
                         }
                     } else {
-                        if(compareTo == 0 && comparison == "==") return Optional.of(true);
+                        if(compareTo == 0 && comparison == "==") return getResult(inverted, true);
                         p.sendMessage("Enchantment not found");
                     }
                 }
@@ -331,11 +331,11 @@ public class EntityCondition {
 
         if(type.equalsIgnoreCase("origins:on_block")){
             p.sendMessage(String.valueOf(entity.isOnGround()) + " entity.isOnGround()");
-            return Optional.of(entity.isOnGround());
+            return getResult(inverted, entity.isOnGround());
         }
 
 
-        return Optional.of(false);
+        return getResult(inverted, false);
     }
 
     public static Enchantment getEnchantmentByNamespace(String namespaceString) {
