@@ -245,6 +245,12 @@ public class EntityCondition {
             }
         }
 
+        if(type.equalsIgnoreCase("origins:invisible")){
+            if(entity instanceof Player player){
+                return Optional.of(player.isInvisible());
+            }
+        }
+
         if (type.equalsIgnoreCase("origins:in_rain")) {
             return Optional.of(entity.isInRain());
         }
@@ -257,9 +263,7 @@ public class EntityCondition {
 
         if (type.equalsIgnoreCase("origins:exposed_to_sun")) {
             if ((p.getLocation().getBlockY() + 1 > p.getWorld().getHighestBlockYAt(p.getLocation()))) {
-                if (p.getGameMode() == GameMode.SURVIVAL || p.getGameMode() == GameMode.ADVENTURE) {
                     return Optional.of(p.getWorld().isDayTime());
-                }
             }
         }
 
@@ -328,6 +332,8 @@ public class EntityCondition {
             p.sendMessage(String.valueOf(entity.isOnGround()) + " entity.isOnGround()");
             return Optional.of(entity.isOnGround());
         }
+
+
         return Optional.of(false);
     }
 

@@ -264,14 +264,17 @@ public class OriginPlayer {
         }
     }
 
-    public static HashMap<Player, Class<? extends CraftPower>> powersAppliedList = new HashMap<>();
+    public static HashMap<Player, ArrayList<Class<? extends CraftPower>>> powersAppliedList = new HashMap<>();
     public static ArrayList<Player> hasPowers = new ArrayList<>();
 
     public static List<Class<? extends CraftPower>> getPowersApplied(Player p){
         List<Class<? extends CraftPower>> array = new ArrayList<>();
         for(Player plc : powersAppliedList.keySet()){
             if(plc.equals(p)){
-                array.add(powersAppliedList.get(plc));
+                for(Class<? extends CraftPower> c : powersAppliedList.get(plc)){
+                    array.add(c);
+                }
+
             }
         }
         return array;
@@ -285,11 +288,24 @@ public class OriginPlayer {
         }
         for (PowerContainer power : origin.getPowerContainers()) {
             for (Class<? extends CraftPower> c : CraftPower.getRegistered()) {
-                CraftPower craftPower = c.newInstance();
+                CraftPower craftPower = null;
+                try {
+                    craftPower = c.newInstance();
+                } catch (InstantiationException e) {
+                    throw new RuntimeException(e);
+                } catch (IllegalAccessException e) {
+                    throw new RuntimeException(e);
+                }
                 if (power.getType().equals(craftPower.getPowerFile())) {
                     craftPower.getPowerArray().add(player);
-                    powersAppliedList.put(player, c);
-                    Bukkit.getConsoleSender().sendMessage("GenesisMC-Origins assigned power[" + craftPower.getPowerFile() + "] on layer[" + layer.getTag() + "] to player " + player.getName());
+                    if(!powersAppliedList.containsKey(player)){
+                        ArrayList lst = new ArrayList<>();
+                        lst.add(c);
+                        powersAppliedList.put(player, lst);
+                    }else{
+                        powersAppliedList.get(player).add(c);
+                    }
+                    Bukkit.getConsoleSender().sendMessage("Assigned power[" + craftPower.getPowerFile() + "] to player " + player.getName());
                 }
             }
         }
@@ -324,7 +340,7 @@ public class OriginPlayer {
             }
         }
         for(Class<? extends CraftPower> classes : getPowersApplied(player)){
-            powersAppliedList.remove(player, classes);
+            powersAppliedList.get(player).add(classes);
         }
         hasPowers.remove(player);
     }

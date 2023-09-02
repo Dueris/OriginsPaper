@@ -33,6 +33,7 @@ public class SelfGlow extends CraftPower {
 
     @Override
     public void run(Player p) {
+        if(!getPowerArray().contains(p)) return;
         for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
             ConditionExecutor conditionExecutor = new ConditionExecutor();
             for (Entity entity : Bukkit.getServer().getWorld(p.getWorld().getKey()).getEntities()) {

@@ -1,5 +1,6 @@
 package me.dueris.genesismc.utils;
 
+import me.dueris.genesismc.factory.powers.CraftPower;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -115,6 +116,19 @@ public class PowerContainer implements Serializable {
         Object type = powerFile.get("type");
         if (type == null) return "";
         return (String) type;
+    }
+
+    public Class<? extends CraftPower> getCraftPowerClass(){
+        for(Class<? extends CraftPower> c : CraftPower.getRegistered()){
+            try {
+                if(c.newInstance().getPowerFile().equalsIgnoreCase(getType())) return c;
+            } catch (InstantiationException e) {
+                throw new RuntimeException(e);
+            } catch (IllegalAccessException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        return null;
     }
 
     /**

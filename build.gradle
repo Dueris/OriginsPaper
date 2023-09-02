@@ -48,7 +48,6 @@ dependencies {
     compileOnly("org.geysermc.floodgate:api:2.2.2-SNAPSHOT")
     implementation("net.skinsrestorer:skinsrestorer-api:14.2.3")
     compileOnly "org.mineskin:java-client:1.2.4-SNAPSHOT"
-    compileOnly("com.mojang:authlib:1.11")
     shade("org.mineskin:java-client:1.2.4-SNAPSHOT")
     implementation("com.github.Dueris:GlowAPI:1.5.6-SNAPSHOT")
     implementation("org.reflections:reflections:0.9.12")

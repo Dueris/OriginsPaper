@@ -4,6 +4,7 @@ import com.github.Anon8281.universalScheduler.bukkitScheduler.BukkitScheduler;
 import com.github.Anon8281.universalScheduler.scheduling.schedulers.TaskScheduler;
 import com.github.Anon8281.universalScheduler.scheduling.tasks.MyScheduledTask;
 import me.dueris.genesismc.entity.OriginPlayer;
+import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.factory.powers.FlightHandler;
 import me.dueris.genesismc.factory.powers.Overlay;
@@ -12,6 +13,7 @@ import me.dueris.genesismc.factory.powers.player.Gravity;
 import me.dueris.genesismc.factory.powers.player.damage.Burn;
 import me.dueris.genesismc.files.GenesisDataFiles;
 import org.bukkit.Bukkit;
+import org.bukkit.craftbukkit.v1_20_R1.entity.CraftAbstractHorse;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
@@ -68,50 +70,49 @@ public class FoliaOriginScheduler {
         @Override
         public void run() {
             for(Player p : OriginPlayer.hasPowers){
-                if(!OriginPlayer.getPowersApplied(p).contains(Gravity.class)){
-                    Gravity gravity = new Gravity();
-                    gravity.run(p);
-                } else if(!OriginPlayer.getPowersApplied(p).contains(FlightHandler.class)){
-                    FlightHandler flightHandler = new FlightHandler();
-                    flightHandler.run(p);
-                } else if(!OriginPlayer.getPowersApplied(p).contains(Overlay.class)){
-                    Overlay overlay = new Overlay();
-                    overlay.run(p);
+//                for(Class<? extends CraftPower> c : CraftPower.getRegistered()){
+//                    try {
+//                        if(c.newInstance() instanceof Burn){
+//                                ((Burn) c.newInstance()).run(p, ticksEMap);
+//                        }else{
+//                            c.newInstance().run(p);
+//                        }
+//                    } catch (InstantiationException e) {
+//                        throw new RuntimeException(e);
+//                    } catch (IllegalAccessException e) {
+//                        throw new RuntimeException(e);
+//                    }
+//
+//                }
+//                if(!OriginPlayer.getPowersApplied(p).contains(Gravity.class)){
+//                    Gravity gravity = new Gravity();
+//                    gravity.run(p);
+//                } else if(!OriginPlayer.getPowersApplied(p).contains(FlightHandler.class)){
+//                    FlightHandler flightHandler = new FlightHandler();
+//                    flightHandler.run(p);
+//                } else if(!OriginPlayer.getPowersApplied(p).contains(Overlay.class)){
+//                    Overlay overlay = new Overlay();
+//                    overlay.run(p);
+//                }
+                if(OriginPlayer.getPowersApplied(p).isEmpty()) {
+                    p.sendMessage("BSDFPR");
                 }
                 for(Class<? extends CraftPower> c : OriginPlayer.getPowersApplied(p)){
-                            CraftPower instance = null;
-                            try {
-                                instance = c.newInstance();
-                            } catch (InstantiationException e) {
-                                throw new RuntimeException(e);
-                            } catch (IllegalAccessException e) {
-                                throw new RuntimeException(e);
-                            }
-                            if (instance instanceof Listener) {
-                                if(instance instanceof ActionOnItemUse){
-                                    if(GenesisDataFiles.getMainConfig().get("disable-ActionOnItemUse-power").equals(false)){
-                                        Bukkit.getServer().getPluginManager().registerEvents((Listener) instance, GenesisMC.getPlugin());
-                                    }
-                                }else{
-                                    Bukkit.getServer().getPluginManager().registerEvents((Listener) instance, GenesisMC.getPlugin());
-                                }
-                            }
-                        new BukkitRunnable() {
-                            @Override
-                            public void run() {
-                                try {
-                                    if(c.newInstance() instanceof Burn){
-                                        ((Burn) c.newInstance()).run(p, ticksEMap);
-                                    }else{
-                                        c.newInstance().run(p);
-                                    }
-                                } catch (InstantiationException e) {
-                                    //rip
-                                } catch (IllegalAccessException e) {
-                                    //honestly skill issue
-                                }
-                            }
-                        }.runTask(GenesisMC.getPlugin());
+                    try {
+                        if(c.newInstance() instanceof Burn){
+                                 ((Burn) c.newInstance()).run(p, ticksEMap);
+                        }else{
+                             c.newInstance().run(p);
+                        }
+
+                        if(c.newInstance() instanceof Listener){
+                            Bukkit.getServer().getPluginManager().registerEvents((Listener) c.newInstance(), GenesisMC.getPlugin());
+                        }
+                    } catch (InstantiationException e) {
+                        throw new RuntimeException(e);
+                    } catch (IllegalAccessException e) {
+                        throw new RuntimeException(e);
+                    }
                 }
             }
         }
