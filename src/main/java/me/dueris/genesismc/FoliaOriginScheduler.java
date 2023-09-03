@@ -90,10 +90,6 @@ public class FoliaOriginScheduler {
                         }else{
                              c.newInstance().run(p);
                         }
-
-                        if(c.newInstance() instanceof Listener){
-                            Bukkit.getServer().getPluginManager().registerEvents((Listener) c.newInstance(), GenesisMC.getPlugin());
-                        }
                     } catch (InstantiationException e) {
                         throw new RuntimeException(e);
                     } catch (IllegalAccessException e) {

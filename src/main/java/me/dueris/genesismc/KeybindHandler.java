@@ -183,8 +183,6 @@ public class KeybindHandler implements Listener {
                 return secondaryTick.contains(player);
             }
 
-            KeybindTriggerEvent keybindTriggerEvent = new KeybindTriggerEvent(player, keyName);
-
         } else {
 
             heldKeys.remove(keyName);
