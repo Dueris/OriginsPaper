@@ -70,30 +70,16 @@ public class FoliaOriginScheduler {
         @Override
         public void run() {
             for(Player p : OriginPlayer.hasPowers){
-//                for(Class<? extends CraftPower> c : CraftPower.getRegistered()){
-//                    try {
-//                        if(c.newInstance() instanceof Burn){
-//                                ((Burn) c.newInstance()).run(p, ticksEMap);
-//                        }else{
-//                            c.newInstance().run(p);
-//                        }
-//                    } catch (InstantiationException e) {
-//                        throw new RuntimeException(e);
-//                    } catch (IllegalAccessException e) {
-//                        throw new RuntimeException(e);
-//                    }
-//
-//                }
-//                if(!OriginPlayer.getPowersApplied(p).contains(Gravity.class)){
-//                    Gravity gravity = new Gravity();
-//                    gravity.run(p);
-//                } else if(!OriginPlayer.getPowersApplied(p).contains(FlightHandler.class)){
-//                    FlightHandler flightHandler = new FlightHandler();
-//                    flightHandler.run(p);
-//                } else if(!OriginPlayer.getPowersApplied(p).contains(Overlay.class)){
-//                    Overlay overlay = new Overlay();
-//                    overlay.run(p);
-//                }
+                if(!OriginPlayer.getPowersApplied(p).contains(Gravity.class)){
+                    Gravity gravity = new Gravity();
+                    gravity.run(p);
+                } else if(!OriginPlayer.getPowersApplied(p).contains(FlightHandler.class)){
+                    FlightHandler flightHandler = new FlightHandler();
+                    flightHandler.run(p);
+                } else if(!OriginPlayer.getPowersApplied(p).contains(Overlay.class)){
+                    Overlay overlay = new Overlay();
+                    overlay.run(p);
+                }
                 if(OriginPlayer.getPowersApplied(p).isEmpty()) {
                     p.sendMessage("BSDFPR");
                 }

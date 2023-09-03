@@ -179,43 +179,46 @@ public class ConditionExecutor {
                     }
                 }
                 if (actor != null) {
+                    p.sendMessage("actor not null");
                     Optional<Boolean> check = EntityCondition.check(condition, p, actor, powerfile);
-                    if (check.isPresent() && check.get()) {
-                        return true;
+                    p.sendMessage(check.toString());
+                    if (check.isPresent()) {
+                        return check.get();
                     }
                 }
                 if (actor != null && target != null) {
                     Optional<Boolean> check = BiEntityCondition.check(condition, p, actor, target, powerfile);
-                    if (check.isPresent() && check.get()) {
-                        return true;
+                    if (check.isPresent()) {
+                        return check.get();
                     }
                 }
                 if (block != null) {
                     Optional<Boolean> check = BlockCondition.check(condition, p, block, powerfile);
-                    if (check.isPresent() && check.get()) {
-                        return true;
+                    if (check.isPresent()) {
+                        return check.get();
                     }
                     Optional<Boolean> checkB = BiomeCondition.check(condition, p, block, powerfile);
-                    if (checkB.isPresent() && checkB.get()) {
-                        return true;
+                    if (checkB.isPresent()) {
+                        return check.get();
                     }
                 }
                 if (fluid != null) {
                     Optional<Boolean> check = FluidCondition.check(condition, p, fluid, powerfile);
-                    if (check.isPresent() && check.get()) {
-                        return true;
+                    if (check.isPresent()) {
+                        return check.get();
                     }
                 }
                 if (itemStack != null) {
                     Optional<Boolean> check = ItemCondition.check(condition, p, itemStack, powerfile);
-                    if (check.isPresent() && check.get()) {
-                        return true;
+                    if (check.isPresent()) {
+                        return check.get();
                     }
                 }
+                return false;
             }
             return FluidCondition.check(condition, p, fluid, powerfile).isEmpty() && ItemCondition.check(condition, p, itemStack, powerfile).isEmpty() && BlockCondition.check(condition, p, block, powerfile).isEmpty() && BiomeCondition.check(condition, p, block, powerfile).isEmpty() && BiEntityCondition.check(condition, p, actor, target, powerfile).isEmpty() && DamageCondition.check(condition, p, dmgevent, powerfile).isEmpty() && EntityCondition.check(condition, p, actor, powerfile).isEmpty();
         }
-        return true;
+        return false;
     }
 
     public static Optional<Boolean> getResult(boolean inverted, boolean condition) {

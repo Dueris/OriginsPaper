@@ -52,14 +52,12 @@ public class Burn extends CraftPower {
                     if (p.isInWaterOrRainOrBubbleColumn()) return;
                     if (p.getGameMode() == GameMode.CREATIVE) return;
                     ConditionExecutor executor = new ConditionExecutor();
-                    p.sendMessage("start_conditions");
                     if (executor.check("condition", "conditions", p, origin, getPowerFile(), p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
                         setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
 
                         Long burn_duration = power.getBurnDuration();
                         p.setFireTicks(burn_duration.intValue() * 20);
                     } else {
-                        p.sendMessage("fail");
                         setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                     }
 

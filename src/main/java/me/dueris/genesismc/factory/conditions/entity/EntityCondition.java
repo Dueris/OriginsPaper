@@ -37,7 +37,7 @@ public class EntityCondition {
         boolean inverted = (boolean) condition.getOrDefault("inverted", false);
         if (condition.get("type") == null) return Optional.empty();
         String type = condition.get("type").toString();
-
+        p.sendMessage(type.toString());
         if (type.equalsIgnoreCase("origins:ability")) {
             String ability = condition.get("ability").toString().toLowerCase();
 
