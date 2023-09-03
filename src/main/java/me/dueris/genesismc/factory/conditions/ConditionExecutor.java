@@ -83,7 +83,8 @@ public class ConditionExecutor {
                 }
             }
 
-            return (boolean) subCondition.getOrDefault("inverted", false) != subConditionResult;
+            boolean subConditionInverted = (boolean) subCondition.getOrDefault("inverted", false);
+            return subConditionResult;
         }
     }
 
@@ -179,9 +180,7 @@ public class ConditionExecutor {
                     }
                 }
                 if (actor != null) {
-                    p.sendMessage("actor not null");
                     Optional<Boolean> check = EntityCondition.check(condition, p, actor, powerfile);
-                    p.sendMessage(check.toString());
                     if (check.isPresent()) {
                         return check.get();
                     }

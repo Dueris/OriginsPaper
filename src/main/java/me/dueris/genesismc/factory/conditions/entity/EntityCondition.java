@@ -16,6 +16,7 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.BoundingBox;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -37,7 +38,6 @@ public class EntityCondition {
         boolean inverted = (boolean) condition.getOrDefault("inverted", false);
         if (condition.get("type") == null) return Optional.empty();
         String type = condition.get("type").toString();
-        p.sendMessage(type.toString());
         if (type.equalsIgnoreCase("origins:ability")) {
             String ability = condition.get("ability").toString().toLowerCase();
 
@@ -248,7 +248,7 @@ public class EntityCondition {
 
         if(type.equalsIgnoreCase("origins:invisible")){
             if(entity instanceof Player player){
-                return getResult(inverted, player.isInvisible());
+                return getResult(false, player.isInvisible() || p.getActivePotionEffects().contains(PotionEffectType.INVISIBILITY));
             }
         }
 
