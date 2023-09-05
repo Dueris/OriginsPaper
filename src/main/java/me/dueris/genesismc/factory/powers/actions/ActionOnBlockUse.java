@@ -36,7 +36,6 @@ public class ActionOnBlockUse extends CraftPower implements Listener {
         for (OriginContainer origin : OriginPlayer.getOrigin(actor).values()) {
             PowerContainer power = origin.getPowerFileFromType(getPowerFile());
             if (power == null) continue;
-            //todo: item block and entity condition
             ConditionExecutor conditionExecutor = new ConditionExecutor();
             if (conditionExecutor.check("condition", "conditions", actor, origin, getPowerFile(), actor, null, e.getClickedBlock(), null, e.getItem(), null)) {
                 if (conditionExecutor.check("entity_condition", "entity_conditions", actor, origin, getPowerFile(), actor, null, e.getClickedBlock(), null, e.getItem(), null)) {

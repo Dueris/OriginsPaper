@@ -8,7 +8,8 @@
     "origins:cookie_saturation",
     "origins:vegetarian",
     "origins:creative_flight",
-    "origins:allay_sparkle"
+    "origins:allay_sparkle",
+    "star:fire"
   ],
   "icon": {
     "item": "minecraft:cookie"

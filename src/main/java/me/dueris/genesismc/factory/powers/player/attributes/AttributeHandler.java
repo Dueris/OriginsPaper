@@ -4,6 +4,7 @@ import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.entity.OriginPlayer;
 import me.dueris.genesismc.events.AttributeExecuteEvent;
 import me.dueris.genesismc.events.OriginChangeEvent;
+import me.dueris.genesismc.events.PowerAssignEvent;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.OriginContainer;
 import me.dueris.genesismc.utils.PowerContainer;
@@ -125,10 +126,13 @@ public class AttributeHandler extends CraftPower implements Listener {
     }
 
     public static void executeAttributeModify(String operation, Attribute attribute_modifier, double base_value, Player p, Double value) {
+        p.sendMessage("4");
         BinaryOperator mathOperator = getOperationMappingsDouble().get(operation);
         if (mathOperator != null) {
             double result = (Double) mathOperator.apply(base_value, value);
+            p.sendMessage("5");
             p.getAttribute(Attribute.valueOf(attribute_modifier.toString())).setBaseValue(result);
+            p.sendMessage("6");
         } else {
             Bukkit.getLogger().warning(LangConfig.getLocalizedString(p, "powers.errors.attribute"));
         }
@@ -150,6 +154,7 @@ public class AttributeHandler extends CraftPower implements Listener {
             @Override
             public void run() {
                 if (attribute.contains(p)) {
+                    p.sendMessage("1");
 
                     for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
                         PowerContainer power = origin.getPowerFileFromType("origins:attribute");
@@ -167,6 +172,7 @@ public class AttributeHandler extends CraftPower implements Listener {
                             }
 
                             try {
+                                p.sendMessage("2");
                                 Attribute attribute_modifier = Attribute.valueOf(modifier.get("attribute").toString().split(":")[1].replace(".", "_").toUpperCase());
 
                                 Object valueObj = modifier.get("value");
@@ -188,6 +194,7 @@ public class AttributeHandler extends CraftPower implements Listener {
 
                                     double base_value = p.getAttribute(attribute_modifier).getBaseValue();
                                     String operation = String.valueOf(modifier.get("operation"));
+                                    p.sendMessage("3");
                                     executeAttributeModify(operation, attribute_modifier, base_value, p, value);
                                     AttributeExecuteEvent attributeExecuteEvent = new AttributeExecuteEvent(p, attribute_modifier, power.toString(), origin);
                                     Bukkit.getServer().getPluginManager().callEvent(attributeExecuteEvent);
@@ -201,13 +208,11 @@ public class AttributeHandler extends CraftPower implements Listener {
                     }
                 }
             }
-        }.runTaskLater(GenesisMC.getPlugin(), 5l);
+        }.runTaskLater(GenesisMC.getPlugin(), 20l);
     }
 
-    Player p;
-
     public AttributeHandler(){
-        this.p = p;
+
     }
 
     @Override

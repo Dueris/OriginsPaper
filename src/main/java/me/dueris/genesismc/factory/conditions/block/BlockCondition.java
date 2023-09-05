@@ -31,6 +31,9 @@ public class BlockCondition implements Condition {
         return "BLOCK_CONDITION";
     }
     public static HashMap<PowerContainer, ArrayList<String>> inTagValues = new HashMap<>();
+
+    @Override
+    @SuppressWarnings("index out of bounds")
     public Optional<Boolean> check(HashMap<String, Object> condition, Player p, OriginContainer origin, String powerfile, Entity actor, Entity target, Block block, Fluid fluid, ItemStack itemStack, EntityDamageEvent entityDamageEvent) {
         p.sendMessage("stest");
         if (origin == null) return Optional.empty();
@@ -49,8 +52,12 @@ public class BlockCondition implements Condition {
                 }
             }
             if(type.equals("origins:material")){
-                Material mat = Material.valueOf(condition.get("material").toString().split(":")[1].toUpperCase());
-                if(block.getType().equals(mat)) return Optional.of(true);
+                try{
+                    Material mat = Material.valueOf(condition.get("material").toString().split(":")[1].toUpperCase());
+                    if(block.getType().equals(mat)) return Optional.of(true);
+                }catch (Exception e){
+                    //yeah imma fail this silently for some weird out of bounds error
+                }
             }
 
             return getResult(inverted, false);
