@@ -11,6 +11,7 @@ import me.dueris.genesismc.factory.powers.Overlay;
 import me.dueris.genesismc.factory.powers.actions.ActionOnItemUse;
 import me.dueris.genesismc.factory.powers.actions.ActionOverTime;
 import me.dueris.genesismc.factory.powers.player.Gravity;
+import me.dueris.genesismc.factory.powers.player.Invisibility;
 import me.dueris.genesismc.factory.powers.player.damage.Burn;
 import me.dueris.genesismc.files.GenesisDataFiles;
 import org.bukkit.Bukkit;
@@ -74,12 +75,18 @@ public class FoliaOriginScheduler {
                 if(!OriginPlayer.getPowersApplied(p).contains(Gravity.class)){
                     Gravity gravity = new Gravity();
                     gravity.run(p);
-                } else if(!OriginPlayer.getPowersApplied(p).contains(FlightHandler.class)){
+                }
+                if(!OriginPlayer.getPowersApplied(p).contains(FlightHandler.class)){
                     FlightHandler flightHandler = new FlightHandler();
                     flightHandler.run(p);
-                } else if(!OriginPlayer.getPowersApplied(p).contains(Overlay.class)){
+                }
+                if(!OriginPlayer.getPowersApplied(p).contains(Overlay.class)){
                     Overlay overlay = new Overlay();
                     overlay.run(p);
+                }
+                if(!OriginPlayer.getPowersApplied(p).contains(Invisibility.class)) {
+                    Invisibility invisibility = new Invisibility();
+                    invisibility.run(p);
                 }
                 if(OriginPlayer.getPowersApplied(p).isEmpty()) {
                     p.sendMessage("BSDFPR");

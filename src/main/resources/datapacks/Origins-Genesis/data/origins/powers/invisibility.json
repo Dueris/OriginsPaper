@@ -3,7 +3,7 @@
   "render_armor": true,
   "condition": {
     "type": "origins:power_active",
-    "power": "*:phantomize"
+    "power": "origins:phantomize"
   },
   "name": "Invisibility",
   "description": "While phantomized, you are invisible",

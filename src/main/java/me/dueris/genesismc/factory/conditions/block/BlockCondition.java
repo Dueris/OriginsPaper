@@ -35,14 +35,12 @@ public class BlockCondition implements Condition {
     @Override
     @SuppressWarnings("index out of bounds")
     public Optional<Boolean> check(HashMap<String, Object> condition, Player p, OriginContainer origin, String powerfile, Entity actor, Entity target, Block block, Fluid fluid, ItemStack itemStack, EntityDamageEvent entityDamageEvent) {
-        p.sendMessage("stest");
         if (origin == null) return Optional.empty();
         if (origin.getPowerFileFromType(powerfile) == null) return Optional.empty();
             if (condition.isEmpty()) return Optional.empty();
             if (condition.get("type") == null) return Optional.empty();
             boolean inverted = (boolean) condition.getOrDefault("inverted", false);
             String type = condition.get("type").toString().toLowerCase();
-            p.sendMessage(type);
             if(type.equals("origins:height")){
                 p.sendMessage("SDHFSKDJJFSDFS");
                 String comparison = condition.get("comparison").toString();
