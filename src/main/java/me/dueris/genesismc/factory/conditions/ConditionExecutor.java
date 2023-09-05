@@ -129,8 +129,6 @@ public class ConditionExecutor {
         if (origin.getPowerFileFromType(powerfile) == null) return true;
         if (origin.getPowerFileFromType(powerfile).getConditionFromString(singular, plural) == null) return true;
         if (origin.getPowerFileFromType(powerfile).getConditionFromString(singular, plural).isEmpty()) return true;
-        if (origin.getPowerFileFromType(powerfile).getCondition().isEmpty()) return true;
-        if (origin.getPowerFileFromType(powerfile).getCondition(singular).isEmpty()) return true;
         for (HashMap<String, Object> condition : origin.getPowerFileFromType(powerfile).getConditionFromString(singular, plural)) {
             if (condition.get("type").equals("origins:and")) {
                 JSONArray conditionsArray = (JSONArray) condition.get("conditions");

@@ -26,7 +26,6 @@ public class ItemCondition implements Condition {
     public Optional<Boolean> check(HashMap<String, Object> condition, Player p, OriginContainer origin, String powerfile, Entity actor, Entity target, Block block, Fluid fluid, ItemStack itemStack, EntityDamageEvent entityDamageEvent) {
         if (origin == null) return Optional.empty();
         if (origin.getPowerFileFromType(powerfile) == null) return Optional.empty();
-        if (origin.getPowerFileFromType(powerfile).getCondition().isEmpty()) return Optional.empty();
             if (condition.isEmpty()) return Optional.empty();
             boolean inverted = (boolean) condition.getOrDefault("inverted", false);
             String type = condition.get("type").toString().toLowerCase();

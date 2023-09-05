@@ -134,7 +134,6 @@ public class EntityCondition implements Condition {
     public Optional<Boolean> check(HashMap<String, Object> condition, Player p, OriginContainer origin, String powerfile, Entity entity, Entity target, Block block, Fluid fluid, ItemStack itemStack, EntityDamageEvent dmgevent) {
         if (origin == null) return Optional.empty();
         if (origin.getPowerFileFromType(powerfile) == null) return Optional.empty();
-        if (origin.getPowerFileFromType(powerfile).getCondition().isEmpty()) return Optional.empty();
             if (condition.isEmpty()) return Optional.empty();
             boolean inverted = (boolean) condition.getOrDefault("inverted", false);
             if (condition.get("type") == null) return Optional.empty();

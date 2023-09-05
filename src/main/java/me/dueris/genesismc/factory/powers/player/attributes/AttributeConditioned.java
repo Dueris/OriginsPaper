@@ -12,6 +12,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityToggleGlideEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerToggleFlightEvent;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
 import org.bukkit.event.player.PlayerToggleSprintEvent;
@@ -169,94 +170,36 @@ public class AttributeConditioned extends CraftPower implements Listener {
     }
 
     @EventHandler
-    public void ExecuteSprintCondition(PlayerToggleSprintEvent e) {
-        Player p = e.getPlayer();
-        for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
-            if (conditioned_attribute.contains(p)) {
-                if (!origin.getPowerFileFromType("origins:conditioned_attribute").getCondition().get("type").toString().equalsIgnoreCase("origins:sprinting"))
-                    return;
-                if (e.isSprinting()) {
-                    executeConditionAttribute(p);
-
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
-                } else {
-                    inverseConditionAttribute(p);
-
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
-                }
-            }
-        }
+    public void join(PlayerJoinEvent e){
+        applied.put(e.getPlayer(), false);
     }
-
-    @EventHandler
-    public void ExecuteFlightCondition(PlayerToggleFlightEvent e) {
-        Player p = e.getPlayer();
-        for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
-            if (conditioned_attribute.contains(p)) {
-                if (!origin.getPowerFileFromType("origins:conditioned_attribute").getCondition().get("type").toString().equalsIgnoreCase("origins:flying"))
-                    return;
-                if (e.isFlying()) {
-                    executeConditionAttribute(p);
-
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
-                } else {
-                    inverseConditionAttribute(p);
-
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
-                }
-            }
-        }
-    }
-
-    @EventHandler
-    public void ExecuteGlideCondition(EntityToggleGlideEvent e) {
-        if (!(e.getEntity() instanceof Player p)) return;
-        for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
-            if (conditioned_attribute.contains(p)) {
-                if (!origin.getPowerFileFromType("origins:conditioned_attribute").getCondition().get("type").toString().equalsIgnoreCase("origins:gliding"))
-                    return;
-                if (e.isGliding()) {
-                    executeConditionAttribute(p);
-
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
-                } else {
-                    inverseConditionAttribute(p);
-
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
-                }
-            }
-        }
-    }
-
-    @EventHandler
-    public void ExecuteSneakCondition(PlayerToggleSneakEvent e) {
-        Player p = e.getPlayer();
-        for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
-            if (conditioned_attribute.contains(p)) {
-                if (!origin.getPowerFileFromType("origins:conditioned_attribute").getCondition().get("type").toString().equalsIgnoreCase("origins:sneaking"))
-                    return;
-                if (e.isSneaking()) {
-                    executeConditionAttribute(p);
-
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
-                } else {
-                    inverseConditionAttribute(p);
-
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
-                }
-            }
-        }
-    }
-
-    Player p;
 
     public AttributeConditioned(){
-        this.p = p;
+
     }
+
+    HashMap<Player, Boolean> applied = new HashMap<>();
 
     @Override
     public void run(Player p) {
-
+        for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
+            if (conditioned_attribute.contains(p)) {
+                ConditionExecutor conditionExecutor = new ConditionExecutor();
+                if (conditionExecutor.check("condition", "conditions", p, origin, getPowerFile(), p, null, p.getLocation().getBlock(), null, p.getInventory().getItemInMainHand(), null)){
+                    if(!applied.get(p)){
+                        executeConditionAttribute(p);
+                        applied.put(p, true);
+                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
+                    }
+                } else {
+                    if(applied.get(p)){
+                        inverseConditionAttribute(p);
+                        applied.put(p, false);
+                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
+                    }
+                }
+            }
+        }
     }
 
     @Override

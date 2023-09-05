@@ -189,7 +189,7 @@ public class ActionTypes {
             if (entityAction.containsKey("stack")) {
                 JSONObject stackObject = (JSONObject) entityAction.get("stack");
                 String item = stackObject.get("item").toString();
-                int amount = Integer.parseInt(stackObject.get("amount").toString());
+                int amount = Integer.parseInt(String.valueOf(stackObject.getOrDefault("amount", 1)));
 
                 ItemStack itemStack = new ItemStack(Material.valueOf(item.toUpperCase().split(":")[1]), amount);
 
@@ -378,6 +378,7 @@ public class ActionTypes {
         if (entityAction == null) {
             entityAction = (JSONObject) power.get("block_action");
         }
+        if(entityAction == null) return;
         String type = entityAction.get("type").toString();
 
         if (type.equals("origins:and")) {
