@@ -360,7 +360,7 @@ public class OriginPlayer {
             }
         }
         for(Class<? extends CraftPower> classes : getPowersApplied(player)){
-            powersAppliedList.get(player).add(classes);
+            powersAppliedList.get(player).remove(classes);
         }
         PowerUnassignEvent powerUnassignEvent = new PowerUnassignEvent(player, powerRemovedClasses, powerRemovedTypes, origin);
         Bukkit.getServer().getPluginManager().callEvent(powerUnassignEvent);

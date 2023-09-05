@@ -100,16 +100,21 @@ public class CooldownStuff implements @NotNull Listener {
 
             @Override
             public void run() {
-                ticksElapsed++;
-                double progress = 1.0 - (ticksElapsed * decreasePerTick);
-                bar.setProgress(progress);
+                try{
+                    ticksElapsed++;
+                    double progress = 1.0 - (ticksElapsed * decreasePerTick);
+                    bar.setProgress(progress);
 
-                int remainingTicks = cooldownTicks - ticksElapsed;
+                    int remainingTicks = cooldownTicks - ticksElapsed;
 
-                if (ticksElapsed >= cooldownTicks) {
-                    resetCooldown(player, cooldownKeybindType);
-                    cancel();
+                    if (ticksElapsed >= cooldownTicks) {
+                        resetCooldown(player, cooldownKeybindType);
+                        cancel();
+                    }
+                }catch (Exception e){
+                    //fail silent
                 }
+
             }
         }.runTaskTimer(GenesisMC.getPlugin(), 0, 1);
     }

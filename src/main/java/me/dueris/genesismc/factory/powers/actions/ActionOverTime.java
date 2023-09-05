@@ -41,7 +41,6 @@ public class ActionOverTime extends CraftPower {
                     if (ticksE <= interval) {
                         ticksE++;
                         ticksEMap.put(p, ticksE);
-                        p.sendMessage(String.valueOf(ticksE));
                     } else {
                         ConditionExecutor executor = new ConditionExecutor();
                         if (executor.check("condition", "conditions", p, origin, getPowerFile(), p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {

@@ -23,6 +23,7 @@ import me.dueris.genesismc.factory.conditions.CraftCondition;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.factory.powers.player.PlayerRender;
 import me.dueris.genesismc.factory.powers.player.inventory.Inventory;
+import me.dueris.genesismc.factory.powers.simple.MimicWarden;
 import me.dueris.genesismc.files.GenesisDataFiles;
 import me.dueris.genesismc.generation.WaterProtBookGen;
 import me.dueris.genesismc.items.GenesisItems;
@@ -33,10 +34,7 @@ import me.dueris.genesismc.utils.*;
 import me.dueris.genesismc.utils.translation.LangConfig;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
-import org.bukkit.Bukkit;
-import org.bukkit.GameMode;
-import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
+import org.bukkit.*;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -145,11 +143,17 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         return taskS;
     }
 
+    boolean previous_respawn_setting;
+
     @Override
     public void onEnable() {
         plugin = this;
         //bstats
         metrics = new Metrics(this, 18536);
+
+        previous_respawn_setting = Bukkit.getWorlds().get(0).getGameRuleValue(GameRule.DO_IMMEDIATE_RESPAWN);
+
+        Bukkit.getWorlds().get(0).setGameRule(GameRule.DO_IMMEDIATE_RESPAWN, true);
 
         getServer().getPluginManager().registerEvents(new DataContainer(), this);
         getServer().getPluginManager().registerEvents(this, this);
@@ -269,6 +273,8 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         getServer().getPluginManager().registerEvents(new Listeners(), this);
         getServer().getPluginManager().registerEvents(new DataContainer(), this);
         getServer().getPluginManager().registerEvents(new GenesisItems(), this);
+        getServer().getPluginManager().registerEvents(new MimicWarden(), this);
+        getServer().getPluginManager().registerEvents(new FoliaOriginScheduler.OriginSchedulerTree(), this);
         if (getServer().getPluginManager().isPluginEnabled("SkinsRestorer")) {
             getServer().getPluginManager().registerEvents(new PlayerRender.ModelColor(), GenesisMC.getPlugin());
             getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] " + LangConfig.getLocalizedString(Bukkit.getConsoleSender(), "startup.skinRestorer.present")).color(TextColor.fromHexString(AQUA)));
@@ -378,6 +384,9 @@ public final class GenesisMC extends JavaPlugin implements Listener {
             }
         } catch (Exception ignored) {
         }
+
+        Bukkit.getWorlds().get(0).setGameRule(GameRule.DO_IMMEDIATE_RESPAWN, previous_respawn_setting);
+
         getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] " + LangConfig.getLocalizedString(Bukkit.getConsoleSender(), "disable")).color(TextColor.fromHexString(RED)));
     }
 }

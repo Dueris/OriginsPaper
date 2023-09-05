@@ -4,6 +4,7 @@ import com.github.Anon8281.universalScheduler.bukkitScheduler.BukkitScheduler;
 import com.github.Anon8281.universalScheduler.scheduling.schedulers.TaskScheduler;
 import com.github.Anon8281.universalScheduler.scheduling.tasks.MyScheduledTask;
 import me.dueris.genesismc.entity.OriginPlayer;
+import me.dueris.genesismc.events.OriginChangeEvent;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.factory.powers.FlightHandler;
@@ -12,12 +13,19 @@ import me.dueris.genesismc.factory.powers.actions.ActionOnItemUse;
 import me.dueris.genesismc.factory.powers.actions.ActionOverTime;
 import me.dueris.genesismc.factory.powers.player.Gravity;
 import me.dueris.genesismc.factory.powers.player.Invisibility;
+import me.dueris.genesismc.factory.powers.player.RestrictArmor;
 import me.dueris.genesismc.factory.powers.player.damage.Burn;
+import me.dueris.genesismc.factory.powers.simple.MimicWarden;
+import me.dueris.genesismc.factory.powers.simple.OriginSimple;
 import me.dueris.genesismc.files.GenesisDataFiles;
+import me.dueris.genesismc.utils.OriginContainer;
+import me.dueris.genesismc.utils.PowerContainer;
 import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.v1_20_R1.entity.CraftAbstractHorse;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
@@ -65,7 +73,9 @@ public class FoliaOriginScheduler {
         return runnable.runTaskTimer(GenesisMC.getPlugin(), delay, period);
     }
 
-    public static class OriginSchedulerTree extends BukkitRunnable {
+    public static class OriginSchedulerTree extends BukkitRunnable implements Listener{
+
+        public static ArrayList<Player> mimic_warden = new ArrayList<>();
 
         private HashMap<Player, Integer> ticksEMap = new HashMap<>();
 
@@ -89,7 +99,7 @@ public class FoliaOriginScheduler {
                     invisibility.run(p);
                 }
                 if(OriginPlayer.getPowersApplied(p).isEmpty()) {
-                    p.sendMessage("BSDFPR");
+                    //empty
                 }
                 for(Class<? extends CraftPower> c : OriginPlayer.getPowersApplied(p)){
                     try {
@@ -97,9 +107,12 @@ public class FoliaOriginScheduler {
                             ((Burn) c.newInstance()).run(p, ticksEMap);
                         } else if (c.newInstance() instanceof ActionOverTime){
                             ((ActionOverTime) c.newInstance()).run(p, ticksEMap);
+                        } else if (c.newInstance() instanceof RestrictArmor){
+                            ((RestrictArmor) c.newInstance()).run(p, ticksEMap);
                         } else {
                              c.newInstance().run(p);
                         }
+
                     } catch (InstantiationException e) {
                         throw new RuntimeException(e);
                     } catch (IllegalAccessException e) {
