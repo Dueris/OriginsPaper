@@ -6,6 +6,7 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.event.player.PlayerEvent;
 import org.jetbrains.annotations.NotNull;
 
+@Deprecated
 public class ToggleTriggerEvent extends PlayerEvent {
     private static final HandlerList handlers = new HandlerList();
     String key;

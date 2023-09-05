@@ -107,8 +107,8 @@ public class Toggle extends CraftPower implements Listener {
                         }
                     }.runTaskTimer(GenesisMC.getPlugin(), 0, 1);
                 }
-                ToggleTriggerEvent toggleTriggerEvent = new ToggleTriggerEvent(p, key, origin, !active);
-                Bukkit.getServer().getPluginManager().callEvent(toggleTriggerEvent);
+//                ToggleTriggerEvent toggleTriggerEvent = new ToggleTriggerEvent(p, key, origin, !active);
+//                Bukkit.getServer().getPluginManager().callEvent(toggleTriggerEvent);
             } else {
                 KeybindHandler.runKeyChangeTrigger(KeybindHandler.getKeybindItem(key, p.getInventory()));
                 setActive(tag, true);
