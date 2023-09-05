@@ -8,6 +8,8 @@ import me.dueris.genesismc.utils.OriginContainer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
@@ -37,44 +39,12 @@ public class ModifyJumpPower extends CraftPower implements Listener {
                 ConditionExecutor conditionExecutor = new ConditionExecutor();
                 if (conditionExecutor.check("condition", "conditions", p, origin, "origins:modify_jump", p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
                     for (HashMap<String, Object> modifier : origin.getPowerFileFromType("origins:modify_jump").getPossibleModifiers("modifier", "modifiers")) {
+                        if (modifier.get("value") instanceof Number) {
+                            double modifierValue = ((Number) modifier.get("value")).doubleValue();
+                            int jumpBoostLevel = (int) ((modifierValue - 1.0) * 2.0);
 
-                        if (modifier.get("value") instanceof Float) {
-                            Float value = Float.valueOf(modifier.get("value").toString());
-                            String operation = modifier.get("operation").toString();
-                            BinaryOperator mathOperator = getOperationMappingsFloat().get(operation);
-                            if (mathOperator != null) {
-                                float result = (float) mathOperator.apply(p.getVelocity().getY(), value);
-                                p.setVelocity(new Vector(p.getEyeLocation().getDirection().getX(), result, p.getEyeLocation().getDirection().getZ()));
-                                setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
-                            }
-                        }
-                        if (modifier.get("value") instanceof Double) {
-                            Double value = Double.valueOf(modifier.get("value").toString());
-                            String operation = modifier.get("operation").toString();
-                            BinaryOperator mathOperator = getOperationMappingsDouble().get(operation);
-                            if (mathOperator != null) {
-                                double result = (double) mathOperator.apply(p.getVelocity().getY(), value);
-                                p.setVelocity(new Vector(p.getEyeLocation().getDirection().getX(), result, p.getEyeLocation().getDirection().getZ()));
-                                setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
-                            }
-                        }
-                        if (modifier.get("value") instanceof Integer) {
-                            Integer value = Integer.valueOf(modifier.get("value").toString());
-                            String operation = modifier.get("operation").toString();
-                            BinaryOperator mathOperator = getOperationMappingsInteger().get(operation);
-                            if (mathOperator != null) {
-                                int result = (int) mathOperator.apply(p.getVelocity().getY(), value);
-                                p.setVelocity(new Vector(p.getEyeLocation().getDirection().getX(), result, p.getEyeLocation().getDirection().getZ()));
-                                setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
-                            }
-                        }
-                        if (modifier.get("value") instanceof Long) {
-                            Long value = Long.valueOf(modifier.get("value").toString());
-                            String operation = modifier.get("operation").toString();
-                            BinaryOperator<Long> mathOperator = getOperationMappingsLong().get(operation);
-                            if (mathOperator != null) {
-                                long result = mathOperator.apply((long) p.getVelocity().getY(), value);
-                                p.setVelocity(new Vector(p.getEyeLocation().getDirection().getX(), result, p.getVelocity().getZ()));
+                            if (jumpBoostLevel >= 0) {
+                                p.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, 20, jumpBoostLevel, true, false));
                                 setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                             }
                         }
@@ -84,10 +54,8 @@ public class ModifyJumpPower extends CraftPower implements Listener {
         }
     }
 
-    Player p;
-
     public ModifyJumpPower(){
-        this.p = p;
+
     }
 
     @Override
