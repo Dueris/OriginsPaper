@@ -5,8 +5,10 @@ import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.KeybindHandler;
 import me.dueris.genesismc.entity.OriginPlayer;
 import me.dueris.genesismc.events.KeybindTriggerEvent;
+import me.dueris.genesismc.events.ToggleTriggerEvent;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.utils.OriginContainer;
+import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -38,15 +40,12 @@ public class Toggle extends CraftPower implements Listener {
         Player p = e.getPlayer();
         if (toggle_power.contains(e.getPlayer())) {
             for (OriginContainer origin : OriginPlayer.getOrigin(e.getPlayer()).values()) {
-                ConditionExecutor conditionExecutor = new ConditionExecutor();
-                if (conditionExecutor.check("condition", "conditions", p, origin, getPowerFile(), p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
                     if (!CooldownStuff.isPlayerInCooldown(p, origin.getPowerFileFromType(getPowerFile()).getKey().get("key").toString())) {
                         if (isKeyBeingPressed(e.getPlayer(), origin.getPowerFileFromType(getPowerFile()).getKey().get("key").toString(), true)) {
                             execute(p, origin);
                             break;
                         }
                     }
-                }
             }
         }
     }
@@ -108,6 +107,8 @@ public class Toggle extends CraftPower implements Listener {
                         }
                     }.runTaskTimer(GenesisMC.getPlugin(), 0, 1);
                 }
+                ToggleTriggerEvent toggleTriggerEvent = new ToggleTriggerEvent(p, key, origin, !active);
+                Bukkit.getServer().getPluginManager().callEvent(toggleTriggerEvent);
             } else {
                 KeybindHandler.runKeyChangeTrigger(KeybindHandler.getKeybindItem(key, p.getInventory()));
                 setActive(tag, true);

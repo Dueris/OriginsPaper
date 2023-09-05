@@ -29,11 +29,9 @@ public class Overlay extends CraftPower {
     @Override
     public void run(Player player) {
         if (getPowerArray().contains(player)) {
-            player.sendMessage("test");
             for (OriginContainer origin : OriginPlayer.getOrigin(player).values()) {
                 ConditionExecutor conditionExecutor = new ConditionExecutor();
                 if (conditionExecutor.check("condition", "conditions", player, origin, "origins:overlay", player, null, player.getLocation().getBlock(), null, player.getInventory().getItemInMainHand(), null)) {
-                    player.sendMessage(String.valueOf(conditionExecutor.check("condition", "conditions", player, origin, "origins:overlay", player, null, player.getLocation().getBlock(), null, player.getInventory().getItemInMainHand(), null)));
                     setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                     Phasing.initializePhantomOverlay(player);
                 } else {

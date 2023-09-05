@@ -28,31 +28,33 @@ public class ActionOnItemUse extends CraftPower implements Listener {
     @EventHandler
     public void entityRightClick(PlayerInteractEvent e) {
         Player actor = e.getPlayer();
-
-        for (OriginContainer origin : OriginPlayer.getOrigin(actor).values()) {
-            PowerContainer power = origin.getPowerFileFromType(getPowerFile());
-            if (power == null) continue;
-
-            if (!getPowerArray().contains(e.getPlayer())) return;
-            setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
-            ConditionExecutor conditionExecutor = new ConditionExecutor();
-            if(conditionExecutor.check("item_condition", "item_conditions", actor, origin, getPowerFile(), actor, null, actor.getLocation().getBlock(), null, actor.getInventory().getItemInHand(), null)){
-                if(conditionExecutor.check("condition", "conditions", actor, origin, getPowerFile(), actor, null, actor.getLocation().getBlock(), null, actor.getInventory().getItemInHand(), null)){
-                    if(conditionExecutor.check("entity_condition", "entity_conditions", actor, origin, getPowerFile(), actor, null, actor.getLocation().getBlock(), null, actor.getInventory().getItemInHand(), null)){
-                        ActionTypes.EntityActionType(actor, power.getEntityAction());
-                        ActionTypes.ItemActionType(actor.getActiveItem(), power.getItemAction());
-                        new BukkitRunnable() {
-                            @Override
-                            public void run() {
-                                if (!getPowerArray().contains(e.getPlayer())) return;
-                                setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
-                            }
-                        }.runTaskLater(GenesisMC.getPlugin(), 2L);
-                    }
-                }
-            }
-
-        }
+//
+//        for (OriginContainer origin : OriginPlayer.getOrigin(actor).values()) {
+//            PowerContainer power = origin.getPowerFileFromType(getPowerFile());
+//            if (power == null) continue;
+//            if (e.getItem() == null) return;
+//            if (e.getClickedBlock() == null) return;
+//            if (!getPowerArray().contains(e.getPlayer())) return;
+//            setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
+//            ConditionExecutor conditionExecutor = new ConditionExecutor();
+//            if(conditionExecutor.check("item_condition", "item_conditions", actor, origin, getPowerFile(), actor, null, actor.getLocation().getBlock(), null, actor.getInventory().getItemInHand(), null)){
+//                if(conditionExecutor.check("condition", "conditions", actor, origin, getPowerFile(), actor, null, actor.getLocation().getBlock(), null, actor.getInventory().getItemInHand(), null)){
+//                    if(conditionExecutor.check("entity_condition", "entity_conditions", actor, origin, getPowerFile(), actor, null, actor.getLocation().getBlock(), null, actor.getInventory().getItemInHand(), null)){
+//                        ActionTypes.EntityActionType(actor, power.getEntityAction());
+//                        ActionTypes.ItemActionType(actor.getInventory().getItemInMainHand(), power.getItemAction());
+//                        new BukkitRunnable() {
+//                            @Override
+//                            public void run() {
+//                                if (!getPowerArray().contains(e.getPlayer())) return;
+//                                setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
+//                            }
+//                        }.runTaskLater(GenesisMC.getPlugin(), 2L);
+//                    }
+//                }
+//            }
+//
+//        }
+        //TODO: PATCH THIS FOR POWER origins:damage_from_potions
 
 //        if (e.getHand() == EquipmentSlot.HAND) System.out.println("main");
 //        if (e.getHand() == EquipmentSlot.OFF_HAND) System.out.println("off");

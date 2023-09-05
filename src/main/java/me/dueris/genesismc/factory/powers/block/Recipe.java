@@ -74,56 +74,58 @@ public class Recipe extends CraftPower implements Listener {
         return patternLines.toArray(new String[0]);
     }
 
-    @EventHandler
-    public void load(ServerLoadEvent e) {
-        for (Player player : Bukkit.getOnlinePlayers()) {
-            for (OriginContainer origin : OriginPlayer.getOrigin(player).values()) {
-                ConditionExecutor conditionExecutor = new ConditionExecutor();
-                if (conditionExecutor.check("condition", "conditions", player, origin, getPowerFile(), player, null, null, null, player.getInventory().getItemInHand(), null)) {
-                    if (!getPowerArray().contains(player)) return;
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
-                    loadRecipe(player, origin, "origins:recipe");
-                } else {
-                    if (!getPowerArray().contains(player)) return;
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
-                }
-            }
-        }
-    }
+//    @EventHandler
+//    public void load(ServerLoadEvent e) {
+//        for (Player player : Bukkit.getOnlinePlayers()) {
+//            for (OriginContainer origin : OriginPlayer.getOrigin(player).values()) {
+//                ConditionExecutor conditionExecutor = new ConditionExecutor();
+//                if (conditionExecutor.check("condition", "conditions", player, origin, getPowerFile(), player, null, null, null, player.getInventory().getItemInHand(), null)) {
+//                    if (!getPowerArray().contains(player)) return;
+//                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
+//                    loadRecipe(player, origin, "origins:recipe");
+//                } else {
+//                    if (!getPowerArray().contains(player)) return;
+//                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
+//                }
+//            }
+//        }
+//    }
+//
+//    @EventHandler
+//    public void load(PlayerJoinEvent e) {
+//        for (Player player : Bukkit.getOnlinePlayers()) {
+//            for (OriginContainer origin : OriginPlayer.getOrigin(player).values()) {
+//                ConditionExecutor conditionExecutor = new ConditionExecutor();
+//                if (conditionExecutor.check("condition", "conditions", player, origin, getPowerFile(), player, null, null, null, player.getInventory().getItemInHand(), null)) {
+//                    if (!getPowerArray().contains(player)) return;
+//                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
+//                    loadRecipe(player, origin, "origins:recipe");
+//                } else {
+//                    if (!getPowerArray().contains(player)) return;
+//                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
+//                }
+//            }
+//        }
+//    }
+//
+//    @EventHandler
+//    public void load(OriginChangeEvent e) {
+//        for (Player player : Bukkit.getOnlinePlayers()) {
+//            for (OriginContainer origin : OriginPlayer.getOrigin(player).values()) {
+//                ConditionExecutor conditionExecutor = new ConditionExecutor();
+//                if (conditionExecutor.check("condition", "conditions", player, origin, getPowerFile(), player, null, null, null, player.getInventory().getItemInHand(), null)) {
+//                    if (!getPowerArray().contains(player)) return;
+//                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
+//                    loadRecipe(player, origin, "origins:recipe");
+//                } else {
+//                    if (!getPowerArray().contains(player)) return;
+//                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
+//                }
+//            }
+//        }
+//    }
 
-    @EventHandler
-    public void load(PlayerJoinEvent e) {
-        for (Player player : Bukkit.getOnlinePlayers()) {
-            for (OriginContainer origin : OriginPlayer.getOrigin(player).values()) {
-                ConditionExecutor conditionExecutor = new ConditionExecutor();
-                if (conditionExecutor.check("condition", "conditions", player, origin, getPowerFile(), player, null, null, null, player.getInventory().getItemInHand(), null)) {
-                    if (!getPowerArray().contains(player)) return;
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
-                    loadRecipe(player, origin, "origins:recipe");
-                } else {
-                    if (!getPowerArray().contains(player)) return;
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
-                }
-            }
-        }
-    }
-
-    @EventHandler
-    public void load(OriginChangeEvent e) {
-        for (Player player : Bukkit.getOnlinePlayers()) {
-            for (OriginContainer origin : OriginPlayer.getOrigin(player).values()) {
-                ConditionExecutor conditionExecutor = new ConditionExecutor();
-                if (conditionExecutor.check("condition", "conditions", player, origin, getPowerFile(), player, null, null, null, player.getInventory().getItemInHand(), null)) {
-                    if (!getPowerArray().contains(player)) return;
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
-                    loadRecipe(player, origin, "origins:recipe");
-                } else {
-                    if (!getPowerArray().contains(player)) return;
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
-                }
-            }
-        }
-    }
+    //TODO: PATCH THIS CAUSING ERRORS CHECK ORIGINS:ARACHNID
 
     Player p;
 

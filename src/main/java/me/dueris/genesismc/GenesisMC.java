@@ -16,7 +16,10 @@ import me.dueris.genesismc.enchantments.EnchantProtEvent;
 import me.dueris.genesismc.enchantments.WaterProtAnvil;
 import me.dueris.genesismc.enchantments.WaterProtection;
 import me.dueris.genesismc.entity.OriginPlayer;
+import me.dueris.genesismc.events.RegisterPowersEvent;
 import me.dueris.genesismc.factory.CraftApoli;
+import me.dueris.genesismc.factory.conditions.Condition;
+import me.dueris.genesismc.factory.conditions.CraftCondition;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.factory.powers.player.PlayerRender;
 import me.dueris.genesismc.factory.powers.player.inventory.Inventory;
@@ -66,6 +69,10 @@ public final class GenesisMC extends JavaPlugin implements Listener {
     }
 
     public GenesisMC() {
+    }
+
+    public static java.util.logging.@org.jetbrains.annotations.NotNull Logger getOriginLogger(){
+        return GenesisMC.getPlugin().getLogger();
     }
 
     //OMG HIIII
@@ -146,6 +153,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 
         getServer().getPluginManager().registerEvents(new DataContainer(), this);
         getServer().getPluginManager().registerEvents(this, this);
+        getServer().getPluginManager().registerEvents(new CooldownStuff(), this);
 
         //configs
 
@@ -224,11 +232,20 @@ public final class GenesisMC extends JavaPlugin implements Listener {
                         }
                     }
                 }
+                RegisterPowersEvent registerPowersEvent = new RegisterPowersEvent(CraftPower.getRegistered());
+                Bukkit.getServer().getPluginManager().callEvent(registerPowersEvent);
             } catch (IOException | ReflectiveOperationException e) {
                 e.printStackTrace();
 //                throw new RuntimeException(e);
             }
 
+        try {
+            for(Class<? extends Condition> c : CraftCondition.findCraftConditionClasses()){
+                CraftCondition.conditionClasses.add(c);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
         if (CraftApoli.getOrigins().size() > 0) {
             getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] " + LangConfig.getLocalizedString(Bukkit.getConsoleSender(), "startup.originAmount").replace("%originAmount%", String.valueOf(CraftApoli.getOrigins().size()))).color(TextColor.fromHexString(GREEN)));

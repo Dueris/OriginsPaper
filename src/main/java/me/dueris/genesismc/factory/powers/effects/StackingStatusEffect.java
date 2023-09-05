@@ -94,19 +94,9 @@ public class StackingStatusEffect extends CraftPower {
             for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
                 ConditionExecutor executor = new ConditionExecutor();
                 if (executor.check("condition", "conditions", p, origin, getPowerFile(), p, null, null, null, p.getItemInHand(), null)) {
-                    if (origin.getPowerFileFromType(getPowerFile()) == null) {
-                        getPowerArray().remove(p);
-                        return;
-                    }
-                    if (!getPowerArray().contains(p)) return;
                     setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                     applyStackingEffect(p, calculateStacks(p, 10, origin), origin);
                 } else {
-                    if (origin.getPowerFileFromType(getPowerFile()) == null) {
-                        getPowerArray().remove(p);
-                        return;
-                    }
-                    if (!getPowerArray().contains(p)) return;
                     setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                 }
             }
@@ -129,13 +119,6 @@ public class StackingStatusEffect extends CraftPower {
     }
 
     private void applyStackingEffect(Player player, int stacks, OriginContainer origin) {
-        int minStacks = Integer.parseInt(origin.getPowerFileFromType(getPowerFile()).get("min_stacks"));
-        int maxStacks = Integer.parseInt(origin.getPowerFileFromType(getPowerFile()).get("max_stacks"));
-        int durationPerStack = 100;
-
-        int clampedStacks = Math.max(minStacks, Math.min(stacks, maxStacks));
-
-        int totalDuration = clampedStacks * durationPerStack;
 
         for (HashMap<String, Object> effect : origin.getPowerFileFromType(getPowerFile()).getSingularAndPlural("effect", "effects")) {
 

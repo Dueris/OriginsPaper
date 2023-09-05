@@ -25,10 +25,8 @@ public class NightVision extends CraftPower {
         }
     }
 
-    Player p;
-
     public NightVision(){
-        this.p = p;
+
     }
 
     @Override
@@ -46,7 +44,7 @@ public class NightVision extends CraftPower {
                         }
                         if (!getPowerArray().contains(p)) return;
                         setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
-                        Float strength = OriginPlayer.getOrigin(p, layer).getPowerFileFromType("origins:night_vision").getStrength();
+                        Double strength = OriginPlayer.getOrigin(p, layer).getPowerFileFromType("origins:night_vision").getStrength();
                         p.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, 400, roundNumber(origin.getPowerFileFromType(getPowerFile()).getStrength()), false, false, false));
                     } else {
                         if (origin.getPowerFileFromType(getPowerFile()) == null) {
@@ -62,16 +60,21 @@ public class NightVision extends CraftPower {
         }
     }
 
-    public int roundNumber(float num) {
+    public int roundNumber(double num) {
         if (String.valueOf(num).contains(".")) {
-            if (Integer.valueOf(String.valueOf(num).split(".")[1]) >= 5) {
-                return Integer.valueOf(String.valueOf(num).split(".")[0]) + 1;
-            } else {
-                return Integer.valueOf(String.valueOf(num).split(".")[0]);
+            String[] parts = String.valueOf(num).split("\\.");
+            if (parts.length > 1) {
+                int decimalPart = Integer.parseInt(parts[1]);
+                if (decimalPart >= 5) {
+                    return Integer.parseInt(parts[0]) + 1;
+                } else {
+                    return Integer.parseInt(parts[0]);
+                }
             }
         }
         return 0;
     }
+
 
     @Override
     public String getPowerFile() {

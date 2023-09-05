@@ -1,5 +1,6 @@
 package me.dueris.genesismc.factory.powers.actions;
 
+import com.google.gson.JsonObject;
 import me.dueris.genesismc.CooldownStuff;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.entity.OriginPlayer;
@@ -12,6 +13,8 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.*;
+import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
@@ -50,6 +53,7 @@ public class ActionTypes {
             if (biEntityAction.containsKey("amount"))
                 amount = Float.parseFloat(biEntityAction.get("amount").toString());
 //                if (biEntityAction.containsKey("damage_type")) damageType = biEntityAction.get("damage_type").toString();
+//                else damageType = "minecraft:kill";
 //                else damageType = "minecraft:kill";
 
             //target.setLastDamageCause(new EntityDamageEvent(actor, EntityDamageEvent.DamageCause.valueOf(damageType.split(":")[1].toUpperCase()), ((Player) target).getLastDamage()));
@@ -131,16 +135,77 @@ public class ActionTypes {
         }
     }
 
+    public static EquipmentSlot getSlotFromString(String slotName) {
+        switch (slotName.toLowerCase()) {
+            case "armor.helmet":
+                return EquipmentSlot.HEAD;
+            case "armor.chest":
+                return EquipmentSlot.CHEST;
+            case "armor.legs":
+                return EquipmentSlot.LEGS;
+            case "armor.feet":
+                return EquipmentSlot.FEET;
+            case "hand":
+                return EquipmentSlot.HAND;
+            case "offhand":
+                return EquipmentSlot.OFF_HAND;
+            default:
+                return null;
+        }
+    }
+
     private static void runEntity(Entity entity, JSONObject power) {
         JSONObject entityAction;
-        System.out.println(power);
         entityAction = power;
         String type = entityAction.get("type").toString();
 
+        if (type.equals("origins:modify_inventory")){
+            if(entity instanceof Player player){
+                if(power.containsKey("slot")){
+                    try{
+                        if(player.getInventory().getItem(getSlotFromString(power.get("slot").toString())) == null) return;
+                        ItemActionType(player.getInventory().getItem(getSlotFromString(power.get("slot").toString())), power);
+                    }catch (Exception e){
+                        //silently fail bc idk whats going on and yeah it wokrs lol
+                    }
+                }
+            }
+        }
+        if (type.equals("origins:extinguish")){
+            entity.setFireTicks(0);
+        }
         if (type.equals("origins:gain_air")){
             long amt = (long) power.get("value");
             if(entity instanceof Player p){
                 p.setRemainingAir(p.getRemainingAir() + Math.toIntExact(amt));
+            }
+        }
+        if (type.equals("origins:give")){
+            int amt = 1;
+            if (power.containsKey("amount")) {
+                amt = Integer.parseInt(power.get("amount").toString());
+            }
+
+            if (entityAction.containsKey("stack")) {
+                JSONObject stackObject = (JSONObject) entityAction.get("stack");
+                String item = stackObject.get("item").toString();
+                int amount = Integer.parseInt(stackObject.get("amount").toString());
+
+                ItemStack itemStack = new ItemStack(Material.valueOf(item.toUpperCase().split(":")[1]), amount);
+
+                if (entityAction.containsKey("item_action")) {
+                    ItemActionType(itemStack, power);
+                }
+                if(entity instanceof Player player){
+                    player.getInventory().addItem(itemStack);
+                }
+            }
+
+        }
+        if (type.equals("origins:damage")){
+            if(entity instanceof Player P){
+                P.damage(Double.valueOf(power.get("amount").toString()));
+                P.setLastDamageCause(new EntityDamageEvent(P, EntityDamageEvent.DamageCause.CUSTOM, Double.valueOf(power.get("amount").toString())));
             }
         }
         if (type.equals("origins:add_velocity")) {
@@ -241,7 +306,7 @@ public class ActionTypes {
                                         key = "key.attack";
                                     }
                                 }
-                                CooldownStuff.addCooldown(player, powerContainer.getTag(), Integer.parseInt(powerContainer.get("cooldown")), key);
+                                CooldownStuff.addCooldown(player, powerContainer.getTag(), powerContainer.getName(), Integer.parseInt(powerContainer.get("cooldown")), key);
                             }
                         }
                     }
@@ -259,7 +324,7 @@ public class ActionTypes {
             JSONArray andActions = (JSONArray) entityAction.get("actions");
             for (Object actionObj : andActions) {
                 JSONObject action = (JSONObject) actionObj;
-                runEntity(entity, action);
+                EntityActionType(entity, action);
             }
         } else if (type.equals("origins:chance")) {
             double chance = Double.parseDouble(entityAction.get("chance").toString());
@@ -267,10 +332,10 @@ public class ActionTypes {
 
             if (randomValue <= chance) {
                 JSONObject action = (JSONObject) entityAction.get("action");
-                runEntity(entity, action);
+                EntityActionType(entity, action);
             } else if (entityAction.containsKey("fail_action")) {
                 JSONObject failAction = (JSONObject) entityAction.get("fail_action");
-                runEntity(entity, failAction);
+                EntityActionType(entity, failAction);
             }
         } else if (type.equals("origins:choice")) {
             JSONArray actionsArray = (JSONArray) entityAction.get("actions");
@@ -288,25 +353,24 @@ public class ActionTypes {
             if (!actionsList.isEmpty()) {
                 int randomIndex = (int) (Math.random() * actionsList.size());
                 JSONObject chosenAction = actionsList.get(randomIndex);
-                runEntity(entity, chosenAction);
+                EntityActionType(entity, chosenAction);
             }
         } else if (type.equals("origins:delay")) {
             int ticks = Integer.parseInt(entityAction.get("ticks").toString());
             JSONObject delayedAction = (JSONObject) entityAction.get("action");
 
             Bukkit.getScheduler().runTaskLater(GenesisMC.getPlugin(), () -> {
-                runEntity(entity, delayedAction);
+                EntityActionType(entity, delayedAction);
             }, ticks);
         } else if (type.equals("origins:nothing")) {
             //literally does nothin
         } else if (type.equals("origins:side")) {
             JSONObject action = (JSONObject) entityAction.get("action");
-            runEntity(entity, action);
+            EntityActionType(entity, action);
         } else {
             runEntity(entity, power);
         }
     }
-
 
     public static void BlockActionType(Location location, JSONObject power) {
         if (power == null) return;
@@ -391,7 +455,6 @@ public class ActionTypes {
         }
         if (type.equals("origins:explode")) {
 
-            //TODO make custom explosion code for block conditions
             float explosionPower = 1f;
             String destruction_type = "break";
             JSONObject indestructible = new JSONObject();
@@ -542,7 +605,11 @@ public class ActionTypes {
     }
 
     private static void runItem(ItemStack item, JSONObject power) {
-
+        JSONObject itemAction = (JSONObject) power.get("item_action");
+        String type = itemAction.get("type").toString();
+        if(type.equals("origins:damage")){
+            item.setDurability((short) (item.getDurability() + Short.parseShort(itemAction.get("amount").toString())));
+        }
     }
 
 }

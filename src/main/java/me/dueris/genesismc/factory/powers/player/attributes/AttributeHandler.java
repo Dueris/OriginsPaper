@@ -2,6 +2,7 @@ package me.dueris.genesismc.factory.powers.player.attributes;
 
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.entity.OriginPlayer;
+import me.dueris.genesismc.events.AttributeExecuteEvent;
 import me.dueris.genesismc.events.OriginChangeEvent;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.OriginContainer;
@@ -17,6 +18,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
 
@@ -144,67 +146,62 @@ public class AttributeHandler extends CraftPower implements Listener {
     @EventHandler
     public void ExecuteAttributeModification(OriginChangeEvent e) {
         Player p = e.getPlayer();
-        if (natural_armor.contains(p)) {
-            p.getAttribute(Attribute.GENERIC_ARMOR).setBaseValue(8);
-        }
-        if (nine_lives.contains(p)) {
-            p.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(18);
-        }
-        if (attribute.contains(p)) {
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                if (attribute.contains(p)) {
 
-            for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
+                    for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
+                        PowerContainer power = origin.getPowerFileFromType("origins:attribute");
+                        if (power == null) continue;
 
-                PowerContainer power = origin.getPowerFileFromType("origins:attribute");
-                if (power == null) continue;
-
-                for (HashMap<String, Object> modifier : power.getPossibleModifiers("modifier", "modifiers")) {
-                    if (modifier.get("attribute").toString().equalsIgnoreCase("reach-entity-attributes:reach")) {
-                        extra_reach.add(p);
-                        return;
-                    } else if (modifier.get("attribute").toString().equalsIgnoreCase("reach-entity-attributes:attack_range")) {
-                        extra_reach_attack.add(p);
-                        return;
-                    } else {
-                        Reach.setFinalReach(p, Reach.getDefaultReach(p));
-                    }
-
-                    try {
-                        Attribute attribute_modifier = Attribute.valueOf(modifier.get("attribute").toString().split(":")[1].replace(".", "_").toUpperCase());
-
-                        Object valueObj = modifier.get("value");
-
-                        if (valueObj instanceof Number) {
-                            double value;
-                            if (valueObj instanceof Integer) {
-                                value = ((Number) valueObj).intValue();
-                            } else if (valueObj instanceof Double) {
-                                value = ((Number) valueObj).doubleValue();
-                            } else if (valueObj instanceof Float) {
-                                value = ((Number) valueObj).floatValue();
-                            } else if (valueObj instanceof Long) {
-                                value = ((Number) valueObj).longValue();
-                            } else {
-                                Objects.requireNonNull(valueObj);
-                                continue;
-                            }
-
-                            double base_value = p.getAttribute(attribute_modifier).getBaseValue();
-                            String operation = String.valueOf(modifier.get("operation"));
-                            executeAttributeModify(operation, attribute_modifier, base_value, p, value);
-                            if (origin.getPowerFileFromType(getPowerFile()) == null) {
-                                getPowerArray().remove(p);
+                        for (HashMap<String, Object> modifier : power.getPossibleModifiers("modifier", "modifiers")) {
+                            if (modifier.get("attribute").toString().equalsIgnoreCase("reach-entity-attributes:reach")) {
+                                extra_reach.add(p);
                                 return;
+                            } else if (modifier.get("attribute").toString().equalsIgnoreCase("reach-entity-attributes:attack_range")) {
+                                extra_reach_attack.add(p);
+                                return;
+                            } else {
+                                Reach.setFinalReach(p, Reach.getDefaultReach(p));
                             }
-                            if (!getPowerArray().contains(p)) return;
-                            setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
-                            p.sendHealthUpdate();
+
+                            try {
+                                Attribute attribute_modifier = Attribute.valueOf(modifier.get("attribute").toString().split(":")[1].replace(".", "_").toUpperCase());
+
+                                Object valueObj = modifier.get("value");
+
+                                if (valueObj instanceof Number) {
+                                    double value;
+                                    if (valueObj instanceof Integer) {
+                                        value = ((Number) valueObj).intValue();
+                                    } else if (valueObj instanceof Double) {
+                                        value = ((Number) valueObj).doubleValue();
+                                    } else if (valueObj instanceof Float) {
+                                        value = ((Number) valueObj).floatValue();
+                                    } else if (valueObj instanceof Long) {
+                                        value = ((Number) valueObj).longValue();
+                                    } else {
+                                        Objects.requireNonNull(valueObj);
+                                        continue;
+                                    }
+
+                                    double base_value = p.getAttribute(attribute_modifier).getBaseValue();
+                                    String operation = String.valueOf(modifier.get("operation"));
+                                    executeAttributeModify(operation, attribute_modifier, base_value, p, value);
+                                    AttributeExecuteEvent attributeExecuteEvent = new AttributeExecuteEvent(p, attribute_modifier, power.toString(), origin);
+                                    Bukkit.getServer().getPluginManager().callEvent(attributeExecuteEvent);
+                                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
+                                    p.sendHealthUpdate();
+                                }
+                            } catch (Exception ev) {
+                                ev.printStackTrace();
+                            }
                         }
-                    } catch (Exception ev) {
-                        //yeah nope
                     }
                 }
             }
-        }
+        }.runTaskLater(GenesisMC.getPlugin(), 5l);
     }
 
     Player p;

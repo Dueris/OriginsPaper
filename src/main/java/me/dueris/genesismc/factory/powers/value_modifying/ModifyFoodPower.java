@@ -3,6 +3,7 @@ package me.dueris.genesismc.factory.powers.value_modifying;
 import me.dueris.genesismc.entity.OriginPlayer;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
+import me.dueris.genesismc.factory.powers.player.attributes.AttributeHandler;
 import me.dueris.genesismc.utils.OriginContainer;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -16,6 +17,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BinaryOperator;
 
+import static me.dueris.genesismc.factory.powers.player.attributes.AttributeHandler.getOperationMappingsDouble;
 import static me.dueris.genesismc.factory.powers.player.attributes.AttributeHandler.getOperationMappingsFloat;
 import static me.dueris.genesismc.factory.powers.value_modifying.ValueModifyingSuperClass.modify_food;
 
@@ -26,6 +28,7 @@ public class ModifyFoodPower extends CraftPower implements Listener {
 
     static {
         foodModifiers.put(Material.APPLE, 1.0);
+        foodModifiers.put(Material.COOKIE, 1.0);
         foodModifiers.put(Material.BAKED_POTATO, 1.0);
         foodModifiers.put(Material.BEETROOT, 1.0);
         foodModifiers.put(Material.BREAD, 1.0);
@@ -74,6 +77,7 @@ public class ModifyFoodPower extends CraftPower implements Listener {
         foodModifiers.put(Material.SUSPICIOUS_STEW, 1.0);
 
         saturationModifiers.put(Material.APPLE, 1.0);
+        saturationModifiers.put(Material.COOKIE, 1.0);
         saturationModifiers.put(Material.BAKED_POTATO, 0.6);
         saturationModifiers.put(Material.BEETROOT, 0.6);
         saturationModifiers.put(Material.BREAD, 0.6);
@@ -147,29 +151,30 @@ public class ModifyFoodPower extends CraftPower implements Listener {
                 ConditionExecutor conditionExecutor = new ConditionExecutor();
                 if (conditionExecutor.check("item_condition", "item_condition", player, origin, "origins:modify_food", player, null, player.getLocation().getBlock(), null, player.getInventory().getItemInHand(), null)) {
                     if (modify_food.contains(player)) {
-                        if (origin.getPowerFileFromType("origins:modify_food").getJsonHashMap("food_modifier") != null) {
-                            Map.Entry<Double, Double> modifiers = getModifiers(player, origin);
-
-                            double modifiedFoodLevel = player.getFoodLevel() * modifiers.getKey();
-                            modifiedFoodLevel = Math.min(modifiedFoodLevel, 20.0);
-
-                            player.setFoodLevel((int) modifiedFoodLevel);
-                            if (!getPowerArray().contains(player)) return;
-                            setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
+                        if (!origin.getPowerFileFromType("origins:modify_food").getJsonHashMap("food_modifier").isEmpty()) {
+                            if(origin.getPowerFileFromType("origins:modify_food").getJsonHashMap("food_modifier").containsKey("value")){
+                                int value = Integer.parseInt(origin.getPowerFileFromType("origins:modify_food").getJsonHashMap("food_modifier").get("value").toString());
+                                String operation = origin.getPowerFileFromType("origins:modify_food").getJsonHashMap("food_modifier").get("operation").toString();
+                                BinaryOperator mathOperator = getOperationMappingsDouble().get(operation);
+                                if(mathOperator != null){
+                                    double finalValue = (double) mathOperator.apply(getFoodModifier(e.getItem().getType()), (double) value);
+                                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
+                                }
+                            }
                         }
-                        if (origin.getPowerFileFromType("origins:modify_food").getJsonHashMap("saturation_modifier") != null) {
-                            Map.Entry<Double, Double> modifiers = getModifiers(player, origin);
-
-                            double modifiedSaturation = player.getSaturation() * modifiers.getValue();
-                            modifiedSaturation = Math.min(modifiedSaturation, 20.0);
-
-                            player.setSaturation((float) modifiedSaturation);
-                            if (!getPowerArray().contains(player)) return;
-                            setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
+                        if (!origin.getPowerFileFromType("origins:modify_food").getJsonHashMap("saturation_modifier").isEmpty()) {
+                            if(origin.getPowerFileFromType("origins:modify_food").getJsonHashMap("saturation_modifier").containsKey("value")){
+                                int value = Integer.parseInt(origin.getPowerFileFromType("origins:modify_food").getJsonHashMap("saturation_modifier").get("value").toString());
+                                String operation = origin.getPowerFileFromType("origins:modify_food").getJsonHashMap("saturation_modifier").get("operation").toString();
+                                BinaryOperator mathOperator = getOperationMappingsDouble().get(operation);
+                                if(mathOperator != null){
+                                    double finalValue = (double) mathOperator.apply(getSaturationModifier(e.getItem().getType()), (double) value);
+                                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
+                                }
+                            }
                         }
                     }
                 } else {
-                    if (!getPowerArray().contains(player)) return;
                     setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                 }
             }
@@ -190,10 +195,7 @@ public class ModifyFoodPower extends CraftPower implements Listener {
         return null;
     }
 
-    Player p;
-
     public ModifyFoodPower(){
-        this.p = p;
     }
 
     @Override

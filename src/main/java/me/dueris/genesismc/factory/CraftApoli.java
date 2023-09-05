@@ -1,6 +1,7 @@
 package me.dueris.genesismc.factory;
 
 import io.netty.util.internal.ConcurrentSet;
+import me.dueris.genesismc.events.OriginLoadEvent;
 import me.dueris.genesismc.files.GenesisDataFiles;
 import me.dueris.genesismc.utils.FileContainer;
 import me.dueris.genesismc.utils.LayerContainer;
@@ -103,6 +104,14 @@ public class CraftApoli {
             }
         }
         powerContainers.addAll(newPowerContainers);
+    }
+
+    public static File datapackDir(){
+        return new File(Bukkit.getServer().getPluginManager().getPlugin("GenesisMC").getDataFolder() + File.separator + ".." + File.separator + ".." + File.separator + Bukkit.getServer().getWorlds().get(0).getName() + File.separator + "datapacks");
+    }
+
+    public static File[] datapacksInDir(){
+        return datapackDir().listFiles();
     }
 
     /**
@@ -310,8 +319,10 @@ public class CraftApoli {
                                 }
                             }
                         }
-
-                        originContainers.add(new OriginContainer(originFolder.get(0) + ":" + originFileName.get(0), fileToFileContainer(originLayerParser), fileToHashMap(originParser), powerContainers));
+                        OriginContainer origin = new OriginContainer(originFolder.get(0) + ":" + originFileName.get(0), fileToFileContainer(originLayerParser), fileToHashMap(originParser), powerContainers);
+                        originContainers.add(origin);
+                        OriginLoadEvent originLoadEvent = new OriginLoadEvent(origin, origin.getPowerContainers(), datapack);
+                        Bukkit.getServer().getPluginManager().callEvent(originLoadEvent);
 
                     } catch (FileNotFoundException fileNotFoundException) {
                         if (showErrors)

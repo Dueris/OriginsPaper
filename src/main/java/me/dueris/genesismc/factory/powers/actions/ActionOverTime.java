@@ -5,48 +5,62 @@ import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.OriginContainer;
 import me.dueris.genesismc.utils.PowerContainer;
+import me.dueris.genesismc.utils.translation.LangConfig;
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class ActionOverTime extends CraftPower {
 
     private Long interval;
-    Player p;
     private int ticksE;
 
     public ActionOverTime() {
         this.interval = 1L;
         this.ticksE = 0;
-        this.p = p;
     }
 
-    @Override
-    public void run(Player p) {
+    public void run(Player p, HashMap<Player, Integer> ticksEMap) {
+        ticksEMap.putIfAbsent(p, 0);
+
         if (getPowerArray().contains(p)) {
             for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
                 PowerContainer power = origin.getPowerFileFromType(getPowerFile());
+
                 if (power == null) continue;
                 if (power.getInterval() == null) {
+                    Bukkit.getLogger().warning(LangConfig.getLocalizedString(p, "powers.errors.action_over_time"));
                     return;
                 }
+
                 interval = power.getInterval();
-                if (ticksE < interval) {
-                    ticksE++;
-                    return;
-                } else {
-                    ConditionExecutor executor = new ConditionExecutor();
-                    if (executor.check("condition", "conditions", p, origin, getPowerFile(), p, null, null, null, p.getItemInHand(), null)) {
-                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
-                        ActionTypes.EntityActionType(p, power.getEntityAction());
+                int ticksE = ticksEMap.getOrDefault(p, 0);
+                    if (ticksE <= interval) {
+                        ticksE++;
+                        ticksEMap.put(p, ticksE);
+                        p.sendMessage(String.valueOf(ticksE));
                     } else {
-                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
+                        ConditionExecutor executor = new ConditionExecutor();
+                        if (executor.check("condition", "conditions", p, origin, getPowerFile(), p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
+                            setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
+                            ActionTypes.EntityActionType(p, power.getEntityAction());
+                        } else {
+                            setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
+                        }
+                        ticksEMap.put(p, 0);
                     }
-                    ticksE = 0;
-                }
             }
         }
+    }
+
+
+
+    @Override
+    public void run(Player p) {
+
     }
 
     @Override

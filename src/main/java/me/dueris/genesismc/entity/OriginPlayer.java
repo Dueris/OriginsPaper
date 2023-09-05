@@ -4,6 +4,8 @@ import me.dueris.genesismc.FoliaOriginScheduler;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.enums.OriginDataType;
 import me.dueris.genesismc.events.OriginChooseEvent;
+import me.dueris.genesismc.events.PowerAssignEvent;
+import me.dueris.genesismc.events.PowerUnassignEvent;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.PowerStartHandler;
 import me.dueris.genesismc.factory.powers.CraftPower;
@@ -251,7 +253,7 @@ public class OriginPlayer {
     }
 
     public static void assignPowers(Player player) {
-        if(player == null) Bukkit.getServer().getConsoleSender().sendMessage("khhdsfuhdslhfkshgdlkfsdfsdfsdfsdO");
+        if(player == null) Bukkit.getServer().getConsoleSender().sendMessage("urm the player is null?!");
         HashMap<LayerContainer, OriginContainer> origins = getOrigin(player);
         for (LayerContainer layer : origins.keySet()) {
             try {
@@ -282,6 +284,8 @@ public class OriginPlayer {
 
     public static void assignPowers(Player player, LayerContainer layer) throws InstantiationException, IllegalAccessException {
         OriginContainer origin = getOrigin(player, layer);
+        ArrayList<String> powerAppliedTypes = new ArrayList<>();
+        ArrayList<Class<? extends CraftPower>> powerAppliedClasses = new ArrayList<>();
         if(player == null) Bukkit.getServer().getConsoleSender().sendMessage("rip player null");
         if(origin.getPowerContainers().isEmpty()){
             player.sendMessage("BRO ITS EMPTY WAHT");
@@ -301,6 +305,8 @@ public class OriginPlayer {
                     if(!powersAppliedList.containsKey(player)){
                         ArrayList lst = new ArrayList<>();
                         lst.add(c);
+                        powerAppliedTypes.add(c.newInstance().getPowerFile());
+                        powerAppliedClasses.add(c);
                         powersAppliedList.put(player, lst);
                     }else{
                         powersAppliedList.get(player).add(c);
@@ -309,6 +315,10 @@ public class OriginPlayer {
                 }
             }
         }
+
+        PowerAssignEvent powerAssignEvent = new PowerAssignEvent(player, powerAppliedClasses, powerAppliedTypes, origin);
+        Bukkit.getServer().getPluginManager().callEvent(powerAssignEvent);
+
         hasPowers.add(player);
     }
 
@@ -321,6 +331,8 @@ public class OriginPlayer {
 
     public static void unassignPowers(Player player, LayerContainer layer) {
         OriginContainer origin = getOrigin(player, layer);
+        ArrayList<String> powerRemovedTypes = new ArrayList<>();
+        ArrayList<Class<? extends CraftPower>> powerRemovedClasses = new ArrayList<>();
         for (PowerContainer power : origin.getPowerContainers()) {
             for (Class<? extends CraftPower> c : CraftPower.getRegistered()) {
                 CraftPower craftPower = null;
@@ -333,6 +345,14 @@ public class OriginPlayer {
                 }
                 if (power.getType().equals(craftPower.getPowerFile())) {
                     craftPower.getPowerArray().remove(player);
+                    try {
+                        powerRemovedTypes.add(c.newInstance().getPowerFile());
+                    } catch (InstantiationException e) {
+                        throw new RuntimeException(e);
+                    } catch (IllegalAccessException e) {
+                        throw new RuntimeException(e);
+                    }
+                    powerRemovedClasses.add(c);
                     if (GenesisDataFiles.getMainConfig().getString("console-startup-debug").equalsIgnoreCase("true")) {
                         Bukkit.getConsoleSender().sendMessage("GenesisMC-Origins removed power[" + craftPower.getPowerFile() + "] on layer[" + layer.getTag() + "] to player " + player.getName());
                     }
@@ -342,6 +362,8 @@ public class OriginPlayer {
         for(Class<? extends CraftPower> classes : getPowersApplied(player)){
             powersAppliedList.get(player).add(classes);
         }
+        PowerUnassignEvent powerUnassignEvent = new PowerUnassignEvent(player, powerRemovedClasses, powerRemovedTypes, origin);
+        Bukkit.getServer().getPluginManager().callEvent(powerUnassignEvent);
         hasPowers.remove(player);
     }
 

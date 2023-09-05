@@ -29,6 +29,19 @@ public class FireProjectile extends CraftPower implements Listener {
 
     public static ArrayList<Player> in_continuous = new ArrayList<>();
     public static ArrayList<Player> enderian_pearl = new ArrayList<>();
+    public static ArrayList<Player> in_cooldown_patch = new ArrayList<>();
+
+    public static void addCooldownPatch(Player p){
+        in_cooldown_patch.add(p);
+        p.sendMessage("1");
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                in_cooldown_patch.remove(p);
+                p.sendMessage("2");
+            }
+        }.runTaskLater(GenesisMC.getPlugin(), 5);
+    }
 
     public static int parseOrDefault(String value, int defaultValue) {
         try {
@@ -63,6 +76,8 @@ public class FireProjectile extends CraftPower implements Listener {
         }
 
     }
+
+
 
     @EventHandler
     public void keybindPress(KeybindTriggerEvent e) {
@@ -119,7 +134,8 @@ public class FireProjectile extends CraftPower implements Listener {
                                                             if (shotsLeft >= 0) {
                                                                 if (origin.getPowerFileFromType("origins:fire_projectile").getKey().get("continuous").toString().equalsIgnoreCase("false")) {
                                                                     KeybindHandler.runKeyChangeTriggerReturn(KeybindHandler.getTriggerFromOriginKey(p, key), p, key);
-                                                                    CooldownStuff.addCooldown(p, origin.getPowerFileFromType(getPowerFile()).getTag(), cooldown, key);
+                                                                    CooldownStuff.addCooldown(p, origin.getPowerFileFromType(getPowerFile()).getTag(), origin.getPowerFileFromType(getPowerFile()).getName(), cooldown * 2, key);
+                                                                    addCooldownPatch(p);
                                                                     peopladf.remove(p);
                                                                     ItemMeta met = KeybindHandler.getKeybindItem(key, p.getInventory()).getItemMeta();
                                                                     met.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "contin"), PersistentDataType.BOOLEAN, false);
@@ -136,7 +152,8 @@ public class FireProjectile extends CraftPower implements Listener {
                                                                 } else {
                                                                     if (!in_continuous.contains(p)) {
                                                                         KeybindHandler.runKeyChangeTriggerReturn(KeybindHandler.getTriggerFromOriginKey(p, key), p, key);
-                                                                        CooldownStuff.addCooldown(p, origin.getPowerFileFromType(getPowerFile()).getTag(), cooldown, key);
+                                                                        CooldownStuff.addCooldown(p, origin.getPowerFileFromType(getPowerFile()).getTag(), origin.getPowerFileFromType(getPowerFile()).getName(), cooldown * 2, key);
+                                                                        addCooldownPatch(p);
                                                                         peopladf.remove(p);
                                                                         ItemMeta met = KeybindHandler.getKeybindItem(key, p.getInventory()).getItemMeta();
                                                                         met.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "contin"), PersistentDataType.BOOLEAN, false);
@@ -162,7 +179,8 @@ public class FireProjectile extends CraftPower implements Listener {
                                                                 return;
                                                             }
 
-                                                            p.setCooldown(KeybindHandler.getKeybindItem(e.getKey(), p.getInventory()).getType(), cooldown);
+                                                            p.setCooldown(KeybindHandler.getKeybindItem(e.getKey(), p.getInventory()).getType(), cooldown * 2);
+                                                            addCooldownPatch(p);
 
                                                             if (type.getEntityClass() != null && Projectile.class.isAssignableFrom(type.getEntityClass())) {
                                                                 Projectile projectile = (Projectile) p.getWorld().spawnEntity(p.getEyeLocation(), type);

@@ -9,6 +9,7 @@ import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.factory.powers.FlightHandler;
 import me.dueris.genesismc.factory.powers.Overlay;
 import me.dueris.genesismc.factory.powers.actions.ActionOnItemUse;
+import me.dueris.genesismc.factory.powers.actions.ActionOverTime;
 import me.dueris.genesismc.factory.powers.player.Gravity;
 import me.dueris.genesismc.factory.powers.player.damage.Burn;
 import me.dueris.genesismc.files.GenesisDataFiles;
@@ -85,9 +86,11 @@ public class FoliaOriginScheduler {
                 }
                 for(Class<? extends CraftPower> c : OriginPlayer.getPowersApplied(p)){
                     try {
-                        if(c.newInstance() instanceof Burn){
-                                 ((Burn) c.newInstance()).run(p, ticksEMap);
-                        }else{
+                        if (c.newInstance() instanceof Burn) {
+                            ((Burn) c.newInstance()).run(p, ticksEMap);
+                        } else if (c.newInstance() instanceof ActionOverTime){
+                            ((ActionOverTime) c.newInstance()).run(p, ticksEMap);
+                        } else {
                              c.newInstance().run(p);
                         }
                     } catch (InstantiationException e) {

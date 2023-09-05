@@ -67,7 +67,6 @@ public class Phasing extends CraftPower implements Listener {
                             p.getEyeLocation().add(0.55F, 0, -0.55F).getBlock().isSolid() ||
                             p.getEyeLocation().add(-0.55F, 0, 0.55F).getBlock().isSolid())
                     ) {
-                        if (conditionExecutor.check("block_condition", "block_conditions", p, origin, getPowerFile(), p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
                             setInPhasingBlockForm(p);
                             if (origin.getPowerFileFromType("origins:phasing").getOverlay()) {
                                 initializePhantomOverlay(p);
@@ -82,9 +81,6 @@ public class Phasing extends CraftPower implements Listener {
                                 Float viewD = origin.getPowerFileFromType("origins:phasing").getViewDistance().floatValue();
                                 p.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, viewD.intValue() * 2, 255, false, false, false));
                             }
-                        } else {
-                            setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
-                        }
                     } else {
                         if (p.getGameMode().equals(GameMode.SPECTATOR)) {
                             if (p.getPreviousGameMode().equals(GameMode.CREATIVE)) {

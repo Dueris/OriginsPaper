@@ -24,10 +24,8 @@ public class PreventItemUse extends CraftPower implements Listener {
         }
     }
 
-    Player p;
-
     public PreventItemUse(){
-        this.p = p;
+
     }
 
     @Override
@@ -37,24 +35,34 @@ public class PreventItemUse extends CraftPower implements Listener {
 
     @EventHandler
     public void runD(PlayerInteractEvent e) {
-        if (prevent_item_use.contains(e.getPlayer())) {
-            for (OriginContainer origin : OriginPlayer.getOrigin(e.getPlayer()).values()) {
-                if (origin.getPowerFileFromType(getPowerFile()) == null) {
-                    getPowerArray().remove(e.getPlayer());
-                    return;
-                } else {
-                    ConditionExecutor conditionExecutor = new ConditionExecutor();
-                    if (conditionExecutor.check("item_condition", "item_conditions", e.getPlayer(), origin, "origins:prevent_item_use", e.getPlayer(), null, e.getPlayer().getLocation().getBlock(), null, e.getItem(), null)) {
-                        e.setCancelled(true);
-                        if (!getPowerArray().contains(e.getPlayer())) return;
-                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
-                    } else {
-                        if (!getPowerArray().contains(e.getPlayer())) return;
-                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
-                    }
-                }
-            }
-        }
+//        if (prevent_item_use.contains(e.getPlayer())) {
+//            if (e.getAction().isRightClick()) {
+//                if (e.getItem() == null) return;
+//
+//                for (OriginContainer origin : OriginPlayer.getOrigin(e.getPlayer()).values()) {
+//                    if (origin.getPowerFileFromType(getPowerFile()) == null) {
+//                        getPowerArray().remove(e.getPlayer());
+//                        return;
+//                    } else {
+//                        ConditionExecutor conditionExecutor = new ConditionExecutor();
+//                        boolean shouldCancel = conditionExecutor.check("item_condition", "item_conditions", e.getPlayer(), origin, "origins:prevent_item_use", e.getPlayer(), null, e.getPlayer().getLocation().getBlock(), null, e.getItem(), null);
+//
+//                        if (shouldCancel) {
+//                            e.setCancelled(true);
+//                            setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
+//                        } else {
+//                                e.setCancelled(false);
+//                                setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
+//                        }
+//                    }
+//                }
+//            } else {
+//                e.getPlayer().sendMessage("sdfsadfsdf");
+//                e.setCancelled(false);
+//            }
+//        }
+        //DISABLED FOR NOW DUE TO WEIRD ISSUES WITH ITEM CONDITIONS
+        //TODO: WORK ON PATCH
     }
 
     @Override

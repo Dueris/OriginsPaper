@@ -1,5 +1,5 @@
 {
-  "type": "origins:action_when_damage_taken",
+  "type": "origins:action_over_time",
   "condition": {
     "type": "origins:on_fire"
   },
@@ -19,5 +19,6 @@
     ]
   },
   "name": "Light the Fuse",
-  "description": "Upon catching fire, you explode."
+  "description": "Upon catching fire, you explode.",
+  "interval": 4
 }

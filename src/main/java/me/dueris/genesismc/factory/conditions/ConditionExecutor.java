@@ -24,18 +24,21 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
+import static me.dueris.genesismc.factory.conditions.CraftCondition.conditionClasses;
+import static me.dueris.genesismc.factory.conditions.item.ItemCondition.getMeatMaterials;
+import static me.dueris.genesismc.factory.conditions.item.ItemCondition.getNonMeatMaterials;
 import static me.dueris.genesismc.factory.powers.CraftPower.findCraftPowerClasses;
 import static me.dueris.genesismc.factory.powers.Power.powers_active;
 
 public class ConditionExecutor {
-    private static boolean checkSubCondition(JSONObject subCondition, Player p, Entity actor, Entity target, Block block, Fluid fluid, ItemStack itemStack, EntityDamageEvent dmgevent, String powerFile) {
+    private static boolean checkSubCondition(JSONObject subCondition, Player p, OriginContainer origin, String powerfile, Entity actor, Entity target, Block block, Fluid fluid, ItemStack itemStack, EntityDamageEvent dmgevent, String powerFile) {
         if ("origins:and".equals(subCondition.get("type"))) {
             JSONArray conditionsArray = (JSONArray) subCondition.get("conditions");
             boolean allTrue = true;
 
             for (Object subConditionObj : conditionsArray) {
                 if (subConditionObj instanceof JSONObject subSubCondition) {
-                    boolean subSubConditionResult = checkSubCondition(subSubCondition, p, actor, target, block, fluid, itemStack, dmgevent, powerFile);
+                    boolean subSubConditionResult = checkSubCondition(subSubCondition, p, origin, powerfile, actor, target, block, fluid, itemStack, dmgevent, powerFile);
                     if (!subSubConditionResult) {
                         allTrue = false;
                         break;
@@ -46,54 +49,71 @@ public class ConditionExecutor {
             return allTrue;
         } else {
             boolean subConditionResult = false;
-            if (dmgevent != null) {
-                var check = DamageCondition.check(subCondition, p, dmgevent, powerFile);
-                if (check.isPresent()) {
-                    subConditionResult = (boolean) check.get();
-                }
 
-            } else if (actor != null) {
-                var check = EntityCondition.check(subCondition, p, actor, powerFile);
-                if (check.isPresent()) {
-                    subConditionResult = (boolean) check.get();
-                }
-            } else if (actor != null && target != null) {
-                var check = BiEntityCondition.check(subCondition, p, actor, target, powerFile);
-                if (check.isPresent()) {
-                    subConditionResult = (boolean) check.get();
-                }
-            } else if (block != null) {
-                var check = BlockCondition.check(subCondition, p, p.getLocation().getBlock(), powerFile);
-                if (check.isPresent()) {
-                    subConditionResult = (boolean) check.get();
-                }
-                var check2 = BiomeCondition.check(subCondition, p, p.getLocation().getBlock(), powerFile);
-                if (check2.isPresent()) {
-                    subConditionResult = (boolean) check.get();
-                }
-            } else if (fluid != null){
-                var check = FluidCondition.check(subCondition, p, fluid, powerFile);
-                if (check.isPresent()) {
-                    subConditionResult = (boolean) check.get();
-                }
-            } else if (itemStack != null) {
-                var check = ItemCondition.check(subCondition, p, itemStack, powerFile);
+            if (!subConditionResult && dmgevent != null) {
+                DamageCondition damageCondition = new DamageCondition();
+                var check = damageCondition.check(subCondition, p, origin, powerfile, actor, target, block, fluid, itemStack, dmgevent);
                 if (check.isPresent()) {
                     subConditionResult = (boolean) check.get();
                 }
             }
 
-            boolean subConditionInverted = (boolean) subCondition.getOrDefault("inverted", false);
+            if (!subConditionResult && actor != null) {
+                EntityCondition entityCondition = new EntityCondition();
+                var check = entityCondition.check(subCondition, p, origin, powerfile, actor, target, block, fluid, itemStack, dmgevent);
+                if (check.isPresent()) {
+                    subConditionResult = (boolean) check.get();
+                }
+            }
+
+            if (!subConditionResult && actor != null && target != null) {
+                BiEntityCondition biEntityCondition = new BiEntityCondition();
+                var check = biEntityCondition.check(subCondition, p, origin, powerfile, actor, target, block, fluid, itemStack, dmgevent);
+                if (check.isPresent()) {
+                    subConditionResult = (boolean) check.get();
+                }
+            }
+
+            if (!subConditionResult && block != null) {
+                BlockCondition blockCondition = new BlockCondition();
+                var check = blockCondition.check(subCondition, p, origin, powerfile, actor, target, block, fluid, itemStack, dmgevent);
+                if (check.isPresent()) {
+                    subConditionResult = (boolean) check.get();
+                }
+
+                BiomeCondition biomeCondition = new BiomeCondition();
+                var check2 = biomeCondition.check(subCondition, p, origin, powerfile, actor, target, block, fluid, itemStack, dmgevent);
+                if (check2.isPresent()) {
+                    subConditionResult = (boolean) check2.get();
+                }
+            }
+
+            if (!subConditionResult && fluid != null) {
+                FluidCondition fluidCondition = new FluidCondition();
+                var check = fluidCondition.check(subCondition, p, origin, powerfile, actor, target, block, fluid, itemStack, dmgevent);
+                if (check.isPresent()) {
+                    subConditionResult = (boolean) check.get();
+                }
+            }
+
+            if (!subConditionResult && itemStack != null) {
+                ItemCondition condition = new ItemCondition();
+                var check = condition.check(subCondition, p, origin, powerfile, actor, target, block, fluid, itemStack, dmgevent);
+                if (check.isPresent()) {
+                    subConditionResult = (boolean) check.get();
+                }
+            }
+
             return subConditionResult;
         }
     }
 
-    public static boolean checkConditions(JSONArray conditionsArray, Player p, Entity actor, Entity target, Block block, Fluid fluid, ItemStack itemStack, EntityDamageEvent dmgevent, String powerFile) {
+    public static boolean checkConditions(JSONArray conditionsArray, Player p, OriginContainer origin, String powerfile, Entity actor, Entity target, Block block, Fluid fluid, ItemStack itemStack, EntityDamageEvent dmgevent, String powerFile) {
         boolean allTrue = true;
 
         for (Object subConditionObj : conditionsArray) {
             if (subConditionObj instanceof JSONObject subCondition) {
-                boolean subConditionResult = checkSubCondition(subCondition, p, actor, target, block, fluid, itemStack, dmgevent, powerFile);
+                boolean subConditionResult = checkSubCondition(subCondition, p, origin, powerfile, actor, target, block, fluid, itemStack, dmgevent, powerFile);
                 if (!subConditionResult) {
                     allTrue = false;
                     break;
@@ -108,18 +128,21 @@ public class ConditionExecutor {
         if (origin == null) return true;
         if (origin.getPowerFileFromType(powerfile) == null) return true;
         if (origin.getPowerFileFromType(powerfile).getConditionFromString(singular, plural) == null) return true;
+        if (origin.getPowerFileFromType(powerfile).getConditionFromString(singular, plural).isEmpty()) return true;
+        if (origin.getPowerFileFromType(powerfile).getCondition().isEmpty()) return true;
+        if (origin.getPowerFileFromType(powerfile).getCondition(singular).isEmpty()) return true;
         for (HashMap<String, Object> condition : origin.getPowerFileFromType(powerfile).getConditionFromString(singular, plural)) {
             if (condition.get("type").equals("origins:and")) {
                 JSONArray conditionsArray = (JSONArray) condition.get("conditions");
 
-                return checkConditions(conditionsArray, p, actor, target, block, fluid, itemStack, dmgevent, powerfile);
+                return checkConditions(conditionsArray, p, origin, powerfile, actor, target, block, fluid, itemStack, dmgevent, powerfile);
             } else if (condition.get("type").equals("origins:or")) {
                 JSONArray conditionsArray = (JSONArray) condition.get("conditions");
                 boolean anyConditionTrue = false;
 
                 for (Object subConditionObj : conditionsArray) {
                     if (subConditionObj instanceof JSONObject subCondition) {
-                        boolean subConditionResult = checkSubCondition(subCondition, p, actor, target, block, fluid, itemStack, dmgevent, powerfile);
+                        boolean subConditionResult = checkSubCondition(subCondition, p, origin, powerfile, actor, target, block, fluid, itemStack, dmgevent, powerfile);
                         if (subConditionResult) {
                             return true;
                         }
@@ -169,53 +192,37 @@ public class ConditionExecutor {
                         throw new RuntimeException(e);
                     }
                 }
+            } else if (condition.get("type").toString().equalsIgnoreCase("origins:meat")) {
+                boolean inverted = Boolean.valueOf(condition.getOrDefault("inverted", false).toString());
+                if (itemStack.getType().isEdible()) {
+                    if (inverted) {
+                        if (getNonMeatMaterials().contains(itemStack.getType())) {
+                            return true;
+                        }
+                    } else {
+                        if (getMeatMaterials().contains(itemStack.getType())) {
+                            return true;
+                        }
+                    }
+                }else{
+                    return false;
+                }
             } else {
-                if (origin.getPowerFileFromType(powerfile).getConditionFromString(singular, plural) == null) {
-                    return true;
-                }
-                if (dmgevent != null) {
-                    Optional<Boolean> check = DamageCondition.check(condition, p, dmgevent, powerfile);
-                    if (check.isPresent() && check.get()) {
-                        return true;
+                String boolResult = "empty";
+                try {
+                    for(Class<? extends Condition> conditionClass : conditionClasses){
+                        Optional<Boolean> bool = conditionClass.newInstance().check(condition, p, origin, powerfile, actor, target, block, fluid, itemStack, dmgevent);
+                        if(bool.isPresent() && !boolResult.equalsIgnoreCase("true")){
+                            boolResult = String.valueOf(bool.get());
+                        }
                     }
+                    return Boolean.parseBoolean(boolResult);
+                } catch (InstantiationException e) {
+                    throw new RuntimeException(e);
+                } catch (IllegalAccessException e) {
+                    throw new RuntimeException(e);
                 }
-                if (actor != null) {
-                    Optional<Boolean> check = EntityCondition.check(condition, p, actor, powerfile);
-                    if (check.isPresent()) {
-                        return check.get();
-                    }
-                }
-                if (actor != null && target != null) {
-                    Optional<Boolean> check = BiEntityCondition.check(condition, p, actor, target, powerfile);
-                    if (check.isPresent()) {
-                        return check.get();
-                    }
-                }
-                if (block != null) {
-                    Optional<Boolean> check = BlockCondition.check(condition, p, block, powerfile);
-                    if (check.isPresent()) {
-                        return check.get();
-                    }
-                    Optional<Boolean> checkB = BiomeCondition.check(condition, p, block, powerfile);
-                    if (checkB.isPresent()) {
-                        return check.get();
-                    }
-                }
-                if (fluid != null) {
-                    Optional<Boolean> check = FluidCondition.check(condition, p, fluid, powerfile);
-                    if (check.isPresent()) {
-                        return check.get();
-                    }
-                }
-                if (itemStack != null) {
-                    Optional<Boolean> check = ItemCondition.check(condition, p, itemStack, powerfile);
-                    if (check.isPresent()) {
-                        return check.get();
-                    }
-                }
-                return false;
             }
-            return FluidCondition.check(condition, p, fluid, powerfile).isEmpty() && ItemCondition.check(condition, p, itemStack, powerfile).isEmpty() && BlockCondition.check(condition, p, block, powerfile).isEmpty() && BiomeCondition.check(condition, p, block, powerfile).isEmpty() && BiEntityCondition.check(condition, p, actor, target, powerfile).isEmpty() && DamageCondition.check(condition, p, dmgevent, powerfile).isEmpty() && EntityCondition.check(condition, p, actor, powerfile).isEmpty();
         }
         return false;
     }

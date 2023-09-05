@@ -13,6 +13,7 @@ import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class ActionOnBeingUsed extends CraftPower implements Listener {
 
@@ -25,19 +26,20 @@ public class ActionOnBeingUsed extends CraftPower implements Listener {
         if (!getPowerArray().contains(target)) return;
 
         for (OriginContainer origin : OriginPlayer.getOrigin(player).values()) {
-            PowerContainer power = origin.getPowerFileFromType("origins:action_on_being_used");
-            if (power == null) continue;
+                PowerContainer power = origin.getPowerFileFromType("origins:action_on_being_used");
+                if (power == null) continue;
 
-            if (!getPowerArray().contains(e.getPlayer())) return;
-            setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
-            ActionTypes.biEntityActionType(actor, target, power.getBiEntityAction());
-            new BukkitRunnable() {
-                @Override
-                public void run() {
-                    if (!getPowerArray().contains(e.getPlayer())) return;
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
-                }
-            }.runTaskLater(GenesisMC.getPlugin(), 2L);
+                if (!getPowerArray().contains(e.getPlayer())) return;
+                setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
+                ActionTypes.biEntityActionType(actor, target, power.getBiEntityAction());
+                new BukkitRunnable() {
+                    @Override
+                    public void run() {
+                        if (!getPowerArray().contains(e.getPlayer())) return;
+                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
+                    }
+                }.runTaskLater(GenesisMC.getPlugin(), 2L);
+
         }
 
 //        if (e.getHand() == EquipmentSlot.HAND) System.out.println("main");

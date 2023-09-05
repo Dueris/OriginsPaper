@@ -89,7 +89,7 @@ public class Launch extends CraftPower implements Listener {
                                                     //power is active
                                                     //dont change any other settings in this other than the powertype and the "retain_state"
                                                     int speed = Integer.parseInt(origin.getPowerFileFromType("origins:launch").get("speed", null));
-                                                    CooldownStuff.addCooldown(p, origin.getPowerFileFromType(getPowerFile()).getTag(), cooldown, key);
+                                                    CooldownStuff.addCooldown(p, origin.getPowerFileFromType(getPowerFile()).getTag(), origin.getPowerFileFromType(getPowerFile()).getName(), cooldown, key);
                                                     p.setVelocity(new Vector(p.getVelocity().getX(), p.getVelocity().getY() + speed, p.getVelocity().getZ()));
                                                     if (origin.getPowerFileFromType(getPowerFile()) == null) {
                                                         getPowerArray().remove(p);

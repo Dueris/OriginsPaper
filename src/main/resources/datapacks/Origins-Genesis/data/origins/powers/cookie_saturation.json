@@ -11,6 +11,11 @@
     "operation": "set_total",
     "value": 8
   },
+  "food_modifier": {
+    "name": "Increased food points",
+    "operation": "set_total",
+    "value": 8
+  },
   "name": "COOKIES",
   "description": "Cookies give the same saturation as steak"
 }
