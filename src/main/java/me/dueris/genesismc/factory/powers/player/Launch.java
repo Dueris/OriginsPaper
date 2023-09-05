@@ -50,7 +50,6 @@ public class Launch extends CraftPower implements Listener {
                                     String key = (String) origin.getPowerFileFromType("origins:launch").getKey().get("key");
                                     if (!CooldownStuff.isPlayerInCooldown(p, key)) {
                                         KeybindHandler.runKeyChangeTrigger(KeybindHandler.getTriggerFromOriginKey(p, key));
-
                                         final boolean[] thing = new boolean[1];
                                         new BukkitRunnable() {
                                             @Override
@@ -64,11 +63,6 @@ public class Launch extends CraftPower implements Listener {
                                                         met.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "contin"), PersistentDataType.BOOLEAN, false);
                                                         KeybindHandler.getKeybindItem(key, p.getInventory()).setItemMeta(met);
                                                         thing[0] = true;
-                                                        if (origin.getPowerFileFromType(getPowerFile()) == null) {
-                                                            getPowerArray().remove(p);
-                                                            return;
-                                                        }
-                                                        if (!getPowerArray().contains(p)) return;
                                                         setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                                                         this.cancel();
                                                     } else {
@@ -76,30 +70,16 @@ public class Launch extends CraftPower implements Listener {
                                                         ItemMeta met = KeybindHandler.getKeybindItem(key, p.getInventory()).getItemMeta();
                                                         met.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "contin"), PersistentDataType.BOOLEAN, true);
                                                         KeybindHandler.getKeybindItem(key, p.getInventory()).setItemMeta(met);
-                                                        if (origin.getPowerFileFromType(getPowerFile()) == null) {
-                                                            getPowerArray().remove(p);
-                                                            return;
-                                                        }
-                                                        if (!getPowerArray().contains(p)) return;
-                                                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                                                     }
                                                 }
-                                                if (in_continuous.contains(p)) {
                                                     //run code here for things that happen when toggled
                                                     //power is active
                                                     //dont change any other settings in this other than the powertype and the "retain_state"
                                                     int speed = Integer.parseInt(origin.getPowerFileFromType("origins:launch").get("speed", null));
-                                                    CooldownStuff.addCooldown(p, origin.getPowerFileFromType(getPowerFile()).getTag(), origin.getPowerFileFromType(getPowerFile()).getName(), cooldown, key);
-                                                    p.setVelocity(new Vector(p.getVelocity().getX(), p.getVelocity().getY() + speed, p.getVelocity().getZ()));
-                                                    if (origin.getPowerFileFromType(getPowerFile()) == null) {
-                                                        getPowerArray().remove(p);
-                                                        return;
-                                                    }
-                                                    if (!getPowerArray().contains(p)) return;
+                                                    CooldownStuff.addCooldown(p, origin, origin.getPowerFileFromType(getPowerFile()).getTag(), origin.getPowerFileFromType(getPowerFile()).getType(), cooldown, key);
                                                     setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
-                                                } else {
-                                                    this.cancel();
-                                                }
+                                                    p.setVelocity(new Vector(p.getVelocity().getX(), speed, p.getVelocity().getZ()));
+                                                this.cancel();
                                             }
                                         }.runTaskTimer(GenesisMC.getPlugin(), 1L, 1L);
 

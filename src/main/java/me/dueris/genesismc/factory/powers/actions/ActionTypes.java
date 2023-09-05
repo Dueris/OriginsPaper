@@ -306,7 +306,7 @@ public class ActionTypes {
                                         key = "key.attack";
                                     }
                                 }
-                                CooldownStuff.addCooldown(player, powerContainer.getTag(), powerContainer.getName(), Integer.parseInt(powerContainer.get("cooldown")), key);
+                                CooldownStuff.addCooldown(player, origin, powerContainer.getTag(), powerContainer.getType(), Integer.parseInt(powerContainer.get("cooldown")), key);
                             }
                         }
                     }

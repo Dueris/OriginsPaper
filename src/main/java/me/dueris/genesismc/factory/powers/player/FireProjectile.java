@@ -39,6 +39,7 @@ public class FireProjectile extends CraftPower implements Listener {
             public void run() {
                 in_cooldown_patch.remove(p);
                 p.sendMessage("2");
+                p.sendMessage(String.valueOf(in_cooldown_patch.contains(p)));
             }
         }.runTaskLater(GenesisMC.getPlugin(), 5);
     }
@@ -134,7 +135,7 @@ public class FireProjectile extends CraftPower implements Listener {
                                                             if (shotsLeft >= 0) {
                                                                 if (origin.getPowerFileFromType("origins:fire_projectile").getKey().get("continuous").toString().equalsIgnoreCase("false")) {
                                                                     KeybindHandler.runKeyChangeTriggerReturn(KeybindHandler.getTriggerFromOriginKey(p, key), p, key);
-                                                                    CooldownStuff.addCooldown(p, origin.getPowerFileFromType(getPowerFile()).getTag(), origin.getPowerFileFromType(getPowerFile()).getName(), cooldown * 2, key);
+                                                                    CooldownStuff.addCooldown(p, origin, origin.getPowerFileFromType(getPowerFile()).getTag(), origin.getPowerFileFromType(getPowerFile()).getType(), cooldown * 2, key);
                                                                     addCooldownPatch(p);
                                                                     peopladf.remove(p);
                                                                     ItemMeta met = KeybindHandler.getKeybindItem(key, p.getInventory()).getItemMeta();
@@ -152,7 +153,7 @@ public class FireProjectile extends CraftPower implements Listener {
                                                                 } else {
                                                                     if (!in_continuous.contains(p)) {
                                                                         KeybindHandler.runKeyChangeTriggerReturn(KeybindHandler.getTriggerFromOriginKey(p, key), p, key);
-                                                                        CooldownStuff.addCooldown(p, origin.getPowerFileFromType(getPowerFile()).getTag(), origin.getPowerFileFromType(getPowerFile()).getName(), cooldown * 2, key);
+                                                                        CooldownStuff.addCooldown(p, origin, origin.getPowerFileFromType(getPowerFile()).getTag(), origin.getPowerFileFromType(getPowerFile()).getType(), cooldown * 2, key);
                                                                         addCooldownPatch(p);
                                                                         peopladf.remove(p);
                                                                         ItemMeta met = KeybindHandler.getKeybindItem(key, p.getInventory()).getItemMeta();

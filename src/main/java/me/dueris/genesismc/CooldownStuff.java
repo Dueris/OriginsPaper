@@ -2,6 +2,7 @@ package me.dueris.genesismc;
 
 import io.papermc.paper.threadedregions.scheduler.GlobalRegionScheduler;
 import me.dueris.genesismc.events.OriginChangeEvent;
+import me.dueris.genesismc.utils.OriginContainer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import org.bukkit.Bukkit;
@@ -35,12 +36,11 @@ public class CooldownStuff implements @NotNull Listener {
     public static HashMap<Player, String> cooldowns = new HashMap<>();
     public static HashMap<Player, BossBar> cooldownBars = new HashMap<>();
 
-    public static void addCooldown(Player player, String title, String dont_use, int cooldownTicks, String cooldownKeybindType) {
-        if(!in_cooldown_patch.contains(player)) return;
+    public static void addCooldown(Player player, OriginContainer origin, String title, String dont_use, int cooldownTicks, String cooldownKeybindType) {
+        if(!in_cooldown_patch.contains(player) && dont_use.equals("origins:fire_projectile")) return;
         if (isPlayerInCooldown(player, cooldownKeybindType)) {
             resetCooldown(player, cooldownKeybindType);
         }
-
         BossBar bar = createCooldownBar(player, BarColor.WHITE, getCooldownPegAMT(cooldownTicks), title);
         bar.addPlayer(player);
         startTickingCooldown(bar, player, cooldownTicks, cooldownKeybindType);
