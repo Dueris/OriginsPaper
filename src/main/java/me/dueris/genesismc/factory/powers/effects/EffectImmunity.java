@@ -13,12 +13,12 @@ import org.bukkit.potion.PotionEffectType;
 import java.util.ArrayList;
 import java.util.List;
 
+import static me.dueris.genesismc.factory.powers.effects.StackingStatusEffect.getPotionEffectType;
+
 public class EffectImmunity extends CraftPower {
 
-    Player p;
-
     public EffectImmunity(){
-        this.p = p;
+
     }
 
     @Override
@@ -27,36 +27,11 @@ public class EffectImmunity extends CraftPower {
             for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
                 ConditionExecutor conditionExecutor = new ConditionExecutor();
                 if (conditionExecutor.check("condition", "conditions", p, origin, getPowerFile(), p, null, null, null, p.getItemInHand(), null)) {
-                    if (origin.getPowerFileFromType(getPowerFile()) == null) {
-                        getPowerArray().remove(p);
-                        return;
-                    }
-                    if (!getPowerArray().contains(p)) return;
                     setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
-                    if (origin.getPowerFileFromType("origins:effect_immunity").getEffect() != null) {
-                        PotionEffectType effectType = PotionEffectType.getByName(origin.getPowerFileFromType("origins:effect_immunity").getEffect());
-                        if (origin.getPowerFileFromType("origins:effect_immunity").isInverted()) {
-                            if (effectType != null) {
-                                if (p.hasPotionEffect(effectType)) {
-                                    p.removePotionEffect(effectType);
-                                }
-                            } else {
-                                Bukkit.getLogger().warning(LangConfig.getLocalizedString(p, "powers.errors.effectImmunity"));
-                            }
-                        } else {
-                            if (effectType != null) {
-                                if (!p.hasPotionEffect(effectType)) {
-                                    p.addPotionEffect(new PotionEffect(effectType, 25, 1));
-                                }
-                            } else {
-                                Bukkit.getLogger().warning(LangConfig.getLocalizedString(p, "powers.errors.effectImmunity"));
-                            }
-                        }
-
-                    } else if (origin.getPowerFileFromType("origins:effect_immunity").getEffects() != null) {
+                    if (!origin.getPowerFileFromType("origins:effect_immunity").getEffects().isEmpty()) {
                         List<String> effectStrings = origin.getPowerFileFromType("origins:effect_immunity").getEffects();
                         for (String effectString : effectStrings) {
-                            PotionEffectType effectType = PotionEffectType.getByName(effectString);
+                            PotionEffectType effectType = getPotionEffectType(effectString);
                             if (effectType != null) {
                                 if (p.hasPotionEffect(effectType)) {
                                     p.removePotionEffect(effectType);
@@ -67,11 +42,6 @@ public class EffectImmunity extends CraftPower {
                         Bukkit.getLogger().warning(LangConfig.getLocalizedString(p, "powers.errors.effectImmunity"));
                     }
                 } else {
-                    if (origin.getPowerFileFromType(getPowerFile()) == null) {
-                        getPowerArray().remove(p);
-                        return;
-                    }
-                    if (!getPowerArray().contains(p)) return;
                     setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                 }
             }
