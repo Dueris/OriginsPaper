@@ -53,6 +53,8 @@ import java.util.EnumSet;
 import java.util.HashMap;
 
 import static me.dueris.genesismc.PlayerHandler.ReapplyEntityReachPowers;
+import static me.dueris.genesismc.factory.powers.simple.MimicWarden.getParticleTasks;
+import static me.dueris.genesismc.factory.powers.simple.MimicWarden.mimicWardenPlayers;
 import static me.dueris.genesismc.utils.BukkitColour.*;
 
 public final class GenesisMC extends JavaPlugin implements Listener {
@@ -332,6 +334,21 @@ public final class GenesisMC extends JavaPlugin implements Listener {
             OriginPlayer.assignPowers(p);
             if (p.isOp())
                 p.sendMessage(Component.text(LangConfig.getLocalizedString(Bukkit.getConsoleSender(), "reloadMessage")).color(TextColor.fromHexString(AQUA)));
+            boolean hasMimicWardenPower = false;
+
+            for(OriginContainer origin : OriginPlayer.getOrigin(p).values()){
+                    for (PowerContainer power : origin.getPowerContainers()) {
+                        if (power.getTag().equals("origins:mimic_warden")) {
+                            hasMimicWardenPower = true;
+                            break;
+                        }
+                    }
+            }
+            if (hasMimicWardenPower && !mimicWardenPlayers.contains(p)) {
+                mimicWardenPlayers.add(p);
+            } else if (!hasMimicWardenPower && mimicWardenPlayers.contains(p)) {
+                mimicWardenPlayers.remove(p);
+            }
         }
     }
 
@@ -352,6 +369,11 @@ public final class GenesisMC extends JavaPlugin implements Listener {
     @Override
     public void onDisable() {
         CraftApoli.unloadData();
+
+        for (int taskId : getParticleTasks().values()) {
+            getServer().getScheduler().cancelTask(taskId);
+        }
+
         for (Player p : Bukkit.getOnlinePlayers()) {
             p.getScoreboard().getTeam("origin-players").removeEntity(p);
             Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), "skin clear " + p.getName());
