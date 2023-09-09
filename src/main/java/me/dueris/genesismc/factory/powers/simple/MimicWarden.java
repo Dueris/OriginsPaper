@@ -94,7 +94,7 @@ public class MimicWarden extends CraftPower implements OriginSimple, Listener {
         Player p = e.getPlayer();
         if (mimicWardenPlayers.contains(p)) {
             for(OriginContainer origin : OriginPlayer.getOrigin(p).values()){
-//                if(CooldownStuff.isPlayerInCooldown(p, "key.origins.primary_active")) return;
+                if(CooldownStuff.isPlayerInCooldown(p, "key.origins.primary_active")) return;
                 if (e.getKey().equals("key.origins.primary_active")) {
                     Location eyeLoc = p.getEyeLocation();
 
