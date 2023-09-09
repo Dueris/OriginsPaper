@@ -20,5 +20,6 @@
     "duration": 5
   },
   "name": "Bloom",
-  "description": "You gain regeneration when near flowers"
+  "description": "You gain regeneration when near flowers",
+  "hidden": false
 }

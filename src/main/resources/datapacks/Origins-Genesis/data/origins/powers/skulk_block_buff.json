@@ -20,5 +20,6 @@
     "duration": 10
   },
   "name": "Amongst Your People",
-  "description": "You get buffs while near sculk blocks"
+  "description": "You get buffs while near sculk blocks",
+  "hidden": false
 }

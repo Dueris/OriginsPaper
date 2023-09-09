@@ -5,5 +5,8 @@
     "green": 0.75,
     "blue": 0.25,
     "alpha": 0
-  }
+  },
+  "name": "Slimy Skin",
+  "description": "You have the green skin of a slime",
+  "hidden": false
 }

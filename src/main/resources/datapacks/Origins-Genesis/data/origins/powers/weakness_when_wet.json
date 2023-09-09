@@ -21,5 +21,6 @@
         "type": "origins:in_rain"
       }
     ]
-  }
+  },
+  "hidden": true
 }

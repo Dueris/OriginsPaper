@@ -20,5 +20,6 @@
   },
   "name": "Light the Fuse",
   "description": "Upon catching fire, you explode.",
-  "interval": 4
+  "interval": 4,
+  "hidden": true
 }

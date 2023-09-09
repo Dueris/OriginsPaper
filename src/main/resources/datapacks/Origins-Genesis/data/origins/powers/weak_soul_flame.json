@@ -25,5 +25,6 @@
     "shape": "cube",
     "comparison": ">=",
     "compare_to": 4
-  }
+  },
+  "hidden": true
 }

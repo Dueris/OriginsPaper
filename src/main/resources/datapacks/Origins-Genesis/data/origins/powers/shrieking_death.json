@@ -6,5 +6,6 @@
       "type": "origins:add_block",
       "block": "minecraft:sculk_catalyst"
     }
-  }
+  },
+  "hidden": true
 }

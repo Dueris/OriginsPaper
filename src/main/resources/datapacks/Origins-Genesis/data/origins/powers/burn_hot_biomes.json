@@ -9,5 +9,6 @@
     }
   },
   "interval": 20,
-  "burn_duration": 6
+  "burn_duration": 6,
+  "hidden": true
 }
