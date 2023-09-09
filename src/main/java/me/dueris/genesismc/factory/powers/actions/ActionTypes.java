@@ -3,6 +3,7 @@ package me.dueris.genesismc.factory.powers.actions;
 import com.google.gson.JsonObject;
 import me.dueris.genesismc.CooldownStuff;
 import me.dueris.genesismc.GenesisMC;
+import me.dueris.genesismc.OriginCommandSender;
 import me.dueris.genesismc.entity.OriginPlayer;
 import me.dueris.genesismc.factory.powers.Toggle;
 import me.dueris.genesismc.utils.OriginContainer;
@@ -222,7 +223,7 @@ public class ActionTypes {
             }
         }
         if (type.equals("origins:execute_command")) {
-            Bukkit.dispatchCommand(entity, power.get("command").toString());
+            Bukkit.dispatchCommand(new OriginCommandSender(), power.get("command").toString());
         }
         if (type.equals("origins:add_xp")) {
             int points = 0;
