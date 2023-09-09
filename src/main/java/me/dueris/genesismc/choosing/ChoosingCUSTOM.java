@@ -237,9 +237,9 @@ public class ChoosingCUSTOM implements Listener {
                     public void run() {
                         if (modify_world_spawn.contains(p)) {
                             ModifyPlayerSpawnPower modifyPlayerSpawnPower = new ModifyPlayerSpawnPower();
-                            if (origin.getPowerFileFromType("origins:modify_player_spawn").get("dimension", null).equals("minecraft:nether")) {
+                            if (origin.getPowerFileFromType("origins:modify_player_spawn").get("dimension", null).equals("the_nether")) {
                                 p.teleportAsync(modifyPlayerSpawnPower.NetherSpawn(origin.getPowerFileFromType("origins:modify_player_spawn").get("spawn_strategy", "default")));
-                            } else if (origin.getPowerFileFromType("origins:modify_player_spawn").get("dimension", null).equals("minecraft:the_end")) {
+                            } else if (origin.getPowerFileFromType("origins:modify_player_spawn").get("dimension", null).equals("the_end")) {
                                 p.teleportAsync(modifyPlayerSpawnPower.EndSpawn(origin.getPowerFileFromType("origins:modify_player_spawn").get("spawn_strategy", "default")));
                             } else {
                                 p.teleportAsync(modifyPlayerSpawnPower.OverworldSpawn(origin.getPowerFileFromType("origins:modify_player_spawn").get("spawn_strategy", "default")));
