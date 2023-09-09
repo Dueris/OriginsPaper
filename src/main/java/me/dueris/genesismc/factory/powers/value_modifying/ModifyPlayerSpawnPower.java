@@ -15,6 +15,7 @@ import org.spigotmc.event.player.PlayerSpawnLocationEvent;
 import java.util.ArrayList;
 
 import static me.dueris.genesismc.factory.powers.value_modifying.ValueModifyingSuperClass.modify_world_spawn;
+import static org.bukkit.Material.BEDROCK;
 import static org.bukkit.Material.OBSIDIAN;
 
 public class ModifyPlayerSpawnPower extends CraftPower implements Listener {
@@ -46,7 +47,7 @@ public class ModifyPlayerSpawnPower extends CraftPower implements Listener {
                     String dimension = origin.getPowerFileFromType("origins:modify_player_spawn").get("dimension", null);
                     Location spawnLocation;
 
-                    if ("nether".equals(dimension)) {
+                    if ("the_nether".equals(dimension)) {
                         spawnLocation = NetherSpawn(origin.getPowerFileFromType("origins:modify_player_spawn").get("spawn_strategy", "default"));
                     } else if ("the_end".equals(dimension)) {
                         spawnLocation = EndSpawn(origin.getPowerFileFromType("origins:modify_player_spawn").get("spawn_strategy", "default"));
@@ -100,9 +101,10 @@ public class ModifyPlayerSpawnPower extends CraftPower implements Listener {
                         return null;
                     }
                 } else if ("center".equals(spawn_strategy)) {
-                    Location spawnLocation = new Location(world, 0, 0, 0);
-                    for (int y = 255; y >= 0; y--) {
-                        spawnLocation.setY(y);
+                    int searchHeight = 4;
+
+                    for (int y = searchHeight; y >= 0; y++) {
+                        Location spawnLocation = new Location(world, 0, y, 0);
                         Block block = spawnLocation.getBlock();
 
                         if (block.getType() != Material.BEDROCK && block.getType().isSolid()) {
@@ -110,11 +112,8 @@ public class ModifyPlayerSpawnPower extends CraftPower implements Listener {
                         }
                     }
 
-                    Location platformLocation = new Location(world, 0, 70, 0);
-                    createSpawnPlatform(platformLocation);
-                    return platformLocation.clone().add(0.5, 1, 0.5);
-
-                } else if ("closest_available".equals(spawn_strategy)) {
+                    return world.getSpawnLocation().clone().add(0.5, 1, 0.5);
+                }else if ("closest_available".equals(spawn_strategy)) {
                     int centerX = 0;
                     int centerY = 70;
                     int centerZ = 0;
