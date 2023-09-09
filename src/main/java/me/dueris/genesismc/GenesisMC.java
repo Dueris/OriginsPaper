@@ -21,6 +21,7 @@ import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.conditions.Condition;
 import me.dueris.genesismc.factory.conditions.CraftCondition;
 import me.dueris.genesismc.factory.powers.CraftPower;
+import me.dueris.genesismc.factory.powers.block.WaterBreathe;
 import me.dueris.genesismc.factory.powers.player.PlayerRender;
 import me.dueris.genesismc.factory.powers.player.inventory.Inventory;
 import me.dueris.genesismc.factory.powers.simple.MimicWarden;
@@ -304,6 +305,14 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 
         FoliaOriginScheduler.OriginSchedulerTree tree = new FoliaOriginScheduler.OriginSchedulerTree();
         tree.runTaskTimer(GenesisMC.getPlugin(), 0, 1);
+
+        WaterBreathe waterBreathe = new WaterBreathe();
+        new BukkitRunnable(){
+            @Override
+            public void run() {
+                waterBreathe.run();
+            }
+        }.runTaskTimer(GenesisMC.getPlugin(), 0, 20);
 
         if(Bukkit.getServer().getPluginManager().isPluginEnabled("SkinsRestorer")){
             GlobalRegionScheduler globalRegionScheduler = Bukkit.getGlobalRegionScheduler();

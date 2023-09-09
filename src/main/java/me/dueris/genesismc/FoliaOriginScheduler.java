@@ -15,6 +15,7 @@ import me.dueris.genesismc.factory.powers.player.Gravity;
 import me.dueris.genesismc.factory.powers.player.Invisibility;
 import me.dueris.genesismc.factory.powers.player.RestrictArmor;
 import me.dueris.genesismc.factory.powers.player.damage.Burn;
+import me.dueris.genesismc.factory.powers.player.damage.DamageOverTime;
 import me.dueris.genesismc.factory.powers.simple.MimicWarden;
 import me.dueris.genesismc.factory.powers.simple.OriginSimple;
 import me.dueris.genesismc.files.GenesisDataFiles;
@@ -109,6 +110,8 @@ public class FoliaOriginScheduler {
                             ((ActionOverTime) c.newInstance()).run(p, ticksEMap);
                         } else if (c.newInstance() instanceof RestrictArmor){
                             ((RestrictArmor) c.newInstance()).run(p, ticksEMap);
+                        } else if (c.newInstance() instanceof DamageOverTime){
+                            ((DamageOverTime) c.newInstance()).run(p, ticksEMap);
                         } else {
                              c.newInstance().run(p);
                         }

@@ -196,6 +196,19 @@ public class EntityCondition implements Condition {
                 }
             }
 
+            if (type.equalsIgnoreCase("origins:sprinting")){
+                return getResult(inverted, p.isSprinting());
+            }
+
+            if (type.equalsIgnoreCase("origins:food_level")){
+                String comparison = condition.get("comparison").toString();
+                int compare_to = Integer.parseInt(condition.get("compare_to").toString());
+                if(RestrictArmor.compareValues(p.getFoodLevel(), comparison, compare_to)){
+                    p.sendMessage("true");
+                    return getResult(inverted, true);
+                }
+            }
+
             if (type.equalsIgnoreCase("origins:air")) {
                 if (entity instanceof Player player) {
                     if (compareValues(player.getRemainingAir(), condition.get("comparison").toString(), Integer.parseInt(condition.get("compare_to").toString()))) {
@@ -266,6 +279,21 @@ public class EntityCondition implements Condition {
 
             }
 
+            if (type.equalsIgnoreCase("origins:weather_check")){
+                boolean thunder = (boolean) condition.getOrDefault("thundering", false);
+                boolean rain = (boolean) condition.getOrDefault("raining", false);
+                boolean clear = (boolean) condition.getOrDefault("clear", false);
+                if(thunder){
+                    return getResult(inverted, p.getWorld().isThundering());
+                }
+                if(rain){
+                    return getResult(inverted, p.getWorld().getClearWeatherDuration() == 0);
+                }
+                if(clear){
+                    return getResult(inverted, p.getWorld().getClearWeatherDuration() > 0);
+                }
+            }
+
             if (type.equalsIgnoreCase("origins:brightness")) {
                 String comparison = condition.get("comparison").toString();
                 double compare_to = Double.parseDouble(condition.get("compare_to").toString());
@@ -274,17 +302,29 @@ public class EntityCondition implements Condition {
                 int ambientLight = 0;
 
                 //calculate ambient light
-                if (entity.getWorld() == Bukkit.getServer().getWorlds().get(0)) { //is overworld
+                if (entity.getWorld() == Bukkit.getServer().getWorlds().get(0)) {
                     ambientLight = 0;
                 } else if (entity.getWorld() == Bukkit.getServer().getWorlds().get(2)) {
                     ambientLight = 1;
                 }
                 brightness = ambientLight + (1 - ambientLight) * lightLevel / (60 - 3 * lightLevel);
+                p.sendMessage(String.valueOf(lightLevel));
                 if (compareValues(brightness, comparison, compare_to)) {
                     return getResult(inverted, true);
                 }
 
             }
+
+        if (type.equalsIgnoreCase("origins:light_level")) {
+            String comparison = condition.get("comparison").toString();
+            double compare_to = Double.parseDouble(condition.get("compare_to").toString());
+            int lightLevel = entity.getLocation().getBlock().getLightLevel();
+
+            if (compareValues(lightLevel, comparison, compare_to)) {
+                return getResult(inverted, true);
+            }
+
+        }
 
             if (type.equalsIgnoreCase("origins:climbing")) {
                 if (entity instanceof Player player) {
@@ -335,9 +375,9 @@ public class EntityCondition implements Condition {
             if (type.equalsIgnoreCase("origins:fluid_height")) {
                 String fluidD = condition.get("fluid").toString();
 
-                if (fluidD.equalsIgnoreCase("lava")) {
+                if (fluidD.equalsIgnoreCase("lava") || fluidD.equalsIgnoreCase("minecraft:lava")) {
                     return getResult(inverted, entity.isInLava());
-                } else if (fluidD.equalsIgnoreCase("water")) {
+                } else if (fluidD.equalsIgnoreCase("water") || fluidD.equalsIgnoreCase("minecraft:water")) {
                     return getResult(inverted, entity.isInWaterOrBubbleColumn());
                 }
             }
@@ -382,12 +422,15 @@ public class EntityCondition implements Condition {
                 }
             }
 
+            if (type.equalsIgnoreCase("origins:light_level")){
+
+            }
+
             if(type.equalsIgnoreCase("origins:submerged_in")){
                 if(condition.get("fluid").equals("minecraft:water")){
-                    p.sendMessage(String.valueOf(entity.getLocation().getBlock().getType().equals(Material.WATER)) + " waternstff");
-                    if(entity.getLocation().getBlock().getType().equals(Material.WATER)) return getResult(inverted, true);
+                    if(entity.isInWaterOrBubbleColumn()) return getResult(inverted, true);
                 }else if (condition.get("fluid").equals("minecraft:lava")) {
-                    if(entity.getLocation().getBlock().getType().equals(Material.LAVA)) return getResult(inverted, true);
+                    if(entity.isInLava()) return getResult(inverted, true);
                 }
             }
 

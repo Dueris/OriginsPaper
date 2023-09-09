@@ -12,6 +12,7 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Random;
 
 public class DamageOverTime extends CraftPower {
@@ -40,21 +41,23 @@ public class DamageOverTime extends CraftPower {
         }
     }
 
-    Player p;
-
-    @Override
-    public void run(Player p) {
-        if (damage_over_time.contains(p)) {
+    public void run(Player p, HashMap<Player, Integer> ticksEMap) {
+        ticksEMap.putIfAbsent(p, 0);
+        if (getPowerArray().contains(p)) {
             for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
                 PowerContainer power = origin.getPowerFileFromType("origins:damage_over_time");
                 if (power == null) continue;
                 if (power.getInterval() == null) {
-                    Bukkit.getLogger().warning(LangConfig.getLocalizedString(p, "powers.errors.damageOverTime"));
+                    Bukkit.getLogger().warning(LangConfig.getLocalizedString(p, "powers.errors.burn"));
                     return;
                 }
                 interval = power.getInterval();
+
+                int ticksE = ticksEMap.getOrDefault(p, 0);
                 if (ticksE < interval) {
                     ticksE++;
+
+                    ticksEMap.put(p, ticksE);
                     return;
                 } else {
                     if (p.getWorld().getDifficulty().equals(Difficulty.EASY)) {
@@ -70,11 +73,6 @@ public class DamageOverTime extends CraftPower {
                     protection_effectiveness = Double.parseDouble(origin.getPowerFileFromType("origins:damage_over_time").get("protection_effectiveness", "1"));
                     ConditionExecutor executor = new ConditionExecutor();
                     if (executor.check("condition", "conditions", p, origin, getPowerFile(), p, null, null, null, p.getItemInHand(), null)) {
-                        if (origin.getPowerFileFromType(getPowerFile()) == null) {
-                            getPowerArray().remove(p);
-                            return;
-                        }
-                        if (!getPowerArray().contains(p)) return;
                         setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
 
                         if (p.getGameMode().equals(GameMode.SURVIVAL) || p.getGameMode().equals(GameMode.ADVENTURE)) {
@@ -149,7 +147,6 @@ public class DamageOverTime extends CraftPower {
                             }
                             float basedamage = damage - helemt_modifier - chestplate_modifier - leggins_modifier - boots_modifier;
 
-
                             if (p.getHealth() >= basedamage && p.getHealth() != 0 && p.getHealth() - basedamage != 0) {
                                 p.damage(basedamage);
 
@@ -188,10 +185,36 @@ public class DamageOverTime extends CraftPower {
                         if (!getPowerArray().contains(p)) return;
                         setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                     }
-                    ticksE = 0;
+
+                    ticksEMap.put(p, 0);
                 }
             }
         }
+    }
+
+    Player p;
+
+    @Override
+    public void run(Player p) {
+//        if (damage_over_time.contains(p)) {
+//            for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
+//                PowerContainer power = origin.getPowerFileFromType("origins:damage_over_time");
+//                if (power == null) continue;
+//                if (power.getInterval() == null) {
+//                    Bukkit.getLogger().warning(LangConfig.getLocalizedString(p, "powers.errors.damageOverTime"));
+//                    return;
+//                }
+//                interval = power.getInterval();
+//                if (ticksE < interval) {
+//                    ticksE++;
+//                    return;
+//                } else {
+//
+//                    ticksE = 0;
+//                }
+//            }
+//        }
+        //removed old code to use new OriginScheduler
     }
 
     @Override

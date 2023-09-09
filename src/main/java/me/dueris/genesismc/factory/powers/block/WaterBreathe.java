@@ -62,11 +62,10 @@ public class WaterBreathe extends CraftPower {
                                 return;
                             int remainingAir = p.getRemainingAir();
                             if (remainingAir <= 5) {
-                                p.setRemainingAir(0);
+                                p.setRemainingAir(-10);
                                 outofAIR.add(p);
                             } else {
                                 p.setRemainingAir(remainingAir - 5);
-
                                 outofAIR.remove(p);
                             }
                         }
@@ -77,12 +76,9 @@ public class WaterBreathe extends CraftPower {
                         }
                     }
                 } else {
-
                     setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                 }
             }
-
-
     }
 
     @Override
@@ -95,4 +91,14 @@ public class WaterBreathe extends CraftPower {
         return water_breathing;
     }
 
+    public void run() {
+        for(Player p : Bukkit.getOnlinePlayers()){
+            if(outofAIR.contains(p)){
+                int remainingAir = p.getRemainingAir();
+                if (remainingAir <= 5) {
+                    p.damage(2);
+                }
+            }
+        }
+    }
 }

@@ -1,18 +1,13 @@
 {
   "type": "origins:stacking_status_effect",
   "condition": {
-    "type": "origins:and",
+    "type": "origins:or",
     "conditions": [
       {
         "type": "origins:exposed_to_sun"
       },
       {
-        "type": "origins:invisible",
-        "inverted": true
-      },
-      {
         "type": "origins:light_level",
-        "light_type": "block",
         "comparison": ">",
         "compare_to": 5
       }

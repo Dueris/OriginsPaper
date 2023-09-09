@@ -3,8 +3,8 @@
   "condition": {
     "type": "origins:block_in_radius",
     "block_condition": {
-      "type": "origins:in_tag",
-      "tag": "origins:skulk"
+      "type": "origins:material",
+      "tag": "origins:sculk_catalyst"
     },
     "shape": "sphere",
     "comparison": ">=",

@@ -4,7 +4,7 @@
     "type": "origins:block_action_at",
     "block_action": {
       "type": "origins:add_block",
-      "block": "minecraft:sculk_shrieker"
+      "block": "minecraft:sculk_catalyst"
     }
   }
 }
