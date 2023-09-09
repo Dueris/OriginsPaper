@@ -1,6 +1,7 @@
 package me.dueris.genesismc.factory.powers.actions;
 
 import com.google.gson.JsonObject;
+import io.papermc.paper.math.Position;
 import me.dueris.genesismc.CooldownStuff;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.OriginCommandSender;
@@ -8,22 +9,37 @@ import me.dueris.genesismc.entity.OriginPlayer;
 import me.dueris.genesismc.factory.powers.Toggle;
 import me.dueris.genesismc.utils.OriginContainer;
 import me.dueris.genesismc.utils.PowerContainer;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.block.SculkBehaviour;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.SculkCatalyst;
+import org.bukkit.block.SculkShrieker;
+import org.bukkit.block.data.BlockData;
+import org.bukkit.craftbukkit.v1_20_R1.CraftWorld;
 import org.bukkit.entity.*;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.material.MaterialData;
+import org.bukkit.metadata.MetadataValue;
+import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.plugin.Plugin;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Unmodifiable;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Random;
 
 import static me.dueris.genesismc.factory.powers.OriginMethods.statusEffectInstance;
 
@@ -434,6 +450,50 @@ public class ActionTypes {
         }
     }
 
+    public static void iterateAndChangeBlocks(World world, int centerX, int centerY, int centerZ,
+                                       Material targetMaterial1, float initialChance, float chanceDecrease,
+                                       Material targetMaterial2, float thresholdPercentage) {
+        Random random = new Random();
+
+        for (int radius = 0; radius < 20; radius++) {
+            for (int x = centerX - radius; x <= centerX + radius; x++) {
+                for (int z = centerZ - radius; z <= centerZ + radius; z++) {
+                    Block block = world.getHighestBlockAt(x, z);
+                    if (block.getType().isSolid()) {
+                        float chance = initialChance - radius * chanceDecrease;
+                        if (chance <= 0.0f) {
+                            break;
+                        }
+                        if (random.nextFloat() <= chance) {
+                            block.setType(targetMaterial1);
+                        }
+                    }
+                }
+            }
+
+            int totalBlocks = (2 * radius + 1) * (2 * radius + 1);
+            int changedBlocks = totalBlocks - world.getHighestBlockYAt(centerX, centerZ);
+
+            float percentage = (float) changedBlocks / totalBlocks;
+
+            if (percentage < thresholdPercentage) {
+                for (int x = centerX - radius; x <= centerX + radius; x++) {
+                    for (int z = centerZ - radius; z <= centerZ + radius; z++) {
+                        Block block = world.getHighestBlockAt(x, z);
+                        block.setType(targetMaterial2);
+                    }
+                }
+                for (int x = centerX - radius; x <= centerX + radius; x++) {
+                    for (int z = centerZ - radius; z <= centerZ + radius; z++) {
+                        Block block = world.getBlockAt(x, centerY + 1, z);
+                        block.setType(targetMaterial2);
+                    }
+                }
+                break;
+            }
+        }
+    }
+
     private static void runBlock(Location location, JSONObject power) {
         JSONObject blockAction = (JSONObject) power.get("block_action");
         String type = blockAction.get("type").toString();
@@ -441,7 +501,6 @@ public class ActionTypes {
         if (type.equals("origins:add_block")) {
             if (blockAction.containsKey("block")) {
                 Material block;
-                System.out.println(blockAction.get("block").toString().split(":")[1].toUpperCase());
                 block = Material.getMaterial(blockAction.get("block").toString().split(":")[1].toUpperCase());
                 if (block == null) return;
 
@@ -450,6 +509,27 @@ public class ActionTypes {
                 location.add(0d, 1d, 0d);
                 location.getWorld().getBlockAt(location).setType(block);
             }
+        }
+        if (type.equals("genesis:grow_sculk")){
+            location.getBlock().setType(Material.SCULK_CATALYST);
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    int centerX = location.getBlockX();
+                    int centerY = location.getBlockY();
+                    int centerZ = location.getBlockZ();
+                    Material sculkStage1 = Material.SCULK;
+                    float initialChance = 0.8f;
+                    float chanceDecrease = 0.05f;
+                    Material sculkStage2 = Material.SCULK_VEIN;
+                    float thresholdPercentage = 0.2f;
+
+                    World world = location.getWorld();
+
+                    iterateAndChangeBlocks(world,centerX, centerY, centerX, sculkStage1, initialChance, chanceDecrease, sculkStage2, thresholdPercentage);
+                }
+            }.runTaskLater(GenesisMC.getPlugin(), 1);
+
         }
         if (type.equals("origins:bonemeal")) {
             Block block = location.getWorld().getBlockAt(location);
