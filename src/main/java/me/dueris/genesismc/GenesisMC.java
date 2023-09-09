@@ -168,6 +168,8 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         GenesisDataFiles.loadMainConfig();
         GenesisDataFiles.loadLangConfig();
         GenesisDataFiles.setup();
+        OriginCommandSender originCommandSender = new OriginCommandSender();
+        originCommandSender.setOp(true);
         Bukkit.getServer().getConsoleSender().sendMessage("[GenesisMC] origin-thread starting asynchronously");
         try{
             BukkitUtils.CopyOriginDatapack();

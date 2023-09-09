@@ -35,19 +35,20 @@ public class ActionWhenHit extends CraftPower implements Listener {
         if (!getPowerArray().contains(target)) return;
 
         for (OriginContainer origin : OriginPlayer.getOrigin(player).values()) {
-            PowerContainer power = origin.getPowerFileFromType("origins:action_on_being_used");
-            if (power == null) continue;
+            for(PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())){
+                if (power == null) continue;
 
-            if (!getPowerArray().contains(target)) return;
-            setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
-            ActionTypes.biEntityActionType(actor, target, power.getBiEntityAction());
-            new BukkitRunnable() {
-                @Override
-                public void run() {
-                    if (!getPowerArray().contains(target)) return;
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
-                }
-            }.runTaskLater(GenesisMC.getPlugin(), 2L);
+                if (!getPowerArray().contains(target)) return;
+                setActive(power.getTag(), true);
+                ActionTypes.biEntityActionType(actor, target, power.getBiEntityAction());
+                new BukkitRunnable() {
+                    @Override
+                    public void run() {
+                        if (!getPowerArray().contains(target)) return;
+                        setActive(power.getTag(), false);
+                    }
+                }.runTaskLater(GenesisMC.getPlugin(), 2L);
+            }
         }
     }
 

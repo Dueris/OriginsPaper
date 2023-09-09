@@ -49,17 +49,17 @@ public class CooldownStuff implements @NotNull Listener {
     }
 
     private static BarStyle getCooldownPegAMT(int ticks){
-        if(ticks >= 20){
-            return BarStyle.SEGMENTED_20;
-        } else if (ticks >= 12) {
-            return BarStyle.SEGMENTED_12;
-        } else if (ticks >= 10) {
-            return BarStyle.SEGMENTED_10;
-        } else if (ticks >= 6) {
-            return BarStyle.SEGMENTED_6;
-        }else{
+//        if(ticks >= 20){
+//            return BarStyle.SEGMENTED_20;
+//        } else if (ticks >= 12) {
+//            return BarStyle.SEGMENTED_12;
+//        } else if (ticks >= 10) {
+//            return BarStyle.SEGMENTED_10;
+//        } else if (ticks >= 6) {
+//            return BarStyle.SEGMENTED_6;
+//        }else{
             return BarStyle.SOLID;
-        }
+//        }
     }
 
     public static boolean isPlayerInCooldown(Player player, String cooldownKeybindType) {
@@ -109,6 +109,8 @@ public class CooldownStuff implements @NotNull Listener {
 
                     if (ticksElapsed >= cooldownTicks) {
                         resetCooldown(player, cooldownKeybindType);
+                        bar.setProgress(0);
+                        bar.setVisible(false);
                         cancel();
                     }
                 }catch (Exception e){

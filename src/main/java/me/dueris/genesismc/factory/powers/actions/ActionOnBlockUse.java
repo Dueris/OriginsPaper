@@ -34,27 +34,28 @@ public class ActionOnBlockUse extends CraftPower implements Listener {
         if (!getPowerArray().contains(actor)) return;
 
         for (OriginContainer origin : OriginPlayer.getOrigin(actor).values()) {
-            PowerContainer power = origin.getPowerFileFromType(getPowerFile());
-            if (power == null) continue;
-            ConditionExecutor conditionExecutor = new ConditionExecutor();
-            if (conditionExecutor.check("condition", "conditions", actor, origin, getPowerFile(), actor, null, e.getClickedBlock(), null, e.getItem(), null)) {
-                if (conditionExecutor.check("entity_condition", "entity_conditions", actor, origin, getPowerFile(), actor, null, e.getClickedBlock(), null, e.getItem(), null)) {
-                    if (conditionExecutor.check("block_condition", "block_conditions", actor, origin, getPowerFile(), actor, null, e.getClickedBlock(), null, e.getItem(), null)) {
-                        if (!getPowerArray().contains(e.getPlayer())) return;
-                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
-                        ActionTypes.BlockActionType(e.getClickedBlock().getLocation(), power.getBlockAction());
-                        ActionTypes.EntityActionType(e.getPlayer(), power.getEntityAction());
-                        ActionTypes.ItemActionType(e.getPlayer().getActiveItem(), power.getItemAction());
-                        ActionTypes.ItemActionType(e.getPlayer().getActiveItem(), power.getAction("held_item_action"));
-                        ActionTypes.ItemActionType(e.getPlayer().getActiveItem(), power.getAction("result_item_action"));
-                        ActionTypes.BlockEntityType(e.getPlayer(), e.getClickedBlock().getLocation(), power.getAction("block_entity_action"));
-                        new BukkitRunnable() {
-                            @Override
-                            public void run() {
-                                if (!getPowerArray().contains(e.getPlayer())) return;
-                                setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
-                            }
-                        }.runTaskLater(GenesisMC.getPlugin(), 2L);
+            for(PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())){
+                if (power == null) continue;
+                ConditionExecutor conditionExecutor = new ConditionExecutor();
+                if (conditionExecutor.check("condition", "conditions", actor, origin, getPowerFile(), actor, null, e.getClickedBlock(), null, e.getItem(), null)) {
+                    if (conditionExecutor.check("entity_condition", "entity_conditions", actor, origin, getPowerFile(), actor, null, e.getClickedBlock(), null, e.getItem(), null)) {
+                        if (conditionExecutor.check("block_condition", "block_conditions", actor, origin, getPowerFile(), actor, null, e.getClickedBlock(), null, e.getItem(), null)) {
+                            if (!getPowerArray().contains(e.getPlayer())) return;
+                            setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
+                            ActionTypes.BlockActionType(e.getClickedBlock().getLocation(), power.getBlockAction());
+                            ActionTypes.EntityActionType(e.getPlayer(), power.getEntityAction());
+                            ActionTypes.ItemActionType(e.getPlayer().getActiveItem(), power.getItemAction());
+                            ActionTypes.ItemActionType(e.getPlayer().getActiveItem(), power.getAction("held_item_action"));
+                            ActionTypes.ItemActionType(e.getPlayer().getActiveItem(), power.getAction("result_item_action"));
+                            ActionTypes.BlockEntityType(e.getPlayer(), e.getClickedBlock().getLocation(), power.getAction("block_entity_action"));
+                            new BukkitRunnable() {
+                                @Override
+                                public void run() {
+                                    if (!getPowerArray().contains(e.getPlayer())) return;
+                                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
+                                }
+                            }.runTaskLater(GenesisMC.getPlugin(), 2L);
+                        }
                     }
                 }
             }

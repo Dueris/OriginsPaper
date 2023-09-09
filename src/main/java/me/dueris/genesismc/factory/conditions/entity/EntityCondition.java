@@ -9,6 +9,7 @@ import me.dueris.genesismc.factory.powers.player.Climbing;
 import me.dueris.genesismc.factory.powers.player.FlightElytra;
 import me.dueris.genesismc.factory.powers.player.RestrictArmor;
 import me.dueris.genesismc.utils.OriginContainer;
+import me.dueris.genesismc.utils.PowerContainer;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Biome;
@@ -409,7 +410,9 @@ public class EntityCondition implements Condition {
             }
 
             if (type.equalsIgnoreCase("origins:resource")) {
-                    return getResult(inverted, !CooldownStuff.isPlayerInCooldownFromTag(p, origin.getPowerFileFromType(powerfile).getTag()));
+                for(PowerContainer powerContainer : origin.getMultiPowerFileFromType(powerfile)){
+                    return getResult(inverted, !CooldownStuff.isPlayerInCooldownFromTag(p, powerContainer.getTag()));
+                }
             }
 
             if (type.equalsIgnoreCase("origins:fall_flying")){

@@ -5,6 +5,7 @@ import me.dueris.genesismc.entity.OriginPlayer;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.OriginContainer;
+import me.dueris.genesismc.utils.PowerContainer;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -38,16 +39,18 @@ public class TargetActionOnHit extends CraftPower implements Listener {
         for (OriginContainer origin : OriginPlayer.getOrigin(player).values()) {
             ConditionExecutor executor = new ConditionExecutor();
             if (CooldownStuff.isPlayerInCooldown((Player) target, "key.attack")) return;
-            if (executor.check("condition", "conditions", (Player) target, origin, getPowerFile(), actor, target, null, null, player.getInventory().getItemInHand(), e)) {
-                if (!getPowerArray().contains(actor)) return;
-                setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
-                ActionTypes.EntityActionType(actor, origin.getPowerFileFromType(getPowerFile()).getEntityAction());
-                if (origin.getPowerFileFromType(getPowerFile()).get("cooldown", "1") != null) {
-                    CooldownStuff.addCooldown((Player) target, origin, origin.getPowerFileFromType(getPowerFile()).getTag(), origin.getPowerFileFromType(getPowerFile()).getType(), Integer.parseInt(origin.getPowerFileFromType(getPowerFile()).get("cooldown", "1")), "key.attack");
+            for(PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())){
+                if (executor.check("condition", "conditions", (Player) target, origin, getPowerFile(), actor, target, null, null, player.getInventory().getItemInHand(), e)) {
+                    if (!getPowerArray().contains(actor)) return;
+                    setActive(power.getTag(), true);
+                    ActionTypes.EntityActionType(actor, power.getEntityAction());
+                    if (power.get("cooldown", "1") != null) {
+                        CooldownStuff.addCooldown((Player) target, origin, power.getTag(), power.getType(), Integer.parseInt(power.get("cooldown", "1")), "key.attack");
+                    }
+                } else {
+                    if (!getPowerArray().contains(target)) return;
+                    setActive(power.getTag(), false);
                 }
-            } else {
-                if (!getPowerArray().contains(target)) return;
-                setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
             }
         }
     }

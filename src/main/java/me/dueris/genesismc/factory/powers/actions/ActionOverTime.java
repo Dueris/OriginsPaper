@@ -28,29 +28,29 @@ public class ActionOverTime extends CraftPower {
 
         if (getPowerArray().contains(p)) {
             for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
-                PowerContainer power = origin.getPowerFileFromType(getPowerFile());
+                for(PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())){
+                    if (power == null) continue;
+                    if (power.getInterval() == null) {
+                        Bukkit.getLogger().warning(LangConfig.getLocalizedString(p, "powers.errors.action_over_time"));
+                        return;
+                    }
 
-                if (power == null) continue;
-                if (power.getInterval() == null) {
-                    Bukkit.getLogger().warning(LangConfig.getLocalizedString(p, "powers.errors.action_over_time"));
-                    return;
-                }
-
-                interval = power.getInterval();
-                int ticksE = ticksEMap.getOrDefault(p, 0);
+                    interval = power.getInterval();
+                    int ticksE = ticksEMap.getOrDefault(p, 0);
                     if (ticksE <= interval) {
                         ticksE++;
                         ticksEMap.put(p, ticksE);
                     } else {
                         ConditionExecutor executor = new ConditionExecutor();
                         if (executor.check("condition", "conditions", p, origin, getPowerFile(), p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
-                            setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
+                            setActive(power.getTag(), true);
                             ActionTypes.EntityActionType(p, power.getEntityAction());
                         } else {
-                            setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
+                            setActive(power.getTag(), false);
                         }
                         ticksEMap.put(p, 0);
                     }
+                }
             }
         }
     }

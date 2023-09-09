@@ -6,6 +6,7 @@ import me.dueris.genesismc.events.KeybindTriggerEvent;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.OriginContainer;
+import me.dueris.genesismc.utils.PowerContainer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -31,20 +32,23 @@ public class ActiveSelf extends CraftPower implements Listener {
         for (OriginContainer origin : OriginPlayer.getOrigin(e.getPlayer()).values()) {
             if (getPowerArray().contains(e.getPlayer())) {
                 ConditionExecutor executor = new ConditionExecutor();
-                if (CooldownStuff.isPlayerInCooldown(e.getPlayer(), e.getKey())) return;
-                if (executor.check("condition", "conditions", e.getPlayer(), origin, getPowerFile(), e.getPlayer(), null, null, null, null, null)) {
-                    if (!getPowerArray().contains(e.getPlayer())) return;
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
-                    if (isKeyBeingPressed(e.getPlayer(), origin.getPowerFileFromType(getPowerFile()).getKey().get("key").toString(), true)) {
-                        ActionTypes.EntityActionType(e.getPlayer(), origin.getPowerFileFromType(getPowerFile()).getEntityAction());
-                        if (origin.getPowerFileFromType(getPowerFile()).get("cooldown", "1") != null) {
-                            CooldownStuff.addCooldown(e.getPlayer(), origin, origin.getPowerFileFromType(getPowerFile()).getTag(), origin.getPowerFileFromType(getPowerFile()).getType(), Integer.parseInt(origin.getPowerFileFromType(getPowerFile()).get("cooldown", "1")), e.getKey());
+                for(PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
+                    if (CooldownStuff.isPlayerInCooldown(e.getPlayer(), e.getKey())) return;
+                    if (executor.check("condition", "conditions", e.getPlayer(), origin, getPowerFile(), e.getPlayer(), null, null, null, null, null)) {
+                        if (!getPowerArray().contains(e.getPlayer())) return;
+                        setActive(power.getTag(), true);
+                        if (isKeyBeingPressed(e.getPlayer(), power.getKey().get("key").toString(), true)) {
+                            ActionTypes.EntityActionType(e.getPlayer(), power.getEntityAction());
+                            if (power.get("cooldown", "1") != null) {
+                                CooldownStuff.addCooldown(e.getPlayer(), origin, power.getTag(), power.getType(), Integer.parseInt(power.get("cooldown", "1")), e.getKey());
+                            }
                         }
+                    } else {
+                        setActive(power.getTag(), false);
                     }
-                } else {
-                    if (!getPowerArray().contains(e.getPlayer())) return;
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
+
                 }
+
             }
         }
     }

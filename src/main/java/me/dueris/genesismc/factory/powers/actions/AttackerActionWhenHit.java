@@ -34,19 +34,20 @@ public class AttackerActionWhenHit extends CraftPower implements Listener {
         if (!getPowerArray().contains(actor)) return;
 
         for (OriginContainer origin : OriginPlayer.getOrigin(player).values()) {
-            PowerContainer power = origin.getPowerFileFromType(getPowerFile());
-            if (power == null) continue;
+            for(PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())){
+                if (power == null) continue;
 
-            if (!getPowerArray().contains(actor)) return;
-            setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
-            ActionTypes.biEntityActionType(actor, actor, power.getBiEntityAction());
-            new BukkitRunnable() {
-                @Override
-                public void run() {
-                    if (!getPowerArray().contains(actor)) return;
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
-                }
-            }.runTaskLater(GenesisMC.getPlugin(), 2L);
+                if (!getPowerArray().contains(actor)) return;
+                setActive(power.getTag(), true);
+                ActionTypes.biEntityActionType(actor, actor, power.getBiEntityAction());
+                new BukkitRunnable() {
+                    @Override
+                    public void run() {
+                        if (!getPowerArray().contains(actor)) return;
+                        setActive(power.getTag(), false);
+                    }
+                }.runTaskLater(GenesisMC.getPlugin(), 2L);
+            }
         }
     }
 

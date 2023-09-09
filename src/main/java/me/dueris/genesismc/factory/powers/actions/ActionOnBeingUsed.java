@@ -26,7 +26,8 @@ public class ActionOnBeingUsed extends CraftPower implements Listener {
         if (!getPowerArray().contains(target)) return;
 
         for (OriginContainer origin : OriginPlayer.getOrigin(player).values()) {
-                PowerContainer power = origin.getPowerFileFromType("origins:action_on_being_used");
+            for(PowerContainer powerContainer : origin.getMultiPowerFileFromType(getPowerFile())){
+                PowerContainer power = powerContainer;
                 if (power == null) continue;
 
                 if (!getPowerArray().contains(e.getPlayer())) return;
@@ -39,7 +40,7 @@ public class ActionOnBeingUsed extends CraftPower implements Listener {
                         setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                     }
                 }.runTaskLater(GenesisMC.getPlugin(), 2L);
-
+            }
         }
 
 //        if (e.getHand() == EquipmentSlot.HAND) System.out.println("main");

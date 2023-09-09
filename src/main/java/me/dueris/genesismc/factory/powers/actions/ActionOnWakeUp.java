@@ -3,6 +3,7 @@ package me.dueris.genesismc.factory.powers.actions;
 import me.dueris.genesismc.entity.OriginPlayer;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.OriginContainer;
+import me.dueris.genesismc.utils.PowerContainer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -26,9 +27,11 @@ public class ActionOnWakeUp extends CraftPower implements Listener {
     public void w(PlayerBedLeaveEvent e) {
         if (!getPowerArray().contains(e.getPlayer())) return;
         for (OriginContainer origin : OriginPlayer.getOrigin(e.getPlayer()).values()) {
-            setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
-            ActionTypes.EntityActionType(e.getPlayer(), origin.getPowerFileFromType(getPowerFile()).getEntityAction());
-            ActionTypes.BlockActionType(e.getBed().getLocation(), origin.getPowerFileFromType(getPowerFile()).getBlockAction());
+            for(PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())){
+                setActive(power.getTag(), true);
+                ActionTypes.EntityActionType(e.getPlayer(), power.getEntityAction());
+                ActionTypes.BlockActionType(e.getBed().getLocation(), power.getBlockAction());
+            }
         }
     }
 

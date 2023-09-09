@@ -35,22 +35,23 @@ public class ActionOnEntityUse extends CraftPower implements Listener {
         if (!getPowerArray().contains(target)) return;
 
         for (OriginContainer origin : OriginPlayer.getOrigin(player).values()) {
-            PowerContainer power = origin.getPowerFileFromType(getPowerFile());
-            if (power == null) continue;
+            for(PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())){
+                if (power == null) continue;
 
-            if (!getPowerArray().contains(e.getPlayer())) return;
-            setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
-            ActionTypes.biEntityActionType(actor, target, power.getBiEntityAction());
-            ActionTypes.ItemActionType(actor.getActiveItem(), power.getAction("held_item_action"));
-            ActionTypes.ItemActionType(actor.getActiveItem(), power.getAction("result_item_action"));
-            //todo:add conditions for it see https://origins.readthedocs.io/en/latest/types/power_types/action_on_entity_use/
-            new BukkitRunnable() {
-                @Override
-                public void run() {
-                    if (!getPowerArray().contains(e.getPlayer())) return;
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
-                }
-            }.runTaskLater(GenesisMC.getPlugin(), 2L);
+                if (!getPowerArray().contains(e.getPlayer())) return;
+                setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
+                ActionTypes.biEntityActionType(actor, target, power.getBiEntityAction());
+                ActionTypes.ItemActionType(actor.getActiveItem(), power.getAction("held_item_action"));
+                ActionTypes.ItemActionType(actor.getActiveItem(), power.getAction("result_item_action"));
+                //todo:add conditions for it see https://origins.readthedocs.io/en/latest/types/power_types/action_on_entity_use/
+                new BukkitRunnable() {
+                    @Override
+                    public void run() {
+                        if (!getPowerArray().contains(e.getPlayer())) return;
+                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
+                    }
+                }.runTaskLater(GenesisMC.getPlugin(), 2L);
+            }
         }
 
 //        if (e.getHand() == EquipmentSlot.HAND) System.out.println("main");
