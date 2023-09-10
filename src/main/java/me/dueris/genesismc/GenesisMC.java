@@ -261,7 +261,6 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         for(OriginContainer origin : CraftApoli.getOrigins()){
             for(PowerContainer powerContainer : origin.getPowerContainers()){
                 CraftApoli.getPowers().add(powerContainer);
-                Bukkit.getLogger().info(powerContainer.getTag());
             }
         }
 
