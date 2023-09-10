@@ -5,7 +5,7 @@ api-version: '1.20'
 authors: [ Dueris, Tye ]
 folia-supported: true
 description: Bringing the life and fun of the Origins mod to PaperMC
-website: https://genesismc.duckdns.org/
+website: https://ko-fi.com/dueris
 softdepend: [ SkinRestorer ]
 prefix: Origins
 commands:
@@ -15,13 +15,11 @@ commands:
     usage: /<command> <args>
     aliases:
       - o
-  shulker:
-    description: Opens the shulk inventory.
-    usage: /<command>
-    aliases:
-      - s
   power:
     permission: genesismc.origins.cmd.power
+    usage: /<command> <args>
+    aliases:
+      - p
 permissions:
   genesismc.origins.cmd.power:
     default: op

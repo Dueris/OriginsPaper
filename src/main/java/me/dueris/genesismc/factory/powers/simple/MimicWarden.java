@@ -217,10 +217,6 @@ public class MimicWarden extends CraftPower implements OriginSimple, Listener {
         return new Vector(newX, newY, newZ);
     }
 
-    private void startParticleAnimation(Player player, Location startLocation) {
-
-    }
-
     @Override
     public ArrayList<Player> getPowerArray() {
         return mimic_warden;

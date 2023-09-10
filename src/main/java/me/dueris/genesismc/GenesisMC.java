@@ -25,6 +25,7 @@ import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.factory.powers.block.WaterBreathe;
 import me.dueris.genesismc.factory.powers.player.PlayerRender;
 import me.dueris.genesismc.factory.powers.player.inventory.Inventory;
+import me.dueris.genesismc.factory.powers.simple.BounceSlimeBlock;
 import me.dueris.genesismc.factory.powers.simple.MimicWarden;
 import me.dueris.genesismc.files.GenesisDataFiles;
 import me.dueris.genesismc.generation.WaterProtBookGen;
@@ -55,6 +56,7 @@ import java.util.EnumSet;
 import java.util.HashMap;
 
 import static me.dueris.genesismc.PlayerHandler.ReapplyEntityReachPowers;
+import static me.dueris.genesismc.factory.powers.simple.BounceSlimeBlock.bouncePlayers;
 import static me.dueris.genesismc.factory.powers.simple.MimicWarden.getParticleTasks;
 import static me.dueris.genesismc.factory.powers.simple.MimicWarden.mimicWardenPlayers;
 import static me.dueris.genesismc.utils.BukkitColour.*;
@@ -270,8 +272,6 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         //Commands
         getCommand("origin").setExecutor(new GenesisCommandManager());
         getCommand("origin").setTabCompleter(new TabAutoComplete());
-        getCommand("shulker").setTabCompleter(new TabAutoComplete());
-        getCommand("shulker").setExecutor(new Inventory());
         getCommand("power").setTabCompleter(new TabAutoComplete());
 //        getCommand("power").setExecutor(new PowerCommand());
         //TODO: FINISH /POWER
@@ -289,6 +289,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         getServer().getPluginManager().registerEvents(new DataContainer(), this);
         getServer().getPluginManager().registerEvents(new GenesisItems(), this);
         getServer().getPluginManager().registerEvents(new MimicWarden(), this);
+        getServer().getPluginManager().registerEvents(new BounceSlimeBlock(), this);
         getServer().getPluginManager().registerEvents(new FoliaOriginScheduler.OriginSchedulerTree(), this);
         if (getServer().getPluginManager().isPluginEnabled("SkinsRestorer")) {
             getServer().getPluginManager().registerEvents(new PlayerRender.ModelColor(), GenesisMC.getPlugin());
@@ -369,6 +370,23 @@ public final class GenesisMC extends JavaPlugin implements Listener {
                 mimicWardenPlayers.add(p);
             } else if (!hasMimicWardenPower && mimicWardenPlayers.contains(p)) {
                 mimicWardenPlayers.remove(p);
+            }
+
+            boolean hasPower = false;
+
+            for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
+                for (String power : origin.getPowers()) {
+                    if (power.equals("origins:slime_block_bounce")) {
+                        hasPower = true;
+                        break;
+                    }
+                }
+            }
+
+            if (hasPower && !bouncePlayers.contains(p)) {
+                bouncePlayers.add(p);
+            } else if (!hasPower && bouncePlayers.contains(p)) {
+                bouncePlayers.remove(p);
             }
         }
     }

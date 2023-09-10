@@ -2,9 +2,11 @@ package me.dueris.genesismc.factory.powers.actions;
 
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.entity.OriginPlayer;
+import me.dueris.genesismc.events.PlayerHitGroundEvent;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.OriginContainer;
 import me.dueris.genesismc.utils.PowerContainer;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -35,6 +37,8 @@ public class ActionOnLand extends CraftPower implements Listener {
                 for(PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())){
                     setActive(power.getTag(), true);
                     ActionTypes.EntityActionType(e.getPlayer(), power.getEntityAction());
+                    PlayerHitGroundEvent playerHitGroundEvent = new PlayerHitGroundEvent(e.getPlayer());
+                    Bukkit.getPluginManager().callEvent(playerHitGroundEvent);
                     new BukkitRunnable() {
                         @Override
                         public void run() {
