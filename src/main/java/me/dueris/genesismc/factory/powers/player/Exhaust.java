@@ -3,9 +3,9 @@ package me.dueris.genesismc.factory.powers.player;
 import me.dueris.genesismc.entity.OriginPlayer;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.utils.translation.LangConfig;
 import me.dueris.genesismc.utils.OriginContainer;
 import me.dueris.genesismc.utils.PowerContainer;
+import me.dueris.genesismc.utils.translation.LangConfig;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -13,32 +13,31 @@ import java.util.ArrayList;
 
 public class Exhaust extends CraftPower {
 
+    private Long interval;
+    private int ticksE;
+
     @Override
-    public void setActive(String tag, Boolean bool){
-        if(powers_active.containsKey(tag)){
+    public void setActive(String tag, Boolean bool) {
+        if (powers_active.containsKey(tag)) {
             powers_active.replace(tag, bool);
-        }else{
+        } else {
             powers_active.put(tag, bool);
         }
     }
 
-    
-
-    private Long interval;
-
-    private int ticksE;
+    Player p;
 
     public Exhaust() {
+        this.p = p;
         this.interval = 1L;
         this.ticksE = 0;
     }
 
     @Override
-    public void run() {
-        for (Player p : Bukkit.getOnlinePlayers()) {
-            if (more_exhaustion.contains(p)) {
-                for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
-                    PowerContainer power = origin.getPowerFileFromType("origins:exhaust");
+    public void run(Player p) {
+        if (more_exhaustion.contains(p)) {
+            for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
+                for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
                     if (power == null) continue;
                     if (power.getInterval() == null) {
                         Bukkit.getLogger().warning(LangConfig.getLocalizedString(p, "powers.errors.exhaust"));
@@ -50,13 +49,21 @@ public class Exhaust extends CraftPower {
                         return;
                     } else {
                         ConditionExecutor conditionExecutor = new ConditionExecutor();
-                        if (conditionExecutor.check("condition", "conditions", p, origin, "origins:exhaust", null, p)) {
-                            if(!getPowerArray().contains(p)) return;
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
-                            p.setExhaustion(p.getExhaustion() - Float.parseFloat(origin.getPowerFileFromType("origins:exhaust").get("exhaustion", "1")));
-                        }else{
-                            if(!getPowerArray().contains(p)) return;
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
+                        if (conditionExecutor.check("condition", "conditions", p, power, "origins:exhaust", p, null, null, null, p.getItemInHand(), null)) {
+                            if (power == null) {
+                                getPowerArray().remove(p);
+                                return;
+                            }
+                            if (!getPowerArray().contains(p)) return;
+                            setActive(power.getTag(), true);
+                            p.setExhaustion(p.getExhaustion() - Float.parseFloat(power.get("exhaustion", "1")));
+                        } else {
+                            if (power == null) {
+                                getPowerArray().remove(p);
+                                return;
+                            }
+                            if (!getPowerArray().contains(p)) return;
+                            setActive(power.getTag(), false);
                         }
                         ticksE = 0;
                     }

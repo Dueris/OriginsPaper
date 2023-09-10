@@ -4,50 +4,63 @@ import me.dueris.genesismc.entity.OriginPlayer;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.OriginContainer;
+import me.dueris.genesismc.utils.PowerContainer;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.spigotmc.event.player.PlayerSpawnLocationEvent;
+import org.bukkit.event.player.PlayerRespawnEvent;
 
 import java.util.ArrayList;
 
 import static me.dueris.genesismc.factory.powers.value_modifying.ValueModifyingSuperClass.modify_world_spawn;
-import static org.bukkit.Material.*;
+import static org.bukkit.Material.OBSIDIAN;
 
 public class ModifyPlayerSpawnPower extends CraftPower implements Listener {
 
     @Override
-    public void setActive(String tag, Boolean bool){
-        if(powers_active.containsKey(tag)){
-            powers_active.replace(tag, bool);
-        }else{
-            powers_active.put(tag, bool);
-        }
+    public void setActive(String tag, Boolean bool) {
+        powers_active.put(tag, bool); // Simplified code
     }
 
-    
+    public ModifyPlayerSpawnPower() {
+
+    }
+
+    @Override
+    public void run(Player p) {
+
+    }
 
     @EventHandler
-    public void run(PlayerSpawnLocationEvent e){
+    public void runD(PlayerRespawnEvent e) {
         Player p = e.getPlayer();
-        if(modify_world_spawn.contains(p)){
-            for(OriginContainer origin : OriginPlayer.getOrigin(p).values()){
+        if (modify_world_spawn.contains(p)) {
+            if (e.getRespawnReason().equals(PlayerRespawnEvent.RespawnReason.END_PORTAL)) return;
+            if (e.getRespawnReason().equals(PlayerRespawnEvent.RespawnReason.PLUGIN)) return;
+            for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
                 ConditionExecutor executor = new ConditionExecutor();
-                if(executor.check("condition", "conditions", p, origin, getPowerFile(), null, p)){
-                    if(!getPowerArray().contains(p)) return;
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
-                    if(origin.getPowerFileFromType("origins:modify_player_spawn").get("dimension", null).equals("minecraft:nether")){
-                        e.setSpawnLocation(NetherSpawn(origin.getPowerFileFromType("origins:modify_player_spawn").get("spawn_strategy", "default")));
-                    } else if (origin.getPowerFileFromType("origins:modify_player_spawn").get("dimension", null).equals("minecraft:the_end")) {
-                        e.setSpawnLocation(EndSpawn(origin.getPowerFileFromType("origins:modify_player_spawn").get("spawn_strategy", "default")));
+                for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
+                    if (executor.check("condition", "conditions", p, power, getPowerFile(), p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
+                        setActive(power.getTag(), true);
+                        String dimension = power.get("dimension", null);
+                        Location spawnLocation;
+
+                        if ("the_nether".equals(dimension)) {
+                            spawnLocation = NetherSpawn(power.get("spawn_strategy", "default"));
+                        } else if ("the_end".equals(dimension)) {
+                            spawnLocation = EndSpawn(power.get("spawn_strategy", "default"));
+                        } else {
+                            spawnLocation = OverworldSpawn(power.get("spawn_strategy", "default"));
+                        }
+
+                        if (spawnLocation != null) {
+                            p.teleportAsync(spawnLocation);
+                        }
                     } else {
-                        e.setSpawnLocation(OverworldSpawn(origin.getPowerFileFromType("origins:modify_player_spawn").get("spawn_strategy", "default")));
+                        setActive(power.getTag(), false);
                     }
-                }else{
-                    if(!getPowerArray().contains(p)) return;
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                 }
             }
         }
@@ -64,7 +77,7 @@ public class ModifyPlayerSpawnPower extends CraftPower implements Listener {
     public Location NetherSpawn(String spawn_strategy) {
         for (World world : Bukkit.getWorlds()) {
             if (world.getEnvironment() == World.Environment.NETHER) {
-                if(spawn_strategy == "default") {
+                if ("default".equals(spawn_strategy)) {
                     World overworld = Bukkit.getWorlds().get(0);
                     if (overworld.getEnvironment() != World.Environment.NORMAL) {
                         return null;
@@ -88,10 +101,11 @@ public class ModifyPlayerSpawnPower extends CraftPower implements Listener {
                     } else {
                         return null;
                     }
-                } else if (spawn_strategy == "center") {
-                    Location spawnLocation = new Location(world, 0, 0, 0);
-                    for (int y = 255; y >= 0; y--) {
-                        spawnLocation.setY(y);
+                } else if ("center".equals(spawn_strategy)) {
+                    int searchHeight = 4;
+
+                    for (int y = searchHeight; y >= 0; y++) {
+                        Location spawnLocation = new Location(world, 0, y, 0);
                         Block block = spawnLocation.getBlock();
 
                         if (block.getType() != Material.BEDROCK && block.getType().isSolid()) {
@@ -99,11 +113,8 @@ public class ModifyPlayerSpawnPower extends CraftPower implements Listener {
                         }
                     }
 
-                    Location platformLocation = new Location(world, 0, 70, 0);
-                    createSpawnPlatform(platformLocation);
-                    return platformLocation.clone().add(0.5, 1, 0.5);
-
-                } else if (spawn_strategy == "closest_available") {
+                    return world.getSpawnLocation().clone().add(0.5, 1, 0.5);
+                } else if ("closest_available".equals(spawn_strategy)) {
                     int centerX = 0;
                     int centerY = 70;
                     int centerZ = 0;
@@ -147,10 +158,9 @@ public class ModifyPlayerSpawnPower extends CraftPower implements Listener {
     public Location EndSpawn(String spawn_strategy) {
         for (World world : Bukkit.getWorlds()) {
             if (world.getEnvironment() == World.Environment.THE_END) {
-                if(spawn_strategy == "default") {
-                    Location end_location_spawn = Bukkit.getWorlds().get(2).getSpawnLocation();
-                    return end_location_spawn;
-                } else if (spawn_strategy == "center") {
+                if ("default".equals(spawn_strategy)) {
+                    return Bukkit.getWorlds().get(2).getSpawnLocation();
+                } else if ("center".equals(spawn_strategy)) {
                     Location spawnLocation = new Location(world, 0, 0, 0);
                     for (int y = 255; y >= 0; y--) {
                         spawnLocation.setY(y);
@@ -165,7 +175,7 @@ public class ModifyPlayerSpawnPower extends CraftPower implements Listener {
                     createSpawnPlatform(platformLocation);
                     return platformLocation.clone().add(0.5, 1, 0.5);
 
-                } else if (spawn_strategy == "closest_available") {
+                } else if ("closest_available".equals(spawn_strategy)) {
                     int centerX = 0;
                     int centerY = 70;
                     int centerZ = 0;
@@ -209,10 +219,9 @@ public class ModifyPlayerSpawnPower extends CraftPower implements Listener {
     public Location OverworldSpawn(String spawn_strategy) {
         for (World world : Bukkit.getWorlds()) {
             if (world.getEnvironment() == World.Environment.NORMAL) {
-                if(spawn_strategy == "default") {
-                    Location overworld_location_spawn = Bukkit.getWorlds().get(0).getSpawnLocation();
-                    return overworld_location_spawn;
-                } else if (spawn_strategy == "center") {
+                if ("default".equals(spawn_strategy)) {
+                    return Bukkit.getWorlds().get(0).getSpawnLocation();
+                } else if ("center".equals(spawn_strategy)) {
                     Location spawnLocation = new Location(world, 0, 0, 0);
                     for (int y = 255; y >= 0; y--) {
                         spawnLocation.setY(y);
@@ -227,7 +236,7 @@ public class ModifyPlayerSpawnPower extends CraftPower implements Listener {
                     createSpawnPlatform(platformLocation);
                     return platformLocation.clone().add(0.5, 1, 0.5);
 
-                } else if (spawn_strategy == "closest_available") {
+                } else if ("closest_available".equals(spawn_strategy)) {
                     int centerX = 0;
                     int centerY = 70;
                     int centerZ = 0;
@@ -277,11 +286,6 @@ public class ModifyPlayerSpawnPower extends CraftPower implements Listener {
                 block.setType(OBSIDIAN);
             }
         }
-    }
-
-    @Override
-    public void run() {
-
     }
 
     @Override

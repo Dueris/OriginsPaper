@@ -2,12 +2,13 @@ package me.dueris.genesismc;
 
 import me.dueris.genesismc.entity.OriginPlayer;
 import me.dueris.genesismc.factory.CraftApoli;
+import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.factory.powers.player.attributes.AttributeHandler;
-import me.dueris.genesismc.utils.translation.LangConfig;
 import me.dueris.genesismc.utils.LayerContainer;
 import me.dueris.genesismc.utils.OriginContainer;
 import me.dueris.genesismc.utils.PowerContainer;
 import me.dueris.genesismc.utils.legacy.LegacyOriginContainer;
+import me.dueris.genesismc.utils.translation.LangConfig;
 import me.dueris.genesismc.utils.translation.Translation;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
@@ -26,8 +27,10 @@ import org.geysermc.floodgate.api.FloodgateApi;
 import org.geysermc.geyser.api.GeyserApi;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectInputStream;
+import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -43,20 +46,52 @@ public class PlayerHandler implements Listener {
 
     public static void ReapplyEntityReachPowers(Player player) {
         for (OriginContainer origin : OriginPlayer.getOrigin(player).values()) {
-            PowerContainer power = origin.getPowerFileFromType("origins:attribute");
-            if (power == null) continue;
-            for(HashMap<String, Object> modifier : origin.getPowerFileFromType("origins:attribute").getPossibleModifiers("modifier", "modifier")){
-                if (modifier.get("attribute").toString().equalsIgnoreCase("reach-entity-attributes:reach")) {
-                    extra_reach.add(player);
-                    return;
-                } else if (modifier.get("attribute").toString().equalsIgnoreCase("reach-entity-attributes:attack_range")) {
-                    extra_reach_attack.add(player);
-                    return;
-                } else {
-                    AttributeHandler.Reach.setFinalReach(player, AttributeHandler.Reach.getDefaultReach(player));
+            for (PowerContainer power : origin.getMultiPowerFileFromType("origins:attribute")) {
+                if (power == null) continue;
+                for (HashMap<String, Object> modifier : power.getPossibleModifiers("modifier", "modifier")) {
+                    if (modifier.get("attribute").toString().equalsIgnoreCase("reach-entity-attributes:reach")) {
+                        extra_reach.add(player);
+                        return;
+                    } else if (modifier.get("attribute").toString().equalsIgnoreCase("reach-entity-attributes:attack_range")) {
+                        extra_reach_attack.add(player);
+                        return;
+                    } else {
+                        AttributeHandler.Reach.setFinalReach(player, AttributeHandler.Reach.getDefaultReach(player));
+                    }
                 }
             }
         }
+    }
+
+    public static void originValidCheck(Player p) {
+        HashMap<LayerContainer, OriginContainer> origins = OriginPlayer.getOrigin(p);
+        ArrayList<LayerContainer> deletedLayers = new ArrayList<>();
+        for (LayerContainer layer : origins.keySet()) {
+            //check if the player layer exists
+            if (!CraftApoli.layerExists(layer)) {
+                deletedLayers.add(layer);
+                p.sendMessage(Component.text(LangConfig.getLocalizedString(p, "misc.layerRemoved").replace("%layerName%", layer.getName())).color(TextColor.fromHexString(RED)));
+                continue;
+            }
+            //origin check
+            if (!CraftApoli.getLayerFromTag(layer.getTag()).getOrigins().contains(origins.get(layer).getTag())) {
+                origins.replace(layer, CraftApoli.nullOrigin());
+                p.sendMessage(Component.text(LangConfig.getLocalizedString(p, "misc.originRemoved").replace("%originName", origins.get(layer).getName()).replace("%layerName%", layer.getName())).color(TextColor.fromHexString(RED)));
+            }
+        }
+
+        //check if the player has all the existing layers
+        layerLoop:
+        for (LayerContainer layer : CraftApoli.getLayers()) {
+            for (LayerContainer playerLayer : origins.keySet()) {
+                if (layer.getTag().equals(playerLayer.getTag())) continue layerLoop;
+            }
+            origins.put(layer, CraftApoli.nullOrigin());
+        }
+        p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origins"), PersistentDataType.BYTE_ARRAY, CraftApoli.toByteArray(origins));
+
+        //removes deleted layer from the players data
+        for (LayerContainer layer : deletedLayers) OriginPlayer.removeOrigin(p, layer);
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
@@ -145,6 +180,7 @@ public class PlayerHandler implements Listener {
         }
 
         originValidCheck(p);
+        if (p == null) Bukkit.getServer().getConsoleSender().sendMessage("BRPO");
         OriginPlayer.assignPowers(p);
         p.sendMessage(Component.text(LangConfig.getLocalizedString(p, "misc.joinText")).color(TextColor.fromHexString(AQUA)));
 
@@ -153,42 +189,29 @@ public class PlayerHandler implements Listener {
             public void run() {
                 ReapplyEntityReachPowers(p);
             }
-        }.runTaskTimer(GenesisMC.getPlugin(), 3, 0);
+        }.runTaskLater(GenesisMC.getPlugin(), 3);
+
+        try {
+            for (Class<? extends CraftPower> c : CraftPower.findCraftPowerClasses()) {
+                if (CraftPower.getRegistered().contains(c)) continue;
+                if (CraftPower.class.isAssignableFrom(c)) {
+                    Constructor<? extends CraftPower> constructor = c.getConstructor(Player.class);
+                    CraftPower instance = constructor.newInstance(p);
+                    CraftPower.getRegistered().add(instance.getClass());
+                    Bukkit.getLogger().info("new CraftPower registered with POWER_TYPE " + instance.getPowerFile() + " with POWER_ARRAY of " + instance.getPowerArray().toString());
+
+                    if (instance instanceof Listener || Listener.class.isAssignableFrom(instance.getClass())) {
+                        Bukkit.getServer().getPluginManager().registerEvents((Listener) instance, GenesisMC.getPlugin());
+                    }
+                }
+            }
+        } catch (IOException | ReflectiveOperationException el) {
+            throw new RuntimeException(el);
+        }
     }
 
     @EventHandler
     public void playerQuitHandler(PlayerQuitEvent e) {
         OriginPlayer.unassignPowers(e.getPlayer());
-    }
-
-    public static void originValidCheck(Player p) {
-        HashMap<LayerContainer, OriginContainer> origins = OriginPlayer.getOrigin(p);
-        ArrayList<LayerContainer> deletedLayers = new ArrayList<>();
-        for (LayerContainer layer : origins.keySet()) {
-            //check if the player layer exists
-            if (!CraftApoli.layerExists(layer)) {
-                deletedLayers.add(layer);
-                p.sendMessage(Component.text(LangConfig.getLocalizedString(p, "misc.layerRemoved").replace("%layerName%", layer.getName())).color(TextColor.fromHexString(RED)));
-                continue;
-            }
-            //origin check
-            if (!CraftApoli.getLayerFromTag(layer.getTag()).getOrigins().contains(origins.get(layer).getTag())) {
-                origins.replace(layer, CraftApoli.nullOrigin());
-                p.sendMessage(Component.text(LangConfig.getLocalizedString(p, "misc.originRemoved").replace("%originName", origins.get(layer).getName()).replace("%layerName%", layer.getName())).color(TextColor.fromHexString(RED)));
-            }
-        }
-
-        //check if the player has all the existing layers
-        layerLoop:
-        for (LayerContainer layer : CraftApoli.getLayers()) {
-            for (LayerContainer playerLayer : origins.keySet()) {
-                if (layer.getTag().equals(playerLayer.getTag())) continue layerLoop;
-            }
-            origins.put(layer, CraftApoli.nullOrigin());
-        }
-        p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origins"), PersistentDataType.BYTE_ARRAY, CraftApoli.toByteArray(origins));
-
-        //removes deleted layer from the players data
-        for (LayerContainer layer : deletedLayers) OriginPlayer.removeOrigin(p, layer);
     }
 }

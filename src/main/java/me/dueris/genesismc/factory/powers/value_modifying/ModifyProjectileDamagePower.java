@@ -5,6 +5,7 @@ import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.ErrorSystem;
 import me.dueris.genesismc.utils.OriginContainer;
+import me.dueris.genesismc.utils.PowerContainer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -20,39 +21,53 @@ import static me.dueris.genesismc.factory.powers.value_modifying.ValueModifyingS
 public class ModifyProjectileDamagePower extends CraftPower implements Listener {
 
     @Override
-    public void setActive(String tag, Boolean bool){
-        if(powers_active.containsKey(tag)){
+    public void setActive(String tag, Boolean bool) {
+        if (powers_active.containsKey(tag)) {
             powers_active.replace(tag, bool);
-        }else{
+        } else {
             powers_active.put(tag, bool);
         }
     }
 
-    
+    Player p;
+
+    public ModifyProjectileDamagePower() {
+        this.p = p;
+    }
+
+    @Override
+    public void run(Player p) {
+
+    }
 
     @EventHandler
-    public void run(EntityDamageEvent e){
-        if(e.getEntity() instanceof Player p){
-            if(modify_projectile_damage.contains(p)){
+    public void runD(EntityDamageEvent e) {
+        if (e.getEntity() instanceof Player p) {
+            if (modify_projectile_damage.contains(p)) {
                 for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
                     ValueModifyingSuperClass valueModifyingSuperClass = new ValueModifyingSuperClass();
                     try {
                         ConditionExecutor conditionExecutor = new ConditionExecutor();
-                        if (conditionExecutor.check("target_condition", "target_conditions", p, origin, "origins:modify_projectile_damage", e, e.getEntity()) && conditionExecutor.check("damage_condition", "damage_conditions", p, origin, "origins:modify_projectile_damage", e, e.getEntity())) {
-                            for(HashMap<String, Object> modifier : origin.getPowerFileFromType("origins:modify_projectile_damage").getPossibleModifiers("modifier", "modifiers")){
-                                Float value = Float.valueOf(modifier.get("value").toString());
-                                String operation = modifier.get("operation").toString();
-                                BinaryOperator mathOperator = getOperationMappingsFloat().get(operation);
-                                if (mathOperator != null) {
-                                    float result = (float) mathOperator.apply(e.getDamage(), value);
-                                    e.setDamage(result);
-                                    if(!getPowerArray().contains(p)) return;
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
+                        for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
+                            if (conditionExecutor.check("target_condition", "target_conditions", p, power, "origins:modify_projectile_damage", p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null) && conditionExecutor.check("damage_condition", "damage_conditions", p, power, "origins:modify_projectile_damage", p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
+                                for (HashMap<String, Object> modifier : power.getPossibleModifiers("modifier", "modifiers")) {
+                                    Float value = Float.valueOf(modifier.get("value").toString());
+                                    String operation = modifier.get("operation").toString();
+                                    BinaryOperator mathOperator = getOperationMappingsFloat().get(operation);
+                                    if (mathOperator != null) {
+                                        float result = (float) mathOperator.apply(e.getDamage(), value);
+                                        e.setDamage(result);
+                                        setActive(power.getTag(), true);
+                                    }
                                 }
+                            } else {
+                                if (power == null) {
+                                    getPowerArray().remove(p);
+                                    return;
+                                }
+                                if (!getPowerArray().contains(p)) return;
+                                setActive(power.getTag(), false);
                             }
-                        }else{
-                            if(!getPowerArray().contains(p)) return;
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                         }
                     } catch (Exception ev) {
                         ErrorSystem errorSystem = new ErrorSystem();
@@ -62,11 +77,6 @@ public class ModifyProjectileDamagePower extends CraftPower implements Listener 
                 }
             }
         }
-    }
-
-    @Override
-    public void run() {
-
     }
 
     @Override

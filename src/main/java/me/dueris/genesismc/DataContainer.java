@@ -5,7 +5,6 @@ import me.dueris.genesismc.utils.BukkitColour;
 import me.dueris.genesismc.utils.translation.LangConfig;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -22,7 +21,7 @@ public class DataContainer implements Listener {
 
         Player p = (Player) e.getPlayer();
 
-        if (e.getView().getTitle().startsWith("Shulker Inventory")) {
+        if (e.getView().getTitle().startsWith("Shulk Inventory")) {
 
             ArrayList<ItemStack> prunedItems = new ArrayList<>();
 
@@ -32,7 +31,7 @@ public class DataContainer implements Listener {
                     })
                     .forEach(itemStack -> prunedItems.add(itemStack));
 
-            Player target = Bukkit.getPlayer(e.getView().getTitle().split(":")[1].substring(1));
+            Player target = (Player) e.getPlayer();
             if (target == null) {
                 p.sendMessage(Component.text(LangConfig.getLocalizedString(p, "errors.inventorySaveFail").replace("%player%", e.getView().getTitle().split(":")[1].substring(1))).color(TextColor.fromHexString(BukkitColour.RED)));
                 return;

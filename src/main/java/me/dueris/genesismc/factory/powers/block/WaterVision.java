@@ -1,7 +1,6 @@
 package me.dueris.genesismc.factory.powers.block;
 
 import me.dueris.genesismc.factory.powers.CraftPower;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -13,23 +12,25 @@ import static me.dueris.genesismc.factory.powers.block.WaterBreathe.isInBreathab
 public class WaterVision extends CraftPower {
 
     @Override
-    public void setActive(String tag, Boolean bool){
-        if(powers_active.containsKey(tag)){
+    public void setActive(String tag, Boolean bool) {
+        if (powers_active.containsKey(tag)) {
             powers_active.replace(tag, bool);
-        }else{
+        } else {
             powers_active.put(tag, bool);
         }
     }
 
-    
+    Player p;
+
+    public WaterVision() {
+        this.p = p;
+    }
 
     @Override
-    public void run() {
-        for (Player p : Bukkit.getOnlinePlayers()) {
-            if (water_vision.contains(p)) {
-                if (isInBreathableWater(p)) {
-                    p.addPotionEffect(new PotionEffect(PotionEffectType.CONDUIT_POWER, 15, 3, false, false));
-                }
+    public void run(Player p) {
+        if (water_vision.contains(p)) {
+            if (isInBreathableWater(p)) {
+                p.addPotionEffect(new PotionEffect(PotionEffectType.CONDUIT_POWER, 15, 3, false, false));
             }
         }
     }

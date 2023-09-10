@@ -1,0 +1,6 @@
+{
+  "type": "origins:fire_immunity",
+  "name": "Fire Immunity",
+  "description": "You are immune to all types of fire damage",
+  "hidden": false
+}

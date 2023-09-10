@@ -4,6 +4,7 @@ import me.dueris.genesismc.entity.OriginPlayer;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.OriginContainer;
+import me.dueris.genesismc.utils.PowerContainer;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -19,17 +20,6 @@ import static org.bukkit.Material.*;
 
 public class StrongArmsBreakSpeed extends CraftPower implements Listener {
 
-    @Override
-    public void setActive(String tag, Boolean bool){
-        if(powers_active.containsKey(tag)){
-            powers_active.replace(tag, bool);
-        }else{
-            powers_active.put(tag, bool);
-        }
-    }
-
-    
-
     public static EnumSet<Material> stones;
     public static EnumSet<Material> tools;
 
@@ -44,29 +34,54 @@ public class StrongArmsBreakSpeed extends CraftPower implements Listener {
                 SHEARS);
     }
 
+    @Override
+    public void setActive(String tag, Boolean bool) {
+        if (powers_active.containsKey(tag)) {
+            powers_active.replace(tag, bool);
+        } else {
+            powers_active.put(tag, bool);
+        }
+    }
+
     @EventHandler
     public void breakBlock(PlayerInteractEvent e) {
         Player p = e.getPlayer();
         if (!strong_arms_break_speed.contains(p)) return;
-        for(OriginContainer origin : OriginPlayer.getOrigin(p).values()){
-            ConditionExecutor executor = new ConditionExecutor();
-            if(executor.check("condition", "conditions", p, origin, getPowerFile(), null, p)){
-                if(!getPowerArray().contains(p)) return;
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
-                if (e.getClickedBlock() != null && stones.contains(e.getClickedBlock().getType()) && e.getAction().isLeftClick() && !tools.contains(p.getEquipment().getItemInMainHand().getType())) {
-                    e.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.FAST_DIGGING, 60, 15, false, false, false));
-                } else if (p.getEquipment().getItemInMainHand().getType() == AIR) { //beacons exist
-                    e.getPlayer().removePotionEffect(PotionEffectType.FAST_DIGGING);
+        for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
+            for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
+                ConditionExecutor executor = new ConditionExecutor();
+                if (executor.check("condition", "conditions", p, power, getPowerFile(), p, null, e.getClickedBlock(), null, p.getItemInHand(), null)) {
+                    if (power == null) {
+                        getPowerArray().remove(p);
+                        return;
+                    }
+                    if (!getPowerArray().contains(p)) return;
+                    setActive(power.getTag(), true);
+                    if (e.getClickedBlock() != null && stones.contains(e.getClickedBlock().getType()) && e.getAction().isLeftClick() && !tools.contains(p.getEquipment().getItemInMainHand().getType())) {
+                        e.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.FAST_DIGGING, 60, 15, false, false, false));
+                    } else if (p.getEquipment().getItemInMainHand().getType() == AIR) { //beacons exist
+                        e.getPlayer().removePotionEffect(PotionEffectType.FAST_DIGGING);
+                    }
+                } else {
+                    if (power == null) {
+                        getPowerArray().remove(p);
+                        return;
+                    }
+                    if (!getPowerArray().contains(p)) return;
+                    setActive(power.getTag(), false);
                 }
-            }else{
-                if(!getPowerArray().contains(p)) return;
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
             }
         }
     }
 
+    Player p;
+
+    public StrongArmsBreakSpeed() {
+        this.p = p;
+    }
+
     @Override
-    public void run() {
+    public void run(Player p) {
 
     }
 

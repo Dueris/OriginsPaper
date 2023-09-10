@@ -1,0 +1,6 @@
+{
+  "type": "origins:modify_player_spawn",
+  "dimension": "the_end",
+  "spawn_strategy": "center",
+  "hidden": true
+}

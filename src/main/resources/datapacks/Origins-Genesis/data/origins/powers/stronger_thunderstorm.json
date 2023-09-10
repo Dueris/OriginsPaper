@@ -1,0 +1,30 @@
+{
+  "type": "origins:stacking_status_effect",
+  "hidden": false,
+  "name": "Charged",
+  "description": "During thunderstorms, you are significantly stronger",
+  "min_stacks": 0,
+  "max_stacks": 1,
+  "duration_per_stack": 10,
+  "effects": [
+    {
+      "effect": "minecraft:speed",
+      "amplifier": 2,
+      "duration": 6
+    },
+    {
+      "effect": "minecraft:health_boost",
+      "amplifier": 1,
+      "duration": 6
+    },
+    {
+      "effect": "minecraft:resistance",
+      "amplifier": 1,
+      "duration": 6
+    }
+  ],
+  "condition": {
+    "type": "origins:weather_check",
+    "thundering": true
+  }
+}

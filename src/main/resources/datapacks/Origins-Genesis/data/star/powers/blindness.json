@@ -1,0 +1,75 @@
+{
+  "type": "origins:self_action_when_hit",
+  "entity_action": {
+    "type": "origins:chance",
+    "action": {
+      "type": "origins:apply_effect",
+      "effects": [
+        {
+          "effect": "minecraft:slowness",
+          "amplifier": 9,
+          "duration": 160,
+          "show_icon": true,
+          "show_particles": false
+        },
+        {
+          "effect": "minecraft:blindness",
+          "amplifier": 9,
+          "duration": 160,
+          "show_icon": true,
+          "show_particles": false
+        },
+        {
+          "effect": "minecraft:jump_boost",
+          "amplifier": 250,
+          "duration": 160,
+          "show_icon": false,
+          "show_particles": false
+        }
+      ]
+    },
+    "chance": 0.2
+  },
+  "damage_condition": {
+    "type": "origins:and",
+    "conditions": [
+      {
+        "type": "origins:amount",
+        "comparison": ">=",
+        "compare_to": 2
+      },
+      {
+        "type": "origins:name",
+        "name": "fireworks",
+        "inverted": true
+      },
+      {
+        "type": "origins:name",
+        "name": "fall",
+        "inverted": true
+      },
+      {
+        "type": "origins:name",
+        "name": "magic",
+        "inverted": true
+      },
+      {
+        "type": "origins:name",
+        "name": "indirectMagic",
+        "inverted": true
+      },
+      {
+        "type": "origins:name",
+        "name": "wither",
+        "inverted": true
+      },
+      {
+        "type": "origins:name",
+        "name": "starve",
+        "inverted": true
+      }
+    ]
+  },
+  "cooldown": 0,
+  "hidden": true
+}

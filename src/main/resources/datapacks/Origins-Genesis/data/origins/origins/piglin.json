@@ -1,0 +1,17 @@
+{
+  "powers": [
+    "origins:nether_spawn",
+    "origins:gold_armor",
+    "origins:gold_tools",
+    "origins:overworld_fire_immunity",
+    "origins:stronger_crossbow",
+    "origins:weak_soul_flame"
+  ],
+  "icon": {
+    "item": "minecraft:gold_ingot"
+  },
+  "name": "Piglin",
+  "description": "Born in the nether and trained by the ancient ancestors of the pigs, you love shiny things and are extremely skilled with a crossbow",
+  "order": 0,
+  "impact": 2
+}

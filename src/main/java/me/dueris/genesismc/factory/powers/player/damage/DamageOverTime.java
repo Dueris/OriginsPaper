@@ -3,77 +3,77 @@ package me.dueris.genesismc.factory.powers.player.damage;
 import me.dueris.genesismc.entity.OriginPlayer;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.utils.translation.LangConfig;
 import me.dueris.genesismc.utils.OriginContainer;
 import me.dueris.genesismc.utils.PowerContainer;
+import me.dueris.genesismc.utils.translation.LangConfig;
 import net.minecraft.world.damagesource.DamageSource;
 import org.bukkit.*;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Random;
 
 public class DamageOverTime extends CraftPower {
 
-    @Override
-    public void setActive(String tag, Boolean bool){
-        if(powers_active.containsKey(tag)){
-            powers_active.replace(tag, bool);
-        }else{
-            powers_active.put(tag, bool);
-        }
-    }
-
-    
-
+    private final String damage_type;
     private Long interval;
     private int damage;
     private DamageSource damage_source;
-    private final String damage_type;
     private String protection_enchantment;
     private double protection_effectiveness;
-
-    private int ticksE;
+    private final int ticksE;
 
     public DamageOverTime() {
         this.interval = 20L;
         this.ticksE = 0;
-        this.damage_type = "apoli:damage_over_time";
+        this.damage_type = "origins:damage_over_time";
         this.protection_effectiveness = 1.0;
     }
 
     @Override
-    public void run() {
-        for (Player p : Bukkit.getOnlinePlayers()) {
-            if (damage_over_time.contains(p)) {
-                for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
-                    PowerContainer power = origin.getPowerFileFromType("origins:damage_over_time");
+    public void setActive(String tag, Boolean bool) {
+        if (powers_active.containsKey(tag)) {
+            powers_active.replace(tag, bool);
+        } else {
+            powers_active.put(tag, bool);
+        }
+    }
+
+    public void run(Player p, HashMap<Player, Integer> ticksEMap) {
+        ticksEMap.putIfAbsent(p, 0);
+        if (getPowerArray().contains(p)) {
+            for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
+                for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
                     if (power == null) continue;
                     if (power.getInterval() == null) {
-                        Bukkit.getLogger().warning(LangConfig.getLocalizedString(p, "powers.errors.damageOverTime"));
+                        Bukkit.getLogger().warning(LangConfig.getLocalizedString(p, "powers.errors.burn"));
                         return;
                     }
                     interval = power.getInterval();
+
+                    int ticksE = ticksEMap.getOrDefault(p, 0);
                     if (ticksE < interval) {
                         ticksE++;
+
+                        ticksEMap.put(p, ticksE);
                         return;
                     } else {
                         if (p.getWorld().getDifficulty().equals(Difficulty.EASY)) {
-                            if (origin.getPowerFileFromType("origins:damage_over_time").get("damage_easy", origin.getPowerFileFromType("origins:damage_over_time").get("damage", "1")) == null) {
-                                damage = Integer.parseInt(origin.getPowerFileFromType("origins:damage_over_time").get("damage", "1"));
+                            if (power.get("damage_easy", power.get("damage", "1")) == null) {
+                                damage = Integer.parseInt(power.get("damage", "1"));
                             } else {
-                                damage = Integer.parseInt(origin.getPowerFileFromType("origins:damage_over_time").get("damage_easy", origin.getPowerFileFromType("origins:damage_over_time").get("damage", "1")));
+                                damage = Integer.parseInt(power.get("damage_easy", power.get("damage", "1")));
                             }
                         } else {
-                            damage = Integer.parseInt(origin.getPowerFileFromType("origins:damage_over_time").get("damage", "1"));
+                            damage = Integer.parseInt(power.get("damage", "1"));
                         }
 
-                        protection_effectiveness = Double.parseDouble(origin.getPowerFileFromType("origins:damage_over_time").get("protection_effectiveness", "1"));
+                        protection_effectiveness = Double.parseDouble(power.get("protection_effectiveness", "1"));
                         ConditionExecutor executor = new ConditionExecutor();
-                        if(executor.check("condition", "conditions", p, origin, getPowerFile(), null, p)){
-                            if(!getPowerArray().contains(p)) return;
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
+                        if (executor.check("condition", "conditions", p, power, getPowerFile(), p, null, null, null, p.getItemInHand(), null)) {
+                            setActive(power.getTag(), true);
 
                             if (p.getGameMode().equals(GameMode.SURVIVAL) || p.getGameMode().equals(GameMode.ADVENTURE)) {
                                 float helemt_modifier = 0;
@@ -147,7 +147,6 @@ public class DamageOverTime extends CraftPower {
                                 }
                                 float basedamage = damage - helemt_modifier - chestplate_modifier - leggins_modifier - boots_modifier;
 
-
                                 if (p.getHealth() >= basedamage && p.getHealth() != 0 && p.getHealth() - basedamage != 0) {
                                     p.damage(basedamage);
 
@@ -178,15 +177,45 @@ public class DamageOverTime extends CraftPower {
                                 }
                             }
 
-                        }else{
-                            if(!getPowerArray().contains(p)) return;
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
+                        } else {
+                            if (power == null) {
+                                getPowerArray().remove(p);
+                                return;
+                            }
+                            if (!getPowerArray().contains(p)) return;
+                            setActive(power.getTag(), false);
                         }
-                        ticksE = 0;
+
+                        ticksEMap.put(p, 0);
                     }
                 }
             }
         }
+    }
+
+    Player p;
+
+    @Override
+    public void run(Player p) {
+//        if (damage_over_time.contains(p)) {
+//            for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
+//                PowerContainer power = origin.getPowerFileFromType("origins:damage_over_time");
+//                if (power == null) continue;
+//                if (power.getInterval() == null) {
+//                    Bukkit.getLogger().warning(LangConfig.getLocalizedString(p, "powers.errors.damageOverTime"));
+//                    return;
+//                }
+//                interval = power.getInterval();
+//                if (ticksE < interval) {
+//                    ticksE++;
+//                    return;
+//                } else {
+//
+//                    ticksE = 0;
+//                }
+//            }
+//        }
+        //removed old code to use new OriginScheduler
     }
 
     @Override

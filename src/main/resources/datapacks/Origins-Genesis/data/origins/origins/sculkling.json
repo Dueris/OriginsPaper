@@ -1,0 +1,17 @@
+{
+  "powers": [
+    "origins:decaying_essence",
+    "origins:mimic_warden",
+    "origins:weaker_light",
+    "origins:skulk_block_buff",
+    "origins:shrieking_death",
+    "origins:burn_in_daylight"
+  ],
+  "icon": {
+    "item": "minecraft:echo_shard"
+  },
+  "name": "Skulkling",
+  "description": "Often found lurking in the Deep Dark, these creatures are dangerous, but weak when exposed to light",
+  "order": 0,
+  "impact": 3
+}

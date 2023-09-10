@@ -1,0 +1,34 @@
+{
+  "type": "origins:modify_break_speed",
+  "modifier": {
+    "name": "Unbreakable natural stone",
+    "value": -1,
+    "operation": "multiply_total"
+  },
+  "block_condition": {
+    "type": "origins:and",
+    "conditions": [
+      {
+        "type": "origins:in_tag",
+        "tag": "origins:natural_stone"
+      },
+      {
+        "type": "origins:adjacent",
+        "adjacent_condition": {
+          "type": "origins:in_tag",
+          "tag": "origins:natural_stone"
+        },
+        "comparison": ">",
+        "compare_to": 2
+      }
+    ]
+  },
+  "condition": {
+    "type": "origins:status_effect",
+    "effect": "minecraft:strength",
+    "inverted": true
+  },
+  "name": "When not under the effect of a strength potion, you can only mine natural stone if there are at most 2 other natural stone blocks adjacent to it",
+  "description": "",
+  "hidden": false
+}

@@ -5,6 +5,7 @@ import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.ErrorSystem;
 import me.dueris.genesismc.utils.OriginContainer;
+import me.dueris.genesismc.utils.PowerContainer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -20,40 +21,54 @@ import static me.dueris.genesismc.factory.powers.value_modifying.ValueModifyingS
 public class ModifyExperienceGainPower extends CraftPower implements Listener {
 
     @Override
-    public void setActive(String tag, Boolean bool){
-        if(powers_active.containsKey(tag)){
+    public void setActive(String tag, Boolean bool) {
+        if (powers_active.containsKey(tag)) {
             powers_active.replace(tag, bool);
-        }else{
+        } else {
             powers_active.put(tag, bool);
         }
     }
 
-    
+    Player p;
+
+    public ModifyExperienceGainPower() {
+        this.p = p;
+    }
+
+    @Override
+    public void run(Player p) {
+
+    }
 
     @EventHandler
-    public void run(PlayerExpChangeEvent e){
+    public void run(PlayerExpChangeEvent e) {
         Player p = e.getPlayer();
-        if(modify_xp_gain.contains(p)){
+        if (modify_xp_gain.contains(p)) {
             for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
                 ValueModifyingSuperClass valueModifyingSuperClass = new ValueModifyingSuperClass();
                 try {
                     ConditionExecutor conditionExecutor = new ConditionExecutor();
-                    if (conditionExecutor.check("condition", "conditions", p, origin, "origins:modify_xp_gain", null, e.getPlayer())) {
-                        for(HashMap<String, Object> modifier : origin.getPowerFileFromType("origins:modify_xp_gain").getConditionFromString("modifier", "modifiers")){
-                            Float value = Float.valueOf(modifier.get("value").toString());
-                            String operation = modifier.get("operation").toString();
-                            BinaryOperator mathOperator = getOperationMappingsFloat().get(operation);
-                            if (mathOperator != null) {
-                                float result = (float) mathOperator.apply(e.getAmount(), value);
-                                e.setAmount(Math.toIntExact(Long.valueOf(String.valueOf(result))));
-                                if(!getPowerArray().contains(p)) return;
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
+                    for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
+                        if (conditionExecutor.check("condition", "conditions", p, power, "origins:modify_xp_gain", p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
+                            for (HashMap<String, Object> modifier : power.getConditionFromString("modifier", "modifiers")) {
+                                Float value = Float.valueOf(modifier.get("value").toString());
+                                String operation = modifier.get("operation").toString();
+                                BinaryOperator mathOperator = getOperationMappingsFloat().get(operation);
+                                if (mathOperator != null) {
+                                    float result = (float) mathOperator.apply(e.getAmount(), value);
+                                    e.setAmount(Math.toIntExact(Long.valueOf(String.valueOf(result))));
+                                    if (power == null) {
+                                        getPowerArray().remove(p);
+                                        return;
+                                    }
+                                    if (!getPowerArray().contains(p)) return;
+                                    setActive(power.getTag(), true);
+                                }
                             }
-                        }
 
-                    }else{
-                        if(!getPowerArray().contains(p)) return;
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
+                        } else {
+                            setActive(power.getTag(), false);
+                        }
                     }
                 } catch (Exception ev) {
                     ErrorSystem errorSystem = new ErrorSystem();
@@ -62,11 +77,6 @@ public class ModifyExperienceGainPower extends CraftPower implements Listener {
                 }
             }
         }
-    }
-
-    @Override
-    public void run() {
-
     }
 
     @Override

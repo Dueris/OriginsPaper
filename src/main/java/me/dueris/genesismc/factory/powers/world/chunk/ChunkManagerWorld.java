@@ -16,6 +16,10 @@ import java.util.HashMap;
 public class ChunkManagerWorld {
     World world;
 
+    public ChunkManagerWorld(World world) {
+        this.world = world;
+    }
+
     public World getWorld() {
         return world;
     }
@@ -47,10 +51,6 @@ public class ChunkManagerWorld {
     @Override
     public int hashCode() {
         return super.hashCode();
-    }
-
-    public ChunkManagerWorld(World world) {
-        this.world = world;
     }
 
     public Chunk getChunkAt(Location location) {

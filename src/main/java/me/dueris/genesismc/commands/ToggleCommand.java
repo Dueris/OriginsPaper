@@ -14,8 +14,8 @@ import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 
-import static me.dueris.genesismc.factory.powers.genesismc.BigLeap.leapToggle;
 import static me.dueris.genesismc.factory.powers.Power.big_leap_tick;
+import static me.dueris.genesismc.factory.powers.genesismc.BigLeap.leapToggle;
 import static me.dueris.genesismc.utils.BukkitColour.RED;
 
 

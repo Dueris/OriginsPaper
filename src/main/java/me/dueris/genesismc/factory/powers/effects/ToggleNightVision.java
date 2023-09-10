@@ -8,7 +8,7 @@ import me.dueris.genesismc.events.KeybindTriggerEvent;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.OriginContainer;
-import org.bukkit.Material;
+import me.dueris.genesismc.utils.PowerContainer;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -22,12 +22,115 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.util.ArrayList;
 
 import static me.dueris.genesismc.KeybindHandler.isKeyBeingPressed;
-import static me.dueris.genesismc.factory.powers.Toggle.in_continuous;
 
 public class ToggleNightVision extends CraftPower implements Listener {
+    Player p;
+
+    public ToggleNightVision() {
+        this.p = p;
+    }
+
     @Override
-    public void run() {
-        
+    public void run(Player p) {
+
+    }
+
+    public void execute(Player p, PowerContainer power) {
+        if (!getPowerArray().contains(p)) return;
+        if (runCancel) return;
+        String tag = power.getTag();
+        String key = (String) power.getKey().get("key");
+        KeybindHandler.runKeyChangeTrigger(KeybindHandler.getTriggerFromOriginKey(p, key));
+        if (CooldownStuff.isPlayerInCooldown(p, key)) return;
+        if (powers_active.containsKey(power.getTag())) {
+            setActive(power.getTag(), !powers_active.get(tag));
+            if (true) {
+                if (active) {
+                    //active
+                    KeybindHandler.runKeyChangeTriggerReturn(KeybindHandler.getTriggerFromOriginKey(p, key), p, key);
+                    ItemMeta met = KeybindHandler.getKeybindItem(key, p.getInventory()).getItemMeta();
+                    met.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "contin"), PersistentDataType.BOOLEAN, false);
+                    KeybindHandler.getKeybindItem(key, p.getInventory()).setItemMeta(met);
+                    setActive(tag, false);
+                    in_continuous.remove(p);
+                    active = false;
+                    runCancel = true;
+                    new BukkitRunnable() {
+                        @Override
+                        public void run() {
+                            runCancel = false;
+                            this.cancel();
+                        }
+                    }.runTaskTimer(GenesisMC.getPlugin(), 0, 5);
+                    new BukkitRunnable() {
+                        @Override
+                        public void run() {
+                            //run code for while its disabled
+                            p.removePotionEffect(PotionEffectType.NIGHT_VISION);
+                        }
+                    }.runTaskTimer(GenesisMC.getPlugin(), 0, 1);
+                } else {
+                    //nonactive
+                    KeybindHandler.runKeyChangeTrigger(KeybindHandler.getKeybindItem(key, p.getInventory()));
+                    ItemMeta met = KeybindHandler.getKeybindItem(key, p.getInventory()).getItemMeta();
+                    met.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "contin"), PersistentDataType.BOOLEAN, true);
+                    KeybindHandler.getKeybindItem(key, p.getInventory()).setItemMeta(met);
+                    setActive(tag, true);
+                    in_continuous.add(p);
+                    active = true;
+                    runCancel = true;
+                    new BukkitRunnable() {
+                        @Override
+                        public void run() {
+                            runCancel = false;
+                            this.cancel();
+                        }
+                    }.runTaskLater(GenesisMC.getPlugin(), 5);
+                    new BukkitRunnable() {
+                        @Override
+                        public void run() {
+                            //run code for while its enabled
+                            ConditionExecutor conditionExecutor = new ConditionExecutor();
+                            if (conditionExecutor.check("condition", "conditions", p, power, getPowerFile(), p, null, null, null, p.getItemInHand(), null)) {
+                                p.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, Integer.MAX_VALUE, 255, false, false, false));
+                            } else {
+                                p.removePotionEffect(PotionEffectType.NIGHT_VISION);
+                            }
+                        }
+                    }.runTaskTimer(GenesisMC.getPlugin(), 0, 1);
+                }
+//                ToggleTriggerEvent toggleTriggerEvent = new ToggleTriggerEvent(p, key, origin, !active);
+//                Bukkit.getServer().getPluginManager().callEvent(toggleTriggerEvent);
+            } else {
+                KeybindHandler.runKeyChangeTrigger(KeybindHandler.getKeybindItem(key, p.getInventory()));
+                setActive(tag, true);
+                in_continuous.add(p);
+                new BukkitRunnable() {
+                    @Override
+                    public void run() {
+                        KeybindHandler.runKeyChangeTriggerReturn(KeybindHandler.getTriggerFromOriginKey(p, key), p, key);
+                        setActive(tag, false);
+                        ItemMeta met = KeybindHandler.getKeybindItem(key, p.getInventory()).getItemMeta();
+                        met.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "contin"), PersistentDataType.BOOLEAN, false);
+                        KeybindHandler.getKeybindItem(key, p.getInventory()).setItemMeta(met);
+                        in_continuous.remove(p);
+                    }
+                }.runTaskLater(GenesisMC.getPlugin(), 2);
+            }
+        } else {
+            //set true
+            KeybindHandler.runKeyChangeTrigger(KeybindHandler.getKeybindItem(key, p.getInventory()));
+            setActive(tag, true);
+            in_continuous.add(p);
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    KeybindHandler.runKeyChangeTriggerReturn(KeybindHandler.getTriggerFromOriginKey(p, key), p, key);
+                    setActive(tag, false);
+                    in_continuous.remove(p);
+                }
+            }.runTaskLater(GenesisMC.getPlugin(), 2);
+        }
     }
 
     @EventHandler
@@ -36,106 +139,16 @@ public class ToggleNightVision extends CraftPower implements Listener {
         if (getPowerArray().contains(e.getPlayer())) {
             for (OriginContainer origin : OriginPlayer.getOrigin(e.getPlayer()).values()) {
                 ConditionExecutor conditionExecutor = new ConditionExecutor();
-                if (conditionExecutor.check("condition", "conditions", p, origin, getPowerFile(), null, p)) {
-                    if (!CooldownStuff.isPlayerInCooldown(p, origin.getPowerFileFromType(getPowerFile()).getKey().get("key").toString())) {
-                        if (isKeyBeingPressed(e.getPlayer(), origin.getPowerFileFromType(getPowerFile()).getKey().get("key").toString(), true)) {
-                            new BukkitRunnable() {
-                                @Override
-                                public void run() {
-                                    String key = (String) origin.getPowerFileFromType(getPowerFile()).getKey().get("key");
-                                    if (!CooldownStuff.isPlayerInCooldown(p, key)) {
-                                        KeybindHandler.runKeyChangeTrigger(KeybindHandler.getTriggerFromOriginKey(p, key));
-
-                                        final boolean[] thing = new boolean[1];
-                                        new BukkitRunnable() {
-                                            @Override
-                                            public void run() {
-                                                if (!CooldownStuff.isPlayerInCooldown(p, key)) {
-                                                    if (origin.getPowerFileFromType(getPowerFile()).get("continuous", "true") == "false") {
-                                                        //continousus - false
-                                                        KeybindHandler.runKeyChangeTriggerReturn(KeybindHandler.getTriggerFromOriginKey(p, key), p, key);
-                                                        ItemMeta met = KeybindHandler.getKeybindItem(key, p.getInventory()).getItemMeta();
-                                                        met.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "contin"), PersistentDataType.BOOLEAN, false);
-                                                        KeybindHandler.getKeybindItem(key, p.getInventory()).setItemMeta(met);
-                                                        thing[0] = true;
-                                                        if(!getPowerArray().contains(p)) return;
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
-                                                        this.cancel();
-                                                    } else {
-                                                        //yes continuouous
-                                                        ItemMeta met = KeybindHandler.getKeybindItem(key, p.getInventory()).getItemMeta();
-                                                        met.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "contin"), PersistentDataType.BOOLEAN, true);
-                                                        KeybindHandler.getKeybindItem(key, p.getInventory()).setItemMeta(met);
-                                                        if(!getPowerArray().contains(p)) return;
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
-                                                    }
-                                                }
-
-                                                if (in_continuous.contains(p)) {
-                                                    if(!getPowerArray().contains(p)) return;
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
-                                                    p.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, 20000, 1, false, false, false));
-                                                } else {
-                                                    p.removePotionEffect(PotionEffectType.NIGHT_VISION);
-                                                    if(!getPowerArray().contains(p)) return;
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
-                                                    this.cancel();
-                                                }
-                                            }
-                                        }.runTaskTimer(GenesisMC.getPlugin(), 1L, 1L);
-
-                                        if (thing[0]) {
-                                            thing[0] = false;
-                                            this.cancel();
-                                        }
-
-                                        if (origin.getPowerFileFromType(getPowerFile()).get("continuous", "true").equalsIgnoreCase("false")) {
-                                            ItemMeta met = KeybindHandler.getKeybindItem(key, p.getInventory()).getItemMeta();
-                                            met.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "contin"), PersistentDataType.BOOLEAN, false);
-                                            KeybindHandler.getKeybindItem(key, p.getInventory()).setItemMeta(met);
-                                            in_continuous.add(p);
-                                            if(!getPowerArray().contains(p)) return;
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
-                                            new BukkitRunnable(){
-                                                @Override
-                                                public void run() {
-                                                    in_continuous.remove(p);
-                                                    if(!getPowerArray().contains(p)) return;
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
-                                                }
-                                            }.runTaskLater(GenesisMC.getPlugin(), 1L);
-                                            this.cancel();
-                                        } else {
-                                            if (isKeyBeingPressed(e.getPlayer(), origin.getPowerFileFromType(getPowerFile()).getKey().get("key").toString(), true)) {
-                                                ItemMeta met = KeybindHandler.getKeybindItem(key, p.getInventory()).getItemMeta();
-                                                met.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "contin"), PersistentDataType.BOOLEAN, false);
-                                                KeybindHandler.getKeybindItem(key, p.getInventory()).setItemMeta(met);
-                                                if (in_continuous.contains(p)) {
-                                                    KeybindHandler.runKeyChangeTriggerReturn(KeybindHandler.getKeybindItem(key, p.getInventory()), p, key);
-                                                    KeybindHandler.getKeybindItem(key, p.getInventory()).setType(Material.GRAY_DYE);
-                                                    met.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "contin"), PersistentDataType.BOOLEAN, false);
-                                                    KeybindHandler.getKeybindItem(key, p.getInventory()).setItemMeta(met);
-                                                    in_continuous.remove(p);
-                                                    p.removePotionEffect(PotionEffectType.NIGHT_VISION);
-                                                    if(!getPowerArray().contains(p)) return;
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
-                                                    this.cancel();
-                                                } else {
-                                                    KeybindHandler.runKeyChangeTrigger(KeybindHandler.getKeybindItem(key, p.getInventory()));
-                                                    KeybindHandler.getKeybindItem(key, p.getInventory()).setType(Material.LIME_DYE);
-                                                    met.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "contin"), PersistentDataType.BOOLEAN, true);
-                                                    KeybindHandler.getKeybindItem(key, p.getInventory()).setItemMeta(met);
-                                                    in_continuous.add(p);
-                                                    if(!getPowerArray().contains(p)) return;
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
-                                                }
-                                                this.cancel();
-                                            }
-                                        }
-                                    }
-                                }
-                            }.runTaskTimer(GenesisMC.getPlugin(), 0, 1);
+                for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
+                    if (conditionExecutor.check("condition", "conditions", p, power, getPowerFile(), p, null, null, null, p.getItemInHand(), null)) {
+                        if (!CooldownStuff.isPlayerInCooldown(p, power.getKey().get("key").toString())) {
+                            if (isKeyBeingPressed(e.getPlayer(), power.getKey().get("key").toString(), true)) {
+                                execute(p, power);
+                            }
                         }
+                    } else {
+                        KeybindHandler.runKeyChangeTriggerReturn(KeybindHandler.getKeybindItem(power.getKey().get("key").toString(), p.getInventory()), p, power.getKey().get("key").toString());
+                        setActive(power.getTag(), false);
                     }
                 }
             }
@@ -143,15 +156,17 @@ public class ToggleNightVision extends CraftPower implements Listener {
     }
 
     @Override
-    public void setActive(String tag, Boolean bool){
-        if(powers_active.containsKey(tag)){
+    public void setActive(String tag, Boolean bool) {
+        if (powers_active.containsKey(tag)) {
             powers_active.replace(tag, bool);
-        }else{
+        } else {
             powers_active.put(tag, bool);
         }
     }
 
-    
+    public static ArrayList<Player> in_continuous = new ArrayList<>();
+    public boolean active = true;
+    public boolean runCancel = false;
 
     @Override
     public String getPowerFile() {

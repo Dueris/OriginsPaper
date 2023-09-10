@@ -14,32 +14,43 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.util.ArrayList;
 
 public class ActionOnHit extends CraftPower {
+    Player p;
+
+    public ActionOnHit() {
+        this.p = p;
+    }
+
     @Override
-    public void run() {
+    public void run(Player p) {
 
     }
 
     @EventHandler
-    public void action(EntityDamageByEntityEvent e){
-        if(e.getEntity() instanceof Player p){
+    public void action(EntityDamageByEntityEvent e) {
+        if (e.getEntity() instanceof Player p) {
             Entity actor = e.getDamager();
             Entity target = p;
-            for(OriginContainer origin : OriginPlayer.getOrigin(p).values()){
-                if(getPowerArray().contains(p)){
-                    PowerContainer power = origin.getPowerFileFromType(getPowerFile());
-                    if (power == null) continue;
+            for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
+                if (getPowerArray().contains(p)) {
+                    for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
+                        if (power == null) continue;
 
-                    if(!getPowerArray().contains(p)) return;
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
-                    ActionTypes.biEntityActionType(actor, target, power.getBiEntityAction());
-                    //todo: bientity condition and damage condition
-                    new BukkitRunnable() {
-                        @Override
-                        public void run() {
-                            if(!getPowerArray().contains(p)) return;
-                            setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
-                        }
-                    }.runTaskLater(GenesisMC.getPlugin(), 2L);
+
+                        setActive(power.getTag(), true);
+                        ActionTypes.biEntityActionType(actor, target, power.getBiEntityAction());
+                        //todo: bientity condition and damage condition
+                        new BukkitRunnable() {
+                            @Override
+                            public void run() {
+                                if (power == null) {
+                                    getPowerArray().remove(p);
+                                    return;
+                                }
+                                if (!getPowerArray().contains(p)) return;
+                                setActive(power.getTag(), false);
+                            }
+                        }.runTaskLater(GenesisMC.getPlugin(), 2L);
+                    }
                 }
             }
         }
@@ -57,9 +68,9 @@ public class ActionOnHit extends CraftPower {
 
     @Override
     public void setActive(String tag, Boolean bool) {
-        if(powers_active.containsKey(tag)){
+        if (powers_active.containsKey(tag)) {
             powers_active.replace(tag, bool);
-        }else{
+        } else {
             powers_active.put(tag, bool);
         }
     }

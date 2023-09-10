@@ -1,0 +1,6 @@
+{
+  "type": "origins:fall_immunity",
+  "name": "Acrobatics",
+  "description": "You never take fall damage, no matter from which height you fall",
+  "hidden": false
+}

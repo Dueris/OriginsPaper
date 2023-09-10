@@ -15,29 +15,33 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.util.ArrayList;
 
 public class ActionWhenDamageTaken extends CraftPower implements Listener {
+    Player p;
+
+    public ActionWhenDamageTaken() {
+        this.p = p;
+    }
+
     @Override
-    public void run() {
+    public void run(Player p) {
 
     }
 
     @EventHandler
-    public void d(EntityDamageEvent e){
+    public void d(EntityDamageEvent e) {
         Entity actor = e.getEntity();
-        if(!(actor instanceof Player)) return;
+        if (!(actor instanceof Player)) return;
         for (OriginContainer origin : OriginPlayer.getOrigin((Player) actor).values()) {
-            PowerContainer power = origin.getPowerFileFromType(getPowerFile());
-            if (power == null) continue;
+            for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
+                if (power == null) continue;
 
-            if(!getPowerArray().contains(actor)) return;
-            setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
-            ActionTypes.EntityActionType(actor, power.getBiEntityAction());
-            new BukkitRunnable() {
-                @Override
-                public void run() {
-                    if(!getPowerArray().contains(actor)) return;
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
-                }
-            }.runTaskLater(GenesisMC.getPlugin(), 2L);
+                setActive(power.getTag(), true);
+                new BukkitRunnable() {
+                    @Override
+                    public void run() {
+                        setActive(power.getTag(), false);
+                    }
+                }.runTaskLater(GenesisMC.getPlugin(), 2L);
+            }
         }
     }
 
@@ -53,9 +57,9 @@ public class ActionWhenDamageTaken extends CraftPower implements Listener {
 
     @Override
     public void setActive(String tag, Boolean bool) {
-        if(powers_active.containsKey(tag)){
+        if (powers_active.containsKey(tag)) {
             powers_active.replace(tag, bool);
-        }else{
+        } else {
             powers_active.put(tag, bool);
         }
     }

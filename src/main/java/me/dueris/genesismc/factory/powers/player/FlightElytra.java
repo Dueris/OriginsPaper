@@ -6,10 +6,8 @@ import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.protocol.SendStringPacketPayload;
 import me.dueris.genesismc.utils.OriginContainer;
-import org.bukkit.GameMode;
-import org.bukkit.GameRule;
-import org.bukkit.Material;
-import org.bukkit.Sound;
+import me.dueris.genesismc.utils.PowerContainer;
+import org.bukkit.*;
 import org.bukkit.craftbukkit.v1_20_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -19,8 +17,6 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
@@ -32,72 +28,111 @@ public class FlightElytra extends CraftPower implements Listener {
     public static ArrayList<UUID> glidingPlayers = new ArrayList<>();
 
     @Override
-    public void setActive(String tag, Boolean bool){
-        if(powers_active.containsKey(tag)){
+    public void setActive(String tag, Boolean bool) {
+        if (powers_active.containsKey(tag)) {
             powers_active.replace(tag, bool);
-        }else{
+        } else {
             powers_active.put(tag, bool);
         }
     }
 
-    
+    Player p;
+
+    public FlightElytra() {
+        this.p = p;
+    }
+
+    @Override
+    public void run(Player p) {
+
+    }
+
+    public static ArrayList<UUID> getGlidingPlayers() {
+        return glidingPlayers;
+    }
 
     @EventHandler
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "Not scheduled yet"})
     public void ExecuteFlight(PlayerToggleSneakEvent e) {
         Player p = e.getPlayer();
         if (elytra.contains(e.getPlayer())) {
             for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
                 ConditionExecutor executor = new ConditionExecutor();
-                if(executor.check("condition", "conditions", p, origin, getPowerFile(), null, p)){
-                    if(!getPowerArray().contains(p)) return;
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
-                    if (origin.getPowerFileFromType("origins:elytra_flight").getShouldRender()) {
-                        SendStringPacketPayload.sendCustomPacket(p, "ExecuteGenesisOriginsElytraRenderID:12232285");
-                        CraftPlayer player = (CraftPlayer) p;
-                        player.getWorld().setGameRule(GameRule.DISABLE_ELYTRA_MOVEMENT_CHECK, false);
-                    }
-                    if (!p.isOnGround() && !p.isGliding()) {
-                        glidingPlayers.add(p.getUniqueId());
-                        if (p.getGameMode() == GameMode.SPECTATOR) return;
-                        new BukkitRunnable() {
-                            @Override
-                            public void run() {
-                                if (p.isOnGround() || p.isFlying()) {
-                                    this.cancel();
-                                    glidingPlayers.remove(p.getUniqueId());
+                for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
+                    if (executor.check("condition", "conditions", p, power, getPowerFile(), p, null, null, null, p.getItemInHand(), null)) {
+                        setActive(power.getTag(), true);
+                        if (power.getShouldRender()) {
+                            SendStringPacketPayload.sendCustomPacket(p, "genesismc-elytra-render[packetID:a354b]");
+                            CraftPlayer player = (CraftPlayer) p;
+                            Bukkit.getServer().getGlobalRegionScheduler().execute(GenesisMC.getPlugin(), new BukkitRunnable() {
+                                @Override
+                                public void run() {
+                                    player.getWorld().setGameRule(GameRule.DISABLE_ELYTRA_MOVEMENT_CHECK, false);
                                 }
-                                p.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 5, 3, false, false, false));
-                                p.setGliding(true);
-                                p.setFallDistance(0);
-                            }
-                        }.runTaskTimer(GenesisMC.getPlugin(), 0L, 1L);
-                    }
-                }else{
-                    if(!getPowerArray().contains(p)) return;
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
-                }
+                            });
+                        }
+                        if (!p.isOnGround() && !p.isGliding()) {
+                            glidingPlayers.add(p.getUniqueId());
+                            if (p.getGameMode() == GameMode.SPECTATOR) return;
+                            new BukkitRunnable() {
+                                @Override
+                                public void run() {
+                                    if (p.isOnGround() || p.isFlying()) {
+                                        this.cancel();
+                                        glidingPlayers.remove(p.getUniqueId());
+                                    }
+                                    glidingPlayers.add(p.getUniqueId());
+                                    p.setGliding(true);
+                                    p.setFallDistance(0);
+                                }
+                            }.runTaskTimer(GenesisMC.getPlugin(), 0L, 1L);
+                        }
+                    } else {
 
+                        setActive(power.getTag(), false);
+                    }
+                }
             }
         }
     }
 
     @EventHandler
-    public void BoostHandler(PlayerInteractEvent e) {
-        Player p = e.getPlayer();
-        if (elytra.contains(e.getPlayer()) && e.getAction().equals(Action.LEFT_CLICK_AIR)) {
-            if (!glidingPlayers.contains(p)) return;
-            if (p.getGameMode() == GameMode.CREATIVE) return;
-            if (e.getItem() != null) {
-                ItemStack rocket = new ItemStack(Material.FIREWORK_ROCKET);
-                if (e.getItem().isSimilar(rocket)) {
-                    launchElytra(p);
-                    e.getItem().setAmount(e.getItem().getAmount() - 1);
-                    p.playSound(p.getLocation(), Sound.ENTITY_FIREWORK_ROCKET_LAUNCH, 10, 1);
-                    e.setCancelled(true);
+    public void onBoost(PlayerInteractEvent event) {
+        Player player = event.getPlayer();
+        Action action = event.getAction();
+
+        if (!player.isGliding()) return;
+
+        if (action != Action.LEFT_CLICK_AIR) {
+            return;
+        }
+
+        ItemStack handItem = player.getInventory().getItemInMainHand();
+        ItemStack rocket = new ItemStack(Material.FIREWORK_ROCKET);
+        if (!handItem.isSimilar(rocket)) return;
+
+        launchElytra(player, 1.75F);
+        if (player.getGameMode() != GameMode.CREATIVE) handItem.setAmount(handItem.getAmount() - 1);
+        player.playSound(player.getLocation(), Sound.ENTITY_FIREWORK_ROCKET_LAUNCH, 10, 1);
+
+        int totalTicks = 10;
+        long interval = 1L;
+
+        new BukkitRunnable() {
+            int ticksRemaining = totalTicks;
+
+            @Override
+            public void run() {
+                if (ticksRemaining > 0) {
+                    player.getWorld().spawnParticle(Particle.FIREWORKS_SPARK, player.getLocation(), 1, 1, 1, 1);
+                    ticksRemaining--;
+                } else {
+                    cancel();
                 }
             }
-        }
+        }.runTaskTimer(GenesisMC.getPlugin(), 0L, interval);
+
+        event.setCancelled(true);
     }
 
     @EventHandler
@@ -118,12 +153,6 @@ public class FlightElytra extends CraftPower implements Listener {
                 }
             }
         }
-    }
-
-
-    @Override
-    public void run() {
-
     }
 
     @Override

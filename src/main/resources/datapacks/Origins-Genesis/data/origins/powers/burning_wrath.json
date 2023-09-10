@@ -1,0 +1,14 @@
+{
+  "type": "origins:modify_damage_dealt",
+  "condition": {
+    "type": "origins:on_fire"
+  },
+  "modifier": {
+    "name": "Additional damage while on fire",
+    "value": 3,
+    "operation": "addition"
+  },
+  "name": "Burning Wrath",
+  "description": "When on fire, you deal additional damage with your attacks",
+  "hidden": false
+}

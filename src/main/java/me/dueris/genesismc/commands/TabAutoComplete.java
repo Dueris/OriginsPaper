@@ -2,6 +2,8 @@ package me.dueris.genesismc.commands;
 
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.utils.LayerContainer;
+import me.dueris.genesismc.utils.OriginContainer;
+import me.dueris.genesismc.utils.PowerContainer;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -12,6 +14,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 public class TabAutoComplete implements TabCompleter {
@@ -153,6 +156,57 @@ public class TabAutoComplete implements TabCompleter {
                     for (Player player : Bukkit.getOnlinePlayers()) playerNames.add(player.getName());
                     return playerNames;
                 } else return new ArrayList<>();
+            }
+        } else if (command.getName().equalsIgnoreCase("power")) {
+            if (args.length == 1) {
+                List<String> arguments = new ArrayList<>();
+                arguments.add("clear");
+                arguments.add("grant");
+                arguments.add("has");
+                arguments.add("list");
+                arguments.add("remove");
+                arguments.add("revoke");
+                arguments.add("revokeall");
+                arguments.add("sources");
+                return arguments;
+            } else if (args.length == 2) {
+                Collection<? extends Player> players = Bukkit.getOnlinePlayers();
+                List<String> playernames = new ArrayList<>();
+                for (Player player : players) playernames.add(player.getName());
+                playernames.add("@a");
+                playernames.add("@s");
+                playernames.add("@e");
+                playernames.add("@p");
+                playernames.add("@r");
+                return playernames;
+            } else if (args.length == 3) {
+                List<String> argS = new ArrayList<>();
+                for (PowerContainer c : CraftApoli.getPowers()) {
+                    if (args[1].equalsIgnoreCase("has")) {
+                        argS.add(c.getTag());
+                    }
+                    if (args[1].equalsIgnoreCase("grant")) {
+                        argS.add(c.getTag());
+                    }
+                    if (args[1].equalsIgnoreCase("remove")) {
+                        argS.add(c.getTag());
+                    }
+                    if (args[1].equalsIgnoreCase("revoke")) {
+                        argS.add(c.getTag());
+                    }
+                }
+
+                for (OriginContainer origin : CraftApoli.getOrigins()) {
+                    if (args[1].equalsIgnoreCase("revokeall")) {
+                        argS.add(origin.getTag());
+                    }
+                }
+
+                return argS;
+
+            } else if (args.length >= 4) {
+                List<String> ba = new ArrayList<>();
+                return ba;
             }
         }
         return null;

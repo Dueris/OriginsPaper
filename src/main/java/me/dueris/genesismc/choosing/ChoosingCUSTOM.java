@@ -5,11 +5,10 @@ import me.dueris.genesismc.entity.OriginPlayer;
 import me.dueris.genesismc.events.OriginChangeEvent;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.powers.value_modifying.ModifyPlayerSpawnPower;
-import me.dueris.genesismc.utils.translation.LangConfig;
 import me.dueris.genesismc.utils.OriginContainer;
 import me.dueris.genesismc.utils.PowerContainer;
+import me.dueris.genesismc.utils.translation.LangConfig;
 import org.bukkit.*;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -21,6 +20,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -30,11 +30,10 @@ import java.util.Objects;
 import static me.dueris.genesismc.choosing.ChoosingCORE.*;
 import static me.dueris.genesismc.choosing.contents.ChooseMenuContents.ChooseMenuContent;
 import static me.dueris.genesismc.choosing.contents.MainMenuContents.GenesisMainMenuContents;
+import static me.dueris.genesismc.factory.powers.Power.phasing;
 import static me.dueris.genesismc.factory.powers.value_modifying.ValueModifyingSuperClass.modify_world_spawn;
-import static me.dueris.genesismc.factory.powers.Power.*;
 import static me.dueris.genesismc.items.OrbOfOrigins.orb;
 import static org.bukkit.Bukkit.getServer;
-import static org.bukkit.ChatColor.GRAY;
 import static org.bukkit.ChatColor.RED;
 
 public class ChoosingCUSTOM implements Listener {
@@ -215,63 +214,38 @@ public class ChoosingCUSTOM implements Listener {
                 setAttributesToDefault(p);
                 OriginPlayer.setOrigin(p, choosing.get(p), origin);
                 choosing.remove(p);
-                Bukkit.getScheduler().runTaskLater(GenesisMC.getPlugin(), () -> {
-                    p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
-                    if (phasing.contains(p)) {
-                        p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.BOOLEAN, true);
-                    } else {
-                        p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.BOOLEAN, false);
+                new BukkitRunnable() {
+                    @Override
+                    public void run() {
+                        p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
+                        if (phasing.contains(p)) {
+                            p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.BOOLEAN, true);
+                        } else {
+                            p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.BOOLEAN, false);
+                        }
+                        DefaultChoose.DefaultChoose(p);
+                        removeItemPhantom(p);
+                        removeItemEnder(p);
+                        removeItemElytrian(p);
                     }
-                    DefaultChoose.DefaultChoose(p);
-                    removeItemPhantom(p);
-                    removeItemEnder(p);
-                    removeItemElytrian(p);
-                }, 1);
-                Bukkit.getScheduler().runTaskLater(GenesisMC.getPlugin(), () -> {
-                    if (launch_into_air.contains(p)) {
-                        ItemStack launchitem = new ItemStack(Material.FEATHER);
-                        ItemMeta launchmeta = launchitem.getItemMeta();
-                        launchmeta.setDisplayName(GRAY + "Launch");
-                        launchmeta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
-                        launchitem.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-                        launchitem.setItemMeta(launchmeta);
-                        p.getInventory().addItem(launchitem);
-                    }
-                    if (throw_ender_pearl.contains(p)) {
-                        ItemStack infinpearl = new ItemStack(Material.ENDER_PEARL);
-                        ItemMeta pearl_meta = infinpearl.getItemMeta();
-                        pearl_meta.setDisplayName(ChatColor.LIGHT_PURPLE + "Teleport");
-                        ArrayList<String> pearl_lore = new ArrayList();
-                        pearl_meta.setUnbreakable(true);
-                        pearl_meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
-                        pearl_meta.setLore(pearl_lore);
-                        infinpearl.setItemMeta(pearl_meta);
-                        p.getInventory().addItem(infinpearl);
-                    }
-                    if (phasing.contains(p)) {
-                        ItemStack spectatorswitch = new ItemStack(Material.PHANTOM_MEMBRANE);
-                        ItemMeta switch_meta = spectatorswitch.getItemMeta();
-                        switch_meta.setDisplayName(GRAY + "Phasing Form");
-                        ArrayList<String> pearl_lore = new ArrayList();
-                        switch_meta.setUnbreakable(true);
-                        switch_meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
-                        switch_meta.addItemFlags(ItemFlag.HIDE_ITEM_SPECIFICS);
-                        switch_meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-                        switch_meta.setLore(pearl_lore);
-                        spectatorswitch.setItemMeta(switch_meta);
-                        p.getInventory().addItem(spectatorswitch);
-                    }
-                    if(modify_world_spawn.contains(p)){
-                        ModifyPlayerSpawnPower modifyPlayerSpawnPower = new ModifyPlayerSpawnPower();
-                            if(origin.getPowerFileFromType("origins:modify_player_spawn").get("dimension", null).equals("minecraft:nether")){
-                                p.teleportAsync(modifyPlayerSpawnPower.NetherSpawn(origin.getPowerFileFromType("origins:modify_player_spawn").get("spawn_strategy", "default")));
-                            } else if (origin.getPowerFileFromType("origins:modify_player_spawn").get("dimension", null).equals("minecraft:the_end")) {
-                                p.teleportAsync(modifyPlayerSpawnPower.EndSpawn(origin.getPowerFileFromType("origins:modify_player_spawn").get("spawn_strategy", "default")));
-                            } else {
-                                p.teleportAsync(modifyPlayerSpawnPower.OverworldSpawn(origin.getPowerFileFromType("origins:modify_player_spawn").get("spawn_strategy", "default")));
+                }.runTaskLater(GenesisMC.getPlugin(), 1);
+                new BukkitRunnable() {
+                    @Override
+                    public void run() {
+                        if (modify_world_spawn.contains(p)) {
+                            ModifyPlayerSpawnPower modifyPlayerSpawnPower = new ModifyPlayerSpawnPower();
+                            for (PowerContainer power : origin.getMultiPowerFileFromType("origins:modify_player_spawn")) {
+                                if (power.get("dimension", null).equals("the_nether")) {
+                                    p.teleportAsync(modifyPlayerSpawnPower.NetherSpawn(power.get("spawn_strategy", "default")));
+                                } else if (power.get("dimension", null).equals("the_end")) {
+                                    p.teleportAsync(modifyPlayerSpawnPower.EndSpawn(power.get("spawn_strategy", "default")));
+                                } else {
+                                    p.teleportAsync(modifyPlayerSpawnPower.OverworldSpawn(power.get("spawn_strategy", "default")));
+                                }
                             }
+                        }
                     }
-                }, 2);
+                }.runTaskLater(GenesisMC.getPlugin(), 2);
                 OriginChangeEvent Event = new OriginChangeEvent(p);
                 getServer().getPluginManager().callEvent(Event);
             }

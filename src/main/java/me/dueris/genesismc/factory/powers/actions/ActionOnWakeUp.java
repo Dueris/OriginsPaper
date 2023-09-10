@@ -3,6 +3,7 @@ package me.dueris.genesismc.factory.powers.actions;
 import me.dueris.genesismc.entity.OriginPlayer;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.OriginContainer;
+import me.dueris.genesismc.utils.PowerContainer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -11,18 +12,26 @@ import org.bukkit.event.player.PlayerBedLeaveEvent;
 import java.util.ArrayList;
 
 public class ActionOnWakeUp extends CraftPower implements Listener {
+    Player p;
+
+    public ActionOnWakeUp() {
+        this.p = p;
+    }
+
     @Override
-    public void run() {
+    public void run(Player p) {
 
     }
 
     @EventHandler
-    public void w(PlayerBedLeaveEvent e){
-        if(!getPowerArray().contains(e.getPlayer())) return;
-        for(OriginContainer origin : OriginPlayer.getOrigin(e.getPlayer()).values()){
-            setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
-            ActionTypes.EntityActionType(e.getPlayer(), origin.getPowerFileFromType(getPowerFile()).getEntityAction());
-            ActionTypes.BlockActionType(e.getBed().getLocation(), origin.getPowerFileFromType(getPowerFile()).getEntityAction());
+    public void w(PlayerBedLeaveEvent e) {
+        if (!getPowerArray().contains(e.getPlayer())) return;
+        for (OriginContainer origin : OriginPlayer.getOrigin(e.getPlayer()).values()) {
+            for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
+                setActive(power.getTag(), true);
+                ActionTypes.EntityActionType(e.getPlayer(), power.getEntityAction());
+                ActionTypes.BlockActionType(e.getBed().getLocation(), power.getBlockAction());
+            }
         }
     }
 
@@ -38,9 +47,9 @@ public class ActionOnWakeUp extends CraftPower implements Listener {
 
     @Override
     public void setActive(String tag, Boolean bool) {
-        if(powers_active.containsKey(tag)){
+        if (powers_active.containsKey(tag)) {
             powers_active.replace(tag, bool);
-        }else{
+        } else {
             powers_active.put(tag, bool);
         }
     }

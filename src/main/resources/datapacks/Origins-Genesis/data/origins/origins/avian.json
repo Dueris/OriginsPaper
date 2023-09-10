@@ -1,0 +1,17 @@
+{
+  "powers": [
+    "origins:slow_falling",
+    "origins:fresh_air",
+    "origins:like_air",
+    "origins:tailwind",
+    "origins:lay_eggs",
+    "origins:vegetarian"
+  ],
+  "icon": {
+    "item": "minecraft:feather"
+  },
+  "order": 0,
+  "impact": 1,
+  "name": "Avian",
+  "description": "The Avian race has lost their ability to fly a long time ago. Now these peaceful creatures can be seen gliding from one place to another"
+}

@@ -1,0 +1,12 @@
+{
+  "type": "origins:attribute",
+  "modifier": {
+    "name": "Nine lives health reduction",
+    "attribute": "minecraft:generic.max_health",
+    "value": -2.0,
+    "operation": "addition"
+  },
+  "name": "Nine Lives",
+  "description": "You have 1 less heart of health than humans",
+  "hidden": false
+}

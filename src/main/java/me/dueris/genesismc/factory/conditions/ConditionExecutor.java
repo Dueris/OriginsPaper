@@ -1,121 +1,46 @@
 package me.dueris.genesismc.factory.conditions;
 
+import me.dueris.genesismc.entity.OriginPlayer;
+import me.dueris.genesismc.factory.CraftApoli;
+import me.dueris.genesismc.factory.conditions.biEntity.BiEntityCondition;
+import me.dueris.genesismc.factory.conditions.biome.BiomeCondition;
+import me.dueris.genesismc.factory.conditions.block.BlockCondition;
 import me.dueris.genesismc.factory.conditions.damage.DamageCondition;
 import me.dueris.genesismc.factory.conditions.entity.EntityCondition;
+import me.dueris.genesismc.factory.conditions.fluid.FluidCondition;
+import me.dueris.genesismc.factory.conditions.item.ItemCondition;
 import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.files.GenesisDataFiles;
 import me.dueris.genesismc.utils.OriginContainer;
-import org.bukkit.Bukkit;
+import me.dueris.genesismc.utils.PowerContainer;
+import org.bukkit.Fluid;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.inventory.ItemStack;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
-import javax.print.attribute.standard.JobKOctets;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 
+import static me.dueris.genesismc.factory.conditions.CraftCondition.conditionClasses;
+import static me.dueris.genesismc.factory.conditions.item.ItemCondition.getMeatMaterials;
+import static me.dueris.genesismc.factory.conditions.item.ItemCondition.getNonMeatMaterials;
 import static me.dueris.genesismc.factory.powers.CraftPower.findCraftPowerClasses;
 import static me.dueris.genesismc.factory.powers.Power.powers_active;
 
 public class ConditionExecutor {
-    public boolean check(String singular, String plural, Player p, OriginContainer origin, String powerfile, EntityDamageEvent dmgevent, Entity entity) {
-        if(origin == null) return true;
-        if(origin.getPowerFileFromType(powerfile) == null) return true;
-        for(HashMap<String, Object> condition : origin.getPowerFileFromType(powerfile).getConditionFromString(singular, plural)){
-            if(condition.get("type").equals("origins:and")){
-                JSONArray conditionsArray = (JSONArray) condition.get("conditions");
-                boolean allConditionsTrue = checkConditions(conditionsArray, p, entity, dmgevent);
-
-                if (allConditionsTrue) {
-                    return true;
-                } else {
-                    return false;
-                }
-            }else if(condition.get("type").equals("origins:or")){
-                JSONArray conditionsArray = (JSONArray) condition.get("conditions");
-                boolean anyConditionTrue = false;
-
-                for (Object subConditionObj : conditionsArray) {
-                    if (subConditionObj instanceof JSONObject) {
-                        JSONObject subCondition = (JSONObject) subConditionObj;
-                        boolean subConditionResult = checkSubCondition(subCondition, p, entity, dmgevent);
-                        if (subConditionResult) {
-                            return true;
-                        }
-                    }
-                }
-            }else if(condition.get("type").equals("origins:constant")){
-                return (boolean) condition.get("value");
-            }else if(condition.get("type").equals("origins:power_active")){
-                for(String string : powers_active.keySet()){
-                    String power = condition.get("power").toString();
-                    if(powers_active.containsKey(power)){
-                        if(powers_active.get(power)){
-                            return true;
-                        }else{
-                            return false;
-                        }
-                    }else{
-                        return false;
-                    }
-                }
-            }else if(condition.get("type").equals("origins:power_type")){
-                List<Class<? extends CraftPower>> craftPowerClasses = null;
-                try {
-                    craftPowerClasses = findCraftPowerClasses();
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-                for (Class<? extends CraftPower> c : craftPowerClasses) {
-                    String pt = condition.get("power_type").toString();
-                    try {
-                        if(c.newInstance().getPowerFile().equals(pt)){
-                            if(c.newInstance().getPowerArray().contains(p)) {
-                                return true;
-                            }else{
-                                return false;
-                            }
-                        }else{
-                            return false;
-                        }
-                    } catch (InstantiationException e) {
-                        throw new RuntimeException(e);
-                    } catch (IllegalAccessException e) {
-                        throw new RuntimeException(e);
-                    }
-                }
-            }else{
-                if (origin.getPowerFileFromType(powerfile).getConditionFromString(singular, plural) == null){
-                    return true;
-                }
-                if (dmgevent != null) {
-                    if (DamageCondition.check(condition, p, dmgevent) == "true"){
-                        return true;
-                    }
-                }
-                if (entity != null) {
-                    if (EntityCondition.check(condition, p, entity) == "true"){
-                        return true;
-                    }
-                }
-            }
-            return DamageCondition.check(condition, p, dmgevent) == "null" && EntityCondition.check(condition, p, entity) == "null";
-        }
-        return true;
-    }
-
-    private static boolean checkSubCondition(JSONObject subCondition, Player p, Entity entity, EntityDamageEvent dmgevent) {
+    private static boolean checkSubCondition(JSONObject subCondition, Player p, PowerContainer power, String powerfile, Entity actor, Entity target, Block block, Fluid fluid, ItemStack itemStack, EntityDamageEvent dmgevent, String powerFile) {
         if ("origins:and".equals(subCondition.get("type"))) {
             JSONArray conditionsArray = (JSONArray) subCondition.get("conditions");
             boolean allTrue = true;
 
             for (Object subConditionObj : conditionsArray) {
-                if (subConditionObj instanceof JSONObject) {
-                    JSONObject subSubCondition = (JSONObject) subConditionObj;
-                    boolean subSubConditionResult = checkSubCondition(subSubCondition, p, entity, dmgevent);
+                if (subConditionObj instanceof JSONObject subSubCondition) {
+                    boolean subSubConditionResult = checkSubCondition(subSubCondition, p, power, powerfile, actor, target, block, fluid, itemStack, dmgevent, powerFile);
                     if (!subSubConditionResult) {
                         allTrue = false;
                         break;
@@ -125,22 +50,72 @@ public class ConditionExecutor {
 
             return allTrue;
         } else {
-            if (dmgevent != null) {
-                return DamageCondition.check(subCondition, p, dmgevent).equals("true");
-            } else if (entity != null) {
-                return EntityCondition.check(subCondition, p, entity).equals("true");
+            boolean subConditionResult = false;
+
+            if (!subConditionResult && dmgevent != null) {
+                DamageCondition damageCondition = new DamageCondition();
+                var check = damageCondition.check(subCondition, p, power, powerfile, actor, target, block, fluid, itemStack, dmgevent);
+                if (check.isPresent()) {
+                    subConditionResult = (boolean) check.get();
+                }
             }
-            return false;
+
+            if (!subConditionResult && actor != null) {
+                EntityCondition entityCondition = new EntityCondition();
+                var check = entityCondition.check(subCondition, p, power, powerfile, actor, target, block, fluid, itemStack, dmgevent);
+                if (check.isPresent()) {
+                    subConditionResult = (boolean) check.get();
+                }
+            }
+
+            if (!subConditionResult && actor != null && target != null) {
+                BiEntityCondition biEntityCondition = new BiEntityCondition();
+                var check = biEntityCondition.check(subCondition, p, power, powerfile, actor, target, block, fluid, itemStack, dmgevent);
+                if (check.isPresent()) {
+                    subConditionResult = (boolean) check.get();
+                }
+            }
+
+            if (!subConditionResult && block != null) {
+                BlockCondition blockCondition = new BlockCondition();
+                var check = blockCondition.check(subCondition, p, power, powerfile, actor, target, block, fluid, itemStack, dmgevent);
+                if (check.isPresent()) {
+                    subConditionResult = (boolean) check.get();
+                }
+
+                BiomeCondition biomeCondition = new BiomeCondition();
+                var check2 = biomeCondition.check(subCondition, p, power, powerfile, actor, target, block, fluid, itemStack, dmgevent);
+                if (check2.isPresent()) {
+                    subConditionResult = (boolean) check2.get();
+                }
+            }
+
+            if (!subConditionResult && fluid != null) {
+                FluidCondition fluidCondition = new FluidCondition();
+                var check = fluidCondition.check(subCondition, p, power, powerfile, actor, target, block, fluid, itemStack, dmgevent);
+                if (check.isPresent()) {
+                    subConditionResult = (boolean) check.get();
+                }
+            }
+
+            if (!subConditionResult && itemStack != null) {
+                ItemCondition condition = new ItemCondition();
+                var check = condition.check(subCondition, p, power, powerfile, actor, target, block, fluid, itemStack, dmgevent);
+                if (check.isPresent()) {
+                    subConditionResult = (boolean) check.get();
+                }
+            }
+
+            return subConditionResult;
         }
     }
 
-    public static boolean checkConditions(JSONArray conditionsArray, Player p, Entity entity, EntityDamageEvent dmgevent) {
+    public static boolean checkConditions(JSONArray conditionsArray, Player p, PowerContainer power, String powerfile, Entity actor, Entity target, Block block, Fluid fluid, ItemStack itemStack, EntityDamageEvent dmgevent, String powerFile) {
         boolean allTrue = true;
 
         for (Object subConditionObj : conditionsArray) {
-            if (subConditionObj instanceof JSONObject) {
-                JSONObject subCondition = (JSONObject) subConditionObj;
-                boolean subConditionResult = checkSubCondition(subCondition, p, entity, dmgevent);
+            if (subConditionObj instanceof JSONObject subCondition) {
+                boolean subConditionResult = checkSubCondition(subCondition, p, power, powerfile, actor, target, block, fluid, itemStack, dmgevent, powerFile);
                 if (!subConditionResult) {
                     allTrue = false;
                     break;
@@ -149,5 +124,111 @@ public class ConditionExecutor {
         }
 
         return allTrue;
+    }
+
+    public boolean check(String singular, String plural, Player p, PowerContainer powerContainer, String powerfile, Entity actor, Entity target, Block block, Fluid fluid, ItemStack itemStack, EntityDamageEvent dmgevent) {
+        if (powerContainer == null) return true;
+        if (powerContainer.getConditionFromString(singular, plural) == null) return true;
+        if (powerContainer.getConditionFromString(singular, plural).isEmpty()) return true;
+        for (HashMap<String, Object> condition : powerContainer.getConditionFromString(singular, plural)) {
+            if (condition.get("type").equals("origins:and")) {
+                JSONArray conditionsArray = (JSONArray) condition.get("conditions");
+
+                return checkConditions(conditionsArray, p, powerContainer, powerfile, actor, target, block, fluid, itemStack, dmgevent, powerfile);
+            } else if (condition.get("type").equals("origins:or")) {
+                JSONArray conditionsArray = (JSONArray) condition.get("conditions");
+                boolean anyConditionTrue = false;
+
+                for (Object subConditionObj : conditionsArray) {
+                    if (subConditionObj instanceof JSONObject subCondition) {
+                        boolean subConditionResult = checkSubCondition(subCondition, p, powerContainer, powerfile, actor, target, block, fluid, itemStack, dmgevent, powerfile);
+                        if (subConditionResult) {
+                            return true;
+                        }
+                    }
+                }
+            } else if (condition.get("type").equals("origins:constant")) {
+                return (boolean) condition.get("value");
+            } else if (condition.get("type").equals("origins:power_active")) {
+                if (condition.get("power").toString().contains("*")) {
+                    String[] powerK = condition.get("power").toString().split("\\*");
+                    for (String string : powers_active.keySet()) {
+                        if (string.startsWith(powerK[0]) && string.endsWith(powerK[1])) {
+                            return powers_active.get(string);
+                        }
+                    }
+                } else {
+                    String power = condition.get("power").toString();
+                    if (powers_active.containsKey(power)) {
+                        return powers_active.get(power);
+                    } else {
+                        return false;
+                    }
+                }
+            } else if (condition.get("type").equals("origins:power")) {
+                for (OriginContainer origin : CraftApoli.getOrigins()) {
+                    for (String string : origin.getPowers()) {
+                        String power = condition.get("power").toString();
+                        return string.equalsIgnoreCase(power);
+                    }
+                }
+            } else if (condition.get("type").equals("origins:origin")) {
+                if (OriginPlayer.hasOrigin(p, condition.get("origin").toString())) return true;
+            } else if (condition.get("type").equals("origins:power_type")) {
+                List<Class<? extends CraftPower>> craftPowerClasses;
+                try {
+                    craftPowerClasses = findCraftPowerClasses();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                for (Class<? extends CraftPower> c : craftPowerClasses) {
+                    String pt = condition.get("power_type").toString();
+                    try {
+                        if (c.newInstance().getPowerFile().equals(pt)) {
+                            return c.newInstance().getPowerArray().contains(p);
+                        } else {
+                            return false;
+                        }
+                    } catch (InstantiationException | IllegalAccessException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            } else if (condition.get("type").toString().equalsIgnoreCase("origins:meat")) {
+                boolean inverted = Boolean.valueOf(condition.getOrDefault("inverted", false).toString());
+                if (itemStack.getType().isEdible()) {
+                    if (inverted) {
+                        if (getNonMeatMaterials().contains(itemStack.getType())) {
+                            return true;
+                        }
+                    } else {
+                        if (getMeatMaterials().contains(itemStack.getType())) {
+                            return true;
+                        }
+                    }
+                } else {
+                    return false;
+                }
+            } else {
+                String boolResult = "empty";
+                try {
+                    for (Class<? extends Condition> conditionClass : conditionClasses) {
+                        Optional<Boolean> bool = conditionClass.newInstance().check(condition, p, powerContainer, powerfile, actor, target, block, fluid, itemStack, dmgevent);
+                        if (bool.isPresent() && !boolResult.equalsIgnoreCase("true")) {
+                            boolResult = String.valueOf(bool.get());
+                        }
+                    }
+                    return Boolean.parseBoolean(boolResult);
+                } catch (InstantiationException e) {
+                    throw new RuntimeException(e);
+                } catch (IllegalAccessException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+        return false;
+    }
+
+    public static Optional<Boolean> getResult(boolean inverted, boolean condition) {
+        return Optional.of(inverted != condition);
     }
 }

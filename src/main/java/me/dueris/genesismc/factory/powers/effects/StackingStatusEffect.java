@@ -4,6 +4,7 @@ import me.dueris.genesismc.entity.OriginPlayer;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.OriginContainer;
+import me.dueris.genesismc.utils.PowerContainer;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
@@ -13,75 +14,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class StackingStatusEffect extends CraftPower {
-    @Override
-    public void run() {
-        for(Player p : Bukkit.getOnlinePlayers()){
-            if(getPowerArray().contains(p)){
-                for(OriginContainer origin : OriginPlayer.getOrigin(p).values()){
-                    ConditionExecutor executor = new ConditionExecutor();
-                    if(executor.check("condition", "conditions", p, origin, getPowerFile(), null, p)){
-                        if(!getPowerArray().contains(p)) return;
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
-                        applyStackingEffect(p, calculateStacks(p, 10, origin), origin);
-                    }else{
-                        if(!getPowerArray().contains(p)) return;
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
-                    }
-                }
-            }
-        }
-    }
-
-    private int calculateStacks(Player player, int durationPerStack, OriginContainer origin) {
-        double healthPercentage = player.getHealth() / player.getMaxHealth();
-        double saturationPercentage = player.getSaturation() / 20.0;
-
-        double combinedPercentage = (healthPercentage + saturationPercentage) / 2.0;
-
-        int minStacks = Integer.parseInt(origin.getPowerFileFromType(getPowerFile()).get("min_stacks"));
-        int maxStacks = Integer.parseInt(origin.getPowerFileFromType(getPowerFile()).get("max_stacks"));
-        int calculatedStacks = (int) Math.round(combinedPercentage * (maxStacks - minStacks) + minStacks);
-
-        int actualDuration = calculatedStacks * durationPerStack;
-
-        return actualDuration;
-    }
-
-    private void applyStackingEffect(Player player, int stacks, OriginContainer origin) {
-        int minStacks = Integer.parseInt(origin.getPowerFileFromType(getPowerFile()).get("min_stacks"));
-        int maxStacks = Integer.parseInt(origin.getPowerFileFromType(getPowerFile()).get("max_stacks"));
-        int durationPerStack = 100;
-
-        int clampedStacks = Math.max(minStacks, Math.min(stacks, maxStacks));
-
-        int totalDuration = clampedStacks * durationPerStack;
-
-        for (HashMap<String, Object> effect : origin.getPowerFileFromType(getPowerFile()).getSingularAndPlural("effect", "effects")) {
-
-            PotionEffectType potionEffectType = getPotionEffectType(effect.get("effect").toString());
-            if (potionEffectType != null) {
-                try {
-                    player.addPotionEffect(new PotionEffect(potionEffectType, 5, 1, false, false, false));
-                } catch (Exception e){
-                    //AHHHHHHHHHH
-                }
-            } else {
-                Bukkit.getLogger().warning("Unknown effect ID: " + effect.get("effect").toString());
-            }
-        }
-    }
-
-    @Override
-    public void setActive(String tag, Boolean bool){
-        if(powers_active.containsKey(tag)){
-            powers_active.replace(tag, bool);
-        }else{
-            powers_active.put(tag, bool);
-        }
-    }
-
-    
-
     public static PotionEffectType getPotionEffectType(String effectString) {
         if (effectString == null) {
             return null;
@@ -144,8 +76,74 @@ public class StackingStatusEffect extends CraftPower {
                 return PotionEffectType.UNLUCK;
             case "minecraft:darkness":
                 return PotionEffectType.DARKNESS;
+            case "minecraft:hero_of_the_village":
+                return PotionEffectType.HERO_OF_THE_VILLAGE;
             default:
                 return null;
+        }
+    }
+
+    Player p;
+
+    public StackingStatusEffect() {
+        this.p = p;
+    }
+
+    @Override
+    public void run(Player p) {
+        if (getPowerArray().contains(p)) {
+            for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
+                ConditionExecutor executor = new ConditionExecutor();
+                for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
+                    if (executor.check("condition", "conditions", p, power, getPowerFile(), p, null, null, null, p.getItemInHand(), null)) {
+                        setActive(power.getTag(), true);
+                        applyStackingEffect(p, calculateStacks(p, 10, origin, power), origin, power);
+                    } else {
+                        setActive(power.getTag(), false);
+                    }
+                }
+            }
+        }
+    }
+
+    private int calculateStacks(Player player, int durationPerStack, OriginContainer origin, PowerContainer power) {
+        double healthPercentage = player.getHealth() / player.getMaxHealth();
+        double saturationPercentage = player.getSaturation() / 20.0;
+
+        double combinedPercentage = (healthPercentage + saturationPercentage) / 2.0;
+
+        int minStacks = Integer.parseInt(power.get("min_stacks"));
+        int maxStacks = Integer.parseInt(power.get("max_stacks"));
+        int calculatedStacks = (int) Math.round(combinedPercentage * (maxStacks - minStacks) + minStacks);
+
+        int actualDuration = calculatedStacks * durationPerStack;
+
+        return actualDuration;
+    }
+
+    private void applyStackingEffect(Player player, int stacks, OriginContainer origin, PowerContainer power) {
+
+        for (HashMap<String, Object> effect : power.getSingularAndPlural("effect", "effects")) {
+
+            PotionEffectType potionEffectType = getPotionEffectType(effect.get("effect").toString());
+            if (potionEffectType != null) {
+                try {
+                    player.addPotionEffect(new PotionEffect(potionEffectType, 5, 1, false, false, false));
+                } catch (Exception e) {
+                    //AHHHHHHHHHH
+                }
+            } else {
+                Bukkit.getLogger().warning("Unknown effect ID: " + effect.get("effect").toString());
+            }
+        }
+    }
+
+    @Override
+    public void setActive(String tag, Boolean bool) {
+        if (powers_active.containsKey(tag)) {
+            powers_active.replace(tag, bool);
+        } else {
+            powers_active.put(tag, bool);
         }
     }
 

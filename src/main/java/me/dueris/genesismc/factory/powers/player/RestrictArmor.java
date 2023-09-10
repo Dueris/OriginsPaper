@@ -5,65 +5,82 @@ import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.OriginContainer;
 import me.dueris.genesismc.utils.PowerContainer;
+import me.dueris.genesismc.utils.translation.LangConfig;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import static me.dueris.genesismc.utils.ArmorUtils.getArmorValue;
 
 public class RestrictArmor extends CraftPower {
 
-    @Override
-    public void setActive(String tag, Boolean bool){
-        if(powers_active.containsKey(tag)){
-            powers_active.replace(tag, bool);
-        }else{
-            powers_active.put(tag, bool);
-        }
-    }
-
-    
-
     private Long interval;
-
-    private int ticksE;
+    private final int ticksE;
 
     public RestrictArmor() {
         this.interval = 1L;
         this.ticksE = 0;
     }
 
+    public static boolean compareValues(double value1, String comparison, double value2) {
+        switch (comparison) {
+            case ">":
+                return value1 > value2;
+            case ">=":
+                return value1 >= value2;
+            case "<":
+                return value1 < value2;
+            case "<=":
+                return value1 <= value2;
+            case "==":
+                return value1 == value2;
+            case "=":
+                return value1 == value2;
+            default:
+                return false;
+        }
+    }
+
     @Override
-    public void run() {
-        for (Player p : Bukkit.getOnlinePlayers()) {
-            if (restrict_armor.contains(p)) {
-                for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
-                    ConditionExecutor executor = new ConditionExecutor();
-                    if(executor.check("condition", "conditions", p, origin, getPowerFile(), null, p)){
-                        if(!getPowerArray().contains(p)) return;
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
-                        PowerContainer power = origin.getPowerFileFromType("origins:restrict_armor");
-                        if (power == null) continue;
-                        interval = power.getTickRate();
-                        if (power.getTickRate() != null) {
-                            if (power.getInterval() == null) {
-                                Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "Unable to parse interval for origins:restrict_armor");
-                                return;
-                            }
-                            if (ticksE < interval) {
-                                ticksE++;
-                                return;
-                            } else {
+    public void setActive(String tag, Boolean bool) {
+        if (powers_active.containsKey(tag)) {
+            powers_active.replace(tag, bool);
+        } else {
+            powers_active.put(tag, bool);
+        }
+    }
 
-                                ticksE = 0;
-                            }
+    /*
 
-                        } else {
-                            //not conditioned
+     */
+
+    Player p;
+
+    public void run(Player p, HashMap<Player, Integer> ticksEMap) {
+        ticksEMap.putIfAbsent(p, 0);
+
+        if (getPowerArray().contains(p)) {
+            for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
+                for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
+                    if (power == null) continue;
+                    if (power.getInterval() == null) {
+                        Bukkit.getLogger().warning(LangConfig.getLocalizedString(p, "powers.errors.action_over_time"));
+                        return;
+                    }
+
+                    interval = power.getInterval();
+                    int ticksE = ticksEMap.getOrDefault(p, 0);
+                    if (ticksE <= interval) {
+                        ticksE++;
+                        ticksEMap.put(p, ticksE);
+                    } else {
+                        ConditionExecutor executor = new ConditionExecutor();
+                        if (executor.check("condition", "conditions", p, power, getPowerFile(), p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
+                            setActive(power.getTag(), true);
                             boolean headb = true;
                             boolean chestb = true;
                             boolean legsb = true;
@@ -96,7 +113,6 @@ public class RestrictArmor extends CraftPower {
                                 }
                             } else if (power.getHead().get("type").toString().equalsIgnoreCase("origins:ingredient")) {
                                 if (!headb) return;
-                                //need to code some methods for that
                             }
 
                             if (power.getChest().get("type").toString().equalsIgnoreCase("origins:armor_value")) {
@@ -111,7 +127,6 @@ public class RestrictArmor extends CraftPower {
                                 }
                             } else if (power.getChest().get("type").toString().equalsIgnoreCase("origins:ingredient")) {
                                 if (!chestb) return;
-                                //need to code some methods for that
                             }
 
                             if (power.getLegs().get("type").toString().equalsIgnoreCase("origins:armor_value")) {
@@ -126,7 +141,6 @@ public class RestrictArmor extends CraftPower {
                                 }
                             } else if (power.getLegs().get("type").toString().equalsIgnoreCase("origins:ingredient")) {
                                 if (!legsb) return;
-                                //need to code some methods for that
                             }
 
                             if (power.getFeet().get("type").toString().equalsIgnoreCase("origins:armor_value")) {
@@ -141,17 +155,20 @@ public class RestrictArmor extends CraftPower {
                                 }
                             } else if (power.getFeet().get("type").toString().equalsIgnoreCase("origins:ingredient")) {
                                 if (!feetb) return;
-                                //need to code some methods for that
                             }
+                        } else {
+                            setActive(power.getTag(), false);
                         }
-                    }else{
-                        if(!getPowerArray().contains(p)) return;
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
+                        ticksEMap.put(p, 0);
                     }
-
                 }
             }
         }
+    }
+
+    @Override
+    public void run(Player p) {
+
     }
 
     @Override
@@ -162,24 +179,5 @@ public class RestrictArmor extends CraftPower {
     @Override
     public ArrayList<Player> getPowerArray() {
         return restrict_armor;
-    }
-
-    public static boolean compareValues(double value1, String comparison, double value2) {
-        switch (comparison) {
-            case ">":
-                return value1 > value2;
-            case ">=":
-                return value1 >= value2;
-            case "<":
-                return value1 < value2;
-            case "<=":
-                return value1 <= value2;
-            case "==":
-                return value1 == value2;
-            case "=":
-                return value1 == value2;
-            default:
-                return false;
-        }
     }
 }

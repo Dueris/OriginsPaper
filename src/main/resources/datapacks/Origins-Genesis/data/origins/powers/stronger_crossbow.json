@@ -1,0 +1,23 @@
+{
+  "type": "origins:modify_projectile_damage",
+  "hidden": false,
+  "name": "Piglin Training",
+  "description": "You deal more damage with a crossbow than normal",
+  "damage_condition": {
+    "type": "origins:attacker",
+    "entity_condition": {
+      "type": "origins:equipped_item",
+      "equipment_slot": "mainhand",
+      "item_condition": {
+        "type": "origins:ingredient",
+        "ingredient": {
+          "item": "minecraft:crossbow"
+        }
+      }
+    }
+  },
+  "modifier": {
+    "operation": "addition",
+    "value": 3.0
+  }
+}

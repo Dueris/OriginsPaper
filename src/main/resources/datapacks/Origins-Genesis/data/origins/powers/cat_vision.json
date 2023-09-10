@@ -1,0 +1,12 @@
+{
+  "type": "origins:night_vision",
+  "strength": 0.4,
+  "condition": {
+    "type": "origins:submerged_in",
+    "fluid": "minecraft:water",
+    "inverted": true
+  },
+  "name": "Nocturnal",
+  "description": "You can slightly see in the dark when not in water",
+  "hidden": false
+}

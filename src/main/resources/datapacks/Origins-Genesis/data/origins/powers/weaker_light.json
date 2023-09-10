@@ -1,0 +1,33 @@
+{
+  "type": "origins:stacking_status_effect",
+  "condition": {
+    "type": "origins:or",
+    "conditions": [
+      {
+        "type": "origins:exposed_to_sun"
+      },
+      {
+        "type": "origins:light_level",
+        "comparison": ">",
+        "compare_to": 5
+      }
+    ]
+  },
+  "min_stacks": 0,
+  "max_stacks": 1,
+  "duration_per_stack": 10,
+  "effects": [
+    {
+      "effect": "minecraft:weakness",
+      "amplifier": 1,
+      "duration": 10
+    },
+    {
+      "effect": "minecraft:slowness",
+      "amplifier": 2,
+      "duration": 10
+    }
+  ],
+  "name": "Afraid of the Light",
+  "description": "You are much weaker in the light"
+}

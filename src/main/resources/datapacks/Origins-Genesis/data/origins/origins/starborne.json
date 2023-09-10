@@ -1,0 +1,29 @@
+{
+  "powers": [
+    "star:descriptions/velocity",
+    "star:descriptions/starbeam",
+    "star:descriptions/strength",
+    "star:descriptions/death",
+    "star:descriptions/fire",
+    "star:descriptions/slow",
+    "star:descriptions/blindness",
+    "star:descriptions/credits",
+    "star:death",
+    "star:cooldown",
+    "star:cooldown2",
+    "star:fire",
+    "star:strength",
+    "star:strength2",
+    "star:slow",
+    "star:velocity",
+    "star:blindness",
+    "star:lightninginvul",
+    "star:starlaser",
+    "star:particles"
+  ],
+  "icon": "minecraft:nether_star",
+  "order": 0,
+  "impact": 3,
+  "name": "Starborne",
+  "description": "Being born from the stars, you are a nonviolent, star-obsessed, mysterious, and potentially powerful entity that fell from the stars down to this blocky world we reside."
+}

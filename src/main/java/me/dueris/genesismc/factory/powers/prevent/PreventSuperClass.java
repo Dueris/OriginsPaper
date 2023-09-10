@@ -1,19 +1,10 @@
 package me.dueris.genesismc.factory.powers.prevent;
 
-import me.dueris.genesismc.GenesisMC;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 
 public class PreventSuperClass {
-    public void runTasks(){
-        Bukkit.getServer().getPluginManager().registerEvents(new PreventBeingUsed(), GenesisMC.getPlugin());
-        Bukkit.getServer().getPluginManager().registerEvents(new PreventBlockSelection(), GenesisMC.getPlugin());
-        Bukkit.getServer().getPluginManager().registerEvents(new PreventBlockUse(), GenesisMC.getPlugin());
-        Bukkit.getServer().getPluginManager().registerEvents(new PreventDeath(), GenesisMC.getPlugin());
-    }
-
     public static ArrayList<Player> prevent_being_used = new ArrayList<>();
     public static ArrayList<Player> prevent_block_selection = new ArrayList<>();
     public static ArrayList<Player> prevent_block_use = new ArrayList<>();
@@ -25,4 +16,5 @@ public class PreventSuperClass {
     public static ArrayList<Player> prevent_item_use = new ArrayList<>();
     public static ArrayList<Player> prevent_sleep = new ArrayList<>();
     public static ArrayList<Player> prevent_sprinting = new ArrayList<>();
+
 }

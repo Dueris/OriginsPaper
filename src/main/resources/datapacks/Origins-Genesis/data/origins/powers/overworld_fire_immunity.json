@@ -1,0 +1,28 @@
+{
+  "type": "origins:multiple",
+  "fire_immunity": {
+    "type": "origins:fire_immunity",
+    "condition": {
+      "type": "origins:dimension",
+      "dimension": "minecraft:overworld"
+    },
+    "hidden": true
+  },
+  "slowness": {
+    "type": "origins:stacking_status_effect",
+    "min_stacks": 0,
+    "max_stacks": 1,
+    "duration_per_stack": 10,
+    "effect": {
+      "effect": "minecraft:slowness",
+      "amplifier": 1,
+      "duration": 5
+    },
+    "condition": {
+      "type": "origins:dimension",
+      "dimension": "minecraft:overworld"
+    },
+    "hidden": true
+  },
+  "hidden": true
+}

@@ -1,0 +1,64 @@
+{
+  "type": "origins:action_over_time",
+  "hidden": false,
+  "name": "Decaying Essence",
+  "description": "Over time your armor slowly disintegrates",
+  "interval": 112,
+  "entity_action": {
+    "type": "origins:and",
+    "actions": [
+      {
+        "type": "origins:chance",
+        "action": {
+          "type": "origins:modify_inventory",
+          "slot": "armor.head",
+          "item_action": {
+            "type": "origins:damage",
+            "amount": 1,
+            "ignore_unbreaking": false
+          }
+        },
+        "chance": 0.1
+      },
+      {
+        "type": "origins:chance",
+        "action": {
+          "type": "origins:modify_inventory",
+          "slot": "armor.chest",
+          "item_action": {
+            "type": "origins:damage",
+            "amount": 1,
+            "ignore_unbreaking": false
+          }
+        },
+        "chance": 0.1
+      },
+      {
+        "type": "origins:chance",
+        "action": {
+          "type": "origins:modify_inventory",
+          "slot": "armor.legs",
+          "item_action": {
+            "type": "origins:damage",
+            "amount": 1,
+            "ignore_unbreaking": false
+          }
+        },
+        "chance": 0.1
+      },
+      {
+        "type": "origins:chance",
+        "action": {
+          "type": "origins:modify_inventory",
+          "slot": "armor.feet",
+          "item_action": {
+            "type": "origins:damage",
+            "amount": 1,
+            "ignore_unbreaking": false
+          }
+        },
+        "chance": 0.1
+      }
+    ]
+  }
+}

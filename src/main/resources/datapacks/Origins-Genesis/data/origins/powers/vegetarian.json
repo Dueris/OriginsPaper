@@ -1,0 +1,9 @@
+{
+  "type": "origins:prevent_item_use",
+  "item_condition": {
+    "type": "origins:meat"
+  },
+  "name": "Vegetarian",
+  "description": "You can't digest any meat",
+  "hidden": false
+}

@@ -1,9 +1,9 @@
 package me.dueris.genesismc.utils;
 
+import me.dueris.genesismc.factory.powers.CraftPower;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
-import java.awt.*;
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -69,20 +69,6 @@ public class PowerContainer implements Serializable {
     }
 
     /**
-     * Changes the name of the power.
-     */
-    public void setName(String newName) {
-        this.powerFile.replace("name", newName);
-    }
-
-    /**
-     * Changes the description of the power.
-     */
-    public void setDescription(String newDescription) {
-        this.powerFile.replace("description", newDescription);
-    }
-
-    /**
      * @return The name of the power. Will return "No Name" if there is no power name present.
      */
     public String getName() {
@@ -92,12 +78,26 @@ public class PowerContainer implements Serializable {
     }
 
     /**
+     * Changes the name of the power.
+     */
+    public void setName(String newName) {
+        this.powerFile.replace("name", newName);
+    }
+
+    /**
      * @return The description of the power. Will return "No Description" if there is no description present.
      */
     public String getDescription() {
         Object description = this.powerFile.get("description");
         if (description == null) return "No Description.";
         return (String) description;
+    }
+
+    /**
+     * Changes the description of the power.
+     */
+    public void setDescription(String newDescription) {
+        this.powerFile.replace("description", newDescription);
     }
 
     /**
@@ -118,6 +118,19 @@ public class PowerContainer implements Serializable {
         return (String) type;
     }
 
+    public Class<? extends CraftPower> getCraftPowerClass() {
+        for (Class<? extends CraftPower> c : CraftPower.getRegistered()) {
+            try {
+                if (c.newInstance().getPowerFile().equalsIgnoreCase(getType())) return c;
+            } catch (InstantiationException e) {
+                throw new RuntimeException(e);
+            } catch (IllegalAccessException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        return null;
+    }
+
     /**
      * @return Whether the elytra should be displayed. Will return false if "render_elytra" is not present.
      */
@@ -136,10 +149,10 @@ public class PowerContainer implements Serializable {
     /**
      * @return The value "strength" from the power file
      */
-    public Long getStrength() {
+    public Double getStrength() {
         Object render = powerFile.get("strength");
-        if (render == null) return 1L;
-        return (long) render;
+        if (render == null) return 1.3;
+        return (double) render;
     }
 
     public String getModelRenderType() {
@@ -153,7 +166,7 @@ public class PowerContainer implements Serializable {
      */
     public Long getInterval() {
         Object render = powerFile.get("interval");
-        if (render == null) return 10L;
+        if (render == null) return 1L;
         return (long) render;
     }
 
@@ -242,6 +255,11 @@ public class PowerContainer implements Serializable {
         return type.toString();
     }
 
+    public Object getObject(String thing) {
+        Object type = powerFile.get(thing);
+        return type;
+    }
+
     public HashMap<String, Object> getJsonHashMap(String thing) {
         Object obj = powerFile.get(thing);
         if (obj == null) return new HashMap<>();
@@ -283,19 +301,17 @@ public class PowerContainer implements Serializable {
      */
     public List<HashMap<String, Object>> getPossibleModifiers(String singular, String plural) {
         Object obj = powerFile.get(singular);
-        if(obj == null){
+        if (obj == null) {
             obj = powerFile.get(plural);
         }
 
         List<HashMap<String, Object>> result = new ArrayList<>();
 
-        if(obj instanceof JSONArray){
-            JSONArray jsonArray = (JSONArray) obj;
-            for(Object item : jsonArray){
-                if(item instanceof JSONObject){
-                    JSONObject jsonObject = (JSONObject) item;
+        if (obj instanceof JSONArray jsonArray) {
+            for (Object item : jsonArray) {
+                if (item instanceof JSONObject jsonObject) {
                     HashMap<String, Object> itemMap = new HashMap<>();
-                    for(Object innerKey : jsonObject.keySet()){
+                    for (Object innerKey : jsonObject.keySet()) {
                         String string_key = (String) innerKey;
                         Object value = jsonObject.get(string_key);
                         itemMap.put(string_key, value);
@@ -306,7 +322,7 @@ public class PowerContainer implements Serializable {
         } else if (obj instanceof JSONObject) {
             JSONObject jsonObject = (JSONObject) obj;
             HashMap<String, Object> itemMap = new HashMap<>();
-            for(Object innerKey : jsonObject.keySet()){
+            for (Object innerKey : jsonObject.keySet()) {
                 String string_key = (String) innerKey;
                 Object value = jsonObject.get(string_key);
                 itemMap.put(string_key, value);
@@ -582,19 +598,17 @@ public class PowerContainer implements Serializable {
      */
     public List<HashMap<String, Object>> getConditionFromString(String singular, String plural) {
         Object obj = powerFile.get(singular);
-        if(obj == null){
+        if (obj == null) {
             obj = powerFile.get(plural);
         }
 
         List<HashMap<String, Object>> result = new ArrayList<>();
 
-        if(obj instanceof JSONArray){
-            JSONArray jsonArray = (JSONArray) obj;
-            for(Object item : jsonArray){
-                if(item instanceof JSONObject){
-                    JSONObject jsonObject = (JSONObject) item;
+        if (obj instanceof JSONArray jsonArray) {
+            for (Object item : jsonArray) {
+                if (item instanceof JSONObject jsonObject) {
                     HashMap<String, Object> itemMap = new HashMap<>();
-                    for(Object innerKey : jsonObject.keySet()){
+                    for (Object innerKey : jsonObject.keySet()) {
                         String string_key = (String) innerKey;
                         Object value = jsonObject.get(string_key);
                         itemMap.put(string_key, value);
@@ -605,7 +619,7 @@ public class PowerContainer implements Serializable {
         } else if (obj instanceof JSONObject) {
             JSONObject jsonObject = (JSONObject) obj;
             HashMap<String, Object> itemMap = new HashMap<>();
-            for(Object innerKey : jsonObject.keySet()){
+            for (Object innerKey : jsonObject.keySet()) {
                 String string_key = (String) innerKey;
                 Object value = jsonObject.get(string_key);
                 itemMap.put(string_key, value);
@@ -623,11 +637,9 @@ public class PowerContainer implements Serializable {
 
         List<HashMap<String, Object>> result = new ArrayList<>();
 
-        if (obj instanceof JSONArray) {
-            JSONArray jsonArray = (JSONArray) obj;
+        if (obj instanceof JSONArray jsonArray) {
             for (Object item : jsonArray) {
-                if (item instanceof JSONObject) {
-                    JSONObject jsonObject = (JSONObject) item;
+                if (item instanceof JSONObject jsonObject) {
                     HashMap<String, Object> itemMap = new HashMap<>();
                     for (Object innerKey : jsonObject.keySet()) {
                         String stringKey = (String) innerKey;
@@ -877,7 +889,7 @@ public class PowerContainer implements Serializable {
     }
 
     public JSONObject getItemAction() {
-        Object obj = powerFile.get("bientity_action");
+        Object obj = powerFile.get("item_action");
         if (obj instanceof JSONObject modifier) {
             return modifier;
         }
@@ -893,7 +905,7 @@ public class PowerContainer implements Serializable {
     }
 
     public JSONObject getEntityAction() {
-        Object obj = powerFile.get("bientity_action");
+        Object obj = powerFile.get("entity_action");
         if (obj instanceof JSONObject modifier) {
             return modifier;
         }

@@ -8,7 +8,6 @@ import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.entity.Player;
 
 import java.io.File;
 
@@ -35,7 +34,7 @@ public class LangConfig {
 
     }
 
-    public static File getFile(String string){
+    public static File getFile(String string) {
         return GenesisDataFiles.getFile(string);
     }
 

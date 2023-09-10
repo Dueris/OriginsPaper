@@ -4,98 +4,29 @@ import me.dueris.genesismc.entity.OriginPlayer;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.OriginContainer;
+import me.dueris.genesismc.utils.PowerContainer;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
 
-import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BinaryOperator;
 
-import static me.dueris.genesismc.factory.powers.player.attributes.AttributeHandler.getOperationMappingsFloat;
+import static me.dueris.genesismc.factory.powers.player.attributes.AttributeHandler.getOperationMappingsDouble;
 import static me.dueris.genesismc.factory.powers.value_modifying.ValueModifyingSuperClass.modify_food;
 
 public class ModifyFoodPower extends CraftPower implements Listener {
 
-    @Override
-    public void setActive(String tag, Boolean bool){
-        if(powers_active.containsKey(tag)){
-            powers_active.replace(tag, bool);
-        }else{
-            powers_active.put(tag, bool);
-        }
-    }
-
-    
-
-    @EventHandler
-    public void saturationorwhateverRUN(PlayerItemConsumeEvent e) {
-        Player player = e.getPlayer();
-        for (OriginContainer origin : OriginPlayer.getOrigin(player).values()) {
-            if (modify_food.contains(player)) {
-                ConditionExecutor conditionExecutor = new ConditionExecutor();
-                if (conditionExecutor.check("item_condition", "item_condition", player, origin, "origins:modify_food", null, player)) {
-                    if (modify_food.contains(player)) {
-                        if (origin.getPowerFileFromType("origins:modify_food").getJsonHashMap("food_modifier") != null) {
-                            Map.Entry<Double, Double> modifiers = getModifiers(player, origin);
-
-                            double modifiedFoodLevel = player.getFoodLevel() * modifiers.getKey();
-                            modifiedFoodLevel = Math.min(modifiedFoodLevel, 20.0);
-
-                            player.setFoodLevel((int) modifiedFoodLevel);
-                            if(!getPowerArray().contains(player)) return;
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
-                        }
-                        if (origin.getPowerFileFromType("origins:modify_food").getJsonHashMap("saturation_modifier") != null) {
-                            Map.Entry<Double, Double> modifiers = getModifiers(player, origin);
-
-                            double modifiedSaturation = player.getSaturation() * modifiers.getValue();
-                            modifiedSaturation = Math.min(modifiedSaturation, 20.0);
-
-                            player.setSaturation((float) modifiedSaturation);
-                            if(!getPowerArray().contains(player)) return;
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
-                        }
-                    }
-                }else{
-                    if(!getPowerArray().contains(player)) return;
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
-                }
-            }
-        }
-    }
-
-    private Map.Entry<Double, Double> getModifiers(Player player, OriginContainer origin) {
-        for(HashMap<String, Object> modifier : origin.getPowerFileFromType("origins:modify_food").getPossibleModifiers("modifier", "modifiers")){
-            float value = Float.valueOf(modifier.get("value").toString());
-            String operation = modifier.get("operation").toString();
-            BinaryOperator<Float> mathOperator = getOperationMappingsFloat().get(operation);
-
-            double foodModifier = mathOperator != null ? mathOperator.apply(Float.valueOf(player.getFoodLevel()), value) : player.getFoodLevel();
-            double saturationModifier = mathOperator != null ? mathOperator.apply(player.getSaturation(), value) : player.getSaturation();
-
-            return new AbstractMap.SimpleEntry<>(foodModifier, saturationModifier);
-        }
-        return null;
-    }
-
     private static final Map<Material, Double> foodModifiers = new HashMap<>();
     private static final Map<Material, Double> saturationModifiers = new HashMap<>();
 
-    public static double getFoodModifier(Material material) {
-        return foodModifiers.getOrDefault(material, 1.0);
-    }
-
-    public static double getSaturationModifier(Material material) {
-        return saturationModifiers.getOrDefault(material, 1.0);
-    }
-
     static {
         foodModifiers.put(Material.APPLE, 1.0);
+        foodModifiers.put(Material.COOKIE, 1.0);
         foodModifiers.put(Material.BAKED_POTATO, 1.0);
         foodModifiers.put(Material.BEETROOT, 1.0);
         foodModifiers.put(Material.BREAD, 1.0);
@@ -144,6 +75,7 @@ public class ModifyFoodPower extends CraftPower implements Listener {
         foodModifiers.put(Material.SUSPICIOUS_STEW, 1.0);
 
         saturationModifiers.put(Material.APPLE, 1.0);
+        saturationModifiers.put(Material.COOKIE, 1.0);
         saturationModifiers.put(Material.BAKED_POTATO, 0.6);
         saturationModifiers.put(Material.BEETROOT, 0.6);
         saturationModifiers.put(Material.BREAD, 0.6);
@@ -192,8 +124,68 @@ public class ModifyFoodPower extends CraftPower implements Listener {
         saturationModifiers.put(Material.SUSPICIOUS_STEW, 0.6);
     }
 
+    public static double getFoodModifier(Material material) {
+        return foodModifiers.getOrDefault(material, 1.0);
+    }
+
+    public static double getSaturationModifier(Material material) {
+        return saturationModifiers.getOrDefault(material, 1.0);
+    }
+
     @Override
-    public void run() {
+    public void setActive(String tag, Boolean bool) {
+        if (powers_active.containsKey(tag)) {
+            powers_active.replace(tag, bool);
+        } else {
+            powers_active.put(tag, bool);
+        }
+    }
+
+    @EventHandler
+    public void saturationorwhateverRUN(PlayerItemConsumeEvent e) {
+        Player player = e.getPlayer();
+        for (OriginContainer origin : OriginPlayer.getOrigin(player).values()) {
+            if (modify_food.contains(player)) {
+                ConditionExecutor conditionExecutor = new ConditionExecutor();
+                for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
+                    if (conditionExecutor.check("item_condition", "item_condition", player, power, "origins:modify_food", player, null, player.getLocation().getBlock(), null, player.getInventory().getItemInHand(), null)) {
+                        if (modify_food.contains(player)) {
+                            if (!power.getJsonHashMap("food_modifier").isEmpty()) {
+                                if (power.getJsonHashMap("food_modifier").containsKey("value")) {
+                                    int value = Integer.parseInt(power.getJsonHashMap("food_modifier").get("value").toString());
+                                    String operation = power.getJsonHashMap("food_modifier").get("operation").toString();
+                                    BinaryOperator mathOperator = getOperationMappingsDouble().get(operation);
+                                    if (mathOperator != null) {
+                                        double finalValue = (double) mathOperator.apply(getFoodModifier(e.getItem().getType()), (double) value);
+                                        setActive(power.getTag(), true);
+                                    }
+                                }
+                            }
+                            if (!power.getJsonHashMap("saturation_modifier").isEmpty()) {
+                                if (power.getJsonHashMap("saturation_modifier").containsKey("value")) {
+                                    int value = Integer.parseInt(power.getJsonHashMap("saturation_modifier").get("value").toString());
+                                    String operation = power.getJsonHashMap("saturation_modifier").get("operation").toString();
+                                    BinaryOperator mathOperator = getOperationMappingsDouble().get(operation);
+                                    if (mathOperator != null) {
+                                        double finalValue = (double) mathOperator.apply(getSaturationModifier(e.getItem().getType()), (double) value);
+                                        setActive(power.getTag(), true);
+                                    }
+                                }
+                            }
+                        }
+                    } else {
+                        setActive(power.getTag(), false);
+                    }
+                }
+            }
+        }
+    }
+
+    public ModifyFoodPower() {
+    }
+
+    @Override
+    public void run(Player p) {
 
     }
 

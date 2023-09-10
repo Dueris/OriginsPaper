@@ -46,7 +46,7 @@ public class Set extends SubCommand {
             return;
         }
         if (args.length == 3) {
-            sender.sendMessage(Component.text(LangConfig.getLocalizedString(sender,"command.origin.set.noOrigin")).color(TextColor.fromHexString(RED)));
+            sender.sendMessage(Component.text(LangConfig.getLocalizedString(sender, "command.origin.set.noOrigin")).color(TextColor.fromHexString(RED)));
             return;
         }
         if (args.length > 3) {
@@ -54,13 +54,13 @@ public class Set extends SubCommand {
             if (players.size() == 0) return;
 
             if (!CraftApoli.getLayers().contains(CraftApoli.getLayerFromTag(args[2]))) {
-                sender.sendMessage(Component.text(LangConfig.getLocalizedString(sender,"command.origin.set.invalidLayer")).color(TextColor.fromHexString(RED)));
+                sender.sendMessage(Component.text(LangConfig.getLocalizedString(sender, "command.origin.set.invalidLayer")).color(TextColor.fromHexString(RED)));
                 return;
             }
 
             String originTag = args[3];
             if (!CraftApoli.getOriginTags().contains(originTag)) {
-                sender.sendMessage(Component.text(LangConfig.getLocalizedString(sender,"command.origin.set.invalidOrigin")).color(TextColor.fromHexString(RED)));
+                sender.sendMessage(Component.text(LangConfig.getLocalizedString(sender, "command.origin.set.invalidOrigin")).color(TextColor.fromHexString(RED)));
                 return;
             }
 

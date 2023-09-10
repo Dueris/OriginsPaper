@@ -22,8 +22,16 @@ public class ChunkManagerPlayer {
         return player;
     }
 
+    public void setPlayer(Player player) {
+        this.player = player;
+    }
+
     public ShapeData getShapeData() {
         return shapeData;
+    }
+
+    public void setShapeData(ShapeData shapeData) {
+        this.shapeData = shapeData;
     }
 
     public String getShape() {
@@ -32,14 +40,6 @@ public class ChunkManagerPlayer {
 
     public void setShape(String shape) {
         this.shape = shape;
-    }
-
-    public void setPlayer(Player player) {
-        this.player = player;
-    }
-
-    public void setShapeData(ShapeData shapeData) {
-        this.shapeData = shapeData;
     }
 
     @Override

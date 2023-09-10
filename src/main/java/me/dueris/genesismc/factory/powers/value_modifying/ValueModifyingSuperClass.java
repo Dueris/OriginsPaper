@@ -14,70 +14,6 @@ import java.util.ArrayList;
 
 public class ValueModifyingSuperClass extends BukkitRunnable implements Listener {
 
-    public void runModifierChanges(Player p){
-        ModifyAirSpeedPower modifyAirSpeedPower = new ModifyAirSpeedPower();
-        ModifyBreakSpeedPower modifyBreakSpeedPower = new ModifyBreakSpeedPower();
-        ModifySwimSpeedPower modifySwimSpeedPower = new ModifySwimSpeedPower();
-        new BukkitRunnable(){
-            @Override
-            public void run() {
-                if(modify_air_speed.contains(p)){
-                    modifyAirSpeedPower.apply(p);
-                }else if(modify_break_speed.contains(p)){
-                    modifyBreakSpeedPower.apply(p);
-                }else if(modify_swim_speed.contains(p)){
-                    modifySwimSpeedPower.apply(p);
-                }else{
-                    saveValueInPDC(p, "modify_air_speed", 0.1f);
-                    saveValueInPDC(p, "modify_break_speed", 0.1f);
-                    saveValueInPDC(p, "modify_swim_speed", -1f);
-                }
-            }
-        }.runTaskLater(GenesisMC.getPlugin(), 4);
-    }
-
-    @EventHandler
-    public void ORIGINCHANGE(OriginChangeEvent e){
-            runModifierChanges(e.getPlayer());
-    }
-
-    public Float getPersistentAttributeContainer(Player player, String key){
-        PersistentDataContainer PDC = player.getPersistentDataContainer();
-        if(PDC.has(new NamespacedKey(GenesisMC.getPlugin(), key))){
-            return PDC.get(new NamespacedKey(GenesisMC.getPlugin(), key), PersistentDataType.FLOAT);
-        }else{
-            createValueInPDC(player, key);
-            return PDC.get(new NamespacedKey(GenesisMC.getPlugin(), key), PersistentDataType.FLOAT);
-        }
-    }
-
-    public void createValueInPDC(Player player, String key){
-        PersistentDataContainer PDC = player.getPersistentDataContainer();
-        PDC.set(new NamespacedKey(GenesisMC.getPlugin(), key), PersistentDataType.FLOAT, getDefaultValue(key));
-    }
-
-    public Float getDefaultValue(String string){
-        switch (string){
-            case "modify_air_speed":
-                return 0.1f;
-            case "modify_break_speed":
-                return 0.1f;
-            case "modify_swim_speed":
-                return -1f;
-            default:
-                return 0f;
-        }
-    }
-
-    public void saveValueInPDC(Player player, String key, Float value){
-        PersistentDataContainer PDC = player.getPersistentDataContainer();
-        if(PDC.has(new NamespacedKey(GenesisMC.getPlugin(), key))){
-            PDC.set(new NamespacedKey(GenesisMC.getPlugin(), key), PersistentDataType.FLOAT, value);
-        }else{
-            PDC.set(new NamespacedKey(GenesisMC.getPlugin(), key), PersistentDataType.FLOAT, value);
-        }
-    }
-
     public static ArrayList<Player> modify_air_speed = new ArrayList<>();
     public static ArrayList<Player> modify_block_render = new ArrayList<>();
     public static ArrayList<Player> modify_break_speed = new ArrayList<>();
@@ -97,6 +33,70 @@ public class ValueModifyingSuperClass extends BukkitRunnable implements Listener
     public static ArrayList<Player> modify_effect_duration = new ArrayList<>();
     public static ArrayList<Player> modify_swim_speed = new ArrayList<>();
     public static ArrayList<Player> modify_xp_gain = new ArrayList<>();
+
+    public void runModifierChanges(Player p) {
+        ModifyAirSpeedPower modifyAirSpeedPower = new ModifyAirSpeedPower();
+        ModifyBreakSpeedPower modifyBreakSpeedPower = new ModifyBreakSpeedPower();
+        ModifySwimSpeedPower modifySwimSpeedPower = new ModifySwimSpeedPower();
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                if (modify_air_speed.contains(p)) {
+                    modifyAirSpeedPower.apply(p);
+                } else if (modify_break_speed.contains(p)) {
+                    modifyBreakSpeedPower.apply(p);
+                } else if (modify_swim_speed.contains(p)) {
+                    modifySwimSpeedPower.apply(p);
+                } else {
+                    saveValueInPDC(p, "modify_air_speed", 0.1f);
+                    saveValueInPDC(p, "modify_break_speed", 0.1f);
+                    saveValueInPDC(p, "modify_swim_speed", -1f);
+                }
+            }
+        }.runTaskLater(GenesisMC.getPlugin(), 4);
+    }
+
+    @EventHandler
+    public void ORIGINCHANGE(OriginChangeEvent e) {
+        runModifierChanges(e.getPlayer());
+    }
+
+    public Float getPersistentAttributeContainer(Player player, String key) {
+        PersistentDataContainer PDC = player.getPersistentDataContainer();
+        if (PDC.has(new NamespacedKey(GenesisMC.getPlugin(), key))) {
+            return PDC.get(new NamespacedKey(GenesisMC.getPlugin(), key), PersistentDataType.FLOAT);
+        } else {
+            createValueInPDC(player, key);
+            return PDC.get(new NamespacedKey(GenesisMC.getPlugin(), key), PersistentDataType.FLOAT);
+        }
+    }
+
+    public void createValueInPDC(Player player, String key) {
+        PersistentDataContainer PDC = player.getPersistentDataContainer();
+        PDC.set(new NamespacedKey(GenesisMC.getPlugin(), key), PersistentDataType.FLOAT, getDefaultValue(key));
+    }
+
+    public Float getDefaultValue(String string) {
+        switch (string) {
+            case "modify_air_speed":
+                return 0.1f;
+            case "modify_break_speed":
+                return 0.1f;
+            case "modify_swim_speed":
+                return -1f;
+            default:
+                return 0f;
+        }
+    }
+
+    public void saveValueInPDC(Player player, String key, Float value) {
+        PersistentDataContainer PDC = player.getPersistentDataContainer();
+        if (PDC.has(new NamespacedKey(GenesisMC.getPlugin(), key))) {
+            PDC.set(new NamespacedKey(GenesisMC.getPlugin(), key), PersistentDataType.FLOAT, value);
+        } else {
+            PDC.set(new NamespacedKey(GenesisMC.getPlugin(), key), PersistentDataType.FLOAT, value);
+        }
+    }
 
     @Override
     public void run() {

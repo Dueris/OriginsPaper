@@ -15,32 +15,39 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.util.ArrayList;
 
 public class AttackerActionWhenHit extends CraftPower implements Listener {
+    Player p;
+
+    public AttackerActionWhenHit() {
+        this.p = p;
+    }
+
     @Override
-    public void run() {
+    public void run(Player p) {
 
     }
 
     @EventHandler
-    public void a(EntityDamageByEntityEvent e){
+    public void a(EntityDamageByEntityEvent e) {
         Entity actor = e.getEntity();
 
         if (!(actor instanceof Player player)) return;
         if (!getPowerArray().contains(actor)) return;
 
         for (OriginContainer origin : OriginPlayer.getOrigin(player).values()) {
-            PowerContainer power = origin.getPowerFileFromType(getPowerFile());
-            if (power == null) continue;
+            for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
+                if (power == null) continue;
 
-            if(!getPowerArray().contains(actor)) return;
-            setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
-            ActionTypes.biEntityActionType(actor,actor, power.getBiEntityAction());
-            new BukkitRunnable() {
-                @Override
-                public void run() {
-                    if(!getPowerArray().contains(actor)) return;
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
-                }
-            }.runTaskLater(GenesisMC.getPlugin(), 2L);
+                if (!getPowerArray().contains(actor)) return;
+                setActive(power.getTag(), true);
+                ActionTypes.biEntityActionType(actor, actor, power.getBiEntityAction());
+                new BukkitRunnable() {
+                    @Override
+                    public void run() {
+                        if (!getPowerArray().contains(actor)) return;
+                        setActive(power.getTag(), false);
+                    }
+                }.runTaskLater(GenesisMC.getPlugin(), 2L);
+            }
         }
     }
 
@@ -56,9 +63,9 @@ public class AttackerActionWhenHit extends CraftPower implements Listener {
 
     @Override
     public void setActive(String tag, Boolean bool) {
-        if(powers_active.containsKey(tag)){
+        if (powers_active.containsKey(tag)) {
             powers_active.replace(tag, bool);
-        }else{
+        } else {
             powers_active.put(tag, bool);
         }
     }

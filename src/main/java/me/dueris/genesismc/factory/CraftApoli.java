@@ -1,8 +1,12 @@
 package me.dueris.genesismc.factory;
 
 import io.netty.util.internal.ConcurrentSet;
+import me.dueris.genesismc.events.OriginLoadEvent;
 import me.dueris.genesismc.files.GenesisDataFiles;
-import me.dueris.genesismc.utils.*;
+import me.dueris.genesismc.utils.FileContainer;
+import me.dueris.genesismc.utils.LayerContainer;
+import me.dueris.genesismc.utils.OriginContainer;
+import me.dueris.genesismc.utils.PowerContainer;
 import me.dueris.genesismc.utils.translation.LangConfig;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
@@ -10,7 +14,6 @@ import org.apache.commons.io.FilenameUtils;
 import org.bukkit.Bukkit;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import org.json.simple.JSONValue;
 import org.json.simple.parser.JSONParser;
 
 import java.io.*;
@@ -25,6 +28,8 @@ public class CraftApoli {
     private static ArrayList<LayerContainer> originLayers = new ArrayList<>();
     @SuppressWarnings("FieldMayBeFinal")
     private static ConcurrentSet<OriginContainer> originContainers = new ConcurrentSet<>();
+    @SuppressWarnings("FieldMayBeFinal")
+    private static ConcurrentSet<PowerContainer> powerContainers = new ConcurrentSet<>();
 
 
     /**
@@ -40,6 +45,11 @@ public class CraftApoli {
     public static ArrayList<OriginContainer> getOrigins() {
         List<OriginContainer> originContainersD = new ArrayList<>(originContainers);
         return (ArrayList<OriginContainer>) originContainersD;
+    }
+
+    public static ArrayList<PowerContainer> getPowers() {
+        List<PowerContainer> d = new ArrayList<>(powerContainers);
+        return (ArrayList<PowerContainer>) d;
     }
 
     /**
@@ -92,16 +102,24 @@ public class CraftApoli {
         for (String key : powerContainer.getPowerFile().getKeys()) {
             Object subPowerValue = powerContainer.getPowerFile().get(key);
 
-            if (subPowerValue instanceof JSONObject) {
-                JSONObject subPowerJson = (JSONObject) subPowerValue;
+            if (subPowerValue instanceof JSONObject subPowerJson) {
                 FileContainer subPowerFile = fileToFileContainer(subPowerJson);
                 String source = powerContainer.getSource();
 
                 PowerContainer newPower = new PowerContainer(powerFolder + ":" + powerFileName + "_" + key, subPowerFile, source);
+                powerContainers.add(newPower);
                 newPowerContainers.add(newPower);
             }
         }
         powerContainers.addAll(newPowerContainers);
+    }
+
+    public static File datapackDir() {
+        return new File(Bukkit.getServer().getPluginManager().getPlugin("GenesisMC").getDataFolder() + File.separator + ".." + File.separator + ".." + File.separator + Bukkit.getServer().getWorlds().get(0).getName() + File.separator + "datapacks");
+    }
+
+    public static File[] datapacksInDir() {
+        return datapackDir().listFiles();
     }
 
     /**
@@ -159,7 +177,7 @@ public class CraftApoli {
 
                                         if (powerParser.containsKey("type") && "origins:multiple".equals(powerParser.get("type"))) {
                                             PowerContainer powerContainer = new PowerContainer(powerFolder + ":" + powerFileName, fileToFileContainer(powerParser), originFolder.get(0) + ":" + originFileName.get(0));
-                                            Bukkit.getConsoleSender().sendMessage(powerContainer.getType());
+                                            powerContainers.add(powerContainer);
                                             processNestedPowers(powerContainer, powerContainers, powerFolder, powerFileName);
                                         } else {
                                             powerContainers.add(new PowerContainer(powerFolder + ":" + powerFileName, fileToFileContainer(powerParser), originFolder.get(0) + ":" + originFileName.get(0)));
@@ -195,7 +213,7 @@ public class CraftApoli {
                                             JSONObject powerParser = (JSONObject) new JSONParser().parse(files.get(Path.of("data" + File.separator + powerFolder + File.separator + "powers" + File.separator + powerFileName + ".json")));
                                             if (powerParser.containsKey("type") && "origins:multiple".equals(powerParser.get("type"))) {
                                                 PowerContainer powerContainer = new PowerContainer(powerFolder + ":" + powerFileName, fileToFileContainer(powerParser), originFolder.get(0) + ":" + originFileName.get(0));
-                                                Bukkit.getConsoleSender().sendMessage(powerContainer.getType());
+                                                powerContainers.add(powerContainer);
                                                 processNestedPowers(powerContainer, powerContainers, powerFolder, powerFileName);
                                             } else {
                                                 powerContainers.add(new PowerContainer(powerFolder + ":" + powerFileName, fileToFileContainer(powerParser), originFolder.get(0) + ":" + originFileName.get(0)));
@@ -301,7 +319,7 @@ public class CraftApoli {
                                     JSONObject powerParser = (JSONObject) new JSONParser().parse(new FileReader(datapack.getAbsolutePath() + File.separator + "data" + File.separator + powerFolder + File.separator + "powers" + File.separator + powerFileName + ".json"));
                                     if (powerParser.containsKey("type") && "origins:multiple".equals(powerParser.get("type"))) {
                                         PowerContainer powerContainer = new PowerContainer(powerFolder + ":" + powerFileName, fileToFileContainer(powerParser), originFolder.get(0) + ":" + originFileName.get(0));
-                                        Bukkit.getConsoleSender().sendMessage(powerContainer.getType());
+                                        powerContainers.add(powerContainer);
                                         processNestedPowers(powerContainer, powerContainers, powerFolder, powerFileName);
                                     } else {
                                         powerContainers.add(new PowerContainer(powerFolder + ":" + powerFileName, fileToFileContainer(powerParser), originFolder.get(0) + ":" + originFileName.get(0)));
@@ -312,8 +330,10 @@ public class CraftApoli {
                                 }
                             }
                         }
-
-                        originContainers.add(new OriginContainer(originFolder.get(0) + ":" + originFileName.get(0), fileToFileContainer(originLayerParser), fileToHashMap(originParser), powerContainers));
+                        OriginContainer origin = new OriginContainer(originFolder.get(0) + ":" + originFileName.get(0), fileToFileContainer(originLayerParser), fileToHashMap(originParser), powerContainers);
+                        originContainers.add(origin);
+                        OriginLoadEvent originLoadEvent = new OriginLoadEvent(origin, origin.getPowerContainers(), datapack);
+                        Bukkit.getServer().getPluginManager().callEvent(originLoadEvent);
 
                     } catch (FileNotFoundException fileNotFoundException) {
                         if (showErrors)
@@ -333,6 +353,7 @@ public class CraftApoli {
         translateOrigins();
     }
 
+
     /**
      * @return The origin that has the specified tag.
      **/
@@ -347,6 +368,8 @@ public class CraftApoli {
         getOrigins().clear();
         getCoreOrigins().clear();
         getOriginTags().clear();
+        getLayers().clear();
+        getPowers().clear();
     }
 
     /**
@@ -398,19 +421,19 @@ public class CraftApoli {
      * @return The byte array deserialized into a HashMap of the originLayer and the OriginContainer.
      **/
     public static HashMap<LayerContainer, OriginContainer> toOrigin(byte[] origin) {
-        ByteArrayInputStream bis = new ByteArrayInputStream(origin);
-        try {
-            ObjectInput oi = new ObjectInputStream(bis);
+        try (ByteArrayInputStream bis = new ByteArrayInputStream(origin);
+             ObjectInput oi = new ObjectInputStream(bis)) {
             return (HashMap<LayerContainer, OriginContainer>) oi.readObject();
-        } catch (Exception e) {
+        } catch (IOException | ClassNotFoundException e) {
             Bukkit.getLogger().warning(LangConfig.getLocalizedString(Bukkit.getConsoleSender(), "errors.containerConversion"));
             e.printStackTrace();
-            HashMap<LayerContainer, OriginContainer> origins = new HashMap<>();
-            for (LayerContainer layer : CraftApoli.getLayers()) {
-                origins.put(layer, CraftApoli.nullOrigin());
-            }
-            return origins;
         }
+
+        HashMap<LayerContainer, OriginContainer> origins = new HashMap<>();
+        for (LayerContainer layer : CraftApoli.getLayers()) {
+            origins.put(layer, CraftApoli.nullOrigin());
+        }
+        return origins;
     }
 
     /**

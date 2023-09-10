@@ -1,0 +1,11 @@
+{
+  "type": "origins:model_color",
+  "hidden": false,
+  "name": "Glowing Spirit",
+  "description": "You are slightly blue, and glow in dark places.",
+  "modifier": {
+    "red": 0.0,
+    "blue": 0.17,
+    "green": 0.04
+  }
+}

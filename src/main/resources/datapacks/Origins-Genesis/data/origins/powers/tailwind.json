@@ -1,0 +1,12 @@
+{
+  "type": "origins:attribute",
+  "modifier": {
+    "name": "Tailwind speed bonus",
+    "attribute": "minecraft:generic.movement_speed",
+    "value": 0.2,
+    "operation": "multiply_base"
+  },
+  "name": "Tailwind",
+  "description": "You are a little bit quicker on foot than others",
+  "hidden": false
+}

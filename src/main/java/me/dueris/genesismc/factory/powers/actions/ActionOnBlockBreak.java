@@ -14,33 +14,40 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.util.ArrayList;
 
 public class ActionOnBlockBreak extends CraftPower implements Listener {
+
+    Player p;
+
+    public ActionOnBlockBreak() {
+        this.p = p;
+    }
+
     @Override
-    public void run() {
+    public void run(Player p) {
 
     }
 
     @EventHandler
-    public void brek(BlockBreakEvent e){
-        //TODO: add blockconditon
+    public void brek(BlockBreakEvent e) {
         Player actor = e.getPlayer();
 
         if (!getPowerArray().contains(actor)) return;
 
         for (OriginContainer origin : OriginPlayer.getOrigin(actor).values()) {
-            PowerContainer power = origin.getPowerFileFromType(getPowerFile());
-            if (power == null) continue;
+            for (PowerContainer powerContainer : origin.getMultiPowerFileFromType(getPowerFile())) {
+                PowerContainer power = powerContainer;
+                if (power == null) continue;
 
-            if(!getPowerArray().contains(e.getPlayer())) return;
-            setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
-            ActionTypes.BlockActionType(e.getBlock().getLocation(), power.getBlockAction());
-            ActionTypes.EntityActionType(e.getPlayer(), power.getEntityAction());
-            new BukkitRunnable() {
-                @Override
-                public void run() {
-                    if(!getPowerArray().contains(e.getPlayer())) return;
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
-                }
-            }.runTaskLater(GenesisMC.getPlugin(), 2L);
+                setActive(powerContainer.getTag(), true);
+                ActionTypes.BlockActionType(e.getBlock().getLocation(), power.getBlockAction());
+                ActionTypes.EntityActionType(e.getPlayer(), power.getEntityAction());
+                new BukkitRunnable() {
+                    @Override
+                    public void run() {
+                        if (!getPowerArray().contains(e.getPlayer())) return;
+                        setActive(powerContainer.getTag(), false);
+                    }
+                }.runTaskLater(GenesisMC.getPlugin(), 2L);
+            }
         }
     }
 
@@ -56,9 +63,9 @@ public class ActionOnBlockBreak extends CraftPower implements Listener {
 
     @Override
     public void setActive(String tag, Boolean bool) {
-        if(powers_active.containsKey(tag)){
+        if (powers_active.containsKey(tag)) {
             powers_active.replace(tag, bool);
-        }else{
+        } else {
             powers_active.put(tag, bool);
         }
     }

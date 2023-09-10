@@ -1,0 +1,30 @@
+{
+  "type": "origins:stacking_status_effect",
+  "min_stacks": 0,
+  "max_stacks": 1,
+  "duration_per_stack": 10,
+  "effects": [
+    {
+      "effect": "minecraft:weakness",
+      "amplifier": 1,
+      "duration": 10
+    },
+    {
+      "effect": "minecraft:slowness",
+      "amplifier": 2,
+      "duration": 10
+    }
+  ],
+  "condition": {
+    "type": "origins:block_in_radius",
+    "block_condition": {
+      "type": "origins:in_tag",
+      "tag": "origins:soul_sourced"
+    },
+    "radius": 4,
+    "shape": "cube",
+    "comparison": ">=",
+    "compare_to": 4
+  },
+  "hidden": true
+}

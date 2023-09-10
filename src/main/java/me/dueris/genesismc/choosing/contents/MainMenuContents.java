@@ -2,8 +2,8 @@ package me.dueris.genesismc.choosing.contents;
 
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.CraftApoli;
-import me.dueris.genesismc.utils.translation.LangConfig;
 import me.dueris.genesismc.utils.OriginContainer;
+import me.dueris.genesismc.utils.translation.LangConfig;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -62,7 +62,7 @@ public class MainMenuContents {
         ItemStack slimeling = applyProperties(new ItemStack(Material.SLIME_BALL));
         ItemStack feline = applyProperties(new ItemStack(Material.ORANGE_WOOL));
         ItemStack blazeborn = applyProperties(new ItemStack(Material.BLAZE_POWDER));
-        ItemStack starborne = applyProperties(new ItemStack(Material.END_CRYSTAL));
+        ItemStack starborne = applyProperties(new ItemStack(Material.NETHER_STAR));
         ItemStack merling = applyProperties(new ItemStack(Material.COD));
         ItemStack allay = applyProperties(new ItemStack(Material.COOKIE));
         ItemStack rabbit = applyProperties(new ItemStack(Material.CARROT));
