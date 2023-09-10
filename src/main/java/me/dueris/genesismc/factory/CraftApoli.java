@@ -28,6 +28,8 @@ public class CraftApoli {
     private static ArrayList<LayerContainer> originLayers = new ArrayList<>();
     @SuppressWarnings("FieldMayBeFinal")
     private static ConcurrentSet<OriginContainer> originContainers = new ConcurrentSet<>();
+    @SuppressWarnings("FieldMayBeFinal")
+    private static ConcurrentSet<PowerContainer> powerContainers = new ConcurrentSet<>();
 
 
     /**
@@ -43,6 +45,11 @@ public class CraftApoli {
     public static ArrayList<OriginContainer> getOrigins() {
         List<OriginContainer> originContainersD = new ArrayList<>(originContainers);
         return (ArrayList<OriginContainer>) originContainersD;
+    }
+
+    public static ArrayList<PowerContainer> getPowers() {
+        List<PowerContainer> d = new ArrayList<>(powerContainers);
+        return (ArrayList<PowerContainer>) d;
     }
 
     /**
@@ -100,6 +107,7 @@ public class CraftApoli {
                 String source = powerContainer.getSource();
 
                 PowerContainer newPower = new PowerContainer(powerFolder + ":" + powerFileName + "_" + key, subPowerFile, source);
+                powerContainers.add(newPower);
                 newPowerContainers.add(newPower);
             }
         }
@@ -169,6 +177,7 @@ public class CraftApoli {
 
                                         if (powerParser.containsKey("type") && "origins:multiple".equals(powerParser.get("type"))) {
                                             PowerContainer powerContainer = new PowerContainer(powerFolder + ":" + powerFileName, fileToFileContainer(powerParser), originFolder.get(0) + ":" + originFileName.get(0));
+                                            powerContainers.add(powerContainer);
                                             processNestedPowers(powerContainer, powerContainers, powerFolder, powerFileName);
                                         } else {
                                             powerContainers.add(new PowerContainer(powerFolder + ":" + powerFileName, fileToFileContainer(powerParser), originFolder.get(0) + ":" + originFileName.get(0)));
@@ -204,6 +213,7 @@ public class CraftApoli {
                                             JSONObject powerParser = (JSONObject) new JSONParser().parse(files.get(Path.of("data" + File.separator + powerFolder + File.separator + "powers" + File.separator + powerFileName + ".json")));
                                             if (powerParser.containsKey("type") && "origins:multiple".equals(powerParser.get("type"))) {
                                                 PowerContainer powerContainer = new PowerContainer(powerFolder + ":" + powerFileName, fileToFileContainer(powerParser), originFolder.get(0) + ":" + originFileName.get(0));
+                                                powerContainers.add(powerContainer);
                                                 processNestedPowers(powerContainer, powerContainers, powerFolder, powerFileName);
                                             } else {
                                                 powerContainers.add(new PowerContainer(powerFolder + ":" + powerFileName, fileToFileContainer(powerParser), originFolder.get(0) + ":" + originFileName.get(0)));
@@ -309,6 +319,7 @@ public class CraftApoli {
                                     JSONObject powerParser = (JSONObject) new JSONParser().parse(new FileReader(datapack.getAbsolutePath() + File.separator + "data" + File.separator + powerFolder + File.separator + "powers" + File.separator + powerFileName + ".json"));
                                     if (powerParser.containsKey("type") && "origins:multiple".equals(powerParser.get("type"))) {
                                         PowerContainer powerContainer = new PowerContainer(powerFolder + ":" + powerFileName, fileToFileContainer(powerParser), originFolder.get(0) + ":" + originFileName.get(0));
+                                        powerContainers.add(powerContainer);
                                         processNestedPowers(powerContainer, powerContainers, powerFolder, powerFileName);
                                     } else {
                                         powerContainers.add(new PowerContainer(powerFolder + ":" + powerFileName, fileToFileContainer(powerParser), originFolder.get(0) + ":" + originFileName.get(0)));

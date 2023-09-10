@@ -8,6 +8,7 @@ import me.dueris.genesismc.choosing.ChoosingCORE;
 import me.dueris.genesismc.choosing.ChoosingCUSTOM;
 import me.dueris.genesismc.choosing.ChoosingGUI;
 import me.dueris.genesismc.commands.GenesisCommandManager;
+import me.dueris.genesismc.commands.PowerCommand;
 import me.dueris.genesismc.commands.TabAutoComplete;
 import me.dueris.genesismc.commands.subcommands.origin.Info.InInfoCheck;
 import me.dueris.genesismc.commands.subcommands.origin.Info.Info;
@@ -255,6 +256,12 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+        for(OriginContainer origin : CraftApoli.getOrigins()){
+            for(PowerContainer powerContainer : origin.getPowerContainers()){
+                CraftApoli.getPowers().add(powerContainer);
+                Bukkit.getLogger().info(powerContainer.getTag());
+            }
+        }
 
         if (CraftApoli.getOrigins().size() > 0) {
             getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] " + LangConfig.getLocalizedString(Bukkit.getConsoleSender(), "startup.originAmount").replace("%originAmount%", String.valueOf(CraftApoli.getOrigins().size()))).color(TextColor.fromHexString(GREEN)));
@@ -265,6 +272,9 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         getCommand("origin").setTabCompleter(new TabAutoComplete());
         getCommand("shulker").setTabCompleter(new TabAutoComplete());
         getCommand("shulker").setExecutor(new Inventory());
+        getCommand("power").setTabCompleter(new TabAutoComplete());
+//        getCommand("power").setExecutor(new PowerCommand());
+        //TODO: FINISH /POWER
         //Event Handler Register
         getServer().getPluginManager().registerEvents(new PlayerHandler(), this);
         getServer().getPluginManager().registerEvents(new EnchantProtEvent(), this);
