@@ -4,6 +4,7 @@ import me.dueris.genesismc.entity.OriginPlayer;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.OriginContainer;
+import me.dueris.genesismc.utils.PowerContainer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -31,21 +32,14 @@ public class PreventElytraFlight extends CraftPower implements Listener {
             if (prevent_elytra_flight.contains(p)) {
                 for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
                     ConditionExecutor conditionExecutor = new ConditionExecutor();
-                    if (conditionExecutor.check("condition", "conditions", p, origin, "origins:prevent_elytra_flight", p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
-                        e.setCancelled(true);
-                        if (origin.getPowerFileFromType(getPowerFile()) == null) {
-                            getPowerArray().remove(p);
-                            return;
+                    for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
+                        if (conditionExecutor.check("condition", "conditions", p, power, "origins:prevent_elytra_flight", p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
+                            e.setCancelled(true);
+                            setActive(power.getTag(), true);
+                        } else {
+
+                            setActive(power.getTag(), false);
                         }
-                        if (!getPowerArray().contains(p)) return;
-                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
-                    } else {
-                        if (origin.getPowerFileFromType(getPowerFile()) == null) {
-                            getPowerArray().remove(p);
-                            return;
-                        }
-                        if (!getPowerArray().contains(p)) return;
-                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                     }
                 }
             }
@@ -54,7 +48,7 @@ public class PreventElytraFlight extends CraftPower implements Listener {
 
     Player p;
 
-    public PreventElytraFlight(){
+    public PreventElytraFlight() {
         this.p = p;
     }
 

@@ -20,7 +20,7 @@ public class ActionOnLand extends CraftPower implements Listener {
 
     Player p;
 
-    public ActionOnLand(){
+    public ActionOnLand() {
         this.p = p;
     }
 
@@ -34,7 +34,7 @@ public class ActionOnLand extends CraftPower implements Listener {
         if (!getPowerArray().contains(e.getPlayer())) return;
         for (OriginContainer origin : OriginPlayer.getOrigin(e.getPlayer()).values()) {
             if (e.getFrom().getY() > e.getTo().getY() && e.getFrom().getY() - e.getTo().getY() >= MIN_FALL_DISTANCE) {
-                for(PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())){
+                for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
                     setActive(power.getTag(), true);
                     ActionTypes.EntityActionType(e.getPlayer(), power.getEntityAction());
                     PlayerHitGroundEvent playerHitGroundEvent = new PlayerHitGroundEvent(e.getPlayer());

@@ -34,34 +34,35 @@ public class Burn extends CraftPower {
         ticksEMap.putIfAbsent(p, 0);
         if (getPowerArray().contains(p)) {
             for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
-                PowerContainer power = origin.getPowerFileFromType("origins:burn");
-                if (power == null) continue;
-                if (power.getInterval() == null) {
-                    Bukkit.getLogger().warning(LangConfig.getLocalizedString(p, "powers.errors.burn"));
-                    return;
-                }
-                interval = power.getInterval();
-
-                int ticksE = ticksEMap.getOrDefault(p, 0);
-                if (ticksE < interval) {
-                    ticksE++;
-
-                    ticksEMap.put(p, ticksE);
-                    return;
-                } else {
-                    if (p.isInWaterOrRainOrBubbleColumn()) return;
-                    if (p.getGameMode() == GameMode.CREATIVE) return;
-                    ConditionExecutor executor = new ConditionExecutor();
-                    if (executor.check("condition", "conditions", p, origin, getPowerFile(), p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
-                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
-
-                        Long burn_duration = power.getBurnDuration();
-                        p.setFireTicks(burn_duration.intValue() * 20);
-                    } else {
-                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
+                for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
+                    if (power == null) continue;
+                    if (power.getInterval() == null) {
+                        Bukkit.getLogger().warning(LangConfig.getLocalizedString(p, "powers.errors.burn"));
+                        return;
                     }
+                    interval = power.getInterval();
 
-                    ticksEMap.put(p, 0);
+                    int ticksE = ticksEMap.getOrDefault(p, 0);
+                    if (ticksE < interval) {
+                        ticksE++;
+
+                        ticksEMap.put(p, ticksE);
+                        return;
+                    } else {
+                        if (p.isInWaterOrRainOrBubbleColumn()) return;
+                        if (p.getGameMode() == GameMode.CREATIVE) return;
+                        ConditionExecutor executor = new ConditionExecutor();
+                        if (executor.check("condition", "conditions", p, power, getPowerFile(), p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
+                            setActive(power.getTag(), true);
+
+                            Long burn_duration = power.getBurnDuration();
+                            p.setFireTicks(burn_duration.intValue() * 20);
+                        } else {
+                            setActive(power.getTag(), false);
+                        }
+
+                        ticksEMap.put(p, 0);
+                    }
                 }
             }
         }

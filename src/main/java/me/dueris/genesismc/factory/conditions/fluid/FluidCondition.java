@@ -1,7 +1,7 @@
 package me.dueris.genesismc.factory.conditions.fluid;
 
 import me.dueris.genesismc.factory.conditions.Condition;
-import me.dueris.genesismc.utils.OriginContainer;
+import me.dueris.genesismc.utils.PowerContainer;
 import org.bukkit.Fluid;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
@@ -21,17 +21,15 @@ public class FluidCondition implements Condition {
     }
 
     @Override
-    public Optional<Boolean> check(HashMap<String, Object> condition, Player p, OriginContainer origin, String powerfile, Entity actor, Entity target, Block block, Fluid fluid, ItemStack itemStack, EntityDamageEvent entityDamageEvent) {
-        if (origin == null) return Optional.empty();
-        if (origin.getPowerFileFromType(powerfile) == null) return Optional.empty();
-            if (condition.isEmpty()) return Optional.empty();
-            if (condition.get("type") == null) return Optional.empty();
-            boolean inverted = (boolean) condition.getOrDefault("inverted", false);
-            String type = condition.get("type").toString().toLowerCase();
+    public Optional<Boolean> check(HashMap<String, Object> condition, Player p, PowerContainer power, String powerfile, Entity actor, Entity target, Block block, Fluid fluid, ItemStack itemStack, EntityDamageEvent entityDamageEvent) {
+        if (condition.isEmpty()) return Optional.empty();
+        if (condition.get("type") == null) return Optional.empty();
+        boolean inverted = (boolean) condition.getOrDefault("inverted", false);
+        String type = condition.get("type").toString().toLowerCase();
 
-            switch (type) {
+        switch (type) {
 
-            }
-            return getResult(inverted, false);
+        }
+        return getResult(inverted, false);
     }
 }

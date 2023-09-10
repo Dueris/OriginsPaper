@@ -4,7 +4,7 @@ import me.dueris.genesismc.entity.OriginPlayer;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.player.Phasing;
 import me.dueris.genesismc.utils.OriginContainer;
-import org.bukkit.Bukkit;
+import me.dueris.genesismc.utils.PowerContainer;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -22,7 +22,7 @@ public class Overlay extends CraftPower {
 
     Player p;
 
-    public Overlay(){
+    public Overlay() {
         this.p = p;
     }
 
@@ -31,12 +31,14 @@ public class Overlay extends CraftPower {
         if (getPowerArray().contains(player)) {
             for (OriginContainer origin : OriginPlayer.getOrigin(player).values()) {
                 ConditionExecutor conditionExecutor = new ConditionExecutor();
-                if (conditionExecutor.check("condition", "conditions", player, origin, "origins:overlay", player, null, player.getLocation().getBlock(), null, player.getInventory().getItemInMainHand(), null)) {
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
-                    Phasing.initializePhantomOverlay(player);
-                } else {
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
-                    Phasing.deactivatePhantomOverlay(player);
+                for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
+                    if (conditionExecutor.check("condition", "conditions", player, power, "origins:overlay", player, null, player.getLocation().getBlock(), null, player.getInventory().getItemInMainHand(), null)) {
+                        setActive(power.getTag(), true);
+                        Phasing.initializePhantomOverlay(player);
+                    } else {
+                        setActive(power.getTag(), false);
+                        Phasing.deactivatePhantomOverlay(player);
+                    }
                 }
             }
         } else {

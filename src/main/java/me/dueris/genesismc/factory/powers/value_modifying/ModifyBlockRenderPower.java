@@ -6,7 +6,7 @@ import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.factory.powers.world.chunk.ChunkManagerWorld;
 import me.dueris.genesismc.utils.ErrorSystem;
 import me.dueris.genesismc.utils.OriginContainer;
-import org.bukkit.Bukkit;
+import me.dueris.genesismc.utils.PowerContainer;
 import org.bukkit.Chunk;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -34,7 +34,7 @@ public class ModifyBlockRenderPower extends CraftPower {
 
     Player p;
 
-    public ModifyBlockRenderPower(){
+    public ModifyBlockRenderPower() {
         this.p = p;
     }
 
@@ -48,36 +48,38 @@ public class ModifyBlockRenderPower extends CraftPower {
             boolean conditionMet = false;
 
             for (OriginContainer origin : OriginPlayer.getOrigin(player).values()) {
-                Material targetMaterial = Material.AIR;
-                if (conditionMet) {
-                    targetMaterial = Material.getMaterial(origin.getPowerFileFromType("origins:modify_block_render").get("block", null).toUpperCase());
-                }
+                for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
+                    Material targetMaterial = Material.AIR;
+                    if (conditionMet) {
+                        targetMaterial = Material.getMaterial(power.get("block", null).toUpperCase());
+                    }
 
-                for (Chunk chunk : chunkManagerWorld.getChunksInPlayerViewDistance(craftPlayer)) {
-                    for (Block block : chunkManagerWorld.getAllBlocksInChunk(chunk)) {
-                        if (block.getType() != Material.AIR) {
-                            try {
-                                ConditionExecutor conditionExecutor = new ConditionExecutor();
-                                if (conditionExecutor.check("block_condition", "block_conditions", player, origin, "origins:modify_block_render", player, null, block, null, player.getInventory().getItemInHand(), null)) {
-                                    conditionMet = true;
-                                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
-                                    BlockState blockState = block.getState();
-                                    blockState.setType(targetMaterial);
-                                    blockChanges.add(blockState);
-                                    break;
-                                } else {
-                                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
+                    for (Chunk chunk : chunkManagerWorld.getChunksInPlayerViewDistance(craftPlayer)) {
+                        for (Block block : chunkManagerWorld.getAllBlocksInChunk(chunk)) {
+                            if (block.getType() != Material.AIR) {
+                                try {
+                                    ConditionExecutor conditionExecutor = new ConditionExecutor();
+                                    if (conditionExecutor.check("block_condition", "block_conditions", player, power, "origins:modify_block_render", player, null, block, null, player.getInventory().getItemInHand(), null)) {
+                                        conditionMet = true;
+                                        setActive(power.getTag(), true);
+                                        BlockState blockState = block.getState();
+                                        blockState.setType(targetMaterial);
+                                        blockChanges.add(blockState);
+                                        break;
+                                    } else {
+                                        setActive(power.getTag(), false);
+                                    }
+                                } catch (Exception e) {
+                                    ErrorSystem errorSystem = new ErrorSystem();
+                                    errorSystem.throwError("unable to send block_render_change", "origins:modify_block_render", player, origin, OriginPlayer.getLayer(player, origin));
+                                    e.printStackTrace();
                                 }
-                            } catch (Exception e) {
-                                ErrorSystem errorSystem = new ErrorSystem();
-                                errorSystem.throwError("unable to send block_render_change", "origins:modify_block_render", player, origin, OriginPlayer.getLayer(player, origin));
-                                e.printStackTrace();
                             }
                         }
                     }
-                }
 
-                craftPlayer.sendBlockChanges(blockChanges);
+                    craftPlayer.sendBlockChanges(blockChanges);
+                }
             }
         }
     }

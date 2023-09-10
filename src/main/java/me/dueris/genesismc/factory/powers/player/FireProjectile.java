@@ -8,6 +8,7 @@ import me.dueris.genesismc.events.KeybindTriggerEvent;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.OriginContainer;
+import me.dueris.genesismc.utils.PowerContainer;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Sound;
 import org.bukkit.entity.EntityType;
@@ -31,7 +32,7 @@ public class FireProjectile extends CraftPower implements Listener {
     public static ArrayList<Player> enderian_pearl = new ArrayList<>();
     public static ArrayList<Player> in_cooldown_patch = new ArrayList<>();
 
-    public static void addCooldownPatch(Player p){
+    public static void addCooldownPatch(Player p) {
         in_cooldown_patch.add(p);
         p.sendMessage("1");
         new BukkitRunnable() {
@@ -57,11 +58,13 @@ public class FireProjectile extends CraftPower implements Listener {
         Player p = e.getPlayer();
         for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
             if (fire_projectile.contains(p)) {
-                if (isKeyBeingPressed(e.getPlayer(), origin.getPowerFileFromType("origins:fire_projectile").getKey().get("key").toString(), true)) {
-                    if (in_continuous.contains(p)) {
-                        in_continuous.remove(p);
-                    } else {
-                        in_continuous.add(p);
+                for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
+                    if (isKeyBeingPressed(e.getPlayer(), power.getKey().get("key").toString(), true)) {
+                        if (in_continuous.contains(p)) {
+                            in_continuous.remove(p);
+                        } else {
+                            in_continuous.add(p);
+                        }
                     }
                 }
             }
@@ -79,81 +82,63 @@ public class FireProjectile extends CraftPower implements Listener {
     }
 
 
-
     @EventHandler
     public void keybindPress(KeybindTriggerEvent e) {
         Player p = e.getPlayer();
         ArrayList<Player> peopladf = new ArrayList<>();
         if (!peopladf.contains(p)) {
             for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
-                if (origin.getPowerFileFromType(getPowerFile()) == null) {
-                    getPowerArray().remove(p);
-                    return;
-                } else {
-                    if (fire_projectile.contains(p)) {
-                        ConditionExecutor conditionExecutor = new ConditionExecutor();
-                        if (conditionExecutor.check("condition", "conditions", p, origin, "origins:fire_projectile", p, null, null, null, p.getItemInHand(), null)) {
-                            if (!CooldownStuff.isPlayerInCooldown(p, origin.getPowerFileFromType("origins:fire_projectile").getKey().get("key").toString())) {
-                                if (isKeyBeingPressed(e.getPlayer(), origin.getPowerFileFromType("origins:fire_projectile").getKey().get("key").toString(), true)) {
-                                    new BukkitRunnable() {
-                                        @Override
-                                        public void run() {
-                                            Sound sound;
-                                            int cooldown = Integer.parseInt(origin.getPowerFileFromType("origins:fire_projectile").get("cooldown", "1"));
-                                            String tag = origin.getPowerFileFromType("origins:fire_projectile").get("tag", null);
-                                            float divergence = Float.parseFloat(origin.getPowerFileFromType("origins:fire_projectile").get("divergence", "1.0"));
-                                            float speed = Float.parseFloat(origin.getPowerFileFromType("origins:fire_projectile").get("speed", "1"));
-                                            int amt = Integer.parseInt(origin.getPowerFileFromType("origins:fire_projectile").get("count", "1"));
-                                            int start_delay = Integer.parseInt(origin.getPowerFileFromType("origins:fire_projectile").get("start_delay", "0"));
-                                            int interval = Integer.parseInt(origin.getPowerFileFromType("origins:fire_projectile").get("interval", "1"));
+                for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
+                    if (power == null) {
+                        getPowerArray().remove(p);
+                        return;
+                    } else {
+                        if (fire_projectile.contains(p)) {
+                            ConditionExecutor conditionExecutor = new ConditionExecutor();
+                            if (conditionExecutor.check("condition", "conditions", p, power, "origins:fire_projectile", p, null, null, null, p.getItemInHand(), null)) {
+                                if (!CooldownStuff.isPlayerInCooldown(p, power.getKey().get("key").toString())) {
+                                    if (isKeyBeingPressed(e.getPlayer(), power.getKey().get("key").toString(), true)) {
+                                        new BukkitRunnable() {
+                                            @Override
+                                            public void run() {
+                                                Sound sound;
+                                                int cooldown = Integer.parseInt(power.get("cooldown", "1"));
+                                                String tag = power.get("tag", null);
+                                                float divergence = Float.parseFloat(power.get("divergence", "1.0"));
+                                                float speed = Float.parseFloat(power.get("speed", "1"));
+                                                int amt = Integer.parseInt(power.get("count", "1"));
+                                                int start_delay = Integer.parseInt(power.get("start_delay", "0"));
+                                                int interval = Integer.parseInt(power.get("interval", "1"));
 
-                                            // Introduce a slight random divergence
-                                            divergence += (float) ((Math.random() - 0.5) * 0.05); // Adjust the 0.05 value to control the randomness level
+                                                // Introduce a slight random divergence
+                                                divergence += (float) ((Math.random() - 0.5) * 0.05); // Adjust the 0.05 value to control the randomness level
 
-                                            EntityType type;
-                                            if (origin.getPowerFileFromType("origins:fire_projectile").get("entity_type", null).equalsIgnoreCase("origins:enderian_pearl")) {
-                                                type = EntityType.ENDER_PEARL;
-                                                enderian_pearl.add(p);
-                                            } else {
-                                                type = EntityType.valueOf(origin.getPowerFileFromType("origins:fire_projectile").get("entity_type", null).split(":")[1].toUpperCase());
-                                                enderian_pearl.remove(p);
-                                            }
+                                                EntityType type;
+                                                if (power.get("entity_type", null).equalsIgnoreCase("origins:enderian_pearl")) {
+                                                    type = EntityType.ENDER_PEARL;
+                                                    enderian_pearl.add(p);
+                                                } else {
+                                                    type = EntityType.valueOf(power.get("entity_type", null).split(":")[1].toUpperCase());
+                                                    enderian_pearl.remove(p);
+                                                }
 
-                                            String key = (String) origin.getPowerFileFromType("origins:fire_projectile").getKey().get("key");
-                                            if (!CooldownStuff.isPlayerInCooldown(p, key)) {
-                                                KeybindHandler.runKeyChangeTrigger(KeybindHandler.getTriggerFromOriginKey(p, key));
+                                                String key = (String) power.getKey().get("key");
+                                                if (!CooldownStuff.isPlayerInCooldown(p, key)) {
+                                                    KeybindHandler.runKeyChangeTrigger(KeybindHandler.getTriggerFromOriginKey(p, key));
 
-                                                float finalDivergence = divergence;
-                                                float finalDivergence1 = divergence;
-                                                final boolean[] thing = new boolean[1];
-                                                new BukkitRunnable() {
-                                                    int shotsLeft = -amt;
+                                                    float finalDivergence = divergence;
+                                                    float finalDivergence1 = divergence;
+                                                    final boolean[] thing = new boolean[1];
+                                                    new BukkitRunnable() {
+                                                        int shotsLeft = -amt;
 
-                                                    @Override
-                                                    public void run() {
-                                                        if (!CooldownStuff.isPlayerInCooldown(p, key)) {
-                                                            if (shotsLeft >= 0) {
-                                                                if (origin.getPowerFileFromType("origins:fire_projectile").getKey().get("continuous").toString().equalsIgnoreCase("false")) {
-                                                                    KeybindHandler.runKeyChangeTriggerReturn(KeybindHandler.getTriggerFromOriginKey(p, key), p, key);
-                                                                    CooldownStuff.addCooldown(p, origin, origin.getPowerFileFromType(getPowerFile()).getTag(), origin.getPowerFileFromType(getPowerFile()).getType(), cooldown * 2, key);
-                                                                    addCooldownPatch(p);
-                                                                    peopladf.remove(p);
-                                                                    ItemMeta met = KeybindHandler.getKeybindItem(key, p.getInventory()).getItemMeta();
-                                                                    met.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "contin"), PersistentDataType.BOOLEAN, false);
-                                                                    KeybindHandler.getKeybindItem(key, p.getInventory()).setItemMeta(met);
-                                                                    shotsLeft = 0;
-                                                                    thing[0] = true;
-                                                                    if (origin.getPowerFileFromType(getPowerFile()) == null) {
-                                                                        getPowerArray().remove(p);
-                                                                        return;
-                                                                    }
-                                                                    if (!getPowerArray().contains(p)) return;
-                                                                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
-                                                                    this.cancel();
-                                                                } else {
-                                                                    if (!in_continuous.contains(p)) {
+                                                        @Override
+                                                        public void run() {
+                                                            if (!CooldownStuff.isPlayerInCooldown(p, key)) {
+                                                                if (shotsLeft >= 0) {
+                                                                    if (power.getKey().get("continuous").toString().equalsIgnoreCase("false")) {
                                                                         KeybindHandler.runKeyChangeTriggerReturn(KeybindHandler.getTriggerFromOriginKey(p, key), p, key);
-                                                                        CooldownStuff.addCooldown(p, origin, origin.getPowerFileFromType(getPowerFile()).getTag(), origin.getPowerFileFromType(getPowerFile()).getType(), cooldown * 2, key);
+                                                                        CooldownStuff.addCooldown(p, origin, power.getTag(), power.getType(), cooldown * 2, key);
                                                                         addCooldownPatch(p);
                                                                         peopladf.remove(p);
                                                                         ItemMeta met = KeybindHandler.getKeybindItem(key, p.getInventory()).getItemMeta();
@@ -161,93 +146,112 @@ public class FireProjectile extends CraftPower implements Listener {
                                                                         KeybindHandler.getKeybindItem(key, p.getInventory()).setItemMeta(met);
                                                                         shotsLeft = 0;
                                                                         thing[0] = true;
-                                                                        if (origin.getPowerFileFromType(getPowerFile()) == null)
+                                                                        if (power == null) {
+                                                                            getPowerArray().remove(p);
                                                                             return;
+                                                                        }
                                                                         if (!getPowerArray().contains(p)) return;
-                                                                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
+                                                                        setActive(power.getTag(), false);
                                                                         this.cancel();
                                                                     } else {
-                                                                        ItemMeta met = KeybindHandler.getKeybindItem(key, p.getInventory()).getItemMeta();
-                                                                        met.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "contin"), PersistentDataType.BOOLEAN, true);
-                                                                        if (origin.getPowerFileFromType(getPowerFile()) == null)
-                                                                            return;
-                                                                        if (!getPowerArray().contains(p)) return;
-                                                                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
-                                                                        KeybindHandler.getKeybindItem(key, p.getInventory()).setItemMeta(met);
-                                                                        shotsLeft = -amt;
+                                                                        if (!in_continuous.contains(p)) {
+                                                                            KeybindHandler.runKeyChangeTriggerReturn(KeybindHandler.getTriggerFromOriginKey(p, key), p, key);
+                                                                            CooldownStuff.addCooldown(p, origin, power.getTag(), power.getType(), cooldown * 2, key);
+                                                                            addCooldownPatch(p);
+                                                                            peopladf.remove(p);
+                                                                            ItemMeta met = KeybindHandler.getKeybindItem(key, p.getInventory()).getItemMeta();
+                                                                            met.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "contin"), PersistentDataType.BOOLEAN, false);
+                                                                            KeybindHandler.getKeybindItem(key, p.getInventory()).setItemMeta(met);
+                                                                            shotsLeft = 0;
+                                                                            thing[0] = true;
+                                                                            if (power == null)
+                                                                                return;
+                                                                            if (!getPowerArray().contains(p)) return;
+                                                                            setActive(power.getTag(), false);
+                                                                            this.cancel();
+                                                                        } else {
+                                                                            ItemMeta met = KeybindHandler.getKeybindItem(key, p.getInventory()).getItemMeta();
+                                                                            met.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "contin"), PersistentDataType.BOOLEAN, true);
+                                                                            if (power == null)
+                                                                                return;
+                                                                            if (!getPowerArray().contains(p)) return;
+                                                                            setActive(power.getTag(), true);
+                                                                            KeybindHandler.getKeybindItem(key, p.getInventory()).setItemMeta(met);
+                                                                            shotsLeft = -amt;
+                                                                        }
                                                                     }
-                                                                }
-                                                                return;
-                                                            }
-
-                                                            p.setCooldown(KeybindHandler.getKeybindItem(e.getKey(), p.getInventory()).getType(), cooldown * 2);
-                                                            addCooldownPatch(p);
-
-                                                            if (type.getEntityClass() != null && Projectile.class.isAssignableFrom(type.getEntityClass())) {
-                                                                Projectile projectile = (Projectile) p.getWorld().spawnEntity(p.getEyeLocation(), type);
-                                                                projectile.setShooter(p);
-
-                                                                Vector direction = p.getEyeLocation().getDirection();
-
-                                                                double yawRadians = Math.toRadians(p.getEyeLocation().getYaw() + finalDivergence1);
-
-                                                                double x = -Math.sin(yawRadians) * Math.cos(Math.toRadians(p.getLocation().getPitch()));
-                                                                double y = -Math.sin(Math.toRadians(p.getLocation().getPitch()));
-                                                                double z = Math.cos(yawRadians) * Math.cos(Math.toRadians(p.getLocation().getPitch()));
-
-                                                                direction.setX(x);
-                                                                direction.setY(y);
-                                                                direction.setZ(z);
-
-                                                                projectile.setVelocity(direction.normalize().multiply(speed));
-                                                                projectile.setGlowing(true);
-                                                                if (origin.getPowerFileFromType(getPowerFile()) == null)
                                                                     return;
-                                                                if (!getPowerArray().contains(p)) return;
-                                                                setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
+                                                                }
 
-                                                                peopladf.add(p);
+                                                                p.setCooldown(KeybindHandler.getKeybindItem(e.getKey(), p.getInventory()).getType(), cooldown * 2);
+                                                                addCooldownPatch(p);
 
+                                                                if (type.getEntityClass() != null && Projectile.class.isAssignableFrom(type.getEntityClass())) {
+                                                                    Projectile projectile = (Projectile) p.getWorld().spawnEntity(p.getEyeLocation(), type);
+                                                                    projectile.setShooter(p);
+
+                                                                    Vector direction = p.getEyeLocation().getDirection();
+
+                                                                    double yawRadians = Math.toRadians(p.getEyeLocation().getYaw() + finalDivergence1);
+
+                                                                    double x = -Math.sin(yawRadians) * Math.cos(Math.toRadians(p.getLocation().getPitch()));
+                                                                    double y = -Math.sin(Math.toRadians(p.getLocation().getPitch()));
+                                                                    double z = Math.cos(yawRadians) * Math.cos(Math.toRadians(p.getLocation().getPitch()));
+
+                                                                    direction.setX(x);
+                                                                    direction.setY(y);
+                                                                    direction.setZ(z);
+
+                                                                    projectile.setVelocity(direction.normalize().multiply(speed));
+                                                                    projectile.setGlowing(true);
+                                                                    if (power == null)
+                                                                        return;
+                                                                    if (!getPowerArray().contains(p)) return;
+                                                                    setActive(power.getTag(), true);
+
+                                                                    peopladf.add(p);
+
+                                                                }
+
+                                                                shotsLeft++; // Decrement the remaining shots
                                                             }
-
-                                                            shotsLeft++; // Decrement the remaining shots
                                                         }
-                                                    }
-                                                }.runTaskTimer(GenesisMC.getPlugin(), start_delay, interval);
+                                                    }.runTaskTimer(GenesisMC.getPlugin(), start_delay, interval);
 
-                                                if (thing[0]) {
-                                                    thing[0] = false;
-                                                    this.cancel();
-                                                }
-
-                                                if (origin.getPowerFileFromType("origins:fire_projectile").getKey().get("continuous").toString().equalsIgnoreCase("false")) {
-                                                    ItemMeta met = KeybindHandler.getKeybindItem(key, p.getInventory()).getItemMeta();
-                                                    met.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "contin"), PersistentDataType.BOOLEAN, false);
-                                                    if (origin.getPowerFileFromType(getPowerFile()) == null) {
-                                                        getPowerArray().remove(p);
-                                                        return;
+                                                    if (thing[0]) {
+                                                        thing[0] = false;
+                                                        this.cancel();
                                                     }
-                                                    if (!getPowerArray().contains(p)) return;
-                                                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
-                                                    KeybindHandler.getKeybindItem(key, p.getInventory()).setItemMeta(met);
-                                                    this.cancel();
-                                                } else {
-                                                    if (isKeyBeingPressed(e.getPlayer(), origin.getPowerFileFromType("origins:fire_projectile").getKey().get("key").toString(), true)) {
+
+                                                    if (power.getKey().get("continuous").toString().equalsIgnoreCase("false")) {
                                                         ItemMeta met = KeybindHandler.getKeybindItem(key, p.getInventory()).getItemMeta();
                                                         met.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "contin"), PersistentDataType.BOOLEAN, false);
-                                                        if (origin.getPowerFileFromType(getPowerFile()) == null) {
+                                                        if (power == null) {
                                                             getPowerArray().remove(p);
                                                             return;
                                                         }
                                                         if (!getPowerArray().contains(p)) return;
-                                                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
+                                                        setActive(power.getTag(), false);
                                                         KeybindHandler.getKeybindItem(key, p.getInventory()).setItemMeta(met);
                                                         this.cancel();
+                                                    } else {
+                                                        if (isKeyBeingPressed(e.getPlayer(), power.getKey().get("key").toString(), true)) {
+                                                            ItemMeta met = KeybindHandler.getKeybindItem(key, p.getInventory()).getItemMeta();
+                                                            met.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "contin"), PersistentDataType.BOOLEAN, false);
+                                                            if (power == null) {
+                                                                getPowerArray().remove(p);
+                                                                return;
+                                                            }
+                                                            if (!getPowerArray().contains(p)) return;
+                                                            setActive(power.getTag(), false);
+                                                            KeybindHandler.getKeybindItem(key, p.getInventory()).setItemMeta(met);
+                                                            this.cancel();
+                                                        }
                                                     }
                                                 }
                                             }
-                                        }
-                                    }.runTaskTimer(GenesisMC.getPlugin(), 0, 1);
+                                        }.runTaskTimer(GenesisMC.getPlugin(), 0, 1);
+                                    }
                                 }
                             }
                         }
@@ -268,7 +272,7 @@ public class FireProjectile extends CraftPower implements Listener {
 
     Player p;
 
-    public FireProjectile(){
+    public FireProjectile() {
         this.p = p;
     }
 

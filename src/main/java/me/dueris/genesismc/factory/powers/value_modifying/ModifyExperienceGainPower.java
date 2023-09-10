@@ -5,6 +5,7 @@ import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.ErrorSystem;
 import me.dueris.genesismc.utils.OriginContainer;
+import me.dueris.genesismc.utils.PowerContainer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -30,7 +31,7 @@ public class ModifyExperienceGainPower extends CraftPower implements Listener {
 
     Player p;
 
-    public ModifyExperienceGainPower(){
+    public ModifyExperienceGainPower() {
         this.p = p;
     }
 
@@ -47,30 +48,27 @@ public class ModifyExperienceGainPower extends CraftPower implements Listener {
                 ValueModifyingSuperClass valueModifyingSuperClass = new ValueModifyingSuperClass();
                 try {
                     ConditionExecutor conditionExecutor = new ConditionExecutor();
-                    if (conditionExecutor.check("condition", "conditions", p, origin, "origins:modify_xp_gain", p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
-                        for (HashMap<String, Object> modifier : origin.getPowerFileFromType("origins:modify_xp_gain").getConditionFromString("modifier", "modifiers")) {
-                            Float value = Float.valueOf(modifier.get("value").toString());
-                            String operation = modifier.get("operation").toString();
-                            BinaryOperator mathOperator = getOperationMappingsFloat().get(operation);
-                            if (mathOperator != null) {
-                                float result = (float) mathOperator.apply(e.getAmount(), value);
-                                e.setAmount(Math.toIntExact(Long.valueOf(String.valueOf(result))));
-                                if (origin.getPowerFileFromType(getPowerFile()) == null) {
-                                    getPowerArray().remove(p);
-                                    return;
+                    for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
+                        if (conditionExecutor.check("condition", "conditions", p, power, "origins:modify_xp_gain", p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
+                            for (HashMap<String, Object> modifier : power.getConditionFromString("modifier", "modifiers")) {
+                                Float value = Float.valueOf(modifier.get("value").toString());
+                                String operation = modifier.get("operation").toString();
+                                BinaryOperator mathOperator = getOperationMappingsFloat().get(operation);
+                                if (mathOperator != null) {
+                                    float result = (float) mathOperator.apply(e.getAmount(), value);
+                                    e.setAmount(Math.toIntExact(Long.valueOf(String.valueOf(result))));
+                                    if (power == null) {
+                                        getPowerArray().remove(p);
+                                        return;
+                                    }
+                                    if (!getPowerArray().contains(p)) return;
+                                    setActive(power.getTag(), true);
                                 }
-                                if (!getPowerArray().contains(p)) return;
-                                setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                             }
-                        }
 
-                    } else {
-                        if (origin.getPowerFileFromType(getPowerFile()) == null) {
-                            getPowerArray().remove(p);
-                            return;
+                        } else {
+                            setActive(power.getTag(), false);
                         }
-                        if (!getPowerArray().contains(p)) return;
-                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                     }
                 } catch (Exception ev) {
                     ErrorSystem errorSystem = new ErrorSystem();

@@ -1,6 +1,5 @@
 package me.dueris.genesismc.utils;
 
-import me.dueris.genesismc.FoliaOriginScheduler;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.files.GenesisDataFiles;
 import me.dueris.genesismc.utils.translation.LangConfig;

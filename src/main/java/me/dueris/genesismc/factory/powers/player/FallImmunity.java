@@ -4,6 +4,7 @@ import me.dueris.genesismc.entity.OriginPlayer;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.OriginContainer;
+import me.dueris.genesismc.utils.PowerContainer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -24,7 +25,7 @@ public class FallImmunity extends CraftPower implements Listener {
 
     Player p;
 
-    public FallImmunity(){
+    public FallImmunity() {
         this.p = p;
     }
 
@@ -39,15 +40,16 @@ public class FallImmunity extends CraftPower implements Listener {
         if (fall_immunity.contains(p)) {
             for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
                 ConditionExecutor conditionExecutor = new ConditionExecutor();
-                if (conditionExecutor.check("condition", "conditions", p, origin, "origins:fall_immunity", p, null, null, null, p.getItemInHand(), e)) {
+                for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
+                    if (conditionExecutor.check("condition", "conditions", p, power, "origins:fall_immunity", p, null, null, null, p.getItemInHand(), e)) {
+                        setActive(power.getTag(), true);
+                        if (e.getCause() == EntityDamageEvent.DamageCause.FALL) {
+                            e.setCancelled(true);
+                        }
+                    } else {
 
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
-                    if (e.getCause() == EntityDamageEvent.DamageCause.FALL) {
-                        e.setCancelled(true);
+                        setActive(power.getTag(), false);
                     }
-                } else {
-
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                 }
             }
         }

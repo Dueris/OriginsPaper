@@ -17,7 +17,7 @@ import java.util.ArrayList;
 public class ActionWhenDamageTaken extends CraftPower implements Listener {
     Player p;
 
-    public ActionWhenDamageTaken(){
+    public ActionWhenDamageTaken() {
         this.p = p;
     }
 
@@ -25,12 +25,13 @@ public class ActionWhenDamageTaken extends CraftPower implements Listener {
     public void run(Player p) {
 
     }
+
     @EventHandler
     public void d(EntityDamageEvent e) {
         Entity actor = e.getEntity();
         if (!(actor instanceof Player)) return;
         for (OriginContainer origin : OriginPlayer.getOrigin((Player) actor).values()) {
-            for(PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())){
+            for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
                 if (power == null) continue;
 
                 setActive(power.getTag(), true);

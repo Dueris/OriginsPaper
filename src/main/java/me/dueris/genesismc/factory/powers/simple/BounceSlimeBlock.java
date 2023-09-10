@@ -1,33 +1,25 @@
 package me.dueris.genesismc.factory.powers.simple;
 
-import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.entity.OriginPlayer;
 import me.dueris.genesismc.events.OriginChangeEvent;
-import me.dueris.genesismc.events.PlayerHitGroundEvent;
 import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.factory.powers.actions.ActionTypes;
 import me.dueris.genesismc.utils.OriginContainer;
 import me.dueris.genesismc.utils.PowerContainer;
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
-import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
 
 public class BounceSlimeBlock extends CraftPower implements OriginSimple, Listener {
     @Override
     public void run(Player p) {
 
     }
+
     public static ArrayList<Player> bouncePlayers = new ArrayList<>();
 
     public static ArrayList<Player> getBouncePlayers() {
@@ -37,17 +29,17 @@ public class BounceSlimeBlock extends CraftPower implements OriginSimple, Listen
     @EventHandler
     public void onPlayerMove(PlayerMoveEvent event) {
         Player player = event.getPlayer();
-        if(!bouncePlayers.contains(player)) return;
+        if (!bouncePlayers.contains(player)) return;
 
-            double velocityY = player.getVelocity().getY();
+        double velocityY = player.getVelocity().getY();
 
-            if (velocityY < -0.5) {
-                double coefficientOfRestitution = 0.75; // Adjust this value as needed
-                double reboundVelocity = -coefficientOfRestitution * velocityY;
+        if (velocityY < -0.5) {
+            double coefficientOfRestitution = 0.75; // Adjust this value as needed
+            double reboundVelocity = -coefficientOfRestitution * velocityY;
 
-                if(!player.isOnGround()) return;
-                player.setVelocity(new Vector(0, reboundVelocity, 0));
-            }
+            if (!player.isOnGround()) return;
+            player.setVelocity(new Vector(0, reboundVelocity, 0));
+        }
     }
 
     @EventHandler
@@ -65,7 +57,7 @@ public class BounceSlimeBlock extends CraftPower implements OriginSimple, Listen
 
         if (hasPower && !bouncePlayers.contains(e.getPlayer())) {
             bouncePlayers.add(e.getPlayer());
-        } else if (!hasPower && bouncePlayers.contains(e.getPlayer())) {
+        } else if (!hasPower) {
             bouncePlayers.remove(e.getPlayer());
         }
     }
@@ -85,7 +77,7 @@ public class BounceSlimeBlock extends CraftPower implements OriginSimple, Listen
 
         if (hasPower && !bouncePlayers.contains(e.getPlayer())) {
             bouncePlayers.add(e.getPlayer());
-        } else if (!hasPower && bouncePlayers.contains(e.getPlayer())) {
+        } else if (!hasPower) {
             bouncePlayers.remove(e.getPlayer());
         }
     }

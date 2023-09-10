@@ -13,7 +13,6 @@ import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class ActionOnBeingUsed extends CraftPower implements Listener {
 
@@ -26,18 +25,18 @@ public class ActionOnBeingUsed extends CraftPower implements Listener {
         if (!getPowerArray().contains(target)) return;
 
         for (OriginContainer origin : OriginPlayer.getOrigin(player).values()) {
-            for(PowerContainer powerContainer : origin.getMultiPowerFileFromType(getPowerFile())){
+            for (PowerContainer powerContainer : origin.getMultiPowerFileFromType(getPowerFile())) {
                 PowerContainer power = powerContainer;
                 if (power == null) continue;
 
                 if (!getPowerArray().contains(e.getPlayer())) return;
-                setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
+                setActive(power.getTag(), true);
                 ActionTypes.biEntityActionType(actor, target, power.getBiEntityAction());
                 new BukkitRunnable() {
                     @Override
                     public void run() {
                         if (!getPowerArray().contains(e.getPlayer())) return;
-                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
+                        setActive(power.getTag(), false);
                     }
                 }.runTaskLater(GenesisMC.getPlugin(), 2L);
             }
@@ -49,7 +48,7 @@ public class ActionOnBeingUsed extends CraftPower implements Listener {
 
     Player p;
 
-    public ActionOnBeingUsed(){
+    public ActionOnBeingUsed() {
         this.p = p;
     }
 

@@ -1,11 +1,5 @@
 package me.dueris.genesismc.factory;
 
-import org.bukkit.Material;
-import org.bukkit.Tag;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-
 public enum TagRegistry {
 //    BLOCK("", ""),
 //    DAMAGE("", ""),

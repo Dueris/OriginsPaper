@@ -3,12 +3,11 @@ package me.dueris.genesismc.factory.powers.value_modifying;
 import me.dueris.genesismc.entity.OriginPlayer;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.utils.ErrorSystem;
 import me.dueris.genesismc.utils.OriginContainer;
+import me.dueris.genesismc.utils.PowerContainer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 
 import java.util.ArrayList;
@@ -32,7 +31,7 @@ public class ModifyDamageTakenPower extends CraftPower implements Listener {
 
     Player p;
 
-    public ModifyDamageTakenPower(){
+    public ModifyDamageTakenPower() {
         this.p = p;
     }
 
@@ -47,17 +46,19 @@ public class ModifyDamageTakenPower extends CraftPower implements Listener {
             for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
                 try {
                     ConditionExecutor conditionExecutor = new ConditionExecutor();
-                    if (conditionExecutor.check("bientity_condition", "bientity_condition", p, origin, "origins:modify_damage_dealt", p, e.getEntity(), p.getLocation().getBlock(), null, p.getItemInHand(), e)) {
-                        if (conditionExecutor.check("condition", "condition", p, origin, "origins:modify_damage_dealt", p, e.getEntity(), p.getLocation().getBlock(), null, p.getItemInHand(), e)) {
-                            for (HashMap<String, Object> modifier : origin.getPowerFileFromType("origins:modify_damage_dealt").getConditionFromString("modifier", "modifiers")) {
-                                Object value = modifier.get("value");
-                                String operation = modifier.get("operation").toString();
-                                runSetDMG(e, operation, value);
-                                setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
+                    for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
+                        if (conditionExecutor.check("bientity_condition", "bientity_condition", p, power, "origins:modify_damage_dealt", p, e.getEntity(), p.getLocation().getBlock(), null, p.getItemInHand(), e)) {
+                            if (conditionExecutor.check("condition", "condition", p, power, "origins:modify_damage_dealt", p, e.getEntity(), p.getLocation().getBlock(), null, p.getItemInHand(), e)) {
+                                for (HashMap<String, Object> modifier : power.getConditionFromString("modifier", "modifiers")) {
+                                    Object value = modifier.get("value");
+                                    String operation = modifier.get("operation").toString();
+                                    runSetDMG(e, operation, value);
+                                    setActive(power.getTag(), true);
+                                }
                             }
+                        } else {
+                            setActive(power.getTag(), false);
                         }
-                    } else {
-                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                     }
                 } catch (Exception ev) {
                     throw new RuntimeException();

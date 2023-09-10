@@ -1,20 +1,15 @@
 package me.dueris.genesismc;
 
-import io.papermc.paper.threadedregions.scheduler.GlobalRegionScheduler;
 import me.dueris.genesismc.events.OriginChangeEvent;
 import me.dueris.genesismc.utils.OriginContainer;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import org.bukkit.Bukkit;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
 import org.bukkit.boss.KeyedBossBar;
-import org.bukkit.craftbukkit.v1_20_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 
@@ -28,7 +23,7 @@ public class CooldownStuff implements @NotNull Listener {
 //TODO: ADD COOLDOWN POWER WHEN ACTIONS ARE DONE
 
     @EventHandler
-    public void runs(OriginChangeEvent e){
+    public void runs(OriginChangeEvent e) {
         cooldowns.remove(e.getPlayer());
         cooldownBars.remove(e.getPlayer());
     }
@@ -37,7 +32,7 @@ public class CooldownStuff implements @NotNull Listener {
     public static HashMap<Player, BossBar> cooldownBars = new HashMap<>();
 
     public static void addCooldown(Player player, OriginContainer origin, String title, String dont_use, int cooldownTicks, String cooldownKeybindType) {
-        if(!in_cooldown_patch.contains(player) && dont_use.equals("origins:fire_projectile")) return;
+        if (!in_cooldown_patch.contains(player) && dont_use.equals("origins:fire_projectile")) return;
         if (isPlayerInCooldown(player, cooldownKeybindType)) {
             resetCooldown(player, cooldownKeybindType);
         }
@@ -48,7 +43,7 @@ public class CooldownStuff implements @NotNull Listener {
         cooldowns.put(player, cooldownKeybindType);
     }
 
-    private static BarStyle getCooldownPegAMT(int ticks){
+    private static BarStyle getCooldownPegAMT(int ticks) {
 //        if(ticks >= 20){
 //            return BarStyle.SEGMENTED_20;
 //        } else if (ticks >= 12) {
@@ -58,7 +53,7 @@ public class CooldownStuff implements @NotNull Listener {
 //        } else if (ticks >= 6) {
 //            return BarStyle.SEGMENTED_6;
 //        }else{
-            return BarStyle.SOLID;
+        return BarStyle.SOLID;
 //        }
     }
 
@@ -100,7 +95,7 @@ public class CooldownStuff implements @NotNull Listener {
 
             @Override
             public void run() {
-                try{
+                try {
                     ticksElapsed++;
                     double progress = 1.0 - (ticksElapsed * decreasePerTick);
                     bar.setProgress(progress);
@@ -113,7 +108,7 @@ public class CooldownStuff implements @NotNull Listener {
                         bar.setVisible(false);
                         cancel();
                     }
-                }catch (Exception e){
+                } catch (Exception e) {
                     //fail silent
                 }
 

@@ -1,18 +1,14 @@
 package me.dueris.genesismc.factory.conditions.entity;
 
 import me.dueris.genesismc.CooldownStuff;
-import me.dueris.genesismc.entity.OriginPlayer;
 import me.dueris.genesismc.factory.conditions.Condition;
-import me.dueris.genesismc.factory.conditions.biome.BiomeCondition;
 import me.dueris.genesismc.factory.conditions.block.BlockCondition;
 import me.dueris.genesismc.factory.powers.player.Climbing;
 import me.dueris.genesismc.factory.powers.player.FlightElytra;
 import me.dueris.genesismc.factory.powers.player.RestrictArmor;
-import me.dueris.genesismc.utils.OriginContainer;
 import me.dueris.genesismc.utils.PowerContainer;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
-import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
@@ -29,12 +25,10 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
 import static me.dueris.genesismc.factory.conditions.ConditionExecutor.getResult;
-import static me.dueris.genesismc.factory.powers.Power.action_on_being_used;
 import static me.dueris.genesismc.factory.powers.player.RestrictArmor.compareValues;
 
 public class EntityCondition implements Condition {
@@ -43,7 +37,7 @@ public class EntityCondition implements Condition {
         return Enchantment.getByName(namespaceString);
     }
 
-    private static int countBlocksInCube(int minX, int minY, int minZ, int maxX, int maxY, int maxZ, World world, HashMap<String, Object> condition, Player p, OriginContainer origin, String powerfile, Entity entity, Entity target, Block block, Fluid fluid, ItemStack itemStack, EntityDamageEvent dmgevent) {
+    private static int countBlocksInCube(int minX, int minY, int minZ, int maxX, int maxY, int maxZ, World world, HashMap<String, Object> condition, Player p, PowerContainer power, String powerfile, Entity entity, Entity target, Block block, Fluid fluid, ItemStack itemStack, EntityDamageEvent dmgevent) {
         int blockCount = 0;
 
         for (int x = minX; x <= maxX; x++) {
@@ -53,11 +47,11 @@ public class EntityCondition implements Condition {
                     Block blockw = location.getBlock();
                     if (blockw.getType() != Material.AIR) {
                         BlockCondition blockCondition = new BlockCondition();
-                        if(blockCondition.check(condition, p, origin, powerfile, entity, target, blockw, fluid, itemStack, dmgevent).isPresent()){
-                            if(blockCondition.check(condition, p, origin, powerfile, entity, target, blockw, fluid, itemStack, dmgevent).get()){
+                        if (blockCondition.check(condition, p, power, powerfile, entity, target, blockw, fluid, itemStack, dmgevent).isPresent()) {
+                            if (blockCondition.check(condition, p, power, powerfile, entity, target, blockw, fluid, itemStack, dmgevent).get()) {
                                 blockCount++;
                             }
-                        }else{
+                        } else {
                             blockCount++;
                         }
                     }
@@ -68,7 +62,7 @@ public class EntityCondition implements Condition {
         return blockCount;
     }
 
-    private static int countBlocksInStar(int centerX, int centerY, int centerZ, int radius, World world, HashMap<String, Object> condition, Player p, OriginContainer origin, String powerfile, Entity entity, Entity target, Block block, Fluid fluid, ItemStack itemStack, EntityDamageEvent dmgevent) {
+    private static int countBlocksInStar(int centerX, int centerY, int centerZ, int radius, World world, HashMap<String, Object> condition, Player p, PowerContainer power, String powerfile, Entity entity, Entity target, Block block, Fluid fluid, ItemStack itemStack, EntityDamageEvent dmgevent) {
         int blockCount = 0;
 
         for (int x = centerX - radius; x <= centerX + radius; x++) {
@@ -82,11 +76,11 @@ public class EntityCondition implements Condition {
 
                         if (block2.getType() != Material.AIR) {
                             BlockCondition blockCondition = new BlockCondition();
-                            if(blockCondition.check(condition, p, origin, powerfile, entity, target, block2, fluid, itemStack, dmgevent).isPresent()){
-                                if(blockCondition.check(condition, p, origin, powerfile, entity, target, block2, fluid, itemStack, dmgevent).get()){
+                            if (blockCondition.check(condition, p, power, powerfile, entity, target, block2, fluid, itemStack, dmgevent).isPresent()) {
+                                if (blockCondition.check(condition, p, power, powerfile, entity, target, block2, fluid, itemStack, dmgevent).get()) {
                                     blockCount++;
                                 }
-                            }else{
+                            } else {
                                 blockCount++;
                             }
                         }
@@ -98,7 +92,7 @@ public class EntityCondition implements Condition {
         return blockCount;
     }
 
-    public static int countBlocksInSphere(int centerX, int centerY, int centerZ, int radius, World world, HashMap<String, Object> condition, Player p, OriginContainer origin, String powerfile, Entity entity, Entity target, Block block, Fluid fluid, ItemStack itemStack, EntityDamageEvent dmgevent) {
+    public static int countBlocksInSphere(int centerX, int centerY, int centerZ, int radius, World world, HashMap<String, Object> condition, Player p, PowerContainer power, String powerfile, Entity entity, Entity target, Block block, Fluid fluid, ItemStack itemStack, EntityDamageEvent dmgevent) {
         int blockCount = 0;
         int squaredRadius = radius * radius;
 
@@ -109,11 +103,11 @@ public class EntityCondition implements Condition {
                         Location location = new Location(world, x, y, z);
                         if (location.getBlock().getType() != Material.AIR) {
                             BlockCondition blockCondition = new BlockCondition();
-                            if(blockCondition.check(condition, p, origin, powerfile, entity, target, location.getBlock(), fluid, itemStack, dmgevent).isPresent()){
-                                if(blockCondition.check(condition, p, origin, powerfile, entity, target, location.getBlock(), fluid, itemStack, dmgevent).get()){
+                            if (blockCondition.check(condition, p, power, powerfile, entity, target, location.getBlock(), fluid, itemStack, dmgevent).isPresent()) {
+                                if (blockCondition.check(condition, p, power, powerfile, entity, target, location.getBlock(), fluid, itemStack, dmgevent).get()) {
                                     blockCount++;
                                 }
-                            }else{
+                            } else {
                                 blockCount++;
                             }
                         }
@@ -132,189 +126,187 @@ public class EntityCondition implements Condition {
     }
 
     @Override
-    public Optional<Boolean> check(HashMap<String, Object> condition, Player p, OriginContainer origin, String powerfile, Entity entity, Entity target, Block block, Fluid fluid, ItemStack itemStack, EntityDamageEvent dmgevent) {
-        if (origin == null) return Optional.empty();
-        if (origin.getPowerFileFromType(powerfile) == null) return Optional.empty();
-            if (condition.isEmpty()) return Optional.empty();
-            boolean inverted = (boolean) condition.getOrDefault("inverted", false);
-            if (condition.get("type") == null) return Optional.empty();
-            String type = condition.get("type").toString();
-            if (type.equalsIgnoreCase("origins:ability")) {
-                String ability = condition.get("ability").toString().toLowerCase();
+    public Optional<Boolean> check(HashMap<String, Object> condition, Player p, PowerContainer power, String powerfile, Entity entity, Entity target, Block block, Fluid fluid, ItemStack itemStack, EntityDamageEvent entityDamageEvent) {
+        if (condition.isEmpty()) return Optional.empty();
+        boolean inverted = (boolean) condition.getOrDefault("inverted", false);
+        if (condition.get("type") == null) return Optional.empty();
+        String type = condition.get("type").toString();
+        if (type.equalsIgnoreCase("origins:ability")) {
+            String ability = condition.get("ability").toString().toLowerCase();
 
-                switch (ability) {
-                    case "minecraft:flying" -> {
-                        if (entity instanceof Player player) {
-                            return getResult(inverted, player.isFlying());
-                        }
+            switch (ability) {
+                case "minecraft:flying" -> {
+                    if (entity instanceof Player player) {
+                        return getResult(inverted, player.isFlying());
                     }
-                    case "minecraft:instabuild" -> {
-                        if (entity instanceof Player player) {
-                            return getResult(inverted, player.getGameMode().equals(GameMode.CREATIVE));
-                        }
+                }
+                case "minecraft:instabuild" -> {
+                    if (entity instanceof Player player) {
+                        return getResult(inverted, player.getGameMode().equals(GameMode.CREATIVE));
                     }
-                    case "minecraft:invulnerable" -> {
-                        return getResult(inverted, entity.isInvulnerable());
-                    }
-                    case "minecraft:maybuild" -> {
-                        return getResult(inverted, entity.hasPermission("minecraft.build"));
-                    }
-                    case "minecraft:mayfly" -> {
-                        if (entity instanceof Player player) {
-                            return getResult(inverted, player.getAllowFlight());
-                        }
+                }
+                case "minecraft:invulnerable" -> {
+                    return getResult(inverted, entity.isInvulnerable());
+                }
+                case "minecraft:maybuild" -> {
+                    return getResult(inverted, entity.hasPermission("minecraft.build"));
+                }
+                case "minecraft:mayfly" -> {
+                    if (entity instanceof Player player) {
+                        return getResult(inverted, player.getAllowFlight());
                     }
                 }
             }
+        }
 
-            if (type.equalsIgnoreCase("origins:advancement")) {
-                String advancementString = condition.get("advancement").toString();
+        if (type.equalsIgnoreCase("origins:advancement")) {
+            String advancementString = condition.get("advancement").toString();
 
-                if (entity instanceof Player player) {
-                    World world = player.getWorld();
-                    File worldFolder = world.getWorldFolder();
-                    File advancementsFolder = new File(worldFolder, "advancements");
-                    File playerAdvancementFile = new File(advancementsFolder, player.getUniqueId() + ".json");
+            if (entity instanceof Player player) {
+                World world = player.getWorld();
+                File worldFolder = world.getWorldFolder();
+                File advancementsFolder = new File(worldFolder, "advancements");
+                File playerAdvancementFile = new File(advancementsFolder, player.getUniqueId() + ".json");
 
-                    if (playerAdvancementFile.exists()) {
-                        try {
-                            JSONParser parser = new JSONParser();
-                            JSONObject jsonObject = (JSONObject) parser.parse(new FileReader(playerAdvancementFile));
-                            JSONObject advancementJson = (JSONObject) jsonObject.get(advancementString);
+                if (playerAdvancementFile.exists()) {
+                    try {
+                        JSONParser parser = new JSONParser();
+                        JSONObject jsonObject = (JSONObject) parser.parse(new FileReader(playerAdvancementFile));
+                        JSONObject advancementJson = (JSONObject) jsonObject.get(advancementString);
 
-                            if (advancementJson != null) {
-                                Boolean done = (Boolean) advancementJson.get("done");
-                                return getResult(inverted, Objects.requireNonNullElse(done, false));
-                            } else {
-                                return getResult(inverted, false);
-                            }
-                        } catch (IOException | ParseException e) {
-                            e.printStackTrace();
+                        if (advancementJson != null) {
+                            Boolean done = (Boolean) advancementJson.get("done");
+                            return getResult(inverted, Objects.requireNonNullElse(done, false));
+                        } else {
+                            return getResult(inverted, false);
                         }
-                    } else {
-                        return getResult(inverted, false);
+                    } catch (IOException | ParseException e) {
+                        e.printStackTrace();
                     }
+                } else {
+                    return getResult(inverted, false);
                 }
             }
+        }
 
-            if (type.equalsIgnoreCase("origins:sprinting")){
-                return getResult(inverted, p.isSprinting());
+        if (type.equalsIgnoreCase("origins:sprinting")) {
+            return getResult(inverted, p.isSprinting());
+        }
+
+        if (type.equalsIgnoreCase("origins:food_level")) {
+            String comparison = condition.get("comparison").toString();
+            int compare_to = Integer.parseInt(condition.get("compare_to").toString());
+            if (RestrictArmor.compareValues(p.getFoodLevel(), comparison, compare_to)) {
+                p.sendMessage("true");
+                return getResult(inverted, true);
             }
+        }
 
-            if (type.equalsIgnoreCase("origins:food_level")){
-                String comparison = condition.get("comparison").toString();
-                int compare_to = Integer.parseInt(condition.get("compare_to").toString());
-                if(RestrictArmor.compareValues(p.getFoodLevel(), comparison, compare_to)){
-                    p.sendMessage("true");
+        if (type.equalsIgnoreCase("origins:air")) {
+            if (entity instanceof Player player) {
+                if (compareValues(player.getRemainingAir(), condition.get("comparison").toString(), Integer.parseInt(condition.get("compare_to").toString()))) {
                     return getResult(inverted, true);
                 }
             }
+        }
 
-            if (type.equalsIgnoreCase("origins:air")) {
-                if (entity instanceof Player player) {
-                    if (compareValues(player.getRemainingAir(), condition.get("comparison").toString(), Integer.parseInt(condition.get("compare_to").toString()))) {
-                        return getResult(inverted, true);
-                    }
-                }
-            }
-
-            if (type.equalsIgnoreCase("origins:attribute")) {
-                if (entity instanceof Player player) {
-                    String attributeString = condition.get("attribute").toString().split(":")[1].replace(".", "_").toUpperCase();
-                    if (compareValues(player.getAttribute(Attribute.valueOf(attributeString)).getValue(), condition.get("comparison").toString(), Integer.parseInt(condition.get("compare_to").toString()))) {
-                        return getResult(inverted, true);
-                    }
-                }
-            }
-
-            if (type.equalsIgnoreCase("origins:block_collision")) {
-                String offsetX = condition.get("offset_x").toString();
-                String offsetY = condition.get("offset_y").toString();
-                String offsetZ = condition.get("offset_z").toString();
-                if (entity instanceof Player player) {
-                    Location playerLocation = player.getEyeLocation();
-                    World world = player.getWorld();
-
-                    int blockX = playerLocation.getBlockX() + Integer.parseInt(offsetX);
-                    int blockY = playerLocation.getBlockY() + Integer.parseInt(offsetY);
-                    int blockZ = playerLocation.getBlockZ() + Integer.parseInt(offsetZ);
-
-                    Block blockAt = world.getBlockAt(blockX, blockY, blockZ);
-                    if (!blockAt.getType().isAir()) {
-                        return getResult(inverted, true);
-                    }
-                }
-            }
-
-            if (type.equalsIgnoreCase("origins:block_in_radius")) {
-                int radius = Math.toIntExact((Long) condition.get("radius"));
-                String shape = condition.get("shape").toString();
-                String comparison = condition.get("comparison").toString();
-                int compare_to = Integer.parseInt(condition.get("compare_to").toString());
-
-                Location center = entity.getLocation();
-                int centerX = center.getBlockX();
-                int centerY = center.getBlockY();
-                int centerZ = center.getBlockZ();
-                World world = center.getWorld();
-
-                int minX = center.getBlockX() - radius;
-                int minY = center.getBlockY() - radius;
-                int minZ = center.getBlockZ() - radius;
-                int maxX = center.getBlockX() + radius;
-                int maxY = center.getBlockY() + radius;
-                int maxZ = center.getBlockZ() + radius;
-
-                int blockCount = 0;
-                HashMap<String, Object> ingredientMap = (HashMap<String, java.lang.Object>) condition.get("block_condition");
-                if (shape.equalsIgnoreCase("sphere")) {
-                    blockCount = countBlocksInSphere(centerX, centerY, centerZ, radius, world, ingredientMap, p, origin, powerfile, entity, target, block, fluid, itemStack, dmgevent);
-                } else if (shape.equalsIgnoreCase("star")) {
-                    blockCount = countBlocksInStar(centerX, centerY, centerZ, radius, world, ingredientMap, p, origin, powerfile, entity, target, block, fluid, itemStack, dmgevent);
-                } else if (shape.equalsIgnoreCase("cube")) {
-                    blockCount = countBlocksInCube(minX, minY, minZ, maxX, maxY, maxZ, world, ingredientMap, p, origin, powerfile, entity, target, block, fluid, itemStack, dmgevent);
-                }
-                if (compareValues(blockCount, comparison, compare_to)) {
+        if (type.equalsIgnoreCase("origins:attribute")) {
+            if (entity instanceof Player player) {
+                String attributeString = condition.get("attribute").toString().split(":")[1].replace(".", "_").toUpperCase();
+                if (compareValues(player.getAttribute(Attribute.valueOf(attributeString)).getValue(), condition.get("comparison").toString(), Integer.parseInt(condition.get("compare_to").toString()))) {
                     return getResult(inverted, true);
                 }
-
             }
+        }
 
-            if (type.equalsIgnoreCase("origins:weather_check")){
-                boolean thunder = (boolean) condition.getOrDefault("thundering", false);
-                boolean rain = (boolean) condition.getOrDefault("raining", false);
-                boolean clear = (boolean) condition.getOrDefault("clear", false);
-                if(thunder){
-                    return getResult(inverted, p.getWorld().isThundering());
-                }
-                if(rain){
-                    return getResult(inverted, p.getWorld().getClearWeatherDuration() == 0);
-                }
-                if(clear){
-                    return getResult(inverted, p.getWorld().getClearWeatherDuration() > 0);
-                }
-            }
+        if (type.equalsIgnoreCase("origins:block_collision")) {
+            String offsetX = condition.get("offset_x").toString();
+            String offsetY = condition.get("offset_y").toString();
+            String offsetZ = condition.get("offset_z").toString();
+            if (entity instanceof Player player) {
+                Location playerLocation = player.getEyeLocation();
+                World world = player.getWorld();
 
-            if (type.equalsIgnoreCase("origins:brightness")) {
-                String comparison = condition.get("comparison").toString();
-                double compare_to = Double.parseDouble(condition.get("compare_to").toString());
-                double brightness;
-                int lightLevel = entity.getLocation().getBlock().getLightLevel();
-                int ambientLight = 0;
+                int blockX = playerLocation.getBlockX() + Integer.parseInt(offsetX);
+                int blockY = playerLocation.getBlockY() + Integer.parseInt(offsetY);
+                int blockZ = playerLocation.getBlockZ() + Integer.parseInt(offsetZ);
 
-                //calculate ambient light
-                if (entity.getWorld() == Bukkit.getServer().getWorlds().get(0)) {
-                    ambientLight = 0;
-                } else if (entity.getWorld() == Bukkit.getServer().getWorlds().get(2)) {
-                    ambientLight = 1;
-                }
-                brightness = ambientLight + (1 - ambientLight) * lightLevel / (60 - 3 * lightLevel);
-                p.sendMessage(String.valueOf(lightLevel));
-                if (compareValues(brightness, comparison, compare_to)) {
+                Block blockAt = world.getBlockAt(blockX, blockY, blockZ);
+                if (!blockAt.getType().isAir()) {
                     return getResult(inverted, true);
                 }
-
             }
+        }
+
+        if (type.equalsIgnoreCase("origins:block_in_radius")) {
+            int radius = Math.toIntExact((Long) condition.get("radius"));
+            String shape = condition.get("shape").toString();
+            String comparison = condition.get("comparison").toString();
+            int compare_to = Integer.parseInt(condition.get("compare_to").toString());
+
+            Location center = entity.getLocation();
+            int centerX = center.getBlockX();
+            int centerY = center.getBlockY();
+            int centerZ = center.getBlockZ();
+            World world = center.getWorld();
+
+            int minX = center.getBlockX() - radius;
+            int minY = center.getBlockY() - radius;
+            int minZ = center.getBlockZ() - radius;
+            int maxX = center.getBlockX() + radius;
+            int maxY = center.getBlockY() + radius;
+            int maxZ = center.getBlockZ() + radius;
+
+            int blockCount = 0;
+            HashMap<String, Object> ingredientMap = (HashMap<String, java.lang.Object>) condition.get("block_condition");
+            if (shape.equalsIgnoreCase("sphere")) {
+                blockCount = countBlocksInSphere(centerX, centerY, centerZ, radius, world, ingredientMap, p, power, powerfile, entity, target, block, fluid, itemStack, entityDamageEvent);
+            } else if (shape.equalsIgnoreCase("star")) {
+                blockCount = countBlocksInStar(centerX, centerY, centerZ, radius, world, ingredientMap, p, power, powerfile, entity, target, block, fluid, itemStack, entityDamageEvent);
+            } else if (shape.equalsIgnoreCase("cube")) {
+                blockCount = countBlocksInCube(minX, minY, minZ, maxX, maxY, maxZ, world, ingredientMap, p, power, powerfile, entity, target, block, fluid, itemStack, entityDamageEvent);
+            }
+            if (compareValues(blockCount, comparison, compare_to)) {
+                return getResult(inverted, true);
+            }
+
+        }
+
+        if (type.equalsIgnoreCase("origins:weather_check")) {
+            boolean thunder = (boolean) condition.getOrDefault("thundering", false);
+            boolean rain = (boolean) condition.getOrDefault("raining", false);
+            boolean clear = (boolean) condition.getOrDefault("clear", false);
+            if (thunder) {
+                return getResult(inverted, p.getWorld().isThundering());
+            }
+            if (rain) {
+                return getResult(inverted, p.getWorld().getClearWeatherDuration() == 0);
+            }
+            if (clear) {
+                return getResult(inverted, p.getWorld().getClearWeatherDuration() > 0);
+            }
+        }
+
+        if (type.equalsIgnoreCase("origins:brightness")) {
+            String comparison = condition.get("comparison").toString();
+            double compare_to = Double.parseDouble(condition.get("compare_to").toString());
+            double brightness;
+            int lightLevel = entity.getLocation().getBlock().getLightLevel();
+            int ambientLight = 0;
+
+            //calculate ambient light
+            if (entity.getWorld() == Bukkit.getServer().getWorlds().get(0)) {
+                ambientLight = 0;
+            } else if (entity.getWorld() == Bukkit.getServer().getWorlds().get(2)) {
+                ambientLight = 1;
+            }
+            brightness = ambientLight + (1 - ambientLight) * lightLevel / (60 - 3 * lightLevel);
+            p.sendMessage(String.valueOf(lightLevel));
+            if (compareValues(brightness, comparison, compare_to)) {
+                return getResult(inverted, true);
+            }
+
+        }
 
         if (type.equalsIgnoreCase("origins:light_level")) {
             String comparison = condition.get("comparison").toString();
@@ -327,156 +319,154 @@ public class EntityCondition implements Condition {
 
         }
 
-            if (type.equalsIgnoreCase("origins:climbing")) {
-                if (entity instanceof Player player) {
-                    if (player.isClimbing()) {
-                        return getResult(inverted, true);
-                    }
-                    Climbing climbing = new Climbing();
-                    if (climbing.isActiveClimbing(player)) {
-                        return getResult(inverted, true);
-                    }
-
-                }
-            }
-
-            if (type.equalsIgnoreCase("origins:collided_horizontally")) {
-                if (entity instanceof Player player) {
-                    BoundingBox playerBoundingBox = player.getBoundingBox();
-                    BoundingBox blockBoundingBox = block.getBoundingBox();
-
-                    if (blockBoundingBox.overlaps(playerBoundingBox)) {
-                        return getResult(inverted, true);
-                    }
-
-                }
-            }
-
-            if (type.equalsIgnoreCase("origins:creative_flying")) {
-                if (entity instanceof Player player) {
-                    if (player.isFlying()) {
-                        return getResult(inverted, true);
-                    }
-
-                }
-            }
-
-            if (type.equalsIgnoreCase("origins:daytime")) {
-                if (entity.getWorld().isDayTime()) {
+        if (type.equalsIgnoreCase("origins:climbing")) {
+            if (entity instanceof Player player) {
+                if (player.isClimbing()) {
                     return getResult(inverted, true);
                 }
-            }
-
-            if (type.equalsIgnoreCase("origins:dimension")) {
-                if (entity.getWorld().getEnvironment().toString().equals(condition.get("dimension").toString().split(":")[1].replace("the_", "").toUpperCase())) {
+                Climbing climbing = new Climbing();
+                if (climbing.isActiveClimbing(player)) {
                     return getResult(inverted, true);
                 }
+
             }
+        }
 
-            if (type.equalsIgnoreCase("origins:fluid_height")) {
-                String fluidD = condition.get("fluid").toString();
+        if (type.equalsIgnoreCase("origins:collided_horizontally")) {
+            if (entity instanceof Player player) {
+                BoundingBox playerBoundingBox = player.getBoundingBox();
+                BoundingBox blockBoundingBox = block.getBoundingBox();
 
-                if (fluidD.equalsIgnoreCase("lava") || fluidD.equalsIgnoreCase("minecraft:lava")) {
-                    return getResult(inverted, entity.isInLava());
-                } else if (fluidD.equalsIgnoreCase("water") || fluidD.equalsIgnoreCase("minecraft:water")) {
-                    return getResult(inverted, entity.isInWaterOrBubbleColumn());
-                }
-            }
-
-            if(type.equalsIgnoreCase("origins:invisible")){
-                if(entity instanceof Player player){
-                    return getResult(false, player.isInvisible() || p.getActivePotionEffects().contains(PotionEffectType.INVISIBILITY));
-                }
-            }
-
-            if (type.equalsIgnoreCase("origins:in_rain")) {
-                return getResult(inverted, entity.isInRain());
-            }
-
-            if (type.equalsIgnoreCase("origins:health")) {
-                if (RestrictArmor.compareValues(p.getHealth(), condition.get("comparison").toString(), Double.parseDouble(condition.get("compare_to").toString()))) {
+                if (blockBoundingBox.overlaps(playerBoundingBox)) {
                     return getResult(inverted, true);
                 }
-            }
 
-            if (type.equalsIgnoreCase("origins:exposed_to_sun")) {
-                if ((p.getLocation().getBlockY() + 1 > p.getWorld().getHighestBlockYAt(p.getLocation()))) {
-                    return getResult(inverted, p.getWorld().isDayTime());
+            }
+        }
+
+        if (type.equalsIgnoreCase("origins:creative_flying")) {
+            if (entity instanceof Player player) {
+                if (player.isFlying()) {
+                    return getResult(inverted, true);
                 }
-            }
 
-            if (type.equalsIgnoreCase("origins:sneaking")) {
-                return getResult(inverted, entity.isSneaking());
             }
+        }
 
-            if (type.equalsIgnoreCase("origins:resource")) {
-                for(PowerContainer powerContainer : origin.getMultiPowerFileFromType(powerfile)){
-                    return getResult(inverted, !CooldownStuff.isPlayerInCooldownFromTag(p, powerContainer.getTag()));
-                }
+        if (type.equalsIgnoreCase("origins:daytime")) {
+            if (entity.getWorld().isDayTime()) {
+                return getResult(inverted, true);
             }
+        }
 
-            if (type.equalsIgnoreCase("origins:fall_flying")){
-                if(entity instanceof Player player){
-                    if(player.isGliding() || FlightElytra.getGlidingPlayers().contains(player)){
-                        if(player.getVelocity().getY() < 0 && !player.isOnGround()){
-                            return getResult(inverted, true);
-                        }
+        if (type.equalsIgnoreCase("origins:dimension")) {
+            if (entity.getWorld().getEnvironment().toString().equals(condition.get("dimension").toString().split(":")[1].replace("the_", "").toUpperCase())) {
+                return getResult(inverted, true);
+            }
+        }
+
+        if (type.equalsIgnoreCase("origins:fluid_height")) {
+            String fluidD = condition.get("fluid").toString();
+
+            if (fluidD.equalsIgnoreCase("lava") || fluidD.equalsIgnoreCase("minecraft:lava")) {
+                return getResult(inverted, entity.isInLava());
+            } else if (fluidD.equalsIgnoreCase("water") || fluidD.equalsIgnoreCase("minecraft:water")) {
+                return getResult(inverted, entity.isInWaterOrBubbleColumn());
+            }
+        }
+
+        if (type.equalsIgnoreCase("origins:invisible")) {
+            if (entity instanceof Player player) {
+                return getResult(false, player.isInvisible() || p.getActivePotionEffects().contains(PotionEffectType.INVISIBILITY));
+            }
+        }
+
+        if (type.equalsIgnoreCase("origins:in_rain")) {
+            return getResult(inverted, entity.isInRain());
+        }
+
+        if (type.equalsIgnoreCase("origins:health")) {
+            if (RestrictArmor.compareValues(p.getHealth(), condition.get("comparison").toString(), Double.parseDouble(condition.get("compare_to").toString()))) {
+                return getResult(inverted, true);
+            }
+        }
+
+        if (type.equalsIgnoreCase("origins:exposed_to_sun")) {
+            if ((p.getLocation().getBlockY() + 1 > p.getWorld().getHighestBlockYAt(p.getLocation()))) {
+                return getResult(inverted, p.getWorld().isDayTime());
+            }
+        }
+
+        if (type.equalsIgnoreCase("origins:sneaking")) {
+            return getResult(inverted, entity.isSneaking());
+        }
+
+        if (type.equalsIgnoreCase("origins:resource")) {
+            return getResult(inverted, !CooldownStuff.isPlayerInCooldownFromTag(p, power.getTag()));
+        }
+
+        if (type.equalsIgnoreCase("origins:fall_flying")) {
+            if (entity instanceof Player player) {
+                if (player.isGliding() || FlightElytra.getGlidingPlayers().contains(player)) {
+                    if (player.getVelocity().getY() < 0 && !player.isOnGround()) {
+                        return getResult(inverted, true);
                     }
                 }
             }
+        }
 
-            if (type.equalsIgnoreCase("origins:light_level")){
+        if (type.equalsIgnoreCase("origins:light_level")) {
 
+        }
+
+        if (type.equalsIgnoreCase("origins:submerged_in")) {
+            if (condition.get("fluid").equals("minecraft:water")) {
+                if (entity.isInWaterOrBubbleColumn()) return getResult(inverted, true);
+            } else if (condition.get("fluid").equals("minecraft:lava")) {
+                if (entity.isInLava()) return getResult(inverted, true);
             }
+        }
 
-            if(type.equalsIgnoreCase("origins:submerged_in")){
-                if(condition.get("fluid").equals("minecraft:water")){
-                    if(entity.isInWaterOrBubbleColumn()) return getResult(inverted, true);
-                }else if (condition.get("fluid").equals("minecraft:lava")) {
-                    if(entity.isInLava()) return getResult(inverted, true);
-                }
-            }
+        if (type.equalsIgnoreCase("origins:enchantment")) {
+            if (entity instanceof Player player) {
+                String enchantmentNamespace = condition.get("enchantment").toString();
+                String comparison = condition.get("comparison").toString();
+                double compareTo = Double.parseDouble(condition.get("compare_to").toString());
 
-            if (type.equalsIgnoreCase("origins:enchantment")) {
-                if (entity instanceof Player player) {
-                    String enchantmentNamespace = condition.get("enchantment").toString();
-                    String comparison = condition.get("comparison").toString();
-                    double compareTo = Double.parseDouble(condition.get("compare_to").toString());
+                for (ItemStack item : player.getInventory().getArmorContents()) {
+                    if (item == null) continue;
 
-                    for (ItemStack item : player.getInventory().getArmorContents()) {
-                        if (item == null) continue;
+                    Enchantment enchantment = getEnchantmentByNamespace(enchantmentNamespace);
 
-                        Enchantment enchantment = getEnchantmentByNamespace(enchantmentNamespace);
+                    if (enchantment != null) {
+                        if (item.containsEnchantment(enchantment)) {
+                            int enchantmentLevel = item.getEnchantmentLevel(enchantment);
 
-                        if (enchantment != null) {
-                            if (item.containsEnchantment(enchantment)) {
-                                int enchantmentLevel = item.getEnchantmentLevel(enchantment);
-
-                                if (RestrictArmor.compareValues(enchantmentLevel, comparison, compareTo)) {
-                                    p.sendMessage("true enchants");
-                                    return getResult(inverted, true);
-                                }
-                            } else {
-                                if (Double.compare(compareTo, 0.0) == 0 && comparison.equals("==")) {
-                                    return getResult(inverted, !item.containsEnchantment(enchantment));
-                                }
+                            if (RestrictArmor.compareValues(enchantmentLevel, comparison, compareTo)) {
+                                p.sendMessage("true enchants");
+                                return getResult(inverted, true);
                             }
                         } else {
-                            if(compareTo == 0 && comparison == "==") return getResult(inverted, true);
-                            p.sendMessage("Enchantment not found");
+                            if (Double.compare(compareTo, 0.0) == 0 && comparison.equals("==")) {
+                                return getResult(inverted, !item.containsEnchantment(enchantment));
+                            }
                         }
+                    } else {
+                        if (compareTo == 0 && comparison == "==") return getResult(inverted, true);
+                        p.sendMessage("Enchantment not found");
                     }
                 }
             }
+        }
 
-            if(type.equalsIgnoreCase("origins:on_block")){
-                return getResult(inverted, entity.isOnGround());
-            }
+        if (type.equalsIgnoreCase("origins:on_block")) {
+            return getResult(inverted, entity.isOnGround());
+        }
 
-            if(type.equalsIgnoreCase("origins:on_fire")){
-                return getResult(inverted, entity.isVisualFire());
-            }
+        if (type.equalsIgnoreCase("origins:on_fire")) {
+            return getResult(inverted, entity.isVisualFire());
+        }
 
-            return getResult(inverted, false);
+        return getResult(inverted, false);
     }
 }

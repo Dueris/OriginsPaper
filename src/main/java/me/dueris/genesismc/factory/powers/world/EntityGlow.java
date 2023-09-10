@@ -4,11 +4,11 @@ import me.dueris.genesismc.entity.OriginPlayer;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.OriginContainer;
+import me.dueris.genesismc.utils.PowerContainer;
 import net.minecraft.network.protocol.game.ClientboundUpdateMobEffectPacket;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
-import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.v1_20_R1.entity.CraftPlayer;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -41,7 +41,7 @@ public class EntityGlow extends CraftPower {
 
     Player p;
 
-    public EntityGlow(){
+    public EntityGlow() {
         this.p = p;
     }
 
@@ -52,23 +52,17 @@ public class EntityGlow extends CraftPower {
                 Collection<Entity> entitiesWithinRadius = getEntitiesInRadius(p, 10);
                 for (Entity entity : entitiesWithinRadius) {
                     ConditionExecutor conditionExecutor = new ConditionExecutor();
-                    if (conditionExecutor.check("condition", "conditions", p, origin, "origins:entity_glow", p, entity, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
-                        CraftPlayer craftPlayer = (CraftPlayer) p;
-                        MobEffect effect = MobEffects.GLOWING;
-                        craftPlayer.getHandle().connection.send(new ClientboundUpdateMobEffectPacket(entity.getEntityId(), new MobEffectInstance(effect, 60, 2, false, false, false)));
-                        if (origin.getPowerFileFromType(getPowerFile()) == null) {
-                            getPowerArray().remove(p);
-                            return;
+                    for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
+                        if (conditionExecutor.check("condition", "conditions", p, power, "origins:entity_glow", p, entity, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
+                            CraftPlayer craftPlayer = (CraftPlayer) p;
+                            MobEffect effect = MobEffects.GLOWING;
+                            craftPlayer.getHandle().connection.send(new ClientboundUpdateMobEffectPacket(entity.getEntityId(), new MobEffectInstance(effect, 60, 2, false, false, false)));
+
+                            setActive(power.getTag(), true);
+                        } else {
+
+                            setActive(power.getTag(), false);
                         }
-                        if (!getPowerArray().contains(p)) return;
-                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
-                    } else {
-                        if (origin.getPowerFileFromType(getPowerFile()) == null) {
-                            getPowerArray().remove(p);
-                            return;
-                        }
-                        if (!getPowerArray().contains(p)) return;
-                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                     }
                 }
             }

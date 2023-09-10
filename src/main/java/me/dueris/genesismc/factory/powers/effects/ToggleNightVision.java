@@ -8,7 +8,7 @@ import me.dueris.genesismc.events.KeybindTriggerEvent;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.OriginContainer;
-import org.bukkit.Material;
+import me.dueris.genesismc.utils.PowerContainer;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -22,12 +22,11 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.util.ArrayList;
 
 import static me.dueris.genesismc.KeybindHandler.isKeyBeingPressed;
-import static me.dueris.genesismc.factory.powers.Toggle.in_continuous;
 
 public class ToggleNightVision extends CraftPower implements Listener {
     Player p;
 
-    public ToggleNightVision(){
+    public ToggleNightVision() {
         this.p = p;
     }
 
@@ -36,15 +35,15 @@ public class ToggleNightVision extends CraftPower implements Listener {
 
     }
 
-    public void execute(Player p, OriginContainer origin) {
+    public void execute(Player p, PowerContainer power) {
         if (!getPowerArray().contains(p)) return;
         if (runCancel) return;
-        String tag = origin.getPowerFileFromType(getPowerFile()).getTag();
-        String key = (String) origin.getPowerFileFromType(getPowerFile()).getKey().get("key");
+        String tag = power.getTag();
+        String key = (String) power.getKey().get("key");
         KeybindHandler.runKeyChangeTrigger(KeybindHandler.getTriggerFromOriginKey(p, key));
         if (CooldownStuff.isPlayerInCooldown(p, key)) return;
-        if (powers_active.containsKey(origin.getPowerFileFromType(getPowerFile()).getTag())) {
-            setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), !powers_active.get(tag));
+        if (powers_active.containsKey(power.getTag())) {
+            setActive(power.getTag(), !powers_active.get(tag));
             if (true) {
                 if (active) {
                     //active
@@ -62,7 +61,7 @@ public class ToggleNightVision extends CraftPower implements Listener {
                             runCancel = false;
                             this.cancel();
                         }
-                    }.runTaskTimer(GenesisMC.getPlugin(),0, 5);
+                    }.runTaskTimer(GenesisMC.getPlugin(), 0, 5);
                     new BukkitRunnable() {
                         @Override
                         public void run() {
@@ -92,9 +91,9 @@ public class ToggleNightVision extends CraftPower implements Listener {
                         public void run() {
                             //run code for while its enabled
                             ConditionExecutor conditionExecutor = new ConditionExecutor();
-                            if (conditionExecutor.check("condition", "conditions", p, origin, getPowerFile(), p, null, null, null, p.getItemInHand(), null)) {
+                            if (conditionExecutor.check("condition", "conditions", p, power, getPowerFile(), p, null, null, null, p.getItemInHand(), null)) {
                                 p.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, Integer.MAX_VALUE, 255, false, false, false));
-                            }else{
+                            } else {
                                 p.removePotionEffect(PotionEffectType.NIGHT_VISION);
                             }
                         }
@@ -140,15 +139,17 @@ public class ToggleNightVision extends CraftPower implements Listener {
         if (getPowerArray().contains(e.getPlayer())) {
             for (OriginContainer origin : OriginPlayer.getOrigin(e.getPlayer()).values()) {
                 ConditionExecutor conditionExecutor = new ConditionExecutor();
-                if (conditionExecutor.check("condition", "conditions", p, origin, getPowerFile(), p, null, null, null, p.getItemInHand(), null)) {
-                    if (!CooldownStuff.isPlayerInCooldown(p, origin.getPowerFileFromType(getPowerFile()).getKey().get("key").toString())) {
-                        if (isKeyBeingPressed(e.getPlayer(), origin.getPowerFileFromType(getPowerFile()).getKey().get("key").toString(), true)) {
-                            execute(p, origin);
+                for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
+                    if (conditionExecutor.check("condition", "conditions", p, power, getPowerFile(), p, null, null, null, p.getItemInHand(), null)) {
+                        if (!CooldownStuff.isPlayerInCooldown(p, power.getKey().get("key").toString())) {
+                            if (isKeyBeingPressed(e.getPlayer(), power.getKey().get("key").toString(), true)) {
+                                execute(p, power);
+                            }
                         }
+                    } else {
+                        KeybindHandler.runKeyChangeTriggerReturn(KeybindHandler.getKeybindItem(power.getKey().get("key").toString(), p.getInventory()), p, power.getKey().get("key").toString());
+                        setActive(power.getTag(), false);
                     }
-                }else{
-                    KeybindHandler.runKeyChangeTriggerReturn(KeybindHandler.getKeybindItem(origin.getPowerFileFromType(getPowerFile()).getKey().get("key").toString(), p.getInventory()), p, origin.getPowerFileFromType(getPowerFile()).getKey().get("key").toString());
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                 }
             }
         }

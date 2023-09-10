@@ -11,11 +11,7 @@ import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntityToggleGlideEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerToggleFlightEvent;
-import org.bukkit.event.player.PlayerToggleSneakEvent;
-import org.bukkit.event.player.PlayerToggleSprintEvent;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -77,7 +73,7 @@ public class AttributeConditioned extends CraftPower implements Listener {
         }
     }
 
-    public static void executeConditionAttribute(Player p) {
+    public void executeConditionAttribute(Player p) {
         Map<String, BinaryOperator<Integer>> operationMap = new HashMap<>();
         operationMap.put("addition", Integer::sum);
         operationMap.put("subtraction", (a, b) -> a - b);
@@ -95,31 +91,32 @@ public class AttributeConditioned extends CraftPower implements Listener {
         operationMap.put("divide_random_max", (a, b) -> a / random.nextInt(b));
 
         for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
+            for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
+                if (power == null) continue;
 
-            PowerContainer power = origin.getPowerFileFromType("origins:attribute");
-            if (power == null) continue;
-
-            for (HashMap<String, Object> modifier : origin.getPowerFileFromType("origins:attribute_conditioned").getConditionFromString("modifier", "modifiers")) {
-                ConditionExecutor conditionExecutor = new ConditionExecutor();
-                if (!conditionExecutor.check("condition", "conditions", p, origin, "origins:attribute_conditioned", p, null, null, null, p.getItemInHand(), null))
-                    return;
-                Attribute attribute_modifier = Attribute.valueOf(modifier.get("attribute").toString().split(":")[1].replace(".", "_").toUpperCase());
-                if (modifier.get("value") instanceof Integer) {
-                    int value = Integer.valueOf(modifier.get("value").toString());
-                    int base_value = (int) p.getAttribute(Attribute.valueOf(attribute_modifier.toString())).getBaseValue();
-                    String operation = String.valueOf(modifier.get("operation"));
-                    executeAttributeModify(operation, attribute_modifier, base_value, p, value);
-                } else if (modifier.get("value") instanceof Double) {
-                    Double value = Double.valueOf(modifier.get("value").toString());
-                    int base_value = (int) p.getAttribute(Attribute.valueOf(attribute_modifier.toString())).getBaseValue();
-                    String operation = String.valueOf(modifier.get("operation"));
-                    executeAttributeModify(operation, attribute_modifier, base_value, p, value);
+                for (HashMap<String, Object> modifier : power.getConditionFromString("modifier", "modifiers")) {
+                    ConditionExecutor conditionExecutor = new ConditionExecutor();
+                    if (!conditionExecutor.check("condition", "conditions", p, power, "origins:attribute_conditioned", p, null, null, null, p.getItemInHand(), null))
+                        return;
+                    Attribute attribute_modifier = Attribute.valueOf(modifier.get("attribute").toString().split(":")[1].replace(".", "_").toUpperCase());
+                    if (modifier.get("value") instanceof Integer) {
+                        int value = Integer.valueOf(modifier.get("value").toString());
+                        int base_value = (int) p.getAttribute(Attribute.valueOf(attribute_modifier.toString())).getBaseValue();
+                        String operation = String.valueOf(modifier.get("operation"));
+                        executeAttributeModify(operation, attribute_modifier, base_value, p, value);
+                    } else if (modifier.get("value") instanceof Double) {
+                        Double value = Double.valueOf(modifier.get("value").toString());
+                        int base_value = (int) p.getAttribute(Attribute.valueOf(attribute_modifier.toString())).getBaseValue();
+                        String operation = String.valueOf(modifier.get("operation"));
+                        executeAttributeModify(operation, attribute_modifier, base_value, p, value);
+                    }
                 }
             }
+
         }
     }
 
-    public static void inverseConditionAttribute(Player p) {
+    public void inverseConditionAttribute(Player p) {
         Map<String, BinaryOperator<Integer>> operationMap = new HashMap<>();
         operationMap.put("addition", (a, b) -> a - b);
         operationMap.put("subtraction", Integer::sum);
@@ -137,25 +134,24 @@ public class AttributeConditioned extends CraftPower implements Listener {
         operationMap.put("divide_random_max", (a, b) -> a * random.nextInt(b));
 
         for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
+            for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
+                if (power == null) continue;
 
-            PowerContainer power = origin.getPowerFileFromType("origins:attribute_conditioned");
-            if (power == null) continue;
-
-            for (HashMap<String, Object> modifier : origin.getPowerFileFromType("origins:attribute_conditioned").getConditionFromString("modifier", "modifiers")) {
-                Attribute attribute_modifier = Attribute.valueOf(modifier.get("attribute").toString().split(":")[1].replace(".", "_").toUpperCase());
-                if (modifier.get("value") instanceof Integer) {
-                    int value = Integer.valueOf(modifier.get("value").toString());
-                    int base_value = (int) p.getAttribute(Attribute.valueOf(attribute_modifier.toString())).getBaseValue();
-                    String operation = String.valueOf(modifier.get("operation"));
-                    executeAttributeModify(operation, attribute_modifier, base_value, p, value);
-                } else if (modifier.get("value") instanceof Double) {
-                    Double value = Double.valueOf(modifier.get("value").toString());
-                    int base_value = (int) p.getAttribute(Attribute.valueOf(attribute_modifier.toString())).getBaseValue();
-                    String operation = String.valueOf(modifier.get("operation"));
-                    executeAttributeModify(operation, attribute_modifier, base_value, p, value);
+                for (HashMap<String, Object> modifier : power.getConditionFromString("modifier", "modifiers")) {
+                    Attribute attribute_modifier = Attribute.valueOf(modifier.get("attribute").toString().split(":")[1].replace(".", "_").toUpperCase());
+                    if (modifier.get("value") instanceof Integer) {
+                        int value = Integer.valueOf(modifier.get("value").toString());
+                        int base_value = (int) p.getAttribute(Attribute.valueOf(attribute_modifier.toString())).getBaseValue();
+                        String operation = String.valueOf(modifier.get("operation"));
+                        executeAttributeModify(operation, attribute_modifier, base_value, p, value);
+                    } else if (modifier.get("value") instanceof Double) {
+                        Double value = Double.valueOf(modifier.get("value").toString());
+                        int base_value = (int) p.getAttribute(Attribute.valueOf(attribute_modifier.toString())).getBaseValue();
+                        String operation = String.valueOf(modifier.get("operation"));
+                        executeAttributeModify(operation, attribute_modifier, base_value, p, value);
+                    }
                 }
             }
-
 
         }
     }
@@ -170,11 +166,11 @@ public class AttributeConditioned extends CraftPower implements Listener {
     }
 
     @EventHandler
-    public void join(PlayerJoinEvent e){
+    public void join(PlayerJoinEvent e) {
         applied.put(e.getPlayer(), false);
     }
 
-    public AttributeConditioned(){
+    public AttributeConditioned() {
 
     }
 
@@ -183,19 +179,21 @@ public class AttributeConditioned extends CraftPower implements Listener {
     @Override
     public void run(Player p) {
         for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
-            if (conditioned_attribute.contains(p)) {
-                ConditionExecutor conditionExecutor = new ConditionExecutor();
-                if (conditionExecutor.check("condition", "conditions", p, origin, getPowerFile(), p, null, p.getLocation().getBlock(), null, p.getInventory().getItemInMainHand(), null)){
-                    if(!applied.get(p)){
-                        executeConditionAttribute(p);
-                        applied.put(p, true);
-                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
-                    }
-                } else {
-                    if(applied.get(p)){
-                        inverseConditionAttribute(p);
-                        applied.put(p, false);
-                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
+            for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
+                if (conditioned_attribute.contains(p)) {
+                    ConditionExecutor conditionExecutor = new ConditionExecutor();
+                    if (conditionExecutor.check("condition", "conditions", p, power, getPowerFile(), p, null, p.getLocation().getBlock(), null, p.getInventory().getItemInMainHand(), null)) {
+                        if (!applied.get(p)) {
+                            executeConditionAttribute(p);
+                            applied.put(p, true);
+                            setActive(power.getTag(), true);
+                        }
+                    } else {
+                        if (applied.get(p)) {
+                            inverseConditionAttribute(p);
+                            applied.put(p, false);
+                            setActive(power.getTag(), false);
+                        }
                     }
                 }
             }

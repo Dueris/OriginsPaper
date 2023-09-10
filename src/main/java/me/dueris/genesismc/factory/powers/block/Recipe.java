@@ -1,9 +1,6 @@
 package me.dueris.genesismc.factory.powers.block;
 
 import me.dueris.genesismc.GenesisMC;
-import me.dueris.genesismc.entity.OriginPlayer;
-import me.dueris.genesismc.events.OriginChangeEvent;
-import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.OriginContainer;
 import me.dueris.genesismc.utils.PowerContainer;
@@ -11,10 +8,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.server.ServerLoadEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.ShapelessRecipe;
@@ -28,37 +22,40 @@ public class Recipe extends CraftPower implements Listener {
 
     private static void loadRecipe(Player player, OriginContainer origin, String powerfile) {
         if (recipe.contains(player)) {
-            if (origin.getPowerFileFromType(powerfile).getRecipe().get("type").toString() == "minecraft:crafting_shapeless") {
-                //uses shapeless recipe
-                ShapelessRecipe SHAPELESS_RECIPE = new ShapelessRecipe(NamespacedKey.minecraft(origin.getPowerFileFromType(powerfile).getRecipe().get("id").toString()), new ItemStack(Material.valueOf(origin.getPowerFileFromType(powerfile).getRecipeResult().get("item").toString().toUpperCase().split(":")[1])));
-                SHAPELESS_RECIPE.setCategory(CraftingBookCategory.MISC);
-                for (String ingredString : origin.getPowerFileFromType(powerfile).getRecipeIngredients()) {
-                    SHAPELESS_RECIPE.addIngredient(Material.valueOf(ingredString.toUpperCase().split(":")[1]));
-                }
-                Bukkit.addRecipe(SHAPELESS_RECIPE);
-            } else {
-                //uses shaped recipe
-                ShapedRecipe SHAPED_RECIPE = new ShapedRecipe(NamespacedKey.minecraft(origin.getPowerFileFromType(powerfile).getRecipe().get("id").toString()), new ItemStack(Material.valueOf(origin.getPowerFileFromType(powerfile).getRecipeResult().get("item").toString().toUpperCase().split(":")[1])));
-                SHAPED_RECIPE.setCategory(CraftingBookCategory.MISC);
-                PowerContainer powerContainer = origin.getPowerFileFromType(powerfile);
-                HashMap<String, Object> recipeData = powerContainer.getRecipe();
-
-                if (!recipeData.isEmpty()) {
-                    String recipeId = (String) recipeData.get("id");
-
-                    ShapedRecipe shapedRecipe = new ShapedRecipe(new NamespacedKey(GenesisMC.getPlugin(), recipeId), getResultItem(powerContainer));
-                    shapedRecipe.shape(getPatternLines(powerContainer));
-
-                    HashMap<String, Object> keyMap = powerContainer.getKey();
-                    for (String key : keyMap.keySet()) {
-                        String keyChar = key;
-                        String keyItem = (String) ((HashMap<String, Object>) keyMap.get(keyChar)).get("item");
-                        shapedRecipe.setIngredient(keyChar.charAt(0), Material.valueOf(keyItem));
+            for (PowerContainer power : origin.getMultiPowerFileFromType(powerfile)) {
+                if (power.getRecipe().get("type").toString() == "minecraft:crafting_shapeless") {
+                    //uses shapeless recipe
+                    ShapelessRecipe SHAPELESS_RECIPE = new ShapelessRecipe(NamespacedKey.minecraft(power.getRecipe().get("id").toString()), new ItemStack(Material.valueOf(power.getRecipeResult().get("item").toString().toUpperCase().split(":")[1])));
+                    SHAPELESS_RECIPE.setCategory(CraftingBookCategory.MISC);
+                    for (String ingredString : power.getRecipeIngredients()) {
+                        SHAPELESS_RECIPE.addIngredient(Material.valueOf(ingredString.toUpperCase().split(":")[1]));
                     }
+                    Bukkit.addRecipe(SHAPELESS_RECIPE);
+                } else {
+                    //uses shaped recipe
+                    ShapedRecipe SHAPED_RECIPE = new ShapedRecipe(NamespacedKey.minecraft(power.getRecipe().get("id").toString()), new ItemStack(Material.valueOf(power.getRecipeResult().get("item").toString().toUpperCase().split(":")[1])));
+                    SHAPED_RECIPE.setCategory(CraftingBookCategory.MISC);
+                    PowerContainer powerContainer = power;
+                    HashMap<String, Object> recipeData = powerContainer.getRecipe();
 
-                    Bukkit.addRecipe(shapedRecipe);
+                    if (!recipeData.isEmpty()) {
+                        String recipeId = (String) recipeData.get("id");
+
+                        ShapedRecipe shapedRecipe = new ShapedRecipe(new NamespacedKey(GenesisMC.getPlugin(), recipeId), getResultItem(powerContainer));
+                        shapedRecipe.shape(getPatternLines(powerContainer));
+
+                        HashMap<String, Object> keyMap = powerContainer.getKey();
+                        for (String key : keyMap.keySet()) {
+                            String keyChar = key;
+                            String keyItem = (String) ((HashMap<String, Object>) keyMap.get(keyChar)).get("item");
+                            shapedRecipe.setIngredient(keyChar.charAt(0), Material.valueOf(keyItem));
+                        }
+
+                        Bukkit.addRecipe(shapedRecipe);
+                    }
                 }
             }
+
         }
     }
 
@@ -81,11 +78,11 @@ public class Recipe extends CraftPower implements Listener {
 //                ConditionExecutor conditionExecutor = new ConditionExecutor();
 //                if (conditionExecutor.check("condition", "conditions", player, origin, getPowerFile(), player, null, null, null, player.getInventory().getItemInHand(), null)) {
 //                    if (!getPowerArray().contains(player)) return;
-//                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
+//                    setActive(power.getTag(), true);
 //                    loadRecipe(player, origin, "origins:recipe");
 //                } else {
 //                    if (!getPowerArray().contains(player)) return;
-//                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
+//                    setActive(power.getTag(), false);
 //                }
 //            }
 //        }
@@ -98,11 +95,11 @@ public class Recipe extends CraftPower implements Listener {
 //                ConditionExecutor conditionExecutor = new ConditionExecutor();
 //                if (conditionExecutor.check("condition", "conditions", player, origin, getPowerFile(), player, null, null, null, player.getInventory().getItemInHand(), null)) {
 //                    if (!getPowerArray().contains(player)) return;
-//                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
+//                    setActive(power.getTag(), true);
 //                    loadRecipe(player, origin, "origins:recipe");
 //                } else {
 //                    if (!getPowerArray().contains(player)) return;
-//                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
+//                    setActive(power.getTag(), false);
 //                }
 //            }
 //        }
@@ -115,11 +112,11 @@ public class Recipe extends CraftPower implements Listener {
 //                ConditionExecutor conditionExecutor = new ConditionExecutor();
 //                if (conditionExecutor.check("condition", "conditions", player, origin, getPowerFile(), player, null, null, null, player.getInventory().getItemInHand(), null)) {
 //                    if (!getPowerArray().contains(player)) return;
-//                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
+//                    setActive(power.getTag(), true);
 //                    loadRecipe(player, origin, "origins:recipe");
 //                } else {
 //                    if (!getPowerArray().contains(player)) return;
-//                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
+//                    setActive(power.getTag(), false);
 //                }
 //            }
 //        }
@@ -129,7 +126,7 @@ public class Recipe extends CraftPower implements Listener {
 
     Player p;
 
-    public Recipe(){
+    public Recipe() {
         this.p = p;
     }
 

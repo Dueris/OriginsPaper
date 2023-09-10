@@ -1,6 +1,6 @@
 package me.dueris.genesismc.factory.conditions;
 
-import me.dueris.genesismc.utils.OriginContainer;
+import me.dueris.genesismc.utils.PowerContainer;
 import org.bukkit.Fluid;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.Optional;
 
 public interface Condition {
-    public abstract String condition_type();
-    public abstract Optional<Boolean> check(HashMap<String, Object> condition, Player p, OriginContainer origin, String powerfile, Entity actor, Entity target, Block block, Fluid fluid, ItemStack itemStack, EntityDamageEvent dmgevent);
+    String condition_type();
+
+    Optional<Boolean> check(HashMap<String, Object> condition, Player p, PowerContainer power, String powerfile, Entity actor, Entity target, Block block, Fluid fluid, ItemStack itemStack, EntityDamageEvent dmgevent);
 }

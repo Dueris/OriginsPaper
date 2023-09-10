@@ -4,6 +4,7 @@ import me.dueris.genesismc.entity.OriginPlayer;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.OriginContainer;
+import me.dueris.genesismc.utils.PowerContainer;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -38,7 +39,7 @@ public class PreventSleep extends CraftPower implements Listener {
 
     Player p;
 
-    public PreventSleep(){
+    public PreventSleep() {
         this.p = p;
     }
 
@@ -55,19 +56,20 @@ public class PreventSleep extends CraftPower implements Listener {
             Player player = e.getPlayer();
             for (OriginContainer origin : OriginPlayer.getOrigin(player).values()) {
                 ConditionExecutor conditionExecutor = new ConditionExecutor();
-                    Block clickedBlock = e.getClickedBlock();
-                    Location blockLocation = clickedBlock.getLocation();
-
-                    boolean meetsCondition = conditionExecutor.check("block_condition", "block_conditions", e.getPlayer(), origin, "origins:prevent_sleep", e.getPlayer(), null, e.getPlayer().getLocation().getBlock(), null, e.getPlayer().getItemInHand(), null);
+                Block clickedBlock = e.getClickedBlock();
+                Location blockLocation = clickedBlock.getLocation();
+                for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
+                    boolean meetsCondition = conditionExecutor.check("block_condition", "block_conditions", e.getPlayer(), power, "origins:prevent_sleep", e.getPlayer(), null, e.getPlayer().getLocation().getBlock(), null, e.getPlayer().getItemInHand(), null);
 
                     if (meetsCondition) {
-                        if (Boolean.parseBoolean(origin.getPowerFileFromType("origins:prevent_sleep").get("set_spawn_point", "false"))) {
+                        if (Boolean.parseBoolean(power.get("set_spawn_point", "false"))) {
                             player.setBedSpawnLocation(blockLocation);
                         }
-                        String message = origin.getPowerFileFromType("origins:prevent_sleep").get("message", "origins.cant_sleep");
+                        String message = power.get("message", "origins.cant_sleep");
                         player.sendMessage(message);
                         e.setCancelled(true);
                     }
+                }
             }
         }
     }

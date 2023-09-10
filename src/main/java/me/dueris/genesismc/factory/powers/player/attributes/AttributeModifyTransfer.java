@@ -6,6 +6,7 @@ import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.factory.powers.value_modifying.ValueModifyingSuperClass;
 import me.dueris.genesismc.utils.OriginContainer;
+import me.dueris.genesismc.utils.PowerContainer;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -27,7 +28,7 @@ public class AttributeModifyTransfer extends CraftPower implements Listener {
 
     Player p;
 
-    public AttributeModifyTransfer(){
+    public AttributeModifyTransfer() {
         this.p = p;
     }
 
@@ -41,16 +42,17 @@ public class AttributeModifyTransfer extends CraftPower implements Listener {
         if (getPowerArray().contains(e.getPlayer())) {
             for (OriginContainer origin : OriginPlayer.getOrigin(e.getPlayer()).values()) {
                 ConditionExecutor executor = new ConditionExecutor();
-                if (executor.check("condition", "conditions", e.getPlayer(), origin, getPowerFile(), e.getPlayer(), null, null, null, e.getPlayer().getItemInHand(), null)) {
-                    if (!getPowerArray().contains(e.getPlayer())) return;
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
-                    ValueModifyingSuperClass valueModifyingSuperClass = new ValueModifyingSuperClass();
-                    applyAttribute(e.getPlayer(), valueModifyingSuperClass.getDefaultValue(origin.getPowerFileFromType(getPowerFile()).get("class")), Float.parseFloat(origin.getPowerFileFromType(getPowerFile()).get("multiplier", "1.0")), origin.getPowerFileFromType(getPowerFile()).get("attribute").toUpperCase().split(":")[1].replace("\\.", "_"));
-                } else {
-                    if (!getPowerArray().contains(e.getPlayer())) return;
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
+                for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
+                    if (executor.check("condition", "conditions", e.getPlayer(), power, getPowerFile(), e.getPlayer(), null, null, null, e.getPlayer().getItemInHand(), null)) {
+                        if (!getPowerArray().contains(e.getPlayer())) return;
+                        setActive(power.getTag(), true);
+                        ValueModifyingSuperClass valueModifyingSuperClass = new ValueModifyingSuperClass();
+                        applyAttribute(e.getPlayer(), valueModifyingSuperClass.getDefaultValue(power.get("class")), Float.parseFloat(power.get("multiplier", "1.0")), power.get("attribute").toUpperCase().split(":")[1].replace("\\.", "_"));
+                    } else {
+                        if (!getPowerArray().contains(e.getPlayer())) return;
+                        setActive(power.getTag(), false);
+                    }
                 }
-
             }
         }
     }

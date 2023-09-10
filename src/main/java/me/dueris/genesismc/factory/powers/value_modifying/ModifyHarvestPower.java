@@ -4,6 +4,7 @@ import me.dueris.genesismc.entity.OriginPlayer;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.OriginContainer;
+import me.dueris.genesismc.utils.PowerContainer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -31,19 +32,17 @@ public class ModifyHarvestPower extends CraftPower implements Listener {
         if (modify_harvest.contains(p)) {
             for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
                 ConditionExecutor conditionExecutor = new ConditionExecutor();
-                if (conditionExecutor.check("block_condition", "block_conditions", p, origin, "origins:modify_harvest", p, null, e.getBlock(), null, p.getItemInHand(), null)) {
-                    if (origin.getPowerFileFromType("origins:modify_harvest").get("allow", null) == "true") {
-                        e.setDropItems(false);
-                        if (origin.getPowerFileFromType(getPowerFile()) == null) {
-                            getPowerArray().remove(p);
-                            return;
-                        }
-                        if (!getPowerArray().contains(p)) return;
-                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
-                    }
-                } else {
+                for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
+                    if (conditionExecutor.check("block_condition", "block_conditions", p, power, "origins:modify_harvest", p, null, e.getBlock(), null, p.getItemInHand(), null)) {
+                        if (power.get("allow", null) == "true") {
+                            e.setDropItems(false);
 
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
+                            setActive(power.getTag(), true);
+                        }
+                    } else {
+
+                        setActive(power.getTag(), false);
+                    }
                 }
             }
         }
@@ -51,7 +50,7 @@ public class ModifyHarvestPower extends CraftPower implements Listener {
 
     Player p;
 
-    public ModifyHarvestPower(){
+    public ModifyHarvestPower() {
         this.p = p;
     }
 

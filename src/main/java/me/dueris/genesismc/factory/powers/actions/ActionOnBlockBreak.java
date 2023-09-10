@@ -2,7 +2,6 @@ package me.dueris.genesismc.factory.powers.actions;
 
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.entity.OriginPlayer;
-import me.dueris.genesismc.factory.conditions.block.BlockCondition;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.OriginContainer;
 import me.dueris.genesismc.utils.PowerContainer;
@@ -13,14 +12,12 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Optional;
 
 public class ActionOnBlockBreak extends CraftPower implements Listener {
 
     Player p;
 
-    public ActionOnBlockBreak(){
+    public ActionOnBlockBreak() {
         this.p = p;
     }
 
@@ -36,7 +33,7 @@ public class ActionOnBlockBreak extends CraftPower implements Listener {
         if (!getPowerArray().contains(actor)) return;
 
         for (OriginContainer origin : OriginPlayer.getOrigin(actor).values()) {
-            for(PowerContainer powerContainer : origin.getMultiPowerFileFromType(getPowerFile())){
+            for (PowerContainer powerContainer : origin.getMultiPowerFileFromType(getPowerFile())) {
                 PowerContainer power = powerContainer;
                 if (power == null) continue;
 

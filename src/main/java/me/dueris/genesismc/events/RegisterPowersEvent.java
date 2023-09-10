@@ -1,7 +1,6 @@
 package me.dueris.genesismc.events;
 
 import me.dueris.genesismc.GenesisMC;
-import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Event;
@@ -31,7 +30,7 @@ public class RegisterPowersEvent extends Event {
         return powers;
     }
 
-    public void registerNewPower(Class<? extends CraftPower> power){
+    public void registerNewPower(Class<? extends CraftPower> power) {
         if (CraftPower.class.isAssignableFrom(power)) {
             CraftPower instance = null;
             try {

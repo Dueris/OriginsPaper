@@ -4,7 +4,7 @@ import me.dueris.genesismc.entity.OriginPlayer;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.OriginContainer;
-import org.bukkit.Bukkit;
+import me.dueris.genesismc.utils.PowerContainer;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -22,7 +22,7 @@ public class Swimming extends CraftPower {
 
     Player p;
 
-    public Swimming(){
+    public Swimming() {
         this.p = p;
     }
 
@@ -30,23 +30,17 @@ public class Swimming extends CraftPower {
     public void run(Player p) {
         for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
             if (swimming.contains(p)) {
-                ConditionExecutor conditionExecutor = new ConditionExecutor();
-                if (!conditionExecutor.check("condition", "conditions", p, origin, getPowerFile(), p, null, null, null, p.getItemInHand(), null)) {
-                    if (origin.getPowerFileFromType(getPowerFile()) == null) {
-                        getPowerArray().remove(p);
+                for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
+                    ConditionExecutor conditionExecutor = new ConditionExecutor();
+                    if (!conditionExecutor.check("condition", "conditions", p, power, getPowerFile(), p, null, null, null, p.getItemInHand(), null)) {
+
+                        setActive(power.getTag(), false);
                         return;
+                    } else {
+                        p.setSwimming(true);
+
+                        setActive(power.getTag(), true);
                     }
-                    if (!getPowerArray().contains(p)) return;
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
-                    return;
-                } else {
-                    p.setSwimming(true);
-                    if (origin.getPowerFileFromType(getPowerFile()) == null) {
-                        getPowerArray().remove(p);
-                        return;
-                    }
-                    if (!getPowerArray().contains(p)) return;
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
                 }
             }
         }

@@ -5,7 +5,7 @@ import me.dueris.genesismc.entity.OriginPlayer;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.OriginContainer;
-import org.bukkit.Bukkit;
+import me.dueris.genesismc.utils.PowerContainer;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
@@ -40,7 +40,7 @@ public class Climbing extends CraftPower {
 
     Player p;
 
-    public Climbing(){
+    public Climbing() {
         this.p = p;
     }
 
@@ -69,27 +69,18 @@ public class Climbing extends CraftPower {
             )) {
                 Block block = p.getTargetBlock(null, 2);
                 for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
-                    boolean cancel_bool = origin.getPowerFileFromType("origins:climbing").getRainCancel();
-                    ConditionExecutor executor = new ConditionExecutor();
-                    if (executor.check("condition", "conditions", p, origin, getPowerFile(), p, null, null, null, p.getItemInHand(), null)) {
-                        if (origin.getPowerFileFromType(getPowerFile()) == null) {
-                            getPowerArray().remove(p);
-                            return;
-                        }
-                        if (!getPowerArray().contains(p)) return;
-                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
-                        if (!cancel_bool) {
-                            if (!p.isSneaking()) return;
-                            p.addPotionEffect(new PotionEffect(PotionEffectType.LEVITATION, 6, 2, false, false, false));
-                            getActiveClimbingMap().add(p);
-                            new BukkitRunnable() {
-                                @Override
-                                public void run() {
-                                    getActiveClimbingMap().remove(p);
-                                }
-                            }.runTaskLater(GenesisMC.getPlugin(), 1L);
-                        } else {
-                            if (block.getType() != AIR && p.isSneaking() && !p.isInRain()) {
+                    for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
+                        boolean cancel_bool = power.getRainCancel();
+                        ConditionExecutor executor = new ConditionExecutor();
+                        if (executor.check("condition", "conditions", p, power, getPowerFile(), p, null, null, null, p.getItemInHand(), null)) {
+                            if (power == null) {
+                                getPowerArray().remove(p);
+                                return;
+                            }
+                            if (!getPowerArray().contains(p)) return;
+                            setActive(power.getTag(), true);
+                            if (!cancel_bool) {
+                                if (!p.isSneaking()) return;
                                 p.addPotionEffect(new PotionEffect(PotionEffectType.LEVITATION, 6, 2, false, false, false));
                                 getActiveClimbingMap().add(p);
                                 new BukkitRunnable() {
@@ -98,15 +89,26 @@ public class Climbing extends CraftPower {
                                         getActiveClimbingMap().remove(p);
                                     }
                                 }.runTaskLater(GenesisMC.getPlugin(), 1L);
+                            } else {
+                                if (block.getType() != AIR && p.isSneaking() && !p.isInRain()) {
+                                    p.addPotionEffect(new PotionEffect(PotionEffectType.LEVITATION, 6, 2, false, false, false));
+                                    getActiveClimbingMap().add(p);
+                                    new BukkitRunnable() {
+                                        @Override
+                                        public void run() {
+                                            getActiveClimbingMap().remove(p);
+                                        }
+                                    }.runTaskLater(GenesisMC.getPlugin(), 1L);
+                                }
                             }
+                        } else {
+                            if (power == null) {
+                                getPowerArray().remove(p);
+                                return;
+                            }
+                            if (!getPowerArray().contains(p)) return;
+                            setActive(power.getTag(), false);
                         }
-                    } else {
-                        if (origin.getPowerFileFromType(getPowerFile()) == null) {
-                            getPowerArray().remove(p);
-                            return;
-                        }
-                        if (!getPowerArray().contains(p)) return;
-                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                     }
                 }
             }

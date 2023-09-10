@@ -1,12 +1,6 @@
 package me.dueris.genesismc.factory.powers.prevent;
 
-import me.dueris.genesismc.GenesisMC;
-import me.dueris.genesismc.entity.OriginPlayer;
-import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.utils.OriginContainer;
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -26,7 +20,7 @@ public class PreventEntityRender extends CraftPower {
 
     Player p;
 
-    public PreventEntityRender(){
+    public PreventEntityRender() {
         this.p = p;
     }
 
@@ -39,28 +33,28 @@ public class PreventEntityRender extends CraftPower {
 //                    if (conditionExecutor.check("entity_condition", "entity_condition", p, origin, "origins:prevent_entity_render", p, entity, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
 //                        if (conditionExecutor.check("bientity_condition", "bientity_condition", p, origin, "origins:prevent_entity_render", p, entity, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
 //                            p.hideEntity(GenesisMC.getPlugin(), entity);
-//                            if (origin.getPowerFileFromType(getPowerFile()) == null) {
+//                            if (power == null) {
 //                                getPowerArray().remove(p);
 //                                return;
 //                            }
 //                            if (!getPowerArray().contains(p)) return;
-//                            setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
+//                            setActive(power.getTag(), true);
 //                        } else {
-//                            if (origin.getPowerFileFromType(getPowerFile()) == null) {
+//                            if (power == null) {
 //                                getPowerArray().remove(p);
 //                                return;
 //                            }
 //                            if (!getPowerArray().contains(p)) return;
-//                            setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
+//                            setActive(power.getTag(), false);
 //                            p.showEntity(GenesisMC.getPlugin(), entity);
 //                        }
 //                    } else {
-//                        if (origin.getPowerFileFromType(getPowerFile()) == null) {
+//                        if (power == null) {
 //                            getPowerArray().remove(p);
 //                            return;
 //                        }
 //                        if (!getPowerArray().contains(p)) return;
-//                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
+//                        setActive(power.getTag(), false);
 //                        p.showEntity(GenesisMC.getPlugin(), entity);
 //                    }
 //                }

@@ -17,7 +17,7 @@ import java.util.ArrayList;
 public class ActionOnBlockUse extends CraftPower implements Listener {
     Player p;
 
-    public ActionOnBlockUse(){
+    public ActionOnBlockUse() {
         this.p = p;
     }
 
@@ -34,14 +34,14 @@ public class ActionOnBlockUse extends CraftPower implements Listener {
         if (!getPowerArray().contains(actor)) return;
 
         for (OriginContainer origin : OriginPlayer.getOrigin(actor).values()) {
-            for(PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())){
+            for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
                 if (power == null) continue;
                 ConditionExecutor conditionExecutor = new ConditionExecutor();
-                if (conditionExecutor.check("condition", "conditions", actor, origin, getPowerFile(), actor, null, e.getClickedBlock(), null, e.getItem(), null)) {
-                    if (conditionExecutor.check("entity_condition", "entity_conditions", actor, origin, getPowerFile(), actor, null, e.getClickedBlock(), null, e.getItem(), null)) {
-                        if (conditionExecutor.check("block_condition", "block_conditions", actor, origin, getPowerFile(), actor, null, e.getClickedBlock(), null, e.getItem(), null)) {
+                if (conditionExecutor.check("condition", "conditions", actor, power, getPowerFile(), actor, null, e.getClickedBlock(), null, e.getItem(), null)) {
+                    if (conditionExecutor.check("entity_condition", "entity_conditions", actor, power, getPowerFile(), actor, null, e.getClickedBlock(), null, e.getItem(), null)) {
+                        if (conditionExecutor.check("block_condition", "block_conditions", actor, power, getPowerFile(), actor, null, e.getClickedBlock(), null, e.getItem(), null)) {
                             if (!getPowerArray().contains(e.getPlayer())) return;
-                            setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
+                            setActive(power.getTag(), true);
                             ActionTypes.BlockActionType(e.getClickedBlock().getLocation(), power.getBlockAction());
                             ActionTypes.EntityActionType(e.getPlayer(), power.getEntityAction());
                             ActionTypes.ItemActionType(e.getPlayer().getActiveItem(), power.getItemAction());
@@ -52,7 +52,7 @@ public class ActionOnBlockUse extends CraftPower implements Listener {
                                 @Override
                                 public void run() {
                                     if (!getPowerArray().contains(e.getPlayer())) return;
-                                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
+                                    setActive(power.getTag(), false);
                                 }
                             }.runTaskLater(GenesisMC.getPlugin(), 2L);
                         }

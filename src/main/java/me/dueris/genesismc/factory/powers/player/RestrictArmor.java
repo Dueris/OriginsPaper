@@ -3,12 +3,10 @@ package me.dueris.genesismc.factory.powers.player;
 import me.dueris.genesismc.entity.OriginPlayer;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.factory.powers.actions.ActionTypes;
 import me.dueris.genesismc.utils.OriginContainer;
 import me.dueris.genesismc.utils.PowerContainer;
 import me.dueris.genesismc.utils.translation.LangConfig;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
@@ -21,7 +19,7 @@ import static me.dueris.genesismc.utils.ArmorUtils.getArmorValue;
 public class RestrictArmor extends CraftPower {
 
     private Long interval;
-    private int ticksE;
+    private final int ticksE;
 
     public RestrictArmor() {
         this.interval = 1L;
@@ -67,102 +65,102 @@ public class RestrictArmor extends CraftPower {
 
         if (getPowerArray().contains(p)) {
             for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
-                PowerContainer power = origin.getPowerFileFromType(getPowerFile());
-
-                if (power == null) continue;
-                if (power.getInterval() == null) {
-                    Bukkit.getLogger().warning(LangConfig.getLocalizedString(p, "powers.errors.action_over_time"));
-                    return;
-                }
-
-                interval = power.getInterval();
-                int ticksE = ticksEMap.getOrDefault(p, 0);
-                if (ticksE <= interval) {
-                    ticksE++;
-                    ticksEMap.put(p, ticksE);
-                } else {
-                    ConditionExecutor executor = new ConditionExecutor();
-                    if (executor.check("condition", "conditions", p, origin, getPowerFile(), p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
-                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
-                        boolean headb = true;
-                        boolean chestb = true;
-                        boolean legsb = true;
-                        boolean feetb = true;
-
-                        if (power.getHead() == null) headb = false;
-                        if (power.getChest() == null) chestb = false;
-                        if (power.getLegs() == null) legsb = false;
-                        if (power.getFeet() == null) feetb = false;
-
-                        String comparisonh = power.getHead().get("comparison").toString();
-                        String comparisonc = power.getChest().get("comparison").toString();
-                        String comparisonl = power.getLegs().get("comparison").toString();
-                        String comparisonf = power.getFeet().get("comparison").toString();
-
-                        String comparisontoh = power.getHead().get("compare_to").toString();
-                        String comparisontoc = power.getChest().get("compare_to").toString();
-                        String comparisontol = power.getLegs().get("compare_to").toString();
-                        String comparisontof = power.getFeet().get("compare_to").toString();
-
-                        if (power.getHead().get("type").toString().equalsIgnoreCase("origins:armor_value")) {
-                            if (!headb) return;
-                            ItemStack item = p.getInventory().getHelmet();
-                            if (item != null) {
-                                double armorValue = getArmorValue(item);
-                                double compareValue = Double.parseDouble(comparisontoh);
-                                if (compareValues(armorValue, comparisonh, compareValue)) {
-                                    OriginPlayer.moveEquipmentInventory(p, EquipmentSlot.HEAD);
-                                }
-                            }
-                        } else if (power.getHead().get("type").toString().equalsIgnoreCase("origins:ingredient")) {
-                            if (!headb) return;
-                        }
-
-                        if (power.getChest().get("type").toString().equalsIgnoreCase("origins:armor_value")) {
-                            if (!chestb) return;
-                            ItemStack item = p.getInventory().getChestplate();
-                            if (item != null) {
-                                double armorValue = getArmorValue(item);
-                                double compareValue = Double.parseDouble(comparisontoc);
-                                if (compareValues(armorValue, comparisonc, compareValue)) {
-                                    OriginPlayer.moveEquipmentInventory(p, EquipmentSlot.CHEST);
-                                }
-                            }
-                        } else if (power.getChest().get("type").toString().equalsIgnoreCase("origins:ingredient")) {
-                            if (!chestb) return;
-                        }
-
-                        if (power.getLegs().get("type").toString().equalsIgnoreCase("origins:armor_value")) {
-                            if (!legsb) return;
-                            ItemStack item = p.getInventory().getLeggings();
-                            if (item != null) {
-                                double armorValue = getArmorValue(item);
-                                double compareValue = Double.parseDouble(comparisontol);
-                                if (compareValues(armorValue, comparisonl, compareValue)) {
-                                    OriginPlayer.moveEquipmentInventory(p, EquipmentSlot.LEGS);
-                                }
-                            }
-                        } else if (power.getLegs().get("type").toString().equalsIgnoreCase("origins:ingredient")) {
-                            if (!legsb) return;
-                        }
-
-                        if (power.getFeet().get("type").toString().equalsIgnoreCase("origins:armor_value")) {
-                            if (!feetb) return;
-                            ItemStack item = p.getInventory().getBoots();
-                            if (item != null) {
-                                double armorValue = getArmorValue(item);
-                                double compareValue = Double.parseDouble(comparisontof);
-                                if (compareValues(armorValue, comparisonf, compareValue)) {
-                                    OriginPlayer.moveEquipmentInventory(p, EquipmentSlot.FEET);
-                                }
-                            }
-                        } else if (power.getFeet().get("type").toString().equalsIgnoreCase("origins:ingredient")) {
-                            if (!feetb) return;
-                        }
-                    } else {
-                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
+                for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
+                    if (power == null) continue;
+                    if (power.getInterval() == null) {
+                        Bukkit.getLogger().warning(LangConfig.getLocalizedString(p, "powers.errors.action_over_time"));
+                        return;
                     }
-                    ticksEMap.put(p, 0);
+
+                    interval = power.getInterval();
+                    int ticksE = ticksEMap.getOrDefault(p, 0);
+                    if (ticksE <= interval) {
+                        ticksE++;
+                        ticksEMap.put(p, ticksE);
+                    } else {
+                        ConditionExecutor executor = new ConditionExecutor();
+                        if (executor.check("condition", "conditions", p, power, getPowerFile(), p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
+                            setActive(power.getTag(), true);
+                            boolean headb = true;
+                            boolean chestb = true;
+                            boolean legsb = true;
+                            boolean feetb = true;
+
+                            if (power.getHead() == null) headb = false;
+                            if (power.getChest() == null) chestb = false;
+                            if (power.getLegs() == null) legsb = false;
+                            if (power.getFeet() == null) feetb = false;
+
+                            String comparisonh = power.getHead().get("comparison").toString();
+                            String comparisonc = power.getChest().get("comparison").toString();
+                            String comparisonl = power.getLegs().get("comparison").toString();
+                            String comparisonf = power.getFeet().get("comparison").toString();
+
+                            String comparisontoh = power.getHead().get("compare_to").toString();
+                            String comparisontoc = power.getChest().get("compare_to").toString();
+                            String comparisontol = power.getLegs().get("compare_to").toString();
+                            String comparisontof = power.getFeet().get("compare_to").toString();
+
+                            if (power.getHead().get("type").toString().equalsIgnoreCase("origins:armor_value")) {
+                                if (!headb) return;
+                                ItemStack item = p.getInventory().getHelmet();
+                                if (item != null) {
+                                    double armorValue = getArmorValue(item);
+                                    double compareValue = Double.parseDouble(comparisontoh);
+                                    if (compareValues(armorValue, comparisonh, compareValue)) {
+                                        OriginPlayer.moveEquipmentInventory(p, EquipmentSlot.HEAD);
+                                    }
+                                }
+                            } else if (power.getHead().get("type").toString().equalsIgnoreCase("origins:ingredient")) {
+                                if (!headb) return;
+                            }
+
+                            if (power.getChest().get("type").toString().equalsIgnoreCase("origins:armor_value")) {
+                                if (!chestb) return;
+                                ItemStack item = p.getInventory().getChestplate();
+                                if (item != null) {
+                                    double armorValue = getArmorValue(item);
+                                    double compareValue = Double.parseDouble(comparisontoc);
+                                    if (compareValues(armorValue, comparisonc, compareValue)) {
+                                        OriginPlayer.moveEquipmentInventory(p, EquipmentSlot.CHEST);
+                                    }
+                                }
+                            } else if (power.getChest().get("type").toString().equalsIgnoreCase("origins:ingredient")) {
+                                if (!chestb) return;
+                            }
+
+                            if (power.getLegs().get("type").toString().equalsIgnoreCase("origins:armor_value")) {
+                                if (!legsb) return;
+                                ItemStack item = p.getInventory().getLeggings();
+                                if (item != null) {
+                                    double armorValue = getArmorValue(item);
+                                    double compareValue = Double.parseDouble(comparisontol);
+                                    if (compareValues(armorValue, comparisonl, compareValue)) {
+                                        OriginPlayer.moveEquipmentInventory(p, EquipmentSlot.LEGS);
+                                    }
+                                }
+                            } else if (power.getLegs().get("type").toString().equalsIgnoreCase("origins:ingredient")) {
+                                if (!legsb) return;
+                            }
+
+                            if (power.getFeet().get("type").toString().equalsIgnoreCase("origins:armor_value")) {
+                                if (!feetb) return;
+                                ItemStack item = p.getInventory().getBoots();
+                                if (item != null) {
+                                    double armorValue = getArmorValue(item);
+                                    double compareValue = Double.parseDouble(comparisontof);
+                                    if (compareValues(armorValue, comparisonf, compareValue)) {
+                                        OriginPlayer.moveEquipmentInventory(p, EquipmentSlot.FEET);
+                                    }
+                                }
+                            } else if (power.getFeet().get("type").toString().equalsIgnoreCase("origins:ingredient")) {
+                                if (!feetb) return;
+                            }
+                        } else {
+                            setActive(power.getTag(), false);
+                        }
+                        ticksEMap.put(p, 0);
+                    }
                 }
             }
         }

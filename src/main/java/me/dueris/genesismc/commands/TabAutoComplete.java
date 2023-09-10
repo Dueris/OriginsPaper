@@ -158,7 +158,7 @@ public class TabAutoComplete implements TabCompleter {
                 } else return new ArrayList<>();
             }
         } else if (command.getName().equalsIgnoreCase("power")) {
-            if(args.length == 1){
+            if (args.length == 1) {
                 List<String> arguments = new ArrayList<>();
                 arguments.add("clear");
                 arguments.add("grant");
@@ -181,23 +181,23 @@ public class TabAutoComplete implements TabCompleter {
                 return playernames;
             } else if (args.length == 3) {
                 List<String> argS = new ArrayList<>();
-                for(PowerContainer c : CraftApoli.getPowers()){
-                    if(args[1].equalsIgnoreCase("has")){
+                for (PowerContainer c : CraftApoli.getPowers()) {
+                    if (args[1].equalsIgnoreCase("has")) {
                         argS.add(c.getTag());
                     }
-                    if(args[1].equalsIgnoreCase("grant")){
+                    if (args[1].equalsIgnoreCase("grant")) {
                         argS.add(c.getTag());
                     }
-                    if(args[1].equalsIgnoreCase("remove")){
+                    if (args[1].equalsIgnoreCase("remove")) {
                         argS.add(c.getTag());
                     }
-                    if(args[1].equalsIgnoreCase("revoke")){
+                    if (args[1].equalsIgnoreCase("revoke")) {
                         argS.add(c.getTag());
                     }
                 }
 
-                for(OriginContainer origin : CraftApoli.getOrigins()){
-                    if(args[1].equalsIgnoreCase("revokeall")){
+                for (OriginContainer origin : CraftApoli.getOrigins()) {
+                    if (args[1].equalsIgnoreCase("revokeall")) {
                         argS.add(origin.getTag());
                     }
                 }

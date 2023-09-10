@@ -4,6 +4,7 @@ import me.dueris.genesismc.entity.OriginPlayer;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.OriginContainer;
+import me.dueris.genesismc.utils.PowerContainer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -31,7 +32,7 @@ public class ModifyFallingPower extends CraftPower implements Listener {
 
     Player p;
 
-    public ModifyFallingPower(){
+    public ModifyFallingPower() {
         this.p = p;
     }
 
@@ -48,54 +49,57 @@ public class ModifyFallingPower extends CraftPower implements Listener {
             @NotNull Vector velocity = p.getVelocity();
             for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
                 ConditionExecutor conditionExecutor = new ConditionExecutor();
-                if (conditionExecutor.check("condition", "conditions", p, origin, "origins:modify_falling", p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
-                    if (origin.getPowerFileFromType(getPowerFile()).getObject("velocity") instanceof Integer) {
-                        if (Integer.parseInt(origin.getPowerFileFromType(getPowerFile()).get("velocity")) < 0) {
-                            //greaterthan
-                            velocity.setY(Integer.parseInt(origin.getPowerFileFromType(getPowerFile()).get("velocity")));
-                            p.setVelocity(velocity);
-                        } else {
-                            //smallerthan
-                            p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_FALLING, 5, 1, false, false, false));
-                        }
-                    } else if (origin.getPowerFileFromType(getPowerFile()).getObject("velocity") instanceof Float) {
-                        if (Float.parseFloat(origin.getPowerFileFromType(getPowerFile()).get("velocity")) < 0) {
-                            //greaterthan
-                            velocity.setY(Float.parseFloat(origin.getPowerFileFromType(getPowerFile()).get("velocity")));
-                            p.setVelocity(velocity);
-                        } else {
-                            //smallerthan
-                            p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_FALLING, 5, 1, false, false, false));
-                        }
-                    } else if (origin.getPowerFileFromType(getPowerFile()).getObject("velocity") instanceof Double) {
-                        if (Double.parseDouble(origin.getPowerFileFromType(getPowerFile()).get("velocity")) < 0) {
-                            //greaterthan
-                            velocity.setY(Double.parseDouble(origin.getPowerFileFromType(getPowerFile()).get("velocity")));
-                            p.setVelocity(velocity);
-                        } else {
-                            //smallerthan
-                            p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_FALLING, 5, 1, false, false, false));
-                        }
-                    } else if (origin.getPowerFileFromType(getPowerFile()).getObject("velocity") instanceof Long) {
-                        if (Long.parseLong(origin.getPowerFileFromType(getPowerFile()).get("velocity")) < 0) {
-                            //greaterthan
-                            velocity.setY(Long.parseLong(origin.getPowerFileFromType(getPowerFile()).get("velocity")));
-                            p.setVelocity(velocity);
-                        } else {
-                            //smallerthan
-                            p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_FALLING, 5, 1, false, false, false));
-                        }
-                    } else if (origin.getPowerFileFromType(getPowerFile()).getObject("velocity") instanceof Short) {
-                        if (Short.parseShort(origin.getPowerFileFromType(getPowerFile()).get("velocity")) < 0) {
-                            //greaterthan
-                            velocity.setY(Short.parseShort(origin.getPowerFileFromType(getPowerFile()).get("velocity")));
-                            p.setVelocity(velocity);
-                        } else {
-                            //smallerthan
-                            p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_FALLING, 5, 1, false, false, false));
+                for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
+                    if (conditionExecutor.check("condition", "conditions", p, power, "origins:modify_falling", p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
+                        if (power.getObject("velocity") instanceof Integer) {
+                            if (Integer.parseInt(power.get("velocity")) < 0) {
+                                //greaterthan
+                                velocity.setY(Integer.parseInt(power.get("velocity")));
+                                p.setVelocity(velocity);
+                            } else {
+                                //smallerthan
+                                p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_FALLING, 5, 1, false, false, false));
+                            }
+                        } else if (power.getObject("velocity") instanceof Float) {
+                            if (Float.parseFloat(power.get("velocity")) < 0) {
+                                //greaterthan
+                                velocity.setY(Float.parseFloat(power.get("velocity")));
+                                p.setVelocity(velocity);
+                            } else {
+                                //smallerthan
+                                p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_FALLING, 5, 1, false, false, false));
+                            }
+                        } else if (power.getObject("velocity") instanceof Double) {
+                            if (Double.parseDouble(power.get("velocity")) < 0) {
+                                //greaterthan
+                                velocity.setY(Double.parseDouble(power.get("velocity")));
+                                p.setVelocity(velocity);
+                            } else {
+                                //smallerthan
+                                p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_FALLING, 5, 1, false, false, false));
+                            }
+                        } else if (power.getObject("velocity") instanceof Long) {
+                            if (Long.parseLong(power.get("velocity")) < 0) {
+                                //greaterthan
+                                velocity.setY(Long.parseLong(power.get("velocity")));
+                                p.setVelocity(velocity);
+                            } else {
+                                //smallerthan
+                                p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_FALLING, 5, 1, false, false, false));
+                            }
+                        } else if (power.getObject("velocity") instanceof Short) {
+                            if (Short.parseShort(power.get("velocity")) < 0) {
+                                //greaterthan
+                                velocity.setY(Short.parseShort(power.get("velocity")));
+                                p.setVelocity(velocity);
+                            } else {
+                                //smallerthan
+                                p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_FALLING, 5, 1, false, false, false));
+                            }
                         }
                     }
                 }
+
             }
         }
     }
@@ -106,15 +110,16 @@ public class ModifyFallingPower extends CraftPower implements Listener {
             if (modify_falling.contains(p)) {
                 for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
                     ConditionExecutor conditionExecutor = new ConditionExecutor();
-                    if (conditionExecutor.check("condition", "conditions", p, origin, "origins:modify_falling", p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
-                        if (Boolean.getBoolean(origin.getPowerFileFromType("origins:modify_falling").get("take_fall_damage", "true"))) {
-                            if (e.getCause() == EntityDamageEvent.DamageCause.FALL) {
-                                e.setDamage(0);
-                                e.setCancelled(true);
+                    for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
+                        if (conditionExecutor.check("condition", "conditions", p, power, "origins:modify_falling", p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
+                            if (Boolean.getBoolean(power.get("take_fall_damage", "true"))) {
+                                if (e.getCause() == EntityDamageEvent.DamageCause.FALL) {
+                                    e.setDamage(0);
+                                    e.setCancelled(true);
+                                }
                             }
                         }
                     }
-
                 }
             }
         }

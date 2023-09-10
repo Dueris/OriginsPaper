@@ -2,14 +2,17 @@ package me.dueris.genesismc.factory.powers.prevent;
 
 import me.dueris.genesismc.entity.OriginPlayer;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
+import me.dueris.genesismc.factory.conditions.item.ItemCondition;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.OriginContainer;
+import me.dueris.genesismc.utils.PowerContainer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import static me.dueris.genesismc.factory.powers.prevent.PreventSuperClass.prevent_item_use;
 
@@ -24,7 +27,7 @@ public class PreventItemUse extends CraftPower implements Listener {
         }
     }
 
-    public PreventItemUse(){
+    public PreventItemUse() {
 
     }
 
@@ -35,34 +38,50 @@ public class PreventItemUse extends CraftPower implements Listener {
 
     @EventHandler
     public void runD(PlayerInteractEvent e) {
-//        if (prevent_item_use.contains(e.getPlayer())) {
-//            if (e.getAction().isRightClick()) {
-//                if (e.getItem() == null) return;
-//
-//                for (OriginContainer origin : OriginPlayer.getOrigin(e.getPlayer()).values()) {
-//                    if (origin.getPowerFileFromType(getPowerFile()) == null) {
-//                        getPowerArray().remove(e.getPlayer());
-//                        return;
-//                    } else {
-//                        ConditionExecutor conditionExecutor = new ConditionExecutor();
-//                        boolean shouldCancel = conditionExecutor.check("item_condition", "item_conditions", e.getPlayer(), origin, "origins:prevent_item_use", e.getPlayer(), null, e.getPlayer().getLocation().getBlock(), null, e.getItem(), null);
-//
-//                        if (shouldCancel) {
-//                            e.setCancelled(true);
-//                            setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
-//                        } else {
-//                                e.setCancelled(false);
-//                                setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
-//                        }
-//                    }
-//                }
-//            } else {
-//                e.getPlayer().sendMessage("sdfsadfsdf");
-//                e.setCancelled(false);
-//            }
-//        }
-        //DISABLED FOR NOW DUE TO WEIRD ISSUES WITH ITEM CONDITIONS
-        //TODO: WORK ON PATCH
+        if (prevent_item_use.contains(e.getPlayer())) {
+            if (e.getAction().isRightClick()) {
+                if (e.getItem() == null) return;
+
+                for (OriginContainer origin : OriginPlayer.getOrigin(e.getPlayer()).values()) {
+                    for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
+                        if (power == null) {
+                            getPowerArray().remove(e.getPlayer());
+                            return;
+                        } else {
+                            ConditionExecutor conditionExecutor = new ConditionExecutor();
+                            boolean shouldCancel = conditionExecutor.check("item_condition", "item_conditions", e.getPlayer(), power, "origins:prevent_item_use", e.getPlayer(), null, e.getPlayer().getLocation().getBlock(), null, e.getItem(), null);
+                            for (HashMap<String, Object> condition : power.getConditionFromString("item_condition", "item_conditions")) {
+                                boolean inverted = (boolean) condition.getOrDefault("inverted", false);
+                                if (condition.get("type") != null) {
+                                    if (condition.get("type").toString().equalsIgnoreCase("origins:meat")) {
+                                        if (inverted) {
+                                            if (ItemCondition.getNonMeatMaterials().contains(e.getItem().getType())) {
+                                                e.setCancelled(true);
+                                            }
+                                        } else {
+                                            if (ItemCondition.getMeatMaterials().contains(e.getItem().getType())) {
+                                                e.setCancelled(true);
+                                            }
+                                        }
+
+                                    } else {
+                                        if (shouldCancel) {
+                                            e.setCancelled(true);
+                                            setActive(power.getTag(), true);
+                                        } else {
+                                            e.setCancelled(false);
+                                            setActive(power.getTag(), false);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            } else {
+                e.setCancelled(false);
+            }
+        }
     }
 
     @Override

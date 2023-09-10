@@ -5,6 +5,7 @@ import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.ErrorSystem;
 import me.dueris.genesismc.utils.OriginContainer;
+import me.dueris.genesismc.utils.PowerContainer;
 import me.dueris.genesismc.utils.translation.LangConfig;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -32,7 +33,7 @@ public class ModifySwimSpeedPower extends CraftPower {
 
     Player p;
 
-    public ModifySwimSpeedPower(){
+    public ModifySwimSpeedPower() {
         this.p = p;
     }
 
@@ -42,25 +43,28 @@ public class ModifySwimSpeedPower extends CraftPower {
             ValueModifyingSuperClass valueModifyingSuperClass = new ValueModifyingSuperClass();
             try {
                 ConditionExecutor conditionExecutor = new ConditionExecutor();
-                if (conditionExecutor.check("condition", "conditions", p, origin, "origins:modify_swim_speed", p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
-                    if (valueModifyingSuperClass.getPersistentAttributeContainer(p, MODIFYING_KEY) == -1) return;
-                    if (!p.isSwimming()) return;
-                    Vector swimVelocity = p.getLocation().getDirection().normalize().multiply(valueModifyingSuperClass.getPersistentAttributeContainer(p, MODIFYING_KEY));
-                    p.setVelocity(swimVelocity);
-                    if (origin.getPowerFileFromType(getPowerFile()) == null) {
-                        getPowerArray().remove(p);
-                        return;
+                for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
+                    if (conditionExecutor.check("condition", "conditions", p, power, "origins:modify_swim_speed", p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
+                        if (valueModifyingSuperClass.getPersistentAttributeContainer(p, MODIFYING_KEY) == -1) return;
+                        if (!p.isSwimming()) return;
+                        Vector swimVelocity = p.getLocation().getDirection().normalize().multiply(valueModifyingSuperClass.getPersistentAttributeContainer(p, MODIFYING_KEY));
+                        p.setVelocity(swimVelocity);
+                        if (power == null) {
+                            getPowerArray().remove(p);
+                            return;
+                        }
+                        if (!getPowerArray().contains(p)) return;
+                        setActive(power.getTag(), true);
+                    } else {
+                        if (power == null) {
+                            getPowerArray().remove(p);
+                            return;
+                        }
+                        if (!getPowerArray().contains(p)) return;
+                        setActive(power.getTag(), false);
                     }
-                    if (!getPowerArray().contains(p)) return;
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
-                } else {
-                    if (origin.getPowerFileFromType(getPowerFile()) == null) {
-                        getPowerArray().remove(p);
-                        return;
-                    }
-                    if (!getPowerArray().contains(p)) return;
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                 }
+
             } catch (Exception e) {
                 ErrorSystem errorSystem = new ErrorSystem();
                 errorSystem.throwError("unable to set modifier", "origins:modify_swim_speed", p, origin, OriginPlayer.getLayer(p, origin));
@@ -82,15 +86,17 @@ public class ModifySwimSpeedPower extends CraftPower {
         ValueModifyingSuperClass valueModifyingSuperClass = new ValueModifyingSuperClass();
         if (modify_swim_speed.contains(p)) {
             for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
-                for (HashMap<String, Object> modifier : origin.getPowerFileFromType("origins:modify_swim_speed").getPossibleModifiers("modifier", "modifiers")) {
-                    Float value = Float.valueOf(modifier.get("value").toString());
-                    String operation = modifier.get("operation").toString();
-                    BinaryOperator mathOperator = getOperationMappingsFloat().get(operation);
-                    if (mathOperator != null) {
-                        float result = (float) mathOperator.apply(valueModifyingSuperClass.getDefaultValue(MODIFYING_KEY), value);
-                        valueModifyingSuperClass.saveValueInPDC(p, MODIFYING_KEY, result);
-                    } else {
-                        Bukkit.getLogger().warning(LangConfig.getLocalizedString(p, "powers.errors.value_modifier_save").replace("%modifier%", MODIFYING_KEY));
+                for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
+                    for (HashMap<String, Object> modifier : power.getPossibleModifiers("modifier", "modifiers")) {
+                        Float value = Float.valueOf(modifier.get("value").toString());
+                        String operation = modifier.get("operation").toString();
+                        BinaryOperator mathOperator = getOperationMappingsFloat().get(operation);
+                        if (mathOperator != null) {
+                            float result = (float) mathOperator.apply(valueModifyingSuperClass.getDefaultValue(MODIFYING_KEY), value);
+                            valueModifyingSuperClass.saveValueInPDC(p, MODIFYING_KEY, result);
+                        } else {
+                            Bukkit.getLogger().warning(LangConfig.getLocalizedString(p, "powers.errors.value_modifier_save").replace("%modifier%", MODIFYING_KEY));
+                        }
                     }
                 }
             }

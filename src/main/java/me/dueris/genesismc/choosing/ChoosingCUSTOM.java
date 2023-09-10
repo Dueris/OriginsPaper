@@ -1,6 +1,5 @@
 package me.dueris.genesismc.choosing;
 
-import me.dueris.genesismc.FoliaOriginScheduler;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.entity.OriginPlayer;
 import me.dueris.genesismc.events.OriginChangeEvent;
@@ -10,7 +9,6 @@ import me.dueris.genesismc.utils.OriginContainer;
 import me.dueris.genesismc.utils.PowerContainer;
 import me.dueris.genesismc.utils.translation.LangConfig;
 import org.bukkit.*;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -32,11 +30,10 @@ import java.util.Objects;
 import static me.dueris.genesismc.choosing.ChoosingCORE.*;
 import static me.dueris.genesismc.choosing.contents.ChooseMenuContents.ChooseMenuContent;
 import static me.dueris.genesismc.choosing.contents.MainMenuContents.GenesisMainMenuContents;
-import static me.dueris.genesismc.factory.powers.Power.*;
+import static me.dueris.genesismc.factory.powers.Power.phasing;
 import static me.dueris.genesismc.factory.powers.value_modifying.ValueModifyingSuperClass.modify_world_spawn;
 import static me.dueris.genesismc.items.OrbOfOrigins.orb;
 import static org.bukkit.Bukkit.getServer;
-import static org.bukkit.ChatColor.GRAY;
 import static org.bukkit.ChatColor.RED;
 
 public class ChoosingCUSTOM implements Listener {
@@ -237,12 +234,14 @@ public class ChoosingCUSTOM implements Listener {
                     public void run() {
                         if (modify_world_spawn.contains(p)) {
                             ModifyPlayerSpawnPower modifyPlayerSpawnPower = new ModifyPlayerSpawnPower();
-                            if (origin.getPowerFileFromType("origins:modify_player_spawn").get("dimension", null).equals("the_nether")) {
-                                p.teleportAsync(modifyPlayerSpawnPower.NetherSpawn(origin.getPowerFileFromType("origins:modify_player_spawn").get("spawn_strategy", "default")));
-                            } else if (origin.getPowerFileFromType("origins:modify_player_spawn").get("dimension", null).equals("the_end")) {
-                                p.teleportAsync(modifyPlayerSpawnPower.EndSpawn(origin.getPowerFileFromType("origins:modify_player_spawn").get("spawn_strategy", "default")));
-                            } else {
-                                p.teleportAsync(modifyPlayerSpawnPower.OverworldSpawn(origin.getPowerFileFromType("origins:modify_player_spawn").get("spawn_strategy", "default")));
+                            for (PowerContainer power : origin.getMultiPowerFileFromType("origins:modify_player_spawn")) {
+                                if (power.get("dimension", null).equals("the_nether")) {
+                                    p.teleportAsync(modifyPlayerSpawnPower.NetherSpawn(power.get("spawn_strategy", "default")));
+                                } else if (power.get("dimension", null).equals("the_end")) {
+                                    p.teleportAsync(modifyPlayerSpawnPower.EndSpawn(power.get("spawn_strategy", "default")));
+                                } else {
+                                    p.teleportAsync(modifyPlayerSpawnPower.OverworldSpawn(power.get("spawn_strategy", "default")));
+                                }
                             }
                         }
                     }

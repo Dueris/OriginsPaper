@@ -4,6 +4,7 @@ import me.dueris.genesismc.entity.OriginPlayer;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.OriginContainer;
+import me.dueris.genesismc.utils.PowerContainer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -33,28 +34,30 @@ public class ModifyHealingPower extends CraftPower implements Listener {
         if (e.getEntity() instanceof Player p) {
             if (!modify_healing.contains(e.getEntity())) return;
             for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
-                for (HashMap<String, Object> modifier : origin.getPowerFileFromType("origins:modify_healing").getPossibleModifiers("modifier", "modifiers")) {
-                    Float value = Float.valueOf(modifier.get("value").toString());
-                    String operation = modifier.get("operation").toString();
-                    BinaryOperator mathOperator = getOperationMappingsFloat().get(operation);
-                    if (mathOperator != null) {
-                        float result = (float) mathOperator.apply(e.getAmount(), value);
-                        ConditionExecutor executor = new ConditionExecutor();
-                        if (executor.check("condition", "conditions", p, origin, getPowerFile(), p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
-                            if (origin.getPowerFileFromType(getPowerFile()) == null) {
-                                getPowerArray().remove(p);
-                                return;
+                for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
+                    for (HashMap<String, Object> modifier : power.getPossibleModifiers("modifier", "modifiers")) {
+                        Float value = Float.valueOf(modifier.get("value").toString());
+                        String operation = modifier.get("operation").toString();
+                        BinaryOperator mathOperator = getOperationMappingsFloat().get(operation);
+                        if (mathOperator != null) {
+                            float result = (float) mathOperator.apply(e.getAmount(), value);
+                            ConditionExecutor executor = new ConditionExecutor();
+                            if (executor.check("condition", "conditions", p, power, getPowerFile(), p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
+                                if (power == null) {
+                                    getPowerArray().remove(p);
+                                    return;
+                                }
+                                if (!getPowerArray().contains(p)) return;
+                                setActive(power.getTag(), true);
+                                e.setAmount(result);
+                            } else {
+                                if (power == null) {
+                                    getPowerArray().remove(p);
+                                    return;
+                                }
+                                if (!getPowerArray().contains(p)) return;
+                                setActive(power.getTag(), false);
                             }
-                            if (!getPowerArray().contains(p)) return;
-                            setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
-                            e.setAmount(result);
-                        } else {
-                            if (origin.getPowerFileFromType(getPowerFile()) == null) {
-                                getPowerArray().remove(p);
-                                return;
-                            }
-                            if (!getPowerArray().contains(p)) return;
-                            setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                         }
                     }
                 }
@@ -64,7 +67,7 @@ public class ModifyHealingPower extends CraftPower implements Listener {
 
     Player p;
 
-    public ModifyHealingPower(){
+    public ModifyHealingPower() {
         this.p = p;
     }
 

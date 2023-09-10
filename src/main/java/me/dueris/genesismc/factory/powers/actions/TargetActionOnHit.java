@@ -17,7 +17,7 @@ import java.util.ArrayList;
 public class TargetActionOnHit extends CraftPower implements Listener {
     Player p;
 
-    public TargetActionOnHit(){
+    public TargetActionOnHit() {
         this.p = p;
     }
 
@@ -39,8 +39,8 @@ public class TargetActionOnHit extends CraftPower implements Listener {
         for (OriginContainer origin : OriginPlayer.getOrigin(player).values()) {
             ConditionExecutor executor = new ConditionExecutor();
             if (CooldownStuff.isPlayerInCooldown((Player) target, "key.attack")) return;
-            for(PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())){
-                if (executor.check("condition", "conditions", (Player) target, origin, getPowerFile(), actor, target, null, null, player.getInventory().getItemInHand(), e)) {
+            for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
+                if (executor.check("condition", "conditions", (Player) target, power, getPowerFile(), actor, target, null, null, player.getInventory().getItemInHand(), e)) {
                     if (!getPowerArray().contains(actor)) return;
                     setActive(power.getTag(), true);
                     ActionTypes.EntityActionType(actor, power.getEntityAction());

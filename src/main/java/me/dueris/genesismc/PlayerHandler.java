@@ -40,24 +40,24 @@ import static me.dueris.genesismc.factory.powers.Power.extra_reach;
 import static me.dueris.genesismc.factory.powers.Power.extra_reach_attack;
 import static me.dueris.genesismc.utils.BukkitColour.AQUA;
 import static me.dueris.genesismc.utils.BukkitColour.RED;
-import static org.bukkit.Bukkit.getPlayer;
 import static org.bukkit.Bukkit.getServer;
 
 public class PlayerHandler implements Listener {
 
     public static void ReapplyEntityReachPowers(Player player) {
         for (OriginContainer origin : OriginPlayer.getOrigin(player).values()) {
-            PowerContainer power = origin.getPowerFileFromType("origins:attribute");
-            if (power == null) continue;
-            for (HashMap<String, Object> modifier : origin.getPowerFileFromType("origins:attribute").getPossibleModifiers("modifier", "modifier")) {
-                if (modifier.get("attribute").toString().equalsIgnoreCase("reach-entity-attributes:reach")) {
-                    extra_reach.add(player);
-                    return;
-                } else if (modifier.get("attribute").toString().equalsIgnoreCase("reach-entity-attributes:attack_range")) {
-                    extra_reach_attack.add(player);
-                    return;
-                } else {
-                    AttributeHandler.Reach.setFinalReach(player, AttributeHandler.Reach.getDefaultReach(player));
+            for (PowerContainer power : origin.getMultiPowerFileFromType("origins:attribute")) {
+                if (power == null) continue;
+                for (HashMap<String, Object> modifier : power.getPossibleModifiers("modifier", "modifier")) {
+                    if (modifier.get("attribute").toString().equalsIgnoreCase("reach-entity-attributes:reach")) {
+                        extra_reach.add(player);
+                        return;
+                    } else if (modifier.get("attribute").toString().equalsIgnoreCase("reach-entity-attributes:attack_range")) {
+                        extra_reach_attack.add(player);
+                        return;
+                    } else {
+                        AttributeHandler.Reach.setFinalReach(player, AttributeHandler.Reach.getDefaultReach(player));
+                    }
                 }
             }
         }
@@ -180,7 +180,7 @@ public class PlayerHandler implements Listener {
         }
 
         originValidCheck(p);
-        if(p == null) Bukkit.getServer().getConsoleSender().sendMessage("BRPO");
+        if (p == null) Bukkit.getServer().getConsoleSender().sendMessage("BRPO");
         OriginPlayer.assignPowers(p);
         p.sendMessage(Component.text(LangConfig.getLocalizedString(p, "misc.joinText")).color(TextColor.fromHexString(AQUA)));
 
@@ -193,7 +193,7 @@ public class PlayerHandler implements Listener {
 
         try {
             for (Class<? extends CraftPower> c : CraftPower.findCraftPowerClasses()) {
-                if(CraftPower.getRegistered().contains(c)) continue;
+                if (CraftPower.getRegistered().contains(c)) continue;
                 if (CraftPower.class.isAssignableFrom(c)) {
                     Constructor<? extends CraftPower> constructor = c.getConstructor(Player.class);
                     CraftPower instance = constructor.newInstance(p);

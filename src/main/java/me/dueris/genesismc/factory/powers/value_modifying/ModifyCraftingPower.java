@@ -5,6 +5,7 @@ import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.ErrorSystem;
 import me.dueris.genesismc.utils.OriginContainer;
+import me.dueris.genesismc.utils.PowerContainer;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -33,7 +34,7 @@ public class ModifyCraftingPower extends CraftPower implements Listener {
 
     Player p;
 
-    public ModifyCraftingPower(){
+    public ModifyCraftingPower() {
         this.p = p;
     }
 
@@ -52,17 +53,19 @@ public class ModifyCraftingPower extends CraftPower implements Listener {
                 ValueModifyingSuperClass valueModifyingSuperClass = new ValueModifyingSuperClass();
                 try {
                     ConditionExecutor conditionExecutor = new ConditionExecutor();
-                    if (conditionExecutor.check("condition", "condition", p, origin, "origins:modify_crafting", p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
-                        if (conditionExecutor.check("item_condition", "item_condition", p, origin, "origins:modify_crafting", p, null, p.getLocation().getBlock(), null, e.getInventory().getResult(), null)) {
-                            if (e.getInventory().getResult().getType() == Material.valueOf(origin.getPowerFileFromType("origins:modify_crafting").get("recipe", null).split(":")[1].toUpperCase())) {
-                                e.getInventory().setResult(new ItemStack(Material.valueOf(origin.getPowerFileFromType("origins:modify_crafting").getJsonHashMap("result").get("item").toString().toUpperCase().split(":")[1])));
-                                setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
+                    for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
+                        if (conditionExecutor.check("condition", "condition", p, power, "origins:modify_crafting", p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
+                            if (conditionExecutor.check("item_condition", "item_condition", p, power, "origins:modify_crafting", p, null, p.getLocation().getBlock(), null, e.getInventory().getResult(), null)) {
+                                if (e.getInventory().getResult().getType() == Material.valueOf(power.get("recipe", null).split(":")[1].toUpperCase())) {
+                                    e.getInventory().setResult(new ItemStack(Material.valueOf(power.getJsonHashMap("result").get("item").toString().toUpperCase().split(":")[1])));
+                                    setActive(power.getTag(), true);
+                                }
+                            } else {
+                                setActive(power.getTag(), false);
                             }
                         } else {
-                            setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
+                            setActive(power.getTag(), false);
                         }
-                    } else {
-                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                     }
                 } catch (Exception ev) {
                     ErrorSystem errorSystem = new ErrorSystem();

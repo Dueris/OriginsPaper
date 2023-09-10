@@ -5,10 +5,8 @@ import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.KeybindHandler;
 import me.dueris.genesismc.entity.OriginPlayer;
 import me.dueris.genesismc.events.KeybindTriggerEvent;
-import me.dueris.genesismc.events.ToggleTriggerEvent;
-import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.utils.OriginContainer;
-import org.bukkit.Bukkit;
+import me.dueris.genesismc.utils.PowerContainer;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -40,26 +38,28 @@ public class Toggle extends CraftPower implements Listener {
         Player p = e.getPlayer();
         if (toggle_power.contains(e.getPlayer())) {
             for (OriginContainer origin : OriginPlayer.getOrigin(e.getPlayer()).values()) {
-                    if (!CooldownStuff.isPlayerInCooldown(p, origin.getPowerFileFromType(getPowerFile()).getKey().get("key").toString())) {
-                        if (isKeyBeingPressed(e.getPlayer(), origin.getPowerFileFromType(getPowerFile()).getKey().get("key").toString(), true)) {
-                            execute(p, origin);
+                for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
+                    if (!CooldownStuff.isPlayerInCooldown(p, power.getKey().get("key").toString())) {
+                        if (isKeyBeingPressed(e.getPlayer(), power.getKey().get("key").toString(), true)) {
+                            execute(p, power);
                             break;
                         }
                     }
+                }
             }
         }
     }
 
-    public void execute(Player p, OriginContainer origin) {
+    public void execute(Player p, PowerContainer power) {
         if (!getPowerArray().contains(p)) return;
         if (runCancel) return;
-        String tag = origin.getPowerFileFromType(getPowerFile()).getTag();
-        String key = (String) origin.getPowerFileFromType(getPowerFile()).getKey().get("key");
+        String tag = power.getTag();
+        String key = (String) power.getKey().get("key");
         KeybindHandler.runKeyChangeTrigger(KeybindHandler.getTriggerFromOriginKey(p, key));
         if (CooldownStuff.isPlayerInCooldown(p, key)) return;
-        if (powers_active.containsKey(origin.getPowerFileFromType(getPowerFile()).getTag())) {
-            setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), !powers_active.get(tag));
-            if (origin.getPowerFileFromType(getPowerFile()).get("retain_state", "false") == "true") {
+        if (powers_active.containsKey(power.getTag())) {
+            setActive(power.getTag(), !powers_active.get(tag));
+            if (power.get("retain_state", "false") == "true") {
                 if (active) {
                     //active
                     KeybindHandler.runKeyChangeTriggerReturn(KeybindHandler.getTriggerFromOriginKey(p, key), p, key);
@@ -76,7 +76,7 @@ public class Toggle extends CraftPower implements Listener {
                             runCancel = false;
                             this.cancel();
                         }
-                    }.runTaskTimer(GenesisMC.getPlugin(),0, 5);
+                    }.runTaskTimer(GenesisMC.getPlugin(), 0, 5);
                     new BukkitRunnable() {
                         @Override
                         public void run() {
@@ -143,7 +143,7 @@ public class Toggle extends CraftPower implements Listener {
 
     Player p;
 
-    public Toggle(){
+    public Toggle() {
         this.p = p;
     }
 

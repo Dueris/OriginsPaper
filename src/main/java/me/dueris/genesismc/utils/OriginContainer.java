@@ -153,7 +153,7 @@ public class OriginContainer implements Serializable {
         return powers;
     }
 
-    public PowerContainer getPowerFileFromType(String powerType) {
+    public PowerContainer getSinglePowerFileFromType(String powerType) {
         for (PowerContainer power : getPowerContainers()) {
             if (power.getType().equals(powerType)) return power;
         }

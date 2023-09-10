@@ -4,7 +4,7 @@ import me.dueris.genesismc.entity.OriginPlayer;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.OriginContainer;
-import org.bukkit.Bukkit;
+import me.dueris.genesismc.utils.PowerContainer;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.craftbukkit.v1_20_R1.entity.CraftPlayer;
@@ -28,7 +28,7 @@ public class WalkOnFluid extends CraftPower {
 
     Player p;
 
-    public WalkOnFluid(){
+    public WalkOnFluid() {
         this.p = p;
     }
 
@@ -37,44 +37,36 @@ public class WalkOnFluid extends CraftPower {
         if (getPowerArray().contains(p)) {
             for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
                 ConditionExecutor executor = new ConditionExecutor();
-                if (executor.check("condition", "conditions", p, origin, getPowerFile(), p, null, null, null, p.getItemInHand(), null)) {
-                    if (origin.getPowerFileFromType(getPowerFile()) == null) {
-                        getPowerArray().remove(p);
-                        return;
-                    }
-                    if (!getPowerArray().contains(p)) return;
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
-                    if (!p.getLocation().add(0, -1, 0).getBlock().isSolid()) {
-                        if (p.getLocation().add(0, -1, 0).getBlock().getType() == Material.WATER || p.getLocation().add(0, -1, 0).getBlock().getType() == Material.LAVA) {
-                            if (p.getLocation().add(0, -1, 0).getBlock().getType().equals(Material.valueOf(origin.getPowerFileFromType(getPowerFile()).get("fluid").toUpperCase().split(":")[1]))) {
-                                CraftPlayer craftPlayer = (CraftPlayer) p;
-                                if (p.getLocation().add(0, -1, 0).getBlock().getType() == Material.WATER) {
-                                    loc.put(p, p.getLocation().add(0, -1, 0).getBlock().getLocation());
-                                    craftPlayer.sendBlockChange(p.getLocation().add(0, -1, 0).getBlock().getLocation(), Material.ICE.createBlockData());
-                                    for (Location location : loc.values()) {
-                                        if (location != p.getLocation().add(0, -1, 0).getBlock().getLocation())
-                                            loc.remove(p, location);
-                                        craftPlayer.sendBlockChange(location, location.getBlock().getBlockData());
-                                    }
-                                } else {
-                                    loc.put(p, p.getLocation().add(0, -1, 0).getBlock().getLocation());
-                                    craftPlayer.sendBlockChange(p.getLocation().add(0, -1, 0).getBlock().getLocation(), Material.OBSIDIAN.createBlockData());
-                                    for (Location location : loc.values()) {
-                                        if (location != p.getLocation().add(0, -1, 0).getBlock().getLocation())
-                                            loc.remove(p, location);
-                                        craftPlayer.sendBlockChange(location, location.getBlock().getBlockData());
+                for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
+                    if (executor.check("condition", "conditions", p, power, getPowerFile(), p, null, null, null, p.getItemInHand(), null)) {
+                        setActive(power.getTag(), true);
+                        if (!p.getLocation().add(0, -1, 0).getBlock().isSolid()) {
+                            if (p.getLocation().add(0, -1, 0).getBlock().getType() == Material.WATER || p.getLocation().add(0, -1, 0).getBlock().getType() == Material.LAVA) {
+                                if (p.getLocation().add(0, -1, 0).getBlock().getType().equals(Material.valueOf(power.get("fluid").toUpperCase().split(":")[1]))) {
+                                    CraftPlayer craftPlayer = (CraftPlayer) p;
+                                    if (p.getLocation().add(0, -1, 0).getBlock().getType() == Material.WATER) {
+                                        loc.put(p, p.getLocation().add(0, -1, 0).getBlock().getLocation());
+                                        craftPlayer.sendBlockChange(p.getLocation().add(0, -1, 0).getBlock().getLocation(), Material.ICE.createBlockData());
+                                        for (Location location : loc.values()) {
+                                            if (location != p.getLocation().add(0, -1, 0).getBlock().getLocation())
+                                                loc.remove(p, location);
+                                            craftPlayer.sendBlockChange(location, location.getBlock().getBlockData());
+                                        }
+                                    } else {
+                                        loc.put(p, p.getLocation().add(0, -1, 0).getBlock().getLocation());
+                                        craftPlayer.sendBlockChange(p.getLocation().add(0, -1, 0).getBlock().getLocation(), Material.OBSIDIAN.createBlockData());
+                                        for (Location location : loc.values()) {
+                                            if (location != p.getLocation().add(0, -1, 0).getBlock().getLocation())
+                                                loc.remove(p, location);
+                                            craftPlayer.sendBlockChange(location, location.getBlock().getBlockData());
+                                        }
                                     }
                                 }
                             }
                         }
+                    } else {
+                        setActive(power.getTag(), false);
                     }
-                } else {
-                    if (origin.getPowerFileFromType(getPowerFile()) == null) {
-                        getPowerArray().remove(p);
-                        return;
-                    }
-                    if (!getPowerArray().contains(p)) return;
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                 }
             }
         }

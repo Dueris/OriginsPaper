@@ -7,7 +7,6 @@ import me.dueris.genesismc.utils.OriginContainer;
 import me.dueris.genesismc.utils.PowerContainer;
 import me.dueris.genesismc.utils.translation.LangConfig;
 import org.bukkit.Bukkit;
-import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -16,7 +15,7 @@ import java.util.HashMap;
 public class ActionOverTime extends CraftPower {
 
     private Long interval;
-    private int ticksE;
+    private final int ticksE;
 
     public ActionOverTime() {
         this.interval = 1L;
@@ -28,7 +27,7 @@ public class ActionOverTime extends CraftPower {
 
         if (getPowerArray().contains(p)) {
             for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
-                for(PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())){
+                for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
                     if (power == null) continue;
                     if (power.getInterval() == null) {
                         Bukkit.getLogger().warning(LangConfig.getLocalizedString(p, "powers.errors.action_over_time"));
@@ -42,7 +41,7 @@ public class ActionOverTime extends CraftPower {
                         ticksEMap.put(p, ticksE);
                     } else {
                         ConditionExecutor executor = new ConditionExecutor();
-                        if (executor.check("condition", "conditions", p, origin, getPowerFile(), p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
+                        if (executor.check("condition", "conditions", p, power, getPowerFile(), p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
                             setActive(power.getTag(), true);
                             ActionTypes.EntityActionType(p, power.getEntityAction());
                         } else {
@@ -54,7 +53,6 @@ public class ActionOverTime extends CraftPower {
             }
         }
     }
-
 
 
     @Override

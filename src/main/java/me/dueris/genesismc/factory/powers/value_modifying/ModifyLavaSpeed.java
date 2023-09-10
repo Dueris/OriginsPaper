@@ -5,7 +5,7 @@ import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.ErrorSystem;
 import me.dueris.genesismc.utils.OriginContainer;
-import org.bukkit.Bukkit;
+import me.dueris.genesismc.utils.PowerContainer;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -30,7 +30,7 @@ public class ModifyLavaSpeed extends CraftPower {
 
     Player p;
 
-    public ModifyLavaSpeed(){
+    public ModifyLavaSpeed() {
         this.p = p;
     }
 
@@ -41,30 +41,27 @@ public class ModifyLavaSpeed extends CraftPower {
                 ValueModifyingSuperClass valueModifyingSuperClass = new ValueModifyingSuperClass();
                 try {
                     ConditionExecutor conditionExecutor = new ConditionExecutor();
-                    if (conditionExecutor.check("bientity_condition", "bientity_conditions", p, origin, "origins:modify_lava_speed", p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
-                        for (HashMap<String, Object> modifier : origin.getPowerFileFromType("origins:modify_lava_speed").getPossibleModifiers("modifier", "modifiers")) {
-                            Float value = Float.valueOf(modifier.get("value").toString());
-                            String operation = modifier.get("operation").toString();
-                            BinaryOperator mathOperator = getOperationMappingsFloat().get(operation);
-                            if (mathOperator != null) {
-                                float result = (float) mathOperator.apply(0.02f, value);
-                                if (origin.getPowerFileFromType(getPowerFile()) == null) {
-                                    getPowerArray().remove(p);
-                                    return;
+                    for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
+                        if (conditionExecutor.check("bientity_condition", "bientity_conditions", p, power, "origins:modify_lava_speed", p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
+                            for (HashMap<String, Object> modifier : power.getPossibleModifiers("modifier", "modifiers")) {
+                                Float value = Float.valueOf(modifier.get("value").toString());
+                                String operation = modifier.get("operation").toString();
+                                BinaryOperator mathOperator = getOperationMappingsFloat().get(operation);
+                                if (mathOperator != null) {
+                                    float result = (float) mathOperator.apply(0.02f, value);
+                                    if (power == null) {
+                                        getPowerArray().remove(p);
+                                        return;
+                                    }
+                                    if (!getPowerArray().contains(p)) return;
+                                    setActive(power.getTag(), true);
+                                    p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 2, calculateSpeedAmplifier(Math.toIntExact(Long.valueOf(String.valueOf(result)))), false, false, false));
                                 }
-                                if (!getPowerArray().contains(p)) return;
-                                setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
-                                p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 2, calculateSpeedAmplifier(Math.toIntExact(Long.valueOf(String.valueOf(result)))), false, false, false));
                             }
-                        }
 
-                    } else {
-                        if (origin.getPowerFileFromType(getPowerFile()) == null) {
-                            getPowerArray().remove(p);
-                            return;
+                        } else {
+                            setActive(power.getTag(), false);
                         }
-                        if (!getPowerArray().contains(p)) return;
-                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                     }
                 } catch (Exception ev) {
                     ErrorSystem errorSystem = new ErrorSystem();

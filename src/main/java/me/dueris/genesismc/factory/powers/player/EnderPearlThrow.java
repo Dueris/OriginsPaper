@@ -5,6 +5,7 @@ import me.dueris.genesismc.entity.OriginPlayer;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.OriginContainer;
+import me.dueris.genesismc.utils.PowerContainer;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
@@ -71,25 +72,27 @@ public class EnderPearlThrow extends CraftPower implements Listener {
                         if (p.getCooldown(ENDER_PEARL) == 0 && p.getGameMode() != GameMode.CREATIVE) {
                             for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
                                 ConditionExecutor executor = new ConditionExecutor();
-                                if (executor.check("condition", "conditions", p, origin, getPowerFile(), p, null, null, null, p.getItemInHand(), null)) {
-                                    if (origin.getPowerFileFromType(getPowerFile()) == null) {
-                                        getPowerArray().remove(p);
-                                        return;
+                                for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
+                                    if (executor.check("condition", "conditions", p, power, getPowerFile(), p, null, null, null, p.getItemInHand(), null)) {
+                                        if (power == null) {
+                                            getPowerArray().remove(p);
+                                            return;
+                                        }
+                                        if (!getPowerArray().contains(p)) return;
+                                        setActive(power.getTag(), true);
+                                        p.getInventory().addItem(infinpearl);
+                                        Bukkit.getScheduler().runTaskLater(GenesisMC.getPlugin(), () -> {
+                                            if (p.getInventory().getItemInMainHand().isSimilar(infinpearl)) ;
+                                            p.getInventory().getItemInMainHand().setAmount(1);
+                                        }, 1);
+                                    } else {
+                                        if (power == null) {
+                                            getPowerArray().remove(p);
+                                            return;
+                                        }
+                                        if (!getPowerArray().contains(p)) return;
+                                        setActive(power.getTag(), false);
                                     }
-                                    if (!getPowerArray().contains(p)) return;
-                                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
-                                    p.getInventory().addItem(infinpearl);
-                                    Bukkit.getScheduler().runTaskLater(GenesisMC.getPlugin(), () -> {
-                                        if (p.getInventory().getItemInMainHand().isSimilar(infinpearl)) ;
-                                        p.getInventory().getItemInMainHand().setAmount(1);
-                                    }, 1);
-                                } else {
-                                    if (origin.getPowerFileFromType(getPowerFile()) == null) {
-                                        getPowerArray().remove(p);
-                                        return;
-                                    }
-                                    if (!getPowerArray().contains(p)) return;
-                                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                                 }
                             }
                         }
@@ -203,7 +206,7 @@ public class EnderPearlThrow extends CraftPower implements Listener {
 
     Player p;
 
-    public EnderPearlThrow(){
+    public EnderPearlThrow() {
         this.p = p;
     }
 

@@ -2,7 +2,6 @@ package me.dueris.genesismc.factory.powers;
 
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.entity.OriginPlayer;
-import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
@@ -14,7 +13,7 @@ public class FlightHandler extends CraftPower {
 
     Player p;
 
-    public FlightHandler(){
+    public FlightHandler() {
         this.p = p;
     }
 

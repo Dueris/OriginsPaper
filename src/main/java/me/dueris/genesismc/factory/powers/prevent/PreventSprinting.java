@@ -4,7 +4,7 @@ import me.dueris.genesismc.entity.OriginPlayer;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.OriginContainer;
-import org.bukkit.Bukkit;
+import me.dueris.genesismc.utils.PowerContainer;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -24,7 +24,7 @@ public class PreventSprinting extends CraftPower {
 
     Player p;
 
-    public PreventSprinting(){
+    public PreventSprinting() {
         this.p = p;
     }
 
@@ -32,22 +32,24 @@ public class PreventSprinting extends CraftPower {
     public void run(Player p) {
         if (prevent_sprinting.contains(p)) {
             for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
-                ConditionExecutor conditionExecutor = new ConditionExecutor();
-                if (conditionExecutor.check("condition", "conditions", p, origin, "origins:prevent_sprinting", p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
-                    if (origin.getPowerFileFromType(getPowerFile()) == null) {
-                        getPowerArray().remove(p);
-                        return;
+                for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
+                    ConditionExecutor conditionExecutor = new ConditionExecutor();
+                    if (conditionExecutor.check("condition", "conditions", p, power, "origins:prevent_sprinting", p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
+                        if (power == null) {
+                            getPowerArray().remove(p);
+                            return;
+                        }
+                        if (!getPowerArray().contains(p)) return;
+                        setActive(power.getTag(), true);
+                        p.setSprinting(false);
+                    } else {
+                        if (power == null) {
+                            getPowerArray().remove(p);
+                            return;
+                        }
+                        if (!getPowerArray().contains(p)) return;
+                        setActive(power.getTag(), false);
                     }
-                    if (!getPowerArray().contains(p)) return;
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
-                    p.setSprinting(false);
-                } else {
-                    if (origin.getPowerFileFromType(getPowerFile()) == null) {
-                        getPowerArray().remove(p);
-                        return;
-                    }
-                    if (!getPowerArray().contains(p)) return;
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                 }
             }
         }

@@ -16,7 +16,7 @@ import java.util.ArrayList;
 public class ActionOnHit extends CraftPower {
     Player p;
 
-    public ActionOnHit(){
+    public ActionOnHit() {
         this.p = p;
     }
 
@@ -32,22 +32,22 @@ public class ActionOnHit extends CraftPower {
             Entity target = p;
             for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
                 if (getPowerArray().contains(p)) {
-                    for(PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())){
+                    for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
                         if (power == null) continue;
 
 
-                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
+                        setActive(power.getTag(), true);
                         ActionTypes.biEntityActionType(actor, target, power.getBiEntityAction());
                         //todo: bientity condition and damage condition
                         new BukkitRunnable() {
                             @Override
                             public void run() {
-                                if (origin.getPowerFileFromType(getPowerFile()) == null) {
+                                if (power == null) {
                                     getPowerArray().remove(p);
                                     return;
                                 }
                                 if (!getPowerArray().contains(p)) return;
-                                setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
+                                setActive(power.getTag(), false);
                             }
                         }.runTaskLater(GenesisMC.getPlugin(), 2L);
                     }

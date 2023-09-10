@@ -14,7 +14,7 @@ import java.util.ArrayList;
 public class ActionOnWakeUp extends CraftPower implements Listener {
     Player p;
 
-    public ActionOnWakeUp(){
+    public ActionOnWakeUp() {
         this.p = p;
     }
 
@@ -27,7 +27,7 @@ public class ActionOnWakeUp extends CraftPower implements Listener {
     public void w(PlayerBedLeaveEvent e) {
         if (!getPowerArray().contains(e.getPlayer())) return;
         for (OriginContainer origin : OriginPlayer.getOrigin(e.getPlayer()).values()) {
-            for(PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())){
+            for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
                 setActive(power.getTag(), true);
                 ActionTypes.EntityActionType(e.getPlayer(), power.getEntityAction());
                 ActionTypes.BlockActionType(e.getBed().getLocation(), power.getBlockAction());

@@ -7,6 +7,7 @@ import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.factory.powers.player.attributes.AttributeHandler;
 import me.dueris.genesismc.utils.ErrorSystem;
 import me.dueris.genesismc.utils.OriginContainer;
+import me.dueris.genesismc.utils.PowerContainer;
 import me.dueris.genesismc.utils.translation.LangConfig;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -56,15 +57,17 @@ public class ModifyBreakSpeedPower extends CraftPower implements Listener {
                 ValueModifyingSuperClass valueModifyingSuperClass = new ValueModifyingSuperClass();
                 try {
                     ConditionExecutor conditionExecutor = new ConditionExecutor();
-                    if (conditionExecutor.check("condition", "condition", p, origin, getPowerFile(), p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
-                        if (conditionExecutor.check("block_condition", "block_condition", p, origin, getPowerFile(), p, null, e.getPlayer().getTargetBlockExact(AttributeHandler.Reach.getDefaultReach(p)), null, p.getItemInHand(), null)) {
-                            setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
+                    for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
+                        if (conditionExecutor.check("condition", "condition", p, power, getPowerFile(), p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
+                            if (conditionExecutor.check("block_condition", "block_condition", p, power, getPowerFile(), p, null, e.getPlayer().getTargetBlockExact(AttributeHandler.Reach.getDefaultReach(p)), null, p.getItemInHand(), null)) {
+                                setActive(power.getTag(), true);
                                 p.addPotionEffect(new PotionEffect(PotionEffectType.FAST_DIGGING, 50, calculateHasteAmplifier(valueModifyingSuperClass.getPersistentAttributeContainer(p, MODIFYING_KEY)), false, false, false));
+                            } else {
+                                setActive(power.getTag(), false);
+                            }
                         } else {
-                            setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
+                            setActive(power.getTag(), false);
                         }
-                    } else {
-                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                     }
                 } catch (Exception ev) {
                     ErrorSystem errorSystem = new ErrorSystem();
@@ -79,15 +82,17 @@ public class ModifyBreakSpeedPower extends CraftPower implements Listener {
         ValueModifyingSuperClass valueModifyingSuperClass = new ValueModifyingSuperClass();
         if (modify_break_speed.contains(p)) {
             for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
-                for (HashMap<String, Object> modifier : origin.getPowerFileFromType("origins:modify_break_speed").getConditionFromString("modifier", "modifiers")) {
-                    Float value = Float.valueOf(modifier.get("value").toString());
-                    String operation = modifier.get("operation").toString();
-                    BinaryOperator mathOperator = getOperationMappingsFloat().get(operation);
-                    if (mathOperator != null) {
-                        float result = (float) mathOperator.apply(valueModifyingSuperClass.getPersistentAttributeContainer(p, MODIFYING_KEY), value);
-                        valueModifyingSuperClass.saveValueInPDC(p, MODIFYING_KEY, result);
-                    } else {
-                        Bukkit.getLogger().warning(LangConfig.getLocalizedString(p, "powers.errors.value_modifier_save").replace("%modifier%", MODIFYING_KEY));
+                for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
+                    for (HashMap<String, Object> modifier : power.getConditionFromString("modifier", "modifiers")) {
+                        Float value = Float.valueOf(modifier.get("value").toString());
+                        String operation = modifier.get("operation").toString();
+                        BinaryOperator mathOperator = getOperationMappingsFloat().get(operation);
+                        if (mathOperator != null) {
+                            float result = (float) mathOperator.apply(valueModifyingSuperClass.getPersistentAttributeContainer(p, MODIFYING_KEY), value);
+                            valueModifyingSuperClass.saveValueInPDC(p, MODIFYING_KEY, result);
+                        } else {
+                            Bukkit.getLogger().warning(LangConfig.getLocalizedString(p, "powers.errors.value_modifier_save").replace("%modifier%", MODIFYING_KEY));
+                        }
                     }
                 }
             }
@@ -98,7 +103,7 @@ public class ModifyBreakSpeedPower extends CraftPower implements Listener {
 
     Player p;
 
-    public ModifyBreakSpeedPower(){
+    public ModifyBreakSpeedPower() {
         this.p = p;
     }
 

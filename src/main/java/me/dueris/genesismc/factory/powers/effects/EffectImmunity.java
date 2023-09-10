@@ -4,10 +4,10 @@ import me.dueris.genesismc.entity.OriginPlayer;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.OriginContainer;
+import me.dueris.genesismc.utils.PowerContainer;
 import me.dueris.genesismc.utils.translation.LangConfig;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import java.util.ArrayList;
@@ -17,7 +17,7 @@ import static me.dueris.genesismc.factory.powers.effects.StackingStatusEffect.ge
 
 public class EffectImmunity extends CraftPower {
 
-    public EffectImmunity(){
+    public EffectImmunity() {
 
     }
 
@@ -26,24 +26,27 @@ public class EffectImmunity extends CraftPower {
         if (effect_immunity.contains(p)) {
             for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
                 ConditionExecutor conditionExecutor = new ConditionExecutor();
-                if (conditionExecutor.check("condition", "conditions", p, origin, getPowerFile(), p, null, null, null, p.getItemInHand(), null)) {
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
-                    if (!origin.getPowerFileFromType("origins:effect_immunity").getEffects().isEmpty()) {
-                        List<String> effectStrings = origin.getPowerFileFromType("origins:effect_immunity").getEffects();
-                        for (String effectString : effectStrings) {
-                            PotionEffectType effectType = getPotionEffectType(effectString);
-                            if (effectType != null) {
-                                if (p.hasPotionEffect(effectType)) {
-                                    p.removePotionEffect(effectType);
+                for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
+                    if (conditionExecutor.check("condition", "conditions", p, power, getPowerFile(), p, null, null, null, p.getItemInHand(), null)) {
+                        setActive(power.getTag(), true);
+                        if (!power.getEffects().isEmpty()) {
+                            List<String> effectStrings = power.getEffects();
+                            for (String effectString : effectStrings) {
+                                PotionEffectType effectType = getPotionEffectType(effectString);
+                                if (effectType != null) {
+                                    if (p.hasPotionEffect(effectType)) {
+                                        p.removePotionEffect(effectType);
+                                    }
                                 }
                             }
+                        } else {
+                            Bukkit.getLogger().warning(LangConfig.getLocalizedString(p, "powers.errors.effectImmunity"));
                         }
                     } else {
-                        Bukkit.getLogger().warning(LangConfig.getLocalizedString(p, "powers.errors.effectImmunity"));
+                        setActive(power.getTag(), false);
                     }
-                } else {
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                 }
+
             }
         }
     }

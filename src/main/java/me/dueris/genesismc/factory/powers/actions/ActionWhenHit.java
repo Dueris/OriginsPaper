@@ -17,7 +17,7 @@ import java.util.ArrayList;
 public class ActionWhenHit extends CraftPower implements Listener {
     Player p;
 
-    public ActionWhenHit(){
+    public ActionWhenHit() {
         this.p = p;
     }
 
@@ -35,7 +35,7 @@ public class ActionWhenHit extends CraftPower implements Listener {
         if (!getPowerArray().contains(target)) return;
 
         for (OriginContainer origin : OriginPlayer.getOrigin(player).values()) {
-            for(PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())){
+            for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
                 if (power == null) continue;
 
                 if (!getPowerArray().contains(target)) return;

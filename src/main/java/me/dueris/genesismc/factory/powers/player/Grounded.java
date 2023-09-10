@@ -4,7 +4,7 @@ import me.dueris.genesismc.entity.OriginPlayer;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.OriginContainer;
-import org.bukkit.Bukkit;
+import me.dueris.genesismc.utils.PowerContainer;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -26,7 +26,7 @@ public class Grounded extends CraftPower {
 
     Player p;
 
-    public Grounded(){
+    public Grounded() {
 
     }
 
@@ -38,29 +38,31 @@ public class Grounded extends CraftPower {
                 Location location = player.getLocation();
                 Location current_block_platform_pos = location.add(0, -1, 0);
                 ConditionExecutor conditionExecutor = new ConditionExecutor();
-                if (conditionExecutor.check("condition", "conditions", player, origin, "origins:grounded", player, null, null, null, player.getInventory().getItemInHand(), null)) {
-                    if (!getPowerArray().contains(player)) return;
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
-                    if (current_block_platform_pos.getBlock().getType().equals(Material.AIR)) {
-                        platform_pos.add(current_block_platform_pos);
-                        CraftPlayer craftPlayer = (CraftPlayer) player;
-                        craftPlayer.sendBlockChange(current_block_platform_pos, Material.BARRIER.createBlockData());
-                        if (player.isSneaking()) {
-                            craftPlayer.sendBlockChange(current_block_platform_pos, current_block_platform_pos.getBlock().getBlockData());
-                            if (!current_block_platform_pos.add(0, -1, 0).getBlock().isCollidable()) {
-                                craftPlayer.teleportAsync(current_block_platform_pos.add(0, -1, 0));
+                for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
+                    if (conditionExecutor.check("condition", "conditions", player, power, "origins:grounded", player, null, null, null, player.getInventory().getItemInHand(), null)) {
+                        if (!getPowerArray().contains(player)) return;
+                        setActive(power.getTag(), true);
+                        if (current_block_platform_pos.getBlock().getType().equals(Material.AIR)) {
+                            platform_pos.add(current_block_platform_pos);
+                            CraftPlayer craftPlayer = (CraftPlayer) player;
+                            craftPlayer.sendBlockChange(current_block_platform_pos, Material.BARRIER.createBlockData());
+                            if (player.isSneaking()) {
+                                craftPlayer.sendBlockChange(current_block_platform_pos, current_block_platform_pos.getBlock().getBlockData());
+                                if (!current_block_platform_pos.add(0, -1, 0).getBlock().isCollidable()) {
+                                    craftPlayer.teleportAsync(current_block_platform_pos.add(0, -1, 0));
+                                }
+                            }
+                        } else {
+                            for (Location thing : platform_pos) {
+                                Block block = thing.getBlock();
+                                CraftPlayer craftPlayer = (CraftPlayer) player;
+                                craftPlayer.sendBlockChange(thing, block.getBlockData());
                             }
                         }
                     } else {
-                        for (Location thing : platform_pos) {
-                            Block block = thing.getBlock();
-                            CraftPlayer craftPlayer = (CraftPlayer) player;
-                            craftPlayer.sendBlockChange(thing, block.getBlockData());
-                        }
+                        if (!getPowerArray().contains(player)) return;
+                        setActive(power.getTag(), false);
                     }
-                } else {
-                    if (!getPowerArray().contains(player)) return;
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                 }
             }
         }

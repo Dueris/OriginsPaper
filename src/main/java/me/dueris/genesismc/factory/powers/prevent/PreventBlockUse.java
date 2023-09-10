@@ -4,6 +4,7 @@ import me.dueris.genesismc.entity.OriginPlayer;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.OriginContainer;
+import me.dueris.genesismc.utils.PowerContainer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -32,7 +33,9 @@ public class PreventBlockUse extends CraftPower implements Listener {
             for (OriginContainer origin : OriginPlayer.getOrigin(e.getPlayer()).values()) {
                 ConditionExecutor conditionExecutor = new ConditionExecutor();
                 if (e.getClickedBlock() != null) e.setCancelled(true);
-                setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), conditionExecutor.check("block_condition", "block_conditions", e.getPlayer(), origin, "origins:prevent_block_used", e.getPlayer(), null, e.getClickedBlock(), null, e.getPlayer().getItemInHand(), null));
+                for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
+                    setActive(power.getTag(), conditionExecutor.check("block_condition", "block_conditions", e.getPlayer(), power, "origins:prevent_block_used", e.getPlayer(), null, e.getClickedBlock(), null, e.getPlayer().getItemInHand(), null));
+                }
             }
         }
     }
@@ -42,8 +45,10 @@ public class PreventBlockUse extends CraftPower implements Listener {
         if (prevent_block_use.contains(e.getPlayer())) {
             for (OriginContainer origin : OriginPlayer.getOrigin(e.getPlayer()).values()) {
                 ConditionExecutor conditionExecutor = new ConditionExecutor();
-                if (conditionExecutor.check("block_condition", "block_conditions", e.getPlayer(), origin, "origins:prevent_block_used", e.getPlayer(), null, e.getBlock(), null, e.getPlayer().getItemInHand(), null)) {
-                    e.setCancelled(true);
+                for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
+                    if (conditionExecutor.check("block_condition", "block_conditions", e.getPlayer(), power, "origins:prevent_block_used", e.getPlayer(), null, e.getBlock(), null, e.getPlayer().getItemInHand(), null)) {
+                        e.setCancelled(true);
+                    }
                 }
             }
         }
@@ -51,7 +56,7 @@ public class PreventBlockUse extends CraftPower implements Listener {
 
     Player p;
 
-    public PreventBlockUse(){
+    public PreventBlockUse() {
         this.p = p;
     }
 

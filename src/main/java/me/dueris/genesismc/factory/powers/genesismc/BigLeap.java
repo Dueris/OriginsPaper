@@ -5,6 +5,7 @@ import me.dueris.genesismc.entity.OriginPlayer;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.OriginContainer;
+import me.dueris.genesismc.utils.PowerContainer;
 import org.bukkit.ChatColor;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Sound;
@@ -55,110 +56,113 @@ public class BigLeap extends CraftPower implements Listener {
         if (getPowerArray().contains(e.getPlayer())) {
             e.getPlayer().sendMessage("test");
             for (OriginContainer origin : OriginPlayer.getOrigin(e.getPlayer()).values()) {
-                if (origin.getPowerFileFromType("genesis:leap") != null) {
-                    e.getPlayer().sendMessage("test123");
-                    Player p = e.getPlayer();
-                    ConditionExecutor executor = new ConditionExecutor();
-                    if (executor.check("condition", "conditions", p, origin, getPowerFile(), p, null, null, null, p.getItemInHand(), null)) {
-                        e.getPlayer().sendMessage("498sdlkfmcxv");
-                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
-                        for (HashMap<String, Object> modifier : origin.getPowerFileFromType("genesis:leap").getPossibleModifiers("modifier", "modifiers")) {
-                            int cooldownTicks = Integer.valueOf(modifier.get("cooldown").toString());
-                            int tickCharge = Integer.valueOf(modifier.get("tick_charge").toString());
-                            int toggleState = data.get(new NamespacedKey(GenesisMC.getPlugin(), "toggle"), PersistentDataType.INTEGER);
-                            if (p.isSneaking()) return;
-                            if (!p.isOnGround()) return;
-                            if (cooldownAfter.containsKey(p.getUniqueId())) return;
-                            if (toggleState == 2) return;
-                            e.getPlayer().sendMessage("dfghjkl");
+                for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
+                    if (power != null) {
+                        e.getPlayer().sendMessage("test123");
+                        Player p = e.getPlayer();
+                        ConditionExecutor executor = new ConditionExecutor();
+                        if (executor.check("condition", "conditions", p, power, getPowerFile(), p, null, null, null, p.getItemInHand(), null)) {
+                            e.getPlayer().sendMessage("498sdlkfmcxv");
+                            setActive(power.getTag(), true);
+                            for (HashMap<String, Object> modifier : power.getPossibleModifiers("modifier", "modifiers")) {
+                                int cooldownTicks = Integer.valueOf(modifier.get("cooldown").toString());
+                                int tickCharge = Integer.valueOf(modifier.get("tick_charge").toString());
+                                int toggleState = data.get(new NamespacedKey(GenesisMC.getPlugin(), "toggle"), PersistentDataType.INTEGER);
+                                if (p.isSneaking()) return;
+                                if (!p.isOnGround()) return;
+                                if (cooldownAfter.containsKey(p.getUniqueId())) return;
+                                if (toggleState == 2) return;
+                                e.getPlayer().sendMessage("dfghjkl");
 
-                            cooldownBefore.put(p.getUniqueId(), 0);
-                            playSound.put(p.getUniqueId(), Boolean.TRUE);
+                                cooldownBefore.put(p.getUniqueId(), 0);
+                                playSound.put(p.getUniqueId(), Boolean.TRUE);
 
-                            new BukkitRunnable() {
-                                @Override
-                                public void run() {
-                                    if (p.isSneaking()) {
-                                        e.getPlayer().sendMessage("27187812312312312312312312");
-                                        if (cooldownBefore.get(p.getUniqueId()) == tickCharge / 5) {
-                                            p.sendActionBar(ChatColor.RED + "|||");
-                                        } else if (cooldownBefore.get(p.getUniqueId()) == tickCharge * 2 / 5) {
-                                            p.sendActionBar(ChatColor.RED + "|||||");
-                                        } else if (cooldownBefore.get(p.getUniqueId()) == tickCharge * 3 / 5) {
-                                            p.sendActionBar(ChatColor.YELLOW + "|||||||");
-                                        } else if (cooldownBefore.get(p.getUniqueId()) == tickCharge * 4 / 5) {
-                                            p.sendActionBar(ChatColor.YELLOW + "|||||||||");
-                                        } else if (cooldownBefore.get(p.getUniqueId()) >= tickCharge) {
-                                            p.sendActionBar(ChatColor.GREEN + "|||||||||||");
-                                            cooldownBefore.replace(p.getUniqueId(), 9);
-                                            if (playSound.get(p.getUniqueId())) {
-                                                p.playSound(p.getLocation(), Sound.ENTITY_ARROW_HIT_PLAYER, 1, 2);
-                                                playSound.replace(p.getUniqueId(), Boolean.FALSE);
+                                new BukkitRunnable() {
+                                    @Override
+                                    public void run() {
+                                        if (p.isSneaking()) {
+                                            e.getPlayer().sendMessage("27187812312312312312312312");
+                                            if (cooldownBefore.get(p.getUniqueId()) == tickCharge / 5) {
+                                                p.sendActionBar(ChatColor.RED + "|||");
+                                            } else if (cooldownBefore.get(p.getUniqueId()) == tickCharge * 2 / 5) {
+                                                p.sendActionBar(ChatColor.RED + "|||||");
+                                            } else if (cooldownBefore.get(p.getUniqueId()) == tickCharge * 3 / 5) {
+                                                p.sendActionBar(ChatColor.YELLOW + "|||||||");
+                                            } else if (cooldownBefore.get(p.getUniqueId()) == tickCharge * 4 / 5) {
+                                                p.sendActionBar(ChatColor.YELLOW + "|||||||||");
+                                            } else if (cooldownBefore.get(p.getUniqueId()) >= tickCharge) {
+                                                p.sendActionBar(ChatColor.GREEN + "|||||||||||");
+                                                cooldownBefore.replace(p.getUniqueId(), 9);
+                                                if (playSound.get(p.getUniqueId())) {
+                                                    p.playSound(p.getLocation(), Sound.ENTITY_ARROW_HIT_PLAYER, 1, 2);
+                                                    playSound.replace(p.getUniqueId(), Boolean.FALSE);
+                                                }
+                                                e.getPlayer().sendMessage("0239845jkdsf");
                                             }
-                                            e.getPlayer().sendMessage("0239845jkdsf");
+                                            cooldownBefore.replace(p.getUniqueId(), cooldownBefore.get(p.getUniqueId()) + 1);
+                                        } else {
+                                            e.getPlayer().sendMessage("BOOOOOM");
+                                            cooldownAfter.put(p.getUniqueId(), System.currentTimeMillis());
+                                            inAir.add(p.getUniqueId());
+                                            p.setVelocity(p.getLocation().getDirection().multiply(1.5 + cooldownBefore.get(p.getUniqueId()) / 10));
+                                            cooldownBefore.remove(p.getUniqueId());
+                                            playSound.remove(p.getUniqueId());
+                                            new BukkitRunnable() {
+                                                @Override
+                                                public void run() {
+                                                    if (cooldownAfter.containsKey(p.getUniqueId())) {
+                                                        if (System.currentTimeMillis() - cooldownAfter.get(p.getUniqueId()) >= cooldownTicks / 5) {
+                                                            p.sendActionBar(ChatColor.RED + "|||||||||");
+                                                        }
+                                                        if (System.currentTimeMillis() - cooldownAfter.get(p.getUniqueId()) >= cooldownTicks * 2L / 5) {
+                                                            p.sendActionBar(ChatColor.RED + "|||||||");
+                                                        }
+                                                        if (System.currentTimeMillis() - cooldownAfter.get(p.getUniqueId()) >= cooldownTicks * 3L / 5) {
+                                                            p.sendActionBar(ChatColor.YELLOW + "|||||");
+                                                        }
+                                                        if (System.currentTimeMillis() - cooldownAfter.get(p.getUniqueId()) >= cooldownTicks * 4L / 5) {
+                                                            p.sendActionBar(ChatColor.YELLOW + "|||");
+                                                        }
+                                                        if (System.currentTimeMillis() - cooldownAfter.get(p.getUniqueId()) >= cooldownTicks) {
+                                                            cooldownAfter.remove(p.getUniqueId());
+                                                            p.sendActionBar(ChatColor.GREEN + "-");
+                                                            inAir.remove(p.getUniqueId());
+                                                            p.playSound(p.getLocation(), Sound.ENTITY_ARROW_HIT_PLAYER, 1, 2);
+                                                            e.getPlayer().sendMessage("80342jksdfs'fds");
+
+                                                        }
+                                                    } else {
+                                                        this.cancel();
+                                                    }
+                                                }
+                                            }.runTaskTimer(GenesisMC.getPlugin(), 0L, 10L);
+
+                                            new BukkitRunnable() {
+                                                @Override
+                                                public void run() {
+                                                    if (cooldownAfter.containsKey(p.getUniqueId())) {
+                                                        p.playSound(p.getLocation(), Sound.BLOCK_SCAFFOLDING_HIT, 1, 2);
+                                                    } else {
+                                                        this.cancel();
+                                                    }
+                                                }
+                                            }.runTaskTimer(GenesisMC.getPlugin(), 0L, 50L);
+                                            this.cancel();
                                         }
-                                        cooldownBefore.replace(p.getUniqueId(), cooldownBefore.get(p.getUniqueId()) + 1);
-                                    } else {
-                                        e.getPlayer().sendMessage("BOOOOOM");
-                                        cooldownAfter.put(p.getUniqueId(), System.currentTimeMillis());
-                                        inAir.add(p.getUniqueId());
-                                        p.setVelocity(p.getLocation().getDirection().multiply(1.5 + cooldownBefore.get(p.getUniqueId()) / 10));
-                                        cooldownBefore.remove(p.getUniqueId());
-                                        playSound.remove(p.getUniqueId());
-                                        new BukkitRunnable() {
-                                            @Override
-                                            public void run() {
-                                                if (cooldownAfter.containsKey(p.getUniqueId())) {
-                                                    if (System.currentTimeMillis() - cooldownAfter.get(p.getUniqueId()) >= cooldownTicks / 5) {
-                                                        p.sendActionBar(ChatColor.RED + "|||||||||");
-                                                    }
-                                                    if (System.currentTimeMillis() - cooldownAfter.get(p.getUniqueId()) >= cooldownTicks * 2L / 5) {
-                                                        p.sendActionBar(ChatColor.RED + "|||||||");
-                                                    }
-                                                    if (System.currentTimeMillis() - cooldownAfter.get(p.getUniqueId()) >= cooldownTicks * 3L / 5) {
-                                                        p.sendActionBar(ChatColor.YELLOW + "|||||");
-                                                    }
-                                                    if (System.currentTimeMillis() - cooldownAfter.get(p.getUniqueId()) >= cooldownTicks * 4L / 5) {
-                                                        p.sendActionBar(ChatColor.YELLOW + "|||");
-                                                    }
-                                                    if (System.currentTimeMillis() - cooldownAfter.get(p.getUniqueId()) >= cooldownTicks) {
-                                                        cooldownAfter.remove(p.getUniqueId());
-                                                        p.sendActionBar(ChatColor.GREEN + "-");
-                                                        inAir.remove(p.getUniqueId());
-                                                        p.playSound(p.getLocation(), Sound.ENTITY_ARROW_HIT_PLAYER, 1, 2);
-                                                        e.getPlayer().sendMessage("80342jksdfs'fds");
-
-                                                    }
-                                                } else {
-                                                    this.cancel();
-                                                }
-                                            }
-                                        }.runTaskTimer(GenesisMC.getPlugin(), 0L, 10L);
-
-                                        new BukkitRunnable() {
-                                            @Override
-                                            public void run() {
-                                                if (cooldownAfter.containsKey(p.getUniqueId())) {
-                                                    p.playSound(p.getLocation(), Sound.BLOCK_SCAFFOLDING_HIT, 1, 2);
-                                                } else {
-                                                    this.cancel();
-                                                }
-                                            }
-                                        }.runTaskTimer(GenesisMC.getPlugin(), 0L, 50L);
-                                        this.cancel();
                                     }
-                                }
-                            }.runTaskTimer(GenesisMC.getPlugin(), 0L, 2L);
+                                }.runTaskTimer(GenesisMC.getPlugin(), 0L, 2L);
+                            }
+                        } else {
+                            if (power == null) {
+                                getPowerArray().remove(p);
+                                return;
+                            }
+                            if (!getPowerArray().contains(p)) return;
+                            setActive(power.getTag(), false);
                         }
-                    } else {
-                        if (origin.getPowerFileFromType(getPowerFile()) == null) {
-                            getPowerArray().remove(p);
-                            return;
-                        }
-                        if (!getPowerArray().contains(p)) return;
-                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                     }
                 }
+
             }
         }
     }
@@ -183,7 +187,7 @@ public class BigLeap extends CraftPower implements Listener {
 
     Player p;
 
-    public BigLeap(){
+    public BigLeap() {
         this.p = p;
     }
 

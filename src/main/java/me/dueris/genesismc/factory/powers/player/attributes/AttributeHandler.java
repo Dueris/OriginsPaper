@@ -4,7 +4,6 @@ import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.entity.OriginPlayer;
 import me.dueris.genesismc.events.AttributeExecuteEvent;
 import me.dueris.genesismc.events.OriginChangeEvent;
-import me.dueris.genesismc.events.PowerAssignEvent;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.OriginContainer;
 import me.dueris.genesismc.utils.PowerContainer;
@@ -154,64 +153,61 @@ public class AttributeHandler extends CraftPower implements Listener {
             @Override
             public void run() {
                 if (attribute.contains(p)) {
-                    p.sendMessage("1");
-
                     for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
-                        PowerContainer power = origin.getPowerFileFromType("origins:attribute");
-                        if (power == null) continue;
+                        for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
+                            if (power == null) continue;
 
-                        for (HashMap<String, Object> modifier : power.getPossibleModifiers("modifier", "modifiers")) {
-                            if (modifier.get("attribute").toString().equalsIgnoreCase("reach-entity-attributes:reach")) {
-                                extra_reach.add(p);
-                                return;
-                            } else if (modifier.get("attribute").toString().equalsIgnoreCase("reach-entity-attributes:attack_range")) {
-                                extra_reach_attack.add(p);
-                                return;
-                            } else {
-                                Reach.setFinalReach(p, Reach.getDefaultReach(p));
-                            }
-
-                            try {
-                                p.sendMessage("2");
-                                Attribute attribute_modifier = Attribute.valueOf(modifier.get("attribute").toString().split(":")[1].replace(".", "_").toUpperCase());
-
-                                Object valueObj = modifier.get("value");
-
-                                if (valueObj instanceof Number) {
-                                    double value;
-                                    if (valueObj instanceof Integer) {
-                                        value = ((Number) valueObj).intValue();
-                                    } else if (valueObj instanceof Double) {
-                                        value = ((Number) valueObj).doubleValue();
-                                    } else if (valueObj instanceof Float) {
-                                        value = ((Number) valueObj).floatValue();
-                                    } else if (valueObj instanceof Long) {
-                                        value = ((Number) valueObj).longValue();
-                                    } else {
-                                        Objects.requireNonNull(valueObj);
-                                        continue;
-                                    }
-
-                                    double base_value = p.getAttribute(attribute_modifier).getBaseValue();
-                                    String operation = String.valueOf(modifier.get("operation"));
-                                    p.sendMessage("3");
-                                    executeAttributeModify(operation, attribute_modifier, base_value, p, value);
-                                    AttributeExecuteEvent attributeExecuteEvent = new AttributeExecuteEvent(p, attribute_modifier, power.toString(), origin);
-                                    Bukkit.getServer().getPluginManager().callEvent(attributeExecuteEvent);
-                                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
-                                    p.sendHealthUpdate();
+                            for (HashMap<String, Object> modifier : power.getPossibleModifiers("modifier", "modifiers")) {
+                                if (modifier.get("attribute").toString().equalsIgnoreCase("reach-entity-attributes:reach")) {
+                                    extra_reach.add(p);
+                                    return;
+                                } else if (modifier.get("attribute").toString().equalsIgnoreCase("reach-entity-attributes:attack_range")) {
+                                    extra_reach_attack.add(p);
+                                    return;
+                                } else {
+                                    Reach.setFinalReach(p, Reach.getDefaultReach(p));
                                 }
-                            } catch (Exception ev) {
-                                ev.printStackTrace();
+
+                                try {
+                                    Attribute attribute_modifier = Attribute.valueOf(modifier.get("attribute").toString().split(":")[1].replace(".", "_").toUpperCase());
+
+                                    Object valueObj = modifier.get("value");
+
+                                    if (valueObj instanceof Number) {
+                                        double value;
+                                        if (valueObj instanceof Integer) {
+                                            value = ((Number) valueObj).intValue();
+                                        } else if (valueObj instanceof Double) {
+                                            value = ((Number) valueObj).doubleValue();
+                                        } else if (valueObj instanceof Float) {
+                                            value = ((Number) valueObj).floatValue();
+                                        } else if (valueObj instanceof Long) {
+                                            value = ((Number) valueObj).longValue();
+                                        } else {
+                                            Objects.requireNonNull(valueObj);
+                                            continue;
+                                        }
+
+                                        double base_value = p.getAttribute(attribute_modifier).getBaseValue();
+                                        String operation = String.valueOf(modifier.get("operation"));
+                                        executeAttributeModify(operation, attribute_modifier, base_value, p, value);
+                                        AttributeExecuteEvent attributeExecuteEvent = new AttributeExecuteEvent(p, attribute_modifier, power.toString(), origin);
+                                        Bukkit.getServer().getPluginManager().callEvent(attributeExecuteEvent);
+                                        setActive(power.getTag(), true);
+                                        p.sendHealthUpdate();
+                                    }
+                                } catch (Exception ev) {
+                                    ev.printStackTrace();
+                                }
                             }
                         }
                     }
                 }
             }
-        }.runTaskLater(GenesisMC.getPlugin(), 20l);
+        }.runTaskLater(GenesisMC.getPlugin(), 20L);
     }
 
-    public AttributeHandler(){
+    public AttributeHandler() {
 
     }
 
@@ -275,65 +271,67 @@ public class AttributeHandler extends CraftPower implements Listener {
             if (extra_reach_attack.contains(e.getPlayer())) {
                 for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
 
-                    PowerContainer power = origin.getPowerFileFromType("origins:attribute");
-                    for (HashMap<String, Object> modifier : power.getPossibleModifiers("modifier", "modifiers")) {
-                        if (!e.getAction().isLeftClick()) return;
-                        String operation = String.valueOf(modifier.get("operation"));
+                    for (PowerContainer power : origin.getMultiPowerFileFromType("origins:attribute")) {
+                        for (HashMap<String, Object> modifier : power.getPossibleModifiers("modifier", "modifiers")) {
+                            if (!e.getAction().isLeftClick()) return;
+                            String operation = String.valueOf(modifier.get("operation"));
 
-                        BinaryOperator mathOperator = getOperationMappingsDouble().get(operation);
+                            BinaryOperator mathOperator = getOperationMappingsDouble().get(operation);
 
-                        Object valueObj = modifier.get("value");
+                            Object valueObj = modifier.get("value");
 
-                        double base = getDefaultReach(p);
+                            double base = getDefaultReach(p);
 
-                        if (valueObj instanceof Number) {
-                            double value;
-                            if (valueObj instanceof Integer) {
-                                value = ((Number) valueObj).intValue();
-                            } else if (valueObj instanceof Double) {
-                                value = ((Number) valueObj).doubleValue();
-                            } else if (valueObj instanceof Float) {
-                                value = ((Number) valueObj).floatValue();
-                            } else if (valueObj instanceof Long) {
-                                value = ((Number) valueObj).longValue();
-                            } else {
-                                Objects.requireNonNull(valueObj);
-                                continue;
-                            }
-
-                            if (mathOperator != null) {
-                                double result = (double) mathOperator.apply(base, value);
-                                setFinalReach(p, result);
-                            } else {
-                                Bukkit.getLogger().warning(LangConfig.getLocalizedString(p, "powers.errors.attribute"));
-                            }
-
-                            Location eyeloc = p.getEyeLocation();
-                            Predicate<Entity> filter = (entity) -> !entity.equals(p);
-
-                            RayTraceResult traceResult4_5F = p.getWorld().rayTrace(eyeloc, eyeloc.getDirection(), getFinalReach(p), FluidCollisionMode.NEVER, false, 0, filter);
-
-                            if (traceResult4_5F != null) {
-                                Entity entity = traceResult4_5F.getHitEntity();
-                                //entity code -- pvp
-                                if (entity == null) return;
-                                Player attacker = p;
-                                if (entity.isDead() || !(entity instanceof LivingEntity)) return;
-                                if (entity.isInvulnerable()) return;
-                                LivingEntity victim = (LivingEntity) traceResult4_5F.getHitEntity();
-                                if (attacker.getLocation().distance(victim.getLocation()) <= getFinalReach(p)) {
-                                    if (entity.getPassengers().contains(p)) return;
-                                    if (!entity.isDead()) {
-                                        LivingEntity ent = (LivingEntity) entity;
-                                        p.attack(ent);
-                                    }
+                            if (valueObj instanceof Number) {
+                                double value;
+                                if (valueObj instanceof Integer) {
+                                    value = ((Number) valueObj).intValue();
+                                } else if (valueObj instanceof Double) {
+                                    value = ((Number) valueObj).doubleValue();
+                                } else if (valueObj instanceof Float) {
+                                    value = ((Number) valueObj).floatValue();
+                                } else if (valueObj instanceof Long) {
+                                    value = ((Number) valueObj).longValue();
                                 } else {
-                                    e.setCancelled(true);
+                                    Objects.requireNonNull(valueObj);
+                                    continue;
                                 }
-                            }
 
+                                if (mathOperator != null) {
+                                    double result = (double) mathOperator.apply(base, value);
+                                    setFinalReach(p, result);
+                                } else {
+                                    Bukkit.getLogger().warning(LangConfig.getLocalizedString(p, "powers.errors.attribute"));
+                                }
+
+                                Location eyeloc = p.getEyeLocation();
+                                Predicate<Entity> filter = (entity) -> !entity.equals(p);
+
+                                RayTraceResult traceResult4_5F = p.getWorld().rayTrace(eyeloc, eyeloc.getDirection(), getFinalReach(p), FluidCollisionMode.NEVER, false, 0, filter);
+
+                                if (traceResult4_5F != null) {
+                                    Entity entity = traceResult4_5F.getHitEntity();
+                                    //entity code -- pvp
+                                    if (entity == null) return;
+                                    Player attacker = p;
+                                    if (entity.isDead() || !(entity instanceof LivingEntity)) return;
+                                    if (entity.isInvulnerable()) return;
+                                    LivingEntity victim = (LivingEntity) traceResult4_5F.getHitEntity();
+                                    if (attacker.getLocation().distance(victim.getLocation()) <= getFinalReach(p)) {
+                                        if (entity.getPassengers().contains(p)) return;
+                                        if (!entity.isDead()) {
+                                            LivingEntity ent = (LivingEntity) entity;
+                                            p.attack(ent);
+                                        }
+                                    } else {
+                                        e.setCancelled(true);
+                                    }
+                                }
+
+                            }
                         }
                     }
+
                 }
             }
         }

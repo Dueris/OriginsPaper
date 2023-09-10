@@ -1,16 +1,11 @@
 package me.dueris.genesismc.events;
 
-import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.factory.powers.Power;
 import me.dueris.genesismc.utils.OriginContainer;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
-import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerEvent;
 import org.jetbrains.annotations.NotNull;
-import org.spigotmc.ActivationRange;
 
 import java.util.ArrayList;
 

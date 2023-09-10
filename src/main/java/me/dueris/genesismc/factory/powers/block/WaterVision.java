@@ -1,7 +1,6 @@
 package me.dueris.genesismc.factory.powers.block;
 
 import me.dueris.genesismc.factory.powers.CraftPower;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -23,7 +22,7 @@ public class WaterVision extends CraftPower {
 
     Player p;
 
-    public WaterVision(){
+    public WaterVision() {
         this.p = p;
     }
 

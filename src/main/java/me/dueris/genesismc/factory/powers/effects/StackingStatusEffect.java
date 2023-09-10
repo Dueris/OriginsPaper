@@ -4,6 +4,7 @@ import me.dueris.genesismc.entity.OriginPlayer;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.OriginContainer;
+import me.dueris.genesismc.utils.PowerContainer;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
@@ -84,7 +85,7 @@ public class StackingStatusEffect extends CraftPower {
 
     Player p;
 
-    public StackingStatusEffect(){
+    public StackingStatusEffect() {
         this.p = p;
     }
 
@@ -93,24 +94,26 @@ public class StackingStatusEffect extends CraftPower {
         if (getPowerArray().contains(p)) {
             for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
                 ConditionExecutor executor = new ConditionExecutor();
-                if (executor.check("condition", "conditions", p, origin, getPowerFile(), p, null, null, null, p.getItemInHand(), null)) {
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
-                    applyStackingEffect(p, calculateStacks(p, 10, origin), origin);
-                } else {
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
+                for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
+                    if (executor.check("condition", "conditions", p, power, getPowerFile(), p, null, null, null, p.getItemInHand(), null)) {
+                        setActive(power.getTag(), true);
+                        applyStackingEffect(p, calculateStacks(p, 10, origin, power), origin, power);
+                    } else {
+                        setActive(power.getTag(), false);
+                    }
                 }
             }
         }
     }
 
-    private int calculateStacks(Player player, int durationPerStack, OriginContainer origin) {
+    private int calculateStacks(Player player, int durationPerStack, OriginContainer origin, PowerContainer power) {
         double healthPercentage = player.getHealth() / player.getMaxHealth();
         double saturationPercentage = player.getSaturation() / 20.0;
 
         double combinedPercentage = (healthPercentage + saturationPercentage) / 2.0;
 
-        int minStacks = Integer.parseInt(origin.getPowerFileFromType(getPowerFile()).get("min_stacks"));
-        int maxStacks = Integer.parseInt(origin.getPowerFileFromType(getPowerFile()).get("max_stacks"));
+        int minStacks = Integer.parseInt(power.get("min_stacks"));
+        int maxStacks = Integer.parseInt(power.get("max_stacks"));
         int calculatedStacks = (int) Math.round(combinedPercentage * (maxStacks - minStacks) + minStacks);
 
         int actualDuration = calculatedStacks * durationPerStack;
@@ -118,9 +121,9 @@ public class StackingStatusEffect extends CraftPower {
         return actualDuration;
     }
 
-    private void applyStackingEffect(Player player, int stacks, OriginContainer origin) {
+    private void applyStackingEffect(Player player, int stacks, OriginContainer origin, PowerContainer power) {
 
-        for (HashMap<String, Object> effect : origin.getPowerFileFromType(getPowerFile()).getSingularAndPlural("effect", "effects")) {
+        for (HashMap<String, Object> effect : power.getSingularAndPlural("effect", "effects")) {
 
             PotionEffectType potionEffectType = getPotionEffectType(effect.get("effect").toString());
             if (potionEffectType != null) {

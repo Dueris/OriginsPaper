@@ -3,22 +3,20 @@ package me.dueris.genesismc.factory.powers.value_modifying;
 import me.dueris.genesismc.entity.OriginPlayer;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.factory.powers.player.attributes.AttributeHandler;
 import me.dueris.genesismc.utils.OriginContainer;
+import me.dueris.genesismc.utils.PowerContainer;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
 
-import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BinaryOperator;
 
 import static me.dueris.genesismc.factory.powers.player.attributes.AttributeHandler.getOperationMappingsDouble;
-import static me.dueris.genesismc.factory.powers.player.attributes.AttributeHandler.getOperationMappingsFloat;
 import static me.dueris.genesismc.factory.powers.value_modifying.ValueModifyingSuperClass.modify_food;
 
 public class ModifyFoodPower extends CraftPower implements Listener {
@@ -149,53 +147,41 @@ public class ModifyFoodPower extends CraftPower implements Listener {
         for (OriginContainer origin : OriginPlayer.getOrigin(player).values()) {
             if (modify_food.contains(player)) {
                 ConditionExecutor conditionExecutor = new ConditionExecutor();
-                if (conditionExecutor.check("item_condition", "item_condition", player, origin, "origins:modify_food", player, null, player.getLocation().getBlock(), null, player.getInventory().getItemInHand(), null)) {
-                    if (modify_food.contains(player)) {
-                        if (!origin.getPowerFileFromType("origins:modify_food").getJsonHashMap("food_modifier").isEmpty()) {
-                            if(origin.getPowerFileFromType("origins:modify_food").getJsonHashMap("food_modifier").containsKey("value")){
-                                int value = Integer.parseInt(origin.getPowerFileFromType("origins:modify_food").getJsonHashMap("food_modifier").get("value").toString());
-                                String operation = origin.getPowerFileFromType("origins:modify_food").getJsonHashMap("food_modifier").get("operation").toString();
-                                BinaryOperator mathOperator = getOperationMappingsDouble().get(operation);
-                                if(mathOperator != null){
-                                    double finalValue = (double) mathOperator.apply(getFoodModifier(e.getItem().getType()), (double) value);
-                                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
+                for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
+                    if (conditionExecutor.check("item_condition", "item_condition", player, power, "origins:modify_food", player, null, player.getLocation().getBlock(), null, player.getInventory().getItemInHand(), null)) {
+                        if (modify_food.contains(player)) {
+                            if (!power.getJsonHashMap("food_modifier").isEmpty()) {
+                                if (power.getJsonHashMap("food_modifier").containsKey("value")) {
+                                    int value = Integer.parseInt(power.getJsonHashMap("food_modifier").get("value").toString());
+                                    String operation = power.getJsonHashMap("food_modifier").get("operation").toString();
+                                    BinaryOperator mathOperator = getOperationMappingsDouble().get(operation);
+                                    if (mathOperator != null) {
+                                        double finalValue = (double) mathOperator.apply(getFoodModifier(e.getItem().getType()), (double) value);
+                                        setActive(power.getTag(), true);
+                                    }
+                                }
+                            }
+                            if (!power.getJsonHashMap("saturation_modifier").isEmpty()) {
+                                if (power.getJsonHashMap("saturation_modifier").containsKey("value")) {
+                                    int value = Integer.parseInt(power.getJsonHashMap("saturation_modifier").get("value").toString());
+                                    String operation = power.getJsonHashMap("saturation_modifier").get("operation").toString();
+                                    BinaryOperator mathOperator = getOperationMappingsDouble().get(operation);
+                                    if (mathOperator != null) {
+                                        double finalValue = (double) mathOperator.apply(getSaturationModifier(e.getItem().getType()), (double) value);
+                                        setActive(power.getTag(), true);
+                                    }
                                 }
                             }
                         }
-                        if (!origin.getPowerFileFromType("origins:modify_food").getJsonHashMap("saturation_modifier").isEmpty()) {
-                            if(origin.getPowerFileFromType("origins:modify_food").getJsonHashMap("saturation_modifier").containsKey("value")){
-                                int value = Integer.parseInt(origin.getPowerFileFromType("origins:modify_food").getJsonHashMap("saturation_modifier").get("value").toString());
-                                String operation = origin.getPowerFileFromType("origins:modify_food").getJsonHashMap("saturation_modifier").get("operation").toString();
-                                BinaryOperator mathOperator = getOperationMappingsDouble().get(operation);
-                                if(mathOperator != null){
-                                    double finalValue = (double) mathOperator.apply(getSaturationModifier(e.getItem().getType()), (double) value);
-                                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
-                                }
-                            }
-                        }
+                    } else {
+                        setActive(power.getTag(), false);
                     }
-                } else {
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                 }
             }
         }
     }
 
-    private Map.Entry<Double, Double> getModifiers(Player player, OriginContainer origin) {
-        for (HashMap<String, Object> modifier : origin.getPowerFileFromType("origins:modify_food").getPossibleModifiers("modifier", "modifiers")) {
-            float value = Float.valueOf(modifier.get("value").toString());
-            String operation = modifier.get("operation").toString();
-            BinaryOperator<Float> mathOperator = getOperationMappingsFloat().get(operation);
-
-            double foodModifier = mathOperator != null ? mathOperator.apply(Float.valueOf(player.getFoodLevel()), value) : player.getFoodLevel();
-            double saturationModifier = mathOperator != null ? mathOperator.apply(player.getSaturation(), value) : player.getSaturation();
-
-            return new AbstractMap.SimpleEntry<>(foodModifier, saturationModifier);
-        }
-        return null;
-    }
-
-    public ModifyFoodPower(){
+    public ModifyFoodPower() {
     }
 
     @Override

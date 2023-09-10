@@ -8,7 +8,6 @@ import me.dueris.genesismc.events.OriginChangeEvent;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.OriginContainer;
 import me.dueris.genesismc.utils.PowerContainer;
-import net.minecraft.core.particles.DustColorTransitionOptions;
 import org.bukkit.*;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -24,7 +23,6 @@ import java.util.*;
 import java.util.function.Predicate;
 
 import static me.dueris.genesismc.FoliaOriginScheduler.OriginSchedulerTree.mimic_warden;
-import static org.bukkit.Bukkit.getServer;
 
 public class MimicWarden extends CraftPower implements OriginSimple, Listener {
 
@@ -59,7 +57,7 @@ public class MimicWarden extends CraftPower implements OriginSimple, Listener {
 
         if (hasMimicWardenPower && !mimicWardenPlayers.contains(e.getPlayer())) {
             mimicWardenPlayers.add(e.getPlayer());
-        } else if (!hasMimicWardenPower && mimicWardenPlayers.contains(e.getPlayer())) {
+        } else if (!hasMimicWardenPower) {
             mimicWardenPlayers.remove(e.getPlayer());
         }
     }
@@ -79,7 +77,7 @@ public class MimicWarden extends CraftPower implements OriginSimple, Listener {
 
         if (hasMimicWardenPower && !mimicWardenPlayers.contains(e.getPlayer())) {
             mimicWardenPlayers.add(e.getPlayer());
-        } else if (!hasMimicWardenPower && mimicWardenPlayers.contains(e.getPlayer())) {
+        } else if (!hasMimicWardenPower) {
             mimicWardenPlayers.remove(e.getPlayer());
         }
     }
@@ -93,8 +91,8 @@ public class MimicWarden extends CraftPower implements OriginSimple, Listener {
     public void key(KeybindTriggerEvent e) {
         Player p = e.getPlayer();
         if (mimicWardenPlayers.contains(p)) {
-            for(OriginContainer origin : OriginPlayer.getOrigin(p).values()){
-                if(CooldownStuff.isPlayerInCooldown(p, "key.origins.primary_active")) return;
+            for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
+                if (CooldownStuff.isPlayerInCooldown(p, "key.origins.primary_active")) return;
                 if (e.getKey().equals("key.origins.primary_active")) {
                     Location eyeLoc = p.getEyeLocation();
 
@@ -118,8 +116,7 @@ public class MimicWarden extends CraftPower implements OriginSimple, Listener {
 
                             double damageRadius = 10.0;
                             for (Entity nearbyEntity : p.getNearbyEntities(damageRadius, damageRadius, damageRadius)) {
-                                if (nearbyEntity instanceof LivingEntity && !nearbyEntity.equals(p)) {
-                                    LivingEntity nearbyLivingEntity = (LivingEntity) nearbyEntity;
+                                if (nearbyEntity instanceof LivingEntity nearbyLivingEntity && !nearbyEntity.equals(p)) {
                                     nearbyLivingEntity.damage(14.0, attacker);
                                 }
                             }
@@ -134,7 +131,8 @@ public class MimicWarden extends CraftPower implements OriginSimple, Listener {
 
                             int taskId = new BukkitRunnable() {
                                 int particleCounter = 1;
-                                Location origin = startLocation.clone();
+                                final Location origin = startLocation.clone();
+
                                 @Override
                                 public void run() {
                                     double time = particleCounter / 14.0;
@@ -171,7 +169,7 @@ public class MimicWarden extends CraftPower implements OriginSimple, Listener {
 
                         }
                     }
-            }
+                }
 
             }
         }

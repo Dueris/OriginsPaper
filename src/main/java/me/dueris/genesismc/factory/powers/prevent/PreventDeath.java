@@ -4,6 +4,7 @@ import me.dueris.genesismc.entity.OriginPlayer;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.OriginContainer;
+import me.dueris.genesismc.utils.PowerContainer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -30,13 +31,15 @@ public class PreventDeath extends CraftPower implements Listener {
         if (prevent_death.contains(e.getPlayer())) {
             for (OriginContainer origin : OriginPlayer.getOrigin(e.getPlayer()).values()) {
                 ConditionExecutor conditionExecutor = new ConditionExecutor();
-                if (conditionExecutor.check("damage_condition", "damage_conditions", e.getPlayer(), origin, "origins:prevent_death", e.getPlayer(), null, null, null, e.getPlayer().getItemInHand(), e.getPlayer().getLastDamageCause())) {
-                    e.setCancelled(true);
-                    if (!getPowerArray().contains(e.getPlayer())) return;
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
-                } else {
-                    if (!getPowerArray().contains(e.getPlayer())) return;
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
+                for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
+                    if (conditionExecutor.check("damage_condition", "damage_conditions", e.getPlayer(), power, "origins:prevent_death", e.getPlayer(), null, null, null, e.getPlayer().getItemInHand(), e.getPlayer().getLastDamageCause())) {
+                        e.setCancelled(true);
+                        if (!getPowerArray().contains(e.getPlayer())) return;
+                        setActive(power.getTag(), true);
+                    } else {
+                        if (!getPowerArray().contains(e.getPlayer())) return;
+                        setActive(power.getTag(), false);
+                    }
                 }
             }
         }
@@ -44,7 +47,7 @@ public class PreventDeath extends CraftPower implements Listener {
 
     Player p;
 
-    public PreventDeath(){
+    public PreventDeath() {
         this.p = p;
     }
 

@@ -17,7 +17,7 @@ import java.util.ArrayList;
 public class SelfActionOnKill extends CraftPower implements Listener {
     Player p;
 
-    public SelfActionOnKill(){
+    public SelfActionOnKill() {
         this.p = p;
     }
 
@@ -36,8 +36,8 @@ public class SelfActionOnKill extends CraftPower implements Listener {
         for (OriginContainer origin : OriginPlayer.getOrigin(player).values()) {
             ConditionExecutor executor = new ConditionExecutor();
             if (CooldownStuff.isPlayerInCooldown((Player) target, "key.attack")) return;
-            for(PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())){
-                if (executor.check("condition", "conditions", (Player) target, origin, getPowerFile(), target, null, null, null, player.getInventory().getItemInHand(), null)) {
+            for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
+                if (executor.check("condition", "conditions", (Player) target, power, getPowerFile(), target, null, null, null, player.getInventory().getItemInHand(), null)) {
                     if (!getPowerArray().contains(target)) return;
                     setActive(power.getTag(), true);
                     ActionTypes.EntityActionType(target, power.getEntityAction());

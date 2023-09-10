@@ -6,7 +6,7 @@ import me.dueris.genesismc.entity.OriginPlayer;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.OriginContainer;
-import org.bukkit.Bukkit;
+import me.dueris.genesismc.utils.PowerContainer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -29,7 +29,7 @@ public class Gravity extends CraftPower implements Listener {
 
     Player p;
 
-    public Gravity(){
+    public Gravity() {
         this.p = p;
     }
 
@@ -38,16 +38,18 @@ public class Gravity extends CraftPower implements Listener {
         for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
             if (no_gravity.contains(p)) {
                 ConditionExecutor executor = new ConditionExecutor();
-                if (executor.check("condition", "conditions", p, origin, getPowerFile(), p, null, null, null, p.getItemInHand(), null)) {
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
-                    if (no_gravity.contains(p)) {
-                        p.setGravity(false);
-                        p.setFallDistance(0.1f);
+                for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
+                    if (executor.check("condition", "conditions", p, power, getPowerFile(), p, null, null, null, p.getItemInHand(), null)) {
+                        setActive(power.getTag(), true);
+                        if (no_gravity.contains(p)) {
+                            p.setGravity(false);
+                            p.setFallDistance(0.1f);
+                        } else {
+                            p.setGravity(true);
+                        }
                     } else {
-                        p.setGravity(true);
+                        setActive(power.getTag(), false);
                     }
-                } else {
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                 }
             } else {
                 p.setGravity(true);

@@ -18,7 +18,7 @@ import static me.dueris.genesismc.KeybindHandler.isKeyBeingPressed;
 public class ActiveSelf extends CraftPower implements Listener {
     Player p;
 
-    public ActiveSelf(){
+    public ActiveSelf() {
         this.p = p;
     }
 
@@ -32,9 +32,9 @@ public class ActiveSelf extends CraftPower implements Listener {
         for (OriginContainer origin : OriginPlayer.getOrigin(e.getPlayer()).values()) {
             if (getPowerArray().contains(e.getPlayer())) {
                 ConditionExecutor executor = new ConditionExecutor();
-                for(PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
+                for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
                     if (CooldownStuff.isPlayerInCooldown(e.getPlayer(), e.getKey())) return;
-                    if (executor.check("condition", "conditions", e.getPlayer(), origin, getPowerFile(), e.getPlayer(), null, null, null, null, null)) {
+                    if (executor.check("condition", "conditions", e.getPlayer(), power, getPowerFile(), e.getPlayer(), null, null, null, null, null)) {
                         if (!getPowerArray().contains(e.getPlayer())) return;
                         setActive(power.getTag(), true);
                         if (isKeyBeingPressed(e.getPlayer(), power.getKey().get("key").toString(), true)) {

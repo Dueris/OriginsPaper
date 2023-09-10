@@ -4,6 +4,7 @@ import me.dueris.genesismc.entity.OriginPlayer;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.OriginContainer;
+import me.dueris.genesismc.utils.PowerContainer;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
@@ -36,18 +37,18 @@ public class WaterBreathe extends CraftPower {
 
     Player p;
 
-    public WaterBreathe(){
+    public WaterBreathe() {
         this.p = p;
     }
 
     @Override
     public void run(Player p) {
-            if(!getPowerArray().contains(p)) return;
-            for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
-                ConditionExecutor conditionExecutor = new ConditionExecutor();
-                if (conditionExecutor.check("condition", "conditions", p, origin, getPowerFile(), p, null, null, null, p.getItemInHand(), null)) {
-
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
+        if (!getPowerArray().contains(p)) return;
+        for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
+            ConditionExecutor conditionExecutor = new ConditionExecutor();
+            for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
+                if (conditionExecutor.check("condition", "conditions", p, power, getPowerFile(), p, null, null, null, p.getItemInHand(), null)) {
+                    setActive(power.getTag(), true);
                     if (water_breathing.contains(p)) {
                         if (isInBreathableWater(p)) {
                             if (p.getRemainingAir() < 290) {
@@ -76,9 +77,11 @@ public class WaterBreathe extends CraftPower {
                         }
                     }
                 } else {
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
+                    setActive(power.getTag(), false);
                 }
             }
+
+        }
     }
 
     @Override
@@ -92,8 +95,8 @@ public class WaterBreathe extends CraftPower {
     }
 
     public void run() {
-        for(Player p : Bukkit.getOnlinePlayers()){
-            if(outofAIR.contains(p)){
+        for (Player p : Bukkit.getOnlinePlayers()) {
+            if (outofAIR.contains(p)) {
                 int remainingAir = p.getRemainingAir();
                 if (remainingAir <= 5) {
                     p.damage(2);

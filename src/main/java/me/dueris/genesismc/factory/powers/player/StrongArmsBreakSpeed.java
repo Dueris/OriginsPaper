@@ -4,6 +4,7 @@ import me.dueris.genesismc.entity.OriginPlayer;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.OriginContainer;
+import me.dueris.genesismc.utils.PowerContainer;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -47,33 +48,35 @@ public class StrongArmsBreakSpeed extends CraftPower implements Listener {
         Player p = e.getPlayer();
         if (!strong_arms_break_speed.contains(p)) return;
         for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
-            ConditionExecutor executor = new ConditionExecutor();
-            if (executor.check("condition", "conditions", p, origin, getPowerFile(), p, null, e.getClickedBlock(), null, p.getItemInHand(), null)) {
-                if (origin.getPowerFileFromType(getPowerFile()) == null) {
-                    getPowerArray().remove(p);
-                    return;
+            for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
+                ConditionExecutor executor = new ConditionExecutor();
+                if (executor.check("condition", "conditions", p, power, getPowerFile(), p, null, e.getClickedBlock(), null, p.getItemInHand(), null)) {
+                    if (power == null) {
+                        getPowerArray().remove(p);
+                        return;
+                    }
+                    if (!getPowerArray().contains(p)) return;
+                    setActive(power.getTag(), true);
+                    if (e.getClickedBlock() != null && stones.contains(e.getClickedBlock().getType()) && e.getAction().isLeftClick() && !tools.contains(p.getEquipment().getItemInMainHand().getType())) {
+                        e.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.FAST_DIGGING, 60, 15, false, false, false));
+                    } else if (p.getEquipment().getItemInMainHand().getType() == AIR) { //beacons exist
+                        e.getPlayer().removePotionEffect(PotionEffectType.FAST_DIGGING);
+                    }
+                } else {
+                    if (power == null) {
+                        getPowerArray().remove(p);
+                        return;
+                    }
+                    if (!getPowerArray().contains(p)) return;
+                    setActive(power.getTag(), false);
                 }
-                if (!getPowerArray().contains(p)) return;
-                setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
-                if (e.getClickedBlock() != null && stones.contains(e.getClickedBlock().getType()) && e.getAction().isLeftClick() && !tools.contains(p.getEquipment().getItemInMainHand().getType())) {
-                    e.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.FAST_DIGGING, 60, 15, false, false, false));
-                } else if (p.getEquipment().getItemInMainHand().getType() == AIR) { //beacons exist
-                    e.getPlayer().removePotionEffect(PotionEffectType.FAST_DIGGING);
-                }
-            } else {
-                if (origin.getPowerFileFromType(getPowerFile()) == null) {
-                    getPowerArray().remove(p);
-                    return;
-                }
-                if (!getPowerArray().contains(p)) return;
-                setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
             }
         }
     }
 
     Player p;
 
-    public StrongArmsBreakSpeed(){
+    public StrongArmsBreakSpeed() {
         this.p = p;
     }
 

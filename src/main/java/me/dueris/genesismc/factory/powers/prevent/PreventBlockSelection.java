@@ -1,9 +1,6 @@
 package me.dueris.genesismc.factory.powers.prevent;
 
-import me.dueris.genesismc.entity.OriginPlayer;
-import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.utils.OriginContainer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -31,14 +28,14 @@ public class PreventBlockSelection extends CraftPower implements Listener {
 //            for (OriginContainer origin : OriginPlayer.getOrigin(e.getPlayer()).values()) {
 //                ConditionExecutor conditionExecutor = new ConditionExecutor();
 //                if (e.getClickedBlock() != null) e.setCancelled(true);
-//                setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), conditionExecutor.check("block_condition", "block_condition", e.getPlayer(), origin, "origins:prevent_block_selection", e.getPlayer(), null, e.getClickedBlock(), null, e.getPlayer().getItemInHand(), null));
+//                setActive(power.getTag(), conditionExecutor.check("block_condition", "block_condition", e.getPlayer(), origin, "origins:prevent_block_selection", e.getPlayer(), null, e.getClickedBlock(), null, e.getPlayer().getItemInHand(), null));
 //            }
 //        }
     }
 
     Player p;
 
-    public PreventBlockSelection(){
+    public PreventBlockSelection() {
         this.p = p;
     }
 

@@ -9,7 +9,7 @@ import java.util.ArrayList;
 public class ActionOnCallback extends CraftPower implements Listener {
     Player p;
 
-    public ActionOnCallback(){
+    public ActionOnCallback() {
         this.p = p;
     }
 

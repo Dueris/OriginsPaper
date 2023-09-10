@@ -4,7 +4,7 @@ import me.dueris.genesismc.entity.OriginPlayer;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.OriginContainer;
-import org.bukkit.Bukkit;
+import me.dueris.genesismc.utils.PowerContainer;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -22,7 +22,7 @@ public class Freeze extends CraftPower {
 
     Player p;
 
-    public Freeze(){
+    public Freeze() {
         this.p = p;
     }
 
@@ -31,21 +31,15 @@ public class Freeze extends CraftPower {
         for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
             if (freeze.contains(p)) {
                 ConditionExecutor conditionExecutor = new ConditionExecutor();
-                if (conditionExecutor.check("condition", "conditions", p, origin, "origins:freeze", p, null, null, null, p.getItemInHand(), null)) {
-                    if (origin.getPowerFileFromType(getPowerFile()) == null) {
-                        getPowerArray().remove(p);
-                        return;
+                for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
+                    if (conditionExecutor.check("condition", "conditions", p, power, "origins:freeze", p, null, null, null, p.getItemInHand(), null)) {
+
+                        setActive(power.getTag(), true);
+                        p.setFreezeTicks(300);
+                    } else {
+
+                        setActive(power.getTag(), false);
                     }
-                    if (!getPowerArray().contains(p)) return;
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
-                    p.setFreezeTicks(300);
-                } else {
-                    if (origin.getPowerFileFromType(getPowerFile()) == null) {
-                        getPowerArray().remove(p);
-                        return;
-                    }
-                    if (!getPowerArray().contains(p)) return;
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
                 }
             }
         }

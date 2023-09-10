@@ -29,11 +29,11 @@ public class AttributeExecuteEvent extends PlayerEvent {
         return handlers;
     }
 
-    public Attribute getAttribute(){
+    public Attribute getAttribute() {
         return attribute;
     }
 
-    public String getPowerData(){
+    public String getPowerData() {
         return powerdata;
     }
 

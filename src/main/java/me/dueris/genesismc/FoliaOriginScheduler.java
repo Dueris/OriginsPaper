@@ -1,32 +1,18 @@
 package me.dueris.genesismc;
 
-import com.github.Anon8281.universalScheduler.bukkitScheduler.BukkitScheduler;
 import com.github.Anon8281.universalScheduler.scheduling.schedulers.TaskScheduler;
-import com.github.Anon8281.universalScheduler.scheduling.tasks.MyScheduledTask;
 import me.dueris.genesismc.entity.OriginPlayer;
-import me.dueris.genesismc.events.OriginChangeEvent;
-import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.factory.powers.FlightHandler;
 import me.dueris.genesismc.factory.powers.Overlay;
-import me.dueris.genesismc.factory.powers.actions.ActionOnItemUse;
 import me.dueris.genesismc.factory.powers.actions.ActionOverTime;
 import me.dueris.genesismc.factory.powers.player.Gravity;
 import me.dueris.genesismc.factory.powers.player.Invisibility;
 import me.dueris.genesismc.factory.powers.player.RestrictArmor;
 import me.dueris.genesismc.factory.powers.player.damage.Burn;
 import me.dueris.genesismc.factory.powers.player.damage.DamageOverTime;
-import me.dueris.genesismc.factory.powers.simple.MimicWarden;
-import me.dueris.genesismc.factory.powers.simple.OriginSimple;
-import me.dueris.genesismc.files.GenesisDataFiles;
-import me.dueris.genesismc.utils.OriginContainer;
-import me.dueris.genesismc.utils.PowerContainer;
-import org.bukkit.Bukkit;
-import org.bukkit.craftbukkit.v1_20_R1.entity.CraftAbstractHorse;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
@@ -42,7 +28,9 @@ public class FoliaOriginScheduler {
         this.plugin = plugin;
     }
 
-    public static TaskScheduler getGlobalScheduler() {return GenesisMC.getGlobalScheduler();}
+    public static TaskScheduler getGlobalScheduler() {
+        return GenesisMC.getGlobalScheduler();
+    }
 
     public BukkitTask runTask(BukkitRunnable runnable) {
         runnables.add(runnable);
@@ -74,46 +62,46 @@ public class FoliaOriginScheduler {
         return runnable.runTaskTimer(GenesisMC.getPlugin(), delay, period);
     }
 
-    public static class OriginSchedulerTree extends BukkitRunnable implements Listener{
+    public static class OriginSchedulerTree extends BukkitRunnable implements Listener {
 
         public static ArrayList<Player> mimic_warden = new ArrayList<>();
 
-        private HashMap<Player, Integer> ticksEMap = new HashMap<>();
+        private final HashMap<Player, Integer> ticksEMap = new HashMap<>();
 
         @Override
         public void run() {
-            for(Player p : OriginPlayer.hasPowers){
-                if(!OriginPlayer.getPowersApplied(p).contains(Gravity.class)){
+            for (Player p : OriginPlayer.hasPowers) {
+                if (!OriginPlayer.getPowersApplied(p).contains(Gravity.class)) {
                     Gravity gravity = new Gravity();
                     gravity.run(p);
                 }
-                if(!OriginPlayer.getPowersApplied(p).contains(FlightHandler.class)){
+                if (!OriginPlayer.getPowersApplied(p).contains(FlightHandler.class)) {
                     FlightHandler flightHandler = new FlightHandler();
                     flightHandler.run(p);
                 }
-                if(!OriginPlayer.getPowersApplied(p).contains(Overlay.class)){
+                if (!OriginPlayer.getPowersApplied(p).contains(Overlay.class)) {
                     Overlay overlay = new Overlay();
                     overlay.run(p);
                 }
-                if(!OriginPlayer.getPowersApplied(p).contains(Invisibility.class)) {
+                if (!OriginPlayer.getPowersApplied(p).contains(Invisibility.class)) {
                     Invisibility invisibility = new Invisibility();
                     invisibility.run(p);
                 }
-                if(OriginPlayer.getPowersApplied(p).isEmpty()) {
+                if (OriginPlayer.getPowersApplied(p).isEmpty()) {
                     //empty
                 }
-                for(Class<? extends CraftPower> c : OriginPlayer.getPowersApplied(p)){
+                for (Class<? extends CraftPower> c : OriginPlayer.getPowersApplied(p)) {
                     try {
                         if (c.newInstance() instanceof Burn) {
                             ((Burn) c.newInstance()).run(p, ticksEMap);
-                        } else if (c.newInstance() instanceof ActionOverTime){
+                        } else if (c.newInstance() instanceof ActionOverTime) {
                             ((ActionOverTime) c.newInstance()).run(p, ticksEMap);
-                        } else if (c.newInstance() instanceof RestrictArmor){
+                        } else if (c.newInstance() instanceof RestrictArmor) {
                             ((RestrictArmor) c.newInstance()).run(p, ticksEMap);
-                        } else if (c.newInstance() instanceof DamageOverTime){
+                        } else if (c.newInstance() instanceof DamageOverTime) {
                             ((DamageOverTime) c.newInstance()).run(p, ticksEMap);
                         } else {
-                             c.newInstance().run(p);
+                            c.newInstance().run(p);
                         }
 
                     } catch (InstantiationException e) {

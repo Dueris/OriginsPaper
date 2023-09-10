@@ -118,10 +118,10 @@ public class PowerContainer implements Serializable {
         return (String) type;
     }
 
-    public Class<? extends CraftPower> getCraftPowerClass(){
-        for(Class<? extends CraftPower> c : CraftPower.getRegistered()){
+    public Class<? extends CraftPower> getCraftPowerClass() {
+        for (Class<? extends CraftPower> c : CraftPower.getRegistered()) {
             try {
-                if(c.newInstance().getPowerFile().equalsIgnoreCase(getType())) return c;
+                if (c.newInstance().getPowerFile().equalsIgnoreCase(getType())) return c;
             } catch (InstantiationException e) {
                 throw new RuntimeException(e);
             } catch (IllegalAccessException e) {

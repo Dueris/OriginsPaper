@@ -4,9 +4,9 @@ import com.destroystokyo.paper.profile.PlayerProfile;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.entity.OriginPlayer;
 import me.dueris.genesismc.events.OriginChangeEvent;
-import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.OriginContainer;
+import me.dueris.genesismc.utils.PowerContainer;
 import me.dueris.genesismc.utils.translation.LangConfig;
 import net.skinsrestorer.api.PlayerWrapper;
 import net.skinsrestorer.api.SkinsRestorerAPI;
@@ -47,7 +47,7 @@ public class PlayerRender extends CraftPower {
 
     Player p;
 
-    public PlayerRender(){
+    public PlayerRender() {
         this.p = p;
     }
 
@@ -59,100 +59,66 @@ public class PlayerRender extends CraftPower {
 //        if (team == null) {
 //            team = scoreboard.registerNewTeam("origin-players");
 //        }
-            boolean isInvisible = p.hasPotionEffect(PotionEffectType.INVISIBILITY);
-            boolean isInTranslucentList = translucent.contains(p);
-            boolean isInPhantomForm = OriginPlayer.isInPhantomForm(p);
+        boolean isInvisible = p.hasPotionEffect(PotionEffectType.INVISIBILITY);
+        boolean isInTranslucentList = translucent.contains(p);
+        boolean isInPhantomForm = OriginPlayer.isInPhantomForm(p);
 
-            if (isInPhantomForm) {
-                for (Player other : Bukkit.getOnlinePlayers()) {
-                    if (!other.equals(p)) {
-                        other.hidePlayer(GenesisMC.getPlugin(), p);
-                    }
+        if (isInPhantomForm) {
+            for (Player other : Bukkit.getOnlinePlayers()) {
+                if (!other.equals(p)) {
+                    other.hidePlayer(GenesisMC.getPlugin(), p);
                 }
+            }
 //                if (!team.getEntries().contains(p)) {
 //                    team.addEntry(p.getName());
 //                }
-            } else if (isInvisible && !isInTranslucentList) {
-                for (Player other : Bukkit.getOnlinePlayers()) {
-                    if (!other.equals(p)) {
-                        other.hidePlayer(GenesisMC.getPlugin(), p);
-                    }
+        } else if (isInvisible && !isInTranslucentList) {
+            for (Player other : Bukkit.getOnlinePlayers()) {
+                if (!other.equals(p)) {
+                    other.hidePlayer(GenesisMC.getPlugin(), p);
                 }
-                Location location = p.getLocation();
-                location.getWorld().spawnParticle(Particle.SPELL_MOB_AMBIENT, location, 2, 0.0, 0.0, 0.0, 1.0, null);
+            }
+            Location location = p.getLocation();
+            location.getWorld().spawnParticle(Particle.SPELL_MOB_AMBIENT, location, 2, 0.0, 0.0, 0.0, 1.0, null);
 //                if (!team.getEntries().contains(p)) {
 //                    team.addEntry(p.getName());
 //                }
-            } else {
-                for (Player other : Bukkit.getOnlinePlayers()) {
-                    if (!other.equals(p)) {
-                        other.showPlayer(GenesisMC.getPlugin(), p);
-                    }
+        } else {
+            for (Player other : Bukkit.getOnlinePlayers()) {
+                if (!other.equals(p)) {
+                    other.showPlayer(GenesisMC.getPlugin(), p);
                 }
+            }
 //                if (!team.getEntries().contains(p)) {
 //                    team.addEntry(p.getName());
 //                }
-            }
+        }
 
-            if (isInTranslucentList) {
-                for (Player other : Bukkit.getOnlinePlayers()) {
-                    if (!other.equals(p)) {
-                        other.showPlayer(GenesisMC.getPlugin(), p);
-                    }
+        if (isInTranslucentList) {
+            for (Player other : Bukkit.getOnlinePlayers()) {
+                if (!other.equals(p)) {
+                    other.showPlayer(GenesisMC.getPlugin(), p);
                 }
-                p.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 15, 255, false, false, false));
+            }
+            p.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 15, 255, false, false, false));
 //                if (!team.getEntries().contains(p)) {
 //                    team.addEntry(p.getName());
 //                }
-            }
+        }
 
-            // Hide player from pumpkin_hate players if wearing a pumpkin
-            ItemStack helmet = p.getInventory().getHelmet();
-            boolean wearingPumpkin = helmet != null && helmet.getType() == Material.CARVED_PUMPKIN;
+        // Hide player from pumpkin_hate players if wearing a pumpkin
+        ItemStack helmet = p.getInventory().getHelmet();
+        boolean wearingPumpkin = helmet != null && helmet.getType() == Material.CARVED_PUMPKIN;
 
-            for (Player target : Bukkit.getOnlinePlayers()) {
-                if (pumpkin_hate.contains(target)) {
-                    if (wearingPumpkin) {
-                        target.hidePlayer(GenesisMC.getPlugin(), p);
-                    } else {
-                        target.showPlayer(GenesisMC.getPlugin(), p);
-                    }
+        for (Player target : Bukkit.getOnlinePlayers()) {
+            if (pumpkin_hate.contains(target)) {
+                if (wearingPumpkin) {
+                    target.hidePlayer(GenesisMC.getPlugin(), p);
+                } else {
+                    target.showPlayer(GenesisMC.getPlugin(), p);
                 }
             }
-
-            if (invisibility.contains(p)) {
-                for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
-                    ConditionExecutor conditionExecutor = new ConditionExecutor();
-                    if (conditionExecutor.check("condition", "conditions", p, origin, "origins:invisibility", p, null, null, null, p.getItemInHand(), null)) {
-                        if (origin.getPowerFileFromType(getPowerFile()) == null) {
-                            getPowerArray().remove(p);
-                            return;
-                        }
-                        if (!getPowerArray().contains(p)) return;
-                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
-                        if (origin.getPowerFileFromType("origins:invisibility").get("render_armor", "false").equalsIgnoreCase("true")) {
-                            for (Player players : Bukkit.getOnlinePlayers()) {
-                                players.hidePlayer(p);
-                            }
-                        } else {
-                            p.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 15, 1, false, false, false));
-                        }
-
-                        if (origin.getPowerFileFromType("origins:invisibility").get("render_outline", "false").equalsIgnoreCase("true")) {
-                            p.addPotionEffect(new PotionEffect(PotionEffectType.GLOWING, 15, 1, false, false, false));
-                        }
-                    } else {
-                        if (origin.getPowerFileFromType(getPowerFile()) == null) {
-                            getPowerArray().remove(p);
-                            return;
-                        }
-                        if (!getPowerArray().contains(p)) return;
-                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
-                    }
-                }
-            }
-
-
+        }
     }
 
     @Override
@@ -177,47 +143,51 @@ public class PlayerRender extends CraftPower {
                 public void run() {
                     if (model_color.contains(player)) {
                         for (OriginContainer origin : OriginPlayer.getOrigin(player).values()) {
-                            Double red;
-                            Double blue;
-                            Double green;
+                            for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
+                                Double red;
+                                Double blue;
+                                Double green;
 
-                            if (origin.getPowerFileFromType("origins:model_color") == null) {
-                                model_color.remove(player);
-                            }
-                            if (origin.getPowerFileFromType("origins:model_color").getColor("red") == null) {
-                                red = 0.0;
-                            } else {
-                                red = origin.getPowerFileFromType("origins:model_color").getColor("red");
-                            }
-                            if (origin.getPowerFileFromType("origins:model_color").getColor("blue") == null) {
-                                blue = 0.0;
-                            } else {
-                                blue = origin.getPowerFileFromType("origins:model_color").getColor("blue");
-                            }
-                            if (origin.getPowerFileFromType("origins:model_color").getColor("green") == null) {
-                                green = 0.0;
-                            } else {
-                                green = origin.getPowerFileFromType("origins:model_color").getColor("green");
-                            }
+                                if (power == null) {
+                                    model_color.remove(player);
+                                }
+                                if (power.getColor("red") == null) {
+                                    red = 0.0;
+                                } else {
+                                    red = power.getColor("red");
+                                }
+                                if (power.getColor("blue") == null) {
+                                    blue = 0.0;
+                                } else {
+                                    blue = power.getColor("blue");
+                                }
+                                if (power.getColor("green") == null) {
+                                    green = 0.0;
+                                } else {
+                                    green = power.getColor("green");
+                                }
 
-                            String savePath = Bukkit.getServer().getPluginManager().getPlugin("genesismc").getDataFolder().getPath() + File.separator + "skins";
-                            skinsRestorerAPI = SkinsRestorerAPI.getApi();
-                            ModelColor.modifyPlayerSkin(player, red, green, blue, savePath, 1L, skinsRestorerAPI, false, origin);
-                            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "skin set " + player.getName() + " " + player.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "modified-skin-url"), PersistentDataType.STRING));
-                            player.sendMessage("skin set " + player.getName() + " " + player.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "modified-skin-url"), PersistentDataType.STRING));
-                            player.saveData();
+                                String savePath = Bukkit.getServer().getPluginManager().getPlugin("genesismc").getDataFolder().getPath() + File.separator + "skins";
+                                skinsRestorerAPI = SkinsRestorerAPI.getApi();
+                                ModelColor.modifyPlayerSkin(player, red, green, blue, savePath, 1L, skinsRestorerAPI, false, power);
+                                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "skin set " + player.getName() + " " + player.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "modified-skin-url"), PersistentDataType.STRING));
+                                player.sendMessage("skin set " + player.getName() + " " + player.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "modified-skin-url"), PersistentDataType.STRING));
+                                player.saveData();
+                            }
                         }
                     } else {
                         for (OriginContainer origin : OriginPlayer.getOrigin(player).values()) {
-                            Double red = Double.valueOf(0);
-                            Double blue = Double.valueOf(0);
-                            Double green = Double.valueOf(0);
-                            Long alphaTint = 0L;
-                            String savePath = Bukkit.getServer().getPluginManager().getPlugin("genesismc").getDataFolder().getPath() + File.separator + "skins";
-                            skinsRestorerAPI = SkinsRestorerAPI.getApi();
-                            ModelColor.modifyPlayerSkin(player, red, green, blue, savePath, alphaTint, skinsRestorerAPI, true, origin);
-                            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "skin clear " + player.getName());
-                            player.saveData();
+                            for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
+                                Double red = Double.valueOf(0);
+                                Double blue = Double.valueOf(0);
+                                Double green = Double.valueOf(0);
+                                Long alphaTint = 0L;
+                                String savePath = Bukkit.getServer().getPluginManager().getPlugin("genesismc").getDataFolder().getPath() + File.separator + "skins";
+                                skinsRestorerAPI = SkinsRestorerAPI.getApi();
+                                ModelColor.modifyPlayerSkin(player, red, green, blue, savePath, alphaTint, skinsRestorerAPI, true, power);
+                                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "skin clear " + player.getName());
+                                player.saveData();
+                            }
                         }
                     }
                     this.cancel();
@@ -251,7 +221,7 @@ public class PlayerRender extends CraftPower {
             }.runTaskTimer(GenesisMC.getPlugin(), 4L, 1L);
         }
 
-        public static void modifyPlayerSkin(Player player, Double redTint, Double greenTint, Double blueTint, String savePath, Long alphaTint, SkinsRestorerAPI skinsRestorerAPI, boolean applyOriginal, OriginContainer origin) {
+        public static void modifyPlayerSkin(Player player, Double redTint, Double greenTint, Double blueTint, String savePath, Long alphaTint, SkinsRestorerAPI skinsRestorerAPI, boolean applyOriginal, PowerContainer power) {
             PlayerProfile gameProfile = player.getPlayerProfile();
             String textureProperty = skinsRestorerAPI.getSkinTextureUrl(SkinsRestorerAPI.getApi().getSkinData(player.getName()));
             String imageUrl = textureProperty;
@@ -261,7 +231,7 @@ public class PlayerRender extends CraftPower {
 
             try {
                 BufferedImage originalImage = downloadImage(imageUrl, savePath, originalFileName);
-                BufferedImage modifiedImage = modifyImage(originalImage, redTint, greenTint, blueTint, alphaTint, player, origin);
+                BufferedImage modifiedImage = modifyImage(originalImage, redTint, greenTint, blueTint, alphaTint, player, power);
                 saveImage(modifiedImage, savePath, modifiedFileName);
                 MineskinClient mineskinClient = new MineskinClient();
 
@@ -348,16 +318,16 @@ public class PlayerRender extends CraftPower {
             return image;
         }
 
-        private static BufferedImage modifyImage(BufferedImage originalImage, double redTint, double greenTint, double blueTint, double alphaTint, Player player, OriginContainer origin) {
+        private static BufferedImage modifyImage(BufferedImage originalImage, double redTint, double greenTint, double blueTint, double alphaTint, Player player, PowerContainer power) {
             if (redTint > 1 || greenTint > 1 || blueTint > 1 || alphaTint > 1) {
-                if (origin.getPowerFileFromType("origins:model_color").getModelRenderType() == "original") {
+                if (power.getModelRenderType() == "original") {
                     throw new IllegalArgumentException(LangConfig.getLocalizedString(Bukkit.getConsoleSender(), "powers.errors.modelColourValue"));
                 }
             }
 
             BufferedImage modifiedImage = new BufferedImage(originalImage.getWidth(), originalImage.getHeight(), BufferedImage.TYPE_INT_ARGB);
-            if (origin.getPowerFileFromType("origins:model_color") == null) return modifiedImage;
-            if (origin.getPowerFileFromType("origins:model_color").getModelRenderType().equalsIgnoreCase("add")) {
+            if (power == null) return modifiedImage;
+            if (power.getModelRenderType().equalsIgnoreCase("add")) {
                 for (int x = 0; x < modifiedImage.getWidth(); x++) {
                     for (int y = 0; y < modifiedImage.getHeight(); y++) {
                         // Get the original RGB values of the pixel
@@ -381,7 +351,7 @@ public class PlayerRender extends CraftPower {
                         modifiedImage.setRGB(x, y, modifiedRGB);
                     }
                 }
-            } else if (origin.getPowerFileFromType("origins:model_color").getModelRenderType().equalsIgnoreCase("subtract")) {
+            } else if (power.getModelRenderType().equalsIgnoreCase("subtract")) {
                 for (int x = 0; x < modifiedImage.getWidth(); x++) {
                     for (int y = 0; y < modifiedImage.getHeight(); y++) {
                         int rgb = originalImage.getRGB(x, y);
@@ -399,7 +369,7 @@ public class PlayerRender extends CraftPower {
                         modifiedImage.setRGB(x, y, modifiedRGB);
                     }
                 }
-            } else if (origin.getPowerFileFromType("origins:model_color").getModelRenderType().equalsIgnoreCase("multiply")) {
+            } else if (power.getModelRenderType().equalsIgnoreCase("multiply")) {
                 for (int x = 0; x < modifiedImage.getWidth(); x++) {
                     for (int y = 0; y < modifiedImage.getHeight(); y++) {
                         int rgb = originalImage.getRGB(x, y);
@@ -417,7 +387,7 @@ public class PlayerRender extends CraftPower {
                         modifiedImage.setRGB(x, y, modifiedRGB);
                     }
                 }
-            } else if (origin.getPowerFileFromType("origins:model_color").getModelRenderType().equalsIgnoreCase("divide")) {
+            } else if (power.getModelRenderType().equalsIgnoreCase("divide")) {
                 for (int x = 0; x < modifiedImage.getWidth(); x++) {
                     for (int y = 0; y < modifiedImage.getHeight(); y++) {
                         int rgb = originalImage.getRGB(x, y);
@@ -435,7 +405,7 @@ public class PlayerRender extends CraftPower {
                         modifiedImage.setRGB(x, y, modifiedRGB);
                     }
                 }
-            } else if (origin.getPowerFileFromType("origins:model_color").getModelRenderType().equalsIgnoreCase("original")) {
+            } else if (power.getModelRenderType().equalsIgnoreCase("original")) {
                 for (int x = 0; x < modifiedImage.getWidth(); x++) {
                     for (int y = 0; y < modifiedImage.getHeight(); y++) {
                         int rgb = originalImage.getRGB(x, y);

@@ -17,7 +17,7 @@ import java.util.ArrayList;
 public class ActionOnEntityUse extends CraftPower implements Listener {
     Player p;
 
-    public ActionOnEntityUse(){
+    public ActionOnEntityUse() {
         this.p = p;
     }
 
@@ -35,11 +35,11 @@ public class ActionOnEntityUse extends CraftPower implements Listener {
         if (!getPowerArray().contains(target)) return;
 
         for (OriginContainer origin : OriginPlayer.getOrigin(player).values()) {
-            for(PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())){
+            for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
                 if (power == null) continue;
 
                 if (!getPowerArray().contains(e.getPlayer())) return;
-                setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
+                setActive(power.getTag(), true);
                 ActionTypes.biEntityActionType(actor, target, power.getBiEntityAction());
                 ActionTypes.ItemActionType(actor.getActiveItem(), power.getAction("held_item_action"));
                 ActionTypes.ItemActionType(actor.getActiveItem(), power.getAction("result_item_action"));
@@ -48,7 +48,7 @@ public class ActionOnEntityUse extends CraftPower implements Listener {
                     @Override
                     public void run() {
                         if (!getPowerArray().contains(e.getPlayer())) return;
-                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
+                        setActive(power.getTag(), false);
                     }
                 }.runTaskLater(GenesisMC.getPlugin(), 2L);
             }

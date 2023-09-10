@@ -64,7 +64,7 @@ public class StrongArms extends CraftPower implements Listener {
 
     Player p;
 
-    public StrongArms(){
+    public StrongArms() {
         this.p = p;
     }
 

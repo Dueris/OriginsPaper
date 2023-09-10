@@ -114,11 +114,11 @@ public class CraftApoli {
         powerContainers.addAll(newPowerContainers);
     }
 
-    public static File datapackDir(){
+    public static File datapackDir() {
         return new File(Bukkit.getServer().getPluginManager().getPlugin("GenesisMC").getDataFolder() + File.separator + ".." + File.separator + ".." + File.separator + Bukkit.getServer().getWorlds().get(0).getName() + File.separator + "datapacks");
     }
 
-    public static File[] datapacksInDir(){
+    public static File[] datapacksInDir() {
         return datapackDir().listFiles();
     }
 
@@ -368,6 +368,8 @@ public class CraftApoli {
         getOrigins().clear();
         getCoreOrigins().clear();
         getOriginTags().clear();
+        getLayers().clear();
+        getPowers().clear();
     }
 
     /**

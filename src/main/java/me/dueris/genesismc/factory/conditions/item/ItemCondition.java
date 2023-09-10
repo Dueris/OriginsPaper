@@ -1,7 +1,6 @@
 package me.dueris.genesismc.factory.conditions.item;
 
 import me.dueris.genesismc.factory.conditions.Condition;
-import me.dueris.genesismc.utils.OriginContainer;
 import me.dueris.genesismc.utils.PowerContainer;
 import org.bukkit.Fluid;
 import org.bukkit.Material;
@@ -10,7 +9,6 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.ItemStack;
-import org.checkerframework.checker.nullness.Opt;
 
 import java.util.*;
 
@@ -23,45 +21,43 @@ public class ItemCondition implements Condition {
     }
 
     @Override
-    public Optional<Boolean> check(HashMap<String, Object> condition, Player p, OriginContainer origin, String powerfile, Entity actor, Entity target, Block block, Fluid fluid, ItemStack itemStack, EntityDamageEvent entityDamageEvent) {
-        if (origin == null) return Optional.empty();
-        if (origin.getPowerFileFromType(powerfile) == null) return Optional.empty();
-            if (condition.isEmpty()) return Optional.empty();
-            boolean inverted = (boolean) condition.getOrDefault("inverted", false);
-            String type = condition.get("type").toString().toLowerCase();
-            if(type.equalsIgnoreCase("origins:ingredient")){
-                if (condition.containsKey("ingredient")) {
-                    Map<String, Object> ingredientMap = (Map<String, Object>) condition.get("ingredient");
-                    if (ingredientMap.containsKey("item")) {
-                        String itemValue = ingredientMap.get("item").toString();
-                        if(itemStack.getType().equals(Material.valueOf(itemValue.toString().split(":")[1].toUpperCase()))){
-                            return getResult(inverted, true);
-                        }else{
-                            return getResult(inverted, false);
-                        }
+    public Optional<Boolean> check(HashMap<String, Object> condition, Player p, PowerContainer power, String powerfile, Entity actor, Entity target, Block block, Fluid fluid, ItemStack itemStack, EntityDamageEvent entityDamageEvent) {
+        if (condition.isEmpty()) return Optional.empty();
+        boolean inverted = (boolean) condition.getOrDefault("inverted", false);
+        String type = condition.get("type").toString().toLowerCase();
+        if (type.equalsIgnoreCase("origins:ingredient")) {
+            if (condition.containsKey("ingredient")) {
+                Map<String, Object> ingredientMap = (Map<String, Object>) condition.get("ingredient");
+                if (ingredientMap.containsKey("item")) {
+                    String itemValue = ingredientMap.get("item").toString();
+                    if (itemStack.getType().equals(Material.valueOf(itemValue.split(":")[1].toUpperCase()))) {
+                        return getResult(inverted, true);
+                    } else {
+                        return getResult(inverted, false);
                     }
                 }
             }
-            if(type.equalsIgnoreCase("origins:meat")) {
-                if (itemStack.getType().isEdible()) {
-                    if (inverted) {
-                        if (getNonMeatMaterials().contains(itemStack)) {
-                            return getResult(false, true);
-                        } else {
-                            return getResult(false, false);
-                        }
+        }
+        if (type.equalsIgnoreCase("origins:meat")) {
+            if (itemStack.getType().isEdible()) {
+                if (inverted) {
+                    if (getNonMeatMaterials().contains(itemStack)) {
+                        return getResult(false, true);
                     } else {
-                        if (getMeatMaterials().contains(itemStack)) {
-                            return getResult(false, true);
-                        } else {
-                            return getResult(false, false);
-                        }
+                        return getResult(false, false);
                     }
                 } else {
-                    return getResult(false, false);
+                    if (getMeatMaterials().contains(itemStack)) {
+                        return getResult(false, true);
+                    } else {
+                        return getResult(false, false);
+                    }
                 }
+            } else {
+                return getResult(false, false);
             }
-            return getResult(inverted, false);
+        }
+        return getResult(inverted, false);
     }
 
     public static List<Material> getNonMeatMaterials() {

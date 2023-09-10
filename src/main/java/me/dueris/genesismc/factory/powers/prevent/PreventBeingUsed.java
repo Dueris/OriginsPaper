@@ -4,6 +4,7 @@ import me.dueris.genesismc.entity.OriginPlayer;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.OriginContainer;
+import me.dueris.genesismc.utils.PowerContainer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -31,26 +32,20 @@ public class PreventBeingUsed extends CraftPower implements Listener {
             Player p = e.getPlayer();
             for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
                 ConditionExecutor conditionExecutor = new ConditionExecutor();
-                if (conditionExecutor.check("bientity_condition", "bientity_conditions", p, origin, "origins:prevent_being_used", p, null, null, null, p.getItemInHand(), null)) {
-                    if (conditionExecutor.check("item_condition", "item_conditions", p, origin, "origins:prevent_being_used", p, null, null, null, p.getItemInHand(), null)) {
-                        if (origin.getPowerFileFromType(getPowerFile()) == null) {
-                            getPowerArray().remove(p);
-                            return;
-                        }
-                        if (!getPowerArray().contains(p)) return;
-                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
-                        e.setCancelled(true);
-                    } else {
-                        if (origin.getPowerFileFromType(getPowerFile()) == null) {
-                            getPowerArray().remove(p);
-                            return;
-                        }
-                        if (!getPowerArray().contains(p)) return;
-                        setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
-                    }
-                } else {
+                for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
+                    if (conditionExecutor.check("bientity_condition", "bientity_conditions", p, power, "origins:prevent_being_used", p, null, null, null, p.getItemInHand(), null)) {
+                        if (conditionExecutor.check("item_condition", "item_conditions", p, power, "origins:prevent_being_used", p, null, null, null, p.getItemInHand(), null)) {
 
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
+                            setActive(power.getTag(), true);
+                            e.setCancelled(true);
+                        } else {
+
+                            setActive(power.getTag(), false);
+                        }
+                    } else {
+
+                        setActive(power.getTag(), false);
+                    }
                 }
             }
         }
@@ -58,7 +53,7 @@ public class PreventBeingUsed extends CraftPower implements Listener {
 
     Player p;
 
-    public PreventBeingUsed(){
+    public PreventBeingUsed() {
         this.p = p;
     }
 

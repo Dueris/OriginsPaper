@@ -6,6 +6,7 @@ import me.dueris.genesismc.entity.OriginPlayer;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.OriginContainer;
+import me.dueris.genesismc.utils.PowerContainer;
 import net.minecraft.network.protocol.game.ClientboundGameEventPacket;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -20,8 +21,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 import org.geysermc.geyser.api.GeyserApi;
 
 import java.util.ArrayList;
@@ -35,7 +34,7 @@ public class Phasing extends CraftPower implements Listener {
 
     Player p;
 
-    public Phasing(){
+    public Phasing() {
         this.p = p;
         this.interval = 100L;
         this.ticksE = 0;
@@ -46,29 +45,30 @@ public class Phasing extends CraftPower implements Listener {
         if (getPowerArray().contains(p)) {
             for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
                 ConditionExecutor conditionExecutor = new ConditionExecutor();
-                if (conditionExecutor.check("condition", "conditions", p, origin, getPowerFile(), p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
-                    if ((p.getLocation().add(0.55F, 0, 0.55F).getBlock().isSolid() ||
-                            p.getLocation().add(0.55F, 0, 0).getBlock().isSolid() ||
-                            p.getLocation().add(0, 0, 0.55F).getBlock().isSolid() ||
-                            p.getLocation().add(-0.55F, 0, -0.55F).getBlock().isSolid() ||
-                            p.getLocation().add(0, 0, -0.55F).getBlock().isSolid() ||
-                            p.getLocation().add(-0.55F, 0, 0).getBlock().isSolid() ||
-                            p.getLocation().add(0.55F, 0, -0.55F).getBlock().isSolid() ||
-                            p.getLocation().add(-0.55F, 0, 0.55F).getBlock().isSolid() ||
-                            p.getLocation().add(0, 0.5, 0).getBlock().isSolid() ||
+                for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
+                    if (conditionExecutor.check("condition", "conditions", p, power, getPowerFile(), p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
+                        setActive(power.getTag(), true);
+                        if ((p.getLocation().add(0.55F, 0, 0.55F).getBlock().isSolid() ||
+                                p.getLocation().add(0.55F, 0, 0).getBlock().isSolid() ||
+                                p.getLocation().add(0, 0, 0.55F).getBlock().isSolid() ||
+                                p.getLocation().add(-0.55F, 0, -0.55F).getBlock().isSolid() ||
+                                p.getLocation().add(0, 0, -0.55F).getBlock().isSolid() ||
+                                p.getLocation().add(-0.55F, 0, 0).getBlock().isSolid() ||
+                                p.getLocation().add(0.55F, 0, -0.55F).getBlock().isSolid() ||
+                                p.getLocation().add(-0.55F, 0, 0.55F).getBlock().isSolid() ||
+                                p.getLocation().add(0, 0.5, 0).getBlock().isSolid() ||
 
-                            p.getEyeLocation().add(0.55F, 0, 0.55F).getBlock().isSolid() ||
-                            p.getEyeLocation().add(0.55F, 0, 0).getBlock().isSolid() ||
-                            p.getEyeLocation().add(0, 0, 0.55F).getBlock().isSolid() ||
-                            p.getEyeLocation().add(-0.55F, 0, -0.55F).getBlock().isSolid() ||
-                            p.getEyeLocation().add(0, 0, -0.55F).getBlock().isSolid() ||
-                            p.getEyeLocation().add(-0.55F, 0, 0).getBlock().isSolid() ||
-                            p.getEyeLocation().add(0.55F, 0, -0.55F).getBlock().isSolid() ||
-                            p.getEyeLocation().add(-0.55F, 0, 0.55F).getBlock().isSolid())
-                    ) {
+                                p.getEyeLocation().add(0.55F, 0, 0.55F).getBlock().isSolid() ||
+                                p.getEyeLocation().add(0.55F, 0, 0).getBlock().isSolid() ||
+                                p.getEyeLocation().add(0, 0, 0.55F).getBlock().isSolid() ||
+                                p.getEyeLocation().add(-0.55F, 0, -0.55F).getBlock().isSolid() ||
+                                p.getEyeLocation().add(0, 0, -0.55F).getBlock().isSolid() ||
+                                p.getEyeLocation().add(-0.55F, 0, 0).getBlock().isSolid() ||
+                                p.getEyeLocation().add(0.55F, 0, -0.55F).getBlock().isSolid() ||
+                                p.getEyeLocation().add(-0.55F, 0, 0.55F).getBlock().isSolid())
+                        ) {
                             setInPhasingBlockForm(p);
-                            if (origin.getPowerFileFromType("origins:phasing").getOverlay()) {
+                            if (power.getOverlay()) {
                                 initializePhantomOverlay(p);
                             }
 
@@ -77,42 +77,43 @@ public class Phasing extends CraftPower implements Listener {
                             p.setFlySpeed(0.04F);
                             p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "insideBlock"), PersistentDataType.BOOLEAN, true);
 
-//                            if (origin.getPowerFileFromType("origins:phasing").getRenderType().equalsIgnoreCase("blindness")) {
-//                                Float viewD = origin.getPowerFileFromType("origins:phasing").getViewDistance().floatValue();
+//                            if (power.getRenderType().equalsIgnoreCase("blindness")) {
+//                                Float viewD = power.getViewDistance().floatValue();
 //                                p.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, viewD.intValue() * 2, 255, false, false, false));
 //                            }
+                        } else {
+                            if (p.getGameMode().equals(GameMode.SPECTATOR)) {
+                                if (p.getPreviousGameMode().equals(GameMode.CREATIVE)) {
+                                    p.setGameMode(p.getPreviousGameMode());
+                                    p.setFlying(false);
+                                } else {
+                                    p.setGameMode(p.getPreviousGameMode());
+                                    if (p.isOnGround()) ;
+                                    p.setFlying(false);
+                                }
+                                p.setFlySpeed(0.1F);
+                                p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "insideBlock"), PersistentDataType.BOOLEAN, false);
+
+                            }
+                        }
                     } else {
-                        if (p.getGameMode().equals(GameMode.SPECTATOR)) {
-                            if (p.getPreviousGameMode().equals(GameMode.CREATIVE)) {
-                                p.setGameMode(p.getPreviousGameMode());
-                                p.setFlying(false);
-                            } else {
-                                p.setGameMode(p.getPreviousGameMode());
-                                if (p.isOnGround()) ;
-                                p.setFlying(false);
-                            }
-                            p.setFlySpeed(0.1F);
-                            p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "insideBlock"), PersistentDataType.BOOLEAN, false);
+                        setActive(power.getTag(), false);
+                        if (test) {
+                            if (p.getGameMode().equals(GameMode.SPECTATOR)) {
+                                if (p.getPreviousGameMode().equals(GameMode.CREATIVE)) {
+                                    p.setGameMode(p.getPreviousGameMode());
+                                    p.setFlying(false);
+                                } else {
+                                    p.setGameMode(p.getPreviousGameMode());
+                                    if (p.isOnGround()) ;
+                                    p.setFlying(false);
+                                }
+                                p.setFlySpeed(0.1F);
+                                p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "insideBlock"), PersistentDataType.BOOLEAN, false);
 
-                        }
-                    }
-                } else {
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
-                    if (test) {
-                        if (p.getGameMode().equals(GameMode.SPECTATOR)) {
-                            if (p.getPreviousGameMode().equals(GameMode.CREATIVE)) {
-                                p.setGameMode(p.getPreviousGameMode());
-                                p.setFlying(false);
-                            } else {
-                                p.setGameMode(p.getPreviousGameMode());
-                                if (p.isOnGround()) ;
-                                p.setFlying(false);
                             }
-                            p.setFlySpeed(0.1F);
-                            p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "insideBlock"), PersistentDataType.BOOLEAN, false);
-
+                            test = false;
                         }
-                        test = false;
                     }
                 }
             }
@@ -204,13 +205,15 @@ public class Phasing extends CraftPower implements Listener {
                 if (phasing.contains(p)) {
                     if (!p.getLocation().getBlock().isCollidable()) {
                         for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
-                            if (p.getLocation().getBlock().getRelative(BlockFace.DOWN).isCollidable()) {
-                                Location currentLocation = p.getLocation();
-                                Location targetLocation = currentLocation.getBlock().getRelative(BlockFace.DOWN).getLocation();
-                                Location loc = new Location(targetLocation.getWorld(), targetLocation.getX(), targetLocation.getY(), targetLocation.getZ(), p.getEyeLocation().getYaw(), p.getEyeLocation().getPitch());
-                                ConditionExecutor conditionExecutor = new ConditionExecutor();
-                                if (conditionExecutor.check("phase_down_condition", "phase_down_conditions", p, origin, getPowerFile(), p, null, loc.getBlock(), null, p.getItemInHand(), null)) {
-                                    p.teleport(loc);
+                            for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
+                                if (p.getLocation().getBlock().getRelative(BlockFace.DOWN).isCollidable()) {
+                                    Location currentLocation = p.getLocation();
+                                    Location targetLocation = currentLocation.getBlock().getRelative(BlockFace.DOWN).getLocation();
+                                    Location loc = new Location(targetLocation.getWorld(), targetLocation.getX(), targetLocation.getY(), targetLocation.getZ(), p.getEyeLocation().getYaw(), p.getEyeLocation().getPitch());
+                                    ConditionExecutor conditionExecutor = new ConditionExecutor();
+                                    if (conditionExecutor.check("phase_down_condition", "phase_down_conditions", p, power, getPowerFile(), p, null, loc.getBlock(), null, p.getItemInHand(), null)) {
+                                        p.teleport(loc);
+                                    }
                                 }
                             }
                         }

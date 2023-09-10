@@ -1,7 +1,5 @@
 package me.dueris.genesismc.factory.powers.actions;
 
-import com.google.gson.JsonObject;
-import io.papermc.paper.math.Position;
 import me.dueris.genesismc.CooldownStuff;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.OriginCommandSender;
@@ -9,35 +7,23 @@ import me.dueris.genesismc.entity.OriginPlayer;
 import me.dueris.genesismc.factory.powers.Toggle;
 import me.dueris.genesismc.utils.OriginContainer;
 import me.dueris.genesismc.utils.PowerContainer;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.world.level.LevelAccessor;
-import net.minecraft.world.level.block.SculkBehaviour;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.block.SculkCatalyst;
-import org.bukkit.block.SculkShrieker;
-import org.bukkit.block.data.BlockData;
-import org.bukkit.craftbukkit.v1_20_R1.CraftWorld;
 import org.bukkit.entity.*;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.material.MaterialData;
-import org.bukkit.metadata.MetadataValue;
-import org.bukkit.persistence.PersistentDataContainer;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.Unmodifiable;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Random;
 
@@ -176,28 +162,29 @@ public class ActionTypes {
         entityAction = power;
         String type = entityAction.get("type").toString();
 
-        if (type.equals("origins:modify_inventory")){
-            if(entity instanceof Player player){
-                if(power.containsKey("slot")){
-                    try{
-                        if(player.getInventory().getItem(getSlotFromString(power.get("slot").toString())) == null) return;
+        if (type.equals("origins:modify_inventory")) {
+            if (entity instanceof Player player) {
+                if (power.containsKey("slot")) {
+                    try {
+                        if (player.getInventory().getItem(getSlotFromString(power.get("slot").toString())) == null)
+                            return;
                         ItemActionType(player.getInventory().getItem(getSlotFromString(power.get("slot").toString())), power);
-                    }catch (Exception e){
+                    } catch (Exception e) {
                         //silently fail bc idk whats going on and yeah it wokrs lol
                     }
                 }
             }
         }
-        if (type.equals("origins:extinguish")){
+        if (type.equals("origins:extinguish")) {
             entity.setFireTicks(0);
         }
-        if (type.equals("origins:gain_air")){
+        if (type.equals("origins:gain_air")) {
             long amt = (long) power.get("value");
-            if(entity instanceof Player p){
+            if (entity instanceof Player p) {
                 p.setRemainingAir(p.getRemainingAir() + Math.toIntExact(amt));
             }
         }
-        if (type.equals("origins:give")){
+        if (type.equals("origins:give")) {
             int amt = 1;
             if (power.containsKey("amount")) {
                 amt = Integer.parseInt(power.get("amount").toString());
@@ -213,14 +200,14 @@ public class ActionTypes {
                 if (entityAction.containsKey("item_action")) {
                     ItemActionType(itemStack, power);
                 }
-                if(entity instanceof Player player){
+                if (entity instanceof Player player) {
                     player.getInventory().addItem(itemStack);
                 }
             }
 
         }
-        if (type.equals("origins:damage")){
-            if(entity instanceof Player P){
+        if (type.equals("origins:damage")) {
+            if (entity instanceof Player P) {
                 P.damage(Double.valueOf(power.get("amount").toString()));
                 P.setLastDamageCause(new EntityDamageEvent(P, EntityDamageEvent.DamageCause.CUSTOM, Double.valueOf(power.get("amount").toString())));
             }
@@ -287,7 +274,7 @@ public class ActionTypes {
                         for (PowerContainer powerContainer : origin.getPowerContainers()) {
                             if (powerContainer.getType().equals("origins:toggle")) {
                                 Toggle toggle = new Toggle();
-                                toggle.execute((Player) entity, origin);
+                                toggle.execute((Player) entity, powerContainer);
                             }
                         }
                     }
@@ -395,7 +382,7 @@ public class ActionTypes {
         if (entityAction == null) {
             entityAction = (JSONObject) power.get("block_action");
         }
-        if(entityAction == null) return;
+        if (entityAction == null) return;
         String type = entityAction.get("type").toString();
 
         if (type.equals("origins:and")) {
@@ -451,8 +438,8 @@ public class ActionTypes {
     }
 
     public static void iterateAndChangeBlocks(World world, int centerX, int centerY, int centerZ,
-                                       Material targetMaterial1, float initialChance, float chanceDecrease,
-                                       Material targetMaterial2, float thresholdPercentage) {
+                                              Material targetMaterial1, float initialChance, float chanceDecrease,
+                                              Material targetMaterial2, float thresholdPercentage) {
         Random random = new Random();
 
         for (int radius = 0; radius < 20; radius++) {
@@ -510,7 +497,7 @@ public class ActionTypes {
                 location.getWorld().getBlockAt(location).setType(block);
             }
         }
-        if (type.equals("genesis:grow_sculk")){
+        if (type.equals("genesis:grow_sculk")) {
             location.getBlock().setType(Material.SCULK_CATALYST);
             new BukkitRunnable() {
                 @Override
@@ -526,7 +513,7 @@ public class ActionTypes {
 
                     World world = location.getWorld();
 
-                    iterateAndChangeBlocks(world,centerX, centerY, centerX, sculkStage1, initialChance, chanceDecrease, sculkStage2, thresholdPercentage);
+                    iterateAndChangeBlocks(world, centerX, centerY, centerX, sculkStage1, initialChance, chanceDecrease, sculkStage2, thresholdPercentage);
                 }
             }.runTaskLater(GenesisMC.getPlugin(), 1);
 
@@ -689,7 +676,7 @@ public class ActionTypes {
     private static void runItem(ItemStack item, JSONObject power) {
         JSONObject itemAction = (JSONObject) power.get("item_action");
         String type = itemAction.get("type").toString();
-        if(type.equals("origins:damage")){
+        if (type.equals("origins:damage")) {
             item.setDurability((short) (item.getDurability() + Short.parseShort(itemAction.get("amount").toString())));
         }
     }

@@ -17,7 +17,7 @@ import java.util.ArrayList;
 public class SelfActionOnHit extends CraftPower implements Listener {
     Player p;
 
-    public SelfActionOnHit(){
+    public SelfActionOnHit() {
         this.p = p;
     }
 
@@ -38,8 +38,8 @@ public class SelfActionOnHit extends CraftPower implements Listener {
             ConditionExecutor executor = new ConditionExecutor();
             if (CooldownStuff.isPlayerInCooldown((Player) target, "key.attack")) return;
 
-                for(PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())){
-                    if (executor.check("condition", "conditions", (Player) target, origin, getPowerFile(), actor, target, null, null, player.getInventory().getItemInHand(), e)) {
+            for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
+                if (executor.check("condition", "conditions", (Player) target, power, getPowerFile(), actor, target, null, null, player.getInventory().getItemInHand(), e)) {
                     if (!getPowerArray().contains(target)) return;
                     setActive(power.getTag(), true);
                     ActionTypes.EntityActionType(target, power.getEntityAction());
@@ -47,8 +47,8 @@ public class SelfActionOnHit extends CraftPower implements Listener {
                         CooldownStuff.addCooldown((Player) target, origin, power.getTag(), power.getType(), Integer.parseInt(power.get("cooldown", "1")), "key.attack");
                     }
                 } else {
-                        setActive(power.getTag(), false);
-                    }
+                    setActive(power.getTag(), false);
+                }
             }
         }
     }

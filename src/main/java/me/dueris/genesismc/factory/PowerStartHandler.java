@@ -1,21 +1,14 @@
 package me.dueris.genesismc.factory;
 
-import io.papermc.paper.threadedregions.scheduler.GlobalRegionScheduler;
-import me.dueris.genesismc.FoliaOriginScheduler;
 import me.dueris.genesismc.GenesisMC;
-import me.dueris.genesismc.entity.OriginPlayer;
 import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.factory.powers.player.PlayerRender;
 import me.dueris.genesismc.factory.powers.player.attributes.AttributeHandler;
-import me.dueris.genesismc.files.GenesisDataFiles;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Listener;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.List;
 
-import static me.dueris.genesismc.factory.powers.CraftPower.*;
+import static me.dueris.genesismc.factory.powers.CraftPower.findCraftPowerClasses;
 
 public class PowerStartHandler {
 

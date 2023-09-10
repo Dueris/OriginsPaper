@@ -1,7 +1,5 @@
 package me.dueris.genesismc.factory.powers.prevent;
 
-import me.dueris.genesismc.GenesisMC;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;

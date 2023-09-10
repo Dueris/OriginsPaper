@@ -1,12 +1,5 @@
 package me.dueris.genesismc.utils;
 
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scoreboard.Scoreboard;
-import org.bukkit.scoreboard.ScoreboardManager;
-import org.bukkit.scoreboard.Team;
-
 public class ScoreboardRunnable {
 //    @Override
 //    public void run() {

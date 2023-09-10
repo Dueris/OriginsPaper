@@ -1,6 +1,5 @@
 package me.dueris.genesismc.factory.conditions;
 
-import me.dueris.genesismc.factory.powers.CraftPower;
 import org.reflections.Reflections;
 
 import java.io.IOException;

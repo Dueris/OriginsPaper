@@ -4,7 +4,7 @@ import me.dueris.genesismc.entity.OriginPlayer;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.OriginContainer;
-import org.bukkit.Bukkit;
+import me.dueris.genesismc.utils.PowerContainer;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -24,7 +24,7 @@ public class PreventEntityCollision extends CraftPower {
 
     Player p;
 
-    public PreventEntityCollision(){
+    public PreventEntityCollision() {
         this.p = p;
     }
 
@@ -33,22 +33,24 @@ public class PreventEntityCollision extends CraftPower {
         for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
             if (prevent_entity_collision.contains(p)) {
                 ConditionExecutor conditionExecutor = new ConditionExecutor();
-                if (conditionExecutor.check("bientity_condition", "bientity_condition", p, origin, "origins:prevent_entity_collision", p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
-                    p.setCollidable(false);
-                    if (origin.getPowerFileFromType(getPowerFile()) == null) {
-                        getPowerArray().remove(p);
-                        return;
+                for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
+                    if (conditionExecutor.check("bientity_condition", "bientity_condition", p, power, "origins:prevent_entity_collision", p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
+                        p.setCollidable(false);
+                        if (power == null) {
+                            getPowerArray().remove(p);
+                            return;
+                        }
+                        if (!getPowerArray().contains(p)) return;
+                        setActive(power.getTag(), false);
+                    } else {
+                        if (power == null) {
+                            getPowerArray().remove(p);
+                            return;
+                        }
+                        if (!getPowerArray().contains(p)) return;
+                        setActive(power.getTag(), false);
+                        p.setCollidable(true);
                     }
-                    if (!getPowerArray().contains(p)) return;
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
-                } else {
-                    if (origin.getPowerFileFromType(getPowerFile()) == null) {
-                        getPowerArray().remove(p);
-                        return;
-                    }
-                    if (!getPowerArray().contains(p)) return;
-                    setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
-                    p.setCollidable(true);
                 }
             } else {
                 p.setCollidable(true);

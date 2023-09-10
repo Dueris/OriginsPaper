@@ -5,18 +5,16 @@ import me.dueris.genesismc.entity.OriginPlayer;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.OriginContainer;
+import me.dueris.genesismc.utils.PowerContainer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.function.BinaryOperator;
 
-import static me.dueris.genesismc.factory.powers.player.attributes.AttributeHandler.*;
 import static me.dueris.genesismc.factory.powers.value_modifying.ValueModifyingSuperClass.modify_jump;
 
 public class ModifyJumpPower extends CraftPower implements Listener {
@@ -37,15 +35,17 @@ public class ModifyJumpPower extends CraftPower implements Listener {
         if (modify_jump.contains(p)) {
             for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
                 ConditionExecutor conditionExecutor = new ConditionExecutor();
-                if (conditionExecutor.check("condition", "conditions", p, origin, "origins:modify_jump", p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
-                    for (HashMap<String, Object> modifier : origin.getPowerFileFromType("origins:modify_jump").getPossibleModifiers("modifier", "modifiers")) {
-                        if (modifier.get("value") instanceof Number) {
-                            double modifierValue = ((Number) modifier.get("value")).doubleValue();
-                            int jumpBoostLevel = (int) ((modifierValue - 1.0) * 2.0);
+                for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
+                    if (conditionExecutor.check("condition", "conditions", p, power, "origins:modify_jump", p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
+                        for (HashMap<String, Object> modifier : power.getPossibleModifiers("modifier", "modifiers")) {
+                            if (modifier.get("value") instanceof Number) {
+                                double modifierValue = ((Number) modifier.get("value")).doubleValue();
+                                int jumpBoostLevel = (int) ((modifierValue - 1.0) * 2.0);
 
-                            if (jumpBoostLevel >= 0) {
-                                p.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, 20, jumpBoostLevel, true, false));
-                                setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
+                                if (jumpBoostLevel >= 0) {
+                                    p.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, 20, jumpBoostLevel, true, false));
+                                    setActive(power.getTag(), true);
+                                }
                             }
                         }
                     }
@@ -54,7 +54,7 @@ public class ModifyJumpPower extends CraftPower implements Listener {
         }
     }
 
-    public ModifyJumpPower(){
+    public ModifyJumpPower() {
 
     }
 

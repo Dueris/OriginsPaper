@@ -1,22 +1,16 @@
 package me.dueris.genesismc.factory.powers.actions;
 
-import me.dueris.genesismc.GenesisMC;
-import me.dueris.genesismc.entity.OriginPlayer;
-import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.utils.OriginContainer;
-import me.dueris.genesismc.utils.PowerContainer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
 
 public class ActionOnItemUse extends CraftPower implements Listener {
 
-    public ActionOnItemUse(){
+    public ActionOnItemUse() {
 
     }
 
@@ -30,12 +24,12 @@ public class ActionOnItemUse extends CraftPower implements Listener {
         Player actor = e.getPlayer();
 //
 //        for (OriginContainer origin : OriginPlayer.getOrigin(actor).values()) {
-//            PowerContainer power = origin.getPowerFileFromType(getPowerFile());
+//            PowerContainer power = power;
 //            if (power == null) continue;
 //            if (e.getItem() == null) return;
 //            if (e.getClickedBlock() == null) return;
 //            if (!getPowerArray().contains(e.getPlayer())) return;
-//            setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), true);
+//            setActive(power.getTag(), true);
 //            ConditionExecutor conditionExecutor = new ConditionExecutor();
 //            if(conditionExecutor.check("item_condition", "item_conditions", actor, origin, getPowerFile(), actor, null, actor.getLocation().getBlock(), null, actor.getInventory().getItemInHand(), null)){
 //                if(conditionExecutor.check("condition", "conditions", actor, origin, getPowerFile(), actor, null, actor.getLocation().getBlock(), null, actor.getInventory().getItemInHand(), null)){
@@ -46,7 +40,7 @@ public class ActionOnItemUse extends CraftPower implements Listener {
 //                            @Override
 //                            public void run() {
 //                                if (!getPowerArray().contains(e.getPlayer())) return;
-//                                setActive(origin.getPowerFileFromType(getPowerFile()).getTag(), false);
+//                                setActive(power.getTag(), false);
 //                            }
 //                        }.runTaskLater(GenesisMC.getPlugin(), 2L);
 //                    }

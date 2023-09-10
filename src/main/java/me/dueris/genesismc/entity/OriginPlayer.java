@@ -1,13 +1,11 @@
 package me.dueris.genesismc.entity;
 
-import me.dueris.genesismc.FoliaOriginScheduler;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.enums.OriginDataType;
 import me.dueris.genesismc.events.OriginChooseEvent;
 import me.dueris.genesismc.events.PowerAssignEvent;
 import me.dueris.genesismc.events.PowerUnassignEvent;
 import me.dueris.genesismc.factory.CraftApoli;
-import me.dueris.genesismc.factory.PowerStartHandler;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.files.GenesisDataFiles;
 import me.dueris.genesismc.utils.LayerContainer;
@@ -27,8 +25,6 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -253,7 +249,7 @@ public class OriginPlayer {
     }
 
     public static void assignPowers(Player player) {
-        if(player == null) Bukkit.getServer().getConsoleSender().sendMessage("urm the player is null?!");
+        if (player == null) Bukkit.getServer().getConsoleSender().sendMessage("urm the player is null?!");
         HashMap<LayerContainer, OriginContainer> origins = getOrigin(player);
         for (LayerContainer layer : origins.keySet()) {
             try {
@@ -269,11 +265,11 @@ public class OriginPlayer {
     public static HashMap<Player, ArrayList<Class<? extends CraftPower>>> powersAppliedList = new HashMap<>();
     public static ArrayList<Player> hasPowers = new ArrayList<>();
 
-    public static List<Class<? extends CraftPower>> getPowersApplied(Player p){
+    public static List<Class<? extends CraftPower>> getPowersApplied(Player p) {
         List<Class<? extends CraftPower>> array = new ArrayList<>();
-        for(Player plc : powersAppliedList.keySet()){
-            if(plc.equals(p)){
-                for(Class<? extends CraftPower> c : powersAppliedList.get(plc)){
+        for (Player plc : powersAppliedList.keySet()) {
+            if (plc.equals(p)) {
+                for (Class<? extends CraftPower> c : powersAppliedList.get(plc)) {
                     array.add(c);
                 }
 
@@ -286,8 +282,8 @@ public class OriginPlayer {
         OriginContainer origin = getOrigin(player, layer);
         ArrayList<String> powerAppliedTypes = new ArrayList<>();
         ArrayList<Class<? extends CraftPower>> powerAppliedClasses = new ArrayList<>();
-        if(player == null) Bukkit.getServer().getConsoleSender().sendMessage("rip player null");
-        if(origin.getPowerContainers().isEmpty()){
+        if (player == null) Bukkit.getServer().getConsoleSender().sendMessage("rip player null");
+        if (origin.getPowerContainers().isEmpty()) {
             player.sendMessage("BRO ITS EMPTY WAHT");
         }
         for (PowerContainer power : origin.getPowerContainers()) {
@@ -302,13 +298,13 @@ public class OriginPlayer {
                 }
                 if (power.getType().equals(craftPower.getPowerFile())) {
                     craftPower.getPowerArray().add(player);
-                    if(!powersAppliedList.containsKey(player)){
+                    if (!powersAppliedList.containsKey(player)) {
                         ArrayList lst = new ArrayList<>();
                         lst.add(c);
                         powerAppliedTypes.add(c.newInstance().getPowerFile());
                         powerAppliedClasses.add(c);
                         powersAppliedList.put(player, lst);
-                    }else{
+                    } else {
                         powersAppliedList.get(player).add(c);
                     }
                     Bukkit.getConsoleSender().sendMessage("Assigned power[" + craftPower.getPowerFile() + "] to player " + player.getName());
@@ -359,7 +355,7 @@ public class OriginPlayer {
                 }
             }
         }
-        for(Class<? extends CraftPower> classes : getPowersApplied(player)){
+        for (Class<? extends CraftPower> classes : getPowersApplied(player)) {
             powersAppliedList.get(player).remove(classes);
         }
         PowerUnassignEvent powerUnassignEvent = new PowerUnassignEvent(player, powerRemovedClasses, powerRemovedTypes, origin);
