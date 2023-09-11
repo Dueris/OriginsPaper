@@ -351,6 +351,7 @@ public class CraftApoli {
         }
         //if an origin is a core one checks if there are translations for the powers
         translateOrigins();
+        TagRegistry.runParse();
     }
 
 

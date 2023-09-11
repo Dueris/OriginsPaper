@@ -57,13 +57,16 @@ public class PreventItemUse extends CraftPower implements Listener {
                                         if (inverted) {
                                             if (ItemCondition.getNonMeatMaterials().contains(e.getItem().getType())) {
                                                 e.setCancelled(true);
+                                            }else{
+                                                return;
                                             }
                                         } else {
                                             if (ItemCondition.getMeatMaterials().contains(e.getItem().getType())) {
                                                 e.setCancelled(true);
+                                            }else{
+                                                return;
                                             }
                                         }
-
                                     } else {
                                         if (shouldCancel) {
                                             e.setCancelled(true);
