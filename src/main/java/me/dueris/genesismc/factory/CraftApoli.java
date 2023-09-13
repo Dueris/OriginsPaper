@@ -47,6 +47,13 @@ public class CraftApoli {
         return (ArrayList<OriginContainer>) originContainersD;
     }
 
+    public static OriginContainer getOrigins(String tag) {
+        for(OriginContainer origin : getOrigins()){
+            if(origin.getTag().equals(tag)) return origin;
+        }
+        return null;
+    }
+
     public static ArrayList<PowerContainer> getPowers() {
         List<PowerContainer> d = new ArrayList<>(powerContainers);
         return (ArrayList<PowerContainer>) d;

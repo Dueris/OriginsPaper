@@ -1,5 +1,6 @@
 package me.dueris.genesismc.factory.conditions.block;
 
+import me.dueris.genesismc.factory.TagRegistry;
 import me.dueris.genesismc.factory.conditions.Condition;
 import me.dueris.genesismc.factory.powers.player.RestrictArmor;
 import me.dueris.genesismc.utils.PowerContainer;
@@ -46,6 +47,13 @@ public class BlockCondition implements Condition {
                 if (block.getType().equals(mat)) return Optional.of(true);
             } catch (Exception e) {
                 //yeah imma fail this silently for some weird out of bounds error
+            }
+        }
+        if (type.equals("origins:in_tag")){
+            for(String mat : TagRegistry.getRegisteredTagFromFileKey(condition.get("tag").toString())){
+                if(block.getType().equals(Material.valueOf(mat.toString().split(":")[1].toUpperCase()))){
+                    return Optional.of(true);
+                }
             }
         }
 
