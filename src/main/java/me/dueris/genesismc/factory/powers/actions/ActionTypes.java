@@ -152,6 +152,14 @@ public class ActionTypes {
                 return EquipmentSlot.HAND;
             case "offhand":
                 return EquipmentSlot.OFF_HAND;
+            case "head":
+                return EquipmentSlot.HEAD;
+            case "chest":
+                return EquipmentSlot.CHEST;
+            case "legs":
+                return EquipmentSlot.LEGS;
+            case "feet":
+                return EquipmentSlot.FEET;
             default:
                 return null;
         }

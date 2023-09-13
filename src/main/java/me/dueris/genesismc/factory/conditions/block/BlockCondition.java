@@ -41,7 +41,6 @@ public class BlockCondition implements Condition {
         boolean inverted = (boolean) condition.getOrDefault("inverted", false);
         String type = condition.get("type").toString().toLowerCase();
         if (type.equals("origins:height")) {
-            p.sendMessage("SDHFSKDJJFSDFS");
             String comparison = condition.get("comparison").toString();
             float compare_to = Float.parseFloat(condition.get("compare_to").toString());
             if (RestrictArmor.compareValues(block.getLocation().getY(), comparison, compare_to)) {
