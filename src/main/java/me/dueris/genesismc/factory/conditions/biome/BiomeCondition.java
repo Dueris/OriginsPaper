@@ -1,9 +1,18 @@
 package me.dueris.genesismc.factory.conditions.biome;
 
+import me.dueris.genesismc.factory.TagRegistry;
 import me.dueris.genesismc.factory.conditions.Condition;
 import me.dueris.genesismc.factory.powers.player.RestrictArmor;
 import me.dueris.genesismc.utils.PowerContainer;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.world.level.biome.BiomeManager;
+import net.minecraft.world.level.biome.BiomeSources;
+import net.minecraft.world.level.biome.Biomes;
+import net.minecraft.world.level.levelgen.WorldGenSettings;
 import org.bukkit.Fluid;
+import org.bukkit.Material;
+import org.bukkit.World;
+import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -37,6 +46,28 @@ public class BiomeCondition implements Condition {
                         return getResult(inverted, true);
                     }
                 }
+            }
+        }
+        if (type.equals("origins:in_tag")){
+            for(String bi : TagRegistry.getRegisteredTagFromFileKey(condition.get("tag").toString())){
+                if(block.getBiome().equals(Biome.valueOf(bi.toString().split(":")[1].toUpperCase()))){
+                    return Optional.of(true);
+                }
+            }
+        }
+        if (type.equalsIgnoreCase("origins:precipitation")){
+            Biome biome = block.getBiome();
+            if (biome != null) {
+                String biomeName = biome.name().toLowerCase();
+                if (biomeName.contains("desert") || biomeName.contains("mesa") || biomeName.contains("savanna")) {
+                    return getResult(inverted, condition.get("precipitation").toString().equals("none"));
+                } else if (biomeName.contains("snow") || biomeName.contains("ice") || biomeName.contains("tundra")) {
+                    return getResult(inverted, condition.get("precipitation").toString().equals("snow"));
+                } else {
+                    return getResult(inverted, condition.get("precipitation").toString().equals("rain"));
+                }
+            } else {
+                return getResult(inverted, condition.get("precipitation").toString().equals("rain"));
             }
         }
         return getResult(inverted, false);
