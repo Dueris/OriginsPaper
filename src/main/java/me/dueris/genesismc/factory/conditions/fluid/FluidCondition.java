@@ -1,10 +1,12 @@
 package me.dueris.genesismc.factory.conditions.fluid;
 
+import me.dueris.genesismc.factory.TagRegistry;
 import me.dueris.genesismc.factory.conditions.Condition;
 import me.dueris.genesismc.utils.PowerContainer;
 import org.bukkit.Fluid;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.ItemStack;
@@ -28,7 +30,19 @@ public class FluidCondition implements Condition {
         String type = condition.get("type").toString().toLowerCase();
 
         switch (type) {
-
+            case "origins:empty" : {
+                return getResult(inverted, Fluid.EMPTY.equals(fluid));
+            }
+            case "origins:in_tag" : {
+                for(String flu : TagRegistry.getRegisteredTagFromFileKey(condition.get("tag").toString())){
+                    if(flu.equalsIgnoreCase(fluid.toString())){
+                        return getResult(inverted, true);
+                    }
+                }
+            }
+            case "origins:still" : {
+                return getResult(inverted, Fluid.LAVA.equals(fluid) || Fluid.WATER.equals(fluid));
+            }
         }
         return getResult(inverted, false);
     }
