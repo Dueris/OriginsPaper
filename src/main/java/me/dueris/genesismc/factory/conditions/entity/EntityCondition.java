@@ -6,22 +6,23 @@ import me.dueris.genesismc.factory.conditions.Condition;
 import me.dueris.genesismc.factory.conditions.block.BlockCondition;
 import me.dueris.genesismc.factory.conditions.item.ItemCondition;
 import me.dueris.genesismc.factory.powers.actions.ActionTypes;
+import me.dueris.genesismc.factory.powers.effects.EffectImmunity;
+import me.dueris.genesismc.factory.powers.effects.StackingStatusEffect;
 import me.dueris.genesismc.factory.powers.player.Climbing;
 import me.dueris.genesismc.factory.powers.player.FlightElytra;
 import me.dueris.genesismc.factory.powers.player.RestrictArmor;
+import me.dueris.genesismc.factory.powers.player.attributes.AttributeHandler;
 import me.dueris.genesismc.utils.PowerContainer;
 import net.minecraft.server.commands.ScoreboardCommand;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Block;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scoreboard.ScoreboardManager;
 import org.bukkit.util.BoundingBox;
@@ -655,6 +656,78 @@ public class EntityCondition implements Condition {
             double compare_to = Double.parseDouble(condition.get("compare_to").toString());
             double fin = p.getSaturation();
             return getResult(inverted, RestrictArmor.compareValues(fin, comparison, compare_to));
+        }
+
+        if (type.equalsIgnoreCase("origins:sneaking")){
+            return getResult(inverted, entity.isSneaking());
+        }
+
+        if (type.equalsIgnoreCase("origins:sprinting")){
+            return getResult(inverted, p.isSprinting());
+        }
+
+        if (type.equalsIgnoreCase("origins:status_effect")){
+            if (entity != null && StackingStatusEffect.getPotionEffectType(condition.get("effect").toString()) != null) {
+                for (PotionEffect effect : p.getActivePotionEffects()) {
+                    if (effect.getType().equals(StackingStatusEffect.getPotionEffectType(condition.get("effect").toString()))
+                            && effect.getAmplifier() >= Integer.parseInt(condition.getOrDefault("min_amplifier", 0).toString())
+                            && effect.getAmplifier() <= Integer.parseInt(condition.getOrDefault("max_amplifier", Integer.MAX_VALUE).toString())
+                            && effect.getDuration() >= Integer.parseInt(condition.getOrDefault("min_duration", 0).toString())
+                            && effect.getDuration() <= Integer.parseInt(condition.getOrDefault("max_duration", Integer.MAX_VALUE).toString())) {
+                        return getResult(inverted, true);
+                    }
+                }
+            }
+        }
+
+        if (type.equalsIgnoreCase("origins:swimming")){
+            return getResult(inverted, p.isSwimming());
+        }
+
+        if (type.equalsIgnoreCase("origins:sneaking")){
+            if(entity instanceof Tameable tameable){
+                return getResult(inverted, tameable.isTamed());
+            }
+        }
+
+        if (type.equalsIgnoreCase("origins:time_of_day")){
+            String comparison = condition.get("comparison").toString();
+            double compare_to = Double.parseDouble(condition.get("compare_to").toString());
+            return getResult(inverted, RestrictArmor.compareValues(entity.getWorld().getTime(), comparison, compare_to));
+        }
+
+        if (type.equalsIgnoreCase("origins:using_effective_tool")){
+            if(p.getTargetBlockExact(AttributeHandler.Reach.getDefaultReach(p)).getBlockData().isPreferredTool(p.getInventory().getItemInMainHand())){
+                return getResult(inverted, true);
+            }
+        }
+
+        if (type.equalsIgnoreCase("origins:using_item")){
+            if(p.getActiveItem() != null){
+                if(condition.get("item_condition") != null){
+                    ItemCondition itemCondition = new ItemCondition();
+                    Optional boolI = itemCondition.check((HashMap<String, Object>) condition.get("item_condition"), p, power, powerfile, entity, target, block, fluid, itemStack, entityDamageEvent);
+                    if(boolI.isPresent()){
+                        if(boolI.get().equals(true)){
+                            return getResult(inverted, true);
+                        }
+                    }
+                }else{
+                    return getResult(inverted, true);
+                }
+            }
+        }
+
+        if (type.equalsIgnoreCase("origins:xp_levels")){
+            String comparison = condition.get("comparison").toString();
+            double compare_to = Double.parseDouble(condition.get("compare_to").toString());
+            return getResult(inverted, RestrictArmor.compareValues(p.getExpToLevel(), comparison, compare_to));
+        }
+
+        if (type.equalsIgnoreCase("origins:xp_points")){
+            String comparison = condition.get("comparison").toString();
+            double compare_to = Double.parseDouble(condition.get("compare_to").toString());
+            return getResult(inverted, RestrictArmor.compareValues(p.getTotalExperience(), comparison, compare_to));
         }
 
         return getResult(inverted, false);
