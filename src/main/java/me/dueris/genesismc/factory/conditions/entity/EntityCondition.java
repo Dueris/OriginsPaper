@@ -5,15 +5,13 @@ import me.dueris.genesismc.factory.TagRegistry;
 import me.dueris.genesismc.factory.conditions.Condition;
 import me.dueris.genesismc.factory.conditions.block.BlockCondition;
 import me.dueris.genesismc.factory.conditions.item.ItemCondition;
-import me.dueris.genesismc.factory.powers.actions.ActionTypes;
-import me.dueris.genesismc.factory.powers.effects.EffectImmunity;
+import me.dueris.genesismc.factory.actions.ActionTypes;
 import me.dueris.genesismc.factory.powers.effects.StackingStatusEffect;
 import me.dueris.genesismc.factory.powers.player.Climbing;
 import me.dueris.genesismc.factory.powers.player.FlightElytra;
 import me.dueris.genesismc.factory.powers.player.RestrictArmor;
 import me.dueris.genesismc.factory.powers.player.attributes.AttributeHandler;
 import me.dueris.genesismc.utils.PowerContainer;
-import net.minecraft.server.commands.ScoreboardCommand;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Block;
@@ -24,7 +22,6 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-import org.bukkit.scoreboard.ScoreboardManager;
 import org.bukkit.util.BoundingBox;
 import org.bukkit.util.RayTraceResult;
 import org.json.simple.JSONObject;
@@ -40,7 +37,6 @@ import java.util.Optional;
 import java.util.function.Predicate;
 
 import static me.dueris.genesismc.factory.conditions.ConditionExecutor.getResult;
-import static me.dueris.genesismc.factory.powers.Power.action_on_being_used;
 import static me.dueris.genesismc.factory.powers.player.RestrictArmor.compareValues;
 
 public class EntityCondition implements Condition {
