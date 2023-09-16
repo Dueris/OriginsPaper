@@ -178,11 +178,6 @@ public class DamageOverTime extends CraftPower {
                             }
 
                         } else {
-                            if (power == null) {
-                                getPowerArray().remove(p);
-                                return;
-                            }
-                            if (!getPowerArray().contains(p)) return;
                             setActive(power.getTag(), false);
                         }
 

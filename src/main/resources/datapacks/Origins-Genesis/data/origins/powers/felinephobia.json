@@ -1,17 +1,9 @@
 {
-  "type": "origins:damage_over_time",
-  "interval": 14,
-  "onset_delay": 1,
-  "damage": 2,
-  "damage_easy": 1,
-  "condition": {
-    "type": "origins:distance",
-    "comparison": "<=",
-    "compare_to": 7,
-    "entity_condition": {
-      "type": "entity_type",
-      "entity_type": "minecraft:cat"
-    }
+  "type": "origins:action_over_time",
+  "entity_action": {
+    "type": "origins:execute_command",
+    "command": "execute as @s if entity @e[distance=..10,type=minecraft:cat] run damage @s 1"
   },
+  "interval": 20,
   "hidden": true
 }

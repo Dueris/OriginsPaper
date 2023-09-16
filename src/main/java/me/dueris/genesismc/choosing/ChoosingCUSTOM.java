@@ -95,11 +95,20 @@ public class ChoosingCUSTOM implements Listener {
 
             p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 10, 2);
 
-            ArrayList<PowerContainer> powerContainers = origin.getPowerContainers();
+            ArrayList<PowerContainer> powerContainers = new ArrayList<>();
+            for(PowerContainer powerContainer : origin.getPowerContainers()){
+                if(powerContainer.getHidden()) continue;
+                powerContainers.add(powerContainer);
+            }
 
             //gets icon from origin
             String minecraftItem = origin.getIcon();
-            String item = minecraftItem.split(":")[1];
+            String item = null;
+            if(minecraftItem.contains(":")){
+                item = minecraftItem.split(":")[1];
+            }else{
+                item = minecraftItem;
+            }
             ItemStack originIcon = new ItemStack(Material.valueOf(item.toUpperCase()));
 
             //making the items to display in the menu
@@ -167,19 +176,17 @@ public class ChoosingCUSTOM implements Listener {
                         powerContainers.remove(0);
                     }
                     if (powerContainers.size() > 0) {
+                            ItemStack originPower = new ItemStack(Material.FILLED_MAP);
 
-                        ItemStack originPower = new ItemStack(Material.FILLED_MAP);
+                            ItemMeta meta = originPower.getItemMeta();
+                            meta.setDisplayName(powerContainers.get(0).getName());
+                            meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+                            meta.setLore(cutStringIntoLists(powerContainers.get(0).getDescription()));
+                            originPower.setItemMeta(meta);
 
-                        ItemMeta meta = originPower.getItemMeta();
-                        meta.setDisplayName(powerContainers.get(0).getName());
-                        meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-                        meta.setLore(cutStringIntoLists(powerContainers.get(0).getDescription()));
-                        originPower.setItemMeta(meta);
+                            contents.add(originPower);
 
-                        contents.add(originPower);
-
-                        powerContainers.remove(0);
-
+                            powerContainers.remove(0);
                     } else {
                         if (i >= 38) {
                             contents.add(new ItemStack(Material.AIR));

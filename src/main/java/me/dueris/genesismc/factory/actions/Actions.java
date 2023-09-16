@@ -91,13 +91,13 @@ public class Actions {
         if (type.equals("origins:actor_action")) {
             EntityActionType(actor, biEntityAction);
         }
+        if (type.equals("origins:target_action")) {
+            EntityActionType(target, biEntityAction);
+        }
     }
 
     public static void biEntityActionType(Entity actor, Entity target, JSONObject biEntityAction) {
-        JSONObject entityAction = (JSONObject) biEntityAction.get("action");
-        if (entityAction == null) {
-            entityAction = (JSONObject) biEntityAction.get("bientity_action");
-        }
+        JSONObject entityAction = biEntityAction;
         String type = entityAction.get("type").toString();
 
         if (type.equals("origins:and")) {
@@ -330,8 +330,8 @@ public class Actions {
         }
         if (type.equals("origins:feed")){
             if (entity instanceof Player player){
-                player.setFoodLevel(Integer.parseInt(player.getFoodLevel() + power.get("food").toString()));
-                player.setSaturation(Float.parseFloat(player.getSaturation() + power.get("saturation").toString()));
+                player.setFoodLevel(player.getFoodLevel() + Integer.parseInt(power.get("food").toString()));
+                player.setSaturation(player.getSaturation() + Float.parseFloat(power.get("saturation").toString()));
             }
         }
         if (type.equals("origins:fire_projectile")){
@@ -372,7 +372,7 @@ public class Actions {
             if(power.get("before_action") != null){
                 runEntity(entity, (JSONObject) power.get("before_action"));
             }
-            RayTraceResult traceResult = entity.getWorld().rayTrace(entity.getLocation(), entity.getLocation().getDirection(), 12, FluidCollisionMode.valueOf(power.getOrDefault("fluid_handling", "none").toString()), false, 1, filter);
+            RayTraceResult traceResult = entity.getWorld().rayTrace(entity.getLocation(), entity.getLocation().getDirection(), 12, FluidCollisionMode.valueOf(power.getOrDefault("fluid_handling", "NEVER").toString().toUpperCase()), false, 1, filter);
             if(traceResult != null){
                 if(traceResult.getHitEntity() != null){
                     Entity entity2 = traceResult.getHitEntity();
@@ -401,7 +401,7 @@ public class Actions {
             entity.setFireTicks(0);
         }
         if (type.equals("origins:play_sound")) {
-            entity.getWorld().playSound(entity, Sound.valueOf(power.get("sound").toString().toUpperCase().split(":")[1].replace("\\.", "_")), 8, 1);
+            entity.getWorld().playSound(entity, Sound.valueOf(power.get("sound").toString().toUpperCase().split(":")[1].replace(".", "_")), 8, 1);
         }
         if (type.equals("origins:gain_air")) {
             long amt = (long) power.get("value");
@@ -477,7 +477,17 @@ public class Actions {
             }
         }
         if (type.equals("origins:execute_command")) {
-            Bukkit.dispatchCommand(new OriginCommandSender(), power.get("command").toString());
+            String cmd = null;
+            if(power.get("command").toString().startsWith("/")){
+                cmd = power.get("command").toString().split("/")[1];
+            }else{
+                cmd = power.get("command").toString();
+            }
+            if(entity instanceof Player p){
+                Bukkit.dispatchCommand(p, "execute as $1 run ".replace("$1", p.getName()) + cmd);
+            }else{
+                Bukkit.dispatchCommand(new OriginCommandSender(), cmd);
+            }
         }
         if (type.equals("origins:add_xp")) {
             int points = 0;
@@ -542,8 +552,8 @@ public class Actions {
                         for (PowerContainer powerContainer : origin.getPowerContainers()) {
                             if (powerContainer.get("cooldown") != null) {
                                 String key = "*";
-                                if (powerContainer.getKey().get("key") != null) {
-                                    key = powerContainer.getKey().get("key").toString();
+                                if (powerContainer.getKey().getOrDefault("key", "key.origins.primary_active") != null) {
+                                    key = powerContainer.getKey().getOrDefault("key", "key.origins.primary_active").toString();
                                     if (powerContainer.getType().equals("origins:action_on_hit")) {
                                         key = "key.attack";
                                     } else if (powerContainer.getType().equals("origins:action_when_damage_taken")) {
@@ -576,6 +586,8 @@ public class Actions {
     public static void EntityActionType(Entity entity, JSONObject power) {
         JSONObject entityAction;
         entityAction = power;
+        if(entityAction == null) return;
+        if(entityAction.get("type") == null) return;
         String type = entityAction.get("type").toString();
 
         if (type.equals("origins:and")) {
@@ -944,6 +956,8 @@ public class Actions {
                 if(player.getInventory().contains(item)){
                     if(item.getType().isEdible()){
                         item.setAmount(item.getAmount() - 1);
+                        player.setSaturation(player.getSaturation() + 2);
+                        player.setFoodLevel(player.getFoodLevel() + 3);
                     }
                 }
             }

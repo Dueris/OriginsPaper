@@ -70,6 +70,14 @@ public class BiomeCondition implements Condition {
                 return getResult(inverted, condition.get("precipitation").toString().equals("rain"));
             }
         }
+        if (type.equalsIgnoreCase("origins:category")){
+            Biome biome = block.getBiome();
+            for(String biom : BiomeMappings.getBiomeIDs(condition.get("category").toString())){
+                 if(Biome.valueOf(biom.split(":")[1].toUpperCase()).equals(biome)){
+                     return getResult(inverted, true);
+                 }
+            }
+        }
         return getResult(inverted, false);
     }
 }

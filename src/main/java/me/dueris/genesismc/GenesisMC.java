@@ -165,7 +165,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 
         previous_respawn_setting = Bukkit.getWorlds().get(0).getGameRuleValue(GameRule.DO_IMMEDIATE_RESPAWN);
 
-        Bukkit.getWorlds().get(0).setGameRule(GameRule.DO_IMMEDIATE_RESPAWN, true);
+//        Bukkit.getWorlds().get(0).setGameRule(GameRule.DO_IMMEDIATE_RESPAWN, true);
 
         getServer().getPluginManager().registerEvents(new DataContainer(), this);
         getServer().getPluginManager().registerEvents(this, this);
@@ -237,19 +237,6 @@ public final class GenesisMC extends JavaPlugin implements Listener {
                 getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] " + LangConfig.getLocalizedString(Bukkit.getConsoleSender(), "startup.debug.allOrigins").replace("%originName%", origins.getName())).color(TextColor.fromHexString(GREEN)));
             }
         }
-//        Bukkit.getServer().getConsoleSender().sendMessage("[OriginPaper] attempting origin-power runtime check");
-//        UUID fakeUUID = UUID.randomUUID();
-//        if(Bukkit.getOfflinePlayer(fakeUUID) != null) return;
-//        if(Bukkit.getOnlinePlayers().contains(Bukkit.getPlayer(fakeUUID))) return;
-//        @NotNull PlayerProfile pT = Bukkit.createPlayerProfile(fakeUUID, "2u3iuroisdnvmskakwoskofdd");
-//        for(LayerContainer layerContainer : CraftApoli.getLayers()){
-//            for(String originTag : layerContainer.getOrigins()){
-//                OriginContainer origin = CraftApoli.getOrigins(originTag);
-//                OriginPlayer.setOrigin(Bukkit.getPlayer(pT.getUniqueId()), layerContainer, origin);
-//                FoliaOriginScheduler.OriginSchedulerTree originSchedulerTree = new FoliaOriginScheduler.OriginSchedulerTree();
-//                originSchedulerTree.runTask(GenesisMC.getPlugin());
-//            }
-//        }
         try {
             for (Class<? extends CraftPower> c : CraftPower.findCraftPowerClasses()) {
                 if (CraftPower.class.isAssignableFrom(c)) {
@@ -290,9 +277,6 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         getCommand("origin").setExecutor(new GenesisCommandManager());
         getCommand("origin").setTabCompleter(new TabAutoComplete());
         getCommand("power").setTabCompleter(new TabAutoComplete());
-//        getCommand("power").setExecutor(new PowerCommand());
-        //TODO: FINISH /POWER
-        //Event Handler Register
         getServer().getPluginManager().registerEvents(new PlayerHandler(), this);
         getServer().getPluginManager().registerEvents(new EnchantProtEvent(), this);
         getServer().getPluginManager().registerEvents(new WaterProtAnvil(), this);

@@ -350,7 +350,7 @@ public class OriginPlayer {
                     }
                     powerRemovedClasses.add(c);
                     if (GenesisDataFiles.getMainConfig().getString("console-startup-debug").equalsIgnoreCase("true")) {
-                        Bukkit.getConsoleSender().sendMessage("GenesisMC-Origins removed power[" + craftPower.getPowerFile() + "] on layer[" + layer.getTag() + "] to player " + player.getName());
+                        Bukkit.getConsoleSender().sendMessage("Removed power[" + craftPower.getPowerFile() + "] to player " + player.getName());
                     }
                 }
             }

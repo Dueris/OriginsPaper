@@ -59,7 +59,7 @@ public class FireProjectile extends CraftPower implements Listener {
         for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
             if (fire_projectile.contains(p)) {
                 for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
-                    if (isKeyBeingPressed(e.getPlayer(), power.getKey().get("key").toString(), true)) {
+                    if (isKeyBeingPressed(e.getPlayer(), power.getKey().getOrDefault("key", "key.origins.primary_active").toString(), true)) {
                         if (in_continuous.contains(p)) {
                             in_continuous.remove(p);
                         } else {
@@ -96,8 +96,8 @@ public class FireProjectile extends CraftPower implements Listener {
                         if (fire_projectile.contains(p)) {
                             ConditionExecutor conditionExecutor = new ConditionExecutor();
                             if (conditionExecutor.check("condition", "conditions", p, power, "origins:fire_projectile", p, null, null, null, p.getItemInHand(), null)) {
-                                if (!CooldownStuff.isPlayerInCooldown(p, power.getKey().get("key").toString())) {
-                                    if (isKeyBeingPressed(e.getPlayer(), power.getKey().get("key").toString(), true)) {
+                                if (!CooldownStuff.isPlayerInCooldown(p, power.getKey().getOrDefault("key", "key.origins.primary_active").toString())) {
+                                    if (isKeyBeingPressed(e.getPlayer(), power.getKey().getOrDefault("key", "key.origins.primary_active").toString(), true)) {
                                         new BukkitRunnable() {
                                             @Override
                                             public void run() {
@@ -122,7 +122,7 @@ public class FireProjectile extends CraftPower implements Listener {
                                                     enderian_pearl.remove(p);
                                                 }
 
-                                                String key = (String) power.getKey().get("key");
+                                                String key = (String) power.getKey().getOrDefault("key", "key.origins.primary_active");
                                                 if (!CooldownStuff.isPlayerInCooldown(p, key)) {
                                                     KeybindHandler.runKeyChangeTrigger(KeybindHandler.getTriggerFromOriginKey(p, key));
 
@@ -136,7 +136,7 @@ public class FireProjectile extends CraftPower implements Listener {
                                                         public void run() {
                                                             if (!CooldownStuff.isPlayerInCooldown(p, key)) {
                                                                 if (shotsLeft >= 0) {
-                                                                    if (power.getKey().get("continuous").toString().equalsIgnoreCase("false")) {
+                                                                    if (power.getKey().getOrDefault("continuous", "false").toString().equalsIgnoreCase("false")) {
                                                                         KeybindHandler.runKeyChangeTriggerReturn(KeybindHandler.getTriggerFromOriginKey(p, key), p, key);
                                                                         CooldownStuff.addCooldown(p, origin, power.getTag(), power.getType(), cooldown * 2, key);
                                                                         addCooldownPatch(p);
@@ -223,7 +223,7 @@ public class FireProjectile extends CraftPower implements Listener {
                                                         this.cancel();
                                                     }
 
-                                                    if (power.getKey().get("continuous").toString().equalsIgnoreCase("false")) {
+                                                    if (power.getKey().getOrDefault("continuous", "false").toString().equalsIgnoreCase("false")) {
                                                         ItemMeta met = KeybindHandler.getKeybindItem(key, p.getInventory()).getItemMeta();
                                                         met.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "contin"), PersistentDataType.BOOLEAN, false);
                                                         if (power == null) {
@@ -235,7 +235,7 @@ public class FireProjectile extends CraftPower implements Listener {
                                                         KeybindHandler.getKeybindItem(key, p.getInventory()).setItemMeta(met);
                                                         this.cancel();
                                                     } else {
-                                                        if (isKeyBeingPressed(e.getPlayer(), power.getKey().get("key").toString(), true)) {
+                                                        if (isKeyBeingPressed(e.getPlayer(), power.getKey().getOrDefault("key", "key.origins.primary_active").toString(), true)) {
                                                             ItemMeta met = KeybindHandler.getKeybindItem(key, p.getInventory()).getItemMeta();
                                                             met.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "contin"), PersistentDataType.BOOLEAN, false);
                                                             if (power == null) {
@@ -290,6 +290,4 @@ public class FireProjectile extends CraftPower implements Listener {
     public ArrayList<Player> getPowerArray() {
         return fire_projectile;
     }
-
-    //TODO: make the kye thinger and all the executorss
 }

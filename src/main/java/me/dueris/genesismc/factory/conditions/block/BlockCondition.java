@@ -56,9 +56,11 @@ public class BlockCondition implements Condition {
             }
         }
         if (type.equals("origins:in_tag")){
-            for(String mat : TagRegistry.getRegisteredTagFromFileKey(condition.get("tag").toString())){
-                if(block.getType().equals(Material.valueOf(mat.toString().split(":")[1].toUpperCase()))){
-                    return Optional.of(true);
+            if(TagRegistry.getRegisteredTagFromFileKey(condition.get("tag").toString()) != null){
+                for(String mat : TagRegistry.getRegisteredTagFromFileKey(condition.get("tag").toString())){
+                    if(block.getType().equals(Material.valueOf(mat.toString().split(":")[1].toUpperCase()))){
+                        return Optional.of(true);
+                    }
                 }
             }
         }

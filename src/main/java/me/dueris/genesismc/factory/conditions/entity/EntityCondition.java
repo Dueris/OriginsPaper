@@ -729,7 +729,7 @@ public class EntityCondition implements Condition {
         return getResult(inverted, false);
     }
 
-    private Location[] prevLoca = new Location[50];
+    private Location[] prevLoca = new Location[100000];
 
     public boolean isEntityMoving(Entity entity){
         int entID = entity.getEntityId();
