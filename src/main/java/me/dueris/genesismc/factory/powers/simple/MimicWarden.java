@@ -9,6 +9,7 @@ import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.OriginContainer;
 import me.dueris.genesismc.utils.PowerContainer;
 import org.bukkit.*;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -114,12 +115,35 @@ public class MimicWarden extends CraftPower implements OriginSimple, Listener {
                                 LivingEntity ent = (LivingEntity) entity;
                             }
 
-                            double damageRadius = 10.0;
-                            for (Entity nearbyEntity : p.getNearbyEntities(damageRadius, damageRadius, damageRadius)) {
-                                if (nearbyEntity instanceof LivingEntity nearbyLivingEntity && !nearbyEntity.equals(p)) {
-                                    nearbyLivingEntity.damage(14.0, attacker);
+                            int centerX = p.getLocation().getBlockX();
+                            int centerY = p.getLocation().getBlockY();
+                            int centerZ = p.getLocation().getBlockZ();
+
+                            int radius = 4;
+
+                            World world = p.getWorld();
+
+                            for (int x = centerX - radius; x <= centerX + radius; x++) {
+                                for (int y = centerY - radius; y <= centerY + radius; y++) {
+                                    for (int z = centerZ - radius; z <= centerZ + radius; z++) {
+                                            Location location = new Location(world, x, y, z);
+                                            Block block = world.getBlockAt(location);
+                                            if(!block.isCollidable()){
+                                                block.breakNaturally();
+                                            }
+                                    }
                                 }
                             }
+                            for(Entity entity1 : traceResult.getHitEntity().getNearbyEntities(3, 3, 3)){
+                                if (entity1 == null) return;
+                                if (entity1.isDead() || !(entity1 instanceof LivingEntity)) return;
+                                if (entity1.isInvulnerable()) return;
+                                LivingEntity victim1 = (LivingEntity) traceResult.getHitEntity();
+                                ((LivingEntity) entity).damage(10, p);
+                                ((LivingEntity) entity).knockback(1, victim1.getX(), victim1.getZ());
+                            }
+                            victim.knockback(1.5, p.getX(), p.getZ());
+                            victim.damage(15);
 
                             CooldownStuff.addCooldown(p, origin, "Sonic Boom", getPowerFile(), 1200, "key.origins.primary_active");
 

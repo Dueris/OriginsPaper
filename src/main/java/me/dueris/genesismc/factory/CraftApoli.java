@@ -165,8 +165,6 @@ public class CraftApoli {
                     ArrayList<String> originFileName = new ArrayList<>();
 
                     for (Path path : files.keySet()) {
-                        Bukkit.getConsoleSender().sendMessage("patj");
-                        Bukkit.getLogger().warning("AHSFD");
                         if (path.equals(Path.of("data" + File.separator + originFolder.get(0) + File.separator + "origins" + File.separator + originFileName.get(0) + ".json"))) {
                             JSONObject originParser = (JSONObject) new JSONParser().parse(files.get(path));
                             ArrayList<String> powersList = (ArrayList<String>) originParser.get("powers");
@@ -242,8 +240,7 @@ public class CraftApoli {
                     zip.close();
 
                 } catch (Exception e) {
-                    if (showErrors)
-                        e.printStackTrace();
+                    //yeah imma fail this silently
                 }
 
             } else {
