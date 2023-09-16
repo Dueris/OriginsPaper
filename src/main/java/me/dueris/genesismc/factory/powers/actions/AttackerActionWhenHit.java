@@ -2,6 +2,7 @@ package me.dueris.genesismc.factory.powers.actions;
 
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.entity.OriginPlayer;
+import me.dueris.genesismc.factory.actions.Actions;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.OriginContainer;
 import me.dueris.genesismc.utils.PowerContainer;
@@ -39,7 +40,7 @@ public class AttackerActionWhenHit extends CraftPower implements Listener {
 
                 if (!getPowerArray().contains(actor)) return;
                 setActive(power.getTag(), true);
-                ActionTypes.biEntityActionType(actor, actor, power.getBiEntityAction());
+                Actions.biEntityActionType(actor, actor, power.getBiEntityAction());
                 new BukkitRunnable() {
                     @Override
                     public void run() {

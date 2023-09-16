@@ -108,8 +108,7 @@ public class FlightElytra extends CraftPower implements Listener {
         }
 
         ItemStack handItem = player.getInventory().getItemInMainHand();
-        ItemStack rocket = new ItemStack(Material.FIREWORK_ROCKET);
-        if (!handItem.isSimilar(rocket)) return;
+        if(handItem.isSimilar(new ItemStack(Material.FIREWORK_ROCKET)))
 
         launchElytra(player, 1.75F);
         if (player.getGameMode() != GameMode.CREATIVE) handItem.setAmount(handItem.getAmount() - 1);

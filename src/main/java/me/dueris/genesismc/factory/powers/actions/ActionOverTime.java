@@ -1,6 +1,7 @@
 package me.dueris.genesismc.factory.powers.actions;
 
 import me.dueris.genesismc.entity.OriginPlayer;
+import me.dueris.genesismc.factory.actions.Actions;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.OriginContainer;
@@ -43,7 +44,7 @@ public class ActionOverTime extends CraftPower {
                         ConditionExecutor executor = new ConditionExecutor();
                         if (executor.check("condition", "conditions", p, power, getPowerFile(), p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
                             setActive(power.getTag(), true);
-                            ActionTypes.EntityActionType(p, power.getEntityAction());
+                            Actions.EntityActionType(p, power.getEntityAction());
                         } else {
                             setActive(power.getTag(), false);
                         }

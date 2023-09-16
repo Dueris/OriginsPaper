@@ -2,6 +2,7 @@ package me.dueris.genesismc.factory.powers.actions;
 
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.entity.OriginPlayer;
+import me.dueris.genesismc.factory.actions.Actions;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.OriginContainer;
@@ -42,12 +43,12 @@ public class ActionOnBlockUse extends CraftPower implements Listener {
                         if (conditionExecutor.check("block_condition", "block_conditions", actor, power, getPowerFile(), actor, null, e.getClickedBlock(), null, e.getItem(), null)) {
                             if (!getPowerArray().contains(e.getPlayer())) return;
                             setActive(power.getTag(), true);
-                            ActionTypes.BlockActionType(e.getClickedBlock().getLocation(), power.getBlockAction());
-                            ActionTypes.EntityActionType(e.getPlayer(), power.getEntityAction());
-                            ActionTypes.ItemActionType(e.getPlayer().getActiveItem(), power.getItemAction());
-                            ActionTypes.ItemActionType(e.getPlayer().getActiveItem(), power.getAction("held_item_action"));
-                            ActionTypes.ItemActionType(e.getPlayer().getActiveItem(), power.getAction("result_item_action"));
-                            ActionTypes.BlockEntityType(e.getPlayer(), e.getClickedBlock().getLocation(), power.getAction("block_entity_action"));
+                            Actions.BlockActionType(e.getClickedBlock().getLocation(), power.getBlockAction());
+                            Actions.EntityActionType(e.getPlayer(), power.getEntityAction());
+                            Actions.ItemActionType(e.getPlayer().getActiveItem(), power.getItemAction());
+                            Actions.ItemActionType(e.getPlayer().getActiveItem(), power.getAction("held_item_action"));
+                            Actions.ItemActionType(e.getPlayer().getActiveItem(), power.getAction("result_item_action"));
+                            Actions.BlockEntityType(e.getPlayer(), e.getClickedBlock().getLocation(), power.getAction("block_entity_action"));
                             new BukkitRunnable() {
                                 @Override
                                 public void run() {

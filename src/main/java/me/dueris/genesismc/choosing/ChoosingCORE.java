@@ -129,15 +129,16 @@ public class ChoosingCORE implements Listener {
                 meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
                 meta.addItemFlags(ItemFlag.HIDE_PLACED_ON);
                 meta.setCustomModelData(00002);
-                meta.setDisplayName(GenesisDataFiles.getOrbCon().getString("name"));
+                meta.setDisplayName(LangConfig.getLocalizedString(Bukkit.getConsoleSender(), "misc.orbOfOrigins"));
                 meta.setUnbreakable(true);
                 meta.getCustomTagContainer().setCustomTag(new NamespacedKey(GenesisMC.getPlugin(), "origins"), ItemTagType.STRING, "orb_of_origin");
                 meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
                 item.setItemMeta(meta);
                 if (e.getItem() != null) {
                     if (e.getItem().isSimilar(item)) {
-                        for (LayerContainer layer : CraftApoli.getLayers())
+                        for (LayerContainer layer : CraftApoli.getLayers()){
                             OriginPlayer.setOrigin(p, layer, CraftApoli.nullOrigin());
+                        }
                         OrbInteractEvent event = new OrbInteractEvent(p);
                         getServer().getPluginManager().callEvent(event);
                     }

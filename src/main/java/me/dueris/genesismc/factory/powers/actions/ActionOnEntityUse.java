@@ -2,6 +2,7 @@ package me.dueris.genesismc.factory.powers.actions;
 
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.entity.OriginPlayer;
+import me.dueris.genesismc.factory.actions.Actions;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.OriginContainer;
 import me.dueris.genesismc.utils.PowerContainer;
@@ -40,9 +41,9 @@ public class ActionOnEntityUse extends CraftPower implements Listener {
 
                 if (!getPowerArray().contains(e.getPlayer())) return;
                 setActive(power.getTag(), true);
-                ActionTypes.biEntityActionType(actor, target, power.getBiEntityAction());
-                ActionTypes.ItemActionType(actor.getActiveItem(), power.getAction("held_item_action"));
-                ActionTypes.ItemActionType(actor.getActiveItem(), power.getAction("result_item_action"));
+                Actions.biEntityActionType(actor, target, power.getBiEntityAction());
+                Actions.ItemActionType(actor.getActiveItem(), power.getAction("held_item_action"));
+                Actions.ItemActionType(actor.getActiveItem(), power.getAction("result_item_action"));
                 //todo:add conditions for it see https://origins.readthedocs.io/en/latest/types/power_types/action_on_entity_use/
                 new BukkitRunnable() {
                     @Override
