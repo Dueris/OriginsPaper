@@ -3,7 +3,7 @@ package me.dueris.genesismc.factory.powers.actions;
 import me.dueris.genesismc.CooldownStuff;
 import me.dueris.genesismc.entity.OriginPlayer;
 import me.dueris.genesismc.events.KeybindTriggerEvent;
-import me.dueris.genesismc.factory.actions.ActionTypes;
+import me.dueris.genesismc.factory.actions.Actions;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.OriginContainer;
@@ -39,7 +39,7 @@ public class ActiveSelf extends CraftPower implements Listener {
                         if (!getPowerArray().contains(e.getPlayer())) return;
                         setActive(power.getTag(), true);
                         if (isKeyBeingPressed(e.getPlayer(), power.getKey().get("key").toString(), true)) {
-                            ActionTypes.EntityActionType(e.getPlayer(), power.getEntityAction());
+                            Actions.EntityActionType(e.getPlayer(), power.getEntityAction());
                             if (power.get("cooldown", "1") != null) {
                                 CooldownStuff.addCooldown(e.getPlayer(), origin, power.getTag(), power.getType(), Integer.parseInt(power.get("cooldown", "1")), e.getKey());
                             }

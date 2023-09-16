@@ -2,7 +2,7 @@ package me.dueris.genesismc.factory.powers.actions;
 
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.entity.OriginPlayer;
-import me.dueris.genesismc.factory.actions.ActionTypes;
+import me.dueris.genesismc.factory.actions.Actions;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.OriginContainer;
 import me.dueris.genesismc.utils.PowerContainer;
@@ -36,7 +36,7 @@ public class ActionOnDeath extends CraftPower implements Listener {
                     for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
                         if (power == null) continue;
                         setActive(power.getTag(), true);
-                        ActionTypes.EntityActionType(p, power.getEntityAction());
+                        Actions.EntityActionType(p, power.getEntityAction());
                         new BukkitRunnable() {
                             @Override
                             public void run() {

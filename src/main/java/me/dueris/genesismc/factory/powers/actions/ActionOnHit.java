@@ -2,7 +2,7 @@ package me.dueris.genesismc.factory.powers.actions;
 
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.entity.OriginPlayer;
-import me.dueris.genesismc.factory.actions.ActionTypes;
+import me.dueris.genesismc.factory.actions.Actions;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.OriginContainer;
 import me.dueris.genesismc.utils.PowerContainer;
@@ -38,7 +38,7 @@ public class ActionOnHit extends CraftPower {
 
 
                         setActive(power.getTag(), true);
-                        ActionTypes.biEntityActionType(actor, target, power.getBiEntityAction());
+                        Actions.biEntityActionType(actor, target, power.getBiEntityAction());
                         //todo: bientity condition and damage condition
                         new BukkitRunnable() {
                             @Override

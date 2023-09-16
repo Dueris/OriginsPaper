@@ -5,7 +5,13 @@ import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.OriginCommandSender;
 import me.dueris.genesismc.enchantments.EnchantProtEvent;
 import me.dueris.genesismc.entity.OriginPlayer;
+import me.dueris.genesismc.factory.CraftApoli;
+import me.dueris.genesismc.factory.conditions.block.BlockCondition;
+import me.dueris.genesismc.factory.conditions.entity.EntityCondition;
+import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.factory.powers.Toggle;
+import me.dueris.genesismc.factory.powers.effects.StackingStatusEffect;
+import me.dueris.genesismc.factory.powers.player.attributes.AttributeHandler;
 import me.dueris.genesismc.utils.OriginContainer;
 import me.dueris.genesismc.utils.PowerContainer;
 import org.bukkit.*;
@@ -14,19 +20,27 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.*;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
+import org.bukkit.projectiles.ProjectileSource;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
+import java.util.function.Predicate;
 
+import static me.dueris.genesismc.factory.conditions.ConditionExecutor.getResult;
 import static me.dueris.genesismc.factory.powers.OriginMethods.statusEffectInstance;
+import static me.dueris.genesismc.factory.powers.Power.conditioned_attribute;
+import static me.dueris.genesismc.factory.powers.player.FireProjectile.enderian_pearl;
 
 public class Actions {
 
@@ -164,6 +178,22 @@ public class Actions {
         }
     }
 
+    public static void spawnEffectCloud(Entity entity, float radius, int waitTime, PotionEffect effect) {
+        if (entity != null) {
+            Location entityLocation = entity.getLocation();
+
+            org.bukkit.entity.AreaEffectCloud effectCloud = entityLocation.getWorld()
+                    .spawn(entityLocation, org.bukkit.entity.AreaEffectCloud.class);
+
+            effectCloud.setRadius(radius);
+            effectCloud.setDuration(waitTime);
+
+            if (effect != null) {
+                effectCloud.addCustomEffect(effect, true);
+            }
+        }
+    }
+
     private static void runEntity(Entity entity, JSONObject power) {
         JSONObject entityAction;
         entityAction = power;
@@ -182,13 +212,227 @@ public class Actions {
                 }
             }
         }
+        if (type.equals("origins:spawn_entity")){
+            Bukkit.dispatchCommand(new OriginCommandSender(), "summon $1 %1 %2 %3 $2"
+                            .replace("$1", power.get("entity_type").toString())
+                            .replace("$2", power.getOrDefault("tag", "").toString()
+                            .replace("%1", String.valueOf(entity.getLocation().getX()))
+                            .replace("%2", String.valueOf(entity.getLocation().getY()))
+                            .replace("%3", String.valueOf(entity.getLocation().getZ()))
+                            ));
+        }
+        if (type.equals("origins:spawn_particles")){
+            Particle particle = Particle.valueOf(power.getOrDefault("particle", null).toString().split(":")[1].toUpperCase());
+            int count = Integer.parseInt(String.valueOf(power.getOrDefault("count", 1)));
+            float offset_y_no_vector = Float.parseFloat(String.valueOf(power.getOrDefault("offset_y", 1.0)));
+            float offset_x = 0.25f;
+            float offset_y = 0.50f;
+            float offset_z = 0.25f;
+            JSONObject spread = (JSONObject) power.get("spread");
+            if (spread.get("y") != null) {
+                offset_y = Float.parseFloat(String.valueOf(spread.get("y")));
+            }
+
+            if (spread.get("x") != null) {
+                offset_x = Float.parseFloat(String.valueOf(spread.get("x")));
+            }
+
+            if (spread.get("z") != null) {
+                offset_z = Float.parseFloat(String.valueOf(spread.get("z")));
+            }
+            entity.getWorld().spawnParticle(particle, new Location(entity.getWorld(), entity.getLocation().getX(), entity.getLocation().getY(), entity.getLocation().getZ()), count, offset_x, offset_y, offset_z, 0);
+        }
+        if (type.equals("origins:spawn_effect_cloud")){
+            spawnEffectCloud(entity, Float.valueOf(power.getOrDefault("radius", 3.0).toString()), Integer.valueOf(power.getOrDefault("wait_time", 10).toString()), new PotionEffect(StackingStatusEffect.getPotionEffectType(power.get("effect").toString()), 1, 1));
+        }
+        if (type.equals("origins:replace_inventory")) {
+            if (entity instanceof Player player) {
+                if (power.containsKey("slot")) {
+                    try {
+                        if (player.getInventory().getItem(getSlotFromString(power.get("slot").toString())) == null)
+                            return;
+                        JSONObject jsonObject = (JSONObject) power.get("stack");
+                        player.getInventory().getItem(getSlotFromString(power.get("slot").toString())).setType(Material.valueOf(jsonObject.get("item").toString().split(":")[1].toUpperCase()));
+                    } catch (Exception e) {
+                        //silently fail
+                    }
+                }
+            }
+        }
+        if (type.equals("origins:heal")){
+            if(entity instanceof Player player){
+                player.setHealth(Double.parseDouble(player.getHealth() + power.get("amount").toString()));
+            }
+        }
+        if (type.equals("origins:clear_effect")){
+            PotionEffectType potionEffectType = StackingStatusEffect.getPotionEffectType(power.get("effect").toString());
+            if(entity instanceof Player player){
+                if(player.hasPotionEffect(potionEffectType)){
+                    player.removePotionEffect(potionEffectType);
+                }
+            }
+        }
+        if (type.equals("origins:exhaust")){
+            if (entity instanceof Player player){
+                player.setFoodLevel(player.getFoodLevel() - Math.round(Float.valueOf(power.get("amount").toString())));
+            }
+        }
+        if (type.equals("origins:explode")){
+            float explosionPower = 1f;
+            String destruction_type = "break";
+            JSONObject indestructible = new JSONObject();
+            JSONObject destructible = new JSONObject();
+            boolean create_fire = false;
+
+            if (power.containsKey("power"))
+                explosionPower = Float.parseFloat(power.get("power").toString());
+            if (power.containsKey("destruction_type"))
+                destruction_type = power.get("destruction_type").toString();
+            if (power.containsKey("indestructible"))
+                indestructible = (JSONObject) power.get("indestructible");
+            if (power.containsKey("destructible")) destructible = (JSONObject) power.get("destructible");
+            if (power.containsKey("create_fire"))
+                create_fire = Boolean.parseBoolean(power.get("create_fire").toString());
+
+            entity.getLocation().createExplosion(explosionPower, create_fire);
+        }
+        if (type.equals("origins:crafting_table")){
+            if(entity instanceof Player player){
+                Inventory inventory = Bukkit.createInventory(player, InventoryType.CRAFTING);
+                player.openInventory(inventory);
+            }
+        }
+        if (type.equals("origins:ender_chest")){
+            if(entity instanceof Player player){
+                Inventory inventory = Bukkit.createInventory(player, InventoryType.ENDER_CHEST);
+                player.openInventory(inventory);
+            }
+        }
+        if (type.equals("origins:equipped_item_action")){
+            if(entity instanceof Player player){
+                if (power.containsKey("equipment_slot")) {
+                    try {
+                        if (player.getInventory().getItem(getSlotFromString(power.get("equipment_slot").toString())) == null)
+                            return;
+                        ItemActionType(player.getInventory().getItem(getSlotFromString(power.get("equipment_slot").toString())), power);
+                    } catch (Exception e) {
+                        //silently fail
+                    }
+                }
+            }
+        }
+        if (type.equals("origins:dismount")){
+            for(Entity entity1 : Bukkit.getWorld(entity.getWorld().getUID()).getEntities()){
+                if(entity1.getPassengers().contains(entity)){
+                    entity1.getPassengers().remove(entity);
+                }
+            }
+        }
+        if (type.equals("origins:feed")){
+            if (entity instanceof Player player){
+                player.setFoodLevel(Integer.parseInt(player.getFoodLevel() + power.get("food").toString()));
+                player.setSaturation(Float.parseFloat(player.getSaturation() + power.get("saturation").toString()));
+            }
+        }
+        if (type.equals("origins:fire_projectile")){
+            if(entity instanceof ProjectileSource){
+                float finalDivergence1 = Float.parseFloat(power.getOrDefault("divergence", 1.0).toString());
+                float speed = Float.parseFloat(power.getOrDefault("speed", 1).toString());
+                EntityType typeE;
+                if (power.getOrDefault("entity_type", null).toString().equalsIgnoreCase("origins:enderian_pearl")) {
+                    typeE = EntityType.ENDER_PEARL;
+                } else {
+                    typeE = EntityType.valueOf(power.getOrDefault("entity_type", null).toString().split(":")[1].toUpperCase());
+                }
+                Projectile projectile = (Projectile) entity.getWorld().spawnEntity(entity.getLocation(), typeE);
+                projectile.setShooter((ProjectileSource) entity);
+
+                Vector direction = entity.getLocation().getDirection();
+
+                double yawRadians = Math.toRadians(entity.getLocation().getYaw() + finalDivergence1);
+
+                double x = -Math.sin(yawRadians) * Math.cos(Math.toRadians(entity.getLocation().getPitch()));
+                double y = -Math.sin(Math.toRadians(entity.getLocation().getPitch()));
+                double z = Math.cos(yawRadians) * Math.cos(Math.toRadians(entity.getLocation().getPitch()));
+
+                direction.setX(x);
+                direction.setY(y);
+                direction.setZ(z);
+
+                projectile.setVelocity(direction.normalize().multiply(speed));
+                projectile.setGlowing(true);
+            }
+        }
+        if (type.equals("origins:passenger_action")){
+            runEntity(entity.getPassenger(), (JSONObject) power.get("action"));
+            runbiEntity(entity, entity.getPassenger(), (JSONObject) power.get("bientity_action"));
+        }
+        if (type.equals("origins:raycast")){
+            Predicate<Entity> filter = entity1 -> !entity1.equals(entity);
+            if(power.get("before_action") != null){
+                runEntity(entity, (JSONObject) power.get("before_action"));
+            }
+            RayTraceResult traceResult = entity.getWorld().rayTrace(entity.getLocation(), entity.getLocation().getDirection(), 12, FluidCollisionMode.valueOf(power.getOrDefault("fluid_handling", "none").toString()), false, 1, filter);
+            if(traceResult != null){
+                if(traceResult.getHitEntity() != null){
+                    Entity entity2 = traceResult.getHitEntity();
+                    if (entity2.isDead() || !(entity2 instanceof LivingEntity)) return ;
+                    if (entity2.isInvulnerable()) return;
+                    if (entity2.getPassengers().contains(entity)) return;
+                    if(power.get("bientity_action") != null){
+                        runbiEntity(entity, entity2, (JSONObject) power.get("bientity_action"));
+                    }
+                }
+                if(traceResult.getHitBlock() != null){
+                    if(power.get("block_action") != null){
+                        runBlock(traceResult.getHitBlock().getLocation(), (JSONObject) power.get("block_action"));
+                    }
+                }
+                if(power.get("after_action") != null){
+                    runEntity(entity, (JSONObject) power.get("after_action"));
+                }
+            }else{
+                if(power.get("miss_action") != null){
+                    runEntity(entity, (JSONObject) power.get("miss_action"));
+                }
+            }
+        }
         if (type.equals("origins:extinguish")) {
             entity.setFireTicks(0);
+        }
+        if (type.equals("origins:play_sound")) {
+            entity.getWorld().playSound(entity, Sound.valueOf(power.get("sound").toString().toUpperCase().split(":")[1].replace("\\.", "_")), 8, 1);
         }
         if (type.equals("origins:gain_air")) {
             long amt = (long) power.get("value");
             if (entity instanceof Player p) {
                 p.setRemainingAir(p.getRemainingAir() + Math.toIntExact(amt));
+            }
+        }
+        if (type.equals("origins:drop_inventory")){
+            if (entity instanceof Player player) {
+                if (power.containsKey("slot")) {
+                    try {
+                        if (player.getInventory().getItem(getSlotFromString(power.get("slot").toString())) == null)
+                            return;
+                        ItemActionType(player.getInventory().getItem(getSlotFromString(power.get("slot").toString())), power);
+                    } catch (Exception e) {
+                        //fail noononooo
+                    }
+                }
+            }
+        }
+        if (type.equals("origins:grant_advancement")){
+            Bukkit.dispatchCommand(new OriginCommandSender(), "advancement grant $1 $2".replace("$1", entity.getName()).replace("$2", power.get("advacnement").toString()));
+        }
+        if (type.equals("origins:revoke_advancement")){
+            Bukkit.dispatchCommand(new OriginCommandSender(), "advancement revoke $1 $2".replace("$1", entity.getName()).replace("$2", power.get("advacnement").toString()));
+        }
+        if (type.equals("origins:selector_action")){
+            if(power.get("bientity_condition") != null){
+                if(entity instanceof Player player){
+                    runbiEntity(entity, player.getTargetEntity(AttributeHandler.Reach.getDefaultReach(player), false), (JSONObject) power.get("bientity_condition"));
+                }
             }
         }
         if (type.equals("origins:give")) {
@@ -287,6 +531,9 @@ public class Actions {
                     }
                 }
             }
+        }
+        if (type.equals("origins:set_fall_distance")){
+            entity.setFallDistance(Float.parseFloat(power.get("fall_distance").toString()));
         }
         if (type.equals("origins:trigger_cooldown")) {
             if (entity instanceof Player player) {

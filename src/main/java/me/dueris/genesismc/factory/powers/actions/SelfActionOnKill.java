@@ -2,7 +2,7 @@ package me.dueris.genesismc.factory.powers.actions;
 
 import me.dueris.genesismc.CooldownStuff;
 import me.dueris.genesismc.entity.OriginPlayer;
-import me.dueris.genesismc.factory.actions.ActionTypes;
+import me.dueris.genesismc.factory.actions.Actions;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.OriginContainer;
@@ -41,7 +41,7 @@ public class SelfActionOnKill extends CraftPower implements Listener {
                 if (executor.check("condition", "conditions", (Player) target, power, getPowerFile(), target, null, null, null, player.getInventory().getItemInHand(), null)) {
                     if (!getPowerArray().contains(target)) return;
                     setActive(power.getTag(), true);
-                    ActionTypes.EntityActionType(target, power.getEntityAction());
+                    Actions.EntityActionType(target, power.getEntityAction());
                     if (power.get("cooldown", "1") != null) {
                         CooldownStuff.addCooldown((Player) target, origin, power.getTag(), power.getType(), Integer.parseInt(power.get("cooldown", "1")), "key.attack");
                     }

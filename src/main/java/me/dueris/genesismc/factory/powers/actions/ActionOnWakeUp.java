@@ -1,7 +1,7 @@
 package me.dueris.genesismc.factory.powers.actions;
 
 import me.dueris.genesismc.entity.OriginPlayer;
-import me.dueris.genesismc.factory.actions.ActionTypes;
+import me.dueris.genesismc.factory.actions.Actions;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.OriginContainer;
 import me.dueris.genesismc.utils.PowerContainer;
@@ -30,8 +30,8 @@ public class ActionOnWakeUp extends CraftPower implements Listener {
         for (OriginContainer origin : OriginPlayer.getOrigin(e.getPlayer()).values()) {
             for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
                 setActive(power.getTag(), true);
-                ActionTypes.EntityActionType(e.getPlayer(), power.getEntityAction());
-                ActionTypes.BlockActionType(e.getBed().getLocation(), power.getBlockAction());
+                Actions.EntityActionType(e.getPlayer(), power.getEntityAction());
+                Actions.BlockActionType(e.getBed().getLocation(), power.getBlockAction());
             }
         }
     }

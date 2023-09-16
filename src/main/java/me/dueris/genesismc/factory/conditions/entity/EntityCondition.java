@@ -5,7 +5,7 @@ import me.dueris.genesismc.factory.TagRegistry;
 import me.dueris.genesismc.factory.conditions.Condition;
 import me.dueris.genesismc.factory.conditions.block.BlockCondition;
 import me.dueris.genesismc.factory.conditions.item.ItemCondition;
-import me.dueris.genesismc.factory.actions.ActionTypes;
+import me.dueris.genesismc.factory.actions.Actions;
 import me.dueris.genesismc.factory.powers.effects.StackingStatusEffect;
 import me.dueris.genesismc.factory.powers.player.Climbing;
 import me.dueris.genesismc.factory.powers.player.FlightElytra;
@@ -488,7 +488,7 @@ public class EntityCondition implements Condition {
         }
 
         if (type.equalsIgnoreCase("origins:equipped_item")){
-            EquipmentSlot eSlot = ActionTypes.getSlotFromString(condition.get("equipment_slot").toString());
+            EquipmentSlot eSlot = Actions.getSlotFromString(condition.get("equipment_slot").toString());
             if(eSlot != null){
                 if(condition.get("item_condition") != null){
                     ItemCondition itemCondition = new ItemCondition();

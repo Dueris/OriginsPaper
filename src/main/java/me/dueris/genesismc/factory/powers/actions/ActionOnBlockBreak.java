@@ -2,7 +2,7 @@ package me.dueris.genesismc.factory.powers.actions;
 
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.entity.OriginPlayer;
-import me.dueris.genesismc.factory.actions.ActionTypes;
+import me.dueris.genesismc.factory.actions.Actions;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.OriginContainer;
 import me.dueris.genesismc.utils.PowerContainer;
@@ -39,8 +39,8 @@ public class ActionOnBlockBreak extends CraftPower implements Listener {
                 if (power == null) continue;
 
                 setActive(powerContainer.getTag(), true);
-                ActionTypes.BlockActionType(e.getBlock().getLocation(), power.getBlockAction());
-                ActionTypes.EntityActionType(e.getPlayer(), power.getEntityAction());
+                Actions.BlockActionType(e.getBlock().getLocation(), power.getBlockAction());
+                Actions.EntityActionType(e.getPlayer(), power.getEntityAction());
                 new BukkitRunnable() {
                     @Override
                     public void run() {
