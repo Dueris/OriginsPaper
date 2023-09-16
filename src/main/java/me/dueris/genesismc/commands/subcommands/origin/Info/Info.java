@@ -72,7 +72,11 @@ public class Info extends SubCommand implements Listener {
     public ItemStack[] infoMenu(Player p, Integer page) {
         OriginContainer origin = playerOrigins.get(p).get(page);
 
-        ArrayList<PowerContainer> powerContainers = origin.getPowerContainers();
+        ArrayList<PowerContainer> powerContainers = new ArrayList<>();
+        for(PowerContainer powerContainer : origin.getPowerContainers()){
+            if(powerContainer.getHidden()) continue;
+            powerContainers.add(powerContainer);
+        }
 
         String minecraftItem = origin.getIcon();
         String item = null;

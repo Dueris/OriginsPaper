@@ -44,12 +44,12 @@ public class Launch extends CraftPower implements Listener {
                 ConditionExecutor conditionExecutor = new ConditionExecutor();
                 for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
                     if (conditionExecutor.check("condition", "conditions", p, power, "origins:launch", p, null, null, null, p.getItemInHand(), null)) {
-                        if (!CooldownStuff.isPlayerInCooldown(p, power.getKey().get("key").toString())) {
-                            if (isKeyBeingPressed(e.getPlayer(), power.getKey().get("key").toString(), true)) {
+                        if (!CooldownStuff.isPlayerInCooldown(p, power.getKey().getOrDefault("key", "key.origins.primary_active").toString())) {
+                            if (isKeyBeingPressed(e.getPlayer(), power.getKey().getOrDefault("key", "key.origins.primary_active").toString(), true)) {
                                 new BukkitRunnable() {
                                     @Override
                                     public void run() {
-                                        String key = (String) power.getKey().get("key");
+                                        String key = (String) power.getKey().getOrDefault("key", "key.origins.primary_active");
                                         if (!CooldownStuff.isPlayerInCooldown(p, key)) {
                                             KeybindHandler.runKeyChangeTrigger(KeybindHandler.getTriggerFromOriginKey(p, key));
                                             final boolean[] thing = new boolean[1];
@@ -109,7 +109,7 @@ public class Launch extends CraftPower implements Listener {
                                                 }.runTaskLater(GenesisMC.getPlugin(), 1L);
                                                 this.cancel();
                                             } else {
-                                                if (isKeyBeingPressed(e.getPlayer(), power.getKey().get("key").toString(), true)) {
+                                                if (isKeyBeingPressed(e.getPlayer(), power.getKey().getOrDefault("key", "key.origins.primary_active").toString(), true)) {
                                                     ItemMeta met = KeybindHandler.getKeybindItem(key, p.getInventory()).getItemMeta();
                                                     met.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "contin"), PersistentDataType.BOOLEAN, false);
                                                     if (power == null) {

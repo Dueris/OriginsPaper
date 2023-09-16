@@ -105,7 +105,7 @@ public class PowerContainer implements Serializable {
      */
     public Boolean getHidden() {
         Object hidden = powerFile.get("hidden");
-        if (hidden == null) return false;
+        if (hidden == null) return true;
         return (Boolean) hidden;
     }
 
@@ -166,7 +166,7 @@ public class PowerContainer implements Serializable {
      */
     public Long getInterval() {
         Object render = powerFile.get("interval");
-        if (render == null) return 1L;
+        if (render == null) return 5L;
         return (long) render;
     }
 
