@@ -99,7 +99,12 @@ public class ChoosingCUSTOM implements Listener {
 
             //gets icon from origin
             String minecraftItem = origin.getIcon();
-            String item = minecraftItem.split(":")[1];
+            String item = null;
+            if(minecraftItem.contains(":")){
+                item = minecraftItem.split(":")[1];
+            }else{
+                item = minecraftItem;
+            }
             ItemStack originIcon = new ItemStack(Material.valueOf(item.toUpperCase()));
 
             //making the items to display in the menu

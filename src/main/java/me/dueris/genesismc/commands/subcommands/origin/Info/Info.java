@@ -75,7 +75,12 @@ public class Info extends SubCommand implements Listener {
         ArrayList<PowerContainer> powerContainers = origin.getPowerContainers();
 
         String minecraftItem = origin.getIcon();
-        String item = minecraftItem.split(":")[1];
+        String item = null;
+        if(minecraftItem.contains(":")){
+            item = minecraftItem.split(":")[1];
+        }else{
+            item = minecraftItem;
+        }
         ItemStack originIcon = new ItemStack(Material.valueOf(item.toUpperCase()));
 
         ItemStack close = itemProperties(new ItemStack(Material.BARRIER), ChatColor.RED + "Close", null, null, null);

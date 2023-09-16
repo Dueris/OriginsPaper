@@ -91,17 +91,9 @@ public class RestrictArmor extends CraftPower {
                             if (power.getLegs() == null) legsb = false;
                             if (power.getFeet() == null) feetb = false;
 
-                            String comparisonh = power.getHead().get("comparison").toString();
-                            String comparisonc = power.getChest().get("comparison").toString();
-                            String comparisonl = power.getLegs().get("comparison").toString();
-                            String comparisonf = power.getFeet().get("comparison").toString();
-
-                            String comparisontoh = power.getHead().get("compare_to").toString();
-                            String comparisontoc = power.getChest().get("compare_to").toString();
-                            String comparisontol = power.getLegs().get("compare_to").toString();
-                            String comparisontof = power.getFeet().get("compare_to").toString();
-
                             if (power.getHead().get("type").toString().equalsIgnoreCase("origins:armor_value")) {
+                                String comparisonh = power.getHead().get("comparison").toString();
+                                String comparisontoh = power.getHead().get("compare_to").toString();
                                 if (!headb) return;
                                 ItemStack item = p.getInventory().getHelmet();
                                 if (item != null) {
@@ -116,6 +108,8 @@ public class RestrictArmor extends CraftPower {
                             }
 
                             if (power.getChest().get("type").toString().equalsIgnoreCase("origins:armor_value")) {
+                                String comparisonc = power.getChest().get("comparison").toString();
+                                String comparisontoc = power.getChest().get("compare_to").toString();
                                 if (!chestb) return;
                                 ItemStack item = p.getInventory().getChestplate();
                                 if (item != null) {
@@ -130,6 +124,8 @@ public class RestrictArmor extends CraftPower {
                             }
 
                             if (power.getLegs().get("type").toString().equalsIgnoreCase("origins:armor_value")) {
+                                String comparisonl = power.getLegs().get("comparison").toString();
+                                String comparisontol = power.getLegs().get("compare_to").toString();
                                 if (!legsb) return;
                                 ItemStack item = p.getInventory().getLeggings();
                                 if (item != null) {
@@ -144,6 +140,8 @@ public class RestrictArmor extends CraftPower {
                             }
 
                             if (power.getFeet().get("type").toString().equalsIgnoreCase("origins:armor_value")) {
+                                String comparisonf = power.getFeet().get("comparison").toString();
+                                String comparisontof = power.getFeet().get("compare_to").toString();
                                 if (!feetb) return;
                                 ItemStack item = p.getInventory().getBoots();
                                 if (item != null) {

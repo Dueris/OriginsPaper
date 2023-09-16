@@ -39,8 +39,8 @@ public class Toggle extends CraftPower implements Listener {
         if (toggle_power.contains(e.getPlayer())) {
             for (OriginContainer origin : OriginPlayer.getOrigin(e.getPlayer()).values()) {
                 for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
-                    if (!CooldownStuff.isPlayerInCooldown(p, power.getKey().get("key").toString())) {
-                        if (isKeyBeingPressed(e.getPlayer(), power.getKey().get("key").toString(), true)) {
+                    if (!CooldownStuff.isPlayerInCooldown(p, power.getKey().getOrDefault("key", "key.origins.primary_active").toString())) {
+                        if (isKeyBeingPressed(e.getPlayer(), power.getKey().getOrDefault("key", "key.origins.primary_active").toString(), true)) {
                             execute(p, power);
                             break;
                         }
@@ -54,7 +54,7 @@ public class Toggle extends CraftPower implements Listener {
         if (!getPowerArray().contains(p)) return;
         if (runCancel) return;
         String tag = power.getTag();
-        String key = (String) power.getKey().get("key");
+        String key = (String) power.getKey().getOrDefault("key", "key.origins.primary_active");
         KeybindHandler.runKeyChangeTrigger(KeybindHandler.getTriggerFromOriginKey(p, key));
         if (CooldownStuff.isPlayerInCooldown(p, key)) return;
         if (powers_active.containsKey(power.getTag())) {

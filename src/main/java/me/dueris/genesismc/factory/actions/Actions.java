@@ -91,13 +91,13 @@ public class Actions {
         if (type.equals("origins:actor_action")) {
             EntityActionType(actor, biEntityAction);
         }
+        if (type.equals("origins:target_action")) {
+            EntityActionType(target, biEntityAction);
+        }
     }
 
     public static void biEntityActionType(Entity actor, Entity target, JSONObject biEntityAction) {
-        JSONObject entityAction = (JSONObject) biEntityAction.get("action");
-        if (entityAction == null) {
-            entityAction = (JSONObject) biEntityAction.get("bientity_action");
-        }
+        JSONObject entityAction = biEntityAction;
         String type = entityAction.get("type").toString();
 
         if (type.equals("origins:and")) {
@@ -330,8 +330,8 @@ public class Actions {
         }
         if (type.equals("origins:feed")){
             if (entity instanceof Player player){
-                player.setFoodLevel(Integer.parseInt(player.getFoodLevel() + power.get("food").toString()));
-                player.setSaturation(Float.parseFloat(player.getSaturation() + power.get("saturation").toString()));
+                player.setFoodLevel(player.getFoodLevel() + Integer.parseInt(power.get("food").toString()));
+                player.setSaturation(player.getSaturation() + Float.parseFloat(power.get("saturation").toString()));
             }
         }
         if (type.equals("origins:fire_projectile")){
@@ -477,7 +477,17 @@ public class Actions {
             }
         }
         if (type.equals("origins:execute_command")) {
-            Bukkit.dispatchCommand(new OriginCommandSender(), power.get("command").toString());
+            String cmd = null;
+            if(power.get("command").toString().startsWith("/")){
+                cmd = power.get("command").toString().split("/")[1];
+            }else{
+                cmd = power.get("command").toString();
+            }
+            if(entity instanceof Player p){
+                Bukkit.dispatchCommand(p, "execute as $1 run ".replace("$1", p.getName()) + cmd);
+            }else{
+                Bukkit.dispatchCommand(new OriginCommandSender(), cmd);
+            }
         }
         if (type.equals("origins:add_xp")) {
             int points = 0;
@@ -944,6 +954,8 @@ public class Actions {
                 if(player.getInventory().contains(item)){
                     if(item.getType().isEdible()){
                         item.setAmount(item.getAmount() - 1);
+                        player.setSaturation(player.getSaturation() + 2);
+                        player.setFoodLevel(player.getFoodLevel() + 3);
                     }
                 }
             }

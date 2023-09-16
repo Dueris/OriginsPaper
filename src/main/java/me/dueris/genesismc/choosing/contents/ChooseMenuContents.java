@@ -81,7 +81,12 @@ public class ChooseMenuContents {
                         origin = originContainers.get(0);
                     }
                     String minecraftItem = origin.getIcon();
-                    String item = minecraftItem.split(":")[1];
+                    String item = null;
+                    if(minecraftItem.contains(":")){
+                        item = minecraftItem.split(":")[1];
+                    }else{
+                        item = minecraftItem;
+                    }
                     ItemStack originIcon = new ItemStack(Material.valueOf(item.toUpperCase()));
 
                     ItemMeta originIconmeta = originIcon.getItemMeta();

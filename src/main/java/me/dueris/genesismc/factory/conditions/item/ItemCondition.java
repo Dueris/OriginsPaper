@@ -35,7 +35,13 @@ public class ItemCondition implements Condition {
                 Map<String, Object> ingredientMap = (Map<String, Object>) condition.get("ingredient");
                 if (ingredientMap.containsKey("item")) {
                     String itemValue = ingredientMap.get("item").toString();
-                    if (itemStack.getType().equals(Material.valueOf(itemValue.split(":")[1].toUpperCase()))) {
+                    String item = null;
+                    if(itemValue.contains(":")){
+                        item = itemValue.split(":")[1];
+                    }else{
+                        item = itemValue;
+                    }
+                    if (itemStack.getType().equals(Material.valueOf(item.toUpperCase()))) {
                         return getResult(inverted, true);
                     } else {
                         return getResult(inverted, false);

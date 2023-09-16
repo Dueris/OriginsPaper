@@ -39,7 +39,6 @@ public class PreventItemUse extends CraftPower implements Listener {
     @EventHandler
     public void runD(PlayerInteractEvent e) {
         if (prevent_item_use.contains(e.getPlayer())) {
-            if (e.getAction().isRightClick()) {
                 if (e.getItem() == null) return;
 
                 for (OriginContainer origin : OriginPlayer.getOrigin(e.getPlayer()).values()) {
@@ -81,9 +80,6 @@ public class PreventItemUse extends CraftPower implements Listener {
                         }
                     }
                 }
-            } else {
-                e.setCancelled(false);
-            }
         }
     }
 
