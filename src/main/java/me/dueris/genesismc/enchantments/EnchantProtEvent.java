@@ -31,7 +31,7 @@ public class EnchantProtEvent implements Listener {
     @EventHandler
     public void onEnchantItem(EnchantItemEvent e) {
         Random random = new Random();
-        int r10 = random.nextInt(10);
+        int r10 = random.nextInt(50);
         int r4 = random.nextInt(45);
         int r5 = random.nextInt(43);
         if (wearable.contains(e.getItem().getType())) {
