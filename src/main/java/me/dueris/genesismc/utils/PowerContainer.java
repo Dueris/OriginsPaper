@@ -105,7 +105,7 @@ public class PowerContainer implements Serializable {
      */
     public Boolean getHidden() {
         Object hidden = powerFile.get("hidden");
-        if (hidden == null) return false;
+        if (hidden == null) return true;
         return (Boolean) hidden;
     }
 

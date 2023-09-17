@@ -95,9 +95,9 @@ public class CraftApoli {
     private static void translateOrigins() {
         for (OriginContainer origin : getCoreOrigins()) {
             for (PowerContainer power : origin.getPowerContainers()) {
-                String powerName = LangConfig.getLocalizedString(Bukkit.getConsoleSender(), power.getName());
+                String powerName = power.getName();
                 if (powerName != null) power.setName(powerName);
-                String powerDescription = LangConfig.getLocalizedString(Bukkit.getConsoleSender(), power.getDescription());
+                String powerDescription = power.getDescription();
                 if (powerDescription != null) power.setDescription(powerDescription);
             }
         }
