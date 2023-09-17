@@ -34,13 +34,10 @@ public class FireProjectile extends CraftPower implements Listener {
 
     public static void addCooldownPatch(Player p) {
         in_cooldown_patch.add(p);
-        p.sendMessage("1");
         new BukkitRunnable() {
             @Override
             public void run() {
                 in_cooldown_patch.remove(p);
-                p.sendMessage("2");
-                p.sendMessage(String.valueOf(in_cooldown_patch.contains(p)));
             }
         }.runTaskLater(GenesisMC.getPlugin(), 5);
     }

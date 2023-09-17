@@ -125,13 +125,10 @@ public class AttributeHandler extends CraftPower implements Listener {
     }
 
     public static void executeAttributeModify(String operation, Attribute attribute_modifier, double base_value, Player p, Double value) {
-        p.sendMessage("4");
         BinaryOperator mathOperator = getOperationMappingsDouble().get(operation);
         if (mathOperator != null) {
             double result = (Double) mathOperator.apply(base_value, value);
-            p.sendMessage("5");
             p.getAttribute(Attribute.valueOf(attribute_modifier.toString())).setBaseValue(result);
-            p.sendMessage("6");
         } else {
             Bukkit.getLogger().warning(LangConfig.getLocalizedString(p, "powers.errors.attribute"));
         }
