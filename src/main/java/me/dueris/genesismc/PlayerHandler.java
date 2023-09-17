@@ -125,8 +125,12 @@ public class PlayerHandler implements Listener {
                 p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origins"), PersistentDataType.BYTE_ARRAY, CraftApoli.toByteArray(new HashMap<>(Map.of(CraftApoli.getLayerFromTag("origins:origin"), CraftApoli.getOrigin(legacyOrigin.getTag())))));
                 p.getPersistentDataContainer().remove(new NamespacedKey(GenesisMC.getPlugin(), "origin"));
             } catch (Exception er) {
-                er.printStackTrace();
-                Bukkit.getLogger().warning(LangConfig.getLocalizedString(p, "errors.oldContainerConversion"));
+                //TODO: fix
+                for (LayerContainer layer : CraftApoli.getLayers()) {
+                    OriginPlayer.setOrigin(p, layer, CraftApoli.nullOrigin());
+                }
+                //er.printStackTrace();
+                //Bukkit.getLogger().warning(LangConfig.getLocalizedString(p, "errors.oldContainerConversion"));
             }
         }
         Bukkit.getLogger().warning("[GenesisMC] Reminder to devs - fix old origin container translation");
