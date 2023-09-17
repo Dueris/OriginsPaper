@@ -15,7 +15,7 @@ public class OriginMethods {
         JSONObject singleEffect = (JSONObject) power.get("effect");
         JSONArray effects = (JSONArray) power.getOrDefault("effects", new JSONArray());
 
-        System.out.println(effects);
+        //System.out.println(effects);
 
         if (singleEffect != null) {
             effects.add(singleEffect);
@@ -38,7 +38,7 @@ public class OriginMethods {
                 showParticles = Boolean.parseBoolean(effect.get("show_particles").toString());
             if (effect.containsKey("show_icon")) showIcon = Boolean.parseBoolean(effect.get("show_icon").toString());
 
-            System.out.println(PotionEffectType.getByKey(new NamespacedKey(potionEffect.split(":")[0], potionEffect.split(":")[1])));
+            //System.out.println(PotionEffectType.getByKey(new NamespacedKey(potionEffect.split(":")[0], potionEffect.split(":")[1])));
 
             player.addPotionEffect(new PotionEffect(Objects.requireNonNull(PotionEffectType.getByKey(new NamespacedKey(potionEffect.split(":")[0], potionEffect.split(":")[1]))), duration, amplifier, isAmbient, showParticles, showIcon));
         }

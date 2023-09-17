@@ -693,8 +693,10 @@ public class EntityCondition implements Condition {
         }
 
         if (type.equalsIgnoreCase("origins:using_effective_tool")){
-            if(p.getTargetBlockExact(AttributeHandler.Reach.getDefaultReach(p)).getBlockData().isPreferredTool(p.getInventory().getItemInMainHand())){
-                return getResult(inverted, true);
+            if(p.getTargetBlockExact(AttributeHandler.Reach.getDefaultReach(p)) != null){
+                if(p.getTargetBlockExact(AttributeHandler.Reach.getDefaultReach(p)).getBlockData().isPreferredTool(p.getInventory().getItemInMainHand())){
+                    return getResult(inverted, true);
+                }
             }
         }
 

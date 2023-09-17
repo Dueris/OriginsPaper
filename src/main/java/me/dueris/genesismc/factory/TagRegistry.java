@@ -53,7 +53,7 @@ public enum TagRegistry {
                                     try (FileReader reader = new FileReader(jsonTagFile)) {
                                         JsonParser jsonParser = new JsonParser();
                                         String fileTag = mainDIR.getName() + ":" + jsonTagFile.getName().replace(".json", "");
-                                        System.out.println("Registered OriginTag with id of :" + fileTag);
+                                        //System.out.println("Registered OriginTag with id of :" + fileTag);
                                         JsonElement jsE = jsonParser.parse(reader);
                                         if (jsE.isJsonObject()) {
                                             JsonObject jsonObject = jsE.getAsJsonObject();
@@ -88,7 +88,7 @@ public enum TagRegistry {
                                     try (FileReader reader = new FileReader(jsonTagFile)) {
                                         JsonParser jsonParser = new JsonParser();
                                         String fileTag = mainDIR.getName() + ":" + jsonTagFile.getName().replace(".json", "");
-                                        System.out.println("Registered OriginTag with id of :" + fileTag);
+                                        //System.out.println("Registered OriginTag with id of :" + fileTag);
                                         JsonElement jsE = jsonParser.parse(reader);
                                         if (jsE.isJsonObject()) {
                                             JsonObject jsonObject = jsE.getAsJsonObject();
@@ -123,7 +123,7 @@ public enum TagRegistry {
                                     try (FileReader reader = new FileReader(jsonTagFile)) {
                                         JsonParser jsonParser = new JsonParser();
                                         String fileTag = mainDIR.getName() + ":" + jsonTagFile.getName().replace(".json", "");
-                                        System.out.println("Registered OriginTag with id of :" + fileTag);
+                                        //System.out.println("Registered OriginTag with id of :" + fileTag);
                                         JsonElement jsE = jsonParser.parse(reader);
                                         if (jsE.isJsonObject()) {
                                             JsonObject jsonObject = jsE.getAsJsonObject();
@@ -158,7 +158,7 @@ public enum TagRegistry {
                                     try (FileReader reader = new FileReader(jsonTagFile)) {
                                         JsonParser jsonParser = new JsonParser();
                                         String fileTag = mainDIR.getName() + ":" + jsonTagFile.getName().replace(".json", "");
-                                        System.out.println("Registered OriginTag with id of :" + fileTag);
+                                        //System.out.println("Registered OriginTag with id of :" + fileTag);
                                         JsonElement jsE = jsonParser.parse(reader);
                                         if (jsE.isJsonObject()) {
                                             JsonObject jsonObject = jsE.getAsJsonObject();
@@ -193,7 +193,7 @@ public enum TagRegistry {
                                     try (FileReader reader = new FileReader(jsonTagFile)) {
                                         JsonParser jsonParser = new JsonParser();
                                         String fileTag = mainDIR.getName() + ":" + jsonTagFile.getName().replace(".json", "");
-                                        System.out.println("Registered OriginTag with id of :" + fileTag);
+                                        //System.out.println("Registered OriginTag with id of :" + fileTag);
                                         JsonElement jsE = jsonParser.parse(reader);
                                         if (jsE.isJsonObject()) {
                                             JsonObject jsonObject = jsE.getAsJsonObject();
@@ -228,7 +228,7 @@ public enum TagRegistry {
                                     try (FileReader reader = new FileReader(jsonTagFile)) {
                                         JsonParser jsonParser = new JsonParser();
                                         String fileTag = mainDIR.getName() + ":" + jsonTagFile.getName().replace(".json", "");
-                                        System.out.println("Registered OriginTag with id of :" + fileTag);
+                                        //System.out.println("Registered OriginTag with id of :" + fileTag);
                                         JsonElement jsE = jsonParser.parse(reader);
                                         if (jsE.isJsonObject()) {
                                             JsonObject jsonObject = jsE.getAsJsonObject();
@@ -263,7 +263,7 @@ public enum TagRegistry {
                                     try (FileReader reader = new FileReader(jsonTagFile)) {
                                         JsonParser jsonParser = new JsonParser();
                                         String fileTag = mainDIR.getName() + ":" + jsonTagFile.getName().replace(".json", "");
-                                        System.out.println("Registered OriginTag with id of :" + fileTag);
+                                        //System.out.println("Registered OriginTag with id of :" + fileTag);
                                         JsonElement jsE = jsonParser.parse(reader);
                                         if (jsE.isJsonObject()) {
                                             JsonObject jsonObject = jsE.getAsJsonObject();

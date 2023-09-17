@@ -172,7 +172,6 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         getServer().getPluginManager().registerEvents(new CooldownStuff(), this);
 
         //configs
-
         GenesisDataFiles.loadOrbConfig();
         GenesisDataFiles.loadMainConfig();
         GenesisDataFiles.loadLangConfig();
@@ -242,8 +241,9 @@ public final class GenesisMC extends JavaPlugin implements Listener {
                 if (CraftPower.class.isAssignableFrom(c)) {
                     CraftPower instance = c.newInstance();
                     CraftPower.getRegistered().add(instance.getClass());
-                    Bukkit.getLogger().info("new CraftPower registered with POWER_TYPE " + instance.getPowerFile() + " with POWER_ARRAY of " + instance.getPowerArray().toString());
-
+                    if (GenesisDataFiles.getMainConfig().getString("console-startup-debug").equalsIgnoreCase("true")) {
+                        Bukkit.getLogger().info("new CraftPower registered with POWER_TYPE " + instance.getPowerFile() + " with POWER_ARRAY of " + instance.getPowerArray().toString());
+                    }
                     if (instance instanceof Listener || Listener.class.isAssignableFrom(instance.getClass())) {
                         Bukkit.getServer().getPluginManager().registerEvents((Listener) instance, GenesisMC.getPlugin());
                     }

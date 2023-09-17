@@ -24,6 +24,8 @@ public class StackingStatusEffect extends CraftPower {
                 return PotionEffectType.SPEED;
             case "minecraft:slowness":
                 return PotionEffectType.SLOW;
+            case "minecraft:slow_falling":
+                return PotionEffectType.SLOW_FALLING;
             case "minecraft:haste":
                 return PotionEffectType.FAST_DIGGING;
             case "minecraft:mining_fatigue":

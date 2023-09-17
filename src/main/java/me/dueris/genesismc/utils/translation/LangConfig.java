@@ -1,5 +1,6 @@
 package me.dueris.genesismc.utils.translation;
 
+import com.mojang.datafixers.kinds.IdF;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.files.GenesisDataFiles;
 import me.dueris.genesismc.utils.BukkitColour;
@@ -8,16 +9,25 @@ import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
+import java.util.logging.Level;
+
 
 public class LangConfig {
     public static String lang_test = getLocalizedString(Bukkit.getConsoleSender(), "lang.test");
 
     public static File getLangFile() {
 
-        String langFileName = GenesisDataFiles.getMainConfig().getString("lang");
-        String filePath = GenesisMC.getPlugin().getDataFolder() + File.separator + "lang" + File.separator + langFileName + ".yml";
+        String fileName = GenesisDataFiles.getMainConfig().getString("lang");
+
+        if (fileName .equals("english")) fileName = "en_us";
+        if (fileName .equals("german")) fileName = "de_DE";
+        if (fileName .equals("russian")) fileName = "ru_RU";
+        if (fileName .equals("trad-chinese")) fileName = "zh_TW";
+
+        String filePath = GenesisMC.getPlugin().getDataFolder() + File.separator + "lang" + File.separator + fileName + ".yml";
         File langFile = new File(filePath);
 
         try {
@@ -26,7 +36,6 @@ public class LangConfig {
                 return null;
             }
         } catch (SecurityException e) {
-            Bukkit.getServer().getConsoleSender().sendMessage(Component.text("Error accessing lang file:\n" + e.getMessage()).color(TextColor.fromHexString(BukkitColour.RED)));
             return null;
         }
 
@@ -44,7 +53,9 @@ public class LangConfig {
 
         if (langFile != null) {
             YamlConfiguration langConfig = YamlConfiguration.loadConfiguration(langFile);
-            return langConfig.getString(key);
+            String value =  langConfig.getString(key);
+            if (value != null) return value;
+            return "There was a problem reading the lang file.";
         }
 
         File engLang = new File(GenesisMC.getPlugin().getDataFolder() + File.separator + "lang" + File.separator + "en_us.yml");

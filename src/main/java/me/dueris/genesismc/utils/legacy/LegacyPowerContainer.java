@@ -131,7 +131,7 @@ public class LegacyPowerContainer implements Serializable {
         JSONArray modifier = (JSONArray) obj;
         for (int i = 0; i < modifier.size(); i++) {
             modifier.get(i);
-            System.out.println(modifier.get(i));
+            //System.out.println(modifier.get(i));
         }
         return null;
     }

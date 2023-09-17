@@ -11,6 +11,7 @@ import me.dueris.genesismc.utils.OriginContainer;
 import me.dueris.genesismc.utils.PowerContainer;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.Particle;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -81,6 +82,7 @@ public class Launch extends CraftPower implements Listener {
                                                     CooldownStuff.addCooldown(p, origin, power.getTag(), power.getType(), cooldown, key);
                                                     setActive(power.getTag(), true);
                                                     p.setVelocity(new Vector(p.getVelocity().getX(), speed, p.getVelocity().getZ()));
+                                                    p.spawnParticle(Particle.CLOUD, p.getLocation(), 100);
                                                     this.cancel();
                                                 }
                                             }.runTaskTimer(GenesisMC.getPlugin(), 1L, 1L);

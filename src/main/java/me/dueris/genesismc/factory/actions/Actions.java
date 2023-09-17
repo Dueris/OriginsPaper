@@ -484,7 +484,7 @@ public class Actions {
                 cmd = power.get("command").toString();
             }
             if(entity instanceof Player p){
-                Bukkit.dispatchCommand(p, "execute as $1 run ".replace("$1", p.getName()) + cmd);
+                Bukkit.dispatchCommand(new OriginCommandSender(), " execute at $1 run execute as $1 run ".replace("$1", p.getName()) + cmd);
             }else{
                 Bukkit.dispatchCommand(new OriginCommandSender(), cmd);
             }

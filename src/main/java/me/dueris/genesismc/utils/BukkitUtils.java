@@ -3,6 +3,7 @@ package me.dueris.genesismc.utils;
 import org.apache.commons.io.FilenameUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -39,8 +40,17 @@ public class BukkitUtils {
             } catch (IOException e) {
                 //SDGFLKSDJFGO
             }
+        }else{
+            if(Files.exists(Path.of(Bukkit.getWorlds().get(0).getName() + File.separator + "datapacks" + File.separator + "Origins-Genesis"))){
+                String path = Path.of(Bukkit.getWorlds().get(0).getName() + File.separator + "datapacks" + File.separator + "Origins-Genesis").toAbsolutePath().toString();
+                try {
+                    deleteDirectory(Path.of(path));
+                } catch (IOException e) {
+                    //SDGFLKSDJFGO
+                }
+            }
         }
-        if (Files.exists(Path.of(Bukkit.getWorlds().get(0).getName() + File.separator + "datapacks" + File.separator + "OriginsGenesis")))
+        if (Files.exists(Path.of(Bukkit.getWorlds().get(0).getName() + File.separator + "datapacks" + File.separator + "Origins-GenesisMC")))
             return;
         try {
             CodeSource src = BukkitUtils.class.getProtectionDomain().getCodeSource();
