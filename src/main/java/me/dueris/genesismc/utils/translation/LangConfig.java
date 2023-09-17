@@ -36,7 +36,6 @@ public class LangConfig {
                 return null;
             }
         } catch (SecurityException e) {
-            Bukkit.getServer().getConsoleSender().sendMessage(Component.text("Error accessing lang file:\n" + e.getMessage()).color(TextColor.fromHexString(BukkitColour.RED)));
             return null;
         }
 
@@ -56,7 +55,6 @@ public class LangConfig {
             YamlConfiguration langConfig = YamlConfiguration.loadConfiguration(langFile);
             String value =  langConfig.getString(key);
             if (value != null) return value;
-            Bukkit.getLogger().log(Level.SEVERE, "ERROR GETTING STRING FROM LANG FILE.");
             return "There was a problem reading the lang file.";
         }
 

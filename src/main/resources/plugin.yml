@@ -7,7 +7,7 @@ folia-supported: true
 description: Bringing the life and fun of the Origins mod to PaperMC
 website: https://ko-fi.com/dueris
 softdepend: [ SkinRestorer ]
-prefix: Origins
+prefix: OriginPaper
 commands:
   origin:
     description: The main root command for the genesis origin plugin.

@@ -1,6 +1,7 @@
 package me.dueris.genesismc.enchantments;
 
 import com.destroystokyo.paper.event.inventory.PrepareResultEvent;
+import me.dueris.genesismc.GenesisMC;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -30,14 +31,12 @@ public class EnchantProtEvent implements Listener {
     @EventHandler
     public void onEnchantItem(EnchantItemEvent e) {
         Random random = new Random();
-        int r10 = random.nextInt(100);
-        int r4 = random.nextInt(50);
+        int r10 = random.nextInt(10);
+        int r4 = random.nextInt(45);
         int r5 = random.nextInt(43);
-        int beta = random.nextInt(2);
         if (wearable.contains(e.getItem().getType())) {
             if (r10 == 1 || r10 == 2 || r10 == 3 || r10 == 4 || r10 == 5 || r10 == 6 || r10 == 7 || r10 == 8 || r10 == 9 || r10 == 10) {
-
-                if (r4 >= 45) {
+                if (r4 <= 45) {
                     e.getEnchantsToAdd().remove(e.getEnchantsToAdd());
                     if (r5 == 1 || r5 == 14 || r5 == 15 || r5 == 5 || r5 == 6 || r5 == 17 || r5 == 18 || r5 == 19 || r5 == 20 || r5 == 21 || r5 == 22 || r5 == 23 || r5 == 24 || r5 == 25 || r5 == 26 || r5 == 27 || r5 == 28 || r5 == 29 || r5 == 30) {
                         String level = "I";
@@ -74,8 +73,6 @@ public class EnchantProtEvent implements Listener {
                         e.setExpLevelCost(basexp + 6);
                     }
                 }
-
-
                 if (r4 == 1 || r4 == 14 || r4 == 15 || r4 == 5 || r4 == 6 || r4 == 17 || r4 == 18 || r4 == 19 || r4 == 20 || r4 == 21 || r4 == 22 || r4 == 23 || r4 == 24 || r4 == 25 || r4 == 26 || r4 == 27 || r4 == 28 || r4 == 29 || r4 == 30) {
                     String level = "I";
                     ItemMeta meta = e.getItem().getItemMeta();

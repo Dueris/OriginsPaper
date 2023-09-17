@@ -21,8 +21,6 @@ public class WaterProtAnvil implements Listener {
     public void onAnvil(PrepareAnvilEvent e) {
         ItemStack first = e.getInventory().getFirstItem();
         ItemStack second = e.getInventory().getSecondItem();
-        ItemStack result = e.getInventory().getResult();
-        Player p = (Player) e.getView().getPlayer();
         Material retype;
         String level;
         ItemMeta meta;
@@ -53,7 +51,6 @@ public class WaterProtAnvil implements Listener {
                         meta.setCustomModelData(3);
                         e.getResult().setLore(List.of(ChatColor.GRAY + "Water Protection " + level));
                         e.getResult().addUnsafeEnchantment(GenesisMC.waterProtectionEnchant, 3);
-                        p.sendMessage("1.3");
                     } else if (first.getLore().contains(ChatColor.GRAY + "Water Protection IV")) {
                         retype = first.getType();
                         e.getResult().setType(retype);
@@ -62,17 +59,15 @@ public class WaterProtAnvil implements Listener {
                         meta.setCustomModelData(4);
                         e.getResult().setLore(List.of(ChatColor.GRAY + "Water Protection " + level));
                         e.getResult().addUnsafeEnchantment(GenesisMC.waterProtectionEnchant, 4);
-                        p.sendMessage("1.4");
                     }
                 }
-            } else {
-
             }
         }
 
         if (first != null && second != null) {
             if (second.getEnchantments().containsKey(Enchantment.getByKey(GenesisMC.waterProtectionEnchant.getKey()))) {
                 if (!first.getEnchantments().containsKey(Enchantment.getByKey(GenesisMC.waterProtectionEnchant.getKey())) && second != null) {
+                    if(e.getResult() == null) return;
                     if (second.getLore().contains(ChatColor.GRAY + "Water Protection I")) {
                         level = "I";
                         meta = e.getResult().getItemMeta();
@@ -91,14 +86,12 @@ public class WaterProtAnvil implements Listener {
                         meta.setCustomModelData(3);
                         e.getResult().setLore(List.of(ChatColor.GRAY + "Water Protection " + level));
                         e.getResult().addUnsafeEnchantment(GenesisMC.waterProtectionEnchant, 3);
-                        p.sendMessage("2.3");
                     } else if (second.getLore().contains(ChatColor.GRAY + "Water Protection IV")) {
                         level = "IV";
                         meta = e.getResult().getItemMeta();
                         meta.setCustomModelData(4);
                         e.getResult().setLore(List.of(ChatColor.GRAY + "Water Protection " + level));
                         e.getResult().addUnsafeEnchantment(GenesisMC.waterProtectionEnchant, 4);
-                        p.sendMessage("2.4");
                     }
                 }
             } else {
@@ -131,15 +124,12 @@ public class WaterProtAnvil implements Listener {
                     e.getResult().setLore(List.of(ChatColor.GRAY + "Water Protection " + level));
                     e.getResult().addUnsafeEnchantment(GenesisMC.waterProtectionEnchant, 4);
                 }
-
-                p.sendMessage("3.3");
             } else if (second.getLore().contains(ChatColor.GRAY + "Water Protection IV") && e.getResult() != null) {
                 level = "IV";
                 meta = e.getResult().getItemMeta();
                 meta.setCustomModelData(4);
                 e.getResult().setLore(List.of(ChatColor.GRAY + "Water Protection " + level));
                 e.getResult().addUnsafeEnchantment(GenesisMC.waterProtectionEnchant, 4);
-                p.sendMessage("3.4");
             }
         }
 
