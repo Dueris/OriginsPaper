@@ -15,6 +15,9 @@ targetCompatibility = JavaVersion.VERSION_17
 repositories {
     mavenCentral()
     maven {
+        url = "https://mvnrepository.com/artifact/org.javassist/javassist"
+    }
+    maven {
         name = "papermc-repo"
         url = "https://repo.papermc.io/repository/maven-public/"
     }
@@ -54,6 +57,8 @@ dependencies {
     shade("org.reflections:reflections:0.9.12")
     implementation 'com.github.Anon8281:UniversalScheduler:0.1.6'
     shade('com.github.Anon8281:UniversalScheduler:0.1.6')
+    implementation("org.javassist:javassist:3.15.0-GA")
+    shade("org.javassist:javassist:3.15.0-GA")
 }
 
 jar {

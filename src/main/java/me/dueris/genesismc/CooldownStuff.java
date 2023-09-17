@@ -102,7 +102,7 @@ public class CooldownStuff implements @NotNull Listener {
 
                     int remainingTicks = cooldownTicks - ticksElapsed;
 
-                    if (ticksElapsed >= cooldownTicks) {
+                    if (ticksElapsed >= cooldownTicks || cooldownTicks == 0) {
                         resetCooldown(player, cooldownKeybindType);
                         bar.setProgress(0);
                         bar.setVisible(false);
