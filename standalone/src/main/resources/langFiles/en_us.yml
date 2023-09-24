@@ -1,0 +1,532 @@
+# GenesisMC - created by Genesis Team.
+# The LANG files should never be renamed, it may cause many errors in the plugin.
+#
+# To change languages, please change the value in  "origin-server.yml " to one of the names of these files.
+#
+# If you would like to contribute to languages provided by Genesis, please join the discord server for a language file to be translated.
+#
+# Syntax
+# %player% - replaced with the player that is sending or receiving, handled plugin-sided.
+# %origin% - replaced with the selected originTag of the player.
+# %originName% - replaced with the name of the origin.
+# %originAmount% - replaced with the amount of origins loaded.
+# %layer% - replaced with the selected layerTag layer of the player.
+# %pluginVersion% - replaced with the version of the plugin.
+# %APIVersion% - replaced with the version of the API.
+# %versionsBehind% - replaced with how many versions behind the latest release the version of the plugin running is.
+# %powerFolder% - replaced with the folder for powers.
+# %powerFileName% - replaced with the name of the power file.
+# %originFolder% - replaced with the name of the origin folder.
+# %originFileName% - replaced with the name of the origin file.
+# %datapack% - replaced with the name of the datapack.
+# %sep% - replaced with the file separator. E.G "\" on Windows.
+# %namespace% - replaced with the namespace of the custom origin - The name of the folder at "yourCustomOriginFolder/data/".
+# %layerName% - replaced with the name of the layer.
+# %fileName% - replaced with the name of the file.
+#
+# Note: The placeholders will only work with fields they are in before any editing.
+# You can remove them if desired, just not add them to places they didn't exist before.
+
+lang:
+  test: "Lang file loaded."
+
+
+startup:
+  credit: "GenesisMC -- Created by The Genesis Team"
+
+  versionCheck:
+    behind: "You are running a version of the plugin that is %versionsBehind% version(s) out of date!\n    Please install the latest version from https://modrinth.com/plugin/genesismc/versions"
+    current: "You are running the latest version of the plugin!"
+    ahead: "You are running a dev build! Join our discord server at https://discord.gg/RKmQnU6SRt or open an issue on github for any feedback :)"
+    fail: "Failed to connect to version control website!\n    You may be using an outdated version of the plugin!\n    You can install the latest version from https://modrinth.com/plugin/genesismc/versions"
+    skip: "Skipping version check"
+
+  debug:
+    start: "Executing Genesis Debug.."
+    dump: "Executing Server-data dump"
+    server: "Please use a PaperMC server."
+    pluginVersion: "Successfully loaded version %pluginVersion%"
+    APIVersion: "Successfully loaded API version %APIVersion%"
+    allOrigins: "Loaded \"%originName%\""
+
+  originAmount: "Loaded %originAmount% origins"
+
+  skinRestorer:
+    present: "SkinRestorer detected, enabling ModelColor"
+    absent: "SkinRestorer not detected, disabling ModelColor"
+
+
+reloadMessage: "Origins Reloaded."
+
+
+disable: "GenesisMC disabled."
+
+
+command:
+  origin:
+    empty: "You did not provide any args. Here is a list of commands:"
+
+    bug:
+      description: "Returns the links to submit any bugs found to."
+      message: "To report a bug either open an issue on github or join our discord server and open a post in the bug-reports channel!"
+
+    enchant:
+      description: "Enchants item with genesis enchantment."
+      noPlayer: "No player specified!"
+      noEnchant: "No enchantment specified!"
+      badItem: "%player% Is not holding an enchant-able item!"
+      wrongNumber: "Please enter a valid number!"
+      waterProtLevelLimit: "The level for water protection must be between 1 and 4!"
+
+    get:
+      description: "Gets origin of player."
+      noPlayer: "No player specified!"
+      noLayer: "No layer specified!"
+      output: "%player% has the following %layer% : %origin%"
+
+    give:
+      description: "Gives players origins specific items."
+      noPlayer: "No player specified!"
+      noItem: "No item specified!"
+      wrongNumber: "Please entre a valid number!"
+
+    gui:
+      description: "Opens origin choosing screen."
+
+    has:
+      description: "Test to check if player has origin."
+      noPlayer: "No player specified!"
+      noLayer: "No layer specified!"
+      noOrigin: "No origin specified!"
+      invalidLayer: "Invalid layer!"
+      invalidOrigin: "Invalid origin!"
+      pass: "%player% passed the test!"
+      fail: "%player% failed the test."
+
+    recipe:
+      description: "Shows the recipe for the orb of origin."
+      disabled: "Orb of origin crafting has been disabled by a server admin!"
+      error: "Failed to load custom origin orb recipe!\nIf you are an admin: Either delete the file, or add a valid material/path."
+      playerOnly: "You must be a player to use this command!"
+
+    references:
+      description: "A list of credits for people who we took insperation from."
+      Apace: "Apace - Origin mod creator: "
+      Slayer: "Slayer - Starborne datapack creator: "
+      TotalElipse: "TotalElipse - Slime origin add-on creator: "
+      Sakisiil: "Sakisiil - Bee origin datapack creator: "
+
+    set:
+      description: "Sets origin of given player."
+      noPlayer: "No player specified!"
+      noLayer: "No layer specified!"
+      noOrigin: "No origin specified!"
+      invalidLayer: "Invalid layer!"
+      invalidOrigin: "Invalid origin!"
+
+
+powers:
+  bathForTooLong: "%player% took a bath for too long!"
+  inventoryOpenPower: "You must have the inventory power to access this command"
+  phasing:
+    activated: "Activated Phasing Form"
+    deactivated: "Deactivated Phasing Form"
+  modelColour: "%player% setting model colour skin..."
+  errors:
+    exhaust: "[GenesisMC] Unable to parse interval for origins:exhaust"
+    damageOverTime: "[GenesisMC] Unable to parse interval for origins:damage_over_time"
+    burn: "[GenesisMC] Unable to parse interval for origins:burn"
+    attribute: "[GenesisMC] Unable to parse origins:attribute, unable to get result"
+    silkTouch: "[GenesisMC] Silk touch error!"
+    effectImmunity: "[GenesisMC] Unable to get PowerEffectType enum for power \"origins:effect_immunity\""
+    modelColourValue: "[GenesisMC] Color values must be between 0 and 1 for model colour!"
+
+misc:
+  orbOfOrigins: "§dOrb of Origins"
+  requiredChoose: "You are required to choose an origin!"
+  randomOrigins: "Your random origin(s) are %layer% : %originName%!"
+  joinText: "GenesisMC is in beta and still has lots of bugs, use /origin bug and notify us about any issues!"
+  layerRemoved: "The layer \"%layerName%\" has been removed!\nIf you believe this is a mistake please contact your server admin(s)."
+  originRemoved: "Your \"%originName%\" origin has been removed from the \"%layerName%\" layer!\nIf you believe this is a mistake please contact your server admin(s)."
+
+
+errors:
+  orbLoad: "[GenesisMC] Failed to load custom origin orb recipe!\n    Either delete the file, or add a valid material/path."
+  craftApoli:
+    powerParsing: "[GenesisMC] Error parsing \"%powerFolder%:%powerFileName%\" for \"%originFolder%:%originFileName%\""
+    layerParsing: "[GenesisMC] Error parsing \"%datapack%%sep%data%sep%%namespace%%sep%origin_layers%sep%%layerName%.json\""
+    originFile: "[GenesisMC] Error parsing \"%datapack%%sep%data%sep%%originFolder%%sep%origins%sep%%originFileName%.json\""
+  containerConversion: "[GenesisMC] CRUCIAL ERROR, PLEASE REPORTING THIS IMMEDIATELY TO THE DEVS!!"
+  configCreation: "[GenesisMC] Failed to create the \"%fileName%\" config file."
+  inventorySaveFail: "[GenesisMC] Failed to save inventory!\n\"%player%\" could not be found!"
+  oldContainerConversion: "[GenesisMC] Error converting old origin container."
+
+
+menu:
+  originSelect:
+    close: "Close"
+    return: "Return"
+    impact:
+      impact: "Impact: "
+      low: "low"
+      medium: "Medium"
+      high: "High"
+
+  customChoose:
+    return: "Return"
+    back: "Back"
+    next: "Next"
+
+  mainChoose:
+    originNotFound: "Origin not found"
+    customMenu: "Custom Origins"
+    close:
+      name: "Close"
+      description: "Cancel choosing"
+    random: "Random"
+
+
+  origins:
+    human:
+      nothing:
+        title: "Nothing"
+        description: "Enough said."
+
+    avian:
+      featherweight:
+        title: "Featherweight"
+        description: "You fall as gently to the ground as a feather would, unless you shift."
+      tailwind:
+        title: "Tailwind"
+        description: "You are a little quicker on foot than others."
+      oviparous:
+        title: "Oviparous "
+        description: "Whenever you wake up in the morning, you lay an egg."
+      vegetarian:
+        title: "Vegetarian"
+        description: "You can't digest any meat."
+      fresh_air:
+        title: "Fresh Air"
+        description: "When sleeping, your bed needs to be at an altitude of at least 100 blocks."
+
+    arachnid:
+      spiderman:
+        title: "SpiderMan"
+        description: "You can climb up walls, but not when its raining (hold shift)."
+      weaver:
+        title: "Weaver"
+        description: "You hinder your foes with cobwebs upon attacking them."
+      squishable:
+        title: "Fragile"
+        description: "You have 3 less hearts."
+      tiny_carnivore:
+        title: "Tiny Carnivor"
+        description: "You can only eat meat."
+
+    elytrian:
+      winged:
+        title: "Winged"
+        description: "You have Elytra wings without needing to equip any (tap shift when in air)."
+      gift_of_the_winds:
+        title: "Gift of the Winds"
+        description: "Every 30 seconds, you can launch yourself 20 blocks in the air."
+      claustrophobia:
+        title: "Calustrophobia"
+        description: "Being somewhere with a low ceiling for too long will weaken you."
+      need_for_mobility:
+        title: "Need for Mobility"
+        description: "You cannot wear any heavy armour with protection values higher than chainmail."
+      brittle_bones:
+        title: "Brittle Bones"
+        description: "You take more damage from falling and flying into blocks."
+      aerial_combatant:
+        title: "Aerial Combatant"
+        description: "You deal substantially more damage while in Elytra flight."
+
+    shulk:
+      hoarder:
+        title: "Hoarder(/shulker open, or press F to open) "
+        description: "You have 9 extra inventory slots that you keep upon death."
+      sturdy_skin:
+        title: "Sturdy Skin"
+        description: "Your skin has natural protection."
+      strong_arms:
+        title: "Strong Arms"
+        description: "You can break natural stones without a pickaxe."
+      unweildy:
+        title: "Unwieldy"
+        description: "You cannot hold a shield."
+      large_appetite:
+        title: "Large Appetite"
+        description: "You exhaust much quicker than others."
+
+    enderian:
+      teleportation:
+        title: "Teleportation"
+        description: "You have an infinite ender pearl that deals no damage."
+      hydrophobia:
+        title: "Hydrophobia"
+        description: "You take damage while in contact with water."
+      delicate_touch:
+        title: "Delicate Touch"
+        description: "You have silk touch hands."
+      slender_body:
+        title: "Slender Body"
+        description: "You can reach farther than everyone due to your long arms, but you are too weak to mine farther away."
+      bearer_of_pearls:
+        title: "Bearer of Pearls"
+        description: "You always drop 0-2 ender pearls upon death."
+      pumpkin_hate:
+        title: "Scared of Gourds"
+        description: "You are afraid of pumpkins. For a good reason."
+
+
+    merling:
+      gills:
+        title: "Gills"
+        description: "You can ONLY breathe underwater, when raining, you can breathe on land for a short time."
+      wet_eyes:
+        title: "Wet Eyes"
+        description: "Your vision underwater is nearly perfect."
+      fins:
+        title: "Fins"
+        description: "Your underwater speed is increased."
+      aqua_affinity:
+        title: "Aqua Affinity"
+        description: "You may break blocks underwater as other do on land."
+      like_water:
+        title: "Like Water"
+        description: "When underwater, you do not sink to the ground unless you want to."
+
+    blazeborn:
+      born_from_flames:
+        title: "Born from Flames"
+        description: "Your natural spawn is in the Nether."
+      burning_wrath:
+        title: "Burning Wrath"
+        description: "When on fire, you deal additional damage."
+      fire_immunity:
+        title: "Fire Immunity"
+        description: "You are immune to all types of fire damage."
+      to_hot_for_water:
+        title: "To Hot for.. Uh.. Ya.. Water?"
+        description: "You get damaged while in water."
+      hotblooded:
+        title: "Hotblooded"
+        description: "Due to your hot body, venom burns up, making you immune to poison and hunger status effects."
+      opposite_forces:
+        title: "Opposite Forces"
+        description: "You are much weaker in colder biomes and at high altitudes."
+      flames_of_nether:
+        title: "Flames of the Nether"
+        description: "Upon hitting someone, they are set on fire."
+
+    phantom:
+      translucent:
+        title: "Translucent"
+        description: "Your skin is translucent."
+      not_vampire:
+        title: "Not Really a Vampire"
+        description: "You take damage from sunlight."
+      phasing:
+        title: "Phasing(Press F to activate, or use item)"
+        description: "You can switch between human and phantom form at will, but only while you are saturated enough to sprint."
+      fast_metabolism:
+        title: "Fast Metabolism"
+        description: "While in Phantom Form, you loose twice as much hunger."
+      fragile_creature:
+        title: "Fragile Creature"
+        description: "You have 3 less hearts."
+      invisibility:
+        title: "Invisibility"
+        description: "While phantomized, you become fully invisible."
+
+    feline:
+      nine_lives:
+        title: "9 Lives"
+        description: "You have 9 hearts of health."
+      good_jumper:
+        title: "Good jumper"
+        description: "You can jump higher while sprinting."
+      nocturnal:
+        title: "Nocturnal"
+        description: "You have natural night vision."
+      catlike_appearance:
+        title: "Catlike Appearance"
+        description: "Creepers are scared of you."
+      velvet_paws:
+        title: "Velvet Paws"
+        description: "Your footsteps don't cause any vibrations."
+
+      acrobatics:
+        title: "Acrobatics"
+        description: "You never take fall damage."
+      strong_ankles:
+        title: "Strong Ankles"
+        description: "You are able to jump higher by jumping while sprinting."
+
+    starborne:
+      starbeam:
+        title: "Starbeam"
+        description: "You can blast a star beam every 30 seconds, dealing 10 damage."
+      shooting_star:
+        title: "Shooting Star"
+        description: "You can fling yourself into the air after a 5 second cooldown."
+      supernova:
+        title: "Supernova"
+        description: "All the collected star energy that you have accumulated through your time in the stars needs to go somewhere, So whenever you happen to meet your demise you will explode in a great Supernova."
+      cold_vacuum:
+        title: "Cold Vacuum"
+        description: "You are used to the coldness of space, so you take double damage from fire."
+      stargazer:
+        title: "Stargazer"
+        description: "When exposed to the stars, you gain speed and regeneration."
+      nonviolent:
+        title: "Nonviolent"
+        description: "In the great abyss of space, violence is uncommon if you even come across someone in the first place, this results in you having a small chance to be immobilized upon taking damage."
+      starwatcher:
+        title: "Starwatcher"
+        description: "When not exposed to the stars, you get a little sad and will move a bit slower."
+
+    allay:
+      little_fairy:
+        title: "Little Fairy"
+        description: "You have small wings, you can fly and float."
+      blue_spirit:
+        title: "Blue Spirit"
+        description: "You are slightly blue, and glow in dark places."
+      sound_of_music:
+        title: "Sounds of Music"
+        description: "You enjoy the sounds of music, you can use a jukebox as a respawn anchor."
+      cookies:
+        title: "COOKIES"
+        description: "Cookies give the same saturation as steak."
+      treasure_finder:
+        title: "Treasure Finder"
+        description: "You have increased chances of getting treasure loot, and villagers will lower their prices for you."
+      kinda_flamable:
+        title: "Kinda Flamable"
+        description: "You burn easily, you take extra fire damage, and you have half health."
+      friendly_angel:
+        title: "Friendly Angel"
+        description: "You don't like to harm animals, you get nauseous when eating meat."
+
+    rabbit:
+      leap:
+        title: "Leap"
+        description: "You can leap in the direction you are looking to."
+      strong_hopper:
+        title: "Strong Hopper"
+        description: "You can jump significantly higher."
+      shock_absorption:
+        title: "Shock Absorption"
+        description: "You take less fall damage."
+      delicious:
+        title: "Delicious"
+        description: "You may drop a rabbit's foot when hit."
+      picky_eater:
+        title: "Picky Eater"
+        description: "You can only eat carrots and golden carrots."
+      fragile:
+        title: "Fragile"
+        description: "You have 3 less hearts."
+
+    bee:
+      featherweight:
+        title: "Featherweight"
+        description: "You fall as gently to the ground as a feather would unless you shift."
+      poisonous:
+        title: "Poisonous"
+        description: "Hitting someone gives them poison for 2 seconds."
+      bloom:
+        title: "Bloom"
+        description: "You gain regeneration when near flowers."
+      flight:
+        title: "Flight"
+        description: "You can fly, just like a bee!(WHATT)."
+      nighttime:
+        title: "Nighttime"
+        description: "You are sleepy at night, so you walk and fly slower."
+      lifespan:
+        title: "Lifespan"
+        description: "You have 3 less hearts."
+      rain:
+        title: "Rain"
+        description: "You cannot fly when in the rain and are weaker while wet."
+
+    piglin:
+      shiny:
+        title: "I like to be SHINY"
+        description: "Golden tools deal extra damage and gold armour has more protection."
+      friendly_frenemies:
+        title: "Friendly Frenemies"
+        description: "Piglins won't attack you unless provoked, Brutes will still attack on sight."
+      nether_dweller:
+        title: "Nether Dweller"
+        description: "Your natural spawn is in the Nether and you can only eat meat."
+      colder_realms:
+        title: "Colder Realms"
+        description: "When outside of the Nether, you zombify and become immune to fire and slower."
+      blue_spooky:
+        title: "BLUE FIRE SPOOKY"
+        description: "You are afraid of soul fire, becoming weak when near it."
+
+    sculk:
+      one_of_them:
+        title: "One of Them"
+        description: "You spawn in the Deep Dark."
+      amongst_people:
+        title: "Amongst Your People"
+        description: "You get buffs while near sculk blocks."
+      besties_forever:
+        title: "Best Friends Forever"
+        description: "The Warden wont attack you, and you don't trigger Sculk Shriekers."
+      afraid_of_light:
+        title: "Afraid of the Light"
+        description: "You are weaker while in sunlight."
+      it_grows:
+        title: "It Grows"
+        description: "Upon dying, a small patch of sculk will grow around you, you gain some saturation."
+      echo_pulse:
+        title: "Echo Pulse"
+        description: "You can see all entities around you, you gain some saturation."
+      decaying_essence:
+        title: "Decaying Essence"
+        description: "All armour you wear will slowly deteriorate."
+      carrier_echos:
+        title: "Carrier of Echos"
+        description: "You emmit a sonic boom upon Shift-Clicking your Boom keybind, or your Boom item(30 second cooldown)."
+
+    creep:
+      boom:
+        title: "BOOOOM"
+        description: "You can explode at will, but you take 5 hearts of damage."
+      charged:
+        title: "Charged "
+        description: "During thunderstorms, you are significantly stronger."
+      friend_in_me:
+        title: "You got a Friend in Me"
+        description: "Other creepers will not attack you."
+      felinephobia:
+        title: "Felinephobia"
+        description: "You are scared of cats and you will take damage when near one."
+
+    slimeling:
+      bouncy:
+        title: "Bouncy"
+        description: "You bounce on any block as if it were a slime block."
+      not_very_solid:
+        title: "Not Very Solid"
+        description: "Upon being hit, you have a chance to split and create small slimes."
+      improved_jump:
+        title: "Improved Leap"
+        description: "You have an improved leap at the cost of movement speed."
+      great_leap:
+        title: "Great Leap"
+        description: "Upon shifting for 4 seconds(nothing in hand), you leap in the direction you are looking."
+      slimy_skin:
+        title: "Slimy Skin"
+        description: "You have the green translucent skin of a slime."
+      burnable:
+        title: "Burnable"
+        description: "You burn when in hotter biomes."

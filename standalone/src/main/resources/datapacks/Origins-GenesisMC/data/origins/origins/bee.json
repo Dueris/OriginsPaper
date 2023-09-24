@@ -1,0 +1,17 @@
+{
+  "powers": [
+    "origins:creative_flight",
+    "origins:flower_bloom",
+    "origins:fragile",
+    "origins:slow_falling",
+    "origins:slower_nighttime",
+    "origins:weakness_when_wet"
+  ],
+  "icon": {
+    "item": "minecraft:honeycomb"
+  },
+  "name": "BumbleBee",
+  "description": "Bees are cool. They fly and enjoy flowers and die",
+  "order": 0,
+  "impact": 2
+}

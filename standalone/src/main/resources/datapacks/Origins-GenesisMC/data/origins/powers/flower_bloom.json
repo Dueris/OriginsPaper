@@ -1,0 +1,25 @@
+{
+  "type": "origins:stacking_status_effect",
+  "condition": {
+    "type": "origins:block_in_radius",
+    "block_condition": {
+      "type": "origins:in_tag",
+      "tag": "origins:flower"
+    },
+    "shape": "sphere",
+    "comparison": ">=",
+    "compare_to": 1,
+    "radius": 5
+  },
+  "min_stacks": 0,
+  "max_stacks": 1,
+  "duration_per_stack": 10,
+  "effect": {
+    "effect": "minecraft:regeneration",
+    "amplifier": 1,
+    "duration": 5
+  },
+  "name": "Bloom",
+  "description": "You gain regeneration when near flowers",
+  "hidden": false
+}

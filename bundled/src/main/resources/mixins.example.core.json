@@ -1,0 +1,7 @@
+{
+  "required": true,
+  "package": "me.dueris.genesismc.mixin.mixins",
+  "mixins": [
+    "StartupHookTestMixin"
+  ]
+}

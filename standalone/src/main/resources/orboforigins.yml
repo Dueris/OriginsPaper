@@ -1,0 +1,14 @@
+# You can find the correct spelling of items at https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html
+crafting:
+  top:
+    left: NETHERITE_INGOT
+    middle: DIAMOND
+    right: NETHERITE_INGOT
+  middle:
+    left: DIAMOND
+    middle: NETHER_STAR
+    right: DIAMOND
+  bottom:
+    left: NETHERITE_INGOT
+    middle: DIAMOND
+    right: NETHERITE_INGOT

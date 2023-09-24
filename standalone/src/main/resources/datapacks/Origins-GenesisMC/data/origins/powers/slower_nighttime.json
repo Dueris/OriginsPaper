@@ -1,0 +1,34 @@
+{
+  "type": "origins:multiple",
+  "walk": {
+    "type": "origins:stacking_status_effect",
+    "min_stacks": 0,
+    "max_stacks": 3,
+    "duration_per_stack": 10,
+    "effect": {
+      "effect": "minecraft:weakness",
+      "amplifier": 1,
+      "duration": 10
+    },
+    "condition": {
+      "type": "origins:daytime",
+      "inverted": true
+    },
+    "hidden": true
+  },
+  "flight": {
+    "type": "origins:modify_air_speed",
+    "modifier": {
+      "operation": "multiply_total",
+      "value": 0.4
+    },
+    "condition": {
+      "type": "origins:daytime",
+      "inverted": true
+    },
+    "hidden": true
+  },
+  "name": "Sleepy Bee",
+  "description": "You are sleepy at night, you walk and fly slower",
+  "hidden": false
+}

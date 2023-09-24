@@ -1,0 +1,39 @@
+{
+  "type": "origins:stacking_status_effect",
+  "min_stacks": 0,
+  "max_stacks": 1,
+  "duration_per_stack": 15,
+  "effects": [
+    {
+      "effect": "minecraft:slow_falling",
+      "amplifier": 0,
+      "is_ambient": true,
+      "show_particles": false,
+      "show_icon": false
+    },
+    {
+      "effect": "minecraft:jump_boost",
+      "amplifier": 2,
+      "is_ambient": true,
+      "show_particles": false,
+      "show_icon": false
+    }
+  ],
+  "condition": {
+    "type": "origins:and",
+    "conditions": [
+      {
+        "type": "origins:exposed_to_sky"
+      },
+      {
+        "type": "origins:daytime",
+        "inverted": true
+      },
+      {
+        "type": "origins:sneaking",
+        "inverted": true
+      }
+    ]
+  },
+  "hidden": true
+}

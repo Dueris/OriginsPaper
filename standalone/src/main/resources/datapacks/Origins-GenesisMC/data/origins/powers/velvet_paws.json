@@ -1,0 +1,7 @@
+{
+  "type": "origins:prevent_game_event",
+  "event": "minecraft:step",
+  "name": "Velvet Paws",
+  "description": "Your footsteps don't cause any vibrations which could otherwise be picked up by nearby lifeforms",
+  "hidden": false
+}

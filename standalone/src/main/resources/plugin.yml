@@ -1,0 +1,91 @@
+name: GenesisMC
+version: '${version}'
+main: me.dueris.genesismc.GenesisMC
+api-version: '1.20'
+authors: [ Dueris, Tye ]
+folia-supported: true
+description: Bringing the life and fun of the Origins mod to PaperMC
+website: https://ko-fi.com/dueris
+softdepend: [ SkinRestorer ]
+prefix: OriginPaper
+commands:
+  origin:
+    description: The main root command for the genesis origin plugin.
+    permission: genesismc.origins.cmd.main
+    usage: /<command> <args>
+    aliases:
+      - o
+  power:
+    permission: genesismc.origins.cmd.power
+    usage: /<command> <args>
+    aliases:
+      - p
+permissions:
+  genesismc.origins.cmd.power:
+    default: op
+  genesismc.origins.cmd.beta:
+    default: op
+  genesismc.origins.human:
+    default: true
+  genesismc.origins.enderian:
+    default: true
+  genesismc.origins.shulk:
+    default: true
+  genesismc.origins.arachnid:
+    default: true
+  genesismc.origins.creep:
+    default: true
+  genesismc.origins.slimeling:
+    default: true
+  genesismc.origins.phantom:
+    default: true
+  genesismc.origins.feline:
+    default: true
+  genesismc.origins.blazeborn:
+    default: true
+  genesismc.origins.starborne:
+    default: true
+  genesismc.origins.merling:
+    default: true
+  genesismc.origins.allay:
+    default: true
+  genesismc.origins.rabbit:
+    default: true
+  genesismc.origins.bee:
+    default: true
+  genesismc.origins.elytrian:
+    default: true
+  genesismc.origins.avian:
+    default: true
+  genesismc.origins.piglin:
+    default: true
+  genesismc.origins.sculkling:
+    default: true
+
+  genesismc.origins.cmd.main:
+    default: true
+  genesismc.origins.cmd.get:
+    default: op
+  genesismc.origins.cmd.enchant:
+    default: op
+  genesis.origins.cmd.gui:
+    default: op
+  genesis.origins.cmd.has:
+    default: op
+  genesis.origins.cmd.set:
+    default: op
+  genesismc.origins.cmd.toggle:
+    default: true
+  gensismc.origins.cmd.orb:
+    default: op
+
+  genesismc.origins.cmd.recipe:
+    default: true
+  genesismc.origins.cmd.info:
+    default: true
+  genesismc.origins.cmd.references:
+    default: true
+  genesismc.origins.cmd.bug:
+    default: true
+  genesism.origins.cmd.othershulk:
+    default: op

@@ -1,0 +1,462 @@
+# GenesisMC - created by Genesis Team
+# The LANG files should never be renamed, it may cause many errors in the plugin
+#
+# To change languages, please change the value in  "origin-server.yml " to one of the names of these files
+#
+# If you would like to contribute to languages provided by Genesis, please join the discord server for a language file
+# to be translated
+
+# Syntax
+# %originlayer% - shows the origin layer of the player
+# %player% - shows the player that is sending or recieving, handled plugin-sided
+
+# Begin LANG
+lang:
+  test:
+    "Lang test successful"
+command:
+  origin:
+    set:
+      given: "Ihr Ursprung wurde auf eingestellt %originlayer% "
+      sender: "Satz %player% Ursprung zu %originlayer% "
+    get:
+      sender: "%player% hat die Schicht %originlayer% "
+    purge:
+      sender: "Der Ursprung wurde erfolgreich entfernt %player% "
+      given: "Ihr Ursprung wurde von einem Betreiber entfernt "
+    gui:
+      sender: "Geöffnetes Auswahlmenü für %player% "
+  layer:
+    get:
+      sender: "%player% Schichten sind: %originlayer% "
+    set:
+      given: "Ihr OriginLayer wurde geändert in %originlayer% "
+    add:
+      given: "Ein OriginLayer wurde von einem Operator hinzugefügt(%originlayer%) "
+    remove:
+      given: "Ihr OriginLayer %originlayer% wurde von einem Betreiber entfernt "
+  toggle:
+    on: "Der Auslöser der Hauptfähigkeit wurde aktiviert "
+    off: "Auslöser der Hauptfähigkeit ausgeschaltet "
+
+menu:
+  original:
+    human:
+      nothing:
+        title: "Nichts "
+        description: "Genug gesagt. "
+    
+    avian:
+      featherweight:
+        title: "Federgewicht "
+        description: "Sie fallen so sanft zu Boden wie eine Feder, es sei denn, Sie bewegen sich"
+      tailwind:
+        title: "Rückenwind "
+        description: "Man ist zu Fuß etwas schneller als andere "
+      oviparous:
+        title: "Ovipar "
+        description: "Immer wenn Sie morgens aufwachen, legen Sie ein Ei "
+      vegitarian:
+        title: "Vegetarier "
+        description: "Fleisch kann man nicht verdauen "
+      fresh_air:
+        title: "Frische Luft "
+        description: "Beim Schlafen muss sich Ihr Bett auf einer Höhe von mindestens 100 Blocks befinden "
+    
+    arachnid:
+      spiderman:
+        title: "SpiderMan "
+        description: "Man kann Wände hochklettern, aber nicht, wenn es regnet "
+      weaver:
+        title: "Weber "
+        description: "Du hinderst deine Feinde mit Spinnweben daran, sie anzugreifen "
+      squishable:
+        title: "Zerquetschbar "
+        description: "Du hast 3 Herzen weniger "
+      tiny_carnivore:
+        title: "Kleiner Fleischfresser "
+        description: "Sie können nur Fleisch essen "
+    
+    elytrian:
+      winged:
+        title: "Geflügelt "
+        description: "Sie haben Elytra-Flügel, ohne dass Sie welche ausrüsten müssen "
+      
+      gift_of_the_winds:
+        title: "Geschenk der Winde "
+        description: "Alle 30 Sekunden können Sie sich 20 Blöcke in die Luft schleudern "
+      
+      claustrophobia:
+        title: "Klaustrophobie "
+        description: "Wenn Sie sich zu lange an einem Ort mit niedriger Decke aufhalten, werden Sie geschwächt "
+      
+      need_for_mobility:
+        title: "Bedürfnis nach Mobilität "
+        description: "Sie können keine schwere Rüstung tragen, deren Schutzwerte höher sind als die von Kettenhemden "
+      
+      brittle_bones:
+        title: "Brüchige Knochen "
+        description: "Du erleidest mehr Schaden durch Stürze und das Fliegen in Blöcke "
+    
+    shulk:
+      hoarder:
+        title: "Hoarder (/shulker öffnen, oder drücken Sie F zum Öffnen) "
+        description: "Sie haben 9 zusätzliche Inventarplätze, die Sie nach dem Tod behalten "
+      
+      sturdy_skin:
+        title: "Robuste Haut "
+        description: "Ihre Haut erhält einen natürlichen Schutz "
+      
+      strong_arms:
+        title: "Starke Arme "
+        description: "Natursteine ​​können Sie ohne Spitzhacke brechen "
+      
+      unweildy:
+        title: "Unhandlich "
+        description: "Du kannst keinen Schild halten "
+      
+      large_appetite:
+        title: "Großer Appetit "
+        description: "Du bist viel schneller erschöpft als andere "
+    
+    enderian:
+      teleportation:
+        title: "Teleportation "
+        description: "Du hast eine unendliche Enderperle, die keinen Schaden verursacht "
+      
+      hydrophobia:
+        title: "Hydrophobie "
+        description: "Bei Kontakt mit Wasser erleiden Sie Schaden "
+      
+      delicate_touch:
+        title: "Zarte Berührung "
+        description: "Sie haben seidenweiche Hände "
+      
+      slender_body:
+        title: "Schlanker Körper "
+        description: "Dank deiner langen Arme kannst du weiter reichen als alle anderen, aber du bist zu schwach, um weiter weg zu schürfen "
+      
+      bearer_of_pearls:
+        title: "Träger der Perlen "
+        description: "Beim Tod lässt man immer 0-2 Enderperlen fallen "
+    
+    
+    merling:
+      gills:
+        title: "Kiemen "
+        description: "Man kann NUR unter Wasser atmen, bei Regen kann man kurzzeitig an Land atmen "
+      
+      wet_eyes:
+        title: "Nasse Augen "
+        description: "Ihre Sicht unter Wasser ist nahezu perfekt "
+      
+      opposing_forces:
+        title: "Gegenkräfte "
+        description: "Durch Feuer erleidet man deutlich mehr Schaden "
+      
+      fins:
+        title: "Flossen "
+        description: "Sie können unter Wasser viel schneller schwimmen und sinken nicht unter Wasser "
+      
+      please_dont:
+        title: "Bitte... nicht "
+        description: "Iss keinen Fisch, das ist im Grunde genommen Kannabalismus und das ist ekelhaft. Es verursacht Übelkeit "
+      
+      luck_of_the_sea:
+        title: "Glück der See "
+        description: "Sie haben mehr Angelglück "
+    
+    blazeborn:
+      born_from_flames:
+        title: "Aus Flammen geboren "
+        description: "Ihr natürlicher Spawn befindet sich im Nether "
+      
+      burning_wrath:
+        title: "Brennender Zorn "
+        description: "Wenn du brennst, verursachst du zusätzlichen Schaden "
+      
+      fire_immunity:
+        title: "Feuerimmunität "
+        description: "Sie sind gegen alle Arten von Feuerschaden immun "
+      
+      to_hot_for_water:
+        title: "Zu heiß für... Äh... Ja... Wasser? "
+        description: "Im Wasser wird man beschädigt "
+      
+      hotblooded:
+        title: "Heissblütig "
+        description: "Aufgrund Ihres heißen Körpers verbrennt das Gift, wodurch Sie immun gegen Gift werden "
+      
+      opposite_forces:
+        title: "Gegensätzliche Kräfte "
+        description: "In kälteren Biomen und in großen Höhen sind Sie viel schwächer "
+      
+      flames_of_nether:
+        title: "Flammen des Nethers "
+        description: "Wenn jemand getroffen wird, wird er in Brand gesteckt "
+    
+    phantom:
+      translucent:
+        title: "Durchscheinend "
+        description: "Sie sind leicht durchscheinend und werden nachts fester "
+      
+      not_vampire:
+        title: "Nicht wirklich ein Vampir "
+        description: "Sie erleiden Schaden durch Sonnenlicht "
+      
+      phasing:
+        title: "Phaseneinstellung (Drücken Sie F zum Aktivieren oder verwenden Sie das Element.) "
+        description: "Sie können sich in Ihre „Phantomform“ verwandeln und so durch Wände gehen "
+      
+      fast_metabolism:
+        title: "Schnellen Stoffwechsel "
+        description: "In der Phantomform verlierst du doppelt so viel Hunger "
+      
+      fragile_creature:
+        title: "Zerbrechliche Kreatur "
+        description: "Du hast 3 Herzen weniger "
+      
+      invisibility:
+        title: "Unsichtbarkeit "
+        description: "Während Sie phantomisiert sind, werden Sie völlig unsichtbar "
+    
+    feline:
+      nine_lives:
+        title: "9 Leben "
+        description: "Du hast 9 Herzen der Gesundheit "
+      
+      good_jumper:
+        title: "Guter Pullover "
+        description: "Beim Sprinten kann man höher springen "
+      
+      nocturnal:
+        title: "Nächtlich "
+        description: "Sie haben eine natürliche Nachtsicht "
+      
+      catlike_appearance:
+        title: "Katzenartiges Aussehen "
+        description: "Creepers haben Angst vor dir "
+      
+      velvet_paws:
+        title: "Samtpfoten "
+        description: "Ihre Schritte verursachen keine Vibrationen "
+      
+      acrobatics:
+        title: "Akrobatik "
+        description: "Du erleidest niemals Sturzschaden "
+      
+      strong_ankles:
+        title: "Starke Knöchel "
+        description: "Sie können höher springen, indem Sie beim Sprinten springen "
+  
+  
+  expanded:
+    
+    starborne:
+      starbeam:
+        title: "Sternenstrahl"
+        description: "Du kannst alle 30 Sekunden einen Sternstrahl abfeuern, der 10 Schaden verursacht"
+
+      shooting_star:
+        title: "Sternschnuppe "
+        description: "Nach einer Abklingzeit von 5 Sekunden können Sie sich in die Luft werfen "
+
+      supernova:
+        title: "Supernova "
+        description: "Die gesamte gesammelte Sternenenergie, die Sie während Ihrer Zeit in den Sternen angesammelt haben, muss irgendwo hingehen. Wann immer Sie also sterben, werden Sie in einer großen Supernova explodieren"
+
+      cold_vacuum:
+        title: "Kaltes Vakuum "
+        description: "Du bist an die Kälte des Weltraums gewöhnt und erleidest daher doppelten Schaden durch Feuer "
+
+      stargazer:
+        title: "Sternengucker "
+        description: "Wenn Sie den Sternen ausgesetzt sind, gewinnen Sie an Geschwindigkeit und Regeneration "
+
+      nonviolent:
+        title: "Gewaltfrei "
+        description: "In den großen Abgründen des Weltraums kommt es selten zu Gewalt. Wenn Sie überhaupt jemandem begegnen, besteht eine geringe Chance, dass Sie bewegungsunfähig werden, wenn Sie Schaden erleiden."
+
+      starwatcher:
+        title: "Sternenbeobachter "
+        description: "Wenn man nicht den Sternen ausgesetzt ist, wird man etwas traurig und bewegt sich etwas langsamer "
+    alllay:
+      little_fairy:
+        title: "Kleine Fee "
+        description: "Du hast kleine Flügel, du kannst fliegen und schweben "
+      
+      blue_spirit:
+        title: "Blauer Geist "
+        description: "Sie sind halbtransparent und leuchten an dunklen Orten "
+      
+      sound_of_music:
+        title: "Klänge der Musik "
+        description: "Genießen Sie die Klänge der Musik, Sie können eine Jukebox als Respawn-Anker verwenden "
+      
+      cookies:
+        title: "KEKSE "
+        description: "Kekse geben die gleiche Sättigung wie Steak "
+      
+      treasure_finder:
+        title: "Schatzfinder "
+        description: "Ihre Chancen auf Schatzbeute sind erhöht und die Dorfbewohner senken ihre Preise für Sie "
+      
+      kinda_flamable:
+        title: "Irgendwie brennbar "
+        description: "Du verbrennst leicht, erleidest zusätzlichen Feuerschaden und hast die Hälfte deiner Gesundheit "
+      
+      friendly_angel:
+        title: "Freundlicher Engel "
+        description: "Du magst es nicht, Tieren Schaden zuzufügen, dir wird übel, wenn du Fleisch isst "
+    
+    rabbit:
+      leap:
+        title: "Sprung "
+        description: "Sie können in die Richtung springen, in die Sie schauen "
+      
+      strong_hopper:
+        title: "Starker Hopper "
+        description: "Sie können deutlich höher springen "
+      
+      shock_absorption:
+        title: "Federung "
+        description: "Du erleidest weniger Sturzschaden "
+      
+      delicious:
+        title: "Lecker "
+        description: "Bei einem Treffer kann es passieren, dass Sie die Pfote eines Kaninchens fallen lassen "
+      
+      picky_eater:
+        title: "Wählerischer Esser "
+        description: "Sie können nur Karotten und goldene Karotten essen "
+      
+      fragile:
+        title: "Fragile "
+        description: "Du hast 3 Herzen weniger "
+    
+    bee:
+      featherweight:
+        title: "Federgewicht "
+        description: "Du fällst so sanft zu Boden wie eine Feder, es sei denn, du verlagerst dich "
+      
+      poisonous:
+        title: "Giftig "
+        description: "Wenn du jemanden schlägst, erhält er 2 Sekunden lang Gift "
+      
+      bloom:
+        title: "blühen "
+        description: "In der Nähe von Blumen erhält man Regeneration "
+      
+      flight:
+        title: "Flug "
+        description: "Du kannst fliegen, genau wie eine Biene! (WAS) "
+      
+      nighttime:
+        title: "Nachts "
+        description: "Du bist nachts schläfrig, deshalb gehst und fliegst du langsamer "
+      
+      lifespan:
+        title: "Lebensdauer "
+        description: "Du hast 3 Herzen weniger "
+      
+      rain:
+        title: "Regen "
+        description: "Bei Regen kann man nicht fliegen und ist bei Nässe schwächer "
+    
+    piglin:
+      shiny:
+        title: "Ich mag es, GLÄNZEND zu sein "
+        description: "Goldene Werkzeuge verursachen zusätzlichen Schaden und goldene Rüstungen bieten mehr Schutz "
+      
+      friendly_frenemies:
+        title: "Freundliche Feinde "
+        description: "Piglins greifen dich nicht an, es sei denn, sie werden provoziert, Brutes greifen immer noch an, wenn sie dich sehen "
+      
+      nether_dweller:
+        title: "Netherbewohner "
+        description: "Ihr natürlicher Brutplatz liegt im Nether und Sie können nur Fleisch essen "
+      
+      colder_realms:
+        title: "Kältere Reiche "
+        description: "Außerhalb des Nethers verwandelst du dich in einen Zombie, wirst immun gegen Feuer und verlangsamst dich "
+      
+      blue_spooky:
+        title: "BLAUES FEUER GRUSELIG "
+        description: "Sie haben Angst vor Seelenfeuer und werden schwach, wenn Sie sich ihm nähern "
+    
+    sculk:
+      one_of_them:
+        title: "Einer von ihnen "
+        description: "Du spawnst in der tiefen Dunkelheit "
+      
+      amongst_people:
+        title: "Unter deinen Leuten "
+        description: "Du erhältst Buffs, wenn du in der Nähe von Sculk-Blöcken bist "
+      
+      besties_forever:
+        title: "Beste Freunde für immer "
+        description: "Der Wächter wird dich nicht angreifen und du löst keine Sculk Shriekers aus "
+      
+      afraid_of_light:
+        title: "Angst vor dem Licht "
+        description: "Im Sonnenlicht sind Sie schwächer "
+      
+      it_grows:
+        title: "Es wächst "
+        description: "Wenn du stirbst, wird um dich herum ein kleines Stück Sculk wachsen und du erhältst eine gewisse Sättigung "
+      
+      echo_pulse:
+        title: "Echoimpuls "
+        description: "Sie können alle Wesenheiten um Sie herum sehen und erhalten eine gewisse Sättigung "
+      
+      decaying_essence:
+        title: "Verfallende Essenz "
+        description: "Alle Rüstungen, die Sie tragen, verschlechtern sich langsam "
+      
+      carrier_echos:
+        title: "Träger von Echos "
+        description: "Sie geben einen Schallknall ab, wenn Sie bei gedrückter Umschalttaste auf Ihre Boom-Tastenkombination oder Ihren Boom-Gegenstand klicken (30 Sekunden Abklingzeit). "
+    
+    creep:
+      boom:
+        title: "BOOOOM "
+        description: "Du kannst nach Belieben explodieren, aber du erleidest 5 Herzen Schaden "
+      
+      charged:
+        title: "Berechnet "
+        description: "Bei Gewitter bist du deutlich stärker "
+      
+      friend_in_me:
+        title: "Mit mir hast du einen Freund "
+        description: "Andere Schlingpflanzen werden dich nicht angreifen "
+      
+      felinephobia:
+        title: "Katzenphobie "
+        description: "Du hast Angst vor Katzen und erleidest Schaden, wenn du in der Nähe einer Katze bist "
+    
+    slimeling:
+      bouncy:
+        title: "Federnd "
+        description: "Sie springen auf jeden Block, als wäre es ein Schleimblock "
+      
+      not_very_solid:
+        title: "Nicht sehr solide "
+        description: "Wenn Sie getroffen werden, haben Sie die Möglichkeit, sich zu teilen und kleine Schleime zu erschaffen "
+      
+      improved_jump:
+        title: "Verbesserter Sprung "
+        description: "Sie haben einen verbesserten Sprung auf Kosten der Bewegungsgeschwindigkeit "
+      
+      great_leap:
+        title: "Großer Sprung "
+        description: "Wenn Sie 4 Sekunden lang die Bewegung verschieben (ohne Hand), springen Sie in die Richtung, in die Sie schauen "
+      
+      slimy_skin:
+        title: "Schleimige Haut "
+        description: "Du hast die grüne, durchscheinende Haut eines Schleims "
+      
+      burnable:
+        title: "Brennbar "
+        description: "In heißeren Biomen verbrennt man "
+  
+  # End of LANG

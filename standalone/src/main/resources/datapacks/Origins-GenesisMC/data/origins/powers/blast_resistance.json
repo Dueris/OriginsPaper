@@ -1,0 +1,13 @@
+{
+  "type": "origins:modify_damage_taken",
+  "damage_condition": {
+    "type": "origins:explosive"
+  },
+  "modifier": {
+    "operation": "multiply_total",
+    "value": -0.8
+  },
+  "hidden": false,
+  "name": "Blast Resistant",
+  "description": "You take 80% less blast/explosion damage"
+}

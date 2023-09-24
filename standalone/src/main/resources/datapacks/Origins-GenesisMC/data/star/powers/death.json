@@ -1,0 +1,90 @@
+{
+  "type": "genesis:action_on_death",
+  "entity_action": {
+    "type": "origins:and",
+    "actions": [
+      {
+        "type": "origins:execute_command",
+        "command": "summon creeper ~ ~2 ~ {Silent:1b,Invulnerable:1b,powered:1b,Fuse:0,ignited:1b}",
+        "permission_level": 4
+      },
+      {
+        "type": "origins:execute_command",
+        "command": "effect give @e[distance=..10] minecraft:levitation 1 15 true",
+        "permission_level": 4
+      },
+      {
+        "type": "origins:execute_command",
+        "command": "scoreboard players remove @e[scores={stardeath=1..}] stardeath 1",
+        "permission_level": 4
+      },
+      {
+        "type": "origins:change_resource",
+        "resource": "star:cooldown",
+        "change": 1200
+      },
+      {
+        "type": "origins:execute_command",
+        "command": "playsound minecraft:entity.illusioner.prepare_blindness master @a[distance=..30] ~ ~ ~ 50 0",
+        "permission_level": 4
+      },
+      {
+        "type": "origins:execute_command",
+        "command": "playsound minecraft:entity.generic.explode master @a[distance=..30] ~ ~ ~ 50 0",
+        "permission_level": 4
+      },
+      {
+        "type": "origins:execute_command",
+        "command": "particle minecraft:wax_off ~ ~ ~ 1 1 1 100 1000 normal",
+        "permission_level": 4
+      },
+      {
+        "type": "origins:execute_command",
+        "command": "particle minecraft:dust .6 0 1 2 ~ ~ ~ 10 10 10 1 1000 normal",
+        "permission_level": 4
+      },
+      {
+        "type": "origins:execute_command",
+        "command": "particle minecraft:dust .7 0 .8 2 ~ ~ ~ 10 10 10 1 1000 normal",
+        "permission_level": 4
+      },
+      {
+        "type": "origins:execute_command",
+        "command": "particle minecraft:dust .2 0.3 1 2 ~ ~ ~ 10 10 10 1 1000 normal",
+        "permission_level": 4
+      },
+      {
+        "type": "origins:execute_command",
+        "command": "particle minecraft:dust .4 0 .8 2 ~ ~ ~ 10 10 10 1 1000 normal",
+        "permission_level": 4
+      },
+      {
+        "type": "origins:execute_command",
+        "command": "particle minecraft:dust .3 0 .8 2 ~ ~ ~ 10 10 10 1 1000 normal",
+        "permission_level": 4
+      }
+    ]
+  },
+  "interval": 1,
+  "condition": {
+    "type": "origins:and",
+    "conditions": [
+      {
+        "type": "origins:health",
+        "comparison": "==",
+        "compare_to": 0
+      },
+      {
+        "type": "origins:resource",
+        "resource": "star:cooldown",
+        "comparison": "==",
+        "compare_to": 0
+      },
+      {
+        "type": "origins:sneaking",
+        "inverted": true
+      }
+    ]
+  },
+  "hidden": true
+}

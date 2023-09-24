@@ -1,0 +1,13 @@
+{
+  "type": "origins:inventory",
+  "title": "Shulk Inventory",
+  "drop_on_death": false,
+  "container_type": "dropper",
+  "key": {
+    "key": "key.origins.primary_active",
+    "continuous": false
+  },
+  "name": "Hoarder",
+  "description": "You have access to an additional 9 slots of inventory, which keep the items on death",
+  "hidden": false
+}

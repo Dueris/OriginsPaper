@@ -1,0 +1,10 @@
+{
+  "type": "origins:modify_jump",
+  "modifier": {
+    "operation": "addition",
+    "value": 1.75
+  },
+  "name": "Strong Hopper",
+  "description": "You can jump significantly higher",
+  "hidden": false
+}

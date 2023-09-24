@@ -1,0 +1,14 @@
+{
+  "type": "origins:modify_damage_dealt",
+  "modifier": {
+    "name": "Extra damage while fall flying",
+    "value": 1,
+    "operation": "multiply_base"
+  },
+  "condition": {
+    "type": "origins:fall_flying"
+  },
+  "name": "Aerial Combatant",
+  "description": "You deal substantially more damage while in Elytra Flight",
+  "hidden": false
+}

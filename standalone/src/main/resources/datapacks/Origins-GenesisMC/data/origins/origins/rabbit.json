@@ -1,0 +1,18 @@
+{
+  "powers": [
+    "origins:tick_leap",
+    "origins:tick_leap_toggle",
+    "origins:jump_boost",
+    "origins:fall_immunity",
+    "origins:drop_foot",
+    "origins:vegetarian",
+    "origins:fragile"
+  ],
+  "icon": {
+    "item": "minecraft:carrot"
+  },
+  "order": 0,
+  "impact": 1,
+  "name": "Rabbit",
+  "description": "These furry bunnies are extremely good jumpers and have amazing agility"
+}

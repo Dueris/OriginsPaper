@@ -1,0 +1,22 @@
+{
+  "type": "origins:modify_food",
+  "item_condition": {
+    "type": "origins:ingredient",
+    "ingredient": {
+      "item": "minecraft:cookie"
+    }
+  },
+  "saturation_modifier": {
+    "name": "Increased saturation points",
+    "operation": "set_total",
+    "value": 8
+  },
+  "food_modifier": {
+    "name": "Increased food points",
+    "operation": "set_total",
+    "value": 8
+  },
+  "name": "COOKIES",
+  "description": "Cookies give the same saturation as steak",
+  "hidden": true
+}

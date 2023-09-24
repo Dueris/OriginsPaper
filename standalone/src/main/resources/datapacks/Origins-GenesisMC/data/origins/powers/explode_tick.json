@@ -1,0 +1,24 @@
+{
+  "type": "genesis:explode_tick",
+  "hidden": false,
+  "name": "BOOOM",
+  "description": "You can explode at will by holding shift, toggleable with keybind [Primary]",
+  "modifier": {
+    "power": 3,
+    "resistance": 2,
+    "charge": 2300,
+    "fire": false,
+    "break_blocks": true,
+    "thunder_modifier": {
+      "power": 6,
+      "fire": true,
+      "break_blocks": true,
+      "charge": 1900,
+      "resistance": 3
+    }
+  },
+  "condition": {
+    "type": "origins:power_active",
+    "power": "origins:explode_tick_toggle"
+  }
+}

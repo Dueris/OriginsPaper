@@ -1,0 +1,461 @@
+# GenesisMC - 由 Genesis 團隊建立
+# 語言檔案不應該被重新命名，否則可能導致插件出現許多錯誤
+#
+# 要更改語言，請在 "origin-server.yml" 中的值更改為這些檔案之一的名稱
+#
+# 如果您想貢獻 Genesis 提供的語言，請加入 Discord 伺服器以翻譯語言檔案
+#
+# 語法
+# %originlayer% - 顯示玩家的原生層級
+# %player% - 顯示發送或接收的玩家，由插件處理
+
+
+# 開始語言
+lang:
+  test:
+    "Lang test successful": "語言測試成功"
+command:
+  origin:
+    set:
+      given: "你的原生層級已設定為 %originlayer%"
+      sender: "將 %player% 的原生層級設定為 %originlayer%"
+    get:
+      sender: "%player% 的層級為 %originlayer%"
+    gui:
+      sender: "打開選擇選單給 %player%"
+    has:
+      sender:
+        failed: "測試失敗。"
+        passed: "測試通過。"
+  layer:
+    get:
+      sender: "%player% 的層級為：%originlayer%"
+    set:
+      given: "你的 OriginLayer 已更改為 %originlayer%"
+    add:
+      given: "一個 OP（%originlayer%）添加了一個 OriginLayer"
+    remove:
+      given: "OP 刪除了你的 OriginLayer：%originlayer%"
+  toggle:
+    on: "已切換主要技能觸發為開啟"
+    off: "已切換主要技能觸發為關閉"
+
+menu:
+  original:
+    human:
+      nothing:
+        title: "無"
+        description: "言之無物。"
+
+    avian:
+      featherweight:
+        title: "輕如羽毛"
+        description: "你下落時像羽毛一樣輕柔，除非你按住 Shift 鍵"
+      tailwind:
+        title: "順風"
+        description: "你的步行速度比其他人快一點"
+      oviparous:
+        title: "卵生"
+        description: "每天早上醒來時，你會下一顆蛋"
+      vegitarian:
+        title: "素食主義者"
+        description: "你無法消化任何肉類"
+      fresh_air:
+        title: "新鮮空氣"
+        description: "睡覺時，你的床必須位於至少 100 個方塊高的海拔位置"
+
+    arachnid:
+      spiderman:
+        title: "蜘蛛人"
+        description: "你可以爬上牆壁，除非下雨"
+      weaver:
+        title: "編織者"
+        description: "你攻擊敵人時會用蜘蛛網纏住他們"
+      squishable:
+        title: "易碎"
+        description: "你擁有 3 顆心臟"
+      tiny_carnivore:
+        title: "小型肉食動物"
+        description: "你只能吃肉類"
+
+    elytrian:
+      winged:
+        title: "有翅膀"
+        description: "你擁有鞘翅，無需裝備"
+
+      gift_of_the_winds:
+        title: "風之恩賜"
+        description: "每 60 秒，你可以將自己彈射 20 個方塊高"
+
+      claustrophobia:
+        title: "幽閉恐懼症"
+        description: "在低天花板的地方停留太久會使你虛弱"
+
+      need_for_mobility:
+        title: "對移動的需求"
+        description: "你不能穿戴任何防護值高於鎖鏈護甲的重型盔甲"
+
+      brittle_bones:
+        title: "骨骼脆弱"
+        description: "你受到的摔落和撞擊傷害更大"
+
+    shulk:
+      hoarder:
+        title: "囤積者（/shulker open 或按 F 鍵打開）"
+        description: "你有 9 個額外的背包欄位，死亡後保留"
+
+      sturdy_skin:
+        title: "堅固皮膚"
+        description: "你的皮膚具有天然的防護能力"
+
+      strong_arms:
+        title: "強壯的雙臂"
+        description: "你可以不使用鎬破壞天然石頭"
+
+      unweildy:
+        title: "不靈巧"
+        description: "你無法持有盾牌"
+
+      large_appetite:
+        title: "大胃口"
+        description: "你的體力比其他人更快耗盡"
+
+    enderian:
+      teleportation:
+        title: "傳送"
+        description: "你擁有一個無限的終界珍珠，不造成傷害"
+
+      hydrophobia:
+        title: "懼水症"
+        description: "接觸水時會受到傷害"
+
+      delicate_touch:
+        title: "精巧之觸"
+        description: "你的手具有絲綢觸感"
+
+      slender_body:
+        title: "苗條身體"
+        description: "由於你的長手臂，你可以觸及更遠的距離，但你太虛弱無法挖掘更遠處的方塊"
+
+      bearer_of_pearls:
+        title: "珍珠之承"
+        description: "你死亡時總會掉落 0-2 顆終界珍珠"
+
+    merling:
+      gills:
+        title: "魚鰓"
+        description: "你只能在水下呼吸，下雨時可以在陸地上呼吸一段時間"
+
+      wet_eyes:
+        title: "濕潤的眼睛"
+        description: "你在水下視野非常清晰"
+
+      opposing_forces:
+        title: "相反的力量"
+        description: "你受到火焰傷害的程度更大"
+
+      fins:
+        title: "鰭"
+        description: "你在水下游泳速度更快，且不會下沉"
+
+      please_dont:
+        title: "拜託..不要"
+        description: "不要吃魚，這基本上是食人行為，很噁心。它會讓你噁心"
+
+      luck_of_the_sea:
+        title: "海之幸運"
+        description: "你的釣魚運氣增加"
+
+    blazeborn:
+      born_from_flames:
+        title: "熾焰之生"
+        description: "你的自然重生點在地獄"
+
+      burning_wrath:
+        title: "燃燒之怒"
+        description: "當著火時，你造成額外傷害"
+
+      fire_immunity:
+        title: "火焰免疫"
+        description: "你對所有類型的火焰傷害免疫"
+
+      to_hot_for_water:
+        title: "太熱了...呃...對...水？"
+        description: "在水中受到傷害"
+
+      hotblooded:
+        title: "熱血"
+        description: "由於你的高體溫，毒素會燃燒，使你免疫中毒"
+
+      opposite_forces:
+        title: "相反的力量"
+        description: "在寒冷的生物群系和高海拔地區，你變得更虛弱"
+
+      flames_of_nether:
+        title: "地獄之焰"
+        description: "攻擊別人時，會點燃對方"
+
+    phantom:
+      translucent:
+        title: "半透明"
+        description: "你略微半透明，在夜晚變得更加實體"
+
+      not_vampire:
+        title: "不是真的吸血鬼"
+        description: "你會受到陽光的傷害"
+
+      phasing:
+        title: "相位（按 F 鍵啟動，或使用物品）"
+        description: "你可以變成「夜魅形態」，允許你穿過牆壁"
+
+      fast_metabolism:
+        title: "新陳代謝快"
+        description: "在形態下，你的飢餓值消耗雙倍"
+
+      fragile_creature:
+        title: "脆弱的生物"
+        description: "你擁有 3 顆心臟"
+
+      invisibility:
+        title: "隱形"
+        description: "在夜魅形態下，你完全隱形"
+
+    feline:
+      nine_lives:
+        title: "九條命"
+        description: "你擁有 9 顆心臟"
+
+      good_jumper:
+        title: "良好的跳躍者"
+        description: "你在奔跑時可以跳得更高"
+
+      nocturnal:
+        title: "夜行性"
+        description: "你具有自然的夜視能力"
+
+      catlike_appearance:
+        title: "貓一般的外表"
+        description: "苦力怕怕你"
+
+      velvet_paws:
+        title: "絲絨之爪"
+        description: "你的腳步不會引起任何震動"
+
+      acrobatics:
+        title: "雜技"
+        description: "你永遠不會受到摔落傷害"
+
+      strong_ankles:
+        title: "強壯的腳踝"
+        description: "你可以通過奔跑跳得更高"
+
+  expanded:
+    starborne:
+      starbeam:
+        title: "星光束"
+        description: "你可以每 30 秒發射一束星光，造成 10 點傷害"
+
+      shooting_star:
+        title: "流星"
+        description: "每隔 5 秒，你可以向空中彈射"
+
+      supernova:
+        title: "超新星"
+        description: "你在星空中積累的所有星能需要找到一個出口。所以每當你遭遇死亡，你會爆炸成一個偉大的超新星"
+
+      cold_vacuum:
+        title: "寒冷真空"
+        description: "你習慣於太空的寒冷，所以你受到的火焰傷害增加一倍"
+
+      stargazer:
+        title: "星空觀察者"
+        description: "當你暴露在星星下時，你會獲得速度和再生效果"
+
+      nonviolent:
+        title: "非暴力"
+        description: "在星空的無窮深淵中，暴力是罕見的，即使你在第一時間遇到某人，這會導致你受到傷害時被固定"
+
+      starwatcher:
+        title: "星空觀察者"
+        description: "當不暴露在星星下時，你會感到有點悲傷，移動速度會變慢"
+
+    allay:
+      little_fairy:
+        title: "小精靈"
+        description: "你有小翅膀，可以飛行和滑翔"
+
+      blue_spirit:
+        title: "藍色之靈"
+        description: "你半透明，在黑暗的地方發光"
+
+      sound_of_music:
+        title: "音樂之聲"
+        description: "你喜歡音樂的聲音，你可以使用音樂盒作為重生點錨"
+
+      cookies:
+        title: "餅乾"
+        description: "餅乾的飽和度與牛排相同"
+
+      treasure_finder:
+        title: "寶藏尋找者"
+        description: "你獲得寶藏戰利品的機會增加，並且村民將降低對你的價格"
+
+      kinda_flamable:
+        title: "有點易燃"
+        description: "你容易燃燒，受到額外的火焰傷害，並且只有一半的生命值"
+
+      friendly_angel:
+        title: "友善的天使"
+        description: "你不喜歡傷害動物，吃肉時會感到噁心"
+
+    rabbit:
+      leap:
+        title: "跳躍"
+        description: "你可以向你望向的方向跳躍"
+
+      strong_hopper:
+        title: "強壯的跳躍者"
+        description: "你可以跳得更高"
+
+      shock_absorption:
+        title: "震動吸收"
+        description: "你受到的摔落傷害較小"
+
+      delicious:
+        title: "美味"
+        description: "你可能在受到攻擊時掉落一隻兔腳"
+
+      picky_eater:
+        title: "挑食者"
+        description: "你只能吃胡蘿蔔和金胡蘿蔔"
+
+      fragile:
+        title: "脆弱"
+        description: "你擁有 3 顆心臟"
+
+    bee:
+      featherweight:
+        title: "輕如羽毛"
+        description: "你下落時像羽毛一樣輕柔，除非你按住 Shift 鍵"
+
+      poisonous:
+        title: "有毒"
+        description: "攻擊某人會讓他們中毒 2 秒"
+
+      bloom:
+        title: "綻放"
+        description: "當靠近花朵時，你獲得再生效果"
+
+      flight:
+        title: "飛行"
+        description: "你可以飛行，就像蜜蜂一樣！"
+
+      nighttime:
+        title: "夜晚"
+        description: "夜間你會感到困倦，所以你在夜間行走和飛行的速度會變慢"
+
+      lifespan:
+        title: "壽命"
+        description: "你擁有 3 顆心臟"
+
+      rain:
+        title: "雨天"
+        description: "在雨中你無法飛行，並且在濕潤狀態下變得虛弱"
+
+    piglin:
+      shiny:
+        title: "我喜歡閃亮的東西"
+        description: "金製工具造成額外傷害，金製盔甲具有更高的防護能力"
+
+      friendly_frenemies:
+        title: "友好敵人"
+        description: "除非挑釁，豬布林不會攻擊你，豬布林蠻兵仍然會對你發起攻擊"
+
+      nether_dweller:
+        title: "地獄居民"
+        description: "你的自然重生點在地獄，且只能吃肉類"
+
+      colder_realms:
+        title: "更冷的領域"
+        description: "當離開地獄時，你會變成僵化，對火焰免疫並且移動速度變慢"
+
+      blue_spooky:
+        title: "藍色火焰幽靈"
+        description: "你害怕靈魂火，靠近時變得虛弱"
+
+    sculk:
+      one_of_them:
+        title: "其中一個"
+        description: "你在深淵中重生"
+
+      amongst_people:
+        title: "與你的同類"
+        description: "在靠近伏聆方塊時獲得增益效果"
+
+      besties_forever:
+        title: "永遠的最好朋友"
+        description: "守衛者不會攻擊你，你不會觸發伏聆嘯口"
+
+      afraid_of_light:
+        title: "怕光"
+        description: "在陽光下，你變得更虛弱"
+
+      it_grows:
+        title: "它在生長"
+        description: "死亡時，你周圍會長出一小塊伏聆，並且獲得一些飽和度"
+
+      echo_pulse:
+        title: "回音脈衝"
+        description: "你可以看到你周圍的所有實體，並且獲得一些飽和度"
+
+      decaying_essence:
+        title: "腐朽的精華"
+        description: "你穿著的所有盔甲都會慢慢磨損"
+
+      carrier_echos:
+        title: "回聲的攜帶者"
+        description: "按住 Shift 鍵點擊你的爆炸按鍵綁定，或使用你的爆炸物品，你會發出音爆（30 秒冷卻時間）"
+
+    creep:
+      boom:
+        title: "爆炸"
+        description: "你可以自爆，但會受到 5 顆心的傷害"
+
+      charged:
+        title: "充能"
+        description: "在雷雨中，你變得更強大"
+
+      friend_in_me:
+        title: "你身邊有個朋友"
+        description: "其他苦力怕不會攻擊你"
+
+      felinephobia:
+        title: "怕貓"
+        description: "你害怕貓，靠近貓時會受到傷害"
+
+    slimeling:
+      bouncy:
+        title: "有彈性"
+        description: "你在任何方塊上跳躍時像膠水方塊一樣彈跳"
+
+      not_very_solid:
+        title: "不太堅固"
+        description: "被打擊時，你有機會分裂並產生小史萊姆"
+
+      improved_jump:
+        title: "跳躍力提升"
+        description: "你在移動速度的代價下擁有更強的跳躍能力"
+
+      great_leap:
+        title: "超強跳躍"
+        description: "按住 Shift 鍵 4 秒（手中無物品），你可以朝著你望向的方向跳躍"
+
+      slimy_skin:
+        title: "黏滑皮膚"
+        description: "你擁有像史萊姆一樣的綠色半透明皮膚"
+
+      burnable:
+        title: "可燃"
+        description: "在更熱的生物群系中，你會燃燒"
+
+# End of LANG

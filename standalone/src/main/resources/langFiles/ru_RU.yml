@@ -1,0 +1,475 @@
+# GenesisMC - created by Genesis Team
+# The LANG files should never be renamed, it may cause many errors in the plugin
+#
+# To change languages, please change the value in  "origin-server.yml " to one of the names of these files
+#
+# If you would like to contribute to languages provided by Genesis, please join the discord server for a language file
+# to be translated
+#
+# Syntax
+# %originlayer% - shows the origin layer of the player
+# %player% - shows the player that is sending or recieving, handled plugin-sided
+
+# Begin LANG
+lang:
+  test:
+    "Lang test successful"
+command:
+  origin:
+    set:
+      given: "Ваше происхождение было установлено на %originlayer% "
+      sender: "%player% получил происхождение %originlayer% "
+    get:
+      sender: "%player% происходит от %originlayer% "
+    purge:
+      sender: "Успешно удалено происхождение у игрока %player% "
+      given: "Ваше происхождение было удалено оператором "
+    gui:
+      sender: "Открывается меню выбора для %player% "
+  layer:
+    get:
+      sender: "%player% происходит от: %originlayer% "
+    set:
+      given: "Ваше происхождение было измененино на %originlayer% "
+    add:
+      given: "Ваше происхождение было выбрано оператором(%originlayer%) "
+    remove:
+      given: "Ваше происхождение %originlayer% было удалено оператором "
+  toggle:
+    on: "Включить триггер главной способности "
+    off: "Отключить триггер главной способности "
+
+menu:
+  original:
+    human:
+      nothing:
+        title: "Ничего "
+        description: "Достаточно сказано. "
+
+    avian:
+      featherweight:
+        title: "Весит как перышко "
+        description: "Вы падаете на землю так же мягко, как перышко, если только не нажмете на shift "
+      tailwind:
+        title: "Попутный ветер "
+        description: "Вы немного быстрее других передвигаетесь пешком "
+      oviparous:
+        title: "Яйцекладущие "
+        description: "Каждый раз, когда вы просыпаетесь утром, вы сносите яйцо "
+      vegitarian:
+        title: "Вегитарианец "
+        description: "Вы не можете есть любые виды мяса "
+      fresh_air:
+        title: "Свежий воздух "
+        description: "Для сна ваша кровать должна находится не ниже 100 высоте "
+
+    arachnid:
+      spiderman:
+        title: "Человек-паук "
+        description: "Вы можете взбираться по стенам, но не во время дождя "
+      weaver:
+        title: "Ткач "
+        description: "При нападении на врагов вы затягиваете их паутиной "
+      squishable:
+        title: "Сплющенный "
+        description: "У вас на 3 сердца меньше "
+      tiny_carnivore:
+        title: "Крошечный хищник "
+        description: "Вы можете есть только мясо "
+
+    elytrian:
+      winged:
+        title: "Крылатый "
+        description: "У вас есть крылья Элитра без необходимости экипировать их "
+
+      gift_of_the_winds:
+        title: "Дар ветров "
+        description: "Каждые 30 секунд вы можете запускать себя на 20 блоков в верх "
+
+      claustrophobia:
+        title: "Калустрофобия "
+        description: "Слишком долгое пребывание в месте с низким потолком ослабит вас "
+
+      need_for_mobility:
+        title: "Потребность в подвижности "
+        description: "Вы не можете носить тяжелые доспехи со степенью защиты выше, чем цепная броню "
+
+      brittle_bones:
+        title: "Хрупкие кости "
+        description: "Вы получаете больше урона при падении и столкновении с блоками "
+
+    shulk:
+      hoarder:
+        title: "Барахольщик(/shulker open, или нажмите F чтобы открыть) "
+        description: "У вас есть 9 дополнительных слотов инвентаря, которые вы сохраняете после смерти "
+
+      sturdy_skin:
+        title: "Прочная кожа "
+        description: "Ваша кожа обладает естественной защитой "
+
+      strong_arms:
+        title: "Cильные руки "
+        description: "Вы можете сломать камни без кирки "
+
+      unweildy:
+        title: "Громоздкий "
+        description: "Вы не можете держать щит "
+
+      large_appetite:
+        title: "Большой аппетит "
+        description: "Вы выматываетесь гораздо быстрее, чем другие "
+
+    enderian:
+      teleportation:
+        title: "Телепортация "
+        description: "У вас есть бесконечная жемчужина эндера, которая не наносит урона "
+
+      hydrophobia:
+        title: "Гидрофобия "
+        description: "Вы получаете урон при контакте с водой "
+
+      delicate_touch:
+        title: "Нежное прикосновение "
+        description: "У вас руки с эфектом шелковые касание "
+
+      slender_body:
+        title: "Стройное тело "
+        description: "Вы можете дотянуться дальше всех благодаря своим длинным рукам, но вы слишком слабы, чтобы добывать дальше "
+
+      bearer_of_pearls:
+        title: "Носитель жемчуга "
+        description: "После смерти всегда выпадает 0-2 жемчуга эндера "
+
+
+    merling:
+      gills:
+        title: "Жабры "
+        description: "Вы можете дышать ТОЛЬКО под водой, во время дождя вы можете дышать на суше в течение короткого времени "
+
+      wet_eyes:
+        title: "Влажные глаза "
+        description: "Ваше зрение под водой почти идеально "
+
+      opposing_forces:
+        title: "Противостояние стихий "
+        description: "Вы получаете значительно больше урона от огня "
+
+      fins:
+        title: "Плавники "
+        description: "Вы можете плавать под водой гораздо быстрее и не тонете под водой "
+
+      please_dont:
+        title: "Пожалуйста... не надо "
+        description: "Не ешьте рыбу, это по сути каннабализм, и это отвратительно. Она вызывает тошноту "
+
+      luck_of_the_sea:
+        title: "Морская удача "
+        description: "У вас увеличилась удача в рыбалке "
+
+    blazeborn:
+      born_from_flames:
+        title: "Рожденный в огне "
+        description: "Ваше истеное происхождение из нижнего мира "
+
+      burning_wrath:
+        title: "Пылающий гнев  "
+        description: "Когда вы горите, вы наносите дополнительный урон "
+
+      fire_immunity:
+        title: "Огнестойкость "
+        description: "Вы невосприимчивы ко всем видам повреждений от огня "
+
+      to_hot_for_water:
+        title: "Горячо для... Э... Да... Вода? "
+        description: "Вы получаете урон, находясь в воде  "
+
+      hotblooded:
+        title: "Горячая кровь "
+        description: "Благодаря горячему телу яд сгорает, делая вас невосприимчивым к отравлению "
+
+      opposite_forces:
+        title: "Противоположные силы "
+        description: "Вы гораздо слабее в более холодных биомах и на больших высотах "
+
+      flames_of_nether:
+        title: "Пламя Ада "
+        description: "При попадании в кого-либо, он поджигается "
+
+    phantom:
+      translucent:
+        title: "Полупрозрачный "
+        description: "Вы слегка прозрачны, а ночью становитесь более твердым "
+
+      not_vampire:
+        title: "Не настоящий вампир "
+        description: "Вы получаете урон от солнечного света "
+
+      phasing:
+        title: "Фазировка (нажмите F, чтобы активировать, или используйте придмет) "
+        description: "Вы можете превратиться в свою \"Призрачную Форму\", что позволит вам проходить сквозь стены.s "
+
+      fast_metabolism:
+        title: "Быстрый метаболизм "
+        description: "Находясь в призрачной форме, вы теряете в два раза больше голода "
+
+      fragile_creature:
+        title: "Хрупкое создание "
+        description: "У вас на 3 сердца меньше "
+
+      invisibility:
+        title: "Невидимость "
+        description: "При фонтомной форме вы становитесь полностью невидимым "
+
+    feline:
+      nine_lives:
+        title: "9 Жизней "
+        description: "У вас 9 сердец здоровья "
+
+      good_jumper:
+        title: "Хороший прыжок "
+        description: "Вы можете прыгать выше во время спринта "
+
+      nocturnal:
+        title: "Ночной зрение "
+        description: "У вас естественное ночное зрение "
+
+      catlike_appearance:
+        title: "Кошачья внешность "
+        description: "Криперы боятся тебя "
+
+      velvet_paws:
+        title: "Бархатные лапы "
+        description: "Ваши шаги не издают не каких звуков "
+
+      acrobatics:
+        title: "Акробатика "
+        description: "Вы никогда не получаете урона при падении "
+
+      strong_ankles:
+        title: "Крепкие лодыжки "
+        description: "Вы можете прыгать выше, прыгая во время спринта "
+
+
+  expanded:
+
+    starborne:
+      wanderer:
+        title: "Странник звезд "
+        description: "Вы не можете спать по ночам "
+
+      shooting_star:
+        title: "Падающая звезда "
+        description: "Вы можете подбросить себя в воздух после 5-секундной выдержки "
+
+      falling_stars:
+        title: "Падающие звезды "
+        description: "Вы можете бросать звезды на врага каждые 30 секунд "
+
+      supernova:
+        title: "Сверхновая "
+        description: "Когда ты умираешь, ты превращаешься в сверхновую звезду "
+
+      cold_vacuum:
+        title: "Холодный вакуум "
+        description: "Вы привыкли к холоду космоса, поэтому получаете двойной урон от огня "
+
+      stargazer:
+        title: "Звездочет "
+        description: "Под воздействием звезд вы приобретаете скорость и регенерацию "
+
+      unknown_realms:
+        title: "Неизвестные миры "
+        description: "Пребывание в мире без звезд делает тебя слабее "
+
+      nonviolent:
+        title: "Ненасильственный "
+        description: "У вас есть шанс быть обездвиженным при получении урона, и вы вегетарианец "
+
+      starwatcher:
+        title: "Тоска по звездам "
+        description: "Если не смотреть на звезды, вы станете немного грустным и будете двигаться немного медленнее "
+
+      gaurdian:
+        title: "Защита звезд "
+        description: "Убив дракона Эндера, вы станете Защитником Звезд, что даст вам оружие, выкованное из звезд "
+
+    alllay:
+      little_fairy:
+        title: "Маленькая фея "
+        description: "У тебя маленькие крылья, ты можешь летать и парить "
+
+      blue_spirit:
+        title: "Голубой дух "
+        description: "Вы полупрозрачны и светитесь в темных местах. "
+
+      sound_of_music:
+        title: "Звуки музыки "
+        description: "Вам нравятся звуки музыки, вы можете использовать музыкальный автомат в качестве якоря респауна "
+
+      cookies:
+        title: "ПЕЧЕНЬКИ "
+        description: "Печенье дает такую же насыщенность, как и стейк "
+
+      treasure_finder:
+        title: "Кладоискатель "
+        description: "У вас увеличиваются шансы получить сокровища, а жители деревень будут снижать цены для вас "
+
+      kinda_flamable:
+        title: "Легковоспламеняющийся "
+        description: "Вы легко горите, получаете дополнительный урон от огня и имеете половину здоровья "
+
+      friendly_angel:
+        title: "Дружелюбный ангел "
+        description: "Вам не нравится причинять вред животным, вас тошнит, когда вы едите мясо "
+
+    rabbit:
+      leap:
+        title: "Скачок "
+        description: "Вы можете прыгнуть в том направлении, куда вы движетесь "
+
+      strong_hopper:
+        title: "Сильные ноги "
+        description: "Вы можете прыгать значительно выше "
+
+      shock_absorption:
+        title: "Поглощение удара "
+        description: "Вы получаете меньше повреждений при падении "
+
+      delicious:
+        title: "Вкусный "
+        description: "Вы можете отбросить кроличью лапку при ударе "
+
+      picky_eater:
+        title: "Придирчивый едок "
+        description: "Вы можете есть только морковь и золотую морковь "
+
+      fragile:
+        title: "Хрупкий "
+        description: "У вас на 3 сердца меньше "
+
+    bee:
+      featherweight:
+        title: "Весит как перышко "
+        description: "Вы падаете на землю так же мягко, как перышко, если только не нажмете на shift "
+
+      poisonous:
+        title: "Ядовитый "
+        description: "Удар по кому-либо дает отровление на 2 секунды "
+
+      bloom:
+        title: "Цветение "
+        description: "Вы получаете регенерацию, когда находитесь рядом с цветами "
+
+      flight:
+        title: "Полет "
+        description: "Ты можешь летать, как пчела! (ЧТО) "
+
+      nighttime:
+        title: "Ночное время "
+        description: "Ночью вам хочется спать, поэтому вы ходите и летаете медленнее "
+
+      lifespan:
+        title: "Срок жизни "
+        description: "У вас на 3 сердца меньше "
+
+      rain:
+        title: "Дождь "
+        description: "Вы не можете летать под дождем и становитесь слабее, пока мокрые "
+
+    piglin:
+      shiny:
+        title: "Мне нравится быть сияющим "
+        description: "Золотые инструменты наносят дополнительный урон, а золотые доспехи имеют большую защиту "
+
+      friendly_frenemies:
+        title: "Дружественные враги "
+        description: "Пиглины не нападут на вас, если их не спровоцировать, Бруты все равно нападут при виде вас "
+
+      nether_dweller:
+        title: "Обитатель Ада "
+        description: "Ваше истеное происхождение из нижнего мира, и вы можете есть только мясо "
+
+      colder_realms:
+        title: "Более холодные миры "
+        description: "Когда вы находитесь вне нижнего мира, вы зомбируетесь и становитесь невосприимчивым к огню и замедлению "
+
+      blue_spooky:
+        title: "СИНИЙ ОГОНЬ "
+        description: "Вы боитесь душевного огня, становясь слабым, когда находитесь рядом с ним "
+
+    sculk:
+      one_of_them:
+        title: "Один из них "
+        description: "Ты рожден в глубокой тьме "
+
+      amongst_people:
+        title: "В своей среде "
+        description: "Вы получаете баффы, находясь рядом с блоками скалка "
+
+      besties_forever:
+        title: "Лучшие друзья навсегда "
+        description: "Варден не атакует вас, и вы не тригерите скалк сенсоры "
+
+      afraid_of_light:
+        title: "Бойтеся света "
+        description: "Вы слабее, когда находитесь под солнечным светом "
+
+      it_grows:
+        title: "Оно растет "
+        description: "После смерти вокруг вас вырастает небольшой участок скалковой жилы, вы получаете немного насыщения "
+
+      echo_pulse:
+        title: "Эхо-импульс "
+        description: "Вы можете видеть все сущности вокруг вас, вы обретаете некоторую насыщенность "
+
+      decaying_essence:
+        title: "Разлагающаяся сущность "
+        description: "Все доспехи, которые вы носите, будут медленно разрушаться "
+
+      carrier_echos:
+        title: "Носитель эха "
+        description: "Вы выпускаете звуковую стрелу при нажатии на Shift или предмет(30-секундный период действия) "
+
+    creep:
+      boom:
+        title: "БУУУУМ "
+        description: "Вы можете взорваться по желанию, но получаете 5 сердец урона "
+
+      charged:
+        title: "Зарядка "
+        description: "Во время грозы вы значительно усиливаетесьr "
+
+      friend_in_me:
+        title: "У тебя есть друг в тебе "
+        description: "Другие криперы не будут нападать на вас "
+
+      felinephobia:
+        title: "Кошкофобия "
+        description: "Вы боитесь кошек и получаете урон, когда находитесь рядом с ними "
+
+    slimeling:
+      bouncy:
+        title: "Надувной "
+        description: "Вы подпрыгиваете на любом блоке, как если бы это был блок слизи "
+
+      not_very_solid:
+        title: "Не очень твердый "
+        description: "При попадании в вас есть шанс разделиться и создать маленьких слизней "
+
+      improved_jump:
+        title: "Улучшенный прыжок "
+        description: "У вас есть улучшенный прыжок за счет расходования времени движения "
+
+      great_leap:
+        title: "Большой скачок "
+        description: "После смещения на 4 секунды (ничего в руках), вы прыгаете в том направлении, куда смотрите "
+
+      slimy_skin:
+        title: "Слизистая кожа "
+        description: "У тебя зеленая полупрозрачная кожа слизи "
+
+      burnable:
+        title: "Высыхание "
+        description: "Вы высыхаете, когда находитесь в более жарких биомах "
+
+# Конец

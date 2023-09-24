@@ -1,0 +1,10 @@
+{
+  "type": "origins:action_on_death",
+  "entity_action": {
+    "type": "origins:block_action_at",
+    "block_action": {
+      "type": "genesis:grow_sculk"
+    }
+  },
+  "hidden": true
+}

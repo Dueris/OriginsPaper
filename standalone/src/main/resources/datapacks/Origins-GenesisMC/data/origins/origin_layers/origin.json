@@ -1,0 +1,31 @@
+{
+  "replace": false,
+  "order": 0,
+  "enabled": true,
+  "origins": [
+    "origins:arachnid",
+    "origins:avian",
+    "origins:blazeborn",
+    "origins:elytrian",
+    "origins:enderian",
+    "origins:feline",
+    "origins:human",
+    "origins:merling",
+    "origins:phantom",
+    "origins:shulk",
+    "origins:starborne",
+    "origins:piglin",
+    "origins:creep",
+    "origins:slimeling",
+    "origins:bee",
+    "origins:allay",
+    "origins:rabbit",
+    "origins:sculkling"
+  ],
+  "allow_random": true,
+  "exclude_random": [
+    "origins:human"
+  ],
+  "allow_random_unchoosable": false,
+  "hidden": false
+}

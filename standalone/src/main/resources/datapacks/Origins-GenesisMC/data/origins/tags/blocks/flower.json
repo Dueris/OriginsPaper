@@ -1,0 +1,18 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:dandelion",
+    "minecraft:sunflower",
+    "minecraft:poppy",
+    "minecraft:cornflower",
+    "minecraft:blue_orchid",
+    "minecraft:allium",
+    "minecraft:lily_of_the_valley",
+    "minecraft:azure_bluet",
+    "minecraft:lilac",
+    "minecraft:peony",
+    "minecraft:oxeye_daisy",
+    "minecraft:rose_bush",
+    "minecraft:spore_blossom"
+  ]
+}

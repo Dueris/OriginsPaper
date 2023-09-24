@@ -1,0 +1,14 @@
+{
+  "type": "genesis:leap",
+  "hidden": false,
+  "name": "Big Leap",
+  "description": "You can leap in the direction you are looking to",
+  "modifier": {
+    "cooldown": 40,
+    "tick_charge": 20
+  },
+  "condition": {
+    "type": "origins:power_active",
+    "power": "origins:tick_leap_toggle"
+  }
+}
