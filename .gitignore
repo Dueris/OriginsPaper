@@ -1,8 +1,5 @@
 /standalone/.gradle/
-/standalone/build/
-/build/
 /.idea/
 /.gradle/
 /gradle/
 /bundled/.gradle/
-/bundled/build/
