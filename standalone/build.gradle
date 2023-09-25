@@ -33,7 +33,7 @@ task copyJarToBundled(type: Copy, dependsOn: jar) {
 }
 
 // Configure the "buildBundled" task to depend on the "build" task of Project B
-task buildBundled(dependsOn: [':bundled:build', 'copyJarToBundled', 'copyToLib']) {
+task buildBundled(dependsOn: [':genesis-mixin:build', 'copyJarToBundled', 'copyToLib']) {
     group = 'custom'
     description = 'Build Project B with the copied JAR from Project A'
     logger.info("Running build for bundled...")
