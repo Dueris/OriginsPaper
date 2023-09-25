@@ -75,7 +75,6 @@ task copyToLib(type: Copy) {
 }
 
 jar {
-    archiveFileName = 'genesis-bundled-$v.jar'.replace('$v', version)
     includeEmptyDirs = false
 }
 
