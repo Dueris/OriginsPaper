@@ -9,7 +9,7 @@ import net.minecraft.network.protocol.game.ClientboundUpdateMobEffectPacket;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
-import org.bukkit.craftbukkit.v1_20_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_20_R2.entity.CraftPlayer;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
@@ -57,10 +57,8 @@ public class EntityGlow extends CraftPower {
                             CraftPlayer craftPlayer = (CraftPlayer) p;
                             MobEffect effect = MobEffects.GLOWING;
                             craftPlayer.getHandle().connection.send(new ClientboundUpdateMobEffectPacket(entity.getEntityId(), new MobEffectInstance(effect, 60, 2, false, false, false)));
-
                             setActive(power.getTag(), true);
                         } else {
-
                             setActive(power.getTag(), false);
                         }
                     }

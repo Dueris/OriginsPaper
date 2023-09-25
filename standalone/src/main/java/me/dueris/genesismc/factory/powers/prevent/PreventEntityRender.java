@@ -1,6 +1,12 @@
 package me.dueris.genesismc.factory.powers.prevent;
 
+import me.dueris.genesismc.GenesisMC;
+import me.dueris.genesismc.entity.OriginPlayer;
+import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
+import me.dueris.genesismc.utils.OriginContainer;
+import me.dueris.genesismc.utils.PowerContainer;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -27,38 +33,28 @@ public class PreventEntityRender extends CraftPower {
     @Override
     public void run(Player p) {
         if (prevent_entity_render.contains(p)) {
-//            for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
-//                for (Entity entity : p.getWorld().getEntities()) {
-//                    ConditionExecutor conditionExecutor = new ConditionExecutor();
-//                    if (conditionExecutor.check("entity_condition", "entity_condition", p, origin, "origins:prevent_entity_render", p, entity, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
-//                        if (conditionExecutor.check("bientity_condition", "bientity_condition", p, origin, "origins:prevent_entity_render", p, entity, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
-//                            p.hideEntity(GenesisMC.getPlugin(), entity);
-//                            if (power == null) {
-//                                getPowerArray().remove(p);
-//                                return;
-//                            }
-//                            if (!getPowerArray().contains(p)) return;
-//                            setActive(power.getTag(), true);
-//                        } else {
-//                            if (power == null) {
-//                                getPowerArray().remove(p);
-//                                return;
-//                            }
-//                            if (!getPowerArray().contains(p)) return;
-//                            setActive(power.getTag(), false);
-//                            p.showEntity(GenesisMC.getPlugin(), entity);
-//                        }
-//                    } else {
-//                        if (power == null) {
-//                            getPowerArray().remove(p);
-//                            return;
-//                        }
-//                        if (!getPowerArray().contains(p)) return;
-//                        setActive(power.getTag(), false);
-//                        p.showEntity(GenesisMC.getPlugin(), entity);
-//                    }
-//                }
-//            }
+            for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
+                for (Entity entity : p.getWorld().getEntities()) {
+                    ConditionExecutor conditionExecutor = new ConditionExecutor();
+                    for(PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())){
+                        if (conditionExecutor.check("entity_condition", "entity_condition", p, power, "origins:prevent_entity_render", entity, entity, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
+                            if (conditionExecutor.check("bientity_condition", "bientity_condition", p, power, "origins:prevent_entity_render", entity, entity, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
+                                p.hideEntity(GenesisMC.getPlugin(), entity);
+//                                entity.setGlowing(true);
+                                setActive(power.getTag(), true);
+                            } else {
+                                setActive(power.getTag(), false);
+//                                entity.setGlowing(false);
+                                p.showEntity(GenesisMC.getPlugin(), entity);
+                            }
+                        } else {
+                            setActive(power.getTag(), false);
+//                            entity.setGlowing(false);
+                            p.showEntity(GenesisMC.getPlugin(), entity);
+                        }
+                    }
+                }
+            }
         }
     }
 

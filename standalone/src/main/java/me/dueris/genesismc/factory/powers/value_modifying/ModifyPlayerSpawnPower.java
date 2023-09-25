@@ -60,15 +60,19 @@ public class ModifyPlayerSpawnPower extends CraftPower implements Listener {
                         String biome = power.get("biome", null);
                         String structure = power.get("structure", null);
                         if(biome != null){
-                            Location biomeLoc = p.getWorld().locateNearestBiome(spawnLocation, Biome.valueOf(biome.toUpperCase().split(":")[1]), 100);;
+                            Location biomeLoc = p.getWorld().locateNearestBiome(spawnLocation, Biome.valueOf(biome.toUpperCase().split(":")[1]), 200);;
                             if(biomeLoc != null){
                                 spawnLocation = biomeLoc;
+                            }else{
+                                p.sendMessage("Unable to find biome &1 within a reasonable distance".replace("&1", biome));
                             }
                         }
                         if(structure != null){
-                            Location structureLoc = p.getWorld().locateNearestStructure(spawnLocation, translate(structure), 100, true).getLocation();
+                            Location structureLoc = p.getWorld().locateNearestStructure(spawnLocation, translate(structure), 200, true).getLocation();
                             if(structureLoc != null){
                                 spawnLocation = structureLoc;
+                            }else{
+                                p.sendMessage("Unable to find structure &1 within a reasonable distance".replace("&1", structure));
                             }
                         }
 

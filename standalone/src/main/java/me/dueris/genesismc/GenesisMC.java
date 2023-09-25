@@ -35,17 +35,23 @@ import me.dueris.genesismc.utils.translation.LangConfig;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.*;
+import org.bukkit.block.Biome;
+import org.bukkit.craftbukkit.v1_20_R2.block.CraftBiome;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.spigotmc.WatchdogThread;
 import org.spongepowered.asm.launch.MixinBootstrap;
 import org.spongepowered.asm.mixin.MixinEnvironment;
 import space.vectrix.ignite.api.Ignite;
 
+import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -53,6 +59,7 @@ import java.util.EnumSet;
 import java.util.HashMap;
 
 import static me.dueris.genesismc.PlayerHandler.ReapplyEntityReachPowers;
+import static me.dueris.genesismc.factory.CraftApoli.unzippedFiles;
 import static me.dueris.genesismc.factory.powers.simple.BounceSlimeBlock.bouncePlayers;
 import static me.dueris.genesismc.factory.powers.simple.MimicWarden.getParticleTasks;
 import static me.dueris.genesismc.factory.powers.simple.MimicWarden.mimicWardenPlayers;
@@ -72,6 +79,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
     public static boolean forceMixinOrigins = classExists("org.spongepowered.asm.launch.MixinBootstrap");
     public static boolean debugOrigins = false;
     public static boolean forceUseCurrentVersion = false;
+    public static boolean forceWatchdogStop = true;
 
     public static FoliaOriginScheduler.OriginSchedulerTree getScheduler(){
         return scheduler;
@@ -86,7 +94,16 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 
     public static ArrayList<String> versions = new ArrayList<>();
     static {
-        versions.add("1.20.1");
+        versions.add("1.20.2");
+    }
+
+    /**
+     * For some reason, this works for fixing the bug where you cant interact or hit entities?
+     * @param e
+     */
+    @EventHandler
+    public void test(PlayerInteractAtEntityEvent e){
+//        e.getPlayer().sendMessage(String.valueOf(e.isCancelled()));
     }
 
     @Override
@@ -96,6 +113,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         GenesisDataFiles.loadLangConfig();
         GenesisDataFiles.loadMainConfig();
         GenesisDataFiles.loadOrbConfig();
+        forceWatchdogStop = GenesisDataFiles.getMainConfig().getBoolean("disable-watchdog");
         isCompatible = (isFolia ? false : (isExpandedScheduler ? true : false));
         if(isCompatible == false){
             if(forceUseCurrentVersion) return;
@@ -123,6 +141,9 @@ public final class GenesisMC extends JavaPlugin implements Listener {
             BukkitUtils.CopyOriginDatapack();
         } catch (Exception E) {
             //FileExistException - ignore
+        }
+        if(forceWatchdogStop){
+            WatchdogThread.doStop();
         }
         debugOrigins = getOrDefault(GenesisDataFiles.getMainConfig().getBoolean("console-startup-debug") /* add arg compat in future version */, false);
         if(LangConfig.getLangFile() == null){

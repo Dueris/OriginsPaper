@@ -7,12 +7,18 @@ import me.dueris.genesismc.utils.OriginContainer;
 import me.dueris.genesismc.utils.PowerContainer;
 import net.minecraft.network.protocol.game.ClientboundUpdateMobEffectPacket;
 import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.effect.MobEffectInstance;
 import org.bukkit.Bukkit;
-import org.bukkit.craftbukkit.v1_20_R1.entity.CraftPlayer;
+import org.bukkit.Effect;
+import org.bukkit.craftbukkit.v1_20_R2.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_20_R2.potion.CraftPotionEffectType;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
+import java.awt.*;
 import java.util.ArrayList;
 
 public class SelfGlow extends CraftPower {
@@ -42,36 +48,21 @@ public class SelfGlow extends CraftPower {
                     if (entity instanceof Player player) {
                         if (conditionExecutor.check("entity_condition", "entity_conditions", p, power, getPowerFile(), p, entity, null, null, p.getItemInHand(), null)) {
                             if (conditionExecutor.check("bientity_condition", "bientity_conditions", p, power, getPowerFile(), p, entity, null, null, p.getItemInHand(), null)) {
-                                if (power == null) {
-                                    getPowerArray().remove(p);
-                                    return;
-                                }
-                                if (!getPowerArray().contains(p)) return;
                                 setActive(power.getTag(), true);
                                 CraftPlayer craftPlayers = (CraftPlayer) player;
-                                craftPlayers.getHandle().connection.send(new ClientboundUpdateMobEffectPacket(p.getEntityId(),
-                                        new MobEffectInstance(MobEffect.byId(24), 5, 1, false, false, false)));
+                                    craftPlayers.getHandle().connection.send(new ClientboundUpdateMobEffectPacket(p.getEntityId(),
+                                            new MobEffectInstance(CraftPotionEffectType.bukkitToMinecraft(PotionEffectType.GLOWING), 5, 1, false, false, false)));
                             } else {
-                                if (power == null) {
-                                    getPowerArray().remove(p);
-                                    return;
-                                }
-                                if (!getPowerArray().contains(p)) return;
                                 setActive(power.getTag(), false);
                             }
                         } else {
-                            if (power == null) {
-                                getPowerArray().remove(p);
-                                return;
-                            }
-                            if (!getPowerArray().contains(p)) return;
                             setActive(power.getTag(), false);
                         }
                     }
                 }
                 CraftPlayer craftPlayer = (CraftPlayer) p;
                 craftPlayer.getHandle().connection.send(new ClientboundUpdateMobEffectPacket(craftPlayer.getEntityId(),
-                        new MobEffectInstance(MobEffect.byId(24), 5, 1, false, false, false)));
+                        new MobEffectInstance(CraftPotionEffectType.bukkitToMinecraft(PotionEffectType.GLOWING), 5, 1, false, false, false)));
             }
         }
     }

@@ -11,7 +11,7 @@ import org.bukkit.Chunk;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
-import org.bukkit.craftbukkit.v1_20_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_20_R2.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;

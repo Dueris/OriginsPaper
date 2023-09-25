@@ -128,9 +128,23 @@ public class TabAutoComplete implements TabCompleter {
                     return layerTags;
                 }
                 if (args[0].equalsIgnoreCase("give")) {
-                    return List.of("genesis:orb_of_origin");
+                    return List.of("origins:orb_of_origin");
                 } else if (args[0].equalsIgnoreCase("enchant")) {
-                    return List.of("genesis:water_protection");
+                    return List.of("origins:water_protection");
+                } else if (args[0].equals("gui")) {
+                    ArrayList<LayerContainer> layers = CraftApoli.getLayers();
+                    for (int i = 0; i < layers.size(); i++) {
+                        String tag = layers.get(i).getTag();
+                        if (tag.length() < args[2].length()) {
+                            layers.remove(layers.get(i));
+                            continue;
+                        }
+                        if (!tag.equals(layers.get(i).getTag().substring(0, tag.length())))
+                            layers.remove(layers.get(i));
+                    }
+                    ArrayList<String> layerTags = new ArrayList<>();
+                    for (LayerContainer layer : layers) layerTags.add(layer.getTag());
+                    return layerTags;
                 } else {
                     return new ArrayList<>();
                 }

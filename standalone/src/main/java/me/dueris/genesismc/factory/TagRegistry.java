@@ -44,7 +44,7 @@ public enum TagRegistry {
         for (File datapack : datapacks) {
             File dataDir = new File(datapack.getAbsolutePath() + File.separator + "data");
             if (!dataDir.isDirectory()) continue;
-            for (File mainDIR : dataDir.listFiles()) { //line 38
+            for (File mainDIR : dataDir.listFiles()) {
                 for (File insideDIR : mainDIR.listFiles()) {
                     if(!insideDIR.getName().equalsIgnoreCase("tags")) continue;
                     for (File tagFolder : insideDIR.listFiles()) {

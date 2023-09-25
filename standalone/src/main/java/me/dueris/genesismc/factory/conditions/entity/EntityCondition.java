@@ -15,10 +15,12 @@ import me.dueris.genesismc.utils.PowerContainer;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Block;
+import org.bukkit.conversations.Conversable;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.*;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -205,7 +207,6 @@ public class EntityCondition implements Condition {
             String comparison = condition.get("comparison").toString();
             int compare_to = Integer.parseInt(condition.get("compare_to").toString());
             if (RestrictArmor.compareValues(p.getFoodLevel(), comparison, compare_to)) {
-                p.sendMessage("true");
                 return getResult(inverted, true);
             }
         }
@@ -488,18 +489,39 @@ public class EntityCondition implements Condition {
         }
 
         if (type.equalsIgnoreCase("origins:equipped_item")){
-            EquipmentSlot eSlot = Actions.getSlotFromString(condition.get("equipment_slot").toString());
-            if(eSlot != null){
-                if(condition.get("item_condition") != null){
-                    ItemCondition itemCondition = new ItemCondition();
-                    Optional boolIC = itemCondition.check((HashMap<String, Object>) condition.get("item_condition"), p, power, powerfile, entity, target, block, fluid, itemStack, entityDamageEvent);
-                    if(boolIC.isPresent()){
-                        if(boolIC.get().equals(true)){
-                            return getResult(inverted, true);
+            if(entity instanceof InventoryHolder invH){
+                if(invH instanceof LivingEntity LeInvH){
+                    EquipmentSlot eSlot = Actions.getSlotFromString(condition.get("equipment_slot").toString());
+                    if(eSlot != null){
+                        if(LeInvH.getEquipment().getItem(eSlot) != null){
+                            if(condition.get("item_condition") != null){
+                                ItemCondition itemCondition = new ItemCondition();
+                                Optional boolIC = itemCondition.check((HashMap<String, Object>) condition.get("item_condition"), p, power, powerfile, entity, target, block, fluid, LeInvH.getEquipment().getItem(eSlot), entityDamageEvent);
+                                if(boolIC.isPresent()){
+                                    if(boolIC.get().equals(true)){
+                                        return getResult(inverted, true);
+                                    }
+                                }
+                            }else{
+                                return getResult(inverted, true);
+                            }
                         }
                     }
                 }
             }
+            //DEPRECIATED - USING CODE ABOVE
+//            EquipmentSlot eSlot = Actions.getSlotFromString(condition.get("equipment_slot").toString());
+//            if(eSlot != null){
+//                if(condition.get("item_condition") != null){
+//                    ItemCondition itemCondition = new ItemCondition();
+//                    Optional boolIC = itemCondition.check((HashMap<String, Object>) condition.get("item_condition"), p, power, powerfile, entity, target, block, fluid, itemStack, entityDamageEvent);
+//                    if(boolIC.isPresent()){
+//                        if(boolIC.get().equals(true)){
+//                            return getResult(inverted, true);
+//                        }
+//                    }
+//                }
+//            }
         }
 
         if (type.equalsIgnoreCase("origins:exists")){
@@ -511,15 +533,19 @@ public class EntityCondition implements Condition {
         }
 
         if (type.equalsIgnoreCase("origins:gamemode")){
-            return getResult(inverted, p.getGameMode().equals(GameMode.valueOf(condition.get("gamemode").toString())));
+            if(entity instanceof Player player){
+                return getResult(inverted, player.equals(GameMode.valueOf(condition.get("gamemode").toString())));
+            }
         }
 
         if (type.equalsIgnoreCase("origins:glowing")){
-            return getResult(inverted, p.isGlowing());
+            return getResult(inverted, entity.isGlowing());
         }
 
         if (type.equalsIgnoreCase("origins:health")){
-            return getResult(inverted, RestrictArmor.compareValues(p.getHealth(), condition.get("comparison").toString(), Double.parseDouble(condition.get("compare_to").toString())));
+            if(entity instanceof LivingEntity le){
+                return getResult(inverted, RestrictArmor.compareValues(le.getHealth(), condition.get("comparison").toString(), Double.parseDouble(condition.get("compare_to").toString())));
+            }
         }
 
         if (type.equalsIgnoreCase("origins:in_block")){
@@ -545,7 +571,9 @@ public class EntityCondition implements Condition {
         }
 
         if (type.equalsIgnoreCase("origins:invisible")){
-            return getResult(inverted, p.isInvisible());
+            if(entity instanceof LivingEntity le){
+                return getResult(inverted, le.isInvisible());
+            }
         }
 
         if (type.equalsIgnoreCase("origins:living")){
@@ -580,7 +608,7 @@ public class EntityCondition implements Condition {
         }
 
         if (type.equalsIgnoreCase("origins:raycast")){
-            Predicate<Entity> filter = entity1 -> !entity1.equals(p);
+            Predicate<Entity> filter = entity1 -> !entity1.equals(entity);
 
             RayTraceResult traceResult = p.getWorld().rayTrace(entity.getLocation(), entity.getLocation().getDirection(), 12, FluidCollisionMode.valueOf(condition.getOrDefault("fluid_handling", "none").toString()), false, 1, filter);
             final boolean[] booleans = new boolean[0];
@@ -637,10 +665,12 @@ public class EntityCondition implements Condition {
         }
 
         if (type.equalsIgnoreCase("origins:relative_health")){
-            String comparison = condition.get("comparison").toString();
-            double compare_to = Double.parseDouble(condition.get("compare_to").toString());
-            double fin = p.getHealth() / p.getMaxHealth();
-            return getResult(inverted, RestrictArmor.compareValues(fin, comparison, compare_to));
+            if(entity instanceof LivingEntity le){
+                String comparison = condition.get("comparison").toString();
+                double compare_to = Double.parseDouble(condition.get("compare_to").toString());
+                double fin = p.getHealth() / le.getMaxHealth();
+                return getResult(inverted, RestrictArmor.compareValues(fin, comparison, compare_to));
+            }
         }
 
         if (type.equalsIgnoreCase("origins:riding")){
@@ -667,24 +697,28 @@ public class EntityCondition implements Condition {
         }
 
         if (type.equalsIgnoreCase("origins:status_effect")){
-            if (entity != null && StackingStatusEffect.getPotionEffectType(condition.get("effect").toString()) != null) {
-                for (PotionEffect effect : p.getActivePotionEffects()) {
-                    if (effect.getType().equals(StackingStatusEffect.getPotionEffectType(condition.get("effect").toString()))
-                            && effect.getAmplifier() >= Integer.parseInt(condition.getOrDefault("min_amplifier", 0).toString())
-                            && effect.getAmplifier() <= Integer.parseInt(condition.getOrDefault("max_amplifier", Integer.MAX_VALUE).toString())
-                            && effect.getDuration() >= Integer.parseInt(condition.getOrDefault("min_duration", 0).toString())
-                            && effect.getDuration() <= Integer.parseInt(condition.getOrDefault("max_duration", Integer.MAX_VALUE).toString())) {
-                        return getResult(inverted, true);
+            if(entity instanceof LivingEntity le){
+                if (entity != null && StackingStatusEffect.getPotionEffectType(condition.get("effect").toString()) != null) {
+                    for (PotionEffect effect : le.getActivePotionEffects()) {
+                        if (effect.getType().equals(StackingStatusEffect.getPotionEffectType(condition.get("effect").toString()))
+                                && effect.getAmplifier() >= Integer.parseInt(condition.getOrDefault("min_amplifier", 0).toString())
+                                && effect.getAmplifier() <= Integer.parseInt(condition.getOrDefault("max_amplifier", Integer.MAX_VALUE).toString())
+                                && effect.getDuration() >= Integer.parseInt(condition.getOrDefault("min_duration", 0).toString())
+                                && effect.getDuration() <= Integer.parseInt(condition.getOrDefault("max_duration", Integer.MAX_VALUE).toString())) {
+                            return getResult(inverted, true);
+                        }
                     }
                 }
             }
         }
 
         if (type.equalsIgnoreCase("origins:swimming")){
-            return getResult(inverted, p.isSwimming());
+            if(entity instanceof LivingEntity le){
+                return getResult(inverted, le.isSwimming());
+            }
         }
 
-        if (type.equalsIgnoreCase("origins:sneaking")){
+        if (type.equalsIgnoreCase("origins:tamed")){
             if(entity instanceof Tameable tameable){
                 return getResult(inverted, tameable.isTamed());
             }
@@ -705,18 +739,20 @@ public class EntityCondition implements Condition {
         }
 
         if (type.equalsIgnoreCase("origins:using_item")){
-            if(p.getActiveItem() != null){
-                if(condition.get("item_condition") != null){
-                    ItemCondition itemCondition = new ItemCondition();
-                    Optional boolI = itemCondition.check((HashMap<String, Object>) condition.get("item_condition"), p, power, powerfile, entity, target, block, fluid, itemStack, entityDamageEvent);
-                    if(boolI.isPresent()){
-                        if(boolI.get().equals(true)){
+            if(entity instanceof LivingEntity le){
+                    if(le.getActiveItem() != null){
+                        if(condition.get("item_condition") != null){
+                            ItemCondition itemCondition = new ItemCondition();
+                            Optional boolI = itemCondition.check((HashMap<String, Object>) condition.get("item_condition"), p, power, powerfile, le, target, block, fluid, itemStack, entityDamageEvent);
+                            if(boolI.isPresent()){
+                                if(boolI.get().equals(true)){
+                                    return getResult(inverted, true);
+                                }
+                            }
+                        }else{
                             return getResult(inverted, true);
                         }
                     }
-                }else{
-                    return getResult(inverted, true);
-                }
             }
         }
 

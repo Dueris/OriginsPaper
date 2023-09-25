@@ -2,6 +2,7 @@ package me.dueris.genesismc.factory.conditions.item;
 
 import me.dueris.genesismc.enchantments.EnchantProtEvent;
 import me.dueris.genesismc.enchantments.WaterProtection;
+import me.dueris.genesismc.factory.TagRegistry;
 import me.dueris.genesismc.factory.conditions.Condition;
 import me.dueris.genesismc.factory.powers.player.RestrictArmor;
 import me.dueris.genesismc.utils.ArmorUtils;
@@ -45,6 +46,14 @@ public class ItemCondition implements Condition {
                         return getResult(inverted, true);
                     } else {
                         return getResult(inverted, false);
+                    }
+                } else if (ingredientMap.containsKey("tag")) {
+                    if(TagRegistry.getRegisteredTagFromFileKey(ingredientMap.get("tag").toString()) != null){
+                        for(String mat : TagRegistry.getRegisteredTagFromFileKey(ingredientMap.get("tag").toString())){
+                            if(itemStack.getType().equals(Material.valueOf(mat.toString().split(":")[1].toUpperCase()))){
+                                return Optional.of(true);
+                            }
+                        }
                     }
                 }
             }

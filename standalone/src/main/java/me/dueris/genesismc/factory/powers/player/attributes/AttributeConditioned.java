@@ -45,6 +45,7 @@ public class AttributeConditioned extends CraftPower implements Listener {
         } else {
             Bukkit.getLogger().warning(LangConfig.getLocalizedString(p, "powers.errors.attribute"));
         }
+        p.sendHealthUpdate();
     }
 
     public static void executeAttributeModify(String operation, Attribute attribute_modifier, int base_value, Player p, Double value) {
@@ -71,6 +72,7 @@ public class AttributeConditioned extends CraftPower implements Listener {
         } else {
             Bukkit.getLogger().warning(LangConfig.getLocalizedString(p, "powers.errors.attribute"));
         }
+        p.sendHealthUpdate();
     }
 
     public void executeConditionAttribute(Player p) {

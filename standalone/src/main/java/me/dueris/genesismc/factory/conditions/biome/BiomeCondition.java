@@ -4,6 +4,7 @@ import me.dueris.genesismc.factory.TagRegistry;
 import me.dueris.genesismc.factory.conditions.Condition;
 import me.dueris.genesismc.factory.powers.player.RestrictArmor;
 import me.dueris.genesismc.utils.PowerContainer;
+import net.minecraft.core.BlockPos;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.biome.BiomeManager;
 import net.minecraft.world.level.biome.BiomeSources;
@@ -14,6 +15,7 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
+import org.bukkit.craftbukkit.v1_20_R2.block.CraftBiome;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;
@@ -58,13 +60,13 @@ public class BiomeCondition implements Condition {
         if (type.equalsIgnoreCase("origins:precipitation")){
             Biome biome = block.getBiome();
             if (biome != null) {
-                String biomeName = biome.name().toLowerCase();
-                if (biomeName.contains("desert") || biomeName.contains("mesa") || biomeName.contains("savanna")) {
-                    return getResult(inverted, condition.get("precipitation").toString().equals("none"));
-                } else if (biomeName.contains("snow") || biomeName.contains("ice") || biomeName.contains("tundra")) {
+                net.minecraft.world.level.biome.Biome b = CraftBiome.bukkitToMinecraft(biome);
+                if (b.coldEnoughToSnow(BlockPos.containing(block.getX(), block.getY(), block.getZ()))){
                     return getResult(inverted, condition.get("precipitation").toString().equals("snow"));
-                } else {
+                } else if (b.hasPrecipitation()) {
                     return getResult(inverted, condition.get("precipitation").toString().equals("rain"));
+                } else {
+                    return getResult(inverted, condition.get("precipitation").toString().equals("none"));
                 }
             } else {
                 return getResult(inverted, condition.get("precipitation").toString().equals("rain"));
@@ -79,14 +81,16 @@ public class BiomeCondition implements Condition {
             }
         }
         if (type.equalsIgnoreCase("origins:temperature")){
+            net.minecraft.world.level.biome.Biome b = CraftBiome.bukkitToMinecraft(block.getBiome());
             String comparison = condition.get("comparison").toString();
             float compare_to = Float.parseFloat(condition.get("compare_to").toString());
-                return getResult(inverted, RestrictArmor.compareValues(block.getWorld().getTemperature(block.getX(), block.getY(), block.getZ()), comparison, compare_to));
+                return getResult(inverted, RestrictArmor.compareValues(b.getBaseTemperature(), comparison, compare_to));
         }
         if (type.equalsIgnoreCase("origins:humidity")){
+            net.minecraft.world.level.biome.Biome b = CraftBiome.bukkitToMinecraft(block.getBiome());
             String comparison = condition.get("comparison").toString();
             float compare_to = Float.parseFloat(condition.get("compare_to").toString());
-                return getResult(inverted, RestrictArmor.compareValues(block.getWorld().getHumidity(block.getX(), block.getY(), block.getZ()), comparison, compare_to));
+                return getResult(inverted, RestrictArmor.compareValues(b.climateSettings.downfall(), comparison, compare_to));
         }
         return getResult(inverted, false);
     }

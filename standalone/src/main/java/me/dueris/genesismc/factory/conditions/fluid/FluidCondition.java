@@ -35,6 +35,8 @@ public class FluidCondition implements Condition {
             }
             case "origins:in_tag" : {
                 for(String flu : TagRegistry.getRegisteredTagFromFileKey(condition.get("tag").toString())){
+                    if(flu == null) continue;
+                    if(fluid == null) continue;
                     if(flu.equalsIgnoreCase(fluid.toString())){
                         return getResult(inverted, true);
                     }

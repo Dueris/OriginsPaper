@@ -5,7 +5,10 @@
     "origins:weaker_light",
     "origins:skulk_block_buff",
     "origins:shrieking_death",
-    "origins:burn_in_daylight"
+    "origins:burn_in_daylight",
+    "origins:deep_dark_spawn",
+    "origins:natural_armor",
+    "origins:toggle_night_vision"
   ],
   "icon": {
     "item": "minecraft:echo_shard"

@@ -1,26 +1,33 @@
 package me.dueris.genesismc.factory;
 
 import io.netty.util.internal.ConcurrentSet;
+import joptsimple.OptionParser;
+import joptsimple.OptionSet;
 import me.dueris.genesismc.events.OriginLoadEvent;
 import me.dueris.genesismc.files.GenesisDataFiles;
-import me.dueris.genesismc.utils.FileContainer;
-import me.dueris.genesismc.utils.LayerContainer;
-import me.dueris.genesismc.utils.OriginContainer;
-import me.dueris.genesismc.utils.PowerContainer;
+import me.dueris.genesismc.files.ServerProperties;
+import me.dueris.genesismc.utils.*;
 import me.dueris.genesismc.utils.translation.LangConfig;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
+import net.minecraft.server.dedicated.DedicatedServerProperties;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.craftbukkit.Main;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
 import java.io.*;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
+import java.util.zip.ZipInputStream;
 
 public class CraftApoli {
 
@@ -129,6 +136,74 @@ public class CraftApoli {
         return datapackDir().listFiles();
     }
 
+    private static BufferedReader readZipEntry(ZipFile zip, InputStream inputStream) throws IOException {
+        InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+        return new BufferedReader(inputStreamReader);
+    }
+
+    /**
+     * ArrayList of unzipped files that are scheduled for removal at the end of the parsing process
+     */
+    public static ArrayList<File> unzippedFiles = new ArrayList<>();
+
+    /**
+     * Size of the buffer to read/write data
+     */
+    private static final int BUFFER_SIZE = 4096;
+    /**
+     * Extracts a zip file specified by the zipFilePath to a directory specified by
+     * destDirectory (will be created if does not exists)
+     * @param zipFilePath
+     * @param destDirectory
+     * @throws IOException
+     */
+    public static void unzip(String zipFilePath, String destDirectory) throws IOException {
+        File destDir = new File(destDirectory);
+        if (!destDir.exists()) {
+            destDir.mkdir();
+            ZipInputStream zipIn = new ZipInputStream(new FileInputStream(zipFilePath));
+            ZipEntry entry = zipIn.getNextEntry();
+            // iterates over entries in the zip file
+            while (entry != null) {
+                String filePath = destDirectory + File.separator + entry.getName();
+                if(Path.of(filePath).toFile().exists()) return;
+                if (!entry.isDirectory()) {
+                    // if the entry is a file, extracts it
+                    extractFile(zipIn, filePath);
+                } else {
+                    // if the entry is a directory, make the directory
+                    File dir = new File(filePath);
+                    dir.mkdirs();
+                }
+                zipIn.closeEntry();
+                entry = zipIn.getNextEntry();
+            }
+            zipIn.close();
+        }
+    }
+    /**
+     * Extracts a zip entry (file entry)
+     * @param zipIn
+     * @param filePath
+     * @throws IOException
+     */
+    private static void extractFile(ZipInputStream zipIn, String filePath) throws IOException {
+        BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(filePath));
+        byte[] bytesIn = new byte[BUFFER_SIZE];
+        int read = 0;
+        while ((read = zipIn.read(bytesIn)) != -1) {
+            bos.write(bytesIn, 0, read);
+        }
+        bos.close();
+    }
+
+    public static void loadWorldContainers(){
+        ServerProperties serverProperties = new ServerProperties(new File(Bukkit.getServer().getPluginsFolder() + File.separator + ".." + File.separator + "server.properties"));
+        if(serverProperties.containsProperty("world-container")){
+            //TODO: continue
+        }
+    }
+
     /**
      * Loads the custom origins from the datapack dir into memory.
      **/
@@ -138,116 +213,26 @@ public class CraftApoli {
         File[] datapacks = DatapackDir.listFiles();
         if (datapacks == null) return;
 
-        for (File datapack : datapacks) {
-
-            //zip
-            if (FilenameUtils.getExtension(datapack.getName()).equals("zip")) {
-                HashMap<Path, String> files = new HashMap<>();
-
+        for (File datapack : datapacks){
+            if (FilenameUtils.getExtension(datapack.getName()).equals(".zip") || FilenameUtils.getExtension(datapack.getName()).equals("zip")) {
                 try {
-                    ZipFile zip = new ZipFile(datapack);
-                    for (Enumeration e = zip.entries(); e.hasMoreElements(); ) {
-                        ZipEntry entry = (ZipEntry) e.nextElement();
-                        if (entry.isDirectory()) continue;
-                        if (!FilenameUtils.getExtension(entry.getName()).equals("json")) continue;
-
-                        StringBuilder out = new StringBuilder();
-                        BufferedReader reader = new BufferedReader(new InputStreamReader(zip.getInputStream(entry)));
-                        String line;
-
-                        while ((line = reader.readLine()) != null) out.append(line);
-                        files.put(Path.of(entry.toString()), out.toString());
-                    }
-
-                    boolean originDatapack = false;
-                    JSONObject originLayerParser = null;
-                    ArrayList<String> originFolder = new ArrayList<>();
-                    ArrayList<String> originFileName = new ArrayList<>();
-
-                    for (Path path : files.keySet()) {
-                        if (path.equals(Path.of("data" + File.separator + originFolder.get(0) + File.separator + "origins" + File.separator + originFileName.get(0) + ".json"))) {
-                            JSONObject originParser = (JSONObject) new JSONParser().parse(files.get(path));
-                            ArrayList<String> powersList = (ArrayList<String>) originParser.get("powers");
-
-                            ArrayList<PowerContainer> powerContainers = new ArrayList<>();
-
-                            if (powersList != null) {
-                                for (String string : powersList) {
-                                    String[] powerLocation = string.split(":");
-                                    String powerFolder = powerLocation[0];
-                                    String powerFileName = powerLocation[1];
-
-                                    try {
-                                        JSONObject powerParser = (JSONObject) new JSONParser().parse(files.get(Path.of("data" + File.separator + powerFolder + File.separator + "powers" + File.separator + powerFileName + ".json")));
-
-                                        if (powerParser.containsKey("type") && "origins:multiple".equals(powerParser.get("type"))) {
-                                            PowerContainer powerContainer = new PowerContainer(powerFolder + ":" + powerFileName, fileToFileContainer(powerParser), originFolder.get(0) + ":" + originFileName.get(0));
-                                            powerContainers.add(powerContainer);
-                                            processNestedPowers(powerContainer, powerContainers, powerFolder, powerFileName);
-                                        } else {
-                                            powerContainers.add(new PowerContainer(powerFolder + ":" + powerFileName, fileToFileContainer(powerParser), originFolder.get(0) + ":" + originFileName.get(0)));
-                                        }
-                                    } catch (NullPointerException nullPointerException) {
-                                    }
-                                }
-                            }
-
-                            originContainers.add(new OriginContainer(originFolder.get(0) + ":" + originFileName.get(0), fileToFileContainer(originLayerParser), fileToHashMap(originParser), powerContainers));
-                        }
-                    }
-
-                    if (!originDatapack) continue;
-
-                    while (originFolder.size() > 0) {
-
-                        for (Path path : files.keySet())
-                            if (path.equals(Path.of("data" + File.separator + originFolder.get(0) + File.separator + "origins" + File.separator + originFileName.get(0) + ".json"))) {
-                                JSONObject originParser = (JSONObject) new JSONParser().parse(files.get(path));
-                                ArrayList<String> powersList = (ArrayList<String>) originParser.get("powers");
-
-
-                                ArrayList<PowerContainer> powerContainers = new ArrayList<>();
-
-                                if (powersList != null) {
-                                    for (String string : powersList) {
-                                        String[] powerLocation = string.split(":");
-                                        String powerFolder = powerLocation[0];
-                                        String powerFileName = powerLocation[1];
-
-                                        try {
-                                            JSONObject powerParser = (JSONObject) new JSONParser().parse(files.get(Path.of("data" + File.separator + powerFolder + File.separator + "powers" + File.separator + powerFileName + ".json")));
-                                            if (powerParser.containsKey("type") && "origins:multiple".equals(powerParser.get("type"))) {
-                                                PowerContainer powerContainer = new PowerContainer(powerFolder + ":" + powerFileName, fileToFileContainer(powerParser), originFolder.get(0) + ":" + originFileName.get(0));
-                                                powerContainers.add(powerContainer);
-                                                processNestedPowers(powerContainer, powerContainers, powerFolder, powerFileName);
-                                            } else {
-                                                powerContainers.add(new PowerContainer(powerFolder + ":" + powerFileName, fileToFileContainer(powerParser), originFolder.get(0) + ":" + originFileName.get(0)));
-                                            }
-                                        } catch (NullPointerException nullPointerException) {
-                                            if (showErrors)
-                                                Bukkit.getServer().getConsoleSender().sendMessage(Component.text(LangConfig.getLocalizedString(Bukkit.getConsoleSender(), "errors.craftApoli.powerParsing").replace("%powerFolder%", powerFolder).replace("%powerFileName%", powerFileName).replace("%originFolder%", originFolder.get(0)).replace("%originFileName%", originFileName.get(0))).color(TextColor.color(255, 0, 0)));
-                                        }
-                                    }
-                                }
-
-                                originContainers.add(new OriginContainer(originFolder.get(0) + ":" + originFileName.get(0), fileToFileContainer(originLayerParser), fileToHashMap(originParser), powerContainers));
-
-                            }
-                        originFolder.remove(0);
-                        originFileName.remove(0);
-                    }
-
-                    zip.close();
+                    CraftApoli.unzip(datapack.getAbsolutePath(), String.valueOf(DatapackDir.getAbsolutePath() + File.separator + datapack.getName().replace(".zip","") + "unzipped"));
+                    System.out.println(DatapackDir.getAbsolutePath());
+                    File dp = new File(String.valueOf(DatapackDir.getAbsolutePath() + File.separator + datapack.getName().replace(".zip","") + "unzipped"));
+                    File dataDir = new File(dp.getAbsolutePath() + File.separator + "data");
+                    if (!dataDir.isDirectory()) continue;
+                    File origin_layer = null;
+                    unzippedFiles.add(dp);
 
                 } catch (Exception e) {
                     //yeah imma fail this silently
                 }
-
             } else {
                 if (datapack.isFile()) continue;
             }
+        }
 
-            //non zip
+        for (File datapack : datapacks) {
             File dataDir = new File(datapack.getAbsolutePath() + File.separator + "data");
             if (!dataDir.isDirectory()) continue;
             File origin_layer = null;

@@ -13,45 +13,46 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.security.CodeSource;
+import java.util.ArrayList;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 public class BukkitUtils {
 
-    public static void deleteDirectory(Path directory) throws IOException {
+    public static void deleteDirectory(Path directory, boolean ignoreErrors) throws IOException {
         if (Files.exists(directory)) {
             Files.walk(directory)
                     .sorted((a, b) -> b.compareTo(a)) // Sort in reverse order for correct deletion
                     .forEach(path -> {
                         try {
                             Files.deleteIfExists(path);
+                            Files.delete(path);
                         } catch (IOException e) {
-                            System.err.println("Error deleting: " + path);
+                            if(!ignoreErrors){
+                                System.err.println("Error deleting: " + path + e);
+                            }
                         }
                     });
         }
     }
+    public static ArrayList<String> oldDV = new ArrayList<>();
+    static {
+        oldDV.add("OriginsGenesis");
+        oldDV.add("Origins-Genesis");
+        oldDV.add("Origins-GenesisMC");
+    }
 
     public static void CopyOriginDatapack() {
-        if (Files.exists(Path.of(Bukkit.getWorlds().get(0).getName() + File.separator + "datapacks" + File.separator + "OriginsGenesis"))) {
-            String path = Path.of(Bukkit.getWorlds().get(0).getName() + File.separator + "datapacks" + File.separator + "OriginsGenesis").toAbsolutePath().toString();
-            try {
-                deleteDirectory(Path.of(path));
-            } catch (IOException e) {
-                //SDGFLKSDJFGO
-            }
-        }else{
-            if(Files.exists(Path.of(Bukkit.getWorlds().get(0).getName() + File.separator + "datapacks" + File.separator + "Origins-Genesis"))){
-                String path = Path.of(Bukkit.getWorlds().get(0).getName() + File.separator + "datapacks" + File.separator + "Origins-Genesis").toAbsolutePath().toString();
+        for(String string : oldDV){
+            if (Files.exists(Path.of(Bukkit.getWorlds().get(0).getName() + File.separator + "datapacks" + File.separator + string))) {
+                String path = Path.of(Bukkit.getWorlds().get(0).getName() + File.separator + "datapacks" + File.separator + string).toAbsolutePath().toString();
                 try {
-                    deleteDirectory(Path.of(path));
+                    deleteDirectory(Path.of(path), false);
                 } catch (IOException e) {
                     //SDGFLKSDJFGO
                 }
             }
         }
-        if (Files.exists(Path.of(Bukkit.getWorlds().get(0).getName() + File.separator + "datapacks" + File.separator + "Origins-GenesisMC")))
-            return;
         try {
             CodeSource src = BukkitUtils.class.getProtectionDomain().getCodeSource();
             URL jar = src.getLocation();

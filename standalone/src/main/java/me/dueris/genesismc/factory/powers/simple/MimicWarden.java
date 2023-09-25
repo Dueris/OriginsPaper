@@ -16,6 +16,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
@@ -92,6 +94,7 @@ public class MimicWarden extends CraftPower implements OriginSimple, Listener {
     public void key(KeybindTriggerEvent e) {
         Player p = e.getPlayer();
         if (mimicWardenPlayers.contains(p)) {
+            if(p.getFoodLevel() < 6) return;
             for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
                 if (CooldownStuff.isPlayerInCooldown(p, "key.origins.primary_active")) return;
                 if (e.getKey().equals("key.origins.primary_active")) {
@@ -138,12 +141,15 @@ public class MimicWarden extends CraftPower implements OriginSimple, Listener {
                                 if (entity1 == null) return;
                                 if (entity1.isDead() || !(entity1 instanceof LivingEntity)) return;
                                 if (entity1.isInvulnerable()) return;
-                                LivingEntity victim1 = (LivingEntity) traceResult.getHitEntity();
                                 ((LivingEntity) entity).damage(10, p);
-                                ((LivingEntity) entity).knockback(1, victim1.getX(), victim1.getZ());
+                                ((LivingEntity) entity).knockback(1, p.getX(), p.getZ());
+                                ((LivingEntity) entity).addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 100, 2, false, false, false));
+                                ((LivingEntity) entity).addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, 50, 2, false, false, false));
                             }
                             victim.knockback(1.5, p.getX(), p.getZ());
                             victim.damage(15);
+                            victim.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 100, 2, false, false, false));
+                            victim.addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, 50, 2, false, false, false));
 
                             CooldownStuff.addCooldown(p, origin, "Sonic Boom", getPowerFile(), 1200, "key.origins.primary_active");
 

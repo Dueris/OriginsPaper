@@ -141,6 +141,7 @@ public class PlayerRender extends CraftPower {
             new BukkitRunnable() {
                 @Override
                 public void run() {
+                    if(!Bukkit.getServer().getPluginManager().isPluginEnabled("SkinsRestorer")) return;
                     if (model_color.contains(player)) {
                         for (OriginContainer origin : OriginPlayer.getOrigin(player).values()) {
                             for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
@@ -223,85 +224,90 @@ public class PlayerRender extends CraftPower {
 
         public static void modifyPlayerSkin(Player player, Double redTint, Double greenTint, Double blueTint, String savePath, Long alphaTint, SkinsRestorerAPI skinsRestorerAPI, boolean applyOriginal, PowerContainer power) {
             PlayerProfile gameProfile = player.getPlayerProfile();
-            String textureProperty = skinsRestorerAPI.getSkinTextureUrl(SkinsRestorerAPI.getApi().getSkinData(player.getName()));
-            String imageUrl = textureProperty;
-            String uuid = player.getUniqueId().toString();
-            String originalFileName = uuid + ".png";
-            String modifiedFileName = uuid + "_modified.png";
-
+            if(!Bukkit.getPluginManager().isPluginEnabled("SkinsRestorer")) return;
             try {
-                BufferedImage originalImage = downloadImage(imageUrl, savePath, originalFileName);
-                BufferedImage modifiedImage = modifyImage(originalImage, redTint, greenTint, blueTint, alphaTint, player, power);
-                saveImage(modifiedImage, savePath, modifiedFileName);
-                MineskinClient mineskinClient = new MineskinClient();
+                String textureProperty = skinsRestorerAPI.getSkinTextureUrl(SkinsRestorerAPI.getApi().getSkinData(player.getName()));
+                String imageUrl = textureProperty;
+                String uuid = player.getUniqueId().toString();
+                String originalFileName = uuid + ".png";
+                String modifiedFileName = uuid + "_modified.png";
 
-                File modifiedFile = new File(savePath, modifiedFileName);
+                try {
+                    BufferedImage originalImage = downloadImage(imageUrl, savePath, originalFileName);
+                    BufferedImage modifiedImage = modifyImage(originalImage, redTint, greenTint, blueTint, alphaTint, player, power);
+                    saveImage(modifiedImage, savePath, modifiedFileName);
+                    MineskinClient mineskinClient = new MineskinClient();
 
-                CompletableFuture<Skin> future = mineskinClient.generateUpload(modifiedFile);
-                future.thenAccept(skinData -> {
-                    if (skinData == null) {
-                        // Failed to generate the skin data
-                        future.cancel(true);
-                        return;
-                    }
+                    File modifiedFile = new File(savePath, modifiedFileName);
 
-                    Skin skin = skinData;
-                    String url = skin.data.texture.url;
-                    player.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "modified-skin-url"), PersistentDataType.STRING, url);
-                    IProperty platformprop = skinsRestorerAPI.createPlatformProperty(player.getUniqueId() + "_modified", skin.data.texture.value, skin.data.texture.signature);
-                    PlayerWrapper playerWrapper = new PlayerWrapper(player);
-                    skinsRestorerAPI.applySkin(playerWrapper, platformprop);
+                    CompletableFuture<Skin> future = mineskinClient.generateUpload(modifiedFile);
+                    future.thenAccept(skinData -> {
+                        if (skinData == null) {
+                            // Failed to generate the skin data
+                            future.cancel(true);
+                            return;
+                        }
 
-                    ModelColor modelColor = new ModelColor();
-                    modelColor.runTaskTimer(GenesisMC.getPlugin(), 2, 1);
+                        Skin skin = skinData;
+                        String url = skin.data.texture.url;
+                        player.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "modified-skin-url"), PersistentDataType.STRING, url);
+                        IProperty platformprop = skinsRestorerAPI.createPlatformProperty(player.getUniqueId() + "_modified", skin.data.texture.value, skin.data.texture.signature);
+                        PlayerWrapper playerWrapper = new PlayerWrapper(player);
+                        skinsRestorerAPI.applySkin(playerWrapper, platformprop);
 
-                    try {
-                        // /api custom
-                        skinsRestorerAPI.setSkinData(player.getUniqueId() + "_modified", skinsRestorerAPI.createPlatformProperty(player.getUniqueId() + "_modified", skin.data.texture.value, skin.data.texture.signature), 0);
-                        // #setSkin() for player skin
-                        skinsRestorerAPI.setSkin(player.getName(), player.getUniqueId() + "_modified");
+                        ModelColor modelColor = new ModelColor();
+                        modelColor.runTaskTimer(GenesisMC.getPlugin(), 2, 1);
 
-                        // Force skin refresh for player
-                        skinsRestorerAPI.applySkin(new PlayerWrapper(player));
-
-                    } catch (SkinRequestException e) {
-                        e.printStackTrace();
-                    }
-
-                });
-
-                CompletableFuture<Skin> futureorg = mineskinClient.generateUpload(originalImage);
-                futureorg.thenAccept(skinData -> {
-                    if (skinData == null) {
-                        // Failed to generate the skin data
-                        return;
-                    }
-
-                    Skin skin = skinData;
-
-                    String url = skin.data.texture.url;
-                    player.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "original-skin-url"), PersistentDataType.STRING, url);
-                    String playername = player.getName();
-
-                    ModelColor modelColor = new ModelColor();
-                    modelColor.runTaskTimer(GenesisMC.getPlugin(), 2, 1);
-
-                    if (applyOriginal) {
                         try {
                             // /api custom
-                            skinsRestorerAPI.setSkinData(player.getUniqueId().toString(), skinsRestorerAPI.createPlatformProperty(player.getUniqueId().toString(), skin.data.texture.value, skin.data.texture.signature), 0);
+                            skinsRestorerAPI.setSkinData(player.getUniqueId() + "_modified", skinsRestorerAPI.createPlatformProperty(player.getUniqueId() + "_modified", skin.data.texture.value, skin.data.texture.signature), 0);
+                            // #setSkin() for player skin
+                            skinsRestorerAPI.setSkin(player.getName(), player.getUniqueId() + "_modified");
+
                             // Force skin refresh for player
-                            skinsRestorerAPI.removeSkin(playername);
                             skinsRestorerAPI.applySkin(new PlayerWrapper(player));
 
                         } catch (SkinRequestException e) {
                             e.printStackTrace();
                         }
-                    }
 
-                });
-            } catch (IOException e) {
-                //rip
+                    });
+
+                    CompletableFuture<Skin> futureorg = mineskinClient.generateUpload(originalImage);
+                    futureorg.thenAccept(skinData -> {
+                        if (skinData == null) {
+                            // Failed to generate the skin data
+                            return;
+                        }
+
+                        Skin skin = skinData;
+
+                        String url = skin.data.texture.url;
+                        player.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "original-skin-url"), PersistentDataType.STRING, url);
+                        String playername = player.getName();
+
+                        ModelColor modelColor = new ModelColor();
+                        modelColor.runTaskTimer(GenesisMC.getPlugin(), 2, 1);
+
+                        if (applyOriginal) {
+                            try {
+                                // /api custom
+                                skinsRestorerAPI.setSkinData(player.getUniqueId().toString(), skinsRestorerAPI.createPlatformProperty(player.getUniqueId().toString(), skin.data.texture.value, skin.data.texture.signature), 0);
+                                // Force skin refresh for player
+                                skinsRestorerAPI.removeSkin(playername);
+                                skinsRestorerAPI.applySkin(new PlayerWrapper(player));
+
+                            } catch (SkinRequestException e) {
+                                e.printStackTrace();
+                            }
+                        }
+
+                    });
+                } catch (IOException e) {
+                    //rip
+                }
+            } catch (Exception e){
+                return;
             }
         }
 

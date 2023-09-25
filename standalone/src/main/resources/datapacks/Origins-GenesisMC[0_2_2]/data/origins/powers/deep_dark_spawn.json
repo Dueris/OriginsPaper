@@ -1,0 +1,8 @@
+{
+  "type": "origins:modify_player_spawn",
+  "dimension": "overworld",
+  "biome": "minecraft:deep_dark",
+  "hidden": false,
+  "name": "One of us",
+  "description": "You spawn in the deep dark"
+}

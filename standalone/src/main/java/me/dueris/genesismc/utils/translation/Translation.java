@@ -3,7 +3,7 @@ package me.dueris.genesismc.utils.translation;
 import com.destroystokyo.paper.ClientOption;
 import me.dueris.genesismc.files.GenesisDataFiles;
 import org.bukkit.command.CommandSender;
-import org.bukkit.craftbukkit.v1_20_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_20_R2.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 

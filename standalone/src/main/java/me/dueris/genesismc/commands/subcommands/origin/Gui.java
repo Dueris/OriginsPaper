@@ -43,29 +43,37 @@ public class Gui extends SubCommand {
             ArrayList<Player> players = PlayerSelector.playerSelector(sender, args[1]);
             if (players.size() == 0) return;
             for (Player p : players) {
-                for (LayerContainer layer : CraftApoli.getLayers()) {
-                    OriginPlayer.unassignPowers(p);
-                    OriginPlayer.setOrigin(p, layer, CraftApoli.nullOrigin());
-                    OriginPlayer.resetOriginData(p, OriginDataType.IN_PHASING_FORM);
-                    String skinData = p.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "original-skin-url"), PersistentDataType.STRING);
-                    if (p.getPlayerProfile().getTextures().getSkinModel() == PlayerTextures.SkinModel.CLASSIC) {
-                        try {
-                            p.getPlayerProfile().getTextures().setSkin(new URL(skinData), PlayerTextures.SkinModel.CLASSIC);
-                        } catch (MalformedURLException e) {
-                            e.printStackTrace();
+                String layR;
+                if(args.length >= 2){
+                    layR = args[2].toString();
+                }else{
+                    layR = "origins:origin";
+                }
+                for(LayerContainer layerContainer : CraftApoli.getLayers()){
+                    if(layerContainer.getTag().equals(layR)){
+                        OriginPlayer.unassignPowers(p, layerContainer);
+                        OriginPlayer.setOrigin(p, layerContainer, CraftApoli.nullOrigin());
+                        OriginPlayer.resetOriginData(p, OriginDataType.IN_PHASING_FORM);
+                        String skinData = p.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "original-skin-url"), PersistentDataType.STRING);
+                        if (p.getPlayerProfile().getTextures().getSkinModel() == PlayerTextures.SkinModel.CLASSIC) {
+                            try {
+                                p.getPlayerProfile().getTextures().setSkin(new URL(skinData), PlayerTextures.SkinModel.CLASSIC);
+                            } catch (MalformedURLException e) {
+                                e.printStackTrace();
+                            }
+                        } else {
+                            try {
+                                p.getPlayerProfile().getTextures().setSkin(new URL(skinData), PlayerTextures.SkinModel.SLIM);
+                            } catch (MalformedURLException e) {
+                                e.printStackTrace();
+                            }
                         }
-                    } else {
-                        try {
-                            p.getPlayerProfile().getTextures().setSkin(new URL(skinData), PlayerTextures.SkinModel.SLIM);
-                        } catch (MalformedURLException e) {
-                            e.printStackTrace();
+                        for (Player pls : Bukkit.getOnlinePlayers()) {
+                            pls.hidePlayer(GenesisMC.getPlugin(), p);
                         }
-                    }
-                    for (Player pls : Bukkit.getOnlinePlayers()) {
-                        pls.hidePlayer(GenesisMC.getPlugin(), p);
-                    }
-                    for (Player pls : Bukkit.getOnlinePlayers()) {
-                        pls.showPlayer(GenesisMC.getPlugin(), p);
+                        for (Player pls : Bukkit.getOnlinePlayers()) {
+                            pls.showPlayer(GenesisMC.getPlugin(), p);
+                        }
                     }
                 }
             }
