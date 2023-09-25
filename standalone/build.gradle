@@ -97,7 +97,6 @@ tasks {
 }
 
 jar {
-    archiveFileName = 'genesis-standalone-$v.jar'.replace('$v', version)
     includeEmptyDirs = false
 }
 
