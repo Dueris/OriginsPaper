@@ -97,14 +97,13 @@ public class OriginContainer implements Serializable {
         if(this.originFile.get("powers") instanceof String){
             ArrayList<String> powers = new ArrayList<>();
             powers.add(String.valueOf(this.originFile.get("powers")));
-            if (powers == null) return new ArrayList<>();
             return powers;
         } else if (this.originFile.get("powers") instanceof ArrayList<?>) {
             ArrayList<String> powers = (ArrayList<String>) this.originFile.get("powers");
             if (powers == null) return new ArrayList<>();
             return powers;
         }
-        return null;
+        return new ArrayList<>();
     }
 
     /**

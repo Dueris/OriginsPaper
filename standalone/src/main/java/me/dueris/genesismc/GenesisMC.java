@@ -46,6 +46,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scoreboard.Team;
 import org.spigotmc.WatchdogThread;
 import org.spongepowered.asm.launch.MixinBootstrap;
 import org.spongepowered.asm.mixin.MixinEnvironment;
@@ -258,19 +259,16 @@ public final class GenesisMC extends JavaPlugin implements Listener {
     }
 
     public static void registerEnchantment(Enchantment enchantment) {
-        boolean registered = true;
+        if (Enchantment.getByKey(enchantment.getKey()) != null) return;
         try {
             Field f = Enchantment.class.getDeclaredField("acceptingNew");
             f.setAccessible(true);
             f.set(null, true);
             Enchantment.registerEnchantment(enchantment);
         } catch (Exception e) {
-            registered = false;
             e.printStackTrace();
         }
-        if (registered) {
-            // It's been registered!
-        }
+        // It's been registered!
     }
 
     public static GenesisMC getPlugin() {
@@ -376,7 +374,8 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         }
 
         for (Player p : Bukkit.getOnlinePlayers()) {
-            p.getScoreboard().getTeam("origin-players").removeEntity(p);
+            Team team = p.getScoreboard().getTeam("origin-players");
+            if (team != null) team.removeEntity(p);
             Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), "skin clear " + p.getName());
 
             //closes all open menus, they would cause errors if not closed

@@ -52,7 +52,7 @@ public class ConditionExecutor {
         } else {
             boolean subConditionResult = false;
 
-            if (!subConditionResult && dmgevent != null) {
+            if (dmgevent != null) {
                 DamageCondition damageCondition = new DamageCondition();
                 var check = damageCondition.check(subCondition, p, power, powerfile, actor, target, block, fluid, itemStack, dmgevent);
                 if (check.isPresent()) {
@@ -159,11 +159,7 @@ public class ConditionExecutor {
                     }
                 } else {
                     String power = condition.get("power").toString();
-                    if (powers_active.containsKey(power)) {
-                        return powers_active.get(power);
-                    } else {
-                        return false;
-                    }
+                    return powers_active.getOrDefault(power, false);
                 }
             } else if (condition.get("type").equals("origins:power")) {
                 for (OriginContainer origin : CraftApoli.getOrigins()) {
@@ -218,9 +214,7 @@ public class ConditionExecutor {
                         }
                     }
                     return Boolean.parseBoolean(boolResult);
-                } catch (InstantiationException e) {
-                    throw new RuntimeException(e);
-                } catch (IllegalAccessException e) {
+                } catch (InstantiationException | IllegalAccessException e) {
                     throw new RuntimeException(e);
                 }
             }

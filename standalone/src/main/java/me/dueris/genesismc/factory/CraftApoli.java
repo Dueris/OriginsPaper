@@ -1,8 +1,6 @@
 package me.dueris.genesismc.factory;
 
 import io.netty.util.internal.ConcurrentSet;
-import joptsimple.OptionParser;
-import joptsimple.OptionSet;
 import me.dueris.genesismc.events.OriginLoadEvent;
 import me.dueris.genesismc.files.GenesisDataFiles;
 import me.dueris.genesismc.files.ServerProperties;
@@ -10,21 +8,15 @@ import me.dueris.genesismc.utils.*;
 import me.dueris.genesismc.utils.translation.LangConfig;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
-import net.minecraft.server.dedicated.DedicatedServerProperties;
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.bukkit.Bukkit;
-import org.bukkit.craftbukkit.Main;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
 import java.io.*;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
@@ -374,56 +366,55 @@ public class CraftApoli {
     /**
      * @return The HashMap serialized into a byte array.
      **/
-    public static byte[] toByteArray(HashMap<LayerContainer, OriginContainer> origin) {
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        try {
-            ObjectOutputStream oos = new ObjectOutputStream(bos);
-            oos.writeObject(origin);
-            oos.flush();
-            return bos.toByteArray();
-        } catch (Exception e) {
-            Bukkit.getLogger().warning(LangConfig.getLocalizedString(Bukkit.getConsoleSender(), "errors.containerConversion"));
-            e.printStackTrace();
-            return toByteArray(new HashMap<>(Map.of(CraftApoli.getLayers().get(0), CraftApoli.nullOrigin())));
+    public static String toSaveFormat(HashMap<LayerContainer, OriginContainer> origin) {
+        StringBuilder data = new StringBuilder();
+        for (LayerContainer layer : origin.keySet()) {
+            OriginContainer layerOrigins = origin.get(layer);
+            ArrayList<String> powers = layerOrigins.getPowers();
+            int powerSize = 0;
+            if (powers != null) powerSize = powers.size();
+            data.append(layer.getTag()).append("|").append(layerOrigins.getTag()).append("|").append(powerSize);
+            if (powers != null) for (String power : powers) data.append("|").append(power);
+            data.append("\n");
         }
+        return data.toString();
     }
 
     /**
      * @return The byte array deserialized into the origin specified by the layer.
      **/
-    public static OriginContainer toOrigin(byte[] origin, LayerContainer originLayer) {
-        ByteArrayInputStream bis = new ByteArrayInputStream(origin);
-        try {
-            ObjectInput oi = new ObjectInputStream(bis);
-            HashMap<LayerContainer, OriginContainer> originData = (HashMap<LayerContainer, OriginContainer>) oi.readObject();
-            for (LayerContainer layer : originData.keySet()) {
-                if (layer.getTag().equals(originLayer.getTag())) return originData.get(layer);
+    public static OriginContainer toOrigin(String originData, LayerContainer originLayer) {
+        if (originData != null) {
+            String[] layers = originData.split("\n");
+            for (String layer : layers) {
+                String[] layerData = layer.split("\\|");
+                if (CraftApoli.getLayerFromTag(layerData[0]).equals(originLayer)) {
+                    return CraftApoli.getOrigin(layerData[1]);
+                }
             }
-        } catch (Exception e) {
-            Bukkit.getLogger().warning(LangConfig.getLocalizedString(Bukkit.getConsoleSender(), "errors.containerConversion"));
-            e.printStackTrace();
-            return nullOrigin();
         }
-        return nullOrigin();
+        return CraftApoli.nullOrigin();
     }
 
     /**
      * @return The byte array deserialized into a HashMap of the originLayer and the OriginContainer.
      **/
-    public static HashMap<LayerContainer, OriginContainer> toOrigin(byte[] origin) {
-        try (ByteArrayInputStream bis = new ByteArrayInputStream(origin);
-             ObjectInput oi = new ObjectInputStream(bis)) {
-            return (HashMap<LayerContainer, OriginContainer>) oi.readObject();
-        } catch (IOException | ClassNotFoundException e) {
-            Bukkit.getLogger().warning(LangConfig.getLocalizedString(Bukkit.getConsoleSender(), "errors.containerConversion"));
-            e.printStackTrace();
+    public static HashMap<LayerContainer, OriginContainer> toOrigin(String originData) {
+        HashMap<LayerContainer, OriginContainer> containedOrigins = new HashMap<>();
+        if (originData == null) {
+            for (LayerContainer layer : CraftApoli.getLayers()) {
+                containedOrigins.put(layer, CraftApoli.nullOrigin());
+            }
+        } else {
+            String[] layers = originData.split("\n");
+            for (String layer : layers) {
+                String[] layerData = layer.split("\\|");
+                LayerContainer layerContainer = CraftApoli.getLayerFromTag(layerData[0]);
+                OriginContainer originContainer = CraftApoli.getOrigin(layerData[1]);
+                containedOrigins.put(layerContainer, originContainer);
+            }
         }
-
-        HashMap<LayerContainer, OriginContainer> origins = new HashMap<>();
-        for (LayerContainer layer : CraftApoli.getLayers()) {
-            origins.put(layer, CraftApoli.nullOrigin());
-        }
-        return origins;
+        return containedOrigins;
     }
 
     /**

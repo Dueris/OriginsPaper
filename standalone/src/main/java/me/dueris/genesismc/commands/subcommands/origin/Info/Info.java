@@ -55,7 +55,7 @@ public class Info extends SubCommand implements Listener {
     public void perform(CommandSender sender, String[] args) {
         if (sender instanceof Player p) {
             if (args.length == 1) {
-                HashMap<LayerContainer, OriginContainer> origins = CraftApoli.toOrigin(p.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "origins"), PersistentDataType.BYTE_ARRAY));
+                HashMap<LayerContainer, OriginContainer> origins = CraftApoli.toOrigin(p.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "origins"), PersistentDataType.STRING));
                 assert origins != null;
                 playerOrigins.put(p, new ArrayList<>(origins.values()));
                 if (!playerPage.containsKey(p)) playerPage.put(p, 0);
