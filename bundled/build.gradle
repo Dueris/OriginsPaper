@@ -60,6 +60,11 @@ jar {
     from {
         configurations.shade.collect { it.isDirectory() ? it : zipTree(it) }
     }
+    delete {fileName ->
+        if(fileName.toString().endsWith("-dev.jar")){
+            delete(jar)
+        }
+    }
 }
 
 tasks {
@@ -69,9 +74,16 @@ tasks {
     }
 }
 
-task copyToLib(type: Copy) {
-    from jar
-    into "../build/libs"
+task copyToLib(type: Copy, dependsOn: [jar, reobfJar]) {
+    from 'build/libs'
+    into '../build/libs'
+    include '**/*.jar'
+    rename { fileName ->
+        if (fileName.startsWith("")) {
+            fileName = fileName.replace("bundled", "genesis-mixn")
+        }
+        fileName
+    }
 }
 
 jar {

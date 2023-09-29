@@ -12,33 +12,6 @@ version = 'mc1.20-v0.2.2'
 sourceCompatibility = JavaVersion.VERSION_17
 targetCompatibility = JavaVersion.VERSION_17
 
-java {
-    toolchain.languageVersion.set(JavaLanguageVersion.of(17))
-}
-
-configurations {
-    shade
-}
-
-task copyToLib(type: Copy, dependsOn: jar) {
-    from jar
-    into "../build/libs"
-}
-
-// Create a custom task to copy the JAR to the resources folder of Project B
-task copyJarToBundled(type: Copy, dependsOn: jar) {
-    from jar.archivePath
-    into '../bundled/src/main/resources'
-    logger.info("Copying standalone jar...")
-}
-
-// Configure the "buildBundled" task to depend on the "build" task of Project B
-task buildBundled(dependsOn: [':bundled:build', 'copyJarToBundled', 'copyToLib']) {
-    group = 'custom'
-    description = 'Build Project B with the copied JAR from Project A'
-    logger.info("Running build for bundled...")
-}
-
 repositories {
     mavenCentral()
     maven {
@@ -62,6 +35,14 @@ repositories {
     }
     maven { url = "https://jitpack.io"}
     maven { url = "https://repo.spongepowered.org/repository/maven-public/"}
+}
+
+java {
+    toolchain.languageVersion.set(JavaLanguageVersion.of(17))
+}
+
+configurations {
+    shade
 }
 
 dependencies {
@@ -93,6 +74,31 @@ tasks {
     // Configure reobfJar to run when invoking the build task
     assemble {
         dependsOn(reobfJar)
+    }
+}
+
+task copyJarToBundled(type: Copy, dependsOn: jar) {
+    from jar.archivePath
+    into '../bundled/src/main/resources'
+    logger.info("Copying standalone jar...")
+}
+
+// Configure the "buildBundled" task to depend on the "build" task of Project B
+task buildBundled(dependsOn: [':bundled:build', 'copyJarToBundled', 'copyToLib']) {
+    group = 'custom'
+    description = 'Build Project B with the copied JAR from Project A'
+    logger.info("Running build for bundled...")
+}
+
+task copyToLib(type: Copy, dependsOn: [jar, reobfJar]) {
+    from 'build/libs'
+    into '../build/libs'
+    include '**/*.jar'
+    rename { fileName ->
+        if (fileName.startsWith("")) {
+            fileName = fileName.replace("standalone", "genesis-standalone")
+        }
+        fileName
     }
 }
 
@@ -132,8 +138,12 @@ publishing {
         }
     }
     repositories {
+        // Add repositories to publish to here.
+        // Notice: This block does NOT have the same function as the block in the top level.
+        // The repositories here will be used for publishing your artifact, not for
+        // retrieving dependencies.
         mavenLocal()
     }
 }
 
-
+build.dependsOn jar, copyToLib
