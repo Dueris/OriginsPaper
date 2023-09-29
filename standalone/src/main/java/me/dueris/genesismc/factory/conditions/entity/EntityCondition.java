@@ -16,6 +16,7 @@ import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Block;
 import org.bukkit.conversations.Conversable;
+import org.bukkit.craftbukkit.v1_20_R2.entity.CraftPlayer;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.*;
 import org.bukkit.event.entity.EntityDamageEvent;
@@ -146,25 +147,19 @@ public class EntityCondition implements Condition {
 
             switch (ability) {
                 case "minecraft:flying" -> {
-                    if (entity instanceof Player player) {
-                        return getResult(inverted, player.isFlying());
-                    }
+                    return getResult(inverted, ((CraftPlayer) p).getHandle().getAbilities().flying);
                 }
                 case "minecraft:instabuild" -> {
-                    if (entity instanceof Player player) {
-                        return getResult(inverted, player.getGameMode().equals(GameMode.CREATIVE));
-                    }
+                    return getResult(inverted, ((CraftPlayer) p).getHandle().getAbilities().instabuild);
                 }
                 case "minecraft:invulnerable" -> {
-                    return getResult(inverted, entity.isInvulnerable());
+                    return getResult(inverted, ((CraftPlayer) p).getHandle().getAbilities().invulnerable);
                 }
                 case "minecraft:maybuild" -> {
-                    return getResult(inverted, entity.hasPermission("minecraft.build"));
+                    return getResult(inverted, ((CraftPlayer) p).getHandle().getAbilities().mayBuild);
                 }
                 case "minecraft:mayfly" -> {
-                    if (entity instanceof Player player) {
-                        return getResult(inverted, player.getAllowFlight());
-                    }
+                    return getResult(inverted, ((CraftPlayer) p).getHandle().getAbilities().mayfly);
                 }
             }
         }
