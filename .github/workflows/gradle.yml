@@ -8,27 +8,55 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    
+
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
-      
+
     - name: Set up Java
       uses: actions/setup-java@v2
       with:
         java-version: 17
         distribution: 'adopt'
-    
+
     - name: Build the project
       run: ./gradlew build  # Replace with your build command
-    
+
     - name: Archive Jars
       run: |
         commit_hash=$(git rev-parse --short HEAD)
-        mkdir -p builds/commits/
         jar_files=$(find build/libs -name "*.jar")
         if [ -n "$jar_files" ]; then
+          mkdir -p builds/commits
           zip -j builds/commits/${commit_hash}.zip ${jar_files}
+
+          # Create folders and move the zip file
+          curl -X PUT -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            -d '{"path": "builds/commits", "message": "Create commits folder"}' \
+            https://api.github.com/repos/${{ github.repository }}/contents/builds/commits
+          curl -X PUT -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            --data-binary "@builds/commits/${commit_hash}.zip" \
+            https://api.github.com/repos/${{ github.repository }}/contents/builds/commits/${commit_hash}.zip
+
+          # Send a Discord message
+          curl -X POST -H "Content-Type: application/json" \
+            -d '{
+              "content": "New build available!",
+              "embeds": [
+                {
+                  "title": "Commit Hash",
+                  "description": "'"${commit_hash}"'",
+                  "url": "https://github.com/'"${{ github.repository }}"/commit/${commit_hash}",
+                  "color": 15158332
+                },
+                {
+                  "title": "Download Zip",
+                  "url": "https://github.com/'"${{ github.repository }}"/blob/main/builds/commits/${commit_hash}.zip",
+                  "color": 3447003
+                }
+              ]
+            }' \
+            "${{ secrets.DISCORD_WEBHOOK }}"
         fi
       shell: bash
 
