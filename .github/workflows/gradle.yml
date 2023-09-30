@@ -3,7 +3,7 @@ name: Build, Release, and Notify
 on:
   push:
     branches:
-      - main  # Change this to your main branch name
+      - origin  # Change this to your main branch name
 
 jobs:
   build:
