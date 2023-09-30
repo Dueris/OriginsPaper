@@ -27,9 +27,8 @@ jobs:
         commit_hash=$(git rev-parse --short HEAD)
         jar_files=$(find build/libs -name "*.jar")
         if [ -n "$jar_files" ]; then
-          mkdir -p builds/commits/${commit_hash}
-          mv ${jar_files} builds/commits/${commit_hash}/
-          zip -j builds/commits/${commit_hash}.zip builds/commits/${commit_hash}/*.jar
+          zip -j builds/commits/${commit_hash}.zip ${jar_files}
+          mv builds/commits/${commit_hash}.zip builds/commits/
         fi
       shell: bash
 
