@@ -29,7 +29,7 @@ jobs:
         if [ -n "$jar_files" ]; then
           zip -j builds/commits/${commit_hash}.zip ${jar_files}
           if [ -f "builds/commits/${commit_hash}.zip" ]; then
-            mv -u builds/commits/${commit_hash}.zip builds/commits/
+            cp builds/commits/${commit_hash}.zip builds/commits/
           fi
         fi
       shell: bash
