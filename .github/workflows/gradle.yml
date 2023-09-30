@@ -28,7 +28,9 @@ jobs:
         jar_files=$(find build/libs -name "*.jar")
         if [ -n "$jar_files" ]; then
           zip -j builds/commits/${commit_hash}.zip ${jar_files}
-          mv builds/commits/${commit_hash}.zip builds/commits/
+          if [ -f "builds/commits/${commit_hash}.zip" ]; then
+            mv builds/commits/${commit_hash}.zip builds/commits/
+          fi
         fi
       shell: bash
 
