@@ -3,4 +3,3 @@ Hello!! This is the git commit guide for GenesisMC. Here all git commit builds w
 
 
 
-
