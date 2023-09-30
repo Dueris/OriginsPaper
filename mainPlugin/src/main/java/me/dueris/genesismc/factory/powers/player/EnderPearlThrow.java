@@ -48,6 +48,7 @@ public class EnderPearlThrow extends CraftPower implements Listener {
         if (throw_ender_pearl.contains(e.getPlayer()) && e.getCause() == PlayerTeleportEvent.TeleportCause.ENDER_PEARL) {
             e.setCancelled(true);
             p.teleport(e.getTo());
+            p.setFallDistance(0);
         }
 
     }
