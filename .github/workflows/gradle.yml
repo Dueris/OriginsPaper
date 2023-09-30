@@ -30,39 +30,21 @@ jobs:
           mkdir -p builds/commits
           zip -j builds/commits/${commit_hash}.zip ${jar_files}
 
-          # Create folders and move the zip file
-          curl -X PUT -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-            -d '{"path": "builds/commits", "message": "Create commits folder"}' \
-            https://api.github.com/repos/${{ github.repository }}/contents/builds/commits/${commit_hash}.zip
-
-          # Send a Discord message
-          curl -X POST -H "Content-Type: application/json" \
+          # Create a GitHub release
+          curl -X POST -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
             -d '{
-              "content": "New build available!",
-              "embeds": [
-                {
-                  "title": "Commit Hash",
-                  "description": "'"${commit_hash}"'",
-                  "url": "https://github.com/${{ github.repository }}/commit/${commit_hash}",
-                  "color": 15158332
-                },
-                {
-                  "title": "Download Zip",
-                  "url": "https://github.com/${{ github.repository }}/blob/main/builds/commits/${commit_hash}.zip",
-                  "color": 3447003
-                }
-              ]
+              "tag_name": "v'${commit_hash}'",
+              "name": "Release '${commit_hash}'",
+              "body": "New build available for commit '${commit_hash}'",
+              "draft": false,
+              "prerelease": false
             }' \
-            ${{ secrets.DISCORD_WEBHOOK }}
+            "https://api.github.com/repos/${{ github.repository }}/releases"
+
+          # Upload the zip file to the release
+          curl -X POST -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            -H "Content-Type: application/zip" \
+            --data-binary "@builds/commits/${commit_hash}.zip" \
+            "https://uploads.github.com/repos/${{ github.repository }}/releases/${commit_hash}/assets?name=${commit_hash}.zip"
         fi
       shell: bash
-
-    - name: Commit and Push Archive
-      run: |
-        git config user.name "GitHub Actions"
-        git config user.email "actions@github.com"
-        if [ -f "builds/commits/${commit_hash}.zip" ]; then
-          git add builds/commits/${commit_hash}.zip
-          git commit -m "Add archive for commit ${commit_hash}"
-          git push
-        fi
