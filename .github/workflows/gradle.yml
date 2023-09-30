@@ -27,10 +27,10 @@ jobs:
         commit_hash=$(git rev-parse --short HEAD)
         jar_files=$(find build/libs -name "*.jar")
         if [ -n "$jar_files" ]; then
-          zip -j specified_directory/${commit_hash}.zip ${jar_files}
-          if [ -f "specified_directory/${commit_hash}.zip" ]; then
-            if [ ! -f "specified_directory/${commit_hash}.zip.bak" ]; then
-              cp specified_directory/${commit_hash}.zip specified_directory/${commit_hash}.zip.bak
+          zip -j builds/commits/${commit_hash}.zip ${jar_files}
+          if [ -f "builds/commits/${commit_hash}.zip" ]; then
+            if [ ! -f "builds/commits/${commit_hash}.zip.bak" ]; then
+              cp builds/commits/${commit_hash}.zip builds/commits/${commit_hash}.zip.bak
             fi
           fi
         fi
@@ -44,8 +44,8 @@ jobs:
         git config --global user.name "github-actions"
         git config --global credential.helper 'store --file ~/.git-credentials'
         echo "https://github.com/Dueris/GenesisMC:${{ secrets.GH_TOKEN }}" > ~/.git-credentials
-        if [ -f "specified_directory/${commit_hash}.zip" ]; then
-          git add specified_directory/${commit_hash}.zip
+        if [ -f "builds/commits/${commit_hash}.zip" ]; then
+          git add builds/commits/${commit_hash}.zip
           git commit -m "Add archive for commit ${commit_hash}"
           git push
         fi
