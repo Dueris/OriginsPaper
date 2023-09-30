@@ -3,7 +3,7 @@ name: Build and Archive Jars
 on:
   push:
     branches:
-      - origin
+      - origin  # Change this to your branch name if it's called "origin"
 
 jobs:
   build:
@@ -17,9 +17,10 @@ jobs:
       uses: actions/setup-java@v2
       with:
         java-version: 17
+        distribution: 'adopt'
     
     - name: Build the project
-      run: ./gradlew build
+      run: ./gradlew build  # Replace with your build command
     
     - name: Archive Jars
       run: |
