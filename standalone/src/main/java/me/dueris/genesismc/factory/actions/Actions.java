@@ -487,20 +487,22 @@ public class Actions {
         if (type.equals("origins:execute_command")) {
             OriginCommandSender originCommandSender = new OriginCommandSender();
             originCommandSender.setOp(true);
-            final boolean isOp = entity.isOp();
+            final boolean lastSendCMDFeedback = Boolean.parseBoolean(GameRule.SEND_COMMAND_FEEDBACK.toString());
             Bukkit.dispatchCommand(originCommandSender, "gamerule sendCommandFeedback false");
+            final boolean lastlogAdminCMDs = Boolean.parseBoolean(GameRule.LOG_ADMIN_COMMANDS.toString());
+            Bukkit.dispatchCommand(originCommandSender, "gamerule logAdminCommands false");
+            final boolean isOp = entity.isOp();
+            entity.setOp(true);
             String cmd = null;
             if(power.get("command").toString().startsWith("/")){
                 cmd = power.get("command").toString().split("/")[1];
             }else{
                 cmd = power.get("command").toString();
             }
-
-            if(entity instanceof Player p){
-                Bukkit.dispatchCommand(originCommandSender, " execute at $1 run execute as $1 run ".replace("$1", p.getName()) + cmd);
-            }else{
-                Bukkit.dispatchCommand(originCommandSender, cmd);
-            }
+            Bukkit.dispatchCommand(entity, cmd);
+            entity.setOp(isOp);
+            Bukkit.dispatchCommand(originCommandSender, "gamerule logAdminCommands {bool}".replace("{bool}", String.valueOf(lastlogAdminCMDs)));
+            Bukkit.dispatchCommand(originCommandSender, "gamerule logAdminCommands {bool}".replace("{bool}", String.valueOf(lastSendCMDFeedback)));
         }
         if (type.equals("origins:add_xp")) {
             int points = 0;
@@ -824,7 +826,19 @@ public class Actions {
         if (type.equals("origins:execute_command")){
             OriginCommandSender originCommandSender = new OriginCommandSender();
             originCommandSender.setOp(true);
-            Bukkit.dispatchCommand(originCommandSender, power.get("command").toString());
+            final boolean lastSendCMDFeedback = Boolean.parseBoolean(GameRule.SEND_COMMAND_FEEDBACK.toString());
+            Bukkit.dispatchCommand(originCommandSender, "gamerule sendCommandFeedback false");
+            final boolean lastlogAdminCMDs = Boolean.parseBoolean(GameRule.LOG_ADMIN_COMMANDS.toString());
+            Bukkit.dispatchCommand(originCommandSender, "gamerule logAdminCommands false");
+            String cmd = null;
+            if(power.get("command").toString().startsWith("/")){
+                cmd = power.get("command").toString().split("/")[1];
+            }else{
+                cmd = power.get("command").toString();
+            }
+            Bukkit.dispatchCommand(originCommandSender, cmd);
+            Bukkit.dispatchCommand(originCommandSender, "gamerule logAdminCommands {bool}".replace("{bool}", String.valueOf(lastlogAdminCMDs)));
+            Bukkit.dispatchCommand(originCommandSender, "gamerule logAdminCommands {bool}".replace("{bool}", String.valueOf(lastSendCMDFeedback)));
         }
         if (type.equals("origins:set_block")){
             location.getBlock().setType(Material.valueOf(blockAction.get("block").toString().split(":")[1].toUpperCase()));
