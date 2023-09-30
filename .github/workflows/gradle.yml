@@ -22,6 +22,9 @@ jobs:
     - name: Build the project
       run: ./gradlew build  # Replace with your build command
 
+    - name: Create Directory
+      run: mkdir -p specified_directory
+
     - name: Archive Jars
       run: |
         commit_hash=$(git rev-parse --short HEAD)
