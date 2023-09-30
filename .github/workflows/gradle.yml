@@ -22,15 +22,17 @@ jobs:
     - name: Build the project
       run: ./gradlew build  # Replace with your build command
 
-    - name: Create Directory
-      run: mkdir -p specified_directory
-
     - name: Archive Jars
       run: |
         commit_hash=$(git rev-parse --short HEAD)
         jar_files=$(find build/libs -name "*.jar")
         if [ -n "$jar_files" ]; then
           zip -j specified_directory/${commit_hash}.zip ${jar_files}
+          if [ -f "specified_directory/${commit_hash}.zip" ]; then
+            if [ ! -f "specified_directory/${commit_hash}.zip.bak" ]; then
+              cp specified_directory/${commit_hash}.zip specified_directory/${commit_hash}.zip.bak
+            fi
+          fi
         fi
       shell: bash
 
@@ -38,11 +40,14 @@ jobs:
       run: |
         git config user.name "GitHub Actions"
         git config user.email "actions@github.com"
-        commit_hash=$(git rev-parse --short HEAD)
+        git config --global user.email "actions@github.com"
+        git config --global user.name "github-actions"
+        git config --global credential.helper 'store --file ~/.git-credentials'
+        echo "https://github.com/Dueris/GenesisMC:${{ secrets.GH_TOKEN }}" > ~/.git-credentials
         if [ -f "specified_directory/${commit_hash}.zip" ]; then
           git add specified_directory/${commit_hash}.zip
           git commit -m "Add archive for commit ${commit_hash}"
-          git push origin HEAD:${{ github.ref }}
+          git push
         fi
 
     - name: Notify Discord
