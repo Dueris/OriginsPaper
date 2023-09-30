@@ -1,4 +1,4 @@
-name: Build, Release, and Notify
+name: Build and Archive Jars
 
 on:
   push:
@@ -25,18 +25,37 @@ jobs:
     - name: Create Directory
       run: mkdir -p builds/commits
 
-    - name: Copy Artifacts to Directory
+    - name: Create Zip Archive
       run: |
         commit_hash=$(git rev-parse --short HEAD)
-        if [ -n "$(find build/libs -name '*.jar')" ]; then
-          zip -j "builds/commits/${commit_hash}.zip" $(find build/libs -name '*.jar')
+        jar_files=$(find build/libs -name "*.jar")
+        if [ -n "$jar_files" ]; then
+          zip -j builds/commits/${commit_hash}.zip ${jar_files}
+        fi
+
+    - name: Copy Zip Archive
+      run: |
+        commit_hash=$(git rev-parse --short HEAD)
+        if [ -f "builds/commits/${commit_hash}.zip" ]; then
+          mkdir -p specified_directory  # Replace 'specified_directory' with the desired directory path
+          cp "builds/commits/${commit_hash}.zip" specified_directory
+        fi
+
+    - name: Push Zip Archive
+      run: |
+        commit_hash=$(git rev-parse --short HEAD)
+        if [ -f "specified_directory/${commit_hash}.zip" ]; then
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+          git add specified_directory/${commit_hash}.zip
+          git commit -m "Add archive for commit ${commit_hash}"
+          git push
         fi
 
     - name: Notify Discord
-      if: ${{ success() }}
-      run: |
-        curl -X POST -H "Content-Type: application/json" \
-          -d '{
-            "content": "New release available! [Download Here](https://github.com/${{ github.repository }}/releases/latest)"
-          }' \
-          https://discord.com/api/webhooks/1081276038983721070/_0mh9jU8_ZIf0grfDqdSinlQo2ZbTWPii_AiY-it13Nybp9z5jqgOzP9b6tKMmUx03JN
+      if: ${{ (success() || failure()) }}
+      # See https://github.com/Tim203/actions-git-discord-webhook/commits
+      uses: Tim203/actions-git-discord-webhook@70f38ded3aca51635ec978ab4e1a58cd4cd0c2ff
+      with:
+        webhook_url: https://discord.com/api/webhooks/1081276038983721070/_0mh9jU8_ZIf0grfDqdSinlQo2ZbTWPii_AiY-it13Nybp9z5jqgOzP9b6tKMmUx03JN
+        status: ${{ job.status }}
