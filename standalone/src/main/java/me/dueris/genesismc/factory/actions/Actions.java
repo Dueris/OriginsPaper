@@ -14,6 +14,8 @@ import me.dueris.genesismc.factory.powers.effects.StackingStatusEffect;
 import me.dueris.genesismc.factory.powers.player.attributes.AttributeHandler;
 import me.dueris.genesismc.utils.OriginContainer;
 import me.dueris.genesismc.utils.PowerContainer;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.world.level.storage.LevelResource;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -483,14 +485,17 @@ public class Actions {
             }
         }
         if (type.equals("origins:execute_command")) {
+            OriginCommandSender originCommandSender = new OriginCommandSender();
+            originCommandSender.setOp(true);
+            final boolean isOp = entity.isOp();
+            Bukkit.dispatchCommand(originCommandSender, "gamerule sendCommandFeedback false");
             String cmd = null;
             if(power.get("command").toString().startsWith("/")){
                 cmd = power.get("command").toString().split("/")[1];
             }else{
                 cmd = power.get("command").toString();
             }
-            OriginCommandSender originCommandSender = new OriginCommandSender();
-            originCommandSender.setOp(true);
+
             if(entity instanceof Player p){
                 Bukkit.dispatchCommand(originCommandSender, " execute at $1 run execute as $1 run ".replace("$1", p.getName()) + cmd);
             }else{

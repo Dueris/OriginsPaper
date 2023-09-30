@@ -34,6 +34,8 @@ import me.dueris.genesismc.utils.*;
 import me.dueris.genesismc.utils.translation.LangConfig;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.world.level.storage.LevelResource;
 import org.bukkit.*;
 import org.bukkit.block.Biome;
 import org.bukkit.craftbukkit.v1_20_R2.block.CraftBiome;
@@ -92,6 +94,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
     public static final boolean isExpandedScheduler = classExists("io.papermc.paper.threadedregions.scheduler.ScheduledTask");
     public static boolean isCompatible = false;
     public static String pluginVersion = "v0.2.2";
+    public static String world_container = MinecraftServer.getServer().options.asMap().toString().split(", \\[W, universe, world-container, world-dir]=\\[")[1].split("], ")[0];
 
     public static ArrayList<String> versions = new ArrayList<>();
     static {

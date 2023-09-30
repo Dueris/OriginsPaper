@@ -12,6 +12,8 @@ import me.dueris.genesismc.factory.powers.player.FlightElytra;
 import me.dueris.genesismc.factory.powers.player.RestrictArmor;
 import me.dueris.genesismc.factory.powers.player.attributes.AttributeHandler;
 import me.dueris.genesismc.utils.PowerContainer;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.world.level.storage.LevelResource;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Block;
@@ -168,9 +170,7 @@ public class EntityCondition implements Condition {
             String advancementString = condition.get("advancement").toString();
 
             if (entity instanceof Player player) {
-                World world = player.getWorld();
-                File worldFolder = world.getWorldFolder();
-                File advancementsFolder = new File(worldFolder, "advancements");
+                File advancementsFolder = new File(MinecraftServer.getServer().getWorldPath(LevelResource.PLAYER_ADVANCEMENTS_DIR).toAbsolutePath().toString());
                 File playerAdvancementFile = new File(advancementsFolder, player.getUniqueId() + ".json");
 
                 if (playerAdvancementFile.exists()) {

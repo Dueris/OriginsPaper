@@ -74,12 +74,10 @@ public class PlayerHandler implements Listener {
                 continue;
             }
             //origin check
-
-            System.out.println("a");
-            System.out.println(layer.getTag());
-            System.out.println(CraftApoli.getLayerFromTag(layer.getTag()).getOrigins());
-            System.out.println(origins.get(layer).getTag());
-            System.out.println(CraftApoli.getLayerFromTag(layer.getTag()).getOrigins().contains(origins.get(layer).getTag()));
+            layer.getTag();
+            CraftApoli.getLayerFromTag(layer.getTag()).getOrigins();
+            origins.get(layer).getTag();
+            CraftApoli.getLayerFromTag(layer.getTag()).getOrigins().contains(origins.get(layer).getTag());
 
             if (!CraftApoli.getLayerFromTag(layer.getTag()).getOrigins().contains(origins.get(layer).getTag())) {
                 origins.replace(layer, CraftApoli.nullOrigin());
@@ -95,7 +93,7 @@ public class PlayerHandler implements Listener {
             }
             origins.put(layer, CraftApoli.nullOrigin());
         }
-        p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origins"), PersistentDataType.STRING, CraftApoli.toSaveFormat(origins));
+        p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "originLayer"), PersistentDataType.STRING, CraftApoli.toSaveFormat(origins));
 
         //removes deleted layer from the players data
         for (LayerContainer layer : deletedLayers) OriginPlayer.removeOrigin(p, layer);
@@ -107,10 +105,10 @@ public class PlayerHandler implements Listener {
         p.setMaximumAir(300);
         Bukkit.getLogger().info("PlayerLocale saved as[" + Translation.getPlayerLocale(p) + "] for player[%player%]".replace("%player%", p.getName()));
         //set origins to null if none present
-        if (p.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "origins"), PersistentDataType.STRING) == null) {
+        if (p.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "originLayer"), PersistentDataType.STRING) == null) {
             HashMap<LayerContainer, OriginContainer> origins = new HashMap<>();
             for (LayerContainer layer : CraftApoli.getLayers()) origins.put(layer, CraftApoli.nullOrigin());
-            p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origins"), PersistentDataType.STRING, CraftApoli.toSaveFormat(origins));
+            p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "originLayers"), PersistentDataType.STRING, CraftApoli.toSaveFormat(origins));
         }
 
         // ---  translation system ---
@@ -119,24 +117,25 @@ public class PlayerHandler implements Listener {
         if (!(originTag == null || originTag.equals("null"))) {
             for (OriginContainer origin : CraftApoli.getOrigins()) {
                 if (("origin-" + (origin.getTag().substring(8))).equals(originTag.substring(8)))
-                    p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origins"), PersistentDataType.STRING, CraftApoli.toSaveFormat(new HashMap<>(Map.of(CraftApoli.getLayerFromTag("origins:origin"), origin))));
+                    p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "originLayer"), PersistentDataType.STRING, CraftApoli.toSaveFormat(new HashMap<>(Map.of(CraftApoli.getLayerFromTag("origins:origin"), origin))));
             }
+        }
+
+        if (p.getPersistentDataContainer().has(new NamespacedKey(GenesisMC.getPlugin(), "origins"), PersistentDataType.BYTE_ARRAY)){
+            p.getPersistentDataContainer().remove(new NamespacedKey(GenesisMC.getPlugin(), "origins"));
         }
 
         if (p.getPersistentDataContainer().has(new NamespacedKey(GenesisMC.getPlugin(), "origin"), PersistentDataType.BYTE_ARRAY)) {
             ByteArrayInputStream bis = new ByteArrayInputStream(p.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "origin"), PersistentDataType.BYTE_ARRAY));
             try {
                 ObjectInput oi = new ObjectInputStream(bis);
-                LegacyOriginContainer legacyOrigin = (LegacyOriginContainer) oi.readObject(); //this errors because it tries to read it as the current origin container before casting it to the old one
-                p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origins"), PersistentDataType.STRING, CraftApoli.toSaveFormat(new HashMap<>(Map.of(CraftApoli.getLayerFromTag("origins:origin"), CraftApoli.getOrigin(legacyOrigin.getTag())))));
-                p.getPersistentDataContainer().remove(new NamespacedKey(GenesisMC.getPlugin(), "origin"));
+                LegacyOriginContainer legacyOrigin = (LegacyOriginContainer) oi.readObject();
+                p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "originLayer"), PersistentDataType.STRING, CraftApoli.toSaveFormat(new HashMap<>(Map.of(CraftApoli.getLayerFromTag("origins:origin"), CraftApoli.getOrigin(legacyOrigin.getTag())))));
+                p.getPersistentDataContainer().remove(new NamespacedKey(GenesisMC.getPlugin(), "origins"));
             } catch (Exception er) {
-                //TODO: fix
                 for (LayerContainer layer : CraftApoli.getLayers()) {
                     OriginPlayer.setOrigin(p, layer, CraftApoli.nullOrigin());
                 }
-                er.printStackTrace();
-                Bukkit.getLogger().warning(LangConfig.getLocalizedString(p, "errors.oldContainerConversion"));
             }
         }
         Bukkit.getLogger().warning("[GenesisMC] Reminder to devs - fix old origin container translation");

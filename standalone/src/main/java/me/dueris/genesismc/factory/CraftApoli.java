@@ -1,13 +1,15 @@
 package me.dueris.genesismc.factory;
 
 import io.netty.util.internal.ConcurrentSet;
+import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.events.OriginLoadEvent;
 import me.dueris.genesismc.files.GenesisDataFiles;
-import me.dueris.genesismc.files.ServerProperties;
 import me.dueris.genesismc.utils.*;
 import me.dueris.genesismc.utils.translation.LangConfig;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.world.level.storage.LevelResource;
 import org.apache.commons.io.FilenameUtils;
 import org.bukkit.Bukkit;
 import org.json.simple.JSONArray;
@@ -121,7 +123,7 @@ public class CraftApoli {
     }
 
     public static File datapackDir() {
-        return new File(Bukkit.getServer().getPluginManager().getPlugin("GenesisMC").getDataFolder() + File.separator + ".." + File.separator + ".." + File.separator + Bukkit.getServer().getWorlds().get(0).getName() + File.separator + "datapacks");
+        return new File(MinecraftServer.getServer().getWorldPath(LevelResource.DATAPACK_DIR).toAbsolutePath().toString());
     }
 
     public static File[] datapacksInDir() {
@@ -189,11 +191,8 @@ public class CraftApoli {
         bos.close();
     }
 
-    public static void loadWorldContainers(){
-        ServerProperties serverProperties = new ServerProperties(new File(Bukkit.getServer().getPluginsFolder() + File.separator + ".." + File.separator + "server.properties"));
-        if(serverProperties.containsProperty("world-container")){
-            //TODO: continue
-        }
+    public static String getWorldContainerName(){
+        return GenesisMC.world_container;
     }
 
     /**
@@ -201,7 +200,7 @@ public class CraftApoli {
      **/
     public static void loadOrigins() {
         Boolean showErrors = Boolean.valueOf(GenesisDataFiles.getMainConfig().get("console-print-parse-errors").toString());
-        File DatapackDir = new File(Bukkit.getServer().getPluginManager().getPlugin("GenesisMC").getDataFolder() + File.separator + ".." + File.separator + ".." + File.separator + Bukkit.getServer().getWorlds().get(0).getName() + File.separator + "datapacks");
+        File DatapackDir = new File(MinecraftServer.getServer().getWorldPath(LevelResource.DATAPACK_DIR).toAbsolutePath().toString());
         File[] datapacks = DatapackDir.listFiles();
         if (datapacks == null) return;
 
