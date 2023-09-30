@@ -45,3 +45,11 @@ jobs:
           git commit -m "Add archive for commit ${commit_hash}"
           git push
         fi
+
+    - name: Notify Discord
+      if: ${{ (success() || failure()) }}
+      # See https://github.com/Tim203/actions-git-discord-webhook/commits
+      uses: Tim203/actions-git-discord-webhook@70f38ded3aca51635ec978ab4e1a58cd4cd0c2ff
+      with:
+        webhook_url: https://discordapp.com/api/webhooks/1081276038983721070/_0mh9jU8_ZIf0grfDqdSinlQo2ZbTWPii_AiY-it13Nybp9z5jqgOzP9b6tKMmUx03JN/github
+        message: "testing"
