@@ -1,2 +1,2 @@
 rootProject.name = 'genesismc.jar'
-include ':standalone', ':bundled'
+include ':mixin', ':mainPlugin'

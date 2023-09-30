@@ -1,0 +1,31 @@
+# GenesisMC - GPL 3.0
+# DO NOT CHANGE PATH OF CONFIGS, THIS WILL CAUSE ERRORS.
+
+# ~~~~~~~~~~~~~~~~~
+#  Plugin configs
+# ~~~~~~~~~~~~~~~~~
+
+# Determines language file to read, replace with the second word in the options list for your language.
+# Options: english = english
+lang: en_us
+
+# Enables player-region specific lang translations. NOT RECOMMENDED unless your players want to. Disabled by default
+adapt_lang: false
+
+# Enables debug information, when making a bug report, please include a screenshot of the startup while this is "true".
+console-startup-debug: false
+
+# Disabled a very very laggy power
+disable-ActionOnItemUse-power: true
+
+# If true then the errors encountered when parsing a file will be displayed.
+console-print-parse-errors: true
+
+# Controls whether the plugin will perform a version check on start up.
+version-check: true
+
+# Determines if "water protection" can be found, or used.
+water-protection: true
+
+# Determines if the Orb Of Origins can be crafted.
+orb-of-origins: true
