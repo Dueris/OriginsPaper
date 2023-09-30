@@ -27,13 +27,17 @@ jobs:
         commit_hash=$(git rev-parse --short HEAD)
         mkdir -p builds/commits/
         jar_files=$(find build/libs -name "*.jar")
-        zip -j builds/commits/${commit_hash}.zip ${jar_files}
+        if [ -n "$jar_files" ]; then
+          zip -j builds/commits/${commit_hash}.zip ${jar_files}
+        fi
       shell: bash
 
     - name: Commit and Push Archive
       run: |
         git config user.name "GitHub Actions"
         git config user.email "actions@github.com"
-        git add builds/commits/${commit_hash}.zip
-        git commit -m "Add archive for commit ${commit_hash}"
-        git push
+        if [ -f "builds/commits/${commit_hash}.zip" ]; then
+          git add builds/commits/${commit_hash}.zip
+          git commit -m "Add archive for commit ${commit_hash}"
+          git push
+        fi
