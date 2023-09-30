@@ -121,7 +121,6 @@ public class BigLeap extends CraftPower implements Listener {
                                                             p.sendActionBar(ChatColor.GREEN + "-");
                                                             inAir.remove(p.getUniqueId());
                                                             p.playSound(p.getLocation(), Sound.ENTITY_ARROW_HIT_PLAYER, 1, 2);
-                                                            e.getPlayer().sendMessage("80342jksdfs'fds");
 
                                                         }
                                                     } else {
