@@ -22,30 +22,11 @@ jobs:
     - name: Build the project
       run: ./gradlew build  # Replace with your build command
 
-    - name: Create Release
-      id: create_release
-      uses: actions/create-release@v1
-      with:
-        files: builds/libs/*  # Specify the artifacts to include in the release
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-    - name: Upload Release Assets
-      id: upload-release-assets
-      uses: actions/upload-release-asset@v1
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: builds/libs/*  # Specify the artifacts to upload
-        asset_name: builds  # Specify the asset name
-        asset_content_type: application/zip  # Specify the content type
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
     - name: Notify Discord
       if: ${{ success() }}
       run: |
         curl -X POST -H "Content-Type: application/json" \
           -d '{
-            "content": "New release available! [Download Here]('${{ steps.upload-release-assets.outputs.browser_download_url }}')"
+            "content": "New release available! [Download Here]('${{ github.repository }}/releases/latest')"
           }' \
           ${{ secrets.DISCORD_WEBHOOK_URL }}
