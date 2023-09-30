@@ -1,0 +1,2 @@
+Hello!! This is the git commit guide for GenesisMC. Here all git commit builds will be stored by hashtag, 
+  and the latest will be announced in the discord server in the git channel.
