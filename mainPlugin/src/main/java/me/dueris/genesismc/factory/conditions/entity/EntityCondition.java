@@ -415,14 +415,9 @@ public class EntityCondition implements Condition {
             if(CooldownStuff.cooldowns.containsValue(condition.get("resource").toString()) && CooldownStuff.cooldowns.containsKey(p)){
                 return getResult(inverted, !CooldownStuff.isPlayerInCooldownFromTag(p, condition.get("resource").toString()));
             }else{
-                System.out.println("qa");
                 if(Resource.registeredBars.containsKey(condition.get("resource").toString())){
-                    System.out.println("jskdf;li");
                     String comparison = condition.get("comparison").toString();
                     double compare_to = Double.parseDouble(condition.get("compare_to").toString());
-                    System.out.println(Resource.getResource(condition.get("resource").toString()).getLeft().getProgress());
-                    System.out.println(Resource.getResource(condition.get("resource").toString()).getLeft().getProgress() + comparison + compare_to);
-                    System.out.println(RestrictArmor.compareValues(Resource.getResource(condition.get("resource").toString()).getLeft().getProgress(), comparison, compare_to));
                     return getResult(inverted, RestrictArmor.compareValues(Resource.getResource(condition.get("resource").toString()).getLeft().getProgress(), comparison, compare_to));
                 }
             }
@@ -542,7 +537,7 @@ public class EntityCondition implements Condition {
 
         if (type.equalsIgnoreCase("origins:gamemode")){
             if(entity instanceof Player player){
-                return getResult(inverted, player.equals(GameMode.valueOf(condition.get("gamemode").toString())));
+                return getResult(inverted, player.equals(GameMode.valueOf(condition.get("gamemode").toString().toUpperCase())));
             }
         }
 
