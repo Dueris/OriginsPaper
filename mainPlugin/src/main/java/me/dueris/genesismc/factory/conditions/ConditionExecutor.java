@@ -223,6 +223,10 @@ public class ConditionExecutor {
     }
 
     public static Optional<Boolean> getResult(boolean inverted, boolean condition) {
-        return Optional.of(inverted != condition);
+        if(inverted){
+            return Optional.of(!condition);
+        }else{
+            return Optional.of(condition);
+        }
     }
 }
