@@ -51,6 +51,7 @@ dependencies {
     compileOnly("io.papermc.paperweight:paperweight-userdev:1.3.6")
     compileOnly("org.spongepowered:mixin:0.8.5-SNAPSHOT")
     compileOnly("space.vectrix.ignite:ignite-api:0.8.1")
+    shade("org.reflections:reflections:0.9.12")
 }
 
 jar {
@@ -133,4 +134,5 @@ publishing {
     }
 }
 
-build.dependsOn jar, copyToLib
+build.dependsOn jar, copyToLib, ':mainPlugin:copyJarToBundled'
+processResources.dependsOn(':mainPlugin:copyJarToBundled')

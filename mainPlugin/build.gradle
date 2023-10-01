@@ -62,11 +62,21 @@ dependencies {
 }
 
 jar {
-    dependsOn configurations.shade
     duplicatesStrategy(DuplicatesStrategy.EXCLUDE)
+    includeEmptyDirs = false
 
     from {
         configurations.shade.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}
+
+task copyToLib(type: Copy, dependsOn: [jar, reobfJar]) {
+    duplicatesStrategy = DuplicatesStrategy.INHERIT // Specify the duplicatesStrategy directly
+    from 'build/libs'
+    into '../build/libs'
+    include '**/*.jar'
+    rename { fileName ->
+        fileName.replace("mainPlugin", "genesis-standalone")
     }
 }
 
@@ -77,30 +87,20 @@ tasks {
     }
 }
 
-task copyJarToBundled(type: Copy, dependsOn: jar) {
+task copyJarToBundled(type: Copy, dependsOn: [jar, ':mainPlugin:reobfJar']) {
+    // Disable state tracking for this task
+
     from jar.archivePath
     into '../mixin/src/main/resources'
     logger.info("Copying standalone jar...")
 }
 
+
 // Configure the "buildBundled" task to depend on the "build" task of Project B
-task buildBundled(dependsOn: [':mixin:build', 'copyJarToBundled', 'copyToLib']) {
+task buildBundled(dependsOn: [':mixin:build', copyJarToBundled, copyToLib]) {
     group = 'custom'
     description = 'Build Project B with the copied JAR from Project A'
     logger.info("Running build for bundled...")
-}
-
-task copyToLib(type: Copy, dependsOn: [jar, reobfJar]) {
-    from 'build/libs'
-    into '../build/libs'
-    include '**/*.jar'
-    rename { fileName ->
-        fileName.replace("mainPlugin", "genesis-standalone")
-    }
-}
-
-jar {
-    includeEmptyDirs = false
 }
 
 def targetJavaVersion = 17
