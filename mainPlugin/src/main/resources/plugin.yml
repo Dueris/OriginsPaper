@@ -16,11 +16,18 @@ commands:
     usage: /<command> <args>
     aliases:
       - o
+      - origins
   power:
     permission: genesismc.origins.cmd.power
     usage: /<command> <args>
     aliases:
       - p
+  resource:
+    permission: genesismc.origins.cmd.resource
+    usage: /<command> <args>
+    aliases:
+      - r
+      - re
 permissions:
   genesismc.origins.cmd.power:
     default: op
