@@ -6,6 +6,7 @@ import me.dueris.genesismc.factory.conditions.Condition;
 import me.dueris.genesismc.factory.conditions.block.BlockCondition;
 import me.dueris.genesismc.factory.conditions.item.ItemCondition;
 import me.dueris.genesismc.factory.actions.Actions;
+import me.dueris.genesismc.factory.powers.Resource;
 import me.dueris.genesismc.factory.powers.effects.StackingStatusEffect;
 import me.dueris.genesismc.factory.powers.player.Climbing;
 import me.dueris.genesismc.factory.powers.player.FlightElytra;
@@ -353,7 +354,6 @@ public class EntityCondition implements Condition {
                 if (player.isFlying()) {
                     return getResult(inverted, true);
                 }
-
             }
         }
 
@@ -412,7 +412,20 @@ public class EntityCondition implements Condition {
         }
 
         if (type.equalsIgnoreCase("origins:resource")) {
-            return getResult(inverted, !CooldownStuff.isPlayerInCooldownFromTag(p, power.getTag()));
+            if(CooldownStuff.cooldowns.containsValue(condition.get("resource").toString()) && CooldownStuff.cooldowns.containsKey(p)){
+                return getResult(inverted, !CooldownStuff.isPlayerInCooldownFromTag(p, condition.get("resource").toString()));
+            }else{
+                System.out.println("qa");
+                if(Resource.registeredBars.containsKey(condition.get("resource").toString())){
+                    System.out.println("jskdf;li");
+                    String comparison = condition.get("comparison").toString();
+                    double compare_to = Double.parseDouble(condition.get("compare_to").toString());
+                    System.out.println(Resource.getResource(condition.get("resource").toString()).getLeft().getProgress());
+                    System.out.println(Resource.getResource(condition.get("resource").toString()).getLeft().getProgress() + comparison + compare_to);
+                    System.out.println(RestrictArmor.compareValues(Resource.getResource(condition.get("resource").toString()).getLeft().getProgress(), comparison, compare_to));
+                    return getResult(inverted, RestrictArmor.compareValues(Resource.getResource(condition.get("resource").toString()).getLeft().getProgress(), comparison, compare_to));
+                }
+            }
         }
 
         if (type.equalsIgnoreCase("origins:fall_flying")) {

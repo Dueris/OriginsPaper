@@ -9,6 +9,7 @@ import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.conditions.block.BlockCondition;
 import me.dueris.genesismc.factory.conditions.entity.EntityCondition;
 import me.dueris.genesismc.factory.powers.CraftPower;
+import me.dueris.genesismc.factory.powers.Resource;
 import me.dueris.genesismc.factory.powers.Toggle;
 import me.dueris.genesismc.factory.powers.effects.StackingStatusEffect;
 import me.dueris.genesismc.factory.powers.player.attributes.AttributeHandler;
@@ -19,6 +20,7 @@ import net.minecraft.world.level.storage.LevelResource;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.boss.BossBar;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.*;
 import org.bukkit.event.entity.EntityDamageEvent;
@@ -196,6 +198,8 @@ public class Actions {
         }
     }
 
+    public static HashMap<Entity, Boolean> resourceChangeTimeout = new HashMap<>();
+
     private static void runEntity(Entity entity, JSONObject power) {
         JSONObject entityAction;
         entityAction = power;
@@ -213,6 +217,34 @@ public class Actions {
                     }
                 }
             }
+        }
+        if (type.equals("origins:change_resource")){
+            if(resourceChangeTimeout.containsKey(entity)) return;
+            String resource = power.get("resource").toString();
+            int change = Integer.parseInt(power.get("change").toString());
+            double finalChange = 1.0 / Resource.getResource(resource).getRight();
+            BossBar bossBar = Resource.getResource(resource).getLeft();
+            double toRemove = finalChange * change;
+            double newP = bossBar.getProgress() + toRemove;
+            if(newP > 1.0){
+                newP = 1.0;
+            } else if (newP < 0) {
+                newP = 0.0;
+            }
+            bossBar.setProgress(newP);
+            bossBar.addPlayer((Player) entity);
+            bossBar.setVisible(true);
+            resourceChangeTimeout.put(entity, true);
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    resourceChangeTimeout.remove(entity);
+                }
+            }.runTaskLater(GenesisMC.getPlugin(), 2);
+            System.out.println(bossBar.getProgress());
+        }
+        if (type.equals("origins:set_on_fire")){
+            entity.setFireTicks(Integer.parseInt(power.get("duration").toString()));
         }
         if (type.equals("origins:spawn_entity")){
             OriginCommandSender originCommandSender = new OriginCommandSender();
@@ -515,7 +547,7 @@ public class Actions {
             }
         }
         if (type.equals("origins:apply_effect")) {
-            if (entity instanceof Player player) {
+            if (entity instanceof LivingEntity player) {
                 statusEffectInstance(player, entityAction);
             }
         }

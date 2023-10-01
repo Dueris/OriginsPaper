@@ -46,8 +46,6 @@ public class PlayerSelector {
         }else if(playerArg == "@s"){
             if (sender instanceof Player p) players.add(p);
             else sender.sendMessage(Component.text("No player was found").color(TextColor.fromHexString(RED)));
-        }else if(Bukkit.getPlayer(UUID.fromString(playerArg)) != null){
-            players.add(Bukkit.getPlayer(UUID.fromString(playerArg)));
         }else{
             Player player = Bukkit.getPlayer(playerArg);
             if (player == null) {

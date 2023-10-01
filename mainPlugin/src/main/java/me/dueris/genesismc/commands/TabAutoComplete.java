@@ -159,18 +159,6 @@ public class TabAutoComplete implements TabCompleter {
                 return new ArrayList<>();
             }
 
-        } else if (command.getName().equalsIgnoreCase("shulker")) {
-            if (args.length == 1) {
-                List<String> arguments = new ArrayList<>();
-                arguments.add("open");
-                return arguments;
-            } else if (args.length == 2) {
-                if (sender.hasPermission("genesism.origins.cmd.othershulk")) {
-                    ArrayList<String> playerNames = new ArrayList<>();
-                    for (Player player : Bukkit.getOnlinePlayers()) playerNames.add(player.getName());
-                    return playerNames;
-                } else return new ArrayList<>();
-            }
         } else if (command.getName().equalsIgnoreCase("power")) {
             if (args.length == 1) {
                 List<String> arguments = new ArrayList<>();
@@ -219,6 +207,39 @@ public class TabAutoComplete implements TabCompleter {
                 return argS;
 
             } else if (args.length >= 4) {
+                List<String> ba = new ArrayList<>();
+                return ba;
+            }
+        } else if(command.getName().equals("resource")){
+            if(args.length == 1){
+                List<String> ba = new ArrayList<>();
+                ba.add("change");
+                ba.add("get");
+                ba.add("set");
+                ba.add("has");
+                return ba;
+            }
+            if(args.length == 2){
+                Collection<? extends Player> players = Bukkit.getOnlinePlayers();
+                List<String> playernames = new ArrayList<>();
+                for (Player player : players) playernames.add(player.getName());
+                playernames.add("@a");
+                playernames.add("@s");
+                playernames.add("@e");
+                playernames.add("@p");
+                playernames.add("@r");
+                return playernames;
+            }
+            if(args.length == 3){
+                List<String> ba = new ArrayList<>();
+                for(OriginContainer origin : CraftApoli.getOrigins()){
+                    for(PowerContainer powerContainer : origin.getPowerContainers()){
+                        ba.add(powerContainer.getTag());
+                    }
+                }
+                return ba;
+            }
+            if(args.length >= 4){
                 List<String> ba = new ArrayList<>();
                 return ba;
             }

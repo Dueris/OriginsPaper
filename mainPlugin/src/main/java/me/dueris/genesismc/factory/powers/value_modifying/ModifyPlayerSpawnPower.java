@@ -1,5 +1,6 @@
 package me.dueris.genesismc.factory.powers.value_modifying;
 
+import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.entity.OriginPlayer;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
@@ -13,6 +14,9 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.generator.structure.Structure;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
 
@@ -44,6 +48,7 @@ public class ModifyPlayerSpawnPower extends CraftPower implements Listener {
             for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
                 ConditionExecutor executor = new ConditionExecutor();
                 for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
+                    p.teleportAsync(new Location(p.getWorld(), 0, 90000, 0));
                     if (executor.check("condition", "conditions", p, power, getPowerFile(), p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
                         setActive(power.getTag(), true);
                         String dimension = power.get("dimension", null);
@@ -60,7 +65,7 @@ public class ModifyPlayerSpawnPower extends CraftPower implements Listener {
                         String biome = power.get("biome", null);
                         String structure = power.get("structure", null);
                         if(biome != null){
-                            Location biomeLoc = p.getWorld().locateNearestBiome(spawnLocation, Biome.valueOf(biome.toUpperCase().split(":")[1]), 200);
+                            Location biomeLoc = p.getWorld().locateNearestBiome(spawnLocation, Biome.valueOf(biome.toUpperCase().split(":")[1]), 100);
                             if(biomeLoc != null){
                                 spawnLocation = biomeLoc;
                             }else{
@@ -68,13 +73,15 @@ public class ModifyPlayerSpawnPower extends CraftPower implements Listener {
                             }
                         }
                         if(structure != null){
-                            Location structureLoc = p.getWorld().locateNearestStructure(spawnLocation, translate(structure), 200, true).getLocation();
+                            Location structureLoc = p.getWorld().locateNearestStructure(spawnLocation, translate(structure), 100, true).getLocation();
                             if(structureLoc != null){
                                 spawnLocation = structureLoc;
                             }else{
                                 p.sendMessage("Unable to find structure &1 within a reasonable distance".replace("&1", structure));
                             }
                         }
+
+                        spawnLocation = spawnLocation.toHighestLocation().add(0, 3, 0);
 
                         if (spawnLocation != null) {
                             p.teleportAsync(spawnLocation);

@@ -1,6 +1,7 @@
 package me.dueris.genesismc.factory.powers;
 
 import org.bukkit.NamespacedKey;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -11,7 +12,7 @@ import java.util.Objects;
 
 public class OriginMethods {
 
-    public static void statusEffectInstance(Player player, JSONObject power) {
+    public static void statusEffectInstance(LivingEntity player, JSONObject power) {
         JSONObject singleEffect = (JSONObject) power.get("effect");
         JSONArray effects = (JSONArray) power.getOrDefault("effects", new JSONArray());
 
