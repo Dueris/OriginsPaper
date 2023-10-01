@@ -197,14 +197,12 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         getCommand("power").setTabCompleter(new TabAutoComplete());
         getCommand("resource").setTabCompleter(new TabAutoComplete());
         getCommand("resource").setExecutor(new ResourceCommand());
-
-        Bukkit.getServer().getConsoleSender().sendMessage("  _______                         __       ___ ___ _______ ");
-        Bukkit.getServer().getConsoleSender().sendMessage(" |   _   .-----.-----.-----.-----|__.-----|   Y   |   _   |");
-        Bukkit.getServer().getConsoleSender().sendMessage(" |.  |___|  -__|     |  -__|__ --|  |__ --|.      |.  1___|");
-        Bukkit.getServer().getConsoleSender().sendMessage(" |.  |   |_____|__|__|_____|_____|__|_____|. \\_/  |.  |___ ");
-        Bukkit.getServer().getConsoleSender().sendMessage(" |:  1   |                                |:  |   |:  1   |");
-        Bukkit.getServer().getConsoleSender().sendMessage(" |::.. . |      ~ Made by Dueris ~        |::.|:. |::.. . |");
-        Bukkit.getServer().getConsoleSender().sendMessage(" `-------'                                `--- ---`-------'");
+        Bukkit.getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC]   ____                          _       __  __   ____").color(TextColor.fromHexString("#b9362f")));
+        Bukkit.getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC]  / ___|  ___  _ __    ___  ___ (_) ___ |  \\/  | / ___|").color(TextColor.fromHexString("#bebe42")));
+        Bukkit.getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] | |  _  / _ \\| '_ \\  / _ \\/ __|| |/ __|| |\\/| || |").color(TextColor.fromHexString("#4fec4f")));
+        Bukkit.getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] | |_| ||  __/| | | ||  __/\\__ \\| |\\__ \\| |  | || |___").color(TextColor.fromHexString("#4de4e4")));
+        Bukkit.getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC]  \\____| \\___||_| |_| \\___||___/|_||___/|_|  |_| \\____|").color(TextColor.fromHexString("#333fb7")));
+        Bukkit.getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC]                     ~ Made by Dueris ~        ").color(TextColor.fromHexString("#dd50ff")));
         Bukkit.getLogger().info("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
         Bukkit.getServer().getConsoleSender().sendMessage("");
         Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "* Loading Version GenesisMC-{minecraftVersion-versionNumber}"
