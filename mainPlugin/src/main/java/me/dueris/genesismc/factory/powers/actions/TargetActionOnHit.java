@@ -29,27 +29,23 @@ public class TargetActionOnHit extends CraftPower implements Listener {
 
     @EventHandler
     public void s(EntityDamageByEntityEvent e) {
-        Entity actor = e.getEntity();
-        Entity target = e.getDamager();
+        Entity actor = e.getDamager();
+        Entity target = e.getEntity();
 
         if (!(actor instanceof Player player)) return;
         if (!getPowerArray().contains(actor)) return;
-        if (!(target instanceof Player)) return;
-        if (!getPowerArray().contains(target)) return;
 
         for (OriginContainer origin : OriginPlayer.getOrigin(player).values()) {
             ConditionExecutor executor = new ConditionExecutor();
-            if (CooldownStuff.isPlayerInCooldown((Player) target, "key.attack")) return;
             for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
-                if (executor.check("condition", "conditions", (Player) target, power, getPowerFile(), actor, target, null, null, player.getInventory().getItemInHand(), e)) {
+                if (executor.check("condition", "conditions", player, power, getPowerFile(), actor, target, null, null, player.getInventory().getItemInHand(), e)) {
                     if (!getPowerArray().contains(actor)) return;
                     setActive(power.getTag(), true);
-                    Actions.EntityActionType(actor, power.getEntityAction());
+                    Actions.EntityActionType(target, power.getEntityAction());
                     if (power.get("cooldown", "1") != null) {
-                        CooldownStuff.addCooldown((Player) target, origin, power.getTag(), power.getType(), Integer.parseInt(power.get("cooldown", "1")), "key.attack");
+                        CooldownStuff.addCooldown((Player) actor, origin, power.getTag(), power.getType(), Integer.parseInt(power.get("cooldown", "0")), "key.attack");
                     }
                 } else {
-                    if (!getPowerArray().contains(target)) return;
                     setActive(power.getTag(), false);
                 }
             }
