@@ -40,6 +40,8 @@ public class RestrictArmor extends CraftPower {
                 return value1 == value2;
             case "=":
                 return value1 == value2;
+            case "!=":
+                return value1 != value2;
             default:
                 return false;
         }
