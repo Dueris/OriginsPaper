@@ -54,5 +54,5 @@ jobs:
       if: ${{ (success() || failure()) }}
       uses: Tim203/actions-git-discord-webhook@70f38ded3aca51635ec978ab4e1a58cd4cd0c2ff
       with:
-        webhook_url: $secrets.DISCORD_WEBHOOK
+        webhook_url: ${{ secrets.GH_TOKEN }}
         status: ${{ job.status }}
