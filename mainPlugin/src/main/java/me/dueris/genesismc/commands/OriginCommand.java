@@ -15,13 +15,13 @@ import java.util.ArrayList;
 import static me.dueris.genesismc.utils.BukkitColour.RED;
 import static me.dueris.genesismc.utils.BukkitColour.YELLOW;
 
-public class GenesisCommandManager implements CommandExecutor {
+public class OriginCommand implements CommandExecutor {
 
     //key = uuid of player
     //long = epoch time of when ran command
     private final ArrayList<SubCommand> subCommands = new ArrayList<>();
 
-    public GenesisCommandManager() {
+    public OriginCommand() {
         subCommands.add(new Enchant());
         subCommands.add(new References());
         subCommands.add(new Recipe());
