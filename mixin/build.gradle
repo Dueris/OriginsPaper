@@ -81,7 +81,7 @@ task copyToLib(type: Copy, dependsOn: [jar, reobfJar]) {
     include '**/*.jar'
     rename { fileName ->
         if (fileName.startsWith("")) {
-            fileName = fileName.replace("mixin", "genesis-mixn")
+            fileName = fileName.replace("mixin", "genesis-mixin")
         }
         fileName
     }
