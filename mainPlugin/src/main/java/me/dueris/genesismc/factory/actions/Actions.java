@@ -241,7 +241,6 @@ public class Actions {
                     resourceChangeTimeout.remove(entity);
                 }
             }.runTaskLater(GenesisMC.getPlugin(), 2);
-            System.out.println(bossBar.getProgress());
         }
         if (type.equals("origins:set_on_fire")){
             entity.setFireTicks(Integer.parseInt(power.get("duration").toString()));
