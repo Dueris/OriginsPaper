@@ -523,7 +523,7 @@ public class Actions {
             final boolean isOp = entity.isOp();
             entity.setOp(true);
             String cmd = null;
-            if(power.get("command").toString.startsWith("power") || power.get("command").toString.startsWith("/power")) return;
+            if(power.get("command").toString().startsWith("power") || power.get("command").toString().startsWith("/power")) return;
             if(power.get("command").toString().startsWith("/")){
                 cmd = power.get("command").toString().split("/")[1];
             }else{
