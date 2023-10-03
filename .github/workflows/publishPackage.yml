@@ -1,4 +1,4 @@
-name: Publish to GitHub Packages
+name: Publish Package to GitHub Packages
 
 on:
   push:
@@ -16,21 +16,16 @@ jobs:
       - name: Set up JDK
         uses: actions/setup-java@v2
         with:
-          java-version: '17'
-          distribution: 'adopt'
+          java-version: '17'  # Adjust the Java version as needed
 
       - name: Build
-        run: |
-          ./gradlew build
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: ./gradlew build
 
-      
-      - name: Publish JAR to GitHub Packages
+      - name: Publish to GitHub Packages
         run: |
-          echo "Publishing JAR to GitHub Packages"
+          echo "Publishing to GitHub Packages"
           echo "registry=https://npm.pkg.github.com/Dueris" >> ~/.npmrc
           echo "//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}" >> ~/.npmrc
-          gh release upload v0.2.2 "build/libs/genesis-standalone-mc1.20-v0.2.2.jar"
+          gh release create v0.2.2 build/libs/genesis-standalone-mc1.20-v0.2.2.jar
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
