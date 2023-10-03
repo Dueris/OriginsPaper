@@ -23,13 +23,13 @@ jobs:
         run: |
           ./gradlew build
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GIT_TOKEN: ${{ secrets.GIT_TOKEN }}
 
       - name: Publish JAR to GitHub Packages
         run: |
           echo "Publishing JAR to GitHub Packages"
           echo "registry=https://npm.pkg.github.com/Dueris" >> ~/.npmrc
-          echo "//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}" >> ~/.npmrc
+          echo "//npm.pkg.github.com/:_authToken=${{ secrets.GIT_TOKEN }}" >> ~/.npmrc
           gh release upload v0.2.2 "build/libs/genesis-standalone-mc1.20-v0.2.2.jar" --clobber
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GIT_TOKEN: ${{ secrets.GIT_TOKEN }}
