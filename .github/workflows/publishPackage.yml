@@ -31,6 +31,6 @@ jobs:
           echo "Publishing JAR to GitHub Packages"
           echo "registry=https://npm.pkg.github.com/Dueris" >> ~/.npmrc
           echo "//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}" >> ~/.npmrc
-          gh release upload v1.0.1 "build/libs/genesis-standalone-mc1.20-v0.2.2.jar"
+          gh release upload v0.2.2 "build/libs/genesis-standalone-mc1.20-v0.2.2.jar"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
