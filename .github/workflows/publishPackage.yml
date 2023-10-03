@@ -1,0 +1,36 @@
+name: Publish to GitHub Packages
+
+on:
+  push:
+    branches:
+      - origin
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up JDK
+        uses: actions/setup-java@v2
+        with:
+          java-version: '17'
+
+      - name: Build
+        run: |
+          ./gradlew build
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Publish JAR to GitHub Packages
+        run: |
+          echo "Publishing JAR to GitHub Packages"
+          echo "registry=https://npm.pkg.github.com/Dueris" >> ~/.npmrc
+          echo "//npm.pkg.github.com/:_authToken=${{secrets.GITHUB_TOKEN}}" >> ~/.npmrc
+          JAR_VERSION=$(find build/libs -type f -name "genesis-standalone-mc1.20-v*.jar" | head -n 1 | sed -n 's/.*mc1\.20-v\([^-]*\)\.jar/\1/p')
+          mv "build/libs/genesis-standalone-mc1.20-v0.2.2.jar" "build/libs/genesis-standalone-mc1.20-v0.2.2.jar"
+          gh release upload v0.2.2 "build/libs/genesis-standalone-mc1.20-v0.2.2.jar"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
