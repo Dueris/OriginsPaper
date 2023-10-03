@@ -30,8 +30,7 @@ jobs:
           echo "Publishing JAR to GitHub Packages"
           echo "registry=https://npm.pkg.github.com/Dueris" >> ~/.npmrc
           echo "//npm.pkg.github.com/:_authToken=${{secrets.GITHUB_TOKEN}}" >> ~/.npmrc
-          JAR_VERSION=$(find build/libs -type f -name "genesis-standalone-mc1.20-v*.jar" | head -n 1 | sed -n 's/.*mc1\.20-v\([^-]*\)\.jar/\1/p')
-          mv "build/libs/genesis-standalone-mc1.20-v0.2.2.jar" "build/libs/genesis-standalone-mc1.20-v0.2.2.jar"
-          gh release upload v0.2.2 "build/libs/genesis-standalone-mc1.20-v0.2.2.jar"
+          # Remove the 'mv' command, as it's not needed if the JAR file name already includes the version
+          gh release upload v1.0.1 "build/libs/genesis-standalone-mc1.20-v0.2.2.jar"  # Replace with the actual release tag and JAR file
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
