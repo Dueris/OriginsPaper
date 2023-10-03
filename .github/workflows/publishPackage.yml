@@ -1,9 +1,9 @@
-name: Publish Package to GitHub Packages
+name: Publish to GitHub Packages
 
 on:
   push:
     branches:
-      - origin
+      - origin  # Adjust the branch name as needed
 
 jobs:
   publish:
@@ -20,13 +20,16 @@ jobs:
           distribution: 'adopt'
 
       - name: Build
-        run: ./gradlew build
-
-      - name: Publish to GitHub Packages
         run: |
-          echo "Publishing to GitHub Packages"
+          ./gradlew build
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Publish JAR to GitHub Packages
+        run: |
+          echo "Publishing JAR to GitHub Packages"
           echo "registry=https://npm.pkg.github.com/Dueris" >> ~/.npmrc
           echo "//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}" >> ~/.npmrc
-          gh release create v0.2.2 build/libs/genesis-standalone-mc1.20-v0.2.2.jar
+          gh release upload v0.2.2 "build/libs/genesis-standalone-mc1.20-v0.2.2.jar" --clobber
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
