@@ -10,6 +10,7 @@ targetCompatibility = JavaVersion.VERSION_17
 
 repositories {
     mavenCentral()
+    gradlePluginPortal()
 }
 
 java {
