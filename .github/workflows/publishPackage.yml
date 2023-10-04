@@ -36,6 +36,7 @@ jobs:
 
       - name: Publish to PackageCloud
         run: |
+          package_cloud yank Dueris/GenesisMC/java me.dueris:genesismc:0.2.2
           package_cloud push Dueris/GenesisMC/java build/libs/genesis-standalone-mc1.20-v0.2.2.jar --coordinates=me.dueris:genesismc:0.2.2
         env:
           PACKAGECLOUD_TOKEN: ${{ secrets.PACKAGECLOUD_TOKEN }}
