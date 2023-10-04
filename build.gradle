@@ -1,10 +1,24 @@
 plugins {
-    id 'maven-publish'
+    id 'java'
+    id("maven-publish")
+}
+apply plugin: 'java'
+apply plugin: 'maven-publish'
+
+sourceCompatibility = JavaVersion.VERSION_17
+targetCompatibility = JavaVersion.VERSION_17
+
+repositories {
+    mavenCentral()
+}
+
+java {
+    toolchain.languageVersion.set(JavaLanguageVersion.of(17))
 }
 
 publishing {
     publications {
-        mavenJava(MavenPublication) {
+        maven(MavenPublication) {
             from components.java // Use 'java' instead of 'java'
 
             groupId = 'me.dueris' // Replace with your group ID
@@ -23,6 +37,7 @@ publishing {
                 password = project.findProperty("gpr.token") ?: System.getenv("TOKEN_GITHUB")
             }
         }
+        mavenCentral()
     }
 }
 
