@@ -1,41 +1,31 @@
-# name: Publish to GitHub Packages
+name: Publish to PackageCloud
 
- on:
+on:
   push:
     branches:
-      - origin  # Adjust the branch name as needed
+      - main
 
- jobs:
+jobs:
   publish:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+        
+      - name: Setup Build
+        run: ./gradlew build
 
-      - name: Set up JDK
-        uses: actions/setup-java@v2
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
         with:
-          java-version: '17'  # Adjust the Java version as needed
-          distribution: 'adopt'  # Specify the distribution (e.g., 'adopt', 'adopt-openj9', 'adopt-hotspot')
+          ruby-version: 3.2.2 # Choose the Ruby version you need
 
-      - name: Build
+      - name: Install required gem (package_cloud)
+        run: gem install package_cloud
+
+      - name: Publish to PackageCloud
         run: |
-          ./gradlew build
+          package_cloud push username/reponame/java /path/to/package.jar --coordinates=com.mygroup:packagename:1.0.2
         env:
-          GIT_TOKEN: ${{ secrets.GIT_TOKEN }}  # Updated to use GIT_TOKEN
-
-      - name: Publish JAR to GitHub Packages
-        run: |
-          echo "Publishing JAR to GitHub Packages"
-          echo "registry=https://npm.pkg.github.com/Dueris" >> ~/.npmrc
-          echo "//npm.pkg.github.com/:_authToken=\${{ secrets.GIT_TOKEN }}" >> ~/.npmrc
-          gh release upload v0.2.2 "build/libs/genesis-standalone-mc1.20-v0.2.2.jar" --clobber
-        env:
-          GIT_TOKEN: ${{ secrets.GIT_TOKEN }}  # Updated to use GIT_TOKEN
-          GH_TOKEN: ${{ secrets.GIT_TOKEN }}
-
-      - name: Deploy to Maven Repository
-        run: |
-          # Assuming your Maven settings.xml file is properly configured with credentials
-          mvn deploy
+          PACKAGECLOUD_TOKEN: ${{ secrets.PACKAGECLOUD_TOKEN }}
