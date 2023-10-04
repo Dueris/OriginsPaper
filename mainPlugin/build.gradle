@@ -1,39 +1,8 @@
 plugins {
     id 'java'
-    id 'java-gradle-plugin'
-    id "com.gradle.plugin-publish" version "1.1.0"
     id("maven-publish")
     id("io.papermc.paperweight.userdev") version "1.5.5"
     id("xyz.jpenilla.run-paper") version "2.2.0"
-}
-
-gradlePlugin {
-    plugins {
-        myPlugin {
-            id = 'genesismc'
-            implementationClass = 'me.dueris.genesismc.GenesisMC'
-        }
-    }
-}
-
-gradlePlugin {
-    plugins {
-        myPlugin {
-            displayName = 'GenesisMC'
-        }
-    }
-}
-
-pluginBundle {
-    website = 'https://github.com/Dueris/GenesisMC'
-    vcsUrl = 'https://github.com/Dueris/GenesisMC'
-    description = 'Origins plugin for PaperMC and forks'
-
-    plugins {
-        myPlugin {
-            displayName = 'GenesisMC'
-        }
-    }
 }
 
 apply plugin: 'java'
