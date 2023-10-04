@@ -30,6 +30,10 @@ jobs:
       - name: Install required gem (package_cloud)
         run: gem install package_cloud
 
+      - name: List contents of build/libs directory
+        run: ls -R build/libs
+        working-directory: ${{ github.workspace }}
+
       - name: Publish to PackageCloud
         run: |
           package_cloud push Dueris/GenesisMC/java /build/libs/genesis-standalone-mc1.20-v0.2.2.jar --coordinates=me.dueris:genesismc:0.2.2
