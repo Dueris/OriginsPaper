@@ -34,3 +34,9 @@ jobs:
         env:
           GIT_TOKEN: ${{ secrets.GIT_TOKEN }}  # Updated to use GIT_TOKEN
           GH_TOKEN: ${{ secrets.GIT_TOKEN }}
+
+      - name: Deploy to Maven Repository
+        run: |
+          # Assuming your Maven settings.xml file is properly configured with credentials
+          mvn deploy
+
