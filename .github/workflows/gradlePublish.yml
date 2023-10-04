@@ -1,0 +1,32 @@
+name: Publish to GitHub Packages
+
+on:
+  push:
+    branches:
+      - origin  # Adjust the branch name as needed
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up JDK
+        uses: actions/setup-java@v2
+        with:
+          java-version: '17'  # Adjust the Java version as needed
+
+      - name: Build
+        run: |
+          chmod +x gradlew
+          ./gradlew build
+        env:
+          GIT_TOKEN: ${{ secrets.GIT_TOKEN }}
+
+      - name: Publish to GitHub Packages
+        run: |
+          ./gradlew publish
+        env:
+          GIT_TOKEN: ${{ secrets.GIT_TOKEN }}
