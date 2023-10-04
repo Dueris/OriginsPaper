@@ -44,4 +44,9 @@ Custom origins are what truly made the Origins mod shine; therefore, we are maki
 <p style="text-align; center;">
 If you can speak a language other than English we would greatly appreciate it if you could join our translation team! For more information please join our <a href="https://discord.gg/RKmQnU6SRt">discord</a> server and ask Dueris about helping to translate. Do know that Dueris is just one person so, you might have to wait for a response. 
 </p>
+<hr>
+<h3>Documentation</h3>
+<hr>
+<p style="text-align; center;">A new beta website is now up for the docs! It includes javadocs for the api, the origins included with the plugin, and more! The site will be improved on and worked on as the plugin evolves:
+http://genesismc.duckdns.org</p>
 </div>
