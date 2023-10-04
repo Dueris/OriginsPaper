@@ -5,7 +5,7 @@ plugins {
 publishing {
     publications {
         mavenJava(MavenPublication) {
-            from components.java
+            from components.java // Use 'java' instead of 'java'
 
             groupId = 'me.dueris' // Replace with your group ID
             artifactId = 'genesismc' // Replace with your artifact ID
@@ -24,4 +24,8 @@ publishing {
             }
         }
     }
+}
+
+components {
+    java // Define the 'java' component
 }
