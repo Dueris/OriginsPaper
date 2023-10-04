@@ -1,53 +1,11 @@
 # name: Publish to GitHub Packages
 
-# on:
-#  push:
-#    branches:
-#      - origin  # Adjust the branch name as needed
-
-#jobs:
-#  publish:
-#    runs-on: ubuntu-latest
-#
-#    steps:
-#      - name: Checkout code
-#        uses: actions/checkout@v2
-#
-#      - name: Set up JDK
-#        uses: actions/setup-java@v2
-#        with:
-#          java-version: '17'  # Adjust the Java version as needed
-#          distribution: 'adopt'  # Specify the distribution (e.g., 'adopt', 'adopt-openj9', 'adopt-hotspot')
-#
-#      - name: Build
-#        run: |
-#          ./gradlew build
-#        env:
-#          GIT_TOKEN: ${{ secrets.GIT_TOKEN }}  # Updated to use GIT_TOKEN
-#
-#      - name: Publish JAR to GitHub Packages
-#        run: |
-#          echo "Publishing JAR to GitHub Packages"
-#          echo "registry=https://npm.pkg.github.com/Dueris" >> ~/.npmrc
-#          echo "//npm.pkg.github.com/:_authToken=\${{ secrets.GIT_TOKEN }}" >> ~/.npmrc
-#          gh release upload v0.2.2 "build/libs/genesis-standalone-mc1.20-v0.2.2.jar" --clobber
-#        env:
-#          GIT_TOKEN: ${{ secrets.GIT_TOKEN }}  # Updated to use GIT_TOKEN
-#          GH_TOKEN: ${{ secrets.GIT_TOKEN }}
-#
-#      - name: Deploy to Maven Repository
-#        run: |
-#          # Assuming your Maven settings.xml file is properly configured with credentials
-#          mvn deploy
-
-name: Publish to GitHub Packages
-
-on:
+ on:
   push:
     branches:
-      - origin
+      - origin  # Adjust the branch name as needed
 
-jobs:
+ jobs:
   publish:
     runs-on: ubuntu-latest
 
@@ -58,13 +16,26 @@ jobs:
       - name: Set up JDK
         uses: actions/setup-java@v2
         with:
-          java-version: '17'
-          distribution: 'adopt'
+          java-version: '17'  # Adjust the Java version as needed
+          distribution: 'adopt'  # Specify the distribution (e.g., 'adopt', 'adopt-openj9', 'adopt-hotspot')
 
-      - name: Build and Publish
+      - name: Build
         run: |
-          chmod +x gradlew
-          ./gradlew publish
+          ./gradlew build
         env:
-          USERNAME_GITHUB: Dueris
-          TOKEN_GITHUB: ${{ secrets.GIT_TOKEN }}
+          GIT_TOKEN: ${{ secrets.GIT_TOKEN }}  # Updated to use GIT_TOKEN
+
+      - name: Publish JAR to GitHub Packages
+        run: |
+          echo "Publishing JAR to GitHub Packages"
+          echo "registry=https://npm.pkg.github.com/Dueris" >> ~/.npmrc
+          echo "//npm.pkg.github.com/:_authToken=\${{ secrets.GIT_TOKEN }}" >> ~/.npmrc
+          gh release upload v0.2.2 "build/libs/genesis-standalone-mc1.20-v0.2.2.jar" --clobber
+        env:
+          GIT_TOKEN: ${{ secrets.GIT_TOKEN }}  # Updated to use GIT_TOKEN
+          GH_TOKEN: ${{ secrets.GIT_TOKEN }}
+
+      - name: Deploy to Maven Repository
+        run: |
+          # Assuming your Maven settings.xml file is properly configured with credentials
+          mvn deploy
