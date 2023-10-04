@@ -37,7 +37,7 @@ publishing {
                 password = project.findProperty("gpr.token") ?: System.getenv("TOKEN_GITHUB")
             }
         }
-        mavenCentral()
+        gradlePluginPortal()
     }
 }
 
