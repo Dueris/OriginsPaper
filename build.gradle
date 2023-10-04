@@ -1,0 +1,23 @@
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+
+            groupId = 'me.dueris' // Replace with your group ID
+            artifactId = 'genesismc' // Replace with your artifact ID
+            version = '0.2.2' // Replace with your desired version
+
+            // Add any other necessary publication settings
+        }
+    }
+    repositories {
+        maven {
+            name = 'GitHubPackages'
+            url = uri("https://maven.pkg.github.com/Dueris/GenesisMC") // Replace with your repository details
+            credentials {
+                username = project.findProperty("gpr.user") ?: System.getenv("USERNAME_GITHUB")
+                password = project.findProperty("gpr.token") ?: System.getenv("TOKEN_GITHUB")
+            }
+        }
+    }
+}
