@@ -8,24 +8,32 @@ plugins {
 }
 
 gradlePlugin {
-  plugins {
-    myPlugin {
-      id = 'genesismc'
-      implementationClass = 'me.dueris.genesismc.GenesisMC'
+    plugins {
+        myPlugin {
+            id = 'genesismc'
+            implementationClass = 'me.dueris.genesismc.GenesisMC'
+        }
     }
-  }
+}
+
+gradlePlugin {
+    plugins {
+        myPlugin {
+            displayName = 'GenesisMC'
+        }
+    }
 }
 
 pluginBundle {
-  website = 'https://github.com/Dueris/GenesisMC'
-  vcsUrl = 'https://github.com/Dueris/GenesisMC'
-  description = 'Origins plugin for PaperMC and forks'
+    website = 'https://github.com/Dueris/GenesisMC'
+    vcsUrl = 'https://github.com/Dueris/GenesisMC'
+    description = 'Origins plugin for PaperMC and forks'
 
-  plugins {
-    myPlugin {
-      displayName = 'GenesisMC'
+    plugins {
+        myPlugin {
+            displayName = 'GenesisMC'
+        }
     }
-  }
 }
 
 apply plugin: 'java'
@@ -159,10 +167,6 @@ publishing {
         }
     }
     repositories {
-        // Add repositories to publish to here.
-        // Notice: This block does NOT have the same function as the block in the top level.
-        // The repositories here will be used for publishing your artifact, not for
-        // retrieving dependencies.
         mavenLocal()
     }
 }
