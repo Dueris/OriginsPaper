@@ -15,10 +15,10 @@ publishing {
         maven {
             //name = "cloudsmith"
             //url = version.endsWith('SNAPSHOT') ? "https://api-g.cloudsmith.io/maven/Dueris/GenesisMC" : "https://api-g.cloudsmith.io/maven/Dueris/GenesisMC/"
-            credentials {
-                username = System.getenv("CLOUDSMITH_USERNAME")
-                password = System.getenv("CLOUDSMITH_PASSWORD")
-            }
+            //credentials {
+                //username = System.getenv("CLOUDSMITH_USERNAME")
+                //password = System.getenv("CLOUDSMITH_PASSWORD")
+            //}
         }
     }
     publications {
