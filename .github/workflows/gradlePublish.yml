@@ -22,10 +22,6 @@ jobs:
       - name: Build
         run: |
           ./gradlew build
-          # Print the contents of the build directory
-          echo "Contents of the build directory:"
-          ls -R build
-
         env:
           GIT_TOKEN: ${{ secrets.GIT_TOKEN }}  # Updated to use GIT_TOKEN
 
@@ -35,27 +31,10 @@ jobs:
         env:
           PIP_NO_CACHE_DIR: "false"
 
-      - name: Upload via Cloudsmith CLI
+      - name: Check for POM files in Gradle cache
         run: |
-          # Print the POM file if it exists
-          if [ -f "genesismc-mc1.20-0.2.2.pom" ]; then
-            echo "Generated Pom file:"
-            cat genesismc-mc1.20-0.2.2.pom
-          else
-            echo "RIP no file"
-          fi
-
-          # Check for the publications directory
-          if [ -d "build/publications" ]; then
-            echo "Contents of the publications directory:"
-            ls -R build/publications
-          else
-            echo "No publications dir"
-          fi
-
-          echo "Uploading to Cloudsmith"
-          cloudsmith push maven Dueris/GenesisMC build/libs/genesis-standalone-mc1.20-v0.2.2.jar --pom-file=genesismc-mc1.20-0.2.2.pom
-
-
-        env:
-          CLOUDSMITH_API_KEY: ${{ secrets.CLOUDSMITH_API_KEY }}  # Replace with your Cloudsmith API
+          echo "Checking for POM files in Gradle cache..."
+          find $HOME/.gradle/caches -type f -name "*.pom" | while read pomfile; do
+            echo "Found POM file: $pomfile"
+          done || echo "No POM files found"
+        shell: bash
