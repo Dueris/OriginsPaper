@@ -25,12 +25,17 @@ jobs:
         env:
           GIT_TOKEN: ${{ secrets.GIT_TOKEN }}  # Updated to use GIT_TOKEN
 
-      - name: Publish JAR to GitHub Packages
+      - name: Install Cloudsmith CLI
         run: |
-          echo "Publishing JAR to GitHub Packages"
-          echo "registry=https://npm.pkg.github.com/Dueris" >> ~/.npmrc
-          echo "//npm.pkg.github.com/:_authToken=\${{ secrets.GIT_TOKEN }}" >> ~/.npmrc
-          gh release upload v0.2.2-SNAPSHOT "build/libs/genesis-standalone-mc1.20-v0.2.2.jar" --clobber
+          pip install --upgrade cloudsmith-cli
         env:
-          GIT_TOKEN: ${{ secrets.GIT_TOKEN }}  # Updated to use GIT_TOKEN
-          GH_TOKEN: ${{ secrets.GIT_TOKEN }}
+          PIP_NO_CACHE_DIR: "false"
+
+      - name: Upload via Cloudsmith CLI
+        run: |
+          echo "Uploading to Cloudsmith"
+          cloudsmith push maven Dueris/GenesisMC build/libs/genesis-standalone-mc1.20-v0.2.2.jar --pom-file=genesismc-mc1.20-0.2.2.pom
+          # Example:
+          # cloudsmith push maven org/repo validation-api-1.0.0.GA.jar --pom-file=validation-api-1.0.0.GA.pom
+        env:
+          CLOUDSMITH_API_KEY: ${{ secrets.CLOUDSMITH_API_KEY }}  # Replace with your Cloudsmith API key
