@@ -1,3 +1,4 @@
+
 name: Publish to GitHub Packages
 
 on:
@@ -19,12 +20,11 @@ jobs:
           java-version: '17'  # Adjust the Java version as needed
           distribution: 'adopt'  # Specify the distribution (e.g., 'adopt', 'adopt-openj9', 'adopt-hotspot')
 
-      - name: Build
+      - name: Build and Publish
         run: |
+          chmod +x ./gradlew
           ./gradlew build
-          # Print the contents of the build directory
-          echo "Contents of the build directory:"
-          ls -R build
+          ./gradlew publish
 
         env:
           GIT_TOKEN: ${{ secrets.GIT_TOKEN }}  # Updated to use GIT_TOKEN
@@ -35,10 +35,24 @@ jobs:
         env:
           PIP_NO_CACHE_DIR: "false"
 
-      - name: Upload via Cloudsmith CLI
+      - name: Check for POM file and List Files
         run: |
-          echo "Uploading POM file to Cloudsmith"
-          cloudsmith push maven Dueris/GenesisMC mainPlugin/mc1.20-v0.2.2/mainPlugin-mc1.20-v0.2.2.pom
+          echo "Checking for POM file..."
+          if [ -f "mainPlugin/mc1.20-v0.2.2/mainPlugin-mc1.20-v0.2.2.pom" ]; then
+            echo "POM file found!"
+          else
+            echo "POM file not found."
+          fi
+
+          if [ -f "mainPlugin/mc1.20-v0.2.2/" ]; then
+            echo "folder file found!"
+          else
+            echo "folder file not found."
+          fi
+
+          # Print the names of files within the mainPlugin directory
+          echo "Contents of the mainPlugin directory:"
+          ls -R mainPlugin
 
         env:
           CLOUDSMITH_API_KEY: ${{ secrets.CLOUDSMITH_API_KEY }}  # Replace with your Cloudsmith API Key
