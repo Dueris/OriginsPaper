@@ -35,24 +35,14 @@ jobs:
         env:
           PIP_NO_CACHE_DIR: "false"
 
-      - name: Check for POM file and List Files
+      - name: Upload via Cloudsmith CLI
         run: |
-          echo "Checking for POM file..."
-          if [ -f "mainPlugin/mc1.20-v0.2.2/mainPlugin-mc1.20-v0.2.2.pom" ]; then
-            echo "POM file found!"
-          else
-            echo "POM file not found."
-          fi
+          echo "Uploading to Cloudsmith"
+          cloudsmith push maven Dueris/GenesisMC build/libs/genesis-standalone-mc1.20-v0.2.2.jar --pom-file=mainPlugin/build/publications/maven/pom-default.xml
 
-          if [ -f "mainPlugin/mc1.20-v0.2.2/" ]; then
-            echo "folder file found!"
-          else
-            echo "folder file not found."
-          fi
-
-          # Print the names of files within the mainPlugin directory
-          echo "Contents of the mainPlugin directory:"
-          ls -R mainPlugin
+          # Print the POM file
+          echo "Generated Pom file:"
+          cat mainPlugin/build/publications/maven/pom-default.xml
 
         env:
           CLOUDSMITH_API_KEY: ${{ secrets.CLOUDSMITH_API_KEY }}  # Replace with your Cloudsmith API Key
