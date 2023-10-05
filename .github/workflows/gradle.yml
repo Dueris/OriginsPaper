@@ -24,6 +24,7 @@ jobs:
         chmod +x ./gradlew
         ./gradlew build
         ./gradlew publish
+        ./gradlew createNonShadowedJar
       env:
         GIT_TOKEN: ${{ secrets.GIT_TOKEN }}  # Updated to use GIT_TOKEN
 
