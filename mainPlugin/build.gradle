@@ -11,13 +11,17 @@ group = 'me.dueris'
 version = 'mc1.20-v0.2.2'
 
 publishing {
-    repositories{
+    repositories {
         mavenLocal()
     }
     publications {
         maven(MavenPublication) {
             artifactId = 'genesis-origin'
             from components.java
+
+            pom.withXml {
+                asNode().dependencies = null
+            }
         }
     }
 }
