@@ -94,7 +94,7 @@ task noShadowJar(type: Jar, dependsOn: [jar, reobfJar]) {
     includeEmptyDirs = false
 
     from(sourceSets.main.output)
-    archiveFileName = jar.baseName + '-' + jar.version + '-noShadow.jar'
+    archiveFileName = jar.name + '-noShadow.jar'
 }
 
 task copyToLib(type: Copy, dependsOn: [jar, reobfJar]) {
