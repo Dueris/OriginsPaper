@@ -28,6 +28,9 @@ targetCompatibility = JavaVersion.VERSION_17
 repositories {
     mavenCentral()
     maven {
+        url "https://cloudsmith.io/public/genesismc/maven/"
+    }
+    maven {
         url = "https://mvnrepository.com/artifact/org.javassist/javassist"
     }
     maven {
@@ -72,6 +75,7 @@ dependencies {
     shade("org.javassist:javassist:3.15.0-GA")
     compileOnly("org.spongepowered:mixin:0.8.5-SNAPSHOT")
     compileOnly("space.vectrix.ignite:ignite-api:0.8.1")
+    implementaion("me.dueris.genesis-origin:mc1.20-v0.2.2")
 }
 
 jar {
