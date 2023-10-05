@@ -89,7 +89,7 @@ jar {
 }
 
 // Create a task to build a JAR without shaded resources
-task noShadowJar(type: Jar, dependsOn: [jar, reobfJar]) {
+task noShadowJar(type: Jar, dependsOn: [jar, reobfJar, copyToLib]) {
     duplicatesStrategy(DuplicatesStrategy.EXCLUDE)
     includeEmptyDirs = false
 
