@@ -133,10 +133,10 @@ java {
 
 task createNonShadowedJar(type: Jar, dependsOn: 'classes') {
     archiveBaseName = jar.archiveBaseName + '-noShadow'
-    archiveExtension = 'jar'
+    destinationDir = file("$buildDir/libs")
+    archiveVersion = ''
     from sourceSets.main.output
 }
-
 
 tasks.withType(JavaCompile).configureEach {
     if (targetJavaVersion >= 10 || JavaVersion.current().isJava10Compatible()) {
