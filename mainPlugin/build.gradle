@@ -76,7 +76,7 @@ dependencies {
     shade("org.javassist:javassist:3.15.0-GA")
     compileOnly("org.spongepowered:mixin:0.8.5-SNAPSHOT")
     compileOnly("space.vectrix.ignite:ignite-api:0.8.1")
-    compileOnly("me.dueris:genesis-origin:mc1.20-v0.2.2") // - removed temporarily until shadow jar is complete
+    //compileOnly("me.dueris:genesis-origin:mc1.20-v0.2.2") // - removed temporarily until shadow jar is complete
 }
 
 jar {
