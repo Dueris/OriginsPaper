@@ -10,6 +10,21 @@ apply plugin: 'maven-publish'
 group = 'me.dueris'
 version = 'mc1.20-v0.2.2'
 
+publishing {
+    publications {
+        customLibrary(MavenPublication) {
+            from components.java
+        }
+    }
+
+    repositories {
+        maven {
+            name = 'genesismc'
+            url = layout.buildDirectory.dir("repo")
+        }
+    }
+}
+
 sourceCompatibility = JavaVersion.VERSION_17
 targetCompatibility = JavaVersion.VERSION_17
 
