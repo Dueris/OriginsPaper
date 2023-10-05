@@ -35,10 +35,9 @@ jobs:
         env:
           PIP_NO_CACHE_DIR: "false"
 
-      - name: Upload via Cloudsmith CLI
+      - name: Prepare POM
         run: |
-          echo "Uploading to Cloudsmith"
-          cloudsmith push maven Dueris/GenesisMC build/libs/genesis-standalone-mc1.20-v0.2.2.jar --pom-file=mainPlugin/build/publications/maven/pom-default.xml
+          echo "POM-PRINT-START"
 
           # Print the POM file
           echo "Generated Pom file:"
@@ -46,3 +45,16 @@ jobs:
 
         env:
           CLOUDSMITH_API_KEY: ${{ secrets.CLOUDSMITH_API_KEY }}  # Replace with your Cloudsmith API Key
+          
+      - name: Push to Cloudsmith
+        id: push
+        uses: cloudsmith-io/action@master
+        with:
+          api-key: ${{ secrets.CLOUDSMITH_API_KEY }}
+          command: 'push'
+          format: 'maven'
+          owner: 'genesismc'               # Your Cloudsmith organization name
+          repo: 'genesismc'               # Your Cloudsmith Repository name (slug)
+          pom-file: 'mainPlugin/build/publications/maven/pom-default.xml'  # Path to your .pom file
+          republish: 'true'            # Set to 'true' ONLY if version is not changing
+          file: 'mainPlugin/build/libs/mainPlugin-mc1.20-v0.2.2.jar'  # Path to your Maven artifact (JAR file)
