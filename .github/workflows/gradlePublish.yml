@@ -22,6 +22,9 @@ jobs:
       - name: Build
         run: |
           ./gradlew build
+          # Display the name of the generated POM file
+          pom_file=$(find . -type f -name '*.pom')
+          echo "Generated POM file: $pom_file"
         env:
           GIT_TOKEN: ${{ secrets.GIT_TOKEN }}  # Updated to use GIT_TOKEN
 
