@@ -30,7 +30,7 @@ jobs:
           echo "Publishing JAR to GitHub Packages"
           echo "registry=https://npm.pkg.github.com/Dueris" >> ~/.npmrc
           echo "//npm.pkg.github.com/:_authToken=\${{ secrets.GIT_TOKEN }}" >> ~/.npmrc
-          gh release upload v0.2.2 "build/libs/genesis-standalone-mc1.20-v0.2.2.jar" --clobber
+          gh release upload v0.2.2-SNAPSHOT "build/libs/genesis-standalone-mc1.20-v0.2.2.jar" --clobber
         env:
           GIT_TOKEN: ${{ secrets.GIT_TOKEN }}  # Updated to use GIT_TOKEN
           GH_TOKEN: ${{ secrets.GIT_TOKEN }}
