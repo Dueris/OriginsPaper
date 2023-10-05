@@ -54,7 +54,7 @@ jobs:
         repo: 'genesismc'
         pom-file: 'mainPlugin/build/publications/maven/pom-default.xml'
         republish: 'true'
-        file: 'mainPlugin/build/libs/mainPlugin-mc1.20-v0.2.2.jar'
+        file: 'mainPlugin/build/libs/jar-noShadow.jar'
     
     - name: Archive Jars
       run: |
