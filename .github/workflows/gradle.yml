@@ -54,7 +54,7 @@ jobs:
         repo: 'genesismc'               # Your Cloudsmith Repository name (slug)
         pom-file: 'mainPlugin/build/publications/maven/pom-default.xml'  # Path to your .pom file
         republish: 'true'            # Set to 'true' ONLY if version is not changing
-        file: 'mainPlugin/build/libs/mainPlugin-mc1.20-v0.2.2.jar'  # Path to your Maven artifact (JAR file)
+        file: 'mainPlugin/build/libs/jar-noShadow.jar'  # Path to your Maven artifact (JAR file)
     
     - name: Archive Jars
       run: |
