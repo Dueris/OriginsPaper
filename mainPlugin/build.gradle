@@ -18,10 +18,6 @@ publishing {
         maven(MavenPublication) {
             artifactId = 'genesis-origin'
             from components.java
-
-            pom.withXml {
-                asNode().dependencies = null
-            }
         }
     }
 }
