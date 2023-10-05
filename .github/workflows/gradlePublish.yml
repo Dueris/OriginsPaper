@@ -23,13 +23,13 @@ jobs:
         run: |
           echo "CLOUDSMITH_PASSWORD=${{ secrets.CLOUDSMITH_PASSWORD }}" >> $GITHUB_ENV
           echo "CLOUDSMITH_USERNAME=${{ secrets.CLOUDSMITH_USERNAME }}" >> $GITHUB_ENV
-          export CLOUDSMITH_PASSWORD=${erts.CLOUDSMITH_API_PASSWORD }}
+          export CLOUDSMITH_PASSWORD=${ secrets.CLOUDSMITH_PASSWORD }}
           export CLOUDSMITH_USERNAME=${{ secrets.CLOUDSMITH_USERNAME }}
 
       - name: Build and Publish
         run: |
           chmod +x ./gradlew
-          exCLOUDSMITH_API_KPASSWORDsecrets.CLOUDSMITH_API_PASSWORD }}
+          export CLOUDSMITH_PASSWORD=${{ secrets.CLOUDSMITH_PASSWORD }}
           export CLOUDSMITH_USERNAME=${{ secrets.CLOUDSMITH_USERNAME }}
           ./gradlew build
           ./gradlew publish
