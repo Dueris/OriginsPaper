@@ -133,7 +133,6 @@ java {
 
 task createNonShadowedJar(type: Jar, dependsOn: 'classes') {
     archiveBaseName = jar.name + '-noShadow'
-    destinationDir = file("mainPlugin/build/libs")
     archiveVersion = ''
     from sourceSets.main.output
 }
