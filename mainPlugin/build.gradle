@@ -9,6 +9,7 @@ apply plugin: 'java'
 apply plugin: 'maven-publish'
 group = 'me.dueris'
 version = 'mc1.20-v0.2.2'
+artifactid = 'genesismc'
 
 publishing {
     repositories{
