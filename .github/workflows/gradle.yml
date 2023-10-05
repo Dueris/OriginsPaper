@@ -19,9 +19,6 @@ jobs:
         java-version: 17
         distribution: 'adopt'
 
-    - name: Build the project
-      run: ./gradlew build  # Replace with your build command
-
     - name: Build and Publish
       run: |
         chmod +x ./gradlew
