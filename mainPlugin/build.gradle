@@ -1,6 +1,6 @@
 plugins {
     id 'java'
-    id("maven-publish")
+    id 'maven-publish'
     id("io.papermc.paperweight.userdev") version "1.5.5"
     id("xyz.jpenilla.run-paper") version "2.2.0"
 }
@@ -11,24 +11,21 @@ group = 'me.dueris'
 version = 'mc1.20-v0.2.2'
 
 publishing {
-  repositories {
-    maven {
-      name = "cloudsmith"
-      url = "https://api-g.cloudsmith.io/maven/Dueris/GenesisMC"
-      def releasesRepoUrl = "https://api-g.cloudsmith.io/maven/Dueris/GenesisMC/"
-      def snapshotsRepoUrl ="https://api-g.cloudsmith.io/maven/Dueris/GenesisMC"
-      url = version.endsWith('SNAPSHOT') ? **snapshotsRepoUrl **: releasesRepoUrl
-      credentials {
-        username = System.getenv("CLOUDSMITH_USERNAME")
-        password = System.getenv("CLOUDSMITH_API_KEY")
-      }
+    repositories {
+        maven {
+            name = "cloudsmith"
+            url = version.endsWith('SNAPSHOT') ? "https://api-g.cloudsmith.io/maven/Dueris/GenesisMC" : "https://api-g.cloudsmith.io/maven/Dueris/GenesisMC/"
+            credentials {
+                username = System.getenv("CLOUDSMITH_USERNAME")
+                password = System.getenv("CLOUDSMITH_API_KEY")
+            }
+        }
     }
-  }
-  publications {
-    maven(MavenPublication) {
-      // [snip]
+    publications {
+        maven(MavenPublication) {
+            // [snip]
+        }
     }
-  }
 }
 
 sourceCompatibility = JavaVersion.VERSION_17
@@ -147,17 +144,6 @@ processResources {
     filteringCharset 'UTF-8'
     filesMatching('plugin.yml') {
         expand props
-    }
-}
-
-publishing {
-    publications {
-        maven(MavenPublication) {
-            from components.java
-        }
-    }
-    repositories {
-        mavenLocal()
     }
 }
 
