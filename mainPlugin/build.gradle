@@ -11,19 +11,12 @@ group = 'me.dueris'
 version = 'mc1.20-v0.2.2'
 
 publishing {
-    repositories {
-        maven {
-            //name = "cloudsmith"
-            //url = version.endsWith('SNAPSHOT') ? "https://api-g.cloudsmith.io/maven/Dueris/GenesisMC" : "https://api-g.cloudsmith.io/maven/Dueris/GenesisMC/"
-            //credentials {
-                //username = System.getenv("CLOUDSMITH_USERNAME")
-                //password = System.getenv("CLOUDSMITH_PASSWORD")
-            //}
-        }
+    repositories{
+        mavenLocal()
     }
     publications {
         maven(MavenPublication) {
-            // [snip]
+            from components.java
         }
     }
 }
