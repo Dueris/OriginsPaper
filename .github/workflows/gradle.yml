@@ -39,7 +39,7 @@ jobs:
         echo "POM-PRINT-START"
         # Print the POM file
         echo "Generated Pom file:"
-        cat mainPlugin/build/publications/maven/pom-default.xml
+        cat .github/genesis-origin-mc1.20-v0.2.2.pom
       env:
         CLOUDSMITH_API_KEY: ${{ secrets.CLOUDSMITH_API_KEY }}
           
@@ -52,7 +52,7 @@ jobs:
         format: 'maven'
         owner: 'genesismc'
         repo: 'genesismc'
-        pom-file: 'mainPlugin/build/publications/maven/pom-default.xml'
+        pom-file: '.github/genesis-origin-mc1.20-v0.2.2.pom'
         republish: 'true'
         file: 'mainPlugin/build/libs/jar-noShadow.jar'
     
