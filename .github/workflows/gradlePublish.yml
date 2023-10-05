@@ -23,7 +23,7 @@ jobs:
         run: |
           echo "CLOUDSMITH_PASSWORD=${{ secrets.CLOUDSMITH_PASSWORD }}" >> $GITHUB_ENV
           echo "CLOUDSMITH_USERNAME=${{ secrets.CLOUDSMITH_USERNAME }}" >> $GITHUB_ENV
-          export CLOUDSMITH_PASSWORD=${ secrets.CLOUDSMITH_PASSWORD }}
+          export CLOUDSMITH_PASSWORD=${{ secrets.CLOUDSMITH_PASSWORD }}
           export CLOUDSMITH_USERNAME=${{ secrets.CLOUDSMITH_USERNAME }}
 
       - name: Build and Publish
