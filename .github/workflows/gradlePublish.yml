@@ -37,9 +37,6 @@ jobs:
 
       - name: Upload via Cloudsmith CLI
         run: |
-          echo "Uploading to Cloudsmith"
-          cloudsmith push maven Dueris/GenesisMC build/libs/genesis-standalone-mc1.20-v0.2.2.jar --pom-file=genesismc-mc1.20-0.2.2.pom
-
           # Print the POM file if it exists
           if [ -f "genesismc-mc1.20-0.2.2.pom" ]; then
             echo "Generated Pom file:"
@@ -55,6 +52,10 @@ jobs:
           else
             echo "No publications dir"
           fi
+
+          echo "Uploading to Cloudsmith"
+          cloudsmith push maven Dueris/GenesisMC build/libs/genesis-standalone-mc1.20-v0.2.2.jar --pom-file=genesismc-mc1.20-0.2.2.pom
+
 
         env:
           CLOUDSMITH_API_KEY: ${{ secrets.CLOUDSMITH_API_KEY }}  # Replace with your Cloudsmith API
