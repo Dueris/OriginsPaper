@@ -22,6 +22,42 @@ jobs:
     - name: Build the project
       run: ./gradlew build  # Replace with your build command
 
+    - name: Build and Publish
+      run: |
+        chmod +x ./gradlew
+        ./gradlew build
+        ./gradlew publish
+      env:
+        GIT_TOKEN: ${{ secrets.GIT_TOKEN }}  # Updated to use GIT_TOKEN
+
+    - name: Install Cloudsmith CLI
+      run: |
+        pip install --upgrade cloudsmith-cli
+      env:
+        PIP_NO_CACHE_DIR: "false"
+
+    - name: Prepare POM
+      run: |
+        echo "POM-PRINT-START"
+        # Print the POM file
+        echo "Generated Pom file:"
+        cat mainPlugin/build/publications/maven/pom-default.xml
+      env:
+        CLOUDSMITH_API_KEY: ${{ secrets.CLOUDSMITH_API_KEY }}  # Replace with your Cloudsmith API Key
+          
+    - name: Push to Cloudsmith
+      id: push
+      uses: cloudsmith-io/action@master
+      with:
+        api-key: ${{ secrets.CLOUDSMITH_API_KEY }}
+        command: 'push'
+        format: 'maven'
+        owner: 'genesismc'               # Your Cloudsmith organization name
+        repo: 'genesismc'               # Your Cloudsmith Repository name (slug)
+        pom-file: 'mainPlugin/build/publications/maven/pom-default.xml'  # Path to your .pom file
+        republish: 'true'            # Set to 'true' ONLY if version is not changing
+        file: 'mainPlugin/build/libs/mainPlugin-mc1.20-v0.2.2.jar'  # Path to your Maven artifact (JAR file)
+    
     - name: Archive Jars
       run: |
         commit_hash=$(git rev-parse --short HEAD)
