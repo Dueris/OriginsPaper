@@ -16,7 +16,7 @@ publishing {
     }
     publications {
         maven(MavenPublication) {
-            artifactId = 'genesis:origin'
+            artifactId = 'genesis-origin'
             from components.java
         }
     }
