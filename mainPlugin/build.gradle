@@ -31,9 +31,6 @@ repositories {
         url "https://cloudsmith.io/public/genesismc/maven/"
     }
     maven {
-        url = "https://mvnrepository.com/artifact/org.javassist/javassist"
-    }
-    maven {
         name = "papermc-repo"
         url = "https://repo.papermc.io/repository/maven-public/"
     }
