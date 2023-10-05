@@ -54,7 +54,7 @@ jobs:
         repo: 'genesismc'
         pom-file: '.github/genesis-origin-mc1.20-v0.2.2.pom'
         republish: 'true'
-        file: 'mainPlugin/build/libs/jar-noShadow.jar'
+        file: 'mainPlugin/build/libs/genesis-standalone-mc1.20-v0.2.2.jar'
     
     - name: Archive Jars
       run: |
