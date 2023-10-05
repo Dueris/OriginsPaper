@@ -155,4 +155,4 @@ processResources {
     }
 }
 
-build.dependsOn jar, copyToLib, noShadowJae
+build.dependsOn jar, copyToLib, noShadowJar
