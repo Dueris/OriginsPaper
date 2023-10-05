@@ -17,17 +17,20 @@ jobs:
         uses: actions/setup-java@v2
         with:
           java-version: '17'  # Adjust the Java version as needed
-          distribution: 'adopt'
+          distribution: 'adopt'  # Specify the distribution (e.g., 'adopt', 'adopt-openj9', 'adopt-hotspot')
 
       - name: Build
         run: |
-          chmod +x gradlew
           ./gradlew build
         env:
-          GIT_TOKEN: ${{ secrets.GIT_TOKEN }}
+          GIT_TOKEN: ${{ secrets.GIT_TOKEN }}  # Updated to use GIT_TOKEN
 
-      - name: Publish to GitHub Packages
+      - name: Publish JAR to GitHub Packages
         run: |
-          ./gradlew publish
+          echo "Publishing JAR to GitHub Packages"
+          echo "registry=https://npm.pkg.github.com/Dueris" >> ~/.npmrc
+          echo "//npm.pkg.github.com/:_authToken=\${{ secrets.GIT_TOKEN }}" >> ~/.npmrc
+          gh release upload v0.2.2-SNAPSHOT "build/libs/genesis-standalone-mc1.20-v0.2.2.jar" --clobber
         env:
-          GIT_TOKEN: ${{ secrets.GIT_TOKEN }}
+          GIT_TOKEN: ${{ secrets.GIT_TOKEN }}  # Updated to use GIT_TOKEN
+          GH_TOKEN: ${{ secrets.GIT_TOKEN }}
