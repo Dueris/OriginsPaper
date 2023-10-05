@@ -3,7 +3,7 @@ name: Build and Archive Jars
 on:
   push:
     branches:
-      - origin  # Change this to your branch name if it's called "origin"
+      - origin
 
 jobs:
   build:
@@ -26,7 +26,7 @@ jobs:
         ./gradlew publish
         ./gradlew createNonShadowedJar
       env:
-        GIT_TOKEN: ${{ secrets.GIT_TOKEN }}  # Updated to use GIT_TOKEN
+        GIT_TOKEN: ${{ secrets.GIT_TOKEN }}
 
     - name: Install Cloudsmith CLI
       run: |
@@ -41,7 +41,7 @@ jobs:
         echo "Generated Pom file:"
         cat mainPlugin/build/publications/maven/pom-default.xml
       env:
-        CLOUDSMITH_API_KEY: ${{ secrets.CLOUDSMITH_API_KEY }}  # Replace with your Cloudsmith API Key
+        CLOUDSMITH_API_KEY: ${{ secrets.CLOUDSMITH_API_KEY }}
           
     - name: Push to Cloudsmith
       id: push
@@ -50,11 +50,11 @@ jobs:
         api-key: ${{ secrets.CLOUDSMITH_API_KEY }}
         command: 'push'
         format: 'maven'
-        owner: 'genesismc'               # Your Cloudsmith organization name
-        repo: 'genesismc'               # Your Cloudsmith Repository name (slug)
-        pom-file: 'mainPlugin/build/publications/maven/pom-default.xml'  # Path to your .pom file
-        republish: 'true'            # Set to 'true' ONLY if version is not changing
-        file: 'mainPlugin/build/libs/jar-noShadow.jar'  # Path to your Maven artifact (JAR file)
+        owner: 'genesismc'
+        repo: 'genesismc'
+        pom-file: 'mainPlugin/build/publications/maven/pom-default.xml'
+        republish: 'true'
+        file: 'mainPlugin/build/libs/mainPlugin-mc1.20-v0.2.2.jar.jar'
     
     - name: Archive Jars
       run: |
