@@ -59,6 +59,16 @@ jobs:
     - name: Archive Jars
       run: |
         commit_hash=$(git rev-parse --short HEAD)
+        jar_files=$(find mainPlugin/build/libs -name "*.jar")
+        if [ -n "$jar_files" ]; then
+          zip -j mainPlugin/builds/commits/${commit_hash}.zip ${jar_files}
+          if [ -f "mainPlugin/builds/commits/${commit_hash}.zip" ]; then
+            if [ ! -f "mainPlugin/builds/commits/${commit_hash}.zip.bak" ]; then
+              cp mainPlugin/builds/commits/${commit_hash}.zip builds/commits/${commit_hash}.zip.bak
+            fi
+          fi
+        fi
+        commit_hash=$(git rev-parse --short HEAD)
         jar_files=$(find build/libs -name "*.jar")
         if [ -n "$jar_files" ]; then
           zip -j builds/commits/${commit_hash}.zip ${jar_files}
