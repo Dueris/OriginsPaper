@@ -1,44 +1,27 @@
-name: Publish to GitHub Packages
+name: Build and Publish
 
 on:
   push:
     branches:
-      - origin  # Adjust the branch name as needed
+      - origin  # Replace with your desired branch
 
 jobs:
-  publish:
+  build:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Set up JDK
+      - name: Set up Java 17 with AdoptOpenJDK
         uses: actions/setup-java@v2
         with:
-          java-version: '17'  # Adjust the Java version as needed
-          distribution: 'adopt'  # Specify the distribution (e.g., 'adopt', 'adopt-openj9', 'adopt-hotspot')
+          distribution: 'adopt'
+          java-version: '17'
 
-      - name: Build
+      - name: Build and Publish
         run: |
+          chmod +x ./gradlew
           ./gradlew build
-          # Display the name of the generated POM file
-          pom_file=$(find . -type f -name '*.pom')
-          echo "Generated POM file: $pom_file"
-        env:
-          GIT_TOKEN: ${{ secrets.GIT_TOKEN }}  # Updated to use GIT_TOKEN
+          ./gradlew publish
 
-      - name: Install Cloudsmith CLI
-        run: |
-          pip install --upgrade cloudsmith-cli
-        env:
-          PIP_NO_CACHE_DIR: "false"
-
-      - name: Upload via Cloudsmith CLI
-        run: |
-          echo "Uploading to Cloudsmith"
-          cloudsmith push maven Dueris/GenesisMC build/libs/genesis-standalone-mc1.20-v0.2.2.jar --pom-file=mainPlugin/genesis-0.2.2.xml
-          # Example:
-          # cloudsmith push maven org/repo validation-api-1.0.0.GA.jar --pom-file=validation-api-1.0.0.GA.pom
-        env:
-          CLOUDSMITH_API_KEY: ${{ secrets.CLOUDSMITH_API_KEY }}  # Replace with your Cloudsmith API key
