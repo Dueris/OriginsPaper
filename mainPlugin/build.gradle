@@ -58,7 +58,8 @@ java {
 }
 
 configurations {
-    shade
+        shade
+        noShadow
 }
 
 dependencies {
@@ -85,6 +86,16 @@ jar {
     from {
         configurations.shade.collect { it.isDirectory() ? it : zipTree(it) }
     }
+}
+
+// Create a task to build a JAR without shaded resources
+task noShadowJar(type: Jar, dependsOn: [jar, reobfJar]) {
+    duplicatesStrategy(DuplicatesStrategy.EXCLUDE)
+    includeEmptyDirs = false
+
+    from(sourceSets.main.output)
+    classifier = 'noShadow'
+    archiveFileName = jar.baseName + '-' + jar.version + '-noShadow.jar'
 }
 
 task copyToLib(type: Copy, dependsOn: [jar, reobfJar]) {
@@ -145,4 +156,4 @@ processResources {
     }
 }
 
-build.dependsOn jar, copyToLib
+build.dependsOn jar, copyToLib, noShadowJae
