@@ -3,7 +3,7 @@ name: Build and Archive Jars
 on:
   push:
     branches:
-      - origin  # Change this to your branch name if it's called "origin"
+      - origin
 
 jobs:
   build:
@@ -19,11 +19,55 @@ jobs:
         java-version: 17
         distribution: 'adopt'
 
-    - name: Build the project
-      run: ./gradlew build  # Replace with your build command
+    - name: Build and Publish
+      run: |
+        chmod +x ./gradlew
+        ./gradlew build
+        ./gradlew publish
+        ./gradlew createNonShadowedJar
+      env:
+        GIT_TOKEN: ${{ secrets.GIT_TOKEN }}
 
+    - name: Install Cloudsmith CLI
+      run: |
+        pip install --upgrade cloudsmith-cli
+      env:
+        PIP_NO_CACHE_DIR: "false"
+
+    - name: Prepare POM
+      run: |
+        echo "POM-PRINT-START"
+        # Print the POM file
+        echo "Generated Pom file:"
+        cat .github/genesis-origin-mc1.20-v0.2.2.pom
+      env:
+        CLOUDSMITH_API_KEY: ${{ secrets.CLOUDSMITH_API_KEY }}
+          
+    - name: Push to Cloudsmith
+      id: push
+      uses: cloudsmith-io/action@master
+      with:
+        api-key: ${{ secrets.CLOUDSMITH_API_KEY }}
+        command: 'push'
+        format: 'maven'
+        owner: 'genesismc'
+        repo: 'genesismc'
+        pom-file: '.github/genesis-origin-mc1.20-v0.2.2.pom'
+        republish: 'true'
+        file: 'mainPlugin/build/libs/mainPlugin-mc1.20-v0.2.2.jar'
+    
     - name: Archive Jars
       run: |
+        commit_hash=$(git rev-parse --short HEAD)
+        jar_files=$(find mainPlugin/build/libs -name "*.jar")
+        if [ -n "$jar_files" ]; then
+          zip -j builds/commits/${commit_hash}.zip ${jar_files}
+          if [ -f "builds/commits/${commit_hash}.zip" ]; then
+            if [ ! -f "builds/commits/${commit_hash}.zip.bak" ]; then
+              cp builds/commits/${commit_hash}.zip builds/commits/${commit_hash}.zip.bak
+            fi
+          fi
+        fi
         commit_hash=$(git rev-parse --short HEAD)
         jar_files=$(find build/libs -name "*.jar")
         if [ -n "$jar_files" ]; then

@@ -523,6 +523,7 @@ public class Actions {
             final boolean isOp = entity.isOp();
             entity.setOp(true);
             String cmd = null;
+            if(power.get("command").toString().startsWith("power") || power.get("command").toString().startsWith("/power")) return;
             if(power.get("command").toString().startsWith("/")){
                 cmd = power.get("command").toString().split("/")[1];
             }else{
@@ -530,8 +531,6 @@ public class Actions {
             }
             Bukkit.dispatchCommand(entity, cmd);
             entity.setOp(isOp);
-            Bukkit.dispatchCommand(originCommandSender, "gamerule logAdminCommands {bool}".replace("{bool}", String.valueOf(lastlogAdminCMDs)));
-            Bukkit.dispatchCommand(originCommandSender, "gamerule logAdminCommands {bool}".replace("{bool}", String.valueOf(lastSendCMDFeedback)));
         }
         if (type.equals("origins:add_xp")) {
             int points = 0;

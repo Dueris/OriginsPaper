@@ -194,7 +194,6 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         TagRegistry.runParse();
         getCommand("origin").setExecutor(new OriginCommand());
         getCommand("origin").setTabCompleter(new TabAutoComplete());
-        getCommand("power").setTabCompleter(new TabAutoComplete());
         getCommand("resource").setTabCompleter(new TabAutoComplete());
         getCommand("resource").setExecutor(new ResourceCommand());
         Bukkit.getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC]   ____                          _       __  __   ____").color(TextColor.fromHexString("#b9362f")));
