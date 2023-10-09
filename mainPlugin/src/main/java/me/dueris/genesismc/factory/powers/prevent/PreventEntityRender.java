@@ -39,18 +39,24 @@ public class PreventEntityRender extends CraftPower {
                     for(PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())){
                         if (conditionExecutor.check("entity_condition", "entity_condition", p, power, "origins:prevent_entity_render", entity, entity, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
                             if (conditionExecutor.check("bientity_condition", "bientity_condition", p, power, "origins:prevent_entity_render", entity, entity, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
-                                p.hideEntity(GenesisMC.getPlugin(), entity);
+                                if(p.canSee(entity)){
+                                    p.hideEntity(GenesisMC.getPlugin(), entity);
+                                }
 //                                entity.setGlowing(true);
                                 setActive(power.getTag(), true);
                             } else {
                                 setActive(power.getTag(), false);
 //                                entity.setGlowing(false);
-                                p.showEntity(GenesisMC.getPlugin(), entity);
+                                if(!p.canSee(entity)){
+                                    p.showEntity(GenesisMC.getPlugin(), entity);
+                                }
                             }
                         } else {
                             setActive(power.getTag(), false);
 //                            entity.setGlowing(false);
-                            p.showEntity(GenesisMC.getPlugin(), entity);
+                            if(!p.canSee(entity)){
+                                p.showEntity(GenesisMC.getPlugin(), entity);
+                            }
                         }
                     }
                 }
