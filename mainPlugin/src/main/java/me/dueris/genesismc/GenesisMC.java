@@ -149,14 +149,13 @@ public final class GenesisMC extends JavaPlugin implements Listener {
             Bukkit.getServer().getPluginManager().disablePlugin(this);
         }
 
-        // load tempStorageOptimizations - start
+        //load tempStorageOptimizations - start
         TempStorageContainer.BiomeStorage biomeStorage = new TempStorageContainer.BiomeStorage();
         biomeStorage.addValues();
         TempStorageContainer.StructureStorage structureStorage = new TempStorageContainer.StructureStorage();
         structureStorage.addValues();
-        // load tempStorageOptimizations - end
+        //load tempStorageOptimizations - end
 
-        me.dueris.genesismc.OriginDataContainer.loadData();
         CraftApoli.loadOrigins();
         try {
             for (Class<? extends CraftPower> c : CraftPower.findCraftPowerClasses()) {
@@ -372,7 +371,6 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 
     @Override
     public void onDisable() {
-        me.dueris.genesismc.OriginDataContainer.unloadAllData();
         CraftApoli.unloadData();
 
         for (int taskId : getParticleTasks().values()) {

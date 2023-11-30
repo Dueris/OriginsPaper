@@ -1,7 +1,6 @@
 package me.dueris.genesismc.commands.subcommands.origin.Info;
 
 import me.dueris.genesismc.GenesisMC;
-import me.dueris.genesismc.OriginDataContainer;
 import me.dueris.genesismc.commands.subcommands.SubCommand;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.utils.LayerContainer;
@@ -56,7 +55,7 @@ public class Info extends SubCommand implements Listener {
     public void perform(CommandSender sender, String[] args) {
         if (sender instanceof Player p) {
             if (args.length == 1) {
-                HashMap<LayerContainer, OriginContainer> origins = CraftApoli.toOrigin(OriginDataContainer.getLayer(p));
+                HashMap<LayerContainer, OriginContainer> origins = CraftApoli.toOrigin(p.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "originLayer"), PersistentDataType.STRING));
                 assert origins != null;
                 playerOrigins.put(p, new ArrayList<>(origins.values()));
                 if (!playerPage.containsKey(p)) playerPage.put(p, 0);
