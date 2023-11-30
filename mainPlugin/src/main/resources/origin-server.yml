@@ -29,14 +29,3 @@ water-protection: true
 
 # Determines if the Orb Of Origins can be crafted.
 orb-of-origins: true
-
-# Tells the server if it should add Genesis data reparse to the tick scheduler
-# If enabled, the value "tickRate" will be used and after that selected amount of ticks,
-# the origindata will reload. This could have unintended concequences and could be dangerous.
-# The following issues are possible to occur:
-#   - OriginData loss
-#   - Loss of origin powers for up to 20 seconds
-shouldTickReload: false
-
-# Tickrate default is 12000, or 10 minutes
-tickRate: 12000
