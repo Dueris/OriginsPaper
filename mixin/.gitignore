@@ -1,3 +1,4 @@
 /build/
 /.gradle/
 /src/main/resources/mainPlugin-mc1.20-v0.2.2.jar
+/bin/

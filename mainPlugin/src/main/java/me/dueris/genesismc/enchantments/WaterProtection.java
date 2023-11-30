@@ -93,4 +93,14 @@ public class WaterProtection extends Enchantment {
     public @NotNull String translationKey() {
         return null;
     }
+
+    @Override
+    public int getMinModifiedCost(int level) {
+        return 1;
+    }
+
+    @Override
+    public int getMaxModifiedCost(int level) {
+        return 5;
+    }
 }
