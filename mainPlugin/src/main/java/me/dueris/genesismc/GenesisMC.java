@@ -170,9 +170,6 @@ public final class GenesisMC extends JavaPlugin implements Listener {
             }
             RegisterPowersEvent registerPowersEvent = new RegisterPowersEvent(CraftPower.getRegistered());
             Bukkit.getServer().getPluginManager().callEvent(registerPowersEvent);
-            for (Class<? extends Condition> c : CraftCondition.findCraftConditionClasses()) {
-                CraftCondition.conditionClasses.add(c);
-            }
             for (OriginContainer origin : CraftApoli.getOrigins()) {
                 for (PowerContainer powerContainer : origin.getPowerContainers()) {
                     CraftApoli.getPowers().add(powerContainer);

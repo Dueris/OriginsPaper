@@ -25,8 +25,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
-
-import static me.dueris.genesismc.factory.conditions.CraftCondition.conditionClasses;
+import static me.dueris.genesismc.factory.conditions.CraftCondition.*;
 import static me.dueris.genesismc.factory.conditions.item.ItemCondition.getMeatMaterials;
 import static me.dueris.genesismc.factory.conditions.item.ItemCondition.getNonMeatMaterials;
 import static me.dueris.genesismc.factory.powers.CraftPower.findCraftPowerClasses;
@@ -206,17 +205,66 @@ public class ConditionExecutor {
                 }
             } else {
                 String boolResult = "empty";
-                try {
-                    for (Class<? extends Condition> conditionClass : conditionClasses) {
-                        Optional<Boolean> bool = conditionClass.newInstance().check(condition, p, powerContainer, powerfile, actor, target, block, fluid, itemStack, dmgevent);
-                        if (bool.isPresent() && !boolResult.equalsIgnoreCase("true")) {
-                            boolResult = String.valueOf(bool.get());
-                        }
+
+                if(boolResult != "true"){
+                    Optional<Boolean> bool = bientity.check(condition, p, powerContainer, powerfile, actor, target, block, fluid, itemStack, dmgevent);
+                    if (bool.isPresent()) {
+                        boolResult = String.valueOf(bool.get());
                     }
-                    return Boolean.parseBoolean(boolResult);
-                } catch (InstantiationException | IllegalAccessException e) {
-                    throw new RuntimeException(e);
                 }
+                if(boolResult != "true"){
+                    Optional<Boolean> bool = biome.check(condition, p, powerContainer, powerfile, actor, target, block, fluid, itemStack, dmgevent);
+                    if (bool.isPresent()) {
+                        boolResult = String.valueOf(bool.get());
+                    }
+                }
+                if(boolResult != "true"){
+                    Optional<Boolean> bool = blockCon.check(condition, p, powerContainer, powerfile, actor, target, block, fluid, itemStack, dmgevent);
+                    if (bool.isPresent()) {
+                        boolResult = String.valueOf(bool.get());
+                    }
+                }
+                if(boolResult != "true"){
+                    Optional<Boolean> bool = damage.check(condition, p, powerContainer, powerfile, actor, target, block, fluid, itemStack, dmgevent);
+                    if (bool.isPresent()) {
+                        boolResult = String.valueOf(bool.get());
+                    }
+                }
+                if(boolResult != "true"){
+                    Optional<Boolean> bool = entity.check(condition, p, powerContainer, powerfile, actor, target, block, fluid, itemStack, dmgevent);
+                    if (bool.isPresent()) {
+                        boolResult = String.valueOf(bool.get());
+                    }
+                }
+                if(boolResult != "true"){
+                    Optional<Boolean> bool = fluidCon.check(condition, p, powerContainer, powerfile, actor, target, block, fluid, itemStack, dmgevent);
+                    if (bool.isPresent()) {
+                        boolResult = String.valueOf(bool.get());
+                    }
+                }
+                if(boolResult != "true"){
+                    Optional<Boolean> bool = item.check(condition, p, powerContainer, powerfile, actor, target, block, fluid, itemStack, dmgevent);
+                    if (bool.isPresent()) {
+                        boolResult = String.valueOf(bool.get());
+                    }
+                }
+                // Custom conditions
+                if(boolResult != "true"){
+                    try {
+                        for (Class<? extends Condition> conditionClass : customConditions) {
+                            Optional<Boolean> bool = conditionClass.newInstance().check(condition, p, powerContainer, powerfile, actor, target, block, fluid, itemStack, dmgevent);
+                            if (bool.isPresent()) {
+                                boolResult = String.valueOf(bool.get());
+                            }
+                        }
+                    } catch (InstantiationException | IllegalAccessException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+                if(boolResult == "empty"){
+                    boolResult = "true";
+                }
+                return Boolean.parseBoolean(boolResult);
             }
         }
         return false;
