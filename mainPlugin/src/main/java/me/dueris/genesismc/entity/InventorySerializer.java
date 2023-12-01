@@ -1,4 +1,4 @@
-package me.dueris.genesismc;
+package me.dueris.genesismc.entity;
 
 import me.dueris.genesismc.factory.powers.player.inventory.InventoryUtils;
 import me.dueris.genesismc.utils.BukkitColour;
@@ -14,7 +14,7 @@ import org.bukkit.inventory.ItemStack;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class DataContainer implements Listener {
+public class InventorySerializer implements Listener {
 
     @EventHandler
     public void onInventoryClose(InventoryCloseEvent e) {

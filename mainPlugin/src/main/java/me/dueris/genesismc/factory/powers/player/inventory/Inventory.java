@@ -1,6 +1,6 @@
 package me.dueris.genesismc.factory.powers.player.inventory;
 
-import me.dueris.genesismc.CooldownStuff;
+import me.dueris.genesismc.CooldownManager;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.entity.OriginPlayer;
 import me.dueris.genesismc.events.KeybindTriggerEvent;
@@ -25,10 +25,10 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import static me.dueris.genesismc.utils.KeybindUtils.isKeyBeingPressed;
+
 import java.util.ArrayList;
 import java.util.Arrays;
-
-import static me.dueris.genesismc.KeybindHandler.isKeyBeingPressed;
 
 public class Inventory extends CraftPower implements CommandExecutor, Listener {
 
@@ -85,7 +85,7 @@ public class Inventory extends CraftPower implements CommandExecutor, Listener {
             if (getPowerArray().contains(e.getPlayer())) {
                 ConditionExecutor executor = new ConditionExecutor();
                 for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
-                    if (CooldownStuff.isPlayerInCooldown(e.getPlayer(), e.getKey())) return;
+                    if (CooldownManager.isPlayerInCooldown(e.getPlayer(), e.getKey())) return;
                     if (executor.check("condition", "conditions", e.getPlayer(), power, getPowerFile(), e.getPlayer(), null, null, null, e.getPlayer().getItemInHand(), null)) {
                         if (!getPowerArray().contains(e.getPlayer())) return;
                         setActive(power.getTag(), true);

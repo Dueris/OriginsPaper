@@ -1,6 +1,6 @@
 package me.dueris.genesismc.factory.conditions.entity;
 
-import me.dueris.genesismc.CooldownStuff;
+import me.dueris.genesismc.CooldownManager;
 import me.dueris.genesismc.factory.TagRegistry;
 import me.dueris.genesismc.factory.conditions.Condition;
 import me.dueris.genesismc.factory.conditions.block.BlockCondition;
@@ -412,8 +412,8 @@ public class EntityCondition implements Condition {
         }
 
         if (type.equalsIgnoreCase("origins:resource")) {
-            if(CooldownStuff.cooldowns.get(p).contains(condition.get("resource").toString()) && CooldownStuff.cooldowns.containsKey(p)){
-                return getResult(inverted, !CooldownStuff.isPlayerInCooldownFromTag(p, condition.get("resource").toString()));
+            if(CooldownManager.cooldowns.get(p).contains(condition.get("resource").toString()) && CooldownManager.cooldowns.containsKey(p)){
+                return getResult(inverted, !CooldownManager.isPlayerInCooldownFromTag(p, condition.get("resource").toString()));
             }else{
                 if(Resource.registeredBars.containsKey(condition.get("resource").toString())){
                     String comparison = condition.get("comparison").toString();

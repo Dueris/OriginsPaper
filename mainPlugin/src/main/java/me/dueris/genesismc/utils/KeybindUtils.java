@@ -1,5 +1,7 @@
-package me.dueris.genesismc;
+package me.dueris.genesismc.utils;
 
+import me.dueris.genesismc.CooldownManager;
+import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.events.KeybindTriggerEvent;
 import me.dueris.genesismc.events.OriginChangeEvent;
 import me.dueris.genesismc.events.OriginKeybindExecuteEvent;
@@ -30,7 +32,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-public class KeybindHandler implements Listener {
+public class KeybindUtils implements Listener {
 
     private static final Set<String> heldKeys = new HashSet<>();
     private static final Set<Player> spawnHandsTick = new HashSet<>();
@@ -159,7 +161,7 @@ public class KeybindHandler implements Listener {
     public static void runKeyChangeTriggerReturn(ItemStack item, Player player, String key) {
         if(item == null) return;
         item.setType(Material.GRAY_DYE);
-        CooldownStuff.cooldowns.get(player).remove(key);
+        CooldownManager.cooldowns.get(player).remove(key);
     }
 
     public static boolean isKeyBeingPressed(Player player, String keyName, boolean isKeyPressed) {

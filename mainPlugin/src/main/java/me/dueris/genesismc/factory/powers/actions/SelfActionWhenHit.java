@@ -1,6 +1,6 @@
 package me.dueris.genesismc.factory.powers.actions;
 
-import me.dueris.genesismc.CooldownStuff;
+import me.dueris.genesismc.CooldownManager;
 import me.dueris.genesismc.entity.OriginPlayer;
 import me.dueris.genesismc.factory.actions.Actions;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
@@ -37,14 +37,14 @@ public class SelfActionWhenHit extends CraftPower implements Listener {
 
         for (OriginContainer origin : OriginPlayer.getOrigin(player).values()) {
             ConditionExecutor executor = new ConditionExecutor();
-            if (CooldownStuff.isPlayerInCooldown((Player) target, "key.attack")) return;
+            if (CooldownManager.isPlayerInCooldown((Player) target, "key.attack")) return;
             for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
                 if (executor.check("condition", "conditions", (Player) target, power, getPowerFile(), actor, target, null, null, ((Player) target).getItemOnCursor(), e)) {
                     if (!getPowerArray().contains(target)) return;
                     setActive(power.getTag(), true);
                     Actions.EntityActionType(target, power.getEntityAction());
                     if (power.get("cooldown", "1") != null) {
-                        CooldownStuff.addCooldown((Player) target, origin, power.getTag(), power.getType(), Integer.parseInt(power.get("cooldown", "1")), "key.attack");
+                        CooldownManager.addCooldown((Player) target, origin, power.getTag(), power.getType(), Integer.parseInt(power.get("cooldown", "1")), "key.attack");
                     }
                 } else {
                     if (!getPowerArray().contains(target)) return;

@@ -1,6 +1,6 @@
 package me.dueris.genesismc.factory.powers.simple;
 
-import me.dueris.genesismc.CooldownStuff;
+import me.dueris.genesismc.CooldownManager;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.entity.OriginPlayer;
 import me.dueris.genesismc.events.KeybindTriggerEvent;
@@ -96,7 +96,7 @@ public class MimicWarden extends CraftPower implements OriginSimple, Listener {
         if (mimicWardenPlayers.contains(p)) {
             if(p.getFoodLevel() < 6) return;
             for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
-                if (CooldownStuff.isPlayerInCooldown(p, "key.origins.primary_active")) return;
+                if (CooldownManager.isPlayerInCooldown(p, "key.origins.primary_active")) return;
                 if (e.getKey().equals("key.origins.primary_active")) {
                     Location eyeLoc = p.getEyeLocation();
 
@@ -151,7 +151,7 @@ public class MimicWarden extends CraftPower implements OriginSimple, Listener {
                             victim.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 100, 2, false, false, false));
                             victim.addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, 50, 2, false, false, false));
 
-                            CooldownStuff.addCooldown(p, origin, "Sonic Boom", getPowerFile(), 1200, "key.origins.primary_active");
+                            CooldownManager.addCooldown(p, origin, "Sonic Boom", getPowerFile(), 1200, "key.origins.primary_active");
 
                             Location startLocation = p.getEyeLocation();
 

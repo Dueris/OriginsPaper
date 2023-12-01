@@ -1,10 +1,10 @@
-package me.dueris.genesismc;
+package me.dueris.genesismc.events;
 
 import me.dueris.genesismc.events.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
-public class Listeners implements Listener {
+public class EventListeners implements Listener {
     @EventHandler
     public void orbevent(OrbInteractEvent e) {
 

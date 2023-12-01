@@ -1,6 +1,6 @@
 package me.dueris.genesismc.factory.powers.actions;
 
-import me.dueris.genesismc.CooldownStuff;
+import me.dueris.genesismc.CooldownManager;
 import me.dueris.genesismc.entity.OriginPlayer;
 import me.dueris.genesismc.events.KeybindTriggerEvent;
 import me.dueris.genesismc.factory.actions.Actions;
@@ -12,9 +12,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
-import java.util.ArrayList;
+import static me.dueris.genesismc.utils.KeybindUtils.isKeyBeingPressed;
 
-import static me.dueris.genesismc.KeybindHandler.isKeyBeingPressed;
+import java.util.ArrayList;
 
 public class ActiveSelf extends CraftPower implements Listener {
     Player p;
@@ -34,14 +34,14 @@ public class ActiveSelf extends CraftPower implements Listener {
             if (getPowerArray().contains(e.getPlayer())) {
                 ConditionExecutor executor = new ConditionExecutor();
                 for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
-                    if (CooldownStuff.isPlayerInCooldown(e.getPlayer(), e.getKey())) return;
+                    if (CooldownManager.isPlayerInCooldown(e.getPlayer(), e.getKey())) return;
                     if (executor.check("condition", "conditions", e.getPlayer(), power, getPowerFile(), e.getPlayer(), null, null, null, null, null)) {
                         if (!getPowerArray().contains(e.getPlayer())) return;
                         setActive(power.getTag(), true);
                         if (isKeyBeingPressed(e.getPlayer(), power.getKey().getOrDefault("key", "key.origins.primary_active").toString(), true)) {
                             Actions.EntityActionType(e.getPlayer(), power.getEntityAction());
                             if (power.get("cooldown", "1") != null) {
-                                CooldownStuff.addCooldown(e.getPlayer(), origin, power.getTag(), power.getType(), Integer.parseInt(power.get("cooldown", power.get("max", "1"))), e.getKey());
+                                CooldownManager.addCooldown(e.getPlayer(), origin, power.getTag(), power.getType(), Integer.parseInt(power.get("cooldown", power.get("max", "1"))), e.getKey());
                             }
                         }
                     } else {

@@ -14,7 +14,9 @@ import me.dueris.genesismc.commands.subcommands.origin.Recipe;
 import me.dueris.genesismc.enchantments.EnchantProtEvent;
 import me.dueris.genesismc.enchantments.WaterProtAnvil;
 import me.dueris.genesismc.enchantments.WaterProtection;
+import me.dueris.genesismc.entity.InventorySerializer;
 import me.dueris.genesismc.entity.OriginPlayer;
+import me.dueris.genesismc.events.EventListeners;
 import me.dueris.genesismc.events.RegisterPowersEvent;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.TagRegistry;
@@ -317,26 +319,26 @@ public final class GenesisMC extends JavaPlugin implements Listener {
     }
 
     private void start(){
-        getServer().getPluginManager().registerEvents(new DataContainer(), this);
+        getServer().getPluginManager().registerEvents(new InventorySerializer(), this);
         getServer().getPluginManager().registerEvents(this, this);
-        getServer().getPluginManager().registerEvents(new CooldownStuff(), this);
+        getServer().getPluginManager().registerEvents(new CooldownManager(), this);
         getServer().getPluginManager().registerEvents(this, this);
         getServer().getPluginManager().registerEvents(new PlayerHandler(), this);
         getServer().getPluginManager().registerEvents(new EnchantProtEvent(), this);
         getServer().getPluginManager().registerEvents(new WaterProtAnvil(), this);
         getServer().getPluginManager().registerEvents(new WaterProtBookGen(), this);
-        getServer().getPluginManager().registerEvents(new KeybindHandler(), this);
+        getServer().getPluginManager().registerEvents(new KeybindUtils(), this);
         getServer().getPluginManager().registerEvents(new ChoosingCORE(), this);
         getServer().getPluginManager().registerEvents(new ChoosingCUSTOM(), this);
         getServer().getPluginManager().registerEvents(new Recipe(), this);
         getServer().getPluginManager().registerEvents(new Info(), this);
-        getServer().getPluginManager().registerEvents(new Listeners(), this);
-        getServer().getPluginManager().registerEvents(new DataContainer(), this);
+        getServer().getPluginManager().registerEvents(new EventListeners(), this);
+        getServer().getPluginManager().registerEvents(new InventorySerializer(), this);
         getServer().getPluginManager().registerEvents(new GenesisItems(), this);
         getServer().getPluginManager().registerEvents(new MimicWarden(), this);
         getServer().getPluginManager().registerEvents(new BounceSlimeBlock(), this);
         getServer().getPluginManager().registerEvents(new FoliaOriginScheduler.OriginSchedulerTree(), this);
-        Bukkit.getServer().getPluginManager().registerEvents(new KeybindHandler(), GenesisMC.getPlugin());
+        Bukkit.getServer().getPluginManager().registerEvents(new KeybindUtils(), GenesisMC.getPlugin());
         if (getServer().getPluginManager().isPluginEnabled("SkinsRestorer")) {
             getServer().getPluginManager().registerEvents(new PlayerRender.ModelColor(), GenesisMC.getPlugin());
             getServer().getConsoleSender().sendMessage(Component.text(LangConfig.getLocalizedString(Bukkit.getConsoleSender(), "startup.skinRestorer.present")).color(TextColor.fromHexString(AQUA)));

@@ -19,7 +19,7 @@ import java.util.Iterator;
 
 import static me.dueris.genesismc.factory.powers.player.FireProjectile.in_cooldown_patch;
 
-public class CooldownStuff implements @NotNull Listener {
+public class CooldownManager implements @NotNull Listener {
 
     @EventHandler
     public void runs(OriginChangeEvent e) {

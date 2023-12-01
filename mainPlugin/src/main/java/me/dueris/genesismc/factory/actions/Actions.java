@@ -1,6 +1,6 @@
 package me.dueris.genesismc.factory.actions;
 
-import me.dueris.genesismc.CooldownStuff;
+import me.dueris.genesismc.CooldownManager;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.OriginCommandSender;
 import me.dueris.genesismc.enchantments.EnchantProtEvent;
@@ -617,7 +617,7 @@ public class Actions {
                                         key = "key.attack";
                                     }
                                 }
-                                CooldownStuff.addCooldown(player, origin, powerContainer.getTag(), powerContainer.getType(), Integer.parseInt(powerContainer.get("cooldown")), key);
+                                CooldownManager.addCooldown(player, origin, powerContainer.getTag(), powerContainer.getType(), Integer.parseInt(powerContainer.get("cooldown")), key);
                             }
                         }
                     }
