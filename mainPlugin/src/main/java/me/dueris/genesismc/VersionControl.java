@@ -20,7 +20,7 @@ public class VersionControl {
     }
 
     public static void pluginVersionCheck() {
-        String pluginVersion = "0.2.2";
+        String pluginVersion = "0.2.3";
 
         try {
             URL url = new URL("https://raw.githubusercontent.com/Dueris/GenesisMC/origin/version.txt");

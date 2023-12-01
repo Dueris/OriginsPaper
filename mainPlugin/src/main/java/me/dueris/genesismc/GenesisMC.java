@@ -95,7 +95,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
     public static final boolean isFolia = classExists("io.papermc.paper.threadedregions.RegionizedServer");
     public static final boolean isExpandedScheduler = classExists("io.papermc.paper.threadedregions.scheduler.ScheduledTask");
     public static boolean isCompatible = false;
-    public static String pluginVersion = "v0.2.2";
+    public static String pluginVersion = "v0.2.3";
     public static String world_container = MinecraftServer.getServer().options.asMap().toString().split(", \\[W, universe, world-container, world-dir]=\\[")[1].split("], ")[0];
 
     public static ArrayList<String> versions = new ArrayList<>();
