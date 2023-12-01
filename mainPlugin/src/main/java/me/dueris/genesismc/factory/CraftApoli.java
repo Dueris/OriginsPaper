@@ -420,7 +420,8 @@ public class CraftApoli {
      * @return True if an origin is part of the core origins.
      **/
     public static Boolean isCoreOrigin(OriginContainer origin) {
-        return origin.getTag().equals("origins:arachnid") || origin.getTag().equals("origins:avian")
+        return origin.getTag().equals("origins:arachnid") 
+                || origin.getTag().equals("origins:avian")
                 || origin.getTag().equals("origins:blazeborn")
                 || origin.getTag().equals("origins:elytrian")
                 || origin.getTag().equals("origins:enderian")
