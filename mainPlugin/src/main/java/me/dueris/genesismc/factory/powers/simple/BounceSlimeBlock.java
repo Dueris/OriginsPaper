@@ -33,8 +33,8 @@ public class BounceSlimeBlock extends CraftPower implements OriginSimple, Listen
 
         double velocityY = player.getVelocity().getY();
 
-        if (velocityY < -0.5) {
-            double coefficientOfRestitution = 0.75; // Adjust this value as needed
+        if (velocityY < -0.4) {
+            double coefficientOfRestitution = 0.85;
             double reboundVelocity = -coefficientOfRestitution * velocityY;
 
             if (!player.isOnGround()) return;
