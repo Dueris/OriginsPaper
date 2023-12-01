@@ -13,6 +13,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
@@ -20,19 +21,17 @@ import static me.dueris.genesismc.factory.powers.player.FireProjectile.in_cooldo
 
 public class CooldownStuff implements @NotNull Listener {
 
-//TODO: ADD COOLDOWN POWER WHEN ACTIONS ARE DONE
-
     @EventHandler
     public void runs(OriginChangeEvent e) {
         cooldowns.remove(e.getPlayer());
         cooldownBars.remove(e.getPlayer());
     }
 
-    public static HashMap<Player, String> cooldowns = new HashMap<>();
+    public static HashMap<Player, ArrayList<String>> cooldowns = new HashMap<>();
     public static HashMap<Player, BossBar> cooldownBars = new HashMap<>();
 
     public static void addCooldown(Player player, OriginContainer origin, String title, String dont_use, int cooldownTicks, String cooldownKeybindType) {
-        if (!in_cooldown_patch.contains(player) && dont_use.equals("origins:fire_projectile")) return;
+        if (!in_cooldown_patch.contains(player) && dont_use.equals("origins:fire_projectile")) return; // this fixes a weird bug with the fire projectile power
         if (isPlayerInCooldown(player, cooldownKeybindType)) {
             resetCooldown(player, cooldownKeybindType);
         }
@@ -41,25 +40,21 @@ public class CooldownStuff implements @NotNull Listener {
         bar.addPlayer(player);
         startTickingCooldown(bar, player, cooldownTicks, cooldownKeybindType);
         cooldownBars.put(player, bar);
-        cooldowns.put(player, cooldownKeybindType);
+        if(!cooldowns.containsKey(player) || cooldowns.get(player).isEmpty()){
+            ArrayList<String> list = new ArrayList<>();
+            list.add(cooldownKeybindType);
+            cooldowns.put(player, list);
+        }else{
+            cooldowns.get(player).add(cooldownKeybindType);
+        }
     }
 
     public static BarStyle getCooldownPegAMT(int ticks) {
-//        if(ticks >= 20){
-//            return BarStyle.SEGMENTED_20;
-//        } else if (ticks >= 12) {
-//            return BarStyle.SEGMENTED_12;
-//        } else if (ticks >= 10) {
-//            return BarStyle.SEGMENTED_10;
-//        } else if (ticks >= 6) {
-//            return BarStyle.SEGMENTED_6;
-//        }else{
-        return BarStyle.SOLID;
-//        }
+       return BarStyle.SOLID;
     }
 
     public static boolean isPlayerInCooldown(Player player, String cooldownKeybindType) {
-        return cooldowns.containsKey(player) && cooldownKeybindType.equals(cooldowns.get(player))
+        return cooldowns.containsKey(player) && cooldowns.get(player).contains(cooldownKeybindType)
                 && cooldownBars.containsKey(player);
     }
 
@@ -68,7 +63,7 @@ public class CooldownStuff implements @NotNull Listener {
             BossBar bar = cooldownBars.get(player);
             bar.removePlayer(player);
             cooldownBars.remove(player);
-            cooldowns.remove(player);
+            cooldowns.get(player).remove(cooldownKeybindType);
         }
     }
 

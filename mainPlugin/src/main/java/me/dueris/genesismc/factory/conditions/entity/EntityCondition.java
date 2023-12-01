@@ -412,7 +412,7 @@ public class EntityCondition implements Condition {
         }
 
         if (type.equalsIgnoreCase("origins:resource")) {
-            if(CooldownStuff.cooldowns.containsValue(condition.get("resource").toString()) && CooldownStuff.cooldowns.containsKey(p)){
+            if(CooldownStuff.cooldowns.get(p).contains(condition.get("resource").toString()) && CooldownStuff.cooldowns.containsKey(p)){
                 return getResult(inverted, !CooldownStuff.isPlayerInCooldownFromTag(p, condition.get("resource").toString()));
             }else{
                 if(Resource.registeredBars.containsKey(condition.get("resource").toString())){

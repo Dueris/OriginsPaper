@@ -159,7 +159,7 @@ public class KeybindHandler implements Listener {
     public static void runKeyChangeTriggerReturn(ItemStack item, Player player, String key) {
         if(item == null) return;
         item.setType(Material.GRAY_DYE);
-        CooldownStuff.cooldowns.remove(player, key);
+        CooldownStuff.cooldowns.get(player).remove(key);
     }
 
     public static boolean isKeyBeingPressed(Player player, String keyName, boolean isKeyPressed) {
