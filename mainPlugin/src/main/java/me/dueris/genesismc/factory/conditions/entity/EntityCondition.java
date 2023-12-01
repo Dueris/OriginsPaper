@@ -471,7 +471,7 @@ public class EntityCondition implements Condition {
                         }
                     } else {
                         if (compareTo == 0 && comparison == "==") return getResult(inverted, true);
-                        p.sendMessage("Enchantment not found");
+                        // p.sendMessage("Enchantment not found"); // Spams logs with weird things lol
                     }
                 }
             }
