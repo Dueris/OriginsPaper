@@ -16,12 +16,12 @@ import org.bukkit.Bukkit;
 
 public class CraftCondition {
     public static BiEntityCondition bientity = new BiEntityCondition();
-    public static BiomeCondition biome = new BiomeCondition();
-    public static BlockCondition blockCon = new BlockCondition();
-    public static DamageCondition damage = new DamageCondition();
-    public static EntityCondition entity = new EntityCondition();
-    public static FluidCondition fluidCon = new FluidCondition();
-    public static ItemCondition item = new ItemCondition();
+    public static BiomeCondition biome;
+    public static BlockCondition blockCon;
+    public static DamageCondition damage;
+    public static EntityCondition entity;
+    public static FluidCondition fluidCon;
+    public static ItemCondition item;
     // Depreciated lol
     // public static List<Class<? extends Condition>> findCraftConditionClasses() throws IOException {
     //     List<Class<? extends Condition>> classes = new ArrayList<>();

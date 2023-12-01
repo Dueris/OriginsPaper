@@ -20,6 +20,13 @@ import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.TagRegistry;
 import me.dueris.genesismc.factory.conditions.Condition;
 import me.dueris.genesismc.factory.conditions.CraftCondition;
+import me.dueris.genesismc.factory.conditions.biEntity.BiEntityCondition;
+import me.dueris.genesismc.factory.conditions.biome.BiomeCondition;
+import me.dueris.genesismc.factory.conditions.block.BlockCondition;
+import me.dueris.genesismc.factory.conditions.damage.DamageCondition;
+import me.dueris.genesismc.factory.conditions.entity.EntityCondition;
+import me.dueris.genesismc.factory.conditions.fluid.FluidCondition;
+import me.dueris.genesismc.factory.conditions.item.ItemCondition;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.factory.powers.block.WaterBreathe;
 import me.dueris.genesismc.factory.powers.player.PlayerRender;
@@ -157,6 +164,15 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         // load tempStorageOptimizations - end
 
         me.dueris.genesismc.OriginDataContainer.loadData();
+        // Pre-load condition types to prevent constant calling
+        CraftCondition.bientity = new BiEntityCondition();
+        CraftCondition.biome = new BiomeCondition();
+        CraftCondition.blockCon = new BlockCondition();
+        CraftCondition.damage = new DamageCondition();
+        CraftCondition.entity = new EntityCondition();
+        CraftCondition.fluidCon = new FluidCondition();
+        CraftCondition.item = new ItemCondition();
+        // Pre-load end
         CraftApoli.loadOrigins();
         try {
             for (Class<? extends CraftPower> c : CraftPower.findCraftPowerClasses()) {
