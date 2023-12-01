@@ -25,139 +25,62 @@ public class EnchantTable implements Listener {
     public static EnumSet<Material> wearable;
 
     static {
-        wearable = EnumSet.of(Material.PUMPKIN, Material.CARVED_PUMPKIN, Material.ELYTRA, Material.TURTLE_HELMET, Material.LEATHER_CHESTPLATE, Material.LEATHER_BOOTS, Material.LEATHER_LEGGINGS, Material.LEATHER_HELMET, Material.CHAINMAIL_BOOTS, Material.CHAINMAIL_CHESTPLATE, Material.CHAINMAIL_HELMET, Material.CHAINMAIL_LEGGINGS, Material.IRON_HELMET, Material.IRON_CHESTPLATE, Material.IRON_LEGGINGS, Material.IRON_BOOTS, Material.GOLDEN_HELMET, Material.GOLDEN_CHESTPLATE, Material.GOLDEN_LEGGINGS, Material.GOLDEN_BOOTS, Material.DIAMOND_HELMET, Material.DIAMOND_CHESTPLATE, Material.DIAMOND_LEGGINGS, Material.DIAMOND_BOOTS, Material.NETHERITE_HELMET, Material.NETHERITE_CHESTPLATE, Material.NETHERITE_LEGGINGS, Material.NETHERITE_BOOTS);
+        wearable = EnumSet.of(
+            Material.PUMPKIN,
+            Material.CARVED_PUMPKIN,
+            Material.ELYTRA,
+            Material.TURTLE_HELMET,
+            Material.LEATHER_CHESTPLATE,
+            Material.LEATHER_BOOTS,
+            Material.LEATHER_LEGGINGS,
+            Material.LEATHER_HELMET,
+            Material.CHAINMAIL_BOOTS,
+            Material.CHAINMAIL_CHESTPLATE,
+            Material.CHAINMAIL_HELMET,
+            Material.CHAINMAIL_LEGGINGS,
+            Material.IRON_HELMET,
+            Material.IRON_CHESTPLATE,
+            Material.IRON_LEGGINGS,
+            Material.IRON_BOOTS,
+            Material.GOLDEN_HELMET,
+            Material.GOLDEN_CHESTPLATE,
+            Material.GOLDEN_LEGGINGS,
+            Material.GOLDEN_BOOTS,
+            Material.DIAMOND_HELMET,
+            Material.DIAMOND_CHESTPLATE,
+            Material.DIAMOND_LEGGINGS,
+            Material.DIAMOND_BOOTS,
+            Material.NETHERITE_HELMET,
+            Material.NETHERITE_CHESTPLATE,
+            Material.NETHERITE_LEGGINGS,
+            Material.NETHERITE_BOOTS
+        );
     }
 
     @EventHandler
     public void onEnchantItem(EnchantItemEvent e) {
-        Random random = new Random();
-        boolean t = false;
-        int r10 = random.nextInt(50);
-        int r4 = random.nextInt(45);
-        int r5 = random.nextInt(43);
-        for(Enchantment enchantment : e.getEnchantsToAdd().keySet()){
-            if (Anvil.conflictenchantments.contains(enchantment)) {
-                t = true;
-                break;
-            }
-        }
-        if(t) {
-            e.setCancelled(true);
-        } else {
-            final boolean b = r10 == 1 || r10 == 2 || r10 == 3 || r10 == 4 || r10 == 5 || r10 == 6 || r10 == 7 || r10 == 8 || r10 == 9 || r10 == 10;
-            if (wearable.contains(e.getItem().getType())) {
-                if (b) {
-                    if (r4 <= 45) {
-                        e.getEnchantsToAdd().remove(e.getEnchantsToAdd());
-                        if (r5 == 1 || r5 == 14 || r5 == 15 || r5 == 5 || r5 == 6 || r5 == 17 || r5 == 18 || r5 == 19 || r5 == 20 || r5 == 21 || r5 == 22 || r5 == 23 || r5 == 24 || r5 == 25 || r5 == 26 || r5 == 27 || r5 == 28 || r5 == 29 || r5 == 30) {
-                            String level = "I";
-                            ItemMeta meta = e.getItem().getItemMeta();
-                            meta.setCustomModelData(1);
-                            e.getItem().setLore(List.of(ChatColor.GRAY + "Water Protection " + level));
-                            e.getItem().addUnsafeEnchantment(waterProtectionEnchant, 1);
-                            int basexp = e.getExpLevelCost();
-                            e.setExpLevelCost(basexp + 2);
-
-                        } else if (r5 == 2 || r5 == 8 || r5 == 9 || r5 == 11 || r5 == 13 || r5 == 7 || r5 == 31 || r5 == 32 || r5 == 33 || r5 == 34 || r5 == 35) {
-                            String level = "II";
-                            ItemMeta meta = e.getItem().getItemMeta();
-                            meta.setCustomModelData(2);
-                            e.getItem().setLore(List.of(ChatColor.GRAY + "Water Protection " + level));
-                            e.getItem().addUnsafeEnchantment(waterProtectionEnchant, 2);
-                            int basexp = e.getExpLevelCost();
-                            e.setExpLevelCost(basexp + 3);
-                        } else if (r5 == 3 || r5 == 10 || r5 == 12 || r5 == 36 || r5 == 37 || r5 == 38 || r5 == 39 || r5 == 40) {
-                            String level = "III";
-                            ItemMeta meta = e.getItem().getItemMeta();
-                            meta.setCustomModelData(3);
-                            e.getItem().setLore(List.of(ChatColor.GRAY + "Water Protection " + level));
-                            e.getItem().addUnsafeEnchantment(waterProtectionEnchant, 3);
-                            int basexp = e.getExpLevelCost();
-                            e.setExpLevelCost(basexp + 4);
-                        } else if (r5 == 4 || r5 == 16 || r5 == 41 || r5 == 42) {
-                            String level = "IV";
-                            ItemMeta meta = e.getItem().getItemMeta();
-                            meta.setCustomModelData(4);
-                            e.getItem().setLore(List.of(ChatColor.GRAY + "Water Protection " + level));
-                            e.getItem().addUnsafeEnchantment(waterProtectionEnchant, 4);
-                            int basexp = e.getExpLevelCost();
-                            e.setExpLevelCost(basexp + 6);
-                        }
-                    }
-                    if (r4 == 1 || r4 == 14 || r4 == 15 || r4 == 5 || r4 == 6 || r4 == 17 || r4 == 18 || r4 == 19 || r4 == 20 || r4 == 21 || r4 == 22 || r4 == 23 || r4 == 24 || r4 == 25 || r4 == 26 || r4 == 27 || r4 == 28 || r4 == 29 || r4 == 30) {
-                        String level = "I";
-                        ItemMeta meta = e.getItem().getItemMeta();
-                        meta.setCustomModelData(1);
-                        e.getItem().setLore(List.of(ChatColor.GRAY + "Water Protection " + level));
-                        e.getItem().addUnsafeEnchantment(waterProtectionEnchant, 1);
-                        int basexp = e.getExpLevelCost();
-                        e.setExpLevelCost(basexp + 2);
-
-                    } else if (r4 == 2 || r4 == 8 || r4 == 9 || r4 == 11 || r4 == 13 || r4 == 7 || r4 == 31 || r4 == 32 || r4 == 33 || r4 == 34 || r4 == 35) {
-                        String level = "II";
-                        ItemMeta meta = e.getItem().getItemMeta();
-                        meta.setCustomModelData(2);
-                        e.getItem().setLore(List.of(ChatColor.GRAY + "Water Protection " + level));
-                        e.getItem().addUnsafeEnchantment(waterProtectionEnchant, 2);
-                        int basexp = e.getExpLevelCost();
-                        e.setExpLevelCost(basexp + 3);
-                    } else if (r4 == 3 || r4 == 10 || r4 == 12 || r4 == 36 || r4 == 37 || r4 == 38 || r4 == 39 || r4 == 40) {
-                        String level = "III";
-                        ItemMeta meta = e.getItem().getItemMeta();
-                        meta.setCustomModelData(3);
-                        e.getItem().setLore(List.of(ChatColor.GRAY + "Water Protection " + level));
-                        e.getItem().addUnsafeEnchantment(waterProtectionEnchant, 3);
-                        int basexp = e.getExpLevelCost();
-                        e.setExpLevelCost(basexp + 4);
-                    } else if (r4 == 4 || r4 == 16 || r4 == 41 || r4 == 42) {
-                        String level = "IV";
-                        ItemMeta meta = e.getItem().getItemMeta();
-                        meta.setCustomModelData(4);
-                        e.getItem().setLore(List.of(ChatColor.GRAY + "Water Protection " + level));
-                        e.getItem().addUnsafeEnchantment(waterProtectionEnchant, 4);
-                        int basexp = e.getExpLevelCost();
-                        e.setExpLevelCost(basexp + 6);
-                    }
-
-
+        boolean conflicts = false;
+        if(wearable.contains(e.getItem().getType()) || e.getItem().getType() == Material.BOOK){
+            for(Enchantment enchant : e.getEnchantsToAdd().keySet()){
+                if(Anvil.conflictenchantments.contains(enchant)){
+                    conflicts = true;
                 }
-            } else if (e.getItem().getType().equals(Material.BOOK)) {
-                if (b) {
-                    if (r4 == 1 || r4 == 14 || r4 == 5 || r4 == 17 || r4 == 18 || r4 == 19 || r4 == 20 || r4 == 21 || r4 == 22 || r4 == 23 || r4 == 24 || r4 == 25 || r4 == 26 || r4 == 27 || r4 == 28 || r4 == 29 || r4 == 30) {
-                        String level = "I";
-                        ItemMeta meta = e.getItem().getItemMeta();
-                        meta.setCustomModelData(1);
-                        e.getItem().setLore(List.of(ChatColor.GRAY + "Water Protection " + level));
-                        e.getItem().addUnsafeEnchantment(waterProtectionEnchant, 1);
-                        int basexp = e.getExpLevelCost();
-                        e.setExpLevelCost(basexp + 2);
-
-                    } else if (r4 == 2 || r4 == 8 || r4 == 9 || r4 == 11 || r4 == 13 || r4 == 7 || r4 == 31 || r4 == 32 || r4 == 33 || r4 == 34 || r4 == 35) {
-                        String level = "II";
-                        ItemMeta meta = e.getItem().getItemMeta();
-                        meta.setCustomModelData(2);
-                        e.getItem().setLore(List.of(ChatColor.GRAY + "Water Protection " + level));
-                        e.getItem().addUnsafeEnchantment(waterProtectionEnchant, 2);
-                        int basexp = e.getExpLevelCost();
-                        e.setExpLevelCost(basexp + 3);
-                    } else if (r4 == 3 || r4 == 10 || r4 == 12 || r4 == 36 || r4 == 37 || r4 == 38 || r4 == 39 || r4 == 40) {
-                        String level = "III";
-                        ItemMeta meta = e.getItem().getItemMeta();
-                        meta.setCustomModelData(3);
-                        e.getItem().setLore(List.of(ChatColor.GRAY + "Water Protection " + level));
-                        e.getItem().addUnsafeEnchantment(waterProtectionEnchant, 3);
-                        int basexp = e.getExpLevelCost();
-                        e.setExpLevelCost(basexp + 4);
-                    } else if (r4 == 4 || r4 == 16 || r4 == 15 || r4 == 6) {
-                        String level = "IV";
-                        ItemMeta meta = e.getItem().getItemMeta();
-                        meta.setCustomModelData(4);
-                        e.getItem().setLore(List.of(ChatColor.GRAY + "Water Protection " + level));
-                        e.getItem().addUnsafeEnchantment(waterProtectionEnchant, 4);
-                        int basexp = e.getExpLevelCost();
-                        e.setExpLevelCost(basexp + 6);
-                    }
-
+            }
+            if(!conflicts){
+                Random r = new Random();
+                int boundInt = r.nextInt(100);
+                if(boundInt <= 40){
+                    // lvl1
+                    Anvil.setWaterProtCustomEnchantLevel(1, e.getItem());
+                } else if(boundInt <= 65 && boundInt >= 41){
+                    // lvl2
+                    Anvil.setWaterProtCustomEnchantLevel(2, e.getItem());
+                } else if(boundInt <= 85 && boundInt >= 66){
+                    // lvl3
+                    Anvil.setWaterProtCustomEnchantLevel(3, e.getItem());
+                } else if(boundInt <= 100 && boundInt >= 86){
+                    // lvl4
+                    Anvil.setWaterProtCustomEnchantLevel(4, e.getItem());
                 }
             }
         }
@@ -166,14 +89,15 @@ public class EnchantTable implements Listener {
     @EventHandler
     public void onGrind(PrepareResultEvent e) {
         if (e.getResult() != null) {
-            if (e.getInventory().getType().equals(InventoryType.GRINDSTONE)) ;
-            if (e.getResult().getLore() != null) {
-                if (e.getResult().getLore().contains(ChatColor.GRAY + waterProtectionEnchant.getName() + " I") || e.getResult().getLore().contains(ChatColor.GRAY + waterProtectionEnchant.getName() + " II") || e.getResult().getLore().contains(ChatColor.GRAY + waterProtectionEnchant.getName() + " III") || e.getResult().getLore().contains(ChatColor.GRAY + waterProtectionEnchant.getName() + " IV") || e.getResult().getLore().contains(ChatColor.GRAY + waterProtectionEnchant.getName())) {
-                    e.getResult().setLore(null);
-                    e.getResult().getItemMeta().setLore(null);
-                    e.getResult().removeEnchantment(waterProtectionEnchant);
-                } else {
-                    //do nothing
+            if (e.getInventory().getType().equals(InventoryType.GRINDSTONE)){
+                ItemStack item = e.getResult();
+                if (item.getEnchantments().keySet().contains(GenesisMC.waterProtectionEnchant)){
+                    for(String loreString : item.getLore()){
+                        if(loreString.startsWith("Water Protection")){
+                            item.getLore().remove(loreString);
+                        }
+                    }
+                    item.removeEnchantment(GenesisMC.waterProtectionEnchant);
                 }
             }
         }

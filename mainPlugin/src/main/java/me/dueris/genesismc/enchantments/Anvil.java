@@ -85,7 +85,7 @@ public class Anvil implements Listener {
         }
     }
 
-    protected void setWaterProtCustomEnchantLevel(int lvl, ItemStack item){
+    protected static void setWaterProtCustomEnchantLevel(int lvl, ItemStack item){
         String level = numberToRomanNum(lvl);
         ItemMeta meta = item.getItemMeta();
         meta.setCustomModelData(lvl);
@@ -98,7 +98,7 @@ public class Anvil implements Listener {
         item.addUnsafeEnchantment(GenesisMC.waterProtectionEnchant, lvl);
     }
 
-    private String numberToRomanNum(int lvl){
+    private static String numberToRomanNum(int lvl){
         if(lvl > 10){
             Bukkit.getLogger().severe("Cannot translate value higher than max enchantment value in Genesis {4}");
             return null;
