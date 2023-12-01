@@ -1,12 +1,12 @@
 package me.dueris.genesismc.factory.powers.value_modifying;
 
-import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.entity.OriginPlayer;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.OriginContainer;
 import me.dueris.genesismc.utils.PowerContainer;
 import org.bukkit.*;
+import org.bukkit.World.Environment;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -14,13 +14,11 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.generator.structure.Structure;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
 
 import static me.dueris.genesismc.factory.powers.value_modifying.ValueModifyingSuperClass.modify_world_spawn;
+import static org.bukkit.Material.AIR;
 import static org.bukkit.Material.OBSIDIAN;
 
 public class ModifyPlayerSpawnPower extends CraftPower implements Listener {
@@ -81,9 +79,25 @@ public class ModifyPlayerSpawnPower extends CraftPower implements Listener {
                             }
                         }
 
-                        spawnLocation = spawnLocation.toHighestLocation().add(0, 3, 0);
+                        if(!spawnLocation.getWorld().getEnvironment().equals(Environment.NETHER)){ // Ensure not spawning on the nether roof
+                            spawnLocation = spawnLocation.toHighestLocation();
+                        }
 
                         if (spawnLocation != null) {
+                            int radius = 1;
+                            for (int xOffset = -radius; xOffset <= radius; xOffset++) {
+                                for (int yOffset = -radius; yOffset <= radius; yOffset++) {
+                                    for (int zOffset = -radius; zOffset <= radius; zOffset++) {
+                                        Location currentLoc = spawnLocation.clone().add(xOffset, yOffset, zOffset);
+                                        
+                                        if (!currentLoc.getBlock().isPassable()) {
+                                            currentLoc.getBlock().setType(Material.OBSIDIAN);
+                                        } else {
+                                            currentLoc.getBlock().setType(Material.AIR);
+                                        }
+                                    }
+                                }
+                            }
                             p.teleportAsync(spawnLocation);
                         }
                     } else {
