@@ -27,6 +27,7 @@ import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -161,7 +162,14 @@ public class KeybindUtils implements Listener {
     public static void runKeyChangeTriggerReturn(ItemStack item, Player player, String key) {
         if(item == null) return;
         item.setType(Material.GRAY_DYE);
-        CooldownManager.cooldowns.get(player).remove(key);
+        if(CooldownManager.cooldowns.containsKey(player)){
+            if(CooldownManager.cooldowns.get(player) == null) return;
+            if(CooldownManager.cooldowns.get(player).isEmpty()) return;
+            CooldownManager.cooldowns.get(player).remove(key);
+        }else{
+            ArrayList list = new ArrayList<>();
+            CooldownManager.cooldowns.put(player, list);
+        }
     }
 
     public static boolean isKeyBeingPressed(Player player, String keyName, boolean isKeyPressed) {
