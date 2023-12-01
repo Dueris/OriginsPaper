@@ -20,7 +20,7 @@ import java.util.Random;
 import static me.dueris.genesismc.GenesisMC.waterProtectionEnchant;
 import static org.bukkit.Material.ENDER_PEARL;
 
-public class EnchantProtEvent implements Listener {
+public class EnchantTable implements Listener {
 
     public static EnumSet<Material> wearable;
 
@@ -36,7 +36,7 @@ public class EnchantProtEvent implements Listener {
         int r4 = random.nextInt(45);
         int r5 = random.nextInt(43);
         for(Enchantment enchantment : e.getEnchantsToAdd().keySet()){
-            if (WaterProtAnvil.conflictenchantments.contains(enchantment)) {
+            if (Anvil.conflictenchantments.contains(enchantment)) {
                 t = true;
                 break;
             }

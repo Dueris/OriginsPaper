@@ -51,6 +51,11 @@ public class WaterProtection extends Enchantment {
 
     @Override
     public boolean conflictsWith(@NotNull Enchantment enchantment) {
+        for(Enchantment enchant : Anvil.conflictenchantments){
+            if(enchant == enchantment){
+                return true;
+            }
+        }
         return false;
     }
 
@@ -96,11 +101,11 @@ public class WaterProtection extends Enchantment {
 
     @Override
     public int getMinModifiedCost(int level) {
-        return 1;
+        return level * 1;
     }
 
     @Override
     public int getMaxModifiedCost(int level) {
-        return 5;
+        return level * 2;
     }
 }

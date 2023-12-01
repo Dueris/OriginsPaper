@@ -9,8 +9,8 @@ import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
 
 @Beta
-public class WaterProtectionEnchantment extends Enchantment {
-    public WaterProtectionEnchantment(Rarity weight, EnchantmentCategory target, EquipmentSlot[] slotTypes) {
+public class WaterProtectionNMSImpl extends Enchantment {
+    public WaterProtectionNMSImpl(Rarity weight, EnchantmentCategory target, EquipmentSlot[] slotTypes) {
         super(weight, target, slotTypes);
     }
 

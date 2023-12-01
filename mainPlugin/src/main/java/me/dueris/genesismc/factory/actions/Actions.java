@@ -3,7 +3,7 @@ package me.dueris.genesismc.factory.actions;
 import me.dueris.genesismc.CooldownManager;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.OriginCommandSender;
-import me.dueris.genesismc.enchantments.EnchantProtEvent;
+import me.dueris.genesismc.enchantments.EnchantTable;
 import me.dueris.genesismc.entity.OriginPlayer;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.conditions.block.BlockCondition;

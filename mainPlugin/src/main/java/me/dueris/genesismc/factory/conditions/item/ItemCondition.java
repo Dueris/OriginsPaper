@@ -1,6 +1,7 @@
 package me.dueris.genesismc.factory.conditions.item;
 
-import me.dueris.genesismc.enchantments.EnchantProtEvent;
+import me.dueris.genesismc.commands.subcommands.origin.Enchant;
+import me.dueris.genesismc.enchantments.EnchantTable;
 import me.dueris.genesismc.enchantments.WaterProtection;
 import me.dueris.genesismc.factory.TagRegistry;
 import me.dueris.genesismc.factory.conditions.Condition;
@@ -118,7 +119,7 @@ public class ItemCondition implements Condition {
             return getResult(inverted, !itemStack.getType().isBlock());
         }
         if (type.equalsIgnoreCase("origins:is_equippable")){
-            return getResult(inverted, EnchantProtEvent.wearable.contains(itemStack.getType()));
+            return getResult(inverted, EnchantTable.wearable.contains(itemStack.getType()));
         }
         if (type.equalsIgnoreCase("origins:relative_durability")){
             String comparison = condition.get("comparison").toString();

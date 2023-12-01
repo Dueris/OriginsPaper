@@ -1,7 +1,7 @@
 package me.dueris.genesismc.mixin.mixins;
 
 import com.google.common.annotations.Beta;
-import me.dueris.genesismc.enchantments.WaterProtectionEnchantment;
+import me.dueris.genesismc.enchantments.WaterProtectionNMSImpl;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
