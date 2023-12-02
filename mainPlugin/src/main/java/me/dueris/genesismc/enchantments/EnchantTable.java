@@ -60,6 +60,8 @@ public class EnchantTable implements Listener {
     @EventHandler
     public void onEnchantItem(EnchantItemEvent e) {
         boolean conflicts = false;
+        Random r = new Random();
+        if(373 < r.nextInt(713)){
         if(wearable.contains(e.getItem().getType()) || e.getItem().getType() == Material.BOOK){
             for(Enchantment enchant : e.getEnchantsToAdd().keySet()){
                 if(Anvil.conflictenchantments.contains(enchant)){
@@ -67,7 +69,6 @@ public class EnchantTable implements Listener {
                 }
             }
             if(!conflicts){
-                Random r = new Random();
                 int boundInt = r.nextInt(100);
                 if(boundInt <= 40){
                     // lvl1
@@ -83,6 +84,7 @@ public class EnchantTable implements Listener {
                     Anvil.setWaterProtCustomEnchantLevel(4, e.getItem());
                 }
             }
+        }
         }
     }
 
