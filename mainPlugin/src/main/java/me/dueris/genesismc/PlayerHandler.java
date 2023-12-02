@@ -1,6 +1,8 @@
 package me.dueris.genesismc;
 
 import me.dueris.genesismc.entity.OriginPlayer;
+import me.dueris.genesismc.events.OriginChangeEvent;
+import me.dueris.genesismc.events.OriginChooseEvent;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.factory.powers.player.attributes.AttributeHandler;
@@ -190,6 +192,7 @@ public class PlayerHandler implements Listener {
                 }
             }
         }
+        OriginDataContainer.loadData(p);
 
         originValidCheck(p);
         OriginPlayer.assignPowers(p);
@@ -226,5 +229,12 @@ public class PlayerHandler implements Listener {
     @EventHandler
     public void playerQuitHandler(PlayerQuitEvent e) {
         OriginPlayer.unassignPowers(e.getPlayer());
+        OriginDataContainer.unloadData(e.getPlayer());
+    }
+
+    @EventHandler
+    public void newOrigin(OriginChangeEvent e){
+        OriginDataContainer.unloadData(e.getPlayer());
+        OriginDataContainer.loadData(e.getPlayer());
     }
 }
