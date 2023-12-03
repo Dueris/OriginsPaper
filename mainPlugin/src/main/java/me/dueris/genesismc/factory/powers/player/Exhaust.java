@@ -48,7 +48,7 @@ public class Exhaust extends CraftPower {
                         ticksE++;
                         return;
                     } else {
-                        ConditionExecutor conditionExecutor = new ConditionExecutor();
+                        ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                         if (conditionExecutor.check("condition", "conditions", p, power, "origins:exhaust", p, null, null, null, p.getItemInHand(), null)) {
                             if (power == null) {
                                 getPowerArray().remove(p);

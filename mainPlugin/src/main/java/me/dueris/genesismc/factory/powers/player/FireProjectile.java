@@ -91,7 +91,7 @@ public class FireProjectile extends CraftPower implements Listener {
                         return;
                     } else {
                         if (fire_projectile.contains(p)) {
-                            ConditionExecutor conditionExecutor = new ConditionExecutor();
+                            ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                             if (conditionExecutor.check("condition", "conditions", p, power, "origins:fire_projectile", p, null, null, null, p.getItemInHand(), null)) {
                                 if (!CooldownManager.isPlayerInCooldown(p, power.getKey().getOrDefault("key", "key.origins.primary_active").toString())) {
                                     if (isKeyBeingPressed(e.getPlayer(), power.getKey().getOrDefault("key", "key.origins.primary_active").toString(), true)) {
@@ -138,9 +138,11 @@ public class FireProjectile extends CraftPower implements Listener {
                                                                         CooldownManager.addCooldown(p, origin, power.getTag(), power.getType(), cooldown * 2, key);
                                                                         addCooldownPatch(p);
                                                                         peopladf.remove(p);
-                                                                        ItemMeta met = KeybindUtils.getKeybindItem(key, p.getInventory()).getItemMeta();
-                                                                        met.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "contin"), PersistentDataType.BOOLEAN, false);
-                                                                        KeybindUtils.getKeybindItem(key, p.getInventory()).setItemMeta(met);
+                                                                        if(KeybindUtils.getKeybindItem(key, p.getInventory()) != null) {
+                                                                            ItemMeta met = KeybindUtils.getKeybindItem(key, p.getInventory()).getItemMeta();
+                                                                            met.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "contin"), PersistentDataType.BOOLEAN, false);
+                                                                            KeybindUtils.getKeybindItem(key, p.getInventory()).setItemMeta(met);
+                                                                        }
                                                                         shotsLeft = 0;
                                                                         thing[0] = true;
                                                                         if (power == null) {

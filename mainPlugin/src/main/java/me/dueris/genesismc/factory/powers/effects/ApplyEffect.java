@@ -35,7 +35,7 @@ public class ApplyEffect extends CraftPower implements Listener {
     public void run(Player p) {
         if (apply_effect.contains(p)) {
             for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
-                ConditionExecutor conditionExecutor = new ConditionExecutor();
+                ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                 for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
                     if (conditionExecutor.check("condition", "conditions", p, power, getPowerFile(), p, null, null, null, p.getItemInHand(), null)) {
 

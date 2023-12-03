@@ -31,7 +31,7 @@ public class Swimming extends CraftPower {
         for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
             if (swimming.contains(p)) {
                 for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
-                    ConditionExecutor conditionExecutor = new ConditionExecutor();
+                    ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                     if (!conditionExecutor.check("condition", "conditions", p, power, getPowerFile(), p, null, null, null, p.getItemInHand(), null)) {
 
                         setActive(power.getTag(), false);

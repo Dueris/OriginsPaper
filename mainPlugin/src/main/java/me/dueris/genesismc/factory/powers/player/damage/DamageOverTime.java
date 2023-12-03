@@ -71,7 +71,7 @@ public class DamageOverTime extends CraftPower {
                         }
 
                         protection_effectiveness = Double.parseDouble(power.get("protection_effectiveness", "1"));
-                        ConditionExecutor executor = new ConditionExecutor();
+                        ConditionExecutor executor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                         if (executor.check("condition", "conditions", p, power, getPowerFile(), p, null, null, null, p.getItemInHand(), null)) {
                             setActive(power.getTag(), true);
 

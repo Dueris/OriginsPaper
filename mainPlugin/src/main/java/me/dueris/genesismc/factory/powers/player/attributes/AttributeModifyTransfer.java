@@ -41,7 +41,7 @@ public class AttributeModifyTransfer extends CraftPower implements Listener {
     public void runChange(OriginChangeEvent e) {
         if (getPowerArray().contains(e.getPlayer())) {
             for (OriginContainer origin : OriginPlayer.getOrigin(e.getPlayer()).values()) {
-                ConditionExecutor executor = new ConditionExecutor();
+                ConditionExecutor executor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                 for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
                     if (executor.check("condition", "conditions", e.getPlayer(), power, getPowerFile(), e.getPlayer(), null, null, null, e.getPlayer().getItemInHand(), null)) {
                         if (!getPowerArray().contains(e.getPlayer())) return;

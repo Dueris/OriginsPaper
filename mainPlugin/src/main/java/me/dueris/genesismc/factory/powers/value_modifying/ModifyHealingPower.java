@@ -41,7 +41,7 @@ public class ModifyHealingPower extends CraftPower implements Listener {
                         BinaryOperator mathOperator = getOperationMappingsFloat().get(operation);
                         if (mathOperator != null) {
                             float result = (float) mathOperator.apply(e.getAmount(), value);
-                            ConditionExecutor executor = new ConditionExecutor();
+                            ConditionExecutor executor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                             if (executor.check("condition", "conditions", p, power, getPowerFile(), p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
                                 if (power == null) {
                                     getPowerArray().remove(p);

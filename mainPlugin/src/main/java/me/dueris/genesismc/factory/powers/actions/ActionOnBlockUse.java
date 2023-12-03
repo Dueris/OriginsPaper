@@ -37,7 +37,7 @@ public class ActionOnBlockUse extends CraftPower implements Listener {
         for (OriginContainer origin : OriginPlayer.getOrigin(actor).values()) {
             for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
                 if (power == null) continue;
-                ConditionExecutor conditionExecutor = new ConditionExecutor();
+                ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                 if (conditionExecutor.check("condition", "conditions", actor, power, getPowerFile(), actor, null, e.getClickedBlock(), null, e.getItem(), null)) {
                     if (conditionExecutor.check("entity_condition", "entity_conditions", actor, power, getPowerFile(), actor, null, e.getClickedBlock(), null, e.getItem(), null)) {
                         if (conditionExecutor.check("block_condition", "block_conditions", actor, power, getPowerFile(), actor, null, e.getClickedBlock(), null, e.getItem(), null)) {

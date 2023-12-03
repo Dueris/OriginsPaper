@@ -1,6 +1,9 @@
 package me.dueris.genesismc.factory.powers;
 
 import org.reflections.Reflections;
+import org.reflections.scanners.SubTypesScanner;
+import org.reflections.util.ClasspathHelper;
+import org.reflections.util.ConfigurationBuilder;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -13,7 +16,11 @@ public abstract class CraftPower implements Power {
 
     public static List<Class<? extends CraftPower>> findCraftPowerClasses() throws IOException {
         List<Class<? extends CraftPower>> classes = new ArrayList<>();
-        Reflections reflections = new Reflections("me.dueris.genesismc.factory.powers");
+        ConfigurationBuilder config = new ConfigurationBuilder();
+        config.setScanners(new SubTypesScanner(false));
+        config.addUrls(ClasspathHelper.forPackage("me.dueris.genesismc.factory.powers"));
+
+        Reflections reflections = new Reflections(config);
 
         Set<Class<? extends CraftPower>> subTypes = reflections.getSubTypesOf(CraftPower.class);
         for (Class<? extends CraftPower> subType : subTypes) {
@@ -24,6 +31,7 @@ public abstract class CraftPower implements Power {
 
         return classes;
     }
+
 
     public static ArrayList<Class<? extends CraftPower>> getRegistered() {
         return registered;

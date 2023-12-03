@@ -48,7 +48,7 @@ public class ExplodeTick extends CraftPower implements Listener {
 
                         @Override
                         public void run() {
-                            ConditionExecutor executor = new ConditionExecutor();
+                            ConditionExecutor executor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                             if (executor.check("condition", "conditions", p, power, getPowerFile(), p, null, null, null, p.getItemInHand(), null)) {
                                 if (power == null) {
                                     getPowerArray().remove(p);

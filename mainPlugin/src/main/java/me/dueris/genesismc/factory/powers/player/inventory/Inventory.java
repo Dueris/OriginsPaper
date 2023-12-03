@@ -83,7 +83,7 @@ public class Inventory extends CraftPower implements CommandExecutor, Listener {
     public void keytrigger(KeybindTriggerEvent e) {
         for (OriginContainer origin : OriginPlayer.getOrigin(e.getPlayer()).values()) {
             if (getPowerArray().contains(e.getPlayer())) {
-                ConditionExecutor executor = new ConditionExecutor();
+                ConditionExecutor executor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                 for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
                     if (CooldownManager.isPlayerInCooldown(e.getPlayer(), e.getKey())) return;
                     if (executor.check("condition", "conditions", e.getPlayer(), power, getPowerFile(), e.getPlayer(), null, null, null, e.getPlayer().getItemInHand(), null)) {

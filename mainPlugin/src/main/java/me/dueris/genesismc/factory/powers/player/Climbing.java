@@ -71,7 +71,7 @@ public class Climbing extends CraftPower {
                 for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
                     for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
                         boolean cancel_bool = power.getRainCancel();
-                        ConditionExecutor executor = new ConditionExecutor();
+                        ConditionExecutor executor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                         if (executor.check("condition", "conditions", p, power, getPowerFile(), p, null, null, null, p.getItemInHand(), null)) {
                             if (power == null) {
                                 getPowerArray().remove(p);

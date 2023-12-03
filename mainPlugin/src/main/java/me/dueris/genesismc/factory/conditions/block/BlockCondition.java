@@ -32,6 +32,7 @@ public class BlockCondition implements Condition {
     }
 
     public static HashMap<PowerContainer, ArrayList<String>> inTagValues = new HashMap<>();
+    public static HashMap<String, ArrayList<Material>> blockTagMappings = new HashMap<>();
 
     @Override
     @SuppressWarnings("index out of bounds")
@@ -57,10 +58,14 @@ public class BlockCondition implements Condition {
         }
         if (type.equals("origins:in_tag")){
             if(TagRegistry.getRegisteredTagFromFileKey(condition.get("tag").toString()) != null){
-                for(String mat : TagRegistry.getRegisteredTagFromFileKey(condition.get("tag").toString())){
-                    if(block.getType().equals(Material.valueOf(mat.split(":")[1].toUpperCase()))){
-                        return Optional.of(true);
+                if(!blockTagMappings.containsKey(condition.get("tag"))){
+                    for(String mat : TagRegistry.getRegisteredTagFromFileKey(condition.get("tag").toString())){
+                        blockTagMappings.put(condition.get("tag").toString(), new ArrayList<>());
+                        blockTagMappings.get(condition.get("tag")).add(Material.valueOf(mat.split(":")[1].toUpperCase()));
                     }
+                }else{
+                    // mappings exist, now we can start stuff
+                    return Optional.of(blockTagMappings.get(condition.get("tag")).contains(block.getType()));
                 }
             }
         }

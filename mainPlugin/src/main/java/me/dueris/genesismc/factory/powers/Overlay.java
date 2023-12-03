@@ -30,7 +30,7 @@ public class Overlay extends CraftPower {
     public void run(Player player) {
         if (getPowerArray().contains(player)) {
             for (OriginContainer origin : OriginPlayer.getOrigin(player).values()) {
-                ConditionExecutor conditionExecutor = new ConditionExecutor();
+                ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                 for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
                     if (conditionExecutor.check("condition", "conditions", player, power, "origins:overlay", player, null, player.getLocation().getBlock(), null, player.getInventory().getItemInMainHand(), null)) {
                         setActive(power.getTag(), true);

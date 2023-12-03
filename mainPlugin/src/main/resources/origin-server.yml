@@ -40,3 +40,6 @@ shouldTickReload: false
 
 # Tickrate default is 12000, or 10 minutes
 tickRate: 12000
+
+# Allow modify render power to be disabled. Disabled by default due to cpu intensity
+disable-render-power: true

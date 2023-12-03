@@ -32,7 +32,7 @@ public class PreventEntityCollision extends CraftPower {
     public void run(Player p) {
         for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
             if (prevent_entity_collision.contains(p)) {
-                ConditionExecutor conditionExecutor = new ConditionExecutor();
+                ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                 for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
                     if (conditionExecutor.check("bientity_condition", "bientity_condition", p, power, "origins:prevent_entity_collision", p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
                         p.setCollidable(false);

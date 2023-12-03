@@ -41,7 +41,7 @@ public class FireImmunity extends CraftPower implements Listener {
         if (e.getEntity() instanceof Player p) {
             for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
                 if (fire_immunity.contains(p)) {
-                    ConditionExecutor conditionExecutor = new ConditionExecutor();
+                    ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                     for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
                         if (conditionExecutor.check("condition", "conditions", p, power, "origins:fire_immunity", p, null, null, null, p.getItemInHand(), e)) {
                             if (power == null) {

@@ -47,7 +47,7 @@ public class ModifyProjectileDamagePower extends CraftPower implements Listener 
                 for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
                     ValueModifyingSuperClass valueModifyingSuperClass = new ValueModifyingSuperClass();
                     try {
-                        ConditionExecutor conditionExecutor = new ConditionExecutor();
+                        ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                         for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
                             if (conditionExecutor.check("target_condition", "target_conditions", p, power, "origins:modify_projectile_damage", p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null) && conditionExecutor.check("damage_condition", "damage_conditions", p, power, "origins:modify_projectile_damage", p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
                                 for (HashMap<String, Object> modifier : power.getPossibleModifiers("modifier", "modifiers")) {

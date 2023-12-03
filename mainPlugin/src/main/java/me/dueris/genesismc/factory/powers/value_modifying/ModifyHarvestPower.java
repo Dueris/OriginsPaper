@@ -31,7 +31,7 @@ public class ModifyHarvestPower extends CraftPower implements Listener {
         Player p = e.getPlayer();
         if (modify_harvest.contains(p)) {
             for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
-                ConditionExecutor conditionExecutor = new ConditionExecutor();
+                ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                 for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
                     if (conditionExecutor.check("block_condition", "block_conditions", p, power, "origins:modify_harvest", p, null, e.getBlock(), null, p.getItemInHand(), null)) {
                         if (power.get("allow", null) == "true") {

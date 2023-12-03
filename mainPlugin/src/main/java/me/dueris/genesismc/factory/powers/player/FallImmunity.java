@@ -39,7 +39,7 @@ public class FallImmunity extends CraftPower implements Listener {
         if (!(e.getEntity() instanceof Player p)) return;
         if (fall_immunity.contains(p)) {
             for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
-                ConditionExecutor conditionExecutor = new ConditionExecutor();
+                ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                 for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
                     if (conditionExecutor.check("condition", "conditions", p, power, "origins:fall_immunity", p, null, null, null, p.getItemInHand(), e)) {
                         setActive(power.getTag(), true);

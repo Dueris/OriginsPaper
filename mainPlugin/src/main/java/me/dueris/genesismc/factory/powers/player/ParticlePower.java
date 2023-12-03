@@ -37,7 +37,7 @@ public class ParticlePower extends CraftPower {
                         getPowerArray().remove(player);
                         return;
                     } else {
-                        ConditionExecutor executor = new ConditionExecutor();
+                        ConditionExecutor executor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                         if (executor.check("condition", "conditions", player, power, getPowerFile(), player, null, null, null, player.getInventory().getItemInHand(), null)) {
                             if (!getPowerArray().contains(player)) return;
                             setActive(power.getTag(), true);

@@ -52,7 +52,7 @@ public class ModifyCraftingPower extends CraftPower implements Listener {
             for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
                 ValueModifyingSuperClass valueModifyingSuperClass = new ValueModifyingSuperClass();
                 try {
-                    ConditionExecutor conditionExecutor = new ConditionExecutor();
+                    ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                     for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
                         if (conditionExecutor.check("condition", "condition", p, power, "origins:modify_crafting", p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
                             if (conditionExecutor.check("item_condition", "item_condition", p, power, "origins:modify_crafting", p, null, p.getLocation().getBlock(), null, e.getInventory().getResult(), null)) {

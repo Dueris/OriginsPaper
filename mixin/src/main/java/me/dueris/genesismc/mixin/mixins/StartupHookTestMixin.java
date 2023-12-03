@@ -25,7 +25,7 @@ public class StartupHookTestMixin {
     private static void injectT(String[] args, CallbackInfo ci){
         //start copying the jar
 
-        Path cdir = Path.of(Bukkit.getServer().getPluginsFolder().toPath() + File.separator + ".." + File.separator + "mods");
+        Path cdir = Path.of(Bukkit.getServer().getPluginsFolder().toPath() + File.separator + ".." + File.separator + "plugins");
 
         try (Stream<Path> files = Files.list(cdir)) {
             Path jarFile = files

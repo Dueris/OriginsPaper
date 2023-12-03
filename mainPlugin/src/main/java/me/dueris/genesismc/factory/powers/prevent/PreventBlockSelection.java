@@ -26,7 +26,7 @@ public class PreventBlockSelection extends CraftPower implements Listener {
     public void runI(PlayerInteractEvent e) {
 //        if (prevent_block_selection.contains(e.getPlayer())) {
 //            for (OriginContainer origin : OriginPlayer.getOrigin(e.getPlayer()).values()) {
-//                ConditionExecutor conditionExecutor = new ConditionExecutor();
+//                ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
 //                if (e.getClickedBlock() != null) e.setCancelled(true);
 //                setActive(power.getTag(), conditionExecutor.check("block_condition", "block_condition", e.getPlayer(), origin, "origins:prevent_block_selection", e.getPlayer(), null, e.getClickedBlock(), null, e.getPlayer().getItemInHand(), null));
 //            }

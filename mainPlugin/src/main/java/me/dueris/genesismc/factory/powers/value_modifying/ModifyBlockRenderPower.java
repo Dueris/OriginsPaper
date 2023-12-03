@@ -58,7 +58,7 @@ public class ModifyBlockRenderPower extends CraftPower {
                         for (Block block : chunkManagerWorld.getAllBlocksInChunk(chunk)) {
                             if (block.getType() != Material.AIR) {
                                 try {
-                                    ConditionExecutor conditionExecutor = new ConditionExecutor();
+                                    ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                                     if (conditionExecutor.check("block_condition", "block_conditions", player, power, "origins:modify_block_render", player, null, block, null, player.getInventory().getItemInHand(), null)) {
                                         conditionMet = true;
                                         setActive(power.getTag(), true);

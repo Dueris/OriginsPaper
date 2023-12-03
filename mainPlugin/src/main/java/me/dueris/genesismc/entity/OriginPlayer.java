@@ -85,8 +85,10 @@ public class OriginPlayer {
      * @return true if the player has the origin.
      */
     public static boolean hasOrigin(Player player, String originTag) {
-        HashMap<LayerContainer, OriginContainer> origins = CraftApoli.toOrigin(OriginDataContainer.getLayer(player));
-        for (OriginContainer origin : origins.values()) if (origin.getTag().equals(originTag)) return true;
+        if(OriginDataContainer.getDataMap().containsKey(player)){
+            HashMap<LayerContainer, OriginContainer> origins = CraftApoli.toOrigin(OriginDataContainer.getLayer(player));
+            for (OriginContainer origin : origins.values()) if (origin.getTag().equals(originTag)) return true;
+        }
         return false;
     }
 
@@ -96,7 +98,7 @@ public class OriginPlayer {
      */
 
     public static OriginContainer getOrigin(Player player, LayerContainer layer) {
-        if(OriginDataContainer.getDataMap().containsKey(player)){
+        if(!OriginDataContainer.getDataMap().containsKey(player)){
             if (OriginDataContainer.getLayer(player) == null) {
                 setOrigin(player, layer, CraftApoli.nullOrigin());
                 return CraftApoli.nullOrigin();
@@ -113,10 +115,12 @@ public class OriginPlayer {
         PersistentDataContainer data = player.getPersistentDataContainer();
         if (!OriginDataContainer.getDataMap().containsKey(player) || OriginDataContainer.getLayer(player) == null) {
             ArrayList<LayerContainer> layers = CraftApoli.getLayers();
-            for (LayerContainer layer : layers) {
-                setOrigin(player, layer, CraftApoli.nullOrigin());
-                return new HashMap<>(Map.of(layer, CraftApoli.nullOrigin()));
-            }
+//            for (LayerContainer layer : layers) {
+//                System.out.println("2");
+//                setOrigin(player, layer, CraftApoli.nullOrigin());
+//                return new HashMap<>(Map.of(layer, CraftApoli.nullOrigin()));
+//            }
+            // This caused a lot of isseus lol
         }
         return CraftApoli.toOrigin(OriginDataContainer.getLayer(player));
     }
@@ -173,6 +177,7 @@ public class OriginPlayer {
             if (layer.getTag().equals(layers.getTag())) origins.replace(layers, origin);
         }
         player.getPersistentDataContainer().set(key, PersistentDataType.STRING, CraftApoli.toSaveFormat(origins));
+        OriginDataContainer.loadData(player);
 
         String originTag = origin.getTag();
         if (!originTag.equals(CraftApoli.nullOrigin().getTag())) SendCharts.originPopularity(player);
@@ -203,6 +208,7 @@ public class OriginPlayer {
             if (playerLayer.getTag().equals(layer.getTag())) origins.remove(playerLayer);
         }
         player.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "originLayer"), PersistentDataType.STRING, CraftApoli.toSaveFormat(origins));
+        OriginDataContainer.loadData(player);
     }
 
     public static LayerContainer getLayer(Player p, OriginContainer origin) {
@@ -290,6 +296,7 @@ public class OriginPlayer {
         for (PowerContainer power : origin.getPowerContainers()) {
             for (Class<? extends CraftPower> c : CraftPower.getRegistered()) {
                 CraftPower craftPower = null;
+
                 try {
                     craftPower = c.newInstance();
                 } catch (InstantiationException e) {
@@ -315,6 +322,8 @@ public class OriginPlayer {
 
         PowerAssignEvent powerAssignEvent = new PowerAssignEvent(player, powerAppliedClasses, powerAppliedTypes, origin);
         Bukkit.getServer().getPluginManager().callEvent(powerAssignEvent);
+        player.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "originLayer"), PersistentDataType.STRING, CraftApoli.toSaveFormat(OriginPlayer.getOrigin(player)));
+        OriginDataContainer.loadData(player);
 
         hasPowers.add(player);
     }
@@ -356,6 +365,8 @@ public class OriginPlayer {
             powersAppliedList.get(player).remove(classes);
         }
         PowerUnassignEvent powerUnassignEvent = new PowerUnassignEvent(player, powerRemovedClasses, powerRemovedTypes, origin);
+        player.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "originLayer"), PersistentDataType.STRING, CraftApoli.toSaveFormat(OriginPlayer.getOrigin(player)));
+        OriginDataContainer.unloadData(player);
         Bukkit.getServer().getPluginManager().callEvent(powerUnassignEvent);
         hasPowers.remove(player);
     }

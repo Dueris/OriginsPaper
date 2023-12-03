@@ -10,6 +10,7 @@ import me.dueris.genesismc.factory.powers.player.Invisibility;
 import me.dueris.genesismc.factory.powers.player.RestrictArmor;
 import me.dueris.genesismc.factory.powers.player.damage.Burn;
 import me.dueris.genesismc.factory.powers.player.damage.DamageOverTime;
+import me.dueris.genesismc.factory.powers.prevent.PreventEntityRender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
@@ -71,25 +72,25 @@ public class FoliaOriginScheduler {
         @Override
         public void run() {
             for (Player p : OriginPlayer.hasPowers) {
-                if (!OriginPlayer.getPowersApplied(p).contains(Gravity.class)) {
-                    Gravity gravity = new Gravity();
-                    gravity.run(p);
-                }
-                if (!OriginPlayer.getPowersApplied(p).contains(FlightHandler.class)) {
-                    FlightHandler flightHandler = new FlightHandler();
-                    flightHandler.run(p);
-                }
-                if (!OriginPlayer.getPowersApplied(p).contains(Overlay.class)) {
-                    Overlay overlay = new Overlay();
-                    overlay.run(p);
-                }
-                if (!OriginPlayer.getPowersApplied(p).contains(Invisibility.class)) {
-                    Invisibility invisibility = new Invisibility();
-                    invisibility.run(p);
-                }
-                if (OriginPlayer.getPowersApplied(p).isEmpty()) {
-                    //empty
-                }
+//                if (!OriginPlayer.getPowersApplied(p).contains(Gravity.class)) {
+//                    Gravity gravity = new Gravity();
+//                    gravity.run(p);
+//                }
+//                if (!OriginPlayer.getPowersApplied(p).contains(FlightHandler.class)) {
+//                    FlightHandler flightHandler = new FlightHandler();
+//                    flightHandler.run(p);
+//                }
+//                if (!OriginPlayer.getPowersApplied(p).contains(Overlay.class)) {
+//                    Overlay overlay = new Overlay();
+//                    overlay.run(p);
+//                }
+//                if (!OriginPlayer.getPowersApplied(p).contains(Invisibility.class)) {
+//                    Invisibility invisibility = new Invisibility();
+//                    invisibility.run(p);
+//                }
+//                if (OriginPlayer.getPowersApplied(p).isEmpty()) {
+//                    //empty
+//                }
                 for (Class<? extends CraftPower> c : OriginPlayer.getPowersApplied(p)) {
                     try {
                         if (c.newInstance() instanceof Burn) {
@@ -100,6 +101,8 @@ public class FoliaOriginScheduler {
                             ((RestrictArmor) c.newInstance()).run(p, ticksEMap);
                         } else if (c.newInstance() instanceof DamageOverTime) {
                             ((DamageOverTime) c.newInstance()).run(p, ticksEMap);
+                        } else if(c.newInstance() instanceof PreventEntityRender) {
+                            ((PreventEntityRender) c.newInstance()).run(p, ticksEMap);
                         } else {
                             c.newInstance().run(p);
                         }

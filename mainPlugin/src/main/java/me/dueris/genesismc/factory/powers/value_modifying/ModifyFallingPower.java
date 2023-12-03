@@ -48,7 +48,7 @@ public class ModifyFallingPower extends CraftPower implements Listener {
             if (e.getTo().getY() == e.getFrom().getY()) return;
             @NotNull Vector velocity = p.getVelocity();
             for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
-                ConditionExecutor conditionExecutor = new ConditionExecutor();
+                ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                 for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
                     if (conditionExecutor.check("condition", "conditions", p, power, "origins:modify_falling", p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
                         if (power.getObject("velocity") instanceof Integer) {
@@ -109,7 +109,7 @@ public class ModifyFallingPower extends CraftPower implements Listener {
         if (e.getEntity() instanceof Player p) {
             if (modify_falling.contains(p)) {
                 for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
-                    ConditionExecutor conditionExecutor = new ConditionExecutor();
+                    ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                     for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
                         if (conditionExecutor.check("condition", "conditions", p, power, "origins:modify_falling", p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
                             if (Boolean.getBoolean(power.get("take_fall_damage", "true"))) {

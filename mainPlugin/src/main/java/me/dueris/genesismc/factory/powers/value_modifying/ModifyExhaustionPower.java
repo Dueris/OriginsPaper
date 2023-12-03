@@ -44,7 +44,7 @@ public class ModifyExhaustionPower extends CraftPower implements Listener {
         Player p = (Player) e.getEntity();
         if (modify_exhaustion.contains(p)) {
             for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
-                ConditionExecutor conditionExecutor = new ConditionExecutor();
+                ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                 for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
                     if (conditionExecutor.check("condition", "conditions", p, power, "origins:modify_exhaustion", p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
                         for (HashMap<String, Object> modifier : power.getConditionFromString("modifier", "modifiers")) {

@@ -30,7 +30,7 @@ public class ActionOnItemUse extends CraftPower implements Listener {
 //            if (e.getClickedBlock() == null) return;
 //            if (!getPowerArray().contains(e.getPlayer())) return;
 //            setActive(power.getTag(), true);
-//            ConditionExecutor conditionExecutor = new ConditionExecutor();
+//            ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
 //            if(conditionExecutor.check("item_condition", "item_conditions", actor, origin, getPowerFile(), actor, null, actor.getLocation().getBlock(), null, actor.getInventory().getItemInHand(), null)){
 //                if(conditionExecutor.check("condition", "conditions", actor, origin, getPowerFile(), actor, null, actor.getLocation().getBlock(), null, actor.getInventory().getItemInHand(), null)){
 //                    if(conditionExecutor.check("entity_condition", "entity_conditions", actor, origin, getPowerFile(), actor, null, actor.getLocation().getBlock(), null, actor.getInventory().getItemInHand(), null)){

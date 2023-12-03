@@ -36,7 +36,7 @@ public class ModifyStatusEffectAmplifierPower extends CraftPower implements List
         if (e.getEntity() instanceof Player p) {
             if (!modify_effect_amplifier.contains(p)) return;
             for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
-                ConditionExecutor executor = new ConditionExecutor();
+                ConditionExecutor executor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                 for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
                     if (executor.check("condition", "conditions", p, power, getPowerFile(), p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
                         setActive(power.getTag(), true);

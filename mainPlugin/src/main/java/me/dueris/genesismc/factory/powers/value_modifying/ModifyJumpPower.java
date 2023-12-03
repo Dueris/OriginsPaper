@@ -34,7 +34,7 @@ public class ModifyJumpPower extends CraftPower implements Listener {
         Player p = e.getPlayer();
         if (modify_jump.contains(p)) {
             for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
-                ConditionExecutor conditionExecutor = new ConditionExecutor();
+                ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                 for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
                     if (conditionExecutor.check("condition", "conditions", p, power, "origins:modify_jump", p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
                         for (HashMap<String, Object> modifier : power.getPossibleModifiers("modifier", "modifiers")) {

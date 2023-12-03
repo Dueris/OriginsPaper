@@ -36,7 +36,7 @@ public class TargetActionOnHit extends CraftPower implements Listener {
         if (!getPowerArray().contains(actor)) return;
 
         for (OriginContainer origin : OriginPlayer.getOrigin(player).values()) {
-            ConditionExecutor executor = new ConditionExecutor();
+            ConditionExecutor executor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
             for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
                 if (executor.check("condition", "conditions", player, power, getPowerFile(), actor, target, null, null, player.getInventory().getItemInHand(), e)) {
                     if (!getPowerArray().contains(actor)) return;

@@ -6,6 +6,7 @@ import me.dueris.genesismc.choosing.ChoosingCORE;
 import me.dueris.genesismc.choosing.ChoosingCUSTOM;
 import me.dueris.genesismc.choosing.ChoosingGUI;
 import me.dueris.genesismc.commands.OriginCommand;
+import me.dueris.genesismc.commands.PlayerSelector;
 import me.dueris.genesismc.commands.ResourceCommand;
 import me.dueris.genesismc.commands.TabAutoComplete;
 import me.dueris.genesismc.commands.subcommands.origin.Info.InInfoCheck;
@@ -21,6 +22,7 @@ import me.dueris.genesismc.events.RegisterPowersEvent;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.TagRegistry;
 import me.dueris.genesismc.factory.conditions.Condition;
+import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.conditions.CraftCondition;
 import me.dueris.genesismc.factory.conditions.biEntity.BiEntityCondition;
 import me.dueris.genesismc.factory.conditions.biome.BiomeCondition;
@@ -51,6 +53,7 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerCommandSendEvent;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -73,9 +76,11 @@ import static me.dueris.genesismc.utils.BukkitColour.*;
 public final class GenesisMC extends JavaPlugin implements Listener {
     public static EnumSet<Material> tool;
     public static Metrics metrics;
+    public static boolean disableRender = true;
     public static ArrayList<Enchantment> custom_enchants = new ArrayList<>();
     public static WaterProtection waterProtectionEnchant;
     private static GenesisMC plugin;
+    public static ConditionExecutor conditionExecutor;
 
     static {
         tool = EnumSet.of(Material.DIAMOND_AXE, Material.DIAMOND_HOE, Material.DIAMOND_PICKAXE, Material.DIAMOND_SHOVEL, Material.DIAMOND_SWORD, Material.GOLDEN_AXE, Material.GOLDEN_HOE, Material.GOLDEN_PICKAXE, Material.GOLDEN_SHOVEL, Material.GOLDEN_SWORD, Material.NETHERITE_AXE, Material.NETHERITE_HOE, Material.NETHERITE_PICKAXE, Material.NETHERITE_SHOVEL, Material.NETHERITE_SWORD, Material.IRON_AXE, Material.IRON_HOE, Material.IRON_PICKAXE, Material.IRON_SHOVEL, Material.IRON_SWORD, Material.WOODEN_AXE, Material.WOODEN_HOE, Material.WOODEN_PICKAXE, Material.WOODEN_SHOVEL, Material.WOODEN_SWORD, Material.SHEARS);
@@ -110,6 +115,10 @@ public final class GenesisMC extends JavaPlugin implements Listener {
     @EventHandler
     public void test(PlayerInteractAtEntityEvent e){
 //        e.getPlayer().sendMessage(String.valueOf(e.isCancelled()));
+    }
+
+    public static ConditionExecutor getConditionExecutor(){
+        return conditionExecutor;
     }
 
     @Override
@@ -164,6 +173,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         TempStorageContainer.StructureStorage structureStorage = new TempStorageContainer.StructureStorage();
         structureStorage.addValues();
         // load tempStorageOptimizations - end
+        GenesisMC.disableRender = GenesisDataFiles.getMainConfig().getBoolean("disable-render-power");
 
         me.dueris.genesismc.OriginDataContainer.loadData();
         // Pre-load condition types to prevent constant calling
@@ -175,6 +185,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         CraftCondition.fluidCon = new FluidCondition();
         CraftCondition.item = new ItemCondition();
         // Pre-load end
+        conditionExecutor = new ConditionExecutor();
         CraftApoli.loadOrigins();
         try {
             for (Class<? extends CraftPower> c : CraftPower.findCraftPowerClasses()) {
@@ -340,8 +351,12 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         getServer().getPluginManager().registerEvents(new FoliaOriginScheduler.OriginSchedulerTree(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new KeybindUtils(), GenesisMC.getPlugin());
         if (getServer().getPluginManager().isPluginEnabled("SkinsRestorer")) {
-            getServer().getPluginManager().registerEvents(new PlayerRender.ModelColor(), GenesisMC.getPlugin());
-            getServer().getConsoleSender().sendMessage(Component.text(LangConfig.getLocalizedString(Bukkit.getConsoleSender(), "startup.skinRestorer.present")).color(TextColor.fromHexString(AQUA)));
+            try {
+//                getServer().getPluginManager().registerEvents(new PlayerRender.ModelColor(), GenesisMC.getPlugin()); -- disable bc aparently skinsrestorer updated api and broke stuff
+//                getServer().getConsoleSender().sendMessage(Component.text(LangConfig.getLocalizedString(Bukkit.getConsoleSender(), "startup.skinRestorer.present")).color(TextColor.fromHexString(AQUA)));
+            } catch (Exception ignored){
+                // ignored
+            }
         } else {
             getServer().getConsoleSender().sendMessage(Component.text(LangConfig.getLocalizedString(Bukkit.getConsoleSender(), "startup.skinRestorer.absent")).color(TextColor.fromHexString(AQUA)));
         }
@@ -359,16 +374,17 @@ public final class GenesisMC extends JavaPlugin implements Listener {
             }
         }.runTaskTimer(GenesisMC.getPlugin(), 0, 20);
 
-        if (Bukkit.getServer().getPluginManager().isPluginEnabled("SkinsRestorer")) {
-            GlobalRegionScheduler globalRegionScheduler = Bukkit.getGlobalRegionScheduler();
-            try {
-                globalRegionScheduler.execute(GenesisMC.getPlugin(), PlayerRender.ModelColor.class.newInstance());
-            } catch (InstantiationException e) {
-                throw new RuntimeException(e);
-            } catch (IllegalAccessException e) {
-                throw new RuntimeException(e);
-            }
-        }
+//        if (Bukkit.getServer().getPluginManager().isPluginEnabled("SkinsRestorer")) {
+//            GlobalRegionScheduler globalRegionScheduler = Bukkit.getGlobalRegionScheduler();
+//            try {
+//                globalRegionScheduler.execute(GenesisMC.getPlugin(), PlayerRender.ModelColor.class.newInstance());
+//            } catch (InstantiationException e) {
+//                throw new RuntimeException(e);
+//            } catch (IllegalAccessException e) {
+//                throw new RuntimeException(e);
+//            }
+//        }
+        // Why does that even exist here?
     }
 
     @EventHandler

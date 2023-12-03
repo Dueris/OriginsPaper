@@ -44,7 +44,7 @@ public class StartingEquipmentPower extends CraftPower implements Listener {
         if (starting_equip.contains(e.getPlayer())) {
             for (OriginContainer origin : OriginPlayer.getOrigin(e.getPlayer()).values()) {
                 for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
-                    ConditionExecutor conditionExecutor = new ConditionExecutor();
+                    ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                     if (conditionExecutor.check("condition", "conditions", e.getPlayer(), power, getPowerFile(), e.getPlayer(), null, null, null, e.getPlayer().getItemInHand(), null)) {
                         if (!getPowerArray().contains(e.getPlayer())) return;
                         setActive(power.getTag(), true);
@@ -68,7 +68,7 @@ public class StartingEquipmentPower extends CraftPower implements Listener {
     public void runRespawn(PlayerRespawnEvent e) {
         if (starting_equip.contains(e.getPlayer())) {
             for (OriginContainer origin : OriginPlayer.getOrigin(e.getPlayer()).values()) {
-                ConditionExecutor conditionExecutor = new ConditionExecutor();
+                ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                 for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
                     if (conditionExecutor.check("condition", "conditions", e.getPlayer(), power, getPowerFile(), e.getPlayer(), null, null, null, e.getPlayer().getItemInHand(), null)) {
                         if (!getPowerArray().contains(e.getPlayer())) return;

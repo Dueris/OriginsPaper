@@ -56,7 +56,7 @@ public class ModifyBreakSpeedPower extends CraftPower implements Listener {
             for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
                 ValueModifyingSuperClass valueModifyingSuperClass = new ValueModifyingSuperClass();
                 try {
-                    ConditionExecutor conditionExecutor = new ConditionExecutor();
+                    ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                     for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
                         if (conditionExecutor.check("condition", "condition", p, power, getPowerFile(), p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
                             if (conditionExecutor.check("block_condition", "block_condition", p, power, getPowerFile(), p, null, e.getPlayer().getTargetBlockExact(AttributeHandler.Reach.getDefaultReach(p)), null, p.getItemInHand(), null)) {

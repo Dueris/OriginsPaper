@@ -14,7 +14,7 @@ public class Invisibility extends CraftPower {
     @Override
     public void run(Player p) {
         if (getPowerArray().contains(p)) {
-            ConditionExecutor conditionExecutor = new ConditionExecutor();
+            ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
             for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
                 for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
                     if (conditionExecutor.check("condition", "conditions", p, power, getPowerFile(), p, null, p.getLocation().getBlock(), null, p.getInventory().getItemInMainHand(), null)) {

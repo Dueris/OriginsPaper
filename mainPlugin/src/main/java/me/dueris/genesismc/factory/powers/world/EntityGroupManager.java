@@ -107,7 +107,7 @@ public class EntityGroupManager extends CraftPower {
                 if (entity instanceof Player) {
                     //Player case, check for power
                     for (OriginContainer origin : OriginPlayer.getOrigin(((Player) entity).getPlayer()).values()) {
-                        ConditionExecutor executor = new ConditionExecutor();
+                        ConditionExecutor executor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                         for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
                             if (executor.check("condition", "conditions", (Player) entity, power, getPowerFile(), entity, null, entity.getLocation().getBlock(), null, ((Player) entity).getItemInHand(), null)) {
                                 if (!getPowerArray().contains(entity)) return;

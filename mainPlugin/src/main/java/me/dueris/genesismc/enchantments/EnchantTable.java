@@ -62,29 +62,29 @@ public class EnchantTable implements Listener {
         boolean conflicts = false;
         Random r = new Random();
         if(373 < r.nextInt(713)){
-        if(wearable.contains(e.getItem().getType()) || e.getItem().getType() == Material.BOOK){
-            for(Enchantment enchant : e.getEnchantsToAdd().keySet()){
-                if(Anvil.conflictenchantments.contains(enchant)){
-                    conflicts = true;
+            if(wearable.contains(e.getItem().getType()) || e.getItem().getType() == Material.BOOK){
+                for(Enchantment enchant : e.getEnchantsToAdd().keySet()){
+                    if(Anvil.conflictenchantments.contains(enchant)){
+                        conflicts = true;
+                    }
+                }
+                if(!conflicts){
+                    int boundInt = r.nextInt(100);
+                    if(boundInt <= 40){
+                        // lvl1
+                        Anvil.setWaterProtCustomEnchantLevel(1, e.getItem());
+                    } else if(boundInt <= 65 && boundInt >= 41){
+                        // lvl2
+                        Anvil.setWaterProtCustomEnchantLevel(2, e.getItem());
+                    } else if(boundInt <= 85 && boundInt >= 66){
+                        // lvl3
+                        Anvil.setWaterProtCustomEnchantLevel(3, e.getItem());
+                    } else if(boundInt <= 100 && boundInt >= 86){
+                        // lvl4
+                        Anvil.setWaterProtCustomEnchantLevel(4, e.getItem());
+                    }
                 }
             }
-            if(!conflicts){
-                int boundInt = r.nextInt(100);
-                if(boundInt <= 40){
-                    // lvl1
-                    Anvil.setWaterProtCustomEnchantLevel(1, e.getItem());
-                } else if(boundInt <= 65 && boundInt >= 41){
-                    // lvl2
-                    Anvil.setWaterProtCustomEnchantLevel(2, e.getItem());
-                } else if(boundInt <= 85 && boundInt >= 66){
-                    // lvl3
-                    Anvil.setWaterProtCustomEnchantLevel(3, e.getItem());
-                } else if(boundInt <= 100 && boundInt >= 86){
-                    // lvl4
-                    Anvil.setWaterProtCustomEnchantLevel(4, e.getItem());
-                }
-            }
-        }
         }
     }
 

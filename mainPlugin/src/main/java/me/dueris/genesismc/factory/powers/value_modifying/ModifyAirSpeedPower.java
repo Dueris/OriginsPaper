@@ -41,7 +41,7 @@ public class ModifyAirSpeedPower extends CraftPower {
         for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
             ValueModifyingSuperClass valueModifyingSuperClass = new ValueModifyingSuperClass();
             try {
-                ConditionExecutor conditionExecutor = new ConditionExecutor();
+                ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                 for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
                     if (conditionExecutor.check("condition", "conditions", p, power, "origins:modify_air_speed", p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
                         if (power == null) {

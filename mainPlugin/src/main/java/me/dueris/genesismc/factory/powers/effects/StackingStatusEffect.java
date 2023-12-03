@@ -162,7 +162,7 @@ public class StackingStatusEffect extends CraftPower {
     public void run(Player p) {
         if (getPowerArray().contains(p)) {
             for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
-                ConditionExecutor executor = new ConditionExecutor();
+                ConditionExecutor executor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                 for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
                     if (executor.check("condition", "conditions", p, power, getPowerFile(), p, null, null, null, p.getItemInHand(), null)) {
                         setActive(power.getTag(), true);

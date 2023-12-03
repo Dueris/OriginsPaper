@@ -51,7 +51,7 @@ public class EntityGlow extends CraftPower {
             if (entity_glow.contains(p)) {
                 Collection<Entity> entitiesWithinRadius = getEntitiesInRadius(p, 10);
                 for (Entity entity : entitiesWithinRadius) {
-                    ConditionExecutor conditionExecutor = new ConditionExecutor();
+                    ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                     for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
                         if (conditionExecutor.check("condition", "conditions", p, power, "origins:entity_glow", p, entity, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
                             CraftPlayer craftPlayer = (CraftPlayer) p;

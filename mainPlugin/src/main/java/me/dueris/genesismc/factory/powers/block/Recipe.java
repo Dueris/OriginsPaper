@@ -75,7 +75,7 @@ public class Recipe extends CraftPower implements Listener {
 //    public void load(ServerLoadEvent e) {
 //        for (Player player : Bukkit.getOnlinePlayers()) {
 //            for (OriginContainer origin : OriginPlayer.getOrigin(player).values()) {
-//                ConditionExecutor conditionExecutor = new ConditionExecutor();
+//                ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
 //                if (conditionExecutor.check("condition", "conditions", player, origin, getPowerFile(), player, null, null, null, player.getInventory().getItemInHand(), null)) {
 //                    if (!getPowerArray().contains(player)) return;
 //                    setActive(power.getTag(), true);
@@ -92,7 +92,7 @@ public class Recipe extends CraftPower implements Listener {
 //    public void load(PlayerJoinEvent e) {
 //        for (Player player : Bukkit.getOnlinePlayers()) {
 //            for (OriginContainer origin : OriginPlayer.getOrigin(player).values()) {
-//                ConditionExecutor conditionExecutor = new ConditionExecutor();
+//                ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
 //                if (conditionExecutor.check("condition", "conditions", player, origin, getPowerFile(), player, null, null, null, player.getInventory().getItemInHand(), null)) {
 //                    if (!getPowerArray().contains(player)) return;
 //                    setActive(power.getTag(), true);
@@ -109,7 +109,7 @@ public class Recipe extends CraftPower implements Listener {
 //    public void load(OriginChangeEvent e) {
 //        for (Player player : Bukkit.getOnlinePlayers()) {
 //            for (OriginContainer origin : OriginPlayer.getOrigin(player).values()) {
-//                ConditionExecutor conditionExecutor = new ConditionExecutor();
+//                ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
 //                if (conditionExecutor.check("condition", "conditions", player, origin, getPowerFile(), player, null, null, null, player.getInventory().getItemInHand(), null)) {
 //                    if (!getPowerArray().contains(player)) return;
 //                    setActive(power.getTag(), true);

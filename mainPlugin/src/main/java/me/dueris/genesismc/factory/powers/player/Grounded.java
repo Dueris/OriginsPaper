@@ -37,7 +37,7 @@ public class Grounded extends CraftPower {
             for (OriginContainer origin : OriginPlayer.getOrigin(player).values()) {
                 Location location = player.getLocation();
                 Location current_block_platform_pos = location.add(0, -1, 0);
-                ConditionExecutor conditionExecutor = new ConditionExecutor();
+                ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                 for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
                     if (conditionExecutor.check("condition", "conditions", player, power, "origins:grounded", player, null, null, null, player.getInventory().getItemInHand(), null)) {
                         if (!getPowerArray().contains(player)) return;

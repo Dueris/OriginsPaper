@@ -51,7 +51,7 @@ public class Phasing extends CraftPower implements Listener {
     public void run(Player p) {
         if (getPowerArray().contains(p)) {
             for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
-                ConditionExecutor conditionExecutor = new ConditionExecutor();
+                ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                 for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
                     if (conditionExecutor.check("condition", "conditions", p, power, getPowerFile(), p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
                         setActive(power.getTag(), true);
@@ -218,7 +218,7 @@ public class Phasing extends CraftPower implements Listener {
                                     Location currentLocation = p.getLocation();
                                     Location targetLocation = currentLocation.getBlock().getRelative(BlockFace.DOWN).getLocation();
                                     Location loc = new Location(targetLocation.getWorld(), targetLocation.getX(), targetLocation.getY(), targetLocation.getZ(), p.getEyeLocation().getYaw(), p.getEyeLocation().getPitch());
-                                    ConditionExecutor conditionExecutor = new ConditionExecutor();
+                                    ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                                     if (conditionExecutor.check("phase_down_condition", "phase_down_conditions", p, power, getPowerFile(), p, null, loc.getBlock(), null, p.getItemInHand(), null)) {
                                         p.teleport(loc);
                                     }

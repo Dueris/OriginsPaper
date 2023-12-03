@@ -55,7 +55,7 @@ public class PreventSleep extends CraftPower implements Listener {
         if (beds.contains(e.getClickedBlock().getType())) {
             Player player = e.getPlayer();
             for (OriginContainer origin : OriginPlayer.getOrigin(player).values()) {
-                ConditionExecutor conditionExecutor = new ConditionExecutor();
+                ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                 Block clickedBlock = e.getClickedBlock();
                 Location blockLocation = clickedBlock.getLocation();
                 for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {

@@ -30,7 +30,7 @@ public class PreventDeath extends CraftPower implements Listener {
     public void run(PlayerDeathEvent e) {
         if (prevent_death.contains(e.getPlayer())) {
             for (OriginContainer origin : OriginPlayer.getOrigin(e.getPlayer()).values()) {
-                ConditionExecutor conditionExecutor = new ConditionExecutor();
+                ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                 for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
                     if (conditionExecutor.check("damage_condition", "damage_conditions", e.getPlayer(), power, "origins:prevent_death", e.getPlayer(), null, null, null, e.getPlayer().getItemInHand(), e.getPlayer().getLastDamageCause())) {
                         e.setCancelled(true);

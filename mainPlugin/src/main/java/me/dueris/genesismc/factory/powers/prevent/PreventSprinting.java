@@ -33,7 +33,7 @@ public class PreventSprinting extends CraftPower {
         if (prevent_sprinting.contains(p)) {
             for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
                 for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
-                    ConditionExecutor conditionExecutor = new ConditionExecutor();
+                    ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                     if (conditionExecutor.check("condition", "conditions", p, power, "origins:prevent_sprinting", p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
                         if (power == null) {
                             getPowerArray().remove(p);

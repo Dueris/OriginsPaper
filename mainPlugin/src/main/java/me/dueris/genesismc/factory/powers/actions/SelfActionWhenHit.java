@@ -36,7 +36,7 @@ public class SelfActionWhenHit extends CraftPower implements Listener {
         if (!getPowerArray().contains(target)) return;
 
         for (OriginContainer origin : OriginPlayer.getOrigin(player).values()) {
-            ConditionExecutor executor = new ConditionExecutor();
+            ConditionExecutor executor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
             if (CooldownManager.isPlayerInCooldown((Player) target, "key.attack")) return;
             for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
                 if (executor.check("condition", "conditions", (Player) target, power, getPowerFile(), actor, target, null, null, ((Player) target).getItemOnCursor(), e)) {

@@ -2,14 +2,24 @@ package me.dueris.genesismc.factory.powers.prevent;
 
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.entity.OriginPlayer;
+import me.dueris.genesismc.factory.actions.Actions;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
+import me.dueris.genesismc.files.GenesisDataFiles;
 import me.dueris.genesismc.utils.OriginContainer;
 import me.dueris.genesismc.utils.PowerContainer;
+import me.dueris.genesismc.utils.translation.LangConfig;
+import org.bukkit.Bukkit;
+import org.bukkit.Chunk;
+import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
 
 import static me.dueris.genesismc.factory.powers.prevent.PreventSuperClass.prevent_entity_render;
 
@@ -24,44 +34,88 @@ public class PreventEntityRender extends CraftPower {
         }
     }
 
-    Player p;
+    private Long interval;
+    private final int ticksE;
 
     public PreventEntityRender() {
-        this.p = p;
+        this.interval = 12L;
+        this.ticksE = 0;
     }
 
-    @Override
-    public void run(Player p) {
-        if (prevent_entity_render.contains(p)) {
+    public void run(Player p, HashMap<Player, Integer> ticksEMap) {
+        if(GenesisMC.disableRender) return;
+        ticksEMap.putIfAbsent(p, 0);
+
+        if (getPowerArray().contains(p)) {
             for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
-                for (Entity entity : p.getWorld().getEntities()) {
-                    ConditionExecutor conditionExecutor = new ConditionExecutor();
-                    for(PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())){
-                        if (conditionExecutor.check("entity_condition", "entity_condition", p, power, "origins:prevent_entity_render", entity, entity, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
-                            if (conditionExecutor.check("bientity_condition", "bientity_condition", p, power, "origins:prevent_entity_render", entity, entity, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
-                                if(p.canSee(entity)){
-                                    p.hideEntity(GenesisMC.getPlugin(), entity);
-                                }
-//                                entity.setGlowing(true);
-                                setActive(power.getTag(), true);
-                            } else {
-                                setActive(power.getTag(), false);
-//                                entity.setGlowing(false);
-                                if(!p.canSee(entity)){
-                                    p.showEntity(GenesisMC.getPlugin(), entity);
+                for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
+                    if (power == null) continue;
+                    if (power.getInterval() == null) {
+                        Bukkit.getLogger().warning(LangConfig.getLocalizedString(p, "powers.errors.action_over_time"));
+                        return;
+                    }
+
+                    interval = 12l;
+                    int ticksE = ticksEMap.getOrDefault(p, 0);
+                    if (ticksE <= interval) {
+                        ticksE++;
+                        ticksEMap.put(p, ticksE);
+                    } else {
+                        for (Entity entity : getEntitiesWithinRender(p)) {
+                            ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
+                                if (conditionExecutor.check("entity_condition", "entity_condition", p, power, "origins:prevent_entity_render", entity, entity, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
+                                    if (conditionExecutor.check("bientity_condition", "bientity_condition", p, power, "origins:prevent_entity_render", entity, entity, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
+                                        if(p.canSee(entity)){
+                                            p.hideEntity(GenesisMC.getPlugin(), entity);
+                                        }
+                                        setActive(power.getTag(), true);
+                                    } else {
+                                        setActive(power.getTag(), false);
+                                        if(!p.canSee(entity)){
+                                            p.showEntity(GenesisMC.getPlugin(), entity);
+                                        }
+                                    }
+                                } else {
+                                    setActive(power.getTag(), false);
+                                    if(!p.canSee(entity)){
+                                        p.showEntity(GenesisMC.getPlugin(), entity);
+                                    }
                                 }
                             }
-                        } else {
-                            setActive(power.getTag(), false);
-//                            entity.setGlowing(false);
-                            if(!p.canSee(entity)){
-                                p.showEntity(GenesisMC.getPlugin(), entity);
-                            }
-                        }
                     }
                 }
             }
         }
+    }
+
+    public List<Entity> getEntitiesWithinRender(Player player) {
+        int maxChunkDistance = 5;
+        int playerRenderDistance = player.getViewDistance();
+
+        if (maxChunkDistance > playerRenderDistance) {
+            maxChunkDistance = playerRenderDistance;
+        }
+
+        World world = player.getWorld();
+        Location playerLocation = player.getLocation();
+        int playerChunkX = playerLocation.getBlockX() >> 4;
+        int playerChunkZ = playerLocation.getBlockZ() >> 4;
+
+        List<Entity> entities = new ArrayList<>();
+
+        for (int x = playerChunkX - maxChunkDistance; x <= playerChunkX + maxChunkDistance; x++) {
+            for (int z = playerChunkZ - maxChunkDistance; z <= playerChunkZ + maxChunkDistance; z++) {
+                Chunk chunk = world.getChunkAt(x, z);
+                entities.addAll(Arrays.asList(chunk.getEntities()));
+            }
+        }
+
+        return entities;
+    }
+
+    @Override
+    public void run(Player p) {
+
     }
 
     @Override

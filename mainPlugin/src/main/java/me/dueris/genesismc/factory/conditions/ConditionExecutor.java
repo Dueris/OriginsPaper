@@ -1,5 +1,6 @@
 package me.dueris.genesismc.factory.conditions;
 
+import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.entity.OriginPlayer;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.conditions.biEntity.BiEntityCondition;
@@ -12,7 +13,9 @@ import me.dueris.genesismc.factory.conditions.item.ItemCondition;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.OriginContainer;
 import me.dueris.genesismc.utils.PowerContainer;
+import org.bukkit.Bukkit;
 import org.bukkit.Fluid;
+import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -24,7 +27,10 @@ import org.json.simple.JSONObject;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+
 import static me.dueris.genesismc.factory.conditions.CraftCondition.*;
 import static me.dueris.genesismc.factory.conditions.item.ItemCondition.getMeatMaterials;
 import static me.dueris.genesismc.factory.conditions.item.ItemCondition.getNonMeatMaterials;
@@ -124,6 +130,14 @@ public class ConditionExecutor {
 
         return allTrue;
     }
+
+    private BiEntityCondition biEntityCondition = new BiEntityCondition();
+    private BiomeCondition biomeCondition = new BiomeCondition();
+    private BlockCondition blockCondition = new BlockCondition();
+    private DamageCondition damageCondition = new DamageCondition();
+    private EntityCondition entityCondition = new EntityCondition();
+    private FluidCondition fluidCondition = new FluidCondition();
+    private ItemCondition itemCondition = new ItemCondition();
 
     public boolean check(String singular, String plural, Player p, PowerContainer powerContainer, String powerfile, Entity actor, Entity target, Block block, Fluid fluid, ItemStack itemStack, EntityDamageEvent dmgevent) {
         if (powerContainer == null) return true;

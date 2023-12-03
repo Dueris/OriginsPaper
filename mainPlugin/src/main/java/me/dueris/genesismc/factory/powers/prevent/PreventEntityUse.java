@@ -64,7 +64,7 @@ public class PreventEntityUse extends CraftPower implements Listener {
                     if (attacker.getLocation().distance(victim.getLocation()) <= AttributeHandler.Reach.getFinalReach(p)) {
                         if (entity.getPassengers().contains(p)) return;
                         if (!entity.isDead()) {
-                            ConditionExecutor conditionExecutor = new ConditionExecutor();
+                            ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                             for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
                                 if (conditionExecutor.check("bientity_condition", "bientity_condition", p, power, "origins:prevent_entity_use", p, entity, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
                                     if (conditionExecutor.check("item_condition", "item_condition", p, power, "origins:prevent_entity_use", p, entity, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {

@@ -41,7 +41,7 @@ public class ActionOverTime extends CraftPower {
                         ticksE++;
                         ticksEMap.put(p, ticksE);
                     } else {
-                        ConditionExecutor executor = new ConditionExecutor();
+                        ConditionExecutor executor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                         if (executor.check("condition", "conditions", p, power, getPowerFile(), p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
                             setActive(power.getTag(), true);
                             Actions.EntityActionType(p, power.getEntityAction());

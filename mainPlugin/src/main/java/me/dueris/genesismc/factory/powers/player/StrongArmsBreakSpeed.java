@@ -49,7 +49,7 @@ public class StrongArmsBreakSpeed extends CraftPower implements Listener {
         if (!strong_arms_break_speed.contains(p)) return;
         for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
             for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
-                ConditionExecutor executor = new ConditionExecutor();
+                ConditionExecutor executor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                 if (executor.check("condition", "conditions", p, power, getPowerFile(), p, null, e.getClickedBlock(), null, p.getItemInHand(), null)) {
                     if (power == null) {
                         getPowerArray().remove(p);

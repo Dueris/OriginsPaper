@@ -31,7 +31,7 @@ public class PreventElytraFlight extends CraftPower implements Listener {
         if (e.getEntity() instanceof Player p) {
             if (prevent_elytra_flight.contains(p)) {
                 for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
-                    ConditionExecutor conditionExecutor = new ConditionExecutor();
+                    ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                     for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
                         if (conditionExecutor.check("condition", "conditions", p, power, "origins:prevent_elytra_flight", p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
                             e.setCancelled(true);

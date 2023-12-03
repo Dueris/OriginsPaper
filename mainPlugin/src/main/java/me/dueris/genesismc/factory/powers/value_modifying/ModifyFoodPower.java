@@ -146,7 +146,7 @@ public class ModifyFoodPower extends CraftPower implements Listener {
         Player player = e.getPlayer();
         for (OriginContainer origin : OriginPlayer.getOrigin(player).values()) {
             if (modify_food.contains(player)) {
-                ConditionExecutor conditionExecutor = new ConditionExecutor();
+                ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                 for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
                     if (conditionExecutor.check("item_condition", "item_condition", player, power, "origins:modify_food", player, null, player.getLocation().getBlock(), null, player.getInventory().getItemInHand(), null)) {
                         if (modify_food.contains(player)) {

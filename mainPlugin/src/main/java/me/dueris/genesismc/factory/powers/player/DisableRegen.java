@@ -29,7 +29,7 @@ public class DisableRegen extends CraftPower implements Listener {
         if (e.getEntity() instanceof Player p) {
             if (disable_regen.contains(p)) {
                 for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
-                    ConditionExecutor executor = new ConditionExecutor();
+                    ConditionExecutor executor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                     for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
                         if (executor.check("condition", "conditions", p, power, getPowerFile(), p, null, null, null, p.getItemInHand(), null)) {
                             if (power == null) {

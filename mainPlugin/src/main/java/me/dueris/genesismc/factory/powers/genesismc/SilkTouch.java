@@ -43,7 +43,7 @@ public class SilkTouch extends CraftPower implements Listener {
         if (!e.getBlock().getType().equals(Material.AIR)) {
             Player p = e.getPlayer();
             if (silk_touch.contains(e.getPlayer())) {
-                ConditionExecutor executor = new ConditionExecutor();
+                ConditionExecutor executor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                 for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
                     for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
                         if (executor.check("condition", "conditions", p, power, getPowerFile(), p, null, e.getBlock(), null, p.getItemInHand(), null)) {

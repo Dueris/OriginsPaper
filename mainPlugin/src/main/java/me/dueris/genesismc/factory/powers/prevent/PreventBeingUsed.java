@@ -31,7 +31,7 @@ public class PreventBeingUsed extends CraftPower implements Listener {
         if (prevent_being_used.contains(e.getPlayer())) {
             Player p = e.getPlayer();
             for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
-                ConditionExecutor conditionExecutor = new ConditionExecutor();
+                ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                 for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
                     if (conditionExecutor.check("bientity_condition", "bientity_conditions", p, power, "origins:prevent_being_used", p, null, null, null, p.getItemInHand(), null)) {
                         if (conditionExecutor.check("item_condition", "item_conditions", p, power, "origins:prevent_being_used", p, null, null, null, p.getItemInHand(), null)) {

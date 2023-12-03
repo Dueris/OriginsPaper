@@ -44,9 +44,9 @@ public class ModifyPlayerSpawnPower extends CraftPower implements Listener {
             if (e.getRespawnReason().equals(PlayerRespawnEvent.RespawnReason.END_PORTAL)) return;
             if (e.getRespawnReason().equals(PlayerRespawnEvent.RespawnReason.PLUGIN)) return;
             for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
-                ConditionExecutor executor = new ConditionExecutor();
+                ConditionExecutor executor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                 for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
-                    p.teleportAsync(new Location(p.getWorld(), 0, 90000, 0));
+//                    p.teleportAsync(new Location(p.getWorld(), 0, 90000, 0));
                     if (executor.check("condition", "conditions", p, power, getPowerFile(), p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
                         setActive(power.getTag(), true);
                         String dimension = power.get("dimension", null);
@@ -85,18 +85,14 @@ public class ModifyPlayerSpawnPower extends CraftPower implements Listener {
 
                         if (spawnLocation != null) {
                             int radius = 1;
-                            for (int xOffset = -radius; xOffset <= radius; xOffset++) {
-                                for (int yOffset = -radius; yOffset <= radius; yOffset++) {
-                                    for (int zOffset = -radius; zOffset <= radius; zOffset++) {
-                                        Location currentLoc = spawnLocation.clone().add(xOffset, yOffset, zOffset);
-                                        
-                                        if (!currentLoc.getBlock().isPassable()) {
-                                            currentLoc.getBlock().setType(Material.OBSIDIAN);
-                                        } else {
-                                            currentLoc.getBlock().setType(Material.AIR);
-                                        }
-                                    }
-                                }
+                            if(spawnLocation.getBlock().isCollidable()){
+                                spawnLocation.getBlock().setType(AIR);
+                            }
+                            if(spawnLocation.add(0, 1, 0).getBlock().isCollidable()){
+                                spawnLocation.add(0, 1, 0).getBlock().setType(AIR);
+                            }
+                            if(!spawnLocation.add(0, -1, 0).getBlock().isCollidable()){
+                                spawnLocation.add(0, -1, 0).getBlock().setType(Material.OBSIDIAN);
                             }
                             p.teleportAsync(spawnLocation);
                         }
