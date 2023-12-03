@@ -221,6 +221,9 @@ public class Actions {
         if (type.equals("origins:change_resource")){
             if(resourceChangeTimeout.containsKey(entity)) return;
             String resource = power.get("resource").toString();
+            if(Resource.getResource(resource) == null) return;
+            if(Resource.getResource(resource).getRight() == null) return;
+            if(Resource.getResource(resource).getLeft() == null) return;
             int change = Integer.parseInt(power.get("change").toString());
             double finalChange = 1.0 / Resource.getResource(resource).getRight();
             BossBar bossBar = Resource.getResource(resource).getLeft();
