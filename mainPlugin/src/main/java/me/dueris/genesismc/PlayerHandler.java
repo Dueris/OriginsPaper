@@ -5,6 +5,7 @@ import me.dueris.genesismc.events.OriginChangeEvent;
 import me.dueris.genesismc.events.OriginChooseEvent;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.powers.CraftPower;
+import me.dueris.genesismc.factory.powers.player.Gravity;
 import me.dueris.genesismc.factory.powers.player.attributes.AttributeHandler;
 import me.dueris.genesismc.utils.LayerContainer;
 import me.dueris.genesismc.utils.OriginContainer;
@@ -224,6 +225,9 @@ public class PlayerHandler implements Listener {
         } catch (IOException | ReflectiveOperationException el) {
             throw new RuntimeException(el);
         }
+
+        Gravity g = new Gravity();
+        g.run(p);
     }
 
     @EventHandler
