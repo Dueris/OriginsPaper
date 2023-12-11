@@ -108,30 +108,30 @@ public class FlightElytra extends CraftPower implements Listener {
         }
 
         ItemStack handItem = player.getInventory().getItemInMainHand();
-        if(handItem.isSimilar(new ItemStack(Material.FIREWORK_ROCKET)))
-
-        launchElytra(player, 1.75F);
-        if (player.getGameMode() != GameMode.CREATIVE) handItem.setAmount(handItem.getAmount() - 1);
-        player.playSound(player.getLocation(), Sound.ENTITY_FIREWORK_ROCKET_LAUNCH, 10, 1);
-
-        int totalTicks = 10;
-        long interval = 1L;
-
-        new BukkitRunnable() {
-            int ticksRemaining = totalTicks;
-
-            @Override
-            public void run() {
-                if (ticksRemaining > 0) {
-                    player.getWorld().spawnParticle(Particle.FIREWORKS_SPARK, player.getLocation(), 1, 1, 1, 1);
-                    ticksRemaining--;
-                } else {
-                    cancel();
+        if(handItem.getType().equals(Material.FIREWORK_ROCKET)){
+            launchElytra(player, 1.75F);
+            if (player.getGameMode() != GameMode.CREATIVE){handItem.setAmount(handItem.getAmount() - 1);}
+            player.playSound(player.getLocation(), Sound.ENTITY_FIREWORK_ROCKET_LAUNCH, 10, 1);
+    
+            int totalTicks = 10;
+            long interval = 1L;
+    
+            new BukkitRunnable() {
+                int ticksRemaining = totalTicks;
+    
+                @Override
+                public void run() {
+                    if (ticksRemaining > 0) {
+                        player.getWorld().spawnParticle(Particle.FIREWORKS_SPARK, player.getLocation(), 1, 1, 1, 1);
+                        ticksRemaining--;
+                    } else {
+                        cancel();
+                    }
                 }
-            }
-        }.runTaskTimer(GenesisMC.getPlugin(), 0L, interval);
-
-        event.setCancelled(true);
+            }.runTaskTimer(GenesisMC.getPlugin(), 0L, interval);
+    
+            event.setCancelled(true);
+        }
     }
 
     @EventHandler
