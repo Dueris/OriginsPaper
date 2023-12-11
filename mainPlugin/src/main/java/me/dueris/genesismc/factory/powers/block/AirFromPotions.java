@@ -12,7 +12,7 @@ public class AirFromPotions implements Listener {
             if (e.getPlayer().getRemainingAir() > 250) {
                 e.getPlayer().setRemainingAir(300);
             } else {
-                e.getPlayer().setRemainingAir(e.getPlayer().getRemainingAir() + 50);
+                e.getPlayer().setRemainingAir(e.getPlayer().getRemainingAir() + 60);
             }
         }
     }
