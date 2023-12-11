@@ -38,12 +38,6 @@ public class WaterBreathe extends CraftPower {
         }
     }
 
-    Player p;
-
-    public WaterBreathe() {
-        this.p = p;
-    }
-
     @Override
     public void run(Player p) {
         if (!getPowerArray().contains(p)) return;
