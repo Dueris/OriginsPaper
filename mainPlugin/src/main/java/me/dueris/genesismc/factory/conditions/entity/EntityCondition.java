@@ -237,7 +237,7 @@ public class EntityCondition implements Condition {
                 int blockZ = playerLocation.getBlockZ() + Integer.parseInt(offsetZ);
 
                 Block blockAt = world.getBlockAt(blockX, blockY, blockZ);
-                if (!blockAt.getType().isAir()) {
+                if (blockAt.getType().isSolid()) {
                     return getResult(inverted, true);
                 }
             }
