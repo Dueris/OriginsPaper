@@ -7,13 +7,16 @@ import me.dueris.genesismc.utils.OriginContainer;
 import me.dueris.genesismc.utils.PowerContainer;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
+import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Particle;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 public class WaterBreathe extends CraftPower {
     public static ArrayList<Player> outofAIR = new ArrayList<>();
@@ -66,6 +69,7 @@ public class WaterBreathe extends CraftPower {
                                 p.setRemainingAir(-10);
                                 outofAIR.add(p);
                             } else {
+                                spawnBubbleLooseParticle(p.getEyeLocation());
                                 p.setRemainingAir(remainingAir - 5);
                                 outofAIR.remove(p);
                             }
@@ -82,6 +86,11 @@ public class WaterBreathe extends CraftPower {
             }
 
         }
+    }
+
+    private void spawnBubbleLooseParticle(Location location){
+        Random r = new Random();
+        location.getWorld().spawnParticle(Particle.WATER_BUBBLE, location, r.nextInt(7));
     }
 
     @Override
