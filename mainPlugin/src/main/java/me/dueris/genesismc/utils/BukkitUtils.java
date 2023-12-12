@@ -3,7 +3,6 @@ package me.dueris.genesismc.utils;
 import org.apache.commons.io.FilenameUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.BufferedInputStream;
 import java.io.File;
