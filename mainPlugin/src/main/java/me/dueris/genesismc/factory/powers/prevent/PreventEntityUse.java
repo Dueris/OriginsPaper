@@ -33,12 +33,6 @@ public class PreventEntityUse extends CraftPower implements Listener {
         }
     }
 
-    Player p;
-
-    public PreventEntityUse() {
-        this.p = p;
-    }
-
     @Override
     public void run(Player p) {
 

@@ -170,12 +170,6 @@ public class Inventory extends CraftPower implements CommandExecutor, Listener {
         return true;
     }
 
-    Player p;
-
-    public Inventory() {
-        this.p = p;
-    }
-
     @Override
     public void run(Player p) {
 

@@ -16,12 +16,6 @@ import java.util.ArrayList;
 
 public class ActionOnBlockBreak extends CraftPower implements Listener {
 
-    Player p;
-
-    public ActionOnBlockBreak() {
-        this.p = p;
-    }
-
     @Override
     public void run(Player p) {
 

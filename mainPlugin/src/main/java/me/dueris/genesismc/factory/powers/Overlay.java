@@ -20,12 +20,6 @@ public class Overlay extends CraftPower {
         }
     }
 
-    Player p;
-
-    public Overlay() {
-        this.p = p;
-    }
-
     @Override
     public void run(Player player) {
         if (getPowerArray().contains(player)) {

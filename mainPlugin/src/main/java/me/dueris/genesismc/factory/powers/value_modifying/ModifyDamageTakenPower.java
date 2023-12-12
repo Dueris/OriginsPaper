@@ -29,12 +29,6 @@ public class ModifyDamageTakenPower extends CraftPower implements Listener {
         }
     }
 
-    Player p;
-
-    public ModifyDamageTakenPower() {
-        this.p = p;
-    }
-
     @Override
     public void run(Player p) {
 

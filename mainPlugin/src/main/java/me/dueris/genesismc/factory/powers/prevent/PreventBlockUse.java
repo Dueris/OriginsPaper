@@ -53,13 +53,7 @@ public class PreventBlockUse extends CraftPower implements Listener {
             }
         }
     }
-
-    Player p;
-
-    public PreventBlockUse() {
-        this.p = p;
-    }
-
+    
     @Override
     public void run(Player p) {
 

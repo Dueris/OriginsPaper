@@ -187,9 +187,7 @@ public class DamageOverTime extends CraftPower {
             }
         }
     }
-
-    Player p;
-
+    
     @Override
     public void run(Player p) {
 //        if (damage_over_time.contains(p)) {

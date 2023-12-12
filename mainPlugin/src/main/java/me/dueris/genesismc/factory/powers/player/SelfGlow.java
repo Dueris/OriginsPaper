@@ -32,12 +32,6 @@ public class SelfGlow extends CraftPower {
         }
     }
 
-    Player p;
-
-    public SelfGlow() {
-        this.p = p;
-    }
-
     @Override
     public void run(Player p) {
         if (!getPowerArray().contains(p)) return;

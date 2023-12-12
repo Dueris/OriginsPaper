@@ -65,12 +65,6 @@ public class ModifyHealingPower extends CraftPower implements Listener {
         }
     }
 
-    Player p;
-
-    public ModifyHealingPower() {
-        this.p = p;
-    }
-
     @Override
     public void run(Player p) {
 

@@ -16,11 +16,6 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.util.ArrayList;
 
 public class AttackerActionWhenHit extends CraftPower implements Listener {
-    Player p;
-
-    public AttackerActionWhenHit() {
-        this.p = p;
-    }
 
     @Override
     public void run(Player p) {

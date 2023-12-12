@@ -30,7 +30,6 @@ public class ModifyStatusEffectAmplifierPower extends CraftPower implements List
         }
     }
 
-
     @EventHandler
     public void runD(EntityPotionEffectEvent e) {
         if (e.getEntity() instanceof Player p) {
@@ -75,13 +74,7 @@ public class ModifyStatusEffectAmplifierPower extends CraftPower implements List
             }
         }
     }
-
-    Player p;
-
-    public ModifyStatusEffectAmplifierPower() {
-        this.p = p;
-    }
-
+    
     @Override
     public void run(Player p) {
 

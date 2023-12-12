@@ -33,11 +33,8 @@ public class Phasing extends CraftPower implements Listener {
     private final Long interval;
     private final int ticksE;
     public static HashMap<Player, Boolean> test = new HashMap<>();
-
-    Player p;
-
+    
     public Phasing() {
-        this.p = p;
         this.interval = 100L;
         this.ticksE = 0;
     }

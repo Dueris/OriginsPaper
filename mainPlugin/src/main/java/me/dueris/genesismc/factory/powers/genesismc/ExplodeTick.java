@@ -165,12 +165,8 @@ public class ExplodeTick extends CraftPower implements Listener {
         }
     }
 
-
-    Player p;
-
     public ExplodeTick() {
         this.cooldown = new HashMap<>();
-        this.p = p;
     }
 
     @Override

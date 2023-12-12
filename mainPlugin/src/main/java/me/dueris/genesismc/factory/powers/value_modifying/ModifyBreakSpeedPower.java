@@ -101,12 +101,6 @@ public class ModifyBreakSpeedPower extends CraftPower implements Listener {
         }
     }
 
-    Player p;
-
-    public ModifyBreakSpeedPower() {
-        this.p = p;
-    }
-
     @Override
     public void run(Player p) {
 

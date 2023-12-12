@@ -27,12 +27,6 @@ public class Gravity extends CraftPower implements Listener {
         }
     }
 
-    Player p;
-
-    public Gravity() {
-        this.p = p;
-    }
-
     @Override
     public void run(Player p) {
         for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {

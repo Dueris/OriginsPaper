@@ -20,12 +20,6 @@ public class Freeze extends CraftPower {
         }
     }
 
-    Player p;
-
-    public Freeze() {
-        this.p = p;
-    }
-
     @Override
     public void run(Player p) {
         for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {

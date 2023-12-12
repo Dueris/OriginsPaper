@@ -24,12 +24,6 @@ public class Grounded extends CraftPower {
         }
     }
 
-    Player p;
-
-    public Grounded() {
-
-    }
-
     @Override
     public void run(Player player) {
         ArrayList<Location> platform_pos = new ArrayList<>();

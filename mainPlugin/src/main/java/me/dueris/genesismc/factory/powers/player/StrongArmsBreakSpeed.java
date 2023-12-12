@@ -74,12 +74,6 @@ public class StrongArmsBreakSpeed extends CraftPower implements Listener {
         }
     }
 
-    Player p;
-
-    public StrongArmsBreakSpeed() {
-        this.p = p;
-    }
-
     @Override
     public void run(Player p) {
 

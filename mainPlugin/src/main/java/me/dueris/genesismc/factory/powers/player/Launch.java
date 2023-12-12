@@ -161,12 +161,6 @@ public class Launch extends CraftPower implements Listener {
         }
     }
 
-    Player p;
-
-    public Launch() {
-        this.p = p;
-    }
-
     @Override
     public void run(Player p) {
 

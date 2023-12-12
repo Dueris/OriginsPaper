@@ -19,12 +19,6 @@ import java.util.ArrayList;
 public class ActionOnLand extends CraftPower implements Listener {
     private final double MIN_FALL_DISTANCE = 0.5;
 
-    Player p;
-
-    public ActionOnLand() {
-        this.p = p;
-    }
-
     @Override
     public void run(Player p) {
 

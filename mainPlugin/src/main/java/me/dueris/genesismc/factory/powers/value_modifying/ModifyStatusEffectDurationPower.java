@@ -76,12 +76,6 @@ public class ModifyStatusEffectDurationPower extends CraftPower implements Liste
         }
     }
 
-    Player p;
-
-    public ModifyStatusEffectDurationPower() {
-        this.p = p;
-    }
-
     @Override
     public void run(Player p) {
 

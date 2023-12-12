@@ -124,12 +124,6 @@ public class Recipe extends CraftPower implements Listener {
 
     //TODO: PATCH THIS CAUSING ERRORS CHECK ORIGINS:ARACHNID
 
-    Player p;
-
-    public Recipe() {
-        this.p = p;
-    }
-
     @Override
     public void run(Player p) {
 

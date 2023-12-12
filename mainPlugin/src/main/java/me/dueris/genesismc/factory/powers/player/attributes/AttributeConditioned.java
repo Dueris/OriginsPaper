@@ -172,10 +172,6 @@ public class AttributeConditioned extends CraftPower implements Listener {
         applied.put(e.getPlayer(), false);
     }
 
-    public AttributeConditioned() {
-
-    }
-
     HashMap<Player, Boolean> applied = new HashMap<>();
 
     @Override

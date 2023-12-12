@@ -25,10 +25,7 @@ public class Exhaust extends CraftPower {
         }
     }
 
-    Player p;
-
     public Exhaust() {
-        this.p = p;
         this.interval = 1L;
         this.ticksE = 0;
     }

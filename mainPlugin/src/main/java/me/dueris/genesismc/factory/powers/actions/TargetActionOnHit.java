@@ -16,11 +16,6 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import java.util.ArrayList;
 
 public class TargetActionOnHit extends CraftPower implements Listener {
-    Player p;
-
-    public TargetActionOnHit() {
-        this.p = p;
-    }
 
     @Override
     public void run(Player p) {

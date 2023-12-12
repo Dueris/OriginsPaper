@@ -22,12 +22,6 @@ public class PreventEntityCollision extends CraftPower {
         }
     }
 
-    Player p;
-
-    public PreventEntityCollision() {
-        this.p = p;
-    }
-
     @Override
     public void run(Player p) {
         for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {

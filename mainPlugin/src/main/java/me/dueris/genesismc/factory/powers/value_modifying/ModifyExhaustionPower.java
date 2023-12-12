@@ -28,12 +28,6 @@ public class ModifyExhaustionPower extends CraftPower implements Listener {
         }
     }
 
-    Player p;
-
-    public ModifyExhaustionPower() {
-        this.p = p;
-    }
-
     @Override
     public void run(Player p) {
 

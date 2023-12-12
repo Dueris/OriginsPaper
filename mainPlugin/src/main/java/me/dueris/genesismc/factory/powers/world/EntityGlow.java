@@ -39,12 +39,6 @@ public class EntityGlow extends CraftPower {
         return entitiesInRadius;
     }
 
-    Player p;
-
-    public EntityGlow() {
-        this.p = p;
-    }
-
     @Override
     public void run(Player p) {
         for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {

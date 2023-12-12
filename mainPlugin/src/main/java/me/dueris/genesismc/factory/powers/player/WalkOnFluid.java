@@ -26,12 +26,6 @@ public class WalkOnFluid extends CraftPower {
         }
     }
 
-    Player p;
-
-    public WalkOnFluid() {
-        this.p = p;
-    }
-
     @Override
     public void run(Player p) {
         if (getPowerArray().contains(p)) {

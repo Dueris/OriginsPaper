@@ -24,11 +24,6 @@ import static me.dueris.genesismc.utils.KeybindUtils.isKeyBeingPressed;
 import java.util.ArrayList;
 
 public class ToggleNightVision extends CraftPower implements Listener {
-    Player p;
-
-    public ToggleNightVision() {
-        this.p = p;
-    }
 
     @Override
     public void run(Player p) {

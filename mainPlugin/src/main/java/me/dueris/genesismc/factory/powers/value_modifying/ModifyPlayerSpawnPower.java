@@ -28,10 +28,6 @@ public class ModifyPlayerSpawnPower extends CraftPower implements Listener {
         powers_active.put(tag, bool); // Simplified code
     }
 
-    public ModifyPlayerSpawnPower() {
-
-    }
-
     @Override
     public void run(Player p) {
 

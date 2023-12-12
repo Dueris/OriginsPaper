@@ -45,12 +45,6 @@ public class PlayerRender extends CraftPower {
         }
     }
 
-    Player p;
-
-    public PlayerRender() {
-        this.p = p;
-    }
-
     @Override
     public void run(Player p) {
 //        ScoreboardManager manager = Bukkit.getScoreboardManager();

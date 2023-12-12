@@ -16,11 +16,6 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.util.ArrayList;
 
 public class ActionOnEntityUse extends CraftPower implements Listener {
-    Player p;
-
-    public ActionOnEntityUse() {
-        this.p = p;
-    }
 
     @Override
     public void run(Player p) {

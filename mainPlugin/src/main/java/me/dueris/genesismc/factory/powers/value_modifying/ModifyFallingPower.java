@@ -30,12 +30,6 @@ public class ModifyFallingPower extends CraftPower implements Listener {
         }
     }
 
-    Player p;
-
-    public ModifyFallingPower() {
-        this.p = p;
-    }
-
     @Override
     public void run(Player p) {
 

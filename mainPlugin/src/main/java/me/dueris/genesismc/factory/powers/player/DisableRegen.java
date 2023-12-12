@@ -56,12 +56,6 @@ public class DisableRegen extends CraftPower implements Listener {
         }
     }
 
-    Player p;
-
-    public DisableRegen() {
-        this.p = p;
-    }
-
     @Override
     public void run(Player p) {
 

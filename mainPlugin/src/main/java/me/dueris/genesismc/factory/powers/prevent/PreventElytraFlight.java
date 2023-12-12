@@ -46,12 +46,6 @@ public class PreventElytraFlight extends CraftPower implements Listener {
         }
     }
 
-    Player p;
-
-    public PreventElytraFlight() {
-        this.p = p;
-    }
-
     @Override
     public void run(Player p) {
 

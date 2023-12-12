@@ -29,12 +29,6 @@ public class ModifyProjectileDamagePower extends CraftPower implements Listener 
         }
     }
 
-    Player p;
-
-    public ModifyProjectileDamagePower() {
-        this.p = p;
-    }
-
     @Override
     public void run(Player p) {
 

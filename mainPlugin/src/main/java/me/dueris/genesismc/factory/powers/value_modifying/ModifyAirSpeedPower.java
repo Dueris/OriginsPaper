@@ -30,12 +30,6 @@ public class ModifyAirSpeedPower extends CraftPower {
         }
     }
 
-    Player p;
-
-    public ModifyAirSpeedPower() {
-        this.p = p;
-    }
-
     @Override
     public void run(Player p) {
         for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {

@@ -54,10 +54,6 @@ public class ModifyJumpPower extends CraftPower implements Listener {
         }
     }
 
-    public ModifyJumpPower() {
-
-    }
-
     @Override
     public void run(Player p) {
 

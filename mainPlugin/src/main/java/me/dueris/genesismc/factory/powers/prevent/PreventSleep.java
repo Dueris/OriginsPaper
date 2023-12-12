@@ -37,12 +37,6 @@ public class PreventSleep extends CraftPower implements Listener {
         }
     }
 
-    Player p;
-
-    public PreventSleep() {
-        this.p = p;
-    }
-
     @Override
     public void run(Player p) {
 

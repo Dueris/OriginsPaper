@@ -22,12 +22,6 @@ public class ParticlePower extends CraftPower {
         }
     }
 
-    Player p;
-
-    public ParticlePower() {
-        this.p = p;
-    }
-
     @Override
     public void run(Player player) {
         if (particle.contains(player)) {

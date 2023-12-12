@@ -38,12 +38,6 @@ public class Climbing extends CraftPower {
         return active_climbing;
     }
 
-    Player p;
-
-    public Climbing() {
-        this.p = p;
-    }
-
     @Override
     public void run(Player p) {
         if (climbing.contains(p)) {

@@ -141,12 +141,6 @@ public class Toggle extends CraftPower implements Listener {
         }
     }
 
-    Player p;
-
-    public Toggle() {
-        this.p = p;
-    }
-
     @Override
     public void run(Player p) {
 

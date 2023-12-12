@@ -59,12 +59,6 @@ public class KeepInventory extends CraftPower implements Listener {
         }
     }
 
-    Player p;
-
-    public KeepInventory() {
-        this.p = p;
-    }
-
     @Override
     public void run(Player p) {
 

@@ -23,12 +23,6 @@ public class FireImmunity extends CraftPower implements Listener {
         }
     }
 
-    Player p;
-
-    public FireImmunity() {
-        this.p = p;
-    }
-
     @Override
     public void run(Player p) {
 

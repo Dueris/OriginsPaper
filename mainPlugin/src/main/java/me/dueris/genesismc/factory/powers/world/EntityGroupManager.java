@@ -84,12 +84,6 @@ public class EntityGroupManager extends CraftPower {
         }
     }
 
-    Player p;
-
-    public EntityGroupManager() {
-        this.p = p;
-    }
-
     @Override
     public void run(Player p) {
         for (World world : Bukkit.getWorlds()) {

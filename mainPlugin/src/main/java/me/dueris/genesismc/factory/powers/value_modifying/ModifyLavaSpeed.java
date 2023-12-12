@@ -28,12 +28,6 @@ public class ModifyLavaSpeed extends CraftPower {
         }
     }
 
-    Player p;
-
-    public ModifyLavaSpeed() {
-        this.p = p;
-    }
-
     @Override
     public void run(Player p) {
         if (modify_lava_speed.contains(p)) {

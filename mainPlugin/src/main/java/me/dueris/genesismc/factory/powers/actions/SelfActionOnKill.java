@@ -16,11 +16,6 @@ import org.bukkit.event.entity.EntityDeathEvent;
 import java.util.ArrayList;
 
 public class SelfActionOnKill extends CraftPower implements Listener {
-    Player p;
-
-    public SelfActionOnKill() {
-        this.p = p;
-    }
 
     @Override
     public void run(Player p) {

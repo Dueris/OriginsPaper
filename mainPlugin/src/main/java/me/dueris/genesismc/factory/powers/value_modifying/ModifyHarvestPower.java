@@ -48,12 +48,6 @@ public class ModifyHarvestPower extends CraftPower implements Listener {
         }
     }
 
-    Player p;
-
-    public ModifyHarvestPower() {
-        this.p = p;
-    }
-
     @Override
     public void run(Player p) {
 

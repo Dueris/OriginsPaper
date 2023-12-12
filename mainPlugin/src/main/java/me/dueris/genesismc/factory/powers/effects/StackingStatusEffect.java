@@ -152,12 +152,6 @@ public class StackingStatusEffect extends CraftPower {
         }
     }
 
-    Player p;
-
-    public StackingStatusEffect() {
-        this.p = p;
-    }
-
     @Override
     public void run(Player p) {
         if (getPowerArray().contains(p)) {

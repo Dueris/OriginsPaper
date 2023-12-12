@@ -11,12 +11,6 @@ import java.util.ArrayList;
 
 public class FlightHandler extends CraftPower {
 
-    Player p;
-
-    public FlightHandler() {
-        this.p = p;
-    }
-
     @Override
     public void run(Player p) {
         if (p.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "insideBlock"), PersistentDataType.BOOLEAN) != null && Boolean.TRUE.equals(p.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "insideBlock"), PersistentDataType.BOOLEAN))) {

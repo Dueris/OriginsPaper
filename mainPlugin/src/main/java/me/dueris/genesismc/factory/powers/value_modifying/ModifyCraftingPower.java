@@ -32,12 +32,6 @@ public class ModifyCraftingPower extends CraftPower implements Listener {
         }
     }
 
-    Player p;
-
-    public ModifyCraftingPower() {
-        this.p = p;
-    }
-
     @Override
     public void run(Player p) {
 

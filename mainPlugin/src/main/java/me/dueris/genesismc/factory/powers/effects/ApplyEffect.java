@@ -25,12 +25,6 @@ public class ApplyEffect extends CraftPower implements Listener {
         }
     }
 
-    Player p;
-
-    public ApplyEffect() {
-        this.p = p;
-    }
-
     @Override
     public void run(Player p) {
         if (apply_effect.contains(p)) {

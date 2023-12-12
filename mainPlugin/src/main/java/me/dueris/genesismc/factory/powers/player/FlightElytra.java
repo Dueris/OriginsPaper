@@ -36,12 +36,6 @@ public class FlightElytra extends CraftPower implements Listener {
         }
     }
 
-    Player p;
-
-    public FlightElytra() {
-        this.p = p;
-    }
-
     @Override
     public void run(Player p) {
 

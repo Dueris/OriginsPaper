@@ -56,12 +56,6 @@ public class RestrictArmor extends CraftPower {
         }
     }
 
-    /*
-
-     */
-
-    Player p;
-
     public void run(Player p, HashMap<Player, Integer> ticksEMap) {
         ticksEMap.putIfAbsent(p, 0);
 

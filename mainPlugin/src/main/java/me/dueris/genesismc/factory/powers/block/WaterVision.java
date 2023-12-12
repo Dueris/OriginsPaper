@@ -20,12 +20,6 @@ public class WaterVision extends CraftPower {
         }
     }
 
-    Player p;
-
-    public WaterVision() {
-        this.p = p;
-    }
-
     @Override
     public void run(Player p) {
         if (water_vision.contains(p)) {

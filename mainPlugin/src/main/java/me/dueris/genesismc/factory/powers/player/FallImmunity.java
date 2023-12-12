@@ -23,12 +23,6 @@ public class FallImmunity extends CraftPower implements Listener {
         }
     }
 
-    Player p;
-
-    public FallImmunity() {
-        this.p = p;
-    }
-
     @Override
     public void run(Player p) {
 

@@ -22,12 +22,6 @@ public class PreventSprinting extends CraftPower {
         }
     }
 
-    Player p;
-
-    public PreventSprinting() {
-        this.p = p;
-    }
-
     @Override
     public void run(Player p) {
         if (prevent_sprinting.contains(p)) {

@@ -27,10 +27,6 @@ public class PreventItemUse extends CraftPower implements Listener {
         }
     }
 
-    public PreventItemUse() {
-
-    }
-
     @Override
     public void run(Player p) {
 

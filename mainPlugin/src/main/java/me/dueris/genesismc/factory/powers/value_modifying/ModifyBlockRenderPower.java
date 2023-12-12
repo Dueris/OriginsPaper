@@ -32,12 +32,6 @@ public class ModifyBlockRenderPower extends CraftPower {
         }
     }
 
-    Player p;
-
-    public ModifyBlockRenderPower() {
-        this.p = p;
-    }
-
     @Override
     public void run(Player player) {
         ChunkManagerWorld chunkManagerWorld = new ChunkManagerWorld(player.getWorld());
