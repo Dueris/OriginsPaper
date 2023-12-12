@@ -9,6 +9,8 @@ import me.dueris.genesismc.utils.PowerContainer;
 import me.dueris.genesismc.utils.translation.LangConfig;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
@@ -31,12 +33,6 @@ public class ModifySwimSpeedPower extends CraftPower {
         }
     }
 
-    Player p;
-
-    public ModifySwimSpeedPower() {
-        this.p = p;
-    }
-
     @Override
     public void run(Player p) {
         for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
@@ -47,8 +43,19 @@ public class ModifySwimSpeedPower extends CraftPower {
                     if (conditionExecutor.check("condition", "conditions", p, power, "origins:modify_swim_speed", p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
                         if (valueModifyingSuperClass.getPersistentAttributeContainer(p, MODIFYING_KEY) == -1) return;
                         if (!p.isSwimming()) return;
-                        Vector swimVelocity = p.getLocation().getDirection().normalize().multiply(valueModifyingSuperClass.getPersistentAttributeContainer(p, MODIFYING_KEY));
-                        p.setVelocity(swimVelocity);
+                        // Change to use dolphins grace for easier
+                        // Vector swimVelocity = p.getLocation().getDirection().normalize().multiply(valueModifyingSuperClass.getPersistentAttributeContainer(p, MODIFYING_KEY));
+                        // p.setVelocity(swimVelocity);
+                        int ampl = Math.round(valueModifyingSuperClass.getPersistentAttributeContainer(p, MODIFYING_KEY));
+                        if(ampl < 1){
+                            ampl = 1;
+                        }
+                        if(ampl > 10){
+                            ampl = 10;
+                        }
+                        p.addPotionEffect(
+                            new PotionEffect(PotionEffectType.DOLPHINS_GRACE, 100, ampl, false, false)
+                        );
                         if (power == null) {
                             getPowerArray().remove(p);
                             return;
