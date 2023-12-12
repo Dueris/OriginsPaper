@@ -135,7 +135,7 @@ public class OriginContainer implements Serializable {
      * @return The impact of the origin.
      */
     public Long getImpact() {
-        Long impact = (Long) this.originFile.get("impact");
+        Long impact = Long.valueOf(this.originFile.get("impact").toString());
         if (impact == null) return 1L;
         return impact;
     }
