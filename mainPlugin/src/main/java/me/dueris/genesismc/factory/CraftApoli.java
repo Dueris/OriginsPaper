@@ -114,7 +114,7 @@ public class CraftApoli {
                 FileContainer subPowerFile = fileToFileContainer(subPowerJson);
                 String source = powerContainer.getSource();
 
-                PowerContainer newPower = new PowerContainer(powerFolder + ":" + powerFileName + "_" + key, subPowerFile, source);
+                PowerContainer newPower = new PowerContainer(powerFolder + ":" + powerFileName + "_" + key, subPowerFile, source, true);
                 powerContainers.add(newPower);
                 newPowerContainers.add(newPower);
             }

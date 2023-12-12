@@ -75,7 +75,7 @@ public class Info extends SubCommand implements Listener {
 
         ArrayList<PowerContainer> powerContainers = new ArrayList<>();
         for(PowerContainer powerContainer : origin.getPowerContainers()){
-            if(powerContainer.getHidden()) continue;
+            if(powerContainer.isHidden()) continue;
             powerContainers.add(powerContainer);
         }
 
@@ -160,7 +160,7 @@ public class Info extends SubCommand implements Listener {
                 }
                 contents.add(originIcon);
             } else if ((i >= 20 && i <= 24) || (i >= 29 && i <= 33) || (i >= 38 && i <= 42)) {
-                while (powerContainers.size() > 0 && powerContainers.get(0).getHidden()) {
+                while (powerContainers.size() > 0 && powerContainers.get(0).isHidden()) {
                     powerContainers.remove(0);
                 }
                 if (powerContainers.size() > 0) {

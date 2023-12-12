@@ -88,7 +88,7 @@ public class LegacyPowerContainer implements Serializable {
     /**
      * @return Whether the power should be displayed. Will return false if "hidden" is not present.
      */
-    public Boolean getHidden() {
+    public Boolean isHidden() {
         Object hidden = powerFile.get("hidden");
         if (hidden == null) return false;
         return (Boolean) hidden;

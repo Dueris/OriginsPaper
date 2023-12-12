@@ -16,6 +16,7 @@ public class PowerContainer implements Serializable {
     String powerTag;
     FileContainer powerFile;
     String powerSource;
+    boolean originMultiple;
 
     /**
      * @param powerTag    The power tag.
@@ -26,10 +27,22 @@ public class PowerContainer implements Serializable {
         this.powerTag = powerTag;
         this.powerFile = powerFile;
         this.powerSource = powerSource;
+        this.originMultiple = false;
+    }
+
+    public PowerContainer(String powerTag, FileContainer powerFile, String powerSource, boolean originMultiple){
+        this.powerTag = powerTag;
+        this.powerFile = powerFile;
+        this.powerSource = powerSource;
+        this.originMultiple = originMultiple;
     }
 
     public FileContainer getPowerFile() {
         return powerFile;
+    }
+
+    public boolean isOriginMultipleSubPower(){
+        return this.originMultiple;
     }
 
     /**
@@ -103,9 +116,10 @@ public class PowerContainer implements Serializable {
     /**
      * @return Whether the power should be displayed. Will return false if "hidden" is not present.
      */
-    public Boolean getHidden() {
+    public Boolean isHidden() {
         Object hidden = powerFile.get("hidden");
-        if (hidden == null) return true;
+        if (hidden == null) return false;
+        if (this.isOriginMultipleSubPower()) return true;
         return (Boolean) hidden;
     }
 
