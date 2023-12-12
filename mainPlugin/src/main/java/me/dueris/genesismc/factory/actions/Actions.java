@@ -517,12 +517,6 @@ public class Actions {
             }
         }
         if (type.equals("origins:execute_command")) {
-            OriginCommandSender originCommandSender = new OriginCommandSender();
-            originCommandSender.setOp(true);
-            final boolean lastSendCMDFeedback = Boolean.parseBoolean(GameRule.SEND_COMMAND_FEEDBACK.toString());
-            Bukkit.dispatchCommand(originCommandSender, "gamerule sendCommandFeedback false");
-            final boolean lastlogAdminCMDs = Boolean.parseBoolean(GameRule.LOG_ADMIN_COMMANDS.toString());
-            Bukkit.dispatchCommand(originCommandSender, "gamerule logAdminCommands false");
             final boolean isOp = entity.isOp();
             entity.setOp(true);
             String cmd = null;
