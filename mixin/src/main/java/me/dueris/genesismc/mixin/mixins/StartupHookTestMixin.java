@@ -21,7 +21,7 @@ import java.util.stream.Stream;
 
 @Mixin(Main.class)
 public class StartupHookTestMixin {
-    @Inject(method = "main", at = @At("RETURN"))
+    @Inject(method = "main", at = @At("HEAD"))
     private static void injectT(String[] args, CallbackInfo ci){
         //start copying the jar
 
