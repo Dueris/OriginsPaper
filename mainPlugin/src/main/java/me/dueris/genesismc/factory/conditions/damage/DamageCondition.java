@@ -44,6 +44,7 @@ public class DamageCondition implements Condition {
     public Optional<Boolean> check(HashMap<String, Object> condition, Player p, PowerContainer power, String powerfile, Entity actor, Entity target, Block block, Fluid fluid, ItemStack itemStack, EntityDamageEvent entityDamageEvent) {
         if (condition.isEmpty()) return Optional.empty();
         if (condition.get("type") == null) return Optional.empty();
+        if (entityDamageEvent == null) return Optional.empty();
         boolean inverted = (boolean) condition.getOrDefault("inverted", false);
         String type = condition.get("type").toString().toLowerCase();
 

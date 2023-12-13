@@ -74,7 +74,7 @@ public class ModifyPlayerSpawnPower extends CraftPower implements Listener {
                     Location teleportLoc = new Location(world, 0, 0, 0);
                     Location centerPosLoc = new Location(world, 0, 70, 0);
                     if(world.getEnvironment() != Environment.NETHER){
-                        centerPosLoc.setY(world.getHighestBlockYAt(0, 0) + 1);
+                        centerPosLoc.setY(world.getHighestBlockYAt(0, 0));
                     }
                     GenesisMC.sendDebug(world.getName());
                     int[] possibleVerticalMovement = {0, 1};
