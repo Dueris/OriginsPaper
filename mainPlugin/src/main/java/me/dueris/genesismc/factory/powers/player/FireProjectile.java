@@ -73,7 +73,7 @@ public class FireProjectile extends CraftPower implements Listener {
         Player p = e.getPlayer();
         if (enderian_pearl.contains(e.getPlayer()) && e.getCause() == PlayerTeleportEvent.TeleportCause.ENDER_PEARL) {
             e.setCancelled(true);
-            p.teleport(e.getTo());
+            p.teleportAsync(e.getTo());
         }
 
     }

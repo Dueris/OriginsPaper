@@ -38,60 +38,66 @@ public class BiomeCondition implements Condition {
     public Optional<Boolean> check(HashMap<String, Object> condition, Player p, PowerContainer power, String powerfile, Entity actor, Entity target, Block block, Fluid fluid, ItemStack itemStack, EntityDamageEvent entityDamageEvent) {
         if (condition.isEmpty()) return Optional.empty();
         if (condition.get("type") == null) return Optional.empty();
-        boolean inverted = (boolean) condition.getOrDefault("inverted", false);
-        String type = condition.get("type").toString().toLowerCase();
-        if (type.equalsIgnoreCase("origins:biome") && condition.containsKey("condition")) {
-            Map<String, Object> keyMap = (Map<String, Object>) condition.get("condition");
-            if (keyMap.containsKey("type") && keyMap.get("type").equals("origins:temperature")) {
-                if (keyMap.containsKey("comparison") && keyMap.containsKey("compare_to")) {
-                    if (RestrictArmor.compareValues(block.getTemperature(), keyMap.get("comparison").toString(), Double.parseDouble(keyMap.get("compare_to").toString()))) {
-                        return getResult(inverted, true);
+        if (block != null) {
+            boolean inverted = (boolean) condition.getOrDefault("inverted", false);
+            String type = condition.get("type").toString().toLowerCase();
+            if (type.equalsIgnoreCase("origins:biome") && condition.containsKey("condition")) {
+                Map<String, Object> keyMap = (Map<String, Object>) condition.get("condition");
+                if (keyMap.containsKey("type") && keyMap.get("type").equals("origins:temperature")) {
+                    if (keyMap.containsKey("comparison") && keyMap.containsKey("compare_to")) {
+                        if (RestrictArmor.compareValues(block.getTemperature(), keyMap.get("comparison").toString(), Double.parseDouble(keyMap.get("compare_to").toString()))) {
+                            return getResult(inverted, true);
+                        }
                     }
                 }
             }
-        }
-        if (type.equals("origins:in_tag")){
-            for(String bi : TagRegistry.getRegisteredTagFromFileKey(condition.get("tag").toString())){
-                if(block.getBiome().equals(Biome.valueOf(bi.split(":")[1].toUpperCase()))){
-                    return Optional.of(true);
+            if (type.equals("origins:in_tag")){
+                for(String bi : TagRegistry.getRegisteredTagFromFileKey(condition.get("tag").toString())){
+                    if(block != null){
+                        if(block.getBiome().equals(Biome.valueOf(bi.split(":")[1].toUpperCase()))){
+                            return Optional.of(true);
+                        }
+                    }
                 }
             }
-        }
-        if (type.equalsIgnoreCase("origins:precipitation")){
-            Biome biome = block.getBiome();
-            if (biome != null) {
-                net.minecraft.world.level.biome.Biome b = CraftBiome.bukkitToMinecraft(biome);
-                if (b.coldEnoughToSnow(BlockPos.containing(block.getX(), block.getY(), block.getZ()))){
-                    return getResult(inverted, condition.get("precipitation").toString().equals("snow"));
-                } else if (b.hasPrecipitation()) {
-                    return getResult(inverted, condition.get("precipitation").toString().equals("rain"));
+            if (type.equalsIgnoreCase("origins:precipitation")){
+                Biome biome = block.getBiome();
+                if (biome != null) {
+                    net.minecraft.world.level.biome.Biome b = CraftBiome.bukkitToMinecraft(biome);
+                    if (b.coldEnoughToSnow(BlockPos.containing(block.getX(), block.getY(), block.getZ()))){
+                        return getResult(inverted, condition.get("precipitation").toString().equals("snow"));
+                    } else if (b.hasPrecipitation()) {
+                        return getResult(inverted, condition.get("precipitation").toString().equals("rain"));
+                    } else {
+                        return getResult(inverted, condition.get("precipitation").toString().equals("none"));
+                    }
                 } else {
-                    return getResult(inverted, condition.get("precipitation").toString().equals("none"));
+                    return getResult(inverted, condition.get("precipitation").toString().equals("rain"));
                 }
-            } else {
-                return getResult(inverted, condition.get("precipitation").toString().equals("rain"));
             }
-        }
-        if (type.equalsIgnoreCase("origins:category")){
-            Biome biome = block.getBiome();
-            for(String biom : BiomeMappings.getBiomeIDs(condition.get("category").toString())){
-                 if(Biome.valueOf(biom.split(":")[1].toUpperCase()).equals(biome)){
-                     return getResult(inverted, true);
-                 }
+            if (type.equalsIgnoreCase("origins:category")){
+                Biome biome = block.getBiome();
+                for(String biom : BiomeMappings.getBiomeIDs(condition.get("category").toString())){
+                     if(Biome.valueOf(biom.split(":")[1].toUpperCase()).equals(biome)){
+                         return getResult(inverted, true);
+                     }
+                }
             }
+            if (type.equalsIgnoreCase("origins:temperature")){
+                net.minecraft.world.level.biome.Biome b = CraftBiome.bukkitToMinecraft(block.getBiome());
+                String comparison = condition.get("comparison").toString();
+                float compare_to = Float.parseFloat(condition.get("compare_to").toString());
+                    return getResult(inverted, RestrictArmor.compareValues(b.getBaseTemperature(), comparison, compare_to));
+            }
+            if (type.equalsIgnoreCase("origins:humidity")){
+                net.minecraft.world.level.biome.Biome b = CraftBiome.bukkitToMinecraft(block.getBiome());
+                String comparison = condition.get("comparison").toString();
+                float compare_to = Float.parseFloat(condition.get("compare_to").toString());
+                    return getResult(inverted, RestrictArmor.compareValues(b.climateSettings.downfall(), comparison, compare_to));
+            }
+            return getResult(inverted, false);
+        }else{
+            return Optional.empty();
         }
-        if (type.equalsIgnoreCase("origins:temperature")){
-            net.minecraft.world.level.biome.Biome b = CraftBiome.bukkitToMinecraft(block.getBiome());
-            String comparison = condition.get("comparison").toString();
-            float compare_to = Float.parseFloat(condition.get("compare_to").toString());
-                return getResult(inverted, RestrictArmor.compareValues(b.getBaseTemperature(), comparison, compare_to));
-        }
-        if (type.equalsIgnoreCase("origins:humidity")){
-            net.minecraft.world.level.biome.Biome b = CraftBiome.bukkitToMinecraft(block.getBiome());
-            String comparison = condition.get("comparison").toString();
-            float compare_to = Float.parseFloat(condition.get("compare_to").toString());
-                return getResult(inverted, RestrictArmor.compareValues(b.climateSettings.downfall(), comparison, compare_to));
-        }
-        return getResult(inverted, false);
     }
 }

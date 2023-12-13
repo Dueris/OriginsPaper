@@ -56,18 +56,8 @@ public class ModifySwimSpeedPower extends CraftPower {
                         p.addPotionEffect(
                             new PotionEffect(PotionEffectType.DOLPHINS_GRACE, 100, ampl, false, false)
                         );
-                        if (power == null) {
-                            getPowerArray().remove(p);
-                            return;
-                        }
-                        if (!getPowerArray().contains(p)) return;
                         setActive(power.getTag(), true);
                     } else {
-                        if (power == null) {
-                            getPowerArray().remove(p);
-                            return;
-                        }
-                        if (!getPowerArray().contains(p)) return;
                         setActive(power.getTag(), false);
                     }
                 }

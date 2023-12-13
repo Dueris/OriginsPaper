@@ -323,9 +323,9 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         return finaL;
     }
 
-    public static void sendDebug(String string){
+    public static void sendDebug(Object string){
         if(debugOrigins){
-            Bukkit.getLogger().info(string);
+            System.out.println(string);
         }
     }
 

@@ -57,7 +57,12 @@ public class OriginPlayer {
     }
 
     public static boolean hasFirstChose(Player p){
-        return p.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "hasFirstChose"), PersistentDataType.BOOLEAN);
+        if(p.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "hasFirstChose"), PersistentDataType.BOOLEAN) == null){
+            p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "hasFirstChose"), PersistentDataType.BOOLEAN, false);
+            return false;
+        }else{
+            return p.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "hasFirstChose"), PersistentDataType.BOOLEAN);
+        }
     }
 
     public static void setHasFirstChose(Player p, boolean chosen){

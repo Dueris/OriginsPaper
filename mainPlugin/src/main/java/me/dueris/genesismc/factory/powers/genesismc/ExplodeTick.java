@@ -110,7 +110,7 @@ public class ExplodeTick extends CraftPower implements Listener {
                                                     boolean break_blocks_thunder = (boolean) power.getThunderModifier().get("break_blocks");
                                                     p.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 10, resistance_thunder, true, false, false));
                                                     p.getWorld().createExplosion(p.getLocation(), power_thunder, fire_thunder, break_blocks_thunder, p);
-                                                    p.teleportAsync(p.getLocation());
+                                                    // p.teleportAsync(p.getLocation());
                                                     p.damage(5);
                                                     e.setCancelled(true);
                                                     this.cancel();
@@ -118,7 +118,7 @@ public class ExplodeTick extends CraftPower implements Listener {
                                                     p.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 10, resistance, true, false, false));
                                                     p.getWorld().createExplosion(p.getLocation(), (float) powerE, fire, break_blocks, p);
                                                     cooldown.put(p.getUniqueId(), System.currentTimeMillis());
-                                                    p.teleportAsync(p.getLocation());
+                                                    // p.teleportAsync(p.getLocation());
                                                     p.damage(10);
                                                     e.setCancelled(true);
                                                     this.cancel();
@@ -127,7 +127,7 @@ public class ExplodeTick extends CraftPower implements Listener {
                                                 p.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 10, resistance, true, false, false));
                                                 p.getWorld().createExplosion(p.getLocation(), powerE, fire, break_blocks, p);
                                                 cooldown.put(p.getUniqueId(), System.currentTimeMillis());
-                                                p.teleportAsync(p.getLocation());
+                                                // p.teleportAsync(p.getLocation());
                                                 p.damage(10);
                                                 e.setCancelled(true);
                                                 this.cancel();

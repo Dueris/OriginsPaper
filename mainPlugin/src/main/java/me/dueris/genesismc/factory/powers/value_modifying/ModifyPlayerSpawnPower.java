@@ -1,19 +1,26 @@
 package me.dueris.genesismc.factory.powers.value_modifying;
 
+import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.entity.OriginPlayer;
+import me.dueris.genesismc.events.OriginChangeEvent;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.OriginContainer;
 import me.dueris.genesismc.utils.PowerContainer;
+
+import org.apache.logging.log4j.core.lookup.EnvironmentLookup;
 import org.bukkit.*;
 import org.bukkit.World.Environment;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
+import org.bukkit.craftbukkit.v1_20_R2.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.generator.structure.Structure;
+
+import com.mojang.logging.LogUtils;
 
 import java.util.ArrayList;
 
@@ -35,65 +42,81 @@ public class ModifyPlayerSpawnPower extends CraftPower implements Listener {
 
     @EventHandler
     public void runD(PlayerRespawnEvent e) {
-        Player p = e.getPlayer();
-        if (modify_world_spawn.contains(p)) {
-            if (e.getRespawnReason().equals(PlayerRespawnEvent.RespawnReason.END_PORTAL)) return;
+        if (e.getRespawnReason().equals(PlayerRespawnEvent.RespawnReason.END_PORTAL)) return;
             if (e.getRespawnReason().equals(PlayerRespawnEvent.RespawnReason.PLUGIN)) return;
+            runHandle(e.getPlayer());
+    }
+
+    @EventHandler
+    public void runO(OriginChangeEvent e){
+        if(!OriginPlayer.hasFirstChose(e.getPlayer())){
+            runHandle(e.getPlayer());
+        }
+    }
+
+    public void runHandle(Player p){
+        if (modify_world_spawn.contains(p)) {
+            // if(p.getBedSpawnLocation() != null) return;
             for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
                 ConditionExecutor executor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
-                for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
-//                    p.teleportAsync(new Location(p.getWorld(), 0, 90000, 0));
-                    if (executor.check("condition", "conditions", p, power, getPowerFile(), p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
-                        setActive(power.getTag(), true);
-                        String dimension = power.get("dimension", null);
-                        Location spawnLocation;
-
-                        if ("the_nether".equals(dimension)) {
-                            spawnLocation = NetherSpawn(power.get("spawn_strategy", "default"));
-                        } else if ("the_end".equals(dimension)) {
-                            spawnLocation = EndSpawn(power.get("spawn_strategy", "default"));
-                        } else {
-                            spawnLocation = OverworldSpawn(power.get("spawn_strategy", "default"));
-                        }
-
-                        String biome = power.get("biome", null);
-                        String structure = power.get("structure", null);
-                        if(biome != null){
-                            Location biomeLoc = p.getWorld().locateNearestBiome(spawnLocation, Biome.valueOf(biome.toUpperCase().split(":")[1]), 100);
-                            if(biomeLoc != null){
-                                spawnLocation = biomeLoc;
-                            }else{
-                                p.sendMessage("Unable to find biome &1 within a reasonable distance".replace("&1", biome));
+                PowerContainer power = origin.getSinglePowerFileFromType(getPowerFile());
+                if(executor.check("condition", "conditions", p, power,getPowerFile(), p, null, p.getLocation().getBlock(), null, p.getInventory().getItemInMainHand(), null)){
+                    String spawnStrat = power.get("spawn_strategy", "default");
+                    float dimMult = 0.125f;
+                    String dimension = power.get("dimension");
+                    if(power.get("dimension_distance_multiplier") != null){
+                        dimMult = Float.valueOf(power.get("dimension_distance_multiplier"));
+                    }
+                    if(!dimension.startsWith("minecraft:") && !dimension.contains(":")){
+                        dimension = "minecraft:" + dimension;
+                    }
+                    World world = Bukkit.getWorld(NamespacedKey.fromString(dimension));
+                    Location teleportLoc = new Location(world, 0, 0, 0);
+                    Location centerPosLoc = new Location(world, 0, 70, 0);
+                    if(world.getEnvironment() != Environment.NETHER){
+                        centerPosLoc.setY(world.getHighestBlockYAt(0, 0) + 1);
+                    }
+                    GenesisMC.sendDebug(world.getName());
+                    int[] possibleVerticalMovement = {0, 1};
+                    GenesisMC.sendDebug(spawnStrat);
+                    GenesisMC.sendDebug("DimensionBuilder started");
+                        // Obsidian platform
+                        for(int x = -2; x < 3; x++){
+                            for(int z = -2; z < 3; z++){
+                                Block bl = world.getBlockAt(centerPosLoc.clone().add(x, 0, z));
+                                if(!bl.isCollidable()){
+                                    bl.setType(OBSIDIAN);
+                                }
+                                GenesisMC.sendDebug(centerPosLoc.clone().add(x, 0, z));
                             }
                         }
-                        if(structure != null){
-                            Location structureLoc = p.getWorld().locateNearestStructure(spawnLocation, translate(structure), 100, true).getLocation();
-                            if(structureLoc != null){
-                                spawnLocation = structureLoc;
-                            }else{
-                                p.sendMessage("Unable to find structure &1 within a reasonable distance".replace("&1", structure));
+                        for(int x = -2; x < 3; x++){
+                            for(int z = -2; z < 3; z++){
+                                Block bl = world.getBlockAt(centerPosLoc.clone().add(x, 1, z));
+                                if(bl.isCollidable() || bl.isLiquid()){
+                                    bl.setType(AIR);
+                                }
+                                GenesisMC.sendDebug(centerPosLoc.clone().add(x, 1, z));
                             }
                         }
-
-                        if(!spawnLocation.getWorld().getEnvironment().equals(Environment.NETHER)){ // Ensure not spawning on the nether roof
-                            spawnLocation = spawnLocation.toHighestLocation();
+                        for(int x = -2; x < 3; x++){
+                            for(int z = -2; z < 3; z++){
+                                Block bl = world.getBlockAt(centerPosLoc.clone().add(x, 2, z));
+                                if(bl.isCollidable() || bl.isLiquid()){
+                                    bl.setType(AIR);
+                                }
+                                GenesisMC.sendDebug(centerPosLoc.clone().add(x, 2, z));
+                            }
                         }
-
-                        if (spawnLocation != null) {
-                            int radius = 1;
-                            if(spawnLocation.getBlock().isCollidable()){
-                                spawnLocation.getBlock().setType(AIR);
-                            }
-                            if(spawnLocation.add(0, 1, 0).getBlock().isCollidable()){
-                                spawnLocation.add(0, 1, 0).getBlock().setType(AIR);
-                            }
-                            if(!spawnLocation.add(0, -1, 0).getBlock().isCollidable()){
-                                spawnLocation.add(0, -1, 0).getBlock().setType(Material.OBSIDIAN);
-                            }
-                            p.teleportAsync(spawnLocation);
-                        }
-                    } else {
-                        setActive(power.getTag(), false);
+                        p.sendMessage(String.valueOf(centerPosLoc.y()) + " == y location of block to spawn at");
+                        teleportLoc = centerPosLoc.add(0, 2, 0);
+                    GenesisMC.sendDebug("DimensionBuilder finished");
+                    if(teleportLoc != null){
+                        p.teleportAsync(teleportLoc);
+                    }else{
+                        throw new RuntimeException("Unable to create suitable spawn for player({p})."
+                            .replace("{p}", p.getName())
+                        );
                     }
                 }
             }
@@ -144,228 +167,6 @@ public class ModifyPlayerSpawnPower extends CraftPower implements Listener {
                 return Structure.RUINED_PORTAL.getStructureType();
             default:
                 return null;
-        }
-    }
-
-    public boolean isInsideBorder(Block block) {
-        WorldBorder border = block.getWorld().getWorldBorder();
-        double radius = border.getSize() / 2;
-        Location location = block.getLocation(), center = border.getCenter();
-
-        return center.distanceSquared(location) >= (radius * radius);
-    }
-
-    public Location NetherSpawn(String spawn_strategy) {
-        for (World world : Bukkit.getWorlds()) {
-            if (world.getEnvironment() == World.Environment.NETHER) {
-                if ("default".equals(spawn_strategy)) {
-                    World overworld = Bukkit.getWorlds().get(0);
-                    if (overworld.getEnvironment() != World.Environment.NORMAL) {
-                        return null;
-                    }
-
-                    Location overworldSpawn = overworld.getSpawnLocation();
-                    double netherX = overworldSpawn.getX() / 8.0;
-                    double netherZ = overworldSpawn.getZ() / 8.0;
-                    double netherY = overworldSpawn.getY();
-
-                    World netherWorld = Bukkit.getWorlds().stream()
-                            .filter(world1 -> world1.getEnvironment() == World.Environment.NETHER)
-                            .findFirst().orElse(null);
-                    if (netherWorld != null) {
-                        Location netherLocation = new Location(netherWorld, netherX, netherY, netherZ);
-                        if (netherLocation.getBlock().getType() != Material.AIR) {
-                            Location spawnPlatformLocation = new Location(netherWorld, netherX, netherY, netherZ);
-                            createSpawnPlatform(spawnPlatformLocation);
-                        }
-                        return new Location(netherWorld, netherX, netherY, netherZ);
-                    } else {
-                        return null;
-                    }
-                } else if ("center".equals(spawn_strategy)) {
-                    int searchHeight = 4;
-
-                    for (int y = searchHeight; y >= 0; y++) {
-                        Location spawnLocation = new Location(world, 0, y, 0);
-                        Block block = spawnLocation.getBlock();
-
-                        if (block.getType() != Material.BEDROCK && block.getType().isSolid()) {
-                            return spawnLocation.clone().add(0.5, 1, 0.5);
-                        }
-                    }
-
-                    return world.getSpawnLocation().clone().add(0.5, 1, 0.5);
-                } else if ("closest_available".equals(spawn_strategy)) {
-                    int centerX = 0;
-                    int centerY = 70;
-                    int centerZ = 0;
-
-                    for (int distance = 0; distance <= 100; distance++) {
-                        for (int x = centerX - distance; x <= centerX + distance; x++) {
-                            for (int z = centerZ - distance; z <= centerZ + distance; z++) {
-                                yLoop:
-                                for (int y = centerY; y < centerY + 68; y++) {
-                                    Location currentLocation = new Location(world, x, y, z);
-                                    if (currentLocation.getBlock().getType() != Material.AIR) continue;
-
-                                    Location aboveLocation = currentLocation.clone().add(0, 1, 0);
-                                    if (aboveLocation.getBlock().getType() != Material.AIR) continue;
-
-                                    Material blockBeneath = currentLocation.clone().subtract(0, 1, 0).getBlock().getType();
-                                    if (blockBeneath == Material.AIR || blockBeneath == Material.LAVA || blockBeneath == Material.FIRE || blockBeneath == Material.SOUL_FIRE)
-                                        continue;
-
-                                    for (int offsetX = -2; offsetX <= 2; offsetX++) {
-                                        for (int offsetY = 0; offsetY <= 1; offsetY++) {
-                                            for (int offsetZ = -2; offsetZ <= 2; offsetZ++) {
-                                                Location potentialLocation = currentLocation.clone().add(offsetX, offsetY, offsetZ);
-                                                if (potentialLocation.getBlock().getType() != Material.AIR || isInsideBorder(potentialLocation.getBlock()))
-                                                    continue yLoop;
-                                            }
-                                        }
-                                    }
-                                    return currentLocation.clone().add(0.5, 0, 0.5);
-                                }
-                            }
-                        }
-                    }
-                }
-                break;
-            }
-        }
-        return null;
-    }
-
-    public Location EndSpawn(String spawn_strategy) {
-        for (World world : Bukkit.getWorlds()) {
-            if (world.getEnvironment() == World.Environment.THE_END) {
-                if ("default".equals(spawn_strategy)) {
-                    return Bukkit.getWorlds().get(2).getSpawnLocation();
-                } else if ("center".equals(spawn_strategy)) {
-                    Location spawnLocation = new Location(world, 0, 0, 0);
-                    for (int y = 255; y >= 0; y--) {
-                        spawnLocation.setY(y);
-                        Block block = spawnLocation.getBlock();
-
-                        if (block.getType().isSolid()) {
-                            return spawnLocation.clone().add(0.5, 1, 0.5);
-                        }
-                    }
-
-                    Location platformLocation = new Location(world, 0, 70, 0);
-                    createSpawnPlatform(platformLocation);
-                    return platformLocation.clone().add(0.5, 1, 0.5);
-
-                } else if ("closest_available".equals(spawn_strategy)) {
-                    int centerX = 0;
-                    int centerY = 70;
-                    int centerZ = 0;
-
-                    for (int distance = 0; distance <= 100; distance++) {
-                        for (int x = centerX - distance; x <= centerX + distance; x++) {
-                            for (int z = centerZ - distance; z <= centerZ + distance; z++) {
-                                yLoop:
-                                for (int y = centerY; y < centerY + 68; y++) {
-                                    Location currentLocation = new Location(world, x, y, z);
-                                    if (currentLocation.getBlock().getType() != Material.AIR) continue;
-
-                                    Location aboveLocation = currentLocation.clone().add(0, 1, 0);
-                                    if (aboveLocation.getBlock().getType() != Material.AIR) continue;
-
-                                    Material blockBeneath = currentLocation.clone().subtract(0, 1, 0).getBlock().getType();
-                                    if (blockBeneath == Material.AIR || blockBeneath == Material.LAVA || blockBeneath == Material.FIRE || blockBeneath == Material.SOUL_FIRE)
-                                        continue;
-
-                                    for (int offsetX = -2; offsetX <= 2; offsetX++) {
-                                        for (int offsetY = 0; offsetY <= 1; offsetY++) {
-                                            for (int offsetZ = -2; offsetZ <= 2; offsetZ++) {
-                                                Location potentialLocation = currentLocation.clone().add(offsetX, offsetY, offsetZ);
-                                                if (potentialLocation.getBlock().getType() != Material.AIR || isInsideBorder(potentialLocation.getBlock()))
-                                                    continue yLoop;
-                                            }
-                                        }
-                                    }
-                                    return currentLocation.clone().add(0.5, 0, 0.5);
-                                }
-                            }
-                        }
-                    }
-                }
-                break;
-            }
-        }
-        return null;
-    }
-
-    public Location OverworldSpawn(String spawn_strategy) {
-        for (World world : Bukkit.getWorlds()) {
-            if (world.getEnvironment() == World.Environment.NORMAL) {
-                if ("default".equals(spawn_strategy)) {
-                    return Bukkit.getWorlds().get(0).getSpawnLocation();
-                } else if ("center".equals(spawn_strategy)) {
-                    Location spawnLocation = new Location(world, 0, 0, 0);
-                    for (int y = 255; y >= 0; y--) {
-                        spawnLocation.setY(y);
-                        Block block = spawnLocation.getBlock();
-
-                        if (block.getType().isSolid()) {
-                            return spawnLocation.clone().add(0.5, 1, 0.5);
-                        }
-                    }
-
-                    Location platformLocation = new Location(world, 0, 70, 0);
-                    createSpawnPlatform(platformLocation);
-                    return platformLocation.clone().add(0.5, 1, 0.5);
-
-                } else if ("closest_available".equals(spawn_strategy)) {
-                    int centerX = 0;
-                    int centerY = 70;
-                    int centerZ = 0;
-
-                    for (int distance = 0; distance <= 100; distance++) {
-                        for (int x = centerX - distance; x <= centerX + distance; x++) {
-                            for (int z = centerZ - distance; z <= centerZ + distance; z++) {
-                                yLoop:
-                                for (int y = centerY; y < centerY + 68; y++) {
-                                    Location currentLocation = new Location(world, x, y, z);
-                                    if (currentLocation.getBlock().getType() != Material.AIR) continue;
-
-                                    Location aboveLocation = currentLocation.clone().add(0, 1, 0);
-                                    if (aboveLocation.getBlock().getType() != Material.AIR) continue;
-
-                                    Material blockBeneath = currentLocation.clone().subtract(0, 1, 0).getBlock().getType();
-                                    if (blockBeneath == Material.AIR || blockBeneath == Material.LAVA || blockBeneath == Material.FIRE || blockBeneath == Material.SOUL_FIRE)
-                                        continue;
-
-                                    for (int offsetX = -2; offsetX <= 2; offsetX++) {
-                                        for (int offsetY = 0; offsetY <= 1; offsetY++) {
-                                            for (int offsetZ = -2; offsetZ <= 2; offsetZ++) {
-                                                Location potentialLocation = currentLocation.clone().add(offsetX, offsetY, offsetZ);
-                                                if (potentialLocation.getBlock().getType() != Material.AIR || isInsideBorder(potentialLocation.getBlock()))
-                                                    continue yLoop;
-                                            }
-                                        }
-                                    }
-                                    return currentLocation.clone().add(0.5, 0, 0.5);
-                                }
-                            }
-                        }
-                    }
-                }
-                break;
-            }
-        }
-        return null;
-    }
-
-    private void createSpawnPlatform(Location location) {
-        World world = location.getWorld();
-
-        for (int x = -2; x <= 2; x++) {
-            for (int z = -2; z <= 2; z++) {
-                Block block = world.getBlockAt(location.getBlockX() + x, location.getBlockY(), location.getBlockZ() + z);
-                block.setType(OBSIDIAN);
-            }
         }
     }
 

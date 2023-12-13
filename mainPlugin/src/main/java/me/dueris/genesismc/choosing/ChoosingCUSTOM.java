@@ -220,7 +220,6 @@ public class ChoosingCUSTOM implements Listener {
 
                 setAttributesToDefault(p);
                 OriginPlayer.setOrigin(p, choosing.get(p), origin);
-                OriginPlayer.setHasFirstChose(p, true);
                 choosing.remove(p);
                 new BukkitRunnable() {
                     @Override
@@ -237,25 +236,9 @@ public class ChoosingCUSTOM implements Listener {
                         removeItemElytrian(p);
                     }
                 }.runTaskLater(GenesisMC.getPlugin(), 1);
-                new BukkitRunnable() {
-                    @Override
-                    public void run() {
-                        if (modify_world_spawn.contains(p)) {
-                            ModifyPlayerSpawnPower modifyPlayerSpawnPower = new ModifyPlayerSpawnPower();
-                            for (PowerContainer power : origin.getMultiPowerFileFromType("origins:modify_player_spawn")) {
-                                if (power.get("dimension", null).equals("the_nether")) {
-                                    p.teleportAsync(modifyPlayerSpawnPower.NetherSpawn(power.get("spawn_strategy", "default")));
-                                } else if (power.get("dimension", null).equals("the_end")) {
-                                    p.teleportAsync(modifyPlayerSpawnPower.EndSpawn(power.get("spawn_strategy", "default")));
-                                } else {
-                                    p.teleportAsync(modifyPlayerSpawnPower.OverworldSpawn(power.get("spawn_strategy", "default")));
-                                }
-                            }
-                        }
-                    }
-                }.runTaskLater(GenesisMC.getPlugin(), 2);
                 OriginChangeEvent Event = new OriginChangeEvent(p);
                 getServer().getPluginManager().callEvent(Event);
+                OriginPlayer.setHasFirstChose(p, true);
             }
         }
     }

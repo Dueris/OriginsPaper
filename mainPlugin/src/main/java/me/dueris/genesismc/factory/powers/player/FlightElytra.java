@@ -55,16 +55,6 @@ public class FlightElytra extends CraftPower implements Listener {
                 for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
                     if (executor.check("condition", "conditions", p, power, getPowerFile(), p, null, null, null, p.getItemInHand(), null)) {
                         setActive(power.getTag(), true);
-                        if (power.getShouldRender()) {
-                            SendStringPacketPayload.sendCustomPacket(p, "genesismc-elytra-render[packetID:a354b]");
-                            CraftPlayer player = (CraftPlayer) p;
-                            Bukkit.getServer().getGlobalRegionScheduler().execute(GenesisMC.getPlugin(), new BukkitRunnable() {
-                                @Override
-                                public void run() {
-                                    player.getWorld().setGameRule(GameRule.DISABLE_ELYTRA_MOVEMENT_CHECK, false);
-                                }
-                            });
-                        }
                         if (!p.isOnGround() && !p.isGliding()) {
                             glidingPlayers.add(p.getUniqueId());
                             if (p.getGameMode() == GameMode.SPECTATOR) return;
@@ -82,7 +72,6 @@ public class FlightElytra extends CraftPower implements Listener {
                             }.runTaskTimer(GenesisMC.getPlugin(), 0L, 1L);
                         }
                     } else {
-
                         setActive(power.getTag(), false);
                     }
                 }
@@ -92,39 +81,41 @@ public class FlightElytra extends CraftPower implements Listener {
 
     @EventHandler
     public void onBoost(PlayerInteractEvent event) {
-        Player player = event.getPlayer();
-        Action action = event.getAction();
-
-        if (!player.isGliding()) return;
-
-        if (action != Action.LEFT_CLICK_AIR) {
-            return;
-        }
-
-        ItemStack handItem = player.getInventory().getItemInMainHand();
-        if(handItem.getType().equals(Material.FIREWORK_ROCKET)){
-            launchElytra(player, 1.75F);
-            if (player.getGameMode() != GameMode.CREATIVE){handItem.setAmount(handItem.getAmount() - 1);}
-            player.playSound(player.getLocation(), Sound.ENTITY_FIREWORK_ROCKET_LAUNCH, 10, 1);
+        if(getPowerArray().contains(event.getPlayer())){
+            Player player = event.getPlayer();
+            Action action = event.getAction();
     
-            int totalTicks = 10;
-            long interval = 1L;
+            if (!player.isGliding()) return;
     
-            new BukkitRunnable() {
-                int ticksRemaining = totalTicks;
+            if (action != Action.LEFT_CLICK_AIR) {
+                return;
+            }
     
-                @Override
-                public void run() {
-                    if (ticksRemaining > 0) {
-                        player.getWorld().spawnParticle(Particle.FIREWORKS_SPARK, player.getLocation(), 1, 1, 1, 1);
-                        ticksRemaining--;
-                    } else {
-                        cancel();
+            ItemStack handItem = player.getInventory().getItemInMainHand();
+            if(handItem.getType().equals(Material.FIREWORK_ROCKET)){
+                launchElytra(player, 1.75F);
+                if (player.getGameMode() != GameMode.CREATIVE){handItem.setAmount(handItem.getAmount() - 1);}
+                player.playSound(player.getLocation(), Sound.ENTITY_FIREWORK_ROCKET_LAUNCH, 10, 1);
+        
+                int totalTicks = 10;
+                long interval = 1L;
+        
+                new BukkitRunnable() {
+                    int ticksRemaining = totalTicks;
+        
+                    @Override
+                    public void run() {
+                        if (ticksRemaining > 0) {
+                            player.getWorld().spawnParticle(Particle.FIREWORKS_SPARK, player.getLocation(), 1, 1, 1, 1);
+                            ticksRemaining--;
+                        } else {
+                            cancel();
+                        }
                     }
-                }
-            }.runTaskTimer(GenesisMC.getPlugin(), 0L, interval);
-    
-            event.setCancelled(true);
+                }.runTaskTimer(GenesisMC.getPlugin(), 0L, interval);
+        
+                event.setCancelled(true);
+            }
         }
     }
 

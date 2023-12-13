@@ -520,13 +520,20 @@ public class Actions {
             final boolean isOp = entity.isOp();
             entity.setOp(true);
             String cmd = null;
-            if(power.get("command").toString().startsWith("power") || power.get("command").toString().startsWith("/power")) return;
+            if(power.get("command").toString().startsWith("power") || power.get("command").toString().startsWith("/power")) return; // TODO: add /power
             if(power.get("command").toString().startsWith("/")){
                 cmd = power.get("command").toString().split("/")[1];
             }else{
                 cmd = power.get("command").toString();
             }
             Bukkit.dispatchCommand(entity, cmd);
+            entity.sendMessage(String.valueOf(isOp));
+            new BukkitRunnable() {
+                @Override
+                public void run(){
+                    entity.setOp(isOp);
+                }
+            }.runTaskLater(GenesisMC.getPlugin(), 1l);
             entity.setOp(isOp);
         }
         if (type.equals("origins:add_xp")) {
