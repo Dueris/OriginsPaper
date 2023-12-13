@@ -220,6 +220,7 @@ public class ChoosingCUSTOM implements Listener {
 
                 setAttributesToDefault(p);
                 OriginPlayer.setOrigin(p, choosing.get(p), origin);
+                OriginPlayer.setHasFirstChose(p, true);
                 choosing.remove(p);
                 new BukkitRunnable() {
                     @Override

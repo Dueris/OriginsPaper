@@ -56,6 +56,14 @@ public class OriginPlayer {
         }
     }
 
+    public static boolean hasFirstChose(Player p){
+        return p.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "hasFirstChose"), PersistentDataType.BOOLEAN);
+    }
+
+    public static void setHasFirstChose(Player p, boolean chosen){
+        p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "hasFirstChose"), PersistentDataType.BOOLEAN, chosen);
+    }
+
     public static void moveEquipmentInventory(Player player, EquipmentSlot equipmentSlot) {
         ItemStack item = player.getInventory().getItem(equipmentSlot);
 
