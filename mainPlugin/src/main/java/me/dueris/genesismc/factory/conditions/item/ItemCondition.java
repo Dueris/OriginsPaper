@@ -200,6 +200,7 @@ public class ItemCondition implements Condition {
         nonMeatMaterials.add(Material.BAMBOO);
 
         nonMeatMaterials.add(Material.KELP);
+        nonMeatMaterials.add(Material.DRIED_KELP);
         nonMeatMaterials.add(Material.SEAGRASS);
 
         nonMeatMaterials.add(Material.MILK_BUCKET);
@@ -207,6 +208,9 @@ public class ItemCondition implements Condition {
 
         nonMeatMaterials.add(Material.SUGAR);
         nonMeatMaterials.add(Material.HONEY_BOTTLE);
+        nonMeatMaterials.add(Material.GLOW_BERRIES);
+        nonMeatMaterials.add(Material.CHORUS_FRUIT);
+        nonMeatMaterials.add(Material.BAKED_POTATO);
 
         nonMeatMaterials.add(Material.WATER_BUCKET);
         nonMeatMaterials.add(Material.LAVA_BUCKET);
