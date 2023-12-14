@@ -61,7 +61,30 @@ public class ModifyBreakSpeedPower extends CraftPower implements Listener {
                         if (conditionExecutor.check("condition", "condition", p, power, getPowerFile(), p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
                             if (conditionExecutor.check("block_condition", "block_condition", p, power, getPowerFile(), p, null, e.getPlayer().getTargetBlockExact(AttributeHandler.Reach.getDefaultReach(p)), null, p.getItemInHand(), null)) {
                                 setActive(power.getTag(), true);
-                                p.addPotionEffect(new PotionEffect(PotionEffectType.FAST_DIGGING, 50, calculateHasteAmplifier(valueModifyingSuperClass.getPersistentAttributeContainer(p, MODIFYING_KEY)), false, false, false));
+                                // if(power.getPossibleModifiers("modifier", "modifiers"))
+                                for(HashMap<String, Object> modifier : power.getPossibleModifiers("modifer", "modifiers")){
+                                    if(Float.valueOf(modifier.get("value").toString()) < 0){
+                                        // Slower mine
+                                        p.addPotionEffect(
+                                            new PotionEffect(
+                                                PotionEffectType.SLOW_DIGGING,
+                                                50,
+                                                    Math.round(valueModifyingSuperClass.getPersistentAttributeContainer(p, MODIFYING_KEY)),
+                                                false, false, false
+                                            )
+                                        );
+                                    }else{
+                                        // Speed up
+                                        p.addPotionEffect(
+                                            new PotionEffect(
+                                                PotionEffectType.FAST_DIGGING,
+                                                50,
+                                                    Math.round(valueModifyingSuperClass.getPersistentAttributeContainer(p, MODIFYING_KEY)),
+                                                false, false, false
+                                            )
+                                        );
+                                    }
+                                }
                             } else {
                                 setActive(power.getTag(), false);
                             }
@@ -85,14 +108,7 @@ public class ModifyBreakSpeedPower extends CraftPower implements Listener {
                 for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
                     for (HashMap<String, Object> modifier : power.getConditionFromString("modifier", "modifiers")) {
                         Float value = Float.valueOf(modifier.get("value").toString());
-                        String operation = modifier.get("operation").toString();
-                        BinaryOperator mathOperator = getOperationMappingsFloat().get(operation);
-                        if (mathOperator != null) {
-                            float result = (float) mathOperator.apply(valueModifyingSuperClass.getPersistentAttributeContainer(p, MODIFYING_KEY), value);
-                            valueModifyingSuperClass.saveValueInPDC(p, MODIFYING_KEY, result);
-                        } else {
-                            Bukkit.getLogger().warning(LangConfig.getLocalizedString(p, "powers.errors.value_modifier_save").replace("%modifier%", MODIFYING_KEY));
-                        }
+                        valueModifyingSuperClass.saveValueInPDC(p, MODIFYING_KEY, value); // Why does there need to be a binary operator if the operator does nothing?
                     }
                 }
             }

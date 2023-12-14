@@ -59,6 +59,7 @@ public class ItemCondition implements Condition {
                 }
             }
         }
+        if (type.equalsIgnoreCase("origins:in_tag"))
         if (type.equalsIgnoreCase("origins:meat")) {
             if (itemStack.getType().isEdible()) {
                 if (inverted) {

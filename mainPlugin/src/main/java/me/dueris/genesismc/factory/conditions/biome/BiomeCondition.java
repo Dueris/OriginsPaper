@@ -5,14 +5,7 @@ import me.dueris.genesismc.factory.conditions.Condition;
 import me.dueris.genesismc.factory.powers.player.RestrictArmor;
 import me.dueris.genesismc.utils.PowerContainer;
 import net.minecraft.core.BlockPos;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.world.level.biome.BiomeManager;
-import net.minecraft.world.level.biome.BiomeSources;
-import net.minecraft.world.level.biome.Biomes;
-import net.minecraft.world.level.levelgen.WorldGenSettings;
 import org.bukkit.Fluid;
-import org.bukkit.Material;
-import org.bukkit.World;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.craftbukkit.v1_20_R2.block.CraftBiome;
@@ -21,6 +14,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -34,11 +28,14 @@ public class BiomeCondition implements Condition {
         return "BIOME_CONDITION";
     }
 
+    public static HashMap<PowerContainer, ArrayList<String>> inTagValues = new HashMap<>();
+    public static HashMap<String, ArrayList<Biome>> biomeTagMappings = new HashMap<>();
+
     @Override
     public Optional<Boolean> check(HashMap<String, Object> condition, Player p, PowerContainer power, String powerfile, Entity actor, Entity target, Block block, Fluid fluid, ItemStack itemStack, EntityDamageEvent entityDamageEvent) {
         if (condition.isEmpty()) return Optional.empty();
         if (condition.get("type") == null) return Optional.empty();
-        if (block != null) {
+        if (block != null && block.getBiome() != null) {
             boolean inverted = (boolean) condition.getOrDefault("inverted", false);
             String type = condition.get("type").toString().toLowerCase();
             if (type.equalsIgnoreCase("origins:biome") && condition.containsKey("condition")) {
@@ -52,11 +49,16 @@ public class BiomeCondition implements Condition {
                 }
             }
             if (type.equals("origins:in_tag")){
-                for(String bi : TagRegistry.getRegisteredTagFromFileKey(condition.get("tag").toString())){
-                    if(block != null){
-                        if(block.getBiome().equals(Biome.valueOf(bi.split(":")[1].toUpperCase()))){
-                            return Optional.of(true);
+                // Use block in_tag optimization
+                if(TagRegistry.getRegisteredTagFromFileKey(condition.get("tag").toString()) != null){
+                    if(!biomeTagMappings.containsKey(condition.get("tag"))){
+                        for(String mat : TagRegistry.getRegisteredTagFromFileKey(condition.get("tag").toString())){
+                            biomeTagMappings.put(condition.get("tag").toString(), new ArrayList<>());
+                            biomeTagMappings.get(condition.get("tag")).add(Biome.valueOf(mat.split(":")[1].toUpperCase()));
                         }
+                    }else{
+                        // mappings exist, now we can start stuff
+                        return Optional.of(biomeTagMappings.get(condition.get("tag")).contains(block.getBiome()));
                     }
                 }
             }

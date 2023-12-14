@@ -37,6 +37,7 @@ import org.json.simple.parser.ParseException;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Objects;
 import java.util.Optional;
@@ -46,6 +47,8 @@ import static me.dueris.genesismc.factory.conditions.ConditionExecutor.getResult
 import static me.dueris.genesismc.factory.powers.player.RestrictArmor.compareValues;
 
 public class EntityCondition implements Condition {
+    public static HashMap<PowerContainer, ArrayList<String>> inTagValues = new HashMap<>();
+    public static HashMap<String, ArrayList<EntityType>> entityTagMappings = new HashMap<>();
 
     public static Enchantment getEnchantmentByNamespace(String namespaceString) {
         return Enchantment.getByName(namespaceString);
@@ -512,19 +515,6 @@ public class EntityCondition implements Condition {
                     }
                 }
             }
-            //DEPRECIATED - USING CODE ABOVE
-//            EquipmentSlot eSlot = Actions.getSlotFromString(condition.get("equipment_slot").toString());
-//            if(eSlot != null){
-//                if(condition.get("item_condition") != null){
-//                    ItemCondition itemCondition = new ItemCondition();
-//                    Optional boolIC = itemCondition.check((HashMap<String, Object>) condition.get("item_condition"), p, power, powerfile, entity, target, block, fluid, itemStack, entityDamageEvent);
-//                    if(boolIC.isPresent()){
-//                        if(boolIC.get().equals(true)){
-//                            return getResult(inverted, true);
-//                        }
-//                    }
-//                }
-//            }
         }
 
         if (type.equalsIgnoreCase("origins:exists")){
@@ -562,14 +552,17 @@ public class EntityCondition implements Condition {
         }
 
         if (type.equals("origins:in_tag")){
-            try{
-                for(String mat : TagRegistry.getRegisteredTagFromFileKey(condition.get("tag").toString())){
-                    if(entity.getType().equals(EntityType.valueOf(mat.split(":")[1].toUpperCase()))){
-                        return Optional.of(true);
+            // Use block in_tag optimization
+            if(TagRegistry.getRegisteredTagFromFileKey(condition.get("tag").toString()) != null){
+                if(!entityTagMappings.containsKey(condition.get("tag"))){
+                    for(String mat : TagRegistry.getRegisteredTagFromFileKey(condition.get("tag").toString())){
+                        entityTagMappings.put(condition.get("tag").toString(), new ArrayList<>());
+                        entityTagMappings.get(condition.get("tag")).add(EntityType.valueOf(mat.split(":")[1].toUpperCase()));
                     }
+                }else{
+                    // mappings exist, now we can start stuff
+                    return Optional.of(entityTagMappings.get(condition.get("tag")).contains(entity.getType()));
                 }
-            }catch (Exception e){
-                //silence because of weird arg things with tags being parsed wrong.
             }
         }
 
