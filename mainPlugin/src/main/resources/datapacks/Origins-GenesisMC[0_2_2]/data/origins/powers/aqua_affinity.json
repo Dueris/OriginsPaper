@@ -6,6 +6,7 @@
       "operation": "multiply_total",
       "value": 4
     },
+    "hidden": true,
     "condition": {
       "type": "origins:and",
       "conditions": [
@@ -28,6 +29,7 @@
       "operation": "multiply_total",
       "value": 4
     },
+    "hidden": true,
     "condition": {
       "type": "origins:and",
       "conditions": [

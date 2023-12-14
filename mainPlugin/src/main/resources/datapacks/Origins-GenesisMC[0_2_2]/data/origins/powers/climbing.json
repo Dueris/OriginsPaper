@@ -2,6 +2,7 @@
   "type": "origins:multiple",
   "toggle": {
     "type": "origins:toggle",
+    "hidden": true,
     "retain_state": true,
     "key": {
       "key": "key.origins.primary_active",
@@ -10,6 +11,7 @@
   },
   "climbing": {
     "type": "origins:climbing",
+    "hidden": true,
     "condition": {
       "type": "origins:power_active",
       "power": "origins:climbing_toggle"

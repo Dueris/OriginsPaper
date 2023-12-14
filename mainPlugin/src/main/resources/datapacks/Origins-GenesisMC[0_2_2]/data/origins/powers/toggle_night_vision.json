@@ -1,5 +1,6 @@
 {
   "type": "origins:toggle_night_vision",
+  "hidden": true,
   "strength": 1,
   "key": {
     "key": "key.origins.secondary_active"
