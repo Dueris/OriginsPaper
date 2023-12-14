@@ -39,7 +39,6 @@ public class Resource extends CraftPower implements Listener {
 
     private void execute(Player p){
         for(OriginContainer origin : OriginPlayer.getOrigin(p).values()){
-            p.sendMessage("1");
             for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
                 p.sendMessage("2");
                 final String tag = power.getTag();
