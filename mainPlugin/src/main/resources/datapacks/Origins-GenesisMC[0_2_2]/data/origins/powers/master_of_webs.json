@@ -17,7 +17,7 @@
         },
         "if_action": {
           "type": "origins:set_block",
-          "block": "origins:temporary_cobweb"
+          "block": "minecraft:cobweb"
         }
       }
     }
@@ -60,27 +60,6 @@
     "condition": {
       "type": "origins:sneaking",
       "inverted": true
-    }
-  },
-  "sense": {
-    "hidden": true,
-    "type": "origins:entity_glow",
-    "entity_condition": {
-      "type": "origins:and",
-      "conditions": [
-        {
-          "type": "origins:in_block_anywhere",
-          "block_condition": {
-            "type": "origins:in_tag",
-            "tag": "origins:cobwebs"
-          }
-        },
-        {
-          "type": "origins:entity_group",
-          "group": "arthropod",
-          "inverted": true
-        }
-      ]
     }
   },
   "web_crafting": {
