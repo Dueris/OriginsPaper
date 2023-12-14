@@ -5,6 +5,8 @@ import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.OriginContainer;
 import me.dueris.genesismc.utils.PowerContainer;
+import me.dueris.genesismc.utils.translation.LangConfig;
+
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -59,7 +61,7 @@ public class PreventSleep extends CraftPower implements Listener {
                         if (Boolean.parseBoolean(power.get("set_spawn_point", "false"))) {
                             player.setBedSpawnLocation(blockLocation);
                         }
-                        String message = power.get("message", "origins.cant_sleep");
+                        String message = power.get("message", LangConfig.getLocalizedString(player, "origins.cant_sleep"));
                         player.sendMessage(message);
                         e.setCancelled(true);
                     }
