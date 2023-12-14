@@ -38,64 +38,69 @@ public class BiomeCondition implements Condition {
         if (block != null && block.getBiome() != null) {
             boolean inverted = (boolean) condition.getOrDefault("inverted", false);
             String type = condition.get("type").toString().toLowerCase();
-            if (type.equalsIgnoreCase("origins:biome") && condition.containsKey("condition")) {
-                Map<String, Object> keyMap = (Map<String, Object>) condition.get("condition");
-                if (keyMap.containsKey("type") && keyMap.get("type").equals("origins:temperature")) {
-                    if (keyMap.containsKey("comparison") && keyMap.containsKey("compare_to")) {
-                        if (RestrictArmor.compareValues(block.getTemperature(), keyMap.get("comparison").toString(), Double.parseDouble(keyMap.get("compare_to").toString()))) {
-                            return getResult(inverted, true);
+            switch(type){
+                case "origins:biome" -> {
+                    Map<String, Object> keyMap = (Map<String, Object>) condition.get("condition");
+                    if (keyMap.containsKey("type") && keyMap.get("type").equals("origins:temperature")) {
+                        if (keyMap.containsKey("comparison") && keyMap.containsKey("compare_to")) {
+                            if (RestrictArmor.compareValues(block.getTemperature(), keyMap.get("comparison").toString(), Double.parseDouble(keyMap.get("compare_to").toString()))) {
+                                return getResult(inverted, true);
+                            }
                         }
                     }
                 }
-            }
-            if (type.equals("origins:in_tag")){
-                // Use block in_tag optimization
-                if(TagRegistry.getRegisteredTagFromFileKey(condition.get("tag").toString()) != null){
-                    if(!biomeTagMappings.containsKey(condition.get("tag"))){
-                        for(String mat : TagRegistry.getRegisteredTagFromFileKey(condition.get("tag").toString())){
-                            biomeTagMappings.put(condition.get("tag").toString(), new ArrayList<>());
-                            biomeTagMappings.get(condition.get("tag")).add(Biome.valueOf(mat.split(":")[1].toUpperCase()));
+                case "origins:in_tag" -> {
+                    // Use block in_tag optimization
+                    if(TagRegistry.getRegisteredTagFromFileKey(condition.get("tag").toString()) != null){
+                        if(!biomeTagMappings.containsKey(condition.get("tag"))){
+                            for(String mat : TagRegistry.getRegisteredTagFromFileKey(condition.get("tag").toString())){
+                                biomeTagMappings.put(condition.get("tag").toString(), new ArrayList<>());
+                                biomeTagMappings.get(condition.get("tag")).add(Biome.valueOf(mat.split(":")[1].toUpperCase()));
+                            }
+                        }else{
+                            // mappings exist, now we can start stuff
+                            return Optional.of(biomeTagMappings.get(condition.get("tag")).contains(block.getBiome()));
                         }
-                    }else{
-                        // mappings exist, now we can start stuff
-                        return Optional.of(biomeTagMappings.get(condition.get("tag")).contains(block.getBiome()));
                     }
                 }
-            }
-            if (type.equalsIgnoreCase("origins:precipitation")){
-                Biome biome = block.getBiome();
-                if (biome != null) {
-                    net.minecraft.world.level.biome.Biome b = CraftBiome.bukkitToMinecraft(biome);
-                    if (b.coldEnoughToSnow(BlockPos.containing(block.getX(), block.getY(), block.getZ()))){
-                        return getResult(inverted, condition.get("precipitation").toString().equals("snow"));
-                    } else if (b.hasPrecipitation()) {
-                        return getResult(inverted, condition.get("precipitation").toString().equals("rain"));
+                case "origins:precipitation" -> {
+                    Biome biome = block.getBiome();
+                    if (biome != null) {
+                        net.minecraft.world.level.biome.Biome b = CraftBiome.bukkitToMinecraft(biome);
+                        if (b.coldEnoughToSnow(BlockPos.containing(block.getX(), block.getY(), block.getZ()))){
+                            return getResult(inverted, condition.get("precipitation").toString().equals("snow"));
+                        } else if (b.hasPrecipitation()) {
+                            return getResult(inverted, condition.get("precipitation").toString().equals("rain"));
+                        } else {
+                            return getResult(inverted, condition.get("precipitation").toString().equals("none"));
+                        }
                     } else {
-                        return getResult(inverted, condition.get("precipitation").toString().equals("none"));
+                        return getResult(inverted, condition.get("precipitation").toString().equals("rain"));
                     }
-                } else {
-                    return getResult(inverted, condition.get("precipitation").toString().equals("rain"));
                 }
-            }
-            if (type.equalsIgnoreCase("origins:category")){
-                Biome biome = block.getBiome();
-                for(String biom : BiomeMappings.getBiomeIDs(condition.get("category").toString())){
-                     if(Biome.valueOf(biom.split(":")[1].toUpperCase()).equals(biome)){
-                         return getResult(inverted, true);
-                     }
+                case "origins:category" -> {
+                    Biome biome = block.getBiome();
+                    for(String biom : BiomeMappings.getBiomeIDs(condition.get("category").toString())){
+                         if(Biome.valueOf(biom.split(":")[1].toUpperCase()).equals(biome)){
+                             return getResult(inverted, true);
+                         }
+                    }
                 }
-            }
-            if (type.equalsIgnoreCase("origins:temperature")){
-                net.minecraft.world.level.biome.Biome b = CraftBiome.bukkitToMinecraft(block.getBiome());
-                String comparison = condition.get("comparison").toString();
-                float compare_to = Float.parseFloat(condition.get("compare_to").toString());
-                    return getResult(inverted, RestrictArmor.compareValues(b.getBaseTemperature(), comparison, compare_to));
-            }
-            if (type.equalsIgnoreCase("origins:humidity")){
-                net.minecraft.world.level.biome.Biome b = CraftBiome.bukkitToMinecraft(block.getBiome());
-                String comparison = condition.get("comparison").toString();
-                float compare_to = Float.parseFloat(condition.get("compare_to").toString());
-                    return getResult(inverted, RestrictArmor.compareValues(b.climateSettings.downfall(), comparison, compare_to));
+                case "origins:temperature" -> {
+                    net.minecraft.world.level.biome.Biome b = CraftBiome.bukkitToMinecraft(block.getBiome());
+                    String comparison = condition.get("comparison").toString();
+                    float compare_to = Float.parseFloat(condition.get("compare_to").toString());
+                        return getResult(inverted, RestrictArmor.compareValues(b.getBaseTemperature(), comparison, compare_to));
+                }
+                case "origins:humidity" -> {
+                    net.minecraft.world.level.biome.Biome b = CraftBiome.bukkitToMinecraft(block.getBiome());
+                    String comparison = condition.get("comparison").toString();
+                    float compare_to = Float.parseFloat(condition.get("compare_to").toString());
+                        return getResult(inverted, RestrictArmor.compareValues(b.climateSettings.downfall(), comparison, compare_to));
+                }
+                default -> {
+                    return getResult(inverted, false);
+                }
             }
             return getResult(inverted, false);
         }else{

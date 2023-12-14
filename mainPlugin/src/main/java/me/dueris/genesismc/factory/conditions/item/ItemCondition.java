@@ -32,107 +32,114 @@ public class ItemCondition implements Condition {
         if (condition.isEmpty()) return Optional.empty();
         boolean inverted = (boolean) condition.getOrDefault("inverted", false);
         String type = condition.get("type").toString().toLowerCase();
-        if (type.equalsIgnoreCase("origins:ingredient")) {
-            if (condition.containsKey("ingredient")) {
-                Map<String, Object> ingredientMap = (Map<String, Object>) condition.get("ingredient");
-                if (ingredientMap.containsKey("item")) {
-                    String itemValue = ingredientMap.get("item").toString();
-                    String item = null;
-                    if(itemValue.contains(":")){
-                        item = itemValue.split(":")[1];
-                    }else{
-                        item = itemValue;
-                    }
-                    if (itemStack.getType().equals(Material.valueOf(item.toUpperCase()))) {
-                        return getResult(inverted, true);
-                    } else {
-                        return getResult(inverted, false);
-                    }
-                } else if (ingredientMap.containsKey("tag")) {
-                    if(TagRegistry.getRegisteredTagFromFileKey(ingredientMap.get("tag").toString()) != null){
-                        for(String mat : TagRegistry.getRegisteredTagFromFileKey(ingredientMap.get("tag").toString())){
-                            if(itemStack.getType().equals(Material.valueOf(mat.split(":")[1].toUpperCase()))){
-                                return Optional.of(true);
+        switch(type){
+            case "origins:ingredient" -> {
+                if (condition.containsKey("ingredient")) {
+                    Map<String, Object> ingredientMap = (Map<String, Object>) condition.get("ingredient");
+                    if (ingredientMap.containsKey("item")) {
+                        String itemValue = ingredientMap.get("item").toString();
+                        String item = null;
+                        if(itemValue.contains(":")){
+                            item = itemValue.split(":")[1];
+                        }else{
+                            item = itemValue;
+                        }
+                        if (itemStack.getType().equals(Material.valueOf(item.toUpperCase()))) {
+                            return getResult(inverted, true);
+                        } else {
+                            return getResult(inverted, false);
+                        }
+                    } else if (ingredientMap.containsKey("tag")) {
+                        if(TagRegistry.getRegisteredTagFromFileKey(ingredientMap.get("tag").toString()) != null){
+                            for(String mat : TagRegistry.getRegisteredTagFromFileKey(ingredientMap.get("tag").toString())){
+                                if(itemStack.getType().equals(Material.valueOf(mat.split(":")[1].toUpperCase()))){
+                                    return Optional.of(true);
+                                }
                             }
                         }
                     }
                 }
             }
-        }
-        if (type.equalsIgnoreCase("origins:in_tag"))
-        if (type.equalsIgnoreCase("origins:meat")) {
-            if (itemStack.getType().isEdible()) {
-                if (inverted) {
-                    if (getNonMeatMaterials().contains(itemStack)) {
-                        return getResult(false, true);
+            case "origins:meat" -> {
+                if (itemStack.getType().isEdible()) {
+                    if (inverted) {
+                        if (getNonMeatMaterials().contains(itemStack)) {
+                            return getResult(false, true);
+                        } else {
+                            return getResult(false, false);
+                        }
                     } else {
-                        return getResult(false, false);
+                        if (getMeatMaterials().contains(itemStack)) {
+                            return getResult(false, true);
+                        } else {
+                            return getResult(false, false);
+                        }
                     }
                 } else {
-                    if (getMeatMaterials().contains(itemStack)) {
-                        return getResult(false, true);
-                    } else {
-                        return getResult(false, false);
+                    return getResult(false, false);
+                }
+            }
+            case "origins:fuel" -> {
+                return getResult(inverted, itemStack.getType().isFuel());
+            }
+            case "origins:amount" -> {
+                String comparison = condition.get("comparison").toString();
+                double compareTo = Double.parseDouble(condition.get("compare_to").toString());
+                int amt = itemStack.getAmount();
+                return getResult(inverted, RestrictArmor.compareValues(amt, comparison, compareTo));
+            }
+            case "origins:armor_value" -> {
+                String comparison = condition.get("comparison").toString();
+                double compareTo = Double.parseDouble(condition.get("compare_to").toString());
+                double amt = ArmorUtils.getArmorValue(itemStack);
+                return getResult(inverted, RestrictArmor.compareValues(amt, comparison, compareTo));
+            }
+            case "origins:durability" -> {
+                String comparison = condition.get("comparison").toString();
+                double compareTo = Double.parseDouble(condition.get("compare_to").toString());
+                double amt = itemStack.getDurability();
+                return getResult(inverted, RestrictArmor.compareValues(amt, comparison, compareTo));
+            }
+            case "origins:empty" -> {
+                return getResult(inverted, itemStack.getType().isAir());
+            }
+            case "origins:enchantable" -> {
+                return getResult(inverted, ENCHANTABLE_MATERIALS.contains(itemStack.getType()));
+            }
+            case "origins:enchantment" -> {
+                String comparison = condition.get("comparison").toString();
+                double compareTo = Double.parseDouble(condition.get("compare_to").toString());
+                for(Enchantment enchantment : itemStack.getEnchantments().keySet()){
+                    if(enchantment.getName().equalsIgnoreCase(String.valueOf(condition.getOrDefault("enchantment", enchantment.getName())))){
+                        int amt = itemStack.getEnchantments().get(enchantment);
+                        return getResult(inverted, RestrictArmor.compareValues(amt, comparison, compareTo));
                     }
                 }
-            } else {
-                return getResult(false, false);
             }
-        }
-        if (type.equalsIgnoreCase("origins:amount")){
-            String comparison = condition.get("comparison").toString();
-            double compareTo = Double.parseDouble(condition.get("compare_to").toString());
-            int amt = itemStack.getAmount();
-            return getResult(inverted, RestrictArmor.compareValues(amt, comparison, compareTo));
-        }
-        if (type.equalsIgnoreCase("origins:armor_value")){
-            String comparison = condition.get("comparison").toString();
-            double compareTo = Double.parseDouble(condition.get("compare_to").toString());
-            double amt = ArmorUtils.getArmorValue(itemStack);
-            return getResult(inverted, RestrictArmor.compareValues(amt, comparison, compareTo));
-        }
-        if (type.equalsIgnoreCase("origins:durability")){
-            String comparison = condition.get("comparison").toString();
-            double compareTo = Double.parseDouble(condition.get("compare_to").toString());
-            double amt = itemStack.getDurability();
-            return getResult(inverted, RestrictArmor.compareValues(amt, comparison, compareTo));
-        }
-        if (type.equalsIgnoreCase("origins:empty")){
-            return getResult(inverted, itemStack.getType().isAir());
-        }
-        if (type.equalsIgnoreCase("origins:enchantable")){
-            return getResult(inverted, ENCHANTABLE_MATERIALS.contains(itemStack.getType()));
-        }
-        if (type.equalsIgnoreCase("origins:enchantment")){
-            String comparison = condition.get("comparison").toString();
-            double compareTo = Double.parseDouble(condition.get("compare_to").toString());
-            for(Enchantment enchantment : itemStack.getEnchantments().keySet()){
-                if(enchantment.getName().equalsIgnoreCase(String.valueOf(condition.getOrDefault("enchantment", enchantment.getName())))){
-                    int amt = itemStack.getEnchantments().get(enchantment);
-                    return getResult(inverted, RestrictArmor.compareValues(amt, comparison, compareTo));
-                }
+            case "origins:fireproof" -> {
+                return getResult(inverted, itemStack.getType().toString().toLowerCase().contains("NETHERITE"));
             }
-        }
-        if (type.equalsIgnoreCase("origins:fireproof")){
-            return getResult(inverted, itemStack.getType().toString().toLowerCase().contains("NETHERITE"));
-        }
-        if (type.equalsIgnoreCase("origins:is_damageable")){
-            return getResult(inverted, !itemStack.getType().isBlock());
-        }
-        if (type.equalsIgnoreCase("origins:is_equippable")){
-            return getResult(inverted, EnchantTable.wearable.contains(itemStack.getType()));
-        }
-        if (type.equalsIgnoreCase("origins:relative_durability")){
-            String comparison = condition.get("comparison").toString();
-            double compareTo = Double.parseDouble(condition.get("compare_to").toString());
-            double amt = itemStack.getDurability() / itemStack.getType().getMaxDurability();
-            return getResult(inverted, RestrictArmor.compareValues(amt, comparison, compareTo));
-        }
-        if (type.equalsIgnoreCase("origins:smeltable")){
-            return getResult(inverted, itemStack.getType().isFuel());
-        }
-        if (type.equalsIgnoreCase("origins:food")){
-            return getResult(inverted, itemStack.getType().isEdible());
+            case "origins:is_damageable" -> {
+                return getResult(inverted, !itemStack.getType().isBlock());
+            }
+            case "origins:is_equippable" -> {
+                return getResult(inverted, EnchantTable.wearable.contains(itemStack.getType()));
+            }
+            case "origins:relative_durability" -> {
+                String comparison = condition.get("comparison").toString();
+                double compareTo = Double.parseDouble(condition.get("compare_to").toString());
+                double amt = itemStack.getDurability() / itemStack.getType().getMaxDurability();
+                return getResult(inverted, RestrictArmor.compareValues(amt, comparison, compareTo));
+            }
+            case "origins:smeltable" -> {
+                return getResult(inverted, itemStack.getType().isFuel());
+            }
+            case "origins:food" -> {
+                return getResult(inverted, itemStack.getType().isEdible());
+            }
+            default -> {
+                return getResult(inverted, false);
+            }
         }
         return getResult(inverted, false);
     }

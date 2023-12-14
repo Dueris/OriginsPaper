@@ -37,7 +37,6 @@ public class BiEntityCondition implements Condition, Listener {
         if (condition.get("type") == null) return Optional.empty();
         boolean inverted = (boolean) condition.getOrDefault("inverted", false);
         String type = condition.get("type").toString().toLowerCase();
-
         switch (type) {
             case "origins:attack_target" : {
                 Bukkit.getLogger().warning("origins:attack_target is depreciated for the plugin, for more details msg Dueris");

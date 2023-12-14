@@ -6,6 +6,7 @@ import me.dueris.genesismc.factory.powers.player.RestrictArmor;
 import me.dueris.genesismc.utils.PowerContainer;
 import org.bukkit.Fluid;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.*;
@@ -47,7 +48,6 @@ public class DamageCondition implements Condition {
         if (entityDamageEvent == null) return Optional.empty();
         boolean inverted = (boolean) condition.getOrDefault("inverted", false);
         String type = condition.get("type").toString().toLowerCase();
-
         switch (type) {
             case "origins:amount" -> {
                 String comparison = condition.get("comparison").toString();
@@ -568,6 +568,10 @@ public class DamageCondition implements Condition {
                         }
                     }
                 }
+            }
+            case "origins:type" -> {
+                String s = NamespacedKey.minecraft(entityDamageEvent.getCause().toString().toLowerCase()).asString();
+                return getResult(inverted, s.equals(condition.get("damage_type")));
             }
             case "origins:out_of_world" -> {
                 if (entityDamageEvent.getCause().equals(DamageCause.VOID)) {

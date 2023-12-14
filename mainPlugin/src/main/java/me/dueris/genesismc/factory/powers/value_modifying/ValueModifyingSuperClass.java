@@ -31,6 +31,7 @@ public class ValueModifyingSuperClass extends BukkitRunnable implements Listener
     public static ArrayList<Player> modify_projectile_damage = new ArrayList<>();
     public static ArrayList<Player> modify_effect_amplifier = new ArrayList<>();
     public static ArrayList<Player> modify_effect_duration = new ArrayList<>();
+    public static ArrayList<Player> modify_enchantment_level = new ArrayList<>();
     public static ArrayList<Player> modify_swim_speed = new ArrayList<>();
     public static ArrayList<Player> modify_xp_gain = new ArrayList<>();
 

@@ -81,6 +81,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
     public static WaterProtection waterProtectionEnchant;
     private static GenesisMC plugin;
     public static ConditionExecutor conditionExecutor;
+    public static String apoliVersion = "1.11.1";
 
     static {
         tool = EnumSet.of(Material.DIAMOND_AXE, Material.DIAMOND_HOE, Material.DIAMOND_PICKAXE, Material.DIAMOND_SHOVEL, Material.DIAMOND_SWORD, Material.GOLDEN_AXE, Material.GOLDEN_HOE, Material.GOLDEN_PICKAXE, Material.GOLDEN_SHOVEL, Material.GOLDEN_SWORD, Material.NETHERITE_AXE, Material.NETHERITE_HOE, Material.NETHERITE_PICKAXE, Material.NETHERITE_SHOVEL, Material.NETHERITE_SWORD, Material.IRON_AXE, Material.IRON_HOE, Material.IRON_PICKAXE, Material.IRON_SHOVEL, Material.IRON_SWORD, Material.WOODEN_AXE, Material.WOODEN_HOE, Material.WOODEN_PICKAXE, Material.WOODEN_SHOVEL, Material.WOODEN_SWORD, Material.SHEARS);
@@ -243,9 +244,10 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         Bukkit.getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC]                     ~ Made by Dueris ~        ").color(TextColor.fromHexString("#dd50ff")));
         Bukkit.getLogger().info("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
         Bukkit.getServer().getConsoleSender().sendMessage("");
-        Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "* Loading Version GenesisMC-{minecraftVersion-versionNumber}"
+        Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "* Loading Version GenesisMC-{minecraftVersion-versionNumber} // CraftApoli-{apoliVersion}"
                 .replace("minecraftVersion", "mc" + version)
                 .replace("versionNumber", pluginVersion)
+                .replace("apoliVersion", apoliVersion)
         );
         Bukkit.getServer().getConsoleSender().sendMessage("");
         if(debugOrigins){

@@ -13,6 +13,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.TileState;
 import org.bukkit.block.data.Waterlogged;
+import org.bukkit.craftbukkit.v1_20_R2.block.CraftBlock;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;
@@ -163,6 +164,28 @@ public class BlockCondition implements Condition {
 
         if (type.equals("origins:light_blocking")){
             return getResult(inverted, block.getType().isOccluding());
+        }
+
+        if (type.equalsIgnoreCase("origins:light_level")) {
+            String lightType = condition.get("light_type").toString();
+            CraftBlock bl = (CraftBlock) block;
+            int level = 0;
+            switch (lightType) {
+                case "sky" -> {
+                    level = bl.getLightFromSky();
+                }
+                case "block" -> {
+                    level = bl.getLightFromBlocks();
+                }
+                default -> {
+                    level = bl.getLightLevel();
+                }
+            }
+
+            String comparison = condition.get("comparison").toString();
+            float compare_to = Float.parseFloat(condition.get("compare_to").toString());
+            float bR = level;
+            return getResult(inverted, RestrictArmor.compareValues(bR, comparison, compare_to));
         }
 
         if (type.equals("origins:movement_blocking")){

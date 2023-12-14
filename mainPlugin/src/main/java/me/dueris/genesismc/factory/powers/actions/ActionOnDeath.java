@@ -3,6 +3,7 @@ package me.dueris.genesismc.factory.powers.actions;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.entity.OriginPlayer;
 import me.dueris.genesismc.factory.actions.Actions;
+import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.OriginContainer;
 import me.dueris.genesismc.utils.PowerContainer;
@@ -25,19 +26,22 @@ public class ActionOnDeath extends CraftPower implements Listener {
     @EventHandler
     public void d(EntityDeathEvent e) {
         if (e.getEntity() instanceof Player p) {
-            Entity target = p;
-            for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
-                if (getPowerArray().contains(p)) {
+            if (getPowerArray().contains(p)) {
+                Entity target = p;
+                for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
+                    ConditionExecutor executor = GenesisMC.getConditionExecutor();
                     for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
                         if (power == null) continue;
-                        setActive(power.getTag(), true);
-                        Actions.EntityActionType(p, power.getEntityAction());
-                        new BukkitRunnable() {
-                            @Override
-                            public void run() {
-                                setActive(power.getTag(), false);
-                            }
-                        }.runTaskLater(GenesisMC.getPlugin(), 2L);
+                        if(executor.check("damage_condition", "damage_conditions", p, power, getPowerFile(), p, null, p.getLocation().getBlock(), null, p.getInventory().getItemInMainHand(), null)){
+                            setActive(power.getTag(), true);
+                            Actions.EntityActionType(p, power.getEntityAction());
+                            new BukkitRunnable() {
+                                @Override
+                                public void run() {
+                                    setActive(power.getTag(), false);
+                                }
+                            }.runTaskLater(GenesisMC.getPlugin(), 2L);
+                        } 
                     }
                 }
             }
