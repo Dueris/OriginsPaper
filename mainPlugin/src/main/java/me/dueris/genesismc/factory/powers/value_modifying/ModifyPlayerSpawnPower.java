@@ -93,7 +93,7 @@ public class ModifyPlayerSpawnPower extends CraftPower implements Listener {
                         for(int x = -2; x < 3; x++){
                             for(int z = -2; z < 3; z++){
                                 Block bl = world.getBlockAt(centerPosLoc.clone().add(x, 1, z));
-                                if(bl.isCollidable() || bl.isLiquid()){
+                                if(bl.isCollidable() || bl.isLiquid() || bl.isSolid() || !bl.isPassable()){
                                     bl.setType(AIR);
                                 }
                                 GenesisMC.sendDebug(centerPosLoc.clone().add(x, 1, z));
@@ -102,13 +102,21 @@ public class ModifyPlayerSpawnPower extends CraftPower implements Listener {
                         for(int x = -2; x < 3; x++){
                             for(int z = -2; z < 3; z++){
                                 Block bl = world.getBlockAt(centerPosLoc.clone().add(x, 2, z));
-                                if(bl.isCollidable() || bl.isLiquid()){
+                                if(bl.isCollidable() || bl.isLiquid() || bl.isSolid() || !bl.isPassable()){
                                     bl.setType(AIR);
                                 }
                                 GenesisMC.sendDebug(centerPosLoc.clone().add(x, 2, z));
                             }
                         }
-                        p.sendMessage(String.valueOf(centerPosLoc.y()) + " == y location of block to spawn at");
+                        for(int x = -2; x < 3; x++){
+                            for(int z = -2; z < 3; z++){
+                                Block bl = world.getBlockAt(centerPosLoc.clone().add(x, 3, z));
+                                if(bl.isCollidable() || bl.isLiquid() || bl.isSolid() || !bl.isPassable()){
+                                    bl.setType(AIR);
+                                }
+                                GenesisMC.sendDebug(centerPosLoc.clone().add(x, 3, z));
+                            }
+                        }
                         teleportLoc = centerPosLoc.add(0, 2, 0);
                     GenesisMC.sendDebug("DimensionBuilder finished");
                     if(teleportLoc != null){
