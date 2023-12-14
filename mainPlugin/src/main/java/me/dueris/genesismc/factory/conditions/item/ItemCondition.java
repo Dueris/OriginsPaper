@@ -233,6 +233,9 @@ public class ItemCondition implements Condition {
         meatMaterials.add(Material.RABBIT);
         meatMaterials.add(Material.TROPICAL_FISH);
         meatMaterials.add(Material.COD);
+        meatMaterials.add(Material.COOKED_COD);
+        meatMaterials.add(Material.RABBIT_STEW);
+        meatMaterials.add(Material.SPIDER_EYE);
         meatMaterials.add(Material.SALMON);
         meatMaterials.add(Material.PUFFERFISH);
 
