@@ -63,6 +63,8 @@ public class ModifyBreakSpeedPower extends CraftPower implements Listener {
                                 setActive(power.getTag(), true);
                                 // if(power.getPossibleModifiers("modifier", "modifiers"))
                                 for(HashMap<String, Object> modifier : power.getPossibleModifiers("modifer", "modifiers")){
+                                    p.sendMessage(modifier.get("value").toString());
+                                    p.sendMessage(valueModifyingSuperClass.getPersistentAttributeContainer(p, MODIFYING_KEY).toString());
                                     if(Float.valueOf(modifier.get("value").toString()) < 0){
                                         // Slower mine
                                         p.addPotionEffect(
