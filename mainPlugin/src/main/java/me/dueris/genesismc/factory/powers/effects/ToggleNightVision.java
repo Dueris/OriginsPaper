@@ -87,7 +87,7 @@ public class ToggleNightVision extends CraftPower implements Listener {
                             //run code for while its enabled
                             ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                             if (conditionExecutor.check("condition", "conditions", p, power, getPowerFile(), p, null, null, null, p.getItemInHand(), null)) {
-                                p.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, Integer.MAX_VALUE, 255, false, false, false));
+                                p.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, Integer.MAX_VALUE, 400, false, false, false));
                             } else {
                                 p.removePotionEffect(PotionEffectType.NIGHT_VISION);
                             }
