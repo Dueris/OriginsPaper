@@ -27,9 +27,7 @@ public class FlightHandler extends CraftPower {
                         p.setFlying(true);
                     }
                 } else {
-                    if (p.getGameMode().equals(GameMode.CREATIVE)) {
-                        p.setAllowFlight(true);
-                    } else p.setAllowFlight(p.getGameMode().equals(GameMode.SPECTATOR));
+                    p.setAllowFlight(p.getGameMode().equals(GameMode.SPECTATOR));
                 }
             }
         }
