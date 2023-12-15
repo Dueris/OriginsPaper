@@ -47,8 +47,6 @@ public class KeepInventory extends CraftPower implements Listener {
                                     e.getItemsToKeep().add(player.getInventory().getItem(i));
                                 }
                             }
-                        } else {
-                            e.setKeepInventory(true);
                         }
                     } else {
                         if (!getPowerArray().contains(player)) return;
