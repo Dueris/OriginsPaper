@@ -882,6 +882,7 @@ public class Actions {
         String type = blockAction.get("type").toString();
         if (type.equals("genesis:set_spawn")) {
             if (entity instanceof Player p) {
+                p.sendMessage("Bed location set.");
                 p.setBedSpawnLocation(location);
             }
         }

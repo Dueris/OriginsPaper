@@ -5,11 +5,14 @@ import me.dueris.genesismc.events.OriginChangeEvent;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.OriginContainer;
 import me.dueris.genesismc.utils.PowerContainer;
+
+import org.bukkit.GameEvent;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.world.GenericGameEvent;
 import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
@@ -27,18 +30,21 @@ public class BounceSlimeBlock extends CraftPower implements OriginSimple, Listen
     }
 
     @EventHandler
-    public void onPlayerMove(PlayerMoveEvent event) {
-        Player player = event.getPlayer();
-        if (!bouncePlayers.contains(player)) return;
+    public void gameEvent(GenericGameEvent event){
+        if(event.getEvent().equals(GameEvent.HIT_GROUND)){
+            if(event.getEntity() instanceof Player player) {
+                if (!bouncePlayers.contains(player)) return;
 
-        double velocityY = player.getVelocity().getY();
-
-        if (velocityY < -0.4) {
-            double coefficientOfRestitution = 0.85;
-            double reboundVelocity = -coefficientOfRestitution * velocityY;
-
-            if (!player.isOnGround()) return;
-            player.setVelocity(new Vector(0, reboundVelocity, 0));
+                double velocityY = player.getVelocity().getY();
+        
+                if (velocityY < -0.4) {
+                    double coefficientOfRestitution = 0.85;
+                    double reboundVelocity = -coefficientOfRestitution * velocityY;
+        
+                    if (!player.isOnGround()) return;
+                    player.setVelocity(new Vector(0, reboundVelocity, 0));
+                }
+            }
         }
     }
 

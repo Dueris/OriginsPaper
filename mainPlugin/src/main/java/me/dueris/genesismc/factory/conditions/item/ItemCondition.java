@@ -219,6 +219,11 @@ public class ItemCondition implements Condition {
         nonMeatMaterials.add(Material.GLOW_BERRIES);
         nonMeatMaterials.add(Material.CHORUS_FRUIT);
         nonMeatMaterials.add(Material.BAKED_POTATO);
+        nonMeatMaterials.add(Material.SWEET_BERRIES);
+        nonMeatMaterials.add(Material.POISONOUS_POTATO);
+        nonMeatMaterials.add(Material.PUMPKIN_PIE);
+        nonMeatMaterials.add(Material.SUSPICIOUS_STEW);
+        nonMeatMaterials.add(Material.MUSHROOM_STEW);
 
         nonMeatMaterials.add(Material.WATER_BUCKET);
         nonMeatMaterials.add(Material.LAVA_BUCKET);
@@ -241,6 +246,7 @@ public class ItemCondition implements Condition {
         meatMaterials.add(Material.TROPICAL_FISH);
         meatMaterials.add(Material.COD);
         meatMaterials.add(Material.COOKED_COD);
+        meatMaterials.add(Material.COOKED_SALMON);
         meatMaterials.add(Material.RABBIT_STEW);
         meatMaterials.add(Material.SPIDER_EYE);
         meatMaterials.add(Material.SALMON);
