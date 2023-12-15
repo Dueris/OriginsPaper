@@ -56,7 +56,7 @@ public class ModifyPlayerSpawnPower extends CraftPower implements Listener {
 
     public void runHandle(Player p){
         if (modify_world_spawn.contains(p)) {
-            // if(p.getBedSpawnLocation() != null) return;
+            if(p.getBedSpawnLocation() != null) return;
             for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
                 ConditionExecutor executor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                 PowerContainer power = origin.getSinglePowerFileFromType(getPowerFile());
@@ -79,46 +79,51 @@ public class ModifyPlayerSpawnPower extends CraftPower implements Listener {
                     GenesisMC.sendDebug(world.getName());
                     int[] possibleVerticalMovement = {0, 1};
                     GenesisMC.sendDebug(spawnStrat);
-                    GenesisMC.sendDebug("DimensionBuilder started");
+                    GenesisMC.sendDebug("DimensionPlatformBuilder started");
                         // Obsidian platform
-                        for(int x = -2; x < 3; x++){
-                            for(int z = -2; z < 3; z++){
-                                Block bl = world.getBlockAt(centerPosLoc.clone().add(x, 0, z));
-                                if(!bl.isCollidable()){
-                                    bl.setType(OBSIDIAN);
+                        if(!world.getBlockAt(centerPosLoc.clone()).getType().isCollidable()){
+                            for(int x = -2; x < 3; x++){
+                                for(int z = -2; z < 3; z++){
+                                    Block bl = world.getBlockAt(centerPosLoc.clone().add(x, 0, z));
+                                    if(!bl.isCollidable()){
+                                        bl.setType(OBSIDIAN);
+                                    }
+                                    GenesisMC.sendDebug(centerPosLoc.clone().add(x, 0, z));
                                 }
-                                GenesisMC.sendDebug(centerPosLoc.clone().add(x, 0, z));
+                            }
+                            for(int x = -2; x < 3; x++){
+                                for(int z = -2; z < 3; z++){
+                                    Block bl = world.getBlockAt(centerPosLoc.clone().add(x, 1, z));
+                                    if(bl.isCollidable() || bl.isLiquid() || bl.isSolid() || !bl.isPassable()){
+                                        bl.setType(AIR);
+                                    }
+                                    GenesisMC.sendDebug(centerPosLoc.clone().add(x, 1, z));
+                                }
+                            }
+                            for(int x = -2; x < 3; x++){
+                                for(int z = -2; z < 3; z++){
+                                    Block bl = world.getBlockAt(centerPosLoc.clone().add(x, 2, z));
+                                    if(bl.isCollidable() || bl.isLiquid() || bl.isSolid() || !bl.isPassable()){
+                                        bl.setType(AIR);
+                                    }
+                                    GenesisMC.sendDebug(centerPosLoc.clone().add(x, 2, z));
+                                }
+                            }
+                            for(int x = -2; x < 3; x++){
+                                for(int z = -2; z < 3; z++){
+                                    Block bl = world.getBlockAt(centerPosLoc.clone().add(x, 3, z));
+                                    if(bl.isCollidable() || bl.isLiquid() || bl.isSolid() || !bl.isPassable()){
+                                        bl.setType(AIR);
+                                    }
+                                    GenesisMC.sendDebug(centerPosLoc.clone().add(x, 3, z));
+                                }
                             }
                         }
-                        for(int x = -2; x < 3; x++){
-                            for(int z = -2; z < 3; z++){
-                                Block bl = world.getBlockAt(centerPosLoc.clone().add(x, 1, z));
-                                if(bl.isCollidable() || bl.isLiquid() || bl.isSolid() || !bl.isPassable()){
-                                    bl.setType(AIR);
-                                }
-                                GenesisMC.sendDebug(centerPosLoc.clone().add(x, 1, z));
-                            }
-                        }
-                        for(int x = -2; x < 3; x++){
-                            for(int z = -2; z < 3; z++){
-                                Block bl = world.getBlockAt(centerPosLoc.clone().add(x, 2, z));
-                                if(bl.isCollidable() || bl.isLiquid() || bl.isSolid() || !bl.isPassable()){
-                                    bl.setType(AIR);
-                                }
-                                GenesisMC.sendDebug(centerPosLoc.clone().add(x, 2, z));
-                            }
-                        }
-                        for(int x = -2; x < 3; x++){
-                            for(int z = -2; z < 3; z++){
-                                Block bl = world.getBlockAt(centerPosLoc.clone().add(x, 3, z));
-                                if(bl.isCollidable() || bl.isLiquid() || bl.isSolid() || !bl.isPassable()){
-                                    bl.setType(AIR);
-                                }
-                                GenesisMC.sendDebug(centerPosLoc.clone().add(x, 3, z));
-                            }
+                        if(!centerPosLoc.getChunk().isLoaded()){
+                            centerPosLoc.getChunk().load(true);
                         }
                         teleportLoc = centerPosLoc.add(0, 2, 0);
-                    GenesisMC.sendDebug("DimensionBuilder finished");
+                    GenesisMC.sendDebug("DimensionPlatformBuilder finished");
                     if(teleportLoc != null){
                         p.teleportAsync(teleportLoc);
                     }else{
