@@ -390,9 +390,9 @@ public class EntityCondition implements Condition {
             }
             case "origins:submerged_in" -> {
                 if (condition.get("fluid").equals("minecraft:water")) {
-                    if (entity.isInWaterOrBubbleColumn()) return getResult(inverted, Optional.of(true));
+                    return getResult(inverted, Optional.of(entity.isInWaterOrBubbleColumn()));
                 } else if (condition.get("fluid").equals("minecraft:lava")) {
-                    if (entity.isInLava()) return getResult(inverted, Optional.of(true));
+                    return getResult(inverted, Optional.of(entity.isInLava()));
                 }else{
                     return getResult(inverted, Optional.of(false));
                 }
