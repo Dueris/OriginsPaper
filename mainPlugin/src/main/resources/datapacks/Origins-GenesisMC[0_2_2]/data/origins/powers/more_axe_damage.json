@@ -11,7 +11,7 @@
     },
     "modifier": {
       "operation": "addition",
-      "value": 2
+      "value": 3
     }
   },
   "netherite": {
@@ -25,7 +25,7 @@
     },
     "modifier": {
       "operation": "addition",
-      "value": 2
+      "value": 3
     }
   },
   "diamond": {
@@ -39,7 +39,7 @@
     },
     "modifier": {
       "operation": "addition",
-      "value": 2
+      "value": 3
     }
   },
   "wooden": {
@@ -53,7 +53,7 @@
     },
     "modifier": {
       "operation": "addition",
-      "value": 2
+      "value": 3
     }
   },
   "stone": {
@@ -67,7 +67,7 @@
     },
     "modifier": {
       "operation": "addition",
-      "value": 2
+      "value": 3
     }
   },
   "iron": {
@@ -81,7 +81,7 @@
     },
     "modifier": {
       "operation": "addition",
-      "value": 2
+      "value": 3
     }
   },
   "hidden": false,
