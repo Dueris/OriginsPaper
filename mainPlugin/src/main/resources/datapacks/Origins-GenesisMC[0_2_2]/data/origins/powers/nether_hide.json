@@ -20,6 +20,7 @@
     "modifier": {
       "operation": "division",
       "value": "2"
-    }
+    },
+    "hidden": true
   }
 }

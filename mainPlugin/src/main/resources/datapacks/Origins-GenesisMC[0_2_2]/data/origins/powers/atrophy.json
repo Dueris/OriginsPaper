@@ -12,5 +12,6 @@
   "modifier":{
     "operation":"multiplication",
     "value": 2
-  }
+  },
+  "hidden": false
 }
