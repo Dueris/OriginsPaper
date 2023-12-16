@@ -39,6 +39,7 @@ public class OriginCommand extends Command{
         subCommands.add(new Set());
         subCommands.add(new Give());
         subCommands.add(new Bug());
+        subCommands.add(new Reload());
     }
 
     public ArrayList<SubCommand> getSubCommands() {
@@ -71,7 +72,7 @@ public class OriginCommand extends Command{
             sender.sendMessage(Component.text("/origin recipe"));
             sender.sendMessage(Component.text("/origin references"));
             sender.sendMessage(Component.text("/origin bug"));
-            sender.sendMessage(Component.text("/shulker open"));
+            sender.sendMessage(Component.text("/origin reload"));
             sender.sendMessage(Component.text("-----------------------------------------").color(TextColor.fromHexString(YELLOW)));
         }
         return true;

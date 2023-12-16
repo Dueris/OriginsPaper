@@ -42,6 +42,12 @@ public class TabAutoComplete implements TabCompleter {
                 } else {
                     arguments.remove("recipe");
                 }
+                if (sender.isOp()) {
+                    if (args[0].equals("r") || args[0].isEmpty() || args[0].equals("re") || args[0].equals("rel") || args[0].equals("relo") || args[0].equals("reloa") || args[0].equals("reload"))
+                        arguments.add("reload");
+                } else {
+                    arguments.remove("reload");
+                }
                 if (sender.hasPermission("genesismc.origins.cmd.get")) {
                     if (args[0].equals("g") || args[0].isEmpty() || args[0].equals("ge") || args[0].equals("get"))
                         arguments.add("get");
