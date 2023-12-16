@@ -4,11 +4,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import me.dueris.genesismc.files.GenesisDataFiles;
-import net.minecraft.world.damagesource.DamageType;
-import org.bukkit.Bukkit;
-import org.bukkit.Fluid;
-import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
+import org.bukkit.*;
 import org.bukkit.block.Biome;
 import org.bukkit.entity.EntityType;
 
@@ -17,8 +13,7 @@ import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public enum TagRegistry {
-    T;
+public class TagRegistry {
 
     @Override
     public String toString() {

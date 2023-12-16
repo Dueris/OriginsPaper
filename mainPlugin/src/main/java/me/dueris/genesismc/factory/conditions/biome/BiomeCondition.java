@@ -53,8 +53,8 @@ public class BiomeCondition implements Condition {
                     // Use block in_tag optimization
                     if(TagRegistry.getRegisteredTagFromFileKey(condition.get("tag").toString()) != null){
                         if(!biomeTagMappings.containsKey(condition.get("tag"))){
+                            biomeTagMappings.put(condition.get("tag").toString(), new ArrayList<>());
                             for(String mat : TagRegistry.getRegisteredTagFromFileKey(condition.get("tag").toString())){
-                                biomeTagMappings.put(condition.get("tag").toString(), new ArrayList<>());
                                 biomeTagMappings.get(condition.get("tag")).add(Biome.valueOf(mat.split(":")[1].toUpperCase()));
                             }
                         }else{

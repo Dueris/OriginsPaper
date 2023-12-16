@@ -503,8 +503,8 @@ public class EntityCondition implements Condition {
                 // Use block in_tag optimization
                 if(TagRegistry.getRegisteredTagFromFileKey(condition.get("tag").toString()) != null){
                     if(!entityTagMappings.containsKey(condition.get("tag"))){
+                        entityTagMappings.put(condition.get("tag").toString(), new ArrayList<>());
                         for(String mat : TagRegistry.getRegisteredTagFromFileKey(condition.get("tag").toString())){
-                            entityTagMappings.put(condition.get("tag").toString(), new ArrayList<>());
                             entityTagMappings.get(condition.get("tag")).add(EntityType.valueOf(mat.split(":")[1].toUpperCase()));
                         }
                     }else{

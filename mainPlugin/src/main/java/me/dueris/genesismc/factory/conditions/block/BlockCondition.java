@@ -5,10 +5,7 @@ import me.dueris.genesismc.factory.conditions.Condition;
 import me.dueris.genesismc.factory.conditions.fluid.FluidCondition;
 import me.dueris.genesismc.factory.powers.player.RestrictArmor;
 import me.dueris.genesismc.utils.PowerContainer;
-import org.bukkit.Fluid;
-import org.bukkit.FluidCollisionMode;
-import org.bukkit.Location;
-import org.bukkit.Material;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.TileState;
@@ -56,8 +53,8 @@ public class BlockCondition implements Condition {
             case "origins:in_tag" -> {
                 if(TagRegistry.getRegisteredTagFromFileKey(condition.get("tag").toString()) != null){
                     if(!blockTagMappings.containsKey(condition.get("tag"))){
+                        blockTagMappings.put(condition.get("tag").toString(), new ArrayList<>());
                         for(String mat : TagRegistry.getRegisteredTagFromFileKey(condition.get("tag").toString())){
-                            blockTagMappings.put(condition.get("tag").toString(), new ArrayList<>());
                             blockTagMappings.get(condition.get("tag")).add(Material.valueOf(mat.split(":")[1].toUpperCase()));
                         }
                     }else{

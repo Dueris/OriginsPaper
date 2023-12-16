@@ -18,68 +18,6 @@ import java.util.zip.ZipInputStream;
 
 public class BukkitUtils {
 
-    public static void deleteDirectory(Path directory, boolean ignoreErrors) throws IOException {
-        if (Files.exists(directory)) {
-            Files.walk(directory)
-                    .sorted((a, b) -> b.compareTo(a)) // Sort in reverse order for correct deletion
-                    .forEach(path -> {
-                        try {
-                            Files.deleteIfExists(path);
-                            Files.delete(path);
-                        } catch (IOException e) {
-                            if(!ignoreErrors){
-                                System.err.println("Error deleting: " + path + e);
-                            }
-                        }
-                    });
-        }
-    }
-    public static ArrayList<String> oldDV = new ArrayList<>();
-    static {
-        oldDV.add("OriginsGenesis");
-        oldDV.add("Origins-Genesis");
-        oldDV.add("Origins-GenesisMC");
-    }
-
-    public static void CopyOriginDatapack() {
-        for(String string : oldDV){
-            if (Files.exists(Path.of(Bukkit.getWorlds().get(0).getName() + File.separator + "datapacks" + File.separator + string))) {
-                String path = Path.of(Bukkit.getWorlds().get(0).getName() + File.separator + "datapacks" + File.separator + string).toAbsolutePath().toString();
-                try {
-                    deleteDirectory(Path.of(path), false);
-                } catch (IOException e) {
-                    //SDGFLKSDJFGO
-                }
-            }
-        }
-        try {
-            CodeSource src = BukkitUtils.class.getProtectionDomain().getCodeSource();
-            URL jar = src.getLocation();
-            ZipInputStream zip = new ZipInputStream(jar.openStream());
-            while (true) {
-                ZipEntry e = zip.getNextEntry();
-                if (e == null)
-                    break;
-                String name = e.getName();
-
-                if (!name.startsWith("datapacks/")) continue;
-                if (FilenameUtils.getExtension(name).equals("zip")) continue;
-                if (name.equals("datapacks/")) continue;
-
-                name = name.substring(10);
-                File file = new File(Path.of(Bukkit.getWorlds().get(0).getName() + File.separator + "datapacks" + File.separator + name).toAbsolutePath().toString());
-                if (!file.getName().contains(".")) {
-                    Files.createDirectory(Path.of(file.getAbsolutePath()));
-                    continue;
-                }
-                Files.writeString(Path.of(file.getAbsolutePath()), new String(zip.readAllBytes()));
-            }
-            zip.close();
-        } catch (Exception e) {
-            //rip thing still there
-        }
-    }
-
     public static void downloadFileFromURL(String fileUrl) throws IOException {
         URL url = new URL(fileUrl);
         try (BufferedInputStream in = new BufferedInputStream(url.openStream())) {

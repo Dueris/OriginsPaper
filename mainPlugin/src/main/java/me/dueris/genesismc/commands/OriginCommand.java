@@ -9,19 +9,26 @@ import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static me.dueris.genesismc.utils.BukkitColour.RED;
 import static me.dueris.genesismc.utils.BukkitColour.YELLOW;
 
-public class OriginCommand implements CommandExecutor {
+public class OriginCommand extends Command{
 
-    //key = uuid of player
-    //long = epoch time of when ran command
     private final ArrayList<SubCommand> subCommands = new ArrayList<>();
 
+    @Override
+    public @NotNull List<String> tabComplete(@NotNull CommandSender sender, @NotNull String alias, @NotNull String[] args) throws IllegalArgumentException {
+        TabAutoComplete tabAutoComplete = new TabAutoComplete();
+        return tabAutoComplete.onTabComplete(sender, this, alias, args);
+    }
+
     public OriginCommand() {
+        super("origin");
         subCommands.add(new Enchant());
         subCommands.add(new References());
         subCommands.add(new Recipe());
@@ -34,9 +41,12 @@ public class OriginCommand implements CommandExecutor {
         subCommands.add(new Bug());
     }
 
+    public ArrayList<SubCommand> getSubCommands() {
+        return subCommands;
+    }
 
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+    public boolean execute(@NotNull CommandSender sender, @NotNull String commandLabel, @NotNull String[] args) {
         if (args.length > 0) {
             for (int i = 0; i < getSubCommands().size(); i++) {
                 if (args[0].equalsIgnoreCase(getSubCommands().get(i).getName())) {
@@ -65,10 +75,5 @@ public class OriginCommand implements CommandExecutor {
             sender.sendMessage(Component.text("-----------------------------------------").color(TextColor.fromHexString(YELLOW)));
         }
         return true;
-    }
-
-
-    public ArrayList<SubCommand> getSubCommands() {
-        return subCommands;
     }
 }

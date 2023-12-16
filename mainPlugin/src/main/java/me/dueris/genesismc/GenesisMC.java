@@ -49,6 +49,9 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import net.minecraft.server.MinecraftServer;
 import org.bukkit.*;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
+import org.bukkit.command.PluginCommand;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -59,6 +62,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scoreboard.Team;
+import org.jetbrains.annotations.NotNull;
 import org.spigotmc.WatchdogThread;
 
 import java.io.IOException;
@@ -166,11 +170,6 @@ public final class GenesisMC extends JavaPlugin implements Listener {
                 Bukkit.getLogger().info("Loading Mixin Environment...");
             }
         } catch (Exception e){}
-        try {
-            BukkitUtils.CopyOriginDatapack();
-        } catch (Exception E) {
-            //FileExistException - ignore
-        }
         if(forceWatchdogStop){
             WatchdogThread.doStop();
         }
@@ -232,10 +231,8 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         start();
         patchPowers();
         TagRegistry.runParse();
-        getCommand("origin").setExecutor(new OriginCommand());
-        getCommand("origin").setTabCompleter(new TabAutoComplete());
-        getCommand("resource").setTabCompleter(new TabAutoComplete());
-        getCommand("resource").setExecutor(new ResourceCommand());
+        Bukkit.getCommandMap().register("origin", new OriginCommand());
+        Bukkit.getCommandMap().register("resource", new ResourceCommand());
         Bukkit.getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC]   ____                          _       __  __   ____").color(TextColor.fromHexString("#b9362f")));
         Bukkit.getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC]  / ___|  ___  _ __    ___  ___ (_) ___ |  \\/  | / ___|").color(TextColor.fromHexString("#bebe42")));
         Bukkit.getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] | |  _  / _ \\| '_ \\  / _ \\/ __|| |/ __|| |\\/| || |").color(TextColor.fromHexString("#4fec4f")));
