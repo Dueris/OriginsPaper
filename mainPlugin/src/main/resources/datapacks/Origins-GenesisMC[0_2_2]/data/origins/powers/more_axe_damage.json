@@ -1,34 +1,90 @@
 {
-  "type":"origins:multiple",
-  "netherite": {
+  "type": "origins:multiple",
+  "gold": {
     "hidden": true,
-    "type":"origins:modify_damage_dealt",
+    "type": "origins:modify_damage_dealt",
     "item_condition": {
       "type": "origins:ingredient",
       "ingredient": {
         "item": "minecraft:golden_axe"
       }
     },
-    "modifier":{
-      "operation":"addition",
-      "value":4
+    "modifier": {
+      "operation": "addition",
+      "value": 2
     }
   },
-  "gold": {
+  "netherite": {
     "hidden": true,
-    "type":"origins:modify_damage_dealt",
+    "type": "origins:modify_damage_dealt",
     "item_condition": {
       "type": "origins:ingredient",
       "ingredient": {
         "item": "minecraft:netherite_axe"
       }
     },
-    "modifier":{
-      "operation":"addition",
-      "value":3
+    "modifier": {
+      "operation": "addition",
+      "value": 2
+    }
+  },
+  "diamond": {
+    "hidden": true,
+    "type": "origins:modify_damage_dealt",
+    "item_condition": {
+      "type": "origins:ingredient",
+      "ingredient": {
+        "item": "minecraft:diamond_axe"
+      }
+    },
+    "modifier": {
+      "operation": "addition",
+      "value": 2
+    }
+  },
+  "wooden": {
+    "hidden": true,
+    "type": "origins:modify_damage_dealt",
+    "item_condition": {
+      "type": "origins:ingredient",
+      "ingredient": {
+        "item": "minecraft:wooden_axe"
+      }
+    },
+    "modifier": {
+      "operation": "addition",
+      "value": 2
+    }
+  },
+  "stone": {
+    "hidden": true,
+    "type": "origins:modify_damage_dealt",
+    "item_condition": {
+      "type": "origins:ingredient",
+      "ingredient": {
+        "item": "minecraft:stone_axe"
+      }
+    },
+    "modifier": {
+      "operation": "addition",
+      "value": 2
+    }
+  },
+  "iron": {
+    "hidden": true,
+    "type": "origins:modify_damage_dealt",
+    "item_condition": {
+      "type": "origins:ingredient",
+      "ingredient": {
+        "item": "minecraft:iron_axe"
+      }
+    },
+    "modifier": {
+      "operation": "addition",
+      "value": 2
     }
   },
   "hidden": false,
-  "name":"Brutish Training",
-  "description":"You deal extra damage with axes."
+  "name": "Brutish Training",
+  "description": "You deal extra damage with axes."
 }
