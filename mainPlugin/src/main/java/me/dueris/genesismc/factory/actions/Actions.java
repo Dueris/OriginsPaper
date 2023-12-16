@@ -503,6 +503,12 @@ public class Actions {
                 P.setLastDamageCause(new EntityDamageEvent(P, EntityDamageEvent.DamageCause.CUSTOM, Double.valueOf(power.get("amount").toString())));
             }
         }
+        if (type.equals("genesis:set_spawn")) {
+            if (entity instanceof Player p) {
+                p.sendMessage("Bed location set.");
+                p.setBedSpawnLocation(p.getTargetBlockExact(Math.toIntExact(Math.round(AttributeHandler.Reach.getFinalReach(p)))).getLocation());
+            }
+        }
         if (type.equals("origins:add_velocity")) {
             float y = 0.0f;
             boolean set = false;
@@ -874,75 +880,6 @@ public class Actions {
         }
         if (type.equals("origins:set_block")){
             location.getBlock().setType(Material.valueOf(blockAction.get("block").toString().split(":")[1].toUpperCase()));
-        }
-    }
-
-    private static void runBlockEntity(Entity entity, Location location, JSONObject power) {
-        JSONObject blockAction = (JSONObject) power.get("block_entity_action");
-        String type = blockAction.get("type").toString();
-        if (type.equals("genesis:set_spawn")) {
-            if (entity instanceof Player p) {
-                p.sendMessage("Bed location set.");
-                p.setBedSpawnLocation(location);
-            }
-        }
-    }
-
-    public static void BlockEntityType(Entity entity, Location location, JSONObject power) {
-        JSONObject entityAction;
-        entityAction = (JSONObject) power.get("action");
-        if (entityAction == null) entityAction = (JSONObject) power.get("entity_action");
-        String type = entityAction.get("type").toString();
-
-        if (type.equals("origins:and")) {
-            JSONArray andActions = (JSONArray) entityAction.get("actions");
-            for (Object actionObj : andActions) {
-                JSONObject action = (JSONObject) actionObj;
-                runBlockEntity(entity, location, action);
-            }
-        } else if (type.equals("origins:chance")) {
-            double chance = Double.parseDouble(entityAction.get("chance").toString());
-            double randomValue = Math.random();
-
-            if (randomValue <= chance) {
-                JSONObject action = (JSONObject) entityAction.get("action");
-                runBlockEntity(entity, location, action);
-            } else if (entityAction.containsKey("fail_action")) {
-                JSONObject failAction = (JSONObject) entityAction.get("fail_action");
-                runBlockEntity(entity, location, failAction);
-            }
-        } else if (type.equals("origins:choice")) {
-            JSONArray actionsArray = (JSONArray) entityAction.get("actions");
-            List<JSONObject> actionsList = new ArrayList<>();
-
-            for (Object actionObj : actionsArray) {
-                JSONObject action = (JSONObject) actionObj;
-                JSONObject element = (JSONObject) action.get("element");
-                int weight = Integer.parseInt(action.get("weight").toString());
-                for (int i = 0; i < weight; i++) {
-                    actionsList.add(element);
-                }
-            }
-
-            if (!actionsList.isEmpty()) {
-                int randomIndex = (int) (Math.random() * actionsList.size());
-                JSONObject chosenAction = actionsList.get(randomIndex);
-                runBlockEntity(entity, location, chosenAction);
-            }
-        } else if (type.equals("origins:delay")) {
-            int ticks = Integer.parseInt(entityAction.get("ticks").toString());
-            JSONObject delayedAction = (JSONObject) entityAction.get("action");
-
-            Bukkit.getScheduler().runTaskLater(GenesisMC.getPlugin(), () -> {
-                runBlockEntity(entity, location, delayedAction);
-            }, ticks);
-        } else if (type.equals("origins:nothing")) {
-            //literally does nothin
-        } else if (type.equals("origins:side")) {
-            JSONObject action = (JSONObject) entityAction.get("action");
-            runBlockEntity(entity, location, action);
-        } else {
-            runBlockEntity(entity, location, power);
         }
     }
 

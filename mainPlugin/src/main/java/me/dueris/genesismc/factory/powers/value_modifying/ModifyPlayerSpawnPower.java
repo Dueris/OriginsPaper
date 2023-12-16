@@ -44,7 +44,11 @@ public class ModifyPlayerSpawnPower extends CraftPower implements Listener {
     public void runD(PlayerRespawnEvent e) {
         if (e.getRespawnReason().equals(PlayerRespawnEvent.RespawnReason.END_PORTAL)) return;
             if (e.getRespawnReason().equals(PlayerRespawnEvent.RespawnReason.PLUGIN)) return;
-            runHandle(e.getPlayer());
+            if(e.getPlayer().getBedSpawnLocation() != null) {
+                e.getPlayer().teleport(e.getPlayer().getBedSpawnLocation());
+            }else{
+                runHandle(e.getPlayer());
+            }
     }
 
     @EventHandler
@@ -56,7 +60,6 @@ public class ModifyPlayerSpawnPower extends CraftPower implements Listener {
 
     public void runHandle(Player p){
         if (modify_world_spawn.contains(p)) {
-            if(p.getBedSpawnLocation() != null) return;
             for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
                 ConditionExecutor executor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                 PowerContainer power = origin.getSinglePowerFileFromType(getPowerFile());

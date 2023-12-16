@@ -43,7 +43,6 @@ public class ActionOnBlockUse extends CraftPower implements Listener {
                             Actions.ItemActionType(e.getPlayer().getActiveItem(), power.getItemAction());
                             Actions.ItemActionType(e.getPlayer().getActiveItem(), power.getAction("held_item_action"));
                             Actions.ItemActionType(e.getPlayer().getActiveItem(), power.getAction("result_item_action"));
-                            Actions.BlockEntityType(e.getPlayer(), e.getClickedBlock().getLocation(), power.getAction("block_entity_action"));
                             new BukkitRunnable() {
                                 @Override
                                 public void run() {
