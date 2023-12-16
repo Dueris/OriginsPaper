@@ -1,7 +1,7 @@
 {
   "type": "origins:multiple",
-  "name": "Nether hide",
-  "description": "You have a stronger skin than most, you get 2 more armor bars and half damage from fire/lava",
+  "name": "Stronger hide",
+  "description": "You have a stronger skin than most, you get 2 more armor bars but take 1.5x more damage from fire/lava",
   "hidden": false,
   "armor": {
     "type": "origins:attribute",
@@ -18,8 +18,8 @@
       "type": "origins:fire_and_lava"
     },
     "modifier": {
-      "operation": "division",
-      "value": "2"
+      "operation": "multiplication",
+      "value": "1.5"
     },
     "hidden": true
   }
