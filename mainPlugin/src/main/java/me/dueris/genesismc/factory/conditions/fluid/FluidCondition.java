@@ -26,26 +26,28 @@ public class FluidCondition implements Condition {
     public Optional<Boolean> check(HashMap<String, Object> condition, Player p, PowerContainer power, String powerfile, Entity actor, Entity target, Block block, Fluid fluid, ItemStack itemStack, EntityDamageEvent entityDamageEvent) {
         if (condition.isEmpty()) return Optional.empty();
         if (condition.get("type") == null) return Optional.empty();
+        if (fluid == null) return Optional.empty();
         boolean inverted = (boolean) condition.getOrDefault("inverted", false);
         String type = condition.get("type").toString().toLowerCase();
 
         switch (type) {
-            case "origins:empty" : {
-                return getResult(inverted, Fluid.EMPTY.equals(fluid));
+            case "origins:empty" -> {
+                return getResult(inverted, Optional.of(Fluid.EMPTY.equals(fluid)));
             }
-            case "origins:in_tag" : {
+            case "origins:in_tag" -> {
                 for(String flu : TagRegistry.getRegisteredTagFromFileKey(condition.get("tag").toString())){
                     if(flu == null) continue;
                     if(fluid == null) continue;
-                    if(flu.equalsIgnoreCase(fluid.toString())){
-                        return getResult(inverted, true);
-                    }
+                    return getResult(inverted, Optional.of(flu.equalsIgnoreCase(fluid.toString())));
                 }
             }
-            case "origins:still" : {
-                return getResult(inverted, Fluid.LAVA.equals(fluid) || Fluid.WATER.equals(fluid));
+            case "origins:still" -> {
+                return getResult(inverted, Optional.of(Fluid.LAVA.equals(fluid) || Fluid.WATER.equals(fluid)));
+            }
+            default -> {
+                return getResult(inverted, Optional.empty());
             }
         }
-        return getResult(inverted, false);
+        return getResult(inverted, Optional.empty());
     }
 }

@@ -45,7 +45,7 @@ public class BlockCondition implements Condition {
             case "origins:material" -> {
                 try {
                     Material mat = Material.valueOf(condition.get("material").toString().split(":")[1].toUpperCase());
-                    if (block.getType().equals(mat)) return Optional.of(true);
+                    return Optional.of(block.getType().equals(mat));
                 } catch (Exception e) {
                     //yeah imma fail this silently for some weird out of bounds error
                 }
@@ -59,7 +59,7 @@ public class BlockCondition implements Condition {
                         }
                     }else{
                         // mappings exist, now we can start stuff
-                        return Optional.of(blockTagMappings.get(condition.get("tag")).contains(block.getType()));
+                        return getResult(inverted, Optional.of(blockTagMappings.get(condition.get("tag")).contains(block.getType())));
                     }
                 }
             }
@@ -97,9 +97,7 @@ public class BlockCondition implements Condition {
                     };
     
                     for(Block adj : adjBlcs){
-                        if(adj != null && adj.getType().isSolid()){
-                            return getResult(inverted, true);
-                        }
+                        return getResult(inverted, Optional.of(adj != null && adj.getType().isSolid()));
                     }
                 }
             }
@@ -107,47 +105,39 @@ public class BlockCondition implements Condition {
                 String comparison = condition.get("comparison").toString();
                 float compare_to = Float.parseFloat(condition.get("compare_to").toString());
                 float bR = block.getType().getBlastResistance();
-                return getResult(inverted, RestrictArmor.compareValues(bR, comparison, compare_to));
+                return getResult(inverted, Optional.of(RestrictArmor.compareValues(bR, comparison, compare_to)));
             }
             case "origins:block_entity" -> {
                 BlockState blockState = block.getState();
-                if(blockState instanceof TileState){
-                    return getResult(inverted, true);
-                }
+                return getResult(inverted, Optional.of(blockState instanceof TileState));
             }
             case "origins:block" -> {
-                if(block.getType().equals(Material.valueOf(condition.get("block").toString().split(":")[1].toUpperCase()))){
-                    return getResult(inverted, true);
-                }
+                    return getResult(inverted, Optional.of(block.getType().equals(Material.valueOf(condition.get("block").toString().split(":")[1].toUpperCase()))));
             }
             case "origins:exposed_to_sky" -> {
-                if(block.getLightFromSky() > 0){
-                    return getResult(inverted, true);
-                }
+                return getResult(inverted, Optional.of(block.getLightFromSky() > 0));
             }
             case "origins:fluid" -> {
                 FluidCondition fluidCondition = new FluidCondition();
                 Optional fl = fluidCondition.check(condition, p, power, powerfile, actor, target, block, fluid, itemStack, entityDamageEvent);
                 if(fl.isPresent()){
-                    if(fl.get().equals(true)){
-                        return getResult(inverted, true);
-                    }
+                    return getResult(inverted, Optional.of(fl.get().equals(true)));
                 }
             }
             case "origins:hardness" -> {
                 String comparison = condition.get("comparison").toString();
                 float compare_to = Float.parseFloat(condition.get("compare_to").toString());
                 float bR = block.getType().getHardness();
-                return getResult(inverted, RestrictArmor.compareValues(bR, comparison, compare_to));
+                return getResult(inverted, Optional.of(RestrictArmor.compareValues(bR, comparison, compare_to)));
             }
             case "origins:height" -> {
                 String comparison = condition.get("comparison").toString();
                 float compare_to = Float.parseFloat(condition.get("compare_to").toString());
                 float bR = block.getLocation().getBlockY();
-                return getResult(inverted, RestrictArmor.compareValues(bR, comparison, compare_to));
+                return getResult(inverted, Optional.of(RestrictArmor.compareValues(bR, comparison, compare_to)));
             }
             case "origins:light_blocking" -> {
-                return getResult(inverted, block.getType().isOccluding());
+                return getResult(inverted, Optional.of(block.getType().isOccluding()));
             }
             case "origins:light_level" -> {
                 String lightType = condition.get("light_type").toString();
@@ -168,22 +158,22 @@ public class BlockCondition implements Condition {
                 String comparison = condition.get("comparison").toString();
                 float compare_to = Float.parseFloat(condition.get("compare_to").toString());
                 float bR = level;
-                return getResult(inverted, RestrictArmor.compareValues(bR, comparison, compare_to));
+                return getResult(inverted, Optional.of(RestrictArmor.compareValues(bR, comparison, compare_to)));
             }
             case "origins:movement_blocking" -> {
-                return getResult(inverted, block.getType().isCollidable());
+                return getResult(inverted, Optional.of(block.getType().isCollidable()));
             }
             case "origins:replaceable" -> {
-                return getResult(inverted, block.getType().isAir() || block.isReplaceable());
+                return getResult(inverted, Optional.of(block.getType().isAir() || block.isReplaceable()));
             }
             case "origins:water_loggable" -> {
-                return getResult(inverted, block.getBlockData().getAsString().contains("waterlogged"));
+                return getResult(inverted, Optional.of(block.getBlockData().getAsString().contains("waterlogged")));
             }
             default -> {
-                return getResult(inverted, false);
+                return getResult(inverted, Optional.empty());
             }
         }
 
-        return getResult(inverted, false);
+        return getResult(inverted, Optional.empty());
     }
 }

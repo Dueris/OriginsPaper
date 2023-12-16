@@ -220,50 +220,50 @@ public class ConditionExecutor {
             } else {
                 String boolResult = "empty";
 
-                if(boolResult != "true"){
-                    Optional<Boolean> bool = bientity.check(condition, p, powerContainer, powerfile, actor, target, block, fluid, itemStack, dmgevent);
-                    if (bool.isPresent()) {
-                        boolResult = String.valueOf(bool.get());
-                    }
-                }
-                if(boolResult != "true"){
-                    Optional<Boolean> bool = biome.check(condition, p, powerContainer, powerfile, actor, target, block, fluid, itemStack, dmgevent);
-                    if (bool.isPresent()) {
-                        boolResult = String.valueOf(bool.get());
-                    }
-                }
-                if(boolResult != "true"){
-                    Optional<Boolean> bool = blockCon.check(condition, p, powerContainer, powerfile, actor, target, block, fluid, itemStack, dmgevent);
-                    if (bool.isPresent()) {
-                        boolResult = String.valueOf(bool.get());
-                    }
-                }
-                if(boolResult != "true"){
-                    Optional<Boolean> bool = damage.check(condition, p, powerContainer, powerfile, actor, target, block, fluid, itemStack, dmgevent);
-                    if (bool.isPresent()) {
-                        boolResult = String.valueOf(bool.get());
-                    }
-                }
-                if(boolResult != "true"){
+                if(boolResult == "empty"){
                     Optional<Boolean> bool = entity.check(condition, p, powerContainer, powerfile, actor, target, block, fluid, itemStack, dmgevent);
                     if (bool.isPresent()) {
                         boolResult = String.valueOf(bool.get());
                     }
                 }
-                if(boolResult != "true"){
+                if(boolResult == "empty"){
+                    Optional<Boolean> bool = bientity.check(condition, p, powerContainer, powerfile, actor, target, block, fluid, itemStack, dmgevent);
+                    if (bool.isPresent()) {
+                        boolResult = String.valueOf(bool.get());
+                    }
+                }
+                if(boolResult == "empty"){
+                    Optional<Boolean> bool = biome.check(condition, p, powerContainer, powerfile, actor, target, block, fluid, itemStack, dmgevent);
+                    if (bool.isPresent()) {
+                        boolResult = String.valueOf(bool.get());
+                    }
+                }
+                if(boolResult == "empty"){
+                    Optional<Boolean> bool = blockCon.check(condition, p, powerContainer, powerfile, actor, target, block, fluid, itemStack, dmgevent);
+                    if (bool.isPresent()) {
+                        boolResult = String.valueOf(bool.get());
+                    }
+                }
+                if(boolResult == "empty"){
+                    Optional<Boolean> bool = damage.check(condition, p, powerContainer, powerfile, actor, target, block, fluid, itemStack, dmgevent);
+                    if (bool.isPresent()) {
+                        boolResult = String.valueOf(bool.get());
+                    }
+                }
+                if(boolResult == "empty"){
                     Optional<Boolean> bool = fluidCon.check(condition, p, powerContainer, powerfile, actor, target, block, fluid, itemStack, dmgevent);
                     if (bool.isPresent()) {
                         boolResult = String.valueOf(bool.get());
                     }
                 }
-                if(boolResult != "true"){
+                if(boolResult == "empty"){
                     Optional<Boolean> bool = item.check(condition, p, powerContainer, powerfile, actor, target, block, fluid, itemStack, dmgevent);
                     if (bool.isPresent()) {
                         boolResult = String.valueOf(bool.get());
                     }
                 }
                 // Custom conditions
-                if(boolResult != "true"){
+                if(boolResult == "empty"){
                     try {
                         for (Class<? extends Condition> conditionClass : customConditions) {
                             Optional<Boolean> bool = conditionClass.newInstance().check(condition, p, powerContainer, powerfile, actor, target, block, fluid, itemStack, dmgevent);
@@ -284,11 +284,15 @@ public class ConditionExecutor {
         return false;
     }
 
-    public static Optional<Boolean> getResult(boolean inverted, boolean condition) {
-        if(inverted){
-            return Optional.of(!condition);
+    public static Optional<Boolean> getResult(boolean inverted, Optional<Boolean> condition) {
+        if(condition.isPresent()){
+            if(inverted){
+                return Optional.of(!condition.get());
+            }else{
+                return Optional.of(condition.get());
+            }
         }else{
-            return Optional.of(condition);
+            return Optional.empty();
         }
     }
 }
