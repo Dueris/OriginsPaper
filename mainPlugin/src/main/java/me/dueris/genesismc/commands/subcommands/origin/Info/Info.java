@@ -61,7 +61,7 @@ public class Info extends SubCommand implements Listener {
                 playerOrigins.put(p, new ArrayList<>(origins.values()));
                 if (!playerPage.containsKey(p)) playerPage.put(p, 0);
 
-                @NotNull Inventory help = Bukkit.createInventory(p, 54, "Info - " + playerOrigins.get(p).get(playerPage.get(p)).getLayerName());
+                @NotNull Inventory help = Bukkit.createInventory(p, 54, "Info - " + playerOrigins.get(p).get(playerPage.get(p)).getLayerTag());
                 help.setContents(infoMenu(p, playerPage.get(p)));
                 p.openInventory(help);
                 p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 10, 2);

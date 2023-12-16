@@ -481,16 +481,20 @@ public class EntityCondition implements Condition {
             }
             case "origins:in_tag" -> {
                 // Use block in_tag optimization
-                if(TagRegistry.getRegisteredTagFromFileKey(condition.get("tag").toString()) != null){
-                    if(!entityTagMappings.containsKey(condition.get("tag"))){
-                        entityTagMappings.put(condition.get("tag").toString(), new ArrayList<>());
-                        for(String mat : TagRegistry.getRegisteredTagFromFileKey(condition.get("tag").toString())){
-                            entityTagMappings.get(condition.get("tag")).add(EntityType.valueOf(mat.split(":")[1].toUpperCase()));
+                try {
+                    if(TagRegistry.getRegisteredTagFromFileKey(condition.get("tag").toString()) != null){
+                        if(!entityTagMappings.containsKey(condition.get("tag"))){
+                            entityTagMappings.put(condition.get("tag").toString(), new ArrayList<>());
+                            for(String mat : TagRegistry.getRegisteredTagFromFileKey(condition.get("tag").toString())){
+                                entityTagMappings.get(condition.get("tag")).add(EntityType.valueOf(mat.split(":")[1].toUpperCase()));
+                            }
+                        }else{
+                            // mappings exist, now we can start stuff
+                            return getResult(inverted, Optional.of(entityTagMappings.get(condition.get("tag")).contains(entity.getType())));
                         }
-                    }else{
-                        // mappings exist, now we can start stuff
-                        return getResult(inverted, Optional.of(entityTagMappings.get(condition.get("tag")).contains(entity.getType())));
                     }
+                } catch (IllegalArgumentException e) {
+                    // yeah imma just ignore this one ty
                 }
             }
             case "origins:living" -> {

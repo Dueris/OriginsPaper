@@ -31,7 +31,7 @@ public class AttributeHandler extends CraftPower implements Listener {
 
     public static Map<String, BinaryOperator<Double>> getOperationMappingsDouble() {
         Map<String, BinaryOperator<Double>> operationMap = new HashMap<>();
-        operationMap.put("addition", Double::sum);
+        operationMap.put("addition", (a, b) -> a + b);
         operationMap.put("subtraction", (a, b) -> a - b);
         operationMap.put("multiplication", (a, b) -> a * b);
         operationMap.put("division", (a, b) -> a / b);
@@ -55,7 +55,7 @@ public class AttributeHandler extends CraftPower implements Listener {
 
     public static Map<String, BinaryOperator<Long>> getOperationMappingsLong() {
         Map<String, BinaryOperator<Long>> operationMap = new HashMap<>();
-        operationMap.put("addition", Long::sum);
+        operationMap.put("addition", (a, b) -> a + b);
         operationMap.put("subtraction", (a, b) -> a - b);
         operationMap.put("multiplication", (a, b) -> a * b);
         operationMap.put("division", (a, b) -> a / b);
@@ -79,7 +79,7 @@ public class AttributeHandler extends CraftPower implements Listener {
 
     public static Map<String, BinaryOperator<Integer>> getOperationMappingsInteger() {
         Map<String, BinaryOperator<Integer>> operationMap = new HashMap<>();
-        operationMap.put("addition", Integer::sum);
+        operationMap.put("addition", (a, b) -> a + b);
         operationMap.put("subtraction", (a, b) -> a - b);
         operationMap.put("multiplication", (a, b) -> a * b);
         operationMap.put("division", (a, b) -> a / b);
@@ -103,7 +103,7 @@ public class AttributeHandler extends CraftPower implements Listener {
 
     public static Map<String, BinaryOperator<Float>> getOperationMappingsFloat() {
         Map<String, BinaryOperator<Float>> operationMap = new HashMap<>();
-        operationMap.put("addition", Float::sum);
+        operationMap.put("addition", (a, b) -> a + b);
         operationMap.put("subtraction", (a, b) -> a - b);
         operationMap.put("multiplication", (a, b) -> a * b);
         operationMap.put("division", (a, b) -> a / b);

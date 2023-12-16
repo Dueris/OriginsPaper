@@ -41,10 +41,6 @@ public class MimicWarden extends CraftPower implements OriginSimple, Listener {
         return particleTasks;
     }
 
-    public static ArrayList<Player> getMimicWardenPlayers() {
-        return mimicWardenPlayers;
-    }
-
     @EventHandler
     public void event(OriginChangeEvent e) {
         boolean hasMimicWardenPower = false;

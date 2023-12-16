@@ -1,19 +1,25 @@
 package me.dueris.genesismc.factory.powers.player;
 
+import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.entity.OriginPlayer;
+import me.dueris.genesismc.factory.TagRegistry;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.OriginContainer;
 import me.dueris.genesismc.utils.PowerContainer;
 import me.dueris.genesismc.utils.translation.LangConfig;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 
+import static me.dueris.genesismc.factory.conditions.ConditionExecutor.getResult;
 import static me.dueris.genesismc.utils.ArmorUtils.getArmorValue;
 
 public class RestrictArmor extends CraftPower {
@@ -101,6 +107,21 @@ public class RestrictArmor extends CraftPower {
                                 }
                             } else if (power.getHead().get("type").toString().equalsIgnoreCase("origins:ingredient")) {
                                 if (!headb) return;
+                                if(p.getInventory().getHelmet() != null){
+                                    Map<String, Object> ingredientMap = (Map<String, Object>) power.getHead().get("ingredient");
+                                    if (ingredientMap.containsKey("item")) {
+                                        String itemValue = ingredientMap.get("item").toString();
+                                        String item = null;
+                                        if(itemValue.contains(":")){
+                                            item = itemValue.split(":")[1];
+                                        }else{
+                                            item = itemValue;
+                                        }
+                                        if(p.getInventory().getHelmet().getType().equals(Material.valueOf(item.toUpperCase()))) {
+                                            OriginPlayer.moveEquipmentInventory(p, EquipmentSlot.HEAD);
+                                        }
+                                    }
+                                }
                             }
 
                             if (power.getChest().get("type").toString().equalsIgnoreCase("origins:armor_value")) {
@@ -117,6 +138,21 @@ public class RestrictArmor extends CraftPower {
                                 }
                             } else if (power.getChest().get("type").toString().equalsIgnoreCase("origins:ingredient")) {
                                 if (!chestb) return;
+                                if(p.getInventory().getChestplate() != null){
+                                    Map<String, Object> ingredientMap = (Map<String, Object>) power.getChest().get("ingredient");
+                                    if (ingredientMap.containsKey("item")) {
+                                        String itemValue = ingredientMap.get("item").toString();
+                                        String item = null;
+                                        if(itemValue.contains(":")){
+                                            item = itemValue.split(":")[1];
+                                        }else{
+                                            item = itemValue;
+                                        }
+                                        if(p.getInventory().getChestplate().getType().equals(Material.valueOf(item.toUpperCase()))) {
+                                            OriginPlayer.moveEquipmentInventory(p, EquipmentSlot.CHEST);
+                                        }
+                                    }
+                                }
                             }
 
                             if (power.getLegs().get("type").toString().equalsIgnoreCase("origins:armor_value")) {
@@ -133,6 +169,21 @@ public class RestrictArmor extends CraftPower {
                                 }
                             } else if (power.getLegs().get("type").toString().equalsIgnoreCase("origins:ingredient")) {
                                 if (!legsb) return;
+                                if(p.getInventory().getLeggings() != null){
+                                    Map<String, Object> ingredientMap = (Map<String, Object>) power.getLegs().get("ingredient");
+                                    if (ingredientMap.containsKey("item")) {
+                                        String itemValue = ingredientMap.get("item").toString();
+                                        String item = null;
+                                        if(itemValue.contains(":")){
+                                            item = itemValue.split(":")[1];
+                                        }else{
+                                            item = itemValue;
+                                        }
+                                        if(p.getInventory().getLeggings().getType().equals(Material.valueOf(item.toUpperCase()))) {
+                                            OriginPlayer.moveEquipmentInventory(p, EquipmentSlot.LEGS);
+                                        }
+                                    }
+                                }
                             }
 
                             if (power.getFeet().get("type").toString().equalsIgnoreCase("origins:armor_value")) {
@@ -149,6 +200,21 @@ public class RestrictArmor extends CraftPower {
                                 }
                             } else if (power.getFeet().get("type").toString().equalsIgnoreCase("origins:ingredient")) {
                                 if (!feetb) return;
+                                if(p.getInventory().getBoots() != null){
+                                    Map<String, Object> ingredientMap = (Map<String, Object>) power.getFeet().get("ingredient");
+                                    if (ingredientMap.containsKey("item")) {
+                                        String itemValue = ingredientMap.get("item").toString();
+                                        String item = null;
+                                        if(itemValue.contains(":")){
+                                            item = itemValue.split(":")[1];
+                                        }else{
+                                            item = itemValue;
+                                        }
+                                        if(p.getInventory().getBoots().getType().equals(Material.valueOf(item.toUpperCase()))) {
+                                            OriginPlayer.moveEquipmentInventory(p, EquipmentSlot.FEET);
+                                        }
+                                    }
+                                }
                             }
                         } else {
                             setActive(power.getTag(), false);

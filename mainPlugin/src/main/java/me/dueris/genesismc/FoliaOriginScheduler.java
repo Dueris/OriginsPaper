@@ -66,6 +66,7 @@ public class FoliaOriginScheduler {
         }
 
         public static ArrayList<Player> mimic_warden = new ArrayList<>();
+        public static ArrayList<Player> piglin_no_attack = new ArrayList<>();
 
         private final HashMap<Player, Integer> ticksEMap = new HashMap<>();
 

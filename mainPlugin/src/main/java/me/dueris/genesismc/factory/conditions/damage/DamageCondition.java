@@ -71,6 +71,9 @@ public class DamageCondition implements Condition {
                 }
                 return getResult(inverted, Optional.of(false));
             }
+            case "origins:fire_and_lava" -> {
+                return getResult(inverted, Optional.of(entityDamageEvent.getCause().equals(DamageCause.FIRE) || entityDamageEvent.getCause().equals(DamageCause.LAVA)));
+            }
             case "origins:explosive" -> {
                 return getResult(inverted, Optional.of(entityDamageEvent.getCause().equals(DamageCause.BLOCK_EXPLOSION) || entityDamageEvent.getCause().equals(DamageCause.ENTITY_EXPLOSION)));
             }

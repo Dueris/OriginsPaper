@@ -75,6 +75,7 @@ import static me.dueris.genesismc.PlayerHandler.ReapplyEntityReachPowers;
 import static me.dueris.genesismc.factory.powers.simple.BounceSlimeBlock.bouncePlayers;
 import static me.dueris.genesismc.factory.powers.simple.MimicWarden.getParticleTasks;
 import static me.dueris.genesismc.factory.powers.simple.MimicWarden.mimicWardenPlayers;
+import static me.dueris.genesismc.factory.powers.simple.PiglinNoAttack.piglinPlayers;
 import static me.dueris.genesismc.utils.BukkitColour.*;
 
 public final class GenesisMC extends JavaPlugin implements Listener {
@@ -296,6 +297,22 @@ public final class GenesisMC extends JavaPlugin implements Listener {
                 bouncePlayers.add(p);
             } else if (!hasPower) {
                 bouncePlayers.remove(p);
+            }
+
+            boolean hasPiglinPower = false;
+
+            for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
+                for (PowerContainer power : origin.getPowerContainers()) {
+                    if (power.getTag().equals("origins:piglin_brothers")) {
+                        hasPiglinPower = true;
+                        break;
+                    }
+                }
+            }
+            if (hasPiglinPower && !piglinPlayers.contains(p)) {
+                piglinPlayers.add(p);
+            } else if (!hasPiglinPower) {
+                piglinPlayers.remove(p);
             }
         }
     }
