@@ -8,6 +8,7 @@ import java.util.HashMap;
 public interface Power {
 
     HashMap<String, Boolean> powers_active = new HashMap<>();
+    ArrayList<Player> game_event_listener = new ArrayList<>();
     ArrayList<Player> resource = new ArrayList<>();
     ArrayList<Player> fall_immunity = new ArrayList<>();
     ArrayList<Player> more_kinetic_damage = new ArrayList<>();
