@@ -44,9 +44,14 @@ public class BlockCondition implements Condition {
         switch(type){
             case "origins:material" -> {
                 try {
-                    Material mat = Material.valueOf(condition.get("material").toString().split(":")[1].toUpperCase());
+                    String matSplit = condition.get("material").toString().toUpperCase();
+                    if(matSplit.contains(":")){
+                        matSplit = matSplit.split(":")[1];
+                    }
+                    Material mat = Material.valueOf(matSplit);
                     return Optional.of(block.getType().equals(mat));
                 } catch (Exception e) {
+                    e.printStackTrace();
                     //yeah imma fail this silently for some weird out of bounds error
                 }
             }
