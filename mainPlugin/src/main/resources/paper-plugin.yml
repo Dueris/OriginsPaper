@@ -9,6 +9,11 @@ authors: [ Dueris, Tye ]
 folia-supported: true
 description: Bringing the life and fun of the Origins mod to PaperMC
 website: https://ko-fi.com/dueris
+dependencies:
+  server:
+    PlaceholderAPI:
+      load: BEFORE
+      required: false
 commands:
   origin:
     description: The main root command for the genesis origin plugin.

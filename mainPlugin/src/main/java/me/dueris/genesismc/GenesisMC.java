@@ -39,6 +39,7 @@ import me.dueris.genesismc.factory.powers.simple.MimicWarden;
 import me.dueris.genesismc.files.GenesisDataFiles;
 import me.dueris.genesismc.files.TempStorageContainer;
 import me.dueris.genesismc.generation.WaterProtBookGen;
+import me.dueris.genesismc.hooks.papi.PlaceholderApiExtension;
 import me.dueris.genesismc.items.GenesisItems;
 import me.dueris.genesismc.items.InfinPearl;
 import me.dueris.genesismc.items.OrbOfOrigins;
@@ -87,6 +88,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
     private static GenesisMC plugin;
     public static ConditionExecutor conditionExecutor;
     public static String apoliVersion = "1.11.3";
+    public static boolean placeholderapi = false;
 
     static {
         tool = EnumSet.of(Material.DIAMOND_AXE, Material.DIAMOND_HOE, Material.DIAMOND_PICKAXE, Material.DIAMOND_SHOVEL, Material.DIAMOND_SWORD, Material.GOLDEN_AXE, Material.GOLDEN_HOE, Material.GOLDEN_PICKAXE, Material.GOLDEN_SHOVEL, Material.GOLDEN_SWORD, Material.NETHERITE_AXE, Material.NETHERITE_HOE, Material.NETHERITE_PICKAXE, Material.NETHERITE_SHOVEL, Material.NETHERITE_SWORD, Material.IRON_AXE, Material.IRON_HOE, Material.IRON_PICKAXE, Material.IRON_SHOVEL, Material.IRON_SWORD, Material.WOODEN_AXE, Material.WOODEN_HOE, Material.WOODEN_PICKAXE, Material.WOODEN_SHOVEL, Material.WOODEN_SWORD, Material.SHEARS);
@@ -178,6 +180,10 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         if(LangConfig.getLangFile() == null){
             Bukkit.getLogger().severe("Unable to start GenesisMC due to lang not being loaded properly");
             Bukkit.getServer().getPluginManager().disablePlugin(this);
+        }
+        placeholderapi = Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null;
+        if(placeholderapi){
+            new PlaceholderApiExtension(this).register();
         }
 
         // load tempStorageOptimizations - start
