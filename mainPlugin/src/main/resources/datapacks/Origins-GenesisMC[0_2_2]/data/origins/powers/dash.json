@@ -1,8 +1,17 @@
 {
   "type": "origins:active_self",
   "entity_action": {
-    "type": "origins:add_velocity",
-    "y": 0.4
+    "type": "origins:and",
+    "actions": [
+      {
+        "type": "origins:add_velocity",
+        "y": 0.2
+      },
+      {
+        "type": "origins:set_fall_distance",
+        "fall_distance": 3
+      }
+    ]
   },
   "cooldown": 600,
   "key": {

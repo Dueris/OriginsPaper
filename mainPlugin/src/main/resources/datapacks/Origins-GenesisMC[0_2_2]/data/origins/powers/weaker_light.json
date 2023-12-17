@@ -1,33 +1,54 @@
 {
-  "type": "origins:stacking_status_effect",
-  "condition": {
-    "type": "origins:or",
-    "conditions": [
+  "type": "origins:multiple",
+  "hidden": false,
+  "effect": {
+    "type": "origins:stacking_status_effect",
+    "condition": {
+      "type": "origins:or",
+      "conditions": [
+        {
+          "type": "origins:exposed_to_sun"
+        },
+        {
+          "type": "origins:light_level",
+          "comparison": ">",
+          "compare_to": 6
+        }
+      ]
+    },
+    "hidden": true,
+    "min_stacks": 0,
+    "max_stacks": 1,
+    "duration_per_stack": 10,
+    "effects": [
       {
-        "type": "origins:exposed_to_sun"
-      },
-      {
-        "type": "origins:light_level",
-        "comparison": ">",
-        "compare_to": 5
+        "effect": "minecraft:slowness",
+        "amplifier": 2,
+        "duration": 10
       }
     ]
   },
-  "min_stacks": 0,
-  "max_stacks": 1,
-  "duration_per_stack": 10,
-  "effects": [
-    {
-      "effect": "minecraft:weakness",
-      "amplifier": 1,
-      "duration": 10
+  "damage": {
+    "type": "origins:modify_damage_dealt",
+    "hidden": true,
+    "condition": {
+      "type": "origins:or",
+      "conditions": [
+        {
+          "type": "origins:exposed_to_sun"
+        },
+        {
+          "type": "origins:light_level",
+          "comparison": ">",
+          "compare_to": 6
+        }
+      ]
     },
-    {
-      "effect": "minecraft:slowness",
-      "amplifier": 2,
-      "duration": 10
+    "modifier": {
+      "operation": "multiplication",
+      "value": 0.7
     }
-  ],
+  },
   "name": "Afraid of the Light",
   "description": "You are much weaker in the light"
 }

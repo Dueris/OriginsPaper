@@ -533,7 +533,6 @@ public class Actions {
                 cmd = power.get("command").toString();
             }
             Bukkit.dispatchCommand(entity, cmd);
-            entity.sendMessage(String.valueOf(isOp));
             new BukkitRunnable() {
                 @Override
                 public void run(){

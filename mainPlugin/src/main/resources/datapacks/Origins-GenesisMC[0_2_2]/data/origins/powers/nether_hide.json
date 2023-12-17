@@ -7,12 +7,13 @@
     "type": "origins:attribute",
     "modifier": {
       "attribute": "minecraft:generic.armor",
-      "value": 4.0,
+      "value": 2.0,
       "operation": "addition"
     },
     "hidden": true
   },
-  "zombification": {
+  "zombification_effect": {
+    "type": "origins:stacking_status_effect",
     "min_stacks": -20,
     "max_stacks": 361,
     "duration_per_stack": 10,
@@ -29,5 +30,16 @@
       "dimension": "minecraft:overworld"
     },
     "hidden": true
+  },
+  "zombification_damage": {
+    "type": "origins:modify_damage_dealt",
+    "condition": {
+      "type": "origins:dimension",
+      "dimension": "minecraft:overworld"
+    },
+    "modifier": {
+      "operation": "multiplication",
+      "value": 0.8
+    }
   }
 }

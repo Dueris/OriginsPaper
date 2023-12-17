@@ -334,7 +334,11 @@ public class EntityCondition implements Condition {
                 return getResult(inverted, Optional.of(entity.getWorld().isDayTime()));
             }
             case "origins:dimension" -> {
-                return getResult(inverted, Optional.of(entity.getWorld().getEnvironment().toString().equals(condition.get("dimension").toString().split(":")[1].replace("the_", "").toUpperCase())));
+                String dim = condition.get("dimension").toString();
+                if(!dim.contains(":")){
+                    dim = "minecraft:" + dim;
+                }
+                return getResult(inverted, Optional.of(entity.getWorld().getKey().equals(NamespacedKey.fromString(dim))));
             }
             case "origins:fluid_height" -> {
                 String fluidD = condition.get("fluid").toString();
@@ -356,11 +360,8 @@ public class EntityCondition implements Condition {
                 return getResult(inverted, Optional.of(entity.isInRain()));
             }
             case "origins:exposed_to_sun" -> {
-                if ((p.getLocation().getBlockY() + 1 > p.getWorld().getHighestBlockYAt(p.getLocation()))) {
-                    return getResult(inverted, Optional.of(p.getWorld().isDayTime()));
-                }else{
-                    return getResult(inverted, Optional.of(false));
-                }
+                System.out.println(getResult(inverted, Optional.of((p.getLocation().getBlockY() + 1 > p.getWorld().getHighestBlockYAt(p.getLocation())) && p.getWorld().isDayTime())) + "gsjlkdjfg;lkjsdlkfjgsfd");
+                return getResult(inverted, Optional.of((p.getLocation().getBlockY() + 1 > p.getWorld().getHighestBlockYAt(p.getLocation())) && p.getWorld().isDayTime()));
             }
             case "origins:exposed_to_sky" -> {
                 return getResult(inverted, Optional.of((entity.getLocation().getBlockY() + 1 > entity.getWorld().getHighestBlockYAt(p.getLocation()))));

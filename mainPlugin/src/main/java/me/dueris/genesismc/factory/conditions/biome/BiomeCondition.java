@@ -52,7 +52,11 @@ public class BiomeCondition implements Condition {
                         if(!biomeTagMappings.containsKey(condition.get("tag"))){
                             biomeTagMappings.put(condition.get("tag").toString(), new ArrayList<>());
                             for(String mat : TagRegistry.getRegisteredTagFromFileKey(condition.get("tag").toString())){
-                                biomeTagMappings.get(condition.get("tag")).add(Biome.valueOf(mat.split(":")[1].toUpperCase()));
+                                try {
+                                    biomeTagMappings.get(condition.get("tag")).add(Biome.valueOf(mat.split(":")[1].toUpperCase()));
+                                } catch (IllegalArgumentException e) {
+                                    // akjghdfkj
+                                }
                             }
                         }else{
                             // mappings exist, now we can start stuff

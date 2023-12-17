@@ -39,10 +39,14 @@ public class Toggle extends CraftPower implements Listener {
         if (toggle_power.contains(e.getPlayer())) {
             for (OriginContainer origin : OriginPlayer.getOrigin(e.getPlayer()).values()) {
                 for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
-                    if (!CooldownManager.isPlayerInCooldown(p, power.getKey().getOrDefault("key", "key.origins.primary_active").toString())) {
-                        if (isKeyBeingPressed(e.getPlayer(), power.getKey().getOrDefault("key", "key.origins.primary_active").toString(), true)) {
-                            execute(p, power);
-                            break;
+                    if(GenesisMC.getConditionExecutor().check("condition", "conditions", p, power, getPowerFile(), p, null, p.getLocation().getBlock(), null, p.getActiveItem(), null)){
+                        if(GenesisMC.getConditionExecutor().check("entity_condition", "entity_conditions", p, power, getPowerFile(), p, null, p.getLocation().getBlock(), null, p.getActiveItem(), null)){
+                            if (!CooldownManager.isPlayerInCooldown(p, power.getKey().getOrDefault("key", "key.origins.primary_active").toString())) {
+                                if (isKeyBeingPressed(e.getPlayer(), power.getKey().getOrDefault("key", "key.origins.primary_active").toString(), true)) {
+                                    execute(p, power);
+                                    break;
+                                }
+                            }
                         }
                     }
                 }

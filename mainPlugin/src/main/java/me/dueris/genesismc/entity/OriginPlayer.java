@@ -8,6 +8,7 @@ import me.dueris.genesismc.events.PowerAssignEvent;
 import me.dueris.genesismc.events.PowerUnassignEvent;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.powers.CraftPower;
+import me.dueris.genesismc.factory.powers.player.Gravity;
 import me.dueris.genesismc.files.GenesisDataFiles;
 import me.dueris.genesismc.utils.LayerContainer;
 import me.dueris.genesismc.utils.OriginContainer;
@@ -199,6 +200,9 @@ public class OriginPlayer {
             public void run() {
                 try {
                     assignPowers(player, layer);
+                    // Extra precaution due to gravity messing up on origin switch
+                    Gravity g = new Gravity();
+                    g.run(player);
                 } catch (InstantiationException e) {
                     throw new RuntimeException(e);
                 } catch (IllegalAccessException e) {

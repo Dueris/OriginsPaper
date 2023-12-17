@@ -7,6 +7,7 @@ import me.dueris.genesismc.utils.OriginContainer;
 import me.dueris.genesismc.utils.PowerContainer;
 
 import org.bukkit.GameEvent;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -16,6 +17,8 @@ import org.bukkit.event.world.GenericGameEvent;
 import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Locale;
 
 public class BounceSlimeBlock extends CraftPower implements OriginSimple, Listener {
     @Override
@@ -24,7 +27,7 @@ public class BounceSlimeBlock extends CraftPower implements OriginSimple, Listen
     }
 
     public static ArrayList<Player> bouncePlayers = new ArrayList<>();
-
+    public static HashMap<Player, Location> lastLoc = new HashMap<>();
     public static ArrayList<Player> getBouncePlayers() {
         return bouncePlayers;
     }
@@ -33,18 +36,28 @@ public class BounceSlimeBlock extends CraftPower implements OriginSimple, Listen
     public void gameEvent(GenericGameEvent event){
         if(event.getEvent().equals(GameEvent.HIT_GROUND)){
             if(event.getEntity() instanceof Player player) {
-                if (!bouncePlayers.contains(player)) return;
+                if (player.isSneaking()) return;
+                if (!bouncePlayers.contains(player) && !lastLoc.containsKey(player)) return;
+                Location lastLocation = lastLoc.get(player);
 
-                double velocityY = player.getVelocity().getY();
-        
-                if (velocityY < -0.4) {
+                if(lastLocation.getY() > player.getY()){
                     double coefficientOfRestitution = 0.85;
-                    double reboundVelocity = -coefficientOfRestitution * velocityY;
-        
+                    double reboundVelocity = -coefficientOfRestitution * -(lastLocation.getY() - player.getY());
+                    if(reboundVelocity <= 0.2) return;
+
                     if (!player.isOnGround()) return;
-                    player.setVelocity(new Vector(0, reboundVelocity, 0));
+                    player.setVelocity(new Vector(player.getVelocity().getX(), reboundVelocity, player.getVelocity().getZ()));
                 }
             }
+        }
+    }
+
+    @EventHandler
+    public void move(PlayerMoveEvent e){
+        if(!e.isCancelled()){
+            if(!bouncePlayers.contains(e.getPlayer())) return;
+            if(e.getPlayer().isOnGround()) return;
+            lastLoc.put(e.getPlayer(), e.getFrom());
         }
     }
 

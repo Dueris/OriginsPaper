@@ -54,6 +54,7 @@ public class Burn extends CraftPower {
                         ConditionExecutor executor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                         if (executor.check("condition", "conditions", p, power, getPowerFile(), p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
                             setActive(power.getTag(), true);
+                            System.out.println(424363463);
 
                             Long burn_duration = power.getBurnDuration();
                             p.setFireTicks(burn_duration.intValue() * 20);
