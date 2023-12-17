@@ -10,8 +10,8 @@
       }
     },
     "modifier":{
-      "operation":"addition",
-      "value":4
+      "operation":"multiplication",
+      "value":1.3
     }
   },
   "gold": {
@@ -24,8 +24,8 @@
       }
     },
     "modifier":{
-      "operation":"addition",
-      "value":3
+      "operation":"multiplication",
+      "value":1.3
     }
   },
   "hidden": false,

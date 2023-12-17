@@ -1,7 +1,7 @@
 {
   "type": "origins:multiple",
   "name": "Nether hide",
-  "description": "You have a stronger skin than most, you get 2 more armor bars and half damage from fire/lava",
+  "description": "You have a stronger skin than most, you get 2 more armor bars zombify in the overworld",
   "hidden": false,
   "armor": {
     "type": "origins:attribute",
@@ -12,14 +12,21 @@
     },
     "hidden": true
   },
-  "damage_res": {
-    "type": "origins:modify_damage_taken",
-    "damage_condition": {
-      "type": "origins:fire_and_lava"
-    },
-    "modifier": {
-      "operation": "division",
-      "value": "2"
+  "zombification": {
+    "min_stacks": -20,
+    "max_stacks": 361,
+    "duration_per_stack": 10,
+    "effects": [
+      {
+        "effect": "minecraft:slowness",
+        "is_ambient": true,
+        "show_particles": false,
+        "show_icon": true
+      }
+    ],
+    "condition": {
+      "type": "origins:dimension",
+      "dimension": "minecraft:overworld"
     },
     "hidden": true
   }
