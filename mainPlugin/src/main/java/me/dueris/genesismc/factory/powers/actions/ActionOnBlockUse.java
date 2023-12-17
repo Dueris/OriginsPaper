@@ -25,6 +25,7 @@ public class ActionOnBlockUse extends CraftPower implements Listener {
     @EventHandler
     public void execute(PlayerInteractEvent e) {
         if (e.getClickedBlock() == null) return;
+        if (e.getAction().isLeftClick()) return;
         Player actor = e.getPlayer();
 
         if (!getPowerArray().contains(actor)) return;
