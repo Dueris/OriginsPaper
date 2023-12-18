@@ -20,8 +20,8 @@ import java.util.Random;
 import static me.dueris.genesismc.GenesisMC.waterProtectionEnchant;
 import static org.bukkit.Material.ENDER_PEARL;
 
+@Deprecated(forRemoval = true)
 public class EnchantTable implements Listener {
-
     public static EnumSet<Material> wearable;
 
     static {
@@ -56,7 +56,8 @@ public class EnchantTable implements Listener {
             Material.NETHERITE_BOOTS
         );
     }
-
+    
+/*
     @EventHandler
     public void onEnchantItem(EnchantItemEvent e) {
         boolean conflicts = false;
@@ -116,4 +117,5 @@ public class EnchantTable implements Listener {
             e.setResult(null);
         }
     }
+    */
 }

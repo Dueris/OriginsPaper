@@ -4,12 +4,17 @@ import io.papermc.paper.configuration.PaperConfigurations;
 import io.papermc.paper.plugin.bootstrap.BootstrapContext;
 import io.papermc.paper.plugin.bootstrap.PluginBootstrap;
 import joptsimple.OptionSet;
+import me.dueris.genesismc.enchantments.WaterProtectionNMSImpl;
 import me.dueris.genesismc.utils.BukkitUtils;
-import net.minecraft.server.MinecraftServer;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.EnchantmentCategory;
+
 import org.apache.commons.io.FilenameUtils;
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.craftbukkit.v1_20_R3.bootstrap.Main;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -35,6 +40,12 @@ public class Bootstrap implements PluginBootstrap {
         } catch (Exception e) {
             // ignore
         }
+        EquipmentSlot[] slots = {EquipmentSlot.CHEST, EquipmentSlot.FEET, EquipmentSlot.HEAD, EquipmentSlot.LEGS};
+        registerEnchantment("water_protection", new WaterProtectionNMSImpl(net.minecraft.world.item.enchantment.Enchantment.Rarity.COMMON, EnchantmentCategory.ARMOR, slots));
+    }
+
+    private static Enchantment registerEnchantment(String name, Enchantment enchantment) {
+        return Registry.register(BuiltInRegistries.ENCHANTMENT, new ResourceLocation("origins", name), enchantment);
     }
 
     public static void deleteDirectory(Path directory, boolean ignoreErrors) throws IOException {

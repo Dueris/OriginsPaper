@@ -13,7 +13,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Set;
 
-//@Deprecated
+@Deprecated(forRemoval = true)
 public class WaterProtection extends Enchantment {
     public WaterProtection() {
         super();

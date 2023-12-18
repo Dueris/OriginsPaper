@@ -19,8 +19,8 @@ import java.util.List;
 
 import static me.dueris.genesismc.GenesisMC.waterProtectionEnchant;
 
+@Deprecated(forRemoval = true)
 public class Anvil implements Listener {
-
     public static ArrayList<Enchantment> conflictenchantments = new ArrayList<>();
     static {
         conflictenchantments.add(Enchantment.PROTECTION_FIRE);
@@ -29,6 +29,7 @@ public class Anvil implements Listener {
         conflictenchantments.add(Enchantment.PROTECTION_FALL);
         conflictenchantments.add(Enchantment.PROTECTION_PROJECTILE);
     }
+/*
 
     @EventHandler
     public void onAnvil(PrepareAnvilEvent e) {
@@ -94,9 +95,10 @@ public class Anvil implements Listener {
                 item.getLore().remove(loreString);
             }
         }
-        item.getLore().add(ChatColor.GRAY + "{name} {lvl}".replace("{name}", /*enchantment.getName()*/ "Water Protection").replace("{lvl}", level));
+        item.getLore().add(ChatColor.GRAY + "{name} {lvl}".replace("{name}", enchantment.getName() "Water Protection").replace("{lvl}", level));
         item.addUnsafeEnchantment(GenesisMC.waterProtectionEnchant, lvl);
     }
+*/
 
     private static String numberToRomanNum(int lvl){
         if(lvl > 10){
