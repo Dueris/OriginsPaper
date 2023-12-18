@@ -360,7 +360,6 @@ public class EntityCondition implements Condition {
                 return getResult(inverted, Optional.of(entity.isInRain()));
             }
             case "origins:exposed_to_sun" -> {
-                System.out.println(getResult(inverted, Optional.of((p.getLocation().getBlockY() + 1 > p.getWorld().getHighestBlockYAt(p.getLocation())) && p.getWorld().isDayTime())) + "gsjlkdjfg;lkjsdlkfjgsfd");
                 return getResult(inverted, Optional.of((p.getLocation().getBlockY() + 1 > p.getWorld().getHighestBlockYAt(p.getLocation())) && p.getWorld().isDayTime()));
             }
             case "origins:exposed_to_sky" -> {
