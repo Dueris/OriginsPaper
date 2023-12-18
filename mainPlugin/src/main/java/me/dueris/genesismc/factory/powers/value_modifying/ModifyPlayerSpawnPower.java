@@ -51,13 +51,6 @@ public class ModifyPlayerSpawnPower extends CraftPower implements Listener {
             }
     }
 
-    @EventHandler
-    public void runO(OriginChangeEvent e){
-        if(!OriginPlayer.hasFirstChose(e.getPlayer())){
-            runHandle(e.getPlayer());
-        }
-    }
-
     public void runHandle(Player p){
         if (modify_world_spawn.contains(p)) {
             for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {

@@ -14,6 +14,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.event.player.PlayerRespawnEvent.RespawnReason;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
@@ -236,8 +238,8 @@ public class ChoosingCUSTOM implements Listener {
                         removeItemElytrian(p);
                     }
                 }.runTaskLater(GenesisMC.getPlugin(), 1);
-                OriginChangeEvent Event = new OriginChangeEvent(p);
-                getServer().getPluginManager().callEvent(Event);
+                ModifyPlayerSpawnPower power = new ModifyPlayerSpawnPower();
+                power.runHandle(p);
                 OriginPlayer.setHasFirstChose(p, true);
             }
         }
