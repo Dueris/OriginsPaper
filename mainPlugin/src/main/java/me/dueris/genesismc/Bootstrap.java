@@ -6,15 +6,31 @@ import io.papermc.paper.plugin.bootstrap.PluginBootstrap;
 import joptsimple.OptionSet;
 import me.dueris.genesismc.enchantments.WaterProtectionNMSImpl;
 import me.dueris.genesismc.utils.BukkitUtils;
+import net.minecraft.core.MappedRegistry;
 import net.minecraft.core.Registry;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.RegistryBootstrap;
+import net.minecraft.core.WritableRegistry;
+import net.minecraft.core.RegistryAccess.Frozen;
+import net.minecraft.core.RegistryAccess.RegistryEntry;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.data.registries.RegistriesDatapackGenerator;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.world.damagesource.DamageEffects;
+import net.minecraft.world.damagesource.DamageScaling;
+import net.minecraft.world.damagesource.DamageType;
+import net.minecraft.world.damagesource.DamageTypes;
+import net.minecraft.world.damagesource.DeathMessageType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
 
 import org.apache.commons.io.FilenameUtils;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.craftbukkit.v1_20_R3.CraftRegistry;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -32,6 +48,8 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 public class Bootstrap implements PluginBootstrap {
+    public static WaterProtectionNMSImpl waterProtection;
+
     @Override
     public void bootstrap(@NotNull BootstrapContext context) {
         try {
@@ -40,12 +58,26 @@ public class Bootstrap implements PluginBootstrap {
         } catch (Exception e) {
             // ignore
         }
+        // hurt by water damage type
+        DamageType hurtByWater = new DamageType("hurt_by_water", DamageScaling.ALWAYS,  0, DamageEffects.HURT, DeathMessageType.DEFAULT);
+        registerDamageType(hurtByWater);
         EquipmentSlot[] slots = {EquipmentSlot.CHEST, EquipmentSlot.FEET, EquipmentSlot.HEAD, EquipmentSlot.LEGS};
-        registerEnchantment("water_protection", new WaterProtectionNMSImpl(net.minecraft.world.item.enchantment.Enchantment.Rarity.COMMON, EnchantmentCategory.ARMOR, slots));
+        WaterProtectionNMSImpl waterProtection = new WaterProtectionNMSImpl(net.minecraft.world.item.enchantment.Enchantment.Rarity.COMMON, EnchantmentCategory.ARMOR, slots);
+        registerEnchantment("water_protection", waterProtection);
+        Bootstrap.waterProtection = waterProtection;
     }
 
     private static Enchantment registerEnchantment(String name, Enchantment enchantment) {
         return Registry.register(BuiltInRegistries.ENCHANTMENT, new ResourceLocation("origins", name), enchantment);
+    }
+
+    private static DamageType registerDamageType(DamageType damageType){
+        Registry.register(
+            RegistryAccess.Frozen.EMPTY.registryOrThrow(Registries.DAMAGE_TYPE),
+            new ResourceLocation("origins", "hurt_in_water"),
+            damageType
+        );
+        return null;
     }
 
     public static void deleteDirectory(Path directory, boolean ignoreErrors) throws IOException {

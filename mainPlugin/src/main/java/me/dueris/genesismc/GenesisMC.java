@@ -2,6 +2,7 @@ package me.dueris.genesismc;
 
 import io.papermc.paper.event.player.PlayerFailMoveEvent;
 import io.papermc.paper.threadedregions.scheduler.GlobalRegionScheduler;
+import javassist.bytecode.Descriptor.Iterator;
 import me.dueris.genesismc.choosing.ChoosingCORE;
 import me.dueris.genesismc.choosing.ChoosingCUSTOM;
 import me.dueris.genesismc.choosing.ChoosingGUI;
@@ -15,6 +16,7 @@ import me.dueris.genesismc.commands.subcommands.origin.Recipe;
 import me.dueris.genesismc.enchantments.Anvil;
 import me.dueris.genesismc.enchantments.EnchantTable;
 import me.dueris.genesismc.enchantments.WaterProtection;
+import me.dueris.genesismc.enchantments.WaterProtectionNMSImpl;
 import me.dueris.genesismc.entity.InventorySerializer;
 import me.dueris.genesismc.entity.OriginPlayer;
 import me.dueris.genesismc.events.EventListeners;
@@ -48,11 +50,16 @@ import me.dueris.genesismc.utils.*;
 import me.dueris.genesismc.utils.translation.LangConfig;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.world.damagesource.DamageType;
+
 import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.PluginCommand;
+import org.bukkit.craftbukkit.v1_20_R3.CraftRegistry;
 import org.bukkit.craftbukkit.v1_20_R3.enchantments.CraftEnchantment;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -85,6 +92,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
     public static Metrics metrics;
     public static boolean disableRender = true;
     public static ArrayList<Enchantment> custom_enchants = new ArrayList<>();
+    @Deprecated(forRemoval = true)
     public static WaterProtection waterProtectionEnchant;
     private static GenesisMC plugin;
     public static ConditionExecutor conditionExecutor;
@@ -165,6 +173,12 @@ public final class GenesisMC extends JavaPlugin implements Listener {
                 break;
             }
         }
+        java.util.Iterator<DamageType> ite = MinecraftServer.getServer().registryAccess().registry(Registries.DAMAGE_TYPE).get().iterator();
+        while (ite.hasNext()) {
+            DamageType element = ite.next();
+            System.out.println(element.toString() + "//" + element.msgId());
+        }
+
         if(!isCorrectVersion){
             if(forceUseCurrentVersion) return;
             Bukkit.getLogger().severe("Unable to start GenesisMC due to it not being compatible with this server version");
@@ -231,8 +245,9 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         FoliaOriginScheduler.OriginSchedulerTree scheduler = new FoliaOriginScheduler.OriginSchedulerTree();
         GenesisMC.scheduler = scheduler;
         scheduler.runTaskTimer(this, 0, 1);
-        waterProtectionEnchant = new WaterProtection();
-        custom_enchants.add(waterProtectionEnchant);
+        // waterProtectionEnchant = new WaterProtection();
+        // custom_enchants.add(waterProtectionEnchant);
+    
         OrbOfOrigins.init();
         InfinPearl.init();
         WaterProtItem.init();
