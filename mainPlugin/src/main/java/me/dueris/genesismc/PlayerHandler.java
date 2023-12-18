@@ -231,6 +231,7 @@ public class PlayerHandler implements Listener {
 
         Gravity g = new Gravity();
         g.run(p);
+        GenesisMC.patchPowers();
     }
 
     @EventHandler

@@ -266,6 +266,7 @@ public class KeybindUtils implements Listener {
 
     @EventHandler
     public void EXECUTE_KEYBIND_EVENT(PlayerInteractEvent e) {
+        if(e.getAction().isLeftClick()) return;
         ItemStack item = e.getItem();
         if (item != null && item.hasItemMeta()) {
             ItemMeta itemMeta = item.getItemMeta();

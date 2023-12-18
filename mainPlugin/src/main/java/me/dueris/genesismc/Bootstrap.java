@@ -58,6 +58,7 @@ public class Bootstrap implements PluginBootstrap {
         oldDV.add("OriginsGenesis");
         oldDV.add("Origins-Genesis");
         oldDV.add("Origins-GenesisMC");
+        oldDV.add("Origins-GenesisMC[0_2_2]");
     }
 
     public static void copyOriginDatapack(Path datapackPath) {

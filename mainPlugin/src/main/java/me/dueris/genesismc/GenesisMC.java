@@ -260,7 +260,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         Bukkit.getLogger().info("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
     }
 
-    private void patchPowers(){
+    protected static void patchPowers(){
         for (Player p : Bukkit.getOnlinePlayers()) {
             new BukkitRunnable() {
                 @Override
