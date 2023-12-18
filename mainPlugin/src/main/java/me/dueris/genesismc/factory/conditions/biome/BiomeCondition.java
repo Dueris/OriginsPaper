@@ -8,7 +8,7 @@ import net.minecraft.core.BlockPos;
 import org.bukkit.Fluid;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
-import org.bukkit.craftbukkit.v1_20_R2.block.CraftBiome;
+import org.bukkit.craftbukkit.v1_20_R3.block.CraftBiome;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;

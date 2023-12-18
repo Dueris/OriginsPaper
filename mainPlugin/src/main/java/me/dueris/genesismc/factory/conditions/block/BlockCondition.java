@@ -10,7 +10,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.TileState;
 import org.bukkit.block.data.Waterlogged;
-import org.bukkit.craftbukkit.v1_20_R2.block.CraftBlock;
+import org.bukkit.craftbukkit.v1_20_R3.block.CraftBlock;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;

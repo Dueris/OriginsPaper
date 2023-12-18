@@ -53,6 +53,7 @@ import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.PluginCommand;
+import org.bukkit.craftbukkit.v1_20_R3.enchantments.CraftEnchantment;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -113,7 +114,8 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 
     public static ArrayList<String> versions = new ArrayList<>();
     static {
-        versions.add("1.20.2");
+        versions.add("1.20.4");
+        versions.add("1.20.3");
     }
 
     /**
@@ -229,9 +231,8 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         FoliaOriginScheduler.OriginSchedulerTree scheduler = new FoliaOriginScheduler.OriginSchedulerTree();
         GenesisMC.scheduler = scheduler;
         scheduler.runTaskTimer(this, 0, 1);
-        waterProtectionEnchant = new WaterProtection("water_protection");
+        waterProtectionEnchant = new WaterProtection();
         custom_enchants.add(waterProtectionEnchant);
-        registerEnchantment(waterProtectionEnchant);
         OrbOfOrigins.init();
         InfinPearl.init();
         WaterProtItem.init();
@@ -323,18 +324,19 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         }
     }
 
-    public static void registerEnchantment(Enchantment enchantment) {
-        if (Enchantment.getByKey(enchantment.getKey()) != null) return;
-        try {
-            Field f = Enchantment.class.getDeclaredField("acceptingNew");
-            f.setAccessible(true);
-            f.set(null, true);
-            Enchantment.registerEnchantment(enchantment);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        // It's been registered!
-    }
+//    public static void registerEnchantment(Enchantment enchantment) {
+//        if (Enchantment.getByKey(enchantment.getKey()) != null) return;
+//        try {
+//            Field f = Enchantment.class.getDeclaredField("acceptingNew");
+//            f.setAccessible(true);
+//            f.set(null, true);
+//            CraftEnchantment
+//            Enchantment.registerEnchantment(enchantment);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//        // It's been registered!
+//    }
 
     public static GenesisMC getPlugin() {
         return plugin;

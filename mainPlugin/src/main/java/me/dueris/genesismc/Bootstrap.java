@@ -9,7 +9,7 @@ import net.minecraft.server.MinecraftServer;
 import org.apache.commons.io.FilenameUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.craftbukkit.v1_20_R2.bootstrap.Main;
+import org.bukkit.craftbukkit.v1_20_R3.bootstrap.Main;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;

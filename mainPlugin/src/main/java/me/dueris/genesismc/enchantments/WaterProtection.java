@@ -13,10 +13,10 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Set;
 
-@Deprecated
+//@Deprecated
 public class WaterProtection extends Enchantment {
-    public WaterProtection(String namespace) {
-        super(new NamespacedKey(GenesisMC.getPlugin(), namespace));
+    public WaterProtection() {
+        super();
     }
 
     @Override
@@ -107,5 +107,10 @@ public class WaterProtection extends Enchantment {
     @Override
     public int getMaxModifiedCost(int level) {
         return level * 2;
+    }
+
+    @Override
+    public @NotNull NamespacedKey getKey() {
+        return NamespacedKey.fromString("origins:water_protection");
     }
 }

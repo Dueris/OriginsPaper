@@ -9,7 +9,7 @@ import org.bukkit.World;
 import org.bukkit.block.Biome;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.craftbukkit.v1_20_R2.block.CraftBiome;
+import org.bukkit.craftbukkit.v1_20_R3.block.CraftBiome;
 
 import java.io.File;
 import java.io.IOException;

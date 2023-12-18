@@ -61,7 +61,7 @@ public class EnchantTable implements Listener {
     public void onEnchantItem(EnchantItemEvent e) {
         boolean conflicts = false;
         Random r = new Random();
-        if(373 < r.nextInt(713)){
+        if(37300 > r.nextInt(37400)){
             if(wearable.contains(e.getItem().getType()) || e.getItem().getType() == Material.BOOK){
                 for(Enchantment enchant : e.getEnchantsToAdd().keySet()){
                     if(Anvil.conflictenchantments.contains(enchant)){
