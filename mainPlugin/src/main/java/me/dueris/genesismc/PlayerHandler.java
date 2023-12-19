@@ -26,7 +26,6 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.geysermc.floodgate.api.FloodgateApi;
 import org.geysermc.geyser.api.GeyserApi;
 
 import java.io.ByteArrayInputStream;
@@ -178,23 +177,6 @@ public class PlayerHandler implements Listener {
             }
         } catch (Exception vv){
             //silence code - offline mode fucks things
-        }
-
-        if (getServer().getPluginManager().isPluginEnabled("Geyser-Spigot")) {
-            if (getServer().getPluginManager().isPluginEnabled("floodgate")) {
-                FloodgateApi FloodgateAPI = FloodgateApi.getInstance();
-                UUID uuid = p.getUniqueId();
-                if (GeyserApi.api().isBedrockPlayer(p.getUniqueId()) || FloodgateAPI.isFloodgatePlayer(uuid)) {
-                    p.getScoreboardTags().add("geyser_player");
-                }
-            }
-            if (GeyserApi.api().isBedrockPlayer(p.getUniqueId())) {
-                p.getScoreboardTags().add("geyser_player");
-            } else {
-                if (p.getScoreboardTags().contains("texture_pack")) {
-                    p.setTexturePack("https://drive.google.com/uc?export=download&id=1mLpqQ233C7ZbMIjrdY13ZpFI8tcUTBH2");
-                }
-            }
         }
         OriginDataContainer.loadData(p);
 

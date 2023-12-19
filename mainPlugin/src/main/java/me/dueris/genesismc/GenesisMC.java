@@ -398,8 +398,8 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         Bukkit.getServer().getPluginManager().registerEvents(new KeybindUtils(), GenesisMC.getPlugin());
         if (getServer().getPluginManager().isPluginEnabled("SkinsRestorer")) {
             try {
-//                getServer().getPluginManager().registerEvents(new PlayerRender.ModelColor(), GenesisMC.getPlugin()); -- disable bc aparently skinsrestorer updated api and broke stuff
-//                getServer().getConsoleSender().sendMessage(Component.text(LangConfig.getLocalizedString(Bukkit.getConsoleSender(), "startup.skinRestorer.present")).color(TextColor.fromHexString(AQUA)));
+               getServer().getPluginManager().registerEvents(new PlayerRender.ModelColor(), GenesisMC.getPlugin());
+               getServer().getConsoleSender().sendMessage(Component.text(LangConfig.getLocalizedString(Bukkit.getConsoleSender(), "startup.skinRestorer.present")).color(TextColor.fromHexString(AQUA)));
             } catch (Exception ignored){
                 // ignored
             }

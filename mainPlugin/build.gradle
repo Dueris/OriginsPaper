@@ -65,17 +65,16 @@ configurations {
 dependencies {
     paperweight.paperDevBundle("1.20.4-R0.1-SNAPSHOT")
     compileOnly("me.clip:placeholderapi:2.11.4")
-    compileOnly("org.geysermc.geyser:api:2.1.0-SNAPSHOT")
-    compileOnly("org.geysermc.floodgate:api:2.0-SNAPSHOT")
-    compileOnly("net.skinsrestorer:skinsrestorer-api:14.2.12")
+    compileOnly("org.geysermc.geyser:api:2.2.0-SNAPSHOT")
+    // compileOnly("org.geysermc.floodgate:api:2.2.2-SNAPSHOT")
+    compileOnly("net.skinsrestorer:skinsrestorer-api:15.0.4")
     compileOnly "org.mineskin:java-client:1.2.4-SNAPSHOT"
     compileOnly("org.reflections:reflections:0.9.12")
-    compileOnly("org.javassist:javassist:3.15.0-GA")
+    // compileOnly("org.javassist:javassist:3.15.0-GA")
     // compileOnly("org.spongepowered:mixin:0.8.5-SNAPSHOT")
     // compileOnly("space.vectrix.ignite:ignite-api:0.8.1")
 
     // shade
-    shade("org.javassist:javassist:3.15.0-GA")
     shade("org.reflections:reflections:0.9.12")
     shade("org.mineskin:java-client:1.2.4-SNAPSHOT")
 }
