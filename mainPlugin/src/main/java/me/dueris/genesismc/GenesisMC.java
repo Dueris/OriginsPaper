@@ -173,11 +173,12 @@ public final class GenesisMC extends JavaPlugin implements Listener {
                 break;
             }
         }
+        int dmgtypeamt = 0;
         java.util.Iterator<DamageType> ite = MinecraftServer.getServer().registryAccess().registry(Registries.DAMAGE_TYPE).get().iterator();
         while (ite.hasNext()) {
-            DamageType element = ite.next();
-            System.out.println(element.toString() + "//" + element.msgId());
+            dmgtypeamt++;
         }
+        this.getLogger().info("Located {amt} damage sources".replace("{amt}", String.valueOf(dmgtypeamt)));
 
         if(!isCorrectVersion){
             if(forceUseCurrentVersion) return;
@@ -386,8 +387,8 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         getServer().getPluginManager().registerEvents(new CooldownManager(), this);
         getServer().getPluginManager().registerEvents(this, this);
         getServer().getPluginManager().registerEvents(new PlayerHandler(), this);
-        getServer().getPluginManager().registerEvents(new EnchantTable(), this);
-        getServer().getPluginManager().registerEvents(new Anvil(), this);
+        // getServer().getPluginManager().registerEvents(new EnchantTable(), this);
+        // getServer().getPluginManager().registerEvents(new Anvil(), this);
         getServer().getPluginManager().registerEvents(new WaterProtBookGen(), this);
         getServer().getPluginManager().registerEvents(new KeybindUtils(), this);
         getServer().getPluginManager().registerEvents(new ChoosingCORE(), this);

@@ -1,6 +1,7 @@
 package me.dueris.genesismc.factory.powers.player.damage;
 
 import me.dueris.genesismc.GenesisMC;
+import me.dueris.genesismc.OriginCommandSender;
 import me.dueris.genesismc.entity.OriginPlayer;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
@@ -24,19 +25,13 @@ import java.util.Random;
 
 public class DamageOverTime extends CraftPower {
 
-    private final String damage_type;
+    private String damage_type;
     private Long interval;
     private int damage;
-    private DamageSource damage_source;
-    private String protection_enchantment;
-    private double protection_effectiveness;
-    private final int ticksE;
 
     public DamageOverTime() {
         this.interval = 20L;
-        this.ticksE = 0;
-        this.damage_type = "origins:damage_over_time";
-        this.protection_effectiveness = 1.0;
+        this.damage_type = "minecraft:generic";
     }
 
     @Override
@@ -77,114 +72,20 @@ public class DamageOverTime extends CraftPower {
                             damage = Integer.parseInt(power.get("damage", "1"));
                         }
 
-                        protection_effectiveness = Double.parseDouble(power.get("protection_effectiveness", "1"));
+                        if(power.get("damage_type") != null){
+                            this.damage_type = power.get("damage_type");
+                        }
+
                         ConditionExecutor executor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                         if (executor.check("condition", "conditions", p, power, getPowerFile(), p, null, null, null, p.getItemInHand(), null)) {
                             setActive(power.getTag(), true);
 
                             if (p.getGameMode().equals(GameMode.SURVIVAL) || p.getGameMode().equals(GameMode.ADVENTURE)) {
-                                float helemt_modifier = 0;
-                                float chestplate_modifier = 0;
-                                float leggins_modifier = 0;
-                                float boots_modifier = 0;
-                                float prot1 = (float) protection_effectiveness;
-                                float prot2 = (float) protection_effectiveness;
-                                float prot3 = (float) protection_effectiveness;
-                                float prot4 = (float) protection_effectiveness;
-                                if (p.getInventory().getHelmet() != null) {
-                                    if(p.getInventory().getHelmet().containsEnchantment(CraftEnchantment.minecraftToBukkit(me.dueris.genesismc.Bootstrap.waterProtection))){
-                                        int lvl = p.getInventory().getHelmet().getEnchantmentLevel(CraftEnchantment.minecraftToBukkit(me.dueris.genesismc.Bootstrap.waterProtection));
-                                        if(lvl == 1){
-                                            helemt_modifier = prot1;
-                                        } else if(lvl == 2){
-                                            helemt_modifier = prot2;
-                                        } else if(lvl == 3){
-                                            helemt_modifier = prot3;
-                                        } else if(lvl == 4){
-                                            helemt_modifier = prot4;
-                                        } else {
-                                            helemt_modifier = 0;
-                                        }
-                                    }
-                                }
-                                if (p.getInventory().getChestplate() != null) {
-                                    if(p.getInventory().getChestplate().containsEnchantment(CraftEnchantment.minecraftToBukkit(me.dueris.genesismc.Bootstrap.waterProtection))){
-                                        int lvl = p.getInventory().getHelmet().getEnchantmentLevel(CraftEnchantment.minecraftToBukkit(me.dueris.genesismc.Bootstrap.waterProtection));
-                                        if(lvl == 1){
-                                            chestplate_modifier = prot1;
-                                        } else if(lvl == 2){
-                                            chestplate_modifier = prot2;
-                                        } else if(lvl == 3){
-                                            chestplate_modifier = prot3;
-                                        } else if(lvl == 4){
-                                            chestplate_modifier = prot4;
-                                        } else {
-                                            chestplate_modifier = 0;
-                                        }
-                                    }
-                                }
-                                if (p.getInventory().getLeggings() != null) {
-                                    if(p.getInventory().getLeggings().containsEnchantment(CraftEnchantment.minecraftToBukkit(me.dueris.genesismc.Bootstrap.waterProtection))){
-                                        int lvl = p.getInventory().getHelmet().getEnchantmentLevel(CraftEnchantment.minecraftToBukkit(me.dueris.genesismc.Bootstrap.waterProtection));
-                                        if(lvl == 1){
-                                            leggins_modifier = prot1;
-                                        } else if(lvl == 2){
-                                            leggins_modifier = prot2;
-                                        } else if(lvl == 3){
-                                            leggins_modifier = prot3;
-                                        } else if(lvl == 4){
-                                            leggins_modifier = prot4;
-                                        } else {
-                                            leggins_modifier = 0;
-                                        }
-                                    }
-                                }
-                                if (p.getInventory().getBoots() != null) {
-                                    if(p.getInventory().getBoots().containsEnchantment(CraftEnchantment.minecraftToBukkit(me.dueris.genesismc.Bootstrap.waterProtection))){
-                                        int lvl = p.getInventory().getHelmet().getEnchantmentLevel(CraftEnchantment.minecraftToBukkit(me.dueris.genesismc.Bootstrap.waterProtection));
-                                        if(lvl == 1){
-                                            boots_modifier = prot1;
-                                        } else if(lvl == 2){
-                                            boots_modifier = prot2;
-                                        } else if(lvl == 3){
-                                            boots_modifier = prot3;
-                                        } else if(lvl == 4){
-                                            boots_modifier = prot4;
-                                        } else {
-                                            boots_modifier = 0;
-                                        }
-                                    }
-                                }
-                                float basedamage = damage - helemt_modifier - chestplate_modifier - leggins_modifier - boots_modifier;
-
-                                if (p.getHealth() >= basedamage && p.getHealth() != 0 && p.getHealth() - basedamage != 0) {
-                                    p.damage(basedamage);
-
-                                    Random random = new Random();
-
-                                    int r = random.nextInt(3);
-                                    if (r == 1) {
-                                        if (p.getInventory().getHelmet() != null) {
-                                            int heldur = p.getEquipment().getHelmet().getDurability();
-                                            p.getEquipment().getHelmet().setDurability((short) (heldur + 3));
-                                        }
-                                        if (p.getInventory().getChestplate() != null) {
-                                            int chestdur = p.getEquipment().getChestplate().getDurability();
-                                            p.getEquipment().getChestplate().setDurability((short) (chestdur + 3));
-                                        }
-                                        if (p.getInventory().getLeggings() != null) {
-                                            int legdur = p.getEquipment().getLeggings().getDurability();
-                                            p.getEquipment().getLeggings().setDurability((short) (legdur + 3));
-                                        }
-                                        if (p.getInventory().getBoots() != null) {
-                                            int bootdur = p.getEquipment().getBoots().getDurability();
-                                            p.getEquipment().getBoots().setDurability((short) (bootdur + 3));
-                                        }
-
-                                    }
-                                } else if (p.getHealth() <= basedamage && p.getHealth() != 0) {
-                                    p.setHealth(0.0f);
-                                }
+                                String command = "damage {player} {amount} {tag}"
+                                    .replace("{player}", p.getName())
+                                    .replace("{amount}", String.valueOf(damage)
+                                    .replace("{tag}", damage_type));
+                                Bukkit.dispatchCommand(new OriginCommandSender(), command);
                             }
 
                         } else {

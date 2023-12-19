@@ -9,7 +9,6 @@ import me.dueris.genesismc.utils.BukkitUtils;
 import net.minecraft.core.MappedRegistry;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
-import net.minecraft.core.RegistryBootstrap;
 import net.minecraft.core.WritableRegistry;
 import net.minecraft.core.RegistryAccess.Frozen;
 import net.minecraft.core.RegistryAccess.RegistryEntry;
@@ -59,8 +58,6 @@ public class Bootstrap implements PluginBootstrap {
             // ignore
         }
         // hurt by water damage type
-        DamageType hurtByWater = new DamageType("hurt_by_water", DamageScaling.ALWAYS,  0, DamageEffects.HURT, DeathMessageType.DEFAULT);
-        registerDamageType(hurtByWater);
         EquipmentSlot[] slots = {EquipmentSlot.CHEST, EquipmentSlot.FEET, EquipmentSlot.HEAD, EquipmentSlot.LEGS};
         WaterProtectionNMSImpl waterProtection = new WaterProtectionNMSImpl(net.minecraft.world.item.enchantment.Enchantment.Rarity.COMMON, EnchantmentCategory.ARMOR, slots);
         registerEnchantment("water_protection", waterProtection);
@@ -69,15 +66,6 @@ public class Bootstrap implements PluginBootstrap {
 
     private static Enchantment registerEnchantment(String name, Enchantment enchantment) {
         return Registry.register(BuiltInRegistries.ENCHANTMENT, new ResourceLocation("origins", name), enchantment);
-    }
-
-    private static DamageType registerDamageType(DamageType damageType){
-        Registry.register(
-            RegistryAccess.Frozen.EMPTY.registryOrThrow(Registries.DAMAGE_TYPE),
-            new ResourceLocation("origins", "hurt_in_water"),
-            damageType
-        );
-        return null;
     }
 
     public static void deleteDirectory(Path directory, boolean ignoreErrors) throws IOException {
