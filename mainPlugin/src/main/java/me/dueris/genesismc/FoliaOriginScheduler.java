@@ -77,10 +77,10 @@ public class FoliaOriginScheduler {
 //                    Gravity gravity = new Gravity();
 //                    gravity.run(p);
 //                }
-//                if (!OriginPlayer.getPowersApplied(p).contains(FlightHandler.class)) {
-//                    FlightHandler flightHandler = new FlightHandler();
-//                    flightHandler.run(p);
-//                }
+               if (!OriginPlayer.getPowersApplied(p).contains(FlightHandler.class)) {
+                   FlightHandler flightHandler = new FlightHandler();
+                   flightHandler.run(p);
+               }
 //                if (!OriginPlayer.getPowersApplied(p).contains(Overlay.class)) {
 //                    Overlay overlay = new Overlay();
 //                    overlay.run(p);
