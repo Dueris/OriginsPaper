@@ -2,6 +2,8 @@ package me.dueris.genesismc.enchantments;
 
 import me.dueris.genesismc.Bootstrap;
 import me.dueris.genesismc.GenesisMC;
+import net.kyori.adventure.text.Component;
+import net.md_5.bungee.api.chat.BaseComponent;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -22,7 +24,6 @@ import java.util.List;
 
 import static me.dueris.genesismc.GenesisMC.waterProtectionEnchant;
 
-@Deprecated(forRemoval = true)
 public class Anvil implements Listener {
     public static WaterProtectionNMSImpl eimpl = Bootstrap.waterProtection;
     public static ArrayList<Enchantment> conflictenchantments = new ArrayList<>();
@@ -89,19 +90,30 @@ public class Anvil implements Listener {
         }
     }
 
-    protected static void setWaterProtCustomEnchantLevel(int lvl, ItemStack item){
+    protected static void setWaterProtCustomEnchantLevel(int lvl, ItemStack item) {
         String level = numberToRomanNum(lvl);
-        ItemMeta meta = item.getItemMeta();
+        ItemMeta meta = item.getItemMeta().clone();
         meta.setCustomModelData(lvl);
-        for(String loreString : item.getLore()){
-            if(loreString.startsWith("Water Protection")){
-                item.getLore().remove(loreString);
-            }
+        
+        List<Component> lore = meta.lore();
+        if (lore == null) {
+            lore = new ArrayList<>(); // Initialize the lore if it's null
+        } else {
+            // Remove existing "Water Protection" lore
+            lore.removeIf(loreString -> loreString.examinableName().startsWith("Water Protection"));
         }
-        item.getLore().add(ChatColor.GRAY + "{name} {lvl}".replace("{name}", "Water Protection").replace("{lvl}", level));
+        
+        lore.add(Component.text(ChatColor.GRAY + "{name} {lvl}"
+                .replace("{name}", "Water Protection")
+                .replace("{lvl}", level)));
+    
+        meta.lore(lore); // Set the modified lore back to the item meta
+        item.setItemMeta(meta);
+        
         net.minecraft.world.item.ItemStack stack = CraftItemStack.asNMSCopy(item);
         stack.enchant(eimpl, lvl);
     }
+    
 
     private static String numberToRomanNum(int lvl){
         if(lvl > 10){

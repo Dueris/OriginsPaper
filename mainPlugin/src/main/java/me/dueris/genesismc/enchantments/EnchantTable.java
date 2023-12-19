@@ -21,7 +21,6 @@ import java.util.Random;
 import static me.dueris.genesismc.GenesisMC.waterProtectionEnchant;
 import static org.bukkit.Material.ENDER_PEARL;
 
-@Deprecated(forRemoval = true)
 public class EnchantTable implements Listener {
     public static EnumSet<Material> wearable;
 
@@ -62,20 +61,15 @@ public class EnchantTable implements Listener {
     public void onEnchantItem(EnchantItemEvent e) {
         boolean conflicts = false;
         Random r = new Random();
-        System.out.println("1");
         // if(37300 > r.nextInt(37400)){
         if(true){
-            System.out.println("1sdlkjfghlsjdflkg");
             if(wearable.contains(e.getItem().getType()) || e.getItem().getType() == Material.BOOK){
-                System.out.println("1dfg");
                 for(Enchantment enchant : e.getEnchantsToAdd().keySet()){
                     if(Anvil.conflictenchantments.contains(enchant)){
                         conflicts = true;
                     }
                 }
-                System.out.println(conflicts);
                 if(!conflicts){
-                    System.out.println("wdg");
                     int boundInt = r.nextInt(100);
                     if(boundInt <= 40){
                         // lvl1
