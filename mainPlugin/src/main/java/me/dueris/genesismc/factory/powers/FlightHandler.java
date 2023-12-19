@@ -2,12 +2,15 @@ package me.dueris.genesismc.factory.powers;
 
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.entity.OriginPlayer;
+import me.dueris.genesismc.events.OriginChangeEvent;
+
 import org.bukkit.GameMode;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
 
@@ -44,6 +47,19 @@ public class FlightHandler extends CraftPower {
     @EventHandler
     public void join(PlayerJoinEvent e){
         run(e.getPlayer());
+    }
+
+    @EventHandler
+    public void choosse(OriginChangeEvent e){
+        new BukkitRunnable() {
+
+            @Override
+            public void run() {
+                FlightHandler fl = new FlightHandler();
+                fl.run(e.getPlayer());
+            }
+            
+        }.runTaskLater(GenesisMC.getPlugin(), 10l);
     }
 
     @Override

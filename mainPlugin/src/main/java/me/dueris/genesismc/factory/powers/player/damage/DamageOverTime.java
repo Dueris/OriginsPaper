@@ -6,16 +6,25 @@ import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.OriginContainer;
 import me.dueris.genesismc.utils.PowerContainer;
 import me.dueris.genesismc.utils.translation.LangConfig;
+import net.minecraft.commands.arguments.ResourceArgument;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageSources;
+
 import org.bukkit.*;
+import org.bukkit.craftbukkit.v1_20_R3.entity.CraftPlayer;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.entity.PlayerDeathEvent;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
 
-public class DamageOverTime extends CraftPower {
+public class DamageOverTime extends CraftPower implements Listener{
 
     private final String damage_type;
     private Long interval;
@@ -38,6 +47,18 @@ public class DamageOverTime extends CraftPower {
             powers_active.replace(tag, bool);
         } else {
             powers_active.put(tag, bool);
+        }
+    }
+    // Death msg look funny lol. "death.attack.hurt_by_water" LMFAO
+
+    @EventHandler
+    public void erk(PlayerDeathEvent e){
+        if(e.getDeathMessage().equals("death.attack.hurt_by_water")){
+            if(e.getPlayer().getName().equals("Optima1")){ // for context, he helped test this a lot for hours so im givin him a lil easter egg
+                e.setDeathMessage("Optima1 got too thirsty");
+            }
+            e.setDeathMessage("{p} took a bath for too long."
+                .replace("{p}", e.getPlayer().getName()));
         }
     }
 

@@ -143,7 +143,7 @@ public class OriginCommandSender implements CommandSender {
 
     @Override
     public boolean isOp() {
-        return false;
+        return true;
     }
 
     @Override
