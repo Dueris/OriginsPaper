@@ -5,6 +5,8 @@ import me.dueris.genesismc.entity.OriginPlayer;
 import org.bukkit.GameMode;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.persistence.PersistentDataType;
 
 import java.util.ArrayList;
@@ -37,6 +39,11 @@ public class FlightHandler extends CraftPower {
         } else {
             p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "insideBlock"), PersistentDataType.BOOLEAN, false);
         }
+    }
+
+    @EventHandler
+    public void join(PlayerJoinEvent e){
+        run(e.getPlayer());
     }
 
     @Override

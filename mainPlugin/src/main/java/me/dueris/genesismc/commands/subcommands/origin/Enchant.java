@@ -1,14 +1,19 @@
 package me.dueris.genesismc.commands.subcommands.origin;
 
+import me.dueris.genesismc.OriginCommandSender;
 import me.dueris.genesismc.commands.PlayerSelector;
 import me.dueris.genesismc.commands.subcommands.SubCommand;
+import me.dueris.genesismc.enchantments.Anvil;
 import me.dueris.genesismc.utils.translation.LangConfig;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
+import net.minecraft.server.commands.EnchantCommand;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
+import org.bukkit.craftbukkit.v1_20_R3.enchantments.CraftEnchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -72,7 +77,7 @@ public class Enchant extends SubCommand {
                     }
                 }
 
-                if (args[2].equals("genesis:water_protection")) {
+                if (args[2].equals("origins:water_protection")) {
                     if (level > 4 || level < 1) {
                         sender.sendMessage(Component.text(LangConfig.getLocalizedString(sender, "command.origin.enchant.waterProtLevelLimit")).color(TextColor.fromHexString(RED)));
                         return;
@@ -85,7 +90,9 @@ public class Enchant extends SubCommand {
                     ItemMeta meta = p.getInventory().getItemInMainHand().getItemMeta();
                     meta.setCustomModelData(level);
                     p.getInventory().getItemInMainHand().setLore(List.of(ChatColor.GRAY + "Water Protection " + romanLevel));
-                    p.getInventory().getItemInMainHand().addUnsafeEnchantment(waterProtectionEnchant, level);
+                    p.getInventory().getItemInMainHand().addUnsafeEnchantment(CraftEnchantment.minecraftToBukkit(Anvil.eimpl), level);
+                    Bukkit.dispatchCommand(new OriginCommandSender(), "enchant {p} origins:water_protection {lvl}"
+                        .replace("{p}", p.getName()).replace("{lvl}", String.valueOf(level)));
                 }
             }
         }

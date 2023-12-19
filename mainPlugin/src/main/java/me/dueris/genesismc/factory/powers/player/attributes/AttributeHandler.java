@@ -18,6 +18,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.RayTraceResult;
@@ -145,6 +146,68 @@ public class AttributeHandler extends CraftPower implements Listener {
     }
 
     @EventHandler
+    public void respawn(PlayerRespawnEvent e){
+        Player p = e.getPlayer();
+        ChoosingCORE.setAttributesToDefault(p);
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                if (attribute.contains(p)) {
+                    for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
+                        for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
+                            if (power == null) continue;
+
+                            for (HashMap<String, Object> modifier : power.getPossibleModifiers("modifier", "modifiers")) {
+                                if (modifier.get("attribute").toString().equalsIgnoreCase("reach-entity-attributes:reach")) {
+                                    extra_reach.add(p);
+                                    return;
+                                } else if (modifier.get("attribute").toString().equalsIgnoreCase("reach-entity-attributes:attack_range")) {
+                                    extra_reach_attack.add(p);
+                                    return;
+                                } else {
+                                    Reach.setFinalReach(p, Reach.getDefaultReach(p));
+                                }
+
+                                try {
+                                    Attribute attribute_modifier = Attribute.valueOf(modifier.get("attribute").toString().split(":")[1].replace(".", "_").toUpperCase());
+
+                                    Object valueObj = modifier.get("value");
+
+                                    if (valueObj instanceof Number) {
+                                        double value;
+                                        if (valueObj instanceof Integer) {
+                                            value = ((Number) valueObj).intValue();
+                                        } else if (valueObj instanceof Double) {
+                                            value = ((Number) valueObj).doubleValue();
+                                        } else if (valueObj instanceof Float) {
+                                            value = ((Number) valueObj).floatValue();
+                                        } else if (valueObj instanceof Long) {
+                                            value = ((Number) valueObj).longValue();
+                                        } else {
+                                            Objects.requireNonNull(valueObj);
+                                            continue;
+                                        }
+
+                                        double base_value = p.getAttribute(attribute_modifier).getBaseValue();
+                                        String operation = String.valueOf(modifier.get("operation"));
+                                        executeAttributeModify(operation, attribute_modifier, base_value, p, value);
+                                        AttributeExecuteEvent attributeExecuteEvent = new AttributeExecuteEvent(p, attribute_modifier, power.toString(), origin);
+                                        Bukkit.getServer().getPluginManager().callEvent(attributeExecuteEvent);
+                                        setActive(power.getTag(), true);
+                                        p.sendHealthUpdate();
+                                    }
+                                } catch (Exception ev) {
+                                    ev.printStackTrace();
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }.runTaskLater(GenesisMC.getPlugin(), 5L);
+    }
+
+    @EventHandler
     public void ExecuteAttributeModification(OriginChangeEvent e) {
         Player p = e.getPlayer();
         ChoosingCORE.setAttributesToDefault(p);
@@ -261,7 +324,11 @@ public class AttributeHandler extends CraftPower implements Listener {
         }
 
         public static double getFinalReach(Player p) {
-            return p.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "reach"), PersistentDataType.DOUBLE);
+            if(p.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "reach"), PersistentDataType.DOUBLE) != null){
+                return p.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "reach"), PersistentDataType.DOUBLE);
+            }else{
+                return getDefaultReach(p);
+            }
         }
 
         @EventHandler

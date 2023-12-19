@@ -4,6 +4,7 @@ import com.destroystokyo.paper.event.inventory.PrepareResultEvent;
 import me.dueris.genesismc.GenesisMC;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.craftbukkit.v1_20_R3.enchantments.CraftEnchantment;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -57,19 +58,24 @@ public class EnchantTable implements Listener {
         );
     }
     
-/*
     @EventHandler
     public void onEnchantItem(EnchantItemEvent e) {
         boolean conflicts = false;
         Random r = new Random();
-        if(37300 > r.nextInt(37400)){
+        System.out.println("1");
+        // if(37300 > r.nextInt(37400)){
+        if(true){
+            System.out.println("1sdlkjfghlsjdflkg");
             if(wearable.contains(e.getItem().getType()) || e.getItem().getType() == Material.BOOK){
+                System.out.println("1dfg");
                 for(Enchantment enchant : e.getEnchantsToAdd().keySet()){
                     if(Anvil.conflictenchantments.contains(enchant)){
                         conflicts = true;
                     }
                 }
+                System.out.println(conflicts);
                 if(!conflicts){
+                    System.out.println("wdg");
                     int boundInt = r.nextInt(100);
                     if(boundInt <= 40){
                         // lvl1
@@ -94,13 +100,13 @@ public class EnchantTable implements Listener {
         if (e.getResult() != null) {
             if (e.getInventory().getType().equals(InventoryType.GRINDSTONE)){
                 ItemStack item = e.getResult();
-                if (item.getEnchantments().keySet().contains(GenesisMC.waterProtectionEnchant)){
+                if (item.getEnchantments().keySet().contains(CraftEnchantment.minecraftToBukkit(Anvil.eimpl))){
                     for(String loreString : item.getLore()){
                         if(loreString.startsWith("Water Protection")){
                             item.getLore().remove(loreString);
                         }
                     }
-                    item.removeEnchantment(GenesisMC.waterProtectionEnchant);
+                    item.removeEnchantment(CraftEnchantment.minecraftToBukkit(Anvil.eimpl));
                 }
             }
         }
@@ -117,5 +123,4 @@ public class EnchantTable implements Listener {
             e.setResult(null);
         }
     }
-    */
 }

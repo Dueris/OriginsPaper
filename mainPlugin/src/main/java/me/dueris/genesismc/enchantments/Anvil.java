@@ -1,10 +1,13 @@
 package me.dueris.genesismc.enchantments;
 
+import me.dueris.genesismc.Bootstrap;
 import me.dueris.genesismc.GenesisMC;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.craftbukkit.v1_20_R3.enchantments.CraftEnchantment;
+import org.bukkit.craftbukkit.v1_20_R3.inventory.CraftItemStack;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -21,6 +24,7 @@ import static me.dueris.genesismc.GenesisMC.waterProtectionEnchant;
 
 @Deprecated(forRemoval = true)
 public class Anvil implements Listener {
+    public static WaterProtectionNMSImpl eimpl = Bootstrap.waterProtection;
     public static ArrayList<Enchantment> conflictenchantments = new ArrayList<>();
     static {
         conflictenchantments.add(Enchantment.PROTECTION_FIRE);
@@ -29,18 +33,17 @@ public class Anvil implements Listener {
         conflictenchantments.add(Enchantment.PROTECTION_FALL);
         conflictenchantments.add(Enchantment.PROTECTION_PROJECTILE);
     }
-/*
 
     @EventHandler
     public void onAnvil(PrepareAnvilEvent e) {
         boolean conflicts = false;
         if(e.getInventory().getItem(0) != null && e.getInventory().getItem(1) != null){
-            if(e.getInventory().getItem(0).containsEnchantment(waterProtectionEnchant) || e.getInventory().getItem(1).containsEnchantment(waterProtectionEnchant)){
-                WaterProtection waterProt = GenesisMC.waterProtectionEnchant;
+            if(e.getInventory().getItem(0).containsEnchantment(CraftEnchantment.minecraftToBukkit(eimpl)) || e.getInventory().getItem(1).containsEnchantment(CraftEnchantment.minecraftToBukkit(eimpl))){
+                Enchantment waterProt = CraftEnchantment.minecraftToBukkit(eimpl);
 
                 for(Enchantment possConf : e.getInventory().getItem(0).getEnchantments().keySet()){
                     if(!conflicts){
-                        if(waterProt.conflictsWith(possConf)){
+                        if(!eimpl.isCompatibleWith(((CraftEnchantment)possConf).getHandle())){
                             conflicts = true;
                             e.setResult(null);
                         }
@@ -48,7 +51,7 @@ public class Anvil implements Listener {
                 }
                 for(Enchantment possConf : e.getInventory().getItem(1).getEnchantments().keySet()){
                     if(!conflicts){
-                        if(waterProt.conflictsWith(possConf)){
+                        if(!eimpl.isCompatibleWith(((CraftEnchantment)possConf).getHandle())){
                             conflicts = true;
                             e.setResult(null);
                         }
@@ -58,12 +61,12 @@ public class Anvil implements Listener {
         }
         if(e.getResult() != null && !conflicts && e.getInventory().getItem(0) != null && e.getInventory().getItem(1) != null){
             // begin anvil calculations. no conflicts and the result != null
-            if(e.getInventory().getItem(0).containsEnchantment(waterProtectionEnchant) || e.getInventory().getItem(1).containsEnchantment(waterProtectionEnchant)){
-                boolean firstContains = e.getInventory().getItem(0).containsEnchantment(waterProtectionEnchant);
-                boolean secondContains = e.getInventory().getItem(1).containsEnchantment(waterProtectionEnchant);
+            if(e.getInventory().getItem(0).containsEnchantment(CraftEnchantment.minecraftToBukkit(eimpl)) || e.getInventory().getItem(1).containsEnchantment(CraftEnchantment.minecraftToBukkit(eimpl))){
+                boolean firstContains = e.getInventory().getItem(0).containsEnchantment(CraftEnchantment.minecraftToBukkit(eimpl));
+                boolean secondContains = e.getInventory().getItem(1).containsEnchantment(CraftEnchantment.minecraftToBukkit(eimpl));
                 if(firstContains && secondContains){
-                    int firstlvl = e.getInventory().getItem(0).getEnchantments().get(waterProtectionEnchant);
-                    int secondlvl = e.getInventory().getItem(1).getEnchantments().get(waterProtectionEnchant);
+                    int firstlvl = e.getInventory().getItem(0).getEnchantments().get(CraftEnchantment.minecraftToBukkit(eimpl));
+                    int secondlvl = e.getInventory().getItem(1).getEnchantments().get(CraftEnchantment.minecraftToBukkit(eimpl));
                     int finl = 1;
                     if(firstlvl > secondlvl){
                         finl = firstlvl;
@@ -74,12 +77,12 @@ public class Anvil implements Listener {
                     }
                     setWaterProtCustomEnchantLevel(finl, e.getResult());
                 } else if(firstContains && !secondContains){
-                    int firstlvl = e.getInventory().getItem(0).getEnchantments().get(waterProtectionEnchant);
+                    int firstlvl = e.getInventory().getItem(0).getEnchantments().get(CraftEnchantment.minecraftToBukkit(eimpl));
                     setWaterProtCustomEnchantLevel(firstlvl, e.getResult());
                 } else if(!firstContains && !secondContains){
                     // why is this even coded bro this is unreachable
                 } else if(!firstContains && secondContains){
-                    int secondlvl = e.getInventory().getItem(1).getEnchantments().get(waterProtectionEnchant);
+                    int secondlvl = e.getInventory().getItem(1).getEnchantments().get(CraftEnchantment.minecraftToBukkit(eimpl));
                     setWaterProtCustomEnchantLevel(secondlvl, e.getResult());
                 }
             }
@@ -95,10 +98,10 @@ public class Anvil implements Listener {
                 item.getLore().remove(loreString);
             }
         }
-        item.getLore().add(ChatColor.GRAY + "{name} {lvl}".replace("{name}", enchantment.getName() "Water Protection").replace("{lvl}", level));
-        item.addUnsafeEnchantment(GenesisMC.waterProtectionEnchant, lvl);
+        item.getLore().add(ChatColor.GRAY + "{name} {lvl}".replace("{name}", "Water Protection").replace("{lvl}", level));
+        net.minecraft.world.item.ItemStack stack = CraftItemStack.asNMSCopy(item);
+        stack.enchant(eimpl, lvl);
     }
-*/
 
     private static String numberToRomanNum(int lvl){
         if(lvl > 10){

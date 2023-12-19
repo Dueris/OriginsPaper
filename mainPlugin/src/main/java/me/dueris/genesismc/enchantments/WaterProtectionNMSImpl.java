@@ -95,13 +95,4 @@ public class WaterProtectionNMSImpl extends Enchantment {
         }
         return false;
     }
-
-    @Override
-    public int getDamageProtection(int level, DamageSource source) {
-        if(source.type().msgId() == "hurt_by_water" && !source.is(DamageTypeTags.BYPASSES_INVULNERABILITY)){
-            return level;
-        }else{
-            return 0;
-        }
-    }
 }

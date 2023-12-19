@@ -173,13 +173,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
                 break;
             }
         }
-        int dmgtypeamt = 0;
-        java.util.Iterator<DamageType> ite = MinecraftServer.getServer().registryAccess().registry(Registries.DAMAGE_TYPE).get().iterator();
-        while (ite.hasNext()) {
-            dmgtypeamt++;
-        }
-        this.getLogger().info("Located {amt} damage sources".replace("{amt}", String.valueOf(dmgtypeamt)));
-
+        
         if(!isCorrectVersion){
             if(forceUseCurrentVersion) return;
             Bukkit.getLogger().severe("Unable to start GenesisMC due to it not being compatible with this server version");
