@@ -30,7 +30,6 @@ public class DamageOverTime extends CraftPower implements Listener{
     private Long interval;
     private int damage;
     private DamageSource damage_source;
-    private String protection_enchantment;
     private double protection_effectiveness;
     private final int ticksE;
 
@@ -107,13 +106,13 @@ public class DamageOverTime extends CraftPower implements Listener{
                                 float prot4 = (float) protection_effectiveness;
                                 if (p.getInventory().getHelmet() != null) {
                                     if (p.getInventory().getHelmet().getLore() != null) {
-                                        if (p.getEquipment().getHelmet().getLore().contains(ChatColor.GRAY + "Water Protection I") || p.getEquipment().getHelmet().getItemMeta().hasEnchant(Enchantment.getByKey(new NamespacedKey("minecraft", protection_enchantment.split(":")[1])))) {
+                                        if (p.getEquipment().getHelmet().getLore().contains(ChatColor.GRAY + "Water Protection I")) {
                                             helemt_modifier = prot1;
-                                        } else if (p.getEquipment().getHelmet().getLore().contains(ChatColor.GRAY + "Water Protection II") || p.getEquipment().getHelmet().getItemMeta().hasEnchant(Enchantment.getByKey(new NamespacedKey("minecraft", protection_enchantment.split(":")[1])))) {
+                                        } else if (p.getEquipment().getHelmet().getLore().contains(ChatColor.GRAY + "Water Protection II")) {
                                             helemt_modifier = prot2;
-                                        } else if (p.getEquipment().getHelmet().getLore().contains(ChatColor.GRAY + "Water Protection III") || p.getEquipment().getHelmet().getItemMeta().hasEnchant(Enchantment.getByKey(new NamespacedKey("minecraft", protection_enchantment.split(":")[1])))) {
+                                        } else if (p.getEquipment().getHelmet().getLore().contains(ChatColor.GRAY + "Water Protection III")) {
                                             helemt_modifier = prot3;
-                                        } else if (p.getEquipment().getHelmet().getLore().contains(ChatColor.GRAY + "Water Protection IV") || p.getEquipment().getHelmet().getItemMeta().hasEnchant(Enchantment.getByKey(new NamespacedKey("minecraft", protection_enchantment.split(":")[1])))) {
+                                        } else if (p.getEquipment().getHelmet().getLore().contains(ChatColor.GRAY + "Water Protection IV")) {
                                             helemt_modifier = prot4;
                                         } else {
                                             helemt_modifier = 0;
@@ -123,13 +122,13 @@ public class DamageOverTime extends CraftPower implements Listener{
                                 if (p.getInventory().getChestplate() != null) {
 
                                     if (p.getInventory().getChestplate().getLore() != null) {
-                                        if (p.getEquipment().getChestplate().getLore().contains(ChatColor.GRAY + "Water Protection I") || p.getEquipment().getChestplate().getItemMeta().hasEnchant(Enchantment.getByKey(new NamespacedKey("minecraft", protection_enchantment.split(":")[1])))) {
+                                        if (p.getEquipment().getChestplate().getLore().contains(ChatColor.GRAY + "Water Protection I")) {
                                             chestplate_modifier = prot1;
-                                        } else if (p.getEquipment().getChestplate().getLore().contains(ChatColor.GRAY + "Water Protection II") || p.getEquipment().getChestplate().getItemMeta().hasEnchant(Enchantment.getByKey(new NamespacedKey("minecraft", protection_enchantment.split(":")[1])))) {
+                                        } else if (p.getEquipment().getChestplate().getLore().contains(ChatColor.GRAY + "Water Protection II")) {
                                             chestplate_modifier = prot2;
-                                        } else if (p.getEquipment().getChestplate().getLore().contains(ChatColor.GRAY + "Water Protection III") || p.getEquipment().getChestplate().getItemMeta().hasEnchant(Enchantment.getByKey(new NamespacedKey("minecraft", protection_enchantment.split(":")[1])))) {
+                                        } else if (p.getEquipment().getChestplate().getLore().contains(ChatColor.GRAY + "Water Protection III")) {
                                             chestplate_modifier = prot3;
-                                        } else if (p.getEquipment().getChestplate().getLore().contains(ChatColor.GRAY + "Water Protection IV") || p.getEquipment().getChestplate().getItemMeta().hasEnchant(Enchantment.getByKey(new NamespacedKey("minecraft", protection_enchantment.split(":")[1])))) {
+                                        } else if (p.getEquipment().getChestplate().getLore().contains(ChatColor.GRAY + "Water Protection IV")) {
                                             chestplate_modifier = prot4;
                                         } else {
                                             chestplate_modifier = 0;
@@ -138,13 +137,13 @@ public class DamageOverTime extends CraftPower implements Listener{
                                 }
                                 if (p.getInventory().getLeggings() != null) {
                                     if (p.getInventory().getLeggings().getLore() != null) {
-                                        if (p.getEquipment().getLeggings().getLore().contains(ChatColor.GRAY + "Water Protection I") || p.getEquipment().getLeggings().getItemMeta().hasEnchant(Enchantment.getByKey(new NamespacedKey("minecraft", protection_enchantment.split(":")[1])))) {
+                                        if (p.getEquipment().getLeggings().getLore().contains(ChatColor.GRAY + "Water Protection I")) {
                                             leggins_modifier = prot1;
-                                        } else if (p.getEquipment().getLeggings().getLore().contains(ChatColor.GRAY + "Water Protection II") || p.getEquipment().getLeggings().getItemMeta().hasEnchant(Enchantment.getByKey(new NamespacedKey("minecraft", protection_enchantment.split(":")[1])))) {
+                                        } else if (p.getEquipment().getLeggings().getLore().contains(ChatColor.GRAY + "Water Protection II")) {
                                             leggins_modifier = prot2;
-                                        } else if (p.getEquipment().getLeggings().getLore().contains(ChatColor.GRAY + "Water Protection III") || p.getEquipment().getLeggings().getItemMeta().hasEnchant(Enchantment.getByKey(new NamespacedKey("minecraft", protection_enchantment.split(":")[1])))) {
+                                        } else if (p.getEquipment().getLeggings().getLore().contains(ChatColor.GRAY + "Water Protection III")) {
                                             leggins_modifier = prot3;
-                                        } else if (p.getEquipment().getLeggings().getLore().contains(ChatColor.GRAY + "Water Protection IV") || p.getEquipment().getLeggings().getItemMeta().hasEnchant(Enchantment.getByKey(new NamespacedKey("minecraft", protection_enchantment.split(":")[1])))) {
+                                        } else if (p.getEquipment().getLeggings().getLore().contains(ChatColor.GRAY + "Water Protection IV")) {
                                             leggins_modifier = prot4;
                                         } else {
                                             leggins_modifier = 0;
@@ -153,13 +152,13 @@ public class DamageOverTime extends CraftPower implements Listener{
                                 }
                                 if (p.getInventory().getBoots() != null) {
                                     if (p.getInventory().getBoots().getLore() != null) {
-                                        if (p.getEquipment().getBoots().getLore().contains(ChatColor.GRAY + "Water Protection I") || p.getEquipment().getBoots().getItemMeta().hasEnchant(Enchantment.getByKey(new NamespacedKey("minecraft", protection_enchantment.split(":")[1])))) {
+                                        if (p.getEquipment().getBoots().getLore().contains(ChatColor.GRAY + "Water Protection I")) {
                                             boots_modifier = prot1;
-                                        } else if (p.getEquipment().getBoots().getLore().contains(ChatColor.GRAY + "Water Protection II") || p.getEquipment().getBoots().getItemMeta().hasEnchant(Enchantment.getByKey(new NamespacedKey("minecraft", protection_enchantment.split(":")[1])))) {
+                                        } else if (p.getEquipment().getBoots().getLore().contains(ChatColor.GRAY + "Water Protection II")) {
                                             boots_modifier = prot2;
-                                        } else if (p.getEquipment().getBoots().getLore().contains(ChatColor.GRAY + "Water Protection III") || p.getEquipment().getBoots().getItemMeta().hasEnchant(Enchantment.getByKey(new NamespacedKey("minecraft", protection_enchantment.split(":")[1])))) {
+                                        } else if (p.getEquipment().getBoots().getLore().contains(ChatColor.GRAY + "Water Protection III")) {
                                             boots_modifier = prot3;
-                                        } else if (p.getEquipment().getBoots().getLore().contains(ChatColor.GRAY + "Water Protection IV") || p.getEquipment().getBoots().getItemMeta().hasEnchant(Enchantment.getByKey(new NamespacedKey("minecraft", protection_enchantment.split(":")[1])))) {
+                                        } else if (p.getEquipment().getBoots().getLore().contains(ChatColor.GRAY + "Water Protection IV")) {
                                             boots_modifier = prot4;
                                         } else {
                                             boots_modifier = 0;
