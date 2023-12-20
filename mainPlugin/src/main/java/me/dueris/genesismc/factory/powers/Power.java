@@ -9,6 +9,7 @@ public interface Power {
 
     HashMap<Player, HashMap<String, Boolean>> powers_active = new HashMap<>();
     ArrayList<Player> game_event_listener = new ArrayList<>();
+    ArrayList<Player> prevent_game_event = new ArrayList<>();
     ArrayList<Player> resource = new ArrayList<>();
     ArrayList<Player> fall_immunity = new ArrayList<>();
     ArrayList<Player> more_kinetic_damage = new ArrayList<>();

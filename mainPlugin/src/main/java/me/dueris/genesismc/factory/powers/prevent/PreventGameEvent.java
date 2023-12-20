@@ -1,20 +1,20 @@
-package me.dueris.genesismc.factory.powers.world;
+package me.dueris.genesismc.factory.powers.prevent;
 
-import me.dueris.genesismc.GenesisMC;
-import me.dueris.genesismc.entity.OriginPlayer;
-import me.dueris.genesismc.factory.actions.Actions;
-import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.utils.OriginContainer;
-import me.dueris.genesismc.utils.PowerContainer;
+import java.util.ArrayList;
+import java.util.HashMap;
+
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.world.GenericGameEvent;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import me.dueris.genesismc.GenesisMC;
+import me.dueris.genesismc.entity.OriginPlayer;
+import me.dueris.genesismc.factory.powers.CraftPower;
+import me.dueris.genesismc.utils.OriginContainer;
+import me.dueris.genesismc.utils.PowerContainer;
 
-public class GameEventListener extends CraftPower implements Listener {
+public class PreventGameEvent extends CraftPower implements Listener {
     @Override
     public void run(Player p) {
 
@@ -32,8 +32,8 @@ public class GameEventListener extends CraftPower implements Listener {
                         if(event.contains(":")){
                             event = event.split(":")[1];
                         }
-                        if(e.getEvent().toString().equals(event)){
-                            Actions.EntityActionType(e.getEntity(), power.getAction("entity_action"));
+                        if(e.getEvent().key().asString().equals(event)){
+                            e.setCancelled(true);
                         }
                     }
                 }
@@ -43,12 +43,12 @@ public class GameEventListener extends CraftPower implements Listener {
 
     @Override
     public String getPowerFile() {
-        return "origins:game_event_listener";
+        return "origins:prevent_game_event";
     }
 
     @Override
     public ArrayList<Player> getPowerArray() {
-        return game_event_listener;
+        return prevent_game_event;
     }
 
     @Override
@@ -64,4 +64,5 @@ public class GameEventListener extends CraftPower implements Listener {
             setActive(p, tag, bool);
         }
     }
+    
 }
