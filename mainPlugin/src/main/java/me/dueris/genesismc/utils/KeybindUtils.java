@@ -225,6 +225,7 @@ public class KeybindUtils implements Listener {
     }
 
     @EventHandler
+    @SuppressWarnings("Index out of bounds")
     public void onTransfer(InventoryClickEvent e) {
         if (e.getClick().isKeyboardClick()) {
             if (e.getView().getTopInventory().getType() == InventoryType.CRAFTING) return;
