@@ -1,6 +1,6 @@
 {
   "id": "genesis",
-  "version": "mc1.20-v0.2.4",
+  "version": "mc1.20-v0.2.5",
   "entry": "me.dueris.genesismc.mixin.GenesisMixin",
   "dependencies": [
     "ignite"
