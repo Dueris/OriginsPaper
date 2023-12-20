@@ -61,7 +61,7 @@ public class ModifyDamageDealtPower extends CraftPower implements Listener {
                         }
                     }
                 } catch (Exception ev) {
-                    throw new RuntimeException();
+                    // throw new RuntimeException(); // urm why?
                 }
             }
         }
