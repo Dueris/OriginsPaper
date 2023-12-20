@@ -25,7 +25,7 @@ import org.bukkit.util.Vector;
 import static me.dueris.genesismc.utils.KeybindUtils.isKeyBeingPressed;
 
 import java.util.ArrayList;
-
+import java.util.HashMap;
 public class FireProjectile extends CraftPower implements Listener {
 
     public static ArrayList<Player> in_continuous = new ArrayList<>();
@@ -150,7 +150,7 @@ public class FireProjectile extends CraftPower implements Listener {
                                                                             return;
                                                                         }
                                                                         if (!getPowerArray().contains(p)) return;
-                                                                        setActive(power.getTag(), false);
+                                                                        setActive(p, power.getTag(), false);
                                                                         this.cancel();
                                                                     } else {
                                                                         if (!in_continuous.contains(p)) {
@@ -166,7 +166,7 @@ public class FireProjectile extends CraftPower implements Listener {
                                                                             if (power == null)
                                                                                 return;
                                                                             if (!getPowerArray().contains(p)) return;
-                                                                            setActive(power.getTag(), false);
+                                                                            setActive(p, power.getTag(), false);
                                                                             this.cancel();
                                                                         } else {
                                                                             ItemMeta met = KeybindUtils.getKeybindItem(key, p.getInventory()).getItemMeta();
@@ -174,7 +174,7 @@ public class FireProjectile extends CraftPower implements Listener {
                                                                             if (power == null)
                                                                                 return;
                                                                             if (!getPowerArray().contains(p)) return;
-                                                                            setActive(power.getTag(), true);
+                                                                            setActive(p, power.getTag(), true);
                                                                             KeybindUtils.getKeybindItem(key, p.getInventory()).setItemMeta(met);
                                                                             shotsLeft = -amt;
                                                                         }
@@ -206,7 +206,7 @@ public class FireProjectile extends CraftPower implements Listener {
                                                                     if (power == null)
                                                                         return;
                                                                     if (!getPowerArray().contains(p)) return;
-                                                                    setActive(power.getTag(), true);
+                                                                    setActive(p, power.getTag(), true);
 
                                                                     peopladf.add(p);
 
@@ -230,7 +230,7 @@ public class FireProjectile extends CraftPower implements Listener {
                                                             return;
                                                         }
                                                         if (!getPowerArray().contains(p)) return;
-                                                        setActive(power.getTag(), false);
+                                                        setActive(p, power.getTag(), false);
                                                         KeybindUtils.getKeybindItem(key, p.getInventory()).setItemMeta(met);
                                                         this.cancel();
                                                     } else {
@@ -242,7 +242,7 @@ public class FireProjectile extends CraftPower implements Listener {
                                                                 return;
                                                             }
                                                             if (!getPowerArray().contains(p)) return;
-                                                            setActive(power.getTag(), false);
+                                                            setActive(p, power.getTag(), false);
                                                             KeybindUtils.getKeybindItem(key, p.getInventory()).setItemMeta(met);
                                                             this.cancel();
                                                         }
@@ -261,11 +261,16 @@ public class FireProjectile extends CraftPower implements Listener {
     }
 
     @Override
-    public void setActive(String tag, Boolean bool) {
-        if (powers_active.containsKey(tag)) {
-            powers_active.replace(tag, bool);
-        } else {
-            powers_active.put(tag, bool);
+    public void setActive(Player p, String tag, Boolean bool) {
+        if(powers_active.containsKey(p)){
+            if(powers_active.get(p).containsKey(tag)){
+                powers_active.get(p).replace(tag, bool);
+            }else{
+                powers_active.get(p).put(tag, bool);
+            }
+        }else{
+            powers_active.put(p, new HashMap());
+            setActive(p, tag, bool);
         }
     }
 

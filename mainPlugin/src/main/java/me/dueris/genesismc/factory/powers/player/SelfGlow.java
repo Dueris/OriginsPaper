@@ -20,15 +20,21 @@ import org.bukkit.potion.PotionEffectType;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class SelfGlow extends CraftPower {
 
     @Override
-    public void setActive(String tag, Boolean bool) {
-        if (powers_active.containsKey(tag)) {
-            powers_active.replace(tag, bool);
-        } else {
-            powers_active.put(tag, bool);
+    public void setActive(Player p, String tag, Boolean bool) {
+        if(powers_active.containsKey(p)){
+            if(powers_active.get(p).containsKey(tag)){
+                powers_active.get(p).replace(tag, bool);
+            }else{
+                powers_active.get(p).put(tag, bool);
+            }
+        }else{
+            powers_active.put(p, new HashMap());
+            setActive(p, tag, bool);
         }
     }
 
@@ -42,15 +48,15 @@ public class SelfGlow extends CraftPower {
                     if (entity instanceof Player player) {
                         if (conditionExecutor.check("entity_condition", "entity_conditions", p, power, getPowerFile(), p, entity, null, null, p.getItemInHand(), null)) {
                             if (conditionExecutor.check("bientity_condition", "bientity_conditions", p, power, getPowerFile(), p, entity, null, null, p.getItemInHand(), null)) {
-                                setActive(power.getTag(), true);
+                                setActive(p, power.getTag(), true);
                                 CraftPlayer craftPlayers = (CraftPlayer) player;
                                     craftPlayers.getHandle().connection.send(new ClientboundUpdateMobEffectPacket(p.getEntityId(),
                                             new MobEffectInstance(CraftPotionEffectType.bukkitToMinecraft(PotionEffectType.GLOWING), 5, 1, false, false, false)));
                             } else {
-                                setActive(power.getTag(), false);
+                                setActive(p, power.getTag(), false);
                             }
                         } else {
-                            setActive(power.getTag(), false);
+                            setActive(p, power.getTag(), false);
                         }
                     }
                 }

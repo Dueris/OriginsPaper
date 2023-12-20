@@ -25,11 +25,16 @@ public class ModifySwimSpeedPower extends CraftPower {
     String MODIFYING_KEY = "modify_swim_speed";
 
     @Override
-    public void setActive(String tag, Boolean bool) {
-        if (powers_active.containsKey(tag)) {
-            powers_active.replace(tag, bool);
-        } else {
-            powers_active.put(tag, bool);
+    public void setActive(Player p, String tag, Boolean bool) {
+        if(powers_active.containsKey(p)){
+            if(powers_active.get(p).containsKey(tag)){
+                powers_active.get(p).replace(tag, bool);
+            }else{
+                powers_active.get(p).put(tag, bool);
+            }
+        }else{
+            powers_active.put(p, new HashMap());
+            setActive(p, tag, bool);
         }
     }
 
@@ -56,9 +61,9 @@ public class ModifySwimSpeedPower extends CraftPower {
                         p.addPotionEffect(
                             new PotionEffect(PotionEffectType.DOLPHINS_GRACE, 100, ampl, false, false)
                         );
-                        setActive(power.getTag(), true);
+                        setActive(p, power.getTag(), true);
                     } else {
-                        setActive(power.getTag(), false);
+                        setActive(p, power.getTag(), false);
                     }
                 }
 

@@ -133,11 +133,16 @@ public class ModifyFoodPower extends CraftPower implements Listener {
     }
 
     @Override
-    public void setActive(String tag, Boolean bool) {
-        if (powers_active.containsKey(tag)) {
-            powers_active.replace(tag, bool);
-        } else {
-            powers_active.put(tag, bool);
+    public void setActive(Player p, String tag, Boolean bool) {
+        if(powers_active.containsKey(p)){
+            if(powers_active.get(p).containsKey(tag)){
+                powers_active.get(p).replace(tag, bool);
+            }else{
+                powers_active.get(p).put(tag, bool);
+            }
+        }else{
+            powers_active.put(p, new HashMap());
+            setActive(p, tag, bool);
         }
     }
 
@@ -157,7 +162,7 @@ public class ModifyFoodPower extends CraftPower implements Listener {
                                     BinaryOperator mathOperator = getOperationMappingsDouble().get(operation);
                                     if (mathOperator != null) {
                                         double finalValue = (double) mathOperator.apply(getFoodModifier(e.getItem().getType()), (double) value);
-                                        setActive(power.getTag(), true);
+                                        setActive(player, power.getTag(), true);
                                     }
                                 }
                             }
@@ -168,13 +173,13 @@ public class ModifyFoodPower extends CraftPower implements Listener {
                                     BinaryOperator mathOperator = getOperationMappingsDouble().get(operation);
                                     if (mathOperator != null) {
                                         double finalValue = (double) mathOperator.apply(getSaturationModifier(e.getItem().getType()), (double) value);
-                                        setActive(power.getTag(), true);
+                                        setActive(player, power.getTag(), true);
                                     }
                                 }
                             }
                         }
                     } else {
-                        setActive(power.getTag(), false);
+                        setActive(player, power.getTag(), false);
                     }
                 }
             }

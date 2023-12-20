@@ -21,11 +21,16 @@ import static me.dueris.genesismc.factory.powers.value_modifying.ValueModifyingS
 public class ModifyProjectileDamagePower extends CraftPower implements Listener {
 
     @Override
-    public void setActive(String tag, Boolean bool) {
-        if (powers_active.containsKey(tag)) {
-            powers_active.replace(tag, bool);
-        } else {
-            powers_active.put(tag, bool);
+    public void setActive(Player p, String tag, Boolean bool) {
+        if(powers_active.containsKey(p)){
+            if(powers_active.get(p).containsKey(tag)){
+                powers_active.get(p).replace(tag, bool);
+            }else{
+                powers_active.get(p).put(tag, bool);
+            }
+        }else{
+            powers_active.put(p, new HashMap());
+            setActive(p, tag, bool);
         }
     }
 
@@ -51,7 +56,7 @@ public class ModifyProjectileDamagePower extends CraftPower implements Listener 
                                     if (mathOperator != null) {
                                         float result = (float) mathOperator.apply(e.getDamage(), value);
                                         e.setDamage(result);
-                                        setActive(power.getTag(), true);
+                                        setActive(p, power.getTag(), true);
                                     }
                                 }
                             } else {
@@ -60,7 +65,7 @@ public class ModifyProjectileDamagePower extends CraftPower implements Listener 
                                     return;
                                 }
                                 if (!getPowerArray().contains(p)) return;
-                                setActive(power.getTag(), false);
+                                setActive(p, power.getTag(), false);
                             }
                         }
                     } catch (Exception ev) {

@@ -11,15 +11,21 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class KeepInventory extends CraftPower implements Listener {
 
     @Override
-    public void setActive(String tag, Boolean bool) {
-        if (powers_active.containsKey(tag)) {
-            powers_active.replace(tag, bool);
-        } else {
-            powers_active.put(tag, bool);
+    public void setActive(Player p, String tag, Boolean bool) {
+        if(powers_active.containsKey(p)){
+            if(powers_active.get(p).containsKey(tag)){
+                powers_active.get(p).replace(tag, bool);
+            }else{
+                powers_active.get(p).put(tag, bool);
+            }
+        }else{
+            powers_active.put(p, new HashMap());
+            setActive(p, tag, bool);
         }
     }
 
@@ -34,7 +40,7 @@ public class KeepInventory extends CraftPower implements Listener {
                     if (conditionExecutor.check("item_condition", "item_conditions", player, power, "origins:keep_inventory", player, null, null, null, player.getInventory().getItemInHand(), null)) {
                         ArrayList<Long> slots = new ArrayList<>();
                         if (!getPowerArray().contains(player)) return;
-                        setActive(power.getTag(), true);
+                        setActive(player, power.getTag(), true);
                         if (power.getSlots() != null) {
                             for (long slot : power.getSlots()) {
                                 slots.add(slot);
@@ -50,7 +56,7 @@ public class KeepInventory extends CraftPower implements Listener {
                         }
                     } else {
                         if (!getPowerArray().contains(player)) return;
-                        setActive(power.getTag(), false);
+                        setActive(player, power.getTag(), false);
                     }
                 }
             }

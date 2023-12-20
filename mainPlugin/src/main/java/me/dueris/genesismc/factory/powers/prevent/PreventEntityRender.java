@@ -26,11 +26,16 @@ import static me.dueris.genesismc.factory.powers.prevent.PreventSuperClass.preve
 public class PreventEntityRender extends CraftPower {
 
     @Override
-    public void setActive(String tag, Boolean bool) {
-        if (powers_active.containsKey(tag)) {
-            powers_active.replace(tag, bool);
-        } else {
-            powers_active.put(tag, bool);
+    public void setActive(Player p, String tag, Boolean bool) {
+        if(powers_active.containsKey(p)){
+            if(powers_active.get(p).containsKey(tag)){
+                powers_active.get(p).replace(tag, bool);
+            }else{
+                powers_active.get(p).put(tag, bool);
+            }
+        }else{
+            powers_active.put(p, new HashMap());
+            setActive(p, tag, bool);
         }
     }
 
@@ -68,15 +73,15 @@ public class PreventEntityRender extends CraftPower {
                                         if(p.canSee(entity)){
                                             p.hideEntity(GenesisMC.getPlugin(), entity);
                                         }
-                                        setActive(power.getTag(), true);
+                                        setActive(p, power.getTag(), true);
                                     } else {
-                                        setActive(power.getTag(), false);
+                                        setActive(p, power.getTag(), false);
                                         if(!p.canSee(entity)){
                                             p.showEntity(GenesisMC.getPlugin(), entity);
                                         }
                                     }
                                 } else {
-                                    setActive(power.getTag(), false);
+                                    setActive(p, power.getTag(), false);
                                     if(!p.canSee(entity)){
                                         p.showEntity(GenesisMC.getPlugin(), entity);
                                     }

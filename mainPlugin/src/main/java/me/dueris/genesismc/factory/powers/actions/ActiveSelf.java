@@ -15,6 +15,7 @@ import org.bukkit.event.Listener;
 import static me.dueris.genesismc.utils.KeybindUtils.isKeyBeingPressed;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class ActiveSelf extends CraftPower implements Listener {
 
@@ -32,7 +33,7 @@ public class ActiveSelf extends CraftPower implements Listener {
                     if (CooldownManager.isPlayerInCooldown(e.getPlayer(), e.getKey())) return;
                     if (executor.check("condition", "conditions", e.getPlayer(), power, getPowerFile(), e.getPlayer(), null, null, null, null, null)) {
                         if (!getPowerArray().contains(e.getPlayer())) return;
-                        setActive(power.getTag(), true);
+                        setActive(e.getPlayer(), power.getTag(), true);
                         if (isKeyBeingPressed(e.getPlayer(), power.getKey().getOrDefault("key", "key.origins.primary_active").toString(), true)) {
                             Actions.EntityActionType(e.getPlayer(), power.getEntityAction());
                             if (power.get("cooldown", "1") != null) {
@@ -40,7 +41,7 @@ public class ActiveSelf extends CraftPower implements Listener {
                             }
                         }
                     } else {
-                        setActive(power.getTag(), false);
+                        setActive(e.getPlayer(), power.getTag(), false);
                     }
 
                 }
@@ -60,11 +61,16 @@ public class ActiveSelf extends CraftPower implements Listener {
     }
 
     @Override
-    public void setActive(String tag, Boolean bool) {
-        if (powers_active.containsKey(tag)) {
-            powers_active.replace(tag, bool);
-        } else {
-            powers_active.put(tag, bool);
+    public void setActive(Player p, String tag, Boolean bool) {
+        if(powers_active.containsKey(p)){
+            if(powers_active.get(p).containsKey(tag)){
+                powers_active.get(p).replace(tag, bool);
+            }else{
+                powers_active.get(p).put(tag, bool);
+            }
+        }else{
+            powers_active.put(p, new HashMap());
+            setActive(p, tag, bool);
         }
     }
 }

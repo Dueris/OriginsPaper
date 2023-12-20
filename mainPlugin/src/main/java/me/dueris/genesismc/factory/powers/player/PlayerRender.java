@@ -32,17 +32,23 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 public class PlayerRender extends CraftPower {
 
     @Override
-    public void setActive(String tag, Boolean bool) {
-        if (powers_active.containsKey(tag)) {
-            powers_active.replace(tag, bool);
-        } else {
-            powers_active.put(tag, bool);
+    public void setActive(Player p, String tag, Boolean bool) {
+        if(powers_active.containsKey(p)){
+            if(powers_active.get(p).containsKey(tag)){
+                powers_active.get(p).replace(tag, bool);
+            }else{
+                powers_active.get(p).put(tag, bool);
+            }
+        }else{
+            powers_active.put(p, new HashMap());
+            setActive(p, tag, bool);
         }
     }
 
@@ -476,11 +482,16 @@ public class PlayerRender extends CraftPower {
             return model_color;
         }
 
-        public void setActive(String tag, Boolean bool) {
-            if (powers_active.containsKey(tag)) {
-                powers_active.replace(tag, bool);
-            } else {
-                powers_active.put(tag, bool);
+        public void setActive(Player p, String tag, Boolean bool) {
+            if(powers_active.containsKey(p)){
+                if(powers_active.get(p).containsKey(tag)){
+                    powers_active.get(p).replace(tag, bool);
+                }else{
+                    powers_active.get(p).put(tag, bool);
+                }
+            }else{
+                powers_active.put(p, new HashMap());
+                setActive(p, tag, bool);
             }
         }
 

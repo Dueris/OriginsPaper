@@ -46,11 +46,16 @@ public class DamageOverTime extends CraftPower implements Listener{
     }
 
     @Override
-    public void setActive(String tag, Boolean bool) {
-        if (powers_active.containsKey(tag)) {
-            powers_active.replace(tag, bool);
-        } else {
-            powers_active.put(tag, bool);
+    public void setActive(Player p, String tag, Boolean bool) {
+        if(powers_active.containsKey(p)){
+            if(powers_active.get(p).containsKey(tag)){
+                powers_active.get(p).replace(tag, bool);
+            }else{
+                powers_active.get(p).put(tag, bool);
+            }
+        }else{
+            powers_active.put(p, new HashMap());
+            setActive(p, tag, bool);
         }
     }
     // Death msg look funny lol. "death.attack.hurt_by_water" LMFAO
@@ -98,7 +103,7 @@ public class DamageOverTime extends CraftPower implements Listener{
                         protection_effectiveness = Double.parseDouble(power.get("protection_effectiveness", "1"));
                         ConditionExecutor executor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                         if (executor.check("condition", "conditions", p, power, getPowerFile(), p, null, null, null, p.getItemInHand(), null)) {
-                            setActive(power.getTag(), true);
+                            setActive(p, power.getTag(), true);
 
                             if (p.getGameMode().equals(GameMode.SURVIVAL) || p.getGameMode().equals(GameMode.ADVENTURE)) {
                                 float helemt_modifier = 0;
@@ -219,7 +224,7 @@ public class DamageOverTime extends CraftPower implements Listener{
                             }
 
                         } else {
-                            setActive(power.getTag(), false);
+                            setActive(p, power.getTag(), false);
                         }
 
                         ticksEMap.put(p, 0);

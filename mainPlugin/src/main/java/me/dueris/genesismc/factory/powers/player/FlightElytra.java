@@ -20,6 +20,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.UUID;
 
 import static me.dueris.genesismc.entity.OriginPlayer.launchElytra;
@@ -28,11 +29,16 @@ public class FlightElytra extends CraftPower implements Listener {
     public static ArrayList<UUID> glidingPlayers = new ArrayList<>();
 
     @Override
-    public void setActive(String tag, Boolean bool) {
-        if (powers_active.containsKey(tag)) {
-            powers_active.replace(tag, bool);
-        } else {
-            powers_active.put(tag, bool);
+    public void setActive(Player p, String tag, Boolean bool) {
+        if(powers_active.containsKey(p)){
+            if(powers_active.get(p).containsKey(tag)){
+                powers_active.get(p).replace(tag, bool);
+            }else{
+                powers_active.get(p).put(tag, bool);
+            }
+        }else{
+            powers_active.put(p, new HashMap());
+            setActive(p, tag, bool);
         }
     }
 
@@ -54,7 +60,7 @@ public class FlightElytra extends CraftPower implements Listener {
                 ConditionExecutor executor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                 for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
                     if (executor.check("condition", "conditions", p, power, getPowerFile(), p, null, null, null, p.getItemInHand(), null)) {
-                        setActive(power.getTag(), true);
+                        setActive(p, power.getTag(), true);
                         if (!p.isOnGround() && !p.isGliding()) {
                             glidingPlayers.add(p.getUniqueId());
                             if (p.getGameMode() == GameMode.SPECTATOR) return;
@@ -72,7 +78,7 @@ public class FlightElytra extends CraftPower implements Listener {
                             }.runTaskTimer(GenesisMC.getPlugin(), 0L, 1L);
                         }
                     } else {
-                        setActive(power.getTag(), false);
+                        setActive(p, power.getTag(), false);
                     }
                 }
             }

@@ -55,17 +55,18 @@ public class ConditionExecutor {
 
             return allTrue;
         } else if (subCondition.get("type").equals("origins:power_active")) {
+            if(!powers_active.containsKey(p)) return false;
             if (subCondition.get("power").toString().contains("*")) {
                 String[] powerK = subCondition.get("power").toString().split("\\*");
-                for (String string : powers_active.keySet()) {
+                for (String string : powers_active.get(p).keySet()) {
                     if (string.startsWith(powerK[0]) && string.endsWith(powerK[1])) {
-                        return powers_active.get(string);
+                        return powers_active.get(p).get(string);
                     }
                 }
             } else {
                 String powerF = subCondition.get("power").toString();
                 boolean invert = Boolean.parseBoolean(subCondition.getOrDefault("inverted", "false").toString());
-                return getResult(invert, Optional.of(Boolean.valueOf(powers_active.getOrDefault(powerF, false)))).get();
+                return getResult(invert, Optional.of(Boolean.valueOf(powers_active.get(p).getOrDefault(powerF, false)))).get();
             }
         } else {
             boolean subConditionResult = false;
@@ -177,17 +178,18 @@ public class ConditionExecutor {
             } else if (condition.get("type").equals("origins:constant")) {
                 return (boolean) condition.get("value");
             } else if (condition.get("type").equals("origins:power_active")) {
+                if(!powers_active.containsKey(p)) return false;
                 if (condition.get("power").toString().contains("*")) {
                     String[] powerK = condition.get("power").toString().split("\\*");
-                    for (String string : powers_active.keySet()) {
+                    for (String string : powers_active.get(p).keySet()) {
                         if (string.startsWith(powerK[0]) && string.endsWith(powerK[1])) {
-                            return powers_active.get(string);
+                            return powers_active.get(p).get(string);
                         }
                     }
                 } else {
                     String power = condition.get("power").toString();
                     boolean invert = Boolean.parseBoolean(condition.getOrDefault("inverted", "false").toString());
-                    return getResult(invert, Optional.of(Boolean.valueOf(powers_active.getOrDefault(power, false)))).get();
+                    return getResult(invert, Optional.of(Boolean.valueOf(powers_active.get(p).getOrDefault(power, false)))).get();
                 }
             } else if (condition.get("type").equals("origins:power")) {
                 for (OriginContainer origin : CraftApoli.getOrigins()) {

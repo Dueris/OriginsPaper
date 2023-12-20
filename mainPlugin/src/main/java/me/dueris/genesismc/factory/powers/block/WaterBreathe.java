@@ -17,6 +17,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Random;
 
 public class WaterBreathe extends CraftPower {
@@ -31,11 +32,16 @@ public class WaterBreathe extends CraftPower {
     }
 
     @Override
-    public void setActive(String tag, Boolean bool) {
-        if (powers_active.containsKey(tag)) {
-            powers_active.replace(tag, bool);
-        } else {
-            powers_active.put(tag, bool);
+    public void setActive(Player p, String tag, Boolean bool) {
+        if(powers_active.containsKey(p)){
+            if(powers_active.get(p).containsKey(tag)){
+                powers_active.get(p).replace(tag, bool);
+            }else{
+                powers_active.get(p).put(tag, bool);
+            }
+        }else{
+            powers_active.put(p, new HashMap());
+            setActive(p, tag, bool);
         }
     }
 
@@ -46,7 +52,7 @@ public class WaterBreathe extends CraftPower {
             ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
             for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
                 if (conditionExecutor.check("condition", "conditions", p, power, getPowerFile(), p, null, null, null, p.getItemInHand(), null)) {
-                    setActive(power.getTag(), true);
+                    setActive(p, power.getTag(), true);
                     if (water_breathing.contains(p)) {
                         if (isInBreathableWater(p)) {
                             if (p.getRemainingAir() < 290) {
@@ -76,7 +82,7 @@ public class WaterBreathe extends CraftPower {
                         }
                     }
                 } else {
-                    setActive(power.getTag(), false);
+                    setActive(p, power.getTag(), false);
                 }
             }
 

@@ -23,6 +23,7 @@ import org.bukkit.generator.structure.Structure;
 import com.mojang.logging.LogUtils;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import static me.dueris.genesismc.factory.powers.value_modifying.ValueModifyingSuperClass.modify_world_spawn;
 import static org.bukkit.Material.AIR;
@@ -31,8 +32,17 @@ import static org.bukkit.Material.OBSIDIAN;
 public class ModifyPlayerSpawnPower extends CraftPower implements Listener {
 
     @Override
-    public void setActive(String tag, Boolean bool) {
-        powers_active.put(tag, bool); // Simplified code
+    public void setActive(Player p, String tag, Boolean bool) {
+        if(powers_active.containsKey(p)){
+            if(powers_active.get(p).containsKey(tag)){
+                powers_active.get(p).replace(tag, bool);
+            }else{
+                powers_active.get(p).put(tag, bool);
+            }
+        }else{
+            powers_active.put(p, new HashMap());
+            setActive(p, tag, bool);
+        }
     }
 
     @Override

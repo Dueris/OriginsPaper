@@ -22,6 +22,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import static me.dueris.genesismc.utils.KeybindUtils.isKeyBeingPressed;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class ToggleNightVision extends CraftPower implements Listener {
 
@@ -37,8 +38,11 @@ public class ToggleNightVision extends CraftPower implements Listener {
         String key = (String) power.getKey().getOrDefault("key", "key.origins.primary_active");
         KeybindUtils.runKeyChangeTrigger(KeybindUtils.getTriggerFromOriginKey(p, key));
         if (CooldownManager.isPlayerInCooldown(p, key)) return;
-        if (powers_active.containsKey(power.getTag())) {
-            setActive(power.getTag(), !powers_active.get(tag));
+        if (!powers_active.containsKey(p)){
+            powers_active.put(p, new HashMap());
+        }
+        if (powers_active.get(p).containsKey(power.getTag())) {
+            setActive(p, power.getTag(), !powers_active.get(p).get(tag));
             if (true) {
                 if (active) {
                     //active
@@ -46,7 +50,7 @@ public class ToggleNightVision extends CraftPower implements Listener {
                     ItemMeta met = KeybindUtils.getKeybindItem(key, p.getInventory()).getItemMeta();
                     met.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "contin"), PersistentDataType.BOOLEAN, false);
                     KeybindUtils.getKeybindItem(key, p.getInventory()).setItemMeta(met);
-                    setActive(tag, false);
+                    setActive(p, tag, false);
                     in_continuous.remove(p);
                     active = false;
                     runCancel = true;
@@ -70,7 +74,7 @@ public class ToggleNightVision extends CraftPower implements Listener {
                     ItemMeta met = KeybindUtils.getKeybindItem(key, p.getInventory()).getItemMeta();
                     met.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "contin"), PersistentDataType.BOOLEAN, true);
                     KeybindUtils.getKeybindItem(key, p.getInventory()).setItemMeta(met);
-                    setActive(tag, true);
+                    setActive(p, tag, true);
                     in_continuous.add(p);
                     active = true;
                     runCancel = true;
@@ -98,13 +102,13 @@ public class ToggleNightVision extends CraftPower implements Listener {
 //                Bukkit.getServer().getPluginManager().callEvent(toggleTriggerEvent);
             } else {
                 KeybindUtils.runKeyChangeTrigger(KeybindUtils.getKeybindItem(key, p.getInventory()));
-                setActive(tag, true);
+                setActive(p, tag, true);
                 in_continuous.add(p);
                 new BukkitRunnable() {
                     @Override
                     public void run() {
                         KeybindUtils.runKeyChangeTriggerReturn(KeybindUtils.getTriggerFromOriginKey(p, key), p, key);
-                        setActive(tag, false);
+                        setActive(p, tag, false);
                         ItemMeta met = KeybindUtils.getKeybindItem(key, p.getInventory()).getItemMeta();
                         met.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "contin"), PersistentDataType.BOOLEAN, false);
                         KeybindUtils.getKeybindItem(key, p.getInventory()).setItemMeta(met);
@@ -115,13 +119,13 @@ public class ToggleNightVision extends CraftPower implements Listener {
         } else {
             //set true
             KeybindUtils.runKeyChangeTrigger(KeybindUtils.getKeybindItem(key, p.getInventory()));
-            setActive(tag, true);
+            setActive(p, tag, true);
             in_continuous.add(p);
             new BukkitRunnable() {
                 @Override
                 public void run() {
                     KeybindUtils.runKeyChangeTriggerReturn(KeybindUtils.getTriggerFromOriginKey(p, key), p, key);
-                    setActive(tag, false);
+                    setActive(p, tag, false);
                     in_continuous.remove(p);
                 }
             }.runTaskLater(GenesisMC.getPlugin(), 2);
@@ -143,7 +147,7 @@ public class ToggleNightVision extends CraftPower implements Listener {
                         }
                     } else {
                         KeybindUtils.runKeyChangeTriggerReturn(KeybindUtils.getKeybindItem(power.getKey().getOrDefault("key", "key.origins.primary_active").toString(), p.getInventory()), p, power.getKey().getOrDefault("key", "key.origins.primary_active").toString());
-                        setActive(power.getTag(), false);
+                        setActive(p, power.getTag(), false);
                     }
                 }
             }
@@ -151,11 +155,16 @@ public class ToggleNightVision extends CraftPower implements Listener {
     }
 
     @Override
-    public void setActive(String tag, Boolean bool) {
-        if (powers_active.containsKey(tag)) {
-            powers_active.replace(tag, bool);
-        } else {
-            powers_active.put(tag, bool);
+    public void setActive(Player p, String tag, Boolean bool) {
+        if(powers_active.containsKey(p)){
+            if(powers_active.get(p).containsKey(tag)){
+                powers_active.get(p).replace(tag, bool);
+            }else{
+                powers_active.get(p).put(tag, bool);
+            }
+        }else{
+            powers_active.put(p, new HashMap());
+            setActive(p, tag, bool);
         }
     }
 

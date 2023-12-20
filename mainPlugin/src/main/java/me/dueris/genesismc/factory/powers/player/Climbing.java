@@ -14,6 +14,7 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import static org.bukkit.Material.AIR;
 
@@ -22,11 +23,16 @@ public class Climbing extends CraftPower {
     public ArrayList<Player> active_climbing = new ArrayList<>();
 
     @Override
-    public void setActive(String tag, Boolean bool) {
-        if (powers_active.containsKey(tag)) {
-            powers_active.replace(tag, bool);
-        } else {
-            powers_active.put(tag, bool);
+    public void setActive(Player p, String tag, Boolean bool) {
+        if(powers_active.containsKey(p)){
+            if(powers_active.get(p).containsKey(tag)){
+                powers_active.get(p).replace(tag, bool);
+            }else{
+                powers_active.get(p).put(tag, bool);
+            }
+        }else{
+            powers_active.put(p, new HashMap());
+            setActive(p, tag, bool);
         }
     }
 
@@ -72,7 +78,7 @@ public class Climbing extends CraftPower {
                                 return;
                             }
                             if (!getPowerArray().contains(p)) return;
-                            setActive(power.getTag(), true);
+                            setActive(p, power.getTag(), true);
                             if (!cancel_bool) {
                                 if (!p.isSneaking()) return;
                                 p.addPotionEffect(new PotionEffect(PotionEffectType.LEVITATION, 6, 2, false, false, false));
@@ -101,7 +107,7 @@ public class Climbing extends CraftPower {
                                 return;
                             }
                             if (!getPowerArray().contains(p)) return;
-                            setActive(power.getTag(), false);
+                            setActive(p, power.getTag(), false);
                         }
                     }
                 }

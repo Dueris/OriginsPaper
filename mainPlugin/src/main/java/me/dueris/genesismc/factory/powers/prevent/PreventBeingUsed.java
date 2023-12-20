@@ -11,17 +11,23 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import static me.dueris.genesismc.factory.powers.prevent.PreventSuperClass.prevent_being_used;
 
 public class PreventBeingUsed extends CraftPower implements Listener {
 
     @Override
-    public void setActive(String tag, Boolean bool) {
-        if (powers_active.containsKey(tag)) {
-            powers_active.replace(tag, bool);
-        } else {
-            powers_active.put(tag, bool);
+    public void setActive(Player p, String tag, Boolean bool) {
+        if(powers_active.containsKey(p)){
+            if(powers_active.get(p).containsKey(tag)){
+                powers_active.get(p).replace(tag, bool);
+            }else{
+                powers_active.get(p).put(tag, bool);
+            }
+        }else{
+            powers_active.put(p, new HashMap());
+            setActive(p, tag, bool);
         }
     }
 
@@ -36,15 +42,15 @@ public class PreventBeingUsed extends CraftPower implements Listener {
                     if (conditionExecutor.check("bientity_condition", "bientity_conditions", p, power, "origins:prevent_being_used", p, null, null, null, p.getItemInHand(), null)) {
                         if (conditionExecutor.check("item_condition", "item_conditions", p, power, "origins:prevent_being_used", p, null, null, null, p.getItemInHand(), null)) {
 
-                            setActive(power.getTag(), true);
+                            setActive(p, power.getTag(), true);
                             e.setCancelled(true);
                         } else {
 
-                            setActive(power.getTag(), false);
+                            setActive(p, power.getTag(), false);
                         }
                     } else {
 
-                        setActive(power.getTag(), false);
+                        setActive(p, power.getTag(), false);
                     }
                 }
             }

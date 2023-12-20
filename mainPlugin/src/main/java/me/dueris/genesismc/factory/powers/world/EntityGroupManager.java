@@ -76,11 +76,16 @@ public class EntityGroupManager extends CraftPower {
     }
 
     @Override
-    public void setActive(String tag, Boolean bool) {
-        if (powers_active.containsKey(tag)) {
-            powers_active.replace(tag, bool);
-        } else {
-            powers_active.put(tag, bool);
+    public void setActive(Player p, String tag, Boolean bool) {
+        if(powers_active.containsKey(p)){
+            if(powers_active.get(p).containsKey(tag)){
+                powers_active.get(p).replace(tag, bool);
+            }else{
+                powers_active.get(p).put(tag, bool);
+            }
+        }else{
+            powers_active.put(p, new HashMap());
+            setActive(p, tag, bool);
         }
     }
 
@@ -105,7 +110,7 @@ public class EntityGroupManager extends CraftPower {
                         for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
                             if (executor.check("condition", "conditions", (Player) entity, power, getPowerFile(), entity, null, entity.getLocation().getBlock(), null, ((Player) entity).getItemInHand(), null)) {
                                 if (!getPowerArray().contains(entity)) return;
-                                setActive(power.getTag(), true);
+                                setActive(p, power.getTag(), true);
                                 if (entity_group.contains(entity)) {
                                     if (power.get("group", null).equalsIgnoreCase("undead")) {
                                         undead.put(entity.getEntityId(), entity.getType().name());
@@ -121,7 +126,7 @@ public class EntityGroupManager extends CraftPower {
                                 }
                             } else {
                                 if (!getPowerArray().contains(entity)) return;
-                                setActive(power.getTag(), false);
+                                setActive(p, power.getTag(), false);
                             }
                         }
                     }

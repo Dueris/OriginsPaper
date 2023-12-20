@@ -30,13 +30,13 @@ public class StackingStatusEffect extends CraftPower {
                 for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
                     if (executor.check("entity_condition", "entity_conditions", p, power, getPowerFile(), p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
                         if (executor.check("condition", "conditions", p, power, getPowerFile(), p, null, null, null, null, null)) {
-                            setActive(power.getTag(), true);
+                            setActive(p, power.getTag(), true);
                             applyStackingEffect(p, Integer.parseInt(power.get("duration_per_stack")), origin, power);
                         } else {
-                            setActive(power.getTag(), false);
+                            setActive(p, power.getTag(), false);
                         }
                     } else {
-                        setActive(power.getTag(), false);
+                        setActive(p, power.getTag(), false);
                     }
                 }
             }
@@ -60,11 +60,16 @@ public class StackingStatusEffect extends CraftPower {
     }
 
     @Override
-    public void setActive(String tag, Boolean bool) {
-        if (powers_active.containsKey(tag)) {
-            powers_active.replace(tag, bool);
-        } else {
-            powers_active.put(tag, bool);
+    public void setActive(Player p, String tag, Boolean bool) {
+        if(powers_active.containsKey(p)){
+            if(powers_active.get(p).containsKey(tag)){
+                powers_active.get(p).replace(tag, bool);
+            }else{
+                powers_active.get(p).put(tag, bool);
+            }
+        }else{
+            powers_active.put(p, new HashMap());
+            setActive(p, tag, bool);
         }
     }
 

@@ -18,11 +18,16 @@ public class WalkOnFluid extends CraftPower {
     HashMap<Player, Location> loc = new HashMap<>();
 
     @Override
-    public void setActive(String tag, Boolean bool) {
-        if (powers_active.containsKey(tag)) {
-            powers_active.replace(tag, bool);
-        } else {
-            powers_active.put(tag, bool);
+    public void setActive(Player p, String tag, Boolean bool) {
+        if(powers_active.containsKey(p)){
+            if(powers_active.get(p).containsKey(tag)){
+                powers_active.get(p).replace(tag, bool);
+            }else{
+                powers_active.get(p).put(tag, bool);
+            }
+        }else{
+            powers_active.put(p, new HashMap());
+            setActive(p, tag, bool);
         }
     }
 
@@ -33,7 +38,7 @@ public class WalkOnFluid extends CraftPower {
                 ConditionExecutor executor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                 for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
                     if (executor.check("condition", "conditions", p, power, getPowerFile(), p, null, null, null, p.getItemInHand(), null)) {
-                        setActive(power.getTag(), true);
+                        setActive(p, power.getTag(), true);
                         if (!p.getLocation().add(0, -1, 0).getBlock().isSolid()) {
                             if (p.getLocation().add(0, -1, 0).getBlock().getType() == Material.WATER || p.getLocation().add(0, -1, 0).getBlock().getType() == Material.LAVA) {
                                 if (p.getLocation().add(0, -1, 0).getBlock().getType().equals(Material.valueOf(power.get("fluid").toUpperCase().split(":")[1]))) {
@@ -59,7 +64,7 @@ public class WalkOnFluid extends CraftPower {
                             }
                         }
                     } else {
-                        setActive(power.getTag(), false);
+                        setActive(p, power.getTag(), false);
                     }
                 }
             }

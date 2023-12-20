@@ -7,6 +7,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class ActionOnItemUse extends CraftPower implements Listener {
 
@@ -29,7 +30,7 @@ public class ActionOnItemUse extends CraftPower implements Listener {
 //            if (e.getItem() == null) return;
 //            if (e.getClickedBlock() == null) return;
 //            if (!getPowerArray().contains(e.getPlayer())) return;
-//            setActive(power.getTag(), true);
+//            setActive(p, power.getTag(), true);
 //            ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
 //            if(conditionExecutor.check("item_condition", "item_conditions", actor, origin, getPowerFile(), actor, null, actor.getLocation().getBlock(), null, actor.getInventory().getItemInHand(), null)){
 //                if(conditionExecutor.check("condition", "conditions", actor, origin, getPowerFile(), actor, null, actor.getLocation().getBlock(), null, actor.getInventory().getItemInHand(), null)){
@@ -40,7 +41,7 @@ public class ActionOnItemUse extends CraftPower implements Listener {
 //                            @Override
 //                            public void run() {
 //                                if (!getPowerArray().contains(e.getPlayer())) return;
-//                                setActive(power.getTag(), false);
+//                                setActive(p, power.getTag(), false);
 //                            }
 //                        }.runTaskLater(GenesisMC.getPlugin(), 2L);
 //                    }
@@ -65,11 +66,16 @@ public class ActionOnItemUse extends CraftPower implements Listener {
     }
 
     @Override
-    public void setActive(String tag, Boolean bool) {
-        if (powers_active.containsKey(tag)) {
-            powers_active.replace(tag, bool);
-        } else {
-            powers_active.put(tag, bool);
+    public void setActive(Player p, String tag, Boolean bool) {
+        if(powers_active.containsKey(p)){
+            if(powers_active.get(p).containsKey(tag)){
+                powers_active.get(p).replace(tag, bool);
+            }else{
+                powers_active.get(p).put(tag, bool);
+            }
+        }else{
+            powers_active.put(p, new HashMap());
+            setActive(p, tag, bool);
         }
     }
 }

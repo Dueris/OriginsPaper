@@ -18,17 +18,23 @@ import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.ShapelessRecipe;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import static me.dueris.genesismc.factory.powers.value_modifying.ValueModifyingSuperClass.modify_crafting;
 
 public class ModifyCraftingPower extends CraftPower implements Listener {
 
     @Override
-    public void setActive(String tag, Boolean bool) {
-        if (powers_active.containsKey(tag)) {
-            powers_active.replace(tag, bool);
-        } else {
-            powers_active.put(tag, bool);
+    public void setActive(Player p, String tag, Boolean bool) {
+        if(powers_active.containsKey(p)){
+            if(powers_active.get(p).containsKey(tag)){
+                powers_active.get(p).replace(tag, bool);
+            }else{
+                powers_active.get(p).put(tag, bool);
+            }
+        }else{
+            powers_active.put(p, new HashMap());
+            setActive(p, tag, bool);
         }
     }
 
@@ -52,13 +58,13 @@ public class ModifyCraftingPower extends CraftPower implements Listener {
                             if (conditionExecutor.check("item_condition", "item_condition", p, power, "origins:modify_crafting", p, null, p.getLocation().getBlock(), null, e.getInventory().getResult(), null)) {
                                 if (e.getInventory().getResult().getType() == Material.valueOf(power.get("recipe", null).split(":")[1].toUpperCase())) {
                                     e.getInventory().setResult(new ItemStack(Material.valueOf(power.getJsonHashMap("result").get("item").toString().toUpperCase().split(":")[1])));
-                                    setActive(power.getTag(), true);
+                                    setActive(p, power.getTag(), true);
                                 }
                             } else {
-                                setActive(power.getTag(), false);
+                                setActive(p, power.getTag(), false);
                             }
                         } else {
-                            setActive(power.getTag(), false);
+                            setActive(p, power.getTag(), false);
                         }
                     }
                 } catch (Exception ev) {

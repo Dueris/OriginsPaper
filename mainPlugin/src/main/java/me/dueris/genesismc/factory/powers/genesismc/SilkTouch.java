@@ -20,6 +20,7 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.EnumSet;
+import java.util.HashMap;
 
 public class SilkTouch extends CraftPower implements Listener {
 
@@ -30,11 +31,16 @@ public class SilkTouch extends CraftPower implements Listener {
     }
 
     @Override
-    public void setActive(String tag, Boolean bool) {
-        if (powers_active.containsKey(tag)) {
-            powers_active.replace(tag, bool);
-        } else {
-            powers_active.put(tag, bool);
+    public void setActive(Player p, String tag, Boolean bool) {
+        if(powers_active.containsKey(p)){
+            if(powers_active.get(p).containsKey(tag)){
+                powers_active.get(p).replace(tag, bool);
+            }else{
+                powers_active.get(p).put(tag, bool);
+            }
+        }else{
+            powers_active.put(p, new HashMap());
+            setActive(p, tag, bool);
         }
     }
 
@@ -52,7 +58,7 @@ public class SilkTouch extends CraftPower implements Listener {
                                 return;
                             }
                             if (!getPowerArray().contains(p)) return;
-                            setActive(power.getTag(), true);
+                            setActive(p, power.getTag(), true);
                             if (p.getGameMode().equals(GameMode.SURVIVAL) && p.getEquipment().getItemInMainHand().getType().equals(Material.AIR)) {
                                 if (!e.getBlock().getType().isItem()) {
                                     return;
@@ -89,7 +95,7 @@ public class SilkTouch extends CraftPower implements Listener {
                                 return;
                             }
                             if (!getPowerArray().contains(p)) return;
-                            setActive(power.getTag(), false);
+                            setActive(p, power.getTag(), false);
                         }
                     }
                 }

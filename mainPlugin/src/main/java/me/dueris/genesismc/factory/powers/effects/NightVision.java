@@ -17,11 +17,16 @@ import java.util.Set;
 public class NightVision extends CraftPower {
 
     @Override
-    public void setActive(String tag, Boolean bool) {
-        if (powers_active.containsKey(tag)) {
-            powers_active.replace(tag, bool);
-        } else {
-            powers_active.put(tag, bool);
+    public void setActive(Player p, String tag, Boolean bool) {
+        if(powers_active.containsKey(p)){
+            if(powers_active.get(p).containsKey(tag)){
+                powers_active.get(p).replace(tag, bool);
+            }else{
+                powers_active.get(p).put(tag, bool);
+            }
+        }else{
+            powers_active.put(p, new HashMap());
+            setActive(p, tag, bool);
         }
     }
 
@@ -44,7 +49,7 @@ public class NightVision extends CraftPower {
                                 return;
                             }
                             if (!getPowerArray().contains(p)) return;
-                            setActive(power.getTag(), true);
+                            setActive(p, power.getTag(), true);
                             Double strength = power.getStrength();
                             p.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, 400, roundNumber(power.getStrength()), false, false, false));
                         } else {
@@ -53,7 +58,7 @@ public class NightVision extends CraftPower {
                                 return;
                             }
                             if (!getPowerArray().contains(p)) return;
-                            setActive(power.getTag(), false);
+                            setActive(p, power.getTag(), false);
                         }
                     }
                 }

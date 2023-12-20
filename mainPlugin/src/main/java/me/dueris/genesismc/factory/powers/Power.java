@@ -7,7 +7,7 @@ import java.util.HashMap;
 
 public interface Power {
 
-    HashMap<String, Boolean> powers_active = new HashMap<>();
+    HashMap<Player, HashMap<String, Boolean>> powers_active = new HashMap<>();
     ArrayList<Player> game_event_listener = new ArrayList<>();
     ArrayList<Player> resource = new ArrayList<>();
     ArrayList<Player> fall_immunity = new ArrayList<>();
@@ -99,6 +99,6 @@ public interface Power {
 
     ArrayList<Player> getPowerArray();
 
-    void setActive(String tag, Boolean bool);
+    void setActive(Player p, String tag, Boolean bool);
 
 }

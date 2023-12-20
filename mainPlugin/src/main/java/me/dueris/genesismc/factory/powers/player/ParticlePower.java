@@ -10,15 +10,21 @@ import org.bukkit.Particle;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class ParticlePower extends CraftPower {
 
     @Override
-    public void setActive(String tag, Boolean bool) {
-        if (powers_active.containsKey(tag)) {
-            powers_active.replace(tag, bool);
-        } else {
-            powers_active.put(tag, bool);
+    public void setActive(Player p, String tag, Boolean bool) {
+        if(powers_active.containsKey(p)){
+            if(powers_active.get(p).containsKey(tag)){
+                powers_active.get(p).replace(tag, bool);
+            }else{
+                powers_active.get(p).put(tag, bool);
+            }
+        }else{
+            powers_active.put(p, new HashMap());
+            setActive(p, tag, bool);
         }
     }
 
@@ -34,7 +40,7 @@ public class ParticlePower extends CraftPower {
                         ConditionExecutor executor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                         if (executor.check("condition", "conditions", player, power, getPowerFile(), player, null, null, null, player.getInventory().getItemInHand(), null)) {
                             if (!getPowerArray().contains(player)) return;
-                            setActive(power.getTag(), true);
+                            setActive(player, power.getTag(), true);
                             Particle particle = Particle.valueOf(power.get("particle", null).split(":")[1].toUpperCase());
                             int count = Integer.parseInt(power.get("count", "1"));
                             float offset_y_no_vector = Float.parseFloat(String.valueOf(power.get("offset_y", "1.0")));
@@ -63,7 +69,7 @@ public class ParticlePower extends CraftPower {
                             }
                         } else {
                             if (!getPowerArray().contains(player)) return;
-                            setActive(power.getTag(), false);
+                            setActive(player, power.getTag(), false);
                         }
                     }
                 }

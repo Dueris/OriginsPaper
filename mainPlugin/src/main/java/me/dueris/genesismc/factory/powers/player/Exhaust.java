@@ -10,6 +10,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Exhaust extends CraftPower {
 
@@ -17,11 +18,16 @@ public class Exhaust extends CraftPower {
     private int ticksE;
 
     @Override
-    public void setActive(String tag, Boolean bool) {
-        if (powers_active.containsKey(tag)) {
-            powers_active.replace(tag, bool);
-        } else {
-            powers_active.put(tag, bool);
+    public void setActive(Player p, String tag, Boolean bool) {
+        if(powers_active.containsKey(p)){
+            if(powers_active.get(p).containsKey(tag)){
+                powers_active.get(p).replace(tag, bool);
+            }else{
+                powers_active.get(p).put(tag, bool);
+            }
+        }else{
+            powers_active.put(p, new HashMap());
+            setActive(p, tag, bool);
         }
     }
 
@@ -52,7 +58,7 @@ public class Exhaust extends CraftPower {
                                 return;
                             }
                             if (!getPowerArray().contains(p)) return;
-                            setActive(power.getTag(), true);
+                            setActive(p, power.getTag(), true);
                             p.setExhaustion(p.getExhaustion() - Float.parseFloat(power.get("exhaustion", "1")));
                         } else {
                             if (power == null) {
@@ -60,7 +66,7 @@ public class Exhaust extends CraftPower {
                                 return;
                             }
                             if (!getPowerArray().contains(p)) return;
-                            setActive(power.getTag(), false);
+                            setActive(p, power.getTag(), false);
                         }
                         ticksE = 0;
                     }

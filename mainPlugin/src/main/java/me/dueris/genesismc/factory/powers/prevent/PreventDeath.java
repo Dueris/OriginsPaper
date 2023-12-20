@@ -11,17 +11,23 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import static me.dueris.genesismc.factory.powers.prevent.PreventSuperClass.prevent_death;
 
 public class PreventDeath extends CraftPower implements Listener {
 
     @Override
-    public void setActive(String tag, Boolean bool) {
-        if (powers_active.containsKey(tag)) {
-            powers_active.replace(tag, bool);
-        } else {
-            powers_active.put(tag, bool);
+    public void setActive(Player p, String tag, Boolean bool) {
+        if(powers_active.containsKey(p)){
+            if(powers_active.get(p).containsKey(tag)){
+                powers_active.get(p).replace(tag, bool);
+            }else{
+                powers_active.get(p).put(tag, bool);
+            }
+        }else{
+            powers_active.put(p, new HashMap());
+            setActive(p, tag, bool);
         }
     }
 
@@ -35,10 +41,10 @@ public class PreventDeath extends CraftPower implements Listener {
                     if (conditionExecutor.check("damage_condition", "damage_conditions", e.getPlayer(), power, "origins:prevent_death", e.getPlayer(), null, null, null, e.getPlayer().getItemInHand(), e.getPlayer().getLastDamageCause())) {
                         e.setCancelled(true);
                         if (!getPowerArray().contains(e.getPlayer())) return;
-                        setActive(power.getTag(), true);
+                        setActive(e.getPlayer(), power.getTag(), true);
                     } else {
                         if (!getPowerArray().contains(e.getPlayer())) return;
-                        setActive(power.getTag(), false);
+                        setActive(e.getPlayer(), power.getTag(), false);
                     }
                 }
             }

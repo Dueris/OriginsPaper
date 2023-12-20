@@ -22,11 +22,16 @@ import static me.dueris.genesismc.factory.powers.value_modifying.ValueModifyingS
 public class ModifyStatusEffectDurationPower extends CraftPower implements Listener {
 
     @Override
-    public void setActive(String tag, Boolean bool) {
-        if (powers_active.containsKey(tag)) {
-            powers_active.replace(tag, bool);
-        } else {
-            powers_active.put(tag, bool);
+    public void setActive(Player p, String tag, Boolean bool) {
+        if(powers_active.containsKey(p)){
+            if(powers_active.get(p).containsKey(tag)){
+                powers_active.get(p).replace(tag, bool);
+            }else{
+                powers_active.get(p).put(tag, bool);
+            }
+        }else{
+            powers_active.put(p, new HashMap());
+            setActive(p, tag, bool);
         }
     }
 
@@ -39,7 +44,7 @@ public class ModifyStatusEffectDurationPower extends CraftPower implements Liste
                 ConditionExecutor executor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                 for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
                     if (executor.check("condition", "conditions", p, power, getPowerFile(), p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
-                        setActive(power.getTag(), true);
+                        setActive(p, power.getTag(), true);
                         if (power.get("status_effect", null) != null) {
                             if (e.getNewEffect().getType().equals(PotionEffectType.getByName(power.get("status_effect", null)))) {
                                 PotionEffect effect = e.getNewEffect();
@@ -68,7 +73,7 @@ public class ModifyStatusEffectDurationPower extends CraftPower implements Liste
                             }
                         }
                     } else {
-                        setActive(power.getTag(), false);
+                        setActive(p, power.getTag(), false);
                     }
                 }
 

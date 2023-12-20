@@ -14,6 +14,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class ActionOnBlockUse extends CraftPower implements Listener {
 
@@ -38,7 +39,7 @@ public class ActionOnBlockUse extends CraftPower implements Listener {
                     if (conditionExecutor.check("entity_condition", "entity_conditions", actor, power, getPowerFile(), actor, null, e.getClickedBlock(), null, e.getItem(), null)) {
                         if (conditionExecutor.check("block_condition", "block_conditions", actor, power, getPowerFile(), actor, null, e.getClickedBlock(), null, e.getItem(), null)) {
                             if (!getPowerArray().contains(e.getPlayer())) return;
-                            setActive(power.getTag(), true);
+                            setActive(e.getPlayer(), power.getTag(), true);
                             Actions.BlockActionType(e.getClickedBlock().getLocation(), power.getBlockAction());
                             Actions.EntityActionType(e.getPlayer(), power.getEntityAction());
                             Actions.ItemActionType(e.getPlayer().getActiveItem(), power.getItemAction());
@@ -48,7 +49,7 @@ public class ActionOnBlockUse extends CraftPower implements Listener {
                                 @Override
                                 public void run() {
                                     if (!getPowerArray().contains(e.getPlayer())) return;
-                                    setActive(power.getTag(), false);
+                                    setActive(e.getPlayer(), power.getTag(), false);
                                 }
                             }.runTaskLater(GenesisMC.getPlugin(), 2L);
                         }
@@ -69,11 +70,16 @@ public class ActionOnBlockUse extends CraftPower implements Listener {
     }
 
     @Override
-    public void setActive(String tag, Boolean bool) {
-        if (powers_active.containsKey(tag)) {
-            powers_active.replace(tag, bool);
-        } else {
-            powers_active.put(tag, bool);
+    public void setActive(Player p, String tag, Boolean bool) {
+        if(powers_active.containsKey(p)){
+            if(powers_active.get(p).containsKey(tag)){
+                powers_active.get(p).replace(tag, bool);
+            }else{
+                powers_active.get(p).put(tag, bool);
+            }
+        }else{
+            powers_active.put(p, new HashMap());
+            setActive(p, tag, bool);
         }
     }
 }

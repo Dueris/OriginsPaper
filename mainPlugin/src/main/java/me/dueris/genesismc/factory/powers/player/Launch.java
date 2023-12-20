@@ -23,17 +23,23 @@ import org.bukkit.util.Vector;
 import static me.dueris.genesismc.utils.KeybindUtils.isKeyBeingPressed;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Launch extends CraftPower implements Listener {
 
     public static ArrayList<Player> in_continuous = new ArrayList<>();
 
     @Override
-    public void setActive(String tag, Boolean bool) {
-        if (powers_active.containsKey(tag)) {
-            powers_active.replace(tag, bool);
-        } else {
-            powers_active.put(tag, bool);
+    public void setActive(Player p, String tag, Boolean bool) {
+        if(powers_active.containsKey(p)){
+            if(powers_active.get(p).containsKey(tag)){
+                powers_active.get(p).replace(tag, bool);
+            }else{
+                powers_active.get(p).put(tag, bool);
+            }
+        }else{
+            powers_active.put(p, new HashMap());
+            setActive(p, tag, bool);
         }
     }
 
@@ -66,7 +72,7 @@ public class Launch extends CraftPower implements Listener {
                                                             met.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "contin"), PersistentDataType.BOOLEAN, false);
                                                             KeybindUtils.getKeybindItem(key, p.getInventory()).setItemMeta(met);
                                                             thing[0] = true;
-                                                            setActive(power.getTag(), false);
+                                                            setActive(p, power.getTag(), false);
                                                             this.cancel();
                                                         } else {
                                                             //yes continuouous
@@ -80,7 +86,7 @@ public class Launch extends CraftPower implements Listener {
                                                     //dont change any other settings in this other than the powertype and the "retain_state"
                                                     int speed = Integer.parseInt(power.get("speed", null));
                                                     CooldownManager.addCooldown(p, origin, power.getTag(), power.getType(), cooldown, key);
-                                                    setActive(power.getTag(), true);
+                                                    setActive(p, power.getTag(), true);
                                                     p.setVelocity(new Vector(p.getVelocity().getX(), speed, p.getVelocity().getZ()));
                                                     p.spawnParticle(Particle.CLOUD, p.getLocation(), 100);
                                                     this.cancel();
@@ -100,7 +106,7 @@ public class Launch extends CraftPower implements Listener {
                                                     return;
                                                 }
                                                 if (!getPowerArray().contains(p)) return;
-                                                setActive(power.getTag(), false);
+                                                setActive(p, power.getTag(), false);
                                                 KeybindUtils.getKeybindItem(key, p.getInventory()).setItemMeta(met);
                                                 in_continuous.add(p);
                                                 new BukkitRunnable() {
@@ -119,7 +125,7 @@ public class Launch extends CraftPower implements Listener {
                                                         return;
                                                     }
                                                     if (!getPowerArray().contains(p)) return;
-                                                    setActive(power.getTag(), false);
+                                                    setActive(p, power.getTag(), false);
                                                     KeybindUtils.getKeybindItem(key, p.getInventory()).setItemMeta(met);
                                                     if (in_continuous.contains(p)) {
                                                         KeybindUtils.runKeyChangeTriggerReturn(KeybindUtils.getKeybindItem(key, p.getInventory()), p, key);
@@ -130,7 +136,7 @@ public class Launch extends CraftPower implements Listener {
                                                             return;
                                                         }
                                                         if (!getPowerArray().contains(p)) return;
-                                                        setActive(power.getTag(), false);
+                                                        setActive(p, power.getTag(), false);
                                                         KeybindUtils.getKeybindItem(key, p.getInventory()).setItemMeta(met);
                                                         in_continuous.remove(p);
                                                         this.cancel();
@@ -143,7 +149,7 @@ public class Launch extends CraftPower implements Listener {
                                                             return;
                                                         }
                                                         if (!getPowerArray().contains(p)) return;
-                                                        setActive(power.getTag(), true);
+                                                        setActive(p, power.getTag(), true);
                                                         KeybindUtils.getKeybindItem(key, p.getInventory()).setItemMeta(met);
                                                         in_continuous.add(p);
                                                     }

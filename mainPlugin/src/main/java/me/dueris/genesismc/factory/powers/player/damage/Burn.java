@@ -22,11 +22,16 @@ public class Burn extends CraftPower {
     }
 
     @Override
-    public void setActive(String tag, Boolean bool) {
-        if (powers_active.containsKey(tag)) {
-            powers_active.replace(tag, bool);
-        } else {
-            powers_active.put(tag, bool);
+    public void setActive(Player p, String tag, Boolean bool) {
+        if(powers_active.containsKey(p)){
+            if(powers_active.get(p).containsKey(tag)){
+                powers_active.get(p).replace(tag, bool);
+            }else{
+                powers_active.get(p).put(tag, bool);
+            }
+        }else{
+            powers_active.put(p, new HashMap());
+            setActive(p, tag, bool);
         }
     }
 
@@ -53,13 +58,13 @@ public class Burn extends CraftPower {
                         if (p.getGameMode() == GameMode.CREATIVE) return;
                         ConditionExecutor executor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                         if (executor.check("condition", "conditions", p, power, getPowerFile(), p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
-                            setActive(power.getTag(), true);
+                            setActive(p, power.getTag(), true);
                             System.out.println(424363463);
 
                             Long burn_duration = power.getBurnDuration();
                             p.setFireTicks(burn_duration.intValue() * 20);
                         } else {
-                            setActive(power.getTag(), false);
+                            setActive(p, power.getTag(), false);
                         }
 
                         ticksEMap.put(p, 0);

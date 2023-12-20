@@ -34,11 +34,16 @@ public class ModifyBreakSpeedPower extends CraftPower implements Listener {
     public static ArrayList<Player> shouldDrop = new ArrayList<>();
 
     @Override
-    public void setActive(String tag, Boolean bool) {
-        if (powers_active.containsKey(tag)) {
-            powers_active.replace(tag, bool);
-        } else {
-            powers_active.put(tag, bool);
+    public void setActive(Player p, String tag, Boolean bool) {
+        if(powers_active.containsKey(p)){
+            if(powers_active.get(p).containsKey(tag)){
+                powers_active.get(p).replace(tag, bool);
+            }else{
+                powers_active.get(p).put(tag, bool);
+            }
+        }else{
+            powers_active.put(p, new HashMap());
+            setActive(p, tag, bool);
         }
     }
 
@@ -76,7 +81,7 @@ public class ModifyBreakSpeedPower extends CraftPower implements Listener {
                     for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
                         if (conditionExecutor.check("condition", "condition", p, power, getPowerFile(), p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
                             if (conditionExecutor.check("block_condition", "block_condition", p, power, getPowerFile(), p, null, p.getTargetBlockExact(Math.toIntExact(Math.round(AttributeHandler.Reach.getFinalReach(p)))), null, p.getItemInHand(), null)) {
-                                setActive(power.getTag(), true);
+                                setActive(p, power.getTag(), true);
                                 // if(power.getPossibleModifiers("modifier", "modifiers"))
                                 for(HashMap<String, Object> modifier : power.getPossibleModifiers("modifier", "modifiers")){
                                     if(Float.valueOf(modifier.get("value").toString()) <= 0){
@@ -109,10 +114,10 @@ public class ModifyBreakSpeedPower extends CraftPower implements Listener {
                                     }.runTaskLater(GenesisMC.getPlugin(), 40);
                                 }
                             } else {
-                                setActive(power.getTag(), false);
+                                setActive(p, power.getTag(), false);
                             }
                         } else {
-                            setActive(power.getTag(), false);
+                            setActive(p, power.getTag(), false);
                         }
                     }
                 } catch (Exception ev) {
