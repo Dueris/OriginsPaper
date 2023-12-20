@@ -11,6 +11,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.block.Block;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -102,7 +103,15 @@ public class WaterBreathe extends CraftPower {
             if (outofAIR.contains(p)) {
                 int remainingAir = p.getRemainingAir();
                 if (remainingAir <= 5) {
-                    p.damage(2);
+                    int finalDmg = 2;
+                    if(p.getInventory().getHelmet() != null){
+                        if(p.getInventory().getHelmet().getType() == Material.TURTLE_HELMET){
+                            finalDmg = 1;
+                        } else if(p.getInventory().getHelmet().containsEnchantment(Enchantment.OXYGEN)){
+                            finalDmg = 1;
+                        }
+                    }
+                    p.damage(finalDmg);
                 }
             }
         }
