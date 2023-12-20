@@ -5,12 +5,17 @@ import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.OriginContainer;
 import me.dueris.genesismc.utils.PowerContainer;
+import me.dueris.genesismc.utils.Utils;
 import me.dueris.genesismc.utils.translation.LangConfig;
 import net.minecraft.commands.arguments.ResourceArgument;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.commands.DamageCommand;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageSources;
+import net.minecraft.world.damagesource.DamageType;
 
 import org.bukkit.*;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftPlayer;
@@ -168,7 +173,23 @@ public class DamageOverTime extends CraftPower implements Listener{
                                 float basedamage = damage - helemt_modifier - chestplate_modifier - leggins_modifier - boots_modifier;
 
                                 if (p.getHealth() >= basedamage && p.getHealth() != 0 && p.getHealth() - basedamage != 0) {
-                                    p.damage(basedamage);
+                                    String namespace;
+                                    String key;
+                                    if(power.get("damage_type") != null){
+                                        if(power.get("damage_type").contains(":")){
+                                            namespace = power.get("damage_type").split(":")[0];
+                                            key = power.get("damage_type").split(":")[1];
+                                        }else{
+                                            namespace = "minecraft";
+                                            key = power.get("damage_type");
+                                        }
+                                    }else{
+                                        namespace = "minecraft";
+                                        key = "generic";
+                                    }
+                                    DamageType dmgType = Utils.DAMAGE_REGISTRY.get(new ResourceLocation(namespace, key));
+                                    ServerPlayer serverPlayer = ((CraftPlayer) p).getHandle();
+                                    serverPlayer.hurt(Utils.getDamageSource(dmgType), basedamage);
 
                                     Random random = new Random();
 
