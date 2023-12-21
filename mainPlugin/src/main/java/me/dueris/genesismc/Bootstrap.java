@@ -61,8 +61,12 @@ public class Bootstrap implements PluginBootstrap {
         // hurt by water damage type
         EquipmentSlot[] slots = {EquipmentSlot.CHEST, EquipmentSlot.FEET, EquipmentSlot.HEAD, EquipmentSlot.LEGS};
         WaterProtectionNMSImpl waterProtection = new WaterProtectionNMSImpl(net.minecraft.world.item.enchantment.Enchantment.Rarity.COMMON, EnchantmentCategory.ARMOR, slots);
-        Utils.registerEnchantment("water_protection", waterProtection);
+        registerEnchantment("water_protection", waterProtection);
         Bootstrap.waterProtection = waterProtection;
+    }
+
+    public static Enchantment registerEnchantment(String name, Enchantment enchantment) {
+        return Registry.register(BuiltInRegistries.ENCHANTMENT, new ResourceLocation("origins", name), enchantment);
     }
 
     public static void deleteDirectory(Path directory, boolean ignoreErrors) throws IOException {

@@ -23,8 +23,6 @@ public class Utils {
     public MinecraftServer server = MinecraftServer.getServer();
     public CraftServer bukkitServer = server.server;
     public static Registry<DamageType> DAMAGE_REGISTRY = CraftRegistry.getMinecraftRegistry().registryOrThrow(Registries.DAMAGE_TYPE);
-    public static Registry<Biome> BIOME_REGISTRY = CraftRegistry.getMinecraftRegistry().registryOrThrow(Registries.BIOME);
-    public static Registry<Enchantment> ENCHANTMENT_REGISTRY = CraftRegistry.getMinecraftRegistry().registryOrThrow(Registries.ENCHANTMENT);
 
     public static DamageSource getDamageSource(DamageType type){
         DamageSource source = null;
@@ -39,10 +37,6 @@ public class Utils {
 
     public static Registry<?> getRegistry(ResourceKey<Registry<?>> registry){
         return CraftRegistry.getMinecraftRegistry().registryOrThrow(registry);
-    }
-
-    public static Enchantment registerEnchantment(String name, Enchantment enchantment) {
-        return Registry.register(BuiltInRegistries.ENCHANTMENT, new ResourceLocation("origins", name), enchantment);
     }
     
     // Math
