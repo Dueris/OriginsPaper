@@ -24,7 +24,6 @@ jobs:
         chmod +x ./gradlew
         ./gradlew build
         ./gradlew publish
-        ./gradlew createNonShadowedJar
       env:
         GIT_TOKEN: ${{ secrets.GIT_TOKEN }}
     - name: Notify Discord
