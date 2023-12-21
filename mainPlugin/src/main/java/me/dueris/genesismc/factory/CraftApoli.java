@@ -10,15 +10,21 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.storage.LevelResource;
+import oshi.hardware.VirtualMemory;
+
 import org.apache.commons.io.FilenameUtils;
 import org.bukkit.Bukkit;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
+import java.beans.JavaBean;
 import java.io.*;
 import java.nio.file.Path;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
@@ -195,6 +201,17 @@ public class CraftApoli {
         return GenesisMC.world_container;
     }
 
+    private static int dynamic_thread_count = 0;
+
+    public static int getDynamicThreadCount(){
+        return dynamic_thread_count;
+    }
+
+    public static void setupDynamicThreadCount(){
+        int avalibleJVMThreads = Runtime.getRuntime().availableProcessors() * 2;
+        dynamic_thread_count = avalibleJVMThreads < 4 ? avalibleJVMThreads : avalibleJVMThreads >= GenesisDataFiles.getMainConfig().getInt("max-loader-threads") ? GenesisDataFiles.getMainConfig().getInt("max-loader-threads") : avalibleJVMThreads;
+    }
+
     /**
      * Loads the custom origins from the datapack dir into memory.
      **/
@@ -204,134 +221,136 @@ public class CraftApoli {
         File[] datapacks = DatapackDir.listFiles();
         if (datapacks == null) return;
 
-        for (File datapack : datapacks){
-            if (FilenameUtils.getExtension(datapack.getName()).equals(".zip") || FilenameUtils.getExtension(datapack.getName()).equals("zip")) {
-                try {
-                    CraftApoli.unzip(datapack.getAbsolutePath(), DatapackDir.getAbsolutePath() + File.separator + datapack.getName().replace(".zip", "") + "unzipped");
-                    System.out.println(DatapackDir.getAbsolutePath());
-                    File dp = new File(DatapackDir.getAbsolutePath() + File.separator + datapack.getName().replace(".zip", "") + "unzipped");
-                    File dataDir = new File(dp.getAbsolutePath() + File.separator + "data");
-                    if (!dataDir.isDirectory()) continue;
-                    File origin_layer = null;
-                    unzippedFiles.add(dp);
-
-                } catch (Exception e) {
-                    //yeah imma fail this silently
-                }
-            } else {
-                if (datapack.isFile()) continue;
-            }
-        }
-
-        for (File datapack : datapacks) {
-            File dataDir = new File(datapack.getAbsolutePath() + File.separator + "data");
-            if (!dataDir.isDirectory()) continue;
-            File origin_layer = null;
-
-            //find layer file
-            for (File namespace : dataDir.listFiles()) {
-                if (!namespace.isDirectory()) continue;
-                String layerNamespace = namespace.getName();
-                File originLayers = new File(namespace.getAbsolutePath() + File.separator + "origin_layers");
-                if (!originLayers.isDirectory()) continue;
-                for (File originLayer : originLayers.listFiles()) {
-                    if (!FilenameUtils.getExtension(originLayer.getName()).equals("json")) continue;
-                    String layerName = FilenameUtils.getBaseName(originLayer.getName());
+        CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
+            for (File datapack : datapacks){
+                if (FilenameUtils.getExtension(datapack.getName()).equals(".zip") || FilenameUtils.getExtension(datapack.getName()).equals("zip")) {
                     try {
-                        LayerContainer layer = new LayerContainer(layerNamespace + ":" + layerName, fileToFileContainer((JSONObject) new JSONParser().parse(new FileReader(originLayer))));
-
-                        if (layer.getReplace() && layerExists(layer)) {
-                            //removes an origin layer if a layer with the same namespace has the replace key set to true
-                            CraftApoli.originLayers.removeIf(existingLayer -> layer.getTag().equals(existingLayer.getTag()));
-                            CraftApoli.originLayers.add(layer);
-                        } else if (layerExists(layer)) {
-                            //adds an origin to a layer if it already exists and the replace key is null or false
-                            LayerContainer existingLayer = CraftApoli.originLayers.get(CraftApoli.originLayers.indexOf(getLayerFromTag(layer.getTag())));
-                            existingLayer.addOrigin(layer.getOrigins());
-                            CraftApoli.originLayers.set(CraftApoli.originLayers.indexOf(getLayerFromTag(layer.getTag())), existingLayer);
-                        } else {
-                            CraftApoli.originLayers.add(layer);
-                        }
-
-                        origin_layer = new File(datapack.getName() + File.separator + "data" + File.separator + namespace.getName() + File.separator + "origin_layers" + File.separator + layerName + ".json");
+                        CraftApoli.unzip(datapack.getAbsolutePath(), DatapackDir.getAbsolutePath() + File.separator + datapack.getName().replace(".zip", "") + "unzipped");
+                        File dp = new File(DatapackDir.getAbsolutePath() + File.separator + datapack.getName().replace(".zip", "") + "unzipped");
+                        File dataDir = new File(dp.getAbsolutePath() + File.separator + "data");
+                        if (!dataDir.isDirectory()) continue;
+                        File origin_layer = null;
+                        unzippedFiles.add(dp);
+    
                     } catch (Exception e) {
-                        if (showErrors) {
-                            Bukkit.getServer().getConsoleSender().sendMessage(Component.text(LangConfig.getLocalizedString(Bukkit.getConsoleSender(), "errors.craftApoli.layerParsing").replace("%datapack%", datapack.getName()).replace("%sep%", File.separator).replace("%namespace%", namespace.getName()).replace("%layerName%", layerName)).color(TextColor.color(255, 0, 0)));
-                        }
+                        //yeah imma fail this silently
                     }
+                } else {
+                    if (datapack.isFile()) continue;
                 }
             }
-
-            if (origin_layer == null) continue;
-
-            //sets up arrays for origins in the datapack
-            ArrayList<String> originFolder = new ArrayList<>();
-            ArrayList<String> originFileName = new ArrayList<>();
-
-            try {
-                JSONObject originLayerParser = (JSONObject) new JSONParser().parse(new FileReader(Bukkit.getServer().getPluginManager().getPlugin("GenesisMC").getDataFolder() + File.separator + ".." + File.separator + ".." + File.separator + Bukkit.getServer().getWorlds().get(0).getName() + File.separator + "datapacks" + File.separator + origin_layer.getPath()));
-                JSONArray originLayer_origins = ((JSONArray) originLayerParser.get("origins"));
-
-                //gets every origin from the layer
-                for (Object o : originLayer_origins) {
-                    String value = (String) o;
-                    String[] valueSplit = value.split(":");
-                    originFolder.add(valueSplit[0]);
-                    originFileName.add(valueSplit[1]);
-                }
-
-                //gets the powers for every origin
-                while (originFolder.size() > 0) {
-
-                    try {
-                        JSONObject originParser = (JSONObject) new JSONParser().parse(new FileReader(datapack.getAbsolutePath() + File.separator + "data" + File.separator + originFolder.get(0) + File.separator + "origins" + File.separator + originFileName.get(0) + ".json"));
-                        ArrayList<String> powersList = (ArrayList<String>) originParser.get("powers");
-
-                        ArrayList<PowerContainer> powerContainers = new ArrayList<>();
-
-                        if (powersList != null) {
-                            for (String string : powersList) {
-                                String[] powerLocation = string.split(":");
-                                String powerFolder = powerLocation[0];
-                                String powerFileName = powerLocation[1];
-
-                                try {
-                                    JSONObject powerParser = (JSONObject) new JSONParser().parse(new FileReader(datapack.getAbsolutePath() + File.separator + "data" + File.separator + powerFolder + File.separator + "powers" + File.separator + powerFileName + ".json"));
-                                    if (powerParser.containsKey("type") && "origins:multiple".equals(powerParser.get("type"))) {
-                                        PowerContainer powerContainer = new PowerContainer(powerFolder + ":" + powerFileName, fileToFileContainer(powerParser), originFolder.get(0) + ":" + originFileName.get(0));
-                                        powerContainers.add(powerContainer);
-                                        processNestedPowers(powerContainer, powerContainers, powerFolder, powerFileName);
-                                    } else {
-                                        powerContainers.add(new PowerContainer(powerFolder + ":" + powerFileName, fileToFileContainer(powerParser), originFolder.get(0) + ":" + originFileName.get(0)));
-                                    }
-                                } catch (FileNotFoundException fileNotFoundException) {
-                                    if (showErrors)
-                                        Bukkit.getServer().getConsoleSender().sendMessage(Component.text(LangConfig.getLocalizedString(Bukkit.getConsoleSender(), "errors.craftApoli.powerParsing").replace("%powerFolder", powerFolder).replace("%powerFileName", powerFileName).replace("%originFolder%", originFolder.get(0)).replace("%originFileName%", originFileName.get(0))).color(TextColor.color(255, 0, 0)));
+        }).thenRun(() -> {
+            for (File datapack : datapacks) {
+                GenesisMC.loaderThreadPool.submit(() -> {
+                    File dataDir = new File(datapack.getAbsolutePath() + File.separator + "data");
+                    if (!dataDir.isDirectory()) return;
+                    File origin_layer = null;
+        
+                    //find layer file
+                    for (File namespace : dataDir.listFiles()) {
+                        if (!namespace.isDirectory()) continue;
+                        String layerNamespace = namespace.getName();
+                        File originLayers = new File(namespace.getAbsolutePath() + File.separator + "origin_layers");
+                        if (!originLayers.isDirectory()) continue;
+                        for (File originLayer : originLayers.listFiles()) {
+                            if (!FilenameUtils.getExtension(originLayer.getName()).equals("json")) continue;
+                            String layerName = FilenameUtils.getBaseName(originLayer.getName());
+                            try {
+                                LayerContainer layer = new LayerContainer(layerNamespace + ":" + layerName, fileToFileContainer((JSONObject) new JSONParser().parse(new FileReader(originLayer))));
+        
+                                if (layer.getReplace() && layerExists(layer)) {
+                                    //removes an origin layer if a layer with the same namespace has the replace key set to true
+                                    CraftApoli.originLayers.removeIf(existingLayer -> layer.getTag().equals(existingLayer.getTag()));
+                                    CraftApoli.originLayers.add(layer);
+                                } else if (layerExists(layer)) {
+                                    //adds an origin to a layer if it already exists and the replace key is null or false
+                                    LayerContainer existingLayer = CraftApoli.originLayers.get(CraftApoli.originLayers.indexOf(getLayerFromTag(layer.getTag())));
+                                    existingLayer.addOrigin(layer.getOrigins());
+                                    CraftApoli.originLayers.set(CraftApoli.originLayers.indexOf(getLayerFromTag(layer.getTag())), existingLayer);
+                                } else {
+                                    CraftApoli.originLayers.add(layer);
+                                }
+        
+                                origin_layer = new File(datapack.getName() + File.separator + "data" + File.separator + namespace.getName() + File.separator + "origin_layers" + File.separator + layerName + ".json");
+                            } catch (Exception e) {
+                                if (showErrors) {
+                                    System.err.println("[GenesisMC] Error parsing \"%datapack%%sep%data%sep%%namespace%%sep%origin_layers%sep%%layerName%.json\"".replace("%datapack%", datapack.getName()).replace("%sep%", File.separator).replace("%namespace%", namespace.getName()).replace("%layerName%", layerName));
                                 }
                             }
                         }
-                        OriginContainer origin = new OriginContainer(originFolder.get(0) + ":" + originFileName.get(0), fileToFileContainer(originLayerParser), fileToHashMap(originParser), powerContainers);
-                        originContainers.add(origin);
-                        OriginLoadEvent originLoadEvent = new OriginLoadEvent(origin, origin.getPowerContainers(), datapack);
-                        Bukkit.getServer().getPluginManager().callEvent(originLoadEvent);
-
-                    } catch (FileNotFoundException fileNotFoundException) {
-                        if (showErrors)
-                            //Bukkit.getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] Error parsing \"" + datapack.getName() + File.separator + "data" + File.separator + originFolder.get(0) + File.separator + "origins" + File.separator + originFileName.get(0) + ".json" + "\"").color(TextColor.color(255, 0, 0)));
-                            Bukkit.getServer().getConsoleSender().sendMessage(Component.text(LangConfig.getLocalizedString(Bukkit.getConsoleSender(), "errors.craftApoli.originFile").replace("%datapack%", datapack.getName()).replace("%originFolder", originFolder.get(0)).replace("%sep%", File.separator).replace("%originFileName%", originFileName.get(0))).color(TextColor.color(255, 0, 0)));
                     }
-                    originFolder.remove(0);
-                    originFileName.remove(0);
-                }
-            } catch (Exception e) {
-                if (showErrors)
-                    e.printStackTrace();
-                //Bukkit.getServer().getConsoleSender().sendMessage("[GenesisMC] Failed to parse the \"/data/origins/origin_layers/origin.json\" file for " + datapack.getName() + ". Is it a valid origin file?");
+        
+                    if (origin_layer == null) return;
+        
+                    //sets up arrays for origins in the datapack
+                    ArrayList<String> originFolder = new ArrayList<>();
+                    ArrayList<String> originFileName = new ArrayList<>();
+        
+                    try {
+                        JSONObject originLayerParser = (JSONObject) new JSONParser().parse(new FileReader(datapackDir().getAbsolutePath() + File.separator + origin_layer.getPath()));
+                        JSONArray originLayer_origins = ((JSONArray) originLayerParser.get("origins"));
+        
+                        //gets every origin from the layer
+                        for (Object o : originLayer_origins) {
+                            String value = (String) o;
+                            String[] valueSplit = value.split(":");
+                            originFolder.add(valueSplit[0]);
+                            originFileName.add(valueSplit[1]);
+                        }
+        
+                        //gets the powers for every origin
+                        while (originFolder.size() > 0) {
+        
+                            try {
+                                JSONObject originParser = (JSONObject) new JSONParser().parse(new FileReader(datapack.getAbsolutePath() + File.separator + "data" + File.separator + originFolder.get(0) + File.separator + "origins" + File.separator + originFileName.get(0) + ".json"));
+                                ArrayList<String> powersList = (ArrayList<String>) originParser.get("powers");
+        
+                                ArrayList<PowerContainer> powerContainers = new ArrayList<>();
+        
+                                if (powersList != null) {
+                                    for (String string : powersList) {
+                                        String[] powerLocation = string.split(":");
+                                        String powerFolder = powerLocation[0];
+                                        String powerFileName = powerLocation[1];
+        
+                                        try {
+                                            JSONObject powerParser = (JSONObject) new JSONParser().parse(new FileReader(datapack.getAbsolutePath() + File.separator + "data" + File.separator + powerFolder + File.separator + "powers" + File.separator + powerFileName + ".json"));
+                                            if (powerParser.containsKey("type") && "origins:multiple".equals(powerParser.get("type"))) {
+                                                PowerContainer powerContainer = new PowerContainer(powerFolder + ":" + powerFileName, fileToFileContainer(powerParser), originFolder.get(0) + ":" + originFileName.get(0));
+                                                powerContainers.add(powerContainer);
+                                                processNestedPowers(powerContainer, powerContainers, powerFolder, powerFileName);
+                                            } else {
+                                                powerContainers.add(new PowerContainer(powerFolder + ":" + powerFileName, fileToFileContainer(powerParser), originFolder.get(0) + ":" + originFileName.get(0)));
+                                            }
+                                        } catch (FileNotFoundException fileNotFoundException) {
+                                            if (showErrors)
+                                                System.err.println("[GenesisMC] Error parsing \"%powerFolder%:%powerFileName%\" for \"%originFolder%:%originFileName%\"".replace("%powerFolder", powerFolder).replace("%powerFileName", powerFileName).replace("%originFolder%", originFolder.get(0)).replace("%originFileName%", originFileName.get(0)));
+                                        }
+                                    }
+                                }
+                                OriginContainer origin = new OriginContainer(originFolder.get(0) + ":" + originFileName.get(0), fileToFileContainer(originLayerParser), fileToHashMap(originParser), powerContainers);
+                                originContainers.add(origin);
+        
+                            } catch (FileNotFoundException fileNotFoundException) {
+                                if (showErrors)
+                                    //Bukkit.getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] Error parsing \"" + datapack.getName() + File.separator + "data" + File.separator + originFolder.get(0) + File.separator + "origins" + File.separator + originFileName.get(0) + ".json" + "\"").color(TextColor.color(255, 0, 0)));
+                                    System.err.println("[GenesisMC] Error parsing \"%datapack%%sep%data%sep%%originFolder%%sep%origins%sep%%originFileName%.json\"".replace("%datapack%", datapack.getName()).replace("%originFolder", originFolder.get(0)).replace("%sep%", File.separator).replace("%originFileName%", originFileName.get(0)));
+                            }
+                            originFolder.remove(0);
+                            originFileName.remove(0);
+                        }
+                    } catch (Exception e) {
+                        if (showErrors)
+                            e.printStackTrace();
+                        //Bukkit.getServer().getConsoleSender().sendMessage("[GenesisMC] Failed to parse the \"/data/origins/origin_layers/origin.json\" file for " + datapack.getName() + ". Is it a valid origin file?");
+                    }
+                });
             }
-        }
-        //if an origin is a core one checks if there are translations for the powers
-        translateOrigins();
-        TagRegistry.runParse();
+        }).thenRun(() -> {
+            //if an origin is a core one checks if there are translations for the powers
+            translateOrigins();
+            TagRegistry.runParse();
+        });
     }
 
 

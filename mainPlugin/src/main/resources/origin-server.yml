@@ -43,3 +43,6 @@ tickRate: 12000
 
 # Allow modify render power to be disabled. Disabled by default due to cpu intensity
 disable-render-power: true
+
+# Allows to set the max number of threads the power/origin loader will use. Default is 6
+max-loader-threads: 6

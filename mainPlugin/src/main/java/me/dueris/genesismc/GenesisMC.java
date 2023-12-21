@@ -79,6 +79,9 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.HashMap;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import static me.dueris.genesismc.PlayerHandler.ReapplyEntityReachPowers;
 import static me.dueris.genesismc.factory.powers.simple.BounceSlimeBlock.bouncePlayers;
@@ -119,6 +122,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
     public static boolean isCompatible = false;
     public static String pluginVersion = "v0.2.5";
     public static String world_container = MinecraftServer.getServer().options.asMap().toString().split(", \\[W, universe, world-container, world-dir]=\\[")[1].split("], ")[0];
+    public static ExecutorService loaderThreadPool;
 
     public static ArrayList<String> versions = new ArrayList<>();
     static {
@@ -187,6 +191,8 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         if(forceWatchdogStop){
             WatchdogThread.doStop();
         }
+        CraftApoli.setupDynamicThreadCount();
+        loaderThreadPool = Executors.newFixedThreadPool(CraftApoli.getDynamicThreadCount());
         debugOrigins = getOrDefault(GenesisDataFiles.getMainConfig().getBoolean("console-startup-debug") /* add arg compat in future version */, false);
         if(LangConfig.getLangFile() == null){
             Bukkit.getLogger().severe("Unable to start GenesisMC due to lang not being loaded properly");
@@ -269,6 +275,8 @@ public final class GenesisMC extends JavaPlugin implements Listener {
             Debug.executeGenesisDebug();
         }
         Bukkit.getLogger().info("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+        // Shutdown executor, we dont need it anymore
+        loaderThreadPool.shutdown();
     }
 
     protected static void patchPowers(){
