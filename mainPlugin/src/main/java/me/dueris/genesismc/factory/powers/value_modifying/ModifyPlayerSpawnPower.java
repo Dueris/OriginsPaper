@@ -20,6 +20,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.generator.structure.Structure;
 
+import com.google.gson.JsonSyntaxException;
 import com.mojang.logging.LogUtils;
 
 import java.util.ArrayList;
@@ -133,7 +134,7 @@ public class ModifyPlayerSpawnPower extends CraftPower implements Listener {
                     if(teleportLoc != null){
                         p.teleportAsync(teleportLoc);
                     }else{
-                        throw new RuntimeException("Unable to create suitable spawn for player({p})."
+                        throw new JsonSyntaxException("Unable to create suitable spawn for player({p})."
                             .replace("{p}", p.getName())
                         );
                     }

@@ -10,6 +10,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 
+import com.google.gson.JsonSyntaxException;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.function.BinaryOperator;
@@ -95,7 +97,7 @@ public class ModifyDamageDealtPower extends CraftPower implements Listener {
                 e.setDamage(newDamage);
             }
         } else {
-            throw new IllegalArgumentException("Unsupported number type: " + value.getClass());
+            throw new JsonSyntaxException("Unsupported number type: " + value.getClass());
         }
     }
 
