@@ -6,6 +6,7 @@ import io.papermc.paper.plugin.bootstrap.PluginBootstrap;
 import joptsimple.OptionSet;
 import me.dueris.genesismc.enchantments.WaterProtectionNMSImpl;
 import me.dueris.genesismc.utils.BukkitUtils;
+import me.dueris.genesismc.utils.Utils;
 import net.minecraft.core.MappedRegistry;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
@@ -60,12 +61,8 @@ public class Bootstrap implements PluginBootstrap {
         // hurt by water damage type
         EquipmentSlot[] slots = {EquipmentSlot.CHEST, EquipmentSlot.FEET, EquipmentSlot.HEAD, EquipmentSlot.LEGS};
         WaterProtectionNMSImpl waterProtection = new WaterProtectionNMSImpl(net.minecraft.world.item.enchantment.Enchantment.Rarity.COMMON, EnchantmentCategory.ARMOR, slots);
-        registerEnchantment("water_protection", waterProtection);
+        Utils.registerEnchantment("water_protection", waterProtection);
         Bootstrap.waterProtection = waterProtection;
-    }
-
-    private static Enchantment registerEnchantment(String name, Enchantment enchantment) {
-        return Registry.register(BuiltInRegistries.ENCHANTMENT, new ResourceLocation("origins", name), enchantment);
     }
 
     public static void deleteDirectory(Path directory, boolean ignoreErrors) throws IOException {

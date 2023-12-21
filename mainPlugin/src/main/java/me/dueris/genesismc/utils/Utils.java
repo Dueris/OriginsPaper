@@ -5,12 +5,15 @@ import org.bukkit.craftbukkit.v1_20_R3.CraftRegistry;
 import org.bukkit.craftbukkit.v1_20_R3.CraftServer;
 
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageSources;
 import net.minecraft.world.damagesource.DamageType;
+import net.minecraft.world.item.enchantment.Enchantment;
 
 public class Utils {
     public MinecraftServer server = MinecraftServer.getServer();
@@ -26,5 +29,9 @@ public class Utils {
             }
         }
         return source;
+    }
+
+    public static Enchantment registerEnchantment(String name, Enchantment enchantment) {
+        return Registry.register(BuiltInRegistries.ENCHANTMENT, new ResourceLocation("origins", name), enchantment);
     }
 }
