@@ -1,6 +1,6 @@
 package me.dueris.genesismc.factory.powers.value_modifying;
 
-import me.dueris.genesismc.entity.OriginPlayer;
+import me.dueris.genesismc.entity.OriginPlayerUtils;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.ErrorSystem;
@@ -43,7 +43,7 @@ public class ModifyExperienceGainPower extends CraftPower implements Listener {
     public void run(PlayerExpChangeEvent e) {
         Player p = e.getPlayer();
         if (modify_xp_gain.contains(p)) {
-            for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
+            for (OriginContainer origin : OriginPlayerUtils.getOrigin(p).values()) {
                 ValueModifyingSuperClass valueModifyingSuperClass = new ValueModifyingSuperClass();
                 try {
                     ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
@@ -71,7 +71,7 @@ public class ModifyExperienceGainPower extends CraftPower implements Listener {
                     }
                 } catch (Exception ev) {
                     ErrorSystem errorSystem = new ErrorSystem();
-                    errorSystem.throwError("idk what errrored lol", "origins:modify_xp_gain", p, origin, OriginPlayer.getLayer(p, origin));
+                    errorSystem.throwError("idk what errrored lol", "origins:modify_xp_gain", p, origin, OriginPlayerUtils.getLayer(p, origin));
                     ev.printStackTrace();
                 }
             }

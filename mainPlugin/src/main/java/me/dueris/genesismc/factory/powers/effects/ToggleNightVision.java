@@ -2,7 +2,7 @@ package me.dueris.genesismc.factory.powers.effects;
 
 import me.dueris.genesismc.CooldownManager;
 import me.dueris.genesismc.GenesisMC;
-import me.dueris.genesismc.entity.OriginPlayer;
+import me.dueris.genesismc.entity.OriginPlayerUtils;
 import me.dueris.genesismc.events.KeybindTriggerEvent;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
@@ -136,7 +136,7 @@ public class ToggleNightVision extends CraftPower implements Listener {
     public void keybindToggle(KeybindTriggerEvent e) {
         Player p = e.getPlayer();
         if (getPowerArray().contains(e.getPlayer())) {
-            for (OriginContainer origin : OriginPlayer.getOrigin(e.getPlayer()).values()) {
+            for (OriginContainer origin : OriginPlayerUtils.getOrigin(e.getPlayer()).values()) {
                 ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                 for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
                     if (conditionExecutor.check("condition", "conditions", p, power, getPowerFile(), p, null, null, null, p.getItemInHand(), null)) {

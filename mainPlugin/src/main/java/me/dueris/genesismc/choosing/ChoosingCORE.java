@@ -1,7 +1,7 @@
 package me.dueris.genesismc.choosing;
 
 import me.dueris.genesismc.GenesisMC;
-import me.dueris.genesismc.entity.OriginPlayer;
+import me.dueris.genesismc.entity.OriginPlayerUtils;
 import me.dueris.genesismc.events.OrbInteractEvent;
 import me.dueris.genesismc.events.OriginChangeEvent;
 import me.dueris.genesismc.events.OriginChooseEvent;
@@ -137,7 +137,7 @@ public class ChoosingCORE implements Listener {
                 if (e.getItem() != null) {
                     if (e.getItem().isSimilar(item)) {
                         for (LayerContainer layer : CraftApoli.getLayers()){
-                            OriginPlayer.setOrigin(p, layer, CraftApoli.nullOrigin());
+                            OriginPlayerUtils.setOrigin(p, layer, CraftApoli.nullOrigin());
                         }
                         OrbInteractEvent event = new OrbInteractEvent(p);
                         getServer().getPluginManager().callEvent(event);
@@ -170,7 +170,7 @@ public class ChoosingCORE implements Listener {
                 if (e.getCurrentItem().getType().equals(Material.BARRIER)) {
                     Player p = (Player) e.getWhoClicked();
                     p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 10, 2);
-                    if (OriginPlayer.hasOrigin(p, "genesis:origin-null"))
+                    if (OriginPlayerUtils.hasOrigin(p, "genesis:origin-null"))
                         p.kick(Component.text(LangConfig.getLocalizedString(p, "misc.requiredChoose")));
                     e.getWhoClicked().closeInventory();
                 } else {
@@ -197,7 +197,7 @@ public class ChoosingCORE implements Listener {
             Random random = new Random();
             for (LayerContainer layer : layers) {
                 OriginContainer origin = origins.get(random.nextInt(origins.size()));
-                OriginPlayer.setOrigin(p, layer, origin);
+                OriginPlayerUtils.setOrigin(p, layer, origin);
                 p.sendMessage(Component.text(LangConfig.getLocalizedString(p, "misc.randomOrigins").replace("%layer%", layer.getTag()).replace("%originName%", origin.getName())).color(TextColor.fromHexString(AQUA)));
             }
 
@@ -217,12 +217,12 @@ public class ChoosingCORE implements Listener {
             OriginChangeEvent Event = new OriginChangeEvent(p);
             getServer().getPluginManager().callEvent(Event);
 
-            if (p.getInventory().getItemInMainHand().isSimilar(OrbOfOrigins.orb) && !OriginPlayer.hasOrigin(p, CraftApoli.nullOrigin().getTag())) {
+            if (p.getInventory().getItemInMainHand().isSimilar(OrbOfOrigins.orb) && !OriginPlayerUtils.hasOrigin(p, CraftApoli.nullOrigin().getTag())) {
                 if (p.getGameMode() == GameMode.CREATIVE) return;
                 int amt = p.getInventory().getItemInMainHand().getAmount();
                 p.getInventory().getItemInMainHand().setAmount(amt - 1);
             } else {
-                if (p.getInventory().getItemInOffHand().isSimilar(orb) && !OriginPlayer.hasOrigin(p, CraftApoli.nullOrigin().getTag())) {
+                if (p.getInventory().getItemInOffHand().isSimilar(orb) && !OriginPlayerUtils.hasOrigin(p, CraftApoli.nullOrigin().getTag())) {
                     if (p.getGameMode() == GameMode.CREATIVE) return;
                     int amt = p.getInventory().getItemInOffHand().getAmount();
                     p.getInventory().getItemInOffHand().setAmount(amt - 1);

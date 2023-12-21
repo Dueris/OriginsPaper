@@ -1,7 +1,7 @@
 package me.dueris.genesismc.factory.powers.actions;
 
 import me.dueris.genesismc.GenesisMC;
-import me.dueris.genesismc.entity.OriginPlayer;
+import me.dueris.genesismc.entity.OriginPlayerUtils;
 import me.dueris.genesismc.events.PlayerHitGroundEvent;
 import me.dueris.genesismc.factory.actions.Actions;
 import me.dueris.genesismc.factory.powers.CraftPower;
@@ -27,17 +27,14 @@ public class ActionOnLand extends CraftPower implements Listener {
     @EventHandler
     public void e(PlayerMoveEvent e) {
         if (!getPowerArray().contains(e.getPlayer())) return;
-        for (OriginContainer origin : OriginPlayer.getOrigin(e.getPlayer()).values()) {
+        for (OriginContainer origin : OriginPlayerUtils.getOrigin(e.getPlayer()).values()) {
             if (e.getFrom().getY() > e.getTo().getY() && e.getFrom().getY() - e.getTo().getY() >= MIN_FALL_DISTANCE) {
                 for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
                     setActive(e.getPlayer(), power.getTag(), true);
                     Actions.EntityActionType(e.getPlayer(), power.getEntityAction());
-                    PlayerHitGroundEvent playerHitGroundEvent = new PlayerHitGroundEvent(e.getPlayer());
-                    Bukkit.getPluginManager().callEvent(playerHitGroundEvent);
                     new BukkitRunnable() {
                         @Override
                         public void run() {
-                            if (!getPowerArray().contains(e.getPlayer())) return;
                             setActive(e.getPlayer(), power.getTag(), false);
                         }
                     }.runTaskLater(GenesisMC.getPlugin(), 2L);

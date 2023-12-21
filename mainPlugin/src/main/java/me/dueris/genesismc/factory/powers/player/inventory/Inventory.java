@@ -2,7 +2,7 @@ package me.dueris.genesismc.factory.powers.player.inventory;
 
 import me.dueris.genesismc.CooldownManager;
 import me.dueris.genesismc.GenesisMC;
-import me.dueris.genesismc.entity.OriginPlayer;
+import me.dueris.genesismc.entity.OriginPlayerUtils;
 import me.dueris.genesismc.events.KeybindTriggerEvent;
 import me.dueris.genesismc.events.OriginChangeEvent;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
@@ -49,7 +49,7 @@ public class Inventory extends CraftPower implements CommandExecutor, Listener {
     @EventHandler
     public void MoveBackChange(OriginChangeEvent e) {
         Player p = e.getPlayer();
-        for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
+        for (OriginContainer origin : OriginPlayerUtils.getOrigin(p).values()) {
             for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
                 new BukkitRunnable() {
                     @Override
@@ -86,13 +86,12 @@ public class Inventory extends CraftPower implements CommandExecutor, Listener {
 
     @EventHandler
     public void keytrigger(KeybindTriggerEvent e) {
-        for (OriginContainer origin : OriginPlayer.getOrigin(e.getPlayer()).values()) {
+        for (OriginContainer origin : OriginPlayerUtils.getOrigin(e.getPlayer()).values()) {
             if (getPowerArray().contains(e.getPlayer())) {
                 ConditionExecutor executor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                 for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
                     if (CooldownManager.isPlayerInCooldown(e.getPlayer(), e.getKey())) return;
                     if (executor.check("condition", "conditions", e.getPlayer(), power, getPowerFile(), e.getPlayer(), null, null, null, e.getPlayer().getItemInHand(), null)) {
-                        if (!getPowerArray().contains(e.getPlayer())) return;
                         setActive(e.getPlayer(), power.getTag(), true);
                         if (isKeyBeingPressed(e.getPlayer(), power.getKey().getOrDefault("key", "key.origins.primary_active").toString(), true)) {
                             ArrayList<ItemStack> vaultItems = InventoryUtils.getItems(e.getPlayer());
@@ -102,7 +101,6 @@ public class Inventory extends CraftPower implements CommandExecutor, Listener {
                             e.getPlayer().openInventory(vault);
                         }
                     } else {
-                        if (!getPowerArray().contains(e.getPlayer())) return;
                         setActive(e.getPlayer(), power.getTag(), false);
                     }
                 }
@@ -112,7 +110,7 @@ public class Inventory extends CraftPower implements CommandExecutor, Listener {
 
     @EventHandler
     public void deathTIMEEE(PlayerDeathEvent e) {
-        for (OriginContainer origin : OriginPlayer.getOrigin(e.getPlayer()).values()) {
+        for (OriginContainer origin : OriginPlayerUtils.getOrigin(e.getPlayer()).values()) {
             if (shulker_inventory.contains(e.getPlayer())) {
                 Player p = e.getPlayer();
                 for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {

@@ -1,7 +1,7 @@
 package me.dueris.genesismc.factory.powers.actions;
 
 import me.dueris.genesismc.GenesisMC;
-import me.dueris.genesismc.entity.OriginPlayer;
+import me.dueris.genesismc.entity.OriginPlayerUtils;
 import me.dueris.genesismc.factory.actions.Actions;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
@@ -29,7 +29,7 @@ public class ActionOnDeath extends CraftPower implements Listener {
         if (e.getEntity() instanceof Player p) {
             if (getPowerArray().contains(p)) {
                 Entity target = p;
-                for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
+                for (OriginContainer origin : OriginPlayerUtils.getOrigin(p).values()) {
                     ConditionExecutor executor = GenesisMC.getConditionExecutor();
                     for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
                         if (power == null) continue;

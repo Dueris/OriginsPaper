@@ -2,7 +2,7 @@ package me.dueris.genesismc.factory.powers;
 
 import me.dueris.genesismc.CooldownManager;
 import me.dueris.genesismc.GenesisMC;
-import me.dueris.genesismc.entity.OriginPlayer;
+import me.dueris.genesismc.entity.OriginPlayerUtils;
 import me.dueris.genesismc.events.KeybindTriggerEvent;
 import me.dueris.genesismc.utils.KeybindUtils;
 import me.dueris.genesismc.utils.OriginContainer;
@@ -43,7 +43,7 @@ public class Toggle extends CraftPower implements Listener {
     public void keybindToggle(KeybindTriggerEvent e) {
         Player p = e.getPlayer();
         if (toggle_power.contains(e.getPlayer())) {
-            for (OriginContainer origin : OriginPlayer.getOrigin(e.getPlayer()).values()) {
+            for (OriginContainer origin : OriginPlayerUtils.getOrigin(e.getPlayer()).values()) {
                 for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
                     if(GenesisMC.getConditionExecutor().check("condition", "conditions", p, power, getPowerFile(), p, null, p.getLocation().getBlock(), null, p.getActiveItem(), null)){
                         if(GenesisMC.getConditionExecutor().check("entity_condition", "entity_conditions", p, power, getPowerFile(), p, null, p.getLocation().getBlock(), null, p.getActiveItem(), null)){

@@ -2,7 +2,7 @@ package me.dueris.genesismc.commands.subcommands.origin;
 
 import me.dueris.genesismc.commands.PlayerSelector;
 import me.dueris.genesismc.commands.subcommands.SubCommand;
-import me.dueris.genesismc.entity.OriginPlayer;
+import me.dueris.genesismc.entity.OriginPlayerUtils;
 import me.dueris.genesismc.enums.OriginDataType;
 import me.dueris.genesismc.events.OriginChangeEvent;
 import me.dueris.genesismc.factory.CraftApoli;
@@ -65,8 +65,8 @@ public class Set extends SubCommand {
             }
 
             for (Player p : players) {
-                OriginPlayer.setOrigin(p, CraftApoli.getLayerFromTag(args[2]), CraftApoli.getOrigin(originTag));
-                OriginPlayer.resetOriginData(p, OriginDataType.IN_PHASING_FORM);
+                OriginPlayerUtils.setOrigin(p, CraftApoli.getLayerFromTag(args[2]), CraftApoli.getOrigin(originTag));
+                OriginPlayerUtils.resetOriginData(p, OriginDataType.IN_PHASING_FORM);
                 OriginChangeEvent originChangeEvent = new OriginChangeEvent(p);
                 getServer().getPluginManager().callEvent(originChangeEvent);
             }

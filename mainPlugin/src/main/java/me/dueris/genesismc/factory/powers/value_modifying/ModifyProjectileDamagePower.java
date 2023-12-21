@@ -1,6 +1,6 @@
 package me.dueris.genesismc.factory.powers.value_modifying;
 
-import me.dueris.genesismc.entity.OriginPlayer;
+import me.dueris.genesismc.entity.OriginPlayerUtils;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.ErrorSystem;
@@ -43,7 +43,7 @@ public class ModifyProjectileDamagePower extends CraftPower implements Listener 
     public void runD(EntityDamageEvent e) {
         if (e.getEntity() instanceof Player p) {
             if (modify_projectile_damage.contains(p)) {
-                for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
+                for (OriginContainer origin : OriginPlayerUtils.getOrigin(p).values()) {
                     ValueModifyingSuperClass valueModifyingSuperClass = new ValueModifyingSuperClass();
                     try {
                         ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
@@ -60,17 +60,13 @@ public class ModifyProjectileDamagePower extends CraftPower implements Listener 
                                     }
                                 }
                             } else {
-                                if (power == null) {
-                                    getPowerArray().remove(p);
-                                    return;
-                                }
-                                if (!getPowerArray().contains(p)) return;
+
                                 setActive(p, power.getTag(), false);
                             }
                         }
                     } catch (Exception ev) {
                         ErrorSystem errorSystem = new ErrorSystem();
-                        errorSystem.throwError("unable to get bi-entity", "origins:modify_projectile_damage", p, origin, OriginPlayer.getLayer(p, origin));
+                        errorSystem.throwError("unable to get bi-entity", "origins:modify_projectile_damage", p, origin, OriginPlayerUtils.getLayer(p, origin));
                         ev.printStackTrace();
                     }
                 }

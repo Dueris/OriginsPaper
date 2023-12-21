@@ -3,7 +3,7 @@ package me.dueris.genesismc.factory.powers.player;
 import com.destroystokyo.paper.profile.PlayerProfile;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.OriginCommandSender;
-import me.dueris.genesismc.entity.OriginPlayer;
+import me.dueris.genesismc.entity.OriginPlayerUtils;
 import me.dueris.genesismc.events.OriginChangeEvent;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.OriginContainer;
@@ -62,7 +62,7 @@ public class PlayerRender extends CraftPower {
 //        }
         boolean isInvisible = p.hasPotionEffect(PotionEffectType.INVISIBILITY);
         boolean isInTranslucentList = translucent.contains(p);
-        boolean isInPhantomForm = OriginPlayer.isInPhantomForm(p);
+        boolean isInPhantomForm = OriginPlayerUtils.isInPhantomForm(p);
 
         if (isInPhantomForm) {
             for (Player other : Bukkit.getOnlinePlayers()) {
@@ -144,7 +144,7 @@ public class PlayerRender extends CraftPower {
                 public void run() {
                     if(!Bukkit.getServer().getPluginManager().isPluginEnabled("SkinsRestorer")) return;
                     if (model_color.contains(player)) {
-                        for (OriginContainer origin : OriginPlayer.getOrigin(player).values()) {
+                        for (OriginContainer origin : OriginPlayerUtils.getOrigin(player).values()) {
                             for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
                                 Double red;
                                 Double blue;
@@ -178,7 +178,7 @@ public class PlayerRender extends CraftPower {
                             }
                         }
                     } else {
-                        for (OriginContainer origin : OriginPlayer.getOrigin(player).values()) {
+                        for (OriginContainer origin : OriginPlayerUtils.getOrigin(player).values()) {
                             for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
                                 Double red = Double.valueOf(0);
                                 Double blue = Double.valueOf(0);
@@ -450,7 +450,7 @@ public class PlayerRender extends CraftPower {
                 Bukkit.getConsoleSender().sendMessage(player.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "modified-skin-url"), PersistentDataType.STRING));
                 Bukkit.getConsoleSender().sendMessage(player.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "original-skin-url"), PersistentDataType.STRING));
                 if (model_color.contains(player)) {
-                    for (OriginContainer origin : OriginPlayer.getOrigin(player).values()) {
+                    for (OriginContainer origin : OriginPlayerUtils.getOrigin(player).values()) {
                         if (model_color.contains(player)) {
                             if (player.getPlayerProfile().getTextures().getSkinModel() == PlayerTextures.SkinModel.CLASSIC) {
                                 Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "skin set " + player.getName() + " " + player.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "modified-skin-url"), PersistentDataType.STRING) + " CLASSIC");
@@ -460,7 +460,7 @@ public class PlayerRender extends CraftPower {
                         }
                     }
                 } else {
-                    for (OriginContainer origin : OriginPlayer.getOrigin(player).values()) {
+                    for (OriginContainer origin : OriginPlayerUtils.getOrigin(player).values()) {
                         if (!model_color.contains(player)) {
                             if (player.getPlayerProfile().getTextures().getSkinModel() == PlayerTextures.SkinModel.CLASSIC) {
                                 Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "skin set " + player.getName() + " " + player.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "original-skin-url"), PersistentDataType.STRING) + " CLASSIC");

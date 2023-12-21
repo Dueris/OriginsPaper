@@ -1,7 +1,7 @@
 package me.dueris.genesismc.factory.powers.actions;
 
 import me.dueris.genesismc.GenesisMC;
-import me.dueris.genesismc.entity.OriginPlayer;
+import me.dueris.genesismc.entity.OriginPlayerUtils;
 import me.dueris.genesismc.factory.actions.Actions;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.OriginContainer;
@@ -31,28 +31,27 @@ public class ActionOnEntityUse extends CraftPower implements Listener {
         if (!(target instanceof Player player)) return;
         if (!getPowerArray().contains(target)) return;
 
-        for (OriginContainer origin : OriginPlayer.getOrigin(player).values()) {
+        for (OriginContainer origin : OriginPlayerUtils.getOrigin(player).values()) {
             for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
-                if (power == null) continue;
-
-                if (!getPowerArray().contains(e.getPlayer())) return;
-                setActive(e.getPlayer(), power.getTag(), true);
-                Actions.biEntityActionType(actor, target, power.getBiEntityAction());
-                Actions.ItemActionType(actor.getActiveItem(), power.getAction("held_item_action"));
-                Actions.ItemActionType(actor.getActiveItem(), power.getAction("result_item_action"));
-                //todo:add conditions for it see https://origins.readthedocs.io/en/latest/types/power_types/action_on_entity_use/
-                new BukkitRunnable() {
-                    @Override
-                    public void run() {
-                        if (!getPowerArray().contains(e.getPlayer())) return;
-                        setActive(e.getPlayer(), power.getTag(), false);
+                if(GenesisMC.getConditionExecutor().check("condition", "conditions", player, power, getPowerFile(), actor, target, actor.getLocation().getBlock(), null, actor.getActiveItem(), null)){
+                    if(GenesisMC.getConditionExecutor().check("item_condition", "item_conditions", player, power, getPowerFile(), actor, target, actor.getLocation().getBlock(), null, actor.getActiveItem(), null)){
+                        if(GenesisMC.getConditionExecutor().check("bientity_condition", "bientity_conditions", player, power, getPowerFile(), actor, target, actor.getLocation().getBlock(), null, actor.getActiveItem(), null)){
+                            if (power == null) continue;
+                            setActive(e.getPlayer(), power.getTag(), true);
+                            Actions.biEntityActionType(actor, target, power.getBiEntityAction());
+                            Actions.ItemActionType(actor.getActiveItem(), power.getAction("held_item_action"));
+                            Actions.ItemActionType(actor.getActiveItem(), power.getAction("result_item_action"));
+                            new BukkitRunnable() {
+                                @Override
+                                public void run() {
+                                    setActive(e.getPlayer(), power.getTag(), false);
+                                }
+                            }.runTaskLater(GenesisMC.getPlugin(), 2L);
+                        }
                     }
-                }.runTaskLater(GenesisMC.getPlugin(), 2L);
+                }
             }
         }
-
-//        if (e.getHand() == EquipmentSlot.HAND) System.out.println("main");
-//        if (e.getHand() == EquipmentSlot.OFF_HAND) System.out.println("off");
     }
 
     @Override

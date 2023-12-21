@@ -2,7 +2,7 @@ package me.dueris.genesismc.factory.powers.simple;
 
 import me.dueris.genesismc.CooldownManager;
 import me.dueris.genesismc.GenesisMC;
-import me.dueris.genesismc.entity.OriginPlayer;
+import me.dueris.genesismc.entity.OriginPlayerUtils;
 import me.dueris.genesismc.events.KeybindTriggerEvent;
 import me.dueris.genesismc.events.OriginChangeEvent;
 import me.dueris.genesismc.factory.powers.CraftPower;
@@ -45,7 +45,7 @@ public class MimicWarden extends CraftPower implements OriginSimple, Listener {
     public void event(OriginChangeEvent e) {
         boolean hasMimicWardenPower = false;
 
-        for (OriginContainer origin : OriginPlayer.getOrigin(e.getPlayer()).values()) {
+        for (OriginContainer origin : OriginPlayerUtils.getOrigin(e.getPlayer()).values()) {
             for (String power : origin.getPowers()) {
                 if (power.equals("origins:mimic_warden")) {
                     hasMimicWardenPower = true;
@@ -65,7 +65,7 @@ public class MimicWarden extends CraftPower implements OriginSimple, Listener {
     public void event(PlayerJoinEvent e) {
         boolean hasMimicWardenPower = false;
 
-        for (OriginContainer origin : OriginPlayer.getOrigin(e.getPlayer()).values()) {
+        for (OriginContainer origin : OriginPlayerUtils.getOrigin(e.getPlayer()).values()) {
             for (PowerContainer power : origin.getPowerContainers()) {
                 if (power.getTag().equals("origins:mimic_warden")) {
                     hasMimicWardenPower = true;
@@ -91,7 +91,7 @@ public class MimicWarden extends CraftPower implements OriginSimple, Listener {
         Player p = e.getPlayer();
         if (mimicWardenPlayers.contains(p)) {
             if(p.getFoodLevel() < 6) return;
-            for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
+            for (OriginContainer origin : OriginPlayerUtils.getOrigin(p).values()) {
                 if (CooldownManager.isPlayerInCooldown(p, "key.origins.primary_active")) return;
                 if (e.getKey().equals("key.origins.primary_active")) {
                     Location eyeLoc = p.getEyeLocation();

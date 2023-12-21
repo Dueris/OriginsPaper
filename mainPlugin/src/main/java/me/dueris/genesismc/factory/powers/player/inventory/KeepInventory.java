@@ -1,6 +1,6 @@
 package me.dueris.genesismc.factory.powers.player.inventory;
 
-import me.dueris.genesismc.entity.OriginPlayer;
+import me.dueris.genesismc.entity.OriginPlayerUtils;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.OriginContainer;
@@ -33,13 +33,12 @@ public class KeepInventory extends CraftPower implements Listener {
     @EventHandler
     public void keepinv(PlayerDeathEvent e) {
         Player player = e.getEntity();
-        for (OriginContainer origin : OriginPlayer.getOrigin(player).values()) {
+        for (OriginContainer origin : OriginPlayerUtils.getOrigin(player).values()) {
             if (keep_inventory.contains(player)) {
                 ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                 for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
                     if (conditionExecutor.check("item_condition", "item_conditions", player, power, "origins:keep_inventory", player, null, null, null, player.getInventory().getItemInHand(), null)) {
                         ArrayList<Long> slots = new ArrayList<>();
-                        if (!getPowerArray().contains(player)) return;
                         setActive(player, power.getTag(), true);
                         if (power.getSlots() != null) {
                             for (long slot : power.getSlots()) {
@@ -55,7 +54,6 @@ public class KeepInventory extends CraftPower implements Listener {
                             }
                         }
                     } else {
-                        if (!getPowerArray().contains(player)) return;
                         setActive(player, power.getTag(), false);
                     }
                 }

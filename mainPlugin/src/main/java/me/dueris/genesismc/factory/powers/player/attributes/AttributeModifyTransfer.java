@@ -1,6 +1,6 @@
 package me.dueris.genesismc.factory.powers.player.attributes;
 
-import me.dueris.genesismc.entity.OriginPlayer;
+import me.dueris.genesismc.entity.OriginPlayerUtils;
 import me.dueris.genesismc.events.OriginChangeEvent;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
@@ -39,16 +39,14 @@ public class AttributeModifyTransfer extends CraftPower implements Listener {
     @EventHandler
     public void runChange(OriginChangeEvent e) {
         if (getPowerArray().contains(e.getPlayer())) {
-            for (OriginContainer origin : OriginPlayer.getOrigin(e.getPlayer()).values()) {
+            for (OriginContainer origin : OriginPlayerUtils.getOrigin(e.getPlayer()).values()) {
                 ConditionExecutor executor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                 for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
                     if (executor.check("condition", "conditions", e.getPlayer(), power, getPowerFile(), e.getPlayer(), null, null, null, e.getPlayer().getItemInHand(), null)) {
-                        if (!getPowerArray().contains(e.getPlayer())) return;
                         setActive(e.getPlayer(), power.getTag(), true);
                         ValueModifyingSuperClass valueModifyingSuperClass = new ValueModifyingSuperClass();
                         applyAttribute(e.getPlayer(), valueModifyingSuperClass.getDefaultValue(power.get("class")), Float.parseFloat(power.get("multiplier", "1.0")), power.get("attribute").toUpperCase().split(":")[1].replace("\\.", "_"));
                     } else {
-                        if (!getPowerArray().contains(e.getPlayer())) return;
                         setActive(e.getPlayer(), power.getTag(), false);
                     }
                 }

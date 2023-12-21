@@ -1,6 +1,6 @@
 package me.dueris.genesismc.factory.powers.prevent;
 
-import me.dueris.genesismc.entity.OriginPlayer;
+import me.dueris.genesismc.entity.OriginPlayerUtils;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.OriginContainer;
@@ -36,7 +36,7 @@ public class PreventBlockUse extends CraftPower implements Listener {
     @EventHandler
     public void run(PlayerInteractEvent e) {
         if (prevent_block_use.contains(e.getPlayer())) {
-            for (OriginContainer origin : OriginPlayer.getOrigin(e.getPlayer()).values()) {
+            for (OriginContainer origin : OriginPlayerUtils.getOrigin(e.getPlayer()).values()) {
                 ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                 if (e.getClickedBlock() != null) e.setCancelled(true);
                 for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
@@ -49,7 +49,7 @@ public class PreventBlockUse extends CraftPower implements Listener {
     @EventHandler
     public void run(BlockPlaceEvent e) {
         if (prevent_block_use.contains(e.getPlayer())) {
-            for (OriginContainer origin : OriginPlayer.getOrigin(e.getPlayer()).values()) {
+            for (OriginContainer origin : OriginPlayerUtils.getOrigin(e.getPlayer()).values()) {
                 ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                 for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
                     if (conditionExecutor.check("block_condition", "block_conditions", e.getPlayer(), power, "origins:prevent_block_used", e.getPlayer(), null, e.getBlock(), null, e.getPlayer().getItemInHand(), null)) {

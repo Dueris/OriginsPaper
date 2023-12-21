@@ -18,7 +18,7 @@ import me.dueris.genesismc.enchantments.EnchantTable;
 import me.dueris.genesismc.enchantments.WaterProtection;
 import me.dueris.genesismc.enchantments.WaterProtectionNMSImpl;
 import me.dueris.genesismc.entity.InventorySerializer;
-import me.dueris.genesismc.entity.OriginPlayer;
+import me.dueris.genesismc.entity.OriginPlayerUtils;
 import me.dueris.genesismc.events.EventListeners;
 import me.dueris.genesismc.events.RegisterPowersEvent;
 import me.dueris.genesismc.factory.CraftApoli;
@@ -288,12 +288,12 @@ public final class GenesisMC extends JavaPlugin implements Listener {
                 }
             }.runTaskLater(GenesisMC.getPlugin(), 5L);
             PlayerHandler.originValidCheck(p);
-            OriginPlayer.assignPowers(p);
+            OriginPlayerUtils.assignPowers(p);
             if (p.isOp())
                 p.sendMessage(Component.text(LangConfig.getLocalizedString(Bukkit.getConsoleSender(), "reloadMessage")).color(TextColor.fromHexString(AQUA)));
             boolean hasMimicWardenPower = false;
 
-            for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
+            for (OriginContainer origin : OriginPlayerUtils.getOrigin(p).values()) {
                 for (PowerContainer power : origin.getPowerContainers()) {
                     if (power.getTag().equals("origins:mimic_warden")) {
                         hasMimicWardenPower = true;
@@ -309,7 +309,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 
             boolean hasPower = false;
 
-            for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
+            for (OriginContainer origin : OriginPlayerUtils.getOrigin(p).values()) {
                 for (String power : origin.getPowers()) {
                     if (power.equals("origins:slime_block_bounce")) {
                         hasPower = true;
@@ -326,7 +326,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 
             boolean hasPiglinPower = false;
 
-            for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
+            for (OriginContainer origin : OriginPlayerUtils.getOrigin(p).values()) {
                 for (PowerContainer power : origin.getPowerContainers()) {
                     if (power.getTag().equals("origins:piglin_brothers")) {
                         hasPiglinPower = true;

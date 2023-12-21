@@ -1,6 +1,6 @@
 package me.dueris.genesismc.factory.powers.player;
 
-import me.dueris.genesismc.entity.OriginPlayer;
+import me.dueris.genesismc.entity.OriginPlayerUtils;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.OriginContainer;
@@ -31,7 +31,7 @@ public class ParticlePower extends CraftPower {
     @Override
     public void run(Player player) {
         if (particle.contains(player)) {
-            for (OriginContainer origin : OriginPlayer.getOrigin(player).values()) {
+            for (OriginContainer origin : OriginPlayerUtils.getOrigin(player).values()) {
                 for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
                     if (power == null) {
                         getPowerArray().remove(player);

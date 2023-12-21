@@ -1,7 +1,7 @@
 package me.dueris.genesismc.factory.powers.actions;
 
 import me.dueris.genesismc.CooldownManager;
-import me.dueris.genesismc.entity.OriginPlayer;
+import me.dueris.genesismc.entity.OriginPlayerUtils;
 import me.dueris.genesismc.factory.actions.Actions;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
@@ -31,11 +31,10 @@ public class TargetActionOnHit extends CraftPower implements Listener {
         if (!(actor instanceof Player player)) return;
         if (!getPowerArray().contains(actor)) return;
 
-        for (OriginContainer origin : OriginPlayer.getOrigin(player).values()) {
+        for (OriginContainer origin : OriginPlayerUtils.getOrigin(player).values()) {
             ConditionExecutor executor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
             for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
                 if (executor.check("condition", "conditions", player, power, getPowerFile(), actor, target, null, null, player.getInventory().getItemInHand(), e)) {
-                    if (!getPowerArray().contains(actor)) return;
                     setActive(player, power.getTag(), true);
                     Actions.EntityActionType(target, power.getEntityAction());
                     if (power.get("cooldown", "1") != null) {

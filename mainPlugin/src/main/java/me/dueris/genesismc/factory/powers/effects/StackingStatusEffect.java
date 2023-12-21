@@ -1,6 +1,6 @@
 package me.dueris.genesismc.factory.powers.effects;
 
-import me.dueris.genesismc.entity.OriginPlayer;
+import me.dueris.genesismc.entity.OriginPlayerUtils;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.OriginContainer;
@@ -25,7 +25,7 @@ public class StackingStatusEffect extends CraftPower {
     @Override
     public void run(Player p) {
         if (getPowerArray().contains(p)) {
-            for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
+            for (OriginContainer origin : OriginPlayerUtils.getOrigin(p).values()) {
                 ConditionExecutor executor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                 for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
                     if (executor.check("entity_condition", "entity_conditions", p, power, getPowerFile(), p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {

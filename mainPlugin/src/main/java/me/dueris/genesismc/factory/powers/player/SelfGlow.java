@@ -1,6 +1,6 @@
 package me.dueris.genesismc.factory.powers.player;
 
-import me.dueris.genesismc.entity.OriginPlayer;
+import me.dueris.genesismc.entity.OriginPlayerUtils;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.OriginContainer;
@@ -41,7 +41,7 @@ public class SelfGlow extends CraftPower {
     @Override
     public void run(Player p) {
         if (!getPowerArray().contains(p)) return;
-        for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
+        for (OriginContainer origin : OriginPlayerUtils.getOrigin(p).values()) {
             for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
                 ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                 for (Entity entity : Bukkit.getServer().getWorld(p.getWorld().getKey()).getEntities()) {

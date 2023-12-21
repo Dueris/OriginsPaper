@@ -1,6 +1,6 @@
 package me.dueris.genesismc.factory.powers.prevent;
 
-import me.dueris.genesismc.entity.OriginPlayer;
+import me.dueris.genesismc.entity.OriginPlayerUtils;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.OriginContainer;
@@ -30,7 +30,7 @@ public class PreventEntityCollision extends CraftPower {
 
     @Override
     public void run(Player p) {
-        for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
+        for (OriginContainer origin : OriginPlayerUtils.getOrigin(p).values()) {
             if (prevent_entity_collision.contains(p)) {
                 ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                 for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {

@@ -2,7 +2,7 @@ package me.dueris.genesismc.factory.powers.player;
 
 import com.destroystokyo.paper.event.player.PlayerJumpEvent;
 import me.dueris.genesismc.GenesisMC;
-import me.dueris.genesismc.entity.OriginPlayer;
+import me.dueris.genesismc.entity.OriginPlayerUtils;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.OriginContainer;
@@ -35,7 +35,7 @@ public class Gravity extends CraftPower implements Listener {
 
     @Override
     public void run(Player p) {
-        for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
+        for (OriginContainer origin : OriginPlayerUtils.getOrigin(p).values()) {
             if (no_gravity.contains(p)) {
                 ConditionExecutor executor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                 for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {

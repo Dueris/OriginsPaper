@@ -1,6 +1,6 @@
 package me.dueris.genesismc.factory.powers.player;
 
-import me.dueris.genesismc.entity.OriginPlayer;
+import me.dueris.genesismc.entity.OriginPlayerUtils;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.OriginContainer;
@@ -28,7 +28,7 @@ public class Swimming extends CraftPower {
 
     @Override
     public void run(Player p) {
-        for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
+        for (OriginContainer origin : OriginPlayerUtils.getOrigin(p).values()) {
             if (swimming.contains(p)) {
                 for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
                     ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();

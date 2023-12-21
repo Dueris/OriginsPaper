@@ -1,6 +1,6 @@
 package me.dueris.genesismc.factory.powers.player.attributes;
 
-import me.dueris.genesismc.entity.OriginPlayer;
+import me.dueris.genesismc.entity.OriginPlayerUtils;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.OriginContainer;
@@ -92,10 +92,9 @@ public class AttributeConditioned extends CraftPower implements Listener {
         operationMap.put("multiply_random_max", (a, b) -> a * random.nextInt(b));
         operationMap.put("divide_random_max", (a, b) -> a / random.nextInt(b));
 
-        for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
+        for (OriginContainer origin : OriginPlayerUtils.getOrigin(p).values()) {
             for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
                 if (power == null) continue;
-
                 for (HashMap<String, Object> modifier : power.getConditionFromString("modifier", "modifiers")) {
                     ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                     if (!conditionExecutor.check("condition", "conditions", p, power, "origins:attribute_conditioned", p, null, null, null, p.getItemInHand(), null))
@@ -135,7 +134,7 @@ public class AttributeConditioned extends CraftPower implements Listener {
         operationMap.put("multiply_random_max", (a, b) -> a / random.nextInt(b));
         operationMap.put("divide_random_max", (a, b) -> a * random.nextInt(b));
 
-        for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
+        for (OriginContainer origin : OriginPlayerUtils.getOrigin(p).values()) {
             for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
                 if (power == null) continue;
 
@@ -181,7 +180,7 @@ public class AttributeConditioned extends CraftPower implements Listener {
 
     @Override
     public void run(Player p) {
-        for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
+        for (OriginContainer origin : OriginPlayerUtils.getOrigin(p).values()) {
             for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
                 if (conditioned_attribute.contains(p)) {
                     ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();

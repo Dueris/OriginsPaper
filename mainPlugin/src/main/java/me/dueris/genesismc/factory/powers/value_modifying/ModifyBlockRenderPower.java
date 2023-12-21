@@ -1,6 +1,6 @@
 package me.dueris.genesismc.factory.powers.value_modifying;
 
-import me.dueris.genesismc.entity.OriginPlayer;
+import me.dueris.genesismc.entity.OriginPlayerUtils;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.factory.powers.world.chunk.ChunkManagerWorld;
@@ -47,7 +47,7 @@ public class ModifyBlockRenderPower extends CraftPower {
             List<BlockState> blockChanges = new ArrayList<>();
             boolean conditionMet = false;
 
-            for (OriginContainer origin : OriginPlayer.getOrigin(player).values()) {
+            for (OriginContainer origin : OriginPlayerUtils.getOrigin(player).values()) {
                 for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
                     Material targetMaterial = Material.AIR;
                     if (conditionMet) {
@@ -71,7 +71,7 @@ public class ModifyBlockRenderPower extends CraftPower {
                                     }
                                 } catch (Exception e) {
                                     ErrorSystem errorSystem = new ErrorSystem();
-                                    errorSystem.throwError("unable to send block_render_change", "origins:modify_block_render", player, origin, OriginPlayer.getLayer(player, origin));
+                                    errorSystem.throwError("unable to send block_render_change", "origins:modify_block_render", player, origin, OriginPlayerUtils.getLayer(player, origin));
                                     e.printStackTrace();
                                 }
                             }

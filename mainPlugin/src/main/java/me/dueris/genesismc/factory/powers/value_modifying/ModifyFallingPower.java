@@ -1,6 +1,6 @@
 package me.dueris.genesismc.factory.powers.value_modifying;
 
-import me.dueris.genesismc.entity.OriginPlayer;
+import me.dueris.genesismc.entity.OriginPlayerUtils;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.OriginContainer;
@@ -47,7 +47,7 @@ public class ModifyFallingPower extends CraftPower implements Listener {
         if (modify_falling.contains(p)) {
             if (e.getTo().getY() == e.getFrom().getY()) return;
             @NotNull Vector velocity = p.getVelocity();
-            for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
+            for (OriginContainer origin : OriginPlayerUtils.getOrigin(p).values()) {
                 ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                 for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
                     if (conditionExecutor.check("condition", "conditions", p, power, "origins:modify_falling", p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
@@ -108,7 +108,7 @@ public class ModifyFallingPower extends CraftPower implements Listener {
     public void runR(EntityDamageEvent e) {
         if (e.getEntity() instanceof Player p) {
             if (modify_falling.contains(p)) {
-                for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
+                for (OriginContainer origin : OriginPlayerUtils.getOrigin(p).values()) {
                     ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                     for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
                         if (conditionExecutor.check("condition", "conditions", p, power, "origins:modify_falling", p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {

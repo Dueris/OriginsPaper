@@ -7,7 +7,6 @@ import me.dueris.genesismc.enchantments.Anvil;
 import me.dueris.genesismc.utils.translation.LangConfig;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
-import net.minecraft.server.commands.EnchantCommand;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -21,7 +20,6 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 
-import static me.dueris.genesismc.GenesisMC.waterProtectionEnchant;
 import static me.dueris.genesismc.utils.BukkitColour.RED;
 
 public class Enchant extends SubCommand {

@@ -2,7 +2,7 @@ package me.dueris.genesismc.commands.subcommands.origin;
 
 import me.dueris.genesismc.commands.PlayerSelector;
 import me.dueris.genesismc.commands.subcommands.SubCommand;
-import me.dueris.genesismc.entity.OriginPlayer;
+import me.dueris.genesismc.entity.OriginPlayerUtils;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.utils.translation.LangConfig;
 import net.kyori.adventure.text.Component;
@@ -46,6 +46,6 @@ public class Get extends SubCommand {
         ArrayList<Player> players = PlayerSelector.playerSelector(sender, args[1]);
         if (players.size() == 0) return;
         for (Player p : players)
-            sender.sendMessage(Component.text(LangConfig.getLocalizedString(p, "command.origin.get.output").replace("%player%", p.getName()).replace("%layer%", args[2]).replace("%origin%", OriginPlayer.getOrigin(p, CraftApoli.getLayerFromTag(args[2])).getTag())));
+            sender.sendMessage(Component.text(LangConfig.getLocalizedString(p, "command.origin.get.output").replace("%player%", p.getName()).replace("%layer%", args[2]).replace("%origin%", OriginPlayerUtils.getOrigin(p, CraftApoli.getLayerFromTag(args[2])).getTag())));
     }
 }

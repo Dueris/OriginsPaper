@@ -1,6 +1,6 @@
 package me.dueris.genesismc.factory.powers.player;
 
-import me.dueris.genesismc.entity.OriginPlayer;
+import me.dueris.genesismc.entity.OriginPlayerUtils;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.OriginContainer;
@@ -34,13 +34,12 @@ public class Grounded extends CraftPower {
     public void run(Player player) {
         ArrayList<Location> platform_pos = new ArrayList<>();
         if (grounded.contains(player)) {
-            for (OriginContainer origin : OriginPlayer.getOrigin(player).values()) {
+            for (OriginContainer origin : OriginPlayerUtils.getOrigin(player).values()) {
                 Location location = player.getLocation();
                 Location current_block_platform_pos = location.add(0, -1, 0);
                 ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                 for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
                     if (conditionExecutor.check("condition", "conditions", player, power, "origins:grounded", player, null, null, null, player.getInventory().getItemInHand(), null)) {
-                        if (!getPowerArray().contains(player)) return;
                         setActive(player, power.getTag(), true);
                         if (current_block_platform_pos.getBlock().getType().equals(Material.AIR)) {
                             platform_pos.add(current_block_platform_pos);
@@ -60,7 +59,6 @@ public class Grounded extends CraftPower {
                             }
                         }
                     } else {
-                        if (!getPowerArray().contains(player)) return;
                         setActive(player, power.getTag(), false);
                     }
                 }

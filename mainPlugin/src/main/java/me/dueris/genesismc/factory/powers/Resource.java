@@ -2,7 +2,7 @@ package me.dueris.genesismc.factory.powers;
 
 import it.unimi.dsi.fastutil.Pair;
 import me.dueris.genesismc.GenesisMC;
-import me.dueris.genesismc.entity.OriginPlayer;
+import me.dueris.genesismc.entity.OriginPlayerUtils;
 import me.dueris.genesismc.events.OriginChangeEvent;
 import me.dueris.genesismc.factory.conditions.entity.EntityCondition;
 import me.dueris.genesismc.utils.OriginContainer;
@@ -38,7 +38,7 @@ public class Resource extends CraftPower implements Listener {
     }
 
     private void execute(Player p){
-        for(OriginContainer origin : OriginPlayer.getOrigin(p).values()){
+        for(OriginContainer origin : OriginPlayerUtils.getOrigin(p).values()){
             for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
                 p.sendMessage("2");
                 final String tag = power.getTag();

@@ -2,7 +2,7 @@ package me.dueris.genesismc.factory.powers.player;
 
 import me.dueris.genesismc.CooldownManager;
 import me.dueris.genesismc.GenesisMC;
-import me.dueris.genesismc.entity.OriginPlayer;
+import me.dueris.genesismc.entity.OriginPlayerUtils;
 import me.dueris.genesismc.events.KeybindTriggerEvent;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
@@ -47,7 +47,7 @@ public class Launch extends CraftPower implements Listener {
     public void keybindToggle(KeybindTriggerEvent e) {
         Player p = e.getPlayer();
         if (launch_into_air.contains(e.getPlayer())) {
-            for (OriginContainer origin : OriginPlayer.getOrigin(e.getPlayer()).values()) {
+            for (OriginContainer origin : OriginPlayerUtils.getOrigin(e.getPlayer()).values()) {
                 ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                 for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
                     if (conditionExecutor.check("condition", "conditions", p, power, "origins:launch", p, null, null, null, p.getItemInHand(), null)) {
@@ -131,11 +131,7 @@ public class Launch extends CraftPower implements Listener {
                                                         KeybindUtils.runKeyChangeTriggerReturn(KeybindUtils.getKeybindItem(key, p.getInventory()), p, key);
                                                         KeybindUtils.getKeybindItem(key, p.getInventory()).setType(Material.GRAY_DYE);
                                                         met.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "contin"), PersistentDataType.BOOLEAN, false);
-                                                        if (power == null) {
-                                                            getPowerArray().remove(p);
-                                                            return;
-                                                        }
-                                                        if (!getPowerArray().contains(p)) return;
+
                                                         setActive(p, power.getTag(), false);
                                                         KeybindUtils.getKeybindItem(key, p.getInventory()).setItemMeta(met);
                                                         in_continuous.remove(p);
@@ -144,11 +140,7 @@ public class Launch extends CraftPower implements Listener {
                                                         KeybindUtils.runKeyChangeTrigger(KeybindUtils.getKeybindItem(key, p.getInventory()));
                                                         KeybindUtils.getKeybindItem(key, p.getInventory()).setType(Material.LIME_DYE);
                                                         met.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "contin"), PersistentDataType.BOOLEAN, true);
-                                                        if (power == null) {
-                                                            getPowerArray().remove(p);
-                                                            return;
-                                                        }
-                                                        if (!getPowerArray().contains(p)) return;
+
                                                         setActive(p, power.getTag(), true);
                                                         KeybindUtils.getKeybindItem(key, p.getInventory()).setItemMeta(met);
                                                         in_continuous.add(p);

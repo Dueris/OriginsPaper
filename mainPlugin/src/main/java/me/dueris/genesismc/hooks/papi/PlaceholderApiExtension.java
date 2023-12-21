@@ -3,7 +3,7 @@ package me.dueris.genesismc.hooks.papi;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.OriginDataContainer;
-import me.dueris.genesismc.entity.OriginPlayer;
+import me.dueris.genesismc.entity.OriginPlayerUtils;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.utils.OriginContainer;
 import org.bukkit.Bukkit;
@@ -58,14 +58,14 @@ public class PlaceholderApiExtension extends PlaceholderExpansion {
     public @Nullable String onPlaceholderRequest(Player player, @NotNull String params) {
         if(params.equalsIgnoreCase("player_origin")){
             String done = "";
-            for(OriginContainer origin : OriginPlayer.getOrigin(player).values()){
+            for(OriginContainer origin : OriginPlayerUtils.getOrigin(player).values()){
                 done = done + origin.getTag() + "//";
             }
             return done;
         }
         if(params.equalsIgnoreCase("player_layer")){
             String done = "";
-            for(OriginContainer origin : OriginPlayer.getOrigin(player).values()){
+            for(OriginContainer origin : OriginPlayerUtils.getOrigin(player).values()){
                 done = done + origin.getLayerTag() + "//";
             }
             return done;

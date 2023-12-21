@@ -1,6 +1,6 @@
 package me.dueris.genesismc;
 
-import me.dueris.genesismc.entity.OriginPlayer;
+import me.dueris.genesismc.entity.OriginPlayerUtils;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.factory.powers.FlightHandler;
 import me.dueris.genesismc.factory.powers.Overlay;
@@ -72,12 +72,12 @@ public class FoliaOriginScheduler {
 
         @Override
         public void run() {
-            for (Player p : OriginPlayer.hasPowers) {
+            for (Player p : OriginPlayerUtils.hasPowers) {
 //                if (!OriginPlayer.getPowersApplied(p).contains(Gravity.class)) {
 //                    Gravity gravity = new Gravity();
 //                    gravity.run(p);
 //                }
-               if (!OriginPlayer.getPowersApplied(p).contains(FlightHandler.class)) {
+               if (!OriginPlayerUtils.getPowersApplied(p).contains(FlightHandler.class)) {
                    FlightHandler flightHandler = new FlightHandler();
                    flightHandler.run(p);
                }
@@ -92,7 +92,7 @@ public class FoliaOriginScheduler {
 //                if (OriginPlayer.getPowersApplied(p).isEmpty()) {
 //                    //empty
 //                }
-                for (Class<? extends CraftPower> c : OriginPlayer.getPowersApplied(p)) {
+                for (Class<? extends CraftPower> c : OriginPlayerUtils.getPowersApplied(p)) {
                     try {
                         if (c.newInstance() instanceof Burn) {
                             ((Burn) c.newInstance()).run(p, ticksEMap);

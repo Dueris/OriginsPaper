@@ -15,7 +15,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
 import me.dueris.genesismc.GenesisMC;
-import me.dueris.genesismc.entity.OriginPlayer;
+import me.dueris.genesismc.entity.OriginPlayerUtils;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.OriginContainer;
 import me.dueris.genesismc.utils.PowerContainer;
@@ -31,7 +31,7 @@ public class ModifyVelocityPower extends CraftPower implements Listener{
     public void velcotiyWEEEEEEEE(PlayerVelocityEvent e){
         if(getPowerArray().contains(e.getPlayer())){
             Player p = e.getPlayer();
-            for(OriginContainer origin : OriginPlayer.getOrigin(p).values()){
+            for(OriginContainer origin : OriginPlayerUtils.getOrigin(p).values()){
                 for(PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())){
                     List<String> identifiers = power.getJsonArray("axes");
                     if(identifiers.isEmpty()){

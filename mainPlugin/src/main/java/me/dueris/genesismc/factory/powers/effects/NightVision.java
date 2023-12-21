@@ -1,6 +1,6 @@
 package me.dueris.genesismc.factory.powers.effects;
 
-import me.dueris.genesismc.entity.OriginPlayer;
+import me.dueris.genesismc.entity.OriginPlayerUtils;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.LayerContainer;
@@ -36,28 +36,18 @@ public class NightVision extends CraftPower {
 
     @Override
     public void run(Player p) {
-        HashMap<LayerContainer, OriginContainer> origins = OriginPlayer.getOrigin(p);
+        HashMap<LayerContainer, OriginContainer> origins = OriginPlayerUtils.getOrigin(p);
         Set<LayerContainer> layers = origins.keySet();
         for (LayerContainer layer : layers) {
             if (night_vision.contains(p)) {
-                for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
+                for (OriginContainer origin : OriginPlayerUtils.getOrigin(p).values()) {
                     for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
                         ConditionExecutor executor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                         if (executor.check("condition", "conditions", p, power, getPowerFile(), p, null, null, null, p.getItemInHand(), null)) {
-                            if (power == null) {
-                                getPowerArray().remove(p);
-                                return;
-                            }
-                            if (!getPowerArray().contains(p)) return;
                             setActive(p, power.getTag(), true);
                             Double strength = power.getStrength();
                             p.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, 400, roundNumber(power.getStrength()), false, false, false));
                         } else {
-                            if (power == null) {
-                                getPowerArray().remove(p);
-                                return;
-                            }
-                            if (!getPowerArray().contains(p)) return;
                             setActive(p, power.getTag(), false);
                         }
                     }

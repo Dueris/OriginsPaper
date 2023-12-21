@@ -1,7 +1,7 @@
 package me.dueris.genesismc.factory.powers.actions;
 
 import me.dueris.genesismc.GenesisMC;
-import me.dueris.genesismc.entity.OriginPlayer;
+import me.dueris.genesismc.entity.OriginPlayerUtils;
 import me.dueris.genesismc.events.OriginChangeEvent;
 import me.dueris.genesismc.factory.actions.Actions;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
@@ -29,23 +29,21 @@ public class ActionOnCallback extends CraftPower implements Listener {
 
         if (!getPowerArray().contains(actor)) return;
 
-        for (OriginContainer origin : OriginPlayer.getOrigin(actor).values()) {
+        for (OriginContainer origin : OriginPlayerUtils.getOrigin(actor).values()) {
             for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
                 if (power == null) continue;
-                            if (!getPowerArray().contains(e.getPlayer())) return;
-                            setActive(e.getPlayer(), power.getTag(), true);
-                            Actions.EntityActionType(e.getPlayer(), power.getEntityAction());
-                            Actions.EntityActionType(e.getPlayer(), power.getAction("entity_action_chosen"));
-                            Actions.ItemActionType(e.getPlayer().getActiveItem(), power.getItemAction());
-                            Actions.ItemActionType(e.getPlayer().getActiveItem(), power.getAction("held_item_action"));
-                            Actions.ItemActionType(e.getPlayer().getActiveItem(), power.getAction("result_item_action"));
-                            new BukkitRunnable() {
-                                @Override
-                                public void run() {
-                                    if (!getPowerArray().contains(e.getPlayer())) return;
-                                    setActive(e.getPlayer(), power.getTag(), false);
-                                }
-                            }.runTaskLater(GenesisMC.getPlugin(), 2L);
+                    setActive(e.getPlayer(), power.getTag(), true);
+                    Actions.EntityActionType(e.getPlayer(), power.getEntityAction());
+                    Actions.EntityActionType(e.getPlayer(), power.getAction("entity_action_chosen"));
+                    Actions.ItemActionType(e.getPlayer().getActiveItem(), power.getItemAction());
+                    Actions.ItemActionType(e.getPlayer().getActiveItem(), power.getAction("held_item_action"));
+                    Actions.ItemActionType(e.getPlayer().getActiveItem(), power.getAction("result_item_action"));
+                    new BukkitRunnable() {
+                        @Override
+                        public void run() {
+                            setActive(e.getPlayer(), power.getTag(), false);
+                        }
+                    }.runTaskLater(GenesisMC.getPlugin(), 2L);
             }
         }
     }

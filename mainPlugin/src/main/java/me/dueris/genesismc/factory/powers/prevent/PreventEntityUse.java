@@ -1,6 +1,6 @@
 package me.dueris.genesismc.factory.powers.prevent;
 
-import me.dueris.genesismc.entity.OriginPlayer;
+import me.dueris.genesismc.entity.OriginPlayerUtils;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.factory.powers.player.attributes.AttributeHandler;
@@ -48,7 +48,7 @@ public class PreventEntityUse extends CraftPower implements Listener {
     public void OnClickREACH(PlayerInteractEvent e) {
         Player p = e.getPlayer();
         if (prevent_entity_use.contains(e.getPlayer())) {
-            for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
+            for (OriginContainer origin : OriginPlayerUtils.getOrigin(p).values()) {
 
                 Location eyeloc = p.getEyeLocation();
                 Predicate<Entity> filter = (entity) -> !entity.equals(p);

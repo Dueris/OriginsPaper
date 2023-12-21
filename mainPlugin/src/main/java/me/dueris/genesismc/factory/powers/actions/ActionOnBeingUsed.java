@@ -1,7 +1,7 @@
 package me.dueris.genesismc.factory.powers.actions;
 
 import me.dueris.genesismc.GenesisMC;
-import me.dueris.genesismc.entity.OriginPlayer;
+import me.dueris.genesismc.entity.OriginPlayerUtils;
 import me.dueris.genesismc.factory.actions.Actions;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.OriginContainer;
@@ -23,29 +23,24 @@ public class ActionOnBeingUsed extends CraftPower implements Listener {
         Entity actor = e.getPlayer();
         Entity target = e.getRightClicked();
 
-        if (!(target instanceof Player player)) return;
-        if (!getPowerArray().contains(target)) return;
+        if (!(actor instanceof Player player)) return;
+        if (!getPowerArray().contains(actor)) return;
 
-        for (OriginContainer origin : OriginPlayer.getOrigin(player).values()) {
+        for (OriginContainer origin : OriginPlayerUtils.getOrigin(player).values()) {
             for (PowerContainer powerContainer : origin.getMultiPowerFileFromType(getPowerFile())) {
                 PowerContainer power = powerContainer;
                 if (power == null) continue;
 
-                if (!getPowerArray().contains(e.getPlayer())) return;
-                setActive(e.getPlayer(), power.getTag(), true);
+                setActive(player, power.getTag(), true);
                 Actions.biEntityActionType(actor, target, power.getBiEntityAction());
                 new BukkitRunnable() {
                     @Override
                     public void run() {
-                        if (!getPowerArray().contains(e.getPlayer())) return;
                         setActive(e.getPlayer(), power.getTag(), false);
                     }
                 }.runTaskLater(GenesisMC.getPlugin(), 2L);
             }
         }
-
-//        if (e.getHand() == EquipmentSlot.HAND) System.out.println("main");
-//        if (e.getHand() == EquipmentSlot.OFF_HAND) System.out.println("off");
     }
 
     @Override

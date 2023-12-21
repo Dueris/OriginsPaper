@@ -1,6 +1,6 @@
 package me.dueris.genesismc.factory.powers.value_modifying;
 
-import me.dueris.genesismc.entity.OriginPlayer;
+import me.dueris.genesismc.entity.OriginPlayerUtils;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.ErrorSystem;
@@ -49,7 +49,7 @@ public class ModifyCraftingPower extends CraftPower implements Listener {
         if (modify_crafting.contains(p)) {
             if (e.getRecipe() == null) return;
             if (e.getInventory().getResult() == null) return;
-            for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
+            for (OriginContainer origin : OriginPlayerUtils.getOrigin(p).values()) {
                 ValueModifyingSuperClass valueModifyingSuperClass = new ValueModifyingSuperClass();
                 try {
                     ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
@@ -69,7 +69,7 @@ public class ModifyCraftingPower extends CraftPower implements Listener {
                     }
                 } catch (Exception ev) {
                     ErrorSystem errorSystem = new ErrorSystem();
-                    errorSystem.throwError("unable to get recipe or result", "origins:modify_crafting", p, origin, OriginPlayer.getLayer(p, origin));
+                    errorSystem.throwError("unable to get recipe or result", "origins:modify_crafting", p, origin, OriginPlayerUtils.getLayer(p, origin));
                     ev.printStackTrace();
                 }
             }

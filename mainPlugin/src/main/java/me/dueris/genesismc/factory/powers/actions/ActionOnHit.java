@@ -1,7 +1,7 @@
 package me.dueris.genesismc.factory.powers.actions;
 
 import me.dueris.genesismc.GenesisMC;
-import me.dueris.genesismc.entity.OriginPlayer;
+import me.dueris.genesismc.entity.OriginPlayerUtils;
 import me.dueris.genesismc.factory.actions.Actions;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.OriginContainer;
@@ -27,26 +27,24 @@ public class ActionOnHit extends CraftPower {
         if (e.getEntity() instanceof Player p) {
             Entity actor = e.getDamager();
             Entity target = p;
-            for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
+            for (OriginContainer origin : OriginPlayerUtils.getOrigin(p).values()) {
                 if (getPowerArray().contains(p)) {
                     for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
-                        if (power == null) continue;
-
-
-                        setActive(p, power.getTag(), true);
-                        Actions.biEntityActionType(actor, target, power.getBiEntityAction());
-                        //todo: bientity condition and damage condition
-                        new BukkitRunnable() {
-                            @Override
-                            public void run() {
-                                if (power == null) {
-                                    getPowerArray().remove(p);
-                                    return;
+                        if(GenesisMC.getConditionExecutor().check("condition", "conditions", p, power, getPowerFile(), actor, target, actor.getLocation().getBlock(), null, p.getActiveItem(), e)){
+                            if(GenesisMC.getConditionExecutor().check("damage_condition", "damage_conditions", p, power, getPowerFile(), actor, target, actor.getLocation().getBlock(), null, p.getActiveItem(), e)){
+                                if(GenesisMC.getConditionExecutor().check("bientity_condition", "bientity_conditions", p, power, getPowerFile(), actor, target, actor.getLocation().getBlock(), null, p.getActiveItem(), e)){
+                                    if (power == null) continue;
+                                    setActive(p, power.getTag(), true);
+                                    Actions.biEntityActionType(actor, target, power.getBiEntityAction());
+                                    new BukkitRunnable() {
+                                        @Override
+                                        public void run() {
+                                            setActive(p, power.getTag(), false);
+                                        }
+                                    }.runTaskLater(GenesisMC.getPlugin(), 2L);
                                 }
-                                if (!getPowerArray().contains(p)) return;
-                                setActive(p, power.getTag(), false);
                             }
-                        }.runTaskLater(GenesisMC.getPlugin(), 2L);
+                        }
                     }
                 }
             }

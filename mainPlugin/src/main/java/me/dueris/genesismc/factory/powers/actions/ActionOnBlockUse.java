@@ -1,7 +1,7 @@
 package me.dueris.genesismc.factory.powers.actions;
 
 import me.dueris.genesismc.GenesisMC;
-import me.dueris.genesismc.entity.OriginPlayer;
+import me.dueris.genesismc.entity.OriginPlayerUtils;
 import me.dueris.genesismc.factory.actions.Actions;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
@@ -31,14 +31,13 @@ public class ActionOnBlockUse extends CraftPower implements Listener {
 
         if (!getPowerArray().contains(actor)) return;
 
-        for (OriginContainer origin : OriginPlayer.getOrigin(actor).values()) {
+        for (OriginContainer origin : OriginPlayerUtils.getOrigin(actor).values()) {
             for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
                 if (power == null) continue;
                 ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                 if (conditionExecutor.check("condition", "conditions", actor, power, getPowerFile(), actor, null, e.getClickedBlock(), null, e.getItem(), null)) {
                     if (conditionExecutor.check("entity_condition", "entity_conditions", actor, power, getPowerFile(), actor, null, e.getClickedBlock(), null, e.getItem(), null)) {
                         if (conditionExecutor.check("block_condition", "block_conditions", actor, power, getPowerFile(), actor, null, e.getClickedBlock(), null, e.getItem(), null)) {
-                            if (!getPowerArray().contains(e.getPlayer())) return;
                             setActive(e.getPlayer(), power.getTag(), true);
                             Actions.BlockActionType(e.getClickedBlock().getLocation(), power.getBlockAction());
                             Actions.EntityActionType(e.getPlayer(), power.getEntityAction());
@@ -48,7 +47,6 @@ public class ActionOnBlockUse extends CraftPower implements Listener {
                             new BukkitRunnable() {
                                 @Override
                                 public void run() {
-                                    if (!getPowerArray().contains(e.getPlayer())) return;
                                     setActive(e.getPlayer(), power.getTag(), false);
                                 }
                             }.runTaskLater(GenesisMC.getPlugin(), 2L);

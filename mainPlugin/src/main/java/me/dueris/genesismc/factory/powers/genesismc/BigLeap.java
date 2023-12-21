@@ -1,7 +1,7 @@
 package me.dueris.genesismc.factory.powers.genesismc;
 
 import me.dueris.genesismc.GenesisMC;
-import me.dueris.genesismc.entity.OriginPlayer;
+import me.dueris.genesismc.entity.OriginPlayerUtils;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.OriginContainer;
@@ -59,7 +59,7 @@ public class BigLeap extends CraftPower implements Listener {
     public void onRabbitLeap(PlayerToggleSneakEvent e) {
         PersistentDataContainer data = e.getPlayer().getPersistentDataContainer();
         if (getPowerArray().contains(e.getPlayer())) {
-            for (OriginContainer origin : OriginPlayer.getOrigin(e.getPlayer()).values()) {
+            for (OriginContainer origin : OriginPlayerUtils.getOrigin(e.getPlayer()).values()) {
                 for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
                     if (power != null) {
                         Player p = e.getPlayer();
@@ -150,11 +150,6 @@ public class BigLeap extends CraftPower implements Listener {
                                 }.runTaskTimer(GenesisMC.getPlugin(), 0L, 2L);
                             }
                         } else {
-                            if (power == null) {
-                                getPowerArray().remove(p);
-                                return;
-                            }
-                            if (!getPowerArray().contains(p)) return;
                             setActive(p, power.getTag(), false);
                         }
                     }

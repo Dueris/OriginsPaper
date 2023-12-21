@@ -1,7 +1,7 @@
 package me.dueris.genesismc.factory.powers.actions;
 
 import me.dueris.genesismc.GenesisMC;
-import me.dueris.genesismc.entity.OriginPlayer;
+import me.dueris.genesismc.entity.OriginPlayerUtils;
 import me.dueris.genesismc.factory.actions.Actions;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.OriginContainer;
@@ -28,18 +28,16 @@ public class ActionOnBlockBreak extends CraftPower implements Listener {
 
         if (!getPowerArray().contains(actor)) return;
 
-        for (OriginContainer origin : OriginPlayer.getOrigin(actor).values()) {
+        for (OriginContainer origin : OriginPlayerUtils.getOrigin(actor).values()) {
             for (PowerContainer powerContainer : origin.getMultiPowerFileFromType(getPowerFile())) {
-                PowerContainer power = powerContainer;
-                if (power == null) continue;
+                if (powerContainer == null) continue;
 
                 setActive(actor, powerContainer.getTag(), true);
-                Actions.BlockActionType(e.getBlock().getLocation(), power.getBlockAction());
-                Actions.EntityActionType(e.getPlayer(), power.getEntityAction());
+                Actions.BlockActionType(e.getBlock().getLocation(), powerContainer.getBlockAction());
+                Actions.EntityActionType(e.getPlayer(), powerContainer.getEntityAction());
                 new BukkitRunnable() {
                     @Override
                     public void run() {
-                        if (!getPowerArray().contains(e.getPlayer())) return;
                         setActive(actor, powerContainer.getTag(), false);
                     }
                 }.runTaskLater(GenesisMC.getPlugin(), 2L);

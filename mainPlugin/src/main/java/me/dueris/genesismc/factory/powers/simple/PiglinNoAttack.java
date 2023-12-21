@@ -2,7 +2,7 @@ package me.dueris.genesismc.factory.powers.simple;
 
 import it.unimi.dsi.fastutil.Hash;
 import me.dueris.genesismc.FoliaOriginScheduler;
-import me.dueris.genesismc.entity.OriginPlayer;
+import me.dueris.genesismc.entity.OriginPlayerUtils;
 import me.dueris.genesismc.events.OriginChangeEvent;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.OriginContainer;
@@ -74,7 +74,7 @@ public class PiglinNoAttack extends CraftPower implements OriginSimple, Listener
     public void event(OriginChangeEvent e) {
         boolean hasMimicWardenPower = false;
 
-        for (OriginContainer origin : OriginPlayer.getOrigin(e.getPlayer()).values()) {
+        for (OriginContainer origin : OriginPlayerUtils.getOrigin(e.getPlayer()).values()) {
             for (String power : origin.getPowers()) {
                 if (power.equals("origins:piglin_brothers")) {
                     hasMimicWardenPower = true;
@@ -94,7 +94,7 @@ public class PiglinNoAttack extends CraftPower implements OriginSimple, Listener
     public void event(PlayerJoinEvent e) {
         boolean hasMimicWardenPower = false;
 
-        for (OriginContainer origin : OriginPlayer.getOrigin(e.getPlayer()).values()) {
+        for (OriginContainer origin : OriginPlayerUtils.getOrigin(e.getPlayer()).values()) {
             for (PowerContainer power : origin.getPowerContainers()) {
                 if (power.getTag().equals("origins:piglin_brothers")) {
                     hasMimicWardenPower = true;

@@ -1,7 +1,7 @@
 package me.dueris.genesismc.factory.powers.player;
 
 import me.dueris.genesismc.GenesisMC;
-import me.dueris.genesismc.entity.OriginPlayer;
+import me.dueris.genesismc.entity.OriginPlayerUtils;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.protocol.SendStringPacketPayload;
@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
 
-import static me.dueris.genesismc.entity.OriginPlayer.launchElytra;
+import static me.dueris.genesismc.entity.OriginPlayerUtils.launchElytra;
 
 public class FlightElytra extends CraftPower implements Listener {
     public static ArrayList<UUID> glidingPlayers = new ArrayList<>();
@@ -56,7 +56,7 @@ public class FlightElytra extends CraftPower implements Listener {
     public void ExecuteFlight(PlayerToggleSneakEvent e) {
         Player p = e.getPlayer();
         if (elytra.contains(e.getPlayer())) {
-            for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
+            for (OriginContainer origin : OriginPlayerUtils.getOrigin(p).values()) {
                 ConditionExecutor executor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                 for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
                     if (executor.check("condition", "conditions", p, power, getPowerFile(), p, null, null, null, p.getItemInHand(), null)) {
@@ -93,9 +93,7 @@ public class FlightElytra extends CraftPower implements Listener {
     
             if (!player.isGliding()) return;
     
-            if (action != Action.LEFT_CLICK_AIR) {
-                return;
-            }
+            if (action != Action.RIGHT_CLICK_AIR) return;
     
             ItemStack handItem = player.getInventory().getItemInMainHand();
             if(handItem.getType().equals(Material.FIREWORK_ROCKET)){

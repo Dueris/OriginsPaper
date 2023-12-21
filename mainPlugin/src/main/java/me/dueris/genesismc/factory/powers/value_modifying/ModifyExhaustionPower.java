@@ -1,6 +1,6 @@
 package me.dueris.genesismc.factory.powers.value_modifying;
 
-import me.dueris.genesismc.entity.OriginPlayer;
+import me.dueris.genesismc.entity.OriginPlayerUtils;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.OriginContainer;
@@ -42,7 +42,7 @@ public class ModifyExhaustionPower extends CraftPower implements Listener {
     public void run(EntityExhaustionEvent e) {
         Player p = (Player) e.getEntity();
         if (modify_exhaustion.contains(p)) {
-            for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
+            for (OriginContainer origin : OriginPlayerUtils.getOrigin(p).values()) {
                 ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                 for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
                     if (conditionExecutor.check("condition", "conditions", p, power, "origins:modify_exhaustion", p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
@@ -53,11 +53,7 @@ public class ModifyExhaustionPower extends CraftPower implements Listener {
                             if (mathOperator != null) {
                                 float result = (float) mathOperator.apply(e.getExhaustion(), value);
                                 e.setExhaustion(result);
-                                if (power == null) {
-                                    getPowerArray().remove(p);
-                                    return;
-                                }
-                                if (!getPowerArray().contains(p)) return;
+
                                 setActive(p, power.getTag(), true);
                             }
                         }

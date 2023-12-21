@@ -1,6 +1,6 @@
 package me.dueris.genesismc.factory.powers.prevent;
 
-import me.dueris.genesismc.entity.OriginPlayer;
+import me.dueris.genesismc.entity.OriginPlayerUtils;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.conditions.item.ItemCondition;
 import me.dueris.genesismc.factory.powers.CraftPower;
@@ -42,7 +42,7 @@ public class PreventItemUse extends CraftPower implements Listener {
         if (prevent_item_use.contains(e.getPlayer())) {
                 if (e.getItem() == null) return;
 
-                for (OriginContainer origin : OriginPlayer.getOrigin(e.getPlayer()).values()) {
+                for (OriginContainer origin : OriginPlayerUtils.getOrigin(e.getPlayer()).values()) {
                     for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
                         if (power == null) {
                             getPowerArray().remove(e.getPlayer());

@@ -1,8 +1,7 @@
 package me.dueris.genesismc.choosing;
 
 import me.dueris.genesismc.GenesisMC;
-import me.dueris.genesismc.entity.OriginPlayer;
-import me.dueris.genesismc.events.OriginChangeEvent;
+import me.dueris.genesismc.entity.OriginPlayerUtils;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.powers.value_modifying.ModifyPlayerSpawnPower;
 import me.dueris.genesismc.utils.OriginContainer;
@@ -14,8 +13,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.player.PlayerRespawnEvent;
-import org.bukkit.event.player.PlayerRespawnEvent.RespawnReason;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
@@ -33,9 +30,7 @@ import static me.dueris.genesismc.choosing.ChoosingCORE.*;
 import static me.dueris.genesismc.choosing.contents.ChooseMenuContents.ChooseMenuContent;
 import static me.dueris.genesismc.choosing.contents.MainMenuContents.GenesisMainMenuContents;
 import static me.dueris.genesismc.factory.powers.Power.phasing;
-import static me.dueris.genesismc.factory.powers.value_modifying.ValueModifyingSuperClass.modify_world_spawn;
 import static me.dueris.genesismc.items.OrbOfOrigins.orb;
-import static org.bukkit.Bukkit.getServer;
 import static org.bukkit.ChatColor.RED;
 
 public class ChoosingCUSTOM implements Listener {
@@ -221,7 +216,7 @@ public class ChoosingCUSTOM implements Listener {
                 Player p = (Player) e.getWhoClicked();
 
                 setAttributesToDefault(p);
-                OriginPlayer.setOrigin(p, choosing.get(p), origin);
+                OriginPlayerUtils.setOrigin(p, choosing.get(p), origin);
                 choosing.remove(p);
                 new BukkitRunnable() {
                     @Override
@@ -240,7 +235,7 @@ public class ChoosingCUSTOM implements Listener {
                 }.runTaskLater(GenesisMC.getPlugin(), 1);
                 ModifyPlayerSpawnPower power = new ModifyPlayerSpawnPower();
                 power.runHandle(p);
-                OriginPlayer.setHasFirstChose(p, true);
+                OriginPlayerUtils.setHasFirstChose(p, true);
             }
         }
     }

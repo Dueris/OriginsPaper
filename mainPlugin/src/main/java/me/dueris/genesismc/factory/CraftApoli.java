@@ -1,6 +1,7 @@
 package me.dueris.genesismc.factory;
 
 import io.netty.util.internal.ConcurrentSet;
+import me.clip.placeholderapi.libs.kyori.adventure.key.Namespaced;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.events.OriginLoadEvent;
 import me.dueris.genesismc.files.GenesisDataFiles;
@@ -14,9 +15,12 @@ import oshi.hardware.VirtualMemory;
 
 import org.apache.commons.io.FilenameUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.NamespacedKey;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+
+import com.destroystokyo.paper.NamespacedTag;
 
 import java.beans.JavaBean;
 import java.io.*;
@@ -70,7 +74,7 @@ public class CraftApoli {
      * @return A copy of The null origin.
      **/
     public static OriginContainer nullOrigin() {
-        return new OriginContainer("genesis:origin-null", new FileContainer(new ArrayList<>(List.of("hidden", "origins")), new ArrayList<>(List.of(true, "genesis:origin-null"))), new HashMap<String, Object>(Map.of("impact", "0", "icon", "minecraft:player_head", "powers", "genesis:null", "order", "0", "unchooseable", true)), new ArrayList<>(List.of(new PowerContainer("genesis:null", new FileContainer(new ArrayList<>(), new ArrayList<>()), "genesis:origin-null"))));
+        return new OriginContainer(new NamespacedKey("genesis", "origin-null"), new FileContainer(new ArrayList<>(List.of("hidden", "origins")), new ArrayList<>(List.of(true, "genesis:origin-null"))), new HashMap<String, Object>(Map.of("impact", "0", "icon", "minecraft:player_head", "powers", "genesis:null", "order", "0", "unchooseable", true)), new ArrayList<>(List.of(new PowerContainer(new NamespacedKey("genesis", "null"), new FileContainer(new ArrayList<>(), new ArrayList<>()), "genesis:origin-null"))));
     }
 
 
@@ -120,7 +124,7 @@ public class CraftApoli {
                 FileContainer subPowerFile = fileToFileContainer(subPowerJson);
                 String source = powerContainer.getSource();
 
-                PowerContainer newPower = new PowerContainer(powerFolder + ":" + powerFileName + "_" + key, subPowerFile, source, true);
+                PowerContainer newPower = new PowerContainer(new NamespacedKey(powerFolder, powerFileName + "_" + key), subPowerFile, source, true);
                 powerContainers.add(newPower);
                 newPowerContainers.add(newPower);
             }
@@ -256,7 +260,7 @@ public class CraftApoli {
                             if (!FilenameUtils.getExtension(originLayer.getName()).equals("json")) continue;
                             String layerName = FilenameUtils.getBaseName(originLayer.getName());
                             try {
-                                LayerContainer layer = new LayerContainer(layerNamespace + ":" + layerName, fileToFileContainer((JSONObject) new JSONParser().parse(new FileReader(originLayer))));
+                                LayerContainer layer = new LayerContainer(new NamespacedKey(layerNamespace, layerName), fileToFileContainer((JSONObject) new JSONParser().parse(new FileReader(originLayer))));
         
                                 if (layer.getReplace() && layerExists(layer)) {
                                     //removes an origin layer if a layer with the same namespace has the replace key set to true
@@ -316,11 +320,11 @@ public class CraftApoli {
                                         try {
                                             JSONObject powerParser = (JSONObject) new JSONParser().parse(new FileReader(datapack.getAbsolutePath() + File.separator + "data" + File.separator + powerFolder + File.separator + "powers" + File.separator + powerFileName + ".json"));
                                             if (powerParser.containsKey("type") && "origins:multiple".equals(powerParser.get("type"))) {
-                                                PowerContainer powerContainer = new PowerContainer(powerFolder + ":" + powerFileName, fileToFileContainer(powerParser), originFolder.get(0) + ":" + originFileName.get(0));
+                                                PowerContainer powerContainer = new PowerContainer(new NamespacedKey(powerFolder, powerFileName), fileToFileContainer(powerParser), originFolder.get(0) + ":" + originFileName.get(0));
                                                 powerContainers.add(powerContainer);
                                                 processNestedPowers(powerContainer, powerContainers, powerFolder, powerFileName);
                                             } else {
-                                                powerContainers.add(new PowerContainer(powerFolder + ":" + powerFileName, fileToFileContainer(powerParser), originFolder.get(0) + ":" + originFileName.get(0)));
+                                                powerContainers.add(new PowerContainer(new NamespacedKey(powerFolder, powerFileName), fileToFileContainer(powerParser), originFolder.get(0) + ":" + originFileName.get(0)));
                                             }
                                         } catch (FileNotFoundException fileNotFoundException) {
                                             if (showErrors)
@@ -328,7 +332,7 @@ public class CraftApoli {
                                         }
                                     }
                                 }
-                                OriginContainer origin = new OriginContainer(originFolder.get(0) + ":" + originFileName.get(0), fileToFileContainer(originLayerParser), fileToHashMap(originParser), powerContainers);
+                                OriginContainer origin = new OriginContainer(new NamespacedKey(originFolder.get(0), originFileName.get(0)), fileToFileContainer(originLayerParser), fileToHashMap(originParser), powerContainers);
                                 originContainers.add(origin);
         
                             } catch (FileNotFoundException fileNotFoundException) {

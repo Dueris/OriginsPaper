@@ -1,6 +1,6 @@
 package me.dueris.genesismc.factory.powers.value_modifying;
 
-import me.dueris.genesismc.entity.OriginPlayer;
+import me.dueris.genesismc.entity.OriginPlayerUtils;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.OriginContainer;
@@ -38,7 +38,7 @@ public class ModifyHealingPower extends CraftPower implements Listener {
     public void runD(EntityRegainHealthEvent e) {
         if (e.getEntity() instanceof Player p) {
             if (!modify_healing.contains(e.getEntity())) return;
-            for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
+            for (OriginContainer origin : OriginPlayerUtils.getOrigin(p).values()) {
                 for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
                     for (HashMap<String, Object> modifier : power.getPossibleModifiers("modifier", "modifiers")) {
                         Float value = Float.valueOf(modifier.get("value").toString());
@@ -48,19 +48,11 @@ public class ModifyHealingPower extends CraftPower implements Listener {
                             float result = (float) mathOperator.apply(e.getAmount(), value);
                             ConditionExecutor executor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                             if (executor.check("condition", "conditions", p, power, getPowerFile(), p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
-                                if (power == null) {
-                                    getPowerArray().remove(p);
-                                    return;
-                                }
-                                if (!getPowerArray().contains(p)) return;
+
                                 setActive(p, power.getTag(), true);
                                 e.setAmount(result);
                             } else {
-                                if (power == null) {
-                                    getPowerArray().remove(p);
-                                    return;
-                                }
-                                if (!getPowerArray().contains(p)) return;
+
                                 setActive(p, power.getTag(), false);
                             }
                         }

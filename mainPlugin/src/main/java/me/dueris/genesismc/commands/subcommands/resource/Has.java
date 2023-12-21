@@ -2,7 +2,7 @@ package me.dueris.genesismc.commands.subcommands.resource;
 
 import me.dueris.genesismc.commands.PlayerSelector;
 import me.dueris.genesismc.commands.subcommands.SubCommand;
-import me.dueris.genesismc.entity.OriginPlayer;
+import me.dueris.genesismc.entity.OriginPlayerUtils;
 import me.dueris.genesismc.utils.OriginContainer;
 import me.dueris.genesismc.utils.PowerContainer;
 import me.dueris.genesismc.utils.translation.LangConfig;
@@ -46,7 +46,7 @@ public class Has extends SubCommand {
         if (players.size() == 0) return;
         boolean tru = false;
         for (Player p : players){
-            for(OriginContainer origin : OriginPlayer.getOrigin(p).values()){
+            for(OriginContainer origin : OriginPlayerUtils.getOrigin(p).values()){
                 for(PowerContainer powerContainer : origin.getPowerContainers()){
                     if(powerContainer.getType().equals("origins:cooldown") || powerContainer.getType().equals("origins:resource")){
                         if(powerContainer.getTag().equals(args[2])){

@@ -1,7 +1,7 @@
 package me.dueris.genesismc.factory.conditions;
 
 import me.dueris.genesismc.GenesisMC;
-import me.dueris.genesismc.entity.OriginPlayer;
+import me.dueris.genesismc.entity.OriginPlayerUtils;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.conditions.biEntity.BiEntityCondition;
 import me.dueris.genesismc.factory.conditions.biome.BiomeCondition;
@@ -199,7 +199,7 @@ public class ConditionExecutor {
                     }
                 }
             } else if (condition.get("type").equals("origins:origin")) {
-                if (OriginPlayer.hasOrigin(p, condition.get("origin").toString())) return true;
+                if (OriginPlayerUtils.hasOrigin(p, condition.get("origin").toString())) return true;
             } else if (condition.get("type").equals("origins:power_type")) {
                 List<Class<? extends CraftPower>> craftPowerClasses;
                 try {

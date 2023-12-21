@@ -2,7 +2,7 @@ package me.dueris.genesismc.factory.powers.value_modifying;
 
 import io.papermc.paper.event.player.PlayerArmSwingEvent;
 import me.dueris.genesismc.GenesisMC;
-import me.dueris.genesismc.entity.OriginPlayer;
+import me.dueris.genesismc.entity.OriginPlayerUtils;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.factory.powers.player.attributes.AttributeHandler;
@@ -74,7 +74,7 @@ public class ModifyBreakSpeedPower extends CraftPower implements Listener {
     public void swing(PlayerArmSwingEvent e){
         Player p = e.getPlayer();
         if (modify_break_speed.contains(p)) {
-            for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
+            for (OriginContainer origin : OriginPlayerUtils.getOrigin(p).values()) {
                 ValueModifyingSuperClass valueModifyingSuperClass = new ValueModifyingSuperClass();
                 try {
                     ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
@@ -122,7 +122,7 @@ public class ModifyBreakSpeedPower extends CraftPower implements Listener {
                     }
                 } catch (Exception ev) {
                     ErrorSystem errorSystem = new ErrorSystem();
-                    errorSystem.throwError("unable to set modifier", "origins:modify_break_speed", p, origin, OriginPlayer.getLayer(p, origin));
+                    errorSystem.throwError("unable to set modifier", "origins:modify_break_speed", p, origin, OriginPlayerUtils.getLayer(p, origin));
                     ev.printStackTrace();
                 }
             }
@@ -132,7 +132,7 @@ public class ModifyBreakSpeedPower extends CraftPower implements Listener {
     public void apply(Player p) {
         ValueModifyingSuperClass valueModifyingSuperClass = new ValueModifyingSuperClass();
         if (modify_break_speed.contains(p)) {
-            for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
+            for (OriginContainer origin : OriginPlayerUtils.getOrigin(p).values()) {
                 for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
                     for (HashMap<String, Object> modifier : power.getConditionFromString("modifier", "modifiers")) {
                         Float value = Float.valueOf(modifier.get("value").toString());

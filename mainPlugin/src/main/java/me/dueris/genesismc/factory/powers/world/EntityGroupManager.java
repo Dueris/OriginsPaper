@@ -1,6 +1,6 @@
 package me.dueris.genesismc.factory.powers.world;
 
-import me.dueris.genesismc.entity.OriginPlayer;
+import me.dueris.genesismc.entity.OriginPlayerUtils;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.OriginContainer;
@@ -105,7 +105,7 @@ public class EntityGroupManager extends CraftPower {
                 }
                 if (entity instanceof Player) {
                     //Player case, check for power
-                    for (OriginContainer origin : OriginPlayer.getOrigin(((Player) entity).getPlayer()).values()) {
+                    for (OriginContainer origin : OriginPlayerUtils.getOrigin(((Player) entity).getPlayer()).values()) {
                         ConditionExecutor executor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                         for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
                             if (executor.check("condition", "conditions", (Player) entity, power, getPowerFile(), entity, null, entity.getLocation().getBlock(), null, ((Player) entity).getItemInHand(), null)) {

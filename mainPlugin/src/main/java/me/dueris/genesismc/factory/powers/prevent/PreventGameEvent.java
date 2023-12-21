@@ -9,7 +9,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.world.GenericGameEvent;
 
 import me.dueris.genesismc.GenesisMC;
-import me.dueris.genesismc.entity.OriginPlayer;
+import me.dueris.genesismc.entity.OriginPlayerUtils;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.OriginContainer;
 import me.dueris.genesismc.utils.PowerContainer;
@@ -25,7 +25,7 @@ public class PreventGameEvent extends CraftPower implements Listener {
         if(e.getEntity() == null) return;
         if(e.getEntity() instanceof Player p){
             if(!this.getPowerArray().contains(p)) return;
-            for(OriginContainer origin : OriginPlayer.getOrigin(p).values()){
+            for(OriginContainer origin : OriginPlayerUtils.getOrigin(p).values()){
                 for(PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())){
                     if(GenesisMC.getConditionExecutor().check("condition", "conditions", p, power, getPowerFile(), p, null, p.getLocation().getBlock(), null, p.getActiveItem(), null)){
                         String event = power.get("event");

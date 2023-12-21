@@ -1,7 +1,7 @@
 package me.dueris.genesismc.factory.powers;
 
 import me.dueris.genesismc.GenesisMC;
-import me.dueris.genesismc.entity.OriginPlayer;
+import me.dueris.genesismc.entity.OriginPlayerUtils;
 import me.dueris.genesismc.events.OriginChangeEvent;
 
 import org.bukkit.GameMode;
@@ -27,7 +27,7 @@ public class FlightHandler extends CraftPower {
             if (p.getGameMode().equals(GameMode.CREATIVE)) {
                 p.setAllowFlight(true);
             } else {
-                if (creative_flight.contains(p) || OriginPlayer.isInPhantomForm(p)) {
+                if (creative_flight.contains(p) || OriginPlayerUtils.isInPhantomForm(p)) {
                     p.setAllowFlight(true);
                     if (p.isFlying()) {
                         p.setFlying(true);

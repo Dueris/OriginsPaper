@@ -1,5 +1,6 @@
 package me.dueris.genesismc.utils;
 
+import org.bukkit.NamespacedKey;
 import org.json.simple.JSONArray;
 
 import java.io.Serial;
@@ -10,10 +11,10 @@ public class LayerContainer implements Serializable {
     @Serial
     private static final long serialVersionUID = 4L;
 
-    String tag;
+    NamespacedKey tag;
     FileContainer layerFile;
 
-    public LayerContainer(String tag, FileContainer layerFile) {
+    public LayerContainer(NamespacedKey tag, FileContainer layerFile) {
         this.tag = tag;
         this.layerFile = layerFile;
     }
@@ -30,7 +31,7 @@ public class LayerContainer implements Serializable {
      * @return The tag associated with this layer
      */
     public String getTag() {
-        return tag;
+        return tag.asString();
     }
 
     /**
@@ -45,7 +46,7 @@ public class LayerContainer implements Serializable {
      */
     public String getName() {
         String name = (String) this.layerFile.get("name");
-        if (name == null) return tag;
+        if (name == null) return tag.asString();
         return name;
     }
 

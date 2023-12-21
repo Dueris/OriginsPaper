@@ -1,6 +1,6 @@
 package me.dueris.genesismc.choosing;
 
-import me.dueris.genesismc.entity.OriginPlayer;
+import me.dueris.genesismc.entity.OriginPlayerUtils;
 import me.dueris.genesismc.events.OriginChooseEvent;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.items.OrbOfOrigins;
@@ -29,12 +29,12 @@ public class DefaultChoose {
         OriginChooseEvent chooseEvent = new OriginChooseEvent(p);
         getServer().getPluginManager().callEvent(chooseEvent);
 
-        if (p.getInventory().getItemInMainHand().isSimilar(OrbOfOrigins.orb) && !OriginPlayer.hasOrigin(p, CraftApoli.nullOrigin().getTag())) {
+        if (p.getInventory().getItemInMainHand().isSimilar(OrbOfOrigins.orb) && !OriginPlayerUtils.hasOrigin(p, CraftApoli.nullOrigin().getTag())) {
             int amt = p.getInventory().getItemInMainHand().getAmount();
             if (p.getGameMode().equals(GameMode.CREATIVE)) return;
             p.getInventory().getItemInMainHand().setAmount(amt - 1);
         } else {
-            if (p.getInventory().getItemInOffHand().isSimilar(orb) && !OriginPlayer.hasOrigin(p, CraftApoli.nullOrigin().getTag())) {
+            if (p.getInventory().getItemInOffHand().isSimilar(orb) && !OriginPlayerUtils.hasOrigin(p, CraftApoli.nullOrigin().getTag())) {
                 int amt = p.getInventory().getItemInOffHand().getAmount();
                 if (p.getGameMode().equals(GameMode.CREATIVE)) return;
                 p.getInventory().getItemInOffHand().setAmount(amt - 1);

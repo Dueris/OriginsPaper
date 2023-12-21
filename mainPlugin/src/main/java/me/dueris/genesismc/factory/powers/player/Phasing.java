@@ -2,7 +2,7 @@ package me.dueris.genesismc.factory.powers.player;
 
 import com.destroystokyo.paper.event.player.PlayerStartSpectatingEntityEvent;
 import me.dueris.genesismc.GenesisMC;
-import me.dueris.genesismc.entity.OriginPlayer;
+import me.dueris.genesismc.entity.OriginPlayerUtils;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.OriginContainer;
@@ -40,7 +40,7 @@ public class Phasing extends CraftPower implements Listener {
     @Override
     public void run(Player p) {
         if (getPowerArray().contains(p)) {
-            for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
+            for (OriginContainer origin : OriginPlayerUtils.getOrigin(p).values()) {
                 ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                 for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
                     if (conditionExecutor.check("condition", "conditions", p, power, getPowerFile(), p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
@@ -204,10 +204,10 @@ public class Phasing extends CraftPower implements Listener {
         if (e.isSneaking()) {
             Player p = e.getPlayer();
             PersistentDataContainer data = p.getPersistentDataContainer();
-            if (OriginPlayer.isInPhantomForm(p)) {
+            if (OriginPlayerUtils.isInPhantomForm(p)) {
                 if (phasing.contains(p)) {
                     if (!p.getLocation().getBlock().isCollidable()) {
-                        for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
+                        for (OriginContainer origin : OriginPlayerUtils.getOrigin(p).values()) {
                             for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
                                 if (p.getLocation().getBlock().getRelative(BlockFace.DOWN).isCollidable()) {
                                     Location currentLocation = p.getLocation();
@@ -240,7 +240,7 @@ public class Phasing extends CraftPower implements Listener {
     public void CancelSpectate(PlayerStartSpectatingEntityEvent e) {
         Player p = e.getPlayer();
         if (phasing.contains(p)) {
-            if (OriginPlayer.isInPhantomForm(p)) {
+            if (OriginPlayerUtils.isInPhantomForm(p)) {
                 e.setCancelled(true);
             }
 

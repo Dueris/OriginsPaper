@@ -1,6 +1,6 @@
 package me.dueris.genesismc.factory.powers.value_modifying;
 
-import me.dueris.genesismc.entity.OriginPlayer;
+import me.dueris.genesismc.entity.OriginPlayerUtils;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.ErrorSystem;
@@ -37,7 +37,7 @@ public class ModifyAirSpeedPower extends CraftPower {
 
     @Override
     public void run(Player p) {
-        for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
+        for (OriginContainer origin : OriginPlayerUtils.getOrigin(p).values()) {
             ValueModifyingSuperClass valueModifyingSuperClass = new ValueModifyingSuperClass();
             try {
                 ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
@@ -62,7 +62,7 @@ public class ModifyAirSpeedPower extends CraftPower {
                 }
             } catch (Exception e) {
                 ErrorSystem errorSystem = new ErrorSystem();
-                errorSystem.throwError("unable to set modifier", "origins:modify_air_speed", p, origin, OriginPlayer.getLayer(p, origin));
+                errorSystem.throwError("unable to set modifier", "origins:modify_air_speed", p, origin, OriginPlayerUtils.getLayer(p, origin));
             }
         }
     }
@@ -80,7 +80,7 @@ public class ModifyAirSpeedPower extends CraftPower {
     public void apply(Player p) {
         ValueModifyingSuperClass valueModifyingSuperClass = new ValueModifyingSuperClass();
         if (modify_air_speed.contains(p)) {
-            for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
+            for (OriginContainer origin : OriginPlayerUtils.getOrigin(p).values()) {
                 for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
                     for (HashMap<String, Object> modifier : power.getConditionFromString("modifier", "modifiers")) {
                         Float value = Float.valueOf(modifier.get("value").toString());

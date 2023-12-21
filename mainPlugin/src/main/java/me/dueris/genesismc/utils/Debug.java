@@ -28,7 +28,7 @@ public class Debug {
         Bukkit.getServer().getConsoleSender().sendMessage("  - Loaded @1 powers".replace("@1", String.valueOf(CraftPower.getRegistered().toArray().length)));
         Bukkit.getServer().getConsoleSender().sendMessage("  - Loaded @2 origins = [".replace("@2", String.valueOf(CraftApoli.getOrigins().toArray().length)));
             for(OriginContainer originContainer : CraftApoli.getOrigins()){
-                Bukkit.getServer().getConsoleSender().sendMessage("     () -> {@3}".replace("@3", originContainer.tag));
+                Bukkit.getServer().getConsoleSender().sendMessage("     () -> {@3}".replace("@3", originContainer.tag.asString()));
             }
         Bukkit.getServer().getConsoleSender().sendMessage("  ]");
         Bukkit.getServer().getConsoleSender().sendMessage("  - Power thread starting with {originScheduler}".replace("originScheduler", GenesisMC.scheduler.toString()));

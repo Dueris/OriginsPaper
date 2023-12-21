@@ -1,11 +1,13 @@
 package me.dueris.genesismc.factory.powers.simple;
 
-import me.dueris.genesismc.entity.OriginPlayer;
+import me.dueris.genesismc.entity.OriginPlayerUtils;
 import me.dueris.genesismc.events.OriginChangeEvent;
+import me.dueris.genesismc.events.PlayerHitGroundEvent;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.OriginContainer;
 import me.dueris.genesismc.utils.PowerContainer;
 
+import org.bukkit.Bukkit;
 import org.bukkit.GameEvent;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -36,6 +38,8 @@ public class BounceSlimeBlock extends CraftPower implements OriginSimple, Listen
     public void gameEvent(GenericGameEvent event){
         if(event.getEvent().equals(GameEvent.HIT_GROUND)){
             if(event.getEntity() instanceof Player player) {
+                PlayerHitGroundEvent playerHitGroundEvent = new PlayerHitGroundEvent(player);
+                Bukkit.getPluginManager().callEvent(playerHitGroundEvent);
                 if (player.isSneaking()) return;
                 if (!bouncePlayers.contains(player) && !lastLoc.containsKey(player)) return;
                 Location lastLocation = lastLoc.get(player);
@@ -65,7 +69,7 @@ public class BounceSlimeBlock extends CraftPower implements OriginSimple, Listen
     public void event(OriginChangeEvent e) {
         boolean hasPower = false;
 
-        for (OriginContainer origin : OriginPlayer.getOrigin(e.getPlayer()).values()) {
+        for (OriginContainer origin : OriginPlayerUtils.getOrigin(e.getPlayer()).values()) {
             for (String power : origin.getPowers()) {
                 if (power.equals("origins:slime_block_bounce")) {
                     hasPower = true;
@@ -85,7 +89,7 @@ public class BounceSlimeBlock extends CraftPower implements OriginSimple, Listen
     public void event(PlayerJoinEvent e) {
         boolean hasPower = false;
 
-        for (OriginContainer origin : OriginPlayer.getOrigin(e.getPlayer()).values()) {
+        for (OriginContainer origin : OriginPlayerUtils.getOrigin(e.getPlayer()).values()) {
             for (PowerContainer power : origin.getPowerContainers()) {
                 if (power.getTag().equals("origins:slime_block_bounce")) {
                     hasPower = true;

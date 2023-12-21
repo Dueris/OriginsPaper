@@ -2,12 +2,13 @@ package me.dueris.genesismc.factory.powers.player.attributes;
 
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.choosing.ChoosingCORE;
-import me.dueris.genesismc.entity.OriginPlayer;
+import me.dueris.genesismc.entity.OriginPlayerUtils;
 import me.dueris.genesismc.events.AttributeExecuteEvent;
 import me.dueris.genesismc.events.OriginChangeEvent;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.OriginContainer;
 import me.dueris.genesismc.utils.PowerContainer;
+import me.dueris.genesismc.utils.Utils;
 import me.dueris.genesismc.utils.translation.LangConfig;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
@@ -31,99 +32,19 @@ import java.util.function.Predicate;
 public class AttributeHandler extends CraftPower implements Listener {
 
     public static Map<String, BinaryOperator<Double>> getOperationMappingsDouble() {
-        Map<String, BinaryOperator<Double>> operationMap = new HashMap<>();
-        operationMap.put("addition", (a, b) -> a + b);
-        operationMap.put("subtraction", (a, b) -> a - b);
-        operationMap.put("multiplication", (a, b) -> a * b);
-        operationMap.put("division", (a, b) -> a / b);
-        operationMap.put("multiply_base", (a, b) -> a + (a * b));
-        operationMap.put("multiply_total", (a, b) -> a * (1 + b));
-        operationMap.put("set_total", (a, b) -> b);
-        operationMap.put("add_base_early", (a, b) -> a + b);
-        operationMap.put("multiply_base_additive", (a, b) -> a + (a * b));
-        operationMap.put("multiply_base_multiplicative", (a, b) -> a * (1 + b));
-        operationMap.put("add_base_late", (a, b) -> a + b);
-
-        Random random = new Random();
-
-        operationMap.put("add_random_max", (a, b) -> a + random.nextDouble(b));
-        operationMap.put("subtract_random_max", (a, b) -> a - random.nextDouble(b));
-        operationMap.put("multiply_random_max", (a, b) -> a * random.nextDouble(b));
-        operationMap.put("divide_random_max", (a, b) -> a / random.nextDouble(b));
-
-        return operationMap;
+        return Utils.getOperationMappingsDouble();
     }
 
     public static Map<String, BinaryOperator<Long>> getOperationMappingsLong() {
-        Map<String, BinaryOperator<Long>> operationMap = new HashMap<>();
-        operationMap.put("addition", (a, b) -> a + b);
-        operationMap.put("subtraction", (a, b) -> a - b);
-        operationMap.put("multiplication", (a, b) -> a * b);
-        operationMap.put("division", (a, b) -> a / b);
-        operationMap.put("multiply_base", (a, b) -> a + (a * b));
-        operationMap.put("multiply_total", (a, b) -> a * (1 + b));
-        operationMap.put("set_total", (a, b) -> b);
-        operationMap.put("add_base_early", (a, b) -> a + b);
-        operationMap.put("multiply_base_additive", (a, b) -> a + (a * b));
-        operationMap.put("multiply_base_multiplicative", (a, b) -> a * (1 + b));
-        operationMap.put("add_base_late", (a, b) -> a + b);
-
-        Random random = new Random();
-
-        operationMap.put("add_random_max", (a, b) -> a + random.nextLong(b));
-        operationMap.put("subtract_random_max", (a, b) -> a - random.nextLong(b));
-        operationMap.put("multiply_random_max", (a, b) -> a * random.nextLong(b));
-        operationMap.put("divide_random_max", (a, b) -> a / random.nextLong(b));
-
-        return operationMap;
+        return Utils.getOperationMappingsLong();
     }
 
     public static Map<String, BinaryOperator<Integer>> getOperationMappingsInteger() {
-        Map<String, BinaryOperator<Integer>> operationMap = new HashMap<>();
-        operationMap.put("addition", (a, b) -> a + b);
-        operationMap.put("subtraction", (a, b) -> a - b);
-        operationMap.put("multiplication", (a, b) -> a * b);
-        operationMap.put("division", (a, b) -> a / b);
-        operationMap.put("multiply_base", (a, b) -> a + (a * b));
-        operationMap.put("multiply_total", (a, b) -> a * (1 + b));
-        operationMap.put("set_total", (a, b) -> b);
-        operationMap.put("add_base_early", (a, b) -> a + b);
-        operationMap.put("multiply_base_additive", (a, b) -> a + (a * b));
-        operationMap.put("multiply_base_multiplicative", (a, b) -> a * (1 + b));
-        operationMap.put("add_base_late", (a, b) -> a + b);
-
-        Random random = new Random();
-
-        operationMap.put("add_random_max", (a, b) -> a + random.nextInt(b));
-        operationMap.put("subtract_random_max", (a, b) -> a - random.nextInt(b));
-        operationMap.put("multiply_random_max", (a, b) -> a * random.nextInt(b));
-        operationMap.put("divide_random_max", (a, b) -> a / random.nextInt(b));
-
-        return operationMap;
+        return Utils.getOperationMappingsInteger();
     }
 
     public static Map<String, BinaryOperator<Float>> getOperationMappingsFloat() {
-        Map<String, BinaryOperator<Float>> operationMap = new HashMap<>();
-        operationMap.put("addition", (a, b) -> a + b);
-        operationMap.put("subtraction", (a, b) -> a - b);
-        operationMap.put("multiplication", (a, b) -> a * b);
-        operationMap.put("division", (a, b) -> a / b);
-        operationMap.put("multiply_base", (a, b) -> a + (a * b));
-        operationMap.put("multiply_total", (a, b) -> a * (1 + b));
-        operationMap.put("set_total", (a, b) -> b);
-        operationMap.put("add_base_early", (a, b) -> a + b);
-        operationMap.put("multiply_base_additive", (a, b) -> a + (a * b));
-        operationMap.put("multiply_base_multiplicative", (a, b) -> a * (1 + b));
-        operationMap.put("add_base_late", (a, b) -> a + b);
-
-        Random random = new Random();
-
-        operationMap.put("add_random_max", (a, b) -> a + random.nextFloat(b));
-        operationMap.put("subtract_random_max", (a, b) -> a - random.nextFloat(b));
-        operationMap.put("multiply_random_max", (a, b) -> a * random.nextFloat(b));
-        operationMap.put("divide_random_max", (a, b) -> a / random.nextFloat(b));
-
-        return operationMap;
+        return getOperationMappingsFloat();
     }
 
     public static void executeAttributeModify(String operation, Attribute attribute_modifier, double base_value, Player p, Double value) {
@@ -158,7 +79,7 @@ public class AttributeHandler extends CraftPower implements Listener {
             @Override
             public void run() {
                 if (attribute.contains(p)) {
-                    for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
+                    for (OriginContainer origin : OriginPlayerUtils.getOrigin(p).values()) {
                         for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
                             if (power == null) continue;
 
@@ -220,7 +141,7 @@ public class AttributeHandler extends CraftPower implements Listener {
             @Override
             public void run() {
                 if (attribute.contains(p)) {
-                    for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
+                    for (OriginContainer origin : OriginPlayerUtils.getOrigin(p).values()) {
                         for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
                             if (power == null) continue;
 
@@ -340,7 +261,7 @@ public class AttributeHandler extends CraftPower implements Listener {
         public void OnClickREACH(PlayerInteractEvent e) {
             Player p = e.getPlayer();
             if (extra_reach_attack.contains(e.getPlayer())) {
-                for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
+                for (OriginContainer origin : OriginPlayerUtils.getOrigin(p).values()) {
 
                     for (PowerContainer power : origin.getMultiPowerFileFromType("origins:attribute")) {
                         for (HashMap<String, Object> modifier : power.getPossibleModifiers("modifier", "modifiers")) {

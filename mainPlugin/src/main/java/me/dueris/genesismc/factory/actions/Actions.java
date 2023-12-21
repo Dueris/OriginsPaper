@@ -4,7 +4,7 @@ import me.dueris.genesismc.CooldownManager;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.OriginCommandSender;
 import me.dueris.genesismc.enchantments.EnchantTable;
-import me.dueris.genesismc.entity.OriginPlayer;
+import me.dueris.genesismc.entity.OriginPlayerUtils;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.conditions.block.BlockCondition;
 import me.dueris.genesismc.factory.conditions.entity.EntityCondition;
@@ -582,7 +582,7 @@ public class Actions {
         }
         if (type.equals("origins:toggle")) {
             if (entity instanceof Player) {
-                for (OriginContainer origin : OriginPlayer.getOrigin((Player) entity).values()) {
+                for (OriginContainer origin : OriginPlayerUtils.getOrigin((Player) entity).values()) {
                     if (origin.getPowers().contains(power.get("power"))) {
                         for (PowerContainer powerContainer : origin.getPowerContainers()) {
                             if (powerContainer.getType().equals("origins:toggle")) {
@@ -599,7 +599,7 @@ public class Actions {
         }
         if (type.equals("origins:trigger_cooldown")) {
             if (entity instanceof Player player) {
-                for (OriginContainer origin : OriginPlayer.getOrigin((Player) entity).values()) {
+                for (OriginContainer origin : OriginPlayerUtils.getOrigin((Player) entity).values()) {
                     if (origin.getPowers().contains(power.get("power"))) {
                         for (PowerContainer powerContainer : origin.getPowerContainers()) {
                             if (powerContainer.get("cooldown") != null) {

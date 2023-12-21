@@ -1,7 +1,7 @@
 package me.dueris.genesismc.factory.powers.value_modifying;
 
 import me.dueris.genesismc.GenesisMC;
-import me.dueris.genesismc.entity.OriginPlayer;
+import me.dueris.genesismc.entity.OriginPlayerUtils;
 import me.dueris.genesismc.events.OriginChangeEvent;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
@@ -63,7 +63,7 @@ public class ModifyPlayerSpawnPower extends CraftPower implements Listener {
 
     public void runHandle(Player p){
         if (modify_world_spawn.contains(p)) {
-            for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
+            for (OriginContainer origin : OriginPlayerUtils.getOrigin(p).values()) {
                 ConditionExecutor executor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                 PowerContainer power = origin.getSinglePowerFileFromType(getPowerFile());
                 if(executor.check("condition", "conditions", p, power,getPowerFile(), p, null, p.getLocation().getBlock(), null, p.getInventory().getItemInMainHand(), null)){

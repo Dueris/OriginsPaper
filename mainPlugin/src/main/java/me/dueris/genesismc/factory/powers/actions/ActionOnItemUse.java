@@ -1,10 +1,17 @@
 package me.dueris.genesismc.factory.powers.actions;
 
+import me.dueris.genesismc.GenesisMC;
+import me.dueris.genesismc.entity.OriginPlayerUtils;
+import me.dueris.genesismc.factory.actions.Actions;
 import me.dueris.genesismc.factory.powers.CraftPower;
+import me.dueris.genesismc.utils.OriginContainer;
+import me.dueris.genesismc.utils.PowerContainer;
+
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -22,37 +29,29 @@ public class ActionOnItemUse extends CraftPower implements Listener {
 
     @EventHandler
     public void entityRightClick(PlayerInteractEvent e) {
-        Player actor = e.getPlayer();
-//
-//        for (OriginContainer origin : OriginPlayer.getOrigin(actor).values()) {
-//            PowerContainer power = power;
-//            if (power == null) continue;
-//            if (e.getItem() == null) return;
-//            if (e.getClickedBlock() == null) return;
-//            if (!getPowerArray().contains(e.getPlayer())) return;
-//            setActive(p, power.getTag(), true);
-//            ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
-//            if(conditionExecutor.check("item_condition", "item_conditions", actor, origin, getPowerFile(), actor, null, actor.getLocation().getBlock(), null, actor.getInventory().getItemInHand(), null)){
-//                if(conditionExecutor.check("condition", "conditions", actor, origin, getPowerFile(), actor, null, actor.getLocation().getBlock(), null, actor.getInventory().getItemInHand(), null)){
-//                    if(conditionExecutor.check("entity_condition", "entity_conditions", actor, origin, getPowerFile(), actor, null, actor.getLocation().getBlock(), null, actor.getInventory().getItemInHand(), null)){
-//                        Actions.EntityActionType(actor, power.getEntityAction());
-//                        Actions.ItemActionType(actor.getInventory().getItemInMainHand(), power.getItemAction());
-//                        new BukkitRunnable() {
-//                            @Override
-//                            public void run() {
-//                                if (!getPowerArray().contains(e.getPlayer())) return;
-//                                setActive(p, power.getTag(), false);
-//                            }
-//                        }.runTaskLater(GenesisMC.getPlugin(), 2L);
-//                    }
-//                }
-//            }
-//
-//        }
-        //TODO: PATCH THIS FOR POWER origins:damage_from_potions
+        Player player = e.getPlayer(); // aka "actor"
+        if (!getPowerArray().contains(player)) return;
 
-//        if (e.getHand() == EquipmentSlot.HAND) System.out.println("main");
-//        if (e.getHand() == EquipmentSlot.OFF_HAND) System.out.println("off");
+        for (OriginContainer origin : OriginPlayerUtils.getOrigin(player).values()) {
+            for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
+                if (power == null) continue;
+                if(GenesisMC.getConditionExecutor().check("condition", "conditions", player, power, getPowerFile(), player, null, player.getLocation().getBlock(), null, e.getItem(), null)){
+                    if(GenesisMC.getConditionExecutor().check("item_condition", "item_conditions", player, power, getPowerFile(), player, null, player.getLocation().getBlock(), null, e.getItem(), null)){
+                        if(GenesisMC.getConditionExecutor().check("entity_condition", "entity_conditions", player, power, getPowerFile(), player, null, player.getLocation().getBlock(), null, e.getItem(), null)){
+                            setActive(e.getPlayer(), power.getTag(), true);
+                            Actions.ItemActionType(e.getItem(), power.getAction("item_action"));
+                            Actions.EntityActionType(player, power.getAction("entity_action"));
+                            new BukkitRunnable() {
+                                @Override
+                                public void run() {
+                                    setActive(e.getPlayer(), power.getTag(), false);
+                                }
+                            }.runTaskLater(GenesisMC.getPlugin(), 2L);
+                        }
+                    }
+                }
+            }
+        }
     }
 
     @Override

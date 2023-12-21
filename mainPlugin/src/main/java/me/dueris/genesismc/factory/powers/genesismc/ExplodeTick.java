@@ -1,7 +1,7 @@
 package me.dueris.genesismc.factory.powers.genesismc;
 
 import me.dueris.genesismc.GenesisMC;
-import me.dueris.genesismc.entity.OriginPlayer;
+import me.dueris.genesismc.entity.OriginPlayerUtils;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.OriginContainer;
@@ -43,7 +43,7 @@ public class ExplodeTick extends CraftPower implements Listener {
 
     @EventHandler
     public void onShiftCreep(PlayerToggleSneakEvent e) {
-        for (OriginContainer origin : OriginPlayer.getOrigin(e.getPlayer()).values()) {
+        for (OriginContainer origin : OriginPlayerUtils.getOrigin(e.getPlayer()).values()) {
             Player p = e.getPlayer();
             if (explode_tick.contains(e.getPlayer()) && !p.isFlying() && !p.isGliding()) {
                 for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
@@ -55,11 +55,6 @@ public class ExplodeTick extends CraftPower implements Listener {
                         public void run() {
                             ConditionExecutor executor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                             if (executor.check("condition", "conditions", p, power, getPowerFile(), p, null, null, null, p.getItemInHand(), null)) {
-                                if (power == null) {
-                                    getPowerArray().remove(p);
-                                    return;
-                                }
-                                if (!getPowerArray().contains(p)) return;
                                 setActive(p, power.getTag(), true);
                                 if (p.isSneaking()) {
                                     if (!cooldown.containsKey(p.getUniqueId()) || ((System.currentTimeMillis() - cooldown.get(p.getUniqueId())) > 3300)) {
@@ -156,11 +151,7 @@ public class ExplodeTick extends CraftPower implements Listener {
                                     this.cancel();
                                 }
                             } else {
-                                if (power == null) {
-                                    getPowerArray().remove(p);
-                                    return;
-                                }
-                                if (!getPowerArray().contains(p)) return;
+
                                 setActive(p, power.getTag(), false);
                             }
                         }

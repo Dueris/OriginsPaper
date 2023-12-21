@@ -2,7 +2,7 @@ package me.dueris.genesismc.commands.subcommands.origin;
 
 import me.dueris.genesismc.commands.PlayerSelector;
 import me.dueris.genesismc.commands.subcommands.SubCommand;
-import me.dueris.genesismc.entity.OriginPlayer;
+import me.dueris.genesismc.entity.OriginPlayerUtils;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.utils.LayerContainer;
 import me.dueris.genesismc.utils.translation.LangConfig;
@@ -62,7 +62,7 @@ public class Has extends SubCommand {
         for (Player p : players) {
             for (LayerContainer layer : CraftApoli.getLayers()) {
                 if (!layer.getTag().equals(args[2])) continue;
-                if (OriginPlayer.hasOrigin(p, args[3]))
+                if (OriginPlayerUtils.hasOrigin(p, args[3]))
                     sender.sendMessage(Component.text(LangConfig.getLocalizedString(p, "command.origin.has.pass").replace("%player%", p.getName())));
                 else
                     sender.sendMessage(Component.text(LangConfig.getLocalizedString(p, "command.origin.has.fail").replace("%player%", p.getName())));

@@ -1,7 +1,7 @@
 package me.dueris.genesismc.factory.powers.genesismc;
 
 
-import me.dueris.genesismc.entity.OriginPlayer;
+import me.dueris.genesismc.entity.OriginPlayerUtils;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.OriginContainer;
@@ -50,14 +50,9 @@ public class SilkTouch extends CraftPower implements Listener {
             Player p = e.getPlayer();
             if (silk_touch.contains(e.getPlayer())) {
                 ConditionExecutor executor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
-                for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
+                for (OriginContainer origin : OriginPlayerUtils.getOrigin(p).values()) {
                     for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
                         if (executor.check("condition", "conditions", p, power, getPowerFile(), p, null, e.getBlock(), null, p.getItemInHand(), null)) {
-                            if (power == null) {
-                                getPowerArray().remove(p);
-                                return;
-                            }
-                            if (!getPowerArray().contains(p)) return;
                             setActive(p, power.getTag(), true);
                             if (p.getGameMode().equals(GameMode.SURVIVAL) && p.getEquipment().getItemInMainHand().getType().equals(Material.AIR)) {
                                 if (!e.getBlock().getType().isItem()) {
@@ -90,11 +85,7 @@ public class SilkTouch extends CraftPower implements Listener {
                                 }
                             }
                         } else {
-                            if (power == null) {
-                                getPowerArray().remove(p);
-                                return;
-                            }
-                            if (!getPowerArray().contains(p)) return;
+
                             setActive(p, power.getTag(), false);
                         }
                     }

@@ -1,6 +1,8 @@
 package me.dueris.genesismc.utils;
 
 import me.dueris.genesismc.factory.powers.CraftPower;
+
+import org.bukkit.NamespacedKey;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -13,7 +15,7 @@ import java.util.List;
 public class PowerContainer implements Serializable {
     @Serial
     private static final long serialVersionUID = 2L;
-    String powerTag;
+    NamespacedKey powerTag;
     FileContainer powerFile;
     String powerSource;
     boolean originMultiple;
@@ -23,14 +25,14 @@ public class PowerContainer implements Serializable {
      * @param powerFile   The data within a power file.
      * @param powerSource What applied the power to the origin.
      */
-    public PowerContainer(String powerTag, FileContainer powerFile, String powerSource) {
+    public PowerContainer(NamespacedKey powerTag, FileContainer powerFile, String powerSource) {
         this.powerTag = powerTag;
         this.powerFile = powerFile;
         this.powerSource = powerSource;
         this.originMultiple = false;
     }
 
-    public PowerContainer(String powerTag, FileContainer powerFile, String powerSource, boolean originMultiple){
+    public PowerContainer(NamespacedKey powerTag, FileContainer powerFile, String powerSource, boolean originMultiple){
         this.powerTag = powerTag;
         this.powerFile = powerFile;
         this.powerSource = powerSource;
@@ -49,7 +51,7 @@ public class PowerContainer implements Serializable {
      * @return The power tag.
      */
     public String getTag() {
-        return this.powerTag;
+        return this.powerTag.asString();
     }
 
 //    /**

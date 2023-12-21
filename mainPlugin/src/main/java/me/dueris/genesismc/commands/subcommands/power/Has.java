@@ -2,7 +2,7 @@ package me.dueris.genesismc.commands.subcommands.power;
 
 import me.dueris.genesismc.commands.PlayerSelector;
 import me.dueris.genesismc.commands.subcommands.SubCommand;
-import me.dueris.genesismc.entity.OriginPlayer;
+import me.dueris.genesismc.entity.OriginPlayerUtils;
 import me.dueris.genesismc.utils.OriginContainer;
 import me.dueris.genesismc.utils.PowerContainer;
 import org.bukkit.command.CommandSender;
@@ -31,7 +31,7 @@ public class Has extends SubCommand {
         if (args.length >= 2) {
             ArrayList<Player> players = PlayerSelector.playerSelector(sender, args[2]);
             for (Player p : players) {
-                for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
+                for (OriginContainer origin : OriginPlayerUtils.getOrigin(p).values()) {
                     for (PowerContainer powerContainer : origin.getPowerContainers()) {
 
                     }

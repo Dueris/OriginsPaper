@@ -3,7 +3,7 @@ package me.dueris.genesismc.commands.subcommands.origin;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.commands.PlayerSelector;
 import me.dueris.genesismc.commands.subcommands.SubCommand;
-import me.dueris.genesismc.entity.OriginPlayer;
+import me.dueris.genesismc.entity.OriginPlayerUtils;
 import me.dueris.genesismc.enums.OriginDataType;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.utils.LayerContainer;
@@ -51,9 +51,9 @@ public class Gui extends SubCommand {
                 }
                 for(LayerContainer layerContainer : CraftApoli.getLayers()){
                     if(layerContainer.getTag().equals(layR)){
-                        OriginPlayer.unassignPowers(p, layerContainer);
-                        OriginPlayer.setOrigin(p, layerContainer, CraftApoli.nullOrigin());
-                        OriginPlayer.resetOriginData(p, OriginDataType.IN_PHASING_FORM);
+                        OriginPlayerUtils.unassignPowers(p, layerContainer);
+                        OriginPlayerUtils.setOrigin(p, layerContainer, CraftApoli.nullOrigin());
+                        OriginPlayerUtils.resetOriginData(p, OriginDataType.IN_PHASING_FORM);
                         String skinData = p.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "original-skin-url"), PersistentDataType.STRING);
                         if (p.getPlayerProfile().getTextures().getSkinModel() == PlayerTextures.SkinModel.CLASSIC) {
                             try {
@@ -79,8 +79,8 @@ public class Gui extends SubCommand {
             }
         } else if (args.length == 1 && sender instanceof Player p) {
             for (LayerContainer layer : CraftApoli.getLayers()) {
-                OriginPlayer.unassignPowers(p);
-                OriginPlayer.setOrigin(p, layer, CraftApoli.nullOrigin());
+                OriginPlayerUtils.unassignPowers(p);
+                OriginPlayerUtils.setOrigin(p, layer, CraftApoli.nullOrigin());
                 for (Player pls : Bukkit.getOnlinePlayers()) {
                     pls.hidePlayer(GenesisMC.getPlugin(), p);
                 }

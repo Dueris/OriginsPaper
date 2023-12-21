@@ -1,6 +1,6 @@
 package me.dueris.genesismc.factory.powers.player;
 
-import me.dueris.genesismc.entity.OriginPlayer;
+import me.dueris.genesismc.entity.OriginPlayerUtils;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.OriginContainer;
@@ -39,7 +39,7 @@ public class Exhaust extends CraftPower {
     @Override
     public void run(Player p) {
         if (more_exhaustion.contains(p)) {
-            for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
+            for (OriginContainer origin : OriginPlayerUtils.getOrigin(p).values()) {
                 for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
                     if (power == null) continue;
                     if (power.getInterval() == null) {
@@ -53,19 +53,11 @@ public class Exhaust extends CraftPower {
                     } else {
                         ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                         if (conditionExecutor.check("condition", "conditions", p, power, "origins:exhaust", p, null, null, null, p.getItemInHand(), null)) {
-                            if (power == null) {
-                                getPowerArray().remove(p);
-                                return;
-                            }
-                            if (!getPowerArray().contains(p)) return;
+
                             setActive(p, power.getTag(), true);
                             p.setExhaustion(p.getExhaustion() - Float.parseFloat(power.get("exhaustion", "1")));
                         } else {
-                            if (power == null) {
-                                getPowerArray().remove(p);
-                                return;
-                            }
-                            if (!getPowerArray().contains(p)) return;
+
                             setActive(p, power.getTag(), false);
                         }
                         ticksE = 0;

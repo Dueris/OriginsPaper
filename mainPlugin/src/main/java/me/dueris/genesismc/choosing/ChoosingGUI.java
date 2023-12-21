@@ -1,7 +1,7 @@
 package me.dueris.genesismc.choosing;
 
 import me.dueris.genesismc.GenesisMC;
-import me.dueris.genesismc.entity.OriginPlayer;
+import me.dueris.genesismc.entity.OriginPlayerUtils;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.utils.LayerContainer;
 import org.bukkit.Bukkit;
@@ -19,10 +19,10 @@ public class ChoosingGUI extends BukkitRunnable {
         for (Player p : Bukkit.getOnlinePlayers()) {
             for (LayerContainer layer : CraftApoli.getLayers()) {
                 try {
-                    if (OriginPlayer.hasOrigin(p, CraftApoli.nullOrigin().getTag())) {
+                    if (OriginPlayerUtils.hasOrigin(p, CraftApoli.nullOrigin().getTag())) {
                         String openInventoryTitle = p.getOpenInventory().getTitle();
                         if (!openInventoryTitle.startsWith("Choosing Menu") && !openInventoryTitle.startsWith("Custom Origins") && !openInventoryTitle.startsWith("Custom Origin") && !openInventoryTitle.startsWith("Origin")) {
-                                if (OriginPlayer.getOrigin(p, layer).getTag().equals(CraftApoli.nullOrigin().getTag())) {
+                                if (OriginPlayerUtils.getOrigin(p, layer).getTag().equals(CraftApoli.nullOrigin().getTag())) {
                                     choosing.put(p, layer);
                                     Inventory mainmenu = Bukkit.createInventory(p, 54, "Choosing Menu - " + layer.getName());
                                     mainmenu.setContents(GenesisMainMenuContents(p));

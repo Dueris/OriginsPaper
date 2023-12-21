@@ -1,7 +1,7 @@
 package me.dueris.genesismc.factory.powers.actions;
 
 import me.dueris.genesismc.GenesisMC;
-import me.dueris.genesismc.entity.OriginPlayer;
+import me.dueris.genesismc.entity.OriginPlayerUtils;
 import me.dueris.genesismc.factory.actions.Actions;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.OriginContainer;
@@ -27,7 +27,7 @@ public class ActionWhenDamageTaken extends CraftPower implements Listener {
     public void d(EntityDamageEvent e) {
         Entity actor = e.getEntity();
         if (!(actor instanceof Player player)) return;
-        for (OriginContainer origin : OriginPlayer.getOrigin((Player) actor).values()) {
+        for (OriginContainer origin : OriginPlayerUtils.getOrigin((Player) actor).values()) {
             for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
                 if (power == null) continue;
                 Actions.EntityActionType(actor, power.getEntityAction());

@@ -1,6 +1,7 @@
 package me.dueris.genesismc.utils;
 
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.json.simple.JSONObject;
 
 import java.io.Serial;
@@ -13,7 +14,7 @@ public class OriginContainer implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
-    String tag;
+    NamespacedKey tag;
     FileContainer layerFile;
     HashMap<String, Object> originFile;
     ArrayList<PowerContainer> powerContainer;
@@ -26,7 +27,7 @@ public class OriginContainer implements Serializable {
      * @param originFile     The origin file, parsed into a HashMap.
      * @param powerContainer An array of powers that the origin has.
      */
-    public OriginContainer(String tag, FileContainer layerFile, HashMap<String, Object> originFile, ArrayList<PowerContainer> powerContainer) {
+    public OriginContainer(NamespacedKey tag, FileContainer layerFile, HashMap<String, Object> originFile, ArrayList<PowerContainer> powerContainer) {
         this.tag = tag;
         this.layerFile = layerFile;
         this.originFile = originFile;
@@ -45,7 +46,7 @@ public class OriginContainer implements Serializable {
      * @return The origin tag.
      */
     public String getTag() {
-        return this.tag;
+        return this.tag.asString();
     }
 
     /**

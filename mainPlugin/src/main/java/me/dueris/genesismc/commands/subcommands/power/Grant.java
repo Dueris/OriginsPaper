@@ -2,7 +2,7 @@ package me.dueris.genesismc.commands.subcommands.power;
 
 import me.dueris.genesismc.commands.PlayerSelector;
 import me.dueris.genesismc.commands.subcommands.SubCommand;
-import me.dueris.genesismc.entity.OriginPlayer;
+import me.dueris.genesismc.entity.OriginPlayerUtils;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.PowerContainer;
@@ -37,7 +37,7 @@ public class Grant extends SubCommand {
                         for (Class<? extends CraftPower> cX : CraftPower.getRegistered()) {
                             try {
                                 if (cX.newInstance().getPowerFile().equalsIgnoreCase(c.getType())) {
-                                    OriginPlayer.getPowersApplied(p).add(cX);
+                                    OriginPlayerUtils.getPowersApplied(p).add(cX);
                                     sender.sendMessage("Entity " + p.getName() + " was granted the power " + c.getName() + " from source apoli:command");
                                     break;
                                 }

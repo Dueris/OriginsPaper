@@ -6,7 +6,7 @@ import me.dueris.genesismc.commands.subcommands.origin.Info.Info;
 import me.dueris.genesismc.commands.subcommands.power.Clear;
 import me.dueris.genesismc.commands.subcommands.power.Grant;
 import me.dueris.genesismc.commands.subcommands.power.Has;
-import me.dueris.genesismc.entity.OriginPlayer;
+import me.dueris.genesismc.entity.OriginPlayerUtils;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.factory.powers.Power;

@@ -1,7 +1,7 @@
 package me.dueris.genesismc.factory.powers.player;
 
 import me.dueris.genesismc.GenesisMC;
-import me.dueris.genesismc.entity.OriginPlayer;
+import me.dueris.genesismc.entity.OriginPlayerUtils;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.OriginContainer;
@@ -68,16 +68,12 @@ public class Climbing extends CraftPower {
                             p.getEyeLocation().getBlock().getRelative(BlockFace.SOUTH).getType().isCollidable()
             )) {
                 Block block = p.getTargetBlock(null, 2);
-                for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
+                for (OriginContainer origin : OriginPlayerUtils.getOrigin(p).values()) {
                     for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
                         boolean cancel_bool = power.getRainCancel();
                         ConditionExecutor executor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                         if (executor.check("condition", "conditions", p, power, getPowerFile(), p, null, null, null, p.getItemInHand(), null)) {
-                            if (power == null) {
-                                getPowerArray().remove(p);
-                                return;
-                            }
-                            if (!getPowerArray().contains(p)) return;
+
                             setActive(p, power.getTag(), true);
                             if (!cancel_bool) {
                                 if (!p.isSneaking()) return;
@@ -102,11 +98,7 @@ public class Climbing extends CraftPower {
                                 }
                             }
                         } else {
-                            if (power == null) {
-                                getPowerArray().remove(p);
-                                return;
-                            }
-                            if (!getPowerArray().contains(p)) return;
+
                             setActive(p, power.getTag(), false);
                         }
                     }
