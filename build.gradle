@@ -1,1 +1,113 @@
+plugins {
+    id 'java'
+    id 'maven-publish'
+    id("io.papermc.paperweight.userdev") version "1.5.5"
+    id("xyz.jpenilla.run-paper") version "2.2.0"
+}
 
+apply plugin: 'java'
+apply plugin: 'maven-publish'
+group = 'me.dueris'
+version = 'mc1.20-v0.2.5'
+
+publishing {
+    repositories {
+        mavenLocal()
+    }
+    publications {
+        maven(MavenPublication) {
+            artifactId = 'genesis-origin'
+            from components.java
+        }
+    }
+}
+
+sourceCompatibility = JavaVersion.VERSION_17
+targetCompatibility = JavaVersion.VERSION_17
+
+repositories {
+    mavenCentral()
+    maven {
+        url "https://dl.cloudsmith.io/public/genesismc/genesismc/maven"
+    }
+    maven {
+        name = "papermc-repo"
+        url = "https://repo.papermc.io/repository/maven-public/"
+    }
+    maven {
+        name = "sonatype"
+        url = "https://oss.sonatype.org/content/groups/public/"
+    }
+    maven {
+        name = "opencollab-snapshot-repo"
+        url = "https://repo.opencollab.dev/main/"
+    }
+    maven {
+        url = "https://repo.extendedclip.com/content/repositories/placeholderapi/"
+    }
+    maven { url 'https://repo.inventivetalent.org/repository/public/' }
+    maven {
+        url = "https://repo.codemc.org/repository/maven-releases/"
+    }
+    maven { url = "https://jitpack.io"}
+    maven { url = "https://repo.spongepowered.org/repository/maven-public/"}
+}
+
+java {
+    toolchain.languageVersion.set(JavaLanguageVersion.of(17))
+}
+
+configurations {
+        shade
+        noShadow
+}
+
+dependencies {
+    paperweight.paperDevBundle("1.20.4-R0.1-SNAPSHOT")
+    compileOnly("me.clip:placeholderapi:2.11.4")
+    compileOnly("org.geysermc.geyser:api:2.2.0-SNAPSHOT")
+    compileOnly("net.skinsrestorer:skinsrestorer-api:15.0.4")
+    compileOnly "org.mineskin:java-client:1.2.4-SNAPSHOT"
+    compileOnly("org.reflections:reflections:0.9.12")
+    // shade
+    shade("org.reflections:reflections:0.9.12")
+    shade("org.mineskin:java-client:1.2.4-SNAPSHOT")
+}
+
+jar {
+    duplicatesStrategy(DuplicatesStrategy.EXCLUDE)
+    includeEmptyDirs = false
+
+    from {
+        configurations.shade.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}
+
+tasks {
+    // Configure reobfJar to run when invoking the build task
+    assemble {
+        dependsOn(reobfJar)
+    }
+}
+
+def targetJavaVersion = 17
+java {
+    def javaVersion = JavaVersion.toVersion(targetJavaVersion)
+    sourceCompatibility = javaVersion
+    targetCompatibility = javaVersion
+}
+
+tasks.withType(JavaCompile).configureEach {
+    if (targetJavaVersion >= 10 || JavaVersion.current().isJava10Compatible()) {
+        options.release = targetJavaVersion
+    }
+}
+
+processResources {
+    def props = [version: version]
+    inputs.properties props
+    filteringCharset 'UTF-8'
+    filesMatching('plugin.yml') {
+        expand props
+    }
+}

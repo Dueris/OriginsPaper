@@ -1,2 +1,1 @@
-rootProject.name = 'genesismc.jar'
-include ':mixin', ':mainPlugin'
+rootProject.name = 'genesis-standalone'
