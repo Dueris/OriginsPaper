@@ -1,5 +1,4 @@
 bootstrapper: me.dueris.genesismc.Bootstrap
-prefix: OriginPaper
 load: POSTWORLD
 name: GenesisMC
 version: 'mc1.20-0.2.5'
