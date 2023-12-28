@@ -139,13 +139,13 @@ public class ConditionExecutor {
         return allTrue;
     }
 
-    public BiEntityCondition biEntityCondition = new BiEntityCondition();
-    public BiomeCondition biomeCondition = new BiomeCondition();
-    public BlockCondition blockCondition = new BlockCondition();
-    public DamageCondition damageCondition = new DamageCondition();
-    public EntityCondition entityCondition = new EntityCondition();
-    public FluidCondition fluidCondition = new FluidCondition();
-    public ItemCondition itemCondition = new ItemCondition();
+    public static BiEntityCondition biEntityCondition = new BiEntityCondition();
+    public static BiomeCondition biomeCondition = new BiomeCondition();
+    public static BlockCondition blockCondition = new BlockCondition();
+    public static DamageCondition damageCondition = new DamageCondition();
+    public static EntityCondition entityCondition = new EntityCondition();
+    public static FluidCondition fluidCondition = new FluidCondition();
+    public static ItemCondition itemCondition = new ItemCondition();
 
     public boolean check(String singular, String plural, Player p, PowerContainer powerContainer, String powerfile, Entity actor, Entity target, Block block, Fluid fluid, ItemStack itemStack, EntityDamageEvent dmgevent) {
         if (powerContainer == null) return true;
