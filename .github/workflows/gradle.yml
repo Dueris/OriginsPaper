@@ -23,9 +23,20 @@ jobs:
       run: |
         chmod +x ./gradlew
         ./gradlew build
-        ./gradlew publish
       env:
         GIT_TOKEN: ${{ secrets.GIT_TOKEN }}
+    - name: Set Commit Hash
+      id: set_commit_hash
+      run: echo "COMMIT_HASH=$(git log --format='%H' -n 1)" >> $GITHUB_ENV
+    - name: Release
+      if: "!contains(github.event.head_commit.message, '--skip') && !contains(github.event.head_commit.commit.message, '--skip')"
+      uses: softprops/action-gh-release@v1
+      with:
+        name: Build ${{ github.run_number }}
+        tag_name: ${{ github.run_number }}
+        body: \"changes\"=${{ github.event.head_commit.message }}
+        token: ${{ secrets.GIT_TOKEN }}
+        files: build/libs/*.jar
     - name: Notify Discord
       if: ${{ (success() || failure()) }}
       uses: Tim203/actions-git-discord-webhook@70f38ded3aca51635ec978ab4e1a58cd4cd0c2ff
