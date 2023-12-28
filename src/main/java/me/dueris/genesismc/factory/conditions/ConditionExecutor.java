@@ -72,7 +72,6 @@ public class ConditionExecutor {
             boolean subConditionResult = false;
 
             if (dmgevent != null) {
-                DamageCondition damageCondition = new DamageCondition();
                 var check = damageCondition.check(subCondition, p, power, powerfile, actor, target, block, fluid, itemStack, dmgevent);
                 if (check.isPresent()) {
                     subConditionResult = (boolean) check.get();
@@ -80,7 +79,6 @@ public class ConditionExecutor {
             }
 
             if (!subConditionResult && actor != null) {
-                EntityCondition entityCondition = new EntityCondition();
                 var check = entityCondition.check(subCondition, p, power, powerfile, actor, target, block, fluid, itemStack, dmgevent);
                 if (check.isPresent()) {
                     subConditionResult = (boolean) check.get();
@@ -88,7 +86,6 @@ public class ConditionExecutor {
             }
 
             if (!subConditionResult && actor != null && target != null) {
-                BiEntityCondition biEntityCondition = new BiEntityCondition();
                 var check = biEntityCondition.check(subCondition, p, power, powerfile, actor, target, block, fluid, itemStack, dmgevent);
                 if (check.isPresent()) {
                     subConditionResult = (boolean) check.get();
@@ -96,13 +93,11 @@ public class ConditionExecutor {
             }
 
             if (!subConditionResult && block != null) {
-                BlockCondition blockCondition = new BlockCondition();
                 var check = blockCondition.check(subCondition, p, power, powerfile, actor, target, block, fluid, itemStack, dmgevent);
                 if (check.isPresent()) {
                     subConditionResult = (boolean) check.get();
                 }
-
-                BiomeCondition biomeCondition = new BiomeCondition();
+                
                 var check2 = biomeCondition.check(subCondition, p, power, powerfile, actor, target, block, fluid, itemStack, dmgevent);
                 if (check2.isPresent()) {
                     subConditionResult = (boolean) check2.get();
@@ -110,7 +105,6 @@ public class ConditionExecutor {
             }
 
             if (!subConditionResult && fluid != null) {
-                FluidCondition fluidCondition = new FluidCondition();
                 var check = fluidCondition.check(subCondition, p, power, powerfile, actor, target, block, fluid, itemStack, dmgevent);
                 if (check.isPresent()) {
                     subConditionResult = (boolean) check.get();
@@ -118,8 +112,7 @@ public class ConditionExecutor {
             }
 
             if (!subConditionResult && itemStack != null) {
-                ItemCondition condition = new ItemCondition();
-                var check = condition.check(subCondition, p, power, powerfile, actor, target, block, fluid, itemStack, dmgevent);
+                var check = itemCondition.check(subCondition, p, power, powerfile, actor, target, block, fluid, itemStack, dmgevent);
                 if (check.isPresent()) {
                     subConditionResult = (boolean) check.get();
                 }
