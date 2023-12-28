@@ -432,12 +432,19 @@ public class CraftApoli {
                 containedOrigins.put(layer, CraftApoli.nullOrigin());
             }
         } else {
-            String[] layers = originData.split("\n");
-            for (String layer : layers) {
-                String[] layerData = layer.split("\\|");
-                LayerContainer layerContainer = CraftApoli.getLayerFromTag(layerData[0]);
-                OriginContainer originContainer = CraftApoli.getOrigin(layerData[1]);
-                containedOrigins.put(layerContainer, originContainer);
+            try{
+                String[] layers = originData.split("\n");
+                for (String layer : layers) {
+                    String[] layerData = layer.split("\\|");
+                    LayerContainer layerContainer = CraftApoli.getLayerFromTag(layerData[0]);
+                    OriginContainer originContainer = CraftApoli.getOrigin(layerData[1]);
+                    containedOrigins.put(layerContainer, originContainer);
+                }
+            }catch(Exception e){
+                for(LayerContainer layer : CraftApoli.getLayers()){
+                    containedOrigins.put(layer, CraftApoli.nullOrigin());
+                }
+                return containedOrigins;
             }
         }
         return containedOrigins;
