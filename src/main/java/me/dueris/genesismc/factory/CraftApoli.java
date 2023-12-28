@@ -407,12 +407,16 @@ public class CraftApoli {
      **/
     public static OriginContainer toOrigin(String originData, LayerContainer originLayer) {
         if (originData != null) {
-            String[] layers = originData.split("\n");
-            for (String layer : layers) {
-                String[] layerData = layer.split("\\|");
-                if (CraftApoli.getLayerFromTag(layerData[0]).equals(originLayer)) {
-                    return CraftApoli.getOrigin(layerData[1]);
+            try{
+                String[] layers = originData.split("\n");
+                for (String layer : layers) {
+                    String[] layerData = layer.split("\\|");
+                    if (CraftApoli.getLayerFromTag(layerData[0]).equals(originLayer)) {
+                        return CraftApoli.getOrigin(layerData[1]);
+                    }
                 }
+            }catch(Exception e){
+                return CraftApoli.nullOrigin();
             }
         }
         return CraftApoli.nullOrigin();
