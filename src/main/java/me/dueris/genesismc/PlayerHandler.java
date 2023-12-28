@@ -115,7 +115,15 @@ public class PlayerHandler implements Listener {
                 p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "hasFirstChose"), PersistentDataType.BOOLEAN, false);
             }
         }
-
+        if (!p.getPersistentDataContainer().has(new NamespacedKey(GenesisMC.getPlugin(), "originLayer"), PersistentDataType.STRING) || p.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "originLayer"), PersistentDataType.STRING) == null){
+            HashMap<LayerContainer, OriginContainer> origins = new HashMap<>();
+            for (LayerContainer layer : CraftApoli.getLayers()) origins.put(layer, CraftApoli.nullOrigin());
+            p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "originLayer"), PersistentDataType.STRING, CraftApoli.toSaveFormat(origins));
+            if (!p.getPersistentDataContainer().has(new NamespacedKey(GenesisMC.getPlugin(), "hasFirstChose"), PersistentDataType.BOOLEAN)){
+                p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "hasFirstChose"), PersistentDataType.BOOLEAN, false);
+            }
+        }
+                                               
         // ---  translation system ---
         String originTag = p.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "originTag"), PersistentDataType.STRING);
 
@@ -145,11 +153,11 @@ public class PlayerHandler implements Listener {
         }
         Bukkit.getLogger().warning("[GenesisMC] Reminder to devs - fix old origin container translation");
 
-        if (p.getPersistentDataContainer().has(new NamespacedKey(GenesisMC.getPlugin(), "insideBlock"), PersistentDataType.BOOLEAN)) {
+        if (!p.getPersistentDataContainer().has(new NamespacedKey(GenesisMC.getPlugin(), "insideBlock"), PersistentDataType.BOOLEAN)) {
             p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "insideBlock"), PersistentDataType.BOOLEAN, false);
         }
 
-        if (p.getPersistentDataContainer().has(new NamespacedKey(GenesisMC.getPlugin(), "reach"), PersistentDataType.INTEGER)) {
+        if (!p.getPersistentDataContainer().has(new NamespacedKey(GenesisMC.getPlugin(), "reach"), PersistentDataType.INTEGER)) {
             p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "reach"), PersistentDataType.INTEGER, AttributeHandler.Reach.getDefaultReach(p));
         }
 
