@@ -55,6 +55,7 @@ public class ModifyPlayerSpawnPower extends CraftPower implements Listener {
     public void runD(PlayerRespawnEvent e) {
         if (e.getRespawnReason().equals(PlayerRespawnEvent.RespawnReason.END_PORTAL)) return;
             if (e.getRespawnReason().equals(PlayerRespawnEvent.RespawnReason.PLUGIN)) return;
+            if (!getPowerArray().contains(e.getPlayer())) return;
             if(e.getPlayer().getBedSpawnLocation() != null) {
                 e.getPlayer().teleport(e.getPlayer().getBedSpawnLocation());
             }else{
