@@ -399,6 +399,7 @@ public class CraftApoli {
             if (powers != null) for (String power : powers) data.append("|").append(power);
             data.append("\n");
         }
+        System.out.println(data.toString());
         return data.toString();
     }
 
@@ -416,6 +417,7 @@ public class CraftApoli {
                     }
                 }
             }catch(Exception e){
+                e.printStackTrace();
                 return CraftApoli.nullOrigin();
             }
         }
@@ -441,6 +443,7 @@ public class CraftApoli {
                     containedOrigins.put(layerContainer, originContainer);
                 }
             }catch(Exception e){
+                e.printStackTrace();
                 for(LayerContainer layer : CraftApoli.getLayers()){
                     containedOrigins.put(layer, CraftApoli.nullOrigin());
                 }
