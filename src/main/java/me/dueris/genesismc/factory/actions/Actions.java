@@ -77,7 +77,7 @@ public class Actions {
 //                else damageType = "minecraft:kill";
 
             //target.setLastDamageCause(new EntityDamageEvent(actor, EntityDamageEvent.DamageCause.valueOf(damageType.split(":")[1].toUpperCase()), ((Player) target).getLastDamage()));
-            ((Player) target).damage(amount);
+            ((LivingEntity) target).damage(amount);
         }
         if (type.equals("origins:mount")) {
             target.addPassenger(actor);
