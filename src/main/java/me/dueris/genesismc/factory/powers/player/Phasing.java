@@ -1,6 +1,7 @@
 package me.dueris.genesismc.factory.powers.player;
 
 import com.destroystokyo.paper.event.player.PlayerStartSpectatingEntityEvent;
+import com.destroystokyo.paper.event.server.ServerTickEndEvent;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.entity.OriginPlayerUtils;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
@@ -29,12 +30,36 @@ import java.util.HashMap;
 
 public class Phasing extends CraftPower implements Listener {
 
-    public static ArrayList<Player> IN_PHANTOM_FORM_BLOCKS = new ArrayList<>();
+    public static ArrayList<Player> inPhantomFormBlocks = new ArrayList<>();
     public static HashMap<Player, Boolean> test = new HashMap<>();
 
     @EventHandler
     public void je(PlayerJoinEvent e){
         test.put(e.getPlayer(), false);
+    }
+
+    @EventHandler
+    public void setPlayerOutRestart(ServerTickEndEvent e){
+        for(Player p : Bukkit.getOnlinePlayers()){
+            if(getPowerArray().contains(p)){
+                if(inPhantomFormBlocks.contains(p)){
+                    // Remove them from phantom form blocks
+                    if (p.getGameMode().equals(GameMode.SPECTATOR)) {
+                        if (p.getPreviousGameMode().equals(GameMode.CREATIVE)) {
+                            p.setGameMode(p.getPreviousGameMode());
+                            p.setFlying(false);
+                        } else {
+                            p.setGameMode(p.getPreviousGameMode());
+                            if (p.isOnGround()) ;
+                            p.setFlying(false);
+                        }
+                        p.setFlySpeed(0.1F);
+                        p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "insideBlock"), PersistentDataType.BOOLEAN, false);
+
+                    }
+                }
+            }
+        }
     }
 
     @Override
@@ -119,6 +144,7 @@ public class Phasing extends CraftPower implements Listener {
 
     public static void setInPhasingBlockForm(Player p) {
         test.put(p, true);
+        inPhantomFormBlocks.add(p);
         if (Bukkit.getServer().getPluginManager().isPluginEnabled("Geyser-Spigot")) {
             if (GeyserApi.api().isBedrockPlayer(p.getUniqueId())) {
                 if (p.getGameMode().equals(GameMode.CREATIVE)) {
@@ -127,7 +153,6 @@ public class Phasing extends CraftPower implements Listener {
                     p.setGameMode(GameMode.SPECTATOR);
                 }
                 p.setCollidable(false);
-                IN_PHANTOM_FORM_BLOCKS.add(p);
                 p.setAllowFlight(true);
                 p.setFlying(true);
             } else {
@@ -139,7 +164,6 @@ public class Phasing extends CraftPower implements Listener {
                     ((CraftPlayer) p).getHandle().connection.send(new ClientboundGameEventPacket(ClientboundGameEventPacket.CHANGE_GAME_MODE, 0));
                 }
                 p.setCollidable(false);
-                IN_PHANTOM_FORM_BLOCKS.add(p);
                 p.setAllowFlight(true);
                 p.setFlying(true);
             }
@@ -152,7 +176,6 @@ public class Phasing extends CraftPower implements Listener {
                 ((CraftPlayer) p).getHandle().connection.send(new ClientboundGameEventPacket(ClientboundGameEventPacket.CHANGE_GAME_MODE, 0));
             }
             p.setCollidable(false);
-            IN_PHANTOM_FORM_BLOCKS.add(p);
             p.setAllowFlight(true);
             p.setFlying(true);
         }
