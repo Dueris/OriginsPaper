@@ -91,7 +91,11 @@ public class CraftApoli {
         ArrayList<Object> values = new ArrayList<>();
         for (Object key : JSONFileParser.keySet()) {
             keys.add((String) key);
-            values.add(JSONFileParser.get(key));
+            if(JSONFileParser.get(key).toString().startsWith("apoli:")){
+                values.add(JSONFileParser.get(key).toString().replace("apoli:", "origins:"));
+            }else{
+                values.add(JSONFileParser.get(key));
+            }
         }
         return new FileContainer(keys, values);
     }
