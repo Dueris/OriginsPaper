@@ -15,12 +15,18 @@ import me.dueris.genesismc.factory.powers.effects.StackingStatusEffect;
 import me.dueris.genesismc.factory.powers.player.attributes.AttributeHandler;
 import me.dueris.genesismc.utils.OriginContainer;
 import me.dueris.genesismc.utils.PowerContainer;
+import me.dueris.genesismc.utils.Utils;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.level.storage.LevelResource;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.boss.BossBar;
+import org.bukkit.craftbukkit.v1_20_R3.entity.CraftLivingEntity;
+import org.bukkit.craftbukkit.v1_20_R3.entity.CraftPlayer;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.*;
 import org.bukkit.event.entity.EntityDamageEvent;
@@ -66,18 +72,28 @@ public class Actions {
             else target.setVelocity(target.getVelocity().add(new Vector(x, y, z)));
         }
         if (type.equals("origins:damage")) {
-            //haven't been able to find a way to change the damage type
             float amount = 0.0f;
-//                String damageType;
 
             if (biEntityAction.containsKey("amount"))
                 amount = Float.parseFloat(biEntityAction.get("amount").toString());
-//                if (biEntityAction.containsKey("damage_type")) damageType = biEntityAction.get("damage_type").toString();
-//                else damageType = "minecraft:kill";
-//                else damageType = "minecraft:kill";
 
-            //target.setLastDamageCause(new EntityDamageEvent(actor, EntityDamageEvent.DamageCause.valueOf(damageType.split(":")[1].toUpperCase()), ((Player) target).getLastDamage()));
-            ((LivingEntity) target).damage(amount);
+            String namespace;
+            String key;
+            if(biEntityAction.get("damage_type") != null){
+                if(biEntityAction.get("damage_type").toString().contains(":")){
+                    namespace = biEntityAction.get("damage_type").toString().split(":")[0];
+                    key = biEntityAction.get("damage_type").toString().split(":")[1];
+                }else{
+                    namespace = "minecraft";
+                    key = biEntityAction.get("damage_type").toString();
+                }
+            }else{
+                namespace = "minecraft";
+                key = "generic";
+            }
+            DamageType dmgType = Utils.DAMAGE_REGISTRY.get(new ResourceLocation(namespace, key));
+            net.minecraft.world.entity.LivingEntity serverPlayer = ((CraftLivingEntity) target).getHandle();
+            serverPlayer.hurt(Utils.getDamageSource(dmgType), amount);
         }
         if (type.equals("origins:mount")) {
             target.addPassenger(actor);
