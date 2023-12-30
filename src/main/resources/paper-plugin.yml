@@ -1,7 +1,7 @@
 bootstrapper: me.dueris.genesismc.Bootstrap
 load: POSTWORLD
 name: GenesisMC
-version: 'mc1.20-0.2.5'
+version: 'mc1.20-0.2.6'
 main: me.dueris.genesismc.GenesisMC
 api-version: '1.20'
 authors: [ Dueris, Tye ]
