@@ -28,9 +28,6 @@ targetCompatibility = JavaVersion.VERSION_17
 repositories {
     mavenCentral()
     maven {
-        url "https://dl.cloudsmith.io/public/genesismc/genesismc/maven"
-    }
-    maven {
         name = "papermc-repo"
         url = "https://repo.papermc.io/repository/maven-public/"
     }

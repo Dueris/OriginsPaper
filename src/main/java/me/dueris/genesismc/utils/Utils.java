@@ -1,5 +1,9 @@
 package me.dueris.genesismc.utils;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -37,6 +41,16 @@ public class Utils {
 
     public static Registry<?> getRegistry(ResourceKey<Registry<?>> registry){
         return CraftRegistry.getMinecraftRegistry().registryOrThrow(registry);
+    }
+
+    public String readJSONFileAsString(File file) {
+        String content = "";
+        try {
+            content = new String(Files.readAllBytes(Paths.get(file.getAbsolutePath())));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return content;
     }
     
     // Math
