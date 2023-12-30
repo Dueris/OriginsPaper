@@ -2,6 +2,7 @@ package me.dueris.genesismc.choosing;
 
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.entity.OriginPlayerUtils;
+import me.dueris.genesismc.events.OriginChangeEvent;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.powers.value_modifying.ModifyPlayerSpawnPower;
 import me.dueris.genesismc.utils.OriginContainer;
@@ -235,6 +236,8 @@ public class ChoosingCUSTOM implements Listener {
                 }.runTaskLater(GenesisMC.getPlugin(), 1);
                 ModifyPlayerSpawnPower power = new ModifyPlayerSpawnPower();
                 power.runHandle(p);
+                OriginChangeEvent event = new OriginChangeEvent(p);
+                event.callEvent();
                 OriginPlayerUtils.setHasFirstChose(p, true);
             }
         }

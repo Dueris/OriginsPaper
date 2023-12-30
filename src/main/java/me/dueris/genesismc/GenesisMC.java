@@ -91,6 +91,7 @@ import static me.dueris.genesismc.factory.powers.simple.BounceSlimeBlock.bounceP
 import static me.dueris.genesismc.factory.powers.simple.MimicWarden.getParticleTasks;
 import static me.dueris.genesismc.factory.powers.simple.MimicWarden.mimicWardenPlayers;
 import static me.dueris.genesismc.factory.powers.simple.PiglinNoAttack.piglinPlayers;
+import static me.dueris.genesismc.factory.powers.simple.ScareCreepers.scaryPlayers;
 import static me.dueris.genesismc.utils.BukkitColour.*;
 
 public final class GenesisMC extends JavaPlugin implements Listener {
@@ -355,10 +356,10 @@ public final class GenesisMC extends JavaPlugin implements Listener {
                     }
                 }
             }
-            if (hasScaryPower && !piglinPlayers.contains(p)) {
-                piglinPlayers.add(p);
+            if (hasScaryPower && !scaryPlayers.contains(p)) {
+                scaryPlayers.add(p);
             } else if (!hasScaryPower) {
-                piglinPlayers.remove(p);
+                scaryPlayers.remove(p);
             }
         }
     }
