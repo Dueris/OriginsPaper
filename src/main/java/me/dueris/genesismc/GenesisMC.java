@@ -344,6 +344,22 @@ public final class GenesisMC extends JavaPlugin implements Listener {
             } else if (!hasPiglinPower) {
                 piglinPlayers.remove(p);
             }
+
+            boolean hasScaryPower = false;
+
+            for (OriginContainer origin : OriginPlayerUtils.getOrigin(p).values()) {
+                for (PowerContainer power : origin.getPowerContainers()) {
+                    if (power.getTag().equals("origins:scare_creepers")) {
+                        hasPiglinPower = true;
+                        break;
+                    }
+                }
+            }
+            if (hasScaryPower && !piglinPlayers.contains(p)) {
+                piglinPlayers.add(p);
+            } else if (!hasScaryPower) {
+                piglinPlayers.remove(p);
+            }
         }
     }
 

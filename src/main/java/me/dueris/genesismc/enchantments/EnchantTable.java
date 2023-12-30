@@ -94,6 +94,7 @@ public class EnchantTable implements Listener {
         if (e.getResult() != null) {
             if (e.getInventory().getType().equals(InventoryType.GRINDSTONE)){
                 ItemStack item = e.getResult();
+                if(item == null) return;
                 if (item.getEnchantments().keySet().contains(CraftEnchantment.minecraftToBukkit(Anvil.eimpl))){
                     for(String loreString : item.getLore()){
                         if(loreString.startsWith("Water Protection")){

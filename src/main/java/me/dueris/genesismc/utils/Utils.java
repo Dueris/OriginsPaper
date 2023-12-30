@@ -8,7 +8,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 import java.util.function.BinaryOperator;
+import java.util.function.Predicate;
 
+import net.minecraft.world.entity.LivingEntity;
 import org.bukkit.craftbukkit.v1_20_R3.CraftRegistry;
 import org.bukkit.craftbukkit.v1_20_R3.CraftServer;
 
@@ -51,6 +53,10 @@ public class Utils {
             e.printStackTrace();
         }
         return content;
+    }
+
+    public static Predicate<LivingEntity> booleanToPredicate(boolean value) {
+        return obj -> value;
     }
     
     // Math

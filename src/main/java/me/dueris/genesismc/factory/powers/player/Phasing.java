@@ -38,30 +38,6 @@ public class Phasing extends CraftPower implements Listener {
         test.put(e.getPlayer(), false);
     }
 
-    @EventHandler
-    public void setPlayerOutRestart(ServerTickEndEvent e){
-        for(Player p : Bukkit.getOnlinePlayers()){
-            if(getPowerArray().contains(p)){
-                if(inPhantomFormBlocks.contains(p)){
-                    // Remove them from phantom form blocks
-                    if (p.getGameMode().equals(GameMode.SPECTATOR)) {
-                        if (p.getPreviousGameMode().equals(GameMode.CREATIVE)) {
-                            p.setGameMode(p.getPreviousGameMode());
-                            p.setFlying(false);
-                        } else {
-                            p.setGameMode(p.getPreviousGameMode());
-                            if (p.isOnGround()) ;
-                            p.setFlying(false);
-                        }
-                        p.setFlySpeed(0.1F);
-                        p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "insideBlock"), PersistentDataType.BOOLEAN, false);
-
-                    }
-                }
-            }
-        }
-    }
-
     @Override
     public void run(Player p) {
         if (getPowerArray().contains(p)) {
