@@ -44,7 +44,7 @@ public class AttributeHandler extends CraftPower implements Listener {
     }
 
     public static Map<String, BinaryOperator<Float>> getOperationMappingsFloat() {
-        return getOperationMappingsFloat();
+        return Utils.getOperationMappingsFloat();
     }
 
     public static void executeAttributeModify(String operation, Attribute attribute_modifier, double base_value, Player p, Double value) {
