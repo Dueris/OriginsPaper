@@ -53,6 +53,7 @@ import net.kyori.adventure.text.format.TextColor;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.thread.NamedThreadFactory;
 import net.minecraft.world.damagesource.DamageType;
 
 import org.bukkit.*;
@@ -82,6 +83,7 @@ import java.util.HashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
 
 import static me.dueris.genesismc.PlayerHandler.ReapplyEntityReachPowers;
 import static me.dueris.genesismc.factory.powers.simple.BounceSlimeBlock.bouncePlayers;
@@ -192,7 +194,8 @@ public final class GenesisMC extends JavaPlugin implements Listener {
             WatchdogThread.doStop();
         }
         CraftApoli.setupDynamicThreadCount();
-        loaderThreadPool = Executors.newFixedThreadPool(CraftApoli.getDynamicThreadCount());
+        ThreadFactory threadFactory = new NamedThreadFactory("OriginParsingPool");
+        loaderThreadPool = Executors.newFixedThreadPool(CraftApoli.getDynamicThreadCount(), threadFactory);
         debugOrigins = getOrDefault(GenesisDataFiles.getMainConfig().getBoolean("console-startup-debug") /* add arg compat in future version */, false);
         if(LangConfig.getLangFile() == null){
             Bukkit.getLogger().severe("Unable to start GenesisMC due to lang not being loaded properly");
@@ -295,6 +298,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 
             for (OriginContainer origin : OriginPlayerUtils.getOrigin(p).values()) {
                 for (PowerContainer power : origin.getPowerContainers()) {
+                    if (power == null) continue;
                     if (power.getTag().equals("origins:mimic_warden")) {
                         hasMimicWardenPower = true;
                         break;

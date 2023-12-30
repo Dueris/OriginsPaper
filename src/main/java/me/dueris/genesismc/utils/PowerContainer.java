@@ -23,16 +23,15 @@ public class PowerContainer implements Serializable {
     /**
      * @param powerTag    The power tag.
      * @param powerFile   The data within a power file.
-     * @param powerSource What applied the power to the origin.
      */
-    public PowerContainer(NamespacedKey powerTag, FileContainer powerFile, String powerSource) {
+    public PowerContainer(NamespacedKey powerTag, FileContainer powerFile) {
         this.powerTag = powerTag;
         this.powerFile = powerFile;
         this.powerSource = powerSource;
         this.originMultiple = false;
     }
 
-    public PowerContainer(NamespacedKey powerTag, FileContainer powerFile, String powerSource, boolean originMultiple){
+    public PowerContainer(NamespacedKey powerTag, FileContainer powerFile, boolean originMultiple){
         this.powerTag = powerTag;
         this.powerFile = powerFile;
         this.powerSource = powerSource;
@@ -54,27 +53,12 @@ public class PowerContainer implements Serializable {
         return this.powerTag.asString();
     }
 
-//    /**
-//     * @return The power file.
-//     */
-//    public FileContainer getFile() {
-//        return this.powerFile;
-//    }
-
-    /**
-     * @return The source of the power.
-     */
-    public String getSource() {
-        return this.powerSource;
-    }
-
-
     /**
      * @return The powerContainer formatted for debugging, not to be used in other circumstances.
      */
     @Override
     public String toString() {
-        return "powerTag: " + this.powerTag + ", PowerFile: " + this.powerFile.toString() + ", PowerSource: " + this.powerSource;
+        return "powerTag: " + this.powerTag + ", PowerFile: " + this.powerFile.toString();
     }
 
     public ArrayList<Long> getSlots() {

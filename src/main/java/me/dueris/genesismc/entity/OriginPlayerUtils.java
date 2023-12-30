@@ -307,6 +307,7 @@ public class OriginPlayerUtils {
             player.sendMessage("BRO ITS EMPTY WAHT");
         }
         for (PowerContainer power : origin.getPowerContainers()) {
+            if (power == null) continue;
             for (Class<? extends CraftPower> c : CraftPower.getRegistered()) {
                 CraftPower craftPower = null;
 

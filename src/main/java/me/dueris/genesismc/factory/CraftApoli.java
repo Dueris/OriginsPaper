@@ -1,34 +1,25 @@
 package me.dueris.genesismc.factory;
 
 import io.netty.util.internal.ConcurrentSet;
-import me.clip.placeholderapi.libs.kyori.adventure.key.Namespaced;
 import me.dueris.genesismc.GenesisMC;
-import me.dueris.genesismc.events.OriginLoadEvent;
+import me.dueris.genesismc.factory.powers.Power;
 import me.dueris.genesismc.files.GenesisDataFiles;
 import me.dueris.genesismc.utils.*;
-import me.dueris.genesismc.utils.translation.LangConfig;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.TextColor;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.storage.LevelResource;
-import oshi.hardware.VirtualMemory;
+import org.json.simple.parser.ParseException;
 
 import org.apache.commons.io.FilenameUtils;
-import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
-import com.destroystokyo.paper.NamespacedTag;
-
-import java.beans.JavaBean;
 import java.io.*;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
@@ -41,7 +32,8 @@ public class CraftApoli {
     private static ConcurrentSet<OriginContainer> originContainers = new ConcurrentSet<>();
     @SuppressWarnings("FieldMayBeFinal")
     private static ConcurrentSet<PowerContainer> powerContainers = new ConcurrentSet<>();
-
+    @SuppressWarnings("FieldMayBeFinal")
+    private static ConcurrentHashMap<String, PowerContainer> keyedPowerContainers = new ConcurrentHashMap();
 
     /**
      * @return A copy of each layerTag that is loaded.
@@ -70,11 +62,15 @@ public class CraftApoli {
         return (ArrayList<PowerContainer>) d;
     }
 
+    public static PowerContainer getPowerContainerFromTag(String tag){
+        return keyedPowerContainers.get(tag);
+    }
+
     /**
      * @return A copy of The null origin.
      **/
     public static OriginContainer nullOrigin() {
-        return new OriginContainer(new NamespacedKey("genesis", "origin-null"), new FileContainer(new ArrayList<>(List.of("hidden", "origins")), new ArrayList<>(List.of(true, "genesis:origin-null"))), new HashMap<String, Object>(Map.of("impact", "0", "icon", "minecraft:player_head", "powers", "genesis:null", "order", "0", "unchooseable", true)), new ArrayList<>(List.of(new PowerContainer(new NamespacedKey("genesis", "null"), new FileContainer(new ArrayList<>(), new ArrayList<>()), "genesis:origin-null"))));
+        return new OriginContainer(new NamespacedKey("genesis", "origin-null"), new FileContainer(new ArrayList<>(List.of("hidden", "origins")), new ArrayList<>(List.of(true, "genesis:origin-null"))), new HashMap<String, Object>(Map.of("impact", "0", "icon", "minecraft:player_head", "powers", "genesis:null", "order", "0", "unchooseable", true)), new ArrayList<>(List.of(new PowerContainer(new NamespacedKey("genesis", "null"), new FileContainer(new ArrayList<>(), new ArrayList<>())))));
     }
 
 
@@ -114,7 +110,7 @@ public class CraftApoli {
         }
     }
 
-    public static void processNestedPowers(PowerContainer powerContainer, ArrayList<PowerContainer> powerContainers, String powerFolder, String powerFileName) {
+    public static void processNestedPowers(PowerContainer powerContainer, ConcurrentSet<PowerContainer> powerContainers, String powerFolder, String powerFileName) {
         ArrayList<PowerContainer> newPowerContainers = new ArrayList<>();
 
         for (String key : powerContainer.getPowerFile().getKeys()) {
@@ -122,10 +118,10 @@ public class CraftApoli {
 
             if (subPowerValue instanceof JSONObject subPowerJson) {
                 FileContainer subPowerFile = fileToFileContainer(subPowerJson);
-                String source = powerContainer.getSource();
 
-                PowerContainer newPower = new PowerContainer(new NamespacedKey(powerFolder, powerFileName + "_" + key), subPowerFile, source, true);
+                PowerContainer newPower = new PowerContainer(new NamespacedKey(powerFolder, powerFileName + "_" + key), subPowerFile, true);
                 powerContainers.add(newPower);
+                keyedPowerContainers.put(powerFolder + ":" + powerFileName + "_" + key, newPower);
                 newPowerContainers.add(newPower);
             }
         }
@@ -282,6 +278,34 @@ public class CraftApoli {
                                 }
                             }
                         }
+                        File powerDir = new File(namespace.getAbsolutePath() + File.separator + "powers");
+                        if(!powerDir.isDirectory()) continue;
+                        for(File powerFile : powerDir.listFiles()){
+                            if (!FilenameUtils.getExtension(powerFile.getName()).equals("json")) continue;
+                            String[] powerLocation = {namespace.getName(), powerFile.getName().replace(".json", "")};
+                            String powerFolder = powerLocation[0];
+                            String powerFileName = powerLocation[1];
+
+                            try {
+                                JSONObject powerParser = (JSONObject) new JSONParser().parse(new FileReader(datapack.getAbsolutePath() + File.separator + "data" + File.separator + powerFolder + File.separator + "powers" + File.separator + powerFileName + ".json"));
+                                if (powerParser.containsKey("type") && "origins:multiple".equals(powerParser.get("type"))) {
+                                    PowerContainer powerContainer = new PowerContainer(new NamespacedKey(powerFolder, powerFileName), fileToFileContainer(powerParser));
+                                    powerContainers.add(powerContainer);
+                                    processNestedPowers(powerContainer, powerContainers, powerFolder, powerFileName);
+                                } else {
+                                    PowerContainer power = new PowerContainer(new NamespacedKey(powerFolder, powerFileName), fileToFileContainer(powerParser));
+                                    powerContainers.add(power);
+                                    keyedPowerContainers.put(powerFolder + ":" + powerFileName, power);
+                                }
+                            } catch (FileNotFoundException fileNotFoundException) {
+                                if (showErrors)
+                                    System.err.println("[GenesisMC] Error parsing \"%powerFolder%:%powerFileName%\"".replace("%powerFolder", powerFolder).replace("%powerFileName", powerFileName));
+                            } catch (IOException e) {
+                                throw new RuntimeException(e);
+                            } catch (ParseException e) {
+                                throw new RuntimeException(e);
+                            }
+                        }
                     }
         
                     if (origin_layer == null) return;
@@ -313,23 +337,7 @@ public class CraftApoli {
         
                                 if (powersList != null) {
                                     for (String string : powersList) {
-                                        String[] powerLocation = string.split(":");
-                                        String powerFolder = powerLocation[0];
-                                        String powerFileName = powerLocation[1];
-        
-                                        try {
-                                            JSONObject powerParser = (JSONObject) new JSONParser().parse(new FileReader(datapack.getAbsolutePath() + File.separator + "data" + File.separator + powerFolder + File.separator + "powers" + File.separator + powerFileName + ".json"));
-                                            if (powerParser.containsKey("type") && "origins:multiple".equals(powerParser.get("type"))) {
-                                                PowerContainer powerContainer = new PowerContainer(new NamespacedKey(powerFolder, powerFileName), fileToFileContainer(powerParser), originFolder.get(0) + ":" + originFileName.get(0));
-                                                powerContainers.add(powerContainer);
-                                                processNestedPowers(powerContainer, powerContainers, powerFolder, powerFileName);
-                                            } else {
-                                                powerContainers.add(new PowerContainer(new NamespacedKey(powerFolder, powerFileName), fileToFileContainer(powerParser), originFolder.get(0) + ":" + originFileName.get(0)));
-                                            }
-                                        } catch (FileNotFoundException fileNotFoundException) {
-                                            if (showErrors)
-                                                System.err.println("[GenesisMC] Error parsing \"%powerFolder%:%powerFileName%\" for \"%originFolder%:%originFileName%\"".replace("%powerFolder", powerFolder).replace("%powerFileName", powerFileName).replace("%originFolder%", originFolder.get(0)).replace("%originFileName%", originFileName.get(0)));
-                                        }
+                                        powerContainers.add(keyedPowerContainers.get(string));
                                     }
                                 }
                                 OriginContainer origin = new OriginContainer(new NamespacedKey(originFolder.get(0), originFileName.get(0)), fileToFileContainer(originLayerParser), fileToHashMap(originParser), powerContainers);

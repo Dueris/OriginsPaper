@@ -156,6 +156,7 @@ public class OriginContainer implements Serializable {
     public ArrayList<PowerContainer> getMultiPowerFileFromType(String powerType) {
         ArrayList<PowerContainer> powers = new ArrayList<>();
         for (PowerContainer power : getPowerContainers()) {
+            if (power == null) continue;
             if (power.getType().equals(powerType)) powers.add(power);
         }
         return powers;
