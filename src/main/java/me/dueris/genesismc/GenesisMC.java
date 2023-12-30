@@ -38,6 +38,7 @@ import me.dueris.genesismc.factory.powers.block.WaterBreathe;
 import me.dueris.genesismc.factory.powers.player.PlayerRender;
 import me.dueris.genesismc.factory.powers.simple.BounceSlimeBlock;
 import me.dueris.genesismc.factory.powers.simple.MimicWarden;
+import me.dueris.genesismc.factory.powers.world.EntityGroupManager;
 import me.dueris.genesismc.files.GenesisDataFiles;
 import me.dueris.genesismc.files.TempStorageContainer;
 import me.dueris.genesismc.generation.WaterProtBookGen;
@@ -443,6 +444,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 //            }
 //        }
         // Why does that even exist here?
+        EntityGroupManager.INSTANCE.startTick();
     }
 
     @EventHandler

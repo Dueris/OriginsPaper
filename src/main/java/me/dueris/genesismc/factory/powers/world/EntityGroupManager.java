@@ -1,15 +1,18 @@
 package me.dueris.genesismc.factory.powers.world;
 
+import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.entity.OriginPlayerUtils;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.OriginContainer;
 import me.dueris.genesismc.utils.PowerContainer;
+import me.dueris.genesismc.utils.translation.LangConfig;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,6 +26,7 @@ public class EntityGroupManager extends CraftPower {
     public static final Map<Integer, String> aquatic = new HashMap<>();
     public static final Map<Integer, String> default_group = new HashMap<>();
     private static final Map<String, String> entityCategories = new HashMap<>();
+    public static EntityGroupManager INSTANCE = new EntityGroupManager();
 
     static {
         // Undead
@@ -91,61 +95,70 @@ public class EntityGroupManager extends CraftPower {
 
     @Override
     public void run(Player p) {
-        for (World world : Bukkit.getWorlds()) {
-            for (Entity entity : world.getEntities()) {
-                //Begin entity cases for removal
-                if (!entity.getType().isAlive()) {
-                    continue;
-                }
-                if (!entity.getType().isSpawnable()) {
-                    continue;
-                }
-                if (entity.getType() == EntityType.DROPPED_ITEM) {
-                    continue;
-                }
-                if (entity instanceof Player) {
-                    //Player case, check for power
-                    for (OriginContainer origin : OriginPlayerUtils.getOrigin(((Player) entity).getPlayer()).values()) {
-                        ConditionExecutor executor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
-                        for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
-                            if (executor.check("condition", "conditions", (Player) entity, power, getPowerFile(), entity, null, entity.getLocation().getBlock(), null, ((Player) entity).getItemInHand(), null)) {
-                                if (!getPowerArray().contains(entity)) return;
-                                setActive(p, power.getTag(), true);
-                                if (entity_group.contains(entity)) {
-                                    if (power.get("group", null).equalsIgnoreCase("undead")) {
-                                        undead.put(entity.getEntityId(), entity.getType().name());
-                                    } else if (power.get("group", null).equalsIgnoreCase("arthropod")) {
-                                        arthropod.put(entity.getEntityId(), entity.getType().name());
-                                    } else if (power.get("group", null).equalsIgnoreCase("illager")) {
-                                        illager.put(entity.getEntityId(), entity.getType().name());
-                                    } else if (power.get("group", null).equalsIgnoreCase("aquatic")) {
-                                        aquatic.put(entity.getEntityId(), entity.getType().name());
-                                    } else if (power.get("group", null).equalsIgnoreCase("default")) {
-                                        default_group.put(entity.getEntityId(), entity.getType().name());
+
+    }
+
+    public void startTick(){
+        new BukkitRunnable(){
+            @Override
+            public void run() {
+                for (World world : Bukkit.getWorlds()) {
+                    for (Entity entity : world.getEntities()) {
+                        //Begin entity cases for removal
+                        if (!entity.getType().isAlive()) {
+                            continue;
+                        }
+                        if (!entity.getType().isSpawnable()) {
+                            continue;
+                        }
+                        if (entity.getType() == EntityType.DROPPED_ITEM) {
+                            continue;
+                        }
+                        if (entity instanceof Player p) {
+                            //Player case, check for power
+                            for (OriginContainer origin : OriginPlayerUtils.getOrigin(((Player) entity).getPlayer()).values()) {
+                                ConditionExecutor executor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
+                                for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
+                                    if (executor.check("condition", "conditions", (Player) entity, power, getPowerFile(), entity, null, entity.getLocation().getBlock(), null, ((Player) entity).getItemInHand(), null)) {
+                                        if (!getPowerArray().contains(p)) return;
+                                        setActive(p, power.getTag(), true);
+                                        if (entity_group.contains(entity)) {
+                                            if (power.get("group", null).equalsIgnoreCase("undead")) {
+                                                undead.put(entity.getEntityId(), entity.getType().name());
+                                            } else if (power.get("group", null).equalsIgnoreCase("arthropod")) {
+                                                arthropod.put(entity.getEntityId(), entity.getType().name());
+                                            } else if (power.get("group", null).equalsIgnoreCase("illager")) {
+                                                illager.put(entity.getEntityId(), entity.getType().name());
+                                            } else if (power.get("group", null).equalsIgnoreCase("aquatic")) {
+                                                aquatic.put(entity.getEntityId(), entity.getType().name());
+                                            } else if (power.get("group", null).equalsIgnoreCase("default")) {
+                                                default_group.put(entity.getEntityId(), entity.getType().name());
+                                            }
+                                        }
+                                    } else {
+                                        if (!getPowerArray().contains(entity)) return;
+                                        setActive(p, power.getTag(), false);
                                     }
                                 }
-                            } else {
-                                if (!getPowerArray().contains(entity)) return;
-                                setActive(p, power.getTag(), false);
                             }
+                        }
+
+                        //Sort into array groups
+                        if (sortEntity(entity.getType()).split("%")[1].equalsIgnoreCase("undead")) {
+                            undead.put(entity.getEntityId(), entity.getType().name());
+                        } else if (sortEntity(entity.getType()).split("%")[1].equalsIgnoreCase("arthropod")) {
+                            arthropod.put(entity.getEntityId(), entity.getType().name());
+                        } else if (sortEntity(entity.getType()).split("%")[1].equalsIgnoreCase("illager")) {
+                            illager.put(entity.getEntityId(), entity.getType().name());
+                        } else if (sortEntity(entity.getType()).split("%")[1].equalsIgnoreCase("aquatic")) {
+                            aquatic.put(entity.getEntityId(), entity.getType().name());
+                        } else if (sortEntity(entity.getType()).split("%")[1].equalsIgnoreCase("default")) {
+                            default_group.put(entity.getEntityId(), entity.getType().name());
                         }
                     }
                 }
-
-                //Sort into array groups
-                if (sortEntity(entity.getType()).split("%")[1].equalsIgnoreCase("undead")) {
-                    undead.put(entity.getEntityId(), entity.getType().name());
-                } else if (sortEntity(entity.getType()).split("%")[1].equalsIgnoreCase("arthropod")) {
-                    arthropod.put(entity.getEntityId(), entity.getType().name());
-                } else if (sortEntity(entity.getType()).split("%")[1].equalsIgnoreCase("illager")) {
-                    illager.put(entity.getEntityId(), entity.getType().name());
-                } else if (sortEntity(entity.getType()).split("%")[1].equalsIgnoreCase("aquatic")) {
-                    aquatic.put(entity.getEntityId(), entity.getType().name());
-                } else if (sortEntity(entity.getType()).split("%")[1].equalsIgnoreCase("default")) {
-                    default_group.put(entity.getEntityId(), entity.getType().name());
-                }
             }
-        }
+        }.runTaskLater(GenesisMC.getPlugin(), 200l);
     }
 
     @Override

@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import org.bukkit.Bukkit;
 
 public class CraftCondition {
-    public static BiEntityCondition bientity = new BiEntityCondition();
+    public static BiEntityCondition bientity;
     public static BiomeCondition biome;
     public static BlockCondition blockCon;
     public static DamageCondition damage;

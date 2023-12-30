@@ -5,14 +5,20 @@ import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.OriginContainer;
 import me.dueris.genesismc.utils.PowerContainer;
-import org.bukkit.Bukkit;
-import org.bukkit.NamespacedKey;
+import me.dueris.genesismc.utils.Utils;
+import me.dueris.genesismc.utils.translation.LangConfig;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.damagesource.DamageType;
+import org.bukkit.*;
+import org.bukkit.craftbukkit.v1_20_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Random;
 
 public class StackingStatusEffect extends CraftPower {
     public static PotionEffectType getPotionEffectType(String effectString) {
@@ -24,19 +30,35 @@ public class StackingStatusEffect extends CraftPower {
 
     @Override
     public void run(Player p) {
+
+    }
+
+    public void run(Player p, HashMap<Player, Integer> ticksEMap) {
+        ticksEMap.putIfAbsent(p, 0);
         if (getPowerArray().contains(p)) {
             for (OriginContainer origin : OriginPlayerUtils.getOrigin(p).values()) {
-                ConditionExecutor executor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                 for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
-                    if (executor.check("entity_condition", "entity_conditions", p, power, getPowerFile(), p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
-                        if (executor.check("condition", "conditions", p, power, getPowerFile(), p, null, null, null, null, null)) {
-                            setActive(p, power.getTag(), true);
-                            applyStackingEffect(p, Integer.parseInt(power.get("duration_per_stack")), origin, power);
+                    if (power == null) continue;
+
+                    int ticksE = ticksEMap.getOrDefault(p, 0);
+                    if (ticksE < 30) {
+                        ticksE++;
+
+                        ticksEMap.put(p, ticksE);
+                        return;
+                    } else {
+                        ConditionExecutor executor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
+                        if (executor.check("entity_condition", "entity_conditions", p, power, getPowerFile(), p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
+                            if (executor.check("condition", "conditions", p, power, getPowerFile(), p, null, null, null, null, null)) {
+                                setActive(p, power.getTag(), true);
+                                applyStackingEffect(p, Integer.parseInt(power.get("duration_per_stack")), origin, power);
+                            } else {
+                                setActive(p, power.getTag(), false);
+                            }
                         } else {
                             setActive(p, power.getTag(), false);
                         }
-                    } else {
-                        setActive(p, power.getTag(), false);
+                        ticksEMap.put(p, 0);
                     }
                 }
             }
@@ -48,7 +70,7 @@ public class StackingStatusEffect extends CraftPower {
             PotionEffectType potionEffectType = getPotionEffectType(effect.get("effect").toString());
             if (potionEffectType != null) {
                 try {
-                    player.addPotionEffect(new PotionEffect(potionEffectType, 10, 1, false, false, false));
+                    player.addPotionEffect(new PotionEffect(potionEffectType, 40, 1, false, false, false));
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

@@ -4,6 +4,7 @@ import it.unimi.dsi.fastutil.Pair;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.entity.OriginPlayerUtils;
 import me.dueris.genesismc.events.OriginChangeEvent;
+import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.conditions.entity.EntityCondition;
 import me.dueris.genesismc.utils.OriginContainer;
 import me.dueris.genesismc.utils.PowerContainer;
@@ -80,7 +81,7 @@ public class Resource extends CraftPower implements Listener {
                                     }
                                 }
                                 if(hud_render.containsKey("condition")){
-                                    EntityCondition conditionExecutor = new EntityCondition();
+                                    EntityCondition conditionExecutor = ConditionExecutor.entityCondition;
                                     Optional<Boolean> conditionMet = conditionExecutor.check(power.getJsonHashMap("hud_render"), p, power, getPowerFile(), p, null, p.getLocation().getBlock(), null, p.getInventory().getItemInMainHand(), null);
                                     if(conditionMet.isPresent()){
                                         canRender[0] = conditionMet.get();

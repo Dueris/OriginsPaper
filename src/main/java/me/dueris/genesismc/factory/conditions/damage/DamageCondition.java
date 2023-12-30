@@ -1,6 +1,7 @@
 package me.dueris.genesismc.factory.conditions.damage;
 
 import me.dueris.genesismc.factory.conditions.Condition;
+import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.conditions.entity.EntityCondition;
 import me.dueris.genesismc.factory.powers.player.RestrictArmor;
 import me.dueris.genesismc.utils.PowerContainer;
@@ -57,7 +58,7 @@ public class DamageCondition implements Condition {
             }
             case "origins:attacker" -> {
                 if (entityDamageEvent instanceof EntityDamageByEntityEvent event) {
-                    EntityCondition entityCondition = new EntityCondition();
+                    EntityCondition entityCondition = ConditionExecutor.entityCondition;
                     return entityCondition.check(condition, p, power, powerfile, actor, target, block, fluid, itemStack, entityDamageEvent);
                 }else{
                     return getResult(inverted, Optional.of(false));

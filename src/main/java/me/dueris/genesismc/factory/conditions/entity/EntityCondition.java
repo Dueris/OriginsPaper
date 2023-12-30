@@ -3,6 +3,7 @@ package me.dueris.genesismc.factory.conditions.entity;
 import me.dueris.genesismc.CooldownManager;
 import me.dueris.genesismc.factory.TagRegistry;
 import me.dueris.genesismc.factory.conditions.Condition;
+import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.conditions.block.BlockCondition;
 import me.dueris.genesismc.factory.conditions.item.ItemCondition;
 import me.dueris.genesismc.factory.actions.Actions;
@@ -65,7 +66,7 @@ public class EntityCondition implements Condition {
                     Location location = new Location(world, x, y, z);
                     Block blockw = location.getBlock();
                     if (blockw.getType() != Material.AIR) {
-                        BlockCondition blockCondition = new BlockCondition();
+                        BlockCondition blockCondition = ConditionExecutor.blockCondition;
                         if (blockCondition.check(condition, p, power, powerfile, entity, target, blockw, fluid, itemStack, dmgevent).isPresent()) {
                             if (blockCondition.check(condition, p, power, powerfile, entity, target, blockw, fluid, itemStack, dmgevent).get()) {
                                 blockCount++;
@@ -94,7 +95,7 @@ public class EntityCondition implements Condition {
                         Block block2 = location.getBlock();
 
                         if (block2.getType() != Material.AIR) {
-                            BlockCondition blockCondition = new BlockCondition();
+                            BlockCondition blockCondition = ConditionExecutor.blockCondition;
                             if (blockCondition.check(condition, p, power, powerfile, entity, target, block2, fluid, itemStack, dmgevent).isPresent()) {
                                 if (blockCondition.check(condition, p, power, powerfile, entity, target, block2, fluid, itemStack, dmgevent).get()) {
                                     blockCount++;
@@ -121,7 +122,7 @@ public class EntityCondition implements Condition {
                     if ((x - centerX) * (x - centerX) + (y - centerY) * (y - centerY) + (z - centerZ) * (z - centerZ) <= squaredRadius) {
                         Location location = new Location(world, x, y, z);
                         if (location.getBlock().getType() != Material.AIR) {
-                            BlockCondition blockCondition = new BlockCondition();
+                            BlockCondition blockCondition = ConditionExecutor.blockCondition;
                             if (blockCondition.check(condition, p, power, powerfile, entity, target, location.getBlock(), fluid, itemStack, dmgevent).isPresent()) {
                                 if (blockCondition.check(condition, p, power, powerfile, entity, target, location.getBlock(), fluid, itemStack, dmgevent).get()) {
                                     blockCount++;
@@ -438,7 +439,7 @@ public class EntityCondition implements Condition {
                         if(eSlot != null){
                             if(LeInvH.getEquipment().getItem(eSlot) != null){
                                 if(condition.get("item_condition") != null){
-                                    ItemCondition itemCondition = new ItemCondition();
+                                    ItemCondition itemCondition = ConditionExecutor.itemCondition;
                                     Optional boolIC = itemCondition.check((HashMap<String, Object>) condition.get("item_condition"), p, power, powerfile, entity, target, block, fluid, LeInvH.getEquipment().getItem(eSlot), entityDamageEvent);
                                     if(boolIC.isPresent()){
                                         return getResult(inverted, Optional.of((Boolean) boolIC.get()));
@@ -471,7 +472,7 @@ public class EntityCondition implements Condition {
                 }
             }
             case "origins:in_block" -> {
-                BlockCondition blockCondition = new BlockCondition();
+                BlockCondition blockCondition = ConditionExecutor.blockCondition;
                 Optional boolB = blockCondition.check((HashMap<String, Object>) condition.get("block_condition"), p, power, powerfile, entity, target, block, fluid, itemStack, entityDamageEvent);
                 if(boolB.isPresent()){
                     return getResult(inverted, Optional.of((Boolean) boolB.get()));
@@ -504,7 +505,7 @@ public class EntityCondition implements Condition {
                 return getResult(inverted, Optional.of(isEntityMoving(entity)));
             }
             case "origins:on_block" -> {
-                BlockCondition blockCondition = new BlockCondition();
+                BlockCondition blockCondition = ConditionExecutor.blockCondition;
                 if(condition.get("block_condition") == null){
                     return getResult(inverted, Optional.of(entity.isOnGround()));
                 }else{
@@ -539,8 +540,7 @@ public class EntityCondition implements Condition {
                         if (entity2.isInvulnerable()) return getResult(inverted, Optional.of(false));
                         if (entity2.getPassengers().contains(p)) return getResult(inverted, Optional.of(false));
                         if(entity2.equals(target)){
-                            EntityCondition entityCondition = new EntityCondition();
-                            Optional boolB = entityCondition.check((HashMap<String, Object>) condition.get("block_condition"), p, power, powerfile, entity, target, block, fluid, itemStack, entityDamageEvent);
+                            Optional boolB = this.check((HashMap<String, Object>) condition.get("block_condition"), p, power, powerfile, entity, target, block, fluid, itemStack, entityDamageEvent);
                             if(boolB.isPresent()){
                                 if(boolB.get().equals(true)){
                                     booleans[2] = true;
@@ -555,7 +555,7 @@ public class EntityCondition implements Condition {
                         }
                     }
                     if(traceResult.getHitBlock() != null){
-                        BlockCondition blockCondition = new BlockCondition();
+                        BlockCondition blockCondition = ConditionExecutor.blockCondition;
                         if(condition.get("block_condition") != null){
                             Optional boolB = blockCondition.check((HashMap<String, Object>) condition.get("block_condition"), p, power, powerfile, entity, target, block, fluid, itemStack, entityDamageEvent);
                             if(boolB.isPresent()){
@@ -635,7 +635,7 @@ public class EntityCondition implements Condition {
                 if(entity instanceof LivingEntity le){
                         if(le.getActiveItem() != null){
                             if(condition.get("item_condition") != null){
-                                ItemCondition itemCondition = new ItemCondition();
+                                ItemCondition itemCondition = ConditionExecutor.itemCondition;
                                 Optional boolI = itemCondition.check((HashMap<String, Object>) condition.get("item_condition"), p, power, powerfile, le, target, block, fluid, itemStack, entityDamageEvent);
                                 if(boolI.isPresent()){
                                     if(boolI.get().equals(true)){

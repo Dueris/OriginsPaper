@@ -9,7 +9,7 @@
     "shape": "sphere",
     "comparison": ">=",
     "compare_to": 1,
-    "radius": 5
+    "radius": 4
   },
   "min_stacks": 0,
   "max_stacks": 1,

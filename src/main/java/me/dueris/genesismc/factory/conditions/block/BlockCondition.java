@@ -2,6 +2,7 @@ package me.dueris.genesismc.factory.conditions.block;
 
 import me.dueris.genesismc.factory.TagRegistry;
 import me.dueris.genesismc.factory.conditions.Condition;
+import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.conditions.fluid.FluidCondition;
 import me.dueris.genesismc.factory.powers.player.RestrictArmor;
 import me.dueris.genesismc.utils.PowerContainer;
@@ -80,7 +81,7 @@ public class BlockCondition implements Condition {
                                 continue;
                             }
                             Block adBlock = block.getRelative(xOFF, yOFF, zOFF);
-                            BlockCondition blockCondition = new BlockCondition();
+                            BlockCondition blockCondition = ConditionExecutor.blockCondition;
                             if(blockCondition.check((HashMap<String, Object>) condition.get("adjacent_condition"), p, power, powerfile, actor, target, adBlock, fluid, itemStack, entityDamageEvent).isPresent() && blockCondition.check(condition, p, power, powerfile, actor, target, adBlock, fluid, itemStack, entityDamageEvent).get()){
                                 matchingADJCount++;
                             }
