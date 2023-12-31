@@ -461,7 +461,7 @@ public class CraftApoli {
             if (powers != null) for (String power : powers) data.append("|").append(power);
             data.append("\n");
         }
-        System.out.println(data.toString());
+//        System.out.println(data.toString());
         return data.toString();
     }
 
