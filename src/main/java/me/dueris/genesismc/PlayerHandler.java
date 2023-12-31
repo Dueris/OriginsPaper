@@ -151,7 +151,7 @@ public class PlayerHandler implements Listener {
                 }
             }
         }
-        Bukkit.getLogger().warning("[GenesisMC] Reminder to devs - fix old origin container translation");
+//        Bukkit.getLogger().warning("[GenesisMC] Reminder to devs - fix old origin container translation"); // yeah we fixed this already?
 
         if (!p.getPersistentDataContainer().has(new NamespacedKey(GenesisMC.getPlugin(), "insideBlock"), PersistentDataType.BOOLEAN)) {
             p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "insideBlock"), PersistentDataType.BOOLEAN, false);
@@ -183,6 +183,7 @@ public class PlayerHandler implements Listener {
             //silence code - offline mode fucks things
         }
         OriginDataContainer.loadData(p);
+        OriginPlayerUtils.setupPowers(p);
 
         originValidCheck(p);
         OriginPlayerUtils.assignPowers(p);

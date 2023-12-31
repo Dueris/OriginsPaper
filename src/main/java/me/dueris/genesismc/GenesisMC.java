@@ -292,6 +292,8 @@ public final class GenesisMC extends JavaPlugin implements Listener {
                     ReapplyEntityReachPowers(p);
                 }
             }.runTaskLater(GenesisMC.getPlugin(), 5L);
+            OriginDataContainer.loadData();
+            OriginPlayerUtils.setupPowers(p);
             PlayerHandler.originValidCheck(p);
             OriginPlayerUtils.assignPowers(p);
             if (p.isOp())

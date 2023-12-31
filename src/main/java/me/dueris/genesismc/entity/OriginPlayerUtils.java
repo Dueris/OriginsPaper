@@ -36,32 +36,6 @@ import static org.bukkit.Bukkit.getServer;
 
 public class OriginPlayerUtils {
 
-    public static void removeArmor(Player player, EquipmentSlot slot) {
-        ItemStack armor = player.getInventory().getItem(slot);
-
-        if (armor != null && armor.getType() != Material.AIR) {
-            // Remove the armor from the player's equipped slot
-            player.getInventory().setItem(slot, new ItemStack(Material.AIR));
-
-            // Add the armor to the player's inventory
-            HashMap<Integer, ItemStack> excess = player.getInventory().addItem(armor);
-
-            // If there is excess armor that couldn't fit in the inventory, drop it
-            for (ItemStack item : excess.values()) {
-                player.getWorld().dropItemNaturally(player.getLocation(), item);
-            }
-        }
-    }
-
-    public static boolean hasFirstChose(Player p){
-        if(p.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "hasFirstChose"), PersistentDataType.BOOLEAN) == null){
-            p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "hasFirstChose"), PersistentDataType.BOOLEAN, false);
-            return false;
-        }else{
-            return p.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "hasFirstChose"), PersistentDataType.BOOLEAN);
-        }
-    }
-
     public static void setHasFirstChose(Player p, boolean chosen){
         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "hasFirstChose"), PersistentDataType.BOOLEAN, chosen);
     }
@@ -133,6 +107,29 @@ public class OriginPlayerUtils {
             // This caused a lot of isseus lol
         }
         return CraftApoli.toOrigin(OriginDataContainer.getLayer(player));
+    }
+
+    public static HashMap<Player, HashMap<LayerContainer, ArrayList<PowerContainer>>> powerContainer = new HashMap<>();
+
+    public static void setupPowers(Player p){
+        String[] layers = OriginDataContainer.getLayer(p).split("\n");
+        HashMap<LayerContainer, ArrayList<PowerContainer>> map = new HashMap<>();
+        for (String layer : layers) {
+            String[] layerData = layer.split("\\|");
+            LayerContainer layerContainer = CraftApoli.getLayerFromTag(layerData[0]);
+            ArrayList<PowerContainer> powers = new ArrayList<>();
+            // setup powers
+            for(String dataPiece : layerData){
+                if(!dataPiece.equals(layerData[0]) || dataPiece.equals(layerData[1]) || dataPiece.equals(layerData[2])){
+                    PowerContainer powerCon = CraftApoli.keyedPowerContainers.get(dataPiece);
+                    if(powerCon != null){
+                        powers.add(powerCon);
+                    }
+                } // else -> layerdata was found, aka the layer, origintag, or power amt/size
+            }
+            map.put(layerContainer, powers);
+        }
+        powerContainer.put(p, map);
     }
 
     public static boolean hasCoreOrigin(Player player, LayerContainer layer) {
