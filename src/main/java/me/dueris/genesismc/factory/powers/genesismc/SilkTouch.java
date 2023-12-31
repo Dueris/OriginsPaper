@@ -50,8 +50,8 @@ public class SilkTouch extends CraftPower implements Listener {
             Player p = e.getPlayer();
             if (silk_touch.contains(e.getPlayer())) {
                 ConditionExecutor executor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
-                for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()) {
-                    for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
+                for (OriginContainer origin : OriginPlayerUtils.getOrigin(p).values()) {
+                    for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
                         if (executor.check("condition", "conditions", p, power, getPowerFile(), p, null, e.getBlock(), null, p.getItemInHand(), null)) {
                             setActive(p, power.getTag(), true);
                             if (p.getGameMode().equals(GameMode.SURVIVAL) && p.getEquipment().getItemInMainHand().getType().equals(Material.AIR)) {

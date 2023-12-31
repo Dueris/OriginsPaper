@@ -2,10 +2,8 @@ package me.dueris.genesismc.factory.powers.actions;
 
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.entity.OriginPlayerUtils;
-import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.actions.Actions;
 import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.utils.LayerContainer;
 import me.dueris.genesismc.utils.OriginContainer;
 import me.dueris.genesismc.utils.PowerContainer;
 import org.bukkit.entity.Entity;
@@ -29,8 +27,8 @@ public class ActionWhenDamageTaken extends CraftPower implements Listener {
     public void d(EntityDamageEvent e) {
         Entity actor = e.getEntity();
         if (!(actor instanceof Player player)) return;
-        for (LayerContainer layer : CraftApoli.getLayers()) {
-            for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(player, getPowerFile(), layer)) {
+        for (OriginContainer origin : OriginPlayerUtils.getOrigin((Player) actor).values()) {
+            for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
                 if (power == null) continue;
                 Actions.EntityActionType(actor, power.getEntityAction());
                 Actions.EntityActionType(actor, power.getAction("action"));

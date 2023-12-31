@@ -39,9 +39,9 @@ public class AttributeModifyTransfer extends CraftPower implements Listener {
     @EventHandler
     public void runChange(OriginChangeEvent e) {
         if (getPowerArray().contains(e.getPlayer())) {
-            for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()) {
+            for (OriginContainer origin : OriginPlayerUtils.getOrigin(e.getPlayer()).values()) {
                 ConditionExecutor executor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
-                for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(e.getPlayer(), getPowerFile(), layer)) {
+                for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
                     if (executor.check("condition", "conditions", e.getPlayer(), power, getPowerFile(), e.getPlayer(), null, null, null, e.getPlayer().getItemInHand(), null)) {
                         setActive(e.getPlayer(), power.getTag(), true);
                         ValueModifyingSuperClass valueModifyingSuperClass = new ValueModifyingSuperClass();

@@ -36,10 +36,10 @@ public class PreventBlockUse extends CraftPower implements Listener {
     @EventHandler
     public void run(PlayerInteractEvent e) {
         if (prevent_block_use.contains(e.getPlayer())) {
-            for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()) {
+            for (OriginContainer origin : OriginPlayerUtils.getOrigin(e.getPlayer()).values()) {
                 ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                 if (e.getClickedBlock() != null) e.setCancelled(true);
-                for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(e.getPlayer(), getPowerFile(), layer)) {
+                for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
                     setActive(e.getPlayer(), power.getTag(), conditionExecutor.check("block_condition", "block_conditions", e.getPlayer(), power, "origins:prevent_block_used", e.getPlayer(), null, e.getClickedBlock(), null, e.getPlayer().getItemInHand(), null));
                 }
             }
@@ -49,9 +49,9 @@ public class PreventBlockUse extends CraftPower implements Listener {
     @EventHandler
     public void run(BlockPlaceEvent e) {
         if (prevent_block_use.contains(e.getPlayer())) {
-            for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()) {
+            for (OriginContainer origin : OriginPlayerUtils.getOrigin(e.getPlayer()).values()) {
                 ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
-                for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(e.getPlayer(), getPowerFile(), layer)) {
+                for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
                     if (conditionExecutor.check("block_condition", "block_conditions", e.getPlayer(), power, "origins:prevent_block_used", e.getPlayer(), null, e.getBlock(), null, e.getPlayer().getItemInHand(), null)) {
                         e.setCancelled(true);
                     }

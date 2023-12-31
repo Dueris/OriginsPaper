@@ -35,10 +35,10 @@ public class Gravity extends CraftPower implements Listener {
 
     @Override
     public void run(Player p) {
-        for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()) {
+        for (OriginContainer origin : OriginPlayerUtils.getOrigin(p).values()) {
             if (no_gravity.contains(p)) {
                 ConditionExecutor executor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
-                for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
+                for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
                     if (executor.check("condition", "conditions", p, power, getPowerFile(), p, null, null, null, p.getItemInHand(), null)) {
                         setActive(p, power.getTag(), true);
                         if (no_gravity.contains(p)) {

@@ -43,11 +43,11 @@ public class ModifyExperienceGainPower extends CraftPower implements Listener {
     public void run(PlayerExpChangeEvent e) {
         Player p = e.getPlayer();
         if (modify_xp_gain.contains(p)) {
-            for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()) {
+            for (OriginContainer origin : OriginPlayerUtils.getOrigin(p).values()) {
                 ValueModifyingSuperClass valueModifyingSuperClass = new ValueModifyingSuperClass();
                 try {
                     ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
-                    for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
+                    for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
                         if (conditionExecutor.check("condition", "conditions", p, power, "origins:modify_xp_gain", p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
                             for (HashMap<String, Object> modifier : power.getConditionFromString("modifier", "modifiers")) {
                                 Float value = Float.valueOf(modifier.get("value").toString());
@@ -71,7 +71,7 @@ public class ModifyExperienceGainPower extends CraftPower implements Listener {
                     }
                 } catch (Exception ev) {
                     ErrorSystem errorSystem = new ErrorSystem();
-                    errorSystem.throwError("idk what errrored lol", "origins:modify_xp_gain", p, layer);
+                    errorSystem.throwError("idk what errrored lol", "origins:modify_xp_gain", p, origin, OriginPlayerUtils.getLayer(p, origin));
                     ev.printStackTrace();
                 }
             }

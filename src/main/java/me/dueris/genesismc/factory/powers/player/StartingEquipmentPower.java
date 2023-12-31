@@ -40,8 +40,8 @@ public class StartingEquipmentPower extends CraftPower implements Listener {
     @EventHandler
     public void runGive(OriginChangeEvent e) {
         if (starting_equip.contains(e.getPlayer())) {
-            for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()) {
-                for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(e.getPlayer(), getPowerFile(), layer)) {
+            for (OriginContainer origin : OriginPlayerUtils.getOrigin(e.getPlayer()).values()) {
+                for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
                     ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                     if (conditionExecutor.check("condition", "conditions", e.getPlayer(), power, getPowerFile(), e.getPlayer(), null, null, null, e.getPlayer().getItemInHand(), null)) {
                         if (!getPowerArray().contains(e.getPlayer())) return;
@@ -65,9 +65,9 @@ public class StartingEquipmentPower extends CraftPower implements Listener {
     @EventHandler
     public void runRespawn(PlayerRespawnEvent e) {
         if (starting_equip.contains(e.getPlayer())) {
-            for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()) {
+            for (OriginContainer origin : OriginPlayerUtils.getOrigin(e.getPlayer()).values()) {
                 ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
-                for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(e.getPlayer(), getPowerFile(), layer)) {
+                for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
                     if (conditionExecutor.check("condition", "conditions", e.getPlayer(), power, getPowerFile(), e.getPlayer(), null, null, null, e.getPlayer().getItemInHand(), null)) {
                         if (!getPowerArray().contains(e.getPlayer())) return;
                         setActive(e.getPlayer(), power.getTag(), true);

@@ -48,9 +48,9 @@ public class WaterBreathe extends CraftPower {
     @Override
     public void run(Player p) {
         if (!getPowerArray().contains(p)) return;
-        for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()) {
+        for (OriginContainer origin : OriginPlayerUtils.getOrigin(p).values()) {
             ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
-            for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
+            for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
                 if (conditionExecutor.check("condition", "conditions", p, power, getPowerFile(), p, null, null, null, p.getItemInHand(), null)) {
                     setActive(p, power.getTag(), true);
                     if (water_breathing.contains(p)) {

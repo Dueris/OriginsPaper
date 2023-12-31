@@ -39,8 +39,8 @@ public class Exhaust extends CraftPower {
     @Override
     public void run(Player p) {
         if (more_exhaustion.contains(p)) {
-            for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()) {
-                for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
+            for (OriginContainer origin : OriginPlayerUtils.getOrigin(p).values()) {
+                for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
                     if (power == null) continue;
                     if (power.getInterval() == null) {
                         Bukkit.getLogger().warning(LangConfig.getLocalizedString(p, "powers.errors.exhaust"));

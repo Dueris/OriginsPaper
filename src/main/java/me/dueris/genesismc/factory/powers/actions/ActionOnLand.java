@@ -27,9 +27,9 @@ public class ActionOnLand extends CraftPower implements Listener {
     @EventHandler
     public void e(PlayerMoveEvent e) {
         if (!getPowerArray().contains(e.getPlayer())) return;
-        for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()) {
+        for (OriginContainer origin : OriginPlayerUtils.getOrigin(e.getPlayer()).values()) {
             if (e.getFrom().getY() > e.getTo().getY() && e.getFrom().getY() - e.getTo().getY() >= MIN_FALL_DISTANCE) {
-                for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(e.getPlayer(), getPowerFile(), layer)) {
+                for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
                     setActive(e.getPlayer(), power.getTag(), true);
                     Actions.EntityActionType(e.getPlayer(), power.getEntityAction());
                     new BukkitRunnable() {

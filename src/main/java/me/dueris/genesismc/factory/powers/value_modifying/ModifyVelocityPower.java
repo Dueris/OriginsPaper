@@ -31,8 +31,8 @@ public class ModifyVelocityPower extends CraftPower implements Listener{
     public void velcotiyWEEEEEEEE(PlayerVelocityEvent e){
         if(getPowerArray().contains(e.getPlayer())){
             Player p = e.getPlayer();
-            for(me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()){
-                for(PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)){
+            for(OriginContainer origin : OriginPlayerUtils.getOrigin(p).values()){
+                for(PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())){
                     List<String> identifiers = power.getJsonArray("axes");
                     if(identifiers.isEmpty()){
                         identifiers.add("x");

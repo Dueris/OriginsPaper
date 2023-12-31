@@ -74,11 +74,11 @@ public class ModifyBreakSpeedPower extends CraftPower implements Listener {
     public void swing(PlayerArmSwingEvent e){
         Player p = e.getPlayer();
         if (modify_break_speed.contains(p)) {
-            for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()) {
+            for (OriginContainer origin : OriginPlayerUtils.getOrigin(p).values()) {
                 ValueModifyingSuperClass valueModifyingSuperClass = new ValueModifyingSuperClass();
                 try {
                     ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
-                    for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
+                    for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
                         if (conditionExecutor.check("condition", "condition", p, power, getPowerFile(), p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
                             if (conditionExecutor.check("block_condition", "block_condition", p, power, getPowerFile(), p, null, p.getTargetBlockExact(Math.toIntExact(Math.round(AttributeHandler.Reach.getFinalReach(p)))), null, p.getItemInHand(), null)) {
                                 setActive(p, power.getTag(), true);
@@ -122,7 +122,7 @@ public class ModifyBreakSpeedPower extends CraftPower implements Listener {
                     }
                 } catch (Exception ev) {
                     ErrorSystem errorSystem = new ErrorSystem();
-                    errorSystem.throwError("unable to set modifier", "origins:modify_break_speed", p, layer);
+                    errorSystem.throwError("unable to set modifier", "origins:modify_break_speed", p, origin, OriginPlayerUtils.getLayer(p, origin));
                     ev.printStackTrace();
                 }
             }
@@ -132,8 +132,8 @@ public class ModifyBreakSpeedPower extends CraftPower implements Listener {
     public void apply(Player p) {
         ValueModifyingSuperClass valueModifyingSuperClass = new ValueModifyingSuperClass();
         if (modify_break_speed.contains(p)) {
-            for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()) {
-                for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
+            for (OriginContainer origin : OriginPlayerUtils.getOrigin(p).values()) {
+                for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
                     for (HashMap<String, Object> modifier : power.getConditionFromString("modifier", "modifiers")) {
                         Float value = Float.valueOf(modifier.get("value").toString());
                         valueModifyingSuperClass.saveValueInPDC(p, MODIFYING_KEY, value); // Why does there need to be a binary operator if the operator does nothing?

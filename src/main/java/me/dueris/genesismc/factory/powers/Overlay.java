@@ -29,9 +29,9 @@ public class Overlay extends CraftPower {
     @Override
     public void run(Player player) {
         if (getPowerArray().contains(player)) {
-            for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()) {
+            for (OriginContainer origin : OriginPlayerUtils.getOrigin(player).values()) {
                 ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
-                for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(player, getPowerFile(), layer)) {
+                for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
                     if (conditionExecutor.check("condition", "conditions", player, power, "origins:overlay", player, null, player.getLocation().getBlock(), null, player.getInventory().getItemInMainHand(), null)) {
                         setActive(player, power.getTag(), true);
                         Phasing.initializePhantomOverlay(player);

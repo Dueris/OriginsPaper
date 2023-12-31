@@ -65,9 +65,9 @@ public class ModifyPlayerSpawnPower extends CraftPower implements Listener {
 
     public void runHandle(Player p){
         if (modify_world_spawn.contains(p)) {
-            for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()) {
+            for (OriginContainer origin : OriginPlayerUtils.getOrigin(p).values()) {
                 ConditionExecutor executor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
-                PowerContainer power = OriginPlayerUtils.getSinglePowerFileFromType(p, getPowerFile(), layer);
+                PowerContainer power = origin.getSinglePowerFileFromType(getPowerFile());
                 if(executor.check("condition", "conditions", p, power,getPowerFile(), p, null, p.getLocation().getBlock(), null, p.getInventory().getItemInMainHand(), null)){
                     String spawnStrat = power.get("spawn_strategy", "default");
                     float dimMult = 0.125f;

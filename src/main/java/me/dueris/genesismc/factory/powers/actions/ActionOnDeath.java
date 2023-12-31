@@ -2,11 +2,9 @@ package me.dueris.genesismc.factory.powers.actions;
 
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.entity.OriginPlayerUtils;
-import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.actions.Actions;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.utils.LayerContainer;
 import me.dueris.genesismc.utils.OriginContainer;
 import me.dueris.genesismc.utils.PowerContainer;
 import org.bukkit.entity.Entity;
@@ -31,9 +29,9 @@ public class ActionOnDeath extends CraftPower implements Listener {
         if (e.getEntity() instanceof Player p) {
             if (getPowerArray().contains(p)) {
                 Entity target = p;
-                for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()) {
+                for (OriginContainer origin : OriginPlayerUtils.getOrigin(p).values()) {
                     ConditionExecutor executor = GenesisMC.getConditionExecutor();
-                    for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
+                    for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
                         if (power == null) continue;
                         if(executor.check("damage_condition", "damage_conditions", p, power, getPowerFile(), p, null, p.getLocation().getBlock(), null, p.getInventory().getItemInMainHand(), null)){
                             setActive(p, power.getTag(), true);

@@ -47,12 +47,12 @@ public class EntityGlow extends CraftPower {
 
     @Override
     public void run(Player p) {
-        for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()) {
+        for (OriginContainer origin : OriginPlayerUtils.getOrigin(p).values()) {
             if (entity_glow.contains(p)) {
                 Collection<Entity> entitiesWithinRadius = getEntitiesInRadius(p, 10);
                 for (Entity entity : entitiesWithinRadius) {
                     ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
-                    for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
+                    for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
                         if (conditionExecutor.check("condition", "conditions", p, power, "origins:entity_glow", p, entity, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
                             CraftPlayer craftPlayer = (CraftPlayer) p;
                             MobEffect effect = MobEffects.GLOWING;

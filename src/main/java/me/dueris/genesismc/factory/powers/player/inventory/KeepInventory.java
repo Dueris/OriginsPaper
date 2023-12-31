@@ -33,10 +33,10 @@ public class KeepInventory extends CraftPower implements Listener {
     @EventHandler
     public void keepinv(PlayerDeathEvent e) {
         Player player = e.getEntity();
-        for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()) {
+        for (OriginContainer origin : OriginPlayerUtils.getOrigin(player).values()) {
             if (keep_inventory.contains(player)) {
                 ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
-                for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(player, getPowerFile(), layer)) {
+                for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
                     if (conditionExecutor.check("item_condition", "item_conditions", player, power, "origins:keep_inventory", player, null, null, null, player.getInventory().getItemInHand(), null)) {
                         ArrayList<Long> slots = new ArrayList<>();
                         setActive(player, power.getTag(), true);

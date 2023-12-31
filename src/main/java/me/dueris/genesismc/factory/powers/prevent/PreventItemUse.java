@@ -42,8 +42,8 @@ public class PreventItemUse extends CraftPower implements Listener {
         if (prevent_item_use.contains(e.getPlayer())) {
                 if (e.getItem() == null) return;
 
-                for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()) {
-                    for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(e.getPlayer(), getPowerFile(), layer)) {
+                for (OriginContainer origin : OriginPlayerUtils.getOrigin(e.getPlayer()).values()) {
+                    for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
                         if (power == null) {
                             getPowerArray().remove(e.getPlayer());
                             return;

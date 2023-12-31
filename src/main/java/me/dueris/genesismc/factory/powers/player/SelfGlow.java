@@ -41,8 +41,8 @@ public class SelfGlow extends CraftPower {
     @Override
     public void run(Player p) {
         if (!getPowerArray().contains(p)) return;
-        for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()) {
-            for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
+        for (OriginContainer origin : OriginPlayerUtils.getOrigin(p).values()) {
+            for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
                 ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                 for (Entity entity : Bukkit.getServer().getWorld(p.getWorld().getKey()).getEntities()) {
                     if (entity instanceof Player player) {

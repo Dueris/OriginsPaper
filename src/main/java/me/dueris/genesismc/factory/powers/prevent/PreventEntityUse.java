@@ -48,7 +48,7 @@ public class PreventEntityUse extends CraftPower implements Listener {
     public void OnClickREACH(PlayerInteractEvent e) {
         Player p = e.getPlayer();
         if (prevent_entity_use.contains(e.getPlayer())) {
-            for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()) {
+            for (OriginContainer origin : OriginPlayerUtils.getOrigin(p).values()) {
 
                 Location eyeloc = p.getEyeLocation();
                 Predicate<Entity> filter = (entity) -> !entity.equals(p);
@@ -65,7 +65,7 @@ public class PreventEntityUse extends CraftPower implements Listener {
                         if (entity.getPassengers().contains(p)) return;
                         if (!entity.isDead()) {
                             ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
-                            for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
+                            for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
                                 if (conditionExecutor.check("bientity_condition", "bientity_condition", p, power, "origins:prevent_entity_use", p, entity, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
                                     if (conditionExecutor.check("item_condition", "item_condition", p, power, "origins:prevent_entity_use", p, entity, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
                                         e.setCancelled(true);

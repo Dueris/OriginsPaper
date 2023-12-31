@@ -28,10 +28,10 @@ public class Freeze extends CraftPower {
 
     @Override
     public void run(Player p) {
-        for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()) {
+        for (OriginContainer origin : OriginPlayerUtils.getOrigin(p).values()) {
             if (freeze.contains(p)) {
                 ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
-                for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
+                for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
                     if (conditionExecutor.check("condition", "conditions", p, power, "origins:freeze", p, null, null, null, p.getItemInHand(), null)) {
                         setActive(p, power.getTag(), true);
                         p.setFreezeTicks(300);

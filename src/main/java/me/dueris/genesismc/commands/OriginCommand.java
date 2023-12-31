@@ -39,7 +39,7 @@ public class OriginCommand extends Command{
         subCommands.add(new Set());
         subCommands.add(new Give());
         subCommands.add(new Bug());
-        // subCommands.add(new Reload());
+        subCommands.add(new Reload());
     }
 
     public ArrayList<SubCommand> getSubCommands() {

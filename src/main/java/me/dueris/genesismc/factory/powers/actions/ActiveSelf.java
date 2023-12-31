@@ -26,10 +26,10 @@ public class ActiveSelf extends CraftPower implements Listener {
 
     @EventHandler
     public void k(KeybindTriggerEvent e) {
-        for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()) {
+        for (OriginContainer origin : OriginPlayerUtils.getOrigin(e.getPlayer()).values()) {
             if (getPowerArray().contains(e.getPlayer())) {
                 ConditionExecutor executor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
-                for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(e.getPlayer(), getPowerFile(), layer)) {
+                for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
                     if (CooldownManager.isPlayerInCooldown(e.getPlayer(), e.getKey())) return;
                     if (executor.check("condition", "conditions", e.getPlayer(), power, getPowerFile(), e.getPlayer(), null, null, null, null, null)) {
                         if (!getPowerArray().contains(e.getPlayer())) return;
@@ -37,7 +37,7 @@ public class ActiveSelf extends CraftPower implements Listener {
                         if (isKeyBeingPressed(e.getPlayer(), power.getKey().getOrDefault("key", "key.origins.primary_active").toString(), true)) {
                             Actions.EntityActionType(e.getPlayer(), power.getEntityAction());
                             if (power.get("cooldown", "1") != null) {
-                                CooldownManager.addCooldown(e.getPlayer(), power.getTag(), power.getType(), Integer.parseInt(power.get("cooldown", power.get("max", "1"))), e.getKey());
+                                CooldownManager.addCooldown(e.getPlayer(), origin, power.getTag(), power.getType(), Integer.parseInt(power.get("cooldown", power.get("max", "1"))), e.getKey());
                             }
                         }
                     } else {

@@ -53,9 +53,9 @@ public class FireProjectile extends CraftPower implements Listener {
     @EventHandler
     public void keybindCONTINUOUSDF(KeybindTriggerEvent e) {
         Player p = e.getPlayer();
-        for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()) {
+        for (OriginContainer origin : OriginPlayerUtils.getOrigin(p).values()) {
             if (fire_projectile.contains(p)) {
-                for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
+                for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
                     if (isKeyBeingPressed(e.getPlayer(), power.getKey().getOrDefault("key", "key.origins.primary_active").toString(), true)) {
                         if (in_continuous.contains(p)) {
                             in_continuous.remove(p);
@@ -84,8 +84,8 @@ public class FireProjectile extends CraftPower implements Listener {
         Player p = e.getPlayer();
         ArrayList<Player> peopladf = new ArrayList<>();
         if (!peopladf.contains(p)) {
-            for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()) {
-                for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
+            for (OriginContainer origin : OriginPlayerUtils.getOrigin(p).values()) {
+                for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
                     if (power == null) {
                         getPowerArray().remove(p);
                         return;
@@ -135,7 +135,7 @@ public class FireProjectile extends CraftPower implements Listener {
                                                                 if (shotsLeft >= 0) {
                                                                     if (power.getKey().getOrDefault("continuous", "false").toString().equalsIgnoreCase("false")) {
                                                                         KeybindUtils.runKeyChangeTriggerReturn(KeybindUtils.getTriggerFromOriginKey(p, key), p, key);
-                                                                        CooldownManager.addCooldown(p, power.getTag(), power.getType(), cooldown * 2, key);
+                                                                        CooldownManager.addCooldown(p, origin, power.getTag(), power.getType(), cooldown * 2, key);
                                                                         addCooldownPatch(p);
                                                                         peopladf.remove(p);
                                                                         if(KeybindUtils.getKeybindItem(key, p.getInventory()) != null) {
@@ -150,7 +150,7 @@ public class FireProjectile extends CraftPower implements Listener {
                                                                     } else {
                                                                         if (!in_continuous.contains(p)) {
                                                                             KeybindUtils.runKeyChangeTriggerReturn(KeybindUtils.getTriggerFromOriginKey(p, key), p, key);
-                                                                            CooldownManager.addCooldown(p, power.getTag(), power.getType(), cooldown * 2, key);
+                                                                            CooldownManager.addCooldown(p, origin, power.getTag(), power.getType(), cooldown * 2, key);
                                                                             addCooldownPatch(p);
                                                                             peopladf.remove(p);
                                                                             ItemMeta met = KeybindUtils.getKeybindItem(key, p.getInventory()).getItemMeta();

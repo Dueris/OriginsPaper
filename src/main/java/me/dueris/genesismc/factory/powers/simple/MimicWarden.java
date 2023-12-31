@@ -45,9 +45,9 @@ public class MimicWarden extends CraftPower implements OriginSimple, Listener {
     public void event(OriginChangeEvent e) {
         boolean hasMimicWardenPower = false;
 
-        for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()) {
-            for (PowerContainer power : OriginPlayerUtils.getPowers(e.getPlayer(), layer)) {
-                if (power.getTag().equals("origins:mimic_warden")) {
+        for (OriginContainer origin : OriginPlayerUtils.getOrigin(e.getPlayer()).values()) {
+            for (String power : origin.getPowers()) {
+                if (power.equals("origins:mimic_warden")) {
                     hasMimicWardenPower = true;
                     break;
                 }
@@ -65,8 +65,8 @@ public class MimicWarden extends CraftPower implements OriginSimple, Listener {
     public void event(PlayerJoinEvent e) {
         boolean hasMimicWardenPower = false;
 
-        for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()) {
-            for (PowerContainer power : OriginPlayerUtils.getPowers(e.getPlayer(), layer)) {
+        for (OriginContainer origin : OriginPlayerUtils.getOrigin(e.getPlayer()).values()) {
+            for (PowerContainer power : origin.getPowerContainers()) {
                 if (power.getTag().equals("origins:mimic_warden")) {
                     hasMimicWardenPower = true;
                     break;
@@ -91,7 +91,7 @@ public class MimicWarden extends CraftPower implements OriginSimple, Listener {
         Player p = e.getPlayer();
         if (mimicWardenPlayers.contains(p)) {
             if(p.getFoodLevel() < 6) return;
-            for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()) {
+            for (OriginContainer origin : OriginPlayerUtils.getOrigin(p).values()) {
                 if (CooldownManager.isPlayerInCooldown(p, "key.origins.primary_active")) return;
                 if (e.getKey().equals("key.origins.primary_active")) {
                     Location eyeLoc = p.getEyeLocation();
@@ -147,7 +147,7 @@ public class MimicWarden extends CraftPower implements OriginSimple, Listener {
                             victim.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 100, 2, false, false, false));
                             victim.addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, 50, 2, false, false, false));
 
-                            CooldownManager.addCooldown(p, "Sonic Boom", getPowerFile(), 1200, "key.origins.primary_active");
+                            CooldownManager.addCooldown(p, origin, "Sonic Boom", getPowerFile(), 1200, "key.origins.primary_active");
 
                             Location startLocation = p.getEyeLocation();
 

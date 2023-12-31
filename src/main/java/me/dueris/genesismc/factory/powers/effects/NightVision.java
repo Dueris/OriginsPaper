@@ -36,12 +36,12 @@ public class NightVision extends CraftPower {
 
     @Override
     public void run(Player p) {
-        // HashMap<LayerContainer, OriginContainer> origins = OriginPlayerUtils.getOrigin(p);
-        // Set<LayerContainer> layers = origins.keySet();
-        // for (LayerContainer layer : layers) {
+        HashMap<LayerContainer, OriginContainer> origins = OriginPlayerUtils.getOrigin(p);
+        Set<LayerContainer> layers = origins.keySet();
+        for (LayerContainer layer : layers) {
             if (night_vision.contains(p)) {
-                for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()) {
-                    for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
+                for (OriginContainer origin : OriginPlayerUtils.getOrigin(p).values()) {
+                    for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
                         ConditionExecutor executor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                         if (executor.check("condition", "conditions", p, power, getPowerFile(), p, null, null, null, p.getItemInHand(), null)) {
                             setActive(p, power.getTag(), true);
@@ -54,7 +54,7 @@ public class NightVision extends CraftPower {
                 }
             }
 
-        // }
+        }
     }
 
     public int roundNumber(double num) {

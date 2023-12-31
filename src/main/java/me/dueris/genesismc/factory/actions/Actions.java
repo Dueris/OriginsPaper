@@ -642,7 +642,7 @@ public class Actions {
                                         key = "key.attack";
                                     }
                                 }
-                                CooldownManager.addCooldown(player, powerContainer.getTag(), powerContainer.getType(), Integer.parseInt(powerContainer.get("cooldown")), key);
+                                CooldownManager.addCooldown(player, origin, powerContainer.getTag(), powerContainer.getType(), Integer.parseInt(powerContainer.get("cooldown")), key);
                             }
                         }
                     }

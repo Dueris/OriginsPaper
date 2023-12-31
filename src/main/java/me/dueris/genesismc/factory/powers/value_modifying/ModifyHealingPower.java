@@ -37,9 +37,9 @@ public class ModifyHealingPower extends CraftPower implements Listener {
     @EventHandler
     public void runD(EntityRegainHealthEvent e) {
         if (e.getEntity() instanceof Player p) {
-            if (!modify_healing.contains(p)) return;
-            for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()) {
-                for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
+            if (!modify_healing.contains(e.getEntity())) return;
+            for (OriginContainer origin : OriginPlayerUtils.getOrigin(p).values()) {
+                for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
                     for (HashMap<String, Object> modifier : power.getPossibleModifiers("modifier", "modifiers")) {
                         Float value = Float.valueOf(modifier.get("value").toString());
                         String operation = modifier.get("operation").toString();

@@ -27,9 +27,9 @@ public class ActionOnHit extends CraftPower {
         if (e.getEntity() instanceof Player p) {
             Entity actor = e.getDamager();
             Entity target = p;
-            for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()) {
+            for (OriginContainer origin : OriginPlayerUtils.getOrigin(p).values()) {
                 if (getPowerArray().contains(p)) {
-                    for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
+                    for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
                         if(GenesisMC.getConditionExecutor().check("condition", "conditions", p, power, getPowerFile(), actor, target, actor.getLocation().getBlock(), null, p.getActiveItem(), e)){
                             if(GenesisMC.getConditionExecutor().check("damage_condition", "damage_conditions", p, power, getPowerFile(), actor, target, actor.getLocation().getBlock(), null, p.getActiveItem(), e)){
                                 if(GenesisMC.getConditionExecutor().check("bientity_condition", "bientity_conditions", p, power, getPowerFile(), actor, target, actor.getLocation().getBlock(), null, p.getActiveItem(), e)){

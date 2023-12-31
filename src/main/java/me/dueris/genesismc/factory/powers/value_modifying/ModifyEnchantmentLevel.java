@@ -22,10 +22,10 @@ public class ModifyEnchantmentLevel extends CraftPower{
     @Override
     public void run(Player p) {
         if(getPowerArray().contains(p)){
-            for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()) {
+            for (OriginContainer origin : OriginPlayerUtils.getOrigin(p).values()) {
                 ValueModifyingSuperClass valueModifyingSuperClass = new ValueModifyingSuperClass();
                 ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
-                for(PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)){
+                for(PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())){
                     if(conditionExecutor.check("condition", "conditions", p, power, getPowerFile(), p, null, p.getLocation().getBlock(), null, p.getInventory().getItemInMainHand(), null)){
                         if(conditionExecutor.check("item_condition", "item_conditions", p, power, getPowerFile(), p, null, p.getLocation().getBlock(), null, p.getInventory().getItemInMainHand(), null)){
                             ItemStack item = p.getInventory().getItemInMainHand();

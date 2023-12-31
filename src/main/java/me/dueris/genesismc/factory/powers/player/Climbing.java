@@ -68,8 +68,8 @@ public class Climbing extends CraftPower {
                             p.getEyeLocation().getBlock().getRelative(BlockFace.SOUTH).getType().isCollidable()
             )) {
                 Block block = p.getTargetBlock(null, 2);
-                for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()) {
-                    for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
+                for (OriginContainer origin : OriginPlayerUtils.getOrigin(p).values()) {
+                    for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
                         boolean cancel_bool = power.getRainCancel();
                         ConditionExecutor executor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                         if (executor.check("condition", "conditions", p, power, getPowerFile(), p, null, null, null, p.getItemInHand(), null)) {
