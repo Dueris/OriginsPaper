@@ -2,6 +2,7 @@ package me.dueris.genesismc.factory;
 
 import io.netty.util.internal.ConcurrentSet;
 import me.dueris.genesismc.GenesisMC;
+import me.dueris.genesismc.entity.OriginPlayerUtils;
 import me.dueris.genesismc.files.GenesisDataFiles;
 import me.dueris.genesismc.utils.*;
 import net.minecraft.server.MinecraftServer;
@@ -9,6 +10,7 @@ import net.minecraft.world.level.storage.LevelResource;
 
 import org.apache.commons.io.FilenameUtils;
 import org.bukkit.NamespacedKey;
+import org.bukkit.entity.Player;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -445,11 +447,14 @@ public class CraftApoli {
     /**
      * @return The HashMap serialized into a byte array.
      **/
-    public static String toSaveFormat(HashMap<LayerContainer, OriginContainer> origin) {
+    public static String toSaveFormat(HashMap<LayerContainer, OriginContainer> origin, Player p) {
         StringBuilder data = new StringBuilder();
         for (LayerContainer layer : origin.keySet()) {
             OriginContainer layerOrigins = origin.get(layer);
-            ArrayList<String> powers = layerOrigins.getPowers();
+            ArrayList<String> powers = new ArrayList<>();
+            for(PowerContainer power : OriginPlayerUtils.powerContainer.get(p).get(layer)){
+                powers.add(power.getTag());
+            }
             int powerSize = 0;
             if (powers != null) powerSize = powers.size();
             data.append(layer.getTag()).append("|").append(layerOrigins.getTag()).append("|").append(powerSize);

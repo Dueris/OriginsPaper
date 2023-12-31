@@ -40,6 +40,10 @@ import java.util.UUID;
 
 import static me.dueris.genesismc.factory.powers.Power.extra_reach;
 import static me.dueris.genesismc.factory.powers.Power.extra_reach_attack;
+import static me.dueris.genesismc.factory.powers.simple.BounceSlimeBlock.bouncePlayers;
+import static me.dueris.genesismc.factory.powers.simple.MimicWarden.mimicWardenPlayers;
+import static me.dueris.genesismc.factory.powers.simple.PiglinNoAttack.piglinPlayers;
+import static me.dueris.genesismc.factory.powers.simple.ScareCreepers.scaryPlayers;
 import static me.dueris.genesismc.utils.BukkitColour.AQUA;
 import static me.dueris.genesismc.utils.BukkitColour.RED;
 import static org.bukkit.Bukkit.getServer;
@@ -95,7 +99,7 @@ public class PlayerHandler implements Listener {
             }
             origins.put(layer, CraftApoli.nullOrigin());
         }
-        p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "originLayer"), PersistentDataType.STRING, CraftApoli.toSaveFormat(origins));
+        p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "originLayer"), PersistentDataType.STRING, CraftApoli.toSaveFormat(origins, p));
 
         //removes deleted layer from the players data
         for (LayerContainer layer : deletedLayers) OriginPlayerUtils.removeOrigin(p, layer);
@@ -110,7 +114,7 @@ public class PlayerHandler implements Listener {
         if (p.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "originLayer"), PersistentDataType.STRING) == null) {
             HashMap<LayerContainer, OriginContainer> origins = new HashMap<>();
             for (LayerContainer layer : CraftApoli.getLayers()) origins.put(layer, CraftApoli.nullOrigin());
-            p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "originLayers"), PersistentDataType.STRING, CraftApoli.toSaveFormat(origins));
+            p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "originLayers"), PersistentDataType.STRING, CraftApoli.toSaveFormat(origins, p));
             if (!p.getPersistentDataContainer().has(new NamespacedKey(GenesisMC.getPlugin(), "hasFirstChose"), PersistentDataType.BOOLEAN)){
                 p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "hasFirstChose"), PersistentDataType.BOOLEAN, false);
             }
@@ -118,7 +122,7 @@ public class PlayerHandler implements Listener {
         if (!p.getPersistentDataContainer().has(new NamespacedKey(GenesisMC.getPlugin(), "originLayer"), PersistentDataType.STRING) || p.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "originLayer"), PersistentDataType.STRING) == null){
             HashMap<LayerContainer, OriginContainer> origins = new HashMap<>();
             for (LayerContainer layer : CraftApoli.getLayers()) origins.put(layer, CraftApoli.nullOrigin());
-            p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "originLayer"), PersistentDataType.STRING, CraftApoli.toSaveFormat(origins));
+            p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "originLayer"), PersistentDataType.STRING, CraftApoli.toSaveFormat(origins, p));
             if (!p.getPersistentDataContainer().has(new NamespacedKey(GenesisMC.getPlugin(), "hasFirstChose"), PersistentDataType.BOOLEAN)){
                 p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "hasFirstChose"), PersistentDataType.BOOLEAN, false);
             }
@@ -130,7 +134,7 @@ public class PlayerHandler implements Listener {
         if (!(originTag == null || originTag.equals("null"))) {
             for (OriginContainer origin : CraftApoli.getOrigins()) {
                 if (("origin-" + (origin.getTag().substring(8))).equals(originTag.substring(8)))
-                    p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "originLayer"), PersistentDataType.STRING, CraftApoli.toSaveFormat(new HashMap<>(Map.of(CraftApoli.getLayerFromTag("origins:origin"), origin))));
+                    p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "originLayer"), PersistentDataType.STRING, CraftApoli.toSaveFormat(new HashMap<>(Map.of(CraftApoli.getLayerFromTag("origins:origin"), origin)), p));
             }
         }
 
@@ -143,7 +147,7 @@ public class PlayerHandler implements Listener {
             try {
                 ObjectInput oi = new ObjectInputStream(bis);
                 LegacyOriginContainer legacyOrigin = (LegacyOriginContainer) oi.readObject();
-                p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "originLayer"), PersistentDataType.STRING, CraftApoli.toSaveFormat(new HashMap<>(Map.of(CraftApoli.getLayerFromTag("origins:origin"), CraftApoli.getOrigin(legacyOrigin.getTag())))));
+                p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "originLayer"), PersistentDataType.STRING, CraftApoli.toSaveFormat(new HashMap<>(Map.of(CraftApoli.getLayerFromTag("origins:origin"), CraftApoli.getOrigin(legacyOrigin.getTag()))), p));
                 p.getPersistentDataContainer().remove(new NamespacedKey(GenesisMC.getPlugin(), "origins"));
             } catch (Exception er) {
                 for (LayerContainer layer : CraftApoli.getLayers()) {
@@ -184,18 +188,8 @@ public class PlayerHandler implements Listener {
         }
         OriginDataContainer.loadData(p);
         OriginPlayerUtils.setupPowers(p);
-
         originValidCheck(p);
         OriginPlayerUtils.assignPowers(p);
-        p.sendMessage(Component.text(LangConfig.getLocalizedString(p, "misc.joinText")).color(TextColor.fromHexString(AQUA)));
-
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                ReapplyEntityReachPowers(p);
-            }
-        }.runTaskLater(GenesisMC.getPlugin(), 3);
-
         try {
             for (Class<? extends CraftPower> c : CraftPower.findCraftPowerClasses()) {
                 if (CraftPower.getRegistered().contains(c)) continue;
@@ -216,9 +210,80 @@ public class PlayerHandler implements Listener {
             throw new RuntimeException(el);
         }
 
+        // origins:simple powers
         Gravity g = new Gravity();
         g.run(p);
-        GenesisMC.patchPowers();
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                ReapplyEntityReachPowers(p);
+            }
+        }.runTaskLater(GenesisMC.getPlugin(), 5L);
+        boolean hasMimicWardenPower = false;
+
+        for (OriginContainer origin : OriginPlayerUtils.getOrigin(p).values()) {
+            for (PowerContainer power : origin.getPowerContainers()) {
+                if (power == null) continue;
+                if (power.getTag().equals("origins:mimic_warden")) {
+                    hasMimicWardenPower = true;
+                    break;
+                }
+            }
+        }
+        if (hasMimicWardenPower && !mimicWardenPlayers.contains(p)) {
+            mimicWardenPlayers.add(p);
+        } else if (!hasMimicWardenPower) {
+            mimicWardenPlayers.remove(p);
+        }
+
+        boolean hasPower = false;
+
+        for (OriginContainer origin : OriginPlayerUtils.getOrigin(p).values()) {
+            for (String power : origin.getPowers()) {
+                if (power.equals("origins:slime_block_bounce")) {
+                    hasPower = true;
+                    break;
+                }
+            }
+        }
+
+        if (hasPower && !bouncePlayers.contains(p)) {
+            bouncePlayers.add(p);
+        } else if (!hasPower) {
+            bouncePlayers.remove(p);
+        }
+
+        boolean hasPiglinPower = false;
+
+        for (OriginContainer origin : OriginPlayerUtils.getOrigin(p).values()) {
+            for (PowerContainer power : origin.getPowerContainers()) {
+                if (power.getTag().equals("origins:piglin_brothers")) {
+                    hasPiglinPower = true;
+                    break;
+                }
+            }
+        }
+        if (hasPiglinPower && !piglinPlayers.contains(p)) {
+            piglinPlayers.add(p);
+        } else if (!hasPiglinPower) {
+            piglinPlayers.remove(p);
+        }
+
+        boolean hasScaryPower = false;
+
+        for (OriginContainer origin : OriginPlayerUtils.getOrigin(p).values()) {
+            for (PowerContainer power : origin.getPowerContainers()) {
+                if (power.getTag().equals("origins:scare_creepers")) {
+                    hasPiglinPower = true;
+                    break;
+                }
+            }
+        }
+        if (hasScaryPower && !scaryPlayers.contains(p)) {
+            scaryPlayers.add(p);
+        } else if (!hasScaryPower) {
+            scaryPlayers.remove(p);
+        }
     }
 
     @EventHandler

@@ -147,18 +147,6 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         return conditionExecutor;
     }
 
-    // This is just a test for the ScareCreepers ai goal
-    // public void testAiGoal(Creeper cr){
-    //     CraftCreeper craftCreep = (CraftCreeper) cr;
-    //     Predicate pred = new Predicate<LivingEntity>() {
-    //         @Override
-    //         public boolean test(LivingEntity t) {
-    //             return true;
-    //         }
-    //     };
-    //     craftCreep.getHandle().goalSelector.addGoal(3, new AvoidEntityGoal(craftCreep.getHandle(), net.minecraft.world.entity.player.Player.class, pred, 6.0f, 1.0d, 1.2d, pred));
-    // }
-
     @Override
     public void onEnable(){
         plugin = this;
@@ -426,6 +414,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         getServer().getPluginManager().registerEvents(new GenesisItems(), this);
         getServer().getPluginManager().registerEvents(new MimicWarden(), this);
         getServer().getPluginManager().registerEvents(new BounceSlimeBlock(), this);
+        getServer().getPluginManager().registerEvents(new LogoutBugWorkaround(), this);
         getServer().getPluginManager().registerEvents(new FoliaOriginScheduler.OriginSchedulerTree(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new KeybindUtils(), GenesisMC.getPlugin());
         if (getServer().getPluginManager().isPluginEnabled("SkinsRestorer")) {

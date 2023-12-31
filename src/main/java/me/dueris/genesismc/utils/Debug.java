@@ -35,22 +35,4 @@ public class Debug {
         Bukkit.getServer().getConsoleSender().sendMessage("  - Lang testing = {true}");
         Bukkit.getServer().getConsoleSender().sendMessage("}");
     }
-
-    public static void executeGenesisReload() {
-        try {
-            getServer().getConsoleSender().sendMessage(ChatColor.GREEN + LangConfig.lang_test);
-        } catch (Exception e) {
-            getServer().getConsoleSender().sendMessage(ChatColor.RED + "A fatal error has occurred, lang could not be loaded. Disabling GenesisMC....");
-            getServer().getPluginManager().disablePlugin(getPlugin());
-        }
-        CraftApoli.unloadData();
-        CraftApoli.loadOrigins();
-        for (Player p : Bukkit.getOnlinePlayers()) {
-            Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.BLUE + "Origins Reloaded.");
-            if (p.isOp()) {
-                p.sendMessage(ChatColor.BLUE + "Origins Reloaded.");
-            }
-            PlayerHandler.originValidCheck(p);
-        }
-    }
 }

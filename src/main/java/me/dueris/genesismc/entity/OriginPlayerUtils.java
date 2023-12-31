@@ -183,7 +183,7 @@ public class OriginPlayerUtils {
         for (LayerContainer layers : origins.keySet()) {
             if (layer.getTag().equals(layers.getTag())) origins.replace(layers, origin);
         }
-        player.getPersistentDataContainer().set(key, PersistentDataType.STRING, CraftApoli.toSaveFormat(origins));
+        player.getPersistentDataContainer().set(key, PersistentDataType.STRING, CraftApoli.toSaveFormat(origins, player));
         OriginDataContainer.loadData(player);
 
         String originTag = origin.getTag();
@@ -217,7 +217,7 @@ public class OriginPlayerUtils {
         for (LayerContainer playerLayer : layers) {
             if (playerLayer.getTag().equals(layer.getTag())) origins.remove(playerLayer);
         }
-        player.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "originLayer"), PersistentDataType.STRING, CraftApoli.toSaveFormat(origins));
+        player.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "originLayer"), PersistentDataType.STRING, CraftApoli.toSaveFormat(origins, player));
         OriginDataContainer.loadData(player);
     }
 
@@ -333,7 +333,7 @@ public class OriginPlayerUtils {
 
         PowerAssignEvent powerAssignEvent = new PowerAssignEvent(player, powerAppliedClasses, powerAppliedTypes, origin);
         Bukkit.getServer().getPluginManager().callEvent(powerAssignEvent);
-        player.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "originLayer"), PersistentDataType.STRING, CraftApoli.toSaveFormat(OriginPlayerUtils.getOrigin(player)));
+        player.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "originLayer"), PersistentDataType.STRING, CraftApoli.toSaveFormat(OriginPlayerUtils.getOrigin(player), player));
         OriginDataContainer.loadData(player);
 
         hasPowers.add(player);
@@ -376,7 +376,7 @@ public class OriginPlayerUtils {
             powersAppliedList.get(player).remove(classes);
         }
         PowerUnassignEvent powerUnassignEvent = new PowerUnassignEvent(player, powerRemovedClasses, powerRemovedTypes, origin);
-        player.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "originLayer"), PersistentDataType.STRING, CraftApoli.toSaveFormat(OriginPlayerUtils.getOrigin(player)));
+        player.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "originLayer"), PersistentDataType.STRING, CraftApoli.toSaveFormat(OriginPlayerUtils.getOrigin(player), player));
         OriginDataContainer.unloadData(player);
         Bukkit.getServer().getPluginManager().callEvent(powerUnassignEvent);
         hasPowers.remove(player);
