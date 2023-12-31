@@ -2,8 +2,10 @@ package me.dueris.genesismc.factory.powers.actions;
 
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.entity.OriginPlayerUtils;
+import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.actions.Actions;
 import me.dueris.genesismc.factory.powers.CraftPower;
+import me.dueris.genesismc.utils.LayerContainer;
 import me.dueris.genesismc.utils.OriginContainer;
 import me.dueris.genesismc.utils.PowerContainer;
 import org.bukkit.entity.Entity;
@@ -26,8 +28,8 @@ public class ActionOnBeingUsed extends CraftPower implements Listener {
         if (!(actor instanceof Player player)) return;
         if (!getPowerArray().contains(actor)) return;
 
-        for (OriginContainer origin : OriginPlayerUtils.getOrigin(player).values()) {
-            for (PowerContainer powerContainer : origin.getMultiPowerFileFromType(getPowerFile())) {
+        for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()) {
+            for (PowerContainer powerContainer : OriginPlayerUtils.getMultiPowerFileFromType(player, getPowerFile(), layer)) {
                 PowerContainer power = powerContainer;
                 if (power == null) continue;
 

@@ -92,8 +92,8 @@ public class AttributeConditioned extends CraftPower implements Listener {
         operationMap.put("multiply_random_max", (a, b) -> a * random.nextInt(b));
         operationMap.put("divide_random_max", (a, b) -> a / random.nextInt(b));
 
-        for (OriginContainer origin : OriginPlayerUtils.getOrigin(p).values()) {
-            for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
+        for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()) {
+            for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                 if (power == null) continue;
                 for (HashMap<String, Object> modifier : power.getConditionFromString("modifier", "modifiers")) {
                     ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
@@ -134,8 +134,8 @@ public class AttributeConditioned extends CraftPower implements Listener {
         operationMap.put("multiply_random_max", (a, b) -> a / random.nextInt(b));
         operationMap.put("divide_random_max", (a, b) -> a * random.nextInt(b));
 
-        for (OriginContainer origin : OriginPlayerUtils.getOrigin(p).values()) {
-            for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
+        for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()) {
+            for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                 if (power == null) continue;
 
                 for (HashMap<String, Object> modifier : power.getConditionFromString("modifier", "modifiers")) {
@@ -180,8 +180,8 @@ public class AttributeConditioned extends CraftPower implements Listener {
 
     @Override
     public void run(Player p) {
-        for (OriginContainer origin : OriginPlayerUtils.getOrigin(p).values()) {
-            for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
+        for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()) {
+            for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                 if (conditioned_attribute.contains(p)) {
                     ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                     if (conditionExecutor.check("condition", "conditions", p, power, getPowerFile(), p, null, p.getLocation().getBlock(), null, p.getInventory().getItemInMainHand(), null)) {

@@ -40,11 +40,11 @@ public class ModifySwimSpeedPower extends CraftPower {
 
     @Override
     public void run(Player p) {
-        for (OriginContainer origin : OriginPlayerUtils.getOrigin(p).values()) {
+        for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()) {
             ValueModifyingSuperClass valueModifyingSuperClass = new ValueModifyingSuperClass();
             try {
                 ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
-                for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
+                for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                     if (conditionExecutor.check("condition", "conditions", p, power, "origins:modify_swim_speed", p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
                         if (valueModifyingSuperClass.getPersistentAttributeContainer(p, MODIFYING_KEY) == -1) return;
                         if (!p.isSwimming()) return;
@@ -69,7 +69,7 @@ public class ModifySwimSpeedPower extends CraftPower {
 
             } catch (Exception e) {
                 ErrorSystem errorSystem = new ErrorSystem();
-                errorSystem.throwError("unable to set modifier", "origins:modify_swim_speed", p, origin, OriginPlayerUtils.getLayer(p, origin));
+                errorSystem.throwError("unable to set modifier", "origins:modify_swim_speed", p, layer);
             }
         }
     }
@@ -87,8 +87,8 @@ public class ModifySwimSpeedPower extends CraftPower {
     public void apply(Player p) {
         ValueModifyingSuperClass valueModifyingSuperClass = new ValueModifyingSuperClass();
         if (modify_swim_speed.contains(p)) {
-            for (OriginContainer origin : OriginPlayerUtils.getOrigin(p).values()) {
-                for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
+            for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()) {
+                for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                     for (HashMap<String, Object> modifier : power.getPossibleModifiers("modifier", "modifiers")) {
                         Float value = Float.valueOf(modifier.get("value").toString());
                         String operation = modifier.get("operation").toString();

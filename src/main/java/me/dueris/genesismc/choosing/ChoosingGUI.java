@@ -17,7 +17,7 @@ public class ChoosingGUI extends BukkitRunnable {
     @Override
     public void run() {
         for (Player p : Bukkit.getOnlinePlayers()) {
-            for (LayerContainer layer : CraftApoli.getLayers()) {
+            for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()) {
                 try {
                     if (OriginPlayerUtils.hasOrigin(p, CraftApoli.nullOrigin().getTag())) {
                         String openInventoryTitle = p.getOpenInventory().getTitle();

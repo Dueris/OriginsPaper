@@ -35,6 +35,7 @@ import java.io.ObjectInputStream;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -47,8 +48,8 @@ import static org.bukkit.Bukkit.getServer;
 public class PlayerHandler implements Listener {
 
     public static void ReapplyEntityReachPowers(Player player) {
-        for (OriginContainer origin : OriginPlayerUtils.getOrigin(player).values()) {
-            for (PowerContainer power : origin.getMultiPowerFileFromType("origins:attribute")) {
+        for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()) {
+            for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(player, "origins:attribute", layer)) {
                 if (power == null) continue;
                 for (HashMap<String, Object> modifier : power.getPossibleModifiers("modifier", "modifier")) {
                     if (modifier.get("attribute").toString().equalsIgnoreCase("reach-entity-attributes:reach")) {
@@ -89,13 +90,13 @@ public class PlayerHandler implements Listener {
 
         //check if the player has all the existing layers
         layerLoop:
-        for (LayerContainer layer : CraftApoli.getLayers()) {
+        for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()) {
             for (LayerContainer playerLayer : origins.keySet()) {
                 if (layer.getTag().equals(playerLayer.getTag())) continue layerLoop;
             }
             origins.put(layer, CraftApoli.nullOrigin());
         }
-        p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "originLayer"), PersistentDataType.STRING, CraftApoli.toSaveFormat(origins));
+        p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "originLayer"), PersistentDataType.STRING, CraftApoli.toSaveFormat(origins, p));
 
         //removes deleted layer from the players data
         for (LayerContainer layer : deletedLayers) OriginPlayerUtils.removeOrigin(p, layer);
@@ -110,7 +111,7 @@ public class PlayerHandler implements Listener {
         if (p.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "originLayer"), PersistentDataType.STRING) == null) {
             HashMap<LayerContainer, OriginContainer> origins = new HashMap<>();
             for (LayerContainer layer : CraftApoli.getLayers()) origins.put(layer, CraftApoli.nullOrigin());
-            p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "originLayers"), PersistentDataType.STRING, CraftApoli.toSaveFormat(origins));
+            p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "originLayers"), PersistentDataType.STRING, CraftApoli.toSaveFormat(origins, p));
             if (!p.getPersistentDataContainer().has(new NamespacedKey(GenesisMC.getPlugin(), "hasFirstChose"), PersistentDataType.BOOLEAN)){
                 p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "hasFirstChose"), PersistentDataType.BOOLEAN, false);
             }
@@ -118,49 +119,18 @@ public class PlayerHandler implements Listener {
         if (!p.getPersistentDataContainer().has(new NamespacedKey(GenesisMC.getPlugin(), "originLayer"), PersistentDataType.STRING) || p.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "originLayer"), PersistentDataType.STRING) == null){
             HashMap<LayerContainer, OriginContainer> origins = new HashMap<>();
             for (LayerContainer layer : CraftApoli.getLayers()) origins.put(layer, CraftApoli.nullOrigin());
-            p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "originLayer"), PersistentDataType.STRING, CraftApoli.toSaveFormat(origins));
+            p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "originLayer"), PersistentDataType.STRING, CraftApoli.toSaveFormat(origins, p));
             if (!p.getPersistentDataContainer().has(new NamespacedKey(GenesisMC.getPlugin(), "hasFirstChose"), PersistentDataType.BOOLEAN)){
                 p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "hasFirstChose"), PersistentDataType.BOOLEAN, false);
             }
         }
-                                               
-        // ---  translation system ---
-        String originTag = p.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "originTag"), PersistentDataType.STRING);
-
-        if (!(originTag == null || originTag.equals("null"))) {
-            for (OriginContainer origin : CraftApoli.getOrigins()) {
-                if (("origin-" + (origin.getTag().substring(8))).equals(originTag.substring(8)))
-                    p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "originLayer"), PersistentDataType.STRING, CraftApoli.toSaveFormat(new HashMap<>(Map.of(CraftApoli.getLayerFromTag("origins:origin"), origin))));
-            }
-        }
-
-        if (p.getPersistentDataContainer().has(new NamespacedKey(GenesisMC.getPlugin(), "origins"), PersistentDataType.BYTE_ARRAY)){
-            p.getPersistentDataContainer().remove(new NamespacedKey(GenesisMC.getPlugin(), "origins"));
-        }
-
-        if (p.getPersistentDataContainer().has(new NamespacedKey(GenesisMC.getPlugin(), "origin"), PersistentDataType.BYTE_ARRAY)) {
-            ByteArrayInputStream bis = new ByteArrayInputStream(p.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "origin"), PersistentDataType.BYTE_ARRAY));
-            try {
-                ObjectInput oi = new ObjectInputStream(bis);
-                LegacyOriginContainer legacyOrigin = (LegacyOriginContainer) oi.readObject();
-                p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "originLayer"), PersistentDataType.STRING, CraftApoli.toSaveFormat(new HashMap<>(Map.of(CraftApoli.getLayerFromTag("origins:origin"), CraftApoli.getOrigin(legacyOrigin.getTag())))));
-                p.getPersistentDataContainer().remove(new NamespacedKey(GenesisMC.getPlugin(), "origins"));
-            } catch (Exception er) {
-                for (LayerContainer layer : CraftApoli.getLayers()) {
-                    OriginPlayerUtils.setOrigin(p, layer, CraftApoli.nullOrigin());
-                }
-            }
-        }
-        Bukkit.getLogger().warning("[GenesisMC] Reminder to devs - fix old origin container translation");
 
         if (!p.getPersistentDataContainer().has(new NamespacedKey(GenesisMC.getPlugin(), "insideBlock"), PersistentDataType.BOOLEAN)) {
             p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "insideBlock"), PersistentDataType.BOOLEAN, false);
         }
 
-        //default playerdata values
-        PersistentDataContainer data = p.getPersistentDataContainer();
-        if (!data.has(new NamespacedKey(GenesisMC.getPlugin(), "shulker-box"), PersistentDataType.STRING)) {
-            data.set(new NamespacedKey(GenesisMC.getPlugin(), "shulker-box"), PersistentDataType.STRING, "");
+        if (!p.getPersistentDataContainer().has(new NamespacedKey(GenesisMC.getPlugin(), "shulker-box"), PersistentDataType.STRING)) {
+            p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "shulker-box"), PersistentDataType.STRING, "");
         }
         if (!p.getPersistentDataContainer().has(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER)) {
             p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
@@ -187,13 +157,6 @@ public class PlayerHandler implements Listener {
         originValidCheck(p);
         OriginPlayerUtils.assignPowers(p);
         p.sendMessage(Component.text(LangConfig.getLocalizedString(p, "misc.joinText")).color(TextColor.fromHexString(AQUA)));
-
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                ReapplyEntityReachPowers(p);
-            }
-        }.runTaskLater(GenesisMC.getPlugin(), 3);
 
         try {
             for (Class<? extends CraftPower> c : CraftPower.findCraftPowerClasses()) {

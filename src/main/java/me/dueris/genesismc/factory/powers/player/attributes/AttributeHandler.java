@@ -79,8 +79,8 @@ public class AttributeHandler extends CraftPower implements Listener {
             @Override
             public void run() {
                 if (attribute.contains(p)) {
-                    for (OriginContainer origin : OriginPlayerUtils.getOrigin(p).values()) {
-                        for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
+                    for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()) {
+                        for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                             if (power == null) continue;
 
                             for (HashMap<String, Object> modifier : power.getPossibleModifiers("modifier", "modifiers")) {
@@ -117,7 +117,7 @@ public class AttributeHandler extends CraftPower implements Listener {
                                         double base_value = p.getAttribute(attribute_modifier).getBaseValue();
                                         String operation = String.valueOf(modifier.get("operation"));
                                         executeAttributeModify(operation, attribute_modifier, base_value, p, value);
-                                        AttributeExecuteEvent attributeExecuteEvent = new AttributeExecuteEvent(p, attribute_modifier, power.toString(), origin);
+                                        AttributeExecuteEvent attributeExecuteEvent = new AttributeExecuteEvent(p, attribute_modifier, power.toString(), power);
                                         Bukkit.getServer().getPluginManager().callEvent(attributeExecuteEvent);
                                         setActive(p, power.getTag(), true);
                                         p.sendHealthUpdate();
@@ -141,8 +141,8 @@ public class AttributeHandler extends CraftPower implements Listener {
             @Override
             public void run() {
                 if (attribute.contains(p)) {
-                    for (OriginContainer origin : OriginPlayerUtils.getOrigin(p).values()) {
-                        for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
+                    for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()) {
+                        for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                             if (power == null) continue;
 
                             for (HashMap<String, Object> modifier : power.getPossibleModifiers("modifier", "modifiers")) {
@@ -179,7 +179,7 @@ public class AttributeHandler extends CraftPower implements Listener {
                                         double base_value = p.getAttribute(attribute_modifier).getBaseValue();
                                         String operation = String.valueOf(modifier.get("operation"));
                                         executeAttributeModify(operation, attribute_modifier, base_value, p, value);
-                                        AttributeExecuteEvent attributeExecuteEvent = new AttributeExecuteEvent(p, attribute_modifier, power.toString(), origin);
+                                        AttributeExecuteEvent attributeExecuteEvent = new AttributeExecuteEvent(p, attribute_modifier, power.toString(), power);
                                         Bukkit.getServer().getPluginManager().callEvent(attributeExecuteEvent);
                                         setActive(p, power.getTag(), true);
                                         p.sendHealthUpdate();
@@ -261,9 +261,9 @@ public class AttributeHandler extends CraftPower implements Listener {
         public void OnClickREACH(PlayerInteractEvent e) {
             Player p = e.getPlayer();
             if (extra_reach_attack.contains(e.getPlayer())) {
-                for (OriginContainer origin : OriginPlayerUtils.getOrigin(p).values()) {
+                for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()) {
 
-                    for (PowerContainer power : origin.getMultiPowerFileFromType("origins:attribute")) {
+                    for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, "origins:attribute", layer)) {
                         for (HashMap<String, Object> modifier : power.getPossibleModifiers("modifier", "modifiers")) {
                             if (!e.getAction().isLeftClick()) return;
                             String operation = String.valueOf(modifier.get("operation"));

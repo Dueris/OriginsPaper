@@ -34,9 +34,9 @@ public class DisableRegen extends CraftPower implements Listener {
     public void disable(EntityRegainHealthEvent e) {
         if (e.getEntity() instanceof Player p) {
             if (disable_regen.contains(p)) {
-                for (OriginContainer origin : OriginPlayerUtils.getOrigin(p).values()) {
+                for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()) {
                     ConditionExecutor executor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
-                    for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
+                    for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                         if (executor.check("condition", "conditions", p, power, getPowerFile(), p, null, null, null, p.getItemInHand(), null)) {
 
                             setActive(p, power.getTag(), true);

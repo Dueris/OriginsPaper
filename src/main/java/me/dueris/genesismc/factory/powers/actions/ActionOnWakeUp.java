@@ -23,8 +23,8 @@ public class ActionOnWakeUp extends CraftPower implements Listener {
     @EventHandler
     public void w(PlayerBedLeaveEvent e) {
         if (!getPowerArray().contains(e.getPlayer())) return;
-        for (OriginContainer origin : OriginPlayerUtils.getOrigin(e.getPlayer()).values()) {
-            for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
+        for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()) {
+            for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(e.getPlayer(), getPowerFile(), layer)) {
                 setActive(e.getPlayer(), power.getTag(), true);
                 Actions.EntityActionType(e.getPlayer(), power.getEntityAction());
                 Actions.BlockActionType(e.getBed().getLocation(), power.getBlockAction());

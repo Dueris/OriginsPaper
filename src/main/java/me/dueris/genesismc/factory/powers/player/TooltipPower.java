@@ -62,9 +62,9 @@ public class TooltipPower extends CraftPower {
     @Override
     public void run(Player p) {
         if (getPowerArray().contains(p)) {
-            for (OriginContainer origin : OriginPlayerUtils.getOrigin(p).values()) {
+            for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()) {
                 ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
-                for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
+                for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                     if (conditionExecutor.check("item_condition", "item_conditions", p, power, getPowerFile(), p, null, null, null, p.getItemInHand(), null)) {
 
                         setActive(p, power.getTag(), true);

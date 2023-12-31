@@ -76,9 +76,9 @@ public class ScareCreepers extends CraftPower implements OriginSimple, Listener 
     public void event(OriginChangeEvent e) {
         boolean hasMimicWardenPower = false;
 
-        for (OriginContainer origin : OriginPlayerUtils.getOrigin(e.getPlayer()).values()) {
-            for (String power : origin.getPowers()) {
-                if (power.equals("origins:scare_creepers")) {
+        for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()) {
+            for (PowerContainer power : OriginPlayerUtils.getPowers(e.getPlayer(), layer)) {
+                if (power.getTag().equals("origins:scare_creepers")) {
                     hasMimicWardenPower = true;
                     break;
                 }
@@ -96,8 +96,8 @@ public class ScareCreepers extends CraftPower implements OriginSimple, Listener 
     public void event(PlayerJoinEvent e) {
         boolean hasMimicWardenPower = false;
 
-        for (OriginContainer origin : OriginPlayerUtils.getOrigin(e.getPlayer()).values()) {
-            for (PowerContainer power : origin.getPowerContainers()) {
+        for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()) {
+            for (PowerContainer power : OriginPlayerUtils.getPowers(e.getPlayer(), layer)) {
                 if (power.getTag().equals("origins:scare_creepers")) {
                     hasMimicWardenPower = true;
                     break;

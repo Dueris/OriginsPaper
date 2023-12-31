@@ -47,9 +47,9 @@ public class ModifyFallingPower extends CraftPower implements Listener {
         if (modify_falling.contains(p)) {
             if (e.getTo().getY() == e.getFrom().getY()) return;
             @NotNull Vector velocity = p.getVelocity();
-            for (OriginContainer origin : OriginPlayerUtils.getOrigin(p).values()) {
+            for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()) {
                 ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
-                for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
+                for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                     if (conditionExecutor.check("condition", "conditions", p, power, "origins:modify_falling", p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
                         if (power.getObject("velocity") instanceof Integer) {
                             if (Integer.parseInt(power.get("velocity")) < 0) {
@@ -108,9 +108,9 @@ public class ModifyFallingPower extends CraftPower implements Listener {
     public void runR(EntityDamageEvent e) {
         if (e.getEntity() instanceof Player p) {
             if (modify_falling.contains(p)) {
-                for (OriginContainer origin : OriginPlayerUtils.getOrigin(p).values()) {
+                for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()) {
                     ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
-                    for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
+                    for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                         if (conditionExecutor.check("condition", "conditions", p, power, "origins:modify_falling", p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
                             if (Boolean.getBoolean(power.get("take_fall_damage", "true"))) {
                                 if (e.getCause() == EntityDamageEvent.DamageCause.FALL) {

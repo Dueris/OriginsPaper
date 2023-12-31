@@ -39,14 +39,11 @@ public class Resource extends CraftPower implements Listener {
     }
 
     private void execute(Player p){
-        for(OriginContainer origin : OriginPlayerUtils.getOrigin(p).values()){
-            for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
-                p.sendMessage("2");
+        for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()){
+            for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                 final String tag = power.getTag();
-                final String originTag = origin.getTag();
                 BossBar bar = Bukkit.createBossBar(power.getTag(), BarColor.WHITE, BarStyle.SOLID);
                 bar.setProgress(1.0);
-                p.sendMessage("3");
                 org.apache.commons.lang3.tuple.Pair<BossBar, Integer> pair = new org.apache.commons.lang3.tuple.Pair<BossBar, Integer>() {
                     @Override
                     public Integer setValue(Integer value) {
@@ -63,9 +60,7 @@ public class Resource extends CraftPower implements Listener {
                         return countNumbersBetween(Integer.valueOf(power.get("start_value", power.get("min")).toString()), Integer.valueOf(power.get("max").toString()));
                     }
                 };
-                p.sendMessage("4");
                 registeredBars.put(tag, pair);
-                p.sendMessage(registeredBars.keySet().toString());
                 final boolean[] shouldRender = {false};
                 if(power.getJsonHashMap("hud_render") != null){
                     new BukkitRunnable() {

@@ -69,9 +69,9 @@ public class BounceSlimeBlock extends CraftPower implements OriginSimple, Listen
     public void event(OriginChangeEvent e) {
         boolean hasPower = false;
 
-        for (OriginContainer origin : OriginPlayerUtils.getOrigin(e.getPlayer()).values()) {
-            for (String power : origin.getPowers()) {
-                if (power.equals("origins:slime_block_bounce")) {
+        for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()) {
+            for (PowerContainer power : OriginPlayerUtils.getPowers(e.getPlayer(), layer)) {
+                if (power.getTag().equals("origins:slime_block_bounce")) {
                     hasPower = true;
                     break;
                 }
@@ -89,8 +89,8 @@ public class BounceSlimeBlock extends CraftPower implements OriginSimple, Listen
     public void event(PlayerJoinEvent e) {
         boolean hasPower = false;
 
-        for (OriginContainer origin : OriginPlayerUtils.getOrigin(e.getPlayer()).values()) {
-            for (PowerContainer power : origin.getPowerContainers()) {
+        for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()) {
+            for (PowerContainer power : OriginPlayerUtils.getPowers(e.getPlayer(), layer)) {
                 if (power.getTag().equals("origins:slime_block_bounce")) {
                     hasPower = true;
                     break;

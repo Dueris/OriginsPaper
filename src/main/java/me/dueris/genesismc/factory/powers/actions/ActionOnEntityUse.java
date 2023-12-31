@@ -31,8 +31,8 @@ public class ActionOnEntityUse extends CraftPower implements Listener {
         if (!(target instanceof Player player)) return;
         if (!getPowerArray().contains(target)) return;
 
-        for (OriginContainer origin : OriginPlayerUtils.getOrigin(player).values()) {
-            for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
+        for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()) {
+            for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(player, getPowerFile(), layer)) {
                 if(GenesisMC.getConditionExecutor().check("condition", "conditions", player, power, getPowerFile(), actor, target, actor.getLocation().getBlock(), null, actor.getActiveItem(), null)){
                     if(GenesisMC.getConditionExecutor().check("item_condition", "item_conditions", player, power, getPowerFile(), actor, target, actor.getLocation().getBlock(), null, actor.getActiveItem(), null)){
                         if(GenesisMC.getConditionExecutor().check("bientity_condition", "bientity_conditions", player, power, getPowerFile(), actor, target, actor.getLocation().getBlock(), null, actor.getActiveItem(), null)){

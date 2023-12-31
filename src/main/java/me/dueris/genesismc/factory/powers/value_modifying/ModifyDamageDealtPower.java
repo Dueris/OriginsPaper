@@ -43,10 +43,10 @@ public class ModifyDamageDealtPower extends CraftPower implements Listener {
     @EventHandler
     public void damageEVENT(EntityDamageByEntityEvent e) {
         if (e.getDamager() instanceof Player p && modify_damage_dealt.contains(p)) {
-            for (OriginContainer origin : OriginPlayerUtils.getOrigin(p).values()) {
+            for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()) {
                 try {
                     ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
-                    for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
+                    for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                         if (conditionExecutor.check("bientity_condition", "bientity_condition", p, power, "origins:modify_damage_dealt", p, e.getEntity(), p.getLocation().getBlock(), null, p.getItemInHand(), e)) {
                             if (conditionExecutor.check("condition", "condition", p, power, "origins:modify_damage_dealt", p, e.getEntity(), p.getLocation().getBlock(), null, p.getItemInHand(), e)) {
                                 if (conditionExecutor.check("item_condition", "item_condition", p, power, "origins:modify_damage_dealt", p, e.getEntity(), p.getLocation().getBlock(), null, p.getItemInHand(), e)) {

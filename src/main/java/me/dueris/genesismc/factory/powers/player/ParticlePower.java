@@ -31,8 +31,8 @@ public class ParticlePower extends CraftPower {
     @Override
     public void run(Player player) {
         if (particle.contains(player)) {
-            for (OriginContainer origin : OriginPlayerUtils.getOrigin(player).values()) {
-                for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
+            for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()) {
+                for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(player, getPowerFile(), layer)) {
                     if (power == null) {
                         getPowerArray().remove(player);
                         return;

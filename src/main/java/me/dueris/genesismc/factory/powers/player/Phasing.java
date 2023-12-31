@@ -41,9 +41,9 @@ public class Phasing extends CraftPower implements Listener {
     @Override
     public void run(Player p) {
         if (getPowerArray().contains(p)) {
-            for (OriginContainer origin : OriginPlayerUtils.getOrigin(p).values()) {
+            for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()) {
                 ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
-                for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
+                for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                     if (conditionExecutor.check("condition", "conditions", p, power, getPowerFile(), p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
                         setActive(p, power.getTag(), true);
                         if ((p.getLocation().add(0.55F, 0, 0.55F).getBlock().isSolid() ||
@@ -206,8 +206,8 @@ public class Phasing extends CraftPower implements Listener {
             if (OriginPlayerUtils.isInPhantomForm(p)) {
                 if (phasing.contains(p)) {
                     if (!p.getLocation().getBlock().isCollidable()) {
-                        for (OriginContainer origin : OriginPlayerUtils.getOrigin(p).values()) {
-                            for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
+                        for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()) {
+                            for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                                 if (p.getLocation().getBlock().getRelative(BlockFace.DOWN).isCollidable()) {
                                     Location currentLocation = p.getLocation();
                                     Location targetLocation = currentLocation.getBlock().getRelative(BlockFace.DOWN).getLocation();

@@ -144,8 +144,8 @@ public class PlayerRender extends CraftPower {
                 public void run() {
                     if(!Bukkit.getServer().getPluginManager().isPluginEnabled("SkinsRestorer")) return;
                     if (model_color.contains(player)) {
-                        for (OriginContainer origin : OriginPlayerUtils.getOrigin(player).values()) {
-                            for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
+                        for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()) {
+                            for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(player, getPowerFile(), layer)) {
                                 Double red;
                                 Double blue;
                                 Double green;
@@ -178,8 +178,8 @@ public class PlayerRender extends CraftPower {
                             }
                         }
                     } else {
-                        for (OriginContainer origin : OriginPlayerUtils.getOrigin(player).values()) {
-                            for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
+                        for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()) {
+                            for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(player, getPowerFile(), layer)) {
                                 Double red = Double.valueOf(0);
                                 Double blue = Double.valueOf(0);
                                 Double green = Double.valueOf(0);
@@ -450,7 +450,7 @@ public class PlayerRender extends CraftPower {
                 Bukkit.getConsoleSender().sendMessage(player.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "modified-skin-url"), PersistentDataType.STRING));
                 Bukkit.getConsoleSender().sendMessage(player.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "original-skin-url"), PersistentDataType.STRING));
                 if (model_color.contains(player)) {
-                    for (OriginContainer origin : OriginPlayerUtils.getOrigin(player).values()) {
+                    for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()) {
                         if (model_color.contains(player)) {
                             if (player.getPlayerProfile().getTextures().getSkinModel() == PlayerTextures.SkinModel.CLASSIC) {
                                 Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "skin set " + player.getName() + " " + player.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "modified-skin-url"), PersistentDataType.STRING) + " CLASSIC");
@@ -460,7 +460,7 @@ public class PlayerRender extends CraftPower {
                         }
                     }
                 } else {
-                    for (OriginContainer origin : OriginPlayerUtils.getOrigin(player).values()) {
+                    for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()) {
                         if (!model_color.contains(player)) {
                             if (player.getPlayerProfile().getTextures().getSkinModel() == PlayerTextures.SkinModel.CLASSIC) {
                                 Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "skin set " + player.getName() + " " + player.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "original-skin-url"), PersistentDataType.STRING) + " CLASSIC");

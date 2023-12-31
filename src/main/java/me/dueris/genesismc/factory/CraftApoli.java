@@ -2,6 +2,9 @@ package me.dueris.genesismc.factory;
 
 import io.netty.util.internal.ConcurrentSet;
 import me.dueris.genesismc.GenesisMC;
+import me.dueris.genesismc.OriginDataContainer;
+import me.dueris.genesismc.entity.OriginPlayerUtils;
+import me.dueris.genesismc.factory.powers.Power;
 import me.dueris.genesismc.files.GenesisDataFiles;
 import me.dueris.genesismc.utils.*;
 import net.minecraft.server.MinecraftServer;
@@ -9,9 +12,11 @@ import net.minecraft.world.level.storage.LevelResource;
 
 import org.apache.commons.io.FilenameUtils;
 import org.bukkit.NamespacedKey;
+import org.bukkit.entity.Player;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 import java.io.*;
 import java.nio.file.Path;
@@ -102,14 +107,16 @@ public class CraftApoli {
      * Changes the origin names to those specified in the lang file.
      **/
     private static void translateOrigins() {
-        for (OriginContainer origin : getCoreOrigins()) {
-            for (PowerContainer power : origin.getPowerContainers()) {
-                String powerName = power.getName();
-                if (powerName != null) power.setName(powerName);
-                String powerDescription = power.getDescription();
-                if (powerDescription != null) power.setDescription(powerDescription);
-            }
-        }
+        // Nope, not anymore
+
+        // for (OriginContainer origin : getCoreOrigins()) {
+        //     for (PowerContainer power : ) {
+        //         String powerName = power.getName();
+        //         if (powerName != null) power.setName(powerName);
+        //         String powerDescription = power.getDescription();
+        //         if (powerDescription != null) power.setDescription(powerDescription);
+        //     }
+        // }
     }
 
     public static void processNestedPowers(PowerContainer powerContainer, ArrayList<PowerContainer> powerContainers, String powerFolder, String powerFileName) {
@@ -128,6 +135,18 @@ public class CraftApoli {
             }
         }
         powerContainers.addAll(newPowerContainers);
+    }
+
+    public static ArrayList<PowerContainer> getNestedPowers(PowerContainer power, String powerFolder, String powerFileName){
+        ArrayList<PowerContainer> nested = new ArrayList<>();
+        if(power == null) return nested;
+
+        for (String key : power.getPowerFile().getKeys()) {
+            if(keyedPowerContainers.get(powerFolder + ":" + powerFileName + "_" + key) != null){
+                nested.add(keyedPowerContainers.get(powerFolder + ":" + powerFileName + "_" + key));
+            }
+        }
+        return nested;
     }
 
     public static File datapackDir() {
@@ -251,6 +270,38 @@ public class CraftApoli {
                     //find layer file
                     for (File namespace : dataDir.listFiles()) {
                         if (!namespace.isDirectory()) continue;
+                        for(File powerDir : namespace.listFiles()){
+                            if(powerDir.getName().equals("powers") && powerDir.isDirectory()){
+                                for(File powerFile : powerDir.listFiles()){
+                                    try {
+                                        if(!powerFile.isDirectory()){
+                                            String powerFolder = namespace.getName();
+                                            String powerFileName = powerFile.getName().replace(".json", "");
+
+                                            JSONObject powerParser = (JSONObject) new JSONParser().parse(new FileReader(datapack.getAbsolutePath() + File.separator + "data" + File.separator + powerFolder + File.separator + "powers" + File.separator + powerFileName + ".json"));
+                                            if (powerParser.containsKey("type") && "origins:multiple".equals(powerParser.get("type"))) {
+                                                PowerContainer powerContainer = new PowerContainer(new NamespacedKey(powerFolder, powerFileName), fileToFileContainer(powerParser));
+                                                powerContainers.add(powerContainer);
+                                                keyedPowerContainers.put(powerFolder + ":" + powerFileName, powerContainer);
+                                                processNestedPowers(powerContainer, new ArrayList<>(), powerFolder, powerFileName);
+                                            } else {
+                                                PowerContainer power = new PowerContainer(new NamespacedKey(powerFolder, powerFileName), fileToFileContainer(powerParser));
+                                                powerContainers.add(power);
+                                                keyedPowerContainers.put(powerFolder + ":" + powerFileName, power);
+                                            }
+
+                                        }
+                                    } catch (FileNotFoundException fileNotFoundException) {
+                                        if (showErrors)
+                                            System.err.println("[GenesisMC] Error parsing \"%powerFolder%:%powerFileName%\"".replace("%powerFolder", namespace.getName()).replace("%powerFileName", powerFile.getName()));
+                                    } catch (IOException e) {
+                                        throw new RuntimeException(e);
+                                    } catch (ParseException e) {
+                                        throw new RuntimeException(e);
+                                    }
+                                }
+                            }
+                        }
                         String layerNamespace = namespace.getName();
                         File originLayers = new File(namespace.getAbsolutePath() + File.separator + "origin_layers");
                         if (!originLayers.isDirectory()) continue;
@@ -311,22 +362,36 @@ public class CraftApoli {
 
                                 if (powersList != null) {
                                     for (String string : powersList) {
-                                        String[] powerLocation = string.split(":");
-                                        String powerFolder = powerLocation[0];
-                                        String powerFileName = powerLocation[1];
-
-                                        try {
-                                            JSONObject powerParser = (JSONObject) new JSONParser().parse(new FileReader(datapack.getAbsolutePath() + File.separator + "data" + File.separator + powerFolder + File.separator + "powers" + File.separator + powerFileName + ".json"));
-                                            if (powerParser.containsKey("type") && "origins:multiple".equals(powerParser.get("type"))) {
-                                                PowerContainer powerContainer = new PowerContainer(new NamespacedKey(powerFolder, powerFileName), fileToFileContainer(powerParser));
-                                                powerContainers.add(powerContainer);
-                                                processNestedPowers(powerContainer, powerContainers, powerFolder, powerFileName);
-                                            } else {
-                                                powerContainers.add(new PowerContainer(new NamespacedKey(powerFolder, powerFileName), fileToFileContainer(powerParser)));
+                                        boolean finished = false;
+                                        if(keyedPowerContainers.containsKey(string)){
+                                            powerContainers.add(keyedPowerContainers.get(string));
+                                            finished = true;
+                                        }
+                                        for(PowerContainer power : getNestedPowers(keyedPowerContainers.get(string), string.split(":")[0], string.split(":")[1])){
+                                            if(power != null){
+                                                powerContainers.add(power);
+                                                finished = true;
                                             }
-                                        } catch (FileNotFoundException fileNotFoundException) {
-                                            if (showErrors)
-                                                System.err.println("[GenesisMC] Error parsing \"%powerFolder%:%powerFileName%\" for \"%originFolder%:%originFileName%\"".replace("%powerFolder", powerFolder).replace("%powerFileName", powerFileName).replace("%originFolder%", originFolder.get(0)).replace("%originFileName%", originFileName.get(0)));
+                                        }
+                                        if(!finished){
+                                            // Not found in database, probably an error, move to backup parse to ensure all powers are added
+                                            String[] powerLocation = string.split(":");
+                                            String powerFolder = powerLocation[0];
+                                            String powerFileName = powerLocation[1];
+
+                                            try {
+                                                JSONObject powerParser = (JSONObject) new JSONParser().parse(new FileReader(datapack.getAbsolutePath() + File.separator + "data" + File.separator + powerFolder + File.separator + "powers" + File.separator + powerFileName + ".json"));
+                                                if (powerParser.containsKey("type") && "origins:multiple".equals(powerParser.get("type"))) {
+                                                    PowerContainer powerContainer = new PowerContainer(new NamespacedKey(powerFolder, powerFileName), fileToFileContainer(powerParser));
+                                                    powerContainers.add(powerContainer);
+                                                    processNestedPowers(powerContainer, powerContainers, powerFolder, powerFileName);
+                                                } else {
+                                                    powerContainers.add(new PowerContainer(new NamespacedKey(powerFolder, powerFileName), fileToFileContainer(powerParser)));
+                                                }
+                                            } catch (FileNotFoundException fileNotFoundException) {
+                                                if (showErrors)
+                                                    System.err.println("[GenesisMC] Error parsing \"%powerFolder%:%powerFileName%\" for \"%originFolder%:%originFileName%\"".replace("%powerFolder", powerFolder).replace("%powerFileName", powerFileName).replace("%originFolder%", originFolder.get(0)).replace("%originFileName%", originFileName.get(0)));
+                                            }
                                         }
                                     }
                                 }
@@ -385,19 +450,22 @@ public class CraftApoli {
 
     /**
      * @return The HashMap serialized into a byte array.
+     * origins:origin|origins:feline|7|origins:fall_immunity|origins:sprint_jump|origins:velvet_paws|origins:nine_lives|origins:weak_arms|origins:scare_creepers|origins:cat_vision
      **/
-    public static String toSaveFormat(HashMap<LayerContainer, OriginContainer> origin) {
+    public static String toSaveFormat(HashMap<LayerContainer, OriginContainer> origin, Player p) {
         StringBuilder data = new StringBuilder();
         for (LayerContainer layer : origin.keySet()) {
             OriginContainer layerOrigins = origin.get(layer);
-            ArrayList<String> powers = layerOrigins.getPowers();
+            ArrayList<String> powers = new ArrayList<>();
+            for(PowerContainer power : OriginPlayerUtils.getPowers(p, layer)){
+                powers.add(power.getTag());
+            }
             int powerSize = 0;
             if (powers != null) powerSize = powers.size();
             data.append(layer.getTag()).append("|").append(layerOrigins.getTag()).append("|").append(powerSize);
             if (powers != null) for (String power : powers) data.append("|").append(power);
             data.append("\n");
         }
-        System.out.println(data.toString());
         return data.toString();
     }
 
@@ -428,7 +496,7 @@ public class CraftApoli {
     public static HashMap<LayerContainer, OriginContainer> toOrigin(String originData) {
         HashMap<LayerContainer, OriginContainer> containedOrigins = new HashMap<>();
         if (originData == null) {
-            for (LayerContainer layer : CraftApoli.getLayers()) {
+            for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()) {
                 containedOrigins.put(layer, CraftApoli.nullOrigin());
             }
         } else {
@@ -490,7 +558,7 @@ public class CraftApoli {
      * @return The loaded layer with the specified tag. If there is no layer with that tag the first layer will be returned.
      **/
     public static LayerContainer getLayerFromTag(String layerTag) {
-        for (LayerContainer layer : CraftApoli.getLayers()) {
+        for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()) {
             if (layer.getTag().equals(layerTag)) return layer;
         }
         return CraftApoli.getLayers().get(0);
