@@ -466,6 +466,24 @@ public class CraftApoli {
     }
 
     /**
+     * @return The HashMap serialized into a byte array.
+     **/
+    public static String toOriginSetSaveFormat(HashMap<LayerContainer, OriginContainer> origin) {
+        StringBuilder data = new StringBuilder();
+        for (LayerContainer layer : origin.keySet()) {
+            OriginContainer layerOrigins = origin.get(layer);
+            ArrayList<String> powers = layerOrigins.getPowers();
+            int powerSize = 0;
+            if (powers != null) powerSize = powers.size();
+            data.append(layer.getTag()).append("|").append(layerOrigins.getTag()).append("|").append(powerSize);
+            if (powers != null) for (String power : powers) data.append("|").append(power);
+            data.append("\n");
+        }
+//        System.out.println(data.toString());
+        return data.toString();
+    }
+
+    /**
      * @return The byte array deserialized into the origin specified by the layer.
      **/
     public static OriginContainer toOrigin(String originData, LayerContainer originLayer) {
