@@ -35,6 +35,7 @@ import me.dueris.genesismc.factory.conditions.fluid.FluidCondition;
 import me.dueris.genesismc.factory.conditions.item.ItemCondition;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.factory.powers.block.WaterBreathe;
+import me.dueris.genesismc.factory.powers.player.FlightElytra;
 import me.dueris.genesismc.factory.powers.player.PlayerRender;
 import me.dueris.genesismc.factory.powers.simple.BounceSlimeBlock;
 import me.dueris.genesismc.factory.powers.simple.MimicWarden;
@@ -67,9 +68,11 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerChatEvent;
 import org.bukkit.event.player.PlayerCommandSendEvent;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scoreboard.Team;
@@ -87,6 +90,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 
 import static me.dueris.genesismc.PlayerHandler.ReapplyEntityReachPowers;
+import static me.dueris.genesismc.entity.OriginPlayerUtils.powersAppliedList;
 import static me.dueris.genesismc.factory.powers.simple.BounceSlimeBlock.bouncePlayers;
 import static me.dueris.genesismc.factory.powers.simple.MimicWarden.getParticleTasks;
 import static me.dueris.genesismc.factory.powers.simple.MimicWarden.mimicWardenPlayers;
@@ -394,6 +398,82 @@ public final class GenesisMC extends JavaPlugin implements Listener {
             System.out.println(string);
         }
     }
+
+//    @EventHandler
+//    public void chatEventTest(PlayerChatEvent e){
+//        Player p = e.getPlayer();
+//        if(e.getMessage().equals("test attempt remove origins:elytra")){
+//            PowerContainer power = CraftApoli.keyedPowerContainers.get("origins:elytra");
+//            if(OriginPlayerUtils.powerContainer.get(e.getPlayer()).get(CraftApoli.getLayerFromTag("origins:origin")).contains(power)){
+//                OriginPlayerUtils.powerContainer.get(e.getPlayer()).get(CraftApoli.getLayerFromTag("origins:origin")).remove(power);
+//                ArrayList<String> powerRemovedTypes = new ArrayList<>();
+//                ArrayList<Class<? extends CraftPower>> powerRemovedClasses = new ArrayList<>();
+//                Class<? extends CraftPower> c = FlightElytra.class;
+//                CraftPower craftPower = null;
+//                try {
+//                    craftPower = c.newInstance();
+//                } catch (InstantiationException | IllegalAccessException ee) {
+//                    throw new RuntimeException(ee);
+//                }
+//                if (power.getType().equals(craftPower.getPowerFile())) {
+//                    craftPower.getPowerArray().remove(p);
+//                    try {
+//                        powerRemovedTypes.add(c.newInstance().getPowerFile());
+//                    } catch (InstantiationException | IllegalAccessException ee) {
+//                        throw new RuntimeException(ee);
+//                    }
+//                    powerRemovedClasses.add(c);
+//                    powersAppliedList.get(p).remove(c);
+//                    if (GenesisDataFiles.getMainConfig().getString("console-startup-debug").equalsIgnoreCase("true")) {
+//                        Bukkit.getConsoleSender().sendMessage("Removed power[" + craftPower.getPowerFile() + "] to player " + p.getName());
+//                    }
+//                }
+//                e.getPlayer().sendMessage("completed successfully");
+//            }else{
+//                e.getPlayer().sendMessage("power not contained");
+//            }
+//        } else if (e.getMessage().equals("test attempt grant origins:elytra")) {
+//            PowerContainer power = CraftApoli.keyedPowerContainers.get("origins:elytra");
+//            try {
+//                ArrayList<String> powerAppliedTypes = new ArrayList<>();
+//                ArrayList<Class<? extends CraftPower>> powerAppliedClasses = new ArrayList<>();
+//                if(!OriginPlayerUtils.powerContainer.get(e.getPlayer()).get(CraftApoli.getLayerFromTag("origins:origin")).contains(power)){
+//                    OriginPlayerUtils.powerContainer.get(e.getPlayer()).get(CraftApoli.getLayerFromTag("origins:origin")).add(power);
+//                    Class<? extends CraftPower> c = FlightElytra.class;
+//                    CraftPower craftPower = null;
+//
+//                    try {
+//                        craftPower = c.newInstance();
+//                    } catch (InstantiationException ee) {
+//                        throw new RuntimeException(ee);
+//                    } catch (IllegalAccessException ee) {
+//                        throw new RuntimeException(ee);
+//                    }
+//                    if (power.getType().equals(craftPower.getPowerFile())) {
+//                        craftPower.getPowerArray().add(p);
+//                        if (!powersAppliedList.containsKey(p)) {
+//                            ArrayList lst = new ArrayList<>();
+//                            lst.add(c);
+//                            powerAppliedTypes.add(c.newInstance().getPowerFile());
+//                            powerAppliedClasses.add(c);
+//                            powersAppliedList.put(p, lst);
+//                        } else {
+//                            powersAppliedList.get(p).add(c);
+//                        }
+//                        Bukkit.getConsoleSender().sendMessage("Assigned power[" + craftPower.getPowerFile() + "] to player " + p.getName());
+//                    }
+//                    e.getPlayer().sendMessage("completed successfully");
+//                }else{
+//                    e.getPlayer().sendMessage("power already contained");
+//                }
+//            } catch (InstantiationException ex) {
+//                throw new RuntimeException(ex);
+//            } catch (IllegalAccessException ex) {
+//                throw new RuntimeException(ex);
+//            }
+//        }
+//        p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "originLayer"), PersistentDataType.STRING, CraftApoli.toSaveFormat(OriginPlayerUtils.getOrigin(p), p));
+//    }
 
     private void start(){
         getServer().getPluginManager().registerEvents(new InventorySerializer(), this);

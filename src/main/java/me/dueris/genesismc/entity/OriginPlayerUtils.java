@@ -301,14 +301,14 @@ public class OriginPlayerUtils {
     }
 
     public static void assignPowers(Player player, LayerContainer layer) throws InstantiationException, IllegalAccessException {
-        OriginContainer origin = getOrigin(player, layer);
+//        OriginContainer origin = getOrigin(player, layer);
         ArrayList<String> powerAppliedTypes = new ArrayList<>();
         ArrayList<Class<? extends CraftPower>> powerAppliedClasses = new ArrayList<>();
         if (player == null) Bukkit.getServer().getConsoleSender().sendMessage("rip player null");
-        if (origin.getPowerContainers().isEmpty()) {
-            player.sendMessage("BRO ITS EMPTY WAHT");
-        }
-        for (PowerContainer power : origin.getPowerContainers()) {
+//        if (origin.getPowerContainers().isEmpty()) {
+//            player.sendMessage("BRO ITS EMPTY WAHT");
+//        }
+        for (PowerContainer power : powerContainer.get(player).get(layer)) {
             if (power == null) continue;
             for (Class<? extends CraftPower> c : CraftPower.getRegistered()) {
                 CraftPower craftPower = null;
@@ -336,9 +336,9 @@ public class OriginPlayerUtils {
             }
         }
 
-        PowerAssignEvent powerAssignEvent = new PowerAssignEvent(player, powerAppliedClasses, powerAppliedTypes, origin);
-        Bukkit.getServer().getPluginManager().callEvent(powerAssignEvent);
-        player.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "originLayer"), PersistentDataType.STRING, CraftApoli.toOriginSetSaveFormat(OriginPlayerUtils.getOrigin(player)));
+//        PowerAssignEvent powerAssignEvent = new PowerAssignEvent(player, powerAppliedClasses, powerAppliedTypes, origin);
+//        Bukkit.getServer().getPluginManager().callEvent(powerAssignEvent);
+//        player.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "originLayer"), PersistentDataType.STRING, CraftApoli.toOriginSetSaveFormat(OriginPlayerUtils.getOrigin(player)));
         OriginDataContainer.loadData(player);
         setupPowers(player);
 
@@ -353,10 +353,10 @@ public class OriginPlayerUtils {
     }
 
     public static void unassignPowers(Player player, LayerContainer layer) {
-        OriginContainer origin = getOrigin(player, layer);
+//        OriginContainer origin = getOrigin(player, layer);
         ArrayList<String> powerRemovedTypes = new ArrayList<>();
         ArrayList<Class<? extends CraftPower>> powerRemovedClasses = new ArrayList<>();
-        for (PowerContainer power : origin.getPowerContainers()) {
+        for (PowerContainer power : powerContainer.get(player).get(layer)) {
             for (Class<? extends CraftPower> c : CraftPower.getRegistered()) {
                 CraftPower craftPower = null;
                 try {
@@ -381,10 +381,10 @@ public class OriginPlayerUtils {
         for (Class<? extends CraftPower> classes : getPowersApplied(player)) {
             powersAppliedList.get(player).remove(classes);
         }
-        PowerUnassignEvent powerUnassignEvent = new PowerUnassignEvent(player, powerRemovedClasses, powerRemovedTypes, origin);
-        player.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "originLayer"), PersistentDataType.STRING, CraftApoli.toOriginSetSaveFormat(OriginPlayerUtils.getOrigin(player)));
+//        PowerUnassignEvent powerUnassignEvent = new PowerUnassignEvent(player, powerRemovedClasses, powerRemovedTypes, origin);
+//        player.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "originLayer"), PersistentDataType.STRING, CraftApoli.toOriginSetSaveFormat(OriginPlayerUtils.getOrigin(player)));
         OriginDataContainer.unloadData(player);
-        Bukkit.getServer().getPluginManager().callEvent(powerUnassignEvent);
+//        Bukkit.getServer().getPluginManager().callEvent(powerUnassignEvent);
         hasPowers.remove(player);
     }
 
