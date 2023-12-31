@@ -67,6 +67,7 @@ public class FoliaOriginScheduler {
 
         public static ArrayList<Player> mimic_warden = new ArrayList<>();
         public static ArrayList<Player> piglin_no_attack = new ArrayList<>();
+        public static FlightHandler flightHandler = new FlightHandler();
 
         private final HashMap<Player, Integer> ticksEMap = new HashMap<>();
 
@@ -78,7 +79,6 @@ public class FoliaOriginScheduler {
 //                    gravity.run(p);
 //                }
                if (!OriginPlayerUtils.getPowersApplied(p).contains(FlightHandler.class)) {
-                   FlightHandler flightHandler = new FlightHandler();
                    flightHandler.run(p);
                }
 //                if (!OriginPlayer.getPowersApplied(p).contains(Overlay.class)) {
