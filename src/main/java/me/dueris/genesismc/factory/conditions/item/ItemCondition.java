@@ -206,7 +206,7 @@ public class ItemCondition implements Condition {
         nonMeatMaterials.add(Material.DRIED_KELP);
         nonMeatMaterials.add(Material.SEAGRASS);
 
-        nonMeatMaterials.add(Material.MILK_BUCKET);
+        // nonMeatMaterials.add(Material.MILK_BUCKET); // allow milk buckets
         nonMeatMaterials.add(Material.EGG);
 
         nonMeatMaterials.add(Material.SUGAR);
@@ -220,8 +220,8 @@ public class ItemCondition implements Condition {
         nonMeatMaterials.add(Material.SUSPICIOUS_STEW);
         nonMeatMaterials.add(Material.MUSHROOM_STEW);
 
-        nonMeatMaterials.add(Material.WATER_BUCKET);
-        nonMeatMaterials.add(Material.LAVA_BUCKET);
+        // nonMeatMaterials.add(Material.WATER_BUCKET); // why were these even here??
+        // nonMeatMaterials.add(Material.LAVA_BUCKET); // why were these even here??
 
         nonMeatMaterials.add(Material.BREAD);
         nonMeatMaterials.add(Material.CAKE);
