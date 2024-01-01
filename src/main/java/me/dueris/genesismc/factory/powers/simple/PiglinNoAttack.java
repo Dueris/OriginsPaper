@@ -73,6 +73,7 @@ public class PiglinNoAttack extends CraftPower implements OriginSimple, Listener
     @EventHandler
     public void event(OriginChangeEvent e) {
         boolean hasMimicWardenPower = false;
+        if(OriginPlayerUtils.powerContainer.get(e.getPlayer()) == null) return;
 
         for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()) {
             for (PowerContainer power : OriginPlayerUtils.powerContainer.get(e.getPlayer()).get(layer)) {
@@ -93,6 +94,7 @@ public class PiglinNoAttack extends CraftPower implements OriginSimple, Listener
     @EventHandler
     public void event(PlayerJoinEvent e) {
         boolean hasMimicWardenPower = false;
+        if(OriginPlayerUtils.powerContainer.get(e.getPlayer()) == null) return;
 
         for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()) {
             for (PowerContainer power : OriginPlayerUtils.powerContainer.get(e.getPlayer()).get(layer)) {
