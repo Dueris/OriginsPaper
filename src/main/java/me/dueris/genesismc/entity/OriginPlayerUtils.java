@@ -136,6 +136,44 @@ public class OriginPlayerUtils {
         }
     }
 
+    public static ArrayList<PowerContainer> getMultiPowerFileFromType(Player p, String powerType) {
+        ArrayList<PowerContainer> powers = new ArrayList<>();
+        for(LayerContainer layer : CraftApoli.getLayers()){
+            if(layer == null) continue;
+            for (PowerContainer power : powerContainer.get(p).get(layer)) {
+                if (power == null) continue;
+                if (power.getType().equals(powerType)) powers.add(power);
+            }
+        }
+        return powers;
+    }
+
+    public static ArrayList<PowerContainer> getMultiPowerFileFromType(Player p, String powerType, LayerContainer layer) {
+        ArrayList<PowerContainer> powers = new ArrayList<>();
+        for (PowerContainer power : powerContainer.get(p).get(layer)) {
+            if (power == null) continue;
+            if (power.getType().equals(powerType)) powers.add(power);
+        }
+        return powers;
+    }
+
+    public static PowerContainer getSinglePowerFileFromType(Player p, String powerType) {
+        for(LayerContainer layer : CraftApoli.getLayers()){
+            if(layer == null) continue;
+            for (PowerContainer power : powerContainer.get(p).get(layer)) {
+                if (power.getType().equals(powerType)) return power;
+            }
+        }
+        return null;
+    }
+
+    public static PowerContainer getSinglePowerFileFromType(Player p, String powerType, LayerContainer layer) {
+        for (PowerContainer power : powerContainer.get(p).get(layer)) {
+            if (power.getType().equals(powerType)) return power;
+        }
+        return null;
+    }
+
     public static boolean hasCoreOrigin(Player player, LayerContainer layer) {
         PersistentDataContainer data = player.getPersistentDataContainer();
         String originTag = OriginPlayerUtils.getOrigin(player, layer).getTag();

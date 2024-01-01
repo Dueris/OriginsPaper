@@ -17,10 +17,12 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntitySpawnEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.persistence.PersistentDataContainer;
@@ -114,7 +116,7 @@ public class PlayerHandler implements Listener {
         if (p.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "originLayer"), PersistentDataType.STRING) == null) {
             HashMap<LayerContainer, OriginContainer> origins = new HashMap<>();
             for (LayerContainer layer : CraftApoli.getLayers()) origins.put(layer, CraftApoli.nullOrigin());
-            p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "originLayers"), PersistentDataType.STRING, CraftApoli.toSaveFormat(origins, p));
+            p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "originLayers"), PersistentDataType.STRING, CraftApoli.toOriginSetSaveFormat(origins));
             if (!p.getPersistentDataContainer().has(new NamespacedKey(GenesisMC.getPlugin(), "hasFirstChose"), PersistentDataType.BOOLEAN)){
                 p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "hasFirstChose"), PersistentDataType.BOOLEAN, false);
             }
@@ -122,7 +124,7 @@ public class PlayerHandler implements Listener {
         if (!p.getPersistentDataContainer().has(new NamespacedKey(GenesisMC.getPlugin(), "originLayer"), PersistentDataType.STRING) || p.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "originLayer"), PersistentDataType.STRING) == null){
             HashMap<LayerContainer, OriginContainer> origins = new HashMap<>();
             for (LayerContainer layer : CraftApoli.getLayers()) origins.put(layer, CraftApoli.nullOrigin());
-            p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "originLayer"), PersistentDataType.STRING, CraftApoli.toSaveFormat(origins, p));
+            p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "originLayer"), PersistentDataType.STRING, CraftApoli.toOriginSetSaveFormat(origins));
             if (!p.getPersistentDataContainer().has(new NamespacedKey(GenesisMC.getPlugin(), "hasFirstChose"), PersistentDataType.BOOLEAN)){
                 p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "hasFirstChose"), PersistentDataType.BOOLEAN, false);
             }
@@ -134,8 +136,12 @@ public class PlayerHandler implements Listener {
         if (!(originTag == null || originTag.equals("null"))) {
             for (OriginContainer origin : CraftApoli.getOrigins()) {
                 if (("origin-" + (origin.getTag().substring(8))).equals(originTag.substring(8)))
-                    p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "originLayer"), PersistentDataType.STRING, CraftApoli.toSaveFormat(new HashMap<>(Map.of(CraftApoli.getLayerFromTag("origins:origin"), origin)), p));
+                    p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "originLayer"), PersistentDataType.STRING, CraftApoli.toOriginSetSaveFormat(new HashMap<>(Map.of(CraftApoli.getLayerFromTag("origins:origin"), origin))));
             }
+        }
+
+        if(p.getPersistentDataContainer().has(new NamespacedKey(GenesisMC.getPlugin(), "origins"))){
+            p.getPersistentDataContainer().remove(new NamespacedKey(GenesisMC.getPlugin(), "originTag"));
         }
 
         if (p.getPersistentDataContainer().has(new NamespacedKey(GenesisMC.getPlugin(), "origins"), PersistentDataType.BYTE_ARRAY)){
@@ -147,8 +153,9 @@ public class PlayerHandler implements Listener {
             try {
                 ObjectInput oi = new ObjectInputStream(bis);
                 LegacyOriginContainer legacyOrigin = (LegacyOriginContainer) oi.readObject();
-                p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "originLayer"), PersistentDataType.STRING, CraftApoli.toSaveFormat(new HashMap<>(Map.of(CraftApoli.getLayerFromTag("origins:origin"), CraftApoli.getOrigin(legacyOrigin.getTag()))), p));
+                p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "originLayer"), PersistentDataType.STRING, CraftApoli.toOriginSetSaveFormat(new HashMap<>(Map.of(CraftApoli.getLayerFromTag("origins:origin"), CraftApoli.getOrigin(legacyOrigin.getTag())))));
                 p.getPersistentDataContainer().remove(new NamespacedKey(GenesisMC.getPlugin(), "origins"));
+                p.getPersistentDataContainer().remove(new NamespacedKey(GenesisMC.getPlugin(), "origin"));
             } catch (Exception er) {
                 for (LayerContainer layer : CraftApoli.getLayers()) {
                     OriginPlayerUtils.setOrigin(p, layer, CraftApoli.nullOrigin());
@@ -288,6 +295,7 @@ public class PlayerHandler implements Listener {
 
     @EventHandler
     public void playerQuitHandler(PlayerQuitEvent e) {
+        e.getPlayer().getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "originLayer"), PersistentDataType.STRING, CraftApoli.toSaveFormat(OriginPlayerUtils.getOrigin(e.getPlayer()), e.getPlayer()));
         OriginPlayerUtils.unassignPowers(e.getPlayer());
         OriginDataContainer.unloadData(e.getPlayer());
     }
