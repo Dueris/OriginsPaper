@@ -14,6 +14,7 @@ import me.dueris.genesismc.utils.LayerContainer;
 import me.dueris.genesismc.utils.OriginContainer;
 import me.dueris.genesismc.utils.PowerContainer;
 import me.dueris.genesismc.utils.SendCharts;
+import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -369,7 +370,7 @@ public class OriginPlayerUtils {
                         powersAppliedList.get(player).add(c);
                     }
                     if (GenesisDataFiles.getMainConfig().getString("console-startup-debug").equalsIgnoreCase("true")) {
-                        Bukkit.getConsoleSender().sendMessage("Assigned power[" + power.getTag() + "] to player " + player.getName());
+                        Bukkit.getConsoleSender().sendMessage(ChatColor.GREEN + "Assigned power[" + power.getTag() + "] to player " + player.getName());
                     }
                 }
             }
@@ -412,7 +413,7 @@ public class OriginPlayerUtils {
                     }
                     powerRemovedClasses.add(c);
                     if (GenesisDataFiles.getMainConfig().getString("console-startup-debug").equalsIgnoreCase("true")) {
-                        Bukkit.getConsoleSender().sendMessage("Removed power[" + power.getTag() + "] to player " + player.getName());
+                        Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "Removed power[" + power.getTag() + "] from player " + player.getName());
                     }
                 }
             }
