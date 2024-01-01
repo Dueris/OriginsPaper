@@ -200,16 +200,16 @@ public class ItemCondition implements Condition {
         nonMeatMaterials.add(Material.WHEAT);
         nonMeatMaterials.add(Material.MELON_SLICE);
         nonMeatMaterials.add(Material.PUMPKIN);
-        nonMeatMaterials.add(Material.BAMBOO);
+//        nonMeatMaterials.add(Material.BAMBOO);
 
         nonMeatMaterials.add(Material.KELP);
         nonMeatMaterials.add(Material.DRIED_KELP);
         nonMeatMaterials.add(Material.SEAGRASS);
 
         // nonMeatMaterials.add(Material.MILK_BUCKET); // allow milk buckets
-        nonMeatMaterials.add(Material.EGG);
+//        nonMeatMaterials.add(Material.EGG);
 
-        nonMeatMaterials.add(Material.SUGAR);
+//        nonMeatMaterials.add(Material.SUGAR);
         nonMeatMaterials.add(Material.HONEY_BOTTLE);
         nonMeatMaterials.add(Material.GLOW_BERRIES);
         nonMeatMaterials.add(Material.CHORUS_FRUIT);
