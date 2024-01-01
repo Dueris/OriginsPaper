@@ -14,6 +14,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -26,7 +27,15 @@ public class LogoutBugWorkaround implements Listener {
 
     @EventHandler
     public void login(PlayerJoinEvent e){
-        Player p = e.getPlayer();
+        freeze(e.getPlayer());
+    }
+
+    @EventHandler
+    public void respawn(PlayerRespawnEvent e){
+        freeze(e.getPlayer());
+    }
+
+    public void freeze(Player p){
         if(p.getPersistentDataContainer().has(new NamespacedKey(GenesisMC.getPlugin(), "logoutWorkaroundLocation"), PersistentDataType.STRING)){
             String logoutData = p.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "logoutWorkaroundLocation"), PersistentDataType.STRING);
             String[] splitData = logoutData.split("//");
