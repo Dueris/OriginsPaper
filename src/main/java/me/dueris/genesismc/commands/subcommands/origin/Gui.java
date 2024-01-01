@@ -78,7 +78,7 @@ public class Gui extends SubCommand {
                 }
             }
         } else if (args.length == 1 && sender instanceof Player p) {
-            for (LayerContainer layer : CraftApoli.getLayers()) {
+            for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()) {
                 OriginPlayerUtils.unassignPowers(p);
                 OriginPlayerUtils.setOrigin(p, layer, CraftApoli.nullOrigin());
                 for (Player pls : Bukkit.getOnlinePlayers()) {

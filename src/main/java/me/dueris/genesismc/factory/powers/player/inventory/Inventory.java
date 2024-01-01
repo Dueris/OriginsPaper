@@ -49,8 +49,8 @@ public class Inventory extends CraftPower implements CommandExecutor, Listener {
     @EventHandler
     public void MoveBackChange(OriginChangeEvent e) {
         Player p = e.getPlayer();
-        for (OriginContainer origin : OriginPlayerUtils.getOrigin(p).values()) {
-            for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
+        for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()) {
+            for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                 new BukkitRunnable() {
                     @Override
                     public void run() {
@@ -86,10 +86,10 @@ public class Inventory extends CraftPower implements CommandExecutor, Listener {
 
     @EventHandler
     public void keytrigger(KeybindTriggerEvent e) {
-        for (OriginContainer origin : OriginPlayerUtils.getOrigin(e.getPlayer()).values()) {
+        for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()) {
             if (getPowerArray().contains(e.getPlayer())) {
                 ConditionExecutor executor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
-                for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
+                for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(e.getPlayer(), getPowerFile(), layer)) {
                     if (CooldownManager.isPlayerInCooldown(e.getPlayer(), e.getKey())) return;
                     if (executor.check("condition", "conditions", e.getPlayer(), power, getPowerFile(), e.getPlayer(), null, null, null, e.getPlayer().getItemInHand(), null)) {
                         setActive(e.getPlayer(), power.getTag(), true);
@@ -110,10 +110,10 @@ public class Inventory extends CraftPower implements CommandExecutor, Listener {
 
     @EventHandler
     public void deathTIMEEE(PlayerDeathEvent e) {
-        for (OriginContainer origin : OriginPlayerUtils.getOrigin(e.getPlayer()).values()) {
+        for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()) {
             if (shulker_inventory.contains(e.getPlayer())) {
                 Player p = e.getPlayer();
-                for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
+                for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                     if (power.getDropOnDeath()) {
                         ArrayList<ItemStack> vaultItems = InventoryUtils.getItems(p);
                         org.bukkit.inventory.Inventory vault = Bukkit.createInventory(p, InventoryType.CHEST, "origin.getPowerFileFromType(origins:inventory).get(title)");

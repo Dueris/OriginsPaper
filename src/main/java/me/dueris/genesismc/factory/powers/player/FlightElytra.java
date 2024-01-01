@@ -59,8 +59,8 @@ public class FlightElytra extends CraftPower implements Listener {
     public void ExecuteFlight(PlayerToggleSneakEvent e) {
         Player p = e.getPlayer();
         if (elytra.contains(e.getPlayer())) {
+            ConditionExecutor executor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
             for (LayerContainer layer : CraftApoli.getLayers()) {
-                ConditionExecutor executor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                 for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                     if (executor.check("condition", "conditions", p, power, getPowerFile(), p, null, null, null, p.getItemInHand(), null)) {
                         setActive(p, power.getTag(), true);

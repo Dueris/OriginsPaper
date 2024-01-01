@@ -47,8 +47,8 @@ public class ModifyBlockRenderPower extends CraftPower {
             List<BlockState> blockChanges = new ArrayList<>();
             boolean conditionMet = false;
 
-            for (OriginContainer origin : OriginPlayerUtils.getOrigin(player).values()) {
-                for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
+            for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()) {
+                for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(player, getPowerFile(), layer)) {
                     Material targetMaterial = Material.AIR;
                     if (conditionMet) {
                         targetMaterial = Material.getMaterial(power.get("block", null).toUpperCase());
@@ -71,7 +71,7 @@ public class ModifyBlockRenderPower extends CraftPower {
                                     }
                                 } catch (Exception e) {
                                     ErrorSystem errorSystem = new ErrorSystem();
-                                    errorSystem.throwError("unable to send block_render_change", "origins:modify_block_render", player, origin, OriginPlayerUtils.getLayer(player, origin));
+                                    errorSystem.throwError("unable to send block_render_change", "origins:modify_block_render", player, layer);
                                     e.printStackTrace();
                                 }
                             }

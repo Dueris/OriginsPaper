@@ -7,12 +7,26 @@ import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.List;
+public class PowerCommand extends Command{
+    public PowerCommand(){
+        super("power");
+    }
 
-public class PowerCommand implements CommandExecutor {
     private final ArrayList<SubCommand> subCommands = new ArrayList<>();
 
+    public ArrayList<SubCommand> getSubCommands() {
+        return subCommands;
+    }
+
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
+    public @NotNull List<String> tabComplete(@NotNull CommandSender sender, @NotNull String alias, @NotNull String[] args) throws IllegalArgumentException {
+        TabAutoComplete tabAutoComplete = new TabAutoComplete();
+        return tabAutoComplete.onTabComplete(sender, this, alias, args);
+    }
+
+    @Override
+    public boolean execute(@NotNull CommandSender sender, @NotNull String commandLabel, @NotNull String[] args) {
         if (args.length > 0) {
             for (int i = 0; i < getSubCommands().size(); i++) {
                 if (args[0].equalsIgnoreCase(getSubCommands().get(i).getName())) {
@@ -25,9 +39,5 @@ public class PowerCommand implements CommandExecutor {
 
         }
         return true;
-    }
-
-    public ArrayList<SubCommand> getSubCommands() {
-        return subCommands;
     }
 }

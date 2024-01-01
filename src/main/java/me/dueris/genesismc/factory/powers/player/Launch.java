@@ -47,9 +47,9 @@ public class Launch extends CraftPower implements Listener {
     public void keybindToggle(KeybindTriggerEvent e) {
         Player p = e.getPlayer();
         if (launch_into_air.contains(e.getPlayer())) {
-            for (OriginContainer origin : OriginPlayerUtils.getOrigin(e.getPlayer()).values()) {
+            for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()) {
                 ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
-                for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
+                for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                     if (conditionExecutor.check("condition", "conditions", p, power, "origins:launch", p, null, null, null, p.getItemInHand(), null)) {
                         if (!CooldownManager.isPlayerInCooldown(p, power.getKey().getOrDefault("key", "key.origins.primary_active").toString())) {
                             if (isKeyBeingPressed(e.getPlayer(), power.getKey().getOrDefault("key", "key.origins.primary_active").toString(), true)) {
@@ -85,7 +85,7 @@ public class Launch extends CraftPower implements Listener {
                                                     //power is active
                                                     //dont change any other settings in this other than the powertype and the "retain_state"
                                                     int speed = Integer.parseInt(power.get("speed", null));
-                                                    CooldownManager.addCooldown(p, origin, power.getTag(), power.getType(), cooldown, key);
+                                                    CooldownManager.addCooldown(p, power.getTag(), power.getType(), cooldown, key);
                                                     setActive(p, power.getTag(), true);
                                                     p.setVelocity(new Vector(p.getVelocity().getX(), speed, p.getVelocity().getZ()));
                                                     p.spawnParticle(Particle.CLOUD, p.getLocation(), 100);

@@ -32,8 +32,8 @@ public class ActionOnItemUse extends CraftPower implements Listener {
         Player player = e.getPlayer(); // aka "actor"
         if (!getPowerArray().contains(player)) return;
 
-        for (OriginContainer origin : OriginPlayerUtils.getOrigin(player).values()) {
-            for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
+        for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()) {
+            for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(player, getPowerFile(), layer)) {
                 if (power == null) continue;
                 if(GenesisMC.getConditionExecutor().check("condition", "conditions", player, power, getPowerFile(), player, null, player.getLocation().getBlock(), null, e.getItem(), null)){
                     if(GenesisMC.getConditionExecutor().check("item_condition", "item_conditions", player, power, getPowerFile(), player, null, player.getLocation().getBlock(), null, e.getItem(), null)){

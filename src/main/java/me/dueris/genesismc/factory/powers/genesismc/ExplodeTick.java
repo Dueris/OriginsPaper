@@ -43,10 +43,10 @@ public class ExplodeTick extends CraftPower implements Listener {
 
     @EventHandler
     public void onShiftCreep(PlayerToggleSneakEvent e) {
-        for (OriginContainer origin : OriginPlayerUtils.getOrigin(e.getPlayer()).values()) {
+        for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()) {
             Player p = e.getPlayer();
-            if (explode_tick.contains(e.getPlayer()) && !p.isFlying() && !p.isGliding()) {
-                for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
+            if (explode_tick.contains(p) && !p.isFlying() && !p.isGliding()) {
+                for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                     cooldown.remove(p.getUniqueId());
                     new BukkitRunnable() {
                         final Material block = e.getPlayer().getLocation().getBlock().getType();

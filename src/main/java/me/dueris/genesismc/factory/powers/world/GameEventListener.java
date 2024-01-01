@@ -25,8 +25,8 @@ public class GameEventListener extends CraftPower implements Listener {
         if(e.getEntity() == null) return;
         if(e.getEntity() instanceof Player p){
             if(!this.getPowerArray().contains(p)) return;
-            for(OriginContainer origin : OriginPlayerUtils.getOrigin(p).values()){
-                for(PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())){
+            for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()){
+                for(PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)){
                     if(GenesisMC.getConditionExecutor().check("condition", "conditions", p, power, getPowerFile(), p, null, p.getLocation().getBlock(), null, p.getActiveItem(), null)){
                         String event = power.get("event");
                         if(event.contains(":")){

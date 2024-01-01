@@ -3,9 +3,11 @@ package me.dueris.genesismc.factory.powers.actions;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.entity.OriginPlayerUtils;
 import me.dueris.genesismc.events.OriginChangeEvent;
+import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.actions.Actions;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
+import me.dueris.genesismc.utils.LayerContainer;
 import me.dueris.genesismc.utils.OriginContainer;
 import me.dueris.genesismc.utils.PowerContainer;
 import org.bukkit.entity.Player;
@@ -29,8 +31,8 @@ public class ActionOnCallback extends CraftPower implements Listener {
 
         if (!getPowerArray().contains(actor)) return;
 
-        for (OriginContainer origin : OriginPlayerUtils.getOrigin(actor).values()) {
-            for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
+        for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()) {
+            for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(actor, getPowerFile(), layer)) {
                 if (power == null) continue;
                     setActive(e.getPlayer(), power.getTag(), true);
                     Actions.EntityActionType(e.getPlayer(), power.getEntityAction());

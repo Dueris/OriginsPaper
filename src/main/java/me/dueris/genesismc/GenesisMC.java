@@ -8,6 +8,7 @@ import me.dueris.genesismc.choosing.ChoosingCUSTOM;
 import me.dueris.genesismc.choosing.ChoosingGUI;
 import me.dueris.genesismc.commands.OriginCommand;
 import me.dueris.genesismc.commands.PlayerSelector;
+import me.dueris.genesismc.commands.PowerCommand;
 import me.dueris.genesismc.commands.ResourceCommand;
 import me.dueris.genesismc.commands.TabAutoComplete;
 import me.dueris.genesismc.commands.subcommands.origin.Info.InInfoCheck;
@@ -254,6 +255,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         TagRegistry.runParse();
         Bukkit.getCommandMap().register("origin", new OriginCommand());
         Bukkit.getCommandMap().register("resource", new ResourceCommand());
+        Bukkit.getCommandMap().register("power", new PowerCommand());
         Bukkit.getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC]   ____                          _       __  __   ____").color(TextColor.fromHexString("#b9362f")));
         Bukkit.getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC]  / ___|  ___  _ __    ___  ___ (_) ___ |  \\/  | / ___|").color(TextColor.fromHexString("#bebe42")));
         Bukkit.getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] | |  _  / _ \\| '_ \\  / _ \\/ __|| |/ __|| |\\/| || |").color(TextColor.fromHexString("#4fec4f")));
@@ -292,8 +294,8 @@ public final class GenesisMC extends JavaPlugin implements Listener {
                 p.sendMessage(Component.text(LangConfig.getLocalizedString(Bukkit.getConsoleSender(), "reloadMessage")).color(TextColor.fromHexString(AQUA)));
             boolean hasMimicWardenPower = false;
 
-            for (OriginContainer origin : OriginPlayerUtils.getOrigin(p).values()) {
-                for (PowerContainer power : origin.getPowerContainers()) {
+            for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()) {
+                for (PowerContainer power : OriginPlayerUtils.powerContainer.get(p).get(layer)) {
                     if (power == null) continue;
                     if (power.getTag().equals("origins:mimic_warden")) {
                         hasMimicWardenPower = true;
@@ -309,9 +311,10 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 
             boolean hasPower = false;
 
-            for (OriginContainer origin : OriginPlayerUtils.getOrigin(p).values()) {
-                for (String power : origin.getPowers()) {
-                    if (power.equals("origins:slime_block_bounce")) {
+            for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()) {
+                for (PowerContainer power : OriginPlayerUtils.powerContainer.get(p).get(layer)) {
+                    if(power == null) continue;
+                    if (power.getTag().equals("origins:slime_block_bounce")) {
                         hasPower = true;
                         break;
                     }
@@ -326,8 +329,8 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 
             boolean hasPiglinPower = false;
 
-            for (OriginContainer origin : OriginPlayerUtils.getOrigin(p).values()) {
-                for (PowerContainer power : origin.getPowerContainers()) {
+            for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()) {
+                for (PowerContainer power : OriginPlayerUtils.powerContainer.get(p).get(layer)) {
                     if (power.getTag().equals("origins:piglin_brothers")) {
                         hasPiglinPower = true;
                         break;
@@ -342,8 +345,8 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 
             boolean hasScaryPower = false;
 
-            for (OriginContainer origin : OriginPlayerUtils.getOrigin(p).values()) {
-                for (PowerContainer power : origin.getPowerContainers()) {
+            for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()) {
+                for (PowerContainer power : OriginPlayerUtils.powerContainer.get(p).get(layer)) {
                     if (power.getTag().equals("origins:scare_creepers")) {
                         hasPiglinPower = true;
                         break;
@@ -402,7 +405,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
     @EventHandler
     public void chatEventTest(PlayerChatEvent e){
         Player p = e.getPlayer();
-        if(e.getMessage().equals("test attempt remove origins:elytra")){
+        if(e.getMessage().equals("./test attempt remove origins:elytra")){
             PowerContainer power = CraftApoli.keyedPowerContainers.get("origins:elytra");
             if(OriginPlayerUtils.powerContainer.get(e.getPlayer()).get(CraftApoli.getLayerFromTag("origins:origin")).contains(power)){
                 OriginPlayerUtils.powerContainer.get(e.getPlayer()).get(CraftApoli.getLayerFromTag("origins:origin")).remove(power);
@@ -432,7 +435,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
             }else{
                 e.getPlayer().sendMessage("power not contained");
             }
-        } else if (e.getMessage().equals("test attempt grant origins:elytra")) {
+        } else if (e.getMessage().equals("./test attempt grant origins:elytra")) {
             PowerContainer power = CraftApoli.keyedPowerContainers.get("origins:elytra");
             try {
                 ArrayList<String> powerAppliedTypes = new ArrayList<>();

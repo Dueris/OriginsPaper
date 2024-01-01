@@ -74,9 +74,9 @@ public class PiglinNoAttack extends CraftPower implements OriginSimple, Listener
     public void event(OriginChangeEvent e) {
         boolean hasMimicWardenPower = false;
 
-        for (OriginContainer origin : OriginPlayerUtils.getOrigin(e.getPlayer()).values()) {
-            for (String power : origin.getPowers()) {
-                if (power.equals("origins:piglin_brothers")) {
+        for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()) {
+            for (PowerContainer power : OriginPlayerUtils.powerContainer.get(e.getPlayer()).get(layer)) {
+                if (power.getTag().equals("origins:piglin_brothers")) {
                     hasMimicWardenPower = true;
                     break;
                 }
@@ -94,8 +94,8 @@ public class PiglinNoAttack extends CraftPower implements OriginSimple, Listener
     public void event(PlayerJoinEvent e) {
         boolean hasMimicWardenPower = false;
 
-        for (OriginContainer origin : OriginPlayerUtils.getOrigin(e.getPlayer()).values()) {
-            for (PowerContainer power : origin.getPowerContainers()) {
+        for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()) {
+            for (PowerContainer power : OriginPlayerUtils.powerContainer.get(e.getPlayer()).get(layer)) {
                 if (power.getTag().equals("origins:piglin_brothers")) {
                     hasMimicWardenPower = true;
                     break;

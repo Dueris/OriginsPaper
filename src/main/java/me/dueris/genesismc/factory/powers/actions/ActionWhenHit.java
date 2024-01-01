@@ -31,8 +31,8 @@ public class ActionWhenHit extends CraftPower implements Listener {
         if (!(target instanceof Player player)) return;
         if (!getPowerArray().contains(target)) return;
 
-        for (OriginContainer origin : OriginPlayerUtils.getOrigin(player).values()) {
-            for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
+        for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()) {
+            for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(player, getPowerFile(), layer)) {
                 if (power == null) continue;
 
                 if (!getPowerArray().contains(target)) return;

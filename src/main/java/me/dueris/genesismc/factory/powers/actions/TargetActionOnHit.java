@@ -31,14 +31,14 @@ public class TargetActionOnHit extends CraftPower implements Listener {
         if (!(actor instanceof Player player)) return;
         if (!getPowerArray().contains(actor)) return;
 
-        for (OriginContainer origin : OriginPlayerUtils.getOrigin(player).values()) {
+        for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()) {
             ConditionExecutor executor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
-            for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
+            for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(player, getPowerFile(), layer)) {
                 if (executor.check("condition", "conditions", player, power, getPowerFile(), actor, target, null, null, player.getInventory().getItemInHand(), e)) {
                     setActive(player, power.getTag(), true);
                     Actions.EntityActionType(target, power.getEntityAction());
                     if (power.get("cooldown", "1") != null) {
-                        CooldownManager.addCooldown((Player) actor, origin, power.getTag(), power.getType(), Integer.parseInt(power.get("cooldown", "0")), "key.attack");
+                        CooldownManager.addCooldown((Player) actor, power.getTag(), power.getType(), Integer.parseInt(power.get("cooldown", "0")), "key.attack");
                     }
                 } else {
                     setActive(player, power.getTag(), false);
