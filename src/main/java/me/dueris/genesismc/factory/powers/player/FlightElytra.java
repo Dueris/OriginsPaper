@@ -17,6 +17,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerToggleFlightEvent;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -56,17 +57,20 @@ public class FlightElytra extends CraftPower implements Listener {
 
     @EventHandler
     @SuppressWarnings({"unchecked", "Not scheduled yet"})
-    public void ExecuteFlight(PlayerToggleSneakEvent e) {
+    public void ExecuteFlight(PlayerToggleFlightEvent e) {
         Player p = e.getPlayer();
+        if(p.getGameMode().equals(GameMode.CREATIVE) || p.getGameMode().equals(GameMode.SPECTATOR)) return;
+        e.setCancelled(true);
+        p.setFlying(false);
         if (elytra.contains(e.getPlayer())) {
             ConditionExecutor executor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
             for (LayerContainer layer : CraftApoli.getLayers()) {
                 for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                     if (executor.check("condition", "conditions", p, power, getPowerFile(), p, null, null, null, p.getItemInHand(), null)) {
                         setActive(p, power.getTag(), true);
-                        if (!p.isOnGround() && !p.isGliding()) {
-                            glidingPlayers.add(p.getUniqueId());
+                        if (!p.isGliding()) {
                             if (p.getGameMode() == GameMode.SPECTATOR) return;
+                            glidingPlayers.add(p.getUniqueId());
                             new BukkitRunnable() {
                                 @Override
                                 public void run() {

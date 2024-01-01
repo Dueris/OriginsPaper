@@ -144,6 +144,7 @@ public class OriginPlayerUtils {
 
     public static ArrayList<PowerContainer> getMultiPowerFileFromType(Player p, String powerType) {
         ArrayList<PowerContainer> powers = new ArrayList<>();
+        if(powerContainer.get(p) == null) return powers;
         for(LayerContainer layer : CraftApoli.getLayers()){
             if(layer == null) continue;
             for (PowerContainer power : powerContainer.get(p).get(layer)) {
@@ -156,6 +157,7 @@ public class OriginPlayerUtils {
 
     public static ArrayList<PowerContainer> getMultiPowerFileFromType(Player p, String powerType, LayerContainer layer) {
         ArrayList<PowerContainer> powers = new ArrayList<>();
+        if(powerContainer.get(p) == null) return powers;
         for (PowerContainer power : powerContainer.get(p).get(layer)) {
             if (power == null) continue;
             if (power.getType().equals(powerType)) powers.add(power);
@@ -163,17 +165,8 @@ public class OriginPlayerUtils {
         return powers;
     }
 
-    public static PowerContainer getSinglePowerFileFromType(Player p, String powerType) {
-        for(LayerContainer layer : CraftApoli.getLayers()){
-            if(layer == null) continue;
-            for (PowerContainer power : powerContainer.get(p).get(layer)) {
-                if (power.getType().equals(powerType)) return power;
-            }
-        }
-        return null;
-    }
-
     public static PowerContainer getSinglePowerFileFromType(Player p, String powerType, LayerContainer layer) {
+        if(powerContainer.get(p) == null) return null;
         for (PowerContainer power : powerContainer.get(p).get(layer)) {
             if (power.getType().equals(powerType)) return power;
         }

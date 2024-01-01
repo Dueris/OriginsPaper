@@ -4,6 +4,7 @@ import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.entity.OriginPlayerUtils;
 import me.dueris.genesismc.events.OriginChangeEvent;
 
+import me.dueris.genesismc.factory.powers.player.FlightElytra;
 import org.bukkit.GameMode;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
@@ -33,7 +34,10 @@ public class FlightHandler extends CraftPower {
                         p.setFlying(true);
                     }
                 } else {
-                    p.setAllowFlight(p.getGameMode().equals(GameMode.SPECTATOR));
+                    p.setAllowFlight(p.getGameMode().equals(GameMode.SPECTATOR) || FlightElytra.elytra.contains(p));
+                    if(FlightElytra.elytra.contains(p)){
+                        p.setFlying(p.getGameMode().equals(GameMode.CREATIVE) || p.getGameMode().equals(GameMode.SPECTATOR));
+                    }
                 }
             }
         }
