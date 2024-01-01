@@ -40,6 +40,7 @@ public class FluidCondition implements Condition {
                     if(fluid == null) continue;
                     return getResult(inverted, Optional.of(flu.equalsIgnoreCase(fluid.toString())));
                 }
+                return getResult(inverted, Optional.of(false));
             }
             case "origins:still" -> {
                 return getResult(inverted, Optional.of(Fluid.LAVA.equals(fluid) || Fluid.WATER.equals(fluid)));
@@ -48,6 +49,5 @@ public class FluidCondition implements Condition {
                 return getResult(inverted, Optional.empty());
             }
         }
-        return getResult(inverted, Optional.empty());
     }
 }

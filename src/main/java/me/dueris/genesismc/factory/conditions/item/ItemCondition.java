@@ -51,24 +51,23 @@ public class ItemCondition implements Condition {
                             for(String mat : TagRegistry.getRegisteredTagFromFileKey(ingredientMap.get("tag").toString())){
                                 return Optional.of(itemStack.getType().equals(Material.valueOf(mat.split(":")[1].toUpperCase())));
                             }
+                            return getResult(inverted, Optional.of(false));
+                        }else{
+                            return getResult(inverted, Optional.of(false));
                         }
+                    }else{
+                        return getResult(inverted, Optional.of(false));
                     }
+                }else{
+                    return getResult(inverted, Optional.of(false));
                 }
             }
             case "origins:meat" -> {
                 if (itemStack.getType().isEdible()) {
                     if (inverted) {
-                        if (getNonMeatMaterials().contains(itemStack)) {
-                            return getResult(inverted, Optional.of(true));
-                        } else {
-                            return getResult(inverted, Optional.of(false));
-                        }
+                        return getResult(inverted, Optional.of(getNonMeatMaterials().contains(itemStack)));
                     } else {
-                        if (getMeatMaterials().contains(itemStack)) {
-                            return getResult(inverted, Optional.of(true));
-                        } else {
-                            return getResult(inverted, Optional.of(false));
-                        }
+                        return getResult(inverted, Optional.of(getMeatMaterials().contains(itemStack)));
                     }
                 } else {
                     return getResult(inverted, Optional.of(false));
@@ -110,6 +109,7 @@ public class ItemCondition implements Condition {
                         return getResult(inverted, Optional.of(RestrictArmor.compareValues(amt, comparison, compareTo)));
                     }
                 }
+                return getResult(inverted, Optional.of(false));
             }
             case "origins:fireproof" -> {
                 return getResult(inverted, Optional.of(itemStack.getType().toString().toLowerCase().contains("NETHERITE")));
@@ -136,7 +136,6 @@ public class ItemCondition implements Condition {
                 return getResult(inverted, Optional.empty());
             }
         }
-        return getResult(inverted, Optional.empty());
     }
 
     public static final List<Material> ENCHANTABLE_MATERIALS = new ArrayList<>();

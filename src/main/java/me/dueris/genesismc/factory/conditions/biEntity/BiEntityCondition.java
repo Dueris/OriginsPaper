@@ -22,6 +22,7 @@ import java.util.Optional;
 import java.util.function.Predicate;
 
 import static me.dueris.genesismc.factory.conditions.ConditionExecutor.getResult;
+import static me.dueris.genesismc.factory.powers.Power.recipe;
 
 public class BiEntityCondition implements Condition, Listener {
 
@@ -59,7 +60,11 @@ public class BiEntityCondition implements Condition, Listener {
                         if (entity.isInvulnerable()) return getResult(inverted, Optional.of(false));
                         if (entity.getPassengers().contains(p)) return getResult(inverted, Optional.of(false));
                             return getResult(inverted, Optional.of(entity.equals(target)));
+                    }else{
+                        return getResult(inverted, Optional.of(false));
                     }
+                }else{
+                    return getResult(inverted, Optional.of(false));
                 }
             }
             case "origins:owner" -> {
@@ -70,11 +75,7 @@ public class BiEntityCondition implements Condition, Listener {
                 }
             }
             case "origins:riding_recursive" -> {
-                if(actor.getPassengers().contains(target)){
-                    return getResult(inverted, Optional.of(true));
-                }else{
-                    return getResult(inverted, Optional.of(false));
-                }
+                return getResult(inverted, Optional.of(actor.getPassengers().contains(target)));
             }
             case "origins:riding_root" -> {
                 for(int i = 0; i < actor.getPassengers().toArray().length; i++){
@@ -85,6 +86,7 @@ public class BiEntityCondition implements Condition, Listener {
                         return getResult(inverted, Optional.of(false));
                     }
                 }
+                return getResult(inverted, Optional.of(false));
             }
             case "origins:riding" -> {
                     return getResult(inverted, Optional.of(target.getPassengers().contains(actor)));

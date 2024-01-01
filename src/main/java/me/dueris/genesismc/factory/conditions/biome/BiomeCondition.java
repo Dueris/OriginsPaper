@@ -43,7 +43,11 @@ public class BiomeCondition implements Condition {
                     if (keyMap.containsKey("type") && keyMap.get("type").equals("origins:temperature")) {
                         if (keyMap.containsKey("comparison") && keyMap.containsKey("compare_to")) {
                             return getResult(inverted, Optional.of(RestrictArmor.compareValues(block.getTemperature(), keyMap.get("comparison").toString(), Double.parseDouble(keyMap.get("compare_to").toString()))));
+                        }else{
+                            return getResult(inverted, Optional.of(false));
                         }
+                    }else{
+                        return getResult(inverted, Optional.of(false));
                     }
                 }
                 case "origins:in_tag" -> {
@@ -62,6 +66,8 @@ public class BiomeCondition implements Condition {
                             // mappings exist, now we can start stuff
                             return getResult(inverted, Optional.of(biomeTagMappings.get(condition.get("tag")).contains(block.getBiome())));
                         }
+                    }else{
+                        return getResult(inverted, Optional.of(false));
                     }
                 }
                 case "origins:precipitation" -> {

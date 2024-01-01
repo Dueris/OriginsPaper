@@ -67,6 +67,8 @@ public class BlockCondition implements Condition {
                         // mappings exist, now we can start stuff
                         return getResult(inverted, Optional.of(blockTagMappings.get(condition.get("tag")).contains(block.getType())));
                     }
+                }else{
+                    return getResult(inverted, Optional.of(false));
                 }
             }
             case "origins:adjacent" -> {
@@ -105,6 +107,8 @@ public class BlockCondition implements Condition {
                     for(Block adj : adjBlcs){
                         return getResult(inverted, Optional.of(adj != null && adj.getType().isSolid()));
                     }
+                }else{
+                    return getResult(inverted, Optional.of(false));
                 }
             }
             case "origins:blast_resistance" -> {
@@ -118,7 +122,7 @@ public class BlockCondition implements Condition {
                 return getResult(inverted, Optional.of(blockState instanceof TileState));
             }
             case "origins:block" -> {
-                    return getResult(inverted, Optional.of(block.getType().equals(Material.valueOf(condition.get("block").toString().split(":")[1].toUpperCase()))));
+                return getResult(inverted, Optional.of(block.getType().equals(Material.valueOf(condition.get("block").toString().split(":")[1].toUpperCase()))));
             }
             case "origins:exposed_to_sky" -> {
                 return getResult(inverted, Optional.of(block.getLightFromSky() > 0));
@@ -128,6 +132,8 @@ public class BlockCondition implements Condition {
                 Optional fl = fluidCondition.check(condition, p, power, powerfile, actor, target, block, fluid, itemStack, entityDamageEvent);
                 if(fl.isPresent()){
                     return getResult(inverted, Optional.of(fl.get().equals(true)));
+                }else{
+                    return getResult(inverted, Optional.of(false));
                 }
             }
             case "origins:hardness" -> {

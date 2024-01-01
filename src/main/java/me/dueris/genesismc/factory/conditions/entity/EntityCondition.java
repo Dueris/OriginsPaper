@@ -377,6 +377,8 @@ public class EntityCondition implements Condition {
                         String comparison = condition.get("comparison").toString();
                         double compare_to = Double.parseDouble(condition.get("compare_to").toString());
                         return getResult(inverted, Optional.of(RestrictArmor.compareValues(Resource.getResource(condition.get("resource").toString()).getLeft().getProgress(), comparison, compare_to)));
+                    }else{
+                        return getResult(inverted, Optional.of(false));
                     }
                 }
             }
