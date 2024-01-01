@@ -17,25 +17,32 @@ public class PowerContainer implements Serializable {
     private static final long serialVersionUID = 2L;
     NamespacedKey powerTag;
     FileContainer powerFile;
-    String powerSource;
     boolean originMultiple;
+    boolean originMultipleParent;
 
     /**
      * @param powerTag    The power tag.
      * @param powerFile   The data within a power file.
+     * @param originMultiple Tells the plugin if its an instance of an origins:multiple sub-power
      */
-    public PowerContainer(NamespacedKey powerTag, FileContainer powerFile) {
-        this.powerTag = powerTag;
-        this.powerFile = powerFile;
-        this.powerSource = powerSource;
-        this.originMultiple = false;
-    }
-
     public PowerContainer(NamespacedKey powerTag, FileContainer powerFile, boolean originMultiple){
         this.powerTag = powerTag;
         this.powerFile = powerFile;
-        this.powerSource = powerSource;
         this.originMultiple = originMultiple;
+        this.originMultipleParent = false;
+    }
+
+    /**
+     * @param powerTag    The power tag.
+     * @param powerFile   The data within a power file.
+     * @param originMultiple Tells the plugin if its an instance of an origins:multiple sub-power
+     * @param originMultipleParent Tells the plugin if its an origins:multiple parent power
+     */
+    public PowerContainer(NamespacedKey powerTag, FileContainer powerFile, boolean originMultiple, boolean originMultipleParent){
+        this.powerTag = powerTag;
+        this.powerFile = powerFile;
+        this.originMultiple = false;
+        this.originMultipleParent = originMultipleParent;
     }
 
     public FileContainer getPowerFile() {
@@ -51,6 +58,13 @@ public class PowerContainer implements Serializable {
      */
     public String getTag() {
         return this.powerTag.asString();
+    }
+
+    /**
+     * @return If the power is an origins:multiple parent
+     */
+    public boolean isOriginMultipleParent(){
+        return this.originMultipleParent;
     }
 
     /**

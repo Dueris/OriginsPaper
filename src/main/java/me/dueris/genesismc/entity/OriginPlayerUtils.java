@@ -125,15 +125,21 @@ public class OriginPlayerUtils {
                     PowerContainer powerCon = CraftApoli.keyedPowerContainers.get(dataPiece);
                     if(powerCon != null){
                         powers.add(powerCon);
+                        if(powerCon.isOriginMultipleParent()){
+                            ArrayList<PowerContainer> nestedPowers = CraftApoli.getNestedPowers(powerCon, powerCon.getTag().split(":")[0], powerCon.getTag().split(":")[1]);
+                            for(PowerContainer nested : nestedPowers){
+                                if(nested != null) powers.add(nested);
+                            }
+                        }
                     }
                 } // else -> layerdata was found, aka the layer, origintag, or power amt/size
             }
             map.put(layerContainer, powers);
         }
         powerContainer.put(p, map);
-        for(PowerContainer power : powerContainer.get(p).get(CraftApoli.getLayerFromTag("origins:origin"))){
-            System.out.println(power.getTag());
-        }
+//        for(PowerContainer power : powerContainer.get(p).get(CraftApoli.getLayerFromTag("origins:origin"))){
+//            System.out.println(power.getTag());
+//        }
     }
 
     public static ArrayList<PowerContainer> getMultiPowerFileFromType(Player p, String powerType) {
@@ -369,7 +375,9 @@ public class OriginPlayerUtils {
                     } else {
                         powersAppliedList.get(player).add(c);
                     }
-                    Bukkit.getConsoleSender().sendMessage("Assigned power[" + craftPower.getPowerFile() + "] to player " + player.getName());
+                    if (GenesisDataFiles.getMainConfig().getString("console-startup-debug").equalsIgnoreCase("true")) {
+                        Bukkit.getConsoleSender().sendMessage("Assigned power[" + power.getTag() + "] to player " + player.getName());
+                    }
                 }
             }
         }
@@ -411,7 +419,7 @@ public class OriginPlayerUtils {
                     }
                     powerRemovedClasses.add(c);
                     if (GenesisDataFiles.getMainConfig().getString("console-startup-debug").equalsIgnoreCase("true")) {
-                        Bukkit.getConsoleSender().sendMessage("Removed power[" + craftPower.getPowerFile() + "] to player " + player.getName());
+                        Bukkit.getConsoleSender().sendMessage("Removed power[" + power.getTag() + "] to player " + player.getName());
                     }
                 }
             }

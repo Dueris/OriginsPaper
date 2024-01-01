@@ -71,7 +71,7 @@ public class CraftApoli {
      * @return A copy of The null origin.
      **/
     public static OriginContainer nullOrigin() {
-        return new OriginContainer(new NamespacedKey("genesis", "origin-null"), new FileContainer(new ArrayList<>(List.of("hidden", "origins")), new ArrayList<>(List.of(true, "genesis:origin-null"))), new HashMap<String, Object>(Map.of("impact", "0", "icon", "minecraft:player_head", "powers", "genesis:null", "order", "0", "unchooseable", true)), new ArrayList<>(List.of(new PowerContainer(new NamespacedKey("genesis", "null"), new FileContainer(new ArrayList<>(), new ArrayList<>())))));
+        return new OriginContainer(new NamespacedKey("genesis", "origin-null"), new FileContainer(new ArrayList<>(List.of("hidden", "origins")), new ArrayList<>(List.of(true, "genesis:origin-null"))), new HashMap<String, Object>(Map.of("impact", "0", "icon", "minecraft:player_head", "powers", "genesis:null", "order", "0", "unchooseable", true)), new ArrayList<>(List.of(new PowerContainer(new NamespacedKey("genesis", "null"), new FileContainer(new ArrayList<>(), new ArrayList<>()), false))));
     }
 
 
@@ -124,7 +124,7 @@ public class CraftApoli {
             if (subPowerValue instanceof JSONObject subPowerJson) {
                 FileContainer subPowerFile = fileToFileContainer(subPowerJson);
 
-                PowerContainer newPower = new PowerContainer(new NamespacedKey(powerFolder, powerFileName + "_" + key), subPowerFile, true);
+                PowerContainer newPower = new PowerContainer(new NamespacedKey(powerFolder, powerFileName + "_" + key), subPowerFile, true, false);
                 powerContainers.add(newPower);
                 keyedPowerContainers.put(powerFolder + ":" + powerFileName + "_" + key, newPower);
                 newPowerContainers.add(newPower);
@@ -138,7 +138,7 @@ public class CraftApoli {
         if(power == null) return nested;
 
         for (String key : power.getPowerFile().getKeys()) {
-            if(keyedPowerContainers.get(powerFolder + ":" + powerFileName + "_" + key) != null){
+            if(keyedPowerContainers.get(new NamespacedKey(powerFolder, powerFileName).asString() + "_" + key) != null){
                 nested.add(keyedPowerContainers.get(powerFolder + ":" + powerFileName + "_" + key));
             }
         }
@@ -276,12 +276,13 @@ public class CraftApoli {
 
                                             JSONObject powerParser = (JSONObject) new JSONParser().parse(new FileReader(datapack.getAbsolutePath() + File.separator + "data" + File.separator + powerFolder + File.separator + "powers" + File.separator + powerFileName + ".json"));
                                             if (powerParser.containsKey("type") && "origins:multiple".equals(powerParser.get("type"))) {
-                                                PowerContainer powerContainer = new PowerContainer(new NamespacedKey(powerFolder, powerFileName), fileToFileContainer(powerParser));
+                                                PowerContainer powerContainer = new PowerContainer(new NamespacedKey(powerFolder, powerFileName), fileToFileContainer(powerParser), false, true);
                                                 powerContainers.add(powerContainer);
                                                 keyedPowerContainers.put(powerFolder + ":" + powerFileName, powerContainer);
+                                                System.out.println(new NamespacedKey(powerFolder, powerFileName).asString());
                                                 processNestedPowers(powerContainer, new ArrayList<>(), powerFolder, powerFileName);
                                             } else {
-                                                PowerContainer power = new PowerContainer(new NamespacedKey(powerFolder, powerFileName), fileToFileContainer(powerParser));
+                                                PowerContainer power = new PowerContainer(new NamespacedKey(powerFolder, powerFileName), fileToFileContainer(powerParser), false);
                                                 powerContainers.add(power);
                                                 keyedPowerContainers.put(powerFolder + ":" + powerFileName, power);
                                             }
@@ -365,6 +366,7 @@ public class CraftApoli {
                                         }
                                         for(PowerContainer power : getNestedPowers(keyedPowerContainers.get(string), string.split(":")[0], string.split(":")[1])){
                                             if(power != null){
+                                                System.out.println(power.getTag());
                                                 powerContainers.add(power);
                                                 finished = true;
                                             }
@@ -378,11 +380,11 @@ public class CraftApoli {
                                             try {
                                                 JSONObject powerParser = (JSONObject) new JSONParser().parse(new FileReader(datapack.getAbsolutePath() + File.separator + "data" + File.separator + powerFolder + File.separator + "powers" + File.separator + powerFileName + ".json"));
                                                 if (powerParser.containsKey("type") && "origins:multiple".equals(powerParser.get("type"))) {
-                                                    PowerContainer powerContainer = new PowerContainer(new NamespacedKey(powerFolder, powerFileName), fileToFileContainer(powerParser));
+                                                    PowerContainer powerContainer = new PowerContainer(new NamespacedKey(powerFolder, powerFileName), fileToFileContainer(powerParser), false, true);
                                                     powerContainers.add(powerContainer);
                                                     processNestedPowers(powerContainer, powerContainers, powerFolder, powerFileName);
                                                 } else {
-                                                    powerContainers.add(new PowerContainer(new NamespacedKey(powerFolder, powerFileName), fileToFileContainer(powerParser)));
+                                                    powerContainers.add(new PowerContainer(new NamespacedKey(powerFolder, powerFileName), fileToFileContainer(powerParser), false));
                                                 }
                                             } catch (FileNotFoundException fileNotFoundException) {
                                                 if (showErrors)
