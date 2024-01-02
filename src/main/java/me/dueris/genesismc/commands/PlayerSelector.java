@@ -49,7 +49,10 @@ public class PlayerSelector {
         }else{
             Player player = Bukkit.getPlayer(playerArg);
             if (player == null) {
-                Player pl2 = Bukkit.getPlayer(UUID.fromString(playerArg));
+                Player pl2 = null;
+                try {
+                    pl2 = Bukkit.getPlayer(UUID.fromString(playerArg));
+                }catch(Exception e){}
                 if(pl2 == null){
                     sender.sendMessage(Component.text("No player was found").color(TextColor.fromHexString(RED)));
                     return new ArrayList<>();
