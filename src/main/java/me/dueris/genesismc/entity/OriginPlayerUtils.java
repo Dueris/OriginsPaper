@@ -122,6 +122,7 @@ public class OriginPlayerUtils {
             ArrayList<PowerContainer> powers = new ArrayList<>();
             // setup powers
             for(String dataPiece : layerData){
+                if(layerData.length == 1) continue;
                 if(!dataPiece.equals(layerData[0]) || dataPiece.equals(layerData[1]) || dataPiece.equals(layerData[2])){
                     PowerContainer powerCon = CraftApoli.keyedPowerContainers.get(dataPiece);
                     if(powerCon != null){

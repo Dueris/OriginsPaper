@@ -68,7 +68,7 @@ public class FlightElytra extends CraftPower implements Listener {
                 for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                     if (executor.check("condition", "conditions", p, power, getPowerFile(), p, null, null, null, p.getItemInHand(), null)) {
                         setActive(p, power.getTag(), true);
-                        if (!p.isGliding()) {
+                        if (!p.isGliding() && !p.getLocation().add(0, 1, 0).getBlock().isCollidable()) {
                             if (p.getGameMode() == GameMode.SPECTATOR) return;
                             glidingPlayers.add(p.getUniqueId());
                             new BukkitRunnable() {

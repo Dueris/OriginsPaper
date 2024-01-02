@@ -165,10 +165,9 @@ public class TabAutoComplete implements TabCompleter {
                 return new ArrayList<>();
             }
 
-        } else if (command.getName().equalsIgnoreCase("power")) { // /power<arg0> grant<arg1> Dueris<arg2> <powerFile><arg3>
+        } else if (command.getName().equalsIgnoreCase("power") && sender.isOp()) { // /power<arg0> grant<arg1> Dueris<arg2> <powerFile><arg3>
             if (args.length == 1) {
                 List<String> arguments = new ArrayList<>();
-                arguments.add("clear");
                 arguments.add("grant");
                 arguments.add("has");
                 arguments.add("list");
@@ -205,7 +204,7 @@ public class TabAutoComplete implements TabCompleter {
                     }
                     return pows;
                 }
-            } else if (args.length >= 4) {
+            } else if (args.length == 4) {
                 if(args[0].equalsIgnoreCase("grant")
                         || args[0].equalsIgnoreCase("remove")
                         || args[0].equalsIgnoreCase("has")){
@@ -218,6 +217,9 @@ public class TabAutoComplete implements TabCompleter {
                     List<String> ba = new ArrayList<>();
                     return ba;
                 }
+            } else if (args.length >= 5) {
+                List<String> ba = new ArrayList<>();
+                return ba;
             }
         } else if(command.getName().equals("resource")){
             if(args.length == 1){

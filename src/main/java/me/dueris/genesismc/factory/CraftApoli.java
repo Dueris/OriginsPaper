@@ -279,7 +279,6 @@ public class CraftApoli {
                                                 PowerContainer powerContainer = new PowerContainer(new NamespacedKey(powerFolder, powerFileName), fileToFileContainer(powerParser), Utils.readJSONFileAsString(new File(datapack.getAbsolutePath() + File.separator + "data" + File.separator + powerFolder + File.separator + "powers" + File.separator + powerFileName + ".json")), false, true);
                                                 powerContainers.add(powerContainer);
                                                 keyedPowerContainers.put(powerFolder + ":" + powerFileName, powerContainer);
-                                                System.out.println(new NamespacedKey(powerFolder, powerFileName).asString());
                                                 processNestedPowers(powerContainer, new ArrayList<>(), powerFolder, powerFileName);
                                             } else {
                                                 PowerContainer power = new PowerContainer(new NamespacedKey(powerFolder, powerFileName), fileToFileContainer(powerParser), Utils.readJSONFileAsString(new File(datapack.getAbsolutePath() + File.separator + "data" + File.separator + powerFolder + File.separator + "powers" + File.separator + powerFileName + ".json")), false);

@@ -390,74 +390,9 @@ public final class GenesisMC extends JavaPlugin implements Listener {
     public void chatEventTest(PlayerChatEvent e){
         Player p = e.getPlayer();
         if(e.getMessage().equals("./test attempt remove origins:shulker_inventory")){
-            PowerContainer power = CraftApoli.keyedPowerContainers.get("origins:shulker_inventory");
-            if(OriginPlayerUtils.powerContainer.get(e.getPlayer()).get(CraftApoli.getLayerFromTag("origins:origin")).contains(power)){
-                OriginPlayerUtils.powerContainer.get(e.getPlayer()).get(CraftApoli.getLayerFromTag("origins:origin")).remove(power);
-                ArrayList<String> powerRemovedTypes = new ArrayList<>();
-                ArrayList<Class<? extends CraftPower>> powerRemovedClasses = new ArrayList<>();
-                Class<? extends CraftPower> c = Inventory.class;
-                CraftPower craftPower = null;
-                try {
-                    craftPower = c.newInstance();
-                } catch (InstantiationException | IllegalAccessException ee) {
-                    throw new RuntimeException(ee);
-                }
-                if (power.getType().equals(craftPower.getPowerFile())) {
-                    craftPower.getPowerArray().remove(p);
-                    try {
-                        powerRemovedTypes.add(c.newInstance().getPowerFile());
-                    } catch (InstantiationException | IllegalAccessException ee) {
-                        throw new RuntimeException(ee);
-                    }
-                    powerRemovedClasses.add(c);
-                    powersAppliedList.get(p).remove(c);
-                    if (GenesisDataFiles.getMainConfig().getString("console-startup-debug").equalsIgnoreCase("true")) {
-                        Bukkit.getConsoleSender().sendMessage("Removed power[" + craftPower.getPowerFile() + "] to player " + p.getName());
-                    }
-                }
-                e.getPlayer().sendMessage("completed successfully");
-            }else{
-                e.getPlayer().sendMessage("power not contained");
-            }
-        } else if (e.getMessage().equals("./test attempt grant origins:shulker_inventory")) {
-            PowerContainer power = CraftApoli.keyedPowerContainers.get("origins:shulker_inventory");
-            try {
-                ArrayList<String> powerAppliedTypes = new ArrayList<>();
-                ArrayList<Class<? extends CraftPower>> powerAppliedClasses = new ArrayList<>();
-                if(!OriginPlayerUtils.powerContainer.get(e.getPlayer()).get(CraftApoli.getLayerFromTag("origins:origin")).contains(power)){
-                    OriginPlayerUtils.powerContainer.get(e.getPlayer()).get(CraftApoli.getLayerFromTag("origins:origin")).add(power);
-                    Class<? extends CraftPower> c = Inventory.class;
-                    CraftPower craftPower = null;
 
-                    try {
-                        craftPower = c.newInstance();
-                    } catch (InstantiationException ee) {
-                        throw new RuntimeException(ee);
-                    } catch (IllegalAccessException ee) {
-                        throw new RuntimeException(ee);
-                    }
-                    if (power.getType().equals(craftPower.getPowerFile())) {
-                        craftPower.getPowerArray().add(p);
-                        if (!powersAppliedList.containsKey(p)) {
-                            ArrayList lst = new ArrayList<>();
-                            lst.add(c);
-                            powerAppliedTypes.add(c.newInstance().getPowerFile());
-                            powerAppliedClasses.add(c);
-                            powersAppliedList.put(p, lst);
-                        } else {
-                            powersAppliedList.get(p).add(c);
-                        }
-                        Bukkit.getConsoleSender().sendMessage("Assigned power[" + craftPower.getPowerFile() + "] to player " + p.getName());
-                    }
-                    e.getPlayer().sendMessage("completed successfully");
-                }else{
-                    e.getPlayer().sendMessage("power already contained");
-                }
-            } catch (InstantiationException ex) {
-                throw new RuntimeException(ex);
-            } catch (IllegalAccessException ex) {
-                throw new RuntimeException(ex);
-            }
+        } else if (e.getMessage().equals("./test attempt grant origins:shulker_inventory")) {
+
         } else if(e.getMessage().equals("./test attempt dump origins:shulker_inventory")){
             PowerContainer power = CraftApoli.keyedPowerContainers.get("origins:shulker_inventory");
             for(int i = 0; i < power.getJsonData().length; i++){

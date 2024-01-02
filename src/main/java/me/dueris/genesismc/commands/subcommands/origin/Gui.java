@@ -44,7 +44,7 @@ public class Gui extends SubCommand {
             if (players.size() == 0) return;
             for (Player p : players) {
                 String layR;
-                if(args.length >= 2){
+                if(args.length >= 2 && args[2] != null){
                     layR = args[2];
                 }else{
                     layR = "origins:origin";

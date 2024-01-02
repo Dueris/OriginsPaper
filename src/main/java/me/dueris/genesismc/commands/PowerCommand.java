@@ -15,7 +15,6 @@ public class PowerCommand extends Command{
 
     private static final ArrayList<SubCommand> subCommands = new ArrayList<>();
     static{
-        subCommands.add(new Clear());
         subCommands.add(new Remove());
         subCommands.add(new Has());
         subCommands.add(new me.dueris.genesismc.commands.subcommands.power.List());
@@ -35,6 +34,7 @@ public class PowerCommand extends Command{
 
     @Override
     public boolean execute(@NotNull CommandSender sender, @NotNull String commandLabel, @NotNull String[] args) {
+        if(!sender.isOp()) return false;
         if (args.length > 0) {
             for (int i = 0; i < getSubCommands().size(); i++) {
                 if (args[0].equalsIgnoreCase(getSubCommands().get(i).getName())) {
