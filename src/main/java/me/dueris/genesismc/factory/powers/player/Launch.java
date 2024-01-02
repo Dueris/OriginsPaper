@@ -85,7 +85,7 @@ public class Launch extends CraftPower implements Listener {
                                                     //power is active
                                                     //dont change any other settings in this other than the powertype and the "retain_state"
                                                     int speed = Integer.parseInt(power.get("speed", null));
-                                                    CooldownManager.addCooldown(p, power.getTag(), power.getType(), cooldown, key);
+                                                    CooldownManager.addCooldown(p, power.getName(), power.getType(), cooldown, key);
                                                     setActive(p, power.getTag(), true);
                                                     p.setVelocity(new Vector(p.getVelocity().getX(), speed, p.getVelocity().getZ()));
                                                     p.spawnParticle(Particle.CLOUD, p.getLocation(), 100);

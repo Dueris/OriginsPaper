@@ -38,7 +38,7 @@ public class SelfActionOnKill extends CraftPower implements Listener {
                     setActive(player, power.getTag(), true);
                     Actions.EntityActionType(target, power.getEntityAction());
                     if (power.get("cooldown", "1") != null) {
-                        CooldownManager.addCooldown((Player) target, power.getTag(), power.getType(), Integer.parseInt(power.get("cooldown", "1")), "key.attack");
+                        CooldownManager.addCooldown((Player) target, power.getName(), power.getType(), Integer.parseInt(power.get("cooldown", "1")), "key.attack");
                     }
                 } else {
                     setActive(player, power.getTag(), false);

@@ -37,7 +37,7 @@ public class ActiveSelf extends CraftPower implements Listener {
                         if (isKeyBeingPressed(e.getPlayer(), power.getKey().getOrDefault("key", "key.origins.primary_active").toString(), true)) {
                             Actions.EntityActionType(e.getPlayer(), power.getEntityAction());
                             if (power.get("cooldown", "1") != null) {
-                                CooldownManager.addCooldown(e.getPlayer(), power.getTag(), power.getType(), Integer.parseInt(power.get("cooldown", power.get("max", "1"))), e.getKey());
+                                CooldownManager.addCooldown(e.getPlayer(), power.getName(), power.getType(), Integer.parseInt(power.get("cooldown", power.get("max", "1"))), e.getKey());
                             }
                         }
                     } else {
