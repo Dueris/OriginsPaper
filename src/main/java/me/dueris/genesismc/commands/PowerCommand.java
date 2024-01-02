@@ -1,8 +1,8 @@
 package me.dueris.genesismc.commands;
 
 import me.dueris.genesismc.commands.subcommands.SubCommand;
+import me.dueris.genesismc.commands.subcommands.power.*;
 import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 
@@ -13,7 +13,15 @@ public class PowerCommand extends Command{
         super("power");
     }
 
-    private final ArrayList<SubCommand> subCommands = new ArrayList<>();
+    private static final ArrayList<SubCommand> subCommands = new ArrayList<>();
+    static{
+        subCommands.add(new Clear());
+        subCommands.add(new Remove());
+        subCommands.add(new Has());
+        subCommands.add(new me.dueris.genesismc.commands.subcommands.power.List());
+        subCommands.add(new Dump());
+        subCommands.add(new Grant());
+    }
 
     public ArrayList<SubCommand> getSubCommands() {
         return subCommands;

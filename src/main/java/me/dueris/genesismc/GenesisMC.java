@@ -1,30 +1,24 @@
 package me.dueris.genesismc;
 
 import io.papermc.paper.event.player.PlayerFailMoveEvent;
-import io.papermc.paper.threadedregions.scheduler.GlobalRegionScheduler;
-import javassist.bytecode.Descriptor.Iterator;
 import me.dueris.genesismc.choosing.ChoosingCORE;
 import me.dueris.genesismc.choosing.ChoosingCUSTOM;
 import me.dueris.genesismc.choosing.ChoosingGUI;
 import me.dueris.genesismc.commands.OriginCommand;
-import me.dueris.genesismc.commands.PlayerSelector;
 import me.dueris.genesismc.commands.PowerCommand;
 import me.dueris.genesismc.commands.ResourceCommand;
-import me.dueris.genesismc.commands.TabAutoComplete;
 import me.dueris.genesismc.commands.subcommands.origin.Info.InInfoCheck;
 import me.dueris.genesismc.commands.subcommands.origin.Info.Info;
 import me.dueris.genesismc.commands.subcommands.origin.Recipe;
 import me.dueris.genesismc.enchantments.Anvil;
 import me.dueris.genesismc.enchantments.EnchantTable;
 import me.dueris.genesismc.enchantments.WaterProtection;
-import me.dueris.genesismc.enchantments.WaterProtectionNMSImpl;
 import me.dueris.genesismc.entity.InventorySerializer;
 import me.dueris.genesismc.entity.OriginPlayerUtils;
 import me.dueris.genesismc.events.EventListeners;
 import me.dueris.genesismc.events.RegisterPowersEvent;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.TagRegistry;
-import me.dueris.genesismc.factory.conditions.Condition;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.conditions.CraftCondition;
 import me.dueris.genesismc.factory.conditions.biEntity.BiEntityCondition;
@@ -36,13 +30,14 @@ import me.dueris.genesismc.factory.conditions.fluid.FluidCondition;
 import me.dueris.genesismc.factory.conditions.item.ItemCondition;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.factory.powers.block.WaterBreathe;
-import me.dueris.genesismc.factory.powers.player.FlightElytra;
 import me.dueris.genesismc.factory.powers.player.PlayerRender;
+import me.dueris.genesismc.factory.powers.player.inventory.Inventory;
 import me.dueris.genesismc.factory.powers.simple.BounceSlimeBlock;
 import me.dueris.genesismc.factory.powers.simple.MimicWarden;
 import me.dueris.genesismc.factory.powers.world.EntityGroupManager;
 import me.dueris.genesismc.files.GenesisDataFiles;
 import me.dueris.genesismc.files.TempStorageContainer;
+import me.dueris.genesismc.generation.VillagerTradeHook;
 import me.dueris.genesismc.generation.WaterProtBookGen;
 import me.dueris.genesismc.hooks.papi.PlaceholderApiExtension;
 import me.dueris.genesismc.items.GenesisItems;
@@ -53,31 +48,21 @@ import me.dueris.genesismc.utils.*;
 import me.dueris.genesismc.utils.translation.LangConfig;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.thread.NamedThreadFactory;
-import net.minecraft.world.damagesource.DamageType;
 
 import org.bukkit.*;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
-import org.bukkit.command.PluginCommand;
-import org.bukkit.craftbukkit.v1_20_R3.CraftRegistry;
-import org.bukkit.craftbukkit.v1_20_R3.enchantments.CraftEnchantment;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerChatEvent;
-import org.bukkit.event.player.PlayerCommandSendEvent;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scoreboard.Team;
-import org.jetbrains.annotations.NotNull;
 import org.spigotmc.WatchdogThread;
 
 import java.io.IOException;
@@ -85,7 +70,6 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.HashMap;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
@@ -405,13 +389,13 @@ public final class GenesisMC extends JavaPlugin implements Listener {
     @EventHandler
     public void chatEventTest(PlayerChatEvent e){
         Player p = e.getPlayer();
-        if(e.getMessage().equals("./test attempt remove origins:elytra")){
-            PowerContainer power = CraftApoli.keyedPowerContainers.get("origins:elytra");
+        if(e.getMessage().equals("./test attempt remove origins:shulker_inventory")){
+            PowerContainer power = CraftApoli.keyedPowerContainers.get("origins:shulker_inventory");
             if(OriginPlayerUtils.powerContainer.get(e.getPlayer()).get(CraftApoli.getLayerFromTag("origins:origin")).contains(power)){
                 OriginPlayerUtils.powerContainer.get(e.getPlayer()).get(CraftApoli.getLayerFromTag("origins:origin")).remove(power);
                 ArrayList<String> powerRemovedTypes = new ArrayList<>();
                 ArrayList<Class<? extends CraftPower>> powerRemovedClasses = new ArrayList<>();
-                Class<? extends CraftPower> c = FlightElytra.class;
+                Class<? extends CraftPower> c = Inventory.class;
                 CraftPower craftPower = null;
                 try {
                     craftPower = c.newInstance();
@@ -435,14 +419,14 @@ public final class GenesisMC extends JavaPlugin implements Listener {
             }else{
                 e.getPlayer().sendMessage("power not contained");
             }
-        } else if (e.getMessage().equals("./test attempt grant origins:elytra")) {
-            PowerContainer power = CraftApoli.keyedPowerContainers.get("origins:elytra");
+        } else if (e.getMessage().equals("./test attempt grant origins:shulker_inventory")) {
+            PowerContainer power = CraftApoli.keyedPowerContainers.get("origins:shulker_inventory");
             try {
                 ArrayList<String> powerAppliedTypes = new ArrayList<>();
                 ArrayList<Class<? extends CraftPower>> powerAppliedClasses = new ArrayList<>();
                 if(!OriginPlayerUtils.powerContainer.get(e.getPlayer()).get(CraftApoli.getLayerFromTag("origins:origin")).contains(power)){
                     OriginPlayerUtils.powerContainer.get(e.getPlayer()).get(CraftApoli.getLayerFromTag("origins:origin")).add(power);
-                    Class<? extends CraftPower> c = FlightElytra.class;
+                    Class<? extends CraftPower> c = Inventory.class;
                     CraftPower craftPower = null;
 
                     try {
@@ -474,9 +458,16 @@ public final class GenesisMC extends JavaPlugin implements Listener {
             } catch (IllegalAccessException ex) {
                 throw new RuntimeException(ex);
             }
+        } else if(e.getMessage().equals("./test attempt dump origins:shulker_inventory")){
+            PowerContainer power = CraftApoli.keyedPowerContainers.get("origins:shulker_inventory");
+            for(int i = 0; i < power.getJsonData().length; i++){
+                System.out.println(power.getJsonData()[i]);
+                p.sendMessage(power.getJsonData()[i]);
+            }
         }
         p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "originLayer"), PersistentDataType.STRING, CraftApoli.toSaveFormat(OriginPlayerUtils.getOrigin(p), p));
     }
+
 
     private void start(){
         getServer().getPluginManager().registerEvents(new InventorySerializer(), this);
@@ -498,6 +489,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         getServer().getPluginManager().registerEvents(new MimicWarden(), this);
         getServer().getPluginManager().registerEvents(new BounceSlimeBlock(), this);
         getServer().getPluginManager().registerEvents(new LogoutBugWorkaround(), this);
+        getServer().getPluginManager().registerEvents(new VillagerTradeHook(), this);
         getServer().getPluginManager().registerEvents(new FoliaOriginScheduler.OriginSchedulerTree(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new KeybindUtils(), GenesisMC.getPlugin());
         if (getServer().getPluginManager().isPluginEnabled("SkinsRestorer")) {

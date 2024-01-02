@@ -19,17 +19,19 @@ public class PowerContainer implements Serializable {
     FileContainer powerFile;
     boolean originMultiple;
     boolean originMultipleParent;
+    String[] jsonData;
 
     /**
      * @param powerTag    The power tag.
      * @param powerFile   The data within a power file.
      * @param originMultiple Tells the plugin if its an instance of an origins:multiple sub-power
      */
-    public PowerContainer(NamespacedKey powerTag, FileContainer powerFile, boolean originMultiple){
+    public PowerContainer(NamespacedKey powerTag, FileContainer powerFile, String[] jsonData, boolean originMultiple){
         this.powerTag = powerTag;
         this.powerFile = powerFile;
         this.originMultiple = originMultiple;
         this.originMultipleParent = false;
+        this.jsonData = jsonData;
     }
 
     /**
@@ -38,11 +40,12 @@ public class PowerContainer implements Serializable {
      * @param originMultiple Tells the plugin if its an instance of an origins:multiple sub-power
      * @param originMultipleParent Tells the plugin if its an origins:multiple parent power
      */
-    public PowerContainer(NamespacedKey powerTag, FileContainer powerFile, boolean originMultiple, boolean originMultipleParent){
+    public PowerContainer(NamespacedKey powerTag, FileContainer powerFile, String[] jsonData, boolean originMultiple, boolean originMultipleParent){
         this.powerTag = powerTag;
         this.powerFile = powerFile;
         this.originMultiple = false;
         this.originMultipleParent = originMultipleParent;
+        this.jsonData = jsonData;
     }
 
     public FileContainer getPowerFile() {
@@ -51,6 +54,10 @@ public class PowerContainer implements Serializable {
 
     public boolean isOriginMultipleSubPower(){
         return this.originMultiple;
+    }
+
+    public String[] getJsonData(){
+        return this.jsonData;
     }
 
     /**

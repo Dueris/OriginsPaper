@@ -165,7 +165,7 @@ public class TabAutoComplete implements TabCompleter {
                 return new ArrayList<>();
             }
 
-        } else if (command.getName().equalsIgnoreCase("power")) {
+        } else if (command.getName().equalsIgnoreCase("power")) { // /power<arg0> grant<arg1> Dueris<arg2> <powerFile><arg3>
             if (args.length == 1) {
                 List<String> arguments = new ArrayList<>();
                 arguments.add("clear");
@@ -173,48 +173,51 @@ public class TabAutoComplete implements TabCompleter {
                 arguments.add("has");
                 arguments.add("list");
                 arguments.add("remove");
-                arguments.add("revoke");
-                arguments.add("revokeall");
-                arguments.add("sources");
+                arguments.add("dump");
                 return arguments;
             } else if (args.length == 2) {
-                Collection<? extends Player> players = Bukkit.getOnlinePlayers();
-                List<String> playernames = new ArrayList<>();
-                for (Player player : players) playernames.add(player.getName());
-                playernames.add("@a");
-                playernames.add("@s");
-                playernames.add("@e");
-                playernames.add("@p");
-                playernames.add("@r");
-                return playernames;
+                if(!args[0].equalsIgnoreCase("dump")){
+                    Collection<? extends Player> players = Bukkit.getOnlinePlayers();
+                    List<String> playernames = new ArrayList<>();
+                    for (Player player : players) playernames.add(player.getName());
+                    playernames.add("@a");
+                    playernames.add("@s");
+                    playernames.add("@e");
+                    playernames.add("@p");
+                    playernames.add("@r");
+                    return playernames;
+                }else{
+                    List<String> pows = new ArrayList<>();
+                    for(String string : CraftApoli.keyedPowerContainers.keySet()){
+                        pows.add(string);
+                    }
+                    return pows;
+                }
             } else if (args.length == 3) {
-                List<String> argS = new ArrayList<>();
-                for (PowerContainer c : CraftApoli.getPowers()) {
-                    if (args[1].equalsIgnoreCase("has")) {
-                        argS.add(c.getTag());
+                if(args[0].equalsIgnoreCase("grant")
+                        || args[0].equalsIgnoreCase("remove")
+                        || args[0].equalsIgnoreCase("has")){
+                    List<String> pows = new ArrayList<>();
+                    for(String string : CraftApoli.keyedPowerContainers.keySet()){
+                        if(!CraftApoli.keyedPowerContainers.get(string).isOriginMultipleSubPower()){
+                            pows.add(string);
+                        }
                     }
-                    if (args[1].equalsIgnoreCase("grant")) {
-                        argS.add(c.getTag());
-                    }
-                    if (args[1].equalsIgnoreCase("remove")) {
-                        argS.add(c.getTag());
-                    }
-                    if (args[1].equalsIgnoreCase("revoke")) {
-                        argS.add(c.getTag());
-                    }
+                    return pows;
                 }
-
-                for (OriginContainer origin : CraftApoli.getOrigins()) {
-                    if (args[1].equalsIgnoreCase("revokeall")) {
-                        argS.add(origin.getTag());
-                    }
-                }
-
-                return argS;
-
             } else if (args.length >= 4) {
-                List<String> ba = new ArrayList<>();
-                return ba;
+                if(args[0].equalsIgnoreCase("grant")
+                        || args[0].equalsIgnoreCase("remove")
+                        || args[0].equalsIgnoreCase("has")){
+                    List<String> pows = new ArrayList<>();
+                    for(LayerContainer layer : CraftApoli.getLayers()){
+                        pows.add(layer.getTag());
+                    }
+                    return pows;
+                }else{
+                    List<String> ba = new ArrayList<>();
+                    return ba;
+                }
             }
         } else if(command.getName().equals("resource")){
             if(args.length == 1){
@@ -237,13 +240,13 @@ public class TabAutoComplete implements TabCompleter {
                 return playernames;
             }
             if(args.length == 3){
-                List<String> ba = new ArrayList<>();
-                for(OriginContainer origin : CraftApoli.getOrigins()){
-                    for(PowerContainer powerContainer : origin.getPowerContainers()){
-                        ba.add(powerContainer.getTag());
+                List<String> pows = new ArrayList<>();
+                for(String string : CraftApoli.keyedPowerContainers.keySet()){
+                    if(!CraftApoli.keyedPowerContainers.get(string).isOriginMultipleSubPower()){
+                        pows.add(string);
                     }
                 }
-                return ba;
+                return pows;
             }
             if(args.length >= 4){
                 List<String> ba = new ArrayList<>();

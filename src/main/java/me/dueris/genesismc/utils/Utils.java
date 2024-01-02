@@ -1,12 +1,12 @@
 package me.dueris.genesismc.utils;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 import java.util.function.BinaryOperator;
 import java.util.function.Predicate;
 
@@ -45,14 +45,17 @@ public class Utils {
         return CraftRegistry.getMinecraftRegistry().registryOrThrow(registry);
     }
 
-    public String readJSONFileAsString(File file) {
-        String content = "";
-        try {
-            content = new String(Files.readAllBytes(Paths.get(file.getAbsolutePath())));
-        } catch (IOException e) {
+    public static String[] readJSONFileAsString(File file) {
+        List<String> lines = new ArrayList<>();
+        try(BufferedReader br = new BufferedReader(new FileReader(file))) {
+            String line;
+            while ((line = br.readLine()) != null){
+                lines.add(line);
+            }
+        } catch (IOException e){
             e.printStackTrace();
         }
-        return content;
+        return lines.toArray(new String[0]);
     }
 
     public static Predicate<LivingEntity> booleanToPredicate(boolean value) {

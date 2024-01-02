@@ -11,6 +11,7 @@ import me.dueris.genesismc.utils.OriginContainer;
 import me.dueris.genesismc.utils.PowerContainer;
 import me.dueris.genesismc.utils.translation.LangConfig;
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -90,7 +91,7 @@ public class ModifyBreakSpeedPower extends CraftPower implements Listener {
                                                 new PotionEffect(
                                                         PotionEffectType.SLOW_DIGGING,
                                                         50,
-                                                        Math.round(valueModifyingSuperClass.getPersistentAttributeContainer(p, MODIFYING_KEY)),
+                                                        Math.round(valueModifyingSuperClass.getPersistentAttributeContainer(p, MODIFYING_KEY)) + 1,
                                                         false, false, false
                                                 )
                                         );
@@ -100,18 +101,20 @@ public class ModifyBreakSpeedPower extends CraftPower implements Listener {
                                                 new PotionEffect(
                                                         PotionEffectType.FAST_DIGGING,
                                                         50,
-                                                        Math.round(valueModifyingSuperClass.getPersistentAttributeContainer(p, MODIFYING_KEY)),
+                                                        Math.round(valueModifyingSuperClass.getPersistentAttributeContainer(p, MODIFYING_KEY)) + 1,
                                                         false, false, false
                                                 )
                                         );
                                     }
-                                    shouldDrop.add(p);
-                                    new BukkitRunnable() {
-                                        @Override
-                                        public void run() {
-                                            shouldDrop.remove(p);
-                                        }
-                                    }.runTaskLater(GenesisMC.getPlugin(), 40);
+                                    if(p.getGameMode() != GameMode.CREATIVE){
+                                        shouldDrop.add(p);
+                                        new BukkitRunnable() {
+                                            @Override
+                                            public void run() {
+                                                shouldDrop.remove(p);
+                                            }
+                                        }.runTaskLater(GenesisMC.getPlugin(), 40);
+                                    }
                                 }
                             } else {
                                 setActive(p, power.getTag(), false);
