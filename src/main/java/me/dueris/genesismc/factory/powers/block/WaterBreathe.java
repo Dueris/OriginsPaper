@@ -5,6 +5,7 @@ import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.OriginContainer;
 import me.dueris.genesismc.utils.PowerContainer;
+import net.minecraft.server.level.ServerPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -13,6 +14,9 @@ import org.bukkit.Particle;
 import org.bukkit.block.Block;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityAirChangeEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -20,8 +24,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
 
-public class WaterBreathe extends CraftPower {
+public class WaterBreathe extends CraftPower implements Listener {
     public static ArrayList<Player> outofAIR = new ArrayList<>();
+    private static ArrayList<Player> genesisExecuting = new ArrayList<>();
 
     public static boolean isInBreathableWater(Player player) {
         Block block = player.getEyeLocation().getBlock();
@@ -45,6 +50,18 @@ public class WaterBreathe extends CraftPower {
         }
     }
 
+    @EventHandler
+    public void interuptMinecraft(EntityAirChangeEvent e){
+        if(e.getEntity() instanceof Player player){
+            if(water_breathing.contains(player)){
+                if(!genesisExecuting.contains(player)){
+                    e.setCancelled(true);
+                    e.setAmount(0);
+                }
+            }
+        }
+    }
+
     @Override
     public void run(Player p) {
         if (!getPowerArray().contains(p)) return;
@@ -54,9 +71,10 @@ public class WaterBreathe extends CraftPower {
                 if (conditionExecutor.check("condition", "conditions", p, power, getPowerFile(), p, null, null, null, p.getItemInHand(), null)) {
                     setActive(p, power.getTag(), true);
                     if (water_breathing.contains(p)) {
+                        genesisExecuting.add(p);
                         if (isInBreathableWater(p)) {
                             if (p.getRemainingAir() < 290) {
-                                p.setRemainingAir(p.getRemainingAir() + 7);
+                                p.setRemainingAir(p.getRemainingAir() + 4);
                             } else {
                                 p.setRemainingAir(300);
                             }
@@ -71,7 +89,7 @@ public class WaterBreathe extends CraftPower {
                                 outofAIR.add(p);
                             } else {
                                 spawnBubbleLooseParticle(p.getEyeLocation());
-                                p.setRemainingAir(remainingAir - 5);
+                                p.setRemainingAir(remainingAir - 1);
                                 outofAIR.remove(p);
                             }
                         }
@@ -80,6 +98,7 @@ public class WaterBreathe extends CraftPower {
                                 outofAIR.remove(p);
                             }
                         }
+                        genesisExecuting.remove(p);
                     }
                 } else {
                     setActive(p, power.getTag(), false);
