@@ -1,17 +1,17 @@
 {
-  "type": "apoli:modify_crafting",
+  "type": "origins:modify_crafting",
   "item_condition": {
-    "type": "apoli:ingredient",
+    "type": "origins:ingredient",
     "ingredient": {
-      "tag": "apoli:swords"
+      "tag": "origins:swords"
     }
   },
   "item_action_after_crafting": {
-    "type": "apoli:modify",
-    "modifier": "apoli:enchant_randomly"
+    "type": "origins:modify",
+    "modifier": "origins:enchant_randomly"
   },
   "entity_action": {
-    "type": "apoli:add_velocity",
+    "type": "origins:add_velocity",
     "y": 2
   }
 }

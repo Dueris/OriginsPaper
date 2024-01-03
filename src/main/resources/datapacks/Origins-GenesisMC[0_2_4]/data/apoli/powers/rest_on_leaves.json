@@ -1,11 +1,11 @@
 {
-  "type": "apoli:action_on_block_use",
+  "type": "origins:action_on_block_use",
   "block_condition": {
-    "type": "apoli:block",
+    "type": "origins:block",
     "block": "minecraft:oak_leaves"
   },
   "entity_action": {
-    "type": "apoli:modify_stat",
+    "type": "origins:modify_stat",
     "stat": {
       "type": "minecraft:custom",
       "id": "minecraft:time_since_rest"

@@ -1,14 +1,14 @@
 {
-  "type": "apoli:multiple",
+  "type": "origins:multiple",
   "death": {
-    "type": "apoli:action_on_entity_use",
+    "type": "origins:action_on_entity_use",
     "bientity_condition": {
-      "type": "apoli:attacker"
+      "type": "origins:attacker"
     },
     "bientity_action": {
-      "type": "apoli:target_action",
+      "type": "origins:target_action",
       "action": {
-        "type": "apoli:damage",
+        "type": "origins:damage",
         "amount": 40,
         "source": {
           "name": "void",
@@ -20,13 +20,13 @@
     "hands": "main_hand"
   },
   "mark": {
-    "type": "apoli:entity_glow",
+    "type": "origins:entity_glow",
     "use_teams": false,
     "red": 0.8,
     "green": 0.1,
     "blue": 0.1,
     "bientity_condition": {
-      "type": "apoli:attacker"
+      "type": "origins:attacker"
     }
   }
 }

@@ -1,12 +1,12 @@
 {
-  "type": "apoli:modify_damage_taken",
+  "type": "origins:modify_damage_taken",
   "bientity_condition": {
-    "type": "apoli:distance",
+    "type": "origins:distance",
     "comparison": "<",
     "compare_to": 3
   },
   "bientity_action": {
-    "type": "apoli:add_velocity",
+    "type": "origins:add_velocity",
     "z": 1
   },
   "modifier": {

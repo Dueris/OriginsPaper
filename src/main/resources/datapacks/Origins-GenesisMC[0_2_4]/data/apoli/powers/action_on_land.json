@@ -1,7 +1,7 @@
 {
-  "type": "apoli:action_on_land",
+  "type": "origins:action_on_land",
   "entity_action": {
-    "type": "apoli:heal",
+    "type": "origins:heal",
     "amount": 1
   }
 }

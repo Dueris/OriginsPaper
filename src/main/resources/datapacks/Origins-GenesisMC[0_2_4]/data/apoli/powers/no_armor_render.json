@@ -1,4 +1,4 @@
 {
-  "type": "apoli:prevent_feature_render",
+  "type": "origins:prevent_feature_render",
   "feature": "armor"
 }

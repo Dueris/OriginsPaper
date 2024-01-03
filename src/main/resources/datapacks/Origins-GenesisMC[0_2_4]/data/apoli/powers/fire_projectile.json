@@ -1,10 +1,10 @@
 {
-  "type": "apoli:multiple",
+  "type": "origins:multiple",
   "fire": {
-    "type": "apoli:fire_projectile",
+    "type": "origins:fire_projectile",
     "cooldown": 120,
     "hud_render": {
-      "sprite_location": "apoli:resource_bar.png",
+      "sprite_location": "origins:resource_bar.png",
       "bar_index": 6
     },
     "entity_type": "minecraft:arrow",
@@ -18,9 +18,9 @@
     }
   },
   "reset": {
-    "type": "apoli:modify_jump",
+    "type": "origins:modify_jump",
     "entity_action": {
-      "type": "apoli:modify_resource",
+      "type": "origins:modify_resource",
       "resource": "*:*_fire",
       "modifier": {
         "operation": "addition",

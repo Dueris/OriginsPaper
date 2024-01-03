@@ -1,20 +1,20 @@
 {
-  "type": "apoli:active_self",
+  "type": "origins:active_self",
   "key": {
     "key": "key.use"
   },
   "entity_action": {
-    "type": "apoli:block_action_at",
+    "type": "origins:block_action_at",
     "block_action": {
-      "type": "apoli:offset",
+      "type": "origins:offset",
       "y": -1,
       "action": {
-        "type": "apoli:explode",
+        "type": "origins:explode",
         "damage_self": false,
         "power": 6,
         "destruction_type": "destroy",
         "indestructible": {
-          "type": "apoli:block",
+          "type": "origins:block",
           "block": "minecraft:grass_block"
         }
       }

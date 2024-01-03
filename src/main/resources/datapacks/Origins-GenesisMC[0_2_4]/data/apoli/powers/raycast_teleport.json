@@ -1,5 +1,5 @@
 {
-  "type": "apoli:active_self",
+  "type": "origins:active_self",
   "cooldown": 40,
   "hud_render": {
     "should_render": false
@@ -9,14 +9,14 @@
     "continuous": false
   },
   "entity_action": {
-    "type": "apoli:raycast",
+    "type": "origins:raycast",
     "distance": 16,
     "command_at_hit": "tp @s ~ ~ ~",
     "before_action": {
-      "type": "apoli:and",
+      "type": "origins:and",
       "actions": [
         {
-          "type": "apoli:spawn_particles",
+          "type": "origins:spawn_particles",
           "particle": {
             "type": "minecraft:portal"
           },
@@ -27,16 +27,16 @@
           "spread_z": 0.65
         },
         {
-          "type": "apoli:play_sound",
+          "type": "origins:play_sound",
           "sound": "minecraft:entity.enderman.teleport"
         }
       ]
     },
     "hit_action": {
-      "type": "apoli:and",
+      "type": "origins:and",
       "actions": [
         {
-          "type": "apoli:spawn_particles",
+          "type": "origins:spawn_particles",
           "particle": {
             "type": "minecraft:portal"
           },
@@ -47,14 +47,14 @@
           "spread_z": 0.65
         },
         {
-          "type": "apoli:play_sound",
+          "type": "origins:play_sound",
           "sound": "minecraft:entity.enderman.teleport"
         }
       ]
     }
   },
   "condition": {
-    "type": "apoli:raycast",
+    "type": "origins:raycast",
     "distance": 16
   }
 }

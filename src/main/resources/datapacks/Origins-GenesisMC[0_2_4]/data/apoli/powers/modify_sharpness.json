@@ -1,5 +1,5 @@
 {
-  "type": "apoli:modify_enchantment_level",
+  "type": "origins:modify_enchantment_level",
   "enchantment": "minecraft:sharpness",
   "modifiers": [
     {
@@ -12,23 +12,23 @@
     }
   ],
   "item_condition": {
-    "type": "apoli:or",
+    "type": "origins:or",
     "conditions": [
       {
-        "type": "apoli:and",
+        "type": "origins:and",
         "conditions": [
           {
-            "type": "apoli:amount",
+            "type": "origins:amount",
             "comparison": ">=",
             "compare_to": 3
           },
           {
-            "type": "apoli:meat"
+            "type": "origins:meat"
           }
         ]
       },
       {
-        "type": "apoli:empty"
+        "type": "origins:empty"
       }
     ]
   }

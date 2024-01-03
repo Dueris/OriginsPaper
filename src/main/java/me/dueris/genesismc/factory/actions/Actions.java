@@ -527,15 +527,24 @@ public class Actions {
         }
         if (type.equals("origins:add_velocity")) {
             float y = 0.0f;
+            float z = 0.0f;
+            float x = 0.0f;
             boolean set = false;
 
+            if (entityAction.containsKey("x")) x = Float.parseFloat(entityAction.get("x").toString());
+            if(entityAction.containsKey("z")) z = Float.parseFloat(entityAction.get("z").toString());
             if (entityAction.containsKey("y")) y = Float.parseFloat(entityAction.get("y").toString());
 
             if (entity instanceof Player player) {
-                Location location = player.getEyeLocation();
-                @NotNull Vector direction = location.getDirection().normalize();
-                Vector velocity = direction.multiply(y + 1.8);
-                player.setVelocity(velocity);
+                if(x == 0.0f && z == 0.0f){
+                    // y only
+                    Location location = player.getEyeLocation();
+                    @NotNull Vector direction = location.getDirection().normalize();
+                    Vector velocity = direction.multiply(y + 1.8);
+                    player.setVelocity(velocity);
+                }else{
+                    player.setVelocity(new Vector(x, y, z));
+                }
             }
         }
         if (type.equals("origins:execute_command")) {

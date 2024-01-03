@@ -1,20 +1,20 @@
 {
-  "type": "apoli:action_over_time",
+  "type": "origins:action_over_time",
   "entity_action": {
-    "type": "apoli:block_action_at",
+    "type": "origins:block_action_at",
     "block_action": {
-      "type": "apoli:offset",
+      "type": "origins:offset",
       "y": -1,
       "action": {
-        "type": "apoli:and",
+        "type": "origins:and",
         "actions": [
           {
-            "type": "apoli:modify_block_state",
+            "type": "origins:modify_block_state",
             "property": "axis",
             "cycle": true
           },
           {
-            "type": "apoli:modify_block_state",
+            "type": "origins:modify_block_state",
             "property": "facing",
             "cycle": true
           }

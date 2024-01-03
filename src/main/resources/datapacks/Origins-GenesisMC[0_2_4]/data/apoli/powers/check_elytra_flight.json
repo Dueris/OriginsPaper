@@ -1,7 +1,7 @@
 {
-  "type": "apoli:multiple",
+  "type": "origins:multiple",
   "activate": {
-    "type": "apoli:active_self",
+    "type": "origins:active_self",
     "key": {
       "key": "key.jump",
       "continuous": false
@@ -11,28 +11,28 @@
       "should_render": false
     },
     "condition": {
-      "type": "apoli:elytra_flight_possible",
+      "type": "origins:elytra_flight_possible",
       "check_state": true
     },
     "entity_action": {
-      "type": "apoli:grant_power",
+      "type": "origins:grant_power",
       "power": "*:*_state",
       "source": "*:*"
     }
   },
   "deactivate": {
-    "type": "apoli:action_on_land",
+    "type": "origins:action_on_land",
     "entity_action": {
-      "type": "apoli:delay",
+      "type": "origins:delay",
       "ticks": 1,
       "action": {
-        "type": "apoli:revoke_power",
+        "type": "origins:revoke_power",
         "power": "*:*_state",
         "source": "*:*"
       }
     }
   },
   "state": {
-    "type": "apoli:simple"
+    "type": "origins:simple"
   }
 }

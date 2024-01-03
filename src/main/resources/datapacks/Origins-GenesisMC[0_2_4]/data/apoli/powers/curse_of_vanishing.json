@@ -1,5 +1,5 @@
 {
-  "type": "apoli:modify_enchantment_level",
+  "type": "origins:modify_enchantment_level",
   "enchantment": "minecraft:vanishing_curse",
   "modifier": {
     "operation": "set_total",

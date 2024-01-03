@@ -1,22 +1,22 @@
 {
-  "type": "apoli:action_on_block_use",
+  "type": "origins:action_on_block_use",
   "block_condition": {
-    "type": "apoli:block",
+    "type": "origins:block",
     "block": "minecraft:grass_block"
   },
   "block_action": {
-    "type": "apoli:set_block",
+    "type": "origins:set_block",
     "block": "minecraft:dirt"
   },
   "entity_action": {
-    "type": "apoli:and",
+    "type": "origins:and",
     "actions": [
       {
-        "type": "apoli:heal",
+        "type": "origins:heal",
         "amount": 4
       },
       {
-        "type": "apoli:modify_stat",
+        "type": "origins:modify_stat",
         "stat": {
           "type": "minecraft:crafted",
           "id": "minecraft:dirt"

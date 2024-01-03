@@ -1,40 +1,40 @@
 {
-  "type": "apoli:multiple",
+  "type": "origins:multiple",
   "meter": {
-    "type": "apoli:resource",
+    "type": "origins:resource",
     "min": 0,
     "max": 100,
     "hud_render": {
       "should_render": true
     },
     "min_action": {
-      "type": "apoli:revoke_power",
-      "power": "apoli:modify_renders",
-      "source": "apoli:wetness"
+      "type": "origins:revoke_power",
+      "power": "origins:modify_renders",
+      "source": "origins:wetness"
     },
     "max_action": {
-      "type": "apoli:grant_power",
-      "power": "apoli:modify_renders",
-      "source": "apoli:wetness"
+      "type": "origins:grant_power",
+      "power": "origins:modify_renders",
+      "source": "origins:wetness"
     }
   },
   "change": {
-    "type": "apoli:action_over_time",
+    "type": "origins:action_over_time",
     "entity_action": {
-      "type": "apoli:if_else",
+      "type": "origins:if_else",
       "condition": {
-        "type": "apoli:fluid_height",
+        "type": "origins:fluid_height",
         "fluid": "minecraft:water",
         "comparison": ">",
         "compare_to": 0
       },
       "if_action": {
-        "type": "apoli:change_resource",
+        "type": "origins:change_resource",
         "resource": "*:*_meter",
         "change": 1
       },
       "else_action": {
-        "type": "apoli:change_resource",
+        "type": "origins:change_resource",
         "resource": "*:*_meter",
         "change": -1
       }

@@ -1,16 +1,16 @@
 {
-  "type": "apoli:multiple",
+  "type": "origins:multiple",
   "resource": {
-    "type": "apoli:resource",
+    "type": "origins:resource",
     "min": 0,
     "max": 3,
     "hud_render": {
-      "sprite_location": "apoli:resource_bar.png",
+      "sprite_location": "origins:resource_bar.png",
       "bar_index": 0
     }
   },
   "modification": {
-    "type": "apoli:modify_enchantment_level",
+    "type": "origins:modify_enchantment_level",
     "enchantment": "minecraft:fortune",
     "modifier": {
       "operation": "addition",
@@ -18,14 +18,14 @@
       "resource": "*:*_resource"
     },
     "condition": {
-      "type": "apoli:enchantment",
+      "type": "origins:enchantment",
       "enchantment": "minecraft:protection",
       "calculation": "max",
       "comparison": "==",
       "compare_to": 0
     },
     "item_condition": {
-      "type": "apoli:enchantment",
+      "type": "origins:enchantment",
       "enchantment": "minecraft:unbreaking",
       "comparison": "==",
       "compare_to": 0

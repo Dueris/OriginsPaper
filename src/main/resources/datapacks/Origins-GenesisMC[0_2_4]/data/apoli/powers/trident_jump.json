@@ -1,7 +1,7 @@
 {
-  "type": "apoli:modify_projectile_damage",
+  "type": "origins:modify_projectile_damage",
   "damage_condition": {
-    "type": "apoli:projectile",
+    "type": "origins:projectile",
     "projectile": "minecraft:trident"
   },
   "modifier": {
@@ -9,7 +9,7 @@
     "value": -1
   },
   "target_action": {
-    "type": "apoli:add_velocity",
+    "type": "origins:add_velocity",
     "y": 1
   }
 }

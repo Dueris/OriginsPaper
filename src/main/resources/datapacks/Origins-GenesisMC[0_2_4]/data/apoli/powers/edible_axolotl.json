@@ -1,7 +1,7 @@
 {
-	"type": "apoli:edible_item",
+	"type": "origins:edible_item",
 	"item_condition": {
-		"type": "apoli:ingredient",
+		"type": "origins:ingredient",
 		"ingredient": {
 			"item": "minecraft:axolotl_bucket"
 		}
@@ -15,15 +15,15 @@
 		"item": "minecraft:water_bucket"
 	},
 	"condition": {
-		"type": "apoli:or",
+		"type": "origins:or",
 		"conditions": [
 			{
-				"type": "apoli:raycast",
+				"type": "origins:raycast",
 				"block": true,
 				"inverted": true
 			},
 			{
-				"type": "apoli:sneaking"
+				"type": "origins:sneaking"
 			}
 		]
 	}

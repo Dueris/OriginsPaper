@@ -1,7 +1,7 @@
 {
-  "type": "apoli:modify_crafting",
+  "type": "origins:modify_crafting",
   "item_condition": {
-    "type": "apoli:ingredient",
+    "type": "origins:ingredient",
     "ingredient": {
       "item": "minecraft:stick"
     }
@@ -11,11 +11,11 @@
     "amount": 4
   },
   "entity_action": {
-    "type": "apoli:add_velocity",
+    "type": "origins:add_velocity",
     "y": 0.5
   },
   "block_action": {
-    "type": "apoli:set_block",
+    "type": "origins:set_block",
     "block": "minecraft:stone"
   }
 }

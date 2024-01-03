@@ -1,12 +1,12 @@
 {
-  "type": "apoli:action_on_hit",
+  "type": "origins:action_on_hit",
   "bientity_action": {
-    "type": "apoli:actor_action",
+    "type": "origins:actor_action",
     "action": {
-      "type": "apoli:area_of_effect",
+      "type": "origins:area_of_effect",
       "radius": 5,
       "bientity_action": {
-        "type": "apoli:damage",
+        "type": "origins:damage",
         "amount": 8,
         "source": {
           "name": "player",

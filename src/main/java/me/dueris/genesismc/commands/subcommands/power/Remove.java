@@ -50,41 +50,46 @@ public class Remove extends SubCommand {
             for(Player p : players){
                 if (players.size() == 0) return;
                 if(OriginPlayerUtils.powerContainer.get(p) == null) continue;
-                PowerContainer power = CraftApoli.keyedPowerContainers.get(args[2]);
-                try {
-                    if(OriginPlayerUtils.powerContainer.get(p).get(CraftApoli.getLayerFromTag(layerTag)).contains(power)){
-                        OriginPlayerUtils.powerContainer.get(p).get(CraftApoli.getLayerFromTag(layerTag)).remove(power);
-                        ArrayList<String> powerRemovedTypes = new ArrayList<>();
-                        ArrayList<Class<? extends CraftPower>> powerRemovedClasses = new ArrayList<>();
-                        Class<? extends CraftPower> c = Inventory.class;
-                        CraftPower craftPower = null;
-                        try {
-                            craftPower = c.newInstance();
-                        } catch (InstantiationException | IllegalAccessException ee) {
-                            throw new RuntimeException(ee);
-                        }
-                        if (power.getType().equals(craftPower.getPowerFile())) {
-                            craftPower.getPowerArray().remove(p);
+                PowerContainer poweR = CraftApoli.keyedPowerContainers.get(args[2]);
+                ArrayList<PowerContainer> powersToEdit = new ArrayList<>();
+                powersToEdit.add(poweR);
+                powersToEdit.addAll(CraftApoli.getNestedPowers(poweR));
+                for(PowerContainer power : powersToEdit){
+                    try {
+                        if(OriginPlayerUtils.powerContainer.get(p).get(CraftApoli.getLayerFromTag(layerTag)).contains(power)){
+                            OriginPlayerUtils.powerContainer.get(p).get(CraftApoli.getLayerFromTag(layerTag)).remove(power);
+                            ArrayList<String> powerRemovedTypes = new ArrayList<>();
+                            ArrayList<Class<? extends CraftPower>> powerRemovedClasses = new ArrayList<>();
+                            Class<? extends CraftPower> c = Inventory.class;
+                            CraftPower craftPower = null;
                             try {
-                                powerRemovedTypes.add(c.newInstance().getPowerFile());
+                                craftPower = c.newInstance();
                             } catch (InstantiationException | IllegalAccessException ee) {
                                 throw new RuntimeException(ee);
                             }
-                            powerRemovedClasses.add(c);
-                            powersAppliedList.get(p).remove(c);
-                            if (GenesisDataFiles.getMainConfig().getString("console-startup-debug").equalsIgnoreCase("true")) {
-                                Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "Removed power[" + power.getTag() + "] to player " + p.getName());
+                            if (power.getType().equals(craftPower.getPowerFile())) {
+                                craftPower.getPowerArray().remove(p);
+                                try {
+                                    powerRemovedTypes.add(c.newInstance().getPowerFile());
+                                } catch (InstantiationException | IllegalAccessException ee) {
+                                    throw new RuntimeException(ee);
+                                }
+                                powerRemovedClasses.add(c);
+                                powersAppliedList.get(p).remove(c);
+                                if (GenesisDataFiles.getMainConfig().getString("console-startup-debug").equalsIgnoreCase("true")) {
+                                    Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "Removed power[" + power.getTag() + "] to player " + p.getName());
+                                }
                             }
-                        }
-                        sender.sendMessage("Entity %name% had the power %power% removed"
-                                .replace("%power%", power.getName())
-                                .replace("%name%", p.getName())
-                        );
-                    }else{
+                            sender.sendMessage("Entity %name% had the power %power% removed"
+                                    .replace("%power%", power.getName())
+                                    .replace("%name%", p.getName())
+                            );
+                        }else{
 
+                        }
+                    } catch (Exception e){
+                        e.printStackTrace();
                     }
-                } catch (Exception e){
-                    e.printStackTrace();
                 }
             }
         }

@@ -1,15 +1,15 @@
 {
-  "type": "apoli:prevent_item_use",
+  "type": "origins:prevent_item_use",
   "name": "Bread Lover",
   "description": "Your body does not accept any food other than bread.",
   "item_condition": {
-    "type": "apoli:and",
+    "type": "origins:and",
     "conditions": [
       {
-        "type": "apoli:food"
+        "type": "origins:food"
       },
       {
-        "type": "apoli:ingredient",
+        "type": "origins:ingredient",
         "ingredient": {
           "item": "minecraft:bread"
         },

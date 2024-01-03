@@ -1,7 +1,7 @@
 {
-  "type": "apoli:modify_jump",
+  "type": "origins:modify_jump",
   "entity_action": {
-    "type": "apoli:swing_hand",
+    "type": "origins:swing_hand",
     "hand": "off_hand"
   }
 }

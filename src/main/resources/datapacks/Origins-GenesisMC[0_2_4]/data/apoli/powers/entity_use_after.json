@@ -1,8 +1,8 @@
 {
-  "type": "apoli:action_on_entity_use",
+  "type": "origins:action_on_entity_use",
   "priority": -100,
   "bientity_action": {
-    "type": "apoli:add_velocity",
+    "type": "origins:add_velocity",
     "z": 0.8,
     "y": 0.2
   }

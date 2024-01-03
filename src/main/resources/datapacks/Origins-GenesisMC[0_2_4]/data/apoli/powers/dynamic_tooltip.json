@@ -1,7 +1,7 @@
 {
-	"type": "apoli:tooltip",
+	"type": "origins:tooltip",
 	"text": {
-		"storage": "apoli:test/dynamic_tooltip",
+		"storage": "origins:test/dynamic_tooltip",
 		"nbt": "text",
 		"interpret": true
 	},

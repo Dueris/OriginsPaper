@@ -1,32 +1,32 @@
 {
-  "type": "apoli:action_over_time",
+  "type": "origins:action_over_time",
   "entity_action": {
-    "type": "apoli:block_action_at",
+    "type": "origins:block_action_at",
     "block_action": {
-      "type": "apoli:and",
+      "type": "origins:and",
       "actions": [
         {
-          "type": "apoli:if_else",
+          "type": "origins:if_else",
           "condition": {
-            "type": "apoli:block",
+            "type": "origins:block",
             "block": "minecraft:wheat"
           },
           "if_action": {
-            "type": "apoli:set_block",
+            "type": "origins:set_block",
             "block": "minecraft:wheat[age=7]"
           }
         },
         {
-          "type": "apoli:offset",
+          "type": "origins:offset",
           "y": 1,
           "action": {
-            "type": "apoli:if_else",
+            "type": "origins:if_else",
             "condition": {
-              "type": "apoli:block",
+              "type": "origins:block",
               "block": "minecraft:wheat"
             },
             "if_action": {
-              "type": "apoli:set_block",
+              "type": "origins:set_block",
               "block": "minecraft:wheat[age=7]"
             }
           }

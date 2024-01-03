@@ -1,9 +1,9 @@
 {
-	"type": "apoli:game_event_listener",
+	"type": "origins:game_event_listener",
 	"bientity_action": {
-		"type": "apoli:target_action",
+		"type": "origins:target_action",
 		"action": {
-			"type": "apoli:apply_effect",
+			"type": "origins:apply_effect",
 			"effects": [
 				{
 					"effect": "minecraft:speed",
@@ -19,21 +19,21 @@
 		}
 	},
 	"block_condition": {
-		"type": "apoli:or",
+		"type": "origins:or",
 		"conditions": [
 			{
-				"type": "apoli:block",
+				"type": "origins:block",
 				"block": "minecraft:bell"
 			},
 			{
-				"type": "apoli:and",
+				"type": "origins:and",
 				"conditions": [
 					{
-						"type": "apoli:block",
+						"type": "origins:block",
 						"block": "minecraft:note_block"
 					},
 					{
-						"type": "apoli:block_state",
+						"type": "origins:block_state",
 						"property": "instrument",
 						"enum": "bell"
 					}

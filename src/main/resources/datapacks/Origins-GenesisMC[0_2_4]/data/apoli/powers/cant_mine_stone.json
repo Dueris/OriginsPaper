@@ -1,7 +1,7 @@
 {
-  "type": "apoli:modify_break_speed",
+  "type": "origins:modify_break_speed",
   "block_condition": {
-    "type": "apoli:material",
+    "type": "origins:material",
     "material": "stone"
   },
   "modifier": {

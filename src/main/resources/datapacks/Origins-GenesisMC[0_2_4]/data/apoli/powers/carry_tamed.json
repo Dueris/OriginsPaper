@@ -1,52 +1,52 @@
 {
-  "type": "apoli:multiple",
+  "type": "origins:multiple",
   "pickup": {
-    "type": "apoli:action_on_entity_use",
+    "type": "origins:action_on_entity_use",
     "bientity_condition": {
-      "type": "apoli:owner"
+      "type": "origins:owner"
     },
     "bientity_action": {
-      "type": "apoli:invert",
+      "type": "origins:invert",
       "action": {
-        "type": "apoli:mount"
+        "type": "origins:mount"
       }
     },
     "condition": {
-      "type": "apoli:and",
+      "type": "origins:and",
       "conditions": [
         {
-          "type": "apoli:sneaking"
+          "type": "origins:sneaking"
         },
         {
-          "type": "apoli:passenger",
+          "type": "origins:passenger",
           "inverted": true
         },
         {
-          "type": "apoli:equipped_item",
+          "type": "origins:equipped_item",
           "equipment_slot": "mainhand",
           "item_condition": {
-            "type": "apoli:empty"
+            "type": "origins:empty"
           }
         }
       ]
     }
   },
   "drop": {
-    "type": "apoli:active_self",
+    "type": "origins:active_self",
     "cooldown": 1,
     "hud_render": {
       "should_render": false
     },
     "entity_action": {
-      "type": "apoli:passenger_action",
+      "type": "origins:passenger_action",
       "bientity_condition": {
-        "type": "apoli:invert",
+        "type": "origins:invert",
         "condition": {
-          "type": "apoli:owner"
+          "type": "origins:owner"
         }
       },
       "action": {
-        "type": "apoli:dismount"
+        "type": "origins:dismount"
       }
     },
     "key": {

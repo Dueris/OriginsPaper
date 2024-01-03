@@ -1,5 +1,5 @@
 {
-  "type": "apoli:overlay",
+  "type": "origins:overlay",
   "render_armor": false,
   "texture": "minecraft:textures/misc/nausea.png",
   "draw_mode": "nausea",
@@ -9,9 +9,9 @@
   "green": 0.4,
   "blue": 0.2,
   "condition": {
-    "type": "apoli:biome",
+    "type": "origins:biome",
     "condition": {
-      "type": "apoli:category",
+      "type": "origins:category",
       "category": "savanna"
     }
   }

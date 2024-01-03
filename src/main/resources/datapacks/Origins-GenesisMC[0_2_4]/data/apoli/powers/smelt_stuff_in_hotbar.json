@@ -1,15 +1,15 @@
 {
-    "type": "apoli:action_over_time",
+    "type": "origins:action_over_time",
     "interval": 100,
     "entity_action": {
-        "type": "apoli:modify_inventory",
+        "type": "origins:modify_inventory",
         "inventory_type": "inventory",
         "item_action": {
-            "type": "apoli:modify",
-            "modifier": "apoli:smelt"
+            "type": "origins:modify",
+            "modifier": "origins:smelt"
         },
         "item_condition": {
-            "type": "apoli:smeltable"
+            "type": "origins:smeltable"
         },
         "slots": [
             "hotbar.0",

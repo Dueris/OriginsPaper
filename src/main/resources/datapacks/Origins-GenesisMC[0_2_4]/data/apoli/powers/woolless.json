@@ -1,19 +1,19 @@
 {
-  "type": "apoli:multiple",
+  "type": "origins:multiple",
   "visibility": {
-    "type": "apoli:prevent_feature_render",
+    "type": "origins:prevent_feature_render",
     "feature": "sheep_wool"
   },
   "functionality": {
-    "type": "apoli:prevent_being_used",
+    "type": "origins:prevent_being_used",
     "item_condition": {
-      "type": "apoli:ingredient",
+      "type": "origins:ingredient",
       "ingredient": {
         "item": "minecraft:shears"
       }
     },
     "condition": {
-      "type": "apoli:entity_type",
+      "type": "origins:entity_type",
       "entity_type": "minecraft:sheep"
     }
   }

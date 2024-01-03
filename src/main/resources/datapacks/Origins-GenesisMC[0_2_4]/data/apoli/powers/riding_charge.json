@@ -1,18 +1,18 @@
 {
-  "type": "apoli:active_self",
+  "type": "origins:active_self",
   "cooldown": 1,
   "hud_render": {
     "should_render": false
   },
   "entity_action": {
-    "type": "apoli:riding_action",
+    "type": "origins:riding_action",
     "bientity_action": {
-      "type": "apoli:add_velocity",
+      "type": "origins:add_velocity",
       "z": 2
     }
   },
   "condition": {
-    "type": "apoli:riding"
+    "type": "origins:riding"
   },
   "key": {
     "key": "key.attack"

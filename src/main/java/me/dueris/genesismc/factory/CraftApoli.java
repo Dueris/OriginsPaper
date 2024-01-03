@@ -133,9 +133,11 @@ public class CraftApoli {
         powerContainers.addAll(newPowerContainers);
     }
 
-    public static ArrayList<PowerContainer> getNestedPowers(PowerContainer power, String powerFolder, String powerFileName){
+    public static ArrayList<PowerContainer> getNestedPowers(PowerContainer power){
         ArrayList<PowerContainer> nested = new ArrayList<>();
         if(power == null) return nested;
+        String powerFolder = power.getTag().split(":")[0];
+        String powerFileName = power.getTag().split(":")[1];
 
         for (String key : power.getPowerFile().getKeys()) {
             if(keyedPowerContainers.get(new NamespacedKey(powerFolder, powerFileName).asString() + "_" + key) != null){
@@ -363,7 +365,7 @@ public class CraftApoli {
                                             powerContainers.add(keyedPowerContainers.get(string));
                                             finished = true;
                                         }
-                                        for(PowerContainer power : getNestedPowers(keyedPowerContainers.get(string), string.split(":")[0], string.split(":")[1])){
+                                        for(PowerContainer power : getNestedPowers(keyedPowerContainers.get(string))){
                                             if(power != null){
                                                 powerContainers.add(power);
                                                 finished = true;

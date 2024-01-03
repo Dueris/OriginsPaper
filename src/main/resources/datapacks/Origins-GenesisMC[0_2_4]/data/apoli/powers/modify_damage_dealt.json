@@ -1,17 +1,17 @@
 {
-  "type": "apoli:modify_damage_dealt",
+  "type": "origins:modify_damage_dealt",
   "damage_condition": {
-    "type": "apoli:amount",
+    "type": "origins:amount",
     "comparison": ">=",
     "compare_to": 6
   },
   "bientity_condition": {
-    "type": "apoli:distance",
+    "type": "origins:distance",
     "comparison": "<",
     "compare_to": 3
   },
   "bientity_action": {
-    "type": "apoli:add_velocity",
+    "type": "origins:add_velocity",
     "x": -4
   },
   "modifier": {

@@ -1,5 +1,5 @@
 {
-  "type": "apoli:particle",
+  "type": "origins:particle",
   "particle": {
     "type": "dust_color_transition",
     "params": "0.000 0.000 0.000 2 0.15 0.15 0.15"
@@ -14,7 +14,7 @@
   "count": -1,
   "frequency": 1,
   "condition": {
-    "type": "apoli:status_effect",
+    "type": "origins:status_effect",
     "effect": "minecraft:invisibility"
   }
 }

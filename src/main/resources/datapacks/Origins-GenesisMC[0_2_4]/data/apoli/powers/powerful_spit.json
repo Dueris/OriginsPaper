@@ -1,7 +1,7 @@
 {
-  "type": "apoli:modify_projectile_damage",
+  "type": "origins:modify_projectile_damage",
   "damage_condition": {
-    "type": "apoli:projectile",
+    "type": "origins:projectile",
     "projectile": "minecraft:llama_spit"
   },
   "modifier": {
@@ -9,7 +9,7 @@
     "value": 5
   },
   "target_action": {
-    "type": "apoli:apply_effect",
+    "type": "origins:apply_effect",
     "effect": {
       "effect": "minecraft:poison",
       "duration": 140,

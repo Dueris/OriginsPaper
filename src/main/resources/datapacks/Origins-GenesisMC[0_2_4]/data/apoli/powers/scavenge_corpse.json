@@ -1,19 +1,19 @@
 {
-  "type": "apoli:multiple",
+  "type": "origins:multiple",
   "tick": {
-    "type": "apoli:action_over_time",
+    "type": "origins:action_over_time",
     "entity_action": {
-      "type": "apoli:and",
+      "type": "origins:and",
       "actions": [
         {
-          "type": "apoli:modify_death_ticks",
+          "type": "origins:modify_death_ticks",
           "modifier": {
             "operation": "set_total",
             "value": 0
           }
         },
         {
-          "type": "apoli:change_resource",
+          "type": "origins:change_resource",
           "resource": "*:*_duration",
           "change": 1
         }
@@ -22,14 +22,14 @@
     "interval": 4
   },
   "duration": {
-    "type": "apoli:resource",
+    "type": "origins:resource",
     "hud_render": {
       "should_render": false
     },
     "min": 0,
     "max": 75,
     "max_action": {
-      "type": "apoli:revoke_power",
+      "type": "origins:revoke_power",
       "power": "*:*",
       "source": "*:scavenge"
     }

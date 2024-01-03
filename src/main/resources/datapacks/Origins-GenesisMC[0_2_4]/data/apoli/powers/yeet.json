@@ -1,27 +1,27 @@
 {
-  "type": "apoli:active_self",
+  "type": "origins:active_self",
   "cooldown": 1,
   "key": {
     "key": "key.use",
     "continuous": false
   },
   "entity_action": {
-    "type": "apoli:passenger_action",
+    "type": "origins:passenger_action",
     "bientity_action": {
-      "type": "apoli:and",
+      "type": "origins:and",
       "actions": [
         {
-          "type": "apoli:actor_action",
+          "type": "origins:actor_action",
           "action": {
-            "type": "apoli:dismount"
+            "type": "origins:dismount"
           }
         },
         {
-          "type": "apoli:invert",
+          "type": "origins:invert",
           "action": {
-            "type": "apoli:delay",
+            "type": "origins:delay",
             "action": {
-              "type": "apoli:add_velocity",
+              "type": "origins:add_velocity",
               "reference": "rotation",
               "z": 1.2
             },
@@ -29,9 +29,9 @@
           }
         },
         {
-          "type": "apoli:target_action",
+          "type": "origins:target_action",
           "action": {
-            "type": "apoli:swing_hand",
+            "type": "origins:swing_hand",
             "hand": "MAIN_HAND"
           }
         }
@@ -39,6 +39,6 @@
     }
   },
   "condition": {
-    "type": "apoli:sneaking"
+    "type": "origins:sneaking"
   }
 }

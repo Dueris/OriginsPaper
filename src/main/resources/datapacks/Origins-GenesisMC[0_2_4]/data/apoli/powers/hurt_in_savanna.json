@@ -1,8 +1,8 @@
 {
-  "type": "apoli:action_over_time",
+  "type": "origins:action_over_time",
   "interval": 40,
   "entity_action": {
-    "type": "apoli:damage",
+    "type": "origins:damage",
     "source": {
       "name": "magic"
     },
@@ -17,9 +17,9 @@
   "green": 0.4,
   "blue": 0.2,
   "condition": {
-    "type": "apoli:biome",
+    "type": "origins:biome",
     "condition": {
-      "type": "apoli:category",
+      "type": "origins:category",
       "category": "savanna"
     }
   }

@@ -1,20 +1,20 @@
 {
-	"type": "apoli:multiple",
+	"type": "origins:multiple",
 
 	"towards_top_of_head_client": {
 
 		"comment": "The preferable solution in most cases",
 
-		"type": "apoli:active_self",
+		"type": "origins:active_self",
 		"entity_action": {
-			"type": "apoli:add_velocity",
+			"type": "origins:add_velocity",
 			"space": "local",
 			"set": true,
 			"server": false,
 			"y": 1
 		},
 		"key": {
-			"key": "key.attack"
+			"key": "key.origins.primary_active"
 		}
 	},
 
@@ -22,16 +22,16 @@
 
 		"comment": "Has a little bit of a delay due to communication between the server and client, as with 'launch', and won't work with velocity spaces",
 
-		"type": "apoli:active_self",
+		"type": "origins:active_self",
 		"entity_action": {
-			"type": "apoli:add_velocity",
+			"type": "origins:add_velocity",
 			"space": "local",
 			"set": true,
 			"client": false,
 			"y": 1
 		},
 		"key": {
-			"key": "key.use"
+			"key": "key.origins.secondary_active"
 		}
 	},
 
@@ -39,15 +39,15 @@
 
 		"comment": "The legacy behavior of add_velocity, somewhat glitchy due to both sides potentially triggering, and server shenanigans described above and below",
 
-		"type": "apoli:active_self",
+		"type": "origins:active_self",
 		"entity_action": {
-			"type": "apoli:add_velocity",
+			"type": "origins:add_velocity",
 			"space": "local",
 			"set": true,
 			"y": 1
 		},
 		"key": {
-			"key": "key.pickItem"
+			"key": "key.origins.secondary_active"
 		}
 	},
 
@@ -57,29 +57,29 @@
 		"comment_": "Remove the line preventing the action from executing on the server...",
 		"comment__": "... and watch it destroy the velocity evaluation completely in some cases, e.g. some cases of walking, of jumping, and of creative flight",
 
-		"type": "apoli:active_self",
+		"type": "origins:active_self",
 		"entity_action": {
-			"type": "apoli:add_velocity",
+			"type": "origins:add_velocity",
 			"space": "velocity_normalized",
 			"server": false, "comment___" : "← this line",
 			"x": 1
 		},
 		"key": {
-			"key": "key.playerlist"
+			"key": "key.origins.primary_active"
 		}
 	},
 
 	"strafe_on_hit": {
 
-		"type": "apoli:action_on_hit",
+		"type": "origins:action_on_hit",
 		"bientity_action": {
-			"type": "apoli:invert",
+			"type": "origins:invert",
 			"action": {
-				"type": "apoli:choice",
+				"type": "origins:choice",
 				"actions": [
 					{
 						"element": {
-							"type": "apoli:add_velocity",
+							"type": "origins:add_velocity",
 							"set": true,
 							"x": -1
 						},
@@ -87,7 +87,7 @@
 					},
 					{
 						"element": {
-							"type": "apoli:add_velocity",
+							"type": "origins:add_velocity",
 							"set": true,
 							"x": 1
 						},

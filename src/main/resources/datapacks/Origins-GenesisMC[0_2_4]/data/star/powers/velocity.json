@@ -14,11 +14,6 @@
         }
       },
       {
-        "type": "origins:add_velocity",
-        "z": 2,
-        "space": "local"
-      },
-      {
         "type": "origins:execute_command",
         "command": "playsound minecraft:entity.illusioner.prepare_blindness master @a[distance=..20] ~ ~ ~ 1000 2",
         "permission_level": 4

@@ -1,5 +1,5 @@
 {
-  "type": "apoli:overlay",
+  "type": "origins:overlay",
   "texture": "minecraft:textures/misc/nausea.png",
   "draw_mode": "nausea",
   "draw_phase": "above_hud",

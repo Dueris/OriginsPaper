@@ -1,5 +1,5 @@
 {
-  "type": "apoli:particle",
+  "type": "origins:particle",
   "particle": {
     "type": "minecraft:end_rod"
   },

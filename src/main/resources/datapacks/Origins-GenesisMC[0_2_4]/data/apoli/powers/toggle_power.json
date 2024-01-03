@@ -1,21 +1,21 @@
 {
-  "type": "apoli:active_self",
+  "type": "origins:active_self",
   "cooldown": 1,
   "entity_action": {
-    "type": "apoli:if_else",
+    "type": "origins:if_else",
     "condition": {
-      "type": "apoli:power",
-      "power": "apoli:modify_renders"
+      "type": "origins:power",
+      "power": "origins:modify_renders"
     },
     "if_action": {
-      "type": "apoli:revoke_power",
-      "power": "apoli:modify_renders",
-      "source": "apoli:grant_test"
+      "type": "origins:revoke_power",
+      "power": "origins:modify_renders",
+      "source": "origins:grant_test"
     },
     "else_action": {
-      "type": "apoli:grant_power",
-      "power": "apoli:modify_renders",
-      "source": "apoli:grant_test"
+      "type": "origins:grant_power",
+      "power": "origins:modify_renders",
+      "source": "origins:grant_test"
     }
   },
   "hud_render": {

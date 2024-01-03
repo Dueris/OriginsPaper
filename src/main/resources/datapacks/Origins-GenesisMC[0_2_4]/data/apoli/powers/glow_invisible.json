@@ -1,7 +1,7 @@
 {
-  "type": "apoli:entity_glow",
+  "type": "origins:entity_glow",
   "entity_condition": {
-    "type": "apoli:status_effect",
+    "type": "origins:status_effect",
     "effect": "minecraft:invisibility"
   },
   "blue": 0.0

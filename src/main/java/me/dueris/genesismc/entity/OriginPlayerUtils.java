@@ -128,7 +128,7 @@ public class OriginPlayerUtils {
                     if(powerCon != null){
                         powers.add(powerCon);
                         if(powerCon.isOriginMultipleParent()){
-                            ArrayList<PowerContainer> nestedPowers = CraftApoli.getNestedPowers(powerCon, powerCon.getTag().split(":")[0], powerCon.getTag().split(":")[1]);
+                            ArrayList<PowerContainer> nestedPowers = CraftApoli.getNestedPowers(powerCon);
                             for(PowerContainer nested : nestedPowers){
                                 if(nested != null) powers.add(nested);
                             }

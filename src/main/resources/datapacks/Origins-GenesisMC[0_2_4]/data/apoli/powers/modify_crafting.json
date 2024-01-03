@@ -1,13 +1,13 @@
 {
-  "type": "apoli:modify_crafting",
+  "type": "origins:modify_crafting",
   "item_condition": {
-    "type": "apoli:ingredient",
+    "type": "origins:ingredient",
     "ingredient": {
       "item": "minecraft:stick"
     }
   },
   "entity_action": {
-    "type": "apoli:give",
+    "type": "origins:give",
     "stack": {
       "item": "minecraft:dirt"
     }

@@ -1,7 +1,7 @@
 {
-  "type": "apoli:entity_glow",
+  "type": "origins:entity_glow",
   "bientity_condition": {
-    "type": "apoli:can_see"
+    "type": "origins:can_see"
   },
   "green": 0.0
 }

@@ -1,16 +1,16 @@
 {
-  "type": "apoli:multiple",
+  "type": "origins:multiple",
   "bushes_are_corals": {
-    "type": "apoli:modify_block_render",
+    "type": "origins:modify_block_render",
     "block_condition": {
-      "type": "apoli:or",
+      "type": "origins:or",
       "conditions": [
         {
-          "type": "apoli:block",
+          "type": "origins:block",
           "block": "minecraft:grass"
         },
         {
-          "type": "apoli:block",
+          "type": "origins:block",
           "block": "minecraft:tall_grass"
         }
       ]
@@ -18,20 +18,20 @@
     "block": "minecraft:tube_coral"
   },
   "grass_is_sand": {
-    "type": "apoli:modify_block_render",
+    "type": "origins:modify_block_render",
     "block_condition": {
-      "type": "apoli:or",
+      "type": "origins:or",
       "conditions": [
         {
-          "type": "apoli:block",
+          "type": "origins:block",
           "block": "minecraft:grass_block"
         },
         {
-          "type": "apoli:block",
+          "type": "origins:block",
           "block": "minecraft:dirt"
         },
         {
-          "type": "apoli:block",
+          "type": "origins:block",
           "block": "minecraft:stone"
         }
       ]
@@ -39,22 +39,22 @@
     "block": "minecraft:sand"
   },
   "fluid": {
-    "type": "apoli:modify_camera_submersion",
+    "type": "origins:modify_camera_submersion",
     "from": "none",
     "to": "water"
   },
   "logs_are_sponges": {
-    "type": "apoli:modify_block_render",
+    "type": "origins:modify_block_render",
     "block_condition": {
-      "type": "apoli:in_tag",
+      "type": "origins:in_tag",
       "tag": "minecraft:logs"
     },
     "block": "minecraft:sponge"
   },
   "leaves_are_wet": {
-    "type": "apoli:modify_block_render",
+    "type": "origins:modify_block_render",
     "block_condition": {
-      "type": "apoli:in_tag",
+      "type": "origins:in_tag",
       "tag": "minecraft:leaves"
     },
     "block": "minecraft:wet_sponge"

@@ -38,6 +38,10 @@ public class List extends SubCommand {
             for(Player p : players) {
                 for(LayerContainer layerContainer : CraftApoli.getLayers()){
                     ArrayList<PowerContainer> powers = OriginPlayerUtils.powerContainer.get(p).get(layerContainer);
+                    for(PowerContainer power : powers){
+                        if(power == null) return;
+                        powers.addAll(CraftApoli.getNestedPowers(power));
+                    }
                     if(powers == null || powers.isEmpty()){
                         sender.sendMessage(ChatColor.RED + "Entity %name% does not have any powers".replace("%name%", p.getName()));
                     }else{

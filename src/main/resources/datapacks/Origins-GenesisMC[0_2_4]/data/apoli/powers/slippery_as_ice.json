@@ -1,11 +1,11 @@
 {
-  "type": "apoli:modify_slipperiness",
+  "type": "origins:modify_slipperiness",
   "modifier": {
     "operation": "addition",
     "value": 0.38
   },
   "block_condition": {
-    "type": "apoli:slipperiness",
+    "type": "origins:slipperiness",
     "comparison": "==",
     "compare_to": 0.6
   }

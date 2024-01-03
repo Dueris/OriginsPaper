@@ -1,21 +1,21 @@
 {
-  "type": "apoli:multiple",
+  "type": "origins:multiple",
   "keep_corpses": {
-    "type": "apoli:action_on_hit",
+    "type": "origins:action_on_hit",
     "bientity_action": {
-      "type": "apoli:target_action",
+      "type": "origins:target_action",
       "action": {
-        "type": "apoli:delay",
+        "type": "origins:delay",
         "ticks": 1,
         "action": {
-          "type": "apoli:if_else",
+          "type": "origins:if_else",
           "condition": {
-            "type": "apoli:health",
+            "type": "origins:health",
             "comparison": "<=",
             "compare_to": 0
           },
           "if_action": {
-            "type": "apoli:grant_power",
+            "type": "origins:grant_power",
             "power": "*:*_corpse",
             "source": "*:*"
           }
@@ -24,38 +24,38 @@
     }
   },
   "scavenge": {
-    "type": "apoli:action_on_entity_use",
+    "type": "origins:action_on_entity_use",
     "bientity_condition": {
-      "type": "apoli:target_condition",
+      "type": "origins:target_condition",
       "condition": {
-        "type": "apoli:power",
+        "type": "origins:power",
         "power": "*:*_corpse"
       }
     },
     "bientity_action": {
-      "type": "apoli:and",
+      "type": "origins:and",
       "actions": [
         {
-          "type": "apoli:actor_action",
+          "type": "origins:actor_action",
           "action": {
-            "type": "apoli:give",
+            "type": "origins:give",
             "stack": {
               "item": "minecraft:diamond"
             }
           }
         },
         {
-          "type": "apoli:target_action",
+          "type": "origins:target_action",
           "action": {
-            "type": "apoli:and",
+            "type": "origins:and",
             "actions": [
               {
-                "type": "apoli:revoke_power",
+                "type": "origins:revoke_power",
                 "power": "*:*_corpse",
                 "source": "*:*"
               },
               {
-                "type": "apoli:execute_command",
+                "type": "origins:execute_command",
                 "command": "loot spawn ~ ~ ~ kill @s"
               }
             ]

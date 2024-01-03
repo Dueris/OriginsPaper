@@ -1,5 +1,5 @@
 {
-    "type": "apoli:inventory",
+    "type": "origins:inventory",
     "title": "Pockets",
     "container_type": "hopper",
     "drop_on_death": false,

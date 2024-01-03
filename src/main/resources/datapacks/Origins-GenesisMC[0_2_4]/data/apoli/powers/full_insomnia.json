@@ -1,5 +1,5 @@
 {
-  "type": "apoli:modify_insomnia_ticks",
+  "type": "origins:modify_insomnia_ticks",
   "modifier": {
     "operation": "set_total",
     "value": 2000000000
