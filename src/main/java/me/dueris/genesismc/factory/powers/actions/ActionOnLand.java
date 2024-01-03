@@ -8,10 +8,12 @@ import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.OriginContainer;
 import me.dueris.genesismc.utils.PowerContainer;
 import org.bukkit.Bukkit;
+import org.bukkit.GameEvent;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.world.GenericGameEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
@@ -25,22 +27,24 @@ public class ActionOnLand extends CraftPower implements Listener {
     }
 
     @EventHandler
-    public void e(PlayerMoveEvent e) {
-        if (!getPowerArray().contains(e.getPlayer())) return;
+    public void e(GenericGameEvent e) {
+        if(e.getEvent() != GameEvent.HIT_GROUND) return;
+        if(!(e.getEntity() instanceof Player player)) return;
+        if (!getPowerArray().contains(player)) return;
         for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()) {
-            if (e.getFrom().getY() > e.getTo().getY() && e.getFrom().getY() - e.getTo().getY() >= MIN_FALL_DISTANCE) {
-                for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(e.getPlayer(), getPowerFile(), layer)) {
-                    setActive(e.getPlayer(), power.getTag(), true);
-                    Actions.EntityActionType(e.getPlayer(), power.getEntityAction());
+//            if (e.getFrom().getY() > e.getTo().getY() && e.getFrom().getY() - e.getTo().getY() >= MIN_FALL_DISTANCE) {
+                for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(player, getPowerFile(), layer)) {
+                    setActive(player, power.getTag(), true);
+                    Actions.EntityActionType(player, power.getEntityAction());
                     new BukkitRunnable() {
                         @Override
                         public void run() {
-                            setActive(e.getPlayer(), power.getTag(), false);
+                            setActive(player, power.getTag(), false);
                         }
                     }.runTaskLater(GenesisMC.getPlugin(), 2L);
                 }
 
-            }
+//            }
         }
     }
 

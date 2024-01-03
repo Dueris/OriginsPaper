@@ -72,6 +72,7 @@ public class Actions {
             else target.setVelocity(target.getVelocity().add(new Vector(x, y, z)));
         }
         if (type.equals("origins:damage")) {
+            if(target.isDead() || !(target instanceof LivingEntity)) return;
             float amount = 0.0f;
 
             if (biEntityAction.containsKey("amount"))
@@ -92,8 +93,8 @@ public class Actions {
                 key = "generic";
             }
             DamageType dmgType = Utils.DAMAGE_REGISTRY.get(new ResourceLocation(namespace, key));
-            net.minecraft.world.entity.LivingEntity serverPlayer = ((CraftLivingEntity) target).getHandle();
-            serverPlayer.hurt(Utils.getDamageSource(dmgType), amount);
+            net.minecraft.world.entity.LivingEntity serverEn = ((CraftLivingEntity) target).getHandle();
+            serverEn.hurt(Utils.getDamageSource(dmgType), amount);
         }
         if (type.equals("origins:mount")) {
             target.addPassenger(actor);
@@ -109,16 +110,17 @@ public class Actions {
             }
         }
         if (type.equals("origins:actor_action")) {
-            EntityActionType(actor, biEntityAction);
+            EntityActionType(actor, (JSONObject) biEntityAction.get("action"));
         }
         if (type.equals("origins:target_action")) {
-            EntityActionType(target, biEntityAction);
+            runEntity(target, (JSONObject) biEntityAction.get("action"));
         }
     }
 
     public static void biEntityActionType(Entity actor, Entity target, JSONObject biEntityAction) {
         JSONObject entityAction = biEntityAction;
         String type = entityAction.get("type").toString();
+        System.out.println(type);
 
         if (type.equals("origins:and")) {
             JSONArray andActions = (JSONArray) entityAction.get("actions");
@@ -314,8 +316,14 @@ public class Actions {
             }
         }
         if (type.equals("origins:heal")){
-            if(entity instanceof Player player){
-                player.setHealth(Double.parseDouble(player.getHealth() + power.get("amount").toString()));
+            if(entity instanceof LivingEntity li){
+                double healthFinal = li.getHealth() + Double.parseDouble(power.get("amount").toString());
+                if(li.getHealth() >= 20) return;
+                if(healthFinal > 20){
+                    li.setHealth(20);
+                }else{
+                    li.setHealth(healthFinal);
+                }
             }
         }
         if (type.equals("origins:clear_effect")){
@@ -551,7 +559,7 @@ public class Actions {
             final boolean isOp = entity.isOp();
             entity.setOp(true);
             String cmd = null;
-            if(power.get("command").toString().startsWith("power") || power.get("command").toString().startsWith("/power")) return; // TODO: add /power
+            System.out.println(power.get("command"));
             if(power.get("command").toString().startsWith("/")){
                 cmd = power.get("command").toString().split("/")[1];
             }else{
@@ -586,14 +594,11 @@ public class Actions {
         if (type.equals("origins:area_of_effect")) {
             float radius = 15f;
             JSONObject bientity_action = new JSONObject();
-            JSONObject bientity_condition = new JSONObject();
             boolean include_target = false;
 
             if (entityAction.containsKey("radius")) radius = Float.parseFloat(entityAction.get("radius").toString());
             if (entityAction.containsKey("bientity_action"))
                 bientity_action = (JSONObject) entityAction.get("bientity_action");
-            if (entityAction.containsKey("bientity_condition"))
-                bientity_condition = (JSONObject) entityAction.get("bientity_condition");
             if (entityAction.containsKey("include_target"))
                 include_target = Boolean.parseBoolean(entityAction.get("include_target").toString());
 
@@ -721,32 +726,28 @@ public class Actions {
 
     public static void BlockActionType(Location location, JSONObject power) {
         if (power == null) return;
-        JSONObject entityAction = (JSONObject) power.get("action");
-        if (entityAction == null) {
-            entityAction = (JSONObject) power.get("block_action");
-        }
-        if (entityAction == null) return;
-        String type = entityAction.get("type").toString();
+        String type = power.get("type").toString();
+        System.out.println(type);
 
         if (type.equals("origins:and")) {
-            JSONArray andActions = (JSONArray) entityAction.get("actions");
+            JSONArray andActions = (JSONArray) power.get("actions");
             for (Object actionObj : andActions) {
                 JSONObject action = (JSONObject) actionObj;
                 runBlock(location, action);
             }
         } else if (type.equals("origins:chance")) {
-            double chance = Double.parseDouble(entityAction.get("chance").toString());
+            double chance = Double.parseDouble(power.get("chance").toString());
             double randomValue = Math.random();
 
             if (randomValue <= chance) {
-                JSONObject action = (JSONObject) entityAction.get("action");
+                JSONObject action = (JSONObject) power.get("action");
                 runBlock(location, action);
-            } else if (entityAction.containsKey("fail_action")) {
-                JSONObject failAction = (JSONObject) entityAction.get("fail_action");
+            } else if (power.containsKey("fail_action")) {
+                JSONObject failAction = (JSONObject) power.get("fail_action");
                 runBlock(location, failAction);
             }
         } else if (type.equals("origins:choice")) {
-            JSONArray actionsArray = (JSONArray) entityAction.get("actions");
+            JSONArray actionsArray = (JSONArray) power.get("actions");
             List<JSONObject> actionsList = new ArrayList<>();
 
             for (Object actionObj : actionsArray) {
@@ -764,8 +765,8 @@ public class Actions {
                 runBlock(location, chosenAction);
             }
         } else if (type.equals("origins:delay")) {
-            int ticks = Integer.parseInt(entityAction.get("ticks").toString());
-            JSONObject delayedAction = (JSONObject) entityAction.get("action");
+            int ticks = Integer.parseInt(power.get("ticks").toString());
+            JSONObject delayedAction = (JSONObject) power.get("action");
 
             Bukkit.getScheduler().runTaskLater(GenesisMC.getPlugin(), () -> {
                 runBlock(location, delayedAction);
@@ -773,7 +774,7 @@ public class Actions {
         } else if (type.equals("origins:nothing")) {
             // Literally does nothing
         } else if (type.equals("origins:side")) {
-            JSONObject action = (JSONObject) entityAction.get("action");
+            JSONObject action = (JSONObject) power.get("action");
             runBlock(location, action);
         } else {
             runBlock(location, power);
@@ -825,13 +826,12 @@ public class Actions {
     }
 
     private static void runBlock(Location location, JSONObject power) {
-        JSONObject blockAction = (JSONObject) power.get("block_action");
-        String type = blockAction.get("type").toString();
+        String type = power.get("type").toString();
 
         if (type.equals("origins:add_block")) {
-            if (blockAction.containsKey("block")) {
+            if (power.containsKey("block")) {
                 Material block;
-                block = Material.getMaterial(blockAction.get("block").toString().split(":")[1].toUpperCase());
+                block = Material.getMaterial(power.get("block").toString().split(":")[1].toUpperCase());
                 if (block == null) return;
 
                 //i experimented with it, and it seemed that it just set it one block above?
@@ -873,15 +873,15 @@ public class Actions {
             JSONObject destructible = new JSONObject();
             boolean create_fire = false;
 
-            if (blockAction.containsKey("power"))
-                explosionPower = Float.parseFloat(blockAction.get("power").toString());
-            if (blockAction.containsKey("destruction_type"))
-                destruction_type = blockAction.get("destruction_type").toString();
-            if (blockAction.containsKey("indestructible"))
-                indestructible = (JSONObject) blockAction.get("indestructible");
-            if (blockAction.containsKey("destructible")) destructible = (JSONObject) blockAction.get("destructible");
-            if (blockAction.containsKey("create_fire"))
-                create_fire = Boolean.parseBoolean(blockAction.get("create_fire").toString());
+            if (power.containsKey("power"))
+                explosionPower = Float.parseFloat(power.get("power").toString());
+            if (power.containsKey("destruction_type"))
+                destruction_type = power.get("destruction_type").toString();
+            if (power.containsKey("indestructible"))
+                indestructible = (JSONObject) power.get("indestructible");
+            if (power.containsKey("destructible")) destructible = (JSONObject) power.get("destructible");
+            if (power.containsKey("create_fire"))
+                create_fire = Boolean.parseBoolean(power.get("create_fire").toString());
 
             location.createExplosion(explosionPower, create_fire);
         }
@@ -903,7 +903,7 @@ public class Actions {
             Bukkit.dispatchCommand(originCommandSender, "gamerule logAdminCommands {bool}".replace("{bool}", String.valueOf(lastSendCMDFeedback)));
         }
         if (type.equals("origins:set_block")){
-            location.getBlock().setType(Material.valueOf(blockAction.get("block").toString().split(":")[1].toUpperCase()));
+            location.getBlock().setType(Material.valueOf(power.get("block").toString().split(":")[1].toUpperCase()));
         }
     }
 

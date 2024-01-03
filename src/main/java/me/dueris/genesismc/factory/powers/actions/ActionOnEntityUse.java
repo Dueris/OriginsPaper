@@ -23,20 +23,23 @@ public class ActionOnEntityUse extends CraftPower implements Listener {
 
     }
 
+    private static ArrayList<Player> cooldownTick = new ArrayList<>();
+
     @EventHandler
     public void entityRightClickEntity(PlayerInteractEntityEvent e) {
         Player actor = e.getPlayer();
         Entity target = e.getRightClicked();
 
-        if (!(target instanceof Player player)) return;
-        if (!getPowerArray().contains(target)) return;
+        if (!getPowerArray().contains(actor)) return;
+        if (cooldownTick.contains(actor)) return;
 
         for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()) {
-            for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(player, getPowerFile(), layer)) {
-                if(GenesisMC.getConditionExecutor().check("condition", "conditions", player, power, getPowerFile(), actor, target, actor.getLocation().getBlock(), null, actor.getActiveItem(), null)){
-                    if(GenesisMC.getConditionExecutor().check("item_condition", "item_conditions", player, power, getPowerFile(), actor, target, actor.getLocation().getBlock(), null, actor.getActiveItem(), null)){
-                        if(GenesisMC.getConditionExecutor().check("bientity_condition", "bientity_conditions", player, power, getPowerFile(), actor, target, actor.getLocation().getBlock(), null, actor.getActiveItem(), null)){
+            for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(actor, getPowerFile(), layer)) {
+                if(GenesisMC.getConditionExecutor().check("condition", "conditions", actor, power, getPowerFile(), actor, target, actor.getLocation().getBlock(), null, actor.getActiveItem(), null)){
+                    if(GenesisMC.getConditionExecutor().check("item_condition", "item_conditions", actor, power, getPowerFile(), actor, target, actor.getLocation().getBlock(), null, actor.getActiveItem(), null)){
+                        if(GenesisMC.getConditionExecutor().check("bientity_condition", "bientity_conditions", actor, power, getPowerFile(), actor, target, actor.getLocation().getBlock(), null, actor.getActiveItem(), null)){
                             if (power == null) continue;
+                            cooldownTick.add(actor);
                             setActive(e.getPlayer(), power.getTag(), true);
                             Actions.biEntityActionType(actor, target, power.getBiEntityAction());
                             Actions.ItemActionType(actor.getActiveItem(), power.getAction("held_item_action"));
@@ -47,6 +50,12 @@ public class ActionOnEntityUse extends CraftPower implements Listener {
                                     setActive(e.getPlayer(), power.getTag(), false);
                                 }
                             }.runTaskLater(GenesisMC.getPlugin(), 2L);
+                            new BukkitRunnable() {
+                                @Override
+                                public void run() {
+                                    cooldownTick.remove(actor);
+                                }
+                            }.runTaskLater(GenesisMC.getPlugin(), 1);
                         }
                     }
                 }

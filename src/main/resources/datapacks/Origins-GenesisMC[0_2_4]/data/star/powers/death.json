@@ -1,5 +1,5 @@
 {
-  "type": "genesis:action_on_death",
+  "type": "origins:action_on_death",
   "entity_action": {
     "type": "origins:and",
     "actions": [

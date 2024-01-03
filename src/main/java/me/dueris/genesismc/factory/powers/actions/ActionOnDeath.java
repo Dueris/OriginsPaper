@@ -30,7 +30,6 @@ public class ActionOnDeath extends CraftPower implements Listener {
     public void d(EntityDeathEvent e) {
         if (e.getEntity() instanceof Player p) {
             if (getPowerArray().contains(p)) {
-                Entity target = p;
                 for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()) {
                     ConditionExecutor executor = GenesisMC.getConditionExecutor();
                     for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
@@ -38,6 +37,9 @@ public class ActionOnDeath extends CraftPower implements Listener {
                         if(executor.check("damage_condition", "damage_conditions", p, power, getPowerFile(), p, null, p.getLocation().getBlock(), null, p.getInventory().getItemInMainHand(), null)){
                             setActive(p, power.getTag(), true);
                             Actions.EntityActionType(p, power.getEntityAction());
+                            if(power.getActionOrNull("bientity_action") != null){
+                                Actions.biEntityActionType(null, p, power.getBiEntityAction());
+                            }
                             new BukkitRunnable() {
                                 @Override
                                 public void run() {
@@ -53,7 +55,7 @@ public class ActionOnDeath extends CraftPower implements Listener {
 
     @Override
     public String getPowerFile() {
-        return "genesis:action_on_death";
+        return "origins:action_on_death";
     }
 
     @Override
