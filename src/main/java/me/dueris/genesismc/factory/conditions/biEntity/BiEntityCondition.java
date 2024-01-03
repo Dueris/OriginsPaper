@@ -2,6 +2,7 @@ package me.dueris.genesismc.factory.conditions.biEntity;
 
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.conditions.Condition;
+import me.dueris.genesismc.factory.powers.player.RestrictArmor;
 import me.dueris.genesismc.utils.PowerContainer;
 import org.bukkit.Bukkit;
 import org.bukkit.Fluid;
@@ -15,6 +16,8 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.RayTraceResult;
+import org.bukkit.util.Vector;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -43,29 +46,23 @@ public class BiEntityCondition implements Condition, Listener {
             case "origins:attack_target" -> {
                 Bukkit.getLogger().warning("origins:attack_target is depreciated for the plugin, for more details msg Dueris");
             }
+            case "origins:distance" -> {
+                @NotNull Vector actorVector = actor.getLocation().toVector();
+                @NotNull Vector targetVector = target.getLocation().toVector();
+                String comparison = condition.get("comparison").toString();
+                double compare_to = Double.parseDouble(condition.get("compare_to").toString());
+                return getResult(inverted, Optional.of(RestrictArmor.compareValues(actorVector.distance(targetVector), comparison, compare_to)));
+            }
             case "origins:attacker" -> {
                 if(!actor.getLastDamageCause().getEntity().isDead()){
                     return getResult(inverted, Optional.of(!in_countdown.contains(actor)));
                 }
             }
             case "origins:can_see" -> {
-                Predicate<Entity> filter = entity -> !entity.equals(p);
-
-                RayTraceResult traceResult = p.getWorld().rayTrace(actor.getLocation(), actor.getLocation().getDirection(), 12, FluidCollisionMode.valueOf(condition.getOrDefault("fluid_handling", "none").toString()), false, 1, filter);
-
-                if(traceResult != null){
-                    if(traceResult.getHitEntity() != null){
-                        Entity entity = traceResult.getHitEntity();
-                        if (entity.isDead() || !(entity instanceof LivingEntity)) return getResult(inverted, Optional.of(false));
-                        if (entity.isInvulnerable()) return getResult(inverted, Optional.of(false));
-                        if (entity.getPassengers().contains(p)) return getResult(inverted, Optional.of(false));
-                            return getResult(inverted, Optional.of(entity.equals(target)));
-                    }else{
-                        return getResult(inverted, Optional.of(false));
-                    }
-                }else{
-                    return getResult(inverted, Optional.of(false));
+                if(actor instanceof Player pl){
+                    return getResult(inverted, Optional.of(pl.canSee(target)));
                 }
+                return getResult(inverted, Optional.of(false));
             }
             case "origins:owner" -> {
                 if(target instanceof Tameable tameable){

@@ -97,6 +97,7 @@ public class Actions {
             serverEn.hurt(Utils.getDamageSource(dmgType), amount);
         }
         if (type.equals("origins:mount")) {
+            System.out.println("jsdlfk");
             target.addPassenger(actor);
         }
         if (type.equals("origins:set_in_love")) {
@@ -120,8 +121,10 @@ public class Actions {
     public static void biEntityActionType(Entity actor, Entity target, JSONObject biEntityAction) {
         JSONObject entityAction = biEntityAction;
         String type = entityAction.get("type").toString();
-        System.out.println(type);
 
+        if (type.equals("origins:invert")){
+            biEntityActionType(target, actor, (JSONObject) biEntityAction.get("action"));
+        }
         if (type.equals("origins:and")) {
             JSONArray andActions = (JSONArray) entityAction.get("actions");
             for (Object actionObj : andActions) {
@@ -164,10 +167,8 @@ public class Actions {
         } else if (type.equals("origins:nothing")) {
             // Literally does nothing
         } else if (type.equals("origins:side")) {
-            String side = entityAction.get("side").toString();
             JSONObject action = (JSONObject) entityAction.get("action");
             runbiEntity(actor, target, action);
-
         } else {
             runbiEntity(actor, target, biEntityAction);
         }
@@ -222,6 +223,7 @@ public class Actions {
         JSONObject entityAction;
         entityAction = power;
         String type = entityAction.get("type").toString();
+        if(entity == null) return;
 
         if (type.equals("origins:modify_inventory")) {
             if (entity instanceof Player player) {
@@ -384,8 +386,8 @@ public class Actions {
             }
         }
         if (type.equals("origins:dismount")){
-            for(Entity entity1 : Bukkit.getWorld(entity.getWorld().getUID()).getEntities()){
-                entity1.getPassengers().remove(entity);
+            for(Entity entity1 : entity.getVehicle().getPassengers()){
+                if(entity1 == entity) entity1.getPassengers().remove(entity);
             }
         }
         if (type.equals("origins:feed")){
@@ -425,7 +427,7 @@ public class Actions {
         }
         if (type.equals("origins:passenger_action")){
             runEntity(entity.getPassenger(), (JSONObject) power.get("action"));
-            runbiEntity(entity, entity.getPassenger(), (JSONObject) power.get("bientity_action"));
+            runbiEntity(entity, entity.getPassenger(), (JSONObject) power.get("action"));
         }
         if (type.equals("origins:raycast")){
             Predicate<Entity> filter = entity1 -> !entity1.equals(entity);
@@ -535,31 +537,20 @@ public class Actions {
         }
         if (type.equals("origins:add_velocity")) {
             float y = 0.0f;
-            float z = 0.0f;
-            float x = 0.0f;
-            boolean set = false;
-
-            if (entityAction.containsKey("x")) x = Float.parseFloat(entityAction.get("x").toString());
-            if(entityAction.containsKey("z")) z = Float.parseFloat(entityAction.get("z").toString());
             if (entityAction.containsKey("y")) y = Float.parseFloat(entityAction.get("y").toString());
 
             if (entity instanceof Player player) {
-                if(x == 0.0f && z == 0.0f){
-                    // y only
-                    Location location = player.getEyeLocation();
-                    @NotNull Vector direction = location.getDirection().normalize();
-                    Vector velocity = direction.multiply(y + 1.8);
-                    player.setVelocity(velocity);
-                }else{
-                    player.setVelocity(new Vector(x, y, z));
-                }
+                Location location = player.getEyeLocation();
+                @NotNull Vector direction = location.getDirection().normalize();
+                Vector velocity = direction.multiply(y + 1.8);
+                player.setVelocity(velocity);
             }
         }
         if (type.equals("origins:execute_command")) {
             final boolean isOp = entity.isOp();
             entity.setOp(true);
             String cmd = null;
-            System.out.println(power.get("command"));
+            if(power.get("command").toString().startsWith("power") || power.get("command").toString().startsWith("/power")) return;
             if(power.get("command").toString().startsWith("/")){
                 cmd = power.get("command").toString().split("/")[1];
             }else{
@@ -727,7 +718,6 @@ public class Actions {
     public static void BlockActionType(Location location, JSONObject power) {
         if (power == null) return;
         String type = power.get("type").toString();
-        System.out.println(type);
 
         if (type.equals("origins:and")) {
             JSONArray andActions = (JSONArray) power.get("actions");
@@ -863,7 +853,7 @@ public class Actions {
         }
         if (type.equals("origins:bonemeal")) {
             Block block = location.getWorld().getBlockAt(location);
-            block.applyBoneMeal(BlockFace.SELF);
+            block.applyBoneMeal(BlockFace.UP);
         }
         if (type.equals("origins:explode")) {
 

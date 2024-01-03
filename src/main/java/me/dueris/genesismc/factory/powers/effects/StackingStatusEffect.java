@@ -74,7 +74,6 @@ public class StackingStatusEffect extends CraftPower implements Listener {
             PotionEffectType potionEffectType = getPotionEffectType(effect.get("effect").toString());
             if (potionEffectType != null) {
                 try {
-                    System.out.println(potionEffectType.key());
                     player.addPotionEffect(new PotionEffect(potionEffectType, 50, 1, false, false, false));
                 } catch (Exception e) {
                     e.printStackTrace();

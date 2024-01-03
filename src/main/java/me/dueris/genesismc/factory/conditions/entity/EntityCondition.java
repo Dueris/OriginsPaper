@@ -460,6 +460,20 @@ public class EntityCondition implements Condition {
             case "origins:exists" -> {
                 return getResult(inverted, Optional.of(entity != null));
             }
+            case "origins:elytra_flight_possible" -> {
+                boolean hasElytraPower = FlightElytra.elytra.contains(entity);
+                boolean hasElytraEquipment = false;
+                if(entity instanceof LivingEntity li){
+                    for(ItemStack item : li.getEquipment().getArmorContents()){
+                        if(hasElytraEquipment) break;
+                        if(item == null) continue;
+                        if(item.getType().equals(Material.ELYTRA)){
+                            hasElytraEquipment = true;
+                        }
+                    }
+                }
+                return getResult(inverted, Optional.of(hasElytraPower || hasElytraEquipment));
+            }
             case "origins:fall_distance" -> {
                 return getResult(inverted, Optional.of(RestrictArmor.compareValues(entity.getFallDistance(), condition.get("comparison").toString(), Double.parseDouble(condition.get("compare_to").toString()))));
             }
@@ -514,13 +528,12 @@ public class EntityCondition implements Condition {
                 if(condition.get("block_condition") == null){
                     return getResult(inverted, Optional.of(entity.isOnGround()));
                 }else{
-                    Optional boolB = blockCondition.check((HashMap<String, Object>) condition.get("block_condition"), p, power, powerfile, entity, target, entity.getLocation().add(0, -1, 0).getBlock(), fluid, itemStack, entityDamageEvent);
+                    Optional<Boolean> boolB = blockCondition.check((HashMap<String, Object>) condition.get("block_condition"), p, power, powerfile, entity, target, entity.getLocation().add(0, -1, 0).getBlock(), fluid, itemStack, entityDamageEvent);
                     if(boolB.isPresent()){
-                        if(boolB.get().equals(true)){
-                            return getResult(inverted, Optional.of(entity.isOnGround()));
-                        }
+                        return getResult(inverted, Optional.of(boolB.get() && entity.isOnGround()));
                     }
                 }
+                return getResult(inverted, Optional.of(false));
             }
             case "origins:passenger" -> {
                 for(Entity entity1 : entity.getWorld().getEntities()){

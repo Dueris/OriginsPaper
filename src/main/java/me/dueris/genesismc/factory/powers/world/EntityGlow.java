@@ -53,12 +53,25 @@ public class EntityGlow extends CraftPower {
                 for (Entity entity : entitiesWithinRadius) {
                     ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                     for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-                        if (conditionExecutor.check("condition", "conditions", p, power, "origins:entity_glow", p, entity, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
-                            CraftPlayer craftPlayer = (CraftPlayer) p;
-                            MobEffect effect = MobEffects.GLOWING;
-                            craftPlayer.getHandle().connection.send(new ClientboundUpdateMobEffectPacket(entity.getEntityId(), new MobEffectInstance(effect, 60, 2, false, false, false)));
-                            setActive(p, power.getTag(), true);
+                        if (conditionExecutor.check("condition", "conditions", p, power, getPowerFile(), p, entity, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
+                            if(conditionExecutor.check("bientity_condition", "bientity_conditions", p, power, getPowerFile(), p, entity, p.getLocation().getBlock(), null, p.getActiveItem(), null)){
+                                CraftPlayer craftPlayer = (CraftPlayer) p;
+//                                MobEffect effect = MobEffects.GLOWING;
+//                                craftPlayer.getHandle().connection.send(new ClientboundUpdateMobEffectPacket(entity.getEntityId(), new MobEffectInstance(effect, 60, 2, false, false, false)));
+                                if(!entity.isGlowing()){
+                                    entity.setGlowing(true);
+                                }
+                                setActive(p, power.getTag(), true);
+                            } else {
+                                if(entity.isGlowing()){
+                                    entity.setGlowing(false);
+                                }
+                                setActive(p, power.getTag(), false);
+                            }
                         } else {
+                            if(entity.isGlowing()){
+                                entity.setGlowing(false);
+                            }
                             setActive(p, power.getTag(), false);
                         }
                     }

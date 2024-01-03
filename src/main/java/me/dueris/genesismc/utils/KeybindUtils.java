@@ -1,5 +1,6 @@
 package me.dueris.genesismc.utils;
 
+import com.destroystokyo.paper.event.player.PlayerJumpEvent;
 import me.dueris.genesismc.CooldownManager;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.events.KeybindTriggerEvent;
@@ -222,6 +223,18 @@ public class KeybindUtils implements Listener {
                 }
             }.runTaskLater(GenesisMC.getPlugin(), 1);
         }
+    }
+
+    @EventHandler
+    public void jump(PlayerJumpEvent e){
+        KeybindTriggerEvent tE = new KeybindTriggerEvent(e.getPlayer(), "key.jump");
+        tE.callEvent();
+    }
+
+    @EventHandler
+    public void sneak(PlayerToggleSneakEvent e){
+        KeybindTriggerEvent tE = new KeybindTriggerEvent(e.getPlayer(), "key.sneak");
+        tE.callEvent();
     }
 
     @EventHandler

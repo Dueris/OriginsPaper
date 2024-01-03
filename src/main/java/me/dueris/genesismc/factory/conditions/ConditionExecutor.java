@@ -24,6 +24,7 @@ import org.bukkit.inventory.ItemStack;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
+import javax.swing.text.html.Option;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
@@ -69,56 +70,60 @@ public class ConditionExecutor {
                 return getResult(invert, Optional.of(Boolean.valueOf(powers_active.get(p).getOrDefault(powerF, false)))).get();
             }
         } else {
-            boolean subConditionResult = false;
+            Optional<Boolean> booleanOptional = Optional.empty();
 
-            if (dmgevent != null) {
+            if (!booleanOptional.isPresent() && dmgevent != null) {
                 var check = damageCondition.check(subCondition, p, power, powerfile, actor, target, block, fluid, itemStack, dmgevent);
                 if (check.isPresent()) {
-                    subConditionResult = (boolean) check.get();
+                    booleanOptional = check;
                 }
             }
 
-            if (!subConditionResult && actor != null) {
+            if (!booleanOptional.isPresent() && actor != null) {
                 var check = entityCondition.check(subCondition, p, power, powerfile, actor, target, block, fluid, itemStack, dmgevent);
                 if (check.isPresent()) {
-                    subConditionResult = (boolean) check.get();
+                    booleanOptional = check;
                 }
             }
 
-            if (!subConditionResult && actor != null && target != null) {
+            if (!booleanOptional.isPresent() && actor != null && target != null) {
                 var check = biEntityCondition.check(subCondition, p, power, powerfile, actor, target, block, fluid, itemStack, dmgevent);
                 if (check.isPresent()) {
-                    subConditionResult = (boolean) check.get();
+                    booleanOptional = check;
                 }
             }
 
-            if (!subConditionResult && block != null) {
+            if (!booleanOptional.isPresent() && block != null) {
                 var check = blockCondition.check(subCondition, p, power, powerfile, actor, target, block, fluid, itemStack, dmgevent);
                 if (check.isPresent()) {
-                    subConditionResult = (boolean) check.get();
+                    booleanOptional = check;
                 }
                 
                 var check2 = biomeCondition.check(subCondition, p, power, powerfile, actor, target, block, fluid, itemStack, dmgevent);
                 if (check2.isPresent()) {
-                    subConditionResult = (boolean) check2.get();
+                    booleanOptional = check;
                 }
             }
 
-            if (!subConditionResult && fluid != null) {
+            if (!booleanOptional.isPresent() && fluid != null) {
                 var check = fluidCondition.check(subCondition, p, power, powerfile, actor, target, block, fluid, itemStack, dmgevent);
                 if (check.isPresent()) {
-                    subConditionResult = (boolean) check.get();
+                    booleanOptional = check;
                 }
             }
 
-            if (!subConditionResult && itemStack != null) {
+            if (!booleanOptional.isPresent() && itemStack != null) {
                 var check = itemCondition.check(subCondition, p, power, powerfile, actor, target, block, fluid, itemStack, dmgevent);
                 if (check.isPresent()) {
-                    subConditionResult = (boolean) check.get();
+                    booleanOptional = check;
                 }
             }
 
-            return subConditionResult;
+            if(!booleanOptional.isPresent()){
+                return true;
+            }else{
+                return booleanOptional.get();
+            }
         }
         return false;
     }

@@ -10,6 +10,8 @@ import me.dueris.genesismc.utils.LayerContainer;
 import me.dueris.genesismc.utils.OriginContainer;
 import me.dueris.genesismc.utils.PowerContainer;
 import org.bukkit.*;
+import org.bukkit.craftbukkit.v1_20_R3.entity.CraftHumanEntity;
+import org.bukkit.craftbukkit.v1_20_R3.entity.CraftLivingEntity;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -94,57 +96,12 @@ public class FlightElytra extends CraftPower implements Listener {
 
     @EventHandler
     public void onBoost(PlayerInteractEvent event) {
-        if(getPowerArray().contains(event.getPlayer())){
-            Player player = event.getPlayer();
-            Action action = event.getAction();
-    
-            if (!player.isGliding()) return;
-    
-            if (action != Action.RIGHT_CLICK_AIR) return;
-    
-            ItemStack handItem = player.getInventory().getItemInMainHand();
-            if(handItem.getType().equals(Material.FIREWORK_ROCKET)){
-                launchElytra(player, 1.75F);
-                if (player.getGameMode() != GameMode.CREATIVE){handItem.setAmount(handItem.getAmount() - 1);}
-                player.playSound(player.getLocation(), Sound.ENTITY_FIREWORK_ROCKET_LAUNCH, 10, 1);
-        
-                int totalTicks = 10;
-                long interval = 1L;
-        
-                new BukkitRunnable() {
-                    int ticksRemaining = totalTicks;
-        
-                    @Override
-                    public void run() {
-                        if (ticksRemaining > 0) {
-                            player.getWorld().spawnParticle(Particle.FIREWORKS_SPARK, player.getLocation(), 1, 1, 1, 1);
-                            ticksRemaining--;
-                        } else {
-                            cancel();
-                        }
-                    }
-                }.runTaskTimer(GenesisMC.getPlugin(), 0L, interval);
-        
-                event.setCancelled(true);
-            }
-        }
-    }
-
-    @EventHandler
-    public void ElytraDamageHandler(EntityDamageEvent e) {
-        if (e.getEntity() instanceof Player p) {
-            if (elytra.contains(p)) {
-                if (glidingPlayers.contains(p)) {
-                    if (e.getCause().equals(EntityDamageEvent.DamageCause.FLY_INTO_WALL) || e.getCause().equals(EntityDamageEvent.DamageCause.CONTACT)) {
-                        e.setDamage(e.getDamage() * 0.25);
-                    }
-                }
-            }
-            if (more_kinetic_damage.contains(p)) {
-                if (!glidingPlayers.contains(p)) {
-                    if (e.getCause().equals(EntityDamageEvent.DamageCause.FLY_INTO_WALL) || e.getCause().equals(EntityDamageEvent.DamageCause.CONTACT) || e.getCause().equals(EntityDamageEvent.DamageCause.FALL)) {
-                        e.setDamage(e.getDamage() * 1.5);
-                    }
+        if (event.getAction() == Action.RIGHT_CLICK_AIR) {
+            if (event.getItem().getType().equals(Material.FIREWORK_ROCKET)) {
+                if (elytra.contains(event.getPlayer()) && glidingPlayers.contains(event.getPlayer().getUniqueId())) {
+                    event.getPlayer().fireworkBoost(event.getItem());
+                    if (!event.getPlayer().getGameMode().equals(GameMode.CREATIVE))
+                        event.getItem().setAmount(event.getItem().getAmount() - 1);
                 }
             }
         }

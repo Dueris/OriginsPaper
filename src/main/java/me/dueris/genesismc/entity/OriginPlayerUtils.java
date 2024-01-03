@@ -398,6 +398,7 @@ public class OriginPlayerUtils {
         ArrayList<String> powerRemovedTypes = new ArrayList<>();
         ArrayList<Class<? extends CraftPower>> powerRemovedClasses = new ArrayList<>();
         for (PowerContainer power : powerContainer.get(player).get(layer)) {
+            if(power == null) continue;
             for (Class<? extends CraftPower> c : CraftPower.getRegistered()) {
                 CraftPower craftPower = null;
                 try {

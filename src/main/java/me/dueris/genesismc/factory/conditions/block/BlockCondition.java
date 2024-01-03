@@ -36,7 +36,7 @@ public class BlockCondition implements Condition {
     @Override
     @SuppressWarnings("index out of bounds")
     public Optional<Boolean> check(HashMap<String, Object> condition, Player p, PowerContainer power, String powerfile, Entity actor, Entity target, Block block, Fluid fluid, ItemStack itemStack, EntityDamageEvent entityDamageEvent) {
-        if (condition.isEmpty()) return Optional.empty();
+        if (condition.isEmpty() || condition == null) return Optional.empty();
         if (condition.get("type") == null) return Optional.empty();
         if (block == null) return Optional.empty();
         if (block.getType() == null) return Optional.empty();
@@ -71,28 +71,32 @@ public class BlockCondition implements Condition {
                     return getResult(inverted, Optional.of(false));
                 }
             }
-            case "origins:adjacent" -> {
-                String comparison = condition.get("comparison").toString();
-                float compare_to = Float.parseFloat(condition.get("compare_to").toString());
-                int matchingADJCount = 0;
-    
-                for(int xOFF = -1; xOFF <= 1; xOFF++){
-                    for(int yOFF = -1; yOFF <= 1; yOFF++){
-                        for(int zOFF = -1; zOFF <= 1; zOFF++){
-                            if(xOFF == 0 && yOFF == 0 && zOFF == 0){
-                                continue;
-                            }
-                            Block adBlock = block.getRelative(xOFF, yOFF, zOFF);
-                            BlockCondition blockCondition = ConditionExecutor.blockCondition;
-                            if(blockCondition.check((HashMap<String, Object>) condition.get("adjacent_condition"), p, power, powerfile, actor, target, adBlock, fluid, itemStack, entityDamageEvent).isPresent() && blockCondition.check(condition, p, power, powerfile, actor, target, adBlock, fluid, itemStack, entityDamageEvent).get()){
-                                matchingADJCount++;
-                            }
-                        }
-                    }
-                }
-    
-                return Optional.of(RestrictArmor.compareValues(matchingADJCount, comparison, compare_to));
-            }
+//            case "origins:adjacent" -> {
+//                String comparison = condition.get("comparison").toString();
+//                float compare_to = Float.parseFloat(condition.get("compare_to").toString());
+//                int matchingADJCount = 0;
+//
+//                for(int xOFF = -1; xOFF <= 1; xOFF++){
+//                    for(int yOFF = -1; yOFF <= 1; yOFF++){
+//                        for(int zOFF = -1; zOFF <= 1; zOFF++){
+//                            if(xOFF == 0 && yOFF == 0 && zOFF == 0){
+//                                continue;
+//                            }
+//                            if(condition.get("adjacent_condition") != null){
+//                                Block adBlock = block.getRelative(xOFF, yOFF, zOFF);
+//                                BlockCondition blockCondition = ConditionExecutor.blockCondition;
+//                                if(blockCondition.check((HashMap<String, Object>) condition.get("adjacent_condition"), p, power, powerfile, actor, target, adBlock, fluid, itemStack, entityDamageEvent).isPresent() && blockCondition.check(condition, p, power, powerfile, actor, target, adBlock, fluid, itemStack, entityDamageEvent).get()){
+//                                    matchingADJCount++;
+//                                }
+//                            }else{
+//                                matchingADJCount++;
+//                            }
+//                        }
+//                    }
+//                }
+//
+//                return Optional.of(RestrictArmor.compareValues(matchingADJCount, comparison, compare_to));
+//            }
             case "origins:attachable" -> {
                 if(block != null && block.getType() != Material.AIR){
                     Block[] adjBlcs = new Block[]{
