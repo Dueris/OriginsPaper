@@ -46,7 +46,6 @@ public class ModifySwimSpeedPower extends CraftPower {
                 ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                 for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                     if (conditionExecutor.check("condition", "conditions", p, power, "origins:modify_swim_speed", p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
-                        if (valueModifyingSuperClass.getPersistentAttributeContainer(p, MODIFYING_KEY) == -1) return;
                         if (!p.isSwimming()) return;
                         // Change to use dolphins grace for easier
                         // Vector swimVelocity = p.getLocation().getDirection().normalize().multiply(valueModifyingSuperClass.getPersistentAttributeContainer(p, MODIFYING_KEY));
@@ -59,7 +58,7 @@ public class ModifySwimSpeedPower extends CraftPower {
                             ampl = 10;
                         }
                         p.addPotionEffect(
-                            new PotionEffect(PotionEffectType.DOLPHINS_GRACE, 100, ampl, false, false)
+                            new PotionEffect(PotionEffectType.DOLPHINS_GRACE, 100, ampl, false, false, false)
                         );
                         setActive(p, power.getTag(), true);
                     } else {
@@ -94,7 +93,7 @@ public class ModifySwimSpeedPower extends CraftPower {
                         String operation = modifier.get("operation").toString();
                         BinaryOperator mathOperator = getOperationMappingsFloat().get(operation);
                         if (mathOperator != null) {
-                            float result = (float) mathOperator.apply(valueModifyingSuperClass.getDefaultValue(MODIFYING_KEY), value);
+                            float result = (float) mathOperator.apply(1, value);
                             valueModifyingSuperClass.saveValueInPDC(p, MODIFYING_KEY, result);
                         } else {
                             Bukkit.getLogger().warning(LangConfig.getLocalizedString(p, "powers.errors.value_modifier_save").replace("%modifier%", MODIFYING_KEY));

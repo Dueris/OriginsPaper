@@ -5,6 +5,7 @@ import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.factory.powers.FlightHandler;
 import me.dueris.genesismc.factory.powers.Overlay;
 import me.dueris.genesismc.factory.powers.actions.ActionOverTime;
+import me.dueris.genesismc.factory.powers.effects.StackingStatusEffect;
 import me.dueris.genesismc.factory.powers.player.Gravity;
 import me.dueris.genesismc.factory.powers.player.Invisibility;
 import me.dueris.genesismc.factory.powers.player.RestrictArmor;

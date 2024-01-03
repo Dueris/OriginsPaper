@@ -6,6 +6,7 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -52,7 +53,7 @@ public class ValueModifyingSuperClass extends BukkitRunnable implements Listener
                 } else {
                     saveValueInPDC(p, "modify_air_speed", 0.1f);
                     saveValueInPDC(p, "modify_break_speed", 0.1f);
-                    saveValueInPDC(p, "modify_swim_speed", -1f);
+                    saveValueInPDC(p, "modify_swim_speed", 1f);
                 }
             }
         }.runTaskLater(GenesisMC.getPlugin(), 4);
@@ -60,7 +61,22 @@ public class ValueModifyingSuperClass extends BukkitRunnable implements Listener
 
     @EventHandler
     public void ORIGINCHANGE(OriginChangeEvent e) {
-        runModifierChanges(e.getPlayer());
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                runModifierChanges(e.getPlayer());
+            }
+        }.runTaskLater(GenesisMC.getPlugin(), 5);
+    }
+
+    @EventHandler
+    public void ORIGINCHANGE(PlayerJoinEvent e) {
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                runModifierChanges(e.getPlayer());
+            }
+        }.runTaskLater(GenesisMC.getPlugin(), 5);
     }
 
     public Float getPersistentAttributeContainer(Player player, String key) {
@@ -85,7 +101,7 @@ public class ValueModifyingSuperClass extends BukkitRunnable implements Listener
             case "modify_break_speed":
                 return 0.1f;
             case "modify_swim_speed":
-                return -1f;
+                return 1f;
             default:
                 return 0f;
         }

@@ -170,10 +170,10 @@ public class PowerContainer implements Serializable {
     /**
      * @return The value "strength" from the power file
      */
-    public Double getStrength() {
+    public Long getStrength() {
         Object render = powerFile.get("strength");
-        if (render == null) return 1.3;
-        return (double) render;
+        if (render == null) return 1l;
+        return (long) render;
     }
 
     public String getModelRenderType() {
