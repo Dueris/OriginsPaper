@@ -11,16 +11,26 @@ group = 'me.dueris'
 version = 'mc1.20-v0.2.6'
 
 publishing {
-    repositories {
-        mavenLocal()
-    }
-    publications {
-        maven(MavenPublication) {
-            artifactId = 'genesis-origin'
-            from components.java
+    publications.create<MavenPublication>("genesismc") {
+        artifact(tasks.generateDevelopmentBundle) {
+            groupId = "io.github.dueris"
+            artifactId = "genesismc"
         }
     }
-}
+    repositories {
+        maven {
+            name = "sonatype"
+            if (version.toString().endsWith("SNAPSHOT")) {
+                url = uri("https://s01.oss.sonatype.org/content/repositories/snapshots/")
+            } else {
+                url = uri("https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/")
+            }
+            credentials {
+                username=System.getenv("OSSRH_USERNAME")
+                password=System.getenv("OSSRH_PASSWORD")
+            }
+        }
+    }
 
 sourceCompatibility = JavaVersion.VERSION_17
 targetCompatibility = JavaVersion.VERSION_17
