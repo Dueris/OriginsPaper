@@ -10,7 +10,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import static me.dueris.genesismc.choosing.ChoosingCORE.choosing;
+import static me.dueris.genesismc.choosing.ChoosingMain.choosing;
 import static me.dueris.genesismc.choosing.contents.MainMenuContents.GenesisMainMenuContents;
 
 public class ChoosingGUI extends BukkitRunnable {

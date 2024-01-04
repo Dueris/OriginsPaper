@@ -1,7 +1,7 @@
 package me.dueris.genesismc.factory.powers.player.attributes;
 
 import me.dueris.genesismc.GenesisMC;
-import me.dueris.genesismc.choosing.ChoosingCORE;
+import me.dueris.genesismc.choosing.ChoosingMain;
 import me.dueris.genesismc.entity.OriginPlayerUtils;
 import me.dueris.genesismc.events.AttributeExecuteEvent;
 import me.dueris.genesismc.events.OriginChangeEvent;
@@ -74,7 +74,7 @@ public class AttributeHandler extends CraftPower implements Listener {
     @EventHandler
     public void respawn(PlayerRespawnEvent e){
         Player p = e.getPlayer();
-        ChoosingCORE.setAttributesToDefault(p);
+        ChoosingMain.setAttributesToDefault(p);
         new BukkitRunnable() {
             @Override
             public void run() {
@@ -136,7 +136,7 @@ public class AttributeHandler extends CraftPower implements Listener {
     @EventHandler
     public void ExecuteAttributeModification(OriginChangeEvent e) {
         Player p = e.getPlayer();
-        ChoosingCORE.setAttributesToDefault(p);
+        ChoosingMain.setAttributesToDefault(p);
         new BukkitRunnable() {
             @Override
             public void run() {

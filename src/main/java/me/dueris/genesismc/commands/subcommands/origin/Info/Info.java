@@ -26,8 +26,8 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import static me.dueris.genesismc.choosing.ChoosingCORE.itemProperties;
-import static me.dueris.genesismc.choosing.ChoosingCUSTOM.cutStringIntoLists;
+import static me.dueris.genesismc.choosing.ChoosingMain.itemProperties;
+import static me.dueris.genesismc.choosing.ChoosingCustomOrigins.cutStringIntoLists;
 import static me.dueris.genesismc.items.OrbOfOrigins.orb;
 import static me.dueris.genesismc.utils.BukkitColour.RED;
 

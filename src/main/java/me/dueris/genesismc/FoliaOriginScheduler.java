@@ -1,5 +1,6 @@
 package me.dueris.genesismc;
 
+import me.dueris.genesismc.commands.OriginCommand;
 import me.dueris.genesismc.entity.OriginPlayerUtils;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.factory.powers.FlightHandler;
@@ -13,10 +14,13 @@ import me.dueris.genesismc.factory.powers.player.damage.Burn;
 import me.dueris.genesismc.factory.powers.player.damage.DamageOverTime;
 import me.dueris.genesismc.factory.powers.prevent.PreventEntityRender;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
+
+import com.destroystokyo.paper.event.server.ServerTickEndEvent;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -58,6 +62,8 @@ public class FoliaOriginScheduler {
         delay = getOneIfNotPositive(delay);
         return runnable.runTaskTimer(GenesisMC.getPlugin(), delay, period);
     }
+
+    public static ArrayList<Class<? extends CraftPower>> activePowerRunners = new ArrayList<>();
 
     public static class OriginSchedulerTree extends BukkitRunnable implements Listener {
 
@@ -106,6 +112,7 @@ public class FoliaOriginScheduler {
                         } else if(c.newInstance() instanceof PreventEntityRender) {
                             ((PreventEntityRender) c.newInstance()).run(p, ticksEMap);
                         } else {
+                            activePowerRunners.add(c);
                             c.newInstance().run(p);
                         }
 

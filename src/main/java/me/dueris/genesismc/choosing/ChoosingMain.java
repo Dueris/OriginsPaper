@@ -39,7 +39,7 @@ import static me.dueris.genesismc.utils.BukkitColour.AQUA;
 import static org.bukkit.Bukkit.getServer;
 import static org.bukkit.ChatColor.GRAY;
 
-public class ChoosingCORE implements Listener {
+public class ChoosingMain implements Listener {
 
     public static HashMap<Player, LayerContainer> choosing = new HashMap<>();
 

@@ -1,8 +1,8 @@
 package me.dueris.genesismc;
 
 import io.papermc.paper.event.player.PlayerFailMoveEvent;
-import me.dueris.genesismc.choosing.ChoosingCORE;
-import me.dueris.genesismc.choosing.ChoosingCUSTOM;
+import me.dueris.genesismc.choosing.ChoosingMain;
+import me.dueris.genesismc.choosing.ChoosingCustomOrigins;
 import me.dueris.genesismc.choosing.ChoosingGUI;
 import me.dueris.genesismc.commands.OriginCommand;
 import me.dueris.genesismc.commands.PowerCommand;
@@ -255,7 +255,16 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         );
         Bukkit.getServer().getConsoleSender().sendMessage("");
         if(debugOrigins){
-            Debug.executeGenesisDebug();
+            Bukkit.getServer().getConsoleSender().sendMessage("* (-debugOrigins={true}) || BEGINNING DEBUG {");
+            Bukkit.getServer().getConsoleSender().sendMessage("  - Loaded @1 powers".replace("@1", String.valueOf(CraftPower.getRegistered().toArray().length)));
+            Bukkit.getServer().getConsoleSender().sendMessage("  - Loaded @2 origins = [".replace("@2", String.valueOf(CraftApoli.getOrigins().toArray().length)));
+                for(OriginContainer originContainer : CraftApoli.getOrigins()){
+                    Bukkit.getServer().getConsoleSender().sendMessage("     () -> {@3}".replace("@3", originContainer.getTag()));
+                }
+            Bukkit.getServer().getConsoleSender().sendMessage("  ]");
+            Bukkit.getServer().getConsoleSender().sendMessage("  - Power thread starting with {originScheduler}".replace("originScheduler", GenesisMC.scheduler.toString()));
+            Bukkit.getServer().getConsoleSender().sendMessage("  - Lang testing = {true}");
+            Bukkit.getServer().getConsoleSender().sendMessage("}");
         }
         Bukkit.getLogger().info("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
         // Shutdown executor, we dont need it anymore
@@ -414,8 +423,8 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         getServer().getPluginManager().registerEvents(new Anvil(), this);
         getServer().getPluginManager().registerEvents(new WaterProtBookGen(), this);
         getServer().getPluginManager().registerEvents(new KeybindUtils(), this);
-        getServer().getPluginManager().registerEvents(new ChoosingCORE(), this);
-        getServer().getPluginManager().registerEvents(new ChoosingCUSTOM(), this);
+        getServer().getPluginManager().registerEvents(new ChoosingMain(), this);
+        getServer().getPluginManager().registerEvents(new ChoosingCustomOrigins(), this);
         getServer().getPluginManager().registerEvents(new Recipe(), this);
         getServer().getPluginManager().registerEvents(new Info(), this);
         getServer().getPluginManager().registerEvents(new EventListeners(), this);

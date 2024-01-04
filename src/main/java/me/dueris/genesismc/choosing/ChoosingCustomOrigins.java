@@ -27,14 +27,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import static me.dueris.genesismc.choosing.ChoosingCORE.*;
+import static me.dueris.genesismc.choosing.ChoosingMain.*;
 import static me.dueris.genesismc.choosing.contents.ChooseMenuContents.ChooseMenuContent;
 import static me.dueris.genesismc.choosing.contents.MainMenuContents.GenesisMainMenuContents;
 import static me.dueris.genesismc.factory.powers.Power.phasing;
 import static me.dueris.genesismc.items.OrbOfOrigins.orb;
 import static org.bukkit.ChatColor.RED;
 
-public class ChoosingCUSTOM implements Listener {
+public class ChoosingCustomOrigins implements Listener {
 
     public static List<String> cutStringIntoLists(String string) {
         ArrayList<String> strings = new ArrayList<>();

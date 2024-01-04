@@ -23,7 +23,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
-import static me.dueris.genesismc.choosing.ChoosingCORE.itemProperties;
+import static me.dueris.genesismc.choosing.ChoosingMain.itemProperties;
 import static me.dueris.genesismc.files.GenesisDataFiles.getMainConfig;
 import static me.dueris.genesismc.files.GenesisDataFiles.getOrbCon;
 import static me.dueris.genesismc.utils.BukkitColour.RED;

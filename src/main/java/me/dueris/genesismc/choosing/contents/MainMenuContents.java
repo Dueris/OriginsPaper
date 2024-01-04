@@ -18,8 +18,8 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 
-import static me.dueris.genesismc.choosing.ChoosingCORE.*;
-import static me.dueris.genesismc.choosing.ChoosingCUSTOM.cutStringIntoLists;
+import static me.dueris.genesismc.choosing.ChoosingMain.*;
+import static me.dueris.genesismc.choosing.ChoosingCustomOrigins.cutStringIntoLists;
 import static me.dueris.genesismc.items.OrbOfOrigins.orb;
 import static org.bukkit.ChatColor.*;
 

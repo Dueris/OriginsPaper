@@ -118,7 +118,6 @@ public class Anvil implements Listener {
         net.minecraft.world.item.ItemStack stack = CraftItemStack.asNMSCopy(item);
         stack.enchant(eimpl, lvl);
     }
-    
 
     private static String numberToRomanNum(int lvl){
         if(lvl > 10){

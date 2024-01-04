@@ -1,7 +1,6 @@
 package me.dueris.genesismc.enchantments;
 
 import io.papermc.paper.enchantments.EnchantmentRarity;
-import me.dueris.genesismc.GenesisMC;
 import net.kyori.adventure.text.Component;
 import org.bukkit.NamespacedKey;
 import org.bukkit.enchantments.Enchantment;

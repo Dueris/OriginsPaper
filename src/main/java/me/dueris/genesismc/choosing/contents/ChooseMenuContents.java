@@ -18,8 +18,8 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 
-import static me.dueris.genesismc.choosing.ChoosingCORE.itemProperties;
-import static me.dueris.genesismc.choosing.ChoosingCUSTOM.cutStringIntoLists;
+import static me.dueris.genesismc.choosing.ChoosingMain.itemProperties;
+import static me.dueris.genesismc.choosing.ChoosingCustomOrigins.cutStringIntoLists;
 
 public class ChooseMenuContents {
 
