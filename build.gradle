@@ -10,7 +10,7 @@ apply plugin: 'maven-publish'
 group = 'me.dueris'
 version = 'mc1.20-v0.2.6'
 
-publishing {
+/*publishing {
     publications.create<MavenPublication>("genesismc") {
         artifact(tasks.generateDevelopmentBundle) {
             groupId = "io.github.dueris"
@@ -31,7 +31,7 @@ publishing {
             }
         }
     }
-}
+}*/
 
 sourceCompatibility = JavaVersion.VERSION_17
 targetCompatibility = JavaVersion.VERSION_17
