@@ -32,6 +32,8 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.BoundingBox;
 import org.bukkit.util.RayTraceResult;
+import org.bukkit.util.Vector;
+import org.jetbrains.annotations.NotNull;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -459,6 +461,13 @@ public class EntityCondition implements Condition {
             }
             case "origins:exists" -> {
                 return getResult(inverted, Optional.of(entity != null));
+            }
+            case "origins:distance_from_spawn" -> {
+                @NotNull Vector actorVector = entity.getLocation().toVector();
+                @NotNull Vector targetVector = entity.getWorld().getSpawnLocation().toVector();
+                String comparison = condition.get("comparison").toString();
+                double compare_to = Double.parseDouble(condition.get("compare_to").toString());
+                return getResult(inverted, Optional.of(RestrictArmor.compareValues(actorVector.distance(targetVector), comparison, compare_to)));
             }
             case "origins:elytra_flight_possible" -> {
                 boolean hasElytraPower = FlightElytra.elytra.contains(entity);

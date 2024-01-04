@@ -54,14 +54,6 @@ public class BiEntityCondition implements Condition, Listener {
                 double compare_to = Double.parseDouble(condition.get("compare_to").toString());
                 return getResult(inverted, Optional.of(RestrictArmor.compareValues(actorVector.distance(targetVector), comparison, compare_to)));
             }
-            case "origins:attacker" -> {
-                if(!target.isDead()){
-                    if(in_countdown.get(actor) != null){
-                        return getResult(inverted, Optional.of(in_countdown.get(actor).contains(target)));
-                    }
-                }
-                return getResult(inverted, Optional.of(false));
-            }
             case "origins:can_see" -> {
                 if(actor instanceof Player pl){
                     return getResult(inverted, Optional.of(pl.canSee(target)));
@@ -97,27 +89,5 @@ public class BiEntityCondition implements Condition, Listener {
             }
         }
         return getResult(inverted, Optional.empty());
-    }
-
-    HashMap<Player, ArrayList<Entity>> in_countdown = new HashMap<>();
-
-    @EventHandler
-    public void counter(EntityDamageByEntityEvent e){
-        if(!e.getEntity().isDead() && e.getDamager() instanceof Player p){
-            ArrayList en = new ArrayList<>();
-            en.add(e.getEntity());
-            in_countdown.get(p).add(e.getEntity());
-            new BukkitRunnable() {
-                @Override
-                public void run() {
-                    in_countdown.remove(p, en);
-                }
-            }.runTaskLater(GenesisMC.getPlugin(), 100);
-        }
-    }
-
-    @EventHandler
-    public void countSet(PlayerJoinEvent e){
-        in_countdown.put(e.getPlayer(), new ArrayList<>());
     }
 }

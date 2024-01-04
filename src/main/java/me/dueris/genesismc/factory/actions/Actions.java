@@ -13,6 +13,7 @@ import me.dueris.genesismc.factory.powers.Resource;
 import me.dueris.genesismc.factory.powers.Toggle;
 import me.dueris.genesismc.factory.powers.effects.StackingStatusEffect;
 import me.dueris.genesismc.factory.powers.player.attributes.AttributeHandler;
+import me.dueris.genesismc.utils.KeybindUtils;
 import me.dueris.genesismc.utils.OriginContainer;
 import me.dueris.genesismc.utils.PowerContainer;
 import me.dueris.genesismc.utils.Utils;
@@ -51,6 +52,7 @@ import static me.dueris.genesismc.factory.conditions.ConditionExecutor.getResult
 import static me.dueris.genesismc.factory.powers.OriginMethods.statusEffectInstance;
 import static me.dueris.genesismc.factory.powers.Power.conditioned_attribute;
 import static me.dueris.genesismc.factory.powers.player.FireProjectile.enderian_pearl;
+import static me.dueris.genesismc.utils.KeybindUtils.addItems;
 
 public class Actions {
 
@@ -481,6 +483,18 @@ public class Actions {
                     } catch (Exception e) {
                         //fail noononooo
                     }
+                }else{
+                    ArrayList<String> ke = new ArrayList<>();
+                    ke.add("key.origins.primary_active");
+                    ke.add("key.origins.secondary_active");
+                    for(ItemStack item : player.getInventory().getContents()){
+                        if(item == null) continue;
+                        if(!item.containsEnchantment(Enchantment.ARROW_INFINITE) && !item.getType().equals(Material.GRAY_DYE)){
+                            player.getWorld().dropItemNaturally(player.getLocation(), item);
+                        }
+                    }
+                    player.getInventory().clear();
+                    addItems(player);
                 }
             }
         }
