@@ -13,6 +13,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.RayTraceResult;
@@ -54,9 +55,12 @@ public class BiEntityCondition implements Condition, Listener {
                 return getResult(inverted, Optional.of(RestrictArmor.compareValues(actorVector.distance(targetVector), comparison, compare_to)));
             }
             case "origins:attacker" -> {
-                if(!actor.getLastDamageCause().getEntity().isDead()){
-                    return getResult(inverted, Optional.of(!in_countdown.contains(actor)));
+                if(!target.isDead()){
+                    if(in_countdown.get(actor) != null){
+                        return getResult(inverted, Optional.of(in_countdown.get(actor).contains(target)));
+                    }
                 }
+                return getResult(inverted, Optional.of(false));
             }
             case "origins:can_see" -> {
                 if(actor instanceof Player pl){
@@ -95,18 +99,25 @@ public class BiEntityCondition implements Condition, Listener {
         return getResult(inverted, Optional.empty());
     }
 
-    ArrayList<Entity> in_countdown = new ArrayList<>();
+    HashMap<Player, ArrayList<Entity>> in_countdown = new HashMap<>();
 
     @EventHandler
     public void counter(EntityDamageByEntityEvent e){
-        if(!e.getDamager().isDead()){
-            in_countdown.add(e.getEntity());
+        if(!e.getEntity().isDead() && e.getDamager() instanceof Player p){
+            ArrayList en = new ArrayList<>();
+            en.add(e.getEntity());
+            in_countdown.get(p).add(e.getEntity());
             new BukkitRunnable() {
                 @Override
                 public void run() {
-                    in_countdown.remove(e.getEntity());
+                    in_countdown.remove(p, en);
                 }
             }.runTaskLater(GenesisMC.getPlugin(), 100);
         }
+    }
+
+    @EventHandler
+    public void countSet(PlayerJoinEvent e){
+        in_countdown.put(e.getPlayer(), new ArrayList<>());
     }
 }

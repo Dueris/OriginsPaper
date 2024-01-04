@@ -547,8 +547,6 @@ public class Actions {
             }
         }
         if (type.equals("origins:execute_command")) {
-            final boolean isOp = entity.isOp();
-            entity.setOp(true);
             String cmd = null;
             if(power.get("command").toString().startsWith("power") || power.get("command").toString().startsWith("/power")) return;
             if(power.get("command").toString().startsWith("/")){
@@ -556,14 +554,7 @@ public class Actions {
             }else{
                 cmd = power.get("command").toString();
             }
-            Bukkit.dispatchCommand(entity, cmd);
-            new BukkitRunnable() {
-                @Override
-                public void run(){
-                    entity.setOp(isOp);
-                }
-            }.runTaskLater(GenesisMC.getPlugin(), 1l);
-            entity.setOp(isOp);
+            Bukkit.dispatchCommand(new OriginCommandSender(), "execute at {name} run ".replace("{name}", entity.getName()) + cmd);
         }
         if (type.equals("origins:add_xp")) {
             int points = 0;
