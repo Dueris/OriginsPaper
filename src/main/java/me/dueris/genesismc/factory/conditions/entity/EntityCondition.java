@@ -225,9 +225,7 @@ public class EntityCondition implements Condition {
                 String offsetX = condition.get("offset_x").toString();
                 String offsetY = condition.get("offset_y").toString();
                 String offsetZ = condition.get("offset_z").toString();
-                System.out.println("lfjksd");
                 if (entity instanceof Player player) {
-                    System.out.println("lksdhfj");
                     Location playerLocation = player.getEyeLocation();
                     World world = player.getWorld();
     
@@ -236,7 +234,6 @@ public class EntityCondition implements Condition {
                     int blockZ = playerLocation.getBlockZ() + Integer.parseInt(offsetZ);
     
                     Block blockAt = world.getBlockAt(blockX, blockY, blockZ);
-                    System.out.println(blockAt.getType());
                     return getResult(inverted, Optional.of(blockAt.getType().isSolid()));
                 }
             }

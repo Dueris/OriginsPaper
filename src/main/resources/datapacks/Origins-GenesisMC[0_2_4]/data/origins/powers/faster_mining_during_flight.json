@@ -1,0 +1,12 @@
+{
+    "type": "origins:modify_break_speed",
+    "modifier": {
+        "operation": "set_total",
+        "value": 2
+    },
+    "hidden": true,
+    "entity_condition": {
+        "type": "origins:on_block",
+        "inverted": true
+    }
+}

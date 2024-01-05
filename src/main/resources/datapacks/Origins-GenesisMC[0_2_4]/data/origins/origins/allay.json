@@ -9,7 +9,8 @@
     "origins:vegetarian",
     "origins:creative_flight",
     "origins:allay_sparkle",
-    "star:fire"
+    "star:fire",
+    "origins:faster_mining_during_flight"
   ],
   "icon": {
     "item": "minecraft:cookie"

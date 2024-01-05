@@ -11,6 +11,8 @@ import java.util.function.BinaryOperator;
 import java.util.function.Predicate;
 
 import net.minecraft.world.entity.LivingEntity;
+
+import org.bukkit.Location;
 import org.bukkit.craftbukkit.v1_20_R3.CraftRegistry;
 import org.bukkit.craftbukkit.v1_20_R3.CraftServer;
 
@@ -69,7 +71,7 @@ public class Utils {
         operationMap.put("subtraction", (a, b) -> a - b);
         operationMap.put("multiplication", (a, b) -> a * b);
         operationMap.put("division", (a, b) -> a / b);
-        operationMap.put("multiply_base", (a, b) -> a + (a * b));
+        operationMap.put("multiply_base", (a, b) -> a * b + 1);
         operationMap.put("multiply_total", (a, b) -> a * (1 + b));
         operationMap.put("set_total", (a, b) -> b);
         operationMap.put("add_base_early", (a, b) -> a + b);
@@ -93,7 +95,7 @@ public class Utils {
         operationMap.put("subtraction", (a, b) -> a - b);
         operationMap.put("multiplication", (a, b) -> a * b);
         operationMap.put("division", (a, b) -> a / b);
-        operationMap.put("multiply_base", (a, b) -> a + (a * b));
+        operationMap.put("multiply_base", (a, b) -> a * b + 1);
         operationMap.put("multiply_total", (a, b) -> a * (1 + b));
         operationMap.put("set_total", (a, b) -> b);
         operationMap.put("add_base_early", (a, b) -> a + b);
@@ -117,7 +119,7 @@ public class Utils {
         operationMap.put("subtraction", (a, b) -> a - b);
         operationMap.put("multiplication", (a, b) -> a * b);
         operationMap.put("division", (a, b) -> a / b);
-        operationMap.put("multiply_base", (a, b) -> a + (a * b));
+        operationMap.put("multiply_base", (a, b) -> a * b + 1);
         operationMap.put("multiply_total", (a, b) -> a * (1 + b));
         operationMap.put("set_total", (a, b) -> b);
         operationMap.put("add_base_early", (a, b) -> a + b);
@@ -135,13 +137,20 @@ public class Utils {
         return operationMap;
     }
 
+    public static boolean hasChangedBlockCoordinates(final Location fromLoc, final Location toLoc) {
+        return !(fromLoc.getWorld().equals(toLoc.getWorld())
+                && fromLoc.getBlockX() == toLoc.getBlockX()
+                && fromLoc.getBlockY() == toLoc.getBlockY()
+                && fromLoc.getBlockZ() == toLoc.getBlockZ());
+    }
+
     public static Map<String, BinaryOperator<Float>> getOperationMappingsFloat() {
         Map<String, BinaryOperator<Float>> operationMap = new HashMap<>();
         operationMap.put("addition", (a, b) -> a + b);
         operationMap.put("subtraction", (a, b) -> a - b);
         operationMap.put("multiplication", (a, b) -> a * b);
         operationMap.put("division", (a, b) -> a / b);
-        operationMap.put("multiply_base", (a, b) -> a + (a * b));
+        operationMap.put("multiply_base", (a, b) -> a * b + 1);
         operationMap.put("multiply_total", (a, b) -> a * (1 + b));
         operationMap.put("set_total", (a, b) -> b);
         operationMap.put("add_base_early", (a, b) -> a + b);

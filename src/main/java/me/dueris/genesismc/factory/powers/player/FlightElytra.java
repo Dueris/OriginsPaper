@@ -9,7 +9,22 @@ import me.dueris.genesismc.protocol.SendStringPacketPayload;
 import me.dueris.genesismc.utils.LayerContainer;
 import me.dueris.genesismc.utils.OriginContainer;
 import me.dueris.genesismc.utils.PowerContainer;
+import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.stats.Stats;
+import net.minecraft.tags.EntityTypeTags;
+import net.minecraft.util.Mth;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageSources;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.state.BlockState;
+
 import org.bukkit.*;
+import org.bukkit.craftbukkit.v1_20_R3.CraftSound;
+import org.bukkit.craftbukkit.v1_20_R3.CraftWorld;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftHumanEntity;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftLivingEntity;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftPlayer;
@@ -21,6 +36,7 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerToggleFlightEvent;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
+import org.bukkit.event.world.GenericGameEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -105,6 +121,60 @@ public class FlightElytra extends CraftPower implements Listener {
                 }
             }
         }
+    }
+
+    @EventHandler
+    public void recreateFallDamage(GenericGameEvent e){
+        if(e.getEvent().equals(GameEvent.HIT_GROUND)){
+            if(e.getEntity() instanceof Player p){
+                if(elytra.contains(p)){
+                    float fallDistance = p.getFallDistance();
+                    ServerPlayer pl = ((CraftPlayer)p).getHandle();
+                    if (fallDistance >= 2.0F) {
+                        pl.awardStat(Stats.FALL_ONE_CM, (int) Math.round((double) fallDistance * 100.0D));
+                    }
+
+                    int i = this.calculateFallDamage(p, fallDistance, 1);
+
+                    if (i > 0) {
+                        pl.hurt(pl.level().damageSources().fall(), (float) i);
+
+                        p.playSound(p.getLocation(), CraftSound.minecraftToBukkit(this.getFallDamageSound(pl, i)), 1f, 1f);
+                        this.playBlockFallSound(pl);
+                    }
+                }
+            }
+        }
+    }
+
+    private SoundEvent getFallDamageSound(ServerPlayer pl, int distance) {
+        return distance > 4 ? pl.getFallSounds().big() : pl.getFallSounds().small();
+    }
+
+    private void playBlockFallSound(ServerPlayer pl) {
+        if (!pl.isSilent()) {
+            int a = Mth.floor(pl.getX());
+            int b = Mth.floor(pl.getY() - 0.20000000298023274d);
+            int c = Mth.floor(pl.getZ());
+            BlockState blockdata = pl.level().getBlockState(new BlockPos(a, b, c));
+
+            if (!blockdata.isAir()) {
+                SoundType soundeffecttype = blockdata.getSoundType();
+
+                pl.playSound(soundeffecttype.getFallSound(), soundeffecttype.getVolume() * 0.5F, soundeffecttype.getPitch() * 0.75F);
+            }
+        }
+    }
+
+    private int calculateFallDamage(Player p, float fallDistance, float damageMultiplier) {
+        ServerPlayer pl = ((CraftPlayer)p).getHandle();
+        if (!pl.getType().is(EntityTypeTags.FALL_DAMAGE_IMMUNE)) {
+            MobEffectInstance mobeffect = pl.getEffect(MobEffects.JUMP);
+            float dm = mobeffect == null ? 0.0F : (mobeffect.getAmplifier() + 1);
+
+            return Mth.ceil((fallDistance - 3.0F - dm) * damageMultiplier);
+        }
+        return 0;
     }
 
     @Override
