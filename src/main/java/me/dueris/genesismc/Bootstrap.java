@@ -102,6 +102,10 @@ public class Bootstrap implements PluginBootstrap {
                 } catch (IOException e) {
 
                 }
+            }else{
+                File file = new File(datapackPath.toAbsolutePath().toString());
+                file.mkdirs();
+                copyOriginDatapack(datapackPath);
             }
         }
         try {

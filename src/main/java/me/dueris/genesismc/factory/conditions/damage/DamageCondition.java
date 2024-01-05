@@ -43,7 +43,7 @@ public class DamageCondition implements Condition {
     }
 
     @Override
-    public Optional<Boolean> check(HashMap<String, Object> condition, Player p, PowerContainer power, String powerfile, Entity actor, Entity target, Block block, Fluid fluid, ItemStack itemStack, EntityDamageEvent entityDamageEvent) {
+    public Optional<Boolean> check(HashMap<String, Object> condition, Player p, Entity actor, Entity target, Block block, Fluid fluid, ItemStack itemStack, EntityDamageEvent entityDamageEvent) {
         if (condition.isEmpty()) return Optional.empty();
         if (condition.get("type") == null) return Optional.empty();
         if (entityDamageEvent == null) return Optional.empty();
@@ -59,7 +59,7 @@ public class DamageCondition implements Condition {
             case "origins:attacker" -> {
                 if (entityDamageEvent instanceof EntityDamageByEntityEvent event) {
                     EntityCondition entityCondition = ConditionExecutor.entityCondition;
-                    return entityCondition.check(condition, p, power, powerfile, actor, target, block, fluid, itemStack, entityDamageEvent);
+                    return entityCondition.check(condition, p, actor, target, block, fluid, itemStack, entityDamageEvent);
                 }else{
                     return getResult(inverted, Optional.of(false));
                 }

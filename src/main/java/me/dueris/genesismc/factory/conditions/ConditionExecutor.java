@@ -73,47 +73,47 @@ public class ConditionExecutor {
             Optional<Boolean> booleanOptional = Optional.empty();
 
             if (!booleanOptional.isPresent() && dmgevent != null) {
-                var check = damageCondition.check(subCondition, p, power, powerfile, actor, target, block, fluid, itemStack, dmgevent);
+                var check = damageCondition.check(subCondition, p, actor, target, block, fluid, itemStack, dmgevent);
                 if (check.isPresent()) {
                     booleanOptional = check;
                 }
             }
 
             if (!booleanOptional.isPresent() && actor != null) {
-                var check = entityCondition.check(subCondition, p, power, powerfile, actor, target, block, fluid, itemStack, dmgevent);
+                var check = entityCondition.check(subCondition, p, actor, target, block, fluid, itemStack, dmgevent);
                 if (check.isPresent()) {
                     booleanOptional = check;
                 }
             }
 
             if (!booleanOptional.isPresent() && actor != null && target != null) {
-                var check = biEntityCondition.check(subCondition, p, power, powerfile, actor, target, block, fluid, itemStack, dmgevent);
+                var check = biEntityCondition.check(subCondition, p, actor, target, block, fluid, itemStack, dmgevent);
                 if (check.isPresent()) {
                     booleanOptional = check;
                 }
             }
 
             if (!booleanOptional.isPresent() && block != null) {
-                var check = blockCondition.check(subCondition, p, power, powerfile, actor, target, block, fluid, itemStack, dmgevent);
+                var check = blockCondition.check(subCondition, p, actor, target, block, fluid, itemStack, dmgevent);
                 if (check.isPresent()) {
                     booleanOptional = check;
                 }
                 
-                var check2 = biomeCondition.check(subCondition, p, power, powerfile, actor, target, block, fluid, itemStack, dmgevent);
+                var check2 = biomeCondition.check(subCondition, p, actor, target, block, fluid, itemStack, dmgevent);
                 if (check2.isPresent()) {
                     booleanOptional = check;
                 }
             }
 
             if (!booleanOptional.isPresent() && fluid != null) {
-                var check = fluidCondition.check(subCondition, p, power, powerfile, actor, target, block, fluid, itemStack, dmgevent);
+                var check = fluidCondition.check(subCondition, p, actor, target, block, fluid, itemStack, dmgevent);
                 if (check.isPresent()) {
                     booleanOptional = check;
                 }
             }
 
             if (!booleanOptional.isPresent() && itemStack != null) {
-                var check = itemCondition.check(subCondition, p, power, powerfile, actor, target, block, fluid, itemStack, dmgevent);
+                var check = itemCondition.check(subCondition, p, actor, target, block, fluid, itemStack, dmgevent);
                 if (check.isPresent()) {
                     booleanOptional = check;
                 }
@@ -163,7 +163,6 @@ public class ConditionExecutor {
                 return checkConditions(conditionsArray, p, powerContainer, powerfile, actor, target, block, fluid, itemStack, dmgevent, powerfile);
             } else if (condition.get("type").equals("origins:or")) {
                 JSONArray conditionsArray = (JSONArray) condition.get("conditions");
-                boolean anyConditionTrue = false;
 
                 for (Object subConditionObj : conditionsArray) {
                     if (subConditionObj instanceof JSONObject subCondition) {
@@ -236,43 +235,43 @@ public class ConditionExecutor {
                 String boolResult = "empty";
 
                 if(boolResult == "empty" && (singular.contains("entity_") || plural.contains("entity_") || plural.equals("conditions") || singular.equals("condition"))){
-                    Optional<Boolean> bool = entity.check(condition, p, powerContainer, powerfile, actor, target, block, fluid, itemStack, dmgevent);
+                    Optional<Boolean> bool = entity.check(condition, p, actor, target, block, fluid, itemStack, dmgevent);
                     if (bool.isPresent()) {
                         boolResult = String.valueOf(bool.get());
                     }
                 }
                 if(boolResult == "empty" && (singular.contains("bientity_") || plural.contains("bientity_") || plural.equals("conditions") || singular.equals("condition"))){
-                    Optional<Boolean> bool = bientity.check(condition, p, powerContainer, powerfile, actor, target, block, fluid, itemStack, dmgevent);
+                    Optional<Boolean> bool = bientity.check(condition, p, actor, target, block, fluid, itemStack, dmgevent);
                     if (bool.isPresent()) {
                         boolResult = String.valueOf(bool.get());
                     }
                 }
                 if(boolResult == "empty" && (singular.contains("block_") || plural.contains("block_") || plural.equals("conditions") || singular.equals("condition"))){
-                    Optional<Boolean> bool = blockCon.check(condition, p, powerContainer, powerfile, actor, target, block, fluid, itemStack, dmgevent);
+                    Optional<Boolean> bool = blockCon.check(condition, p, actor, target, block, fluid, itemStack, dmgevent);
                     if (bool.isPresent()) {
                         boolResult = String.valueOf(bool.get());
                     }
                 }
                 if(boolResult == "empty" && (singular.contains("biome_") || plural.contains("biome_") || plural.equals("conditions") || singular.equals("condition"))){
-                    Optional<Boolean> bool = biome.check(condition, p, powerContainer, powerfile, actor, target, block, fluid, itemStack, dmgevent);
+                    Optional<Boolean> bool = biome.check(condition, p, actor, target, block, fluid, itemStack, dmgevent);
                     if (bool.isPresent()) {
                         boolResult = String.valueOf(bool.get());
                     }
                 }
                 if(boolResult == "empty" && (singular.contains("damage_") || plural.contains("damage_") || plural.equals("conditions") || singular.equals("condition"))){
-                    Optional<Boolean> bool = damage.check(condition, p, powerContainer, powerfile, actor, target, block, fluid, itemStack, dmgevent);
+                    Optional<Boolean> bool = damage.check(condition, p, actor, target, block, fluid, itemStack, dmgevent);
                     if (bool.isPresent()) {
                         boolResult = String.valueOf(bool.get());
                     }
                 }
                 if(boolResult == "empty" && (singular.contains("fluid_") || plural.contains("fluid_") || plural.equals("conditions") || singular.equals("condition"))){
-                    Optional<Boolean> bool = fluidCon.check(condition, p, powerContainer, powerfile, actor, target, block, fluid, itemStack, dmgevent);
+                    Optional<Boolean> bool = fluidCon.check(condition, p, actor, target, block, fluid, itemStack, dmgevent);
                     if (bool.isPresent()) {
                         boolResult = String.valueOf(bool.get());
                     }
                 }
                 if(boolResult == "empty" && (singular.contains("item_") || plural.contains("item_") || plural.equals("conditions") || singular.equals("condition"))){
-                    Optional<Boolean> bool = item.check(condition, p, powerContainer, powerfile, actor, target, block, fluid, itemStack, dmgevent);
+                    Optional<Boolean> bool = item.check(condition, p, actor, target, block, fluid, itemStack, dmgevent);
                     if (bool.isPresent()) {
                         boolResult = String.valueOf(bool.get());
                     }
@@ -281,7 +280,7 @@ public class ConditionExecutor {
                 if(boolResult == "empty"){
                     try {
                         for (Class<? extends Condition> conditionClass : customConditions) {
-                            Optional<Boolean> bool = conditionClass.newInstance().check(condition, p, powerContainer, powerfile, actor, target, block, fluid, itemStack, dmgevent);
+                            Optional<Boolean> bool = conditionClass.newInstance().check(condition, p, actor, target, block, fluid, itemStack, dmgevent);
                             if (bool.isPresent()) {
                                 boolResult = String.valueOf(bool.get());
                             }
