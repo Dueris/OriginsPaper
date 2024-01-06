@@ -30,23 +30,11 @@ public class TabAutoComplete implements TabCompleter {
                 } else {
                     arguments.remove("info");
                 }
-                if (sender.hasPermission("genesismc.origins.cmd.references")) {
-                    if (args[0].equals("r") || args[0].isEmpty() || args[0].equals("re") || args[0].equals("ref") || args[0].equals("refe") || args[0].equals("refer") || args[0].equals("refere") || args[0].equals("referen") || args[0].equals("referenc") || args[0].equals("reference") || args[0].equals("references"))
-                        arguments.add("references");
-                } else {
-                    arguments.remove("references");
-                }
                 if (sender.hasPermission("genesismc.origins.cmd.recipe")) {
                     if (args[0].equals("r") || args[0].isEmpty() || args[0].equals("re") || args[0].equals("rec") || args[0].equals("reci") || args[0].equals("recip") || args[0].equals("recipe"))
                         arguments.add("recipe");
                 } else {
                     arguments.remove("recipe");
-                }
-                if (sender.isOp()) {
-                    if (args[0].equals("r") || args[0].isEmpty() || args[0].equals("re") || args[0].equals("rel") || args[0].equals("relo") || args[0].equals("reloa") || args[0].equals("reload"))
-                        arguments.add("reload");
-                } else {
-                    arguments.remove("reload");
                 }
                 if (sender.hasPermission("genesismc.origins.cmd.get")) {
                     if (args[0].equals("g") || args[0].isEmpty() || args[0].equals("ge") || args[0].equals("get"))
@@ -83,12 +71,6 @@ public class TabAutoComplete implements TabCompleter {
                         arguments.add("give");
                 } else {
                     arguments.remove("give");
-                }
-                if (sender.hasPermission("genesis.origins.cmd.bug")) {
-                    if (args[0].equals("b") || args[0].isEmpty() || args[0].equals("bu") || args[0].equals("bug"))
-                        arguments.add("bug");
-                } else {
-                    arguments.remove("bug");
                 }
 
                 return arguments;

@@ -44,7 +44,7 @@ public class Gui extends SubCommand {
             if (players.size() == 0) return;
             for (Player p : players) {
                 String layR;
-                if(args.length >= 2 && args[2] != null){
+                if(args.length > 2 && args[2] != null){
                     layR = args[2];
                 }else{
                     layR = "origins:origin";
@@ -59,13 +59,13 @@ public class Gui extends SubCommand {
                             try {
                                 p.getPlayerProfile().getTextures().setSkin(new URL(skinData), PlayerTextures.SkinModel.CLASSIC);
                             } catch (MalformedURLException e) {
-                                e.printStackTrace();
+                                // e.printStackTrace(); // no need to print the stacktrace for something that means nothing
                             }
                         } else {
                             try {
                                 p.getPlayerProfile().getTextures().setSkin(new URL(skinData), PlayerTextures.SkinModel.SLIM);
                             } catch (MalformedURLException e) {
-                                e.printStackTrace();
+                                // e.printStackTrace(); // no need to print the stacktrace for something that means nothing
                             }
                         }
                         for (Player pls : Bukkit.getOnlinePlayers()) {

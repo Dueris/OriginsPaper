@@ -30,7 +30,6 @@ public class OriginCommand extends Command{
     public OriginCommand() {
         super("origin");
         subCommands.add(new Enchant());
-        subCommands.add(new References());
         subCommands.add(new Recipe());
         subCommands.add(new Get());
         subCommands.add(new Gui());
@@ -38,8 +37,6 @@ public class OriginCommand extends Command{
         subCommands.add(new Info());
         subCommands.add(new Set());
         subCommands.add(new Give());
-        subCommands.add(new Bug());
-        subCommands.add(new Reload());
     }
 
     public ArrayList<SubCommand> getSubCommands() {
