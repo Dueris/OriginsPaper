@@ -5,6 +5,8 @@ import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.OriginContainer;
 import me.dueris.genesismc.utils.PowerContainer;
+
+import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -36,6 +38,7 @@ public class ModifyHarvestPower extends CraftPower implements Listener {
     public void runD(BlockBreakEvent e) {
         Player p = e.getPlayer();
         if (modify_harvest.contains(p)) {
+            if(p.getGameMode().equals(GameMode.CREATIVE)) return;
             try {
                 for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()) {
                     ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();

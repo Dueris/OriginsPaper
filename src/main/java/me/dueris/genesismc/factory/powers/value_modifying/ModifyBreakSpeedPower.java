@@ -3,15 +3,15 @@ package me.dueris.genesismc.factory.powers.value_modifying;
 import io.papermc.paper.event.player.PlayerArmSwingEvent;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.entity.OriginPlayerUtils;
+import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.factory.powers.player.attributes.AttributeHandler;
 import me.dueris.genesismc.utils.ErrorSystem;
-import me.dueris.genesismc.utils.OriginContainer;
+import me.dueris.genesismc.utils.LayerContainer;
 import me.dueris.genesismc.utils.PowerContainer;
-import me.dueris.genesismc.utils.translation.LangConfig;
-import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
+import org.bukkit.craftbukkit.v1_20_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -21,12 +21,9 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.function.BinaryOperator;
 
-import static me.dueris.genesismc.factory.powers.player.attributes.AttributeHandler.getOperationMappingsFloat;
 import static me.dueris.genesismc.factory.powers.value_modifying.ValueModifyingSuperClass.modify_break_speed;
 
 public class ModifyBreakSpeedPower extends CraftPower implements Listener {
@@ -75,10 +72,11 @@ public class ModifyBreakSpeedPower extends CraftPower implements Listener {
     public void swing(PlayerArmSwingEvent e){
         Player p = e.getPlayer();
         if (modify_break_speed.contains(p)) {
-            for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()) {
+            if(p.getGameMode().equals(GameMode.CREATIVE)) return;
+            for (LayerContainer layer : CraftApoli.getLayers()) {
                 ValueModifyingSuperClass valueModifyingSuperClass = new ValueModifyingSuperClass();
                 try {
-                    ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
+                    ConditionExecutor conditionExecutor = GenesisMC.getConditionExecutor();
                     for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                         if (conditionExecutor.check("condition", "condition", p, power, getPowerFile(), p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
                             if (conditionExecutor.check("block_condition", "block_condition", p, power, getPowerFile(), p, null, p.getTargetBlockExact(Math.toIntExact(Math.round(AttributeHandler.Reach.getFinalReach(p)))), null, p.getItemInHand(), null)) {
@@ -106,15 +104,13 @@ public class ModifyBreakSpeedPower extends CraftPower implements Listener {
                                                 )
                                         );
                                     }
-                                    if(p.getGameMode() != GameMode.CREATIVE){
-                                        shouldDrop.add(p);
-                                        new BukkitRunnable() {
-                                            @Override
-                                            public void run() {
-                                                shouldDrop.remove(p);
-                                            }
-                                        }.runTaskLater(GenesisMC.getPlugin(), 40);
-                                    }
+                                    shouldDrop.add(p);
+                                    new BukkitRunnable() {
+                                        @Override
+                                        public void run() {
+                                            shouldDrop.remove(p);
+                                        }
+                                    }.runTaskLater(GenesisMC.getPlugin(), 40);
                                 }
                             } else {
                                 setActive(p, power.getTag(), false);

@@ -436,10 +436,10 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         getServer().getPluginManager().registerEvents(new LogoutBugWorkaround(), this);
         getServer().getPluginManager().registerEvents(new VillagerTradeHook(), this);
         getServer().getPluginManager().registerEvents(new OriginScheduler.OriginSchedulerTree(), this);
-        Bukkit.getServer().getPluginManager().registerEvents(new KeybindUtils(), GenesisMC.getPlugin());
+        getServer().getPluginManager().registerEvents(new KeybindUtils(), this);
         if (getServer().getPluginManager().isPluginEnabled("SkinsRestorer")) {
             try {
-               getServer().getPluginManager().registerEvents(new PlayerRender.ModelColor(), GenesisMC.getPlugin());
+               getServer().getPluginManager().registerEvents(new PlayerRender.ModelColor(), this);
                getServer().getConsoleSender().sendMessage(Component.text(LangConfig.getLocalizedString(Bukkit.getConsoleSender(), "startup.skinRestorer.present")).color(TextColor.fromHexString(AQUA)));
             } catch (Exception ignored){
                 // ignored
@@ -461,26 +461,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
             }
         }.runTaskTimer(GenesisMC.getPlugin(), 0, 20);
 
-//        if (Bukkit.getServer().getPluginManager().isPluginEnabled("SkinsRestorer")) {
-//            GlobalRegionScheduler globalRegionScheduler = Bukkit.getGlobalRegionScheduler();
-//            try {
-//                globalRegionScheduler.execute(GenesisMC.getPlugin(), PlayerRender.ModelColor.class.newInstance());
-//            } catch (InstantiationException e) {
-//                throw new RuntimeException(e);
-//            } catch (IllegalAccessException e) {
-//                throw new RuntimeException(e);
-//            }
-//        }
-        // Why does that even exist here?
         EntityGroupManager.INSTANCE.startTick();
-    }
-
-    @EventHandler
-    public void invulnerableBugPatch(PlayerJoinEvent e) {
-        Player p = e.getPlayer();
-        if (!p.isInvulnerable() && p.getGameMode() != GameMode.CREATIVE && p.getGameMode() != GameMode.SPECTATOR)
-            return;
-        p.setInvulnerable(false);
     }
 
     @EventHandler
@@ -493,6 +474,9 @@ public final class GenesisMC extends JavaPlugin implements Listener {
     public void onDisable() {
         me.dueris.genesismc.OriginDataContainer.unloadAllData();
         CraftApoli.unloadData();
+        OriginPlayerUtils.powerContainer.clear();
+        OriginPlayerUtils.powersAppliedList.clear();
+        CraftPower.getRegistered().clear();
 
         for (int taskId : getParticleTasks().values()) {
             getServer().getScheduler().cancelTask(taskId);
@@ -507,30 +491,6 @@ public final class GenesisMC extends JavaPlugin implements Listener {
             if (p.getOpenInventory().getTitle().startsWith("Choosing Menu") && p.getOpenInventory().getTitle().startsWith("Custom Origins") && p.getOpenInventory().getTitle().startsWith("Expanded Origins") && p.getOpenInventory().getTitle().startsWith("Custom Origin") && p.getOpenInventory().getTitle().startsWith("Origin")) {
                 p.closeInventory();
             }
-        }
-        // Disable enchantments
-        try {
-            Field keyField = Enchantment.class.getDeclaredField("byKey");
-
-            keyField.setAccessible(true);
-            @SuppressWarnings("unchecked")
-            HashMap<NamespacedKey, Enchantment> byKey = (HashMap<NamespacedKey, Enchantment>) keyField.get(null);
-
-            for (Enchantment enchantment : custom_enchants) {
-                byKey.remove(enchantment.getKey());
-            }
-
-            Field nameField = Enchantment.class.getDeclaredField("byName");
-
-            nameField.setAccessible(true);
-            @SuppressWarnings("unchecked")
-            HashMap<String, Enchantment> byName = (HashMap<String, Enchantment>) nameField.get(null);
-
-            for (Enchantment enchantment : custom_enchants) {
-                byName.remove(enchantment.getName());
-            }
-        } catch (Exception ignored) {
-
         }
 
         getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] " + LangConfig.getLocalizedString(Bukkit.getConsoleSender(), "disable")).color(TextColor.fromHexString(RED)));
