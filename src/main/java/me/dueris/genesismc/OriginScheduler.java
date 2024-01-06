@@ -25,11 +25,11 @@ import com.destroystokyo.paper.event.server.ServerTickEndEvent;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class FoliaOriginScheduler {
+public class OriginScheduler {
 
     final Plugin plugin;
 
-    public FoliaOriginScheduler(Plugin plugin) {
+    public OriginScheduler(Plugin plugin) {
         this.plugin = plugin;
     }
 

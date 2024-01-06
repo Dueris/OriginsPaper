@@ -25,7 +25,7 @@ import org.bukkit.util.Vector;
 import java.util.*;
 import java.util.function.Predicate;
 
-import static me.dueris.genesismc.FoliaOriginScheduler.OriginSchedulerTree.mimic_warden;
+import static me.dueris.genesismc.OriginScheduler.OriginSchedulerTree.mimic_warden;
 
 public class MimicWarden extends CraftPower implements OriginSimple, Listener {
 

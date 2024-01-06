@@ -1,7 +1,7 @@
 package me.dueris.genesismc.factory.powers.simple;
 
 import it.unimi.dsi.fastutil.Hash;
-import me.dueris.genesismc.FoliaOriginScheduler;
+import me.dueris.genesismc.OriginScheduler;
 import me.dueris.genesismc.entity.OriginPlayerUtils;
 import me.dueris.genesismc.events.OriginChangeEvent;
 import me.dueris.genesismc.factory.powers.CraftPower;
@@ -119,7 +119,7 @@ public class PiglinNoAttack extends CraftPower implements OriginSimple, Listener
 
     @Override
     public ArrayList<Player> getPowerArray() {
-        return FoliaOriginScheduler.OriginSchedulerTree.piglin_no_attack;
+        return OriginScheduler.OriginSchedulerTree.piglin_no_attack;
     }
 
     @Override

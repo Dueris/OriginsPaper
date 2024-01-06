@@ -104,11 +104,11 @@ public final class GenesisMC extends JavaPlugin implements Listener {
     public static boolean forceUseCurrentVersion = false;
     public static boolean forceWatchdogStop = true;
 
-    public static FoliaOriginScheduler.OriginSchedulerTree getScheduler(){
+    public static OriginScheduler.OriginSchedulerTree getScheduler(){
         return scheduler;
     }
 
-    public static FoliaOriginScheduler.OriginSchedulerTree scheduler = null;
+    public static OriginScheduler.OriginSchedulerTree scheduler = null;
     public static String version = Bukkit.getVersion().split("\\(MC: ")[1].replace(")", "");
     public static final boolean isFolia = classExists("io.papermc.paper.threadedregions.RegionizedServer");
     public static final boolean isExpandedScheduler = classExists("io.papermc.paper.threadedregions.scheduler.ScheduledTask");
@@ -225,7 +225,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         } catch (IOException | ReflectiveOperationException e) {
             e.printStackTrace();
         }
-        FoliaOriginScheduler.OriginSchedulerTree scheduler = new FoliaOriginScheduler.OriginSchedulerTree();
+        OriginScheduler.OriginSchedulerTree scheduler = new OriginScheduler.OriginSchedulerTree();
         GenesisMC.scheduler = scheduler;
         scheduler.runTaskTimer(this, 0, 1);
         // waterProtectionEnchant = new WaterProtection();
@@ -435,7 +435,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         getServer().getPluginManager().registerEvents(new BiEntityCondition(), this);
         getServer().getPluginManager().registerEvents(new LogoutBugWorkaround(), this);
         getServer().getPluginManager().registerEvents(new VillagerTradeHook(), this);
-        getServer().getPluginManager().registerEvents(new FoliaOriginScheduler.OriginSchedulerTree(), this);
+        getServer().getPluginManager().registerEvents(new OriginScheduler.OriginSchedulerTree(), this);
         Bukkit.getServer().getPluginManager().registerEvents(new KeybindUtils(), GenesisMC.getPlugin());
         if (getServer().getPluginManager().isPluginEnabled("SkinsRestorer")) {
             try {
