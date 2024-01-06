@@ -27,15 +27,23 @@ public class LogoutBugWorkaround implements Listener {
 
     @EventHandler
     public void login(PlayerJoinEvent e){
-        freeze(e.getPlayer());
+        freezeLogin(e.getPlayer());
     }
 
     @EventHandler
     public void respawn(PlayerRespawnEvent e){
-        freeze(e.getPlayer());
+        final int[] i = {0};
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                if(i[0] > 15) cancel();
+                e.getPlayer().teleportAsync(e.getPlayer().getLocation());
+                i[0]++;
+            }
+        }.runTaskTimer(GenesisMC.getPlugin(), 0, 1);
     }
 
-    public void freeze(Player p){
+    public void freezeLogin(Player p){
         if(p.getPersistentDataContainer().has(new NamespacedKey(GenesisMC.getPlugin(), "logoutWorkaroundLocation"), PersistentDataType.STRING)){
             String logoutData = p.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "logoutWorkaroundLocation"), PersistentDataType.STRING);
             String[] splitData = logoutData.split("//");
@@ -51,8 +59,8 @@ public class LogoutBugWorkaround implements Listener {
             new BukkitRunnable() {
                 @Override
                 public void run() {
-                    if(i[0] > 20) cancel();
-                    p.teleportAsync(new Location(p.getWorld(), p.getLocation().getX(), p.getLocation().getY(), p.getLocation().getZ(), p.getLocation().getYaw(), p.getLocation().getPitch()));
+                    if(i[0] > 15) cancel();
+                    p.teleportAsync(location);
                     i[0]++;
                 }
             }.runTaskTimer(GenesisMC.getPlugin(), 0, 1);
