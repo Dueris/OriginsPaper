@@ -1,11 +1,13 @@
 package me.dueris.genesismc.factory.powers.value_modifying;
 
 import me.dueris.genesismc.entity.OriginPlayerUtils;
+import me.dueris.genesismc.factory.actions.Actions;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.ErrorSystem;
 import me.dueris.genesismc.utils.OriginContainer;
 import me.dueris.genesismc.utils.PowerContainer;
+import net.minecraft.advancements.critereon.EntityPredicate;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -56,9 +58,26 @@ public class ModifyCraftingPower extends CraftPower implements Listener {
                     for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                         if (conditionExecutor.check("condition", "condition", p, power, "origins:modify_crafting", p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
                             if (conditionExecutor.check("item_condition", "item_condition", p, power, "origins:modify_crafting", p, null, p.getLocation().getBlock(), null, e.getInventory().getResult(), null)) {
-                                if (e.getInventory().getResult().getType() == Material.valueOf(power.get("recipe", null).split(":")[1].toUpperCase())) {
-                                    e.getInventory().setResult(new ItemStack(Material.valueOf(power.getJsonHashMap("result").get("item").toString().toUpperCase().split(":")[1])));
+                                if(power.get("recipe") != null){
+                                    if (e.getInventory().getResult().getType() == Material.valueOf(power.get("recipe", null).split(":")[1].toUpperCase())) {
+                                        if(power.getJsonHashMap("result") != null){
+                                            e.getInventory().setResult(new ItemStack(Material.valueOf(power.getJsonHashMap("result").get("item").toString().toUpperCase().split(":")[1])));
+                                        }
+                                        setActive(p, power.getTag(), true);
+                                        Actions.EntityActionType(p, power.getEntityAction());
+                                        if(power.getActionOrNull("item_action_after_crafting") != null){
+                                            Actions.ItemActionType(e.getInventory().getResult(), power.getAction("item_action_after_crafting"));
+                                        }
+                                    }
+                                }else{
+                                    if(power.getJsonHashMap("result") != null && power.getJsonHashMap("result").get("item") != null){
+                                        e.getInventory().setResult(new ItemStack(Material.valueOf(power.getJsonHashMap("result").get("item").toString().toUpperCase().split(":")[1])));
+                                    }
                                     setActive(p, power.getTag(), true);
+                                    Actions.EntityActionType(p, power.getEntityAction());
+                                    if(power.getActionOrNull("item_action_after_crafting") != null){
+                                        Actions.ItemActionType(e.getInventory().getResult(), power.getAction("item_action_after_crafting"));
+                                    }
                                 }
                             } else {
                                 setActive(p, power.getTag(), false);
@@ -88,7 +107,7 @@ public class ModifyCraftingPower extends CraftPower implements Listener {
 
     @Override
     public String getPowerFile() {
-        return "origins:modify_crafting_power";
+        return "origins:modify_crafting";
     }
 
     @Override
