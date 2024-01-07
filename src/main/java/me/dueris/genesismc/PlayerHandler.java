@@ -194,12 +194,13 @@ public class PlayerHandler implements Listener {
             //silence code - offline mode fucks things
         }
 
+        p.saveData();
         try {
             FixerUpper.fixupFile(Path.of(GenesisMC.playerDataFolder.toPath().toString() + File.separator + ((CraftPlayer)p).getHandle().getStringUUID() + ".dat").toFile());
         } catch (IOException ev){
             ev.printStackTrace();
         }
-        
+
         OriginDataContainer.loadData(p);
         OriginPlayerUtils.setupPowers(p);
         originValidCheck(p);
