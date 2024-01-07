@@ -4,6 +4,7 @@ import me.dueris.genesismc.utils.translation.LangConfig;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -47,13 +48,13 @@ public class VersionControl {
             int diff = latestId - pluginId;
 
             if (diff > 0)
-                Bukkit.getLogger().warning("[GenesisMC] " + LangConfig.getLocalizedString(Bukkit.getConsoleSender(), "startup.versionCheck.behind").replace("%versionsBehind%", String.valueOf(diff)));
+                Bukkit.getLogger().warning("  " + LangConfig.getLocalizedString(Bukkit.getConsoleSender(), "startup.versionCheck.behind").replace("%versionsBehind%", String.valueOf(diff)));
             if (diff < 0)
-                Bukkit.getConsoleSender().sendMessage(Component.text("[GenesisMC] " + LangConfig.getLocalizedString(Bukkit.getConsoleSender(), "startup.versionCheck.ahead")).color(TextColor.fromHexString(GREEN)));
+                Bukkit.getConsoleSender().sendMessage(ChatColor.GREEN +  "  " + LangConfig.getLocalizedString(Bukkit.getConsoleSender(), "startup.versionCheck.ahead"));
 
         } catch (Exception e) {
             e.printStackTrace();
-            Bukkit.getLogger().warning("[GenesisMC] " + LangConfig.getLocalizedString(Bukkit.getConsoleSender(), "startup.versionCheck.fail"));
+            Bukkit.getLogger().warning("  " + LangConfig.getLocalizedString(Bukkit.getConsoleSender(), "startup.versionCheck.fail"));
         }
     }
 
