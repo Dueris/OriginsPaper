@@ -36,7 +36,6 @@ import me.dueris.genesismc.factory.powers.world.EntityGroupManager;
 import me.dueris.genesismc.files.GenesisDataFiles;
 import me.dueris.genesismc.files.TempStorageContainer;
 import me.dueris.genesismc.enchantments.generation.VillagerTradeHook;
-import me.dueris.genesismc.enchantments.generation.WaterProtBookGen;
 import me.dueris.genesismc.hooks.papi.PlaceholderApiExtension;
 import me.dueris.genesismc.items.GenesisItems;
 import me.dueris.genesismc.items.InfinPearl;
@@ -409,7 +408,6 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         getServer().getPluginManager().registerEvents(new PlayerHandler(), this);
         getServer().getPluginManager().registerEvents(new EnchantTable(), this);
         getServer().getPluginManager().registerEvents(new Anvil(), this);
-        getServer().getPluginManager().registerEvents(new WaterProtBookGen(), this);
         getServer().getPluginManager().registerEvents(new KeybindUtils(), this);
         getServer().getPluginManager().registerEvents(new ChoosingMain(), this);
         getServer().getPluginManager().registerEvents(new ChoosingCustomOrigins(), this);
