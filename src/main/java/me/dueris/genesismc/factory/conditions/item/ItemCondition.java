@@ -1,13 +1,10 @@
 package me.dueris.genesismc.factory.conditions.item;
 
-import me.dueris.genesismc.commands.subcommands.origin.Enchant;
 import me.dueris.genesismc.enchantments.EnchantTable;
-import me.dueris.genesismc.enchantments.WaterProtection;
 import me.dueris.genesismc.factory.TagRegistry;
 import me.dueris.genesismc.factory.conditions.Condition;
 import me.dueris.genesismc.factory.powers.player.RestrictArmor;
 import me.dueris.genesismc.utils.ArmorUtils;
-import me.dueris.genesismc.utils.PowerContainer;
 import org.bukkit.Fluid;
 import org.bukkit.Material;
 import org.bukkit.block.Block;

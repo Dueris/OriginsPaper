@@ -1,7 +1,6 @@
 package me.dueris.genesismc.enchantments;
 
 import com.destroystokyo.paper.event.inventory.PrepareResultEvent;
-import me.dueris.genesismc.GenesisMC;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.craftbukkit.v1_20_R3.enchantments.CraftEnchantment;
@@ -15,10 +14,8 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
 import java.util.EnumSet;
-import java.util.List;
 import java.util.Random;
 
-import static me.dueris.genesismc.GenesisMC.waterProtectionEnchant;
 import static org.bukkit.Material.ENDER_PEARL;
 
 public class EnchantTable implements Listener {
@@ -95,13 +92,13 @@ public class EnchantTable implements Listener {
             if (e.getInventory().getType().equals(InventoryType.GRINDSTONE)){
                 ItemStack item = e.getResult();
                 if(item == null) return;
-                if (item.getEnchantments().keySet().contains(CraftEnchantment.minecraftToBukkit(Anvil.eimpl))){
+                if (item.getEnchantments().keySet().contains(CraftEnchantment.minecraftToBukkit(Anvil.minecraftEnchantment))){
                     for(String loreString : item.getLore()){
                         if(loreString.startsWith("Water Protection")){
                             item.getLore().remove(loreString);
                         }
                     }
-                    item.removeEnchantment(CraftEnchantment.minecraftToBukkit(Anvil.eimpl));
+                    item.removeEnchantment(CraftEnchantment.minecraftToBukkit(Anvil.minecraftEnchantment));
                 }
             }
         }

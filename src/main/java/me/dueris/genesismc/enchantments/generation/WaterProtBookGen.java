@@ -1,4 +1,4 @@
-package me.dueris.genesismc.generation;
+package me.dueris.genesismc.enchantments.generation;
 
 import me.dueris.genesismc.events.WaterProtectionGenerateEvent;
 import org.bukkit.ChatColor;

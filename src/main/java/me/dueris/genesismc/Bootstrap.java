@@ -1,36 +1,19 @@
 package me.dueris.genesismc;
 
-import io.papermc.paper.configuration.PaperConfigurations;
 import io.papermc.paper.plugin.bootstrap.BootstrapContext;
 import io.papermc.paper.plugin.bootstrap.PluginBootstrap;
 import joptsimple.OptionSet;
-import me.dueris.genesismc.enchantments.WaterProtectionNMSImpl;
+import me.dueris.genesismc.enchantments.WaterProtectionEnchantment;
 import me.dueris.genesismc.utils.BukkitUtils;
-import me.dueris.genesismc.utils.Utils;
-import net.minecraft.core.MappedRegistry;
 import net.minecraft.core.Registry;
-import net.minecraft.core.RegistryAccess;
-import net.minecraft.core.WritableRegistry;
-import net.minecraft.core.RegistryAccess.Frozen;
-import net.minecraft.core.RegistryAccess.RegistryEntry;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.data.registries.RegistriesDatapackGenerator;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.world.damagesource.DamageEffects;
-import net.minecraft.world.damagesource.DamageScaling;
-import net.minecraft.world.damagesource.DamageType;
-import net.minecraft.world.damagesource.DamageTypes;
-import net.minecraft.world.damagesource.DeathMessageType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
 
 import org.apache.commons.io.FilenameUtils;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.craftbukkit.v1_20_R3.CraftRegistry;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -48,7 +31,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 public class Bootstrap implements PluginBootstrap {
-    public static WaterProtectionNMSImpl waterProtection;
+    public static WaterProtectionEnchantment waterProtection;
 
     @Override
     public void bootstrap(@NotNull BootstrapContext context) {
@@ -60,7 +43,7 @@ public class Bootstrap implements PluginBootstrap {
         }
         // hurt by water damage type
         EquipmentSlot[] slots = {EquipmentSlot.CHEST, EquipmentSlot.FEET, EquipmentSlot.HEAD, EquipmentSlot.LEGS};
-        WaterProtectionNMSImpl waterProtection = new WaterProtectionNMSImpl(net.minecraft.world.item.enchantment.Enchantment.Rarity.COMMON, EnchantmentCategory.ARMOR, slots);
+        WaterProtectionEnchantment waterProtection = new WaterProtectionEnchantment(Enchantment.Rarity.RARE, EnchantmentCategory.ARMOR, slots);
         registerEnchantment("water_protection", waterProtection);
         Bootstrap.waterProtection = waterProtection;
     }

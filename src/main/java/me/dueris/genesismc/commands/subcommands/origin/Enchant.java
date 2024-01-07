@@ -81,16 +81,15 @@ public class Enchant extends SubCommand {
                         return;
                     }
 
-                    String romanLevel = "I";
-                    if (level == 2) romanLevel = "II";
-                    if (level == 3) romanLevel = "III";
-                    if (level == 4) romanLevel = "IV";
+                    String romanLevel = Anvil.numberToRomanNum(level);
                     ItemMeta meta = p.getInventory().getItemInMainHand().getItemMeta();
                     meta.setCustomModelData(level);
                     p.getInventory().getItemInMainHand().setLore(List.of(ChatColor.GRAY + "Water Protection " + romanLevel));
-                    p.getInventory().getItemInMainHand().addUnsafeEnchantment(CraftEnchantment.minecraftToBukkit(Anvil.eimpl), level);
-                    Bukkit.dispatchCommand(new OriginCommandSender(), "enchant {p} origins:water_protection {lvl}"
-                        .replace("{p}", p.getName()).replace("{lvl}", String.valueOf(level)));
+                    p.getInventory().getItemInMainHand().addEnchantment(Anvil.bukkitEnchantment, level);
+                    sender.sendMessage("Applied enchantment " +
+                        ChatColor.GRAY + "{water_prot}".replace("{water_prot}", "Water Protection " + Anvil.numberToRomanNum(level)) +
+                        ChatColor.WHITE + " to {target}'s item".replace("{target}", p.getName())
+                    );
                 }
             }
         }

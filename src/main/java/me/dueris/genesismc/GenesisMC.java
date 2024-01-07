@@ -12,7 +12,6 @@ import me.dueris.genesismc.commands.subcommands.origin.Info.Info;
 import me.dueris.genesismc.commands.subcommands.origin.Recipe;
 import me.dueris.genesismc.enchantments.Anvil;
 import me.dueris.genesismc.enchantments.EnchantTable;
-import me.dueris.genesismc.enchantments.WaterProtection;
 import me.dueris.genesismc.entity.InventorySerializer;
 import me.dueris.genesismc.entity.OriginPlayerUtils;
 import me.dueris.genesismc.events.EventListeners;
@@ -31,14 +30,13 @@ import me.dueris.genesismc.factory.conditions.item.ItemCondition;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.factory.powers.block.WaterBreathe;
 import me.dueris.genesismc.factory.powers.player.PlayerRender;
-import me.dueris.genesismc.factory.powers.player.inventory.Inventory;
 import me.dueris.genesismc.factory.powers.simple.BounceSlimeBlock;
 import me.dueris.genesismc.factory.powers.simple.MimicWarden;
 import me.dueris.genesismc.factory.powers.world.EntityGroupManager;
 import me.dueris.genesismc.files.GenesisDataFiles;
 import me.dueris.genesismc.files.TempStorageContainer;
-import me.dueris.genesismc.generation.VillagerTradeHook;
-import me.dueris.genesismc.generation.WaterProtBookGen;
+import me.dueris.genesismc.enchantments.generation.VillagerTradeHook;
+import me.dueris.genesismc.enchantments.generation.WaterProtBookGen;
 import me.dueris.genesismc.hooks.papi.PlaceholderApiExtension;
 import me.dueris.genesismc.items.GenesisItems;
 import me.dueris.genesismc.items.InfinPearl;
@@ -57,8 +55,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerChatEvent;
-import org.bukkit.event.player.PlayerInteractAtEntityEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -66,16 +62,13 @@ import org.bukkit.scoreboard.Team;
 import org.spigotmc.WatchdogThread;
 
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.EnumSet;
-import java.util.HashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 
 import static me.dueris.genesismc.PlayerHandler.ReapplyEntityReachPowers;
-import static me.dueris.genesismc.entity.OriginPlayerUtils.powersAppliedList;
 import static me.dueris.genesismc.factory.powers.simple.BounceSlimeBlock.bouncePlayers;
 import static me.dueris.genesismc.factory.powers.simple.MimicWarden.getParticleTasks;
 import static me.dueris.genesismc.factory.powers.simple.MimicWarden.mimicWardenPlayers;
@@ -88,9 +81,8 @@ public final class GenesisMC extends JavaPlugin implements Listener {
     public static Metrics metrics;
     public static boolean disableRender = true;
     public static ArrayList<Enchantment> custom_enchants = new ArrayList<>();
-    @Deprecated(forRemoval = true)
-    public static WaterProtection waterProtectionEnchant;
     private static GenesisMC plugin;
+    public static String MODID = "genesismc";
     public static ConditionExecutor conditionExecutor;
     public static String apoliVersion = "1.11.3";
     public static boolean placeholderapi = false;
@@ -99,7 +91,6 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         tool = EnumSet.of(Material.DIAMOND_AXE, Material.DIAMOND_HOE, Material.DIAMOND_PICKAXE, Material.DIAMOND_SHOVEL, Material.DIAMOND_SWORD, Material.GOLDEN_AXE, Material.GOLDEN_HOE, Material.GOLDEN_PICKAXE, Material.GOLDEN_SHOVEL, Material.GOLDEN_SWORD, Material.NETHERITE_AXE, Material.NETHERITE_HOE, Material.NETHERITE_PICKAXE, Material.NETHERITE_SHOVEL, Material.NETHERITE_SWORD, Material.IRON_AXE, Material.IRON_HOE, Material.IRON_PICKAXE, Material.IRON_SHOVEL, Material.IRON_SWORD, Material.WOODEN_AXE, Material.WOODEN_HOE, Material.WOODEN_PICKAXE, Material.WOODEN_SHOVEL, Material.WOODEN_SWORD, Material.SHEARS);
     }
 
-    public static boolean forceMixinOrigins = classExists("org.spongepowered.asm.launch.MixinBootstrap");
     public static boolean debugOrigins = false;
     public static boolean forceUseCurrentVersion = false;
     public static boolean forceWatchdogStop = true;
@@ -123,13 +114,16 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         versions.add("1.20.3");
     }
 
-    /**
-     * For some reason, this works for fixing the bug where you cant interact or hit entities?
-     * @param e
-     */
-    @EventHandler
-    public void test(PlayerInteractAtEntityEvent e){
-//        e.getPlayer().sendMessage(String.valueOf(e.isCancelled()));
+    public static NamespacedKey identifier(String path){
+        return new NamespacedKey(MODID, path);
+    }
+
+    public static NamespacedKey originIdentifier(String path){
+        return new NamespacedKey("origins", path);
+    }
+
+    public static NamespacedKey apoliIdentifier(String path){
+        return new NamespacedKey("apoli", path);
     }
 
     public static ConditionExecutor getConditionExecutor(){
@@ -164,11 +158,6 @@ public final class GenesisMC extends JavaPlugin implements Listener {
             Bukkit.getLogger().severe("Unable to start GenesisMC due to it not being compatible with this server version");
             Bukkit.getServer().getPluginManager().disablePlugin(this);
         }
-        try{
-            if(forceMixinOrigins) {
-                Bukkit.getLogger().info("Loading Mixin Environment...");
-            }
-        } catch (Exception e){}
         if(forceWatchdogStop){
             WatchdogThread.doStop();
         }
@@ -417,7 +406,6 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         getServer().getPluginManager().registerEvents(new InventorySerializer(), this);
         getServer().getPluginManager().registerEvents(this, this);
         getServer().getPluginManager().registerEvents(new CooldownManager(), this);
-        getServer().getPluginManager().registerEvents(this, this);
         getServer().getPluginManager().registerEvents(new PlayerHandler(), this);
         getServer().getPluginManager().registerEvents(new EnchantTable(), this);
         getServer().getPluginManager().registerEvents(new Anvil(), this);

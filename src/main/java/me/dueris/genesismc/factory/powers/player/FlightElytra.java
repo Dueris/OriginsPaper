@@ -5,7 +5,6 @@ import me.dueris.genesismc.entity.OriginPlayerUtils;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.protocol.SendStringPacketPayload;
 import me.dueris.genesismc.utils.LayerContainer;
 import me.dueris.genesismc.utils.OriginContainer;
 import me.dueris.genesismc.utils.PowerContainer;
@@ -127,9 +126,11 @@ public class FlightElytra extends CraftPower implements Listener {
     public void recreateFallDamage(GenericGameEvent e){
         if(e.getEvent().equals(GameEvent.HIT_GROUND)){
             if(e.getEntity() instanceof Player p){
+                if(p.getGameMode().equals(GameMode.CREATIVE)) return;
                 if(elytra.contains(p)){
                     float fallDistance = p.getFallDistance();
                     ServerPlayer pl = ((CraftPlayer)p).getHandle();
+                    if(pl.getAbilities().invulnerable) return;
                     if (fallDistance >= 2.0F) {
                         pl.awardStat(Stats.FALL_ONE_CM, (int) Math.round((double) fallDistance * 100.0D));
                     }

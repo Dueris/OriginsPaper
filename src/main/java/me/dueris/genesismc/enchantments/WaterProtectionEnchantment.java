@@ -1,8 +1,6 @@
 package me.dueris.genesismc.enchantments;
 
-import org.bukkit.craftbukkit.v1_20_R3.enchantments.CraftEnchantment;
-
-import com.google.common.annotations.Beta;
+import net.minecraft.world.item.enchantment.ProtectionEnchantment;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
@@ -14,9 +12,9 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
 
-public class WaterProtectionNMSImpl extends Enchantment {
+public class WaterProtectionEnchantment extends Enchantment {
     String descriptionID = "water_protection";
-    public WaterProtectionNMSImpl(Rarity weight, EnchantmentCategory target, EquipmentSlot[] slotTypes) {
+    public WaterProtectionEnchantment(Rarity weight, EnchantmentCategory target, EquipmentSlot[] slotTypes) {
         super(weight, target, slotTypes);
     }
 
@@ -55,11 +53,6 @@ public class WaterProtectionNMSImpl extends Enchantment {
     }
 
     @Override
-    public boolean isTreasureOnly() {
-        return true;
-    }
-
-    @Override
     public boolean isTradeable() {
         return super.isTradeable();
     }
@@ -76,12 +69,10 @@ public class WaterProtectionNMSImpl extends Enchantment {
 
     @Override
     protected boolean checkCompatibility(Enchantment other) {
-        for(org.bukkit.enchantments.Enchantment enchant : Anvil.conflictenchantments){
-            CraftEnchantment enchantt = (CraftEnchantment) enchant;
-            if(other == enchantt.getHandle()){
-                return true;
-            }
+        if(other == this || ((other instanceof ProtectionEnchantment && !(((ProtectionEnchantment)other).type == ProtectionEnchantment.Type.FALL)))) {
+            return false;
         }
-        return false;
+        return super.checkCompatibility(other);
     }
+
 }

@@ -1,36 +1,30 @@
 package me.dueris.genesismc.enchantments;
 
-import me.dueris.genesismc.Bootstrap;
-import me.dueris.genesismc.GenesisMC;
+import com.destroystokyo.paper.event.inventory.PrepareResultEvent;
 import net.kyori.adventure.text.Component;
-import net.md_5.bungee.api.chat.BaseComponent;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.craftbukkit.v1_20_R3.CraftRegistry;
 import org.bukkit.craftbukkit.v1_20_R3.enchantments.CraftEnchantment;
 import org.bukkit.craftbukkit.v1_20_R3.inventory.CraftItemStack;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.PrepareAnvilEvent;
-import org.bukkit.event.inventory.PrepareGrindstoneEvent;
+import org.bukkit.event.player.PlayerChatEvent;
+import org.bukkit.inventory.AnvilInventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Nullable;
 
-import static me.dueris.genesismc.GenesisMC.waterProtectionEnchant;
-
 public class Anvil implements Listener {
-    public static @Nullable net.minecraft.world.item.enchantment.Enchantment eimpl = CraftEnchantment.bukkitToMinecraft(CraftRegistry.ENCHANTMENT.get(new NamespacedKey("origins", "water_protection")));
+    public static @Nullable net.minecraft.world.item.enchantment.Enchantment minecraftEnchantment = CraftEnchantment.bukkitToMinecraft(CraftRegistry.ENCHANTMENT.get(new NamespacedKey("origins", "water_protection")));
+    public static Enchantment bukkitEnchantment = Enchantment.getByKey(new NamespacedKey("origins", "water_protection"));
     public static ArrayList<Enchantment> conflictenchantments = new ArrayList<>();
     static {
         conflictenchantments.add(Enchantment.PROTECTION_FIRE);
@@ -41,85 +35,84 @@ public class Anvil implements Listener {
     }
 
     @EventHandler
+    public void onAnvilResult(PrepareResultEvent e){
+        if(e.getInventory() instanceof AnvilInventory inv){
+            if(inv.getResult() == null) return;
+            if(inv.getResult().containsEnchantment(bukkitEnchantment)){
+                inv.setResult(setWaterProtCustomEnchantLevel(inv.getResult().getEnchantmentLevel(bukkitEnchantment), inv.getResult()));
+            }
+        }
+    }
+
+    @EventHandler
     public void onAnvil(PrepareAnvilEvent e) {
         boolean conflicts = false;
-        if(e.getInventory().getItem(0) != null && e.getInventory().getItem(1) != null){
-            if(e.getInventory().getItem(0).containsEnchantment(CraftEnchantment.minecraftToBukkit(eimpl)) || e.getInventory().getItem(1).containsEnchantment(CraftEnchantment.minecraftToBukkit(eimpl))){
-                Enchantment waterProt = CraftEnchantment.minecraftToBukkit(eimpl);
+        try {
+            if(e.getInventory().getFirstItem() != null && e.getInventory().getSecondItem() != null){
+                if(e.getInventory().getFirstItem().containsEnchantment(bukkitEnchantment) || e.getInventory().getSecondItem().containsEnchantment(bukkitEnchantment)){
+                    for(Enchantment possConf : e.getInventory().getFirstItem().getEnchantments().keySet()){
+                        if(!conflicts){
+                            if(!minecraftEnchantment.isCompatibleWith(((CraftEnchantment)possConf).getHandle())){
+                                conflicts = true;
+                            }
+                        }
+                    }
+                    for(Enchantment possConf : e.getInventory().getSecondItem().getEnchantments().keySet()){
+                        if(!conflicts){
+                            if(!minecraftEnchantment.isCompatibleWith(((CraftEnchantment)possConf).getHandle())){
+                                conflicts = true;
+                            }
+                        }
+                    }
+                }
+            }
+            if(!conflicts){
+                // begin anvil calculations. no conflicts and the result != null
+                if(e.getInventory().getFirstItem().containsEnchantment(bukkitEnchantment) || e.getInventory().getSecondItem().containsEnchantment(bukkitEnchantment)){
+                    boolean firstContains = e.getInventory().getFirstItem().containsEnchantment(bukkitEnchantment);
+                    boolean secondContains = e.getInventory().getSecondItem().containsEnchantment(bukkitEnchantment);
+                    int resultLvl = 0;
+                    if(firstContains && secondContains){
+                        int firstlvl = e.getInventory().getFirstItem().getEnchantments().get(bukkitEnchantment);
+                        int secondlvl = e.getInventory().getSecondItem().getEnchantments().get(bukkitEnchantment);
+                        int finl = 1;
+                        if(firstlvl > secondlvl){
+                            finl = firstlvl;
+                        } else if(firstlvl < secondlvl){
+                            finl = secondlvl;
+                        } else if(firstlvl == secondlvl){
+                            finl = firstlvl + 1;
+                        }
+                        resultLvl = finl;
+                    } else if(firstContains && !secondContains) {
+                        resultLvl = e.getInventory().getFirstItem().getEnchantments().get(bukkitEnchantment);
+                    } else if(!firstContains && secondContains){
+                        resultLvl = e.getInventory().getSecondItem().getEnchantments().get(bukkitEnchantment);
+                    }
+                    if(resultLvl != 0){
+//                        e.setResult(setWaterProtCustomEnchantLevel(resultLvl, new ItemStack(e.getInventory().getFirstItem())));
+                    }
+                }
+            }
+        } catch (Exception ee){
+            // me personally i am done with this enchant system
+        }
 
-                for(Enchantment possConf : e.getInventory().getItem(0).getEnchantments().keySet()){
-                    if(!conflicts){
-                        if(!eimpl.isCompatibleWith(((CraftEnchantment)possConf).getHandle())){
-                            conflicts = true;
-                            e.setResult(null);
-                        }
-                    }
-                }
-                for(Enchantment possConf : e.getInventory().getItem(1).getEnchantments().keySet()){
-                    if(!conflicts){
-                        if(!eimpl.isCompatibleWith(((CraftEnchantment)possConf).getHandle())){
-                            conflicts = true;
-                            e.setResult(null);
-                        }
-                    }
-                }
-            }
-        }
-        if(e.getResult() != null && !conflicts && e.getInventory().getItem(0) != null && e.getInventory().getItem(1) != null){
-            // begin anvil calculations. no conflicts and the result != null
-            if(e.getInventory().getItem(0).containsEnchantment(CraftEnchantment.minecraftToBukkit(eimpl)) || e.getInventory().getItem(1).containsEnchantment(CraftEnchantment.minecraftToBukkit(eimpl))){
-                boolean firstContains = e.getInventory().getItem(0).containsEnchantment(CraftEnchantment.minecraftToBukkit(eimpl));
-                boolean secondContains = e.getInventory().getItem(1).containsEnchantment(CraftEnchantment.minecraftToBukkit(eimpl));
-                if(firstContains && secondContains){
-                    int firstlvl = e.getInventory().getItem(0).getEnchantments().get(CraftEnchantment.minecraftToBukkit(eimpl));
-                    int secondlvl = e.getInventory().getItem(1).getEnchantments().get(CraftEnchantment.minecraftToBukkit(eimpl));
-                    int finl = 1;
-                    if(firstlvl > secondlvl){
-                        finl = firstlvl;
-                    } else if(firstlvl < secondlvl){
-                        finl = secondlvl;
-                    } else if(firstlvl == secondlvl){
-                        finl = firstlvl + 1;
-                    }
-                    setWaterProtCustomEnchantLevel(finl, e.getResult());
-                } else if(firstContains && !secondContains){
-                    int firstlvl = e.getInventory().getItem(0).getEnchantments().get(CraftEnchantment.minecraftToBukkit(eimpl));
-                    setWaterProtCustomEnchantLevel(firstlvl, e.getResult());
-                } else if(!firstContains && !secondContains){
-                    // why is this even coded bro this is unreachable
-                } else if(!firstContains && secondContains){
-                    int secondlvl = e.getInventory().getItem(1).getEnchantments().get(CraftEnchantment.minecraftToBukkit(eimpl));
-                    setWaterProtCustomEnchantLevel(secondlvl, e.getResult());
-                }
-            }
-        }
     }
 
-    protected static void setWaterProtCustomEnchantLevel(int lvl, ItemStack item) {
-        String level = numberToRomanNum(lvl);
+    public static ItemStack setWaterProtCustomEnchantLevel(int lvl, ItemStack item) {
         ItemMeta meta = item.getItemMeta().clone();
         meta.setCustomModelData(lvl);
-        
-        List<Component> lore = meta.lore();
-        if (lore == null) {
-            lore = new ArrayList<>(); // Initialize the lore if it's null
-        } else {
-            // Remove existing "Water Protection" lore
-            lore.removeIf(loreString -> loreString.examinableName().startsWith("Water Protection"));
-        }
-        
-        lore.add(Component.text(ChatColor.GRAY + "{name} {lvl}"
-                .replace("{name}", "Water Protection")
-                .replace("{lvl}", level)));
-    
-        meta.lore(lore); // Set the modified lore back to the item meta
+        meta.setLore(List.of(ChatColor.GRAY + "Water Protection " + numberToRomanNum(lvl)));
+
         item.setItemMeta(meta);
         
-        net.minecraft.world.item.ItemStack stack = CraftItemStack.asNMSCopy(item);
-        stack.enchant(eimpl, lvl);
+        net.minecraft.world.item.ItemStack stack = CraftItemStack.unwrap(item);
+        stack.enchant(minecraftEnchantment, lvl);
+        return CraftItemStack.asCraftMirror(stack);
     }
 
-    private static String numberToRomanNum(int lvl){
+    public static String numberToRomanNum(int lvl){
         if(lvl > 10){
             Bukkit.getLogger().severe("Cannot translate value higher than max enchantment value in Genesis {4}");
             return null;
