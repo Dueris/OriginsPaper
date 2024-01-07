@@ -174,7 +174,7 @@ public class PowerContainer implements Serializable {
      */
     public Long getInterval() {
         Object render = powerFile.get("interval");
-        if (render == null) return 5L;
+        if (render == null) return 20L;
         return (long) render;
     }
 
