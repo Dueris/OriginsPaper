@@ -101,7 +101,7 @@ public class PlayerHandler implements Listener {
             }
             origins.put(layer, CraftApoli.nullOrigin());
         }
-        p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "originLayer"), PersistentDataType.STRING, CraftApoli.toSaveFormat(origins, p));
+        p.getPersistentDataContainer().set(GenesisMC.identifier("originLayer"), PersistentDataType.STRING, CraftApoli.toSaveFormat(origins, p));
 
         //removes deleted layer from the players data
         for (LayerContainer layer : deletedLayers) OriginPlayerUtils.removeOrigin(p, layer);
@@ -113,49 +113,42 @@ public class PlayerHandler implements Listener {
         p.setMaximumAir(300);
         Bukkit.getLogger().info("PlayerLocale saved as[" + Translation.getPlayerLocale(p) + "] for player[%player%]".replace("%player%", p.getName()));
         //set origins to null if none present
-        if (p.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "originLayer"), PersistentDataType.STRING) == null) {
+        if (
+            !p.getPersistentDataContainer().has(GenesisMC.identifier("originLayer"), PersistentDataType.STRING) ||
+            p.getPersistentDataContainer().get(GenesisMC.identifier("originLayer"), PersistentDataType.STRING) == null ||
+            p.getPersistentDataContainer().get(GenesisMC.identifier("originLayer"), PersistentDataType.STRING) == " "
+        ){
             HashMap<LayerContainer, OriginContainer> origins = new HashMap<>();
             for (LayerContainer layer : CraftApoli.getLayers()) origins.put(layer, CraftApoli.nullOrigin());
-            p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "originLayers"), PersistentDataType.STRING, CraftApoli.toOriginSetSaveFormat(origins));
-            if (!p.getPersistentDataContainer().has(new NamespacedKey(GenesisMC.getPlugin(), "hasFirstChose"), PersistentDataType.BOOLEAN)){
-                p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "hasFirstChose"), PersistentDataType.BOOLEAN, false);
-            }
-        }
-        if (!p.getPersistentDataContainer().has(new NamespacedKey(GenesisMC.getPlugin(), "originLayer"), PersistentDataType.STRING) || p.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "originLayer"), PersistentDataType.STRING) == null){
-            HashMap<LayerContainer, OriginContainer> origins = new HashMap<>();
-            for (LayerContainer layer : CraftApoli.getLayers()) origins.put(layer, CraftApoli.nullOrigin());
-            p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "originLayer"), PersistentDataType.STRING, CraftApoli.toOriginSetSaveFormat(origins));
-            if (!p.getPersistentDataContainer().has(new NamespacedKey(GenesisMC.getPlugin(), "hasFirstChose"), PersistentDataType.BOOLEAN)){
-                p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "hasFirstChose"), PersistentDataType.BOOLEAN, false);
-            }
+            p.getPersistentDataContainer().set(GenesisMC.identifier("originLayer"), PersistentDataType.STRING, CraftApoli.toOriginSetSaveFormat(origins));
         }
                                                
         // ---  translation system ---
-        String originTag = p.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "originTag"), PersistentDataType.STRING);
+        String originTag = p.getPersistentDataContainer().get(GenesisMC.identifier("originTag"), PersistentDataType.STRING);
 
         if (!(originTag == null || originTag.equals("null"))) {
             for (OriginContainer origin : CraftApoli.getOrigins()) {
                 if (("origin-" + (origin.getTag().substring(8))).equals(originTag.substring(8)))
-                    p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "originLayer"), PersistentDataType.STRING, CraftApoli.toOriginSetSaveFormat(new HashMap<>(Map.of(CraftApoli.getLayerFromTag("origins:origin"), origin))));
+                    p.getPersistentDataContainer().set(GenesisMC.identifier("originLayer"), PersistentDataType.STRING, CraftApoli.toOriginSetSaveFormat(new HashMap<>(Map.of(CraftApoli.getLayerFromTag("origins:origin"), origin))));
             }
         }
 
-        if(p.getPersistentDataContainer().has(new NamespacedKey(GenesisMC.getPlugin(), "origins"))){
-            p.getPersistentDataContainer().remove(new NamespacedKey(GenesisMC.getPlugin(), "originTag"));
+        if(p.getPersistentDataContainer().has(GenesisMC.identifier("origins"))){
+            p.getPersistentDataContainer().remove(GenesisMC.identifier("originTag"));
         }
 
-        if (p.getPersistentDataContainer().has(new NamespacedKey(GenesisMC.getPlugin(), "origins"), PersistentDataType.BYTE_ARRAY)){
-            p.getPersistentDataContainer().remove(new NamespacedKey(GenesisMC.getPlugin(), "origins"));
+        if (p.getPersistentDataContainer().has(GenesisMC.identifier("origins"), PersistentDataType.BYTE_ARRAY)){
+            p.getPersistentDataContainer().remove(GenesisMC.identifier("origins"));
         }
 
-        if (p.getPersistentDataContainer().has(new NamespacedKey(GenesisMC.getPlugin(), "origin"), PersistentDataType.BYTE_ARRAY)) {
-            ByteArrayInputStream bis = new ByteArrayInputStream(p.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "origin"), PersistentDataType.BYTE_ARRAY));
+        if (p.getPersistentDataContainer().has(GenesisMC.identifier("origin"), PersistentDataType.BYTE_ARRAY)) {
+            ByteArrayInputStream bis = new ByteArrayInputStream(p.getPersistentDataContainer().get(GenesisMC.identifier("origin"), PersistentDataType.BYTE_ARRAY));
             try {
                 ObjectInput oi = new ObjectInputStream(bis);
                 LegacyOriginContainer legacyOrigin = (LegacyOriginContainer) oi.readObject();
-                p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "originLayer"), PersistentDataType.STRING, CraftApoli.toOriginSetSaveFormat(new HashMap<>(Map.of(CraftApoli.getLayerFromTag("origins:origin"), CraftApoli.getOrigin(legacyOrigin.getTag())))));
-                p.getPersistentDataContainer().remove(new NamespacedKey(GenesisMC.getPlugin(), "origins"));
-                p.getPersistentDataContainer().remove(new NamespacedKey(GenesisMC.getPlugin(), "origin"));
+                p.getPersistentDataContainer().set(GenesisMC.identifier("originLayer"), PersistentDataType.STRING, CraftApoli.toOriginSetSaveFormat(new HashMap<>(Map.of(CraftApoli.getLayerFromTag("origins:origin"), CraftApoli.getOrigin(legacyOrigin.getTag())))));
+                p.getPersistentDataContainer().remove(GenesisMC.identifier("origins"));
+                p.getPersistentDataContainer().remove(GenesisMC.identifier("origin"));
             } catch (Exception er) {
                 for (LayerContainer layer : CraftApoli.getLayers()) {
                     OriginPlayerUtils.setOrigin(p, layer, CraftApoli.nullOrigin());
@@ -164,31 +157,31 @@ public class PlayerHandler implements Listener {
         }
 //        Bukkit.getLogger().warning("[GenesisMC] Reminder to devs - fix old origin container translation"); // yeah we fixed this already?
 
-        if (!p.getPersistentDataContainer().has(new NamespacedKey(GenesisMC.getPlugin(), "insideBlock"), PersistentDataType.BOOLEAN)) {
-            p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "insideBlock"), PersistentDataType.BOOLEAN, false);
+        if (!p.getPersistentDataContainer().has(GenesisMC.identifier("insideBlock"), PersistentDataType.BOOLEAN)) {
+            p.getPersistentDataContainer().set(GenesisMC.identifier("insideBlock"), PersistentDataType.BOOLEAN, false);
         }
 
         //default playerdata values
         PersistentDataContainer data = p.getPersistentDataContainer();
-        if (!data.has(new NamespacedKey(GenesisMC.getPlugin(), "shulker-box"), PersistentDataType.STRING)) {
-            data.set(new NamespacedKey(GenesisMC.getPlugin(), "shulker-box"), PersistentDataType.STRING, "");
+        if (!data.has(GenesisMC.identifier("shulker-box"), PersistentDataType.STRING)) {
+            data.set(GenesisMC.identifier("shulker-box"), PersistentDataType.STRING, "");
         }
-        if (!p.getPersistentDataContainer().has(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER)) {
-            p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, 1);
+        if (!p.getPersistentDataContainer().has(GenesisMC.identifier("can-explode"), PersistentDataType.INTEGER)) {
+            p.getPersistentDataContainer().set(GenesisMC.identifier("can-explode"), PersistentDataType.INTEGER, 1);
         }
-        if (!p.getPersistentDataContainer().has(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.BOOLEAN)) {
-            p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.BOOLEAN, false);
+        if (!p.getPersistentDataContainer().has(GenesisMC.identifier("in-phantomform"), PersistentDataType.BOOLEAN)) {
+            p.getPersistentDataContainer().set(GenesisMC.identifier("in-phantomform"), PersistentDataType.BOOLEAN, false);
         }
-        if (!p.getPersistentDataContainer().has(new NamespacedKey(GenesisMC.getPlugin(), "toggle"), PersistentDataType.INTEGER)) {
-            p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "toggle"), PersistentDataType.INTEGER, 1);
+        if (!p.getPersistentDataContainer().has(GenesisMC.identifier("toggle"), PersistentDataType.INTEGER)) {
+            p.getPersistentDataContainer().set(GenesisMC.identifier("toggle"), PersistentDataType.INTEGER, 1);
         }
 
         try{
-            if (!p.getPersistentDataContainer().has(new NamespacedKey(GenesisMC.getPlugin(), "modified-skin-url"), PersistentDataType.STRING) || p.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "modified-skin-url"), PersistentDataType.STRING) == null) {
-                p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "modified-skin-url"), PersistentDataType.STRING, p.getPlayerProfile().getTextures().getSkin().getFile());
+            if (!p.getPersistentDataContainer().has(GenesisMC.identifier("modified-skin-url"), PersistentDataType.STRING) || p.getPersistentDataContainer().get(GenesisMC.identifier("modified-skin-url"), PersistentDataType.STRING) == null) {
+                p.getPersistentDataContainer().set(GenesisMC.identifier("modified-skin-url"), PersistentDataType.STRING, p.getPlayerProfile().getTextures().getSkin().getFile());
             }
-            if (!p.getPersistentDataContainer().has(new NamespacedKey(GenesisMC.getPlugin(), "original-skin-url"), PersistentDataType.STRING) || p.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "original-skin-url"), PersistentDataType.STRING) == null) {
-                p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "original-skin-url"), PersistentDataType.STRING, p.getPlayerProfile().getTextures().getSkin().getFile());
+            if (!p.getPersistentDataContainer().has(GenesisMC.identifier("original-skin-url"), PersistentDataType.STRING) || p.getPersistentDataContainer().get(GenesisMC.identifier("original-skin-url"), PersistentDataType.STRING) == null) {
+                p.getPersistentDataContainer().set(GenesisMC.identifier("original-skin-url"), PersistentDataType.STRING, p.getPlayerProfile().getTextures().getSkin().getFile());
             }
         } catch (Exception vv){
             //silence code - offline mode fucks things
@@ -295,7 +288,7 @@ public class PlayerHandler implements Listener {
 
     @EventHandler
     public void playerQuitHandler(PlayerQuitEvent e) {
-        e.getPlayer().getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "originLayer"), PersistentDataType.STRING, CraftApoli.toSaveFormat(OriginPlayerUtils.getOrigin(e.getPlayer()), e.getPlayer()));
+        e.getPlayer().getPersistentDataContainer().set(GenesisMC.identifier("originLayer"), PersistentDataType.STRING, CraftApoli.toSaveFormat(OriginPlayerUtils.getOrigin(e.getPlayer()), e.getPlayer()));
         OriginPlayerUtils.unassignPowers(e.getPlayer());
         OriginDataContainer.unloadData(e.getPlayer());
     }

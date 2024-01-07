@@ -30,9 +30,9 @@ public class CraftApoli {
     @SuppressWarnings("FieldMayBeFinal")
     private static ArrayList<LayerContainer> originLayers = new ArrayList<>();
     @SuppressWarnings("FieldMayBeFinal")
-    private static ConcurrentSet<OriginContainer> originContainers = new ConcurrentSet<>();
+    private static ArrayList<OriginContainer> originContainers = new ArrayList<>();
     @SuppressWarnings("FieldMayBeFinal")
-    private static ConcurrentSet<PowerContainer> powerContainers = new ConcurrentSet<>();
+    private static ArrayList<PowerContainer> powerContainers = new ArrayList<>();
     @SuppressWarnings("FieldMayBeFinal")
     public static ConcurrentHashMap<String, PowerContainer> keyedPowerContainers = new ConcurrentHashMap();
 
@@ -40,15 +40,14 @@ public class CraftApoli {
      * @return A copy of each layerTag that is loaded.
      **/
     public static ArrayList<LayerContainer> getLayers() {
-        return (ArrayList<LayerContainer>) originLayers.clone();
+        return originLayers;
     }
 
     /**
      * @return A copy of the CustomOrigin object array for all the origins that are loaded.
      **/
     public static ArrayList<OriginContainer> getOrigins() {
-        List<OriginContainer> originContainersD = new ArrayList<>(originContainers);
-        return (ArrayList<OriginContainer>) originContainersD;
+        return originContainers;
     }
 
     public static OriginContainer getOrigins(String tag) {
@@ -59,8 +58,7 @@ public class CraftApoli {
     }
 
     public static ArrayList<PowerContainer> getPowers() {
-        List<PowerContainer> d = new ArrayList<>(powerContainers);
-        return (ArrayList<PowerContainer>) d;
+        return powerContainers;
     }
 
     public static PowerContainer getPowerContainerFromTag(String tag){

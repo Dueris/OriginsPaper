@@ -33,7 +33,6 @@ import me.dueris.genesismc.factory.powers.simple.BounceSlimeBlock;
 import me.dueris.genesismc.factory.powers.simple.MimicWarden;
 import me.dueris.genesismc.factory.powers.world.EntityGroupManager;
 import me.dueris.genesismc.files.GenesisDataFiles;
-import me.dueris.genesismc.files.TempStorageContainer;
 import me.dueris.genesismc.enchantments.generation.VillagerTradeHook;
 import me.dueris.genesismc.hooks.papi.PlaceholderApiExtension;
 import me.dueris.genesismc.items.GenesisItems;
@@ -172,12 +171,6 @@ public final class GenesisMC extends JavaPlugin implements Listener {
             new PlaceholderApiExtension(this).register();
         }
 
-        // load tempStorageOptimizations - start
-        TempStorageContainer.BiomeStorage biomeStorage = new TempStorageContainer.BiomeStorage();
-        biomeStorage.addValues();
-        TempStorageContainer.StructureStorage structureStorage = new TempStorageContainer.StructureStorage();
-        structureStorage.addValues();
-        // load tempStorageOptimizations - end
         GenesisMC.disableRender = GenesisDataFiles.getMainConfig().getBoolean("disable-render-power");
 
         me.dueris.genesismc.OriginDataContainer.loadData();
@@ -244,6 +237,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         if(debugOrigins){
             Bukkit.getServer().getConsoleSender().sendMessage("* (-debugOrigins={true}) || BEGINNING DEBUG {");
             Bukkit.getServer().getConsoleSender().sendMessage("  - Loaded @1 powers".replace("@1", String.valueOf(CraftPower.getRegistered().toArray().length)));
+            Bukkit.getServer().getConsoleSender().sendMessage("  - Loaded @4 layers".replace("@4", String.valueOf(CraftApoli.getLayers().toArray().length)));
             Bukkit.getServer().getConsoleSender().sendMessage("  - Loaded @2 origins = [".replace("@2", String.valueOf(CraftApoli.getOrigins().toArray().length)));
                 for(OriginContainer originContainer : CraftApoli.getOrigins()){
                     Bukkit.getServer().getConsoleSender().sendMessage("     () -> {@3}".replace("@3", originContainer.getTag()));
@@ -396,7 +390,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
                 p.sendMessage(power.getJsonData()[i]);
             }
         }
-        p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "originLayer"), PersistentDataType.STRING, CraftApoli.toSaveFormat(OriginPlayerUtils.getOrigin(p), p));
+        p.getPersistentDataContainer().set(GenesisMC.identifier( "originLayer"), PersistentDataType.STRING, CraftApoli.toSaveFormat(OriginPlayerUtils.getOrigin(p), p));
     }
 
 

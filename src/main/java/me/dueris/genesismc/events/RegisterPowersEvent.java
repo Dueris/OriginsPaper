@@ -52,7 +52,7 @@ public class RegisterPowersEvent extends Event {
     @Override
     public String toString() {
         return "RegisterPowersEvent{" +
-                "powers=" + "powers" +
+                "powers=" + powers +
                 '}';
     }
 
