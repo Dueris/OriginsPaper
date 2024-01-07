@@ -636,7 +636,7 @@ public class Actions {
             if (include_target) biEntityActionType(entity, entity, bientity_action);
         }
         if (type.equals("origins:block_action_at")) {
-            BlockActionType(entity.getLocation(), entityAction);
+            BlockActionType(entity.getLocation(), (JSONObject) entityAction.get("block_action"));
         }
         if (type.equals("origins:toggle")) {
             if (entity instanceof Player) {
@@ -866,6 +866,9 @@ public class Actions {
                 location.add(0d, 1d, 0d);
                 location.getWorld().getBlockAt(location).setType(block);
             }
+        }
+        if (type.equals("origins:offset")){
+            BlockActionType(location.add(Double.valueOf(power.getOrDefault("x", "0").toString()), Double.valueOf(power.getOrDefault("y", "0").toString()), Double.valueOf(power.getOrDefault("z", "0").toString())), (JSONObject) power.get("action"));
         }
         if (type.equals("genesis:grow_sculk")) {
             location.getBlock().setType(Material.SCULK_CATALYST);
