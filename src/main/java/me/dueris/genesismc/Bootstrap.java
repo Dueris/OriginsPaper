@@ -126,20 +126,9 @@ public class Bootstrap implements PluginBootstrap {
             File container;
             container = new File(bukkitConfiguration.getString("settings.world-container", "."));
             String s = (String) Optional.ofNullable(
-                    "world"
+                levelNameProp()               
             ).orElseGet(() -> {
-                Path propPath = Paths.get("server.properties");
-                if (propPath.toFile().exists()) {
-                    Properties properties = new Properties();
-                    try (FileInputStream input = new FileInputStream(propPath.toFile())) {
-                        properties.load(input);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    return properties.getProperty("level-name", "world");
-                } else {
-                    return "world";
-                }
+                return "world";
             });
                     Path datapackFolder = Paths.get(container.getAbsolutePath() + File.separator + s + File.separator + "datapacks");
             return datapackFolder.toString();
@@ -147,5 +136,21 @@ public class Bootstrap implements PluginBootstrap {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public static String levelNameProp(){
+        Path propPath = Paths.get("server.properties");
+            if (propPath.toFile().exists()) {
+                Properties properties = new Properties();
+                try (FileInputStream input = new FileInputStream(propPath.toFile())) {
+                    properties.load(input);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                System.out.println(properties.keySet());
+                return properties.getProperty("level-name", "world");
+            } else {
+                return "world";
+            }
     }
 }
