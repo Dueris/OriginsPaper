@@ -60,6 +60,10 @@ public class Utils {
         return lines.toArray(new String[0]);
     }
 
+    public static String getNameOrTag(String name, String tag){
+        return name != "No Name" ? name : tag;
+    }
+
     public static boolean hasChangedBlockCoordinates(final Location fromLoc, final Location toLoc) {
         return !(fromLoc.getWorld().equals(toLoc.getWorld())
                 && fromLoc.getBlockX() == toLoc.getBlockX()

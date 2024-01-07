@@ -9,6 +9,7 @@ import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.KeybindUtils;
 import me.dueris.genesismc.utils.OriginContainer;
 import me.dueris.genesismc.utils.PowerContainer;
+import me.dueris.genesismc.utils.Utils;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Sound;
 import org.bukkit.entity.EntityType;
@@ -135,7 +136,7 @@ public class FireProjectile extends CraftPower implements Listener {
                                                                 if (shotsLeft >= 0) {
                                                                     if (power.getKey().getOrDefault("continuous", "false").toString().equalsIgnoreCase("false")) {
                                                                         KeybindUtils.runKeyChangeTriggerReturn(KeybindUtils.getTriggerFromOriginKey(p, key), p, key);
-                                                                        CooldownManager.addCooldown(p, power.getName(), power.getType(), cooldown * 2, key);
+                                                                        CooldownManager.addCooldown(p, Utils.getNameOrTag(power.getName(), power.getTag()), power.getType(), cooldown * 2, key);
                                                                         addCooldownPatch(p);
                                                                         peopladf.remove(p);
                                                                         if(KeybindUtils.getKeybindItem(key, p.getInventory()) != null) {
@@ -150,7 +151,7 @@ public class FireProjectile extends CraftPower implements Listener {
                                                                     } else {
                                                                         if (!in_continuous.contains(p)) {
                                                                             KeybindUtils.runKeyChangeTriggerReturn(KeybindUtils.getTriggerFromOriginKey(p, key), p, key);
-                                                                            CooldownManager.addCooldown(p, power.getName(), power.getType(), cooldown * 2, key);
+                                                                            CooldownManager.addCooldown(p, Utils.getNameOrTag(power.getName(), power.getTag()), power.getType(), cooldown * 2, key);
                                                                             addCooldownPatch(p);
                                                                             peopladf.remove(p);
                                                                             ItemMeta met = KeybindUtils.getKeybindItem(key, p.getInventory()).getItemMeta();

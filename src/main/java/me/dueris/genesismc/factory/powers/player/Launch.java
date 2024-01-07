@@ -9,6 +9,7 @@ import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.KeybindUtils;
 import me.dueris.genesismc.utils.OriginContainer;
 import me.dueris.genesismc.utils.PowerContainer;
+import me.dueris.genesismc.utils.Utils;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Particle;
@@ -85,7 +86,7 @@ public class Launch extends CraftPower implements Listener {
                                                     //power is active
                                                     //dont change any other settings in this other than the powertype and the "retain_state"
                                                     int speed = Integer.parseInt(power.get("speed", null));
-                                                    CooldownManager.addCooldown(p, power.getName(), power.getType(), cooldown, key);
+                                                    CooldownManager.addCooldown(p, Utils.getNameOrTag(power.getName(), power.getTag()), power.getType(), cooldown, key);
                                                     setActive(p, power.getTag(), true);
                                                     p.setVelocity(new Vector(p.getVelocity().getX(), speed, p.getVelocity().getZ()));
                                                     p.spawnParticle(Particle.CLOUD, p.getLocation(), 100);

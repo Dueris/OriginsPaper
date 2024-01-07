@@ -8,6 +8,7 @@ import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.OriginContainer;
 import me.dueris.genesismc.utils.PowerContainer;
+import me.dueris.genesismc.utils.Utils;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -37,7 +38,7 @@ public class ActiveSelf extends CraftPower implements Listener {
                         if (isKeyBeingPressed(e.getPlayer(), power.getKey().getOrDefault("key", "key.origins.primary_active").toString(), true)) {
                             Actions.EntityActionType(e.getPlayer(), power.getEntityAction());
                             if (power.get("cooldown", "1") != null) {
-                                CooldownManager.addCooldown(e.getPlayer(), power.getName(), power.getType(), Integer.parseInt(power.get("cooldown", power.get("max", "1"))), e.getKey());
+                                CooldownManager.addCooldown(e.getPlayer(), Utils.getNameOrTag(power.getName(), power.getTag()), power.getType(), Integer.parseInt(power.get("cooldown", power.get("max", "1"))), e.getKey());
                             }
                         }
                     } else {

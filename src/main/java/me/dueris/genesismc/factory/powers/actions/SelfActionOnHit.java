@@ -7,6 +7,7 @@ import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.OriginContainer;
 import me.dueris.genesismc.utils.PowerContainer;
+import me.dueris.genesismc.utils.Utils;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -40,7 +41,7 @@ public class SelfActionOnHit extends CraftPower implements Listener {
                     setActive(player, power.getTag(), true);
                     Actions.EntityActionType(target, power.getEntityAction());
                     if (power.get("cooldown", "1") != null) {
-                        CooldownManager.addCooldown((Player) target, power.getName(), power.getType(), Integer.parseInt(power.get("cooldown", "1")), "key.attack");
+                        CooldownManager.addCooldown((Player) target, Utils.getNameOrTag(power.getName(), power.getTag()), power.getType(), Integer.parseInt(power.get("cooldown", "1")), "key.attack");
                     }
                 } else {
                     setActive(player, power.getTag(), false);
