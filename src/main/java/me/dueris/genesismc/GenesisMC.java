@@ -241,6 +241,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
                 .replace("versionNumber", pluginVersion)
                 .replace("apoliVersion", apoliVersion)
         );
+        VersionControl.pluginVersionCheck();
         Bukkit.getServer().getConsoleSender().sendMessage("");
         if(debugOrigins){
             Bukkit.getServer().getConsoleSender().sendMessage("* (-debugOrigins={true}) || BEGINNING DEBUG {");

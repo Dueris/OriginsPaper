@@ -48,8 +48,6 @@ public class VersionControl {
 
             if (diff > 0)
                 Bukkit.getLogger().warning("[GenesisMC] " + LangConfig.getLocalizedString(Bukkit.getConsoleSender(), "startup.versionCheck.behind").replace("%versionsBehind%", String.valueOf(diff)));
-            if (diff == 0)
-                Bukkit.getConsoleSender().sendMessage(Component.text("[GenesisMC] " + LangConfig.getLocalizedString(Bukkit.getConsoleSender(), "startup.versionCheck.current")).color(TextColor.fromHexString(GREEN)));
             if (diff < 0)
                 Bukkit.getConsoleSender().sendMessage(Component.text("[GenesisMC] " + LangConfig.getLocalizedString(Bukkit.getConsoleSender(), "startup.versionCheck.ahead")).color(TextColor.fromHexString(GREEN)));
 
