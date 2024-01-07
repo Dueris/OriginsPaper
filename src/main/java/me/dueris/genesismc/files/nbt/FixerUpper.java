@@ -37,8 +37,10 @@ public class FixerUpper {
 
     public static void runFixerUpper() throws IOException{
         Stopwatch stopwatch = Stopwatch.createStarted();
+        File[] filesToFix = MinecraftServer.getServer().playerDataStorage.getPlayerDir().listFiles();
         int[] i = {0};
-        for(File f : MinecraftServer.getServer().playerDataStorage.getPlayerDir().listFiles()){
+        System.out.println("Found (x) files in (dir)".replace("(x)", String.valueOf(filesToFix.length)).replace("(dir)", MinecraftServer.getServer().playerDataStorage.getPlayerDir().toPath().toString()));
+        for(File f : filesToFix){
             GenesisMC.loaderThreadPool.submit(() -> {
                 try {
                     fixupFile(f);
