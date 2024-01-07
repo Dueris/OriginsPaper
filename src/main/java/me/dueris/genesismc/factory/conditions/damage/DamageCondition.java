@@ -60,9 +60,8 @@ public class DamageCondition implements Condition {
                 if (entityDamageEvent instanceof EntityDamageByEntityEvent event) {
                     EntityCondition entityCondition = ConditionExecutor.entityCondition;
                     return entityCondition.check(condition, p, actor, target, block, fluid, itemStack, entityDamageEvent);
-                }else{
-                    return getResult(inverted, Optional.of(false));
                 }
+                return getResult(inverted, Optional.of(false));
             }
             case "origins:bypasses_armor" -> {
                 switch (entityDamageEvent.getCause()) {
@@ -87,6 +86,7 @@ public class DamageCondition implements Condition {
             case "origins:in_tag" -> {
                 String tag = condition.get("tag").toString();
                 //TODO: need to parse tag folder
+                return getResult(inverted, Optional.of(false));
             }
             case "origins:name" -> {
                 String name = condition.get("name").toString().toLowerCase();
@@ -101,6 +101,7 @@ public class DamageCondition implements Condition {
                                         || fallingBlock.getBlockData().getMaterial().equals(Material.DAMAGED_ANVIL)));
                             }
                         }
+                        return getResult(inverted, Optional.of(false));
                     }
                     case "anvil.player" -> {
                         if (entityDamageEvent.getCause().equals(DamageCause.FALLING_BLOCK)) {
@@ -114,27 +115,19 @@ public class DamageCondition implements Condition {
                                     }
                                     return getResult(inverted, Optional.of(entityDamageEvent.getEntity().getLastDamageCause() instanceof EntityDamageByEntityEvent event
                                             && event.getDamager() instanceof Player));
-                                }else{
-                                    return getResult(inverted, Optional.of(false));
                                 }
-                            }else{
-                                return getResult(inverted, Optional.of(false));
                             }
-                        }else{
-                            return getResult(inverted, Optional.of(false));
                         }
+                        return getResult(inverted, Optional.of(false));
                     }
                     case "arrow" -> {
                         if (entityDamageEvent.getEntity() instanceof Player && entityDamageEvent.getCause() == DamageCause.PROJECTILE) {
                             EntityDamageByEntityEvent ev = (EntityDamageByEntityEvent) entityDamageEvent;
                             if (ev.getDamager() instanceof Projectile projectile) {
                                 return getResult(inverted, Optional.of(projectile.getShooter() instanceof Player || projectile.getShooter() instanceof Mob));
-                            }else{
-                                return getResult(inverted, Optional.of(false));
                             }
-                        }else{
-                            return getResult(inverted, Optional.of(false));
                         }
+                        return getResult(inverted, Optional.of(false));
                     }
                     case "arrow.item" -> {
                         if (entityDamageEvent.getEntity() instanceof Player && entityDamageEvent.getCause() == DamageCause.PROJECTILE) {
@@ -144,41 +137,33 @@ public class DamageCondition implements Condition {
                                     if (!((LivingEntity) projectile.getShooter()).getActiveItem().getType().equals(Material.BOW)) {
                                         return getResult(inverted, Optional.of(true));
 
-                                    }else if (!((LivingEntity) projectile.getShooter()).getActiveItem().getType().equals(Material.CROSSBOW)) {
+                                    } else if (!((LivingEntity) projectile.getShooter()).getActiveItem().getType().equals(Material.CROSSBOW)) {
                                         return getResult(inverted, Optional.of(true));
-                                    }else{
-                                        return getResult(inverted, Optional.of(false));
                                     }
-                                }else{
-                                    return getResult(inverted, Optional.of(false));
                                 }
-                            }else{
-                                return getResult(inverted, Optional.of(false));
                             }
-                        }else{
-                            return getResult(inverted, Optional.of(false));
                         }
+                        return getResult(inverted, Optional.of(false));
                     }
                     case "bedrespawnpoint" -> {
                         if (entityDamageEvent.getCause().equals(DamageCause.BLOCK_EXPLOSION)) {
                             return getResult(inverted, Optional.of(isBedExplosionRestrictedDimension(p)));
                         }
+                        return getResult(inverted, Optional.of(false));
                     }
                     case "cactus" -> {
                         if (entityDamageEvent instanceof EntityDamageByBlockEvent eb) {
                             return getResult(inverted, Optional.of(eb.getDamager() != null & eb.getDamager().getType().equals(Material.CACTUS)));
                         }
+                        return getResult(inverted, Optional.of(false));
                     }
                     case "cactus.player" -> {
                         if (entityDamageEvent instanceof EntityDamageByBlockEvent eb) {
                             if (eb.getDamager() != null && eb.getDamager().getType().equals(Material.CACTUS)) {
                                 return getResult(inverted, Optional.of(entityDamageEvent.getEntity().getLastDamageCause() instanceof EntityDamageByEntityEvent damageByEntityEvent && damageByEntityEvent.getDamager() instanceof Player));
-                            }else{
-                                return getResult(inverted, Optional.of(false));
                             }
-                        }else{
-                            return getResult(inverted, Optional.of(false));
                         }
+                        return getResult(inverted, Optional.of(false));
                     }
                     case "cramming" -> {
                         return getResult(inverted, Optional.of(entityDamageEvent.getCause().equals(DamageCause.CRAMMING)));
@@ -186,9 +171,8 @@ public class DamageCondition implements Condition {
                     case "cramming.player" -> {
                         if (entityDamageEvent.getCause().equals(DamageCause.CRAMMING)) {
                             return getResult(inverted, Optional.of(entityDamageEvent.getEntity().getLastDamageCause() instanceof EntityDamageByEntityEvent damageByEntityEvent && damageByEntityEvent.getDamager() instanceof Player));
-                        }else{
-                            return getResult(inverted, Optional.of(false));
                         }
+                        return getResult(inverted, Optional.of(false));
                     }
                     case "dragonbreath" -> {
                         return getResult(inverted, Optional.of(entityDamageEvent.getCause().equals(DamageCause.DRAGON_BREATH)));
@@ -196,9 +180,8 @@ public class DamageCondition implements Condition {
                     case "dragonbreath.player" -> {
                         if (entityDamageEvent.getCause().equals(DamageCause.DRAGON_BREATH)) {
                             return getResult(inverted, Optional.of(entityDamageEvent.getEntity().getLastDamageCause() instanceof EntityDamageByEntityEvent damageByEntityEvent && damageByEntityEvent.getDamager() instanceof Player));
-                        }else{
-                            return getResult(inverted, Optional.of(false));
                         }
+                        return getResult(inverted, Optional.of(false));
                     }
                     case "drown" -> {
                         return getResult(inverted, Optional.of(entityDamageEvent.getCause().equals(DamageCause.DROWNING)));
@@ -206,9 +189,8 @@ public class DamageCondition implements Condition {
                     case "drown.player" -> {
                         if (entityDamageEvent.getCause().equals(DamageCause.DROWNING)) {
                             return getResult(inverted, Optional.of(entityDamageEvent.getEntity().getLastDamageCause() instanceof EntityDamageByEntityEvent damageByEntityEvent && damageByEntityEvent.getDamager() instanceof Player));
-                        }else{
-                            return getResult(inverted, Optional.of(false));
                         }
+                        return getResult(inverted, Optional.of(false));
                     }
                     case "dryout" -> {
                         return getResult(inverted, Optional.of(entityDamageEvent.getCause().equals(DamageCause.DRYOUT)));
@@ -216,9 +198,8 @@ public class DamageCondition implements Condition {
                     case "dryout.player" -> {
                         if (entityDamageEvent.getCause().equals(DamageCause.DRYOUT)) {
                             return getResult(inverted, Optional.of(entityDamageEvent.getEntity().getLastDamageCause() instanceof EntityDamageByEntityEvent damageByEntityEvent && damageByEntityEvent.getDamager() instanceof Player));
-                        }else{
-                            return getResult(inverted, Optional.of(false));
                         }
+                        return getResult(inverted, Optional.of(false));
                     }
                     case "explosion" -> {
                         return getResult(inverted, Optional.of(entityDamageEvent.getCause().equals(DamageCause.ENTITY_EXPLOSION) || entityDamageEvent.getCause().equals(DamageCause.BLOCK_EXPLOSION)));
@@ -226,20 +207,18 @@ public class DamageCondition implements Condition {
                     case "explosion.player" -> {
                         if (entityDamageEvent.getCause().equals(DamageCause.ENTITY_EXPLOSION) || entityDamageEvent.getCause().equals(DamageCause.BLOCK_EXPLOSION)) {
                             return getResult(inverted, Optional.of(entityDamageEvent.getEntity().getLastDamageCause() instanceof EntityDamageByEntityEvent damageByEntityEvent && damageByEntityEvent.getDamager() instanceof Player));
-                        }else{
-                            return getResult(inverted, Optional.of(false));
                         }
+                        return getResult(inverted, Optional.of(false));
                     }
                     case "fall" -> {
                         return getResult(inverted, Optional.of(entityDamageEvent.getCause().equals(DamageCause.FALL)));
                     }
                     case "fall.player" -> {
                         if (entityDamageEvent.getCause().equals(DamageCause.FALL)) {
-                                return getResult(inverted, Optional.of(entityDamageEvent.getEntity().getLastDamageCause() instanceof EntityDamageByEntityEvent damageByEntityEvent
-                                        && damageByEntityEvent.getDamager() instanceof Player));
-                        }else{
-                            return getResult(inverted, Optional.of(false));
+                            return getResult(inverted, Optional.of(entityDamageEvent.getEntity().getLastDamageCause() instanceof EntityDamageByEntityEvent damageByEntityEvent
+                                    && damageByEntityEvent.getDamager() instanceof Player));
                         }
+                        return getResult(inverted, Optional.of(false));
                     }
                     case "fallingblock" -> {
                         return getResult(inverted, Optional.of(entityDamageEvent.getCause().equals(DamageCause.FALLING_BLOCK)));
@@ -248,52 +227,42 @@ public class DamageCondition implements Condition {
                         if (entityDamageEvent.getCause().equals(DamageCause.FALLING_BLOCK)) {
                             return getResult(inverted, Optional.of(entityDamageEvent.getEntity().getLastDamageCause() instanceof EntityDamageByEntityEvent damageByEntityEvent
                                     && damageByEntityEvent.getDamager() instanceof Player));
-                        }else{
-                            return getResult(inverted, Optional.of(false));
                         }
+                        return getResult(inverted, Optional.of(false));
                     }
                     case "fallingstalactite" -> {
                         if (entityDamageEvent instanceof EntityDamageByBlockEvent eb) {
                             return getResult(inverted, Optional.of(eb.getDamager().getType().equals(Material.POINTED_DRIPSTONE)));
-                        }else{
-                            return getResult(inverted, Optional.of(false));
                         }
+                        return getResult(inverted, Optional.of(false));
                     }
                     case "fallingstalactite.player" -> {
                         if (entityDamageEvent instanceof EntityDamageByBlockEvent eb) {
                             if (eb.getDamager() != null && eb.getDamager().getType().equals(Material.POINTED_DRIPSTONE)) {
                                 return getResult(inverted, Optional.of(entityDamageEvent.getEntity().getLastDamageCause() instanceof EntityDamageByEntityEvent damageByEntityEvent && damageByEntityEvent.getDamager() instanceof Player));
-                            }else{
-                                return getResult(inverted, Optional.of(false));
                             }
-                        }else{
-                            return getResult(inverted, Optional.of(false));
                         }
+                        return getResult(inverted, Optional.of(false));
                     }
                     case "fireball" -> {
                         if (entityDamageEvent instanceof EntityDamageByEntityEvent ev) {
                             return getResult(inverted, Optional.of(ev.getDamager() instanceof Fireball));
-                        }else{
-                            return getResult(inverted, Optional.of(false));
                         }
+                        return getResult(inverted, Optional.of(false));
                     }
                     case "fireball.player" -> {
                         if (entityDamageEvent instanceof EntityDamageByEntityEvent ev) {
                             if (ev.getDamager() instanceof Fireball) {
                                 return getResult(inverted, Optional.of(entityDamageEvent.getEntity().getLastDamageCause() instanceof EntityDamageByEntityEvent damageByEntityEvent && damageByEntityEvent.getDamager() instanceof Player));
-                            }else{
-                                return getResult(inverted, Optional.of(false));
                             }
-                        }else{
-                            return getResult(inverted, Optional.of(false));
                         }
+                        return getResult(inverted, Optional.of(false));
                     }
                     case "fireworks" -> {
                         if (entityDamageEvent instanceof EntityDamageByEntityEvent ev) {
                             return getResult(inverted, Optional.of(ev.getDamager() instanceof Firework));
-                        }else{
-                            return getResult(inverted, Optional.of(false));
                         }
+                        return getResult(inverted, Optional.of(false));
                     }
                     case "flyintowall" -> {
                         return getResult(inverted, Optional.of(entityDamageEvent.getCause().equals(DamageCause.FLY_INTO_WALL)));
@@ -303,6 +272,7 @@ public class DamageCondition implements Condition {
                             return getResult(inverted, Optional.of(entityDamageEvent.getEntity().getLastDamageCause() instanceof EntityDamageByEntityEvent damageByEntityEvent
                                     && damageByEntityEvent.getDamager() instanceof Player));
                         }
+                        return getResult(inverted, Optional.of(false));
                     }
                     case "freeze" -> {
                         return getResult(inverted, Optional.of(entityDamageEvent.getCause().equals(DamageCause.FREEZE)));
@@ -312,6 +282,7 @@ public class DamageCondition implements Condition {
                             return getResult(inverted, Optional.of(entityDamageEvent.getEntity().getLastDamageCause() instanceof EntityDamageByEntityEvent damageByEntityEvent
                                     && damageByEntityEvent.getDamager() instanceof Player));
                         }
+                        return getResult(inverted, Optional.of(false));
                     }
                     case "generic" -> {
                         return getResult(inverted, Optional.of(entityDamageEvent.getCause().equals(DamageCause.CUSTOM)));
@@ -320,9 +291,8 @@ public class DamageCondition implements Condition {
                         if (entityDamageEvent.getCause().equals(DamageCause.CUSTOM)) {
                             return getResult(inverted, Optional.of(entityDamageEvent.getEntity().getLastDamageCause() instanceof EntityDamageByEntityEvent damageByEntityEvent
                                     && damageByEntityEvent.getDamager() instanceof Player));
-                        }else{
-                            return getResult(inverted, Optional.of(false));
                         }
+                        return getResult(inverted, Optional.of(false));
                     }
                     case "hotfloor" -> {
                         return getResult(inverted, Optional.of(entityDamageEvent.getCause().equals(DamageCause.HOT_FLOOR)));
@@ -332,12 +302,9 @@ public class DamageCondition implements Condition {
                             if (p.getLocation().getBlock().getRelative(BlockFace.DOWN).getType().equals(Material.MAGMA_BLOCK)) {
                                 return getResult(inverted, Optional.of(entityDamageEvent.getEntity().getLastDamageCause() instanceof EntityDamageByEntityEvent damageByEntityEvent
                                         && damageByEntityEvent.getDamager() instanceof Player));
-                            }else{
-                                return getResult(inverted, Optional.of(false));
                             }
-                        }else{
-                            return getResult(inverted, Optional.of(false));
                         }
+                        return getResult(inverted, Optional.of(false));
                     }
                     case "indirectmagic", "magic" -> {
                         return getResult(inverted, Optional.of(entityDamageEvent.getCause().equals(DamageCause.MAGIC)));
@@ -353,6 +320,7 @@ public class DamageCondition implements Condition {
                             return getResult(inverted, Optional.of(entityDamageEvent.getEntity().getLastDamageCause() instanceof EntityDamageByEntityEvent damageByEntityEvent
                                     && damageByEntityEvent.getDamager() instanceof Player));
                         }
+                        return getResult(inverted, Optional.of(false));
                     }
                     case "lava" -> {
                         return getResult(inverted, Optional.of(entityDamageEvent.getCause().equals(DamageCause.LAVA)));
@@ -361,6 +329,7 @@ public class DamageCondition implements Condition {
                         if (entityDamageEvent.getCause().equals(DamageCause.LAVA)) {
                             return getResult(inverted, Optional.of(entityDamageEvent.getEntity().getLastDamageCause() instanceof EntityDamageByEntityEvent damageByEntityEvent && damageByEntityEvent.getDamager() instanceof Player));
                         }
+                        return getResult(inverted, Optional.of(false));
                     }
                     case "lightningbolt" -> {
                         return getResult(inverted, Optional.of(entityDamageEvent.getCause().equals(DamageCause.LIGHTNING)));
@@ -370,12 +339,14 @@ public class DamageCondition implements Condition {
                             return getResult(inverted, Optional.of(entityDamageEvent.getEntity().getLastDamageCause() instanceof EntityDamageByEntityEvent damageByEntityEvent
                                     && damageByEntityEvent.getDamager() instanceof Player));
                         }
+                        return getResult(inverted, Optional.of(false));
                     }
                     case "magic.player" -> {
                         if (entityDamageEvent.getCause().equals(DamageCause.MAGIC)) {
                             return getResult(inverted, Optional.of(entityDamageEvent.getEntity().getLastDamageCause() instanceof EntityDamageByEntityEvent damageByEntityEvent
                                     && damageByEntityEvent.getDamager() instanceof Player));
                         }
+                        return getResult(inverted, Optional.of(false));
                     }
                     case "mob" -> {
                         return getResult(inverted, Optional.of(entityDamageEvent.getCause().equals(DamageCause.ENTITY_ATTACK)));
@@ -386,16 +357,14 @@ public class DamageCondition implements Condition {
                     case "outofworld.player" -> {
                         if (entityDamageEvent.getCause().equals(DamageCause.WORLD_BORDER)) {
                             return getResult(inverted, Optional.of(entityDamageEvent.getEntity().getLastDamageCause() instanceof EntityDamageByEntityEvent damageByEntityEvent && damageByEntityEvent.getDamager() instanceof Player));
-                        }else{
-                            return getResult(inverted, Optional.of(false));
                         }
+                        return getResult(inverted, Optional.of(false));
                     }
                     case "player", "player.item" -> {
                         if (entityDamageEvent instanceof EntityDamageByEntityEvent ev) {
                             return getResult(inverted, Optional.of(ev.getDamager() instanceof Player));
-                        }else{
-                            return getResult(inverted, Optional.of(false));
                         }
+                        return getResult(inverted, Optional.of(false));
                     }
                     case "sonic_boom" -> {
                         return getResult(inverted, Optional.of(entityDamageEvent.getCause().equals(DamageCause.SONIC_BOOM)));
@@ -404,23 +373,17 @@ public class DamageCondition implements Condition {
                         if (entityDamageEvent.getCause().equals(DamageCause.SONIC_BOOM)) {
                             if (entityDamageEvent instanceof EntityDamageByEntityEvent ev) {
                                 return getResult(inverted, Optional.of(entityDamageEvent.getEntity().getLastDamageCause() instanceof EntityDamageByEntityEvent damageByEntityEvent && damageByEntityEvent.getDamager() instanceof Player));
-                            }else{
-                                return getResult(inverted, Optional.of(false));
                             }
-                        }else{
-                            return getResult(inverted, Optional.of(false));
                         }
+                        return getResult(inverted, Optional.of(false));
                     }
                     case "stalagmite" -> {
                         if (entityDamageEvent instanceof EntityDamageByBlockEvent eb) {
                             if (eb.getDamager() != null && eb.getDamager().getType().equals(Material.POINTED_DRIPSTONE)) {
                                 return getResult(inverted, Optional.of(entityDamageEvent.getEntity().getLocation().getBlock().getRelative(BlockFace.DOWN).getType().equals(Material.POINTED_DRIPSTONE)));
-                            }else{
-                                return getResult(inverted, Optional.of(false));
                             }
-                        }else{
-                            return getResult(inverted, Optional.of(false));
                         }
+                        return getResult(inverted, Optional.of(false));
                     }
                     case "stalagmite.player" -> {
                         if (entityDamageEvent instanceof EntityDamageByBlockEvent eb) {
@@ -429,67 +392,49 @@ public class DamageCondition implements Condition {
                                     if (entityDamageEvent.getEntity().getLastDamageCause() instanceof EntityDamageByEntityEvent damageByEntityEvent
                                             && damageByEntityEvent.getDamager() instanceof Player) {
                                         return getResult(inverted, Optional.of(true));
-                                    }else{
-                                        return getResult(inverted, Optional.of(false));
                                     }
-                                }else{
-                                    return getResult(inverted, Optional.of(false));
                                 }
-                            }else{
-                                return getResult(inverted, Optional.of(false));
                             }
-                        }else{
-                            return getResult(inverted, Optional.of(false));
                         }
+                        return getResult(inverted, Optional.of(false));
                     }
                     case "starve" -> {
                         if (entityDamageEvent.getCause().equals(DamageCause.STARVATION)) {
                             return getResult(inverted, Optional.of(true));
-                        }else{
-                            return getResult(inverted, Optional.of(false));
                         }
+                        return getResult(inverted, Optional.of(false));
                     }
                     case "starve.player" -> {
                         if (entityDamageEvent.getCause().equals(DamageCause.STARVATION)) {
                             if (entityDamageEvent.getEntity().getLastDamageCause() instanceof EntityDamageByEntityEvent damageByEntityEvent
                                     && damageByEntityEvent.getDamager() instanceof Player) {
                                 return getResult(inverted, Optional.of(true));
-                            }else{
-                                return getResult(inverted, Optional.of(false));
                             }
-                        }else{
-                            return getResult(inverted, Optional.of(false));
                         }
+                        return getResult(inverted, Optional.of(false));
                     }
                     case "sting" -> {
                         if (entityDamageEvent instanceof EntityDamageByEntityEvent ev) {
                             if (ev.getDamager() instanceof Bee) {
                                 return getResult(inverted, Optional.of(true));
-                            }else{
-                                return getResult(inverted, Optional.of(false));
                             }
-                        }else{
-                            return getResult(inverted, Optional.of(false));
                         }
+                        return getResult(inverted, Optional.of(false));
                     }
                     case "sting.player" -> {
                         if (entityDamageEvent instanceof EntityDamageByEntityEvent ev) {
                             if (ev.getDamager() instanceof Bee) {
                                 return getResult(inverted, Optional.of(ev.getEntity().getLastDamageCause() instanceof EntityDamageByEntityEvent damageByEntityEvent
                                         && damageByEntityEvent.getDamager() instanceof Player));
-                            }else{
-                                return getResult(inverted, Optional.of(false));
                             }
-                        }else{
-                            return getResult(inverted, Optional.of(false));
                         }
+                        return getResult(inverted, Optional.of(false));
                     }
                     case "sweetberrybush" -> {
                         if (entityDamageEvent instanceof EntityDamageByBlockEvent ev) {
                             return getResult(inverted, Optional.of(ev.getDamager() != null && ev.getDamager().getType().equals(Material.SWEET_BERRY_BUSH)));
-                        }else{
-                            return getResult(inverted, Optional.of(false));
                         }
+                        return getResult(inverted, Optional.of(false));
                     }
                     case "sweetberrybush.player" -> {
                         if (entityDamageEvent instanceof EntityDamageByBlockEvent ev) {
@@ -497,15 +442,10 @@ public class DamageCondition implements Condition {
                                 if (ev.getEntity().getLastDamageCause() instanceof EntityDamageByEntityEvent damageByEntityEvent
                                         && damageByEntityEvent.getDamager() instanceof Player) {
                                     return getResult(inverted, Optional.of(true));
-                                }else{
-                                    return getResult(inverted, Optional.of(false));
                                 }
-                            }else{
-                                return getResult(inverted, Optional.of(false));
                             }
-                        }else{
-                            return getResult(inverted, Optional.of(false));
                         }
+                        return getResult(inverted, Optional.of(false));
                     }
                     case "thorns" -> {
                         return getResult(inverted, Optional.of(entityDamageEvent.getCause().equals(DamageCause.THORNS)));
@@ -514,9 +454,8 @@ public class DamageCondition implements Condition {
                         if (entityDamageEvent.getCause().equals(DamageCause.THORNS)) {
                             return getResult(inverted, Optional.of(entityDamageEvent.getEntity().getLastDamageCause() instanceof EntityDamageByEntityEvent damageByEntityEvent
                                     && damageByEntityEvent.getDamager() instanceof Player));
-                        }else{
-                            return getResult(inverted, Optional.of(false));
                         }
+                        return getResult(inverted, Optional.of(false));
                     }
                     case "trident" -> {
                         return getResult(inverted, Optional.of(entityDamageEvent.getCause().equals(DamageCause.PROJECTILE) && entityDamageEvent instanceof EntityDamageByEntityEvent ev && ev.getDamager() instanceof Trident));
@@ -534,6 +473,7 @@ public class DamageCondition implements Condition {
                         return getResult(inverted, Optional.of(entityDamageEvent.getCause().equals(DamageCause.ENTITY_EXPLOSION) && entityDamageEvent instanceof EntityDamageByEntityEvent ev && ev.getDamager() instanceof WitherSkull));
                     }
                 }
+                return getResult(inverted, Optional.of(false));
             }
             case "origins:type" -> {
                 String s = NamespacedKey.minecraft(entityDamageEvent.getCause().toString().toLowerCase()).asString();
@@ -543,7 +483,14 @@ public class DamageCondition implements Condition {
                 return getResult(inverted, Optional.of(entityDamageEvent.getCause().equals(DamageCause.VOID)));
             }
             case "origins:projectile" -> {
-                return getResult(inverted, Optional.of(entityDamageEvent.getCause().equals(DamageCause.PROJECTILE)));
+                if (entityDamageEvent.getCause().equals(DamageCause.PROJECTILE)) {
+                    if (condition.containsKey("projectile_condition")) {
+                        return getResult(inverted, ConditionExecutor.entityCondition.check((HashMap<String, Object>) condition.get("projectile_condition"), p, ((EntityDamageByEntityEvent) entityDamageEvent).getDamager(), target, block, fluid, itemStack, ((EntityDamageByEntityEvent) entityDamageEvent)));
+                    } else {
+                        return getResult(inverted, Optional.of(true));
+                    }
+                }
+                return getResult(inverted, Optional.of(false));
             }
             case "origins:unblockable" -> {
                 switch (entityDamageEvent.getCause()) {
@@ -557,6 +504,5 @@ public class DamageCondition implements Condition {
                 return getResult(inverted, Optional.empty());
             }
         }
-        return getResult(inverted, Optional.empty());
     }
 }
