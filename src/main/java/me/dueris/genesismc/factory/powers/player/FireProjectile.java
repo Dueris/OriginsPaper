@@ -191,7 +191,6 @@ public class FireProjectile extends CraftPower implements Listener {
                                                                     direction.setZ(z);
 
                                                                     projectile.setVelocity(direction.normalize().multiply(speed));
-                                                                    projectile.setGlowing(true);
                                                                     if (power == null)
                                                                         return;
                                                                     if (!getPowerArray().contains(p)) return;
