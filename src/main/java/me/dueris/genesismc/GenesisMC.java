@@ -115,7 +115,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
     }
 
     public static NamespacedKey identifier(String path){
-        return new NamespacedKey(MODID, path);
+        return new NamespacedKey(getPlugin(), path);
     }
 
     public static NamespacedKey originIdentifier(String path){
