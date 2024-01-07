@@ -33,6 +33,7 @@ import me.dueris.genesismc.factory.powers.simple.BounceSlimeBlock;
 import me.dueris.genesismc.factory.powers.simple.MimicWarden;
 import me.dueris.genesismc.factory.powers.world.EntityGroupManager;
 import me.dueris.genesismc.files.GenesisDataFiles;
+import me.dueris.genesismc.files.nbt.FixerUpper;
 import me.dueris.genesismc.enchantments.generation.VillagerTradeHook;
 import me.dueris.genesismc.hooks.papi.PlaceholderApiExtension;
 import me.dueris.genesismc.items.GenesisItems;
@@ -58,6 +59,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scoreboard.Team;
 import org.spigotmc.WatchdogThread;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.EnumSet;
@@ -83,6 +85,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
     public static ConditionExecutor conditionExecutor;
     public static String apoliVersion = "1.12.1";
     public static boolean placeholderapi = false;
+    public static File playerDataFolder = MinecraftServer.getServer().playerDataStorage.getPlayerDir();
 
     static {
         tool = EnumSet.of(Material.DIAMOND_AXE, Material.DIAMOND_HOE, Material.DIAMOND_PICKAXE, Material.DIAMOND_SHOVEL, Material.DIAMOND_SWORD, Material.GOLDEN_AXE, Material.GOLDEN_HOE, Material.GOLDEN_PICKAXE, Material.GOLDEN_SHOVEL, Material.GOLDEN_SWORD, Material.NETHERITE_AXE, Material.NETHERITE_HOE, Material.NETHERITE_PICKAXE, Material.NETHERITE_SHOVEL, Material.NETHERITE_SWORD, Material.IRON_AXE, Material.IRON_HOE, Material.IRON_PICKAXE, Material.IRON_SHOVEL, Material.IRON_SWORD, Material.WOODEN_AXE, Material.WOODEN_HOE, Material.WOODEN_PICKAXE, Material.WOODEN_SHOVEL, Material.WOODEN_SWORD, Material.SHEARS);
@@ -217,6 +220,11 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         start();
         patchPowers();
         TagRegistry.runParse();
+        try {
+            FixerUpper.runFixerUpper();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
         Bukkit.getCommandMap().register("origin", new OriginCommand());
         Bukkit.getCommandMap().register("resource", new ResourceCommand());
         Bukkit.getCommandMap().register("power", new PowerCommand());

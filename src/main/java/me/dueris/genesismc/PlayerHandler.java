@@ -7,6 +7,7 @@ import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.factory.powers.player.Gravity;
 import me.dueris.genesismc.factory.powers.player.attributes.AttributeHandler;
+import me.dueris.genesismc.files.nbt.FixerUpper;
 import me.dueris.genesismc.utils.LayerContainer;
 import me.dueris.genesismc.utils.OriginContainer;
 import me.dueris.genesismc.utils.PowerContainer;
@@ -17,6 +18,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
+import org.bukkit.craftbukkit.v1_20_R3.entity.CraftPlayer;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -31,10 +33,12 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.geysermc.geyser.api.GeyserApi;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectInputStream;
 import java.lang.reflect.Constructor;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -110,17 +114,20 @@ public class PlayerHandler implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void playerJoin(PlayerJoinEvent e) {
         Player p = e.getPlayer();
-        p.setMaximumAir(300);
         Bukkit.getLogger().info("PlayerLocale saved as[" + Translation.getPlayerLocale(p) + "] for player[%player%]".replace("%player%", p.getName()));
         //set origins to null if none present
         if (
             !p.getPersistentDataContainer().has(GenesisMC.identifier("originLayer"), PersistentDataType.STRING) ||
             p.getPersistentDataContainer().get(GenesisMC.identifier("originLayer"), PersistentDataType.STRING) == null ||
-            p.getPersistentDataContainer().get(GenesisMC.identifier("originLayer"), PersistentDataType.STRING) == " "
+            p.getPersistentDataContainer().get(GenesisMC.identifier("originLayer"), PersistentDataType.STRING) == ""
         ){
             HashMap<LayerContainer, OriginContainer> origins = new HashMap<>();
             for (LayerContainer layer : CraftApoli.getLayers()) origins.put(layer, CraftApoli.nullOrigin());
             p.getPersistentDataContainer().set(GenesisMC.identifier("originLayer"), PersistentDataType.STRING, CraftApoli.toOriginSetSaveFormat(origins));
+        }
+
+        if(p.getPersistentDataContainer().has(GenesisMC.identifier("originLayers"))){
+            p.getPersistentDataContainer().remove(GenesisMC.identifier("originLayers"));
         }
                                                
         // ---  translation system ---
@@ -186,6 +193,13 @@ public class PlayerHandler implements Listener {
         } catch (Exception vv){
             //silence code - offline mode fucks things
         }
+
+        try {
+            FixerUpper.fixupFile(Path.of(GenesisMC.playerDataFolder.toPath().toString() + File.separator + ((CraftPlayer)p).getHandle().getStringUUID() + ".dat").toFile());
+        } catch (IOException ev){
+            ev.printStackTrace();
+        }
+        
         OriginDataContainer.loadData(p);
         OriginPlayerUtils.setupPowers(p);
         originValidCheck(p);
