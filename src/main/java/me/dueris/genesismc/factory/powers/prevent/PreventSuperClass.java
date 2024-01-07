@@ -6,7 +6,8 @@ import java.util.ArrayList;
 
 public class PreventSuperClass {
     public static ArrayList<Player> prevent_being_used = new ArrayList<>();
-    public static ArrayList<Player> prevent_block_selection = new ArrayList<>();
+    public static ArrayList<Player> prevent_block_place = new ArrayList<>();
+    public static ArrayList<Player> prevent_game_event = new ArrayList<>();
     public static ArrayList<Player> prevent_block_use = new ArrayList<>();
     public static ArrayList<Player> prevent_death = new ArrayList<>();
     public static ArrayList<Player> prevent_elytra_flight = new ArrayList<>();

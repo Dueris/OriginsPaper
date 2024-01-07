@@ -236,7 +236,7 @@ public class ChoosingCustomOrigins implements Listener {
                 }.runTaskLater(GenesisMC.getPlugin(), 1);
                 ModifyPlayerSpawnPower power = new ModifyPlayerSpawnPower();
                 power.runHandle(p);
-                OriginChangeEvent event = new OriginChangeEvent(p);
+                OriginChangeEvent event = new OriginChangeEvent(p, origin);
                 event.callEvent();
                 OriginPlayerUtils.setHasFirstChose(p, true);
             }

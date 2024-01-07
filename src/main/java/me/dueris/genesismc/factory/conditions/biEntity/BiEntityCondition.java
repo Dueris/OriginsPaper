@@ -3,6 +3,7 @@ package me.dueris.genesismc.factory.conditions.biEntity;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.conditions.Condition;
 import me.dueris.genesismc.factory.powers.player.RestrictArmor;
+import me.dueris.genesismc.factory.powers.world.EntitySetPower;
 import me.dueris.genesismc.utils.PowerContainer;
 import org.bukkit.Bukkit;
 import org.bukkit.Fluid;
@@ -52,6 +53,9 @@ public class BiEntityCondition implements Condition, Listener {
                 String comparison = condition.get("comparison").toString();
                 double compare_to = Double.parseDouble(condition.get("compare_to").toString());
                 return getResult(inverted, Optional.of(RestrictArmor.compareValues(actorVector.distance(targetVector), comparison, compare_to)));
+            }
+            case "origins:in_set" -> {
+                return getResult(inverted, Optional.of(EntitySetPower.isInEntitySet(target, condition.get("set").toString())));
             }
             case "origins:can_see" -> {
                 if(actor instanceof Player pl){

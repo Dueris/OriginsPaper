@@ -1,5 +1,11 @@
 package me.dueris.genesismc.enchantments;
 
+import me.dueris.genesismc.utils.Utils;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.tags.DamageTypeTags;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.item.enchantment.ProtectionEnchantment;
 
 import net.minecraft.ChatFormatting;
@@ -11,6 +17,7 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
+import org.bukkit.craftbukkit.v1_20_R3.entity.CraftPlayer;
 
 public class WaterProtectionEnchantment extends Enchantment {
     String descriptionID = "water_protection";
@@ -75,4 +82,14 @@ public class WaterProtectionEnchantment extends Enchantment {
         return super.checkCompatibility(other);
     }
 
+    @Override
+    public int getDamageProtection(int level, DamageSource source) {
+        DamageType dmgType = Utils.DAMAGE_REGISTRY.get(new ResourceLocation("origins", "water_protection"));
+        if (source.is(DamageTypeTags.BYPASSES_INVULNERABILITY)) {
+            return 0;
+        } else if (source == Utils.getDamageSource(dmgType)) {
+            return level;
+        }
+        return super.getDamageProtection(level, source);
+    }
 }

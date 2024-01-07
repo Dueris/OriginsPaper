@@ -9,30 +9,23 @@ public interface Power {
 
     HashMap<Player, HashMap<String, Boolean>> powers_active = new HashMap<>();
     ArrayList<Player> game_event_listener = new ArrayList<>();
-    ArrayList<Player> prevent_game_event = new ArrayList<>();
+    ArrayList<Player> entity_set = new ArrayList<>();
     ArrayList<Player> resource = new ArrayList<>();
     ArrayList<Player> fall_immunity = new ArrayList<>();
-    ArrayList<Player> more_kinetic_damage = new ArrayList<>();
     ArrayList<Player> climbing = new ArrayList<>();
     ArrayList<Player> fire_immunity = new ArrayList<>();
     ArrayList<Player> launch_into_air = new ArrayList<>();
     ArrayList<Player> water_breathing = new ArrayList<>();
     ArrayList<Player> shulker_inventory = new ArrayList<>();
-    ArrayList<Player> water_vulnerability = new ArrayList<>();
     ArrayList<Player> invisibility = new ArrayList<>();
     ArrayList<Player> more_exhaustion = new ArrayList<>();
-    ArrayList<Player> nine_lives = new ArrayList<>();
     ArrayList<Player> phasing = new ArrayList<>();
     ArrayList<Player> pumpkin_hate = new ArrayList<>();
     ArrayList<Player> extra_reach = new ArrayList<>();
     ArrayList<Player> extra_reach_attack = new ArrayList<>();
-    ArrayList<Player> strong_arms = new ArrayList<>();
-    ArrayList<Player> natural_armor = new ArrayList<>();
-    ArrayList<Player> throw_ender_pearl = new ArrayList<>();
     ArrayList<Player> translucent = new ArrayList<>();
     ArrayList<Player> water_vision = new ArrayList<>();
     ArrayList<Player> elytra = new ArrayList<>();
-    ArrayList<Player> strong_arms_break_speed = new ArrayList<>();
     ArrayList<Player> apply_effect = new ArrayList<>();
     ArrayList<Player> effect_immunity = new ArrayList<>();
     ArrayList<Player> attribute = new ArrayList<>();
@@ -67,6 +60,7 @@ public interface Power {
     //actions
     ArrayList<Player> action_on_being_used = new ArrayList<>();
     ArrayList<Player> action_on_block_break = new ArrayList<>();
+    ArrayList<Player> action_on_block_place = new ArrayList<>();
     ArrayList<Player> action_on_block_use = new ArrayList<>();
     ArrayList<Player> action_on_callback = new ArrayList<>();
     ArrayList<Player> action_on_entity_use = new ArrayList<>();
@@ -89,8 +83,6 @@ public interface Power {
     ArrayList<Player> silk_touch = new ArrayList<>();
     ArrayList<Player> explode_tick = new ArrayList<>();
     ArrayList<Player> big_leap_tick = new ArrayList<>();
-
-    //TODO: yeah gotta come back to Attribute Modifier, and Item on Item(*crys*)
     ArrayList<Player> attribute_modify_transfer = new ArrayList<>();
     ArrayList<Player> no_gravity = new ArrayList<>();
 

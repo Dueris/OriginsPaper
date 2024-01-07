@@ -14,6 +14,8 @@ import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.OriginContainer;
 import me.dueris.genesismc.utils.PowerContainer;
 
+import static me.dueris.genesismc.factory.powers.prevent.PreventSuperClass.prevent_game_event;
+
 public class PreventGameEvent extends CraftPower implements Listener {
     @Override
     public void run(Player p) {

@@ -14,7 +14,6 @@ import me.dueris.genesismc.enchantments.Anvil;
 import me.dueris.genesismc.enchantments.EnchantTable;
 import me.dueris.genesismc.entity.InventorySerializer;
 import me.dueris.genesismc.entity.OriginPlayerUtils;
-import me.dueris.genesismc.events.EventListeners;
 import me.dueris.genesismc.events.RegisterPowersEvent;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.TagRegistry;
@@ -83,7 +82,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
     private static GenesisMC plugin;
     public static String MODID = "genesismc";
     public static ConditionExecutor conditionExecutor;
-    public static String apoliVersion = "1.11.3";
+    public static String apoliVersion = "1.12.1";
     public static boolean placeholderapi = false;
 
     static {
@@ -413,7 +412,6 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         getServer().getPluginManager().registerEvents(new ChoosingCustomOrigins(), this);
         getServer().getPluginManager().registerEvents(new Recipe(), this);
         getServer().getPluginManager().registerEvents(new Info(), this);
-        getServer().getPluginManager().registerEvents(new EventListeners(), this);
         getServer().getPluginManager().registerEvents(new InventorySerializer(), this);
         getServer().getPluginManager().registerEvents(new GenesisItems(), this);
         getServer().getPluginManager().registerEvents(new MimicWarden(), this);

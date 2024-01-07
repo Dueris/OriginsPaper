@@ -112,78 +112,7 @@ public class DamageOverTime extends CraftPower implements Listener{
                             setActive(p, power.getTag(), true);
 
                             if (p.getGameMode().equals(GameMode.SURVIVAL) || p.getGameMode().equals(GameMode.ADVENTURE)) {
-                                float helemt_modifier = 0;
-                                float chestplate_modifier = 0;
-                                float leggins_modifier = 0;
-                                float boots_modifier = 0;
-                                float prot1 = (float) protection_effectiveness;
-                                float prot2 = (float) protection_effectiveness;
-                                float prot3 = (float) protection_effectiveness;
-                                float prot4 = (float) protection_effectiveness;
-                                if (p.getInventory().getHelmet() != null) {
-                                    if (p.getInventory().getHelmet().getLore() != null) {
-                                        if (p.getEquipment().getHelmet().getLore().contains(ChatColor.GRAY + "Water Protection I")) {
-                                            helemt_modifier = prot1;
-                                        } else if (p.getEquipment().getHelmet().getLore().contains(ChatColor.GRAY + "Water Protection II")) {
-                                            helemt_modifier = prot2;
-                                        } else if (p.getEquipment().getHelmet().getLore().contains(ChatColor.GRAY + "Water Protection III")) {
-                                            helemt_modifier = prot3;
-                                        } else if (p.getEquipment().getHelmet().getLore().contains(ChatColor.GRAY + "Water Protection IV")) {
-                                            helemt_modifier = prot4;
-                                        } else {
-                                            helemt_modifier = 0;
-                                        }
-                                    }
-                                }
-                                if (p.getInventory().getChestplate() != null) {
-
-                                    if (p.getInventory().getChestplate().getLore() != null) {
-                                        if (p.getEquipment().getChestplate().getLore().contains(ChatColor.GRAY + "Water Protection I")) {
-                                            chestplate_modifier = prot1;
-                                        } else if (p.getEquipment().getChestplate().getLore().contains(ChatColor.GRAY + "Water Protection II")) {
-                                            chestplate_modifier = prot2;
-                                        } else if (p.getEquipment().getChestplate().getLore().contains(ChatColor.GRAY + "Water Protection III")) {
-                                            chestplate_modifier = prot3;
-                                        } else if (p.getEquipment().getChestplate().getLore().contains(ChatColor.GRAY + "Water Protection IV")) {
-                                            chestplate_modifier = prot4;
-                                        } else {
-                                            chestplate_modifier = 0;
-                                        }
-                                    }
-                                }
-                                if (p.getInventory().getLeggings() != null) {
-                                    if (p.getInventory().getLeggings().getLore() != null) {
-                                        if (p.getEquipment().getLeggings().getLore().contains(ChatColor.GRAY + "Water Protection I")) {
-                                            leggins_modifier = prot1;
-                                        } else if (p.getEquipment().getLeggings().getLore().contains(ChatColor.GRAY + "Water Protection II")) {
-                                            leggins_modifier = prot2;
-                                        } else if (p.getEquipment().getLeggings().getLore().contains(ChatColor.GRAY + "Water Protection III")) {
-                                            leggins_modifier = prot3;
-                                        } else if (p.getEquipment().getLeggings().getLore().contains(ChatColor.GRAY + "Water Protection IV")) {
-                                            leggins_modifier = prot4;
-                                        } else {
-                                            leggins_modifier = 0;
-                                        }
-                                    }
-                                }
-                                if (p.getInventory().getBoots() != null) {
-                                    if (p.getInventory().getBoots().getLore() != null) {
-                                        if (p.getEquipment().getBoots().getLore().contains(ChatColor.GRAY + "Water Protection I")) {
-                                            boots_modifier = prot1;
-                                        } else if (p.getEquipment().getBoots().getLore().contains(ChatColor.GRAY + "Water Protection II")) {
-                                            boots_modifier = prot2;
-                                        } else if (p.getEquipment().getBoots().getLore().contains(ChatColor.GRAY + "Water Protection III")) {
-                                            boots_modifier = prot3;
-                                        } else if (p.getEquipment().getBoots().getLore().contains(ChatColor.GRAY + "Water Protection IV")) {
-                                            boots_modifier = prot4;
-                                        } else {
-                                            boots_modifier = 0;
-                                        }
-                                    }
-                                }
-                                float basedamage = damage - helemt_modifier - chestplate_modifier - leggins_modifier - boots_modifier;
-
-                                if (p.getHealth() >= basedamage && p.getHealth() != 0 && p.getHealth() - basedamage != 0) {
+                                if (p.getHealth() >= damage && p.getHealth() != 0 && p.getHealth() - damage != 0) {
                                     String namespace;
                                     String key;
                                     if(power.get("damage_type") != null){
@@ -200,7 +129,7 @@ public class DamageOverTime extends CraftPower implements Listener{
                                     }
                                     DamageType dmgType = Utils.DAMAGE_REGISTRY.get(new ResourceLocation(namespace, key));
                                     ServerPlayer serverPlayer = ((CraftPlayer) p).getHandle();
-                                    serverPlayer.hurt(Utils.getDamageSource(dmgType), basedamage);
+                                    serverPlayer.hurt(Utils.getDamageSource(dmgType), damage);
 
                                     Random random = new Random();
 
@@ -224,7 +153,7 @@ public class DamageOverTime extends CraftPower implements Listener{
                                         }
 
                                     }
-                                } else if (p.getHealth() <= basedamage && p.getHealth() != 0) {
+                                } else if (p.getHealth() <= damage && p.getHealth() != 0) {
                                     p.setHealth(0.0f);
                                 }
                             }

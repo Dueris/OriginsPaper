@@ -139,19 +139,6 @@ public class PowerContainer implements Serializable {
         return (String) type;
     }
 
-    public Class<? extends CraftPower> getCraftPowerClass() {
-        for (Class<? extends CraftPower> c : CraftPower.getRegistered()) {
-            try {
-                if (c.newInstance().getPowerFile().equalsIgnoreCase(getType())) return c;
-            } catch (InstantiationException e) {
-                throw new RuntimeException(e);
-            } catch (IllegalAccessException e) {
-                throw new RuntimeException(e);
-            }
-        }
-        return null;
-    }
-
     /**
      * @return Whether the elytra should be displayed. Will return false if "render_elytra" is not present.
      */
@@ -212,15 +199,6 @@ public class PowerContainer implements Serializable {
         return (long) render;
     }
 
-    /**
-     * @return String value of render_type for power origins:phasing
-     */
-    public String getRenderType() {
-        Object type = powerFile.get("render_type");
-        if (type == null) return "blindness";
-        return type.toString();
-    }
-
     public String getEffect() {
         Object type = powerFile.get("effect");
         if (type == null) return "blindness";
@@ -234,15 +212,6 @@ public class PowerContainer implements Serializable {
         Object distance = powerFile.get("view_distance");
         if (distance == null) return 10L;
         return (Long) distance;
-    }
-
-    /**
-     * @return The value "tick_rate" from the power file
-     */
-    public Long getTickRate() {
-        Object render = powerFile.get("tick_rate");
-        if (render == null) return 10L;
-        return (long) render;
     }
 
     /**
@@ -274,6 +243,14 @@ public class PowerContainer implements Serializable {
             return null;
         }
         return type.toString();
+    }
+
+    public JSONObject getJsonObject(String string) {
+        Object obj = powerFile.get(string);
+        if (obj instanceof JSONObject modifier) {
+            return modifier;
+        }
+        return new JSONObject();
     }
 
     public Object getObject(String thing) {
@@ -698,113 +675,6 @@ public class PowerContainer implements Serializable {
         return result;
     }
 
-    public HashMap<String, Object> getCondition() {
-        Object obj = powerFile.get("condition");
-        if (obj == null) return new HashMap<>();
-
-        if (obj instanceof JSONObject modifier) {
-            HashMap<String, Object> result = new HashMap<>();
-            for (Object key : modifier.keySet()) {
-                String string_key = (String) key;
-                Object value = modifier.get(string_key);
-                result.put(string_key, value);
-            }
-            return result;
-        }
-
-        return null;
-    }
-
-    /**
-     * Checks the powerfile for the "condition" tag
-     *
-     * @return Conditions in the power file or null if not found
-     */
-    public HashMap<String, Object> getDamageCondition() {
-        Object obj = powerFile.get("damage_condition");
-        if (obj == null) return new HashMap<>();
-
-        if (obj instanceof JSONObject modifier) {
-            HashMap<String, Object> result = new HashMap<>();
-            for (Object key : modifier.keySet()) {
-                String string_key = (String) key;
-                Object value = modifier.get(string_key);
-                result.put(string_key, value);
-            }
-            return result;
-        }
-
-        return null;
-    }
-
-    public HashMap<String, Object> getFluidCondition() {
-        Object obj = powerFile.get("fluid_condition");
-        if (obj == null) return new HashMap<>();
-
-        if (obj instanceof JSONObject modifier) {
-            HashMap<String, Object> result = new HashMap<>();
-            for (Object key : modifier.keySet()) {
-                String string_key = (String) key;
-                Object value = modifier.get(string_key);
-                result.put(string_key, value);
-            }
-            return result;
-        }
-
-        return null;
-    }
-
-    public HashMap<String, Object> getBiomeCondition() {
-        Object obj = powerFile.get("fluid_condition");
-        if (obj == null) return new HashMap<>();
-
-        if (obj instanceof JSONObject modifier) {
-            HashMap<String, Object> result = new HashMap<>();
-            for (Object key : modifier.keySet()) {
-                String string_key = (String) key;
-                Object value = modifier.get(string_key);
-                result.put(string_key, value);
-            }
-            return result;
-        }
-
-        return null;
-    }
-
-    public HashMap<String, Object> getItemCondition() {
-        Object obj = powerFile.get("item_condition");
-        if (obj == null) return new HashMap<>();
-
-        if (obj instanceof JSONObject modifier) {
-            HashMap<String, Object> result = new HashMap<>();
-            for (Object key : modifier.keySet()) {
-                String string_key = (String) key;
-                Object value = modifier.get(string_key);
-                result.put(string_key, value);
-            }
-            return result;
-        }
-
-        return null;
-    }
-
-    public HashMap<String, Object> getBlockCondition() {
-        Object obj = powerFile.get("block_condition");
-        if (obj == null) return new HashMap<>();
-
-        if (obj instanceof JSONObject modifier) {
-            HashMap<String, Object> result = new HashMap<>();
-            for (Object key : modifier.keySet()) {
-                String string_key = (String) key;
-                Object value = modifier.get(string_key);
-                result.put(string_key, value);
-            }
-            return result;
-        }
-
-        return null;
-    }
-
     public HashMap<String, Object> getThunderModifier() {
         Object obj = powerFile.get("modifier");
         if (obj == null) return new HashMap<>();
@@ -823,81 +693,6 @@ public class PowerContainer implements Serializable {
         }
 
         return new HashMap<>();
-    }
-
-    public HashMap<String, Object> getEntityConditionFromDamageCondition() {
-        Object obj = powerFile.get("damage_condition");
-        if (obj == null) return new HashMap<>();
-
-        if (obj instanceof JSONObject damageCondition) {
-            Object entityConditionObj = damageCondition.get("entity_condition");
-            if (entityConditionObj instanceof JSONObject entityCondition) {
-                HashMap<String, Object> result = new HashMap<>();
-                for (Object key : entityCondition.keySet()) {
-                    String stringKey = (String) key;
-                    Object value = entityCondition.get(stringKey);
-                    result.put(stringKey, value);
-                }
-                return result;
-            }
-        }
-
-        return new HashMap<>();
-    }
-
-    public HashMap<String, Object> getEntityCondition() {
-        Object obj = powerFile.get("entity_condition");
-        if (obj == null) return new HashMap<>();
-
-        if (obj instanceof JSONObject modifier) {
-            HashMap<String, Object> result = new HashMap<>();
-            for (Object key : modifier.keySet()) {
-                String string_key = (String) key;
-                Object value = modifier.get(string_key);
-                result.put(string_key, value);
-            }
-            return result;
-        }
-
-        return null;
-    }
-
-    public HashMap<String, Object> getPhaseDownCondition() {
-        Object obj = powerFile.get("phase_down_condition");
-        if (obj == null) return new HashMap<>();
-
-        if (obj instanceof JSONObject modifier) {
-            HashMap<String, Object> result = new HashMap<>();
-            for (Object key : modifier.keySet()) {
-                String string_key = (String) key;
-                Object value = modifier.get(string_key);
-                result.put(string_key, value);
-            }
-            return result;
-        }
-
-        return null;
-    }
-
-    /**
-     * Checks the PowerFile for the specified condition
-     *
-     * @return A HashMap of the keys and values in the condition or null if the condition type isn't found
-     */
-    public HashMap<String, Object> getCondition(String conditionType) {
-        Object obj = powerFile.get(conditionType);
-        if (obj == null) return new HashMap<>();
-        if (obj instanceof JSONObject modifier) {
-            HashMap<String, Object> result = new HashMap<>();
-            for (Object key : modifier.keySet()) {
-                String string_key = (String) key;
-                Object value = modifier.get(string_key);
-                result.put(string_key, value);
-            }
-            return result;
-        }
-
-        return null;
     }
 
 

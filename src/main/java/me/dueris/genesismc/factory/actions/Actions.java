@@ -5,6 +5,8 @@ import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.OriginCommandSender;
 import me.dueris.genesismc.enchantments.EnchantTable;
 import me.dueris.genesismc.entity.OriginPlayerUtils;
+import me.dueris.genesismc.events.AddToSetEvent;
+import me.dueris.genesismc.events.RemoveFromSetEvent;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.conditions.block.BlockCondition;
 import me.dueris.genesismc.factory.conditions.entity.EntityCondition;
@@ -59,7 +61,6 @@ public class Actions {
     public static void runbiEntity(Entity actor, Entity target, JSONObject biEntityAction) {
         String type = biEntityAction.get("type").toString();
         if (type.equals("origins:add_velocity")) {
-            //TODO: make this align to the actor entity
             float x = 0.0f;
             float y = 0.0f;
             float z = 0.0f;
@@ -72,6 +73,14 @@ public class Actions {
 
             if (set) target.setVelocity(new Vector(x, y, z));
             else target.setVelocity(target.getVelocity().add(new Vector(x, y, z)));
+        }
+        if (type.equals("origins:remove_from_set")){
+            RemoveFromSetEvent ev = new RemoveFromSetEvent(target, biEntityAction.get("set").toString());
+            ev.callEvent();
+        }
+        if (type.equals("origins:add_to_set")){
+            AddToSetEvent ev = new AddToSetEvent(target, biEntityAction.get("set").toString());
+            ev.callEvent();
         }
         if (type.equals("origins:damage")) {
             if(target.isDead() || !(target instanceof LivingEntity)) return;
@@ -301,6 +310,29 @@ public class Actions {
                 offset_z = Float.parseFloat(String.valueOf(spread.get("z")));
             }
             entity.getWorld().spawnParticle(particle, new Location(entity.getWorld(), entity.getLocation().getX(), entity.getLocation().getY(), entity.getLocation().getZ()), count, offset_x, offset_y, offset_z, 0);
+        }
+        if (type.equals("origins:random_teleport")){
+            int spreadDistance = Math.round(Float.valueOf(power.getOrDefault("max_width", "8.0").toString()));
+            int attempts = Integer.valueOf(power.getOrDefault("attempts", "1").toString());
+            for(int i = 0; i < attempts; i++){
+                String cmd = "spreadplayers {xloc} {zloc} 1 {spreadDist} false {name}"
+                        .replace("{xloc}", String.valueOf(entity.getLocation().getX()))
+                        .replace("{zloc}", String.valueOf(entity.getLocation().getZ()))
+                        .replace("{spreadDist}", String.valueOf(spreadDistance))
+                        .replace("{name}", "@e[{data}]"
+                                .replace("{data}", "x=" + entity.getLocation().getX() + ",y=" + entity.getLocation().getY() + ",z=" + entity.getLocation().getZ() + ",type=" + entity.getType().toString().toLowerCase() + ",x_rotation=" + entity.getLocation().getDirection().getX() + ",y_rotation=" + entity.getLocation().getDirection().getY())
+                        );
+                Bukkit.dispatchCommand(new OriginCommandSender(), cmd);
+                System.out.println(cmd);
+            }
+        }
+        if(type.equals("origins:remove_power")){
+            if(entity instanceof Player p){
+                PowerContainer powerContainer = CraftApoli.getPowerContainerFromTag(power.get("power").toString());
+                if(powerContainer != null){
+                    Bukkit.dispatchCommand(new OriginCommandSender(), "power remove {name} {identifier}".replace("{name}", p.getName()).replace("{identifier}", power.get("power").toString()));
+                }
+            }
         }
         if (type.equals("origins:spawn_effect_cloud")){
             spawnEffectCloud(entity, Float.valueOf(power.getOrDefault("radius", 3.0).toString()), Integer.valueOf(power.getOrDefault("wait_time", 10).toString()), new PotionEffect(StackingStatusEffect.getPotionEffectType(power.get("effect").toString()), 1, 1));

@@ -195,8 +195,8 @@ public class ChoosingMain implements Listener {
             ArrayList<OriginContainer> origins = CraftApoli.getOrigins();
             ArrayList<LayerContainer> layers = CraftApoli.getLayers();
             Random random = new Random();
+            OriginContainer origin = origins.get(random.nextInt(origins.size()));
             for (LayerContainer layer : layers) {
-                OriginContainer origin = origins.get(random.nextInt(origins.size()));
                 OriginPlayerUtils.setOrigin(p, layer, origin);
                 p.sendMessage(Component.text(LangConfig.getLocalizedString(p, "misc.randomOrigins").replace("%layer%", layer.getTag()).replace("%originName%", origin.getName())).color(TextColor.fromHexString(AQUA)));
             }
@@ -214,7 +214,7 @@ public class ChoosingMain implements Listener {
 
             OriginChooseEvent chooseEvent = new OriginChooseEvent(p);
             getServer().getPluginManager().callEvent(chooseEvent);
-            OriginChangeEvent Event = new OriginChangeEvent(p);
+            OriginChangeEvent Event = new OriginChangeEvent(p, origin);
             getServer().getPluginManager().callEvent(Event);
 
             if (p.getInventory().getItemInMainHand().isSimilar(OrbOfOrigins.orb) && !OriginPlayerUtils.hasOrigin(p, CraftApoli.nullOrigin().getTag())) {
