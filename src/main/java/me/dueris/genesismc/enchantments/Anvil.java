@@ -101,12 +101,13 @@ public class Anvil implements Listener {
     }
 
     public static ItemStack setWaterProtCustomEnchantLevel(int lvl, ItemStack item) {
+        if(lvl == 0) lvl = 1;
         ItemMeta meta = item.getItemMeta().clone();
         meta.setCustomModelData(lvl);
         meta.setLore(List.of(ChatColor.GRAY + "Water Protection " + numberToRomanNum(lvl)));
 
         item.setItemMeta(meta);
-        
+
         net.minecraft.world.item.ItemStack stack = CraftItemStack.unwrap(item);
         stack.enchant(minecraftEnchantment, lvl);
         return CraftItemStack.asCraftMirror(stack);

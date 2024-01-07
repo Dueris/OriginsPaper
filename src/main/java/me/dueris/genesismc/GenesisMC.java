@@ -12,6 +12,7 @@ import me.dueris.genesismc.commands.subcommands.origin.Info.Info;
 import me.dueris.genesismc.commands.subcommands.origin.Recipe;
 import me.dueris.genesismc.enchantments.Anvil;
 import me.dueris.genesismc.enchantments.EnchantTable;
+import me.dueris.genesismc.enchantments.generation.StructureGeneration;
 import me.dueris.genesismc.entity.InventorySerializer;
 import me.dueris.genesismc.entity.OriginPlayerUtils;
 import me.dueris.genesismc.events.RegisterPowersEvent;
@@ -424,6 +425,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         getServer().getPluginManager().registerEvents(new VillagerTradeHook(), this);
         getServer().getPluginManager().registerEvents(new OriginScheduler.OriginSchedulerTree(), this);
         getServer().getPluginManager().registerEvents(new KeybindUtils(), this);
+        getServer().getPluginManager().registerEvents(new StructureGeneration(), this);
         if (getServer().getPluginManager().isPluginEnabled("SkinsRestorer")) {
             try {
                getServer().getPluginManager().registerEvents(new PlayerRender.ModelColor(), this);

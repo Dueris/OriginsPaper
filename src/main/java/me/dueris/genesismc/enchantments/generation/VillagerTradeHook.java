@@ -3,6 +3,7 @@ package me.dueris.genesismc.enchantments.generation;
 import me.dueris.genesismc.enchantments.Anvil;
 import org.bukkit.Material;
 import org.bukkit.entity.Villager;
+import org.bukkit.entity.WanderingTrader;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.VillagerAcquireTradeEvent;
@@ -14,6 +15,7 @@ import java.util.Random;
 public class VillagerTradeHook implements Listener {
     @EventHandler
     public void test(VillagerAcquireTradeEvent e){
+        if(e.getEntity() instanceof WanderingTrader) return;
         Villager villager = (Villager) e.getEntity();
         if(villager.getProfession().equals(Villager.Profession.LIBRARIAN)){
             Random chanceOfSpawnRandom = new Random();
