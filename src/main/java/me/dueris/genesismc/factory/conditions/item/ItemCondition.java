@@ -4,12 +4,14 @@ import me.dueris.genesismc.enchantments.EnchantTable;
 import me.dueris.genesismc.factory.TagRegistry;
 import me.dueris.genesismc.factory.conditions.Condition;
 import me.dueris.genesismc.factory.powers.player.RestrictArmor;
+import me.dueris.genesismc.items.OrbOfOrigins;
 import me.dueris.genesismc.utils.ArmorUtils;
 import org.bukkit.Fluid;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.ItemStack;
@@ -19,6 +21,8 @@ import java.util.*;
 import static me.dueris.genesismc.factory.conditions.ConditionExecutor.getResult;
 
 public class ItemCondition implements Condition {
+    public static HashMap<String, ArrayList<Material>> entityTagMappings = new HashMap<>();
+
     @Override
     public String condition_type() {
         return "ITEM_CONDITION";
@@ -42,22 +46,29 @@ public class ItemCondition implements Condition {
                         }else{
                             item = itemValue;
                         }
+                        if(item.contains("orb_of_origin")){
+                            return getResult(inverted, Optional.of(itemStack.isSimilar(OrbOfOrigins.orb)));
+                        }
                         return getResult(inverted, Optional.of(itemStack.getType().equals(Material.valueOf(item.toUpperCase()))));
                     } else if (ingredientMap.containsKey("tag")) {
-                        if(TagRegistry.getRegisteredTagFromFileKey(ingredientMap.get("tag").toString()) != null){
-                            for(String mat : TagRegistry.getRegisteredTagFromFileKey(ingredientMap.get("tag").toString())){
-                                return Optional.of(itemStack.getType().equals(Material.valueOf(mat.split(":")[1].toUpperCase())));
+                        try {
+                            if(TagRegistry.getRegisteredTagFromFileKey(ingredientMap.get("tag").toString()) != null){
+                                if(!entityTagMappings.containsKey(ingredientMap.get("tag"))){
+                                    entityTagMappings.put(ingredientMap.get("tag").toString(), new ArrayList<>());
+                                    for(String mat : TagRegistry.getRegisteredTagFromFileKey(ingredientMap.get("tag").toString())){
+                                        entityTagMappings.get(ingredientMap.get("tag")).add(Material.valueOf(mat.split(":")[1].toUpperCase()));
+                                    }
+                                }else{
+                                    // mappings exist, now we can start stuff
+                                    return getResult(inverted, Optional.of(entityTagMappings.get(ingredientMap.get("tag")).contains(itemStack.getType())));
+                                }
                             }
-                            return getResult(inverted, Optional.of(false));
-                        }else{
-                            return getResult(inverted, Optional.of(false));
+                        } catch (IllegalArgumentException e) {
+                            e.printStackTrace();
                         }
-                    }else{
-                        return getResult(inverted, Optional.of(false));
                     }
-                }else{
-                    return getResult(inverted, Optional.of(false));
                 }
+                return getResult(inverted, Optional.of(false));
             }
             case "origins:meat" -> {
                 if (itemStack.getType().isEdible()) {

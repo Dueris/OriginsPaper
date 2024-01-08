@@ -372,15 +372,17 @@ public class EntityCondition implements Condition {
                 return getResult(inverted, Optional.of(entity.isSneaking()));
             }
             case "origins:resource" -> {
-                if(CooldownManager.cooldowns.get(p).contains(condition.get("resource").toString()) && CooldownManager.cooldowns.containsKey(p)){
-                    return getResult(inverted, Optional.of(!CooldownManager.isPlayerInCooldownFromTag(p, condition.get("resource").toString())));
-                }else{
-                    if(Resource.registeredBars.containsKey(condition.get("resource").toString())){
-                        String comparison = condition.get("comparison").toString();
-                        double compare_to = Double.parseDouble(condition.get("compare_to").toString());
-                        return getResult(inverted, Optional.of(RestrictArmor.compareValues(Resource.getResource(condition.get("resource").toString()).getLeft().getProgress(), comparison, compare_to)));
+                if(CooldownManager.cooldowns.containsKey(p)){
+                    if(CooldownManager.cooldowns.get(p).contains(condition.get("resource").toString()) && CooldownManager.cooldowns.containsKey(p)){
+                        return getResult(inverted, Optional.of(!CooldownManager.isPlayerInCooldownFromTag(p, condition.get("resource").toString())));
                     }else{
-                        return getResult(inverted, Optional.of(false));
+                        if(Resource.registeredBars.containsKey(condition.get("resource").toString())){
+                            String comparison = condition.get("comparison").toString();
+                            double compare_to = Double.parseDouble(condition.get("compare_to").toString());
+                            return getResult(inverted, Optional.of(RestrictArmor.compareValues(Resource.getResource(condition.get("resource").toString()).getLeft().getProgress(), comparison, compare_to)));
+                        }else{
+                            return getResult(inverted, Optional.of(false));
+                        }
                     }
                 }
             }
