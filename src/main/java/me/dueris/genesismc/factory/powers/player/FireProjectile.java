@@ -24,6 +24,7 @@ import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Sound;
 import org.bukkit.craftbukkit.v1_20_R3.CraftWorld;
+import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEnderPearl;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftLivingEntity;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftPlayer;
@@ -34,12 +35,14 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
+import com.destroystokyo.paper.event.player.PlayerLaunchProjectileEvent;
 import com.mojang.brigadier.StringReader;
 
 import io.papermc.paper.util.MCUtil;
@@ -56,6 +59,7 @@ public class FireProjectile extends CraftPower implements Listener {
     public static ArrayList<Player> in_continuous = new ArrayList<>();
     public static ArrayList<Player> enderian_pearl = new ArrayList<>();
     public static ArrayList<Player> in_cooldown_patch = new ArrayList<>();
+    private static ArrayList<Player> doubleFirePatch = new ArrayList<>();
 
     public static void addCooldownPatch(Player p) {
         in_cooldown_patch.add(p);
@@ -103,6 +107,14 @@ public class FireProjectile extends CraftPower implements Listener {
 
     }
 
+    @EventHandler
+    public void fixEnderPearlThrow(PlayerLaunchProjectileEvent e){
+        if(e.getProjectile().getType().equals(EntityType.ENDER_PEARL)){
+            CompoundTag mergedTag = ((CraftEnderPearl)e.getProjectile()).getHandle().saveWithoutId(new CompoundTag());
+            System.out.println(mergedTag.getAsString());
+        }
+    }
+
 
     @EventHandler
     public void keybindPress(KeybindTriggerEvent e) {
@@ -112,6 +124,7 @@ public class FireProjectile extends CraftPower implements Listener {
             for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()) {
                 for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                     if (power != null) {
+                        if(doubleFirePatch.contains(p)) return;
                         if (fire_projectile.contains(p)) {
                             ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                             if (conditionExecutor.check("condition", "conditions", p, power, "origins:fire_projectile", p, null, null, null, p.getItemInHand(), null)) {
@@ -198,8 +211,10 @@ public class FireProjectile extends CraftPower implements Listener {
                                                                 if (type.getEntityClass() != null) {
                                                                     Entity entityToSpawn = ((CraftEntity)p.getWorld().spawnEntity(p.getEyeLocation(), type)).getHandle();
                                                                     if(entityToSpawn.getBukkitEntity() instanceof Projectile proj){
-                                                                        ((CraftProjectile)proj).getHandle().setOwner(((CraftPlayer)p).getHandle());
-                                                                        ((CraftProjectile)proj).getHandle().saveWithoutId(new CompoundTag());
+                                                                        proj.getScoreboardTags().add("fired_from_fp_power_by_" + p.getUniqueId());
+                                                                        proj.setShooter(p);
+                                                                        proj.setHasBeenShot(true);
+                                                                        ((CraftEntity)proj).getHandle().saveWithoutId(new CompoundTag());
                                                                         Vector direction = p.getEyeLocation().getDirection();
                                                                         Vector dir = direction.clone().normalize().multiply(3);
                                                                         Vec3 startPos = MCUtil.toVec3(p.getEyeLocation());
@@ -248,6 +263,42 @@ public class FireProjectile extends CraftPower implements Listener {
                                                                                 .replace("{nbt}", finalNbtTag[0]);
                                                                                 Bukkit.dispatchCommand(Bukkit.getConsoleSender(), cmd);
                                                                                 setActive(p, power.getTag(), true);
+                                                                                doubleFirePatch.add(p);
+                                                                                new BukkitRunnable(){
+                                                                                    @Override
+                                                                                    public void run(){
+                                                                                        doubleFirePatch.remove(p);
+                                                                                    }
+                                                                                }.runTaskLater(GenesisMC.getPlugin(), 2);
+
+                                                                                org.bukkit.entity.Entity gottenEntity = null;
+                                                                                for(org.bukkit.entity.Entity nearbyEntity : p.getNearbyEntities(1, 2, 1)){
+                                                                                    if(nearbyEntity.getScoreboardTags().contains("fired_from_fp_power_by_" + p.getUniqueId())){
+                                                                                        gottenEntity = nearbyEntity;
+                                                                                        break;
+                                                                                    }
+                                                                                }
+
+                                                                                if(gottenEntity == null) return;
+
+                                                                                org.bukkit.entity.Entity finalEntity = p.getWorld().spawnEntity(spawnLoc, type);
+                                                                                if(finalEntity instanceof Projectile proj){
+                                                                                    proj.setShooter(p);
+                                                                                }
+                                                                                finalEntity.setCustomName(gottenEntity.getCustomName());
+                                                                                finalEntity.setCustomNameVisible(gottenEntity.isCustomNameVisible());
+                                                                                finalEntity.setFallDistance(gottenEntity.getFallDistance());
+                                                                                finalEntity.setFireTicks(gottenEntity.getFireTicks());
+                                                                                finalEntity.setFreezeTicks(gottenEntity.getFreezeTicks());
+                                                                                finalEntity.setGlowing(gottenEntity.isGlowing());
+                                                                                finalEntity.setGravity(gottenEntity.hasGravity());
+                                                                                finalEntity.setInvulnerable(gottenEntity.isInvulnerable());
+                                                                                finalEntity.setPassenger(gottenEntity.getPassenger());
+                                                                                finalEntity.setOp(gottenEntity.isOp());
+                                                                                finalEntity.setVelocity(gottenEntity.getVelocity());
+                                                                                finalEntity.setSilent(gottenEntity.isSilent());
+                                                                                ((CraftEntity)gottenEntity).getHandle().getFirstPassenger().remove(RemovalReason.DISCARDED);
+                                                                                ((CraftEntity)gottenEntity).getHandle().remove(RemovalReason.DISCARDED);
 
                                                                                 peopladf.add(p);
                                                                             }

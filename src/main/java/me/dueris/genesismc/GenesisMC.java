@@ -1,5 +1,6 @@
 package me.dueris.genesismc;
 
+import io.papermc.paper.command.PaperCommand;
 import io.papermc.paper.event.player.PlayerFailMoveEvent;
 import me.dueris.genesismc.choosing.ChoosingMain;
 import me.dueris.genesismc.choosing.ChoosingCustomOrigins;
@@ -49,6 +50,9 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.thread.NamedThreadFactory;
 
 import org.bukkit.*;
+import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.craftbukkit.v1_20_R3.CraftWorld;
+import org.bukkit.craftbukkit.v1_20_R3.CraftServer;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -59,9 +63,11 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scoreboard.Team;
 import org.spigotmc.WatchdogThread;
+import org.yaml.snakeyaml.Yaml;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.concurrent.ExecutorService;
@@ -95,6 +101,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
     public static boolean debugOrigins = false;
     public static boolean forceUseCurrentVersion = false;
     public static boolean forceWatchdogStop = true;
+    public static boolean fixPaperExploits = true;
 
     public static OriginScheduler.OriginSchedulerTree getScheduler(){
         return scheduler;
@@ -176,6 +183,14 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         }
 
         GenesisMC.disableRender = GenesisDataFiles.getMainConfig().getBoolean("disable-render-power");
+        GenesisMC.fixPaperExploits = GenesisDataFiles.getMainConfig().getBoolean("modify-configs-to-fix-bugs");
+        if(fixPaperExploits){
+            File globalDefault = Paths.get("config" + File.separator + "paper-world-defaults.yml").toFile();
+            YamlConfiguration yamlConfig = YamlConfiguration.loadConfiguration(globalDefault);
+            yamlConfig.set("fixes.disable-unloaded-chunk-enderpearl-exploit", false);
+        }
+        MinecraftServer server = ((CraftServer) Bukkit.getServer()).getServer();
+        server.paperConfigurations.reloadConfigs(server);
 
         me.dueris.genesismc.OriginDataContainer.loadData();
         // Pre-load condition types to prevent constant calling
