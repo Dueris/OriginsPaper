@@ -44,10 +44,10 @@ public class ModifyJumpPower extends CraftPower implements Listener {
                         for (HashMap<String, Object> modifier : power.getPossibleModifiers("modifier", "modifiers")) {
                             if (modifier.get("value") instanceof Number) {
                                 double modifierValue = ((Number) modifier.get("value")).doubleValue();
-                                int jumpBoostLevel = (int) /*((modifierValue - 1.0) * 2.0)*/ Math.round(modifierValue);
+                                int jumpBoostLevel = (int) /*((modifierValue - 1.0) * 2.0)*/ Math.round(modifierValue * 10);
 
                                 if (jumpBoostLevel >= 0) {
-                                    p.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, 20, jumpBoostLevel, true, false));
+                                    p.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, 20, jumpBoostLevel, false, false, false));
                                     setActive(p, power.getTag(), true);
                                 }
                             }

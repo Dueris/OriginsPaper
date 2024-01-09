@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
@@ -16,6 +17,15 @@ import org.bukkit.Location;
 import org.bukkit.craftbukkit.v1_20_R3.CraftRegistry;
 import org.bukkit.craftbukkit.v1_20_R3.CraftServer;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParseException;
+import com.google.gson.internal.Streams;
+import com.google.gson.stream.JsonReader;
+import com.mojang.brigadier.StringReader;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.JsonOps;
+
+import net.minecraft.Util;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -167,5 +177,51 @@ public class Utils {
         operationMap.put("divide_random_max", (a, b) -> a / random.nextFloat(b));
 
         return operationMap;
+    }
+
+    public static class ParserUtils {
+        private static final Field JSON_READER_POS = Util.make(() -> {
+            try {
+                Field field = JsonReader.class.getDeclaredField("pos");
+                field.setAccessible(true);
+                return field;
+            } catch (NoSuchFieldException var1) {
+                throw new IllegalStateException("Couldn't get field 'pos' for JsonReader", var1);
+            }
+        });
+        private static final Field JSON_READER_LINESTART = Util.make(() -> {
+            try {
+                Field field = JsonReader.class.getDeclaredField("lineStart");
+                field.setAccessible(true);
+                return field;
+            } catch (NoSuchFieldException var1) {
+                throw new IllegalStateException("Couldn't get field 'lineStart' for JsonReader", var1);
+            }
+        });
+    
+        private static int getPos(JsonReader jsonReader) {
+            try {
+                return JSON_READER_POS.getInt(jsonReader) - JSON_READER_LINESTART.getInt(jsonReader) + 1;
+            } catch (IllegalAccessException var2) {
+                throw new IllegalStateException("Couldn't read position of JsonReader", var2);
+            }
+        }
+    
+        public static <T> T parseJson(StringReader stringReader, Codec<T> codec) {
+            JsonReader jsonReader = new JsonReader(new java.io.StringReader(stringReader.getRemaining()));
+            jsonReader.setLenient(true);
+    
+            Object var4;
+            try {
+                JsonElement jsonElement = Streams.parse(jsonReader);
+                var4 = Util.<T, JsonParseException>getOrThrow(codec.parse(JsonOps.INSTANCE, jsonElement), JsonParseException::new);
+            } catch (StackOverflowError var8) {
+                throw new JsonParseException(var8);
+            } finally {
+                stringReader.setCursor(stringReader.getCursor() + getPos(jsonReader));
+            }
+    
+            return (T)var4;
+        }
     }
 }

@@ -126,6 +126,7 @@ public class OriginPlayerUtils {
                 if(!dataPiece.equals(layerData[0]) || dataPiece.equals(layerData[1]) || dataPiece.equals(layerData[2])){
                     PowerContainer powerCon = CraftApoli.keyedPowerContainers.get(dataPiece);
                     if(powerCon != null){
+                        if(powers.contains(powerCon)) continue;
                         powers.add(powerCon);
                         if(powerCon.isOriginMultipleParent()){
                             ArrayList<PowerContainer> nestedPowers = CraftApoli.getNestedPowers(powerCon);

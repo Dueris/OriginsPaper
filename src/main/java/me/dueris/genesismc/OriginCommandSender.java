@@ -8,6 +8,8 @@ import net.kyori.adventure.identity.Identity;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.util.TriState;
+
+import org.bukkit.Bukkit;
 import org.bukkit.Server;
 import org.bukkit.command.CommandSender;
 import org.bukkit.permissions.Permission;
@@ -23,8 +25,6 @@ import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
-@Deprecated
-@ApiStatus.ScheduledForRemoval
 public class OriginCommandSender implements CommandSender {
     @Override
     public void sendMessage(@NotNull String message) {
@@ -48,12 +48,12 @@ public class OriginCommandSender implements CommandSender {
 
     @Override
     public @NotNull Server getServer() {
-        return null;
+        return Bukkit.getServer();
     }
 
     @Override
     public @NotNull String getName() {
-        return null;
+        return "OriginCommandSender";
     }
 
     @Override
@@ -78,22 +78,22 @@ public class OriginCommandSender implements CommandSender {
 
     @Override
     public boolean isPermissionSet(@NotNull String name) {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isPermissionSet(@NotNull Permission perm) {
-        return false;
+        return true;
     }
 
     @Override
     public boolean hasPermission(@NotNull String name) {
-        return false;
+        return true;
     }
 
     @Override
     public boolean hasPermission(@NotNull Permission perm) {
-        return false;
+        return true;
     }
 
     @Override
