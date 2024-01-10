@@ -9,6 +9,8 @@ import me.dueris.genesismc.utils.PowerContainer;
 import me.dueris.genesismc.utils.Utils;
 import net.minecraft.world.entity.ai.goal.AvoidEntityGoal;
 import net.minecraft.world.entity.animal.Cat;
+
+import org.bukkit.NamespacedKey;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftCreeper;
 import org.bukkit.entity.Creeper;
 import org.bukkit.entity.Player;
@@ -21,13 +23,9 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class ScareCreepers extends CraftPower implements OriginSimple, Listener {
+public class ScareCreepers extends CraftPower implements Listener, PowerProvider {
     public static ArrayList<Player> scaryPlayers = new ArrayList<>();
-    
-    @Override
-    public String getSimpleTagID() {
-        return "origins:scare_creepers";
-    }
+    protected static NamespacedKey powerReference = GenesisMC.originIdentifier("scare_creepers");
 
     @Override
     public void run(Player p) {
@@ -50,7 +48,7 @@ public class ScareCreepers extends CraftPower implements OriginSimple, Listener 
 
     @Override
     public String getPowerFile() {
-        return "genesis:origins-simple-ljshdljkghslkdfjhgkjshdfk;jghskljdfg-[@dueris]";
+        return null;
     }
 
     @Override
@@ -69,48 +67,6 @@ public class ScareCreepers extends CraftPower implements OriginSimple, Listener 
         }else{
             powers_active.put(p, new HashMap());
             setActive(p, tag, bool);
-        }
-    }
-
-    @EventHandler
-    public void event(OriginChangeEvent e) {
-        boolean hasMimicWardenPower = false;
-        if(OriginPlayerUtils.powerContainer.get(e.getPlayer()) == null) return;
-
-        for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()) {
-            for (PowerContainer power : OriginPlayerUtils.powerContainer.get(e.getPlayer()).get(layer)) {
-                if (power.getTag().equals("origins:scare_creepers")) {
-                    hasMimicWardenPower = true;
-                    break;
-                }
-            }
-        }
-
-        if (hasMimicWardenPower && !scaryPlayers.contains(e.getPlayer())) {
-            scaryPlayers.add(e.getPlayer());
-        } else if (!hasMimicWardenPower) {
-            scaryPlayers.remove(e.getPlayer());
-        }
-    }
-
-    @EventHandler
-    public void event(PlayerJoinEvent e) {
-        boolean hasMimicWardenPower = false;
-        if(OriginPlayerUtils.powerContainer.get(e.getPlayer()) == null) return;
-
-        for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()) {
-            for (PowerContainer power : OriginPlayerUtils.powerContainer.get(e.getPlayer()).get(layer)) {
-                if (power.getTag().equals("origins:scare_creepers")) {
-                    hasMimicWardenPower = true;
-                    break;
-                }
-            }
-        }
-
-        if (hasMimicWardenPower && !scaryPlayers.contains(e.getPlayer())) {
-            scaryPlayers.add(e.getPlayer());
-        } else if (!hasMimicWardenPower) {
-            scaryPlayers.remove(e.getPlayer());
         }
     }
 }

@@ -37,9 +37,10 @@ public class List extends SubCommand {
             ArrayList<Player> players = PlayerSelector.playerSelector(sender, args[1]);
             for(Player p : players) {
                 for(LayerContainer layerContainer : CraftApoli.getLayers()){
-                    ArrayList<PowerContainer> powers = OriginPlayerUtils.powerContainer.get(p).get(layerContainer);
+                    ArrayList<PowerContainer> powers = (ArrayList<PowerContainer>) OriginPlayerUtils.powerContainer.get(p).get(layerContainer).clone();
                     for(PowerContainer power : powers){
                         if(power == null) return;
+                        if(CraftApoli.getNestedPowers(power) == null) return;
                         powers.addAll(CraftApoli.getNestedPowers(power));
                     }
                     if(powers == null || powers.isEmpty()){

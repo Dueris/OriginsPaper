@@ -11,11 +11,8 @@ import java.util.ArrayList;
 
 public class RegisterPowersEvent extends Event {
     private static final HandlerList handlers = new HandlerList();
-    ArrayList<Class<? extends CraftPower>> powers;
 
-    public RegisterPowersEvent(ArrayList<Class<? extends CraftPower>> powers) {
-        this.powers = powers;
-    }
+    public RegisterPowersEvent() {}
 
     public static HandlerList getHandlerList() {
         return handlers;
@@ -24,10 +21,6 @@ public class RegisterPowersEvent extends Event {
     @Override
     public HandlerList getHandlers() {
         return handlers;
-    }
-
-    public ArrayList<Class<? extends CraftPower>> getPowers() {
-        return powers;
     }
 
     public void registerNewPower(Class<? extends CraftPower> power) {
@@ -47,13 +40,6 @@ public class RegisterPowersEvent extends Event {
                 Bukkit.getServer().getPluginManager().registerEvents((Listener) instance, GenesisMC.getPlugin());
             }
         }
-    }
-
-    @Override
-    public String toString() {
-        return "RegisterPowersEvent{" +
-                "powers=" + powers +
-                '}';
     }
 
     @Override

@@ -205,27 +205,7 @@ public class PlayerHandler implements Listener {
         OriginPlayerUtils.setupPowers(p);
         originValidCheck(p);
         OriginPlayerUtils.assignPowers(p);
-        try {
-            for (Class<? extends CraftPower> c : CraftPower.findCraftPowerClasses()) {
-                if (CraftPower.getRegistered().contains(c)) continue;
-                if (CraftPower.class.isAssignableFrom(c)) {
-                    Constructor<? extends CraftPower> constructor = c.getConstructor(Player.class);
-                    CraftPower instance = constructor.newInstance(p);
-                    CraftPower.getRegistered().add(instance.getClass());
-                    Bukkit.getLogger().info("new CraftPower registered with POWER_TYPE " + instance.getPowerFile() + " with POWER_ARRAY of " + instance.getPowerArray().toString());
 
-                    if (instance instanceof Listener) {
-                        Bukkit.getServer().getPluginManager().registerEvents((Listener) instance, GenesisMC.getPlugin());
-                    } else {
-                        Listener.class.isAssignableFrom(instance.getClass());
-                    }
-                }
-            }
-        } catch (IOException | ReflectiveOperationException el) {
-            throw new RuntimeException(el);
-        }
-
-        // origins:simple powers
         Gravity g = new Gravity();
         g.run(p);
         new BukkitRunnable() {

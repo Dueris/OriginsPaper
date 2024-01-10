@@ -1,5 +1,6 @@
 package me.dueris.genesismc.factory.powers.simple;
 
+import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.entity.OriginPlayerUtils;
 import me.dueris.genesismc.events.OriginChangeEvent;
 import me.dueris.genesismc.events.PlayerHitGroundEvent;
@@ -10,6 +11,7 @@ import me.dueris.genesismc.utils.PowerContainer;
 import org.bukkit.Bukkit;
 import org.bukkit.GameEvent;
 import org.bukkit.Location;
+import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -22,7 +24,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Locale;
 
-public class BounceSlimeBlock extends CraftPower implements OriginSimple, Listener {
+public class BounceSlimeBlock extends CraftPower implements Listener, PowerProvider {
     @Override
     public void run(Player p) {
 
@@ -30,6 +32,7 @@ public class BounceSlimeBlock extends CraftPower implements OriginSimple, Listen
 
     public static ArrayList<Player> bouncePlayers = new ArrayList<>();
     public static HashMap<Player, Location> lastLoc = new HashMap<>();
+    protected static NamespacedKey powerReference = GenesisMC.originIdentifier("slime_block_bounce");
     public static ArrayList<Player> getBouncePlayers() {
         return bouncePlayers;
     }
@@ -65,51 +68,9 @@ public class BounceSlimeBlock extends CraftPower implements OriginSimple, Listen
         }
     }
 
-    @EventHandler
-    public void event(OriginChangeEvent e) {
-        boolean hasPower = false;
-        if(OriginPlayerUtils.powerContainer.get(e.getPlayer()) == null) return;
-
-        for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()) {
-            for (PowerContainer power : OriginPlayerUtils.powerContainer.get(e.getPlayer()).get(layer)) {
-                if (power.getTag().equals("origins:slime_block_bounce")) {
-                    hasPower = true;
-                    break;
-                }
-            }
-        }
-
-        if (hasPower && !bouncePlayers.contains(e.getPlayer())) {
-            bouncePlayers.add(e.getPlayer());
-        } else if (!hasPower) {
-            bouncePlayers.remove(e.getPlayer());
-        }
-    }
-
-    @EventHandler
-    public void event(PlayerJoinEvent e) {
-        boolean hasPower = false;
-        if(OriginPlayerUtils.powerContainer.get(e.getPlayer()) == null) return;
-
-        for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()) {
-            for (PowerContainer power : OriginPlayerUtils.powerContainer.get(e.getPlayer()).get(layer)) {
-                if (power.getTag().equals("origins:slime_block_bounce")) {
-                    hasPower = true;
-                    break;
-                }
-            }
-        }
-
-        if (hasPower && !bouncePlayers.contains(e.getPlayer())) {
-            bouncePlayers.add(e.getPlayer());
-        } else if (!hasPower) {
-            bouncePlayers.remove(e.getPlayer());
-        }
-    }
-
     @Override
     public String getPowerFile() {
-        return "genesis:bouncing_slime_fsd3sd;jf[@dueris]";
+        return null;
     }
 
     @Override
@@ -129,10 +90,5 @@ public class BounceSlimeBlock extends CraftPower implements OriginSimple, Listen
             powers_active.put(p, new HashMap());
             setActive(p, tag, bool);
         }
-    }
-
-    @Override
-    public String getSimpleTagID() {
-        return "origins:slime_block_bounce";
     }
 }

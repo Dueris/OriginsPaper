@@ -67,6 +67,8 @@ import org.yaml.snakeyaml.Yaml;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.EnumSet;
@@ -204,31 +206,22 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         // Pre-load end
         conditionExecutor = new ConditionExecutor();
         CraftApoli.loadOrigins();
+
+        // Register builtin powers
+        Method registerMethod;
         try {
-            for (Class<? extends CraftPower> c : CraftPower.findCraftPowerClasses()) {
-                if (CraftPower.class.isAssignableFrom(c)) {
-                    CraftPower instance = c.newInstance();
-                    CraftPower.getRegistered().add(instance.getClass());
-                    if (instance instanceof Listener || Listener.class.isAssignableFrom(instance.getClass())) {
-                        Bukkit.getServer().getPluginManager().registerEvents((Listener) instance, GenesisMC.getPlugin());
-                    }
-                }
-            }
-            RegisterPowersEvent registerPowersEvent = new RegisterPowersEvent(CraftPower.getRegistered());
-            Bukkit.getServer().getPluginManager().callEvent(registerPowersEvent);
-            for (OriginContainer origin : CraftApoli.getOrigins()) {
-                for (PowerContainer powerContainer : origin.getPowerContainers()) {
-                    CraftApoli.getPowers().add(powerContainer);
-                }
-            }
-        } catch (IOException | ReflectiveOperationException e) {
-            e.printStackTrace();
+            registerMethod = CraftPower.class.getDeclaredMethod("registerBuiltinPowers");
+            registerMethod.setAccessible(true);
+            registerMethod.invoke(null);
+            RegisterPowersEvent e = new RegisterPowersEvent();
+            e.callEvent();
+        } catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+            throw new RuntimeException("Unable to build builtin-powers registry");
         }
+        
         OriginScheduler.OriginSchedulerTree scheduler = new OriginScheduler.OriginSchedulerTree();
         GenesisMC.scheduler = scheduler;
         scheduler.runTaskTimer(this, 0, 1);
-        // waterProtectionEnchant = new WaterProtection();
-        // custom_enchants.add(waterProtectionEnchant);
     
         OrbOfOrigins.init();
         InfinPearl.init();

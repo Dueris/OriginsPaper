@@ -41,11 +41,12 @@ public class FlightHandler extends CraftPower {
                 }
             }
         }
-
-        if (p.getEyeLocation().getBlock().isCollidable()) {
-            p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "insideBlock"), PersistentDataType.BOOLEAN, true);
-        } else {
-            p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "insideBlock"), PersistentDataType.BOOLEAN, false);
+        if(p.getChunk().isLoaded()){
+            if (p.getEyeLocation().getBlock().isCollidable()) {
+                p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "insideBlock"), PersistentDataType.BOOLEAN, true);
+            } else {
+                p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "insideBlock"), PersistentDataType.BOOLEAN, false);
+            }
         }
     }
 

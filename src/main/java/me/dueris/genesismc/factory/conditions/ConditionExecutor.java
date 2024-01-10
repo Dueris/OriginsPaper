@@ -35,7 +35,6 @@ import java.util.concurrent.CompletableFuture;
 import static me.dueris.genesismc.factory.conditions.CraftCondition.*;
 import static me.dueris.genesismc.factory.conditions.item.ItemCondition.getMeatMaterials;
 import static me.dueris.genesismc.factory.conditions.item.ItemCondition.getNonMeatMaterials;
-import static me.dueris.genesismc.factory.powers.CraftPower.findCraftPowerClasses;
 import static me.dueris.genesismc.factory.powers.Power.powers_active;
 
 public class ConditionExecutor {
@@ -198,12 +197,7 @@ public class ConditionExecutor {
             } else if (condition.get("type").equals("origins:origin")) {
                 if (OriginPlayerUtils.hasOrigin(p, condition.get("origin").toString())) return true;
             } else if (condition.get("type").equals("origins:power_type")) {
-                List<Class<? extends CraftPower>> craftPowerClasses;
-                try {
-                    craftPowerClasses = findCraftPowerClasses();
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
+                List<Class<? extends CraftPower>> craftPowerClasses = CraftPower.getRegistered();
                 for (Class<? extends CraftPower> c : craftPowerClasses) {
                     String pt = condition.get("power_type").toString();
                     try {
