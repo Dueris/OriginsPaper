@@ -29,7 +29,6 @@ import static me.dueris.genesismc.factory.powers.value_modifying.ValueModifyingS
 public class ModifyBreakSpeedPower extends CraftPower implements Listener {
 
     String MODIFYING_KEY = "modify_break_speed";
-    public static ArrayList<Player> shouldDrop = new ArrayList<>();
 
     @Override
     public void setActive(Player p, String tag, Boolean bool) {
@@ -56,16 +55,6 @@ public class ModifyBreakSpeedPower extends CraftPower implements Listener {
         int amplifier = (int) (percentage * (maxAmplifier - minAmplifier)) + minAmplifier;
 
         return amplifier + 1;
-    }
-
-    @EventHandler
-    public void onBreak(BlockBreakEvent e){
-        if(getPowerArray().contains(e.getPlayer())){
-            if(!shouldDrop.contains(e.getPlayer())) return;
-            for(ItemStack item : e.getBlock().getDrops()) {
-                e.getPlayer().getWorld().dropItemNaturally(e.getBlock().getLocation(), item);
-            }
-        }
     }
 
     @EventHandler
@@ -104,13 +93,6 @@ public class ModifyBreakSpeedPower extends CraftPower implements Listener {
                                                 )
                                         );
                                     }
-                                    shouldDrop.add(p);
-                                    new BukkitRunnable() {
-                                        @Override
-                                        public void run() {
-                                            shouldDrop.remove(p);
-                                        }
-                                    }.runTaskLater(GenesisMC.getPlugin(), 40);
                                 }
                             } else {
                                 setActive(p, power.getTag(), false);
