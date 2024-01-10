@@ -129,7 +129,7 @@ public class PlayerHandler implements Listener {
         if(p.getPersistentDataContainer().has(GenesisMC.identifier("originLayers"))){
             p.getPersistentDataContainer().remove(GenesisMC.identifier("originLayers"));
         }
-                                               
+
         // ---  translation system ---
         String originTag = p.getPersistentDataContainer().get(GenesisMC.identifier("originTag"), PersistentDataType.STRING);
 
@@ -202,7 +202,6 @@ public class PlayerHandler implements Listener {
         }
 
         OriginDataContainer.loadData(p);
-        OriginPlayerUtils.setupPowers(p);
         originValidCheck(p);
         OriginPlayerUtils.assignPowers(p);
 
@@ -215,70 +214,6 @@ public class PlayerHandler implements Listener {
             }
         }.runTaskLater(GenesisMC.getPlugin(), 5L);
         boolean hasMimicWardenPower = false;
-
-        for (OriginContainer origin : OriginPlayerUtils.getOrigin(p).values()) {
-            for (PowerContainer power : origin.getPowerContainers()) {
-                if (power == null) continue;
-                if (power.getTag().equals("origins:mimic_warden")) {
-                    hasMimicWardenPower = true;
-                    break;
-                }
-            }
-        }
-        if (hasMimicWardenPower && !mimicWardenPlayers.contains(p)) {
-            mimicWardenPlayers.add(p);
-        } else if (!hasMimicWardenPower) {
-            mimicWardenPlayers.remove(p);
-        }
-
-        boolean hasPower = false;
-
-        for (OriginContainer origin : OriginPlayerUtils.getOrigin(p).values()) {
-            for (String power : origin.getPowers()) {
-                if (power.equals("origins:slime_block_bounce")) {
-                    hasPower = true;
-                    break;
-                }
-            }
-        }
-
-        if (hasPower && !bouncePlayers.contains(p)) {
-            bouncePlayers.add(p);
-        } else if (!hasPower) {
-            bouncePlayers.remove(p);
-        }
-
-        boolean hasPiglinPower = false;
-
-        for (OriginContainer origin : OriginPlayerUtils.getOrigin(p).values()) {
-            for (PowerContainer power : origin.getPowerContainers()) {
-                if (power.getTag().equals("origins:piglin_brothers")) {
-                    hasPiglinPower = true;
-                    break;
-                }
-            }
-        }
-        if (hasPiglinPower && !piglinPlayers.contains(p)) {
-            piglinPlayers.add(p);
-        } else if (!hasPiglinPower) {
-            piglinPlayers.remove(p);
-        }
-
-        boolean hasScaryPower = false;
-
-        for (OriginContainer origin : OriginPlayerUtils.getOrigin(p).values()) {
-            for (PowerContainer power : origin.getPowerContainers()) {
-                if (power.getTag().equals("origins:scare_creepers")) {
-                    hasPiglinPower = true;
-                    break;
-                }
-            }
-        }
-        if (hasScaryPower && !scaryPlayers.contains(p)) {
-            scaryPlayers.add(p);
-        } else if (!hasScaryPower) {
-            scaryPlayers.remove(p);
-        }
     }
 
     @EventHandler

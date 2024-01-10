@@ -4,8 +4,6 @@ import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.OriginDataContainer;
 import me.dueris.genesismc.enums.OriginDataType;
 import me.dueris.genesismc.events.OriginChooseEvent;
-import me.dueris.genesismc.events.PowerAssignEvent;
-import me.dueris.genesismc.events.PowerUnassignEvent;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.factory.powers.player.Gravity;

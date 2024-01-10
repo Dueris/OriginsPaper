@@ -10,6 +10,7 @@ import org.jetbrains.annotations.NotNull;
 import java.io.File;
 import java.util.ArrayList;
 
+@Deprecated(forRemoval = true)
 public class OriginLoadEvent extends Event {
     private static final HandlerList handlers = new HandlerList();
     OriginContainer origin;
