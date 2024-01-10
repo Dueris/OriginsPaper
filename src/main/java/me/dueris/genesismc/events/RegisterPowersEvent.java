@@ -3,6 +3,7 @@ package me.dueris.genesismc.events;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
@@ -23,20 +24,13 @@ public class RegisterPowersEvent extends Event {
         return handlers;
     }
 
-    public void registerNewPower(Class<? extends CraftPower> power) {
-        if (CraftPower.class.isAssignableFrom(power)) {
-            CraftPower instance = null;
-            try {
-                instance = power.newInstance();
-            } catch (InstantiationException e) {
-                throw new RuntimeException(e);
-            } catch (IllegalAccessException e) {
-                throw new RuntimeException(e);
-            }
-            CraftPower.getRegistered().add(instance.getClass());
-            Bukkit.getLogger().info("new CraftPower registered with POWER_TYPE " + instance.getPowerFile() + " with POWER_ARRAY of " + instance.getPowerArray().toString());
-
-            if (instance instanceof Listener || Listener.class.isAssignableFrom(instance.getClass())) {
+    public void registerNewPower(Class<? extends CraftPower> c) throws InstantiationException, IllegalAccessException {
+        if (CraftPower.class.isAssignableFrom(c)) {
+            CraftPower instance = c.newInstance();
+            CraftPower.getRegistered().add(c);
+            CraftPower.getKeyedRegistry().put(instance.getPowerFile(), c);
+            Bukkit.getConsoleSender().sendMessage(ChatColor.GREEN + "New CraftPower registered for {%%}".replace("%%", instance.getPowerFile()));
+            if (instance instanceof Listener || Listener.class.isAssignableFrom(c)) {
                 Bukkit.getServer().getPluginManager().registerEvents((Listener) instance, GenesisMC.getPlugin());
             }
         }

@@ -7,6 +7,7 @@ import org.reflections.scanners.SubTypesScanner;
 import org.reflections.util.ClasspathHelper;
 import org.reflections.util.ConfigurationBuilder;
 
+import javassist.NotFoundException;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.events.RegisterPowersEvent;
 import me.dueris.genesismc.factory.CraftApoli;
@@ -20,6 +21,7 @@ import me.dueris.genesismc.utils.PowerContainer;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
@@ -28,6 +30,7 @@ import java.util.concurrent.ExecutionException;
 public abstract class CraftPower implements Power {
 
     public static ArrayList<Class<? extends CraftPower>> registered = new ArrayList<>();
+    protected static HashMap<String, Class<? extends CraftPower>> registeredFromKey = new HashMap<>();
 
     protected static List<Class<? extends CraftPower>> findCraftPowerClasses() throws IOException {
         CompletableFuture<List<Class<? extends CraftPower>>> future = CompletableFuture.supplyAsync(() -> {
@@ -61,6 +64,7 @@ public abstract class CraftPower implements Power {
                 if (CraftPower.class.isAssignableFrom(c)) {
                     CraftPower instance = c.newInstance();
                     CraftPower.getRegistered().add(c);
+                    registeredFromKey.put(instance.getPowerFile(), c);
                     if (instance instanceof Listener || Listener.class.isAssignableFrom(c)) {
                         Bukkit.getServer().getPluginManager().registerEvents((Listener) instance, GenesisMC.getPlugin());
                     }
@@ -78,13 +82,32 @@ public abstract class CraftPower implements Power {
         } catch (IOException | ReflectiveOperationException e) {
             e.printStackTrace();
         }
+        System.out.println(registeredFromKey.toString());
+    }
+
+    public static HashMap<String, Class<? extends CraftPower>> getKeyedRegistry(){
+        return registeredFromKey;
     }
 
     public static ArrayList<Class<? extends CraftPower>> getRegistered() {
         return registered;
     }
 
-    public static boolean isCraftPower(Class<?> c) {
+    public static Class<? extends CraftPower> getCraftPowerFromKey(String key){
+        return registeredFromKey.getOrDefault(key, null);
+    }
+
+    public static Class<? extends CraftPower> getCraftPowerFromKeyOrThrow(String key) throws NotFoundException{
+        if(registeredFromKey.get(key) != null){
+            return registeredFromKey.get(key);
+        }else{throw new NotFoundException("Unable to find power");}
+    }
+
+    public static boolean isRegisteredCraftPower(Class<?> c) {
         return getRegistered().contains(c);
+    }
+
+    public static boolean isCraftPower(Class<?> c){
+        return CraftPower.class.isAssignableFrom(c);
     }
 }

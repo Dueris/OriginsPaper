@@ -202,6 +202,7 @@ public class PlayerHandler implements Listener {
         }
 
         OriginDataContainer.loadData(p);
+        OriginPlayerUtils.setupPowers(p);
         originValidCheck(p);
         OriginPlayerUtils.assignPowers(p);
 
@@ -213,7 +214,6 @@ public class PlayerHandler implements Listener {
                 ReapplyEntityReachPowers(p);
             }
         }.runTaskLater(GenesisMC.getPlugin(), 5L);
-        boolean hasMimicWardenPower = false;
     }
 
     @EventHandler

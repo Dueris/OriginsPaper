@@ -37,10 +37,8 @@ public class OriginSimpleContainer {
     } 
 
     public static Class<? extends CraftPower> getFromRegistryOrThrow(String powerTag) throws NotFoundException{
-        try {
+        if (keyedRegistry.containsKey(powerTag)) {
             return keyedRegistry.get(powerTag);
-        } catch (Exception e) {
-            throw new NotFoundException("CraftPower not found");
-        }
+        } else {throw new NotFoundException("CraftPower not found");}
     }
 }
