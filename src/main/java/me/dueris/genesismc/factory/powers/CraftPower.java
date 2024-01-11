@@ -82,7 +82,6 @@ public abstract class CraftPower implements Power {
         } catch (IOException | ReflectiveOperationException e) {
             e.printStackTrace();
         }
-        System.out.println(registeredFromKey.toString());
     }
 
     public static HashMap<String, Class<? extends CraftPower>> getKeyedRegistry(){

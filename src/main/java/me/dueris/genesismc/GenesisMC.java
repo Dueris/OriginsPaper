@@ -69,9 +69,11 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.EnumSet;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
@@ -140,6 +142,10 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         return conditionExecutor;
     }
 
+    public static File getTmpFolder(){
+        return Path.of(GenesisMC.getPlugin().getDataFolder().getAbsolutePath() + File.separator + ".tmp" + File.separator).toFile();
+    }
+
     @Override
     public void onEnable(){
         plugin = this;
@@ -183,6 +189,10 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         if(placeholderapi){
             new PlaceholderApiExtension(this).register();
         }
+        
+        if(!getTmpFolder().exists()){
+            getTmpFolder().mkdirs();
+        }
 
         GenesisMC.disableRender = GenesisDataFiles.getMainConfig().getBoolean("disable-render-power");
         GenesisMC.fixPaperExploits = GenesisDataFiles.getMainConfig().getBoolean("modify-configs-to-fix-bugs");
@@ -205,7 +215,11 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         CraftCondition.item = new ItemCondition();
         // Pre-load end
         conditionExecutor = new ConditionExecutor();
-        CraftApoli.loadOrigins();
+        try {
+            CraftApoli.loadOrigins();
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
 
         // Register builtin powers
         Method registerMethod;
@@ -268,6 +282,11 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         Bukkit.getLogger().info("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
         // Shutdown executor, we dont need it anymore
         loaderThreadPool.shutdown();
+        try {
+            Bootstrap.deleteDirectory(GenesisMC.getTmpFolder().toPath(), true);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     protected static void patchPowers(){

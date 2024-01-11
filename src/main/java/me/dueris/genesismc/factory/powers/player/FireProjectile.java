@@ -120,11 +120,11 @@ public class FireProjectile extends CraftPower implements Listener {
     public void keybindPress(KeybindTriggerEvent e) {
         Player p = e.getPlayer();
         ArrayList<Player> peopladf = new ArrayList<>();
+        if(doubleFirePatch.contains(p)) return;
         if (!peopladf.contains(p)) {
             for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()) {
                 for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                     if (power != null) {
-                        if(doubleFirePatch.contains(p)) return;
                         if (fire_projectile.contains(p)) {
                             ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                             if (conditionExecutor.check("condition", "conditions", p, power, "origins:fire_projectile", p, null, null, null, p.getItemInHand(), null)) {
@@ -209,6 +209,7 @@ public class FireProjectile extends CraftPower implements Listener {
                                                                 addCooldownPatch(p);
 
                                                                 if (type.getEntityClass() != null) {
+                                                                    if(doubleFirePatch.contains(p)) return;
                                                                     Entity entityToSpawn = ((CraftEntity)p.getWorld().spawnEntity(p.getEyeLocation(), type)).getHandle();
                                                                     if(entityToSpawn.getBukkitEntity() instanceof Projectile proj){
                                                                         proj.getScoreboardTags().add("fired_from_fp_power_by_" + p.getUniqueId());
@@ -269,7 +270,7 @@ public class FireProjectile extends CraftPower implements Listener {
                                                                                     public void run(){
                                                                                         doubleFirePatch.remove(p);
                                                                                     }
-                                                                                }.runTaskLater(GenesisMC.getPlugin(), 2);
+                                                                                }.runTaskLater(GenesisMC.getPlugin(), 5);
 
                                                                                 org.bukkit.entity.Entity gottenEntity = null;
                                                                                 for(org.bukkit.entity.Entity nearbyEntity : p.getNearbyEntities(1, 2, 1)){
@@ -297,7 +298,8 @@ public class FireProjectile extends CraftPower implements Listener {
                                                                                 finalEntity.setOp(gottenEntity.isOp());
                                                                                 finalEntity.setVelocity(gottenEntity.getVelocity());
                                                                                 finalEntity.setSilent(gottenEntity.isSilent());
-                                                                                ((CraftEntity)gottenEntity).getHandle().getFirstPassenger().remove(RemovalReason.DISCARDED);
+                                                                                if(((CraftEntity)gottenEntity).getHandle().getFirstPassenger() != null)
+                                                                                    ((CraftEntity)gottenEntity).getHandle().getFirstPassenger().remove(RemovalReason.DISCARDED);
                                                                                 ((CraftEntity)gottenEntity).getHandle().remove(RemovalReason.DISCARDED);
 
                                                                                 peopladf.add(p);
@@ -332,7 +334,7 @@ public class FireProjectile extends CraftPower implements Listener {
                                                     }
                                                 }
                                             }
-                                        }.runTaskTimer(GenesisMC.getPlugin(), 0, 1);
+                                        }.runTaskLater(GenesisMC.getPlugin(), 1);
                                     }
                                 }
                             }
