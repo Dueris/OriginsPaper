@@ -92,7 +92,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
     private static GenesisMC plugin;
     public static String MODID = "genesismc";
     public static ConditionExecutor conditionExecutor;
-    public static String apoliVersion = "1.12.1";
+    public static String apoliVersion = "1.12.2";
     public static boolean placeholderapi = false;
     public static File playerDataFolder = MinecraftServer.getServer().playerDataStorage.getPlayerDir();
 
