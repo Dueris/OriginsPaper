@@ -192,7 +192,7 @@ public class CraftApoli {
     
             while (entry != null) {
                 File file = new File(out, entry.getName());
-                if (!entry.getName().endsWith(".jar")){
+                if (!entry.getName().endsWith(".jar") && !entry.getName().contains("../")){
                     if (entry.isDirectory()) {
                         file.mkdirs();
                     } else {
@@ -228,7 +228,7 @@ public class CraftApoli {
         File[] datapacks = DatapackDir.listFiles();
         if (datapacks == null) return;
 
-        Void future = CompletableFuture.runAsync(() -> {
+        CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
             for (File datapack : datapacks){
                 if (FilenameUtils.getExtension(datapack.getName()).equals(".zip") || FilenameUtils.getExtension(datapack.getName()).equals("zip")) {
                     try {
@@ -403,7 +403,7 @@ public class CraftApoli {
             //if an origin is a core one checks if there are translations for the powers
             translateOrigins();
             TagRegistry.runParse();
-        }).get();
+        });
     }
 
 
