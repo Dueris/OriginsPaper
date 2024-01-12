@@ -1,23 +1,17 @@
 package me.dueris.genesismc.factory.powers;
 
+import javassist.NotFoundException;
+import me.dueris.genesismc.GenesisMC;
+import me.dueris.genesismc.factory.CraftApoli;
+import me.dueris.genesismc.factory.powers.simple.*;
+import me.dueris.genesismc.utils.OriginContainer;
+import me.dueris.genesismc.utils.PowerContainer;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Listener;
 import org.reflections.Reflections;
 import org.reflections.scanners.SubTypesScanner;
 import org.reflections.util.ClasspathHelper;
 import org.reflections.util.ConfigurationBuilder;
-
-import javassist.NotFoundException;
-import me.dueris.genesismc.GenesisMC;
-import me.dueris.genesismc.events.RegisterPowersEvent;
-import me.dueris.genesismc.factory.CraftApoli;
-import me.dueris.genesismc.factory.powers.simple.BounceSlimeBlock;
-import me.dueris.genesismc.factory.powers.simple.OriginSimpleContainer;
-import me.dueris.genesismc.factory.powers.simple.MimicWarden;
-import me.dueris.genesismc.factory.powers.simple.PiglinNoAttack;
-import me.dueris.genesismc.factory.powers.simple.ScareCreepers;
-import me.dueris.genesismc.utils.OriginContainer;
-import me.dueris.genesismc.utils.PowerContainer;
 
 import java.io.IOException;
 import java.util.ArrayList;

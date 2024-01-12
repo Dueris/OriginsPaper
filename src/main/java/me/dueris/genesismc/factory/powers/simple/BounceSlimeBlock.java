@@ -1,13 +1,8 @@
 package me.dueris.genesismc.factory.powers.simple;
 
 import me.dueris.genesismc.GenesisMC;
-import me.dueris.genesismc.entity.OriginPlayerUtils;
-import me.dueris.genesismc.events.OriginChangeEvent;
 import me.dueris.genesismc.events.PlayerHitGroundEvent;
 import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.utils.OriginContainer;
-import me.dueris.genesismc.utils.PowerContainer;
-
 import org.bukkit.Bukkit;
 import org.bukkit.GameEvent;
 import org.bukkit.Location;
@@ -15,14 +10,12 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.world.GenericGameEvent;
 import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Locale;
 
 public class BounceSlimeBlock extends CraftPower implements Listener, PowerProvider {
     @Override

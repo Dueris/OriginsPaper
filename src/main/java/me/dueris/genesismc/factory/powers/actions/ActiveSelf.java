@@ -6,17 +6,16 @@ import me.dueris.genesismc.events.KeybindTriggerEvent;
 import me.dueris.genesismc.factory.actions.Actions;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.utils.OriginContainer;
 import me.dueris.genesismc.utils.PowerContainer;
 import me.dueris.genesismc.utils.Utils;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
-import static me.dueris.genesismc.utils.KeybindUtils.isKeyBeingPressed;
-
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import static me.dueris.genesismc.utils.KeybindUtils.isKeyBeingPressed;
 
 public class ActiveSelf extends CraftPower implements Listener {
 

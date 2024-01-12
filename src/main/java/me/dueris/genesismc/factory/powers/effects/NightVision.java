@@ -3,8 +3,6 @@ package me.dueris.genesismc.factory.powers.effects;
 import me.dueris.genesismc.entity.OriginPlayerUtils;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.utils.LayerContainer;
-import me.dueris.genesismc.utils.OriginContainer;
 import me.dueris.genesismc.utils.PowerContainer;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
@@ -12,7 +10,6 @@ import org.bukkit.potion.PotionEffectType;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Set;
 
 public class NightVision extends CraftPower {
 

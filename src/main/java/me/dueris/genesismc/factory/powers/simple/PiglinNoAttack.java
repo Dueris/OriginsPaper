@@ -1,14 +1,7 @@
 package me.dueris.genesismc.factory.powers.simple;
 
-import it.unimi.dsi.fastutil.Hash;
 import me.dueris.genesismc.GenesisMC;
-import me.dueris.genesismc.OriginScheduler;
-import me.dueris.genesismc.entity.OriginPlayerUtils;
-import me.dueris.genesismc.events.OriginChangeEvent;
 import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.utils.OriginContainer;
-import me.dueris.genesismc.utils.PowerContainer;
-
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -17,7 +10,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityTargetEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
 
 import java.util.ArrayList;
 import java.util.HashMap;

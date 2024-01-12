@@ -4,7 +4,6 @@ import me.dueris.genesismc.entity.OriginPlayerUtils;
 import me.dueris.genesismc.events.OriginChangeEvent;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.utils.OriginContainer;
 import me.dueris.genesismc.utils.PowerContainer;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;

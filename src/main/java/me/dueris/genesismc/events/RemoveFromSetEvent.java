@@ -3,7 +3,6 @@ package me.dueris.genesismc.events;
 import org.bukkit.entity.Entity;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
-import org.jetbrains.annotations.NotNull;
 
 public class RemoveFromSetEvent extends Event {
     private static final HandlerList handlers = new HandlerList();

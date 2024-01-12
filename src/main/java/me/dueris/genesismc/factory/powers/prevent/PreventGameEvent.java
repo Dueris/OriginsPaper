@@ -1,18 +1,16 @@
 package me.dueris.genesismc.factory.powers.prevent;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-
+import me.dueris.genesismc.GenesisMC;
+import me.dueris.genesismc.entity.OriginPlayerUtils;
+import me.dueris.genesismc.factory.powers.CraftPower;
+import me.dueris.genesismc.utils.PowerContainer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.world.GenericGameEvent;
 
-import me.dueris.genesismc.GenesisMC;
-import me.dueris.genesismc.entity.OriginPlayerUtils;
-import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.utils.OriginContainer;
-import me.dueris.genesismc.utils.PowerContainer;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 import static me.dueris.genesismc.factory.powers.prevent.PreventSuperClass.prevent_game_event;
 

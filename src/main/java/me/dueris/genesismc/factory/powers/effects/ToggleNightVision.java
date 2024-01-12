@@ -7,7 +7,6 @@ import me.dueris.genesismc.events.KeybindTriggerEvent;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.KeybindUtils;
-import me.dueris.genesismc.utils.OriginContainer;
 import me.dueris.genesismc.utils.PowerContainer;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
@@ -19,10 +18,10 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import static me.dueris.genesismc.utils.KeybindUtils.isKeyBeingPressed;
-
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import static me.dueris.genesismc.utils.KeybindUtils.isKeyBeingPressed;
 
 public class ToggleNightVision extends CraftPower implements Listener {
 

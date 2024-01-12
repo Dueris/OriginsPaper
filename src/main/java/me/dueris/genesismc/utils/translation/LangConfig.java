@@ -1,6 +1,5 @@
 package me.dueris.genesismc.utils.translation;
 
-import com.mojang.datafixers.kinds.IdF;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.files.GenesisDataFiles;
 import me.dueris.genesismc.utils.BukkitColour;
@@ -9,10 +8,8 @@ import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
-import java.util.logging.Level;
 
 
 public class LangConfig {

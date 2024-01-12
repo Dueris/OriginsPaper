@@ -1,7 +1,5 @@
 package me.dueris.genesismc.utils;
 
-import me.dueris.genesismc.factory.powers.CraftPower;
-
 import org.bukkit.NamespacedKey;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;

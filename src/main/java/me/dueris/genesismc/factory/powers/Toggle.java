@@ -5,7 +5,6 @@ import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.entity.OriginPlayerUtils;
 import me.dueris.genesismc.events.KeybindTriggerEvent;
 import me.dueris.genesismc.utils.KeybindUtils;
-import me.dueris.genesismc.utils.OriginContainer;
 import me.dueris.genesismc.utils.PowerContainer;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
@@ -15,10 +14,10 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import static me.dueris.genesismc.utils.KeybindUtils.isKeyBeingPressed;
-
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import static me.dueris.genesismc.utils.KeybindUtils.isKeyBeingPressed;
 
 public class Toggle extends CraftPower implements Listener {
     public static ArrayList<Player> in_continuous = new ArrayList<>();

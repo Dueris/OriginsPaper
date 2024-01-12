@@ -6,7 +6,6 @@ import me.dueris.genesismc.entity.OriginPlayerUtils;
 import me.dueris.genesismc.events.AttributeExecuteEvent;
 import me.dueris.genesismc.events.OriginChangeEvent;
 import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.utils.OriginContainer;
 import me.dueris.genesismc.utils.PowerContainer;
 import me.dueris.genesismc.utils.Utils;
 import me.dueris.genesismc.utils.translation.LangConfig;
@@ -25,7 +24,10 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 import java.util.function.BinaryOperator;
 import java.util.function.Predicate;
 

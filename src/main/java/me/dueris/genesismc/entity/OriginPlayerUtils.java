@@ -1,9 +1,9 @@
 package me.dueris.genesismc.entity;
 
+import javassist.NotFoundException;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.OriginDataContainer;
 import me.dueris.genesismc.enums.OriginDataType;
-import me.dueris.genesismc.events.OriginChooseEvent;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.factory.powers.player.Gravity;
@@ -14,10 +14,7 @@ import me.dueris.genesismc.utils.OriginContainer;
 import me.dueris.genesismc.utils.PowerContainer;
 import me.dueris.genesismc.utils.SendCharts;
 import net.md_5.bungee.api.ChatColor;
-
-import org.apache.commons.lang.time.StopWatch;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
@@ -26,22 +23,14 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
-
-import com.google.common.base.Stopwatch;
-
-import javassist.NotFoundException;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
-
-import static org.bukkit.Bukkit.getServer;
 
 public class OriginPlayerUtils {
 

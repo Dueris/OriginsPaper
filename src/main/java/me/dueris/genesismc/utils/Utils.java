@@ -1,22 +1,5 @@
 package me.dueris.genesismc.utils;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.lang.reflect.Field;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.*;
-import java.util.function.BinaryOperator;
-import java.util.function.Predicate;
-
-import net.minecraft.world.entity.LivingEntity;
-
-import org.bukkit.Location;
-import org.bukkit.craftbukkit.v1_20_R3.CraftRegistry;
-import org.bukkit.craftbukkit.v1_20_R3.CraftServer;
-
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 import com.google.gson.internal.Streams;
@@ -24,18 +7,24 @@ import com.google.gson.stream.JsonReader;
 import com.mojang.brigadier.StringReader;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
-
 import net.minecraft.Util;
 import net.minecraft.core.Registry;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageType;
-import net.minecraft.world.item.enchantment.Enchantment;
-import net.minecraft.world.level.biome.Biome;
+import org.bukkit.Location;
+import org.bukkit.craftbukkit.v1_20_R3.CraftRegistry;
+import org.bukkit.craftbukkit.v1_20_R3.CraftServer;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.lang.reflect.Field;
+import java.util.*;
+import java.util.function.BinaryOperator;
 
 public class Utils {
     public MinecraftServer server = MinecraftServer.getServer();

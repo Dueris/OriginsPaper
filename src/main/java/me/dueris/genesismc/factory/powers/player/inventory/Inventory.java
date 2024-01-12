@@ -8,7 +8,6 @@ import me.dueris.genesismc.events.OriginChangeEvent;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.BukkitColour;
-import me.dueris.genesismc.utils.OriginContainer;
 import me.dueris.genesismc.utils.PowerContainer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
@@ -25,11 +24,11 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import static me.dueris.genesismc.utils.KeybindUtils.isKeyBeingPressed;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+
+import static me.dueris.genesismc.utils.KeybindUtils.isKeyBeingPressed;
 public class Inventory extends CraftPower implements CommandExecutor, Listener {
 
     @Override

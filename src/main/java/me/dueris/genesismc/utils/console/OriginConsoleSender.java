@@ -4,7 +4,6 @@ import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.conversations.Conversation;
 import org.bukkit.conversations.ConversationAbandonedEvent;
 import org.bukkit.conversations.ManuallyAbandonedConversationCanceller;
-import org.bukkit.craftbukkit.v1_20_R3.command.ServerCommandSender;
 import org.bukkit.craftbukkit.v1_20_R3.conversations.ConversationTracker;
 
 import java.util.UUID;

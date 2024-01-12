@@ -8,8 +8,6 @@ import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 
-import java.util.ArrayList;
-
 public class RegisterPowersEvent extends Event {
     private static final HandlerList handlers = new HandlerList();
 

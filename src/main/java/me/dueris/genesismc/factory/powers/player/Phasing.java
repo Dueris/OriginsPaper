@@ -1,12 +1,10 @@
 package me.dueris.genesismc.factory.powers.player;
 
 import com.destroystokyo.paper.event.player.PlayerStartSpectatingEntityEvent;
-import com.destroystokyo.paper.event.server.ServerTickEndEvent;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.entity.OriginPlayerUtils;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.utils.OriginContainer;
 import me.dueris.genesismc.utils.PowerContainer;
 import net.minecraft.network.protocol.game.ClientboundGameEventPacket;
 import org.bukkit.Bukkit;

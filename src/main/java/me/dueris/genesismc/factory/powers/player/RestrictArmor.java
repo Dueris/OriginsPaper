@@ -1,11 +1,9 @@
 package me.dueris.genesismc.factory.powers.player;
 
-import me.dueris.genesismc.GenesisMC;
+import com.destroystokyo.paper.event.player.PlayerArmorChangeEvent;
 import me.dueris.genesismc.entity.OriginPlayerUtils;
-import me.dueris.genesismc.factory.TagRegistry;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.utils.OriginContainer;
 import me.dueris.genesismc.utils.PowerContainer;
 import me.dueris.genesismc.utils.translation.LangConfig;
 import org.bukkit.Bukkit;
@@ -16,14 +14,10 @@ import org.bukkit.event.Listener;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 
-import com.destroystokyo.paper.event.player.PlayerArmorChangeEvent;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
-import static me.dueris.genesismc.factory.conditions.ConditionExecutor.getResult;
 import static me.dueris.genesismc.utils.ArmorUtils.getArmorValue;
 
 public class RestrictArmor extends CraftPower implements Listener{

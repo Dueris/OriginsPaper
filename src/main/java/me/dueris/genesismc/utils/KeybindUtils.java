@@ -5,7 +5,6 @@ import me.dueris.genesismc.CooldownManager;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.events.KeybindTriggerEvent;
 import me.dueris.genesismc.events.OriginChangeEvent;
-import me.dueris.genesismc.events.OriginKeybindExecuteEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -28,11 +27,7 @@ import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class KeybindUtils implements Listener {
 

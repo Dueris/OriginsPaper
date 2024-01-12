@@ -1,8 +1,9 @@
 package me.dueris.genesismc.factory.powers.player;
 
+import com.mojang.brigadier.StringReader;
+import io.papermc.paper.util.MCUtil;
 import me.dueris.genesismc.CooldownManager;
 import me.dueris.genesismc.GenesisMC;
-import me.dueris.genesismc.utils.console.OriginConsoleSender;
 import me.dueris.genesismc.entity.OriginPlayerUtils;
 import me.dueris.genesismc.events.KeybindTriggerEvent;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
@@ -10,15 +11,12 @@ import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.KeybindUtils;
 import me.dueris.genesismc.utils.PowerContainer;
 import me.dueris.genesismc.utils.Utils;
-import me.dueris.genesismc.utils.console.OriginServerCommandSender;
+import me.dueris.genesismc.utils.console.OriginConsoleSender;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.server.commands.SummonCommand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.Entity.RemovalReason;
 import net.minecraft.world.phys.Vec3;
-
 import org.bukkit.*;
-import org.bukkit.craftbukkit.v1_20_R3.CraftServer;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_20_R3.util.CraftLocation;
 import org.bukkit.entity.EntityType;
@@ -26,23 +24,18 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerCommandSendEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
-import com.mojang.brigadier.StringReader;
-
-import io.papermc.paper.util.MCUtil;
-
-import static me.dueris.genesismc.utils.KeybindUtils.isKeyBeingPressed;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static me.dueris.genesismc.utils.KeybindUtils.isKeyBeingPressed;
 public class FireProjectile extends CraftPower implements Listener {
 
     public static ArrayList<Player> in_continuous = new ArrayList<>();

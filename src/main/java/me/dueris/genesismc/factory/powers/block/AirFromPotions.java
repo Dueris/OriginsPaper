@@ -1,11 +1,10 @@
 package me.dueris.genesismc.factory.powers.block;
 
+import me.dueris.genesismc.factory.powers.Power;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
-
-import me.dueris.genesismc.factory.powers.Power;
 
 public class AirFromPotions implements Listener {
     @EventHandler

@@ -1,14 +1,13 @@
 package me.dueris.genesismc.factory.powers.simple;
 
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.HashMap;
-
+import javassist.NotFoundException;
+import me.dueris.genesismc.factory.powers.CraftPower;
 import org.bukkit.NamespacedKey;
 import org.mineskin.com.google.common.base.Preconditions;
 
-import javassist.NotFoundException;
-import me.dueris.genesismc.factory.powers.CraftPower;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 public class OriginSimpleContainer {
     protected static ArrayList<Class<? extends CraftPower>> simpleRegistry = new ArrayList<>();
