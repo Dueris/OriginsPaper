@@ -13,22 +13,22 @@ import java.util.HashMap;
 
 public class NightVision extends CraftPower {
 
+    public NightVision() {
+
+    }
+
     @Override
     public void setActive(Player p, String tag, Boolean bool) {
-        if(powers_active.containsKey(p)){
-            if(powers_active.get(p).containsKey(tag)){
+        if (powers_active.containsKey(p)) {
+            if (powers_active.get(p).containsKey(tag)) {
                 powers_active.get(p).replace(tag, bool);
-            }else{
+            } else {
                 powers_active.get(p).put(tag, bool);
             }
-        }else{
+        } else {
             powers_active.put(p, new HashMap());
             setActive(p, tag, bool);
         }
-    }
-
-    public NightVision() {
-
     }
 
     @Override
@@ -36,19 +36,19 @@ public class NightVision extends CraftPower {
         // HashMap<LayerContainer, OriginContainer> origins = OriginPlayerUtils.getOrigin(p);
         // Set<LayerContainer> layers = origins.keySet();
         // for (LayerContainer layer : layers) {
-            if (night_vision.contains(p)) {
-                for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()) {
-                    for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-                        ConditionExecutor executor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
-                        if (executor.check("condition", "conditions", p, power, getPowerFile(), p, null, null, null, p.getItemInHand(), null)) {
-                            setActive(p, power.getTag(), true);
-                            p.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, 400, roundNumber(power.getStrength()), false, false, false));
-                        } else {
-                            setActive(p, power.getTag(), false);
-                        }
+        if (night_vision.contains(p)) {
+            for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()) {
+                for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
+                    ConditionExecutor executor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
+                    if (executor.check("condition", "conditions", p, power, getPowerFile(), p, null, null, null, p.getItemInHand(), null)) {
+                        setActive(p, power.getTag(), true);
+                        p.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, 400, roundNumber(power.getStrength()), false, false, false));
+                    } else {
+                        setActive(p, power.getTag(), false);
                     }
                 }
             }
+        }
 
         // }
     }

@@ -101,19 +101,6 @@ public class KeybindUtils implements Listener {
         addSecondaryItem(p);
     }
 
-    @EventHandler
-    public void resetKeybinding(OriginChangeEvent e) {
-        for (ItemStack item : e.getPlayer().getInventory()) {
-            if (item == null) continue;
-            if (item.equals(getPrimaryTrigger(e.getPlayer()))) {
-                runKeyChangeTriggerReturn(item, e.getPlayer(), "key.origins.primary_active");
-            }
-            if (item.equals(getSecondaryTrigger(e.getPlayer()))) {
-                runKeyChangeTriggerReturn(item, e.getPlayer(), "key.origins.secondary_active");
-            }
-        }
-    }
-
     public static ItemStack getPrimaryTrigger(Player player) {
         for (ItemStack item : player.getInventory().getContents()) {
             if (item == null) continue;
@@ -156,13 +143,13 @@ public class KeybindUtils implements Listener {
     }
 
     public static void runKeyChangeTriggerReturn(ItemStack item, Player player, String key) {
-        if(item == null) return;
+        if (item == null) return;
         item.setType(Material.GRAY_DYE);
-        if(CooldownManager.cooldowns.containsKey(player)){
-            if(CooldownManager.cooldowns.get(player) == null) return;
-            if(CooldownManager.cooldowns.get(player).isEmpty()) return;
+        if (CooldownManager.cooldowns.containsKey(player)) {
+            if (CooldownManager.cooldowns.get(player) == null) return;
+            if (CooldownManager.cooldowns.get(player).isEmpty()) return;
             CooldownManager.cooldowns.get(player).remove(key);
-        }else{
+        } else {
             ArrayList list = new ArrayList<>();
             CooldownManager.cooldowns.put(player, list);
         }
@@ -199,6 +186,19 @@ public class KeybindUtils implements Listener {
     }
 
     @EventHandler
+    public void resetKeybinding(OriginChangeEvent e) {
+        for (ItemStack item : e.getPlayer().getInventory()) {
+            if (item == null) continue;
+            if (item.equals(getPrimaryTrigger(e.getPlayer()))) {
+                runKeyChangeTriggerReturn(item, e.getPlayer(), "key.origins.primary_active");
+            }
+            if (item.equals(getSecondaryTrigger(e.getPlayer()))) {
+                runKeyChangeTriggerReturn(item, e.getPlayer(), "key.origins.secondary_active");
+            }
+        }
+    }
+
+    @EventHandler
     public void OnPressMainKey(KeybindTriggerEvent e) {
         if (e.getKey().equals("key.origins.primary_active")) {
             primaryTick.add(e.getPlayer());
@@ -221,13 +221,13 @@ public class KeybindUtils implements Listener {
     }
 
     @EventHandler
-    public void jump(PlayerJumpEvent e){
+    public void jump(PlayerJumpEvent e) {
         KeybindTriggerEvent tE = new KeybindTriggerEvent(e.getPlayer(), "key.jump");
         tE.callEvent();
     }
 
     @EventHandler
-    public void sneak(PlayerToggleSneakEvent e){
+    public void sneak(PlayerToggleSneakEvent e) {
         KeybindTriggerEvent tE = new KeybindTriggerEvent(e.getPlayer(), "key.sneak");
         tE.callEvent();
     }
@@ -275,7 +275,7 @@ public class KeybindUtils implements Listener {
 
     @EventHandler
     public void EXECUTE_KEYBIND_EVENT(PlayerInteractEvent e) {
-        if(e.getAction().isLeftClick()) return;
+        if (e.getAction().isLeftClick()) return;
         ItemStack item = e.getItem();
         if (item != null && item.hasItemMeta()) {
             ItemMeta itemMeta = item.getItemMeta();

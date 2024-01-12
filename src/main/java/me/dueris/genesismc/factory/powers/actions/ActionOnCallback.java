@@ -22,7 +22,7 @@ public class ActionOnCallback extends CraftPower implements Listener {
     }
 
     @EventHandler
-    public void choose(OriginChangeEvent e){
+    public void choose(OriginChangeEvent e) {
         Player actor = e.getPlayer();
 
         if (!getPowerArray().contains(actor)) return;
@@ -58,13 +58,13 @@ public class ActionOnCallback extends CraftPower implements Listener {
 
     @Override
     public void setActive(Player p, String tag, Boolean bool) {
-        if(powers_active.containsKey(p)){
-            if(powers_active.get(p).containsKey(tag)){
+        if (powers_active.containsKey(p)) {
+            if (powers_active.get(p).containsKey(tag)) {
                 powers_active.get(p).replace(tag, bool);
-            }else{
+            } else {
                 powers_active.get(p).put(tag, bool);
             }
-        }else{
+        } else {
             powers_active.put(p, new HashMap());
             setActive(p, tag, bool);
         }

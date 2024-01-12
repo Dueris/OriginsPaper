@@ -30,26 +30,26 @@ public class Has extends SubCommand {
 
     @Override
     public void perform(CommandSender sender, String[] args) {
-        if(args.length == 0){
+        if (args.length == 0) {
             sender.sendMessage(ChatColor.RED + "Please provide a player arg.");
         } else if (args.length == 1) {
             sender.sendMessage(ChatColor.RED + "Please provide a power arg.");
         } else if (args.length >= 2) {
             ArrayList<Player> players = PlayerSelector.playerSelector(sender, args[1]);
-            for(Player p : players) {
+            for (Player p : players) {
                 boolean passed = false;
                 if (players.size() == 0) return;
-                for(LayerContainer layer : CraftApoli.getLayers()){
-                    for(PowerContainer power : OriginPlayerUtils.powerContainer.get(p).get(layer)){
-                        if(passed) continue;
-                        if(power.getTag().equals(args[2])){
+                for (LayerContainer layer : CraftApoli.getLayers()) {
+                    for (PowerContainer power : OriginPlayerUtils.powerContainer.get(p).get(layer)) {
+                        if (passed) continue;
+                        if (power.getTag().equals(args[2])) {
                             passed = true;
                         }
                     }
                 }
-                if(passed){
+                if (passed) {
                     sender.sendMessage("Test passed");
-                }else{
+                } else {
                     sender.sendMessage(ChatColor.RED + "Test failed");
                 }
             }

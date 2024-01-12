@@ -22,30 +22,29 @@ import static me.dueris.genesismc.factory.powers.prevent.PreventSuperClass.preve
 
 public class PreventEntityRender extends CraftPower {
 
-    @Override
-    public void setActive(Player p, String tag, Boolean bool) {
-        if(powers_active.containsKey(p)){
-            if(powers_active.get(p).containsKey(tag)){
-                powers_active.get(p).replace(tag, bool);
-            }else{
-                powers_active.get(p).put(tag, bool);
-            }
-        }else{
-            powers_active.put(p, new HashMap());
-            setActive(p, tag, bool);
-        }
-    }
-
-    private Long interval;
     private final int ticksE;
-
+    private Long interval;
     public PreventEntityRender() {
         this.interval = 12L;
         this.ticksE = 0;
     }
 
+    @Override
+    public void setActive(Player p, String tag, Boolean bool) {
+        if (powers_active.containsKey(p)) {
+            if (powers_active.get(p).containsKey(tag)) {
+                powers_active.get(p).replace(tag, bool);
+            } else {
+                powers_active.get(p).put(tag, bool);
+            }
+        } else {
+            powers_active.put(p, new HashMap());
+            setActive(p, tag, bool);
+        }
+    }
+
     public void run(Player p, HashMap<Player, Integer> ticksEMap) {
-        if(GenesisMC.disableRender) return;
+        if (GenesisMC.disableRender) return;
         ticksEMap.putIfAbsent(p, 0);
 
         if (getPowerArray().contains(p)) {
@@ -57,7 +56,7 @@ public class PreventEntityRender extends CraftPower {
                         return;
                     }
 
-                    interval = 12l;
+                    interval = 12L;
                     int ticksE = ticksEMap.getOrDefault(p, 0);
                     if (ticksE <= interval) {
                         ticksE++;
@@ -65,25 +64,25 @@ public class PreventEntityRender extends CraftPower {
                     } else {
                         for (Entity entity : getEntitiesWithinRender(p)) {
                             ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
-                                if (conditionExecutor.check("entity_condition", "entity_condition", p, power, "origins:prevent_entity_render", entity, entity, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
-                                    if (conditionExecutor.check("bientity_condition", "bientity_condition", p, power, "origins:prevent_entity_render", entity, entity, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
-                                        if(p.canSee(entity)){
-                                            p.hideEntity(GenesisMC.getPlugin(), entity);
-                                        }
-                                        setActive(p, power.getTag(), true);
-                                    } else {
-                                        setActive(p, power.getTag(), false);
-                                        if(!p.canSee(entity)){
-                                            p.showEntity(GenesisMC.getPlugin(), entity);
-                                        }
+                            if (conditionExecutor.check("entity_condition", "entity_condition", p, power, "origins:prevent_entity_render", entity, entity, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
+                                if (conditionExecutor.check("bientity_condition", "bientity_condition", p, power, "origins:prevent_entity_render", entity, entity, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
+                                    if (p.canSee(entity)) {
+                                        p.hideEntity(GenesisMC.getPlugin(), entity);
                                     }
+                                    setActive(p, power.getTag(), true);
                                 } else {
                                     setActive(p, power.getTag(), false);
-                                    if(!p.canSee(entity)){
+                                    if (!p.canSee(entity)) {
                                         p.showEntity(GenesisMC.getPlugin(), entity);
                                     }
                                 }
+                            } else {
+                                setActive(p, power.getTag(), false);
+                                if (!p.canSee(entity)) {
+                                    p.showEntity(GenesisMC.getPlugin(), entity);
+                                }
                             }
+                        }
                     }
                 }
             }

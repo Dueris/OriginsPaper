@@ -7,7 +7,6 @@ import me.dueris.genesismc.utils.translation.LangConfig;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 
@@ -17,15 +16,9 @@ import java.util.List;
 import static me.dueris.genesismc.utils.BukkitColour.RED;
 import static me.dueris.genesismc.utils.BukkitColour.YELLOW;
 
-public class OriginCommand extends Command{
+public class OriginCommand extends Command {
 
     private final ArrayList<SubCommand> subCommands = new ArrayList<>();
-
-    @Override
-    public @NotNull List<String> tabComplete(@NotNull CommandSender sender, @NotNull String alias, @NotNull String[] args) throws IllegalArgumentException {
-        TabAutoComplete tabAutoComplete = new TabAutoComplete();
-        return tabAutoComplete.onTabComplete(sender, this, alias, args);
-    }
 
     public OriginCommand() {
         super("origin");
@@ -37,6 +30,12 @@ public class OriginCommand extends Command{
         subCommands.add(new Info());
         subCommands.add(new Set());
         subCommands.add(new Give());
+    }
+
+    @Override
+    public @NotNull List<String> tabComplete(@NotNull CommandSender sender, @NotNull String alias, @NotNull String[] args) throws IllegalArgumentException {
+        TabAutoComplete tabAutoComplete = new TabAutoComplete();
+        return tabAutoComplete.onTabComplete(sender, this, alias, args);
     }
 
     public ArrayList<SubCommand> getSubCommands() {

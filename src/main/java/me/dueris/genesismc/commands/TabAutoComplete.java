@@ -2,8 +2,6 @@ package me.dueris.genesismc.commands;
 
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.utils.LayerContainer;
-import me.dueris.genesismc.utils.OriginContainer;
-import me.dueris.genesismc.utils.PowerContainer;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -157,7 +155,7 @@ public class TabAutoComplete implements TabCompleter {
                 arguments.add("dump");
                 return arguments;
             } else if (args.length == 2) {
-                if(!args[0].equalsIgnoreCase("dump")){
+                if (!args[0].equalsIgnoreCase("dump")) {
                     Collection<? extends Player> players = Bukkit.getOnlinePlayers();
                     List<String> playernames = new ArrayList<>();
                     for (Player player : players) playernames.add(player.getName());
@@ -167,35 +165,35 @@ public class TabAutoComplete implements TabCompleter {
                     playernames.add("@p");
                     playernames.add("@r");
                     return playernames;
-                }else{
+                } else {
                     List<String> pows = new ArrayList<>();
-                    for(String string : CraftApoli.keyedPowerContainers.keySet()){
+                    for (String string : CraftApoli.keyedPowerContainers.keySet()) {
                         pows.add(string);
                     }
                     return pows;
                 }
             } else if (args.length == 3) {
-                if(args[0].equalsIgnoreCase("grant")
+                if (args[0].equalsIgnoreCase("grant")
                         || args[0].equalsIgnoreCase("remove")
-                        || args[0].equalsIgnoreCase("has")){
+                        || args[0].equalsIgnoreCase("has")) {
                     List<String> pows = new ArrayList<>();
-                    for(String string : CraftApoli.keyedPowerContainers.keySet()){
-                        if(!CraftApoli.keyedPowerContainers.get(string).isOriginMultipleSubPower()){
+                    for (String string : CraftApoli.keyedPowerContainers.keySet()) {
+                        if (!CraftApoli.keyedPowerContainers.get(string).isOriginMultipleSubPower()) {
                             pows.add(string);
                         }
                     }
                     return pows;
                 }
             } else if (args.length == 4) {
-                if(args[0].equalsIgnoreCase("grant")
+                if (args[0].equalsIgnoreCase("grant")
                         || args[0].equalsIgnoreCase("remove")
-                        || args[0].equalsIgnoreCase("has")){
+                        || args[0].equalsIgnoreCase("has")) {
                     List<String> pows = new ArrayList<>();
-                    for(LayerContainer layer : CraftApoli.getLayers()){
+                    for (LayerContainer layer : CraftApoli.getLayers()) {
                         pows.add(layer.getTag());
                     }
                     return pows;
-                }else{
+                } else {
                     List<String> ba = new ArrayList<>();
                     return ba;
                 }
@@ -203,8 +201,8 @@ public class TabAutoComplete implements TabCompleter {
                 List<String> ba = new ArrayList<>();
                 return ba;
             }
-        } else if(command.getName().equals("resource")){
-            if(args.length == 1){
+        } else if (command.getName().equals("resource")) {
+            if (args.length == 1) {
                 List<String> ba = new ArrayList<>();
                 ba.add("change");
                 ba.add("get");
@@ -212,7 +210,7 @@ public class TabAutoComplete implements TabCompleter {
                 ba.add("has");
                 return ba;
             }
-            if(args.length == 2){
+            if (args.length == 2) {
                 Collection<? extends Player> players = Bukkit.getOnlinePlayers();
                 List<String> playernames = new ArrayList<>();
                 for (Player player : players) playernames.add(player.getName());
@@ -223,16 +221,16 @@ public class TabAutoComplete implements TabCompleter {
                 playernames.add("@r");
                 return playernames;
             }
-            if(args.length == 3){
+            if (args.length == 3) {
                 List<String> pows = new ArrayList<>();
-                for(String string : CraftApoli.keyedPowerContainers.keySet()){
-                    if(!CraftApoli.keyedPowerContainers.get(string).isOriginMultipleSubPower()){
+                for (String string : CraftApoli.keyedPowerContainers.keySet()) {
+                    if (!CraftApoli.keyedPowerContainers.get(string).isOriginMultipleSubPower()) {
                         pows.add(string);
                     }
                 }
                 return pows;
             }
-            if(args.length >= 4){
+            if (args.length >= 4) {
                 List<String> ba = new ArrayList<>();
                 return ba;
             }

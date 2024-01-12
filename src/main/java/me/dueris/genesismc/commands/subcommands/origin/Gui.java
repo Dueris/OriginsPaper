@@ -1,5 +1,6 @@
 package me.dueris.genesismc.commands.subcommands.origin;
 
+import javassist.NotFoundException;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.commands.PlayerSelector;
 import me.dueris.genesismc.commands.subcommands.SubCommand;
@@ -14,8 +15,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.profile.PlayerTextures;
-
-import javassist.NotFoundException;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -46,13 +45,13 @@ public class Gui extends SubCommand {
             if (players.size() == 0) return;
             for (Player p : players) {
                 String layR;
-                if(args.length > 2 && args[2] != null){
+                if (args.length > 2 && args[2] != null) {
                     layR = args[2];
-                }else{
+                } else {
                     layR = "origins:origin";
                 }
-                for(LayerContainer layerContainer : CraftApoli.getLayers()){
-                    if(layerContainer.getTag().equals(layR)){
+                for (LayerContainer layerContainer : CraftApoli.getLayers()) {
+                    if (layerContainer.getTag().equals(layR)) {
                         try {
                             OriginPlayerUtils.unassignPowers(p, layerContainer);
                         } catch (NotFoundException e) {

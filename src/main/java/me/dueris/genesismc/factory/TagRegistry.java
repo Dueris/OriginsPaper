@@ -4,7 +4,10 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import me.dueris.genesismc.files.GenesisDataFiles;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.Fluid;
+import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.block.Biome;
 import org.bukkit.entity.EntityType;
 
@@ -15,12 +18,9 @@ import java.util.HashMap;
 
 public class TagRegistry {
 
-    @Override
-    public String toString() {
-        return super.toString();
-    }
-
     public static ArrayList<String> available_types = new ArrayList<>();
+    public static HashMap<String, ArrayList<String>> registered = new HashMap();
+
     static {
         available_types.add("blocks");
         available_types.add("items");
@@ -42,9 +42,9 @@ public class TagRegistry {
             if (!dataDir.isDirectory()) continue;
             for (File mainDIR : dataDir.listFiles()) {
                 for (File insideDIR : mainDIR.listFiles()) {
-                    if(!insideDIR.getName().equalsIgnoreCase("tags")) continue;
+                    if (!insideDIR.getName().equalsIgnoreCase("tags")) continue;
                     for (File tagFolder : insideDIR.listFiles()) {
-                        for(String av : available_types){
+                        for (String av : available_types) {
                             if (tagFolder.getName().equalsIgnoreCase(av)) {
                                 for (File jsonTagFile : tagFolder.listFiles()) {
                                     if (jsonTagFile.getName().endsWith(".json")) {
@@ -62,9 +62,9 @@ public class TagRegistry {
                                                             if (valueStr.startsWith("#minecraft:")) {
                                                                 processMinecraftTag(valueStr, av, fileTag);
                                                             } else {
-                                                                if(registered.containsKey(fileTag)){
+                                                                if (registered.containsKey(fileTag)) {
                                                                     registered.get(fileTag).add(valueStr);
-                                                                }else{
+                                                                } else {
                                                                     registered.put(fileTag, new ArrayList<>());
                                                                     registered.get(fileTag).add(valueStr);
                                                                 }
@@ -89,46 +89,46 @@ public class TagRegistry {
     private static void processMinecraftTag(String tag, String registry, String fileTag) {
         String[] tagS = tag.split("#")[1].split(":");
         NamespacedKey saplingsKey = new NamespacedKey(tagS[0], tagS[1]);
-        if(registry.equals("entity_type")){
-            if(Bukkit.getServer().getTag("entity_type", saplingsKey, EntityType.class) == null) return;
+        if (registry.equals("entity_type")) {
+            if (Bukkit.getServer().getTag("entity_type", saplingsKey, EntityType.class) == null) return;
             Bukkit.getServer().getTag(registry, saplingsKey, EntityType.class);
-            for(EntityType s : Bukkit.getServer().getTag("entity_type", saplingsKey, EntityType.class).getValues()){
-                if(registered.containsKey(fileTag)){
+            for (EntityType s : Bukkit.getServer().getTag("entity_type", saplingsKey, EntityType.class).getValues()) {
+                if (registered.containsKey(fileTag)) {
                     registered.get(fileTag).add(s.getKey().toString());
-                }else{
+                } else {
                     registered.put(fileTag, new ArrayList<>());
                     registered.get(fileTag).add(s.getKey().toString());
                 }
             }
         } else if (registry.equals("biome")) {
-            if(Bukkit.getServer().getTag("biome", saplingsKey, Biome.class) == null) return;
+            if (Bukkit.getServer().getTag("biome", saplingsKey, Biome.class) == null) return;
             Bukkit.getServer().getTag(registry, saplingsKey, Biome.class);
-            for(Biome s : Bukkit.getServer().getTag("biome", saplingsKey, Biome.class).getValues()) {
-                if(registered.containsKey(fileTag)){
+            for (Biome s : Bukkit.getServer().getTag("biome", saplingsKey, Biome.class).getValues()) {
+                if (registered.containsKey(fileTag)) {
                     registered.get(fileTag).add(s.getKey().toString());
-                }else{
+                } else {
                     registered.put(fileTag, new ArrayList<>());
                     registered.get(fileTag).add(s.getKey().toString());
                 }
             }
         } else if (registry.equals("fluid")) {
-            if(Bukkit.getServer().getTag("fluid", saplingsKey, Fluid.class) == null) return;
+            if (Bukkit.getServer().getTag("fluid", saplingsKey, Fluid.class) == null) return;
             Bukkit.getServer().getTag(registry, saplingsKey, Fluid.class);
-            for(Fluid s : Bukkit.getServer().getTag("fluid", saplingsKey, Fluid.class).getValues()){
-                if(registered.containsKey(fileTag)){
+            for (Fluid s : Bukkit.getServer().getTag("fluid", saplingsKey, Fluid.class).getValues()) {
+                if (registered.containsKey(fileTag)) {
                     registered.get(fileTag).add(s.getKey().toString());
-                }else{
+                } else {
                     registered.put(fileTag, new ArrayList<>());
                     registered.get(fileTag).add(s.getKey().toString());
                 }
             }
-        }else{
+        } else {
             Bukkit.getServer().getTag(registry, saplingsKey, Material.class);
-            if(Bukkit.getServer().getTag("blocks", saplingsKey, Material.class) == null) return;
-            for(Material s : Bukkit.getServer().getTag("blocks", saplingsKey, Material.class).getValues()){
-                if(registered.containsKey(fileTag)){
+            if (Bukkit.getServer().getTag("blocks", saplingsKey, Material.class) == null) return;
+            for (Material s : Bukkit.getServer().getTag("blocks", saplingsKey, Material.class).getValues()) {
+                if (registered.containsKey(fileTag)) {
                     registered.get(fileTag).add(s.getKey().toString());
-                }else{
+                } else {
                     registered.put(fileTag, new ArrayList<>());
                     registered.get(fileTag).add(s.getKey().toString());
                 }
@@ -136,13 +136,16 @@ public class TagRegistry {
         }
     }
 
-    public static HashMap<String, ArrayList<String>> registered = new HashMap();
-
-    public static ArrayList<String> getRegisteredTagFromFileKey(String fileTag){
-        if(registered.containsKey(fileTag)){
+    public static ArrayList<String> getRegisteredTagFromFileKey(String fileTag) {
+        if (registered.containsKey(fileTag)) {
             return registered.get(fileTag);
         }
         return null;
+    }
+
+    @Override
+    public String toString() {
+        return super.toString();
     }
 
 }

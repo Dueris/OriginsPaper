@@ -5,9 +5,7 @@ import me.dueris.genesismc.factory.actions.Actions;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.ErrorSystem;
-import me.dueris.genesismc.utils.OriginContainer;
 import me.dueris.genesismc.utils.PowerContainer;
-import net.minecraft.advancements.critereon.EntityPredicate;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -28,13 +26,13 @@ public class ModifyCraftingPower extends CraftPower implements Listener {
 
     @Override
     public void setActive(Player p, String tag, Boolean bool) {
-        if(powers_active.containsKey(p)){
-            if(powers_active.get(p).containsKey(tag)){
+        if (powers_active.containsKey(p)) {
+            if (powers_active.get(p).containsKey(tag)) {
                 powers_active.get(p).replace(tag, bool);
-            }else{
+            } else {
                 powers_active.get(p).put(tag, bool);
             }
-        }else{
+        } else {
             powers_active.put(p, new HashMap());
             setActive(p, tag, bool);
         }
@@ -58,24 +56,24 @@ public class ModifyCraftingPower extends CraftPower implements Listener {
                     for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                         if (conditionExecutor.check("condition", "condition", p, power, "origins:modify_crafting", p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
                             if (conditionExecutor.check("item_condition", "item_condition", p, power, "origins:modify_crafting", p, null, p.getLocation().getBlock(), null, e.getInventory().getResult(), null)) {
-                                if(power.get("recipe") != null){
+                                if (power.get("recipe") != null) {
                                     if (e.getInventory().getResult().getType() == Material.valueOf(power.get("recipe", null).split(":")[1].toUpperCase())) {
-                                        if(power.getJsonHashMap("result") != null){
+                                        if (power.getJsonHashMap("result") != null) {
                                             e.getInventory().setResult(new ItemStack(Material.valueOf(power.getJsonHashMap("result").get("item").toString().toUpperCase().split(":")[1])));
                                         }
                                         setActive(p, power.getTag(), true);
                                         Actions.EntityActionType(p, power.getEntityAction());
-                                        if(power.getActionOrNull("item_action_after_crafting") != null){
+                                        if (power.getActionOrNull("item_action_after_crafting") != null) {
                                             Actions.ItemActionType(e.getInventory().getResult(), power.getAction("item_action_after_crafting"));
                                         }
                                     }
-                                }else{
-                                    if(power.getJsonHashMap("result") != null && power.getJsonHashMap("result").get("item") != null){
+                                } else {
+                                    if (power.getJsonHashMap("result") != null && power.getJsonHashMap("result").get("item") != null) {
                                         e.getInventory().setResult(new ItemStack(Material.valueOf(power.getJsonHashMap("result").get("item").toString().toUpperCase().split(":")[1])));
                                     }
                                     setActive(p, power.getTag(), true);
                                     Actions.EntityActionType(p, power.getEntityAction());
-                                    if(power.getActionOrNull("item_action_after_crafting") != null){
+                                    if (power.getActionOrNull("item_action_after_crafting") != null) {
                                         Actions.ItemActionType(e.getInventory().getResult(), power.getAction("item_action_after_crafting"));
                                     }
                                 }

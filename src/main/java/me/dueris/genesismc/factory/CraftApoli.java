@@ -1,14 +1,11 @@
 package me.dueris.genesismc.factory;
 
-import io.netty.util.internal.ConcurrentSet;
-import me.dueris.genesismc.Bootstrap;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.entity.OriginPlayerUtils;
 import me.dueris.genesismc.files.GenesisDataFiles;
 import me.dueris.genesismc.utils.*;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.storage.LevelResource;
-
 import org.apache.commons.io.FilenameUtils;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
@@ -18,7 +15,6 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import java.io.*;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
@@ -30,14 +26,23 @@ import java.util.zip.ZipInputStream;
 
 public class CraftApoli {
 
+    /**
+     * Size of the buffer to read/write data
+     */
+    private static final int BUFFER_SIZE = 4096;
+    @SuppressWarnings("FieldMayBeFinal")
+    public static ConcurrentHashMap<String, PowerContainer> keyedPowerContainers = new ConcurrentHashMap();
+    /**
+     * ArrayList of unzipped files that are scheduled for removal at the end of the parsing process
+     */
+    public static ArrayList<File> unzippedFiles = new ArrayList<>();
     @SuppressWarnings("FieldMayBeFinal")
     private static ArrayList<LayerContainer> originLayers = new ArrayList<>();
     @SuppressWarnings("FieldMayBeFinal")
     private static ArrayList<OriginContainer> originContainers = new ArrayList<>();
     @SuppressWarnings("FieldMayBeFinal")
     private static ArrayList<PowerContainer> powerContainers = new ArrayList<>();
-    @SuppressWarnings("FieldMayBeFinal")
-    public static ConcurrentHashMap<String, PowerContainer> keyedPowerContainers = new ConcurrentHashMap();
+    private static int dynamic_thread_count = 0;
 
     /**
      * @return A copy of each layerTag that is loaded.
@@ -54,8 +59,8 @@ public class CraftApoli {
     }
 
     public static OriginContainer getOrigins(String tag) {
-        for(OriginContainer origin : getOrigins()){
-            if(origin.getTag().equals(tag)) return origin;
+        for (OriginContainer origin : getOrigins()) {
+            if (origin.getTag().equals(tag)) return origin;
         }
         return null;
     }
@@ -64,7 +69,7 @@ public class CraftApoli {
         return powerContainers;
     }
 
-    public static PowerContainer getPowerContainerFromTag(String tag){
+    public static PowerContainer getPowerContainerFromTag(String tag) {
         return keyedPowerContainers.get(tag);
     }
 
@@ -74,7 +79,6 @@ public class CraftApoli {
     public static OriginContainer nullOrigin() {
         return new OriginContainer(new NamespacedKey("genesis", "origin-null"), new FileContainer(new ArrayList<>(List.of("hidden", "origins")), new ArrayList<>(List.of(true, "genesis:origin-null"))), new HashMap<String, Object>(Map.of("impact", "0", "icon", "minecraft:player_head", "powers", "genesis:null", "order", "0", "unchooseable", true)), new ArrayList<>(List.of(new PowerContainer(new NamespacedKey("genesis", "null"), new FileContainer(new ArrayList<>(), new ArrayList<>()), null, false))));
     }
-
 
     /**
      * Parses a JSON file into a HashMap.
@@ -93,9 +97,9 @@ public class CraftApoli {
         ArrayList<Object> values = new ArrayList<>();
         for (Object key : JSONFileParser.keySet()) {
             keys.add((String) key);
-            if(JSONFileParser.get(key).toString().startsWith("apoli:")){
+            if (JSONFileParser.get(key).toString().startsWith("apoli:")) {
                 values.add(JSONFileParser.get(key).toString().replace("apoli:", "origins:"));
-            }else{
+            } else {
                 values.add(JSONFileParser.get(key));
             }
         }
@@ -134,14 +138,14 @@ public class CraftApoli {
         powerContainers.addAll(newPowerContainers);
     }
 
-    public static ArrayList<PowerContainer> getNestedPowers(PowerContainer power){
+    public static ArrayList<PowerContainer> getNestedPowers(PowerContainer power) {
         ArrayList<PowerContainer> nested = new ArrayList<>();
-        if(power == null) return nested;
+        if (power == null) return nested;
         String powerFolder = power.getTag().split(":")[0];
         String powerFileName = power.getTag().split(":")[1];
 
         for (String key : power.getPowerFile().getKeys()) {
-            if(keyedPowerContainers.get(new NamespacedKey(powerFolder, powerFileName).asString() + "_" + key) != null){
+            if (keyedPowerContainers.get(new NamespacedKey(powerFolder, powerFileName).asString() + "_" + key) != null) {
                 nested.add(keyedPowerContainers.get(powerFolder + ":" + powerFileName + "_" + key));
             }
         }
@@ -161,27 +165,15 @@ public class CraftApoli {
         return new BufferedReader(inputStreamReader);
     }
 
-    /**
-     * ArrayList of unzipped files that are scheduled for removal at the end of the parsing process
-     */
-    public static ArrayList<File> unzippedFiles = new ArrayList<>();
-
-    /**
-     * Size of the buffer to read/write data
-     */
-    private static final int BUFFER_SIZE = 4096;
-
-    public static String getWorldContainerName(){
+    public static String getWorldContainerName() {
         return GenesisMC.world_container;
     }
 
-    private static int dynamic_thread_count = 0;
-
-    public static int getDynamicThreadCount(){
+    public static int getDynamicThreadCount() {
         return dynamic_thread_count;
     }
 
-    public static void setupDynamicThreadCount(){
+    public static void setupDynamicThreadCount() {
         int avalibleJVMThreads = Runtime.getRuntime().availableProcessors() * 2;
         dynamic_thread_count = avalibleJVMThreads < 4 ? avalibleJVMThreads : avalibleJVMThreads >= GenesisDataFiles.getMainConfig().getInt("max-loader-threads") ? GenesisDataFiles.getMainConfig().getInt("max-loader-threads") : avalibleJVMThreads;
     }
@@ -189,10 +181,10 @@ public class CraftApoli {
     public static void unzip(File source, String out) throws IOException {
         try (ZipInputStream zis = new ZipInputStream(new FileInputStream(source))) {
             ZipEntry entry = zis.getNextEntry();
-    
+
             while (entry != null) {
                 File file = new File(out, entry.getName());
-                if (!entry.getName().endsWith(".jar") && !entry.getName().contains("../")){
+                if (!entry.getName().endsWith(".jar") && !entry.getName().contains("../")) {
                     if (entry.isDirectory()) {
                         file.mkdirs();
                     } else {
@@ -200,12 +192,12 @@ public class CraftApoli {
                         if (!parent.exists()) {
                             parent.mkdirs();
                         }
-        
+
                         try (BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(file))) {
                             int bufferSize = Math.toIntExact(entry.getSize());
                             byte[] buffer = new byte[bufferSize > 0 ? bufferSize : 1];
                             int location;
-        
+
                             while ((location = zis.read(buffer)) != -1) {
                                 bos.write(buffer, 0, location);
                             }
@@ -219,6 +211,7 @@ public class CraftApoli {
 
     /**
      * Loads the custom origins from the datapack dir into memory.
+     *
      * @throws ExecutionException
      * @throws InterruptedException
      **/
@@ -229,7 +222,7 @@ public class CraftApoli {
         if (datapacks == null) return;
 
         CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
-            for (File datapack : datapacks){
+            for (File datapack : datapacks) {
                 if (FilenameUtils.getExtension(datapack.getName()).equals(".zip") || FilenameUtils.getExtension(datapack.getName()).equals("zip")) {
                     try {
                         unzip(datapack, GenesisMC.getTmpFolder().getAbsolutePath() + File.separator + datapack.getName().replace(".zip", ""));
@@ -241,7 +234,7 @@ public class CraftApoli {
             }
 
             List<File> datapacksToParse = new ArrayList();
-            for (File packInDatapacks : DatapackDir.listFiles()) {datapacksToParse.add(packInDatapacks);}
+            Collections.addAll(datapacksToParse, DatapackDir.listFiles());
             datapacksToParse.addAll(unzippedFiles);
             for (File datapack : datapacksToParse) {
                 try {
@@ -253,11 +246,11 @@ public class CraftApoli {
                         //find layer file
                         for (File namespace : dataDir.listFiles()) {
                             if (!namespace.isDirectory()) continue;
-                            for(File powerDir : namespace.listFiles()){
-                                if(powerDir.getName().equals("powers") && powerDir.isDirectory()){
-                                    for(File powerFile : powerDir.listFiles()){
+                            for (File powerDir : namespace.listFiles()) {
+                                if (powerDir.getName().equals("powers") && powerDir.isDirectory()) {
+                                    for (File powerFile : powerDir.listFiles()) {
                                         try {
-                                            if(!powerFile.isDirectory()){
+                                            if (!powerFile.isDirectory()) {
                                                 String powerFolder = namespace.getName();
                                                 String powerFileName = powerFile.getName().replace(".json", "");
 
@@ -346,17 +339,17 @@ public class CraftApoli {
                                     if (powersList != null) {
                                         for (String string : powersList) {
                                             boolean finished = false;
-                                            if(keyedPowerContainers.containsKey(string)){
+                                            if (keyedPowerContainers.containsKey(string)) {
                                                 powerContainers.add(keyedPowerContainers.get(string));
                                                 finished = true;
                                             }
-                                            for(PowerContainer power : getNestedPowers(keyedPowerContainers.get(string))){
-                                                if(power != null){
+                                            for (PowerContainer power : getNestedPowers(keyedPowerContainers.get(string))) {
+                                                if (power != null) {
                                                     powerContainers.add(power);
                                                     finished = true;
                                                 }
                                             }
-                                            if(!finished){
+                                            if (!finished) {
                                                 // Not found in database, probably an error, move to backup parse to ensure all powers are added
                                                 String[] powerLocation = string.split(":");
                                                 String powerFolder = powerLocation[0];
@@ -442,7 +435,7 @@ public class CraftApoli {
         for (LayerContainer layer : origin.keySet()) {
             OriginContainer layerOrigins = origin.get(layer);
             ArrayList<String> powers = new ArrayList<>();
-            for(PowerContainer power : OriginPlayerUtils.powerContainer.get(p).get(layer)){
+            for (PowerContainer power : OriginPlayerUtils.powerContainer.get(p).get(layer)) {
                 powers.add(power.getTag());
             }
             int powerSize = 0;
@@ -478,7 +471,7 @@ public class CraftApoli {
      **/
     public static OriginContainer toOrigin(String originData, LayerContainer originLayer) {
         if (originData != null) {
-            try{
+            try {
                 String[] layers = originData.split("\n");
                 for (String layer : layers) {
                     String[] layerData = layer.split("\\|");
@@ -486,7 +479,7 @@ public class CraftApoli {
                         return CraftApoli.getOrigin(layerData[1]);
                     }
                 }
-            }catch(Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
                 return CraftApoli.nullOrigin();
             }
@@ -504,7 +497,7 @@ public class CraftApoli {
                 containedOrigins.put(layer, CraftApoli.nullOrigin());
             }
         } else {
-            try{
+            try {
                 String[] layers = originData.split("\n");
                 for (String layer : layers) {
                     String[] layerData = layer.split("\\|");
@@ -512,9 +505,9 @@ public class CraftApoli {
                     OriginContainer originContainer = CraftApoli.getOrigin(layerData[1]);
                     containedOrigins.put(layerContainer, originContainer);
                 }
-            }catch(Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
-                for(LayerContainer layer : CraftApoli.getLayers()){
+                for (LayerContainer layer : CraftApoli.getLayers()) {
                     containedOrigins.put(layer, CraftApoli.nullOrigin());
                 }
                 return containedOrigins;
@@ -527,7 +520,7 @@ public class CraftApoli {
      * @return True if an origin is part of the core origins.
      **/
     public static Boolean isCoreOrigin(OriginContainer origin) {
-        return origin.getTag().equals("origins:arachnid") 
+        return origin.getTag().equals("origins:arachnid")
                 || origin.getTag().equals("origins:avian")
                 || origin.getTag().equals("origins:blazeborn")
                 || origin.getTag().equals("origins:elytrian")

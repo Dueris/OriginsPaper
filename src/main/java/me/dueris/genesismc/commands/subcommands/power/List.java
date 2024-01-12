@@ -4,7 +4,6 @@ import me.dueris.genesismc.commands.PlayerSelector;
 import me.dueris.genesismc.commands.subcommands.SubCommand;
 import me.dueris.genesismc.entity.OriginPlayerUtils;
 import me.dueris.genesismc.factory.CraftApoli;
-import me.dueris.genesismc.factory.powers.Power;
 import me.dueris.genesismc.utils.LayerContainer;
 import me.dueris.genesismc.utils.PowerContainer;
 import org.bukkit.ChatColor;
@@ -31,29 +30,29 @@ public class List extends SubCommand {
 
     @Override
     public void perform(CommandSender sender, String[] args) {
-        if(args.length == 0){
+        if (args.length == 0) {
             sender.sendMessage(ChatColor.RED + "Please provide a player arg.");
         } else if (args.length >= 1) {
             ArrayList<Player> players = PlayerSelector.playerSelector(sender, args[1]);
-            for(Player p : players) {
-                for(LayerContainer layerContainer : CraftApoli.getLayers()){
+            for (Player p : players) {
+                for (LayerContainer layerContainer : CraftApoli.getLayers()) {
                     ArrayList<PowerContainer> powers = (ArrayList<PowerContainer>) OriginPlayerUtils.powerContainer.get(p).get(layerContainer).clone();
-                    for(PowerContainer power : powers){
-                        if(power == null) return;
-                        if(CraftApoli.getNestedPowers(power) == null) return;
+                    for (PowerContainer power : powers) {
+                        if (power == null) return;
+                        if (CraftApoli.getNestedPowers(power) == null) return;
                         powers.addAll(CraftApoli.getNestedPowers(power));
                     }
-                    if(powers == null || powers.isEmpty()){
+                    if (powers == null || powers.isEmpty()) {
                         sender.sendMessage(ChatColor.RED + "Entity %name% does not have any powers".replace("%name%", p.getName()));
-                    }else{
+                    } else {
                         PowerContainer[] powerContainers = powers.toArray(new PowerContainer[0]);
                         String msg = "Entity %name% has %size% powers: [%powers%]".replace("%name%", p.getName()).replace("%size%", String.valueOf(powerContainers.length));
                         String powerString = "";
-                        for(int i = 0; i < powerContainers.length; i++){
+                        for (int i = 0; i < powerContainers.length; i++) {
                             String sep;
-                            if(i == powerContainers.length){
+                            if (i == powerContainers.length) {
                                 sep = "";
-                            }else{
+                            } else {
                                 sep = ", ";
                             }
                             powerString = powerString + powerContainers[i].getTag() + sep;

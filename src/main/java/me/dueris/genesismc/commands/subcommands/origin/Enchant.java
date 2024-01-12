@@ -6,7 +6,6 @@ import me.dueris.genesismc.enchantments.Anvil;
 import me.dueris.genesismc.utils.translation.LangConfig;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -85,8 +84,8 @@ public class Enchant extends SubCommand {
                     p.getInventory().getItemInMainHand().setLore(List.of(ChatColor.GRAY + "Water Protection " + romanLevel));
                     p.getInventory().getItemInMainHand().addEnchantment(Anvil.bukkitEnchantment, level);
                     sender.sendMessage("Applied enchantment " +
-                        ChatColor.GRAY + "{water_prot}".replace("{water_prot}", "Water Protection " + Anvil.numberToRomanNum(level)) +
-                        ChatColor.WHITE + " to {target}'s item".replace("{target}", p.getName())
+                            ChatColor.GRAY + "{water_prot}".replace("{water_prot}", "Water Protection " + Anvil.numberToRomanNum(level)) +
+                            ChatColor.WHITE + " to {target}'s item".replace("{target}", p.getName())
                     );
                 }
             }

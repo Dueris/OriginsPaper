@@ -2,9 +2,7 @@ package me.dueris.genesismc;
 
 import me.dueris.genesismc.entity.OriginPlayerUtils;
 import me.dueris.genesismc.events.OriginChangeEvent;
-import me.dueris.genesismc.events.OriginChooseEvent;
 import me.dueris.genesismc.factory.CraftApoli;
-import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.factory.powers.player.Gravity;
 import me.dueris.genesismc.factory.powers.player.attributes.AttributeHandler;
 import me.dueris.genesismc.files.nbt.FixerUpper;
@@ -17,42 +15,26 @@ import me.dueris.genesismc.utils.translation.Translation;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.Bukkit;
-import org.bukkit.NamespacedKey;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftPlayer;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntitySpawnEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.geysermc.geyser.api.GeyserApi;
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectInputStream;
-import java.lang.reflect.Constructor;
+import java.io.*;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 import static me.dueris.genesismc.factory.powers.Power.extra_reach;
 import static me.dueris.genesismc.factory.powers.Power.extra_reach_attack;
-import static me.dueris.genesismc.factory.powers.simple.BounceSlimeBlock.bouncePlayers;
-import static me.dueris.genesismc.factory.powers.simple.MimicWarden.mimicWardenPlayers;
-import static me.dueris.genesismc.factory.powers.simple.PiglinNoAttack.piglinPlayers;
-import static me.dueris.genesismc.factory.powers.simple.ScareCreepers.scaryPlayers;
-import static me.dueris.genesismc.utils.BukkitColour.AQUA;
 import static me.dueris.genesismc.utils.BukkitColour.RED;
-import static org.bukkit.Bukkit.getServer;
 
 public class PlayerHandler implements Listener {
 
@@ -117,16 +99,16 @@ public class PlayerHandler implements Listener {
         Bukkit.getLogger().info("PlayerLocale saved as[" + Translation.getPlayerLocale(p) + "] for player[%player%]".replace("%player%", p.getName()));
         //set origins to null if none present
         if (
-            !p.getPersistentDataContainer().has(GenesisMC.identifier("originLayer"), PersistentDataType.STRING) ||
-            p.getPersistentDataContainer().get(GenesisMC.identifier("originLayer"), PersistentDataType.STRING) == null ||
-            p.getPersistentDataContainer().get(GenesisMC.identifier("originLayer"), PersistentDataType.STRING) == ""
-        ){
+                !p.getPersistentDataContainer().has(GenesisMC.identifier("originLayer"), PersistentDataType.STRING) ||
+                        p.getPersistentDataContainer().get(GenesisMC.identifier("originLayer"), PersistentDataType.STRING) == null ||
+                        p.getPersistentDataContainer().get(GenesisMC.identifier("originLayer"), PersistentDataType.STRING) == ""
+        ) {
             HashMap<LayerContainer, OriginContainer> origins = new HashMap<>();
             for (LayerContainer layer : CraftApoli.getLayers()) origins.put(layer, CraftApoli.nullOrigin());
             p.getPersistentDataContainer().set(GenesisMC.identifier("originLayer"), PersistentDataType.STRING, CraftApoli.toOriginSetSaveFormat(origins));
         }
 
-        if(p.getPersistentDataContainer().has(GenesisMC.identifier("originLayers"))){
+        if (p.getPersistentDataContainer().has(GenesisMC.identifier("originLayers"))) {
             p.getPersistentDataContainer().remove(GenesisMC.identifier("originLayers"));
         }
 
@@ -140,11 +122,11 @@ public class PlayerHandler implements Listener {
             }
         }
 
-        if(p.getPersistentDataContainer().has(GenesisMC.identifier("origins"))){
+        if (p.getPersistentDataContainer().has(GenesisMC.identifier("origins"))) {
             p.getPersistentDataContainer().remove(GenesisMC.identifier("originTag"));
         }
 
-        if (p.getPersistentDataContainer().has(GenesisMC.identifier("origins"), PersistentDataType.BYTE_ARRAY)){
+        if (p.getPersistentDataContainer().has(GenesisMC.identifier("origins"), PersistentDataType.BYTE_ARRAY)) {
             p.getPersistentDataContainer().remove(GenesisMC.identifier("origins"));
         }
 
@@ -183,21 +165,21 @@ public class PlayerHandler implements Listener {
             p.getPersistentDataContainer().set(GenesisMC.identifier("toggle"), PersistentDataType.INTEGER, 1);
         }
 
-        try{
+        try {
             if (!p.getPersistentDataContainer().has(GenesisMC.identifier("modified-skin-url"), PersistentDataType.STRING) || p.getPersistentDataContainer().get(GenesisMC.identifier("modified-skin-url"), PersistentDataType.STRING) == null) {
                 p.getPersistentDataContainer().set(GenesisMC.identifier("modified-skin-url"), PersistentDataType.STRING, p.getPlayerProfile().getTextures().getSkin().getFile());
             }
             if (!p.getPersistentDataContainer().has(GenesisMC.identifier("original-skin-url"), PersistentDataType.STRING) || p.getPersistentDataContainer().get(GenesisMC.identifier("original-skin-url"), PersistentDataType.STRING) == null) {
                 p.getPersistentDataContainer().set(GenesisMC.identifier("original-skin-url"), PersistentDataType.STRING, p.getPlayerProfile().getTextures().getSkin().getFile());
             }
-        } catch (Exception vv){
+        } catch (Exception vv) {
             //silence code - offline mode fucks things
         }
 
         p.saveData();
         try {
-            FixerUpper.fixupFile(Path.of(GenesisMC.playerDataFolder.toPath().toString() + File.separator + ((CraftPlayer)p).getHandle().getStringUUID() + ".dat").toFile());
-        } catch (IOException ev){
+            FixerUpper.fixupFile(Path.of(GenesisMC.playerDataFolder.toPath() + File.separator + ((CraftPlayer) p).getHandle().getStringUUID() + ".dat").toFile());
+        } catch (IOException ev) {
             ev.printStackTrace();
         }
 
@@ -224,7 +206,7 @@ public class PlayerHandler implements Listener {
     }
 
     @EventHandler
-    public void newOrigin(OriginChangeEvent e){
+    public void newOrigin(OriginChangeEvent e) {
         OriginDataContainer.unloadData(e.getPlayer());
         OriginDataContainer.loadData(e.getPlayer());
     }

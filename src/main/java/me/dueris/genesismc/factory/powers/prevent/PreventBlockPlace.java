@@ -25,30 +25,30 @@ public class PreventBlockPlace extends CraftPower implements Listener {
     }
 
     @EventHandler
-    public void blockBreak(BlockPlaceEvent e){
-        if(prevent_block_place.contains(e.getPlayer())){
-            for(LayerContainer layer : CraftApoli.getLayers()){
-                for(PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(e.getPlayer(), getPowerFile(), layer)){
-                    if(GenesisMC.getConditionExecutor().check("condition", "conditions", e.getPlayer(), power, getPowerFile(), e.getPlayer(), null, e.getBlockPlaced(), null, e.getItemInHand(), null)){
-                        if(GenesisMC.getConditionExecutor().check("item_condition", "item_conditions", e.getPlayer(), power, getPowerFile(), e.getPlayer(), null, e.getBlockPlaced(), null, e.getItemInHand(), null)){
-                            if(GenesisMC.getConditionExecutor().check("place_on_condition", "place_on_conditions", e.getPlayer(), power, getPowerFile(), e.getPlayer(), null, e.getBlockAgainst(), null, e.getItemInHand(), null)){
-                                if(GenesisMC.getConditionExecutor().check("place_to_condition", "place_to_conditions", e.getPlayer(), power, getPowerFile(), e.getPlayer(), null, e.getBlockPlaced(), null, e.getItemInHand(), null)){
+    public void blockBreak(BlockPlaceEvent e) {
+        if (prevent_block_place.contains(e.getPlayer())) {
+            for (LayerContainer layer : CraftApoli.getLayers()) {
+                for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(e.getPlayer(), getPowerFile(), layer)) {
+                    if (GenesisMC.getConditionExecutor().check("condition", "conditions", e.getPlayer(), power, getPowerFile(), e.getPlayer(), null, e.getBlockPlaced(), null, e.getItemInHand(), null)) {
+                        if (GenesisMC.getConditionExecutor().check("item_condition", "item_conditions", e.getPlayer(), power, getPowerFile(), e.getPlayer(), null, e.getBlockPlaced(), null, e.getItemInHand(), null)) {
+                            if (GenesisMC.getConditionExecutor().check("place_on_condition", "place_on_conditions", e.getPlayer(), power, getPowerFile(), e.getPlayer(), null, e.getBlockAgainst(), null, e.getItemInHand(), null)) {
+                                if (GenesisMC.getConditionExecutor().check("place_to_condition", "place_to_conditions", e.getPlayer(), power, getPowerFile(), e.getPlayer(), null, e.getBlockPlaced(), null, e.getItemInHand(), null)) {
                                     e.setCancelled(true);
                                     setActive(e.getPlayer(), power.getTag(), true);
                                     Actions.EntityActionType(e.getPlayer(), power.getEntityAction());
                                     Actions.ItemActionType(e.getItemInHand(), power.getAction("held_item_action"));
                                     Actions.BlockActionType(e.getBlockAgainst().getLocation(), power.getAction("place_on_action"));
                                     Actions.BlockActionType(e.getBlockPlaced().getLocation(), power.getAction("place_to_action"));
-                                }else{
+                                } else {
                                     setActive(e.getPlayer(), power.getTag(), false);
                                 }
-                            }else{
+                            } else {
                                 setActive(e.getPlayer(), power.getTag(), false);
                             }
-                        }else{
+                        } else {
                             setActive(e.getPlayer(), power.getTag(), false);
                         }
-                    }else{
+                    } else {
                         setActive(e.getPlayer(), power.getTag(), false);
                     }
                 }
@@ -68,13 +68,13 @@ public class PreventBlockPlace extends CraftPower implements Listener {
 
     @Override
     public void setActive(Player p, String tag, Boolean bool) {
-        if(powers_active.containsKey(p)){
-            if(powers_active.get(p).containsKey(tag)){
+        if (powers_active.containsKey(p)) {
+            if (powers_active.get(p).containsKey(tag)) {
                 powers_active.get(p).replace(tag, bool);
-            }else{
+            } else {
                 powers_active.get(p).put(tag, bool);
             }
-        }else{
+        } else {
             powers_active.put(p, new HashMap());
             setActive(p, tag, bool);
         }

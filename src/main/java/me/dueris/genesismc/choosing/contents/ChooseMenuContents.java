@@ -18,8 +18,8 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 
-import static me.dueris.genesismc.choosing.ChoosingMain.itemProperties;
 import static me.dueris.genesismc.choosing.ChoosingCustomOrigins.cutStringIntoLists;
+import static me.dueris.genesismc.choosing.ChoosingMain.itemProperties;
 
 public class ChooseMenuContents {
 
@@ -82,9 +82,9 @@ public class ChooseMenuContents {
                     }
                     String minecraftItem = origin.getIcon();
                     String item = null;
-                    if(minecraftItem.contains(":")){
+                    if (minecraftItem.contains(":")) {
                         item = minecraftItem.split(":")[1];
-                    }else{
+                    } else {
                         item = minecraftItem;
                     }
                     ItemStack originIcon = new ItemStack(Material.valueOf(item.toUpperCase()));

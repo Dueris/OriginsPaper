@@ -14,12 +14,12 @@ import java.util.Random;
 
 public class VillagerTradeHook implements Listener {
     @EventHandler
-    public void test(VillagerAcquireTradeEvent e){
-        if(e.getEntity() instanceof WanderingTrader) return;
+    public void test(VillagerAcquireTradeEvent e) {
+        if (e.getEntity() instanceof WanderingTrader) return;
         Villager villager = (Villager) e.getEntity();
-        if(villager.getProfession().equals(Villager.Profession.LIBRARIAN)){
+        if (villager.getProfession().equals(Villager.Profession.LIBRARIAN)) {
             Random chanceOfSpawnRandom = new Random();
-            if(chanceOfSpawnRandom.nextInt(100) > 97 && (e.getRecipe().getResult().getType().equals(Material.ENCHANTED_BOOK))){
+            if (chanceOfSpawnRandom.nextInt(100) > 97 && (e.getRecipe().getResult().getType().equals(Material.ENCHANTED_BOOK))) {
                 Random emeraldCountRandom = new Random();
                 Random shouldAddBookRandom = new Random();
                 Random chanceOfLevelRandom = new Random();
@@ -29,13 +29,13 @@ public class VillagerTradeHook implements Listener {
                 boolean shouldAddBook = shouldAddBookRandom.nextBoolean();
                 int emeraldCount = emeraldCountRandom.nextInt(53);
                 int lvl;
-                if(chanceOfLevel <= 40){
+                if (chanceOfLevel <= 40) {
                     lvl = 1;
-                } else if(chanceOfLevel <= 65 && chanceOfLevel >= 41){
+                } else if (chanceOfLevel <= 65 && chanceOfLevel >= 41) {
                     lvl = 2;
-                } else if(chanceOfLevel <= 85 && chanceOfLevel >= 66){
+                } else if (chanceOfLevel <= 85 && chanceOfLevel >= 66) {
                     lvl = 3;
-                } else if(chanceOfLevel <= 100 && chanceOfLevel >= 86){
+                } else if (chanceOfLevel <= 100 && chanceOfLevel >= 86) {
                     lvl = 4;
                 } else {
                     lvl = 1;
@@ -44,7 +44,7 @@ public class VillagerTradeHook implements Listener {
                 Anvil.setWaterProtCustomEnchantLevel(lvl, item);
                 MerchantRecipe recipe = new MerchantRecipe(item, maxUses);
                 recipe.addIngredient(new ItemStack(Material.EMERALD, emeraldCount));
-                if(shouldAddBook){
+                if (shouldAddBook) {
                     recipe.addIngredient(new ItemStack(Material.BOOK, 1));
                 }
                 e.setRecipe(recipe);

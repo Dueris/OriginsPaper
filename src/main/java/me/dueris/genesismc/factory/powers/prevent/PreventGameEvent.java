@@ -21,18 +21,18 @@ public class PreventGameEvent extends CraftPower implements Listener {
     }
 
     @EventHandler
-    public void event(GenericGameEvent e){
-        if(e.getEntity() == null) return;
-        if(e.getEntity() instanceof Player p){
-            if(!this.getPowerArray().contains(p)) return;
+    public void event(GenericGameEvent e) {
+        if (e.getEntity() == null) return;
+        if (e.getEntity() instanceof Player p) {
+            if (!this.getPowerArray().contains(p)) return;
             for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()) {
-                for(PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)){
-                    if(GenesisMC.getConditionExecutor().check("condition", "conditions", p, power, getPowerFile(), p, null, p.getLocation().getBlock(), null, p.getActiveItem(), null)){
+                for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
+                    if (GenesisMC.getConditionExecutor().check("condition", "conditions", p, power, getPowerFile(), p, null, p.getLocation().getBlock(), null, p.getActiveItem(), null)) {
                         String event = power.get("event");
-                        if(event.contains(":")){
+                        if (event.contains(":")) {
                             event = event.split(":")[1];
                         }
-                        if(e.getEvent().key().asString().equals(event)){
+                        if (e.getEvent().key().asString().equals(event)) {
                             e.setCancelled(true);
                         }
                     }
@@ -53,16 +53,16 @@ public class PreventGameEvent extends CraftPower implements Listener {
 
     @Override
     public void setActive(Player p, String tag, Boolean bool) {
-        if(powers_active.containsKey(p)){
-            if(powers_active.get(p).containsKey(tag)){
+        if (powers_active.containsKey(p)) {
+            if (powers_active.get(p).containsKey(tag)) {
                 powers_active.get(p).replace(tag, bool);
-            }else{
+            } else {
                 powers_active.get(p).put(tag, bool);
             }
-        }else{
+        } else {
             powers_active.put(p, new HashMap());
             setActive(p, tag, bool);
         }
     }
-    
+
 }

@@ -12,9 +12,9 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class PlaceholderApiExtension extends PlaceholderExpansion {
-    private GenesisMC plugin;
+    private final GenesisMC plugin;
 
-    public PlaceholderApiExtension(GenesisMC plugin){
+    public PlaceholderApiExtension(GenesisMC plugin) {
         this.plugin = plugin;
     }
 
@@ -55,27 +55,27 @@ public class PlaceholderApiExtension extends PlaceholderExpansion {
 
     @Override
     public @Nullable String onPlaceholderRequest(Player player, @NotNull String params) {
-        if(params.equalsIgnoreCase("player_origin")){
+        if (params.equalsIgnoreCase("player_origin")) {
             String done = "";
-            for(OriginContainer origin : OriginPlayerUtils.getOrigin(player).values()){
+            for (OriginContainer origin : OriginPlayerUtils.getOrigin(player).values()) {
                 done = done + origin.getTag() + "//";
             }
             return done;
         }
-        if(params.equalsIgnoreCase("player_layer")){
+        if (params.equalsIgnoreCase("player_layer")) {
             String done = "";
-            for(OriginContainer origin : OriginPlayerUtils.getOrigin(player).values()){
+            for (OriginContainer origin : OriginPlayerUtils.getOrigin(player).values()) {
                 done = done + origin.getLayerTag() + "//";
             }
             return done;
         }
-        if(params.equalsIgnoreCase("player_origin_data")){
+        if (params.equalsIgnoreCase("player_origin_data")) {
             return OriginDataContainer.getLayer(player);
         }
-        if(params.equalsIgnoreCase("all_origins")){
+        if (params.equalsIgnoreCase("all_origins")) {
             return CraftApoli.getOrigins().toString();
         }
-        if(params.equalsIgnoreCase("all_layers")){
+        if (params.equalsIgnoreCase("all_layers")) {
             return CraftApoli.getLayers().toString();
         }
 

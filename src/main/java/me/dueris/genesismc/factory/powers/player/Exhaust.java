@@ -16,23 +16,23 @@ public class Exhaust extends CraftPower {
     private Long interval;
     private int ticksE;
 
-    @Override
-    public void setActive(Player p, String tag, Boolean bool) {
-        if(powers_active.containsKey(p)){
-            if(powers_active.get(p).containsKey(tag)){
-                powers_active.get(p).replace(tag, bool);
-            }else{
-                powers_active.get(p).put(tag, bool);
-            }
-        }else{
-            powers_active.put(p, new HashMap());
-            setActive(p, tag, bool);
-        }
-    }
-
     public Exhaust() {
         this.interval = 1L;
         this.ticksE = 0;
+    }
+
+    @Override
+    public void setActive(Player p, String tag, Boolean bool) {
+        if (powers_active.containsKey(p)) {
+            if (powers_active.get(p).containsKey(tag)) {
+                powers_active.get(p).replace(tag, bool);
+            } else {
+                powers_active.get(p).put(tag, bool);
+            }
+        } else {
+            powers_active.put(p, new HashMap());
+            setActive(p, tag, bool);
+        }
     }
 
     @Override

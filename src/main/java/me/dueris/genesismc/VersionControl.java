@@ -1,16 +1,12 @@
 package me.dueris.genesismc;
 
 import me.dueris.genesismc.utils.translation.LangConfig;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URL;
-
-import static me.dueris.genesismc.utils.BukkitColour.GREEN;
 
 public class VersionControl {
     public static final String REQUIRED_VERSION = "1.20";
@@ -50,7 +46,7 @@ public class VersionControl {
             if (diff > 0)
                 Bukkit.getLogger().warning("  " + LangConfig.getLocalizedString(Bukkit.getConsoleSender(), "startup.versionCheck.behind").replace("%versionsBehind%", String.valueOf(diff)));
             if (diff < 0)
-                Bukkit.getConsoleSender().sendMessage(ChatColor.GREEN +  "  " + LangConfig.getLocalizedString(Bukkit.getConsoleSender(), "startup.versionCheck.ahead"));
+                Bukkit.getConsoleSender().sendMessage(ChatColor.GREEN + "  " + LangConfig.getLocalizedString(Bukkit.getConsoleSender(), "startup.versionCheck.ahead"));
 
         } catch (Exception e) {
             e.printStackTrace();

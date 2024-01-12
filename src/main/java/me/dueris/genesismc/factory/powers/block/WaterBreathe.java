@@ -24,7 +24,7 @@ import java.util.Random;
 
 public class WaterBreathe extends CraftPower implements Listener {
     public static ArrayList<Player> outofAIR = new ArrayList<>();
-    private static ArrayList<Player> genesisExecuting = new ArrayList<>();
+    private static final ArrayList<Player> genesisExecuting = new ArrayList<>();
 
     public static boolean isInBreathableWater(Player player) {
         Block block = player.getEyeLocation().getBlock();
@@ -36,23 +36,23 @@ public class WaterBreathe extends CraftPower implements Listener {
 
     @Override
     public void setActive(Player p, String tag, Boolean bool) {
-        if(powers_active.containsKey(p)){
-            if(powers_active.get(p).containsKey(tag)){
+        if (powers_active.containsKey(p)) {
+            if (powers_active.get(p).containsKey(tag)) {
                 powers_active.get(p).replace(tag, bool);
-            }else{
+            } else {
                 powers_active.get(p).put(tag, bool);
             }
-        }else{
+        } else {
             powers_active.put(p, new HashMap());
             setActive(p, tag, bool);
         }
     }
 
     @EventHandler
-    public void interuptMinecraft(EntityAirChangeEvent e){
-        if(e.getEntity() instanceof Player player){
-            if(water_breathing.contains(player)){
-                if(!genesisExecuting.contains(player)){
+    public void interuptMinecraft(EntityAirChangeEvent e) {
+        if (e.getEntity() instanceof Player player) {
+            if (water_breathing.contains(player)) {
+                if (!genesisExecuting.contains(player)) {
                     e.setCancelled(true);
                     e.setAmount(0);
                 }
@@ -61,8 +61,8 @@ public class WaterBreathe extends CraftPower implements Listener {
     }
 
     @EventHandler
-    public void drinkWater(PlayerItemConsumeEvent e){
-        if(water_breathing.contains(e.getPlayer()) && e.getItem().getType().equals(Material.POTION)){
+    public void drinkWater(PlayerItemConsumeEvent e) {
+        if (water_breathing.contains(e.getPlayer()) && e.getItem().getType().equals(Material.POTION)) {
             genesisExecuting.add(e.getPlayer());
             e.getPlayer().setRemainingAir(e.getPlayer().getRemainingAir() + 60);
             genesisExecuting.remove(e.getPlayer());
@@ -83,37 +83,37 @@ public class WaterBreathe extends CraftPower implements Listener {
                         int lowestAir = -10;
                         int tickDownAir = 1;
                         boolean shouldDamage = true;
-                        if(((CraftPlayer)(p)).getHandle().hasEffect(MobEffects.WATER_BREATHING)){
+                        if (((CraftPlayer) (p)).getHandle().hasEffect(MobEffects.WATER_BREATHING)) {
                             addonAir = 0;
                             tickDownAir = 0;
                             shouldDamage = false;
                         }
-                            if (isInBreathableWater(p)) {
-                                if (p.getRemainingAir() < 290) {
-                                    p.setRemainingAir(p.getRemainingAir() + addonAir);
-                                } else {
-                                    p.setRemainingAir(310);
-                                }
-                                outofAIR.remove(p);
+                        if (isInBreathableWater(p)) {
+                            if (p.getRemainingAir() < 290) {
+                                p.setRemainingAir(p.getRemainingAir() + addonAir);
                             } else {
-                                if (p.getGameMode().equals(GameMode.CREATIVE) || p.getGameMode().equals(GameMode.SPECTATOR))
-                                    return;
-                                int remainingAir = p.getRemainingAir();
-                                if (remainingAir <= 5) {
-                                    p.setRemainingAir(lowestAir);
-                                    outofAIR.add(p);
-                                } else {
-                                    p.setRemainingAir(remainingAir - tickDownAir);
-                                    outofAIR.remove(p);
-                                }
+                                p.setRemainingAir(310);
                             }
-                            if (!shouldDamage){
+                            outofAIR.remove(p);
+                        } else {
+                            if (p.getGameMode().equals(GameMode.CREATIVE) || p.getGameMode().equals(GameMode.SPECTATOR))
+                                return;
+                            int remainingAir = p.getRemainingAir();
+                            if (remainingAir <= 5) {
+                                p.setRemainingAir(lowestAir);
+                                outofAIR.add(p);
+                            } else {
+                                p.setRemainingAir(remainingAir - tickDownAir);
                                 outofAIR.remove(p);
-                            } else if (outofAIR.contains(p)) {
-                                if (p.getRemainingAir() > 20) {
-                                    outofAIR.remove(p);
-                                }
                             }
+                        }
+                        if (!shouldDamage) {
+                            outofAIR.remove(p);
+                        } else if (outofAIR.contains(p)) {
+                            if (p.getRemainingAir() > 20) {
+                                outofAIR.remove(p);
+                            }
+                        }
                         genesisExecuting.remove(p);
                     }
                 } else {
@@ -124,7 +124,7 @@ public class WaterBreathe extends CraftPower implements Listener {
         }
     }
 
-    private void spawnBubbleLooseParticle(Location location){
+    private void spawnBubbleLooseParticle(Location location) {
         Random r = new Random();
         location.getWorld().spawnParticle(Particle.WATER_BUBBLE, location, r.nextInt(7));
     }
@@ -145,10 +145,10 @@ public class WaterBreathe extends CraftPower implements Listener {
                 int remainingAir = p.getRemainingAir();
                 if (remainingAir <= 5) {
                     int finalDmg = 3;
-                    if(p.getInventory().getHelmet() != null){
-                        if(p.getInventory().getHelmet().getType() == Material.TURTLE_HELMET){
+                    if (p.getInventory().getHelmet() != null) {
+                        if (p.getInventory().getHelmet().getType() == Material.TURTLE_HELMET) {
                             finalDmg = 2;
-                        } else if(p.getInventory().getHelmet().containsEnchantment(Enchantment.OXYGEN)){
+                        } else if (p.getInventory().getHelmet().containsEnchantment(Enchantment.OXYGEN)) {
                             finalDmg = 2;
                         }
                     }

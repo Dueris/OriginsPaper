@@ -29,17 +29,18 @@ import java.util.Arrays;
 import java.util.HashMap;
 
 import static me.dueris.genesismc.utils.KeybindUtils.isKeyBeingPressed;
+
 public class Inventory extends CraftPower implements CommandExecutor, Listener {
 
     @Override
     public void setActive(Player p, String tag, Boolean bool) {
-        if(powers_active.containsKey(p)){
-            if(powers_active.get(p).containsKey(tag)){
+        if (powers_active.containsKey(p)) {
+            if (powers_active.get(p).containsKey(tag)) {
                 powers_active.get(p).replace(tag, bool);
-            }else{
+            } else {
                 powers_active.get(p).put(tag, bool);
             }
-        }else{
+        } else {
             powers_active.put(p, new HashMap());
             setActive(p, tag, bool);
         }

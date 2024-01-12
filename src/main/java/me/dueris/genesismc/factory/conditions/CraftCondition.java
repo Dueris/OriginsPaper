@@ -1,7 +1,6 @@
 package me.dueris.genesismc.factory.conditions;
 
 
-import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.conditions.biEntity.BiEntityCondition;
 import me.dueris.genesismc.factory.conditions.biome.BiomeCondition;
 import me.dueris.genesismc.factory.conditions.block.BlockCondition;
@@ -9,10 +8,9 @@ import me.dueris.genesismc.factory.conditions.damage.DamageCondition;
 import me.dueris.genesismc.factory.conditions.entity.EntityCondition;
 import me.dueris.genesismc.factory.conditions.fluid.FluidCondition;
 import me.dueris.genesismc.factory.conditions.item.ItemCondition;
+import org.bukkit.Bukkit;
 
 import java.util.ArrayList;
-
-import org.bukkit.Bukkit;
 
 public class CraftCondition {
     public static BiEntityCondition bientity;
@@ -36,11 +34,10 @@ public class CraftCondition {
 
     //     return classes;
     // }
-    
-    public static void registerCustomCondition(Class<? extends Condition> condition){
+    protected static ArrayList<Class<? extends Condition>> customConditions = new ArrayList<>();
+
+    public static void registerCustomCondition(Class<? extends Condition> condition) {
         customConditions.add(condition);
         Bukkit.getLogger().info("Origins Condition[%c] has been registered!".replace("%c", condition.getName()));
     }
-
-    protected static ArrayList<Class<? extends Condition>> customConditions = new ArrayList<>();
 }

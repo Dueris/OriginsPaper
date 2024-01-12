@@ -19,12 +19,12 @@ public class PlayerSelector {
 
     public static ArrayList<Player> playerSelector(CommandSender sender, String playerArg) {
         ArrayList<Player> players = new ArrayList<>();
-        if(playerArg == "@a"){
+        if (playerArg == "@a") {
             players.addAll(Bukkit.getOnlinePlayers());
-        }else if(playerArg == "@e"){
+        } else if (playerArg == "@e") {
             sender.sendMessage(Component.text("Only player may be affected by this command, but the provided selector includes entities.").color(TextColor.fromHexString(RED)));
             return players;
-        }else if(playerArg == "@p"){
+        } else if (playerArg == "@p") {
             if (sender instanceof Player p) {
                 for (int i = 0; players.size() < 1; i++) {
                     if (p.getLocation().getNearbyPlayers(i).size() == 0) continue;
@@ -39,27 +39,28 @@ public class PlayerSelector {
                     players.add(Bukkit.getPlayer(craftPlayer.getName()));
                 }
             }
-        }else if(playerArg == "@r"){
+        } else if (playerArg == "@r") {
             Random random = new Random();
             int randomInt = random.nextInt(Bukkit.getOnlinePlayers().size());
             players.add((Player) Bukkit.getOnlinePlayers().toArray()[randomInt]);
-        }else if(playerArg == "@s"){
+        } else if (playerArg == "@s") {
             if (sender instanceof Player p) players.add(p);
             else sender.sendMessage(Component.text("No player was found").color(TextColor.fromHexString(RED)));
-        }else{
+        } else {
             Player player = Bukkit.getPlayer(playerArg);
             if (player == null) {
                 Player pl2 = null;
                 try {
                     pl2 = Bukkit.getPlayer(UUID.fromString(playerArg));
-                }catch(Exception e){}
-                if(pl2 == null){
+                } catch (Exception e) {
+                }
+                if (pl2 == null) {
                     sender.sendMessage(Component.text("No player was found").color(TextColor.fromHexString(RED)));
                     return new ArrayList<>();
-                }else{
+                } else {
                     players.add(pl2);
                 }
-            }else{
+            } else {
                 players.add(player);
             }
         }

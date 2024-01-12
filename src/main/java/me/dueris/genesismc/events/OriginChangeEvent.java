@@ -8,7 +8,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class OriginChangeEvent extends PlayerEvent {
     private static final HandlerList handlers = new HandlerList();
-    private OriginContainer origin;
+    private final OriginContainer origin;
 
     public OriginChangeEvent(@NotNull Player who, OriginContainer origin) {
         super(who);

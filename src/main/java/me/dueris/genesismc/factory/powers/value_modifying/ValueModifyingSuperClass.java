@@ -109,7 +109,7 @@ public class ValueModifyingSuperClass extends BukkitRunnable implements Listener
 
     public void saveValueInPDC(Player player, String key, Float value) {
         PersistentDataContainer PDC = player.getPersistentDataContainer();
-            PDC.set(new NamespacedKey(GenesisMC.getPlugin(), key), PersistentDataType.FLOAT, value);
+        PDC.set(new NamespacedKey(GenesisMC.getPlugin(), key), PersistentDataType.FLOAT, value);
     }
 
     @Override

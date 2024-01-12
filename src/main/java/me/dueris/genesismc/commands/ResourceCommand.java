@@ -5,7 +5,6 @@ import me.dueris.genesismc.commands.subcommands.origin.Get;
 import me.dueris.genesismc.commands.subcommands.resource.Change;
 import me.dueris.genesismc.commands.subcommands.resource.Has;
 import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 
@@ -14,7 +13,8 @@ import java.util.List;
 
 public class ResourceCommand extends Command {
     private final ArrayList<SubCommand> subCommands = new ArrayList<>();
-    public ResourceCommand(){
+
+    public ResourceCommand() {
         super("resource");
         subCommands.add(new Change());
         subCommands.add(new Get());

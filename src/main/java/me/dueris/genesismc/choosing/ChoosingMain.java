@@ -136,7 +136,7 @@ public class ChoosingMain implements Listener {
                 item.setItemMeta(meta);
                 if (e.getItem() != null) {
                     if (e.getItem().isSimilar(item)) {
-                        for (LayerContainer layer : CraftApoli.getLayers()){
+                        for (LayerContainer layer : CraftApoli.getLayers()) {
                             OriginPlayerUtils.setOrigin(p, layer, CraftApoli.nullOrigin());
                         }
                         OrbInteractEvent event = new OrbInteractEvent(p);

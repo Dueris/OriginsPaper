@@ -1,33 +1,27 @@
 package me.dueris.genesismc;
 
-import me.dueris.genesismc.commands.OriginCommand;
 import me.dueris.genesismc.entity.OriginPlayerUtils;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.factory.powers.FlightHandler;
-import me.dueris.genesismc.factory.powers.Overlay;
 import me.dueris.genesismc.factory.powers.actions.ActionOverTime;
-import me.dueris.genesismc.factory.powers.effects.StackingStatusEffect;
-import me.dueris.genesismc.factory.powers.player.Gravity;
-import me.dueris.genesismc.factory.powers.player.Invisibility;
 import me.dueris.genesismc.factory.powers.player.RestrictArmor;
 import me.dueris.genesismc.factory.powers.player.damage.Burn;
 import me.dueris.genesismc.factory.powers.player.damage.DamageOverTime;
 import me.dueris.genesismc.factory.powers.prevent.PreventEntityRender;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
-
-import com.destroystokyo.paper.event.server.ServerTickEndEvent;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
 public class OriginScheduler {
 
+    public static ArrayList<Class<? extends CraftPower>> activePowerRunners = new ArrayList<>();
     final Plugin plugin;
+    ArrayList<BukkitRunnable> runnables = new ArrayList<>();
 
     public OriginScheduler(Plugin plugin) {
         this.plugin = plugin;
@@ -51,8 +45,6 @@ public class OriginScheduler {
         return runnable.runTaskLater(plugin, delay);
     }
 
-    ArrayList<BukkitRunnable> runnables = new ArrayList<>();
-
     public ArrayList<BukkitRunnable> getRunnables() {
         return runnables;
     }
@@ -63,18 +55,15 @@ public class OriginScheduler {
         return runnable.runTaskTimer(GenesisMC.getPlugin(), delay, period);
     }
 
-    public static ArrayList<Class<? extends CraftPower>> activePowerRunners = new ArrayList<>();
-
     public static class OriginSchedulerTree extends BukkitRunnable implements Listener {
+
+        public static FlightHandler flightHandler = new FlightHandler();
+        private final HashMap<Player, Integer> ticksEMap = new HashMap<>();
 
         @Override
         public String toString() {
             return "OriginSchedulerTree$run()";
         }
-
-        public static FlightHandler flightHandler = new FlightHandler();
-
-        private final HashMap<Player, Integer> ticksEMap = new HashMap<>();
 
         @Override
         public void run() {
@@ -83,9 +72,9 @@ public class OriginScheduler {
 //                    Gravity gravity = new Gravity();
 //                    gravity.run(p);
 //                }
-               if (!OriginPlayerUtils.getPowersApplied(p).contains(FlightHandler.class)) {
-                   flightHandler.run(p);
-               }
+                if (!OriginPlayerUtils.getPowersApplied(p).contains(FlightHandler.class)) {
+                    flightHandler.run(p);
+                }
 //                if (!OriginPlayer.getPowersApplied(p).contains(Overlay.class)) {
 //                    Overlay overlay = new Overlay();
 //                    overlay.run(p);
@@ -107,7 +96,7 @@ public class OriginScheduler {
                             ((RestrictArmor) c.newInstance()).run(p, ticksEMap);
                         } else if (c.newInstance() instanceof DamageOverTime) {
                             ((DamageOverTime) c.newInstance()).run(p, ticksEMap);
-                        } else if(c.newInstance() instanceof PreventEntityRender) {
+                        } else if (c.newInstance() instanceof PreventEntityRender) {
                             ((PreventEntityRender) c.newInstance()).run(p, ticksEMap);
                         } else {
                             activePowerRunners.add(c);

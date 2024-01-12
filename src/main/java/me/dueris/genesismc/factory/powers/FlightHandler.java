@@ -3,7 +3,6 @@ package me.dueris.genesismc.factory.powers;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.entity.OriginPlayerUtils;
 import me.dueris.genesismc.events.OriginChangeEvent;
-
 import me.dueris.genesismc.factory.powers.player.FlightElytra;
 import org.bukkit.GameMode;
 import org.bukkit.NamespacedKey;
@@ -35,13 +34,13 @@ public class FlightHandler extends CraftPower {
                     }
                 } else {
                     p.setAllowFlight(p.getGameMode().equals(GameMode.SPECTATOR) || FlightElytra.elytra.contains(p));
-                    if(FlightElytra.elytra.contains(p)){
+                    if (FlightElytra.elytra.contains(p)) {
                         p.setFlying(p.getGameMode().equals(GameMode.CREATIVE) || p.getGameMode().equals(GameMode.SPECTATOR));
                     }
                 }
             }
         }
-        if(p.getChunk().isLoaded()){
+        if (p.getChunk().isLoaded()) {
             if (p.getEyeLocation().getBlock().isCollidable()) {
                 p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "insideBlock"), PersistentDataType.BOOLEAN, true);
             } else {
@@ -51,12 +50,12 @@ public class FlightHandler extends CraftPower {
     }
 
     @EventHandler
-    public void join(PlayerJoinEvent e){
+    public void join(PlayerJoinEvent e) {
         run(e.getPlayer());
     }
 
     @EventHandler
-    public void choosse(OriginChangeEvent e){
+    public void choosse(OriginChangeEvent e) {
         new BukkitRunnable() {
 
             @Override
@@ -64,8 +63,8 @@ public class FlightHandler extends CraftPower {
                 FlightHandler fl = new FlightHandler();
                 fl.run(e.getPlayer());
             }
-            
-        }.runTaskLater(GenesisMC.getPlugin(), 10l);
+
+        }.runTaskLater(GenesisMC.getPlugin(), 10L);
     }
 
     @Override
@@ -80,13 +79,13 @@ public class FlightHandler extends CraftPower {
 
     @Override
     public void setActive(Player p, String tag, Boolean bool) {
-        if(powers_active.containsKey(p)){
-            if(powers_active.get(p).containsKey(tag)){
+        if (powers_active.containsKey(p)) {
+            if (powers_active.get(p).containsKey(tag)) {
                 powers_active.get(p).replace(tag, bool);
-            }else{
+            } else {
                 powers_active.get(p).put(tag, bool);
             }
-        }else{
+        } else {
             powers_active.put(p, new HashMap());
             setActive(p, tag, bool);
         }

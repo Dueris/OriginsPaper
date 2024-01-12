@@ -2,7 +2,6 @@ package me.dueris.genesismc.factory.actions;
 
 import me.dueris.genesismc.CooldownManager;
 import me.dueris.genesismc.GenesisMC;
-import me.dueris.genesismc.utils.console.OriginConsoleSender;
 import me.dueris.genesismc.entity.OriginPlayerUtils;
 import me.dueris.genesismc.events.AddToSetEvent;
 import me.dueris.genesismc.events.RemoveFromSetEvent;
@@ -14,6 +13,7 @@ import me.dueris.genesismc.factory.powers.player.attributes.AttributeHandler;
 import me.dueris.genesismc.utils.OriginContainer;
 import me.dueris.genesismc.utils.PowerContainer;
 import me.dueris.genesismc.utils.Utils;
+import me.dueris.genesismc.utils.console.OriginConsoleSender;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.damagesource.DamageType;
 import org.bukkit.*;
@@ -38,13 +38,18 @@ import org.jetbrains.annotations.NotNull;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Random;
 import java.util.function.Predicate;
 
 import static me.dueris.genesismc.factory.powers.OriginMethods.statusEffectInstance;
 import static me.dueris.genesismc.utils.KeybindUtils.addItems;
 
 public class Actions {
+
+    public static HashMap<Entity, Boolean> resourceChangeTimeout = new HashMap<>();
 
     public static void runbiEntity(Entity actor, Entity target, JSONObject biEntityAction) {
         String type = biEntityAction.get("type").toString();
@@ -62,16 +67,16 @@ public class Actions {
             if (set) target.setVelocity(new Vector(x, y, z));
             else target.setVelocity(target.getVelocity().add(new Vector(x, y, z)));
         }
-        if (type.equals("origins:remove_from_set")){
+        if (type.equals("origins:remove_from_set")) {
             RemoveFromSetEvent ev = new RemoveFromSetEvent(target, biEntityAction.get("set").toString());
             ev.callEvent();
         }
-        if (type.equals("origins:add_to_set")){
+        if (type.equals("origins:add_to_set")) {
             AddToSetEvent ev = new AddToSetEvent(target, biEntityAction.get("set").toString());
             ev.callEvent();
         }
         if (type.equals("origins:damage")) {
-            if(target.isDead() || !(target instanceof LivingEntity)) return;
+            if (target.isDead() || !(target instanceof LivingEntity)) return;
             float amount = 0.0f;
 
             if (biEntityAction.containsKey("amount"))
@@ -79,15 +84,15 @@ public class Actions {
 
             String namespace;
             String key;
-            if(biEntityAction.get("damage_type") != null){
-                if(biEntityAction.get("damage_type").toString().contains(":")){
+            if (biEntityAction.get("damage_type") != null) {
+                if (biEntityAction.get("damage_type").toString().contains(":")) {
                     namespace = biEntityAction.get("damage_type").toString().split(":")[0];
                     key = biEntityAction.get("damage_type").toString().split(":")[1];
-                }else{
+                } else {
                     namespace = "minecraft";
                     key = biEntityAction.get("damage_type").toString();
                 }
-            }else{
+            } else {
                 namespace = "minecraft";
                 key = "generic";
             }
@@ -121,7 +126,7 @@ public class Actions {
         JSONObject entityAction = biEntityAction;
         String type = entityAction.get("type").toString();
 
-        if (type.equals("origins:invert")){
+        if (type.equals("origins:invert")) {
             biEntityActionType(target, actor, (JSONObject) biEntityAction.get("action"));
         }
         if (type.equals("origins:and")) {
@@ -216,13 +221,11 @@ public class Actions {
         }
     }
 
-    public static HashMap<Entity, Boolean> resourceChangeTimeout = new HashMap<>();
-
     private static void runEntity(Entity entity, JSONObject power) {
         JSONObject entityAction;
         entityAction = power;
         String type = entityAction.get("type").toString();
-        if(entity == null) return;
+        if (entity == null) return;
 
         if (type.equals("origins:modify_inventory")) {
             if (entity instanceof Player player) {
@@ -237,18 +240,18 @@ public class Actions {
                 }
             }
         }
-        if (type.equals("origins:change_resource")){
-            if(resourceChangeTimeout.containsKey(entity)) return;
+        if (type.equals("origins:change_resource")) {
+            if (resourceChangeTimeout.containsKey(entity)) return;
             String resource = power.get("resource").toString();
-            if(Resource.getResource(resource) == null) return;
-            if(Resource.getResource(resource).getRight() == null) return;
-            if(Resource.getResource(resource).getLeft() == null) return;
+            if (Resource.getResource(resource) == null) return;
+            if (Resource.getResource(resource).getRight() == null) return;
+            if (Resource.getResource(resource).getLeft() == null) return;
             int change = Integer.parseInt(power.get("change").toString());
             double finalChange = 1.0 / Resource.getResource(resource).getRight();
             BossBar bossBar = Resource.getResource(resource).getLeft();
             double toRemove = finalChange * change;
             double newP = bossBar.getProgress() + toRemove;
-            if(newP > 1.0){
+            if (newP > 1.0) {
                 newP = 1.0;
             } else if (newP < 0) {
                 newP = 0.0;
@@ -264,21 +267,21 @@ public class Actions {
                 }
             }.runTaskLater(GenesisMC.getPlugin(), 2);
         }
-        if (type.equals("origins:set_on_fire")){
+        if (type.equals("origins:set_on_fire")) {
             entity.setFireTicks(Integer.parseInt(power.get("duration").toString()));
         }
-        if (type.equals("origins:spawn_entity")){
+        if (type.equals("origins:spawn_entity")) {
             OriginConsoleSender originConsoleSender = new OriginConsoleSender();
             originConsoleSender.setOp(true);
             Bukkit.dispatchCommand(originConsoleSender, "summon $1 %1 %2 %3 $2"
-                            .replace("$1", power.get("entity_type").toString())
-                            .replace("$2", power.getOrDefault("tag", "").toString()
+                    .replace("$1", power.get("entity_type").toString())
+                    .replace("$2", power.getOrDefault("tag", "").toString()
                             .replace("%1", String.valueOf(entity.getLocation().getX()))
                             .replace("%2", String.valueOf(entity.getLocation().getY()))
                             .replace("%3", String.valueOf(entity.getLocation().getZ()))
-                            ));
+                    ));
         }
-        if (type.equals("origins:spawn_particles")){
+        if (type.equals("origins:spawn_particles")) {
             Particle particle = Particle.valueOf(power.getOrDefault("particle", null).toString().split(":")[1].toUpperCase());
             int count = Integer.parseInt(String.valueOf(power.getOrDefault("count", 1)));
             float offset_y_no_vector = Float.parseFloat(String.valueOf(power.getOrDefault("offset_y", 1.0)));
@@ -299,10 +302,10 @@ public class Actions {
             }
             entity.getWorld().spawnParticle(particle, new Location(entity.getWorld(), entity.getLocation().getX(), entity.getLocation().getY(), entity.getLocation().getZ()), count, offset_x, offset_y, offset_z, 0);
         }
-        if (type.equals("origins:random_teleport")){
+        if (type.equals("origins:random_teleport")) {
             int spreadDistance = Math.round(Float.valueOf(power.getOrDefault("max_width", "8.0").toString()));
             int attempts = Integer.valueOf(power.getOrDefault("attempts", "1").toString());
-            for(int i = 0; i < attempts; i++){
+            for (int i = 0; i < attempts; i++) {
                 String cmd = "spreadplayers {xloc} {zloc} 1 {spreadDist} false {name}"
                         .replace("{xloc}", String.valueOf(entity.getLocation().getX()))
                         .replace("{zloc}", String.valueOf(entity.getLocation().getZ()))
@@ -314,15 +317,15 @@ public class Actions {
                 System.out.println(cmd);
             }
         }
-        if(type.equals("origins:remove_power")){
-            if(entity instanceof Player p){
+        if (type.equals("origins:remove_power")) {
+            if (entity instanceof Player p) {
                 PowerContainer powerContainer = CraftApoli.getPowerContainerFromTag(power.get("power").toString());
-                if(powerContainer != null){
+                if (powerContainer != null) {
                     Bukkit.dispatchCommand(new OriginConsoleSender(), "power remove {name} {identifier}".replace("{name}", p.getName()).replace("{identifier}", power.get("power").toString()));
                 }
             }
         }
-        if (type.equals("origins:spawn_effect_cloud")){
+        if (type.equals("origins:spawn_effect_cloud")) {
             spawnEffectCloud(entity, Float.valueOf(power.getOrDefault("radius", 3.0).toString()), Integer.valueOf(power.getOrDefault("wait_time", 10).toString()), new PotionEffect(StackingStatusEffect.getPotionEffectType(power.get("effect").toString()), 1, 1));
         }
         if (type.equals("origins:replace_inventory")) {
@@ -339,31 +342,31 @@ public class Actions {
                 }
             }
         }
-        if (type.equals("origins:heal")){
-            if(entity instanceof LivingEntity li){
+        if (type.equals("origins:heal")) {
+            if (entity instanceof LivingEntity li) {
                 double healthFinal = li.getHealth() + Double.parseDouble(power.get("amount").toString());
-                if(li.getHealth() >= 20) return;
-                if(healthFinal > 20){
+                if (li.getHealth() >= 20) return;
+                if (healthFinal > 20) {
                     li.setHealth(20);
-                }else{
+                } else {
                     li.setHealth(healthFinal);
                 }
             }
         }
-        if (type.equals("origins:clear_effect")){
+        if (type.equals("origins:clear_effect")) {
             PotionEffectType potionEffectType = StackingStatusEffect.getPotionEffectType(power.get("effect").toString());
-            if(entity instanceof Player player){
-                if(player.hasPotionEffect(potionEffectType)){
+            if (entity instanceof Player player) {
+                if (player.hasPotionEffect(potionEffectType)) {
                     player.removePotionEffect(potionEffectType);
                 }
             }
         }
-        if (type.equals("origins:exhaust")){
-            if (entity instanceof Player player){
+        if (type.equals("origins:exhaust")) {
+            if (entity instanceof Player player) {
                 player.setFoodLevel(player.getFoodLevel() - Math.round(Float.valueOf(power.get("amount").toString())));
             }
         }
-        if (type.equals("origins:explode")){
+        if (type.equals("origins:explode")) {
             float explosionPower = 1f;
             String destruction_type = "break";
             JSONObject indestructible = new JSONObject();
@@ -382,20 +385,20 @@ public class Actions {
 
             entity.getLocation().createExplosion(explosionPower, create_fire);
         }
-        if (type.equals("origins:crafting_table")){
-            if(entity instanceof Player player){
+        if (type.equals("origins:crafting_table")) {
+            if (entity instanceof Player player) {
                 Inventory inventory = Bukkit.createInventory(player, InventoryType.CRAFTING);
                 player.openInventory(inventory);
             }
         }
-        if (type.equals("origins:ender_chest")){
-            if(entity instanceof Player player){
+        if (type.equals("origins:ender_chest")) {
+            if (entity instanceof Player player) {
                 Inventory inventory = Bukkit.createInventory(player, InventoryType.ENDER_CHEST);
                 player.openInventory(inventory);
             }
         }
-        if (type.equals("origins:equipped_item_action")){
-            if(entity instanceof Player player){
+        if (type.equals("origins:equipped_item_action")) {
+            if (entity instanceof Player player) {
                 if (power.containsKey("equipment_slot")) {
                     try {
                         if (player.getInventory().getItem(getSlotFromString(power.get("equipment_slot").toString())) == null)
@@ -407,19 +410,19 @@ public class Actions {
                 }
             }
         }
-        if (type.equals("origins:dismount")){
-            for(Entity entity1 : entity.getVehicle().getPassengers()){
-                if(entity1 == entity) entity1.getPassengers().remove(entity);
+        if (type.equals("origins:dismount")) {
+            for (Entity entity1 : entity.getVehicle().getPassengers()) {
+                if (entity1 == entity) entity1.getPassengers().remove(entity);
             }
         }
-        if (type.equals("origins:feed")){
-            if (entity instanceof Player player){
+        if (type.equals("origins:feed")) {
+            if (entity instanceof Player player) {
                 player.setFoodLevel(player.getFoodLevel() + Integer.parseInt(power.get("food").toString()));
                 player.setSaturation(player.getSaturation() + Float.parseFloat(power.get("saturation").toString()));
             }
         }
-        if (type.equals("origins:fire_projectile")){
-            if(entity instanceof ProjectileSource){
+        if (type.equals("origins:fire_projectile")) {
+            if (entity instanceof ProjectileSource) {
                 float finalDivergence1 = Float.parseFloat(power.getOrDefault("divergence", 1.0).toString());
                 float speed = Float.parseFloat(power.getOrDefault("speed", 1).toString());
                 EntityType typeE;
@@ -447,36 +450,36 @@ public class Actions {
                 projectile.setGlowing(true);
             }
         }
-        if (type.equals("origins:passenger_action")){
+        if (type.equals("origins:passenger_action")) {
             runEntity(entity.getPassenger(), (JSONObject) power.get("action"));
             runbiEntity(entity, entity.getPassenger(), (JSONObject) power.get("action"));
         }
-        if (type.equals("origins:raycast")){
+        if (type.equals("origins:raycast")) {
             Predicate<Entity> filter = entity1 -> !entity1.equals(entity);
-            if(power.get("before_action") != null){
+            if (power.get("before_action") != null) {
                 runEntity(entity, (JSONObject) power.get("before_action"));
             }
             RayTraceResult traceResult = entity.getWorld().rayTrace(entity.getLocation(), entity.getLocation().getDirection(), 12, FluidCollisionMode.valueOf(power.getOrDefault("fluid_handling", "NEVER").toString().toUpperCase()), false, 1, filter);
-            if(traceResult != null){
-                if(traceResult.getHitEntity() != null){
+            if (traceResult != null) {
+                if (traceResult.getHitEntity() != null) {
                     Entity entity2 = traceResult.getHitEntity();
-                    if (entity2.isDead() || !(entity2 instanceof LivingEntity)) return ;
+                    if (entity2.isDead() || !(entity2 instanceof LivingEntity)) return;
                     if (entity2.isInvulnerable()) return;
                     if (entity2.getPassengers().contains(entity)) return;
-                    if(power.get("bientity_action") != null){
+                    if (power.get("bientity_action") != null) {
                         runbiEntity(entity, entity2, (JSONObject) power.get("bientity_action"));
                     }
                 }
-                if(traceResult.getHitBlock() != null){
-                    if(power.get("block_action") != null){
+                if (traceResult.getHitBlock() != null) {
+                    if (power.get("block_action") != null) {
                         runBlock(traceResult.getHitBlock().getLocation(), (JSONObject) power.get("block_action"));
                     }
                 }
-                if(power.get("after_action") != null){
+                if (power.get("after_action") != null) {
                     runEntity(entity, (JSONObject) power.get("after_action"));
                 }
-            }else{
-                if(power.get("miss_action") != null){
+            } else {
+                if (power.get("miss_action") != null) {
                     runEntity(entity, (JSONObject) power.get("miss_action"));
                 }
             }
@@ -493,7 +496,7 @@ public class Actions {
                 p.setRemainingAir(p.getRemainingAir() + Math.toIntExact(amt));
             }
         }
-        if (type.equals("origins:drop_inventory")){
+        if (type.equals("origins:drop_inventory")) {
             if (entity instanceof Player player) {
                 if (power.containsKey("slot")) {
                     try {
@@ -503,13 +506,13 @@ public class Actions {
                     } catch (Exception e) {
                         //fail noononooo
                     }
-                }else{
+                } else {
                     ArrayList<String> ke = new ArrayList<>();
                     ke.add("key.origins.primary_active");
                     ke.add("key.origins.secondary_active");
-                    for(ItemStack item : player.getInventory().getContents()){
-                        if(item == null) continue;
-                        if(!item.containsEnchantment(Enchantment.ARROW_INFINITE) && !item.getType().equals(Material.GRAY_DYE)){
+                    for (ItemStack item : player.getInventory().getContents()) {
+                        if (item == null) continue;
+                        if (!item.containsEnchantment(Enchantment.ARROW_INFINITE) && !item.getType().equals(Material.GRAY_DYE)) {
                             player.getWorld().dropItemNaturally(player.getLocation(), item);
                         }
                     }
@@ -518,19 +521,19 @@ public class Actions {
                 }
             }
         }
-        if (type.equals("origins:grant_advancement")){
+        if (type.equals("origins:grant_advancement")) {
             OriginConsoleSender originConsoleSender = new OriginConsoleSender();
             originConsoleSender.setOp(true);
             Bukkit.dispatchCommand(originConsoleSender, "advancement grant $1 $2".replace("$1", entity.getName()).replace("$2", power.get("advacnement").toString()));
         }
-        if (type.equals("origins:revoke_advancement")){
+        if (type.equals("origins:revoke_advancement")) {
             OriginConsoleSender originConsoleSender = new OriginConsoleSender();
             originConsoleSender.setOp(true);
             Bukkit.dispatchCommand(originConsoleSender, "advancement revoke $1 $2".replace("$1", entity.getName()).replace("$2", power.get("advacnement").toString()));
         }
-        if (type.equals("origins:selector_action")){
-            if(power.get("bientity_condition") != null){
-                if(entity instanceof Player player){
+        if (type.equals("origins:selector_action")) {
+            if (power.get("bientity_condition") != null) {
+                if (entity instanceof Player player) {
                     runbiEntity(entity, player.getTargetEntity(AttributeHandler.Reach.getDefaultReach(player), false), (JSONObject) power.get("bientity_condition"));
                 }
             }
@@ -582,10 +585,11 @@ public class Actions {
         }
         if (type.equals("origins:execute_command")) {
             String cmd = null;
-            if(power.get("command").toString().startsWith("power") || power.get("command").toString().startsWith("/power")) return;
-            if(power.get("command").toString().startsWith("/")){
+            if (power.get("command").toString().startsWith("power") || power.get("command").toString().startsWith("/power"))
+                return;
+            if (power.get("command").toString().startsWith("/")) {
                 cmd = power.get("command").toString().split("/")[1];
-            }else{
+            } else {
                 cmd = power.get("command").toString();
             }
             Bukkit.dispatchCommand(new OriginConsoleSender(), "execute at {name} run ".replace("{name}", entity.getName()) + cmd);
@@ -640,7 +644,7 @@ public class Actions {
                 }
             }
         }
-        if (type.equals("origins:set_fall_distance")){
+        if (type.equals("origins:set_fall_distance")) {
             entity.setFallDistance(Float.parseFloat(power.get("fall_distance").toString()));
         }
         if (type.equals("origins:trigger_cooldown")) {
@@ -684,8 +688,8 @@ public class Actions {
     public static void EntityActionType(Entity entity, JSONObject power) {
         JSONObject entityAction;
         entityAction = power;
-        if(entityAction == null) return;
-        if(entityAction.get("type") == null) return;
+        if (entityAction == null) return;
+        if (entityAction.get("type") == null) return;
         String type = entityAction.get("type").toString();
 
         if (type.equals("origins:and")) {
@@ -855,7 +859,7 @@ public class Actions {
                 location.getWorld().getBlockAt(location).setType(block);
             }
         }
-        if (type.equals("origins:offset")){
+        if (type.equals("origins:offset")) {
             BlockActionType(location.add(Double.valueOf(power.getOrDefault("x", "0").toString()), Double.valueOf(power.getOrDefault("y", "0").toString()), Double.valueOf(power.getOrDefault("z", "0").toString())), (JSONObject) power.get("action"));
         }
         if (type.equals("genesis:grow_sculk")) {
@@ -903,7 +907,7 @@ public class Actions {
 
             location.createExplosion(explosionPower, create_fire);
         }
-        if (type.equals("origins:execute_command")){
+        if (type.equals("origins:execute_command")) {
             OriginConsoleSender originConsoleSender = new OriginConsoleSender();
             originConsoleSender.setOp(true);
             final boolean lastSendCMDFeedback = Boolean.parseBoolean(GameRule.SEND_COMMAND_FEEDBACK.toString());
@@ -911,16 +915,16 @@ public class Actions {
             final boolean lastlogAdminCMDs = Boolean.parseBoolean(GameRule.LOG_ADMIN_COMMANDS.toString());
             Bukkit.dispatchCommand(originConsoleSender, "gamerule logAdminCommands false");
             String cmd = null;
-            if(power.get("command").toString().startsWith("/")){
+            if (power.get("command").toString().startsWith("/")) {
                 cmd = power.get("command").toString().split("/")[1];
-            }else{
+            } else {
                 cmd = power.get("command").toString();
             }
             Bukkit.dispatchCommand(originConsoleSender, cmd);
             Bukkit.dispatchCommand(originConsoleSender, "gamerule logAdminCommands {bool}".replace("{bool}", String.valueOf(lastlogAdminCMDs)));
             Bukkit.dispatchCommand(originConsoleSender, "gamerule logAdminCommands {bool}".replace("{bool}", String.valueOf(lastSendCMDFeedback)));
         }
-        if (type.equals("origins:set_block")){
+        if (type.equals("origins:set_block")) {
             location.getBlock().setType(Material.valueOf(power.get("block").toString().split(":")[1].toUpperCase()));
         }
     }
@@ -992,10 +996,10 @@ public class Actions {
         if (type.equals("origins:damage")) {
             item.setDurability((short) (item.getDurability() + Short.parseShort(itemAction.get("amount").toString())));
         }
-        if (type.equals("origins:consume")){
-            for(Player player : Bukkit.getOnlinePlayers()){
-                if(player.getInventory().contains(item)){
-                    if(item.getType().isEdible()){
+        if (type.equals("origins:consume")) {
+            for (Player player : Bukkit.getOnlinePlayers()) {
+                if (player.getInventory().contains(item)) {
+                    if (item.getType().isEdible()) {
                         item.setAmount(item.getAmount() - 1);
                         player.setSaturation(player.getSaturation() + 2);
                         player.setFoodLevel(player.getFoodLevel() + 3);
@@ -1003,9 +1007,9 @@ public class Actions {
                 }
             }
         }
-        if (type.equals("origins:remove_enchantment")){
+        if (type.equals("origins:remove_enchantment")) {
             Enchantment enchantment = Enchantment.getByKey(new NamespacedKey(power.get("enchantment").toString().split(":")[0], power.get("enchantment").toString().split(":")[1]));
-            if(item.containsEnchantment(enchantment)){
+            if (item.containsEnchantment(enchantment)) {
                 item.removeEnchantment(enchantment);
             }
         }

@@ -38,15 +38,19 @@ import java.util.UUID;
 public class FlightElytra extends CraftPower implements Listener {
     public static ArrayList<UUID> glidingPlayers = new ArrayList<>();
 
+    public static ArrayList<UUID> getGlidingPlayers() {
+        return glidingPlayers;
+    }
+
     @Override
     public void setActive(Player p, String tag, Boolean bool) {
-        if(powers_active.containsKey(p)){
-            if(powers_active.get(p).containsKey(tag)){
+        if (powers_active.containsKey(p)) {
+            if (powers_active.get(p).containsKey(tag)) {
                 powers_active.get(p).replace(tag, bool);
-            }else{
+            } else {
                 powers_active.get(p).put(tag, bool);
             }
-        }else{
+        } else {
             powers_active.put(p, new HashMap());
             setActive(p, tag, bool);
         }
@@ -57,15 +61,11 @@ public class FlightElytra extends CraftPower implements Listener {
 
     }
 
-    public static ArrayList<UUID> getGlidingPlayers() {
-        return glidingPlayers;
-    }
-
     @EventHandler
     @SuppressWarnings({"unchecked", "Not scheduled yet"})
     public void ExecuteFlight(PlayerToggleFlightEvent e) {
         Player p = e.getPlayer();
-        if(p.getGameMode().equals(GameMode.CREATIVE) || p.getGameMode().equals(GameMode.SPECTATOR)) return;
+        if (p.getGameMode().equals(GameMode.CREATIVE) || p.getGameMode().equals(GameMode.SPECTATOR)) return;
         if (elytra.contains(e.getPlayer())) {
             e.setCancelled(true);
             p.setFlying(false);
@@ -112,14 +112,14 @@ public class FlightElytra extends CraftPower implements Listener {
     }
 
     @EventHandler
-    public void recreateFallDamage(GenericGameEvent e){
-        if(e.getEvent().equals(GameEvent.HIT_GROUND)){
-            if(e.getEntity() instanceof Player p){
-                if(p.getGameMode().equals(GameMode.CREATIVE)) return;
-                if(elytra.contains(p)){
+    public void recreateFallDamage(GenericGameEvent e) {
+        if (e.getEvent().equals(GameEvent.HIT_GROUND)) {
+            if (e.getEntity() instanceof Player p) {
+                if (p.getGameMode().equals(GameMode.CREATIVE)) return;
+                if (elytra.contains(p)) {
                     float fallDistance = p.getFallDistance();
-                    ServerPlayer pl = ((CraftPlayer)p).getHandle();
-                    if(pl.getAbilities().invulnerable) return;
+                    ServerPlayer pl = ((CraftPlayer) p).getHandle();
+                    if (pl.getAbilities().invulnerable) return;
                     if (fallDistance >= 2.0F) {
                         pl.awardStat(Stats.FALL_ONE_CM, (int) Math.round((double) fallDistance * 100.0D));
                     }
@@ -157,7 +157,7 @@ public class FlightElytra extends CraftPower implements Listener {
     }
 
     private int calculateFallDamage(Player p, float fallDistance, float damageMultiplier) {
-        ServerPlayer pl = ((CraftPlayer)p).getHandle();
+        ServerPlayer pl = ((CraftPlayer) p).getHandle();
         if (!pl.getType().is(EntityTypeTags.FALL_DAMAGE_IMMUNE)) {
             MobEffectInstance mobeffect = pl.getEffect(MobEffects.JUMP);
             float dm = mobeffect == null ? 0.0F : (mobeffect.getAmplifier() + 1);

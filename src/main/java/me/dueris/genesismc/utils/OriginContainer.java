@@ -95,7 +95,7 @@ public class OriginContainer implements Serializable {
      * @return An array of powers from the origin.
      */
     public ArrayList<String> getPowers() {
-        if(this.originFile.get("powers") instanceof String){
+        if (this.originFile.get("powers") instanceof String) {
             ArrayList<String> powers = new ArrayList<>();
             powers.add(String.valueOf(this.originFile.get("powers")));
             return powers;

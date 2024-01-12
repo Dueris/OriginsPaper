@@ -30,10 +30,10 @@ public class ActionOnDeath extends CraftPower implements Listener {
                     ConditionExecutor executor = GenesisMC.getConditionExecutor();
                     for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                         if (power == null) continue;
-                        if(executor.check("damage_condition", "damage_conditions", p, power, getPowerFile(), p, null, p.getLocation().getBlock(), null, p.getInventory().getItemInMainHand(), null)){
+                        if (executor.check("damage_condition", "damage_conditions", p, power, getPowerFile(), p, null, p.getLocation().getBlock(), null, p.getInventory().getItemInMainHand(), null)) {
                             setActive(p, power.getTag(), true);
                             Actions.EntityActionType(p, power.getEntityAction());
-                            if(power.getActionOrNull("bientity_action") != null){
+                            if (power.getActionOrNull("bientity_action") != null) {
                                 Actions.biEntityActionType(null, p, power.getBiEntityAction());
                             }
                             new BukkitRunnable() {
@@ -42,7 +42,7 @@ public class ActionOnDeath extends CraftPower implements Listener {
                                     setActive(p, power.getTag(), false);
                                 }
                             }.runTaskLater(GenesisMC.getPlugin(), 2L);
-                        } 
+                        }
                     }
                 }
             }
@@ -61,13 +61,13 @@ public class ActionOnDeath extends CraftPower implements Listener {
 
     @Override
     public void setActive(Player p, String tag, Boolean bool) {
-        if(powers_active.containsKey(p)){
-            if(powers_active.get(p).containsKey(tag)){
+        if (powers_active.containsKey(p)) {
+            if (powers_active.get(p).containsKey(tag)) {
                 powers_active.get(p).replace(tag, bool);
-            }else{
+            } else {
                 powers_active.get(p).put(tag, bool);
             }
-        }else{
+        } else {
             powers_active.put(p, new HashMap());
             setActive(p, tag, bool);
         }

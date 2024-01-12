@@ -26,15 +26,19 @@ public class ExplodeTick extends CraftPower implements Listener {
 
     private final HashMap<UUID, Long> cooldown;
 
+    public ExplodeTick() {
+        this.cooldown = new HashMap<>();
+    }
+
     @Override
     public void setActive(Player p, String tag, Boolean bool) {
-        if(powers_active.containsKey(p)){
-            if(powers_active.get(p).containsKey(tag)){
+        if (powers_active.containsKey(p)) {
+            if (powers_active.get(p).containsKey(tag)) {
                 powers_active.get(p).replace(tag, bool);
-            }else{
+            } else {
                 powers_active.get(p).put(tag, bool);
             }
-        }else{
+        } else {
             powers_active.put(p, new HashMap());
             setActive(p, tag, bool);
         }
@@ -158,10 +162,6 @@ public class ExplodeTick extends CraftPower implements Listener {
                 }
             }
         }
-    }
-
-    public ExplodeTick() {
-        this.cooldown = new HashMap<>();
     }
 
     @Override

@@ -1,26 +1,24 @@
 package me.dueris.genesismc.enchantments;
 
 import me.dueris.genesismc.utils.Utils;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.tags.DamageTypeTags;
-import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.damagesource.DamageType;
-import net.minecraft.world.item.enchantment.ProtectionEnchantment;
-
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.DamageTypeTags;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
-import org.bukkit.craftbukkit.v1_20_R3.entity.CraftPlayer;
+import net.minecraft.world.item.enchantment.ProtectionEnchantment;
 
 public class WaterProtectionEnchantment extends Enchantment {
     String descriptionID = "water_protection";
+
     public WaterProtectionEnchantment(Rarity weight, EnchantmentCategory target, EquipmentSlot[] slotTypes) {
         super(weight, target, slotTypes);
     }
@@ -52,10 +50,10 @@ public class WaterProtectionEnchantment extends Enchantment {
     @Override
     public Component getFullname(int level) {
         MutableComponent mutableComponent = Component.literal("Water Protection");
-            mutableComponent.withStyle(ChatFormatting.GRAY);
-            if (level != 1 || this.getMaxLevel() != 1) {
-                mutableComponent.append(CommonComponents.SPACE).append(Component.translatable("enchantment.level." + level));
-            }
+        mutableComponent.withStyle(ChatFormatting.GRAY);
+        if (level != 1 || this.getMaxLevel() != 1) {
+            mutableComponent.append(CommonComponents.SPACE).append(Component.translatable("enchantment.level." + level));
+        }
         return mutableComponent;
     }
 
@@ -76,7 +74,7 @@ public class WaterProtectionEnchantment extends Enchantment {
 
     @Override
     protected boolean checkCompatibility(Enchantment other) {
-        if(other == this || ((other instanceof ProtectionEnchantment && !(((ProtectionEnchantment)other).type == ProtectionEnchantment.Type.FALL)))) {
+        if (other == this || ((other instanceof ProtectionEnchantment && !(((ProtectionEnchantment) other).type == ProtectionEnchantment.Type.FALL)))) {
             return false;
         }
         return super.checkCompatibility(other);

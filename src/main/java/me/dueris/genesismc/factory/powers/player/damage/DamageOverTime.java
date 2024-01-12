@@ -23,14 +23,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
 
-public class DamageOverTime extends CraftPower implements Listener{
+public class DamageOverTime extends CraftPower implements Listener {
 
     private final String damage_type;
+    private final int ticksE;
     private Long interval;
     private int damage;
     private DamageSource damage_source;
     private double protection_effectiveness;
-    private final int ticksE;
 
     public DamageOverTime() {
         this.interval = 20L;
@@ -41,13 +41,13 @@ public class DamageOverTime extends CraftPower implements Listener{
 
     @Override
     public void setActive(Player p, String tag, Boolean bool) {
-        if(powers_active.containsKey(p)){
-            if(powers_active.get(p).containsKey(tag)){
+        if (powers_active.containsKey(p)) {
+            if (powers_active.get(p).containsKey(tag)) {
                 powers_active.get(p).replace(tag, bool);
-            }else{
+            } else {
                 powers_active.get(p).put(tag, bool);
             }
-        }else{
+        } else {
             powers_active.put(p, new HashMap());
             setActive(p, tag, bool);
         }
@@ -55,17 +55,17 @@ public class DamageOverTime extends CraftPower implements Listener{
     // Death msg look funny lol. "death.attack.hurt_by_water" LMFAO
 
     @EventHandler
-    public void erk(PlayerDeathEvent e){
-        if(e.getDeathMessage().equals("death.attack.hurt_by_water")){
-            if(e.getPlayer().getName().equals("Optima1")){ // for context, he helped test this a lot for hours so im givin him a lil easter egg
+    public void erk(PlayerDeathEvent e) {
+        if (e.getDeathMessage().equals("death.attack.hurt_by_water")) {
+            if (e.getPlayer().getName().equals("Optima1")) { // for context, he helped test this a lot for hours so im givin him a lil easter egg
                 e.setDeathMessage("Optima1 got too thirsty");
             }
             e.setDeathMessage("{p} took a bath for too long."
-                .replace("{p}", e.getPlayer().getName()));
-        } else if(e.getDeathMessage().equals("death.attack.no_water_for_gills")){
+                    .replace("{p}", e.getPlayer().getName()));
+        } else if (e.getDeathMessage().equals("death.attack.no_water_for_gills")) {
             e.setDeathMessage("{p} didn't manage to keep wet"
                     .replace("{p}", e.getPlayer().getName()));
-        } else if(e.getDeathMessage().equals("death.attack.genericDamageOverTime")){
+        } else if (e.getDeathMessage().equals("death.attack.genericDamageOverTime")) {
             e.setDeathMessage("{p} died to a damage over time effect"
                     .replace("{p}", e.getPlayer().getName()));
         }
@@ -109,15 +109,15 @@ public class DamageOverTime extends CraftPower implements Listener{
                                 if (p.getHealth() >= damage && p.getHealth() != 0 && p.getHealth() - damage != 0) {
                                     String namespace;
                                     String key;
-                                    if(power.get("damage_type") != null){
-                                        if(power.get("damage_type").contains(":")){
+                                    if (power.get("damage_type") != null) {
+                                        if (power.get("damage_type").contains(":")) {
                                             namespace = power.get("damage_type").split(":")[0];
                                             key = power.get("damage_type").split(":")[1];
-                                        }else{
+                                        } else {
                                             namespace = "minecraft";
                                             key = power.get("damage_type");
                                         }
-                                    }else{
+                                    } else {
                                         namespace = "minecraft";
                                         key = "generic";
                                     }
@@ -162,7 +162,7 @@ public class DamageOverTime extends CraftPower implements Listener{
             }
         }
     }
-    
+
     @Override
     public void run(Player p) {
 //        if (damage_over_time.contains(p)) {

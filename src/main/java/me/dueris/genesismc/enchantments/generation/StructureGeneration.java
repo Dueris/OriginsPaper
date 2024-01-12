@@ -12,6 +12,7 @@ import java.util.Random;
 
 public class StructureGeneration implements Listener {
     protected static ArrayList<String> validLootTableKeys = new ArrayList<>();
+
     static {
         validLootTableKeys.add("minecraft:chests/desert_pyramid");
         validLootTableKeys.add("minecraft:chests/shipwreck_treasure");
@@ -25,10 +26,10 @@ public class StructureGeneration implements Listener {
     }
 
     @EventHandler
-    public void lootGen(LootGenerateEvent e){
-        if(validLootTableKeys.contains(e.getLootTable().key().asString())){
+    public void lootGen(LootGenerateEvent e) {
+        if (validLootTableKeys.contains(e.getLootTable().key().asString())) {
             Random r = new Random();
-            if(r.nextInt(1000) > 954){
+            if (r.nextInt(1000) > 954) {
                 ItemStack itemStack = new ItemStack(Material.ENCHANTED_BOOK, 1);
                 Anvil.setWaterProtCustomEnchantLevel(r.nextInt(4), itemStack);
                 e.getLoot().add(itemStack);

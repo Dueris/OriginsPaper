@@ -1,7 +1,6 @@
 package me.dueris.genesismc;
 
 import me.dueris.genesismc.events.OriginChangeEvent;
-import me.dueris.genesismc.utils.OriginContainer;
 import org.bukkit.Bukkit;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
@@ -21,36 +20,31 @@ import static me.dueris.genesismc.factory.powers.player.FireProjectile.in_cooldo
 
 public class CooldownManager implements @NotNull Listener {
 
-    @EventHandler
-    public void runs(OriginChangeEvent e) {
-        cooldowns.remove(e.getPlayer());
-        cooldownBars.remove(e.getPlayer());
-    }
-
     public static HashMap<Player, ArrayList<String>> cooldowns = new HashMap<>();
     public static HashMap<Player, BossBar> cooldownBars = new HashMap<>();
 
     public static void addCooldown(Player player, String title, String dont_use, int cooldownTicks, String cooldownKeybindType) {
-        if (!in_cooldown_patch.contains(player) && dont_use.equals("origins:fire_projectile")) return; // this fixes a weird bug with the fire projectile power
+        if (!in_cooldown_patch.contains(player) && dont_use.equals("origins:fire_projectile"))
+            return; // this fixes a weird bug with the fire projectile power
         if (isPlayerInCooldown(player, cooldownKeybindType)) {
             resetCooldown(player, cooldownKeybindType);
         }
-        if(cooldownTicks == 0) return;
+        if (cooldownTicks == 0) return;
         BossBar bar = createCooldownBar(player, BarColor.WHITE, getCooldownPegAMT(cooldownTicks), title);
         bar.addPlayer(player);
         startTickingCooldown(bar, player, cooldownTicks, cooldownKeybindType);
         cooldownBars.put(player, bar);
-        if(!cooldowns.containsKey(player) || cooldowns.get(player).isEmpty()){
+        if (!cooldowns.containsKey(player) || cooldowns.get(player).isEmpty()) {
             ArrayList<String> list = new ArrayList<>();
             list.add(cooldownKeybindType);
             cooldowns.put(player, list);
-        }else{
+        } else {
             cooldowns.get(player).add(cooldownKeybindType);
         }
     }
 
     public static BarStyle getCooldownPegAMT(int ticks) {
-       return BarStyle.SOLID;
+        return BarStyle.SOLID;
     }
 
     public static boolean isPlayerInCooldown(Player player, String cooldownKeybindType) {
@@ -110,6 +104,12 @@ public class CooldownManager implements @NotNull Listener {
 
             }
         }.runTaskTimer(GenesisMC.getPlugin(), 0, 1);
+    }
+
+    @EventHandler
+    public void runs(OriginChangeEvent e) {
+        cooldowns.remove(e.getPlayer());
+        cooldownBars.remove(e.getPlayer());
     }
 
 }

@@ -9,7 +9,7 @@ import org.bukkit.event.player.PlayerItemConsumeEvent;
 public class AirFromPotions implements Listener {
     @EventHandler
     public void OnDrink(PlayerItemConsumeEvent e) {
-        if(Power.water_breathing.contains(e.getPlayer())){
+        if (Power.water_breathing.contains(e.getPlayer())) {
             if (e.getItem().getType().equals(Material.POTION)) {
                 if (e.getPlayer().getRemainingAir() > 250) {
                     e.getPlayer().setRemainingAir(300);

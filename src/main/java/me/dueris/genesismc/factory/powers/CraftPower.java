@@ -32,9 +32,9 @@ public abstract class CraftPower implements Power {
             ConfigurationBuilder config = new ConfigurationBuilder();
             config.setScanners(new SubTypesScanner(false));
             config.addUrls(ClasspathHelper.forPackage("me.dueris.genesismc.factory.powers"));
-    
+
             Reflections reflections = new Reflections(config);
-    
+
             Set<Class<? extends CraftPower>> subTypes = reflections.getSubTypesOf(CraftPower.class);
             for (Class<? extends CraftPower> subType : subTypes) {
                 if (!subType.isInterface() && !subType.isEnum()) {
@@ -43,7 +43,7 @@ public abstract class CraftPower implements Power {
             }
             return classes;
         });
-        
+
         try {
             return future.get();
         } catch (InterruptedException | ExecutionException e) {
@@ -52,7 +52,7 @@ public abstract class CraftPower implements Power {
         return null;
     }
 
-    private static void registerBuiltinPowers(){
+    private static void registerBuiltinPowers() {
         try {
             for (Class<? extends CraftPower> c : CraftPower.findCraftPowerClasses()) {
                 if (CraftPower.class.isAssignableFrom(c)) {
@@ -78,7 +78,7 @@ public abstract class CraftPower implements Power {
         }
     }
 
-    public static HashMap<String, Class<? extends CraftPower>> getKeyedRegistry(){
+    public static HashMap<String, Class<? extends CraftPower>> getKeyedRegistry() {
         return registeredFromKey;
     }
 
@@ -86,21 +86,23 @@ public abstract class CraftPower implements Power {
         return registered;
     }
 
-    public static Class<? extends CraftPower> getCraftPowerFromKey(String key){
+    public static Class<? extends CraftPower> getCraftPowerFromKey(String key) {
         return registeredFromKey.getOrDefault(key, null);
     }
 
-    public static Class<? extends CraftPower> getCraftPowerFromKeyOrThrow(String key) throws NotFoundException{
-        if(registeredFromKey.get(key) != null){
+    public static Class<? extends CraftPower> getCraftPowerFromKeyOrThrow(String key) throws NotFoundException {
+        if (registeredFromKey.get(key) != null) {
             return registeredFromKey.get(key);
-        }else{throw new NotFoundException("Unable to find power: " + key);}
+        } else {
+            throw new NotFoundException("Unable to find power: " + key);
+        }
     }
 
     public static boolean isRegisteredCraftPower(Class<?> c) {
         return getRegistered().contains(c);
     }
 
-    public static boolean isCraftPower(Class<?> c){
+    public static boolean isCraftPower(Class<?> c) {
         return CraftPower.class.isAssignableFrom(c);
     }
 }

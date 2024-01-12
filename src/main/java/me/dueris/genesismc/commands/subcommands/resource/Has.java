@@ -45,11 +45,11 @@ public class Has extends SubCommand {
         ArrayList<Player> players = PlayerSelector.playerSelector(sender, args[1]);
         if (players.size() == 0) return;
         boolean tru = false;
-        for (Player p : players){
-            for(OriginContainer origin : OriginPlayerUtils.getOrigin(p).values()){
-                for(PowerContainer powerContainer : origin.getPowerContainers()){
-                    if(powerContainer.getType().equals("origins:cooldown") || powerContainer.getType().equals("origins:resource")){
-                        if(powerContainer.getTag().equals(args[2])){
+        for (Player p : players) {
+            for (OriginContainer origin : OriginPlayerUtils.getOrigin(p).values()) {
+                for (PowerContainer powerContainer : origin.getPowerContainers()) {
+                    if (powerContainer.getType().equals("origins:cooldown") || powerContainer.getType().equals("origins:resource")) {
+                        if (powerContainer.getTag().equals(args[2])) {
                             sender.sendMessage("Test passed.");
                             tru = true;
                         }
@@ -57,7 +57,7 @@ public class Has extends SubCommand {
                 }
             }
         }
-        if(!tru){
+        if (!tru) {
             sender.sendMessage(ChatColor.RED + "Test failed.");
         }
     }

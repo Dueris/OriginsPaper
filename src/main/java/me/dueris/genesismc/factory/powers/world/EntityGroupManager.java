@@ -80,13 +80,13 @@ public class EntityGroupManager extends CraftPower {
 
     @Override
     public void setActive(Player p, String tag, Boolean bool) {
-        if(powers_active.containsKey(p)){
-            if(powers_active.get(p).containsKey(tag)){
+        if (powers_active.containsKey(p)) {
+            if (powers_active.get(p).containsKey(tag)) {
                 powers_active.get(p).replace(tag, bool);
-            }else{
+            } else {
                 powers_active.get(p).put(tag, bool);
             }
-        }else{
+        } else {
             powers_active.put(p, new HashMap());
             setActive(p, tag, bool);
         }
@@ -97,8 +97,8 @@ public class EntityGroupManager extends CraftPower {
 
     }
 
-    public void startTick(){
-        new BukkitRunnable(){
+    public void startTick() {
+        new BukkitRunnable() {
             @Override
             public void run() {
                 for (World world : Bukkit.getWorlds()) {
@@ -157,7 +157,7 @@ public class EntityGroupManager extends CraftPower {
                     }
                 }
             }
-        }.runTaskLater(GenesisMC.getPlugin(), 200l);
+        }.runTaskLater(GenesisMC.getPlugin(), 200L);
     }
 
     @Override

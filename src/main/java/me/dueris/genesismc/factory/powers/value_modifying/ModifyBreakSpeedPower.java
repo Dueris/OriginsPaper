@@ -11,15 +11,11 @@ import me.dueris.genesismc.utils.ErrorSystem;
 import me.dueris.genesismc.utils.LayerContainer;
 import me.dueris.genesismc.utils.PowerContainer;
 import org.bukkit.GameMode;
-import org.bukkit.craftbukkit.v1_20_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -32,13 +28,13 @@ public class ModifyBreakSpeedPower extends CraftPower implements Listener {
 
     @Override
     public void setActive(Player p, String tag, Boolean bool) {
-        if(powers_active.containsKey(p)){
-            if(powers_active.get(p).containsKey(tag)){
+        if (powers_active.containsKey(p)) {
+            if (powers_active.get(p).containsKey(tag)) {
                 powers_active.get(p).replace(tag, bool);
-            }else{
+            } else {
                 powers_active.get(p).put(tag, bool);
             }
-        }else{
+        } else {
             powers_active.put(p, new HashMap());
             setActive(p, tag, bool);
         }
@@ -58,10 +54,10 @@ public class ModifyBreakSpeedPower extends CraftPower implements Listener {
     }
 
     @EventHandler
-    public void swing(PlayerArmSwingEvent e){
+    public void swing(PlayerArmSwingEvent e) {
         Player p = e.getPlayer();
         if (modify_break_speed.contains(p)) {
-            if(p.getGameMode().equals(GameMode.CREATIVE)) return;
+            if (p.getGameMode().equals(GameMode.CREATIVE)) return;
             for (LayerContainer layer : CraftApoli.getLayers()) {
                 ValueModifyingSuperClass valueModifyingSuperClass = new ValueModifyingSuperClass();
                 try {
@@ -71,8 +67,8 @@ public class ModifyBreakSpeedPower extends CraftPower implements Listener {
                             if (conditionExecutor.check("block_condition", "block_condition", p, power, getPowerFile(), p, null, p.getTargetBlockExact(Math.toIntExact(Math.round(AttributeHandler.Reach.getFinalReach(p)))), null, p.getItemInHand(), null)) {
                                 setActive(p, power.getTag(), true);
                                 // if(power.getPossibleModifiers("modifier", "modifiers"))
-                                for(HashMap<String, Object> modifier : power.getPossibleModifiers("modifier", "modifiers")){
-                                    if(Float.valueOf(modifier.get("value").toString()) <= 0){
+                                for (HashMap<String, Object> modifier : power.getPossibleModifiers("modifier", "modifiers")) {
+                                    if (Float.valueOf(modifier.get("value").toString()) <= 0) {
                                         // Slower mine
                                         p.addPotionEffect(
                                                 new PotionEffect(
@@ -82,7 +78,7 @@ public class ModifyBreakSpeedPower extends CraftPower implements Listener {
                                                         false, false, false
                                                 )
                                         );
-                                    }else{
+                                    } else {
                                         // Speed up
                                         p.addPotionEffect(
                                                 new PotionEffect(

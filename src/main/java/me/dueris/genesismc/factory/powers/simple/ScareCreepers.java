@@ -22,10 +22,10 @@ public class ScareCreepers extends CraftPower implements Listener, PowerProvider
     }
 
     @EventHandler
-    public void target(EntityTargetLivingEntityEvent e){
-        if(e.getEntity() instanceof Creeper creeper){
-            if(e.getTarget() instanceof Player player){
-                if(scaryPlayers.contains(player)){
+    public void target(EntityTargetLivingEntityEvent e) {
+        if (e.getEntity() instanceof Creeper creeper) {
+            if (e.getTarget() instanceof Player player) {
+                if (scaryPlayers.contains(player)) {
                     // TODO: maybe try experimenting more with this? atm doesnt seem to be possible without mixin
 //                    net.minecraft.world.entity.monster.Creeper c = ((CraftCreeper) creeper).getHandle();
 //                    c.goalSelector.addGoal(1, new AvoidEntityGoal(c, net.minecraft.world.entity.player.Player.class, 6.0F, 1.0, 1.2));
@@ -47,13 +47,13 @@ public class ScareCreepers extends CraftPower implements Listener, PowerProvider
 
     @Override
     public void setActive(Player p, String tag, Boolean bool) {
-        if(powers_active.containsKey(p)){
-            if(powers_active.get(p).containsKey(tag)){
+        if (powers_active.containsKey(p)) {
+            if (powers_active.get(p).containsKey(tag)) {
                 powers_active.get(p).replace(tag, bool);
-            }else{
+            } else {
                 powers_active.get(p).put(tag, bool);
             }
-        }else{
+        } else {
             powers_active.put(p, new HashMap());
             setActive(p, tag, bool);
         }

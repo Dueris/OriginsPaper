@@ -11,7 +11,8 @@ import org.bukkit.event.Listener;
 public class RegisterPowersEvent extends Event {
     private static final HandlerList handlers = new HandlerList();
 
-    public RegisterPowersEvent() {}
+    public RegisterPowersEvent() {
+    }
 
     public static HandlerList getHandlerList() {
         return handlers;

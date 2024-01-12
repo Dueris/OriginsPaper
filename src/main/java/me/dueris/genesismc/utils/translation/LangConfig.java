@@ -19,10 +19,10 @@ public class LangConfig {
 
         String fileName = GenesisDataFiles.getMainConfig().getString("lang");
 
-        if (fileName .equals("english")) fileName = "en_us";
-        if (fileName .equals("german")) fileName = "de_DE";
-        if (fileName .equals("russian")) fileName = "ru_RU";
-        if (fileName .equals("trad-chinese")) fileName = "zh_TW";
+        if (fileName.equals("english")) fileName = "en_us";
+        if (fileName.equals("german")) fileName = "de_DE";
+        if (fileName.equals("russian")) fileName = "ru_RU";
+        if (fileName.equals("trad-chinese")) fileName = "zh_TW";
 
         String filePath = GenesisMC.getPlugin().getDataFolder() + File.separator + "lang" + File.separator + fileName + ".yml";
         File langFile = new File(filePath);
@@ -50,7 +50,7 @@ public class LangConfig {
 
         if (langFile != null) {
             YamlConfiguration langConfig = YamlConfiguration.loadConfiguration(langFile);
-            String value =  langConfig.getString(key);
+            String value = langConfig.getString(key);
             if (value != null) return value;
             return "There was a problem reading the lang file.";
         }

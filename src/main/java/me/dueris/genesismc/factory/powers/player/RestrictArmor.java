@@ -20,10 +20,10 @@ import java.util.Map;
 
 import static me.dueris.genesismc.utils.ArmorUtils.getArmorValue;
 
-public class RestrictArmor extends CraftPower implements Listener{
+public class RestrictArmor extends CraftPower implements Listener {
 
-    private Long interval;
     private final int ticksE;
+    private Long interval;
 
     public RestrictArmor() {
         this.interval = 1L;
@@ -52,16 +52,16 @@ public class RestrictArmor extends CraftPower implements Listener{
     }
 
     @EventHandler
-    public void tick(PlayerArmorChangeEvent e){
+    public void tick(PlayerArmorChangeEvent e) {
         Player p = e.getPlayer();
         if (getPowerArray().contains(p)) {
             for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()) {
                 for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                     if (power == null) continue;
                     ConditionExecutor executor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
-                        if (executor.check("condition", "conditions", p, power, getPowerFile(), p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
-                            runPower(p, power);
-                        }
+                    if (executor.check("condition", "conditions", p, power, getPowerFile(), p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
+                        runPower(p, power);
+                    }
                 }
             }
         }
@@ -69,13 +69,13 @@ public class RestrictArmor extends CraftPower implements Listener{
 
     @Override
     public void setActive(Player p, String tag, Boolean bool) {
-        if(powers_active.containsKey(p)){
-            if(powers_active.get(p).containsKey(tag)){
+        if (powers_active.containsKey(p)) {
+            if (powers_active.get(p).containsKey(tag)) {
                 powers_active.get(p).replace(tag, bool);
-            }else{
+            } else {
                 powers_active.get(p).put(tag, bool);
             }
-        }else{
+        } else {
             powers_active.put(p, new HashMap());
             setActive(p, tag, bool);
         }
@@ -111,7 +111,7 @@ public class RestrictArmor extends CraftPower implements Listener{
         }
     }
 
-    public void runPower(Player p, PowerContainer power){
+    public void runPower(Player p, PowerContainer power) {
         setActive(p, power.getTag(), true);
         boolean headb = true;
         boolean chestb = true;
@@ -137,17 +137,17 @@ public class RestrictArmor extends CraftPower implements Listener{
             }
         } else if (power.getHead().get("type").toString().equalsIgnoreCase("origins:ingredient")) {
             if (!headb) return;
-            if(p.getInventory().getHelmet() != null){
+            if (p.getInventory().getHelmet() != null) {
                 Map<String, Object> ingredientMap = (Map<String, Object>) power.getHead().get("ingredient");
                 if (ingredientMap.containsKey("item")) {
                     String itemValue = ingredientMap.get("item").toString();
                     String item = null;
-                    if(itemValue.contains(":")){
+                    if (itemValue.contains(":")) {
                         item = itemValue.split(":")[1];
-                    }else{
+                    } else {
                         item = itemValue;
                     }
-                    if(p.getInventory().getHelmet().getType().equals(Material.valueOf(item.toUpperCase()))) {
+                    if (p.getInventory().getHelmet().getType().equals(Material.valueOf(item.toUpperCase()))) {
                         OriginPlayerUtils.moveEquipmentInventory(p, EquipmentSlot.HEAD);
                     }
                 }
@@ -168,17 +168,17 @@ public class RestrictArmor extends CraftPower implements Listener{
             }
         } else if (power.getChest().get("type").toString().equalsIgnoreCase("origins:ingredient")) {
             if (!chestb) return;
-            if(p.getInventory().getChestplate() != null){
+            if (p.getInventory().getChestplate() != null) {
                 Map<String, Object> ingredientMap = (Map<String, Object>) power.getChest().get("ingredient");
                 if (ingredientMap.containsKey("item")) {
                     String itemValue = ingredientMap.get("item").toString();
                     String item = null;
-                    if(itemValue.contains(":")){
+                    if (itemValue.contains(":")) {
                         item = itemValue.split(":")[1];
-                    }else{
+                    } else {
                         item = itemValue;
                     }
-                    if(p.getInventory().getChestplate().getType().equals(Material.valueOf(item.toUpperCase()))) {
+                    if (p.getInventory().getChestplate().getType().equals(Material.valueOf(item.toUpperCase()))) {
                         OriginPlayerUtils.moveEquipmentInventory(p, EquipmentSlot.CHEST);
                     }
                 }
@@ -199,17 +199,17 @@ public class RestrictArmor extends CraftPower implements Listener{
             }
         } else if (power.getLegs().get("type").toString().equalsIgnoreCase("origins:ingredient")) {
             if (!legsb) return;
-            if(p.getInventory().getLeggings() != null){
+            if (p.getInventory().getLeggings() != null) {
                 Map<String, Object> ingredientMap = (Map<String, Object>) power.getLegs().get("ingredient");
                 if (ingredientMap.containsKey("item")) {
                     String itemValue = ingredientMap.get("item").toString();
                     String item = null;
-                    if(itemValue.contains(":")){
+                    if (itemValue.contains(":")) {
                         item = itemValue.split(":")[1];
-                    }else{
+                    } else {
                         item = itemValue;
                     }
-                    if(p.getInventory().getLeggings().getType().equals(Material.valueOf(item.toUpperCase()))) {
+                    if (p.getInventory().getLeggings().getType().equals(Material.valueOf(item.toUpperCase()))) {
                         OriginPlayerUtils.moveEquipmentInventory(p, EquipmentSlot.LEGS);
                     }
                 }
@@ -230,17 +230,17 @@ public class RestrictArmor extends CraftPower implements Listener{
             }
         } else if (power.getFeet().get("type").toString().equalsIgnoreCase("origins:ingredient")) {
             if (!feetb) return;
-            if(p.getInventory().getBoots() != null){
+            if (p.getInventory().getBoots() != null) {
                 Map<String, Object> ingredientMap = (Map<String, Object>) power.getFeet().get("ingredient");
                 if (ingredientMap.containsKey("item")) {
                     String itemValue = ingredientMap.get("item").toString();
                     String item = null;
-                    if(itemValue.contains(":")){
+                    if (itemValue.contains(":")) {
                         item = itemValue.split(":")[1];
-                    }else{
+                    } else {
                         item = itemValue;
                     }
-                    if(p.getInventory().getBoots().getType().equals(Material.valueOf(item.toUpperCase()))) {
+                    if (p.getInventory().getBoots().getType().equals(Material.valueOf(item.toUpperCase()))) {
                         OriginPlayerUtils.moveEquipmentInventory(p, EquipmentSlot.FEET);
                     }
                 }

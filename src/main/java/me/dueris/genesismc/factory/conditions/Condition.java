@@ -1,6 +1,5 @@
 package me.dueris.genesismc.factory.conditions;
 
-import me.dueris.genesismc.utils.PowerContainer;
 import org.bukkit.Fluid;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;

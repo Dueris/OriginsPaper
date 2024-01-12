@@ -19,13 +19,13 @@ public class ModifyHarvestPower extends CraftPower implements Listener {
 
     @Override
     public void setActive(Player p, String tag, Boolean bool) {
-        if(powers_active.containsKey(p)){
-            if(powers_active.get(p).containsKey(tag)){
+        if (powers_active.containsKey(p)) {
+            if (powers_active.get(p).containsKey(tag)) {
                 powers_active.get(p).replace(tag, bool);
-            }else{
+            } else {
                 powers_active.get(p).put(tag, bool);
             }
-        }else{
+        } else {
             powers_active.put(p, new HashMap());
             setActive(p, tag, bool);
         }
@@ -36,7 +36,7 @@ public class ModifyHarvestPower extends CraftPower implements Listener {
     public void runD(BlockBreakEvent e) {
         Player p = e.getPlayer();
         if (modify_harvest.contains(p)) {
-            if(p.getGameMode().equals(GameMode.CREATIVE)) return;
+            if (p.getGameMode().equals(GameMode.CREATIVE)) return;
             try {
                 for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()) {
                     ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
@@ -53,7 +53,7 @@ public class ModifyHarvestPower extends CraftPower implements Listener {
                         }
                     }
                 }
-            } catch (Exception ee){
+            } catch (Exception ee) {
 
             }
         }

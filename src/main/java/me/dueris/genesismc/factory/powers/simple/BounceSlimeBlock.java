@@ -18,32 +18,33 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class BounceSlimeBlock extends CraftPower implements Listener, PowerProvider {
+    public static ArrayList<Player> bouncePlayers = new ArrayList<>();
+    public static HashMap<Player, Location> lastLoc = new HashMap<>();
+    protected static NamespacedKey powerReference = GenesisMC.originIdentifier("slime_block_bounce");
+
+    public static ArrayList<Player> getBouncePlayers() {
+        return bouncePlayers;
+    }
+
     @Override
     public void run(Player p) {
 
     }
 
-    public static ArrayList<Player> bouncePlayers = new ArrayList<>();
-    public static HashMap<Player, Location> lastLoc = new HashMap<>();
-    protected static NamespacedKey powerReference = GenesisMC.originIdentifier("slime_block_bounce");
-    public static ArrayList<Player> getBouncePlayers() {
-        return bouncePlayers;
-    }
-
     @EventHandler
-    public void gameEvent(GenericGameEvent event){
-        if(event.getEvent().equals(GameEvent.HIT_GROUND)){
-            if(event.getEntity() instanceof Player player) {
+    public void gameEvent(GenericGameEvent event) {
+        if (event.getEvent().equals(GameEvent.HIT_GROUND)) {
+            if (event.getEntity() instanceof Player player) {
                 PlayerHitGroundEvent playerHitGroundEvent = new PlayerHitGroundEvent(player);
                 Bukkit.getPluginManager().callEvent(playerHitGroundEvent);
                 if (player.isSneaking()) return;
                 if (!bouncePlayers.contains(player) && !lastLoc.containsKey(player)) return;
                 Location lastLocation = lastLoc.get(player);
 
-                if(lastLocation.getY() > player.getY()){
+                if (lastLocation.getY() > player.getY()) {
                     double coefficientOfRestitution = 0.45;
                     double reboundVelocity = -coefficientOfRestitution * -(lastLocation.getY() - player.getY());
-                    if(reboundVelocity <= 0.2) return;
+                    if (reboundVelocity <= 0.2) return;
 
                     if (!player.isOnGround() || player.isJumping() || player.isSprinting()) return;
                     player.setVelocity(new Vector(player.getVelocity().getX(), reboundVelocity, player.getVelocity().getZ()));
@@ -53,10 +54,10 @@ public class BounceSlimeBlock extends CraftPower implements Listener, PowerProvi
     }
 
     @EventHandler
-    public void move(PlayerMoveEvent e){
-        if(!e.isCancelled()){
-            if(!bouncePlayers.contains(e.getPlayer())) return;
-            if(e.getPlayer().isOnGround()) return;
+    public void move(PlayerMoveEvent e) {
+        if (!e.isCancelled()) {
+            if (!bouncePlayers.contains(e.getPlayer())) return;
+            if (e.getPlayer().isOnGround()) return;
             lastLoc.put(e.getPlayer(), e.getFrom());
         }
     }
@@ -73,13 +74,13 @@ public class BounceSlimeBlock extends CraftPower implements Listener, PowerProvi
 
     @Override
     public void setActive(Player p, String tag, Boolean bool) {
-        if(powers_active.containsKey(p)){
-            if(powers_active.get(p).containsKey(tag)){
+        if (powers_active.containsKey(p)) {
+            if (powers_active.get(p).containsKey(tag)) {
                 powers_active.get(p).replace(tag, bool);
-            }else{
+            } else {
                 powers_active.get(p).put(tag, bool);
             }
-        }else{
+        } else {
             powers_active.put(p, new HashMap());
             setActive(p, tag, bool);
         }

@@ -25,6 +25,10 @@ import static me.dueris.genesismc.utils.KeybindUtils.isKeyBeingPressed;
 
 public class ToggleNightVision extends CraftPower implements Listener {
 
+    public static ArrayList<Player> in_continuous = new ArrayList<>();
+    public boolean active = true;
+    public boolean runCancel = false;
+
     @Override
     public void run(Player p) {
 
@@ -37,7 +41,7 @@ public class ToggleNightVision extends CraftPower implements Listener {
         String key = (String) power.getKey().getOrDefault("key", "key.origins.primary_active");
         KeybindUtils.runKeyChangeTrigger(KeybindUtils.getTriggerFromOriginKey(p, key));
         if (CooldownManager.isPlayerInCooldown(p, key)) return;
-        if (!powers_active.containsKey(p)){
+        if (!powers_active.containsKey(p)) {
             powers_active.put(p, new HashMap());
         }
         if (powers_active.get(p).containsKey(power.getTag())) {
@@ -155,21 +159,17 @@ public class ToggleNightVision extends CraftPower implements Listener {
 
     @Override
     public void setActive(Player p, String tag, Boolean bool) {
-        if(powers_active.containsKey(p)){
-            if(powers_active.get(p).containsKey(tag)){
+        if (powers_active.containsKey(p)) {
+            if (powers_active.get(p).containsKey(tag)) {
                 powers_active.get(p).replace(tag, bool);
-            }else{
+            } else {
                 powers_active.get(p).put(tag, bool);
             }
-        }else{
+        } else {
             powers_active.put(p, new HashMap());
             setActive(p, tag, bool);
         }
     }
-
-    public static ArrayList<Player> in_continuous = new ArrayList<>();
-    public boolean active = true;
-    public boolean runCancel = false;
 
     @Override
     public String getPowerFile() {

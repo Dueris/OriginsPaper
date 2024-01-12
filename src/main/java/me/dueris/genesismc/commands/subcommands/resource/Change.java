@@ -49,15 +49,15 @@ public class Change extends SubCommand {
         }
         ArrayList<Player> players = PlayerSelector.playerSelector(sender, args[1]);
         if (players.size() == 0) return;
-        for (Player p : players){
-            if(resourceChangeTimeout.containsKey(p)) return;
+        for (Player p : players) {
+            if (resourceChangeTimeout.containsKey(p)) return;
             String resource = args[2];
             int change = Integer.parseInt(args[3]);
             double finalChange = 1.0 / Resource.getResource(resource).getRight();
             BossBar bossBar = Resource.getResource(resource).getLeft();
             double toRemove = finalChange * change;
             double newP = bossBar.getProgress() + toRemove;
-            if(newP > 1.0){
+            if (newP > 1.0) {
                 newP = 1.0;
             } else if (newP < 0) {
                 newP = 0.0;

@@ -61,20 +61,20 @@ public class AttributeHandler extends CraftPower implements Listener {
 
     @Override
     public void setActive(Player p, String tag, Boolean bool) {
-        if(powers_active.containsKey(p)){
-            if(powers_active.get(p).containsKey(tag)){
+        if (powers_active.containsKey(p)) {
+            if (powers_active.get(p).containsKey(tag)) {
                 powers_active.get(p).replace(tag, bool);
-            }else{
+            } else {
                 powers_active.get(p).put(tag, bool);
             }
-        }else{
+        } else {
             powers_active.put(p, new HashMap());
             setActive(p, tag, bool);
         }
     }
 
     @EventHandler
-    public void respawn(PlayerRespawnEvent e){
+    public void respawn(PlayerRespawnEvent e) {
         Player p = e.getPlayer();
         ChoosingMain.setAttributesToDefault(p);
         new BukkitRunnable() {
@@ -197,10 +197,6 @@ public class AttributeHandler extends CraftPower implements Listener {
         }.runTaskLater(GenesisMC.getPlugin(), 20L);
     }
 
-    public AttributeHandler() {
-
-    }
-
     @Override
     public void run(Player p) {
 
@@ -252,9 +248,9 @@ public class AttributeHandler extends CraftPower implements Listener {
         }
 
         public static double getFinalReach(Player p) {
-            if(p.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "reach"), PersistentDataType.DOUBLE) != null){
+            if (p.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "reach"), PersistentDataType.DOUBLE) != null) {
                 return p.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "reach"), PersistentDataType.DOUBLE);
-            }else{
+            } else {
                 return getDefaultReach(p);
             }
         }

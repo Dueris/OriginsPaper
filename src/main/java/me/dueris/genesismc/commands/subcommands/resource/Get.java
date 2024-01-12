@@ -3,7 +3,6 @@ package me.dueris.genesismc.commands.subcommands.resource;
 import me.dueris.genesismc.commands.PlayerSelector;
 import me.dueris.genesismc.commands.subcommands.SubCommand;
 import me.dueris.genesismc.factory.powers.Resource;
-import me.dueris.genesismc.factory.powers.player.RestrictArmor;
 import me.dueris.genesismc.utils.translation.LangConfig;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
@@ -13,7 +12,6 @@ import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 
-import static me.dueris.genesismc.factory.conditions.ConditionExecutor.getResult;
 import static me.dueris.genesismc.utils.BukkitColour.RED;
 
 public class Get extends SubCommand {
@@ -44,13 +42,13 @@ public class Get extends SubCommand {
         }
         ArrayList<Player> players = PlayerSelector.playerSelector(sender, args[1]);
         if (players.size() == 0) return;
-        for (Player p : players){
-            if(Resource.registeredBars.containsKey(args[2])){
+        for (Player p : players) {
+            if (Resource.registeredBars.containsKey(args[2])) {
                 sender.sendMessage("$1 has %value% $2"
                         .replace("$2", args[2])
                         .replace("$1", p.getName())
                         .replace("%value%", String.valueOf(Resource.registeredBars.get(args[2]).getLeft().getProgress())));
-            }else{
+            } else {
                 sender.sendMessage(ChatColor.RED + "Can't get value of $2 for $1; none is set"
                         .replace("$2", args[2])
                         .replace("$1", p.getName()));

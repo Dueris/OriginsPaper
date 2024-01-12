@@ -26,8 +26,8 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import static me.dueris.genesismc.choosing.ChoosingMain.itemProperties;
 import static me.dueris.genesismc.choosing.ChoosingCustomOrigins.cutStringIntoLists;
+import static me.dueris.genesismc.choosing.ChoosingMain.itemProperties;
 import static me.dueris.genesismc.items.OrbOfOrigins.orb;
 import static me.dueris.genesismc.utils.BukkitColour.RED;
 
@@ -74,16 +74,16 @@ public class Info extends SubCommand implements Listener {
         OriginContainer origin = playerOrigins.get(p).get(page);
 
         ArrayList<PowerContainer> powerContainers = new ArrayList<>();
-        for(PowerContainer powerContainer : origin.getPowerContainers()){
-            if(powerContainer.isHidden()) continue;
+        for (PowerContainer powerContainer : origin.getPowerContainers()) {
+            if (powerContainer.isHidden()) continue;
             powerContainers.add(powerContainer);
         }
 
         String minecraftItem = origin.getIcon();
         String item = null;
-        if(minecraftItem.contains(":")){
+        if (minecraftItem.contains(":")) {
             item = minecraftItem.split(":")[1];
-        }else{
+        } else {
             item = minecraftItem;
         }
         ItemStack originIcon = new ItemStack(Material.valueOf(item.toUpperCase()));

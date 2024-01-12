@@ -24,7 +24,7 @@ public class Dump extends SubCommand {
 
     @Override
     public void perform(CommandSender sender, String[] args) {
-        if(args.length == 0){
+        if (args.length == 0) {
             sender.sendMessage(ChatColor.RED + "Please provide a power arg.");
         } else if (args.length >= 1) {
             PowerContainer power = CraftApoli.keyedPowerContainers.get(args[1]);

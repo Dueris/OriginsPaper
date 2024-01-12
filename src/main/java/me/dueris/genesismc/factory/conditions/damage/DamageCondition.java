@@ -4,7 +4,6 @@ import me.dueris.genesismc.factory.conditions.Condition;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.conditions.entity.EntityCondition;
 import me.dueris.genesismc.factory.powers.player.RestrictArmor;
-import me.dueris.genesismc.utils.PowerContainer;
 import org.bukkit.Fluid;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -485,7 +484,7 @@ public class DamageCondition implements Condition {
             case "origins:projectile" -> {
                 if (entityDamageEvent.getCause().equals(DamageCause.PROJECTILE)) {
                     if (condition.containsKey("projectile_condition")) {
-                        return getResult(inverted, ConditionExecutor.entityCondition.check((HashMap<String, Object>) condition.get("projectile_condition"), p, ((EntityDamageByEntityEvent) entityDamageEvent).getDamager(), target, block, fluid, itemStack, ((EntityDamageByEntityEvent) entityDamageEvent)));
+                        return getResult(inverted, ConditionExecutor.entityCondition.check((HashMap<String, Object>) condition.get("projectile_condition"), p, ((EntityDamageByEntityEvent) entityDamageEvent).getDamager(), target, block, fluid, itemStack, entityDamageEvent));
                     } else {
                         return getResult(inverted, Optional.of(true));
                     }

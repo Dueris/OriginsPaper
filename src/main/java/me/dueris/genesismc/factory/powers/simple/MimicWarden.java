@@ -21,18 +21,17 @@ import java.util.*;
 import java.util.function.Predicate;
 
 public class MimicWarden extends CraftPower implements Listener, PowerProvider {
+    public static ArrayList<Player> mimicWardenPlayers = new ArrayList<>();
+    public static Map<UUID, Integer> particleTasks = new HashMap<>();
     protected static NamespacedKey powerReference = GenesisMC.originIdentifier("mimic_warden");
+
+    public static Map<UUID, Integer> getParticleTasks() {
+        return particleTasks;
+    }
 
     @Override
     public void run(Player p) {
 
-    }
-
-    public static ArrayList<Player> mimicWardenPlayers = new ArrayList<>();
-    public static Map<UUID, Integer> particleTasks = new HashMap<>();
-
-    public static Map<UUID, Integer> getParticleTasks() {
-        return particleTasks;
     }
 
     @Override
@@ -44,7 +43,7 @@ public class MimicWarden extends CraftPower implements Listener, PowerProvider {
     public void key(KeybindTriggerEvent e) {
         Player p = e.getPlayer();
         if (mimicWardenPlayers.contains(p)) {
-            if(p.getFoodLevel() < 6) return;
+            if (p.getFoodLevel() < 6) return;
             for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()) {
                 if (CooldownManager.isPlayerInCooldown(p, "key.origins.primary_active")) return;
                 if (e.getKey().equals("key.origins.primary_active")) {
@@ -79,15 +78,15 @@ public class MimicWarden extends CraftPower implements Listener, PowerProvider {
                             for (int x = centerX - radius; x <= centerX + radius; x++) {
                                 for (int y = centerY - radius; y <= centerY + radius; y++) {
                                     for (int z = centerZ - radius; z <= centerZ + radius; z++) {
-                                            Location location = new Location(world, x, y, z);
-                                            Block block = world.getBlockAt(location);
-                                            if(!block.isCollidable()){
-                                                block.breakNaturally();
-                                            }
+                                        Location location = new Location(world, x, y, z);
+                                        Block block = world.getBlockAt(location);
+                                        if (!block.isCollidable()) {
+                                            block.breakNaturally();
+                                        }
                                     }
                                 }
                             }
-                            for(Entity entity1 : traceResult.getHitEntity().getNearbyEntities(3, 3, 3)){
+                            for (Entity entity1 : traceResult.getHitEntity().getNearbyEntities(3, 3, 3)) {
                                 if (entity1 == null) return;
                                 if (entity1.isDead() || !(entity1 instanceof LivingEntity)) return;
                                 if (entity1.isInvulnerable()) return;
@@ -110,8 +109,8 @@ public class MimicWarden extends CraftPower implements Listener, PowerProvider {
                             p.getWorld().spawnParticle(Particle.SWEEP_ATTACK, p.getEyeLocation(), 1);
 
                             int taskId = new BukkitRunnable() {
-                                int particleCounter = 1;
                                 final Location origin = startLocation.clone();
+                                int particleCounter = 1;
 
                                 @Override
                                 public void run() {
@@ -202,13 +201,13 @@ public class MimicWarden extends CraftPower implements Listener, PowerProvider {
 
     @Override
     public void setActive(Player p, String tag, Boolean bool) {
-        if(powers_active.containsKey(p)){
-            if(powers_active.get(p).containsKey(tag)){
+        if (powers_active.containsKey(p)) {
+            if (powers_active.get(p).containsKey(tag)) {
                 powers_active.get(p).replace(tag, bool);
-            }else{
+            } else {
                 powers_active.get(p).put(tag, bool);
             }
-        }else{
+        } else {
             powers_active.put(p, new HashMap());
             setActive(p, tag, bool);
         }

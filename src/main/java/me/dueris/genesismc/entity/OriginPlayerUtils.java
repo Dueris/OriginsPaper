@@ -34,6 +34,10 @@ import java.util.concurrent.ExecutionException;
 
 public class OriginPlayerUtils {
 
+    public static HashMap<Player, HashMap<LayerContainer, ArrayList<PowerContainer>>> powerContainer = new HashMap<>();
+    public static HashMap<Player, ArrayList<Class<? extends CraftPower>>> powersAppliedList = new HashMap<>();
+    public static ArrayList<Player> hasPowers = new ArrayList<>();
+
     public static void moveEquipmentInventory(Player player, EquipmentSlot equipmentSlot) {
         ItemStack item = player.getInventory().getItem(equipmentSlot);
 
@@ -56,7 +60,7 @@ public class OriginPlayerUtils {
      * @return true if the player has the origin.
      */
     public static boolean hasOrigin(Player player, String originTag) {
-        if(OriginDataContainer.getDataMap().containsKey(player)){
+        if (OriginDataContainer.getDataMap().containsKey(player)) {
             HashMap<LayerContainer, OriginContainer> origins = CraftApoli.toOrigin(OriginDataContainer.getLayer(player));
             for (OriginContainer origin : origins.values()) if (origin.getTag().equals(originTag)) return true;
         }
@@ -69,7 +73,7 @@ public class OriginPlayerUtils {
      */
 
     public static OriginContainer getOrigin(Player player, LayerContainer layer) {
-        if(!OriginDataContainer.getDataMap().containsKey(player)){
+        if (!OriginDataContainer.getDataMap().containsKey(player)) {
             if (OriginDataContainer.getLayer(player) == null) {
                 setOrigin(player, layer, CraftApoli.nullOrigin());
                 return CraftApoli.nullOrigin();
@@ -96,9 +100,7 @@ public class OriginPlayerUtils {
         return CraftApoli.toOrigin(OriginDataContainer.getLayer(player));
     }
 
-    public static HashMap<Player, HashMap<LayerContainer, ArrayList<PowerContainer>>> powerContainer = new HashMap<>();
-
-    public static void setupPowers(Player p){
+    public static void setupPowers(Player p) {
         OriginDataContainer.loadData(p);
         String[] layers = OriginDataContainer.getLayer(p).split("\n");
         HashMap<LayerContainer, ArrayList<PowerContainer>> map = new HashMap<>();
@@ -107,19 +109,19 @@ public class OriginPlayerUtils {
             LayerContainer layerContainer = CraftApoli.getLayerFromTag(layerData[0]);
             ArrayList<PowerContainer> powers = new ArrayList<>();
             // setup powers
-            for(String dataPiece : layerData){
-                if(layerData.length == 1) continue;
+            for (String dataPiece : layerData) {
+                if (layerData.length == 1) continue;
                 PowerContainer powerCon = CraftApoli.keyedPowerContainers.get(dataPiece);
-                    if(powerCon != null){
-                        if(powers.contains(powerCon)) continue;
-                        powers.add(powerCon);
-                        if(powerCon.isOriginMultipleParent()){
-                            ArrayList<PowerContainer> nestedPowers = CraftApoli.getNestedPowers(powerCon);
-                            for(PowerContainer nested : nestedPowers){
-                                if(nested != null) powers.add(nested);
-                            }
+                if (powerCon != null) {
+                    if (powers.contains(powerCon)) continue;
+                    powers.add(powerCon);
+                    if (powerCon.isOriginMultipleParent()) {
+                        ArrayList<PowerContainer> nestedPowers = CraftApoli.getNestedPowers(powerCon);
+                        for (PowerContainer nested : nestedPowers) {
+                            if (nested != null) powers.add(nested);
                         }
                     }
+                }
             }
             map.put(layerContainer, powers);
         }
@@ -131,9 +133,9 @@ public class OriginPlayerUtils {
 
     public static ArrayList<PowerContainer> getMultiPowerFileFromType(Player p, String powerType) {
         ArrayList<PowerContainer> powers = new ArrayList<>();
-        if(powerContainer.get(p) == null) return powers;
-        for(LayerContainer layer : CraftApoli.getLayers()){
-            if(layer == null) continue;
+        if (powerContainer.get(p) == null) return powers;
+        for (LayerContainer layer : CraftApoli.getLayers()) {
+            if (layer == null) continue;
             for (PowerContainer power : powerContainer.get(p).get(layer)) {
                 if (power == null) continue;
                 if (power.getType().equals(powerType)) powers.add(power);
@@ -144,7 +146,7 @@ public class OriginPlayerUtils {
 
     public static ArrayList<PowerContainer> getMultiPowerFileFromType(Player p, String powerType, LayerContainer layer) {
         ArrayList<PowerContainer> powers = new ArrayList<>();
-        if(powerContainer.get(p) == null) return powers;
+        if (powerContainer.get(p) == null) return powers;
         for (PowerContainer power : powerContainer.get(p).get(layer)) {
             if (power == null) continue;
             if (power.getType().equals(powerType)) powers.add(power);
@@ -153,7 +155,7 @@ public class OriginPlayerUtils {
     }
 
     public static PowerContainer getSinglePowerFileFromType(Player p, String powerType, LayerContainer layer) {
-        if(powerContainer.get(p) == null) return null;
+        if (powerContainer.get(p) == null) return null;
         for (PowerContainer power : powerContainer.get(p).get(layer)) {
             if (power.getType().equals(powerType)) return power;
         }
@@ -207,13 +209,14 @@ public class OriginPlayerUtils {
             return;
         }
 
-        if (!origin.getTag().equals(CraftApoli.nullOrigin().getTag()))
-            {try {
+        if (!origin.getTag().equals(CraftApoli.nullOrigin().getTag())) {
+            try {
                 unassignPowers(player, layer);
             } catch (NotFoundException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
-            }}
+            }
+        }
         for (LayerContainer layers : origins.keySet()) {
             if (layer.getTag().equals(layers.getTag())) origins.replace(layers, origin);
         }
@@ -310,9 +313,6 @@ public class OriginPlayerUtils {
         }
     }
 
-    public static HashMap<Player, ArrayList<Class<? extends CraftPower>>> powersAppliedList = new HashMap<>();
-    public static ArrayList<Player> hasPowers = new ArrayList<>();
-
     public static List<Class<? extends CraftPower>> getPowersApplied(Player p) {
         List<Class<? extends CraftPower>> array = new ArrayList<>();
         for (Player plc : powersAppliedList.keySet()) {
@@ -331,14 +331,14 @@ public class OriginPlayerUtils {
             CompletableFuture.runAsync(() -> {
                 for (PowerContainer power : powerContainer.get(player).get(layer)) {
                     if (power == null) continue;
-                    if (power.getType().equalsIgnoreCase("origins:simple")){
+                    if (power.getType().equalsIgnoreCase("origins:simple")) {
                         try {
                             Class<? extends CraftPower> c = OriginSimpleContainer.getFromRegistryOrThrow(power.getTag());
                             CraftPower craftPower = c.newInstance();
 
                             Field field = c.getDeclaredField("powerReference");
                             field.setAccessible(true);
-                            if (power.getTag().equalsIgnoreCase(((NamespacedKey)field.get(craftPower)).asString())) {
+                            if (power.getTag().equalsIgnoreCase(((NamespacedKey) field.get(craftPower)).asString())) {
                                 craftPower.getPowerArray().add(player);
                                 if (!powersAppliedList.containsKey(player)) {
                                     ArrayList lst = new ArrayList<>();
@@ -352,15 +352,15 @@ public class OriginPlayerUtils {
                                 }
                             }
                         } catch (NotFoundException | InstantiationException | IllegalAccessException
-                                | NoSuchFieldException | SecurityException e) {
+                                 | NoSuchFieldException | SecurityException e) {
                             e.printStackTrace();
                         }
-                    }else{
+                    } else {
                         try {
                             Class<? extends CraftPower> c = CraftPower.getCraftPowerFromKeyOrThrow(power.getType());
-                            if(c == null) continue;
+                            if (c == null) continue;
                             CraftPower craftPower = c.newInstance();
-                        
+
                             if (craftPower != null) {
                                 craftPower.getPowerArray().add(player);
                                 if (!powersAppliedList.containsKey(player)) {
@@ -404,30 +404,30 @@ public class OriginPlayerUtils {
         try {
             CompletableFuture.runAsync(() -> {
                 for (PowerContainer power : powerContainer.get(player).get(layer)) {
-                    if(power == null) continue;
-                    if(power.getType().equalsIgnoreCase("origins:simple")){
+                    if (power == null) continue;
+                    if (power.getType().equalsIgnoreCase("origins:simple")) {
                         try {
                             Class<? extends CraftPower> c = OriginSimpleContainer.getFromRegistryOrThrow(power.getTag());
                             CraftPower craftPower = c.newInstance();
 
                             Field field = c.getDeclaredField("powerReference");
                             field.setAccessible(true);
-                            if (power.getTag().equalsIgnoreCase(((NamespacedKey)field.get(craftPower)).asString())) {
+                            if (power.getTag().equalsIgnoreCase(((NamespacedKey) field.get(craftPower)).asString())) {
                                 craftPower.getPowerArray().remove(player);
                                 if (GenesisDataFiles.getMainConfig().getString("console-startup-debug").equalsIgnoreCase("true")) {
                                     Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "Removed builtinImpl power[" + power.getTag() + "] from player " + player.getName());
                                 }
                             }
-                        
+
                         } catch (NotFoundException | NoSuchFieldException | SecurityException
-                                | InstantiationException | IllegalAccessException e) {
+                                 | InstantiationException | IllegalAccessException e) {
                             e.printStackTrace();
                         }
-                    }else{
+                    } else {
                         try {
                             Class<? extends CraftPower> c = CraftPower.getCraftPowerFromKeyOrThrow(power.getType());
-                            if(c == null) continue;
-                            
+                            if (c == null) continue;
+
                             CraftPower craftPower = c.newInstance();
                             if (craftPower != null) {
                                 craftPower.getPowerArray().remove(player);

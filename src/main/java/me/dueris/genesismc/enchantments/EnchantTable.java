@@ -23,61 +23,62 @@ public class EnchantTable implements Listener {
 
     static {
         wearable = EnumSet.of(
-            Material.PUMPKIN,
-            Material.CARVED_PUMPKIN,
-            Material.ELYTRA,
-            Material.TURTLE_HELMET,
-            Material.LEATHER_CHESTPLATE,
-            Material.LEATHER_BOOTS,
-            Material.LEATHER_LEGGINGS,
-            Material.LEATHER_HELMET,
-            Material.CHAINMAIL_BOOTS,
-            Material.CHAINMAIL_CHESTPLATE,
-            Material.CHAINMAIL_HELMET,
-            Material.CHAINMAIL_LEGGINGS,
-            Material.IRON_HELMET,
-            Material.IRON_CHESTPLATE,
-            Material.IRON_LEGGINGS,
-            Material.IRON_BOOTS,
-            Material.GOLDEN_HELMET,
-            Material.GOLDEN_CHESTPLATE,
-            Material.GOLDEN_LEGGINGS,
-            Material.GOLDEN_BOOTS,
-            Material.DIAMOND_HELMET,
-            Material.DIAMOND_CHESTPLATE,
-            Material.DIAMOND_LEGGINGS,
-            Material.DIAMOND_BOOTS,
-            Material.NETHERITE_HELMET,
-            Material.NETHERITE_CHESTPLATE,
-            Material.NETHERITE_LEGGINGS,
-            Material.NETHERITE_BOOTS
+                Material.PUMPKIN,
+                Material.CARVED_PUMPKIN,
+                Material.ELYTRA,
+                Material.TURTLE_HELMET,
+                Material.LEATHER_CHESTPLATE,
+                Material.LEATHER_BOOTS,
+                Material.LEATHER_LEGGINGS,
+                Material.LEATHER_HELMET,
+                Material.CHAINMAIL_BOOTS,
+                Material.CHAINMAIL_CHESTPLATE,
+                Material.CHAINMAIL_HELMET,
+                Material.CHAINMAIL_LEGGINGS,
+                Material.IRON_HELMET,
+                Material.IRON_CHESTPLATE,
+                Material.IRON_LEGGINGS,
+                Material.IRON_BOOTS,
+                Material.GOLDEN_HELMET,
+                Material.GOLDEN_CHESTPLATE,
+                Material.GOLDEN_LEGGINGS,
+                Material.GOLDEN_BOOTS,
+                Material.DIAMOND_HELMET,
+                Material.DIAMOND_CHESTPLATE,
+                Material.DIAMOND_LEGGINGS,
+                Material.DIAMOND_BOOTS,
+                Material.NETHERITE_HELMET,
+                Material.NETHERITE_CHESTPLATE,
+                Material.NETHERITE_LEGGINGS,
+                Material.NETHERITE_BOOTS
         );
     }
-    
+
     @EventHandler
     public void onEnchantItem(EnchantItemEvent e) {
         boolean conflicts = false;
         Random r = new Random();
         // if(37300 > r.nextInt(37400)){
-        if(true){
-            if(wearable.contains(e.getItem().getType()) || e.getItem().getType() == Material.BOOK){
-                for(Enchantment enchant : e.getEnchantsToAdd().keySet()){
-                    if(Anvil.conflictenchantments.contains(enchant)){
+        if (true) {
+            if (wearable.contains(e.getItem().getType()) || e.getItem().getType() == Material.BOOK) {
+                for (Enchantment enchant : e.getEnchantsToAdd().keySet()) {
+                    if (Anvil.conflictenchantments.contains(enchant)) {
                         conflicts = true;
+                        break;
                     }
                 }
-                if(!conflicts){
+                if (!conflicts) {
                     int boundInt = r.nextInt(100);
-                    if(boundInt <= 40){
+                    if (boundInt <= 40) {
                         // lvl1
                         Anvil.setWaterProtCustomEnchantLevel(1, e.getItem());
-                    } else if(boundInt <= 65 && boundInt >= 41){
+                    } else if (boundInt <= 65 && boundInt >= 41) {
                         // lvl2
                         Anvil.setWaterProtCustomEnchantLevel(2, e.getItem());
-                    } else if(boundInt <= 85 && boundInt >= 66){
+                    } else if (boundInt <= 85 && boundInt >= 66) {
                         // lvl3
                         Anvil.setWaterProtCustomEnchantLevel(3, e.getItem());
-                    } else if(boundInt <= 100 && boundInt >= 86){
+                    } else if (boundInt <= 100 && boundInt >= 86) {
                         // lvl4
                         Anvil.setWaterProtCustomEnchantLevel(4, e.getItem());
                     }
@@ -89,12 +90,12 @@ public class EnchantTable implements Listener {
     @EventHandler
     public void onGrind(PrepareResultEvent e) {
         if (e.getResult() != null) {
-            if (e.getInventory().getType().equals(InventoryType.GRINDSTONE)){
+            if (e.getInventory().getType().equals(InventoryType.GRINDSTONE)) {
                 ItemStack item = e.getResult();
-                if(item == null) return;
-                if (item.getEnchantments().keySet().contains(CraftEnchantment.minecraftToBukkit(Anvil.minecraftEnchantment))){
-                    for(String loreString : item.getLore()){
-                        if(loreString.startsWith("Water Protection")){
+                if (item == null) return;
+                if (item.getEnchantments().containsKey(CraftEnchantment.minecraftToBukkit(Anvil.minecraftEnchantment))) {
+                    for (String loreString : item.getLore()) {
+                        if (loreString.startsWith("Water Protection")) {
                             item.getLore().remove(loreString);
                         }
                     }

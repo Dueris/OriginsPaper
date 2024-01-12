@@ -11,7 +11,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
-
 import org.apache.commons.io.FilenameUtils;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.NotNull;
@@ -32,20 +31,13 @@ import java.util.zip.ZipInputStream;
 
 public class Bootstrap implements PluginBootstrap {
     public static WaterProtectionEnchantment waterProtection;
+    public static ArrayList<String> oldDV = new ArrayList<>();
 
-    @Override
-    public void bootstrap(@NotNull BootstrapContext context) {
-        try {
-            File datapackDir = new File(this.parseDatapackPath(context));
-            copyOriginDatapack(datapackDir.toPath());
-        } catch (Exception e) {
-            // ignore
-        }
-        // hurt by water damage type
-        EquipmentSlot[] slots = {EquipmentSlot.CHEST, EquipmentSlot.FEET, EquipmentSlot.HEAD, EquipmentSlot.LEGS};
-        WaterProtectionEnchantment waterProtection = new WaterProtectionEnchantment(Enchantment.Rarity.RARE, EnchantmentCategory.ARMOR, slots);
-        registerEnchantment("water_protection", waterProtection);
-        Bootstrap.waterProtection = waterProtection;
+    static {
+        oldDV.add("OriginsGenesis");
+        oldDV.add("Origins-Genesis");
+        oldDV.add("Origins-GenesisMC");
+        oldDV.add("Origins-GenesisMC[0_2_2]");
     }
 
     public static Enchantment registerEnchantment(String name, Enchantment enchantment) {
@@ -61,23 +53,16 @@ public class Bootstrap implements PluginBootstrap {
                             Files.deleteIfExists(path);
                             Files.delete(path);
                         } catch (IOException e) {
-                            if(!ignoreErrors){
+                            if (!ignoreErrors) {
                                 System.err.println("Error deleting: " + path + e);
                             }
                         }
                     });
         }
     }
-    public static ArrayList<String> oldDV = new ArrayList<>();
-    static {
-        oldDV.add("OriginsGenesis");
-        oldDV.add("Origins-Genesis");
-        oldDV.add("Origins-GenesisMC");
-        oldDV.add("Origins-GenesisMC[0_2_2]");
-    }
 
     public static void copyOriginDatapack(Path datapackPath) {
-        for(String string : oldDV){
+        for (String string : oldDV) {
             if (Files.exists(datapackPath)) {
                 String path = Path.of(datapackPath + File.separator + string).toAbsolutePath().toString();
                 try {
@@ -85,7 +70,7 @@ public class Bootstrap implements PluginBootstrap {
                 } catch (IOException e) {
 
                 }
-            }else{
+            } else {
                 File file = new File(datapackPath.toAbsolutePath().toString());
                 file.mkdirs();
                 copyOriginDatapack(datapackPath);
@@ -119,38 +104,53 @@ public class Bootstrap implements PluginBootstrap {
         }
     }
 
-    public String parseDatapackPath(BootstrapContext context){
+    public static String levelNameProp() {
+        Path propPath = Paths.get("server.properties");
+        if (propPath.toFile().exists()) {
+            Properties properties = new Properties();
+            try (FileInputStream input = new FileInputStream(propPath.toFile())) {
+                properties.load(input);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            System.out.println(properties.keySet());
+            return properties.getProperty("level-name", "world");
+        } else {
+            return "world";
+        }
+    }
+
+    @Override
+    public void bootstrap(@NotNull BootstrapContext context) {
+        try {
+            File datapackDir = new File(this.parseDatapackPath(context));
+            copyOriginDatapack(datapackDir.toPath());
+        } catch (Exception e) {
+            // ignore
+        }
+        // hurt by water damage type
+        EquipmentSlot[] slots = {EquipmentSlot.CHEST, EquipmentSlot.FEET, EquipmentSlot.HEAD, EquipmentSlot.LEGS};
+        WaterProtectionEnchantment waterProtection = new WaterProtectionEnchantment(Enchantment.Rarity.RARE, EnchantmentCategory.ARMOR, slots);
+        registerEnchantment("water_protection", waterProtection);
+        Bootstrap.waterProtection = waterProtection;
+    }
+
+    public String parseDatapackPath(BootstrapContext context) {
         OptionSet optionset;
         try {
             org.bukkit.configuration.file.YamlConfiguration bukkitConfiguration = YamlConfiguration.loadConfiguration(Paths.get("bukkit.yml").toFile());
             File container;
             container = new File(bukkitConfiguration.getString("settings.world-container", "."));
-            String s = (String) Optional.ofNullable(
-                levelNameProp()               
+            String s = Optional.ofNullable(
+                    levelNameProp()
             ).orElseGet(() -> {
                 return "world";
             });
-                    Path datapackFolder = Paths.get(container.getAbsolutePath() + File.separator + s + File.separator + "datapacks");
+            Path datapackFolder = Paths.get(container.getAbsolutePath() + File.separator + s + File.separator + "datapacks");
             return datapackFolder.toString();
         } catch (Exception e) {
             e.printStackTrace();
         }
         return null;
-    }
-
-    public static String levelNameProp(){
-        Path propPath = Paths.get("server.properties");
-            if (propPath.toFile().exists()) {
-                Properties properties = new Properties();
-                try (FileInputStream input = new FileInputStream(propPath.toFile())) {
-                    properties.load(input);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                System.out.println(properties.keySet());
-                return properties.getProperty("level-name", "world");
-            } else {
-                return "world";
-            }
     }
 }

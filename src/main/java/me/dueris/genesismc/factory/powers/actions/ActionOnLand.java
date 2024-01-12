@@ -14,6 +14,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+
 public class ActionOnLand extends CraftPower implements Listener {
     private final double MIN_FALL_DISTANCE = 0.5;
 
@@ -24,21 +25,21 @@ public class ActionOnLand extends CraftPower implements Listener {
 
     @EventHandler
     public void e(GenericGameEvent e) {
-        if(e.getEvent() != GameEvent.HIT_GROUND) return;
-        if(!(e.getEntity() instanceof Player player)) return;
+        if (e.getEvent() != GameEvent.HIT_GROUND) return;
+        if (!(e.getEntity() instanceof Player player)) return;
         if (!getPowerArray().contains(player)) return;
         for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()) {
 //            if (e.getFrom().getY() > e.getTo().getY() && e.getFrom().getY() - e.getTo().getY() >= MIN_FALL_DISTANCE) {
-                for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(player, getPowerFile(), layer)) {
-                    setActive(player, power.getTag(), true);
-                    Actions.EntityActionType(player, power.getEntityAction());
-                    new BukkitRunnable() {
-                        @Override
-                        public void run() {
-                            setActive(player, power.getTag(), false);
-                        }
-                    }.runTaskLater(GenesisMC.getPlugin(), 2L);
-                }
+            for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(player, getPowerFile(), layer)) {
+                setActive(player, power.getTag(), true);
+                Actions.EntityActionType(player, power.getEntityAction());
+                new BukkitRunnable() {
+                    @Override
+                    public void run() {
+                        setActive(player, power.getTag(), false);
+                    }
+                }.runTaskLater(GenesisMC.getPlugin(), 2L);
+            }
 
 //            }
         }
@@ -56,13 +57,13 @@ public class ActionOnLand extends CraftPower implements Listener {
 
     @Override
     public void setActive(Player p, String tag, Boolean bool) {
-        if(powers_active.containsKey(p)){
-            if(powers_active.get(p).containsKey(tag)){
+        if (powers_active.containsKey(p)) {
+            if (powers_active.get(p).containsKey(tag)) {
                 powers_active.get(p).replace(tag, bool);
-            }else{
+            } else {
                 powers_active.get(p).put(tag, bool);
             }
-        }else{
+        } else {
             powers_active.put(p, new HashMap());
             setActive(p, tag, bool);
         }

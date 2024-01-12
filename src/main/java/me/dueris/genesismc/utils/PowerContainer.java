@@ -20,11 +20,11 @@ public class PowerContainer implements Serializable {
     String[] jsonData;
 
     /**
-     * @param powerTag    The power tag.
-     * @param powerFile   The data within a power file.
+     * @param powerTag       The power tag.
+     * @param powerFile      The data within a power file.
      * @param originMultiple Tells the plugin if its an instance of an origins:multiple sub-power
      */
-    public PowerContainer(NamespacedKey powerTag, FileContainer powerFile, String[] jsonData, boolean originMultiple){
+    public PowerContainer(NamespacedKey powerTag, FileContainer powerFile, String[] jsonData, boolean originMultiple) {
         this.powerTag = powerTag;
         this.powerFile = powerFile;
         this.originMultiple = originMultiple;
@@ -33,12 +33,12 @@ public class PowerContainer implements Serializable {
     }
 
     /**
-     * @param powerTag    The power tag.
-     * @param powerFile   The data within a power file.
-     * @param originMultiple Tells the plugin if its an instance of an origins:multiple sub-power
+     * @param powerTag             The power tag.
+     * @param powerFile            The data within a power file.
+     * @param originMultiple       Tells the plugin if its an instance of an origins:multiple sub-power
      * @param originMultipleParent Tells the plugin if its an origins:multiple parent power
      */
-    public PowerContainer(NamespacedKey powerTag, FileContainer powerFile, String[] jsonData, boolean originMultiple, boolean originMultipleParent){
+    public PowerContainer(NamespacedKey powerTag, FileContainer powerFile, String[] jsonData, boolean originMultiple, boolean originMultipleParent) {
         this.powerTag = powerTag;
         this.powerFile = powerFile;
         this.originMultiple = false;
@@ -50,11 +50,11 @@ public class PowerContainer implements Serializable {
         return powerFile;
     }
 
-    public boolean isOriginMultipleSubPower(){
+    public boolean isOriginMultipleSubPower() {
         return this.originMultiple;
     }
 
-    public String[] getJsonData(){
+    public String[] getJsonData() {
         return this.jsonData;
     }
 
@@ -68,7 +68,7 @@ public class PowerContainer implements Serializable {
     /**
      * @return If the power is an origins:multiple parent
      */
-    public boolean isOriginMultipleParent(){
+    public boolean isOriginMultipleParent() {
         return this.originMultipleParent;
     }
 
@@ -157,7 +157,7 @@ public class PowerContainer implements Serializable {
      */
     public Long getStrength() {
         Object render = powerFile.get("strength");
-        if (render == null) return 1l;
+        if (render == null) return 1L;
         return (long) render;
     }
 
@@ -315,8 +315,7 @@ public class PowerContainer implements Serializable {
                     result.add(itemMap);
                 }
             }
-        } else if (obj instanceof JSONObject) {
-            JSONObject jsonObject = (JSONObject) obj;
+        } else if (obj instanceof JSONObject jsonObject) {
             HashMap<String, Object> itemMap = new HashMap<>();
             for (Object innerKey : jsonObject.keySet()) {
                 String string_key = (String) innerKey;
@@ -612,8 +611,7 @@ public class PowerContainer implements Serializable {
                     result.add(itemMap);
                 }
             }
-        } else if (obj instanceof JSONObject) {
-            JSONObject jsonObject = (JSONObject) obj;
+        } else if (obj instanceof JSONObject jsonObject) {
             HashMap<String, Object> itemMap = new HashMap<>();
             for (Object innerKey : jsonObject.keySet()) {
                 String string_key = (String) innerKey;
@@ -653,8 +651,7 @@ public class PowerContainer implements Serializable {
                     result.add(itemMap);
                 }
             }
-        } else if (obj instanceof JSONObject) {
-            JSONObject jsonObject = (JSONObject) obj;
+        } else if (obj instanceof JSONObject jsonObject) {
             HashMap<String, Object> itemMap = new HashMap<>();
             for (Object innerKey : jsonObject.keySet()) {
                 String stringKey = (String) innerKey;
@@ -718,7 +715,7 @@ public class PowerContainer implements Serializable {
         return new JSONObject();
     }
 
-    public JSONObject getActionOrNull(String string){
+    public JSONObject getActionOrNull(String string) {
         Object obj = powerFile.get(string);
         if (obj instanceof JSONObject modifier) {
             return modifier;

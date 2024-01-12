@@ -1,3 +1,4 @@
 package me.dueris.genesismc.factory.powers.simple;
 
-public interface PowerProvider {}
+public interface PowerProvider {
+}

@@ -1,6 +1,5 @@
 package me.dueris.genesismc.factory.conditions;
 
-import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.entity.OriginPlayerUtils;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.conditions.biEntity.BiEntityCondition;
@@ -13,9 +12,7 @@ import me.dueris.genesismc.factory.conditions.item.ItemCondition;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.OriginContainer;
 import me.dueris.genesismc.utils.PowerContainer;
-import org.bukkit.Bukkit;
 import org.bukkit.Fluid;
-import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -24,13 +21,9 @@ import org.bukkit.inventory.ItemStack;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
-import javax.swing.text.html.Option;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
 
 import static me.dueris.genesismc.factory.conditions.CraftCondition.*;
 import static me.dueris.genesismc.factory.conditions.item.ItemCondition.getMeatMaterials;
@@ -38,6 +31,14 @@ import static me.dueris.genesismc.factory.conditions.item.ItemCondition.getNonMe
 import static me.dueris.genesismc.factory.powers.Power.powers_active;
 
 public class ConditionExecutor {
+    public static BiEntityCondition biEntityCondition = new BiEntityCondition();
+    public static BiomeCondition biomeCondition = new BiomeCondition();
+    public static BlockCondition blockCondition = new BlockCondition();
+    public static DamageCondition damageCondition = new DamageCondition();
+    public static EntityCondition entityCondition = new EntityCondition();
+    public static FluidCondition fluidCondition = new FluidCondition();
+    public static ItemCondition itemCondition = new ItemCondition();
+
     private static boolean checkSubCondition(JSONObject subCondition, Player p, PowerContainer power, String powerfile, Entity actor, Entity target, Block block, Fluid fluid, ItemStack itemStack, EntityDamageEvent dmgevent, String powerFile) {
         if ("origins:and".equals(subCondition.get("type"))) {
             JSONArray conditionsArray = (JSONArray) subCondition.get("conditions");
@@ -55,7 +56,7 @@ public class ConditionExecutor {
 
             return allTrue;
         } else if (subCondition.get("type").equals("origins:power_active")) {
-            if(!powers_active.containsKey(p)) return false;
+            if (!powers_active.containsKey(p)) return false;
             if (subCondition.get("power").toString().contains("*")) {
                 String[] powerK = subCondition.get("power").toString().split("\\*");
                 for (String string : powers_active.get(p).keySet()) {
@@ -66,7 +67,7 @@ public class ConditionExecutor {
             } else {
                 String powerF = subCondition.get("power").toString();
                 boolean invert = Boolean.parseBoolean(subCondition.getOrDefault("inverted", "false").toString());
-                return getResult(invert, Optional.of(Boolean.valueOf(powers_active.get(p).getOrDefault(powerF, false)))).get();
+                return getResult(invert, Optional.of(powers_active.get(p).getOrDefault(powerF, false))).get();
             }
         } else {
             Optional<Boolean> booleanOptional = Optional.empty();
@@ -97,7 +98,7 @@ public class ConditionExecutor {
                 if (check.isPresent()) {
                     booleanOptional = check;
                 }
-                
+
                 var check2 = biomeCondition.check(subCondition, p, actor, target, block, fluid, itemStack, dmgevent);
                 if (check2.isPresent()) {
                     booleanOptional = check;
@@ -118,9 +119,9 @@ public class ConditionExecutor {
                 }
             }
 
-            if(!booleanOptional.isPresent()){
+            if (!booleanOptional.isPresent()) {
                 return true;
-            }else{
+            } else {
                 return booleanOptional.get();
             }
         }
@@ -143,13 +144,17 @@ public class ConditionExecutor {
         return allTrue;
     }
 
-    public static BiEntityCondition biEntityCondition = new BiEntityCondition();
-    public static BiomeCondition biomeCondition = new BiomeCondition();
-    public static BlockCondition blockCondition = new BlockCondition();
-    public static DamageCondition damageCondition = new DamageCondition();
-    public static EntityCondition entityCondition = new EntityCondition();
-    public static FluidCondition fluidCondition = new FluidCondition();
-    public static ItemCondition itemCondition = new ItemCondition();
+    public static Optional<Boolean> getResult(boolean inverted, Optional<Boolean> condition) {
+        if (condition.isPresent()) {
+            if (inverted) {
+                return Optional.of(!condition.get());
+            } else {
+                return Optional.of(condition.get());
+            }
+        } else {
+            return Optional.empty();
+        }
+    }
 
     public boolean check(String singular, String plural, Player p, PowerContainer powerContainer, String powerfile, Entity actor, Entity target, Block block, Fluid fluid, ItemStack itemStack, EntityDamageEvent dmgevent) {
         if (powerContainer == null) return true;
@@ -174,7 +179,7 @@ public class ConditionExecutor {
             } else if (condition.get("type").equals("origins:constant")) {
                 return (boolean) condition.get("value");
             } else if (condition.get("type").equals("origins:power_active")) {
-                if(!powers_active.containsKey(p)) return false;
+                if (!powers_active.containsKey(p)) return false;
                 if (condition.get("power").toString().contains("*")) {
                     String[] powerK = condition.get("power").toString().split("\\*");
                     for (String string : powers_active.get(p).keySet()) {
@@ -185,7 +190,7 @@ public class ConditionExecutor {
                 } else {
                     String power = condition.get("power").toString();
                     boolean invert = Boolean.parseBoolean(condition.getOrDefault("inverted", "false").toString());
-                    return getResult(invert, Optional.of(Boolean.valueOf(powers_active.get(p).getOrDefault(power, false)))).get();
+                    return getResult(invert, Optional.of(powers_active.get(p).getOrDefault(power, false))).get();
                 }
             } else if (condition.get("type").equals("origins:power")) {
                 for (OriginContainer origin : CraftApoli.getOrigins()) {
@@ -228,50 +233,50 @@ public class ConditionExecutor {
             } else {
                 String boolResult = "empty";
 
-                if(boolResult == "empty" && (singular.contains("entity_") || plural.contains("entity_") || plural.equals("conditions") || singular.equals("condition"))){
+                if (boolResult == "empty" && (singular.contains("entity_") || plural.contains("entity_") || plural.equals("conditions") || singular.equals("condition"))) {
                     Optional<Boolean> bool = entity.check(condition, p, actor, target, block, fluid, itemStack, dmgevent);
                     if (bool.isPresent()) {
                         boolResult = String.valueOf(bool.get());
                     }
                 }
-                if(boolResult == "empty" && (singular.contains("bientity_") || plural.contains("bientity_") || plural.equals("conditions") || singular.equals("condition"))){
+                if (boolResult == "empty" && (singular.contains("bientity_") || plural.contains("bientity_") || plural.equals("conditions") || singular.equals("condition"))) {
                     Optional<Boolean> bool = bientity.check(condition, p, actor, target, block, fluid, itemStack, dmgevent);
                     if (bool.isPresent()) {
                         boolResult = String.valueOf(bool.get());
                     }
                 }
-                if(boolResult == "empty" && (singular.contains("block_") || plural.contains("block_") || plural.equals("conditions") || singular.equals("condition"))){
+                if (boolResult == "empty" && (singular.contains("block_") || plural.contains("block_") || plural.equals("conditions") || singular.equals("condition"))) {
                     Optional<Boolean> bool = blockCon.check(condition, p, actor, target, block, fluid, itemStack, dmgevent);
                     if (bool.isPresent()) {
                         boolResult = String.valueOf(bool.get());
                     }
                 }
-                if(boolResult == "empty" && (singular.contains("biome_") || plural.contains("biome_") || plural.equals("conditions") || singular.equals("condition"))){
+                if (boolResult == "empty" && (singular.contains("biome_") || plural.contains("biome_") || plural.equals("conditions") || singular.equals("condition"))) {
                     Optional<Boolean> bool = biome.check(condition, p, actor, target, block, fluid, itemStack, dmgevent);
                     if (bool.isPresent()) {
                         boolResult = String.valueOf(bool.get());
                     }
                 }
-                if(boolResult == "empty" && (singular.contains("damage_") || plural.contains("damage_") || plural.equals("conditions") || singular.equals("condition"))){
+                if (boolResult == "empty" && (singular.contains("damage_") || plural.contains("damage_") || plural.equals("conditions") || singular.equals("condition"))) {
                     Optional<Boolean> bool = damage.check(condition, p, actor, target, block, fluid, itemStack, dmgevent);
                     if (bool.isPresent()) {
                         boolResult = String.valueOf(bool.get());
                     }
                 }
-                if(boolResult == "empty" && (singular.contains("fluid_") || plural.contains("fluid_") || plural.equals("conditions") || singular.equals("condition"))){
+                if (boolResult == "empty" && (singular.contains("fluid_") || plural.contains("fluid_") || plural.equals("conditions") || singular.equals("condition"))) {
                     Optional<Boolean> bool = fluidCon.check(condition, p, actor, target, block, fluid, itemStack, dmgevent);
                     if (bool.isPresent()) {
                         boolResult = String.valueOf(bool.get());
                     }
                 }
-                if(boolResult == "empty" && (singular.contains("item_") || plural.contains("item_") || plural.equals("conditions") || singular.equals("condition"))){
+                if (boolResult == "empty" && (singular.contains("item_") || plural.contains("item_") || plural.equals("conditions") || singular.equals("condition"))) {
                     Optional<Boolean> bool = item.check(condition, p, actor, target, block, fluid, itemStack, dmgevent);
                     if (bool.isPresent()) {
                         boolResult = String.valueOf(bool.get());
                     }
                 }
                 // Custom conditions
-                if(boolResult == "empty"){
+                if (boolResult == "empty") {
                     try {
                         for (Class<? extends Condition> conditionClass : customConditions) {
                             Optional<Boolean> bool = conditionClass.newInstance().check(condition, p, actor, target, block, fluid, itemStack, dmgevent);
@@ -283,24 +288,12 @@ public class ConditionExecutor {
                         throw new RuntimeException(e);
                     }
                 }
-                if(boolResult == "empty"){
+                if (boolResult == "empty") {
                     boolResult = "true";
                 }
                 return Boolean.parseBoolean(boolResult);
             }
         }
         return false;
-    }
-
-    public static Optional<Boolean> getResult(boolean inverted, Optional<Boolean> condition) {
-        if(condition.isPresent()){
-            if(inverted){
-                return Optional.of(!condition.get());
-            }else{
-                return Optional.of(condition.get());
-            }
-        }else{
-            return Optional.empty();
-        }
     }
 }

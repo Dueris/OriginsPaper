@@ -1,63 +1,60 @@
 package me.dueris.genesismc.factory.powers.value_modifying;
 
-import static me.dueris.genesismc.factory.powers.player.attributes.AttributeHandler.getOperationMappingsFloat;
-import static me.dueris.genesismc.factory.powers.player.attributes.AttributeHandler.getOperationMappingsInteger;
+import me.dueris.genesismc.entity.OriginPlayerUtils;
+import me.dueris.genesismc.factory.conditions.ConditionExecutor;
+import me.dueris.genesismc.factory.powers.CraftPower;
+import me.dueris.genesismc.utils.PowerContainer;
+import org.bukkit.NamespacedKey;
+import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.function.BinaryOperator;
 
-import org.bukkit.NamespacedKey;
-import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
+import static me.dueris.genesismc.factory.powers.player.attributes.AttributeHandler.getOperationMappingsInteger;
 
-import me.dueris.genesismc.entity.OriginPlayerUtils;
-import me.dueris.genesismc.factory.conditions.ConditionExecutor;
-import me.dueris.genesismc.utils.OriginContainer;
-import me.dueris.genesismc.utils.PowerContainer;
-import me.dueris.genesismc.factory.powers.*;
-
-public class ModifyEnchantmentLevel extends CraftPower{
+public class ModifyEnchantmentLevel extends CraftPower {
 
     @Override
     public void run(Player p) {
-        if(getPowerArray().contains(p)){
+        if (getPowerArray().contains(p)) {
             for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()) {
                 ValueModifyingSuperClass valueModifyingSuperClass = new ValueModifyingSuperClass();
                 ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
-                for(PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)){
+                for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                     ArrayList<ItemStack> items = new ArrayList<>();
                     items.addAll(Arrays.stream(p.getInventory().getArmorContents()).toList());
                     items.add(p.getInventory().getItemInMainHand());
-                    for(ItemStack item : items)
-                    if(conditionExecutor.check("condition", "conditions", p, power, getPowerFile(), p, null, p.getLocation().getBlock(), null, item, null)){
-                        if(conditionExecutor.check("item_condition", "item_conditions", p, power, getPowerFile(), p, null, p.getLocation().getBlock(), null, item, null)){
-                            for(HashMap<String, Object> modifier : power.getPossibleModifiers("modifier", "modifiers")){
-                                Enchantment enchant = Enchantment.getByKey(NamespacedKey.fromString(power.get("enchantment").toString()));
-                                if(item.containsEnchantment(enchant)){
-                                    item.removeEnchantment(enchant);
-                                }
-                                int result = 1;
-                                Integer value = Integer.valueOf(modifier.get("value").toString());
-                                String operation = modifier.get("operation").toString();
-                                BinaryOperator mathOperator = getOperationMappingsInteger().get(operation);
-                                if (mathOperator != null) {
-                                    result = Integer.valueOf(String.valueOf(mathOperator.apply(0, value)));
-                                }
-                                if(result < 0){
-                                    result = 1;
-                                }
-                                try {
-                                    item.addEnchantment(enchant, result);
-                                } catch (Exception e) {
-                                    // ignore. -- cannot apply enchant to itemstack
+                    for (ItemStack item : items)
+                        if (conditionExecutor.check("condition", "conditions", p, power, getPowerFile(), p, null, p.getLocation().getBlock(), null, item, null)) {
+                            if (conditionExecutor.check("item_condition", "item_conditions", p, power, getPowerFile(), p, null, p.getLocation().getBlock(), null, item, null)) {
+                                for (HashMap<String, Object> modifier : power.getPossibleModifiers("modifier", "modifiers")) {
+                                    Enchantment enchant = Enchantment.getByKey(NamespacedKey.fromString(power.get("enchantment")));
+                                    if (item.containsEnchantment(enchant)) {
+                                        item.removeEnchantment(enchant);
+                                    }
+                                    int result = 1;
+                                    Integer value = Integer.valueOf(modifier.get("value").toString());
+                                    String operation = modifier.get("operation").toString();
+                                    BinaryOperator mathOperator = getOperationMappingsInteger().get(operation);
+                                    if (mathOperator != null) {
+                                        result = Integer.valueOf(String.valueOf(mathOperator.apply(0, value)));
+                                    }
+                                    if (result < 0) {
+                                        result = 1;
+                                    }
+                                    try {
+                                        item.addEnchantment(enchant, result);
+                                    } catch (Exception e) {
+                                        // ignore. -- cannot apply enchant to itemstack
+                                    }
                                 }
                             }
                         }
-                    }
-                }     
+                }
             }
         }
     }
@@ -74,16 +71,16 @@ public class ModifyEnchantmentLevel extends CraftPower{
 
     @Override
     public void setActive(Player p, String tag, Boolean bool) {
-        if(powers_active.containsKey(p)){
-            if(powers_active.get(p).containsKey(tag)){
+        if (powers_active.containsKey(p)) {
+            if (powers_active.get(p).containsKey(tag)) {
                 powers_active.get(p).replace(tag, bool);
-            }else{
+            } else {
                 powers_active.get(p).put(tag, bool);
             }
-        }else{
+        } else {
             powers_active.put(p, new HashMap());
             setActive(p, tag, bool);
         }
     }
-    
+
 }

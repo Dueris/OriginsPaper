@@ -20,6 +20,8 @@ import java.util.function.BinaryOperator;
 
 public class AttributeConditioned extends CraftPower implements Listener {
 
+    HashMap<Player, Boolean> applied = new HashMap<>();
+
     public static void executeAttributeModify(String operation, Attribute attribute_modifier, int base_value, Player p, int value) {
         Map<String, BinaryOperator<Integer>> operationMap = new HashMap<>();
         operationMap.put("addition", Integer::sum);
@@ -158,13 +160,13 @@ public class AttributeConditioned extends CraftPower implements Listener {
 
     @Override
     public void setActive(Player p, String tag, Boolean bool) {
-        if(powers_active.containsKey(p)){
-            if(powers_active.get(p).containsKey(tag)){
+        if (powers_active.containsKey(p)) {
+            if (powers_active.get(p).containsKey(tag)) {
                 powers_active.get(p).replace(tag, bool);
-            }else{
+            } else {
                 powers_active.get(p).put(tag, bool);
             }
-        }else{
+        } else {
             powers_active.put(p, new HashMap());
             setActive(p, tag, bool);
         }
@@ -174,8 +176,6 @@ public class AttributeConditioned extends CraftPower implements Listener {
     public void join(PlayerJoinEvent e) {
         applied.put(e.getPlayer(), false);
     }
-
-    HashMap<Player, Boolean> applied = new HashMap<>();
 
     @Override
     public void run(Player p) {

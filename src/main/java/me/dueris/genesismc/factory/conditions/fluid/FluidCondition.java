@@ -2,11 +2,9 @@ package me.dueris.genesismc.factory.conditions.fluid;
 
 import me.dueris.genesismc.factory.TagRegistry;
 import me.dueris.genesismc.factory.conditions.Condition;
-import me.dueris.genesismc.utils.PowerContainer;
 import org.bukkit.Fluid;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.ItemStack;
@@ -35,9 +33,9 @@ public class FluidCondition implements Condition {
                 return getResult(inverted, Optional.of(Fluid.EMPTY.equals(fluid)));
             }
             case "origins:in_tag" -> {
-                for(String flu : TagRegistry.getRegisteredTagFromFileKey(condition.get("tag").toString())){
-                    if(flu == null) continue;
-                    if(fluid == null) continue;
+                for (String flu : TagRegistry.getRegisteredTagFromFileKey(condition.get("tag").toString())) {
+                    if (flu == null) continue;
+                    if (fluid == null) continue;
                     return getResult(inverted, Optional.of(flu.equalsIgnoreCase(fluid.toString())));
                 }
                 return getResult(inverted, Optional.of(false));

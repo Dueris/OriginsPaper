@@ -6,8 +6,14 @@ import org.bukkit.event.HandlerList;
 
 public class AddToSetEvent extends Event {
     private static final HandlerList handlers = new HandlerList();
-    private Entity entity;
-    private String tag;
+    private final Entity entity;
+    private final String tag;
+
+    public AddToSetEvent(Entity entity, String tag) {
+        this.entity = entity;
+        this.tag = tag;
+    }
+
     public static HandlerList getHandlerList() {
         return handlers;
     }
@@ -15,11 +21,6 @@ public class AddToSetEvent extends Event {
     @Override
     public HandlerList getHandlers() {
         return handlers;
-    }
-
-    public AddToSetEvent(Entity entity, String tag){
-        this.entity = entity;
-        this.tag = tag;
     }
 
     public Entity getEntity() {

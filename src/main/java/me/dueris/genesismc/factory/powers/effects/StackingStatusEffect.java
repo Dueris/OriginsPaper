@@ -32,11 +32,11 @@ public class StackingStatusEffect extends CraftPower implements Listener {
     }
 
     @EventHandler
-    public void join(PlayerJoinEvent e){
+    public void join(PlayerJoinEvent e) {
         new BukkitRunnable() {
             @Override
             public void run() {
-                if(e.getPlayer() == null) cancel();
+                if (e.getPlayer() == null) cancel();
                 runExecution(e.getPlayer());
             }
         }.runTaskTimer(GenesisMC.getPlugin(), 0, 40);
@@ -80,13 +80,13 @@ public class StackingStatusEffect extends CraftPower implements Listener {
 
     @Override
     public void setActive(Player p, String tag, Boolean bool) {
-        if(powers_active.containsKey(p)){
-            if(powers_active.get(p).containsKey(tag)){
+        if (powers_active.containsKey(p)) {
+            if (powers_active.get(p).containsKey(tag)) {
                 powers_active.get(p).replace(tag, bool);
-            }else{
+            } else {
                 powers_active.get(p).put(tag, bool);
             }
-        }else{
+        } else {
             powers_active.put(p, new HashMap());
             setActive(p, tag, bool);
         }

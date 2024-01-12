@@ -2,21 +2,19 @@ package me.dueris.genesismc.factory.conditions.block;
 
 import me.dueris.genesismc.factory.TagRegistry;
 import me.dueris.genesismc.factory.conditions.Condition;
-import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.conditions.fluid.FluidCondition;
 import me.dueris.genesismc.factory.powers.player.RestrictArmor;
 import me.dueris.genesismc.utils.PowerContainer;
-import org.bukkit.*;
+import org.bukkit.Fluid;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.TileState;
-import org.bukkit.block.data.Waterlogged;
 import org.bukkit.craftbukkit.v1_20_R3.block.CraftBlock;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.ItemStack;
-import org.json.simple.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,13 +23,13 @@ import java.util.Optional;
 import static me.dueris.genesismc.factory.conditions.ConditionExecutor.getResult;
 
 public class BlockCondition implements Condition {
+    public static HashMap<PowerContainer, ArrayList<String>> inTagValues = new HashMap<>();
+    public static HashMap<String, ArrayList<Material>> blockTagMappings = new HashMap<>();
+
     @Override
     public String condition_type() {
         return "BLOCK_CONDITION";
     }
-
-    public static HashMap<PowerContainer, ArrayList<String>> inTagValues = new HashMap<>();
-    public static HashMap<String, ArrayList<Material>> blockTagMappings = new HashMap<>();
 
     @Override
     @SuppressWarnings("index out of bounds")
@@ -42,11 +40,11 @@ public class BlockCondition implements Condition {
         if (block.getType() == null) return Optional.empty();
         boolean inverted = (boolean) condition.getOrDefault("inverted", false);
         String type = condition.get("type").toString().toLowerCase();
-        switch(type){
+        switch (type) {
             case "origins:material" -> {
                 try {
                     String matSplit = condition.get("material").toString().toUpperCase();
-                    if(matSplit.contains(":")){
+                    if (matSplit.contains(":")) {
                         matSplit = matSplit.split(":")[1];
                     }
                     Material mat = Material.valueOf(matSplit);
@@ -57,17 +55,17 @@ public class BlockCondition implements Condition {
                 }
             }
             case "origins:in_tag" -> {
-                if(TagRegistry.getRegisteredTagFromFileKey(condition.get("tag").toString()) != null){
-                    if(!blockTagMappings.containsKey(condition.get("tag"))){
+                if (TagRegistry.getRegisteredTagFromFileKey(condition.get("tag").toString()) != null) {
+                    if (!blockTagMappings.containsKey(condition.get("tag"))) {
                         blockTagMappings.put(condition.get("tag").toString(), new ArrayList<>());
-                        for(String mat : TagRegistry.getRegisteredTagFromFileKey(condition.get("tag").toString())){
+                        for (String mat : TagRegistry.getRegisteredTagFromFileKey(condition.get("tag").toString())) {
                             blockTagMappings.get(condition.get("tag")).add(Material.valueOf(mat.split(":")[1].toUpperCase()));
                         }
-                    }else{
+                    } else {
                         // mappings exist, now we can start stuff
                         return getResult(inverted, Optional.of(blockTagMappings.get(condition.get("tag")).contains(block.getType())));
                     }
-                }else{
+                } else {
                     return getResult(inverted, Optional.of(false));
                 }
             }
@@ -98,7 +96,7 @@ public class BlockCondition implements Condition {
 //                return Optional.of(RestrictArmor.compareValues(matchingADJCount, comparison, compare_to));
 //            }
             case "origins:attachable" -> {
-                if(block != null && block.getType() != Material.AIR){
+                if (block != null && block.getType() != Material.AIR) {
                     Block[] adjBlcs = new Block[]{
                             block.getRelative(0, 1, 0), // Up
                             block.getRelative(0, -1, 0), // Down
@@ -107,11 +105,11 @@ public class BlockCondition implements Condition {
                             block.getRelative(-1, 0, 0), // West
                             block.getRelative(1, 0, 0)  // East
                     };
-    
-                    for(Block adj : adjBlcs){
+
+                    for (Block adj : adjBlcs) {
                         return getResult(inverted, Optional.of(adj != null && adj.getType().isSolid()));
                     }
-                }else{
+                } else {
                     return getResult(inverted, Optional.of(false));
                 }
             }
@@ -134,9 +132,9 @@ public class BlockCondition implements Condition {
             case "origins:fluid" -> {
                 FluidCondition fluidCondition = new FluidCondition();
                 Optional fl = fluidCondition.check(condition, p, actor, target, block, fluid, itemStack, entityDamageEvent);
-                if(fl.isPresent()){
+                if (fl.isPresent()) {
                     return getResult(inverted, Optional.of(fl.get().equals(true)));
-                }else{
+                } else {
                     return getResult(inverted, Optional.of(false));
                 }
             }
@@ -170,7 +168,7 @@ public class BlockCondition implements Condition {
                         level = bl.getLightLevel();
                     }
                 }
-    
+
                 String comparison = condition.get("comparison").toString();
                 float compare_to = Float.parseFloat(condition.get("compare_to").toString());
                 float bR = level;

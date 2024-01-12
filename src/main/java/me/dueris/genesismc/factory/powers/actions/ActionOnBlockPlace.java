@@ -26,42 +26,42 @@ public class ActionOnBlockPlace extends CraftPower implements Listener {
     }
 
     @EventHandler
-    public void blockBreak(BlockPlaceEvent e){
-        if(action_on_block_place.contains(e.getPlayer())){
-            for(LayerContainer layer : CraftApoli.getLayers()){
-                for(PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(e.getPlayer(), getPowerFile(), layer)){
-                    if(GenesisMC.getConditionExecutor().check("condition", "conditions", e.getPlayer(), power, getPowerFile(), e.getPlayer(), null, e.getBlockPlaced(), null, e.getItemInHand(), null)){
-                        if(GenesisMC.getConditionExecutor().check("item_condition", "item_conditions", e.getPlayer(), power, getPowerFile(), e.getPlayer(), null, e.getBlockPlaced(), null, e.getItemInHand(), null)){
-                            if(GenesisMC.getConditionExecutor().check("place_on_condition", "place_on_conditions", e.getPlayer(), power, getPowerFile(), e.getPlayer(), null, e.getBlockAgainst(), null, e.getItemInHand(), null)){
-                                if(GenesisMC.getConditionExecutor().check("place_to_condition", "place_to_conditions", e.getPlayer(), power, getPowerFile(), e.getPlayer(), null, e.getBlockPlaced(), null, e.getItemInHand(), null)){
+    public void blockBreak(BlockPlaceEvent e) {
+        if (action_on_block_place.contains(e.getPlayer())) {
+            for (LayerContainer layer : CraftApoli.getLayers()) {
+                for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(e.getPlayer(), getPowerFile(), layer)) {
+                    if (GenesisMC.getConditionExecutor().check("condition", "conditions", e.getPlayer(), power, getPowerFile(), e.getPlayer(), null, e.getBlockPlaced(), null, e.getItemInHand(), null)) {
+                        if (GenesisMC.getConditionExecutor().check("item_condition", "item_conditions", e.getPlayer(), power, getPowerFile(), e.getPlayer(), null, e.getBlockPlaced(), null, e.getItemInHand(), null)) {
+                            if (GenesisMC.getConditionExecutor().check("place_on_condition", "place_on_conditions", e.getPlayer(), power, getPowerFile(), e.getPlayer(), null, e.getBlockAgainst(), null, e.getItemInHand(), null)) {
+                                if (GenesisMC.getConditionExecutor().check("place_to_condition", "place_to_conditions", e.getPlayer(), power, getPowerFile(), e.getPlayer(), null, e.getBlockPlaced(), null, e.getItemInHand(), null)) {
                                     e.setCancelled(true);
                                     setActive(e.getPlayer(), power.getTag(), true);
                                     Actions.EntityActionType(e.getPlayer(), power.getEntityAction());
                                     Actions.ItemActionType(e.getItemInHand(), power.getAction("held_item_action"));
                                     Actions.BlockActionType(e.getBlockAgainst().getLocation(), power.getAction("place_on_action"));
                                     Actions.BlockActionType(e.getBlockPlaced().getLocation(), power.getAction("place_to_action"));
-                                    if(power.get("result_stack") != null){
+                                    if (power.get("result_stack") != null) {
                                         JSONObject jsonObject = power.getJsonObject("result_stack");
                                         int amt;
-                                        if(jsonObject.get("amount").toString() != null) {
+                                        if (jsonObject.get("amount").toString() != null) {
                                             amt = Integer.parseInt(jsonObject.get("amount").toString());
-                                        }else{
+                                        } else {
                                             amt = 1;
                                         }
                                         Bukkit.dispatchCommand(new OriginConsoleSender(), "give {player} {item} {amount}"
-                                            .replace("{player}", e.getPlayer().getName()).replace("{item}", jsonObject.get("item").toString()).replace("{amount}", String.valueOf(amt))
+                                                .replace("{player}", e.getPlayer().getName()).replace("{item}", jsonObject.get("item").toString()).replace("{amount}", String.valueOf(amt))
                                         );
                                     }
-                                }else{
+                                } else {
                                     setActive(e.getPlayer(), power.getTag(), false);
                                 }
-                            }else{
+                            } else {
                                 setActive(e.getPlayer(), power.getTag(), false);
                             }
-                        }else{
+                        } else {
                             setActive(e.getPlayer(), power.getTag(), false);
                         }
-                    }else{
+                    } else {
                         setActive(e.getPlayer(), power.getTag(), false);
                     }
                 }
@@ -81,13 +81,13 @@ public class ActionOnBlockPlace extends CraftPower implements Listener {
 
     @Override
     public void setActive(Player p, String tag, Boolean bool) {
-        if(powers_active.containsKey(p)){
-            if(powers_active.get(p).containsKey(tag)){
+        if (powers_active.containsKey(p)) {
+            if (powers_active.get(p).containsKey(tag)) {
                 powers_active.get(p).replace(tag, bool);
-            }else{
+            } else {
                 powers_active.get(p).put(tag, bool);
             }
-        }else{
+        } else {
             powers_active.put(p, new HashMap());
             setActive(p, tag, bool);
         }

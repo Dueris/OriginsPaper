@@ -27,14 +27,14 @@ import java.util.*;
 import java.util.function.BinaryOperator;
 
 public class Utils {
+    public static Registry<DamageType> DAMAGE_REGISTRY = CraftRegistry.getMinecraftRegistry().registryOrThrow(Registries.DAMAGE_TYPE);
     public MinecraftServer server = MinecraftServer.getServer();
     public CraftServer bukkitServer = server.server;
-    public static Registry<DamageType> DAMAGE_REGISTRY = CraftRegistry.getMinecraftRegistry().registryOrThrow(Registries.DAMAGE_TYPE);
 
-    public static DamageSource getDamageSource(DamageType type){
+    public static DamageSource getDamageSource(DamageType type) {
         DamageSource source = null;
-        for(ResourceKey<DamageType> dkey : DAMAGE_REGISTRY.registryKeySet()){
-            if(DAMAGE_REGISTRY.get(dkey).equals(type)){
+        for (ResourceKey<DamageType> dkey : DAMAGE_REGISTRY.registryKeySet()) {
+            if (DAMAGE_REGISTRY.get(dkey).equals(type)) {
                 source = new DamageSource(DAMAGE_REGISTRY.getHolderOrThrow(dkey));
                 break;
             }
@@ -42,24 +42,24 @@ public class Utils {
         return source;
     }
 
-    public static Registry<?> getRegistry(ResourceKey<Registry<?>> registry){
+    public static Registry<?> getRegistry(ResourceKey<Registry<?>> registry) {
         return CraftRegistry.getMinecraftRegistry().registryOrThrow(registry);
     }
 
     public static String[] readJSONFileAsString(File file) {
         List<String> lines = new ArrayList<>();
-        try(BufferedReader br = new BufferedReader(new FileReader(file))) {
+        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
             String line;
-            while ((line = br.readLine()) != null){
+            while ((line = br.readLine()) != null) {
                 lines.add(line);
             }
-        } catch (IOException e){
+        } catch (IOException e) {
             e.printStackTrace();
         }
         return lines.toArray(new String[0]);
     }
 
-    public static String getNameOrTag(String name, String tag){
+    public static String getNameOrTag(String name, String tag) {
         return name != "No Name" ? name : tag;
     }
 
@@ -69,7 +69,7 @@ public class Utils {
                 && fromLoc.getBlockY() == toLoc.getBlockY()
                 && fromLoc.getBlockZ() == toLoc.getBlockZ());
     }
-    
+
     // Math
     public static Map<String, BinaryOperator<Double>> getOperationMappingsDouble() {
         Map<String, BinaryOperator<Double>> operationMap = new HashMap<>();
@@ -187,7 +187,7 @@ public class Utils {
                 throw new IllegalStateException("Couldn't get field 'lineStart' for JsonReader", var1);
             }
         });
-    
+
         private static int getPos(JsonReader jsonReader) {
             try {
                 return JSON_READER_POS.getInt(jsonReader) - JSON_READER_LINESTART.getInt(jsonReader) + 1;
@@ -195,22 +195,22 @@ public class Utils {
                 throw new IllegalStateException("Couldn't read position of JsonReader", var2);
             }
         }
-    
+
         public static <T> T parseJson(StringReader stringReader, Codec<T> codec) {
             JsonReader jsonReader = new JsonReader(new java.io.StringReader(stringReader.getRemaining()));
             jsonReader.setLenient(true);
-    
+
             Object var4;
             try {
                 JsonElement jsonElement = Streams.parse(jsonReader);
-                var4 = Util.<T, JsonParseException>getOrThrow(codec.parse(JsonOps.INSTANCE, jsonElement), JsonParseException::new);
+                var4 = Util.getOrThrow(codec.parse(JsonOps.INSTANCE, jsonElement), JsonParseException::new);
             } catch (StackOverflowError var8) {
                 throw new JsonParseException(var8);
             } finally {
                 stringReader.setCursor(stringReader.getCursor() + getPos(jsonReader));
             }
-    
-            return (T)var4;
+
+            return (T) var4;
         }
     }
 }

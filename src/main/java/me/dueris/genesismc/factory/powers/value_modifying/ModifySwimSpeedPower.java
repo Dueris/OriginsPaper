@@ -4,14 +4,12 @@ import me.dueris.genesismc.entity.OriginPlayerUtils;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.ErrorSystem;
-import me.dueris.genesismc.utils.OriginContainer;
 import me.dueris.genesismc.utils.PowerContainer;
 import me.dueris.genesismc.utils.translation.LangConfig;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,13 +24,13 @@ public class ModifySwimSpeedPower extends CraftPower {
 
     @Override
     public void setActive(Player p, String tag, Boolean bool) {
-        if(powers_active.containsKey(p)){
-            if(powers_active.get(p).containsKey(tag)){
+        if (powers_active.containsKey(p)) {
+            if (powers_active.get(p).containsKey(tag)) {
                 powers_active.get(p).replace(tag, bool);
-            }else{
+            } else {
                 powers_active.get(p).put(tag, bool);
             }
-        }else{
+        } else {
             powers_active.put(p, new HashMap());
             setActive(p, tag, bool);
         }
@@ -51,14 +49,14 @@ public class ModifySwimSpeedPower extends CraftPower {
                         // Vector swimVelocity = p.getLocation().getDirection().normalize().multiply(valueModifyingSuperClass.getPersistentAttributeContainer(p, MODIFYING_KEY));
                         // p.setVelocity(swimVelocity);
                         int ampl = Math.round(valueModifyingSuperClass.getPersistentAttributeContainer(p, MODIFYING_KEY));
-                        if(ampl < 1){
+                        if (ampl < 1) {
                             ampl = 1;
                         }
-                        if(ampl > 10){
+                        if (ampl > 10) {
                             ampl = 10;
                         }
                         p.addPotionEffect(
-                            new PotionEffect(PotionEffectType.DOLPHINS_GRACE, 100, ampl, false, false, false)
+                                new PotionEffect(PotionEffectType.DOLPHINS_GRACE, 100, ampl, false, false, false)
                         );
                         setActive(p, power.getTag(), true);
                     } else {
