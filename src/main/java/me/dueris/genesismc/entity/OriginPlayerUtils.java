@@ -4,17 +4,18 @@ import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.OriginDataContainer;
 import me.dueris.genesismc.enums.OriginDataType;
 import me.dueris.genesismc.events.OriginChooseEvent;
-import me.dueris.genesismc.events.PowerAssignEvent;
-import me.dueris.genesismc.events.PowerUnassignEvent;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.factory.powers.player.Gravity;
+import me.dueris.genesismc.factory.powers.simple.OriginSimpleContainer;
 import me.dueris.genesismc.files.GenesisDataFiles;
 import me.dueris.genesismc.utils.LayerContainer;
 import me.dueris.genesismc.utils.OriginContainer;
 import me.dueris.genesismc.utils.PowerContainer;
 import me.dueris.genesismc.utils.SendCharts;
 import net.md_5.bungee.api.ChatColor;
+
+import org.apache.commons.lang.time.StopWatch;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -28,18 +29,21 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 
+import com.google.common.base.Stopwatch;
+
+import javassist.NotFoundException;
+
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 import static org.bukkit.Bukkit.getServer;
 
 public class OriginPlayerUtils {
-
-    public static void setHasFirstChose(Player p, boolean chosen){
-        p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "hasFirstChose"), PersistentDataType.BOOLEAN, chosen);
-    }
 
     public static void moveEquipmentInventory(Player player, EquipmentSlot equipmentSlot) {
         ItemStack item = player.getInventory().getItem(equipmentSlot);
@@ -56,13 +60,6 @@ public class OriginPlayerUtils {
                 player.getInventory().setItem(emptySlot, item);
             }
         }
-    }
-
-    public static void launchElytra(Player player, float speed) {
-        Location location = player.getEyeLocation();
-        @NotNull Vector direction = location.getDirection().normalize();
-        Vector velocity = direction.multiply(speed);
-        player.setVelocity(velocity);
     }
 
     /**
@@ -123,9 +120,9 @@ public class OriginPlayerUtils {
             // setup powers
             for(String dataPiece : layerData){
                 if(layerData.length == 1) continue;
-                if(!dataPiece.equals(layerData[0]) || dataPiece.equals(layerData[1]) || dataPiece.equals(layerData[2])){
-                    PowerContainer powerCon = CraftApoli.keyedPowerContainers.get(dataPiece);
+                PowerContainer powerCon = CraftApoli.keyedPowerContainers.get(dataPiece);
                     if(powerCon != null){
+                        if(powers.contains(powerCon)) continue;
                         powers.add(powerCon);
                         if(powerCon.isOriginMultipleParent()){
                             ArrayList<PowerContainer> nestedPowers = CraftApoli.getNestedPowers(powerCon);
@@ -134,7 +131,6 @@ public class OriginPlayerUtils {
                             }
                         }
                     }
-                } // else -> layerdata was found, aka the layer, origintag, or power amt/size
             }
             map.put(layerContainer, powers);
         }
@@ -222,7 +218,13 @@ public class OriginPlayerUtils {
             return;
         }
 
-        if (!origin.getTag().equals(CraftApoli.nullOrigin().getTag())) unassignPowers(player, layer);
+        if (!origin.getTag().equals(CraftApoli.nullOrigin().getTag()))
+            {try {
+                unassignPowers(player, layer);
+            } catch (NotFoundException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }}
         for (LayerContainer layers : origins.keySet()) {
             if (layer.getTag().equals(layers.getTag())) origins.replace(layers, origin);
         }
@@ -243,6 +245,14 @@ public class OriginPlayerUtils {
                 } catch (InstantiationException e) {
                     throw new RuntimeException(e);
                 } catch (IllegalAccessException e) {
+                    throw new RuntimeException(e);
+                } catch (IllegalArgumentException e) {
+                    throw new RuntimeException(e);
+                } catch (NoSuchFieldException e) {
+                    throw new RuntimeException(e);
+                } catch (SecurityException e) {
+                    throw new RuntimeException(e);
+                } catch (NotFoundException e) {
                     throw new RuntimeException(e);
                 }
             }
@@ -286,31 +296,11 @@ public class OriginPlayerUtils {
 
     }
 
-    public static void setOriginData(Player player, OriginDataType type, int value) {
-        if (type.equals(OriginDataType.CAN_EXPLODE)) {
-            player.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "can-explode"), PersistentDataType.INTEGER, value);
-        } else if (type.equals(OriginDataType.TOGGLE)) {
-            player.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "toggle"), PersistentDataType.INTEGER, value);
-        }
-    }
-
-    public static void setOriginData(Player player, OriginDataType type, boolean value) {
-        if (type.equals(OriginDataType.IN_PHASING_FORM)) {
-            player.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.BOOLEAN, value);
-        }
-    }
-
-    public static void triggerChooseEvent(Player player) {
-        OriginChooseEvent chooseEvent = new OriginChooseEvent(player);
-        getServer().getPluginManager().callEvent(chooseEvent);
-    }
-
     public static boolean isInPhantomForm(Player player) {
         return player.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "in-phantomform"), PersistentDataType.BOOLEAN);
     }
 
-    public static void assignPowers(Player player) {
-        if (player == null) Bukkit.getServer().getConsoleSender().sendMessage("urm the player is null?!");
+    public static void assignPowers(@NotNull Player player) {
         HashMap<LayerContainer, OriginContainer> origins = getOrigin(player);
         for (LayerContainer layer : origins.keySet()) {
             try {
@@ -318,6 +308,14 @@ public class OriginPlayerUtils {
             } catch (InstantiationException e) {
                 throw new RuntimeException(e);
             } catch (IllegalAccessException e) {
+                throw new RuntimeException(e);
+            } catch (IllegalArgumentException e) {
+                throw new RuntimeException(e);
+            } catch (NoSuchFieldException e) {
+                throw new RuntimeException(e);
+            } catch (SecurityException e) {
+                throw new RuntimeException(e);
+            } catch (NotFoundException e) {
                 throw new RuntimeException(e);
             }
         }
@@ -339,95 +337,130 @@ public class OriginPlayerUtils {
         return array;
     }
 
-    public static void assignPowers(Player player, LayerContainer layer) throws InstantiationException, IllegalAccessException {
-//        OriginContainer origin = getOrigin(player, layer);
-        ArrayList<String> powerAppliedTypes = new ArrayList<>();
-        ArrayList<Class<? extends CraftPower>> powerAppliedClasses = new ArrayList<>();
-        if (player == null) Bukkit.getServer().getConsoleSender().sendMessage("rip player null");
-//        if (origin.getPowerContainers().isEmpty()) {
-//            player.sendMessage("BRO ITS EMPTY WAHT");
-//        }
-        for (PowerContainer power : powerContainer.get(player).get(layer)) {
-            if (power == null) continue;
-            for (Class<? extends CraftPower> c : CraftPower.getRegistered()) {
-                CraftPower craftPower = null;
+    public static void assignPowers(@NotNull Player player, @NotNull LayerContainer layer) throws InstantiationException, IllegalAccessException, NotFoundException, IllegalArgumentException, NoSuchFieldException, SecurityException {
+        try {
+            CompletableFuture.runAsync(() -> {
+                for (PowerContainer power : powerContainer.get(player).get(layer)) {
+                    if (power == null) continue;
+                    if (power.getType().equalsIgnoreCase("origins:simple")){
+                        try {
+                            Class<? extends CraftPower> c = OriginSimpleContainer.getFromRegistryOrThrow(power.getTag());
+                            CraftPower craftPower = c.newInstance();
 
-                try {
-                    craftPower = c.newInstance();
-                } catch (InstantiationException e) {
-                    throw new RuntimeException(e);
-                } catch (IllegalAccessException e) {
-                    throw new RuntimeException(e);
-                }
-                if (power.getType().equals(craftPower.getPowerFile())) {
-                    craftPower.getPowerArray().add(player);
-                    if (!powersAppliedList.containsKey(player)) {
-                        ArrayList lst = new ArrayList<>();
-                        lst.add(c);
-                        powerAppliedTypes.add(c.newInstance().getPowerFile());
-                        powerAppliedClasses.add(c);
-                        powersAppliedList.put(player, lst);
-                    } else {
-                        powersAppliedList.get(player).add(c);
+                            Field field = c.getDeclaredField("powerReference");
+                            field.setAccessible(true);
+                            if (power.getTag().equalsIgnoreCase(((NamespacedKey)field.get(craftPower)).asString())) {
+                                craftPower.getPowerArray().add(player);
+                                if (!powersAppliedList.containsKey(player)) {
+                                    ArrayList lst = new ArrayList<>();
+                                    lst.add(c);
+                                    powersAppliedList.put(player, lst);
+                                } else {
+                                    powersAppliedList.get(player).add(c);
+                                }
+                                if (GenesisDataFiles.getMainConfig().getString("console-startup-debug").equalsIgnoreCase("true")) {
+                                    Bukkit.getConsoleSender().sendMessage(ChatColor.GREEN + "Assigned builtinImpl power[" + power.getTag() + "] to player " + player.getName());
+                                }
+                            }
+                        } catch (NotFoundException | InstantiationException | IllegalAccessException
+                                | NoSuchFieldException | SecurityException e) {
+                            e.printStackTrace();
+                        }
+                    }else{
+                        try {
+                            Class<? extends CraftPower> c = CraftPower.getCraftPowerFromKeyOrThrow(power.getType());
+                            if(c == null) continue;
+                            CraftPower craftPower = c.newInstance();
+                        
+                            if (craftPower != null) {
+                                craftPower.getPowerArray().add(player);
+                                if (!powersAppliedList.containsKey(player)) {
+                                    ArrayList lst = new ArrayList<>();
+                                    lst.add(c);
+                                    powersAppliedList.put(player, lst);
+                                } else {
+                                    powersAppliedList.get(player).add(c);
+                                }
+                                if (GenesisDataFiles.getMainConfig().getString("console-startup-debug").equalsIgnoreCase("true")) {
+                                    Bukkit.getConsoleSender().sendMessage(ChatColor.GREEN + "Assigned power[" + power.getTag() + "] to player " + player.getName());
+                                }
+                            }
+                        } catch (NotFoundException | InstantiationException | IllegalAccessException e) {
+                            e.printStackTrace();
+                        }
                     }
-                    if (GenesisDataFiles.getMainConfig().getString("console-startup-debug").equalsIgnoreCase("true")) {
-                        Bukkit.getConsoleSender().sendMessage(ChatColor.GREEN + "Assigned power[" + power.getTag() + "] to player " + player.getName());
-                    }
                 }
-            }
+            }).thenRun(() -> {
+                OriginDataContainer.loadData(player);
+                setupPowers(player);
+                hasPowers.add(player);
+            }).get();
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
         }
-
-//        PowerAssignEvent powerAssignEvent = new PowerAssignEvent(player, powerAppliedClasses, powerAppliedTypes, origin);
-//        Bukkit.getServer().getPluginManager().callEvent(powerAssignEvent);
-//        player.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "originLayer"), PersistentDataType.STRING, CraftApoli.toOriginSetSaveFormat(OriginPlayerUtils.getOrigin(player)));
-        OriginDataContainer.loadData(player);
-        setupPowers(player);
-
-        hasPowers.add(player);
     }
 
-    public static void unassignPowers(Player player) {
+    public static void unassignPowers(@NotNull Player player) {
         HashMap<LayerContainer, OriginContainer> origins = getOrigin(player);
         for (LayerContainer layer : origins.keySet()) {
-            unassignPowers(player, layer);
+            try {
+                unassignPowers(player, layer);
+            } catch (NotFoundException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 
-    public static void unassignPowers(Player player, LayerContainer layer) {
-//        OriginContainer origin = getOrigin(player, layer);
-        ArrayList<String> powerRemovedTypes = new ArrayList<>();
-        ArrayList<Class<? extends CraftPower>> powerRemovedClasses = new ArrayList<>();
-        for (PowerContainer power : powerContainer.get(player).get(layer)) {
-            if(power == null) continue;
-            for (Class<? extends CraftPower> c : CraftPower.getRegistered()) {
-                CraftPower craftPower = null;
-                try {
-                    craftPower = c.newInstance();
-                } catch (InstantiationException | IllegalAccessException e) {
-                    throw new RuntimeException(e);
-                }
-                if (power.getType().equals(craftPower.getPowerFile())) {
-                    craftPower.getPowerArray().remove(player);
-                    try {
-                        powerRemovedTypes.add(c.newInstance().getPowerFile());
-                    } catch (InstantiationException | IllegalAccessException e) {
-                        throw new RuntimeException(e);
+    public static void unassignPowers(@NotNull Player player, @NotNull LayerContainer layer) throws NotFoundException {
+        try {
+            CompletableFuture.runAsync(() -> {
+                for (PowerContainer power : powerContainer.get(player).get(layer)) {
+                    if(power == null) continue;
+                    if(power.getType().equalsIgnoreCase("origins:simple")){
+                        try {
+                            Class<? extends CraftPower> c = OriginSimpleContainer.getFromRegistryOrThrow(power.getTag());
+                            CraftPower craftPower = c.newInstance();
+
+                            Field field = c.getDeclaredField("powerReference");
+                            field.setAccessible(true);
+                            if (power.getTag().equalsIgnoreCase(((NamespacedKey)field.get(craftPower)).asString())) {
+                                craftPower.getPowerArray().remove(player);
+                                if (GenesisDataFiles.getMainConfig().getString("console-startup-debug").equalsIgnoreCase("true")) {
+                                    Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "Removed builtinImpl power[" + power.getTag() + "] from player " + player.getName());
+                                }
+                            }
+                        
+                        } catch (NotFoundException | NoSuchFieldException | SecurityException
+                                | InstantiationException | IllegalAccessException e) {
+                            e.printStackTrace();
+                        }
+                    }else{
+                        try {
+                            Class<? extends CraftPower> c = CraftPower.getCraftPowerFromKeyOrThrow(power.getType());
+                            if(c == null) continue;
+                            
+                            CraftPower craftPower = c.newInstance();
+                            if (craftPower != null) {
+                                craftPower.getPowerArray().remove(player);
+                                if (GenesisDataFiles.getMainConfig().getString("console-startup-debug").equalsIgnoreCase("true")) {
+                                    Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "Removed power[" + power.getTag() + "] from player " + player.getName());
+                                }
+                            }
+                        } catch (InstantiationException | IllegalAccessException | NotFoundException e) {
+                            throw new RuntimeException(e);
+                        }
                     }
-                    powerRemovedClasses.add(c);
-                    if (GenesisDataFiles.getMainConfig().getString("console-startup-debug").equalsIgnoreCase("true")) {
-                        Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "Removed power[" + power.getTag() + "] from player " + player.getName());
-                    }
                 }
-            }
+            }).thenRun(() -> {
+                for (Class<? extends CraftPower> classes : getPowersApplied(player)) {
+                    powersAppliedList.get(player).remove(classes);
+                }
+                OriginDataContainer.unloadData(player);
+                hasPowers.remove(player);
+            }).get();
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
         }
-        for (Class<? extends CraftPower> classes : getPowersApplied(player)) {
-            powersAppliedList.get(player).remove(classes);
-        }
-//        PowerUnassignEvent powerUnassignEvent = new PowerUnassignEvent(player, powerRemovedClasses, powerRemovedTypes, origin);
-//        player.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "originLayer"), PersistentDataType.STRING, CraftApoli.toOriginSetSaveFormat(OriginPlayerUtils.getOrigin(player)));
-        OriginDataContainer.unloadData(player);
-//        Bukkit.getServer().getPluginManager().callEvent(powerUnassignEvent);
-        hasPowers.remove(player);
     }
 
     /**

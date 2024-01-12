@@ -43,9 +43,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
 
-import static me.dueris.genesismc.entity.OriginPlayerUtils.launchElytra;
-import static me.dueris.genesismc.entity.OriginPlayerUtils.powerContainer;
-
 public class FlightElytra extends CraftPower implements Listener {
     public static ArrayList<UUID> glidingPlayers = new ArrayList<>();
 

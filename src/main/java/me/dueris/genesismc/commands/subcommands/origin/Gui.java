@@ -15,6 +15,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.profile.PlayerTextures;
 
+import javassist.NotFoundException;
+
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -51,7 +53,11 @@ public class Gui extends SubCommand {
                 }
                 for(LayerContainer layerContainer : CraftApoli.getLayers()){
                     if(layerContainer.getTag().equals(layR)){
-                        OriginPlayerUtils.unassignPowers(p, layerContainer);
+                        try {
+                            OriginPlayerUtils.unassignPowers(p, layerContainer);
+                        } catch (NotFoundException e) {
+                            e.printStackTrace();
+                        }
                         OriginPlayerUtils.setOrigin(p, layerContainer, CraftApoli.nullOrigin());
                         OriginPlayerUtils.resetOriginData(p, OriginDataType.IN_PHASING_FORM);
                         String skinData = p.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "original-skin-url"), PersistentDataType.STRING);

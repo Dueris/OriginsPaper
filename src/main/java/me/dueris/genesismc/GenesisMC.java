@@ -1,5 +1,6 @@
 package me.dueris.genesismc;
 
+import io.papermc.paper.command.PaperCommand;
 import io.papermc.paper.event.player.PlayerFailMoveEvent;
 import me.dueris.genesismc.choosing.ChoosingMain;
 import me.dueris.genesismc.choosing.ChoosingCustomOrigins;
@@ -49,6 +50,9 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.thread.NamedThreadFactory;
 
 import org.bukkit.*;
+import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.craftbukkit.v1_20_R3.CraftWorld;
+import org.bukkit.craftbukkit.v1_20_R3.CraftServer;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -59,11 +63,17 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scoreboard.Team;
 import org.spigotmc.WatchdogThread;
+import org.yaml.snakeyaml.Yaml;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.EnumSet;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
@@ -84,7 +94,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
     private static GenesisMC plugin;
     public static String MODID = "genesismc";
     public static ConditionExecutor conditionExecutor;
-    public static String apoliVersion = "1.12.1";
+    public static String apoliVersion = "1.12.2";
     public static boolean placeholderapi = false;
     public static File playerDataFolder = MinecraftServer.getServer().playerDataStorage.getPlayerDir();
 
@@ -95,6 +105,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
     public static boolean debugOrigins = false;
     public static boolean forceUseCurrentVersion = false;
     public static boolean forceWatchdogStop = true;
+    public static boolean fixPaperExploits = true;
 
     public static OriginScheduler.OriginSchedulerTree getScheduler(){
         return scheduler;
@@ -129,6 +140,10 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 
     public static ConditionExecutor getConditionExecutor(){
         return conditionExecutor;
+    }
+
+    public static File getTmpFolder(){
+        return Path.of(GenesisMC.getPlugin().getDataFolder().getAbsolutePath() + File.separator + ".tmp" + File.separator).toFile();
     }
 
     @Override
@@ -174,8 +189,20 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         if(placeholderapi){
             new PlaceholderApiExtension(this).register();
         }
+        
+        if(!getTmpFolder().exists()){
+            getTmpFolder().mkdirs();
+        }
 
         GenesisMC.disableRender = GenesisDataFiles.getMainConfig().getBoolean("disable-render-power");
+        GenesisMC.fixPaperExploits = GenesisDataFiles.getMainConfig().getBoolean("modify-configs-to-fix-bugs");
+        if(fixPaperExploits){
+            File globalDefault = Paths.get("config" + File.separator + "paper-world-defaults.yml").toFile();
+            YamlConfiguration yamlConfig = YamlConfiguration.loadConfiguration(globalDefault);
+            yamlConfig.set("fixes.disable-unloaded-chunk-enderpearl-exploit", false);
+        }
+        MinecraftServer server = ((CraftServer) Bukkit.getServer()).getServer();
+        server.paperConfigurations.reloadConfigs(server);
 
         me.dueris.genesismc.OriginDataContainer.loadData();
         // Pre-load condition types to prevent constant calling
@@ -188,32 +215,27 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         CraftCondition.item = new ItemCondition();
         // Pre-load end
         conditionExecutor = new ConditionExecutor();
-        CraftApoli.loadOrigins();
         try {
-            for (Class<? extends CraftPower> c : CraftPower.findCraftPowerClasses()) {
-                if (CraftPower.class.isAssignableFrom(c)) {
-                    CraftPower instance = c.newInstance();
-                    CraftPower.getRegistered().add(instance.getClass());
-                    if (instance instanceof Listener || Listener.class.isAssignableFrom(instance.getClass())) {
-                        Bukkit.getServer().getPluginManager().registerEvents((Listener) instance, GenesisMC.getPlugin());
-                    }
-                }
-            }
-            RegisterPowersEvent registerPowersEvent = new RegisterPowersEvent(CraftPower.getRegistered());
-            Bukkit.getServer().getPluginManager().callEvent(registerPowersEvent);
-            for (OriginContainer origin : CraftApoli.getOrigins()) {
-                for (PowerContainer powerContainer : origin.getPowerContainers()) {
-                    CraftApoli.getPowers().add(powerContainer);
-                }
-            }
-        } catch (IOException | ReflectiveOperationException e) {
+            CraftApoli.loadOrigins();
+        } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
         }
+
+        // Register builtin powers
+        Method registerMethod;
+        try {
+            registerMethod = CraftPower.class.getDeclaredMethod("registerBuiltinPowers");
+            registerMethod.setAccessible(true);
+            registerMethod.invoke(null);
+            RegisterPowersEvent e = new RegisterPowersEvent();
+            e.callEvent();
+        } catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+            throw new RuntimeException("Unable to build builtin-powers registry");
+        }
+        
         OriginScheduler.OriginSchedulerTree scheduler = new OriginScheduler.OriginSchedulerTree();
         GenesisMC.scheduler = scheduler;
         scheduler.runTaskTimer(this, 0, 1);
-        // waterProtectionEnchant = new WaterProtection();
-        // custom_enchants.add(waterProtectionEnchant);
     
         OrbOfOrigins.init();
         InfinPearl.init();
@@ -260,6 +282,11 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         Bukkit.getLogger().info("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
         // Shutdown executor, we dont need it anymore
         loaderThreadPool.shutdown();
+        try {
+            Bootstrap.deleteDirectory(GenesisMC.getTmpFolder().toPath(), true);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     protected static void patchPowers(){
@@ -276,72 +303,6 @@ public final class GenesisMC extends JavaPlugin implements Listener {
             OriginPlayerUtils.assignPowers(p);
             if (p.isOp())
                 p.sendMessage(Component.text(LangConfig.getLocalizedString(Bukkit.getConsoleSender(), "reloadMessage")).color(TextColor.fromHexString(AQUA)));
-            boolean hasMimicWardenPower = false;
-
-            for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()) {
-                for (PowerContainer power : OriginPlayerUtils.powerContainer.get(p).get(layer)) {
-                    if (power == null) continue;
-                    if (power.getTag().equals("origins:mimic_warden")) {
-                        hasMimicWardenPower = true;
-                        break;
-                    }
-                }
-            }
-            if (hasMimicWardenPower && !mimicWardenPlayers.contains(p)) {
-                mimicWardenPlayers.add(p);
-            } else if (!hasMimicWardenPower) {
-                mimicWardenPlayers.remove(p);
-            }
-
-            boolean hasPower = false;
-
-            for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()) {
-                for (PowerContainer power : OriginPlayerUtils.powerContainer.get(p).get(layer)) {
-                    if(power == null) continue;
-                    if (power.getTag().equals("origins:slime_block_bounce")) {
-                        hasPower = true;
-                        break;
-                    }
-                }
-            }
-
-            if (hasPower && !bouncePlayers.contains(p)) {
-                bouncePlayers.add(p);
-            } else if (!hasPower) {
-                bouncePlayers.remove(p);
-            }
-
-            boolean hasPiglinPower = false;
-
-            for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()) {
-                for (PowerContainer power : OriginPlayerUtils.powerContainer.get(p).get(layer)) {
-                    if (power.getTag().equals("origins:piglin_brothers")) {
-                        hasPiglinPower = true;
-                        break;
-                    }
-                }
-            }
-            if (hasPiglinPower && !piglinPlayers.contains(p)) {
-                piglinPlayers.add(p);
-            } else if (!hasPiglinPower) {
-                piglinPlayers.remove(p);
-            }
-
-            boolean hasScaryPower = false;
-
-            for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()) {
-                for (PowerContainer power : OriginPlayerUtils.powerContainer.get(p).get(layer)) {
-                    if (power.getTag().equals("origins:scare_creepers")) {
-                        hasPiglinPower = true;
-                        break;
-                    }
-                }
-            }
-            if (hasScaryPower && !scaryPlayers.contains(p)) {
-                scaryPlayers.add(p);
-            } else if (!hasScaryPower) {
-                scaryPlayers.remove(p);
-            }
         }
     }
 

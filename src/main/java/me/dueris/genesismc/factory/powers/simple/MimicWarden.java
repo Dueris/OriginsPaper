@@ -25,9 +25,8 @@ import org.bukkit.util.Vector;
 import java.util.*;
 import java.util.function.Predicate;
 
-import static me.dueris.genesismc.OriginScheduler.OriginSchedulerTree.mimic_warden;
-
-public class MimicWarden extends CraftPower implements OriginSimple, Listener {
+public class MimicWarden extends CraftPower implements Listener, PowerProvider {
+    protected static NamespacedKey powerReference = GenesisMC.originIdentifier("mimic_warden");
 
     @Override
     public void run(Player p) {
@@ -41,51 +40,9 @@ public class MimicWarden extends CraftPower implements OriginSimple, Listener {
         return particleTasks;
     }
 
-    @EventHandler
-    public void event(OriginChangeEvent e) {
-        boolean hasMimicWardenPower = false;
-        if(OriginPlayerUtils.powerContainer.get(e.getPlayer()) == null) return;
-
-        for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()) {
-            for (PowerContainer power : OriginPlayerUtils.powerContainer.get(e.getPlayer()).get(layer)) {
-                if (power.getTag().equals("origins:mimic_warden")) {
-                    hasMimicWardenPower = true;
-                    break;
-                }
-            }
-        }
-
-        if (hasMimicWardenPower && !mimicWardenPlayers.contains(e.getPlayer())) {
-            mimicWardenPlayers.add(e.getPlayer());
-        } else if (!hasMimicWardenPower) {
-            mimicWardenPlayers.remove(e.getPlayer());
-        }
-    }
-
-    @EventHandler
-    public void event(PlayerJoinEvent e) {
-        boolean hasMimicWardenPower = false;
-        if(OriginPlayerUtils.powerContainer.get(e.getPlayer()) == null) return;
-
-        for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()) {
-            for (PowerContainer power : OriginPlayerUtils.powerContainer.get(e.getPlayer()).get(layer)) {
-                if (power.getTag().equals("origins:mimic_warden")) {
-                    hasMimicWardenPower = true;
-                    break;
-                }
-            }
-        }
-
-        if (hasMimicWardenPower && !mimicWardenPlayers.contains(e.getPlayer())) {
-            mimicWardenPlayers.add(e.getPlayer());
-        } else if (!hasMimicWardenPower) {
-            mimicWardenPlayers.remove(e.getPlayer());
-        }
-    }
-
     @Override
     public String getPowerFile() {
-        return "genesis:simple-implementation-mimic-warden[@dueris]";
+        return null;
     }
 
     @EventHandler
@@ -245,7 +202,7 @@ public class MimicWarden extends CraftPower implements OriginSimple, Listener {
 
     @Override
     public ArrayList<Player> getPowerArray() {
-        return mimic_warden;
+        return mimicWardenPlayers;
     }
 
     @Override
@@ -260,10 +217,5 @@ public class MimicWarden extends CraftPower implements OriginSimple, Listener {
             powers_active.put(p, new HashMap());
             setActive(p, tag, bool);
         }
-    }
-
-    @Override
-    public String getSimpleTagID() {
-        return "origins:mimic_warden";
     }
 }

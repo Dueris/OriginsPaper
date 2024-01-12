@@ -46,3 +46,7 @@ disable-render-power: true
 
 # Allows to set the max number of threads the power/origin loader will use. Default is 6
 max-loader-threads: 6
+
+# Paper configs have some bug fixes in them that prevent Genesis from doing some
+# things correctly, Genesis changes them by default, but can be disabled.
+modify-configs-to-fix-bugs: true

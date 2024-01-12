@@ -1,12 +1,15 @@
 package me.dueris.genesismc.factory.powers.simple;
 
 import it.unimi.dsi.fastutil.Hash;
+import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.OriginScheduler;
 import me.dueris.genesismc.entity.OriginPlayerUtils;
 import me.dueris.genesismc.events.OriginChangeEvent;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.OriginContainer;
 import me.dueris.genesismc.utils.PowerContainer;
+
+import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -19,10 +22,12 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class PiglinNoAttack extends CraftPower implements OriginSimple, Listener  {
+public class PiglinNoAttack extends CraftPower implements Listener, PowerProvider  {
     public static ArrayList<Player> piglinPlayers = new ArrayList<>();
     static ArrayList<EntityType> piglinValid = new ArrayList<>();
+    protected static NamespacedKey powerReference = GenesisMC.originIdentifier("piglin_brothers");
     private HashMap<Player, HashMap<Entity, Integer>> cooldowns = new HashMap<>();
+    
     static {
         piglinValid.add(EntityType.PIGLIN);
         piglinValid.add(EntityType.PIGLIN_BRUTE);
@@ -70,56 +75,14 @@ public class PiglinNoAttack extends CraftPower implements OriginSimple, Listener
         }
     }
 
-    @EventHandler
-    public void event(OriginChangeEvent e) {
-        boolean hasMimicWardenPower = false;
-        if(OriginPlayerUtils.powerContainer.get(e.getPlayer()) == null) return;
-
-        for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()) {
-            for (PowerContainer power : OriginPlayerUtils.powerContainer.get(e.getPlayer()).get(layer)) {
-                if (power.getTag().equals("origins:piglin_brothers")) {
-                    hasMimicWardenPower = true;
-                    break;
-                }
-            }
-        }
-
-        if (hasMimicWardenPower && !piglinPlayers.contains(e.getPlayer())) {
-            piglinPlayers.add(e.getPlayer());
-        } else if (!hasMimicWardenPower) {
-            piglinPlayers.remove(e.getPlayer());
-        }
-    }
-
-    @EventHandler
-    public void event(PlayerJoinEvent e) {
-        boolean hasMimicWardenPower = false;
-        if(OriginPlayerUtils.powerContainer.get(e.getPlayer()) == null) return;
-
-        for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()) {
-            for (PowerContainer power : OriginPlayerUtils.powerContainer.get(e.getPlayer()).get(layer)) {
-                if (power.getTag().equals("origins:piglin_brothers")) {
-                    hasMimicWardenPower = true;
-                    break;
-                }
-            }
-        }
-
-        if (hasMimicWardenPower && !piglinPlayers.contains(e.getPlayer())) {
-            piglinPlayers.add(e.getPlayer());
-        } else if (!hasMimicWardenPower) {
-            piglinPlayers.remove(e.getPlayer());
-        }
-    }
-
     @Override
     public String getPowerFile() {
-        return "genesis:simple-implementation-piglin-no-attack[@dueris]";
+        return null;
     }
 
     @Override
     public ArrayList<Player> getPowerArray() {
-        return OriginScheduler.OriginSchedulerTree.piglin_no_attack;
+        return piglinPlayers;
     }
 
     @Override
@@ -134,10 +97,5 @@ public class PiglinNoAttack extends CraftPower implements OriginSimple, Listener
             powers_active.put(p, new HashMap());
             setActive(p, tag, bool);
         }
-    }
-
-    @Override
-    public String getSimpleTagID() {
-        return "origins:piglin_brothers";
     }
 }

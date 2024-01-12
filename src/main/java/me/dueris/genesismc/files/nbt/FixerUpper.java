@@ -2,7 +2,9 @@ package me.dueris.genesismc.files.nbt;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 import com.google.common.base.Stopwatch;
@@ -38,23 +40,29 @@ public class FixerUpper {
     public static void runFixerUpper() throws IOException{
         Stopwatch stopwatch = Stopwatch.createStarted();
         File[] filesToFix = MinecraftServer.getServer().playerDataStorage.getPlayerDir().listFiles();
-        int[] i = {0};
-        System.out.println("Found (x) files in (dir)".replace("(x)", String.valueOf(filesToFix.length)).replace("(dir)", MinecraftServer.getServer().playerDataStorage.getPlayerDir().toPath().toString()));
+        List<CompletableFuture<Void>> futures = new ArrayList<>();
+
+        System.out.println("Found (x) files in (dir)"
+                .replace("(x)", String.valueOf(filesToFix.length))
+                .replace("(dir)", MinecraftServer.getServer().playerDataStorage.getPlayerDir().toPath().toString()));
+
         for(File f : filesToFix){
-            GenesisMC.loaderThreadPool.submit(() -> {
+            CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
                 try {
-                    fixupFile(f);
+                    if(!f.getPath().endsWith(".dat_old")){
+                        fixupFile(f);
+                    }
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                i[0]++;
-            });
+            }, GenesisMC.loaderThreadPool);
+
+            futures.add(future);
         }
-        while(true){
-            if(i[0] == MinecraftServer.getServer().playerDataStorage.getPlayerDir().listFiles().length){
-                System.out.println("FixerUpper took {time} ms and completed successfully.".replace("{time}", String.valueOf(stopwatch.stop().elapsed().toMillis())));
-                break;
-            }
-        }
+
+        // Wait for all files to complete FixerUpper
+        CompletableFuture<Void> allTasks = CompletableFuture.allOf(futures.toArray(new CompletableFuture[0]));
+        allTasks.join();
+        System.out.println("FixerUpper took {time} ms and completed successfully.".replace("{time}", String.valueOf(stopwatch.stop().elapsed().toMillis())));
     }
 }

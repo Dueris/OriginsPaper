@@ -238,7 +238,6 @@ public class ChoosingCustomOrigins implements Listener {
                 power.runHandle(p);
                 OriginChangeEvent event = new OriginChangeEvent(p, origin);
                 event.callEvent();
-                OriginPlayerUtils.setHasFirstChose(p, true);
             }
         }
     }
