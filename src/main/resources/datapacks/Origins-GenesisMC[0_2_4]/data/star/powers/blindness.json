@@ -70,6 +70,6 @@
       }
     ]
   },
-  "cooldown": 1,
+  "cooldown": 0,
   "hidden": true
 }

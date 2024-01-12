@@ -13,9 +13,11 @@ import me.dueris.genesismc.factory.powers.player.attributes.AttributeHandler;
 import me.dueris.genesismc.utils.OriginContainer;
 import me.dueris.genesismc.utils.PowerContainer;
 import me.dueris.genesismc.utils.Utils;
+import me.dueris.genesismc.utils.apoli.Space;
 import me.dueris.genesismc.utils.console.OriginConsoleSender;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.damagesource.DamageType;
+import org.apache.commons.lang3.function.TriConsumer;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -34,7 +36,7 @@ import org.bukkit.projectiles.ProjectileSource;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
-import org.jetbrains.annotations.NotNull;
+import org.joml.Vector3f;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -573,14 +575,22 @@ public class Actions {
             }
         }
         if (type.equals("origins:add_velocity")) {
-            float y = 0.0f;
+            float y = 0f;
+            float x = 0f;
+            float z = 0f;
+            Space space = Utils.getSpaceFromString(entityAction.getOrDefault("space", "world").toString());
             if (entityAction.containsKey("y")) y = Float.parseFloat(entityAction.get("y").toString());
+            if (entityAction.containsKey("x")) x = Float.parseFloat(entityAction.get("x").toString());
+            if (entityAction.containsKey("z")) z = Float.parseFloat(entityAction.get("z").toString());
 
-            if (entity instanceof Player player) {
-                Location location = player.getEyeLocation();
-                @NotNull Vector direction = location.getDirection().normalize();
-                Vector velocity = direction.multiply(y + 1.8);
-                player.setVelocity(velocity);
+            Vector3f vec = new Vector3f(x, y, z);
+            net.minecraft.world.entity.Entity en = ((CraftLivingEntity)entity).getHandle();
+            space.toGlobal(vec, en);
+            System.out.println(vec);
+            if(Boolean.parseBoolean(entityAction.getOrDefault("set", "false").toString())){
+                en.getBukkitEntity().getVelocity().add(new Vector(vec.x, vec.y, vec.z));
+            }else{
+                en.getBukkitEntity().setVelocity(new Vector(vec.x, vec.y, vec.z));
             }
         }
         if (type.equals("origins:execute_command")) {
@@ -592,7 +602,15 @@ public class Actions {
             } else {
                 cmd = power.get("command").toString();
             }
+            final boolean returnToNormal = entity.getWorld().getGameRuleValue(GameRule.SEND_COMMAND_FEEDBACK);
+            entity.getWorld().setGameRule(GameRule.SEND_COMMAND_FEEDBACK, false);
             Bukkit.dispatchCommand(new OriginConsoleSender(), "execute at {name} run ".replace("{name}", entity.getName()) + cmd);
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    entity.getWorld().setGameRule(GameRule.SEND_COMMAND_FEEDBACK, returnToNormal);
+                }
+            }.runTaskLater(GenesisMC.getPlugin(), 1);
         }
         if (type.equals("origins:add_xp")) {
             int points = 0;

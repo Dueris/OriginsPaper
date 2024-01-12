@@ -7,6 +7,7 @@ import com.google.gson.stream.JsonReader;
 import com.mojang.brigadier.StringReader;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
+import me.dueris.genesismc.utils.apoli.Space;
 import net.minecraft.Util;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
@@ -68,6 +69,38 @@ public class Utils {
                 && fromLoc.getBlockX() == toLoc.getBlockX()
                 && fromLoc.getBlockY() == toLoc.getBlockY()
                 && fromLoc.getBlockZ() == toLoc.getBlockZ());
+    }
+
+    public static Space getSpaceFromString(String space){
+        switch (space) {
+            case "world" -> {
+                return Space.WORLD;
+            }
+            case "local" -> {
+                return Space.LOCAL;
+            }
+            case "local_horizontal" -> {
+                return Space.LOCAL_HORIZONTAL;
+            }
+            case "local_horizontal_normalized" -> {
+                return Space.LOCAL_HORIZONTAL_NORMALIZED;
+            }
+            case "velocity" -> {
+                return Space.VELOCITY;
+            }
+            case "velocity_normalized" -> {
+                return Space.VELOCITY_NORMALIZED;
+            }
+            case "velocity_horizontal" -> {
+                return Space.VELOCITY_HORIZONTAL;
+            }
+            case "velocity_horizontal_normalized" -> {
+                return Space.VELOCITY_HORIZONTAL_NORMALIZED;
+            }
+            default -> {
+                return Space.WORLD;
+            }
+        }
     }
 
     // Math
