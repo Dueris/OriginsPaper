@@ -323,7 +323,7 @@ public class CraftApoli {
                         ArrayList<String> originFileName = new ArrayList<>();
 
                         try {
-                            JSONObject originLayerParser = (JSONObject) new JSONParser().parse(new FileReader(datapack.getAbsolutePath() + origin_layer.getPath().split(datapack.getName())[1]));
+                            JSONObject originLayerParser = (JSONObject) new JSONParser().parse(new FileReader(datapack.getAbsolutePath().replace(datapack.getName(), "") + origin_layer.getPath()));
                             JSONArray originLayer_origins = ((JSONArray) originLayerParser.get("origins"));
 
                             //gets every origin from the layer
