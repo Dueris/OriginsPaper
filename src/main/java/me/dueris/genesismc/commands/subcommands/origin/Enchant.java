@@ -1,6 +1,5 @@
 package me.dueris.genesismc.commands.subcommands.origin;
 
-import me.dueris.genesismc.OriginCommandSender;
 import me.dueris.genesismc.commands.PlayerSelector;
 import me.dueris.genesismc.commands.subcommands.SubCommand;
 import me.dueris.genesismc.enchantments.Anvil;
@@ -12,7 +11,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
-import org.bukkit.craftbukkit.v1_20_R3.enchantments.CraftEnchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.meta.ItemMeta;
 

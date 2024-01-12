@@ -99,7 +99,7 @@ public abstract class CraftPower implements Power {
     public static Class<? extends CraftPower> getCraftPowerFromKeyOrThrow(String key) throws NotFoundException{
         if(registeredFromKey.get(key) != null){
             return registeredFromKey.get(key);
-        }else{throw new NotFoundException("Unable to find power");}
+        }else{throw new NotFoundException("Unable to find power: " + key);}
     }
 
     public static boolean isRegisteredCraftPower(Class<?> c) {

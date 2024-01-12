@@ -2,47 +2,37 @@ package me.dueris.genesismc.factory.powers.player;
 
 import me.dueris.genesismc.CooldownManager;
 import me.dueris.genesismc.GenesisMC;
-import me.dueris.genesismc.OriginCommandSender;
+import me.dueris.genesismc.utils.console.OriginConsoleSender;
 import me.dueris.genesismc.entity.OriginPlayerUtils;
 import me.dueris.genesismc.events.KeybindTriggerEvent;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.KeybindUtils;
-import me.dueris.genesismc.utils.OriginContainer;
 import me.dueris.genesismc.utils.PowerContainer;
 import me.dueris.genesismc.utils.Utils;
-import net.minecraft.commands.ParserUtils;
+import me.dueris.genesismc.utils.console.OriginServerCommandSender;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.commands.SummonCommand;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Entity.RemovalReason;
 import net.minecraft.world.phys.Vec3;
 
-import org.bukkit.Bukkit;
-import org.bukkit.FluidCollisionMode;
-import org.bukkit.Location;
-import org.bukkit.NamespacedKey;
-import org.bukkit.Sound;
-import org.bukkit.craftbukkit.v1_20_R3.CraftWorld;
-import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEnderPearl;
+import org.bukkit.*;
+import org.bukkit.craftbukkit.v1_20_R3.CraftServer;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
-import org.bukkit.craftbukkit.v1_20_R3.entity.CraftLivingEntity;
-import org.bukkit.craftbukkit.v1_20_R3.entity.CraftPlayer;
-import org.bukkit.craftbukkit.v1_20_R3.entity.CraftProjectile;
 import org.bukkit.craftbukkit.v1_20_R3.util.CraftLocation;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.player.PlayerCommandSendEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
-import com.destroystokyo.paper.event.player.PlayerLaunchProjectileEvent;
 import com.mojang.brigadier.StringReader;
 
 import io.papermc.paper.util.MCUtil;
@@ -51,7 +41,6 @@ import static me.dueris.genesismc.utils.KeybindUtils.isKeyBeingPressed;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 public class FireProjectile extends CraftPower implements Listener {
@@ -69,14 +58,6 @@ public class FireProjectile extends CraftPower implements Listener {
                 in_cooldown_patch.remove(p);
             }
         }.runTaskLater(GenesisMC.getPlugin(), 5);
-    }
-
-    public static int parseOrDefault(String value, int defaultValue) {
-        try {
-            return Integer.parseInt(value);
-        } catch (NumberFormatException e) {
-            return defaultValue;
-        }
     }
 
     @EventHandler
@@ -106,15 +87,6 @@ public class FireProjectile extends CraftPower implements Listener {
         }
 
     }
-
-    @EventHandler
-    public void fixEnderPearlThrow(PlayerLaunchProjectileEvent e){
-        if(e.getProjectile().getType().equals(EntityType.ENDER_PEARL)){
-            CompoundTag mergedTag = ((CraftEnderPearl)e.getProjectile()).getHandle().saveWithoutId(new CompoundTag());
-            System.out.println(mergedTag.getAsString());
-        }
-    }
-
 
     @EventHandler
     public void keybindPress(KeybindTriggerEvent e) {
@@ -217,7 +189,7 @@ public class FireProjectile extends CraftPower implements Listener {
                                                                         proj.setHasBeenShot(true);
                                                                         ((CraftEntity)proj).getHandle().saveWithoutId(new CompoundTag());
                                                                         Vector direction = p.getEyeLocation().getDirection();
-                                                                        Vector dir = direction.clone().normalize().multiply(3);
+                                                                        Vector dir = direction.clone().normalize().multiply(1);
                                                                         Vec3 startPos = MCUtil.toVec3(p.getEyeLocation());
                                                                         Vec3 endPos = startPos.add(dir.getX(), dir.getY(), dir.getZ());
                                                                         entityToSpawn.getBukkitEntity().getLocation().setDirection(direction);
@@ -254,6 +226,8 @@ public class FireProjectile extends CraftPower implements Listener {
                                                                         }
                                                                         finalNbtTag[0].replace(previousSetMotion, finalVeloc.getX() + "," + finalVeloc.getY() + "," + finalVeloc.getZ());
                                                                         entityToSpawn.remove(RemovalReason.DISCARDED);
+                                                                        final boolean returnToNormal = p.getWorld().getGameRuleValue(GameRule.SEND_COMMAND_FEEDBACK);
+                                                                        p.getWorld().setGameRule(GameRule.SEND_COMMAND_FEEDBACK, false);
                                                                         new BukkitRunnable() {
                                                                             @Override
                                                                             public void run() {
@@ -262,8 +236,14 @@ public class FireProjectile extends CraftPower implements Listener {
                                                                                 .replace("{type}", type.key().asString())
                                                                                 .replace("{loc}", "^ ^1 ^")
                                                                                 .replace("{nbt}", finalNbtTag[0]);
-                                                                                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), cmd);
+                                                                                Bukkit.dispatchCommand(new OriginConsoleSender(), cmd);
                                                                                 setActive(p, power.getTag(), true);
+                                                                                new BukkitRunnable(){
+                                                                                    @Override
+                                                                                    public void run(){
+                                                                                        p.getWorld().setGameRule(GameRule.SEND_COMMAND_FEEDBACK, returnToNormal);
+                                                                                    }
+                                                                                }.runTaskLater(GenesisMC.getPlugin(), 1);
                                                                                 doubleFirePatch.add(p);
                                                                                 new BukkitRunnable(){
                                                                                     @Override

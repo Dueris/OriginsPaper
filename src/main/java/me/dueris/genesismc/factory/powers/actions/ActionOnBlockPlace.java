@@ -1,7 +1,7 @@
 package me.dueris.genesismc.factory.powers.actions;
 
 import me.dueris.genesismc.GenesisMC;
-import me.dueris.genesismc.OriginCommandSender;
+import me.dueris.genesismc.utils.console.OriginConsoleSender;
 import me.dueris.genesismc.entity.OriginPlayerUtils;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.actions.Actions;
@@ -9,12 +9,10 @@ import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.LayerContainer;
 import me.dueris.genesismc.utils.PowerContainer;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.inventory.ItemStack;
 import org.json.simple.JSONObject;
 
 import java.util.ArrayList;
@@ -50,7 +48,7 @@ public class ActionOnBlockPlace extends CraftPower implements Listener {
                                         }else{
                                             amt = 1;
                                         }
-                                        Bukkit.dispatchCommand(new OriginCommandSender(), "give {player} {item} {amount}"
+                                        Bukkit.dispatchCommand(new OriginConsoleSender(), "give {player} {item} {amount}"
                                             .replace("{player}", e.getPlayer().getName()).replace("{item}", jsonObject.get("item").toString()).replace("{amount}", String.valueOf(amt))
                                         );
                                     }

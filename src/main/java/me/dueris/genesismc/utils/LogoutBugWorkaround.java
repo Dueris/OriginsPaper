@@ -1,14 +1,8 @@
 package me.dueris.genesismc.utils;
 
-import io.papermc.paper.entity.TeleportFlag;
 import me.dueris.genesismc.GenesisMC;
-import me.dueris.genesismc.OriginCommandSender;
-import me.dueris.genesismc.OriginDataContainer;
-import net.minecraft.server.level.ServerPlayer;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
-import org.bukkit.craftbukkit.v1_20_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;

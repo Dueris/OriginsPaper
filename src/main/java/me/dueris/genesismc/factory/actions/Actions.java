@@ -2,34 +2,25 @@ package me.dueris.genesismc.factory.actions;
 
 import me.dueris.genesismc.CooldownManager;
 import me.dueris.genesismc.GenesisMC;
-import me.dueris.genesismc.OriginCommandSender;
-import me.dueris.genesismc.enchantments.EnchantTable;
+import me.dueris.genesismc.utils.console.OriginConsoleSender;
 import me.dueris.genesismc.entity.OriginPlayerUtils;
 import me.dueris.genesismc.events.AddToSetEvent;
 import me.dueris.genesismc.events.RemoveFromSetEvent;
 import me.dueris.genesismc.factory.CraftApoli;
-import me.dueris.genesismc.factory.conditions.block.BlockCondition;
-import me.dueris.genesismc.factory.conditions.entity.EntityCondition;
-import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.factory.powers.Resource;
 import me.dueris.genesismc.factory.powers.Toggle;
 import me.dueris.genesismc.factory.powers.effects.StackingStatusEffect;
 import me.dueris.genesismc.factory.powers.player.attributes.AttributeHandler;
-import me.dueris.genesismc.utils.KeybindUtils;
 import me.dueris.genesismc.utils.OriginContainer;
 import me.dueris.genesismc.utils.PowerContainer;
 import me.dueris.genesismc.utils.Utils;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageType;
-import net.minecraft.world.level.storage.LevelResource;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.boss.BossBar;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftLivingEntity;
-import org.bukkit.craftbukkit.v1_20_R3.entity.CraftPlayer;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.*;
 import org.bukkit.event.entity.EntityDamageEvent;
@@ -50,10 +41,7 @@ import org.json.simple.JSONObject;
 import java.util.*;
 import java.util.function.Predicate;
 
-import static me.dueris.genesismc.factory.conditions.ConditionExecutor.getResult;
 import static me.dueris.genesismc.factory.powers.OriginMethods.statusEffectInstance;
-import static me.dueris.genesismc.factory.powers.Power.conditioned_attribute;
-import static me.dueris.genesismc.factory.powers.player.FireProjectile.enderian_pearl;
 import static me.dueris.genesismc.utils.KeybindUtils.addItems;
 
 public class Actions {
@@ -280,9 +268,9 @@ public class Actions {
             entity.setFireTicks(Integer.parseInt(power.get("duration").toString()));
         }
         if (type.equals("origins:spawn_entity")){
-            OriginCommandSender originCommandSender = new OriginCommandSender();
-            originCommandSender.setOp(true);
-            Bukkit.dispatchCommand(originCommandSender, "summon $1 %1 %2 %3 $2"
+            OriginConsoleSender originConsoleSender = new OriginConsoleSender();
+            originConsoleSender.setOp(true);
+            Bukkit.dispatchCommand(originConsoleSender, "summon $1 %1 %2 %3 $2"
                             .replace("$1", power.get("entity_type").toString())
                             .replace("$2", power.getOrDefault("tag", "").toString()
                             .replace("%1", String.valueOf(entity.getLocation().getX()))
@@ -322,7 +310,7 @@ public class Actions {
                         .replace("{name}", "@e[{data}]"
                                 .replace("{data}", "x=" + entity.getLocation().getX() + ",y=" + entity.getLocation().getY() + ",z=" + entity.getLocation().getZ() + ",type=" + entity.getType().toString().toLowerCase() + ",x_rotation=" + entity.getLocation().getDirection().getX() + ",y_rotation=" + entity.getLocation().getDirection().getY())
                         );
-                Bukkit.dispatchCommand(new OriginCommandSender(), cmd);
+                Bukkit.dispatchCommand(new OriginConsoleSender(), cmd);
                 System.out.println(cmd);
             }
         }
@@ -330,7 +318,7 @@ public class Actions {
             if(entity instanceof Player p){
                 PowerContainer powerContainer = CraftApoli.getPowerContainerFromTag(power.get("power").toString());
                 if(powerContainer != null){
-                    Bukkit.dispatchCommand(new OriginCommandSender(), "power remove {name} {identifier}".replace("{name}", p.getName()).replace("{identifier}", power.get("power").toString()));
+                    Bukkit.dispatchCommand(new OriginConsoleSender(), "power remove {name} {identifier}".replace("{name}", p.getName()).replace("{identifier}", power.get("power").toString()));
                 }
             }
         }
@@ -531,14 +519,14 @@ public class Actions {
             }
         }
         if (type.equals("origins:grant_advancement")){
-            OriginCommandSender originCommandSender = new OriginCommandSender();
-            originCommandSender.setOp(true);
-            Bukkit.dispatchCommand(originCommandSender, "advancement grant $1 $2".replace("$1", entity.getName()).replace("$2", power.get("advacnement").toString()));
+            OriginConsoleSender originConsoleSender = new OriginConsoleSender();
+            originConsoleSender.setOp(true);
+            Bukkit.dispatchCommand(originConsoleSender, "advancement grant $1 $2".replace("$1", entity.getName()).replace("$2", power.get("advacnement").toString()));
         }
         if (type.equals("origins:revoke_advancement")){
-            OriginCommandSender originCommandSender = new OriginCommandSender();
-            originCommandSender.setOp(true);
-            Bukkit.dispatchCommand(originCommandSender, "advancement revoke $1 $2".replace("$1", entity.getName()).replace("$2", power.get("advacnement").toString()));
+            OriginConsoleSender originConsoleSender = new OriginConsoleSender();
+            originConsoleSender.setOp(true);
+            Bukkit.dispatchCommand(originConsoleSender, "advancement revoke $1 $2".replace("$1", entity.getName()).replace("$2", power.get("advacnement").toString()));
         }
         if (type.equals("origins:selector_action")){
             if(power.get("bientity_condition") != null){
@@ -600,7 +588,7 @@ public class Actions {
             }else{
                 cmd = power.get("command").toString();
             }
-            Bukkit.dispatchCommand(new OriginCommandSender(), "execute at {name} run ".replace("{name}", entity.getName()) + cmd);
+            Bukkit.dispatchCommand(new OriginConsoleSender(), "execute at {name} run ".replace("{name}", entity.getName()) + cmd);
         }
         if (type.equals("origins:add_xp")) {
             int points = 0;
@@ -916,21 +904,21 @@ public class Actions {
             location.createExplosion(explosionPower, create_fire);
         }
         if (type.equals("origins:execute_command")){
-            OriginCommandSender originCommandSender = new OriginCommandSender();
-            originCommandSender.setOp(true);
+            OriginConsoleSender originConsoleSender = new OriginConsoleSender();
+            originConsoleSender.setOp(true);
             final boolean lastSendCMDFeedback = Boolean.parseBoolean(GameRule.SEND_COMMAND_FEEDBACK.toString());
-            Bukkit.dispatchCommand(originCommandSender, "gamerule sendCommandFeedback false");
+            Bukkit.dispatchCommand(originConsoleSender, "gamerule sendCommandFeedback false");
             final boolean lastlogAdminCMDs = Boolean.parseBoolean(GameRule.LOG_ADMIN_COMMANDS.toString());
-            Bukkit.dispatchCommand(originCommandSender, "gamerule logAdminCommands false");
+            Bukkit.dispatchCommand(originConsoleSender, "gamerule logAdminCommands false");
             String cmd = null;
             if(power.get("command").toString().startsWith("/")){
                 cmd = power.get("command").toString().split("/")[1];
             }else{
                 cmd = power.get("command").toString();
             }
-            Bukkit.dispatchCommand(originCommandSender, cmd);
-            Bukkit.dispatchCommand(originCommandSender, "gamerule logAdminCommands {bool}".replace("{bool}", String.valueOf(lastlogAdminCMDs)));
-            Bukkit.dispatchCommand(originCommandSender, "gamerule logAdminCommands {bool}".replace("{bool}", String.valueOf(lastSendCMDFeedback)));
+            Bukkit.dispatchCommand(originConsoleSender, cmd);
+            Bukkit.dispatchCommand(originConsoleSender, "gamerule logAdminCommands {bool}".replace("{bool}", String.valueOf(lastlogAdminCMDs)));
+            Bukkit.dispatchCommand(originConsoleSender, "gamerule logAdminCommands {bool}".replace("{bool}", String.valueOf(lastSendCMDFeedback)));
         }
         if (type.equals("origins:set_block")){
             location.getBlock().setType(Material.valueOf(power.get("block").toString().split(":")[1].toUpperCase()));

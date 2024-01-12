@@ -2,11 +2,9 @@ package me.dueris.genesismc.factory.powers.player;
 
 import com.destroystokyo.paper.profile.PlayerProfile;
 import me.dueris.genesismc.GenesisMC;
-import me.dueris.genesismc.OriginCommandSender;
 import me.dueris.genesismc.entity.OriginPlayerUtils;
 import me.dueris.genesismc.events.OriginChangeEvent;
 import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.utils.OriginContainer;
 import me.dueris.genesismc.utils.PowerContainer;
 import me.dueris.genesismc.utils.translation.LangConfig;
 import net.skinsrestorer.api.*;

@@ -204,7 +204,7 @@ public class KeybindUtils implements Listener {
     }
 
     @EventHandler
-    public void OnPressMainKey(OriginKeybindExecuteEvent e) {
+    public void OnPressMainKey(KeybindTriggerEvent e) {
         if (e.getKey().equals("key.origins.primary_active")) {
             primaryTick.add(e.getPlayer());
             new BukkitRunnable() {
@@ -292,9 +292,6 @@ public class KeybindUtils implements Listener {
                 if (originItemData.equalsIgnoreCase("key.origins.primary_active") || originItemData.equalsIgnoreCase("key.origins.secondary_active")) {
                     if (!item.getType().equals(Material.LIME_DYE) || dataContainer.getOrDefault(new NamespacedKey(GenesisMC.getPlugin(), "contin"), PersistentDataType.BOOLEAN, false)) {
                         String key = originItemData;
-
-                        OriginKeybindExecuteEvent originKeybindExecuteEvent = new OriginKeybindExecuteEvent(e.getPlayer(), key, item);
-                        Bukkit.getServer().getPluginManager().callEvent(originKeybindExecuteEvent);
 
                         KeybindTriggerEvent keybindExecuteEvent = new KeybindTriggerEvent(e.getPlayer(), key);
                         Bukkit.getServer().getPluginManager().callEvent(keybindExecuteEvent);
