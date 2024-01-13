@@ -36,7 +36,7 @@ public class ActionOnHit extends CraftPower implements Listener {
                                 if (GenesisMC.getConditionExecutor().check("bientity_condition", "bientity_conditions", p, power, getPowerFile(), actor, target, actor.getLocation().getBlock(), null, p.getActiveItem(), e)) {
                                     setActive(p, power.getTag(), true);
                                     Actions.EntityActionType(actor, power.getEntityAction());
-                                    Actions.biEntityActionType(actor, target, power.getBiEntityAction());
+                                    Actions.BiEntityActionType(actor, target, power.getBiEntityAction());
                                     new BukkitRunnable() {
                                         @Override
                                         public void run() {

@@ -591,34 +591,22 @@ public class PowerContainer implements Serializable {
      *
      * @return Conditions in the power file or null if not found
      */
-    public List<HashMap<String, Object>> getConditionFromString(String singular, String plural) {
+    public List<JSONObject> getConditionFromString(String singular, String plural) {
         Object obj = powerFile.get(singular);
         if (obj == null) {
             obj = powerFile.get(plural);
         }
 
-        List<HashMap<String, Object>> result = new ArrayList<>();
+        List<JSONObject> result = new ArrayList<>();
 
         if (obj instanceof JSONArray jsonArray) {
             for (Object item : jsonArray) {
                 if (item instanceof JSONObject jsonObject) {
-                    HashMap<String, Object> itemMap = new HashMap<>();
-                    for (Object innerKey : jsonObject.keySet()) {
-                        String string_key = (String) innerKey;
-                        Object value = jsonObject.get(string_key);
-                        itemMap.put(string_key, value);
-                    }
-                    result.add(itemMap);
+                    result.add(jsonObject);
                 }
             }
         } else if (obj instanceof JSONObject jsonObject) {
-            HashMap<String, Object> itemMap = new HashMap<>();
-            for (Object innerKey : jsonObject.keySet()) {
-                String string_key = (String) innerKey;
-                Object value = jsonObject.get(string_key);
-                itemMap.put(string_key, value);
-            }
-            result.add(itemMap);
+            result.add(jsonObject);
         }
         return result;
     }

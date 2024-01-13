@@ -160,7 +160,7 @@ public class ConditionExecutor {
         if (powerContainer == null) return true;
         if (powerContainer.getConditionFromString(singular, plural) == null) return true;
         if (powerContainer.getConditionFromString(singular, plural).isEmpty()) return true;
-        for (HashMap<String, Object> condition : powerContainer.getConditionFromString(singular, plural)) {
+        for (JSONObject condition : powerContainer.getConditionFromString(singular, plural)) {
             if (condition.get("type").equals("origins:and")) {
                 JSONArray conditionsArray = (JSONArray) condition.get("conditions");
 

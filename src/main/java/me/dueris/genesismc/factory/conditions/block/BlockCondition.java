@@ -15,6 +15,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.ItemStack;
+import org.json.simple.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -33,13 +34,14 @@ public class BlockCondition implements Condition {
 
     @Override
     @SuppressWarnings("index out of bounds")
-    public Optional<Boolean> check(HashMap<String, Object> condition, Player p, Entity actor, Entity target, Block block, Fluid fluid, ItemStack itemStack, EntityDamageEvent entityDamageEvent) {
+    public Optional<Boolean> check(JSONObject condition, Player p, Entity actor, Entity target, Block block, Fluid fluid, ItemStack itemStack, EntityDamageEvent entityDamageEvent) {
         if (condition.isEmpty() || condition == null) return Optional.empty();
         if (condition.get("type") == null) return Optional.empty();
         if (block == null) return Optional.empty();
         if (block.getType() == null) return Optional.empty();
         boolean inverted = (boolean) condition.getOrDefault("inverted", false);
         String type = condition.get("type").toString().toLowerCase();
+        System.out.println(type);
         switch (type) {
             case "origins:material" -> {
                 try {
@@ -177,7 +179,7 @@ public class BlockCondition implements Condition {
             case "origins:movement_blocking" -> {
                 return getResult(inverted, Optional.of(block.getType().isCollidable()));
             }
-            case "origins:replaceable" -> {
+            case "origins:replacable" -> {
                 return getResult(inverted, Optional.of(block.getType().isAir() || block.isReplaceable()));
             }
             case "origins:water_loggable" -> {

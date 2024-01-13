@@ -333,7 +333,8 @@ public class OriginPlayerUtils {
                     if (power == null) continue;
                     if (power.getType().equalsIgnoreCase("origins:simple")) {
                         try {
-                            Class<? extends CraftPower> c = OriginSimpleContainer.getFromRegistryOrThrow(power.getTag());
+                            Class<? extends CraftPower> c = OriginSimpleContainer.getFromRegistry(power.getTag());
+                            if(c == null) continue;
                             CraftPower craftPower = c.newInstance();
 
                             Field field = c.getDeclaredField("powerReference");
@@ -351,7 +352,7 @@ public class OriginPlayerUtils {
                                     Bukkit.getConsoleSender().sendMessage(ChatColor.GREEN + "Assigned builtinImpl power[" + power.getTag() + "] to player " + player.getName());
                                 }
                             }
-                        } catch (NotFoundException | InstantiationException | IllegalAccessException
+                        } catch (InstantiationException | IllegalAccessException
                                  | NoSuchFieldException | SecurityException e) {
                             e.printStackTrace();
                         }
@@ -407,7 +408,8 @@ public class OriginPlayerUtils {
                     if (power == null) continue;
                     if (power.getType().equalsIgnoreCase("origins:simple")) {
                         try {
-                            Class<? extends CraftPower> c = OriginSimpleContainer.getFromRegistryOrThrow(power.getTag());
+                            Class<? extends CraftPower> c = OriginSimpleContainer.getFromRegistry(power.getTag());
+                            if(c == null) continue;
                             CraftPower craftPower = c.newInstance();
 
                             Field field = c.getDeclaredField("powerReference");
@@ -419,7 +421,7 @@ public class OriginPlayerUtils {
                                 }
                             }
 
-                        } catch (NotFoundException | NoSuchFieldException | SecurityException
+                        } catch (NoSuchFieldException | SecurityException
                                  | InstantiationException | IllegalAccessException e) {
                             e.printStackTrace();
                         }

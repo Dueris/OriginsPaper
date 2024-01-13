@@ -57,7 +57,7 @@ public class EntityCondition implements Condition {
         return Enchantment.getByName(namespaceString);
     }
 
-    private static int countBlocksInCube(int minX, int minY, int minZ, int maxX, int maxY, int maxZ, World world, HashMap<String, Object> condition, Player p, Entity entity, Entity target, Block block, Fluid fluid, ItemStack itemStack, EntityDamageEvent dmgevent) {
+    private static int countBlocksInCube(int minX, int minY, int minZ, int maxX, int maxY, int maxZ, World world, JSONObject condition, Player p, Entity entity, Entity target, Block block, Fluid fluid, ItemStack itemStack, EntityDamageEvent dmgevent) {
         int blockCount = 0;
 
         for (int x = minX; x <= maxX; x++) {
@@ -82,7 +82,7 @@ public class EntityCondition implements Condition {
         return blockCount;
     }
 
-    private static int countBlocksInStar(int centerX, int centerY, int centerZ, int radius, World world, HashMap<String, Object> condition, Player p, Entity entity, Entity target, Block block, Fluid fluid, ItemStack itemStack, EntityDamageEvent dmgevent) {
+    private static int countBlocksInStar(int centerX, int centerY, int centerZ, int radius, World world, JSONObject condition, Player p, Entity entity, Entity target, Block block, Fluid fluid, ItemStack itemStack, EntityDamageEvent dmgevent) {
         int blockCount = 0;
 
         for (int x = centerX - radius; x <= centerX + radius; x++) {
@@ -112,7 +112,7 @@ public class EntityCondition implements Condition {
         return blockCount;
     }
 
-    public static int countBlocksInSphere(int centerX, int centerY, int centerZ, int radius, World world, HashMap<String, Object> condition, Player p, Entity entity, Entity target, Block block, Fluid fluid, ItemStack itemStack, EntityDamageEvent dmgevent) {
+    public static int countBlocksInSphere(int centerX, int centerY, int centerZ, int radius, World world, JSONObject condition, Player p, Entity entity, Entity target, Block block, Fluid fluid, ItemStack itemStack, EntityDamageEvent dmgevent) {
         int blockCount = 0;
         int squaredRadius = radius * radius;
 
@@ -145,7 +145,7 @@ public class EntityCondition implements Condition {
     }
 
     @Override
-    public Optional<Boolean> check(HashMap<String, Object> condition, Player p, Entity entity, Entity target, Block block, Fluid fluid, ItemStack itemStack, EntityDamageEvent entityDamageEvent) {
+    public Optional<Boolean> check(JSONObject condition, Player p, Entity entity, Entity target, Block block, Fluid fluid, ItemStack itemStack, EntityDamageEvent entityDamageEvent) {
         if (condition.isEmpty()) return Optional.empty();
         boolean inverted = (boolean) condition.getOrDefault("inverted", false);
         if (condition.get("type") == null) return Optional.empty();
@@ -254,7 +254,7 @@ public class EntityCondition implements Condition {
                 int maxZ = center.getBlockZ() + radius;
 
                 int blockCount = 0;
-                HashMap<String, Object> ingredientMap = (HashMap<String, java.lang.Object>) condition.get("block_condition");
+                JSONObject ingredientMap = (JSONObject) condition.get("block_condition");
                 if (shape.equalsIgnoreCase("sphere")) {
                     blockCount = countBlocksInSphere(centerX, centerY, centerZ, radius, world, ingredientMap, p, entity, target, block, fluid, itemStack, entityDamageEvent);
                 } else if (shape.equalsIgnoreCase("star")) {
@@ -443,7 +443,7 @@ public class EntityCondition implements Condition {
                             if (LeInvH.getEquipment().getItem(eSlot) != null) {
                                 if (condition.get("item_condition") != null) {
                                     ItemCondition itemCondition = ConditionExecutor.itemCondition;
-                                    Optional boolIC = itemCondition.check((HashMap<String, Object>) condition.get("item_condition"), p, entity, target, block, fluid, LeInvH.getEquipment().getItem(eSlot), entityDamageEvent);
+                                    Optional boolIC = itemCondition.check((JSONObject) condition.get("item_condition"), p, entity, target, block, fluid, LeInvH.getEquipment().getItem(eSlot), entityDamageEvent);
                                     if (boolIC.isPresent()) {
                                         return getResult(inverted, Optional.of((Boolean) boolIC.get()));
                                     }
@@ -497,7 +497,7 @@ public class EntityCondition implements Condition {
             }
             case "origins:in_block" -> {
                 BlockCondition blockCondition = ConditionExecutor.blockCondition;
-                Optional boolB = blockCondition.check((HashMap<String, Object>) condition.get("block_condition"), p, entity, target, block, fluid, itemStack, entityDamageEvent);
+                Optional boolB = blockCondition.check((JSONObject) condition.get("block_condition"), p, entity, target, block, fluid, itemStack, entityDamageEvent);
                 if (boolB.isPresent()) {
                     return getResult(inverted, Optional.of((Boolean) boolB.get()));
                 } else {
@@ -533,7 +533,7 @@ public class EntityCondition implements Condition {
                 if (condition.get("block_condition") == null) {
                     return getResult(inverted, Optional.of(entity.isOnGround()));
                 } else {
-                    Optional<Boolean> boolB = blockCondition.check((HashMap<String, Object>) condition.get("block_condition"), p, entity, target, entity.getLocation().add(0, -1, 0).getBlock(), fluid, itemStack, entityDamageEvent);
+                    Optional<Boolean> boolB = blockCondition.check((JSONObject) condition.get("block_condition"), p, entity, target, entity.getLocation().add(0, -1, 0).getBlock(), fluid, itemStack, entityDamageEvent);
                     if (boolB.isPresent()) {
                         return getResult(inverted, Optional.of(boolB.get() && entity.isOnGround()));
                     }
@@ -564,7 +564,7 @@ public class EntityCondition implements Condition {
                         if (entity2.isInvulnerable()) return getResult(inverted, Optional.of(false));
                         if (entity2.getPassengers().contains(p)) return getResult(inverted, Optional.of(false));
                         if (entity2.equals(target)) {
-                            Optional boolB = this.check((HashMap<String, Object>) condition.get("block_condition"), p, entity, target, block, fluid, itemStack, entityDamageEvent);
+                            Optional boolB = this.check((JSONObject) condition.get("block_condition"), p, entity, target, block, fluid, itemStack, entityDamageEvent);
                             if (boolB.isPresent()) {
                                 if (boolB.get().equals(true)) {
                                     booleans[2] = true;
@@ -581,7 +581,7 @@ public class EntityCondition implements Condition {
                     if (traceResult.getHitBlock() != null) {
                         BlockCondition blockCondition = ConditionExecutor.blockCondition;
                         if (condition.get("block_condition") != null) {
-                            Optional boolB = blockCondition.check((HashMap<String, Object>) condition.get("block_condition"), p, entity, target, block, fluid, itemStack, entityDamageEvent);
+                            Optional boolB = blockCondition.check((JSONObject) condition.get("block_condition"), p, entity, target, block, fluid, itemStack, entityDamageEvent);
                             if (boolB.isPresent()) {
                                 booleans[1] = boolB.get().equals(true);
                             } else {
@@ -660,7 +660,7 @@ public class EntityCondition implements Condition {
                     if (le.getActiveItem() != null) {
                         if (condition.get("item_condition") != null) {
                             ItemCondition itemCondition = ConditionExecutor.itemCondition;
-                            Optional boolI = itemCondition.check((HashMap<String, Object>) condition.get("item_condition"), p, le, target, block, fluid, itemStack, entityDamageEvent);
+                            Optional boolI = itemCondition.check((JSONObject) condition.get("item_condition"), p, le, target, block, fluid, itemStack, entityDamageEvent);
                             if (boolI.isPresent()) {
                                 if (boolI.get().equals(true)) {
                                     return getResult(inverted, Optional.of(true));

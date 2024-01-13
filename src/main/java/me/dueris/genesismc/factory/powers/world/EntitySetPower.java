@@ -103,7 +103,7 @@ public class EntitySetPower extends CraftPower implements Listener {
                         for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                             if (power.get("action_on_add") == null) return;
                             if (power.getTag() == e.getTag()) {
-                                Actions.biEntityActionType(p, e.getEntity(), power.getAction("action_on_add"));
+                                Actions.BiEntityActionType(p, e.getEntity(), power.getAction("action_on_add"));
                             }
                         }
                     }
@@ -122,7 +122,7 @@ public class EntitySetPower extends CraftPower implements Listener {
                         for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                             if (power.get("action_on_add") == null) return;
                             if (power.getTag() == e.getTag()) {
-                                Actions.biEntityActionType(p, e.getEntity(), power.getAction("action_on_remove"));
+                                Actions.BiEntityActionType(p, e.getEntity(), power.getAction("action_on_remove"));
                             }
                         }
                     }

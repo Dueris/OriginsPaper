@@ -5,7 +5,9 @@ import me.dueris.genesismc.choosing.ChoosingMain;
 import me.dueris.genesismc.entity.OriginPlayerUtils;
 import me.dueris.genesismc.events.AttributeExecuteEvent;
 import me.dueris.genesismc.events.OriginChangeEvent;
+import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.powers.CraftPower;
+import me.dueris.genesismc.utils.LayerContainer;
 import me.dueris.genesismc.utils.PowerContainer;
 import me.dueris.genesismc.utils.Utils;
 import me.dueris.genesismc.utils.translation.LangConfig;
@@ -236,19 +238,21 @@ public class AttributeHandler extends CraftPower implements Listener {
             return null; // No block in sight within the range
         }
 
-        public static int getDefaultReach(Player player) {
-            if (player.getGameMode().equals(GameMode.CREATIVE)) {
-                return 5;
+        public static int getDefaultReach(Entity entity) {
+            if(entity instanceof Player p) {
+                if (p.getGameMode().equals(GameMode.CREATIVE)) {
+                    return 5;
+                }
             }
             return 3;
         }
 
-        public static void setFinalReach(Player p, double value) {
+        public static void setFinalReach(Entity p, double value) {
             p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "reach"), PersistentDataType.DOUBLE, value);
         }
 
-        public static double getFinalReach(Player p) {
-            if (p.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "reach"), PersistentDataType.DOUBLE) != null) {
+        public static double getFinalReach(Entity p) {
+            if (p.getPersistentDataContainer().has(new NamespacedKey(GenesisMC.getPlugin(), "reach"), PersistentDataType.DOUBLE)) {
                 return p.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "reach"), PersistentDataType.DOUBLE);
             } else {
                 return getDefaultReach(p);
@@ -259,8 +263,7 @@ public class AttributeHandler extends CraftPower implements Listener {
         public void OnClickREACH(PlayerInteractEvent e) {
             Player p = e.getPlayer();
             if (extra_reach_attack.contains(e.getPlayer())) {
-                for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()) {
-
+                for (LayerContainer layer : CraftApoli.getLayers()) {
                     for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, "origins:attribute", layer)) {
                         for (HashMap<String, Object> modifier : power.getPossibleModifiers("modifier", "modifiers")) {
                             if (!e.getAction().isLeftClick()) return;

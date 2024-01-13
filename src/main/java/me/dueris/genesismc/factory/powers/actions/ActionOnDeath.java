@@ -34,7 +34,7 @@ public class ActionOnDeath extends CraftPower implements Listener {
                             setActive(p, power.getTag(), true);
                             Actions.EntityActionType(p, power.getEntityAction());
                             if (power.getActionOrNull("bientity_action") != null) {
-                                Actions.biEntityActionType(null, p, power.getBiEntityAction());
+                                Actions.BiEntityActionType(null, p, power.getBiEntityAction());
                             }
                             new BukkitRunnable() {
                                 @Override

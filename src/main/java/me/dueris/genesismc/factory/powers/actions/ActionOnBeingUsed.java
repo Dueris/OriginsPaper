@@ -31,7 +31,7 @@ public class ActionOnBeingUsed extends CraftPower implements Listener {
                 if (power == null) continue;
 
                 setActive(player, power.getTag(), true);
-                Actions.biEntityActionType(actor, target, power.getBiEntityAction());
+                Actions.BiEntityActionType(actor, target, power.getBiEntityAction());
                 new BukkitRunnable() {
                     @Override
                     public void run() {

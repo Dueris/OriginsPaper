@@ -14,6 +14,7 @@ import org.bukkit.event.entity.EntityDamageByBlockEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.ItemStack;
+import org.json.simple.JSONObject;
 
 import java.util.HashMap;
 import java.util.Optional;
@@ -42,7 +43,7 @@ public class DamageCondition implements Condition {
     }
 
     @Override
-    public Optional<Boolean> check(HashMap<String, Object> condition, Player p, Entity actor, Entity target, Block block, Fluid fluid, ItemStack itemStack, EntityDamageEvent entityDamageEvent) {
+    public Optional<Boolean> check(JSONObject condition, Player p, Entity actor, Entity target, Block block, Fluid fluid, ItemStack itemStack, EntityDamageEvent entityDamageEvent) {
         if (condition.isEmpty()) return Optional.empty();
         if (condition.get("type") == null) return Optional.empty();
         if (entityDamageEvent == null) return Optional.empty();
@@ -484,7 +485,7 @@ public class DamageCondition implements Condition {
             case "origins:projectile" -> {
                 if (entityDamageEvent.getCause().equals(DamageCause.PROJECTILE)) {
                     if (condition.containsKey("projectile_condition")) {
-                        return getResult(inverted, ConditionExecutor.entityCondition.check((HashMap<String, Object>) condition.get("projectile_condition"), p, ((EntityDamageByEntityEvent) entityDamageEvent).getDamager(), target, block, fluid, itemStack, entityDamageEvent));
+                        return getResult(inverted, ConditionExecutor.entityCondition.check((JSONObject) condition.get("projectile_condition"), p, ((EntityDamageByEntityEvent) entityDamageEvent).getDamager(), target, block, fluid, itemStack, entityDamageEvent));
                     } else {
                         return getResult(inverted, Optional.of(true));
                     }

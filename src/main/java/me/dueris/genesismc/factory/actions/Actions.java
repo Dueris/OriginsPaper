@@ -6,6 +6,7 @@ import me.dueris.genesismc.entity.OriginPlayerUtils;
 import me.dueris.genesismc.events.AddToSetEvent;
 import me.dueris.genesismc.events.RemoveFromSetEvent;
 import me.dueris.genesismc.factory.CraftApoli;
+import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.Resource;
 import me.dueris.genesismc.factory.powers.Toggle;
 import me.dueris.genesismc.factory.powers.effects.StackingStatusEffect;
@@ -15,14 +16,17 @@ import me.dueris.genesismc.utils.PowerContainer;
 import me.dueris.genesismc.utils.Utils;
 import me.dueris.genesismc.utils.apoli.Space;
 import me.dueris.genesismc.utils.console.OriginConsoleSender;
+import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.damagesource.DamageType;
-import org.apache.commons.lang3.function.TriConsumer;
+import org.apache.commons.lang3.tuple.Triple;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.boss.BossBar;
+import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftLivingEntity;
+import org.bukkit.craftbukkit.v1_20_R3.entity.CraftPlayer;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.*;
 import org.bukkit.event.entity.EntityDamageEvent;
@@ -34,16 +38,14 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.projectiles.ProjectileSource;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.util.BlockIterator;
 import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
 import org.joml.Vector3f;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 import java.util.function.Predicate;
 
 import static me.dueris.genesismc.factory.powers.OriginMethods.statusEffectInstance;
@@ -52,6 +54,376 @@ import static me.dueris.genesismc.utils.KeybindUtils.addItems;
 public class Actions {
 
     public static HashMap<Entity, Boolean> resourceChangeTimeout = new HashMap<>();
+
+    public static void BiEntityActionType(Entity actor, Entity target, JSONObject power) {
+        String type = power.get("type").toString();
+
+        if (type.equals("origins:invert")) {
+            BiEntityActionType(target, actor, (JSONObject) power.get("action"));
+        } else if (type.equals("origins:and")) {
+            JSONArray andActions = (JSONArray) power.get("actions");
+            for (Object actionObj : andActions) {
+                JSONObject action = (JSONObject) actionObj;
+                runbiEntity(actor, target, action);
+            }
+        } else if (type.equals("origins:chance")) {
+            double chance = Double.parseDouble(power.get("chance").toString());
+            double randomValue = Math.random();
+
+            if (randomValue <= chance) {
+                JSONObject action = (JSONObject) power.get("action");
+                runbiEntity(actor, target, action);
+            }
+        } else if (type.equals("origins:choice")) {
+            JSONArray actionsArray = (JSONArray) power.get("actions");
+            List<JSONObject> actionsList = new ArrayList<>();
+
+            for (Object actionObj : actionsArray) {
+                JSONObject action = (JSONObject) actionObj;
+                JSONObject element = (JSONObject) action.get("element");
+                int weight = Integer.parseInt(action.get("weight").toString());
+                for (int i = 0; i < weight; i++) {
+                    actionsList.add(element);
+                }
+            }
+
+            if (!actionsList.isEmpty()) {
+                int randomIndex = (int) (Math.random() * actionsList.size());
+                JSONObject chosenAction = actionsList.get(randomIndex);
+                runbiEntity(actor, target, chosenAction);
+            }
+        } else if (type.equals("origins:delay")) {
+            int ticks = Integer.parseInt(power.get("ticks").toString());
+            JSONObject delayedAction = (JSONObject) power.get("action");
+
+            Bukkit.getScheduler().runTaskLater(GenesisMC.getPlugin(), () -> {
+                runbiEntity(actor, target, delayedAction);
+            }, ticks);
+        } else if (type.equals("origins:nothing")) {
+            // Literally does nothing
+        } else if (type.equals("origins:side")) {
+            JSONObject action = (JSONObject) power.get("action");
+            runbiEntity(actor, target, action);
+        } else if (type.equals("origins:if_else")) {
+            if(actor instanceof Player p){
+                Optional<Boolean> bool = ConditionExecutor.biEntityCondition.check((JSONObject) power.get("condition"), p, actor, target, actor.getLocation().getBlock(), null, null, null);
+                if(bool.isPresent()){
+                    if(bool.get()){BiEntityActionType(actor, target, (JSONObject) power.get("if_action"));}
+                    else{BiEntityActionType(actor, target, (JSONObject) power.get("else_action"));}
+                }else{BiEntityActionType(actor, target, (JSONObject) power.get("else_action"));}
+            }else if(target instanceof Player p){
+                Optional<Boolean> bool = ConditionExecutor.biEntityCondition.check((JSONObject) power.get("condition"), p, actor, target, actor.getLocation().getBlock(), null, null, null);
+                if(bool.isPresent()){
+                    if(bool.get()){BiEntityActionType(actor, target, (JSONObject) power.get("if_action"));}
+                    else{BiEntityActionType(actor, target, (JSONObject) power.get("else_action"));}
+                }else{BiEntityActionType(actor, target, (JSONObject) power.get("else_action"));}
+            }else{
+                BiEntityActionType(actor, target, (JSONObject) power.get("else_action"));
+            }
+        } else {
+            runbiEntity(actor, target, power);
+        }
+    }
+
+    public static void ItemActionType(ItemStack item, JSONObject power) {
+        if (power == null) return;
+        if (power.get("type") == null) return;
+        String type = power.get("type").toString();
+
+        if (type.equals("origins:and")) {
+            JSONArray andActions = (JSONArray) power.get("actions");
+            for (Object actionObj : andActions) {
+                JSONObject action = (JSONObject) actionObj;
+                runItem(item, action);
+            }
+        } else if (type.equals("origins:chance")) {
+            double chance = Double.parseDouble(power.get("chance").toString());
+            double randomValue = Math.random();
+
+            if (randomValue <= chance) {
+                JSONObject action = (JSONObject) power.get("action");
+                runItem(item, action);
+            } else if (power.containsKey("fail_action")) {
+                JSONObject failAction = (JSONObject) power.get("fail_action");
+                runItem(item, failAction);
+            }
+        } else if (type.equals("origins:choice")) {
+            JSONArray actionsArray = (JSONArray) power.get("actions");
+            List<JSONObject> actionsList = new ArrayList<>();
+
+            for (Object actionObj : actionsArray) {
+                JSONObject action = (JSONObject) actionObj;
+                JSONObject element = (JSONObject) action.get("element");
+                int weight = Integer.parseInt(action.get("weight").toString());
+                for (int i = 0; i < weight; i++) {
+                    actionsList.add(element);
+                }
+            }
+
+            if (!actionsList.isEmpty()) {
+                int randomIndex = (int) (Math.random() * actionsList.size());
+                JSONObject chosenAction = actionsList.get(randomIndex);
+                runItem(item, chosenAction);
+            }
+        } else if (type.equals("origins:delay")) {
+            int ticks = Integer.parseInt(power.get("ticks").toString());
+            JSONObject delayedAction = (JSONObject) power.get("action");
+
+            Bukkit.getScheduler().runTaskLater(GenesisMC.getPlugin(), () -> {
+                runItem(item, delayedAction);
+            }, ticks);
+        } else if (type.equals("origins:nothing")) {
+            // Literally does nothing
+        } else if (type.equals("origins:if_else")) {
+            Optional<Boolean> bool = ConditionExecutor.itemCondition.check((JSONObject) power.get("condition"), null, null, null, null, null, item, null);
+            if(bool.isPresent()){
+                if(bool.get()){ItemActionType(item, (JSONObject) power.get("if_action"));}
+                else{ItemActionType(item, (JSONObject) power.get("else_action"));}
+            }else{ItemActionType(item, (JSONObject) power.get("else_action"));}
+        } else if (type.equals("origins:side")) {
+            JSONObject action = (JSONObject) power.get("action");
+            runItem(item, action);
+        } else {
+            runItem(item, power);
+        }
+    }
+
+    public static void EntityActionType(Entity entity, JSONObject power) {
+        if (power == null) return;
+        if (power.get("type") == null) return;
+        String type = power.get("type").toString();
+
+        if (type.equals("origins:and")) {
+            JSONArray andActions = (JSONArray) power.get("actions");
+            for (Object actionObj : andActions) {
+                JSONObject action = (JSONObject) actionObj;
+                EntityActionType(entity, action);
+            }
+        } else if (type.equals("origins:chance")) {
+            double chance = Double.parseDouble(power.get("chance").toString());
+            double randomValue = Math.random();
+
+            if (randomValue <= chance) {
+                JSONObject action = (JSONObject) power.get("action");
+                EntityActionType(entity, action);
+            } else if (power.containsKey("fail_action")) {
+                JSONObject failAction = (JSONObject) power.get("fail_action");
+                EntityActionType(entity, failAction);
+            }
+        } else if (type.equals("origins:choice")) {
+            JSONArray actionsArray = (JSONArray) power.get("actions");
+            List<JSONObject> actionsList = new ArrayList<>();
+
+            for (Object actionObj : actionsArray) {
+                JSONObject action = (JSONObject) actionObj;
+                JSONObject element = (JSONObject) action.get("element");
+                int weight = Integer.parseInt(action.get("weight").toString());
+                for (int i = 0; i < weight; i++) {
+                    actionsList.add(element);
+                }
+            }
+
+            if (!actionsList.isEmpty()) {
+                int randomIndex = (int) (Math.random() * actionsList.size());
+                JSONObject chosenAction = actionsList.get(randomIndex);
+                EntityActionType(entity, chosenAction);
+            }
+        } else if (type.equals("origins:delay")) {
+            int ticks = Integer.parseInt(power.get("ticks").toString());
+            JSONObject delayedAction = (JSONObject) power.get("action");
+
+            Bukkit.getScheduler().runTaskLater(GenesisMC.getPlugin(), () -> {
+                EntityActionType(entity, delayedAction);
+            }, ticks);
+        } else if (type.equals("origins:nothing")) {
+            //literally does nothin
+        } else if (type.equals("origins:if_else")) {
+            if(entity instanceof Player p){
+                Optional<Boolean> bool = ConditionExecutor.entityCondition.check((JSONObject) power.get("condition"), p, entity, null, entity.getLocation().getBlock(), null, null, null);
+                if(bool.isPresent()){
+                    if(bool.get()){EntityActionType(entity, (JSONObject) power.get("if_action"));}
+                    else{EntityActionType(entity, (JSONObject) power.get("else_action"));}
+                }else{EntityActionType(entity, (JSONObject) power.get("else_action"));}
+            }else{EntityActionType(entity, (JSONObject) power.get("else_action"));}
+        } else if (type.equals("origins:side")) {
+            JSONObject action = (JSONObject) power.get("action");
+            EntityActionType(entity, action);
+        } else {
+            runEntity(entity, power);
+        }
+    }
+
+    public static void BlockActionType(Location location, JSONObject power) {
+        if (power == null) return;
+        String type = power.get("type").toString();
+
+        if (type.equals("origins:and")) {
+            JSONArray andActions = (JSONArray) power.get("actions");
+            for (Object actionObj : andActions) {
+                JSONObject action = (JSONObject) actionObj;
+                runBlock(location, action);
+            }
+        } else if (type.equals("origins:chance")) {
+            double chance = Double.parseDouble(power.get("chance").toString());
+            double randomValue = Math.random();
+
+            if (randomValue <= chance) {
+                JSONObject action = (JSONObject) power.get("action");
+                runBlock(location, action);
+            } else if (power.containsKey("fail_action")) {
+                JSONObject failAction = (JSONObject) power.get("fail_action");
+                runBlock(location, failAction);
+            }
+        } else if (type.equals("origins:choice")) {
+            JSONArray actionsArray = (JSONArray) power.get("actions");
+            List<JSONObject> actionsList = new ArrayList<>();
+
+            for (Object actionObj : actionsArray) {
+                JSONObject action = (JSONObject) actionObj;
+                JSONObject element = (JSONObject) action.get("element");
+                int weight = Integer.parseInt(action.get("weight").toString());
+                for (int i = 0; i < weight; i++) {
+                    actionsList.add(element);
+                }
+            }
+
+            if (!actionsList.isEmpty()) {
+                int randomIndex = (int) (Math.random() * actionsList.size());
+                JSONObject chosenAction = actionsList.get(randomIndex);
+                runBlock(location, chosenAction);
+            }
+        } else if (type.equals("origins:delay")) {
+            int ticks = Integer.parseInt(power.get("ticks").toString());
+            JSONObject delayedAction = (JSONObject) power.get("action");
+
+            Bukkit.getScheduler().runTaskLater(GenesisMC.getPlugin(), () -> {
+                runBlock(location, delayedAction);
+            }, ticks);
+        } else if (type.equals("origins:nothing")) {
+            // Literally does nothing
+        } else if (type.equals("origins:if_else")) {
+            Optional<Boolean> bool = ConditionExecutor.blockCondition.check((JSONObject) power.get("condition"), null, null, null, location.getBlock(), null, null, null);
+            if(bool.isPresent()){
+                if(bool.get()){BlockActionType(location, (JSONObject) power.get("if_action"));}
+                else{BlockActionType(location, (JSONObject) power.get("else_action"));}
+            }else{BlockActionType(location, (JSONObject) power.get("else_action"));}
+        } else if (type.equals("origins:side")) {
+            JSONObject action = (JSONObject) power.get("action");
+            runBlock(location, action);
+        } else {
+            runBlock(location, power);
+        }
+    }
+
+    private static void runBlock(Location location, JSONObject power) {
+        String type = power.get("type").toString();
+
+        if (type.equals("origins:add_block")) {
+            if (power.containsKey("block")) {
+                Material block;
+                block = Material.getMaterial(power.get("block").toString().split(":")[1].toUpperCase());
+                if (block == null) return;
+
+                //i experimented with it, and it seemed that it just set it one block above?
+                //still unsure about this one tho
+                location.add(0d, 1d, 0d);
+                location.getWorld().getBlockAt(location).setType(block);
+            }
+        }
+        if (type.equals("origins:offset")) {
+            BlockActionType(location.add(Double.valueOf(power.getOrDefault("x", "0").toString()), Double.valueOf(power.getOrDefault("y", "0").toString()), Double.valueOf(power.getOrDefault("z", "0").toString())), (JSONObject) power.get("action"));
+        }
+        if (type.equals("genesis:grow_sculk")) {
+            location.getBlock().setType(Material.SCULK_CATALYST);
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    int centerX = location.getBlockX();
+                    int centerY = location.getBlockY();
+                    int centerZ = location.getBlockZ();
+                    Material sculkStage1 = Material.SCULK;
+                    float initialChance = 0.8f;
+                    float chanceDecrease = 0.05f;
+                    Material sculkStage2 = Material.SCULK_VEIN;
+                    float thresholdPercentage = 0.2f;
+
+                    World world = location.getWorld();
+
+                    iterateAndChangeBlocks(world, centerX, centerY, centerX, sculkStage1, initialChance, chanceDecrease, sculkStage2, thresholdPercentage);
+                }
+            }.runTaskLater(GenesisMC.getPlugin(), 1);
+
+        }
+        if (type.equals("origins:bonemeal")) {
+            Block block = location.getWorld().getBlockAt(location);
+            block.applyBoneMeal(BlockFace.UP);
+        }
+        if (type.equals("origins:explode")) {
+
+            float explosionPower = 1f;
+            String destruction_type = "break";
+            JSONObject indestructible = new JSONObject();
+            JSONObject destructible = new JSONObject();
+            boolean create_fire = false;
+
+            if (power.containsKey("power"))
+                explosionPower = Float.parseFloat(power.get("power").toString());
+            if (power.containsKey("destruction_type"))
+                destruction_type = power.get("destruction_type").toString();
+            if (power.containsKey("indestructible"))
+                indestructible = (JSONObject) power.get("indestructible");
+            if (power.containsKey("destructible")) destructible = (JSONObject) power.get("destructible");
+            if (power.containsKey("create_fire"))
+                create_fire = Boolean.parseBoolean(power.get("create_fire").toString());
+
+            location.createExplosion(explosionPower, create_fire);
+        }
+        if (type.equals("origins:execute_command")) {
+            OriginConsoleSender originConsoleSender = new OriginConsoleSender();
+            originConsoleSender.setOp(true);
+            final boolean lastSendCMDFeedback = Boolean.parseBoolean(GameRule.SEND_COMMAND_FEEDBACK.toString());
+            Bukkit.dispatchCommand(originConsoleSender, "gamerule sendCommandFeedback false");
+            final boolean lastlogAdminCMDs = Boolean.parseBoolean(GameRule.LOG_ADMIN_COMMANDS.toString());
+            Bukkit.dispatchCommand(originConsoleSender, "gamerule logAdminCommands false");
+            String cmd = null;
+            if (power.get("command").toString().startsWith("/")) {
+                cmd = power.get("command").toString().split("/")[1];
+            } else {
+                cmd = power.get("command").toString();
+            }
+            Bukkit.dispatchCommand(originConsoleSender, cmd);
+            Bukkit.dispatchCommand(originConsoleSender, "gamerule logAdminCommands {bool}".replace("{bool}", String.valueOf(lastlogAdminCMDs)));
+            Bukkit.dispatchCommand(originConsoleSender, "gamerule logAdminCommands {bool}".replace("{bool}", String.valueOf(lastSendCMDFeedback)));
+        }
+        if (type.equals("origins:set_block")) {
+            location.getBlock().setType(Material.valueOf(power.get("block").toString().split(":")[1].toUpperCase()));
+        }
+    }
+
+    private static void runItem(ItemStack item, JSONObject power) {
+        JSONObject itemAction = (JSONObject) power.get("item_action");
+        String type = itemAction.get("type").toString();
+        if (type.equals("origins:damage")) {
+            item.setDurability((short) (item.getDurability() + Short.parseShort(itemAction.get("amount").toString())));
+        }
+        if (type.equals("origins:consume")) {
+            for (Player player : Bukkit.getOnlinePlayers()) {
+                if (player.getInventory().contains(item)) {
+                    if (item.getType().isEdible()) {
+                        item.setAmount(item.getAmount() - 1);
+                        player.setSaturation(player.getSaturation() + 2);
+                        player.setFoodLevel(player.getFoodLevel() + 3);
+                    }
+                }
+            }
+        }
+        if (type.equals("origins:remove_enchantment")) {
+            Enchantment enchantment = Enchantment.getByKey(new NamespacedKey(power.get("enchantment").toString().split(":")[0], power.get("enchantment").toString().split(":")[1]));
+            if (item.containsEnchantment(enchantment)) {
+                item.removeEnchantment(enchantment);
+            }
+        }
+    }
 
     public static void runbiEntity(Entity actor, Entity target, JSONObject biEntityAction) {
         String type = biEntityAction.get("type").toString();
@@ -121,105 +493,6 @@ public class Actions {
         }
         if (type.equals("origins:target_action")) {
             runEntity(target, (JSONObject) biEntityAction.get("action"));
-        }
-    }
-
-    public static void biEntityActionType(Entity actor, Entity target, JSONObject biEntityAction) {
-        JSONObject entityAction = biEntityAction;
-        String type = entityAction.get("type").toString();
-
-        if (type.equals("origins:invert")) {
-            biEntityActionType(target, actor, (JSONObject) biEntityAction.get("action"));
-        }
-        if (type.equals("origins:and")) {
-            JSONArray andActions = (JSONArray) entityAction.get("actions");
-            for (Object actionObj : andActions) {
-                JSONObject action = (JSONObject) actionObj;
-                runbiEntity(actor, target, action);
-            }
-        } else if (type.equals("origins:chance")) {
-            double chance = Double.parseDouble(entityAction.get("chance").toString());
-            double randomValue = Math.random();
-
-            if (randomValue <= chance) {
-                JSONObject action = (JSONObject) entityAction.get("action");
-                runbiEntity(actor, target, action);
-            }
-        } else if (type.equals("origins:choice")) {
-            JSONArray actionsArray = (JSONArray) entityAction.get("actions");
-            List<JSONObject> actionsList = new ArrayList<>();
-
-            for (Object actionObj : actionsArray) {
-                JSONObject action = (JSONObject) actionObj;
-                JSONObject element = (JSONObject) action.get("element");
-                int weight = Integer.parseInt(action.get("weight").toString());
-                for (int i = 0; i < weight; i++) {
-                    actionsList.add(element);
-                }
-            }
-
-            if (!actionsList.isEmpty()) {
-                int randomIndex = (int) (Math.random() * actionsList.size());
-                JSONObject chosenAction = actionsList.get(randomIndex);
-                runbiEntity(actor, target, chosenAction);
-            }
-        } else if (type.equals("origins:delay")) {
-            int ticks = Integer.parseInt(entityAction.get("ticks").toString());
-            JSONObject delayedAction = (JSONObject) entityAction.get("action");
-
-            Bukkit.getScheduler().runTaskLater(GenesisMC.getPlugin(), () -> {
-                runbiEntity(actor, target, delayedAction);
-            }, ticks);
-        } else if (type.equals("origins:nothing")) {
-            // Literally does nothing
-        } else if (type.equals("origins:side")) {
-            JSONObject action = (JSONObject) entityAction.get("action");
-            runbiEntity(actor, target, action);
-        } else {
-            runbiEntity(actor, target, biEntityAction);
-        }
-    }
-
-    public static EquipmentSlot getSlotFromString(String slotName) {
-        switch (slotName.toLowerCase()) {
-            case "armor.helmet":
-                return EquipmentSlot.HEAD;
-            case "armor.chest":
-                return EquipmentSlot.CHEST;
-            case "armor.legs":
-                return EquipmentSlot.LEGS;
-            case "armor.feet":
-                return EquipmentSlot.FEET;
-            case "hand":
-                return EquipmentSlot.HAND;
-            case "offhand":
-                return EquipmentSlot.OFF_HAND;
-            case "head":
-                return EquipmentSlot.HEAD;
-            case "chest":
-                return EquipmentSlot.CHEST;
-            case "legs":
-                return EquipmentSlot.LEGS;
-            case "feet":
-                return EquipmentSlot.FEET;
-            default:
-                return null;
-        }
-    }
-
-    public static void spawnEffectCloud(Entity entity, float radius, int waitTime, PotionEffect effect) {
-        if (entity != null) {
-            Location entityLocation = entity.getLocation();
-
-            org.bukkit.entity.AreaEffectCloud effectCloud = entityLocation.getWorld()
-                    .spawn(entityLocation, org.bukkit.entity.AreaEffectCloud.class);
-
-            effectCloud.setRadius(radius);
-            effectCloud.setDuration(waitTime);
-
-            if (effect != null) {
-                effectCloud.addCustomEffect(effect, true);
-            }
         }
     }
 
@@ -641,9 +914,9 @@ public class Actions {
                 include_target = Boolean.parseBoolean(entityAction.get("include_target").toString());
 
             for (Entity nearbyEntity : entity.getNearbyEntities(radius, radius, radius)) {
-                biEntityActionType(entity, nearbyEntity, bientity_action);
+                BiEntityActionType(entity, nearbyEntity, bientity_action);
             }
-            if (include_target) biEntityActionType(entity, entity, bientity_action);
+            if (include_target) BiEntityActionType(entity, entity, bientity_action);
         }
         if (type.equals("origins:block_action_at")) {
             BlockActionType(entity.getLocation(), (JSONObject) entityAction.get("block_action"));
@@ -703,118 +976,46 @@ public class Actions {
         }
     }
 
-    public static void EntityActionType(Entity entity, JSONObject power) {
-        JSONObject entityAction;
-        entityAction = power;
-        if (entityAction == null) return;
-        if (entityAction.get("type") == null) return;
-        String type = entityAction.get("type").toString();
-
-        if (type.equals("origins:and")) {
-            JSONArray andActions = (JSONArray) entityAction.get("actions");
-            for (Object actionObj : andActions) {
-                JSONObject action = (JSONObject) actionObj;
-                EntityActionType(entity, action);
-            }
-        } else if (type.equals("origins:chance")) {
-            double chance = Double.parseDouble(entityAction.get("chance").toString());
-            double randomValue = Math.random();
-
-            if (randomValue <= chance) {
-                JSONObject action = (JSONObject) entityAction.get("action");
-                EntityActionType(entity, action);
-            } else if (entityAction.containsKey("fail_action")) {
-                JSONObject failAction = (JSONObject) entityAction.get("fail_action");
-                EntityActionType(entity, failAction);
-            }
-        } else if (type.equals("origins:choice")) {
-            JSONArray actionsArray = (JSONArray) entityAction.get("actions");
-            List<JSONObject> actionsList = new ArrayList<>();
-
-            for (Object actionObj : actionsArray) {
-                JSONObject action = (JSONObject) actionObj;
-                JSONObject element = (JSONObject) action.get("element");
-                int weight = Integer.parseInt(action.get("weight").toString());
-                for (int i = 0; i < weight; i++) {
-                    actionsList.add(element);
-                }
-            }
-
-            if (!actionsList.isEmpty()) {
-                int randomIndex = (int) (Math.random() * actionsList.size());
-                JSONObject chosenAction = actionsList.get(randomIndex);
-                EntityActionType(entity, chosenAction);
-            }
-        } else if (type.equals("origins:delay")) {
-            int ticks = Integer.parseInt(entityAction.get("ticks").toString());
-            JSONObject delayedAction = (JSONObject) entityAction.get("action");
-
-            Bukkit.getScheduler().runTaskLater(GenesisMC.getPlugin(), () -> {
-                EntityActionType(entity, delayedAction);
-            }, ticks);
-        } else if (type.equals("origins:nothing")) {
-            //literally does nothin
-        } else if (type.equals("origins:side")) {
-            JSONObject action = (JSONObject) entityAction.get("action");
-            EntityActionType(entity, action);
-        } else {
-            runEntity(entity, power);
+    public static EquipmentSlot getSlotFromString(String slotName) {
+        switch (slotName.toLowerCase()) {
+            case "armor.helmet":
+                return EquipmentSlot.HEAD;
+            case "armor.chest":
+                return EquipmentSlot.CHEST;
+            case "armor.legs":
+                return EquipmentSlot.LEGS;
+            case "armor.feet":
+                return EquipmentSlot.FEET;
+            case "hand":
+                return EquipmentSlot.HAND;
+            case "offhand":
+                return EquipmentSlot.OFF_HAND;
+            case "head":
+                return EquipmentSlot.HEAD;
+            case "chest":
+                return EquipmentSlot.CHEST;
+            case "legs":
+                return EquipmentSlot.LEGS;
+            case "feet":
+                return EquipmentSlot.FEET;
+            default:
+                return null;
         }
     }
 
-    public static void BlockActionType(Location location, JSONObject power) {
-        if (power == null) return;
-        String type = power.get("type").toString();
+    public static void spawnEffectCloud(Entity entity, float radius, int waitTime, PotionEffect effect) {
+        if (entity != null) {
+            Location entityLocation = entity.getLocation();
 
-        if (type.equals("origins:and")) {
-            JSONArray andActions = (JSONArray) power.get("actions");
-            for (Object actionObj : andActions) {
-                JSONObject action = (JSONObject) actionObj;
-                runBlock(location, action);
+            org.bukkit.entity.AreaEffectCloud effectCloud = entityLocation.getWorld()
+                    .spawn(entityLocation, org.bukkit.entity.AreaEffectCloud.class);
+
+            effectCloud.setRadius(radius);
+            effectCloud.setDuration(waitTime);
+
+            if (effect != null) {
+                effectCloud.addCustomEffect(effect, true);
             }
-        } else if (type.equals("origins:chance")) {
-            double chance = Double.parseDouble(power.get("chance").toString());
-            double randomValue = Math.random();
-
-            if (randomValue <= chance) {
-                JSONObject action = (JSONObject) power.get("action");
-                runBlock(location, action);
-            } else if (power.containsKey("fail_action")) {
-                JSONObject failAction = (JSONObject) power.get("fail_action");
-                runBlock(location, failAction);
-            }
-        } else if (type.equals("origins:choice")) {
-            JSONArray actionsArray = (JSONArray) power.get("actions");
-            List<JSONObject> actionsList = new ArrayList<>();
-
-            for (Object actionObj : actionsArray) {
-                JSONObject action = (JSONObject) actionObj;
-                JSONObject element = (JSONObject) action.get("element");
-                int weight = Integer.parseInt(action.get("weight").toString());
-                for (int i = 0; i < weight; i++) {
-                    actionsList.add(element);
-                }
-            }
-
-            if (!actionsList.isEmpty()) {
-                int randomIndex = (int) (Math.random() * actionsList.size());
-                JSONObject chosenAction = actionsList.get(randomIndex);
-                runBlock(location, chosenAction);
-            }
-        } else if (type.equals("origins:delay")) {
-            int ticks = Integer.parseInt(power.get("ticks").toString());
-            JSONObject delayedAction = (JSONObject) power.get("action");
-
-            Bukkit.getScheduler().runTaskLater(GenesisMC.getPlugin(), () -> {
-                runBlock(location, delayedAction);
-            }, ticks);
-        } else if (type.equals("origins:nothing")) {
-            // Literally does nothing
-        } else if (type.equals("origins:side")) {
-            JSONObject action = (JSONObject) power.get("action");
-            runBlock(location, action);
-        } else {
-            runBlock(location, power);
         }
     }
 
@@ -861,176 +1062,4 @@ public class Actions {
             }
         }
     }
-
-    private static void runBlock(Location location, JSONObject power) {
-        String type = power.get("type").toString();
-
-        if (type.equals("origins:add_block")) {
-            if (power.containsKey("block")) {
-                Material block;
-                block = Material.getMaterial(power.get("block").toString().split(":")[1].toUpperCase());
-                if (block == null) return;
-
-                //i experimented with it, and it seemed that it just set it one block above?
-                //still unsure about this one tho
-                location.add(0d, 1d, 0d);
-                location.getWorld().getBlockAt(location).setType(block);
-            }
-        }
-        if (type.equals("origins:offset")) {
-            BlockActionType(location.add(Double.valueOf(power.getOrDefault("x", "0").toString()), Double.valueOf(power.getOrDefault("y", "0").toString()), Double.valueOf(power.getOrDefault("z", "0").toString())), (JSONObject) power.get("action"));
-        }
-        if (type.equals("genesis:grow_sculk")) {
-            location.getBlock().setType(Material.SCULK_CATALYST);
-            new BukkitRunnable() {
-                @Override
-                public void run() {
-                    int centerX = location.getBlockX();
-                    int centerY = location.getBlockY();
-                    int centerZ = location.getBlockZ();
-                    Material sculkStage1 = Material.SCULK;
-                    float initialChance = 0.8f;
-                    float chanceDecrease = 0.05f;
-                    Material sculkStage2 = Material.SCULK_VEIN;
-                    float thresholdPercentage = 0.2f;
-
-                    World world = location.getWorld();
-
-                    iterateAndChangeBlocks(world, centerX, centerY, centerX, sculkStage1, initialChance, chanceDecrease, sculkStage2, thresholdPercentage);
-                }
-            }.runTaskLater(GenesisMC.getPlugin(), 1);
-
-        }
-        if (type.equals("origins:bonemeal")) {
-            Block block = location.getWorld().getBlockAt(location);
-            block.applyBoneMeal(BlockFace.UP);
-        }
-        if (type.equals("origins:explode")) {
-
-            float explosionPower = 1f;
-            String destruction_type = "break";
-            JSONObject indestructible = new JSONObject();
-            JSONObject destructible = new JSONObject();
-            boolean create_fire = false;
-
-            if (power.containsKey("power"))
-                explosionPower = Float.parseFloat(power.get("power").toString());
-            if (power.containsKey("destruction_type"))
-                destruction_type = power.get("destruction_type").toString();
-            if (power.containsKey("indestructible"))
-                indestructible = (JSONObject) power.get("indestructible");
-            if (power.containsKey("destructible")) destructible = (JSONObject) power.get("destructible");
-            if (power.containsKey("create_fire"))
-                create_fire = Boolean.parseBoolean(power.get("create_fire").toString());
-
-            location.createExplosion(explosionPower, create_fire);
-        }
-        if (type.equals("origins:execute_command")) {
-            OriginConsoleSender originConsoleSender = new OriginConsoleSender();
-            originConsoleSender.setOp(true);
-            final boolean lastSendCMDFeedback = Boolean.parseBoolean(GameRule.SEND_COMMAND_FEEDBACK.toString());
-            Bukkit.dispatchCommand(originConsoleSender, "gamerule sendCommandFeedback false");
-            final boolean lastlogAdminCMDs = Boolean.parseBoolean(GameRule.LOG_ADMIN_COMMANDS.toString());
-            Bukkit.dispatchCommand(originConsoleSender, "gamerule logAdminCommands false");
-            String cmd = null;
-            if (power.get("command").toString().startsWith("/")) {
-                cmd = power.get("command").toString().split("/")[1];
-            } else {
-                cmd = power.get("command").toString();
-            }
-            Bukkit.dispatchCommand(originConsoleSender, cmd);
-            Bukkit.dispatchCommand(originConsoleSender, "gamerule logAdminCommands {bool}".replace("{bool}", String.valueOf(lastlogAdminCMDs)));
-            Bukkit.dispatchCommand(originConsoleSender, "gamerule logAdminCommands {bool}".replace("{bool}", String.valueOf(lastSendCMDFeedback)));
-        }
-        if (type.equals("origins:set_block")) {
-            location.getBlock().setType(Material.valueOf(power.get("block").toString().split(":")[1].toUpperCase()));
-        }
-    }
-
-    public static void ItemActionType(ItemStack item, JSONObject power) {
-        if (power == null) return;
-        JSONObject entityAction = power;
-        if (entityAction == null) {
-            entityAction = (JSONObject) power.get("item_action");
-        }
-        if (entityAction.get("type") == null) return;
-        String type = entityAction.get("type").toString();
-
-        if (type.equals("origins:and")) {
-            JSONArray andActions = (JSONArray) entityAction.get("actions");
-            for (Object actionObj : andActions) {
-                JSONObject action = (JSONObject) actionObj;
-                runItem(item, action);
-            }
-        } else if (type.equals("origins:chance")) {
-            double chance = Double.parseDouble(entityAction.get("chance").toString());
-            double randomValue = Math.random();
-
-            if (randomValue <= chance) {
-                JSONObject action = (JSONObject) entityAction.get("action");
-                runItem(item, action);
-            } else if (entityAction.containsKey("fail_action")) {
-                JSONObject failAction = (JSONObject) entityAction.get("fail_action");
-                runItem(item, failAction);
-            }
-        } else if (type.equals("origins:choice")) {
-            JSONArray actionsArray = (JSONArray) entityAction.get("actions");
-            List<JSONObject> actionsList = new ArrayList<>();
-
-            for (Object actionObj : actionsArray) {
-                JSONObject action = (JSONObject) actionObj;
-                JSONObject element = (JSONObject) action.get("element");
-                int weight = Integer.parseInt(action.get("weight").toString());
-                for (int i = 0; i < weight; i++) {
-                    actionsList.add(element);
-                }
-            }
-
-            if (!actionsList.isEmpty()) {
-                int randomIndex = (int) (Math.random() * actionsList.size());
-                JSONObject chosenAction = actionsList.get(randomIndex);
-                runItem(item, chosenAction);
-            }
-        } else if (type.equals("origins:delay")) {
-            int ticks = Integer.parseInt(entityAction.get("ticks").toString());
-            JSONObject delayedAction = (JSONObject) entityAction.get("action");
-
-            Bukkit.getScheduler().runTaskLater(GenesisMC.getPlugin(), () -> {
-                runItem(item, delayedAction);
-            }, ticks);
-        } else if (type.equals("origins:nothing")) {
-            // Literally does nothing
-        } else if (type.equals("origins:side")) {
-            JSONObject action = (JSONObject) entityAction.get("action");
-            runItem(item, action);
-        } else {
-            runItem(item, power);
-        }
-    }
-
-    private static void runItem(ItemStack item, JSONObject power) {
-        JSONObject itemAction = (JSONObject) power.get("item_action");
-        String type = itemAction.get("type").toString();
-        if (type.equals("origins:damage")) {
-            item.setDurability((short) (item.getDurability() + Short.parseShort(itemAction.get("amount").toString())));
-        }
-        if (type.equals("origins:consume")) {
-            for (Player player : Bukkit.getOnlinePlayers()) {
-                if (player.getInventory().contains(item)) {
-                    if (item.getType().isEdible()) {
-                        item.setAmount(item.getAmount() - 1);
-                        player.setSaturation(player.getSaturation() + 2);
-                        player.setFoodLevel(player.getFoodLevel() + 3);
-                    }
-                }
-            }
-        }
-        if (type.equals("origins:remove_enchantment")) {
-            Enchantment enchantment = Enchantment.getByKey(new NamespacedKey(power.get("enchantment").toString().split(":")[0], power.get("enchantment").toString().split(":")[1]));
-            if (item.containsEnchantment(enchantment)) {
-                item.removeEnchantment(enchantment);
-            }
-        }
-    }
-
 }
