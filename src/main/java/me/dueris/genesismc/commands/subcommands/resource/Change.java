@@ -72,7 +72,6 @@ public class Change extends SubCommand {
                     resourceChangeTimeout.remove(p);
                 }
             }.runTaskLater(GenesisMC.getPlugin(), 2);
-            System.out.println(bossBar.getProgress());
         }
     }
 }

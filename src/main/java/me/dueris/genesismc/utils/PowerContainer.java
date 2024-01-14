@@ -18,6 +18,7 @@ public class PowerContainer implements Serializable {
     boolean originMultiple;
     boolean originMultipleParent;
     String[] jsonData;
+    PowerContainer powerParent;
 
     /**
      * @param powerTag       The power tag.
@@ -30,6 +31,7 @@ public class PowerContainer implements Serializable {
         this.originMultiple = originMultiple;
         this.originMultipleParent = false;
         this.jsonData = jsonData;
+        this.powerParent = null;
     }
 
     /**
@@ -43,7 +45,23 @@ public class PowerContainer implements Serializable {
         this.powerFile = powerFile;
         this.originMultiple = false;
         this.originMultipleParent = originMultipleParent;
+        this.powerParent = null;
+    }
+
+    /**
+     * @param powerTag             The power tag.
+     * @param powerFile            The data within a power file.
+     * @param originMultiple       Tells the plugin if its an instance of an origins:multiple sub-power
+     * @param originMultipleParent Tells the plugin if its an origins:multiple parent power
+     * @param powerParent          Tells the plugin what to use as an "Inheritance" for values like the name
+     */
+    public PowerContainer(NamespacedKey powerTag, FileContainer powerFile, String[] jsonData, boolean originMultiple, boolean originMultipleParent, PowerContainer powerParent) {
+        this.powerTag = powerTag;
+        this.powerFile = powerFile;
+        this.originMultiple = false;
+        this.originMultipleParent = originMultipleParent;
         this.jsonData = jsonData;
+        this.powerParent = powerParent;
     }
 
     public FileContainer getPowerFile() {
@@ -56,6 +74,11 @@ public class PowerContainer implements Serializable {
 
     public String[] getJsonData() {
         return this.jsonData;
+    }
+
+    // Used for origins:multiple purposes to try and add an "inheritance" feature for cooldowns
+    public PowerContainer getPowerParent(){
+        return powerParent;
     }
 
     /**

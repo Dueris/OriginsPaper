@@ -42,7 +42,7 @@ public class ScareCreepers extends CraftPower implements Listener, PowerProvider
 
     @Override
     public ArrayList<Player> getPowerArray() {
-        return null;
+        return scaryPlayers;
     }
 
     @Override

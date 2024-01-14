@@ -71,8 +71,10 @@ public class Utils {
         return lines.toArray(new String[0]);
     }
 
-    public static String getNameOrTag(String name, String tag) {
-        return name != "No Name" ? name : tag;
+    public static String getNameOrTag(PowerContainer power) {
+        String name = power.getName();
+        String tag = power.getTag();
+         return name != "No Name" ? name : power.getPowerParent() != null ? getNameOrTag(power.getPowerParent()) : tag;
     }
 
     public static boolean hasChangedBlockCoordinates(final Location fromLoc, final Location toLoc) {

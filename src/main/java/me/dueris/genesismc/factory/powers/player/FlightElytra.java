@@ -2,6 +2,7 @@ package me.dueris.genesismc.factory.powers.player;
 
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.entity.OriginPlayerUtils;
+import me.dueris.genesismc.events.OriginChangeEvent;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
@@ -62,6 +63,14 @@ public class FlightElytra extends CraftPower implements Listener {
     }
 
     @EventHandler
+    public void fixChangeConstantFlight(OriginChangeEvent e){
+        if(glidingPlayers.contains(e.getPlayer())){
+            glidingPlayers.remove(e.getPlayer());
+            e.getPlayer().setGliding(false);
+        }
+    }
+
+    @EventHandler
     @SuppressWarnings({"unchecked", "Not scheduled yet"})
     public void ExecuteFlight(PlayerToggleFlightEvent e) {
         Player p = e.getPlayer();
@@ -80,7 +89,7 @@ public class FlightElytra extends CraftPower implements Listener {
                             new BukkitRunnable() {
                                 @Override
                                 public void run() {
-                                    if (p.isOnGround() || p.isFlying()) {
+                                    if (p.isOnGround() || p.isFlying() || p.isInsideVehicle()) {
                                         this.cancel();
                                         glidingPlayers.remove(p.getUniqueId());
                                     }

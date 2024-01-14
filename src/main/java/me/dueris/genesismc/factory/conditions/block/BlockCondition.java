@@ -41,7 +41,6 @@ public class BlockCondition implements Condition {
         if (block.getType() == null) return Optional.empty();
         boolean inverted = (boolean) condition.getOrDefault("inverted", false);
         String type = condition.get("type").toString().toLowerCase();
-        System.out.println(type);
         switch (type) {
             case "origins:material" -> {
                 try {

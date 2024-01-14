@@ -303,7 +303,6 @@ public class PlayerRender {
                                 skinsRestorerAPI = net.skinsrestorer.api.SkinsRestorerProvider.get();
                                 ModelColor.modifyPlayerSkin(player, red, green, blue, savePath, 1L, skinsRestorerAPI, false, power);
                                 Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "skin set " + player.getName() + " " + player.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "modified-skin-url"), PersistentDataType.STRING));
-                                player.sendMessage("skin set " + player.getName() + " " + player.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "modified-skin-url"), PersistentDataType.STRING));
                                 player.saveData();
                             }
                         }

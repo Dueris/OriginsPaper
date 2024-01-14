@@ -28,18 +28,6 @@ public class BigLeap extends CraftPower implements Listener {
     private static final HashMap<UUID, Boolean> playSound = new HashMap<>();
     private static final ArrayList<UUID> inAir = new ArrayList<>();
 
-    public static boolean leapToggle(Player p) {
-        PersistentDataContainer data = p.getPersistentDataContainer();
-        int toggleState = data.get(new NamespacedKey(GenesisMC.getPlugin(), "toggle"), PersistentDataType.INTEGER);
-        if (toggleState == 1) {
-            p.sendMessage(ChatColor.GREEN + "Leap enabled.");
-        } else {
-            p.sendMessage(ChatColor.RED + "Leap disabled.");
-        }
-        p.playSound(p.getLocation(), Sound.ENTITY_ARROW_HIT_PLAYER, 1, 2);
-        return true;
-    }
-
     @Override
     public void setActive(Player p, String tag, Boolean bool) {
         if (powers_active.containsKey(p)) {

@@ -76,7 +76,7 @@ public class Launch extends CraftPower implements Listener {
                                                     }
 
                                                     int speed = Integer.parseInt(power.getStringOrDefault("speed", null)); // used as string so that upon parsing the int it throws if not found
-                                                    CooldownManager.addCooldown(p, Utils.getNameOrTag(power.getName(), power.getTag()), power.getType(), cooldown, key);
+                                                    CooldownManager.addCooldown(p, Utils.getNameOrTag(power), power.getType(), cooldown, key);
                                                     setActive(p, power.getTag(), true);
                                                     p.setVelocity(new Vector(p.getVelocity().getX(), speed, p.getVelocity().getZ()));
                                                     p.spawnParticle(Particle.CLOUD, p.getLocation(), 100);

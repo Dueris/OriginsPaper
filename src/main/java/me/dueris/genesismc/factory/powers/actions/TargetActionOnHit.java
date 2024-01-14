@@ -33,12 +33,13 @@ public class TargetActionOnHit extends CraftPower implements Listener {
 
         for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()) {
             ConditionExecutor executor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
+            if (CooldownManager.isPlayerInCooldown(player, getPowerFile())) return;
             for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(player, getPowerFile(), layer)) {
                 if (executor.check("condition", "conditions", player, power, getPowerFile(), actor, target, null, null, player.getInventory().getItemInHand(), e)) {
                     setActive(player, power.getTag(), true);
                     Actions.EntityActionType(target, power.getEntityAction());
                     if (power.getObjectOrDefault("cooldown", 1) != null) {
-                        CooldownManager.addCooldown((Player) actor, Utils.getNameOrTag(power.getName(), power.getTag()), power.getType(), power.getIntOrDefault("cooldown", power.getIntOrDefault("max", 1)), "key.attack");
+                        CooldownManager.addCooldown((Player) actor, Utils.getNameOrTag(power), power.getType(), power.getIntOrDefault("cooldown", power.getIntOrDefault("max", 1)), getPowerFile());
                     }
                 } else {
                     setActive(player, power.getTag(), false);

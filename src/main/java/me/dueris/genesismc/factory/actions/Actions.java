@@ -475,7 +475,6 @@ public class Actions {
             serverEn.hurt(Utils.getDamageSource(dmgType), amount);
         }
         if (type.equals("origins:mount")) {
-            System.out.println("jsdlfk");
             target.addPassenger(actor);
         }
         if (type.equals("origins:set_in_love")) {
@@ -589,7 +588,6 @@ public class Actions {
                                 .replace("{data}", "x=" + entity.getLocation().getX() + ",y=" + entity.getLocation().getY() + ",z=" + entity.getLocation().getZ() + ",type=" + entity.getType().toString().toLowerCase() + ",x_rotation=" + entity.getLocation().getDirection().getX() + ",y_rotation=" + entity.getLocation().getDirection().getY())
                         );
                 Bukkit.dispatchCommand(new OriginConsoleSender(), cmd);
-                System.out.println(cmd);
             }
         }
         if (type.equals("origins:remove_power")) {
@@ -859,7 +857,6 @@ public class Actions {
             Vector3f vec = new Vector3f(x, y, z);
             net.minecraft.world.entity.Entity en = ((CraftLivingEntity)entity).getHandle();
             space.toGlobal(vec, en);
-            System.out.println(vec);
             if(Boolean.parseBoolean(entityAction.getOrDefault("set", "false").toString())){
                 en.getBukkitEntity().getVelocity().add(new Vector(vec.x, vec.y, vec.z));
             }else{
@@ -967,7 +964,7 @@ public class Actions {
                                         key = "key.attack";
                                     }
                                 }
-                                CooldownManager.addCooldown(player, Utils.getNameOrTag(powerContainer.getName(), powerContainer.getTag()), powerContainer.getType(), powerContainer.getInt("cooldown"), key);
+                                CooldownManager.addCooldown(player, Utils.getNameOrTag(powerContainer), powerContainer.getType(), powerContainer.getInt("cooldown"), key);
                             }
                         }
                     }

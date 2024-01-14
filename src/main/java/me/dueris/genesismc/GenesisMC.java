@@ -342,23 +342,6 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         }
     }
 
-    @EventHandler
-    public void chatEventTest(PlayerChatEvent e) {
-        Player p = e.getPlayer();
-        if (e.getMessage().equals("./test attempt remove origins:shulker_inventory")) {
-
-        } else if (e.getMessage().equals("./test attempt grant origins:shulker_inventory")) {
-
-        } else if (e.getMessage().equals("./test attempt dump origins:shulker_inventory")) {
-            PowerContainer power = CraftApoli.keyedPowerContainers.get("origins:shulker_inventory");
-            for (int i = 0; i < power.getJsonData().length; i++) {
-                System.out.println(power.getJsonData()[i]);
-                p.sendMessage(power.getJsonData()[i]);
-            }
-        }
-        p.getPersistentDataContainer().set(GenesisMC.identifier("originLayer"), PersistentDataType.STRING, CraftApoli.toSaveFormat(OriginPlayerUtils.getOrigin(p), p));
-    }
-
 
     private void start() {
         getServer().getPluginManager().registerEvents(new InventorySerializer(), this);

@@ -130,7 +130,7 @@ public class CraftApoli {
             if (subPowerValue instanceof JSONObject subPowerJson) {
                 FileContainer subPowerFile = fileToFileContainer(subPowerJson);
 
-                PowerContainer newPower = new PowerContainer(new NamespacedKey(powerFolder, powerFileName + "_" + key), subPowerFile, subPowerJson.toJSONString().split("\n"), true, false);
+                PowerContainer newPower = new PowerContainer(new NamespacedKey(powerFolder, powerFileName + "_" + key), subPowerFile, subPowerJson.toJSONString().split("\n"), true, false, powerContainer);
                 powerContainers.add(newPower);
                 keyedPowerContainers.put(powerFolder + ":" + powerFileName + "_" + key, newPower);
                 newPowerContainers.add(newPower);
