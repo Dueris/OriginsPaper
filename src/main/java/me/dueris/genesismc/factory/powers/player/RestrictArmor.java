@@ -13,6 +13,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
+import org.json.simple.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -87,12 +88,12 @@ public class RestrictArmor extends CraftPower implements Listener {
             for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()) {
                 for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                     if (power == null) continue;
-                    if (power.getInterval() == null) {
+                    if (power.getObjectOrDefault("interval", 1l) == null) {
                         Bukkit.getLogger().warning(LangConfig.getLocalizedString(p, "powers.errors.action_over_time"));
                         return;
                     }
 
-                    interval = power.getInterval();
+                    interval = power.getLong("interval");
                     int ticksE = ticksEMap.getOrDefault(p, 0);
                     if (ticksE <= interval) {
                         ticksE++;
@@ -117,15 +118,19 @@ public class RestrictArmor extends CraftPower implements Listener {
         boolean chestb = true;
         boolean legsb = true;
         boolean feetb = true;
+        JSONObject headObj = power.get("head");
+        JSONObject chestObj = power.get("head");
+        JSONObject legsObj = power.get("head");
+        JSONObject feetObj = power.get("head");
 
-        if (power.getHead() == null) headb = false;
-        if (power.getChest() == null) chestb = false;
-        if (power.getLegs() == null) legsb = false;
-        if (power.getFeet() == null) feetb = false;
+        if (headObj == null) headb = false;
+        if (chestObj == null) chestb = false;
+        if (legsObj == null) legsb = false;
+        if (feetObj == null) feetb = false;
 
-        if (power.getHead().get("type").toString().equalsIgnoreCase("origins:armor_value")) {
-            String comparisonh = power.getHead().get("comparison").toString();
-            String comparisontoh = power.getHead().get("compare_to").toString();
+        if (headObj.get("type").toString().equalsIgnoreCase("origins:armor_value")) {
+            String comparisonh = headObj.get("comparison").toString();
+            String comparisontoh = headObj.get("compare_to").toString();
             if (!headb) return;
             ItemStack item = p.getInventory().getHelmet();
             if (item != null) {
@@ -135,10 +140,10 @@ public class RestrictArmor extends CraftPower implements Listener {
                     OriginPlayerUtils.moveEquipmentInventory(p, EquipmentSlot.HEAD);
                 }
             }
-        } else if (power.getHead().get("type").toString().equalsIgnoreCase("origins:ingredient")) {
+        } else if (headObj.get("type").toString().equalsIgnoreCase("origins:ingredient")) {
             if (!headb) return;
             if (p.getInventory().getHelmet() != null) {
-                Map<String, Object> ingredientMap = (Map<String, Object>) power.getHead().get("ingredient");
+                Map<String, Object> ingredientMap = (Map<String, Object>) headObj.get("ingredient");
                 if (ingredientMap.containsKey("item")) {
                     String itemValue = ingredientMap.get("item").toString();
                     String item = null;
@@ -154,9 +159,9 @@ public class RestrictArmor extends CraftPower implements Listener {
             }
         }
 
-        if (power.getChest().get("type").toString().equalsIgnoreCase("origins:armor_value")) {
-            String comparisonc = power.getChest().get("comparison").toString();
-            String comparisontoc = power.getChest().get("compare_to").toString();
+        if (chestObj.get("type").toString().equalsIgnoreCase("origins:armor_value")) {
+            String comparisonc = chestObj.get("comparison").toString();
+            String comparisontoc = chestObj.get("compare_to").toString();
             if (!chestb) return;
             ItemStack item = p.getInventory().getChestplate();
             if (item != null) {
@@ -166,10 +171,10 @@ public class RestrictArmor extends CraftPower implements Listener {
                     OriginPlayerUtils.moveEquipmentInventory(p, EquipmentSlot.CHEST);
                 }
             }
-        } else if (power.getChest().get("type").toString().equalsIgnoreCase("origins:ingredient")) {
+        } else if (chestObj.get("type").toString().equalsIgnoreCase("origins:ingredient")) {
             if (!chestb) return;
             if (p.getInventory().getChestplate() != null) {
-                Map<String, Object> ingredientMap = (Map<String, Object>) power.getChest().get("ingredient");
+                Map<String, Object> ingredientMap = (Map<String, Object>) chestObj.get("ingredient");
                 if (ingredientMap.containsKey("item")) {
                     String itemValue = ingredientMap.get("item").toString();
                     String item = null;
@@ -185,9 +190,9 @@ public class RestrictArmor extends CraftPower implements Listener {
             }
         }
 
-        if (power.getLegs().get("type").toString().equalsIgnoreCase("origins:armor_value")) {
-            String comparisonl = power.getLegs().get("comparison").toString();
-            String comparisontol = power.getLegs().get("compare_to").toString();
+        if (legsObj.get("type").toString().equalsIgnoreCase("origins:armor_value")) {
+            String comparisonl = legsObj.get("comparison").toString();
+            String comparisontol = legsObj.get("compare_to").toString();
             if (!legsb) return;
             ItemStack item = p.getInventory().getLeggings();
             if (item != null) {
@@ -197,10 +202,10 @@ public class RestrictArmor extends CraftPower implements Listener {
                     OriginPlayerUtils.moveEquipmentInventory(p, EquipmentSlot.LEGS);
                 }
             }
-        } else if (power.getLegs().get("type").toString().equalsIgnoreCase("origins:ingredient")) {
+        } else if (legsObj.get("type").toString().equalsIgnoreCase("origins:ingredient")) {
             if (!legsb) return;
             if (p.getInventory().getLeggings() != null) {
-                Map<String, Object> ingredientMap = (Map<String, Object>) power.getLegs().get("ingredient");
+                Map<String, Object> ingredientMap = (Map<String, Object>) legsObj.get("ingredient");
                 if (ingredientMap.containsKey("item")) {
                     String itemValue = ingredientMap.get("item").toString();
                     String item = null;
@@ -216,9 +221,9 @@ public class RestrictArmor extends CraftPower implements Listener {
             }
         }
 
-        if (power.getFeet().get("type").toString().equalsIgnoreCase("origins:armor_value")) {
-            String comparisonf = power.getFeet().get("comparison").toString();
-            String comparisontof = power.getFeet().get("compare_to").toString();
+        if (feetObj.get("type").toString().equalsIgnoreCase("origins:armor_value")) {
+            String comparisonf = feetObj.get("comparison").toString();
+            String comparisontof = feetObj.get("compare_to").toString();
             if (!feetb) return;
             ItemStack item = p.getInventory().getBoots();
             if (item != null) {
@@ -228,10 +233,10 @@ public class RestrictArmor extends CraftPower implements Listener {
                     OriginPlayerUtils.moveEquipmentInventory(p, EquipmentSlot.FEET);
                 }
             }
-        } else if (power.getFeet().get("type").toString().equalsIgnoreCase("origins:ingredient")) {
+        } else if (feetObj.get("type").toString().equalsIgnoreCase("origins:ingredient")) {
             if (!feetb) return;
             if (p.getInventory().getBoots() != null) {
-                Map<String, Object> ingredientMap = (Map<String, Object>) power.getFeet().get("ingredient");
+                Map<String, Object> ingredientMap = (Map<String, Object>) feetObj.get("ingredient");
                 if (ingredientMap.containsKey("item")) {
                     String itemValue = ingredientMap.get("item").toString();
                     String item = null;

@@ -57,9 +57,9 @@ public class ModifyCraftingPower extends CraftPower implements Listener {
                         if (conditionExecutor.check("condition", "condition", p, power, "origins:modify_crafting", p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
                             if (conditionExecutor.check("item_condition", "item_condition", p, power, "origins:modify_crafting", p, null, p.getLocation().getBlock(), null, e.getInventory().getResult(), null)) {
                                 if (power.get("recipe") != null) {
-                                    if (e.getInventory().getResult().getType() == Material.valueOf(power.get("recipe", null).split(":")[1].toUpperCase())) {
-                                        if (power.getJsonHashMap("result") != null) {
-                                            e.getInventory().setResult(new ItemStack(Material.valueOf(power.getJsonHashMap("result").get("item").toString().toUpperCase().split(":")[1])));
+                                    if (e.getInventory().getResult().getType() == Material.valueOf(power.getStringOrDefault("recipe", null).split(":")[1].toUpperCase())) {
+                                        if (power.get("result") != null) {
+                                            e.getInventory().setResult(new ItemStack(Material.valueOf(power.get("result").get("item").toString().toUpperCase().split(":")[1])));
                                         }
                                         setActive(p, power.getTag(), true);
                                         Actions.EntityActionType(p, power.getEntityAction());
@@ -68,8 +68,8 @@ public class ModifyCraftingPower extends CraftPower implements Listener {
                                         }
                                     }
                                 } else {
-                                    if (power.getJsonHashMap("result") != null && power.getJsonHashMap("result").get("item") != null) {
-                                        e.getInventory().setResult(new ItemStack(Material.valueOf(power.getJsonHashMap("result").get("item").toString().toUpperCase().split(":")[1])));
+                                    if (power.get("result") != null && power.get("result").get("item") != null) {
+                                        e.getInventory().setResult(new ItemStack(Material.valueOf(power.get("result").get("item").toString().toUpperCase().split(":")[1])));
                                     }
                                     setActive(p, power.getTag(), true);
                                     Actions.EntityActionType(p, power.getEntityAction());

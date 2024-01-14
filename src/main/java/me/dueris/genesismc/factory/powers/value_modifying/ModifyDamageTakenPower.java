@@ -48,7 +48,7 @@ public class ModifyDamageTakenPower extends CraftPower implements Listener {
                         if (conditionExecutor.check("bientity_condition", "bientity_condition", p, power, "origins:modify_damage_dealt", p, e.getEntity(), p.getLocation().getBlock(), null, p.getItemInHand(), e)) {
                             if (conditionExecutor.check("condition", "condition", p, power, "origins:modify_damage_dealt", p, e.getEntity(), p.getLocation().getBlock(), null, p.getItemInHand(), e)) {
                                 if (conditionExecutor.check("damage_condition", "damage_condition", p, power, "origins:modify_damage_dealt", p, e.getEntity(), p.getLocation().getBlock(), null, p.getItemInHand(), e)) {
-                                    for (HashMap<String, Object> modifier : power.getConditionFromString("modifier", "modifiers")) {
+                                    for (HashMap<String, Object> modifier : power.getJsonListSingularPlural("modifier", "modifiers")) {
                                         Object value = modifier.get("value");
                                         String operation = modifier.get("operation").toString();
                                         runSetDMG(e, operation, value);

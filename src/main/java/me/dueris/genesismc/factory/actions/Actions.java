@@ -945,8 +945,8 @@ public class Actions {
                         for (PowerContainer powerContainer : origin.getPowerContainers()) {
                             if (powerContainer.get("cooldown") != null) {
                                 String key = "*";
-                                if (powerContainer.getKey().getOrDefault("key", "key.origins.primary_active") != null) {
-                                    key = powerContainer.getKey().getOrDefault("key", "key.origins.primary_active").toString();
+                                if (powerContainer.get("key").getOrDefault("key", "key.origins.primary_active") != null) {
+                                    key = powerContainer.get("key").getOrDefault("key", "key.origins.primary_active").toString();
                                     if (powerContainer.getType().equals("origins:action_on_hit")) {
                                         key = "key.attack";
                                     } else if (powerContainer.getType().equals("origins:action_when_damage_taken")) {
@@ -967,7 +967,7 @@ public class Actions {
                                         key = "key.attack";
                                     }
                                 }
-                                CooldownManager.addCooldown(player, Utils.getNameOrTag(powerContainer.getName(), powerContainer.getTag()), powerContainer.getType(), Integer.parseInt(powerContainer.get("cooldown")), key);
+                                CooldownManager.addCooldown(player, Utils.getNameOrTag(powerContainer.getName(), powerContainer.getTag()), powerContainer.getType(), powerContainer.getInt("cooldown"), key);
                             }
                         }
                     }

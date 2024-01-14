@@ -80,10 +80,11 @@ public class PowerContainer implements Serializable {
         return "powerTag: " + this.powerTag + ", PowerFile: " + this.powerFile.toString();
     }
 
-    public ArrayList<Long> getSlots() {
-        ArrayList<Long> slots = (ArrayList<Long>) this.powerFile.get("slots");
-        if (slots == null) return new ArrayList<>();
-        return slots;
+    /**
+     * Changes the name of the power.
+     */
+    public void setName(String newName) {
+        this.powerFile.replace("name", newName);
     }
 
     /**
@@ -93,13 +94,6 @@ public class PowerContainer implements Serializable {
         Object name = this.powerFile.get("name");
         if (name == null) return "No Name";
         return (String) name;
-    }
-
-    /**
-     * Changes the name of the power.
-     */
-    public void setName(String newName) {
-        this.powerFile.replace("name", newName);
     }
 
     /**
@@ -137,160 +131,222 @@ public class PowerContainer implements Serializable {
         return (String) type;
     }
 
-    /**
-     * @return Whether the elytra should be displayed. Will return false if "render_elytra" is not present.
-     */
-    public Boolean getShouldRender() {
-        Object render = powerFile.get("render_elytra");
-        if (render == null) return true;
-        return (Boolean) render;
+//    /**
+//     * @return Whether the elytra should be displayed. Will return false if "render_elytra" is not present.
+//     */
+//    public Boolean getShouldRender() {
+//        Object render = powerFile.get("render_elytra");
+//        if (render == null) return true;
+//        return (Boolean) render;
+//    }
+//
+//    public Boolean getOverlay() {
+//        Object render = powerFile.get("overlay");
+//        if (render == null) return false;
+//        return (Boolean) render;
+//    }
+//
+//    /**
+//     * @return The value "strength" from the power file
+//     */
+//    public Long getStrength() {
+//        Object render = powerFile.get("strength");
+//        if (render == null) return 1L;
+//        return (long) render;
+//    }
+//
+//    public String getModelRenderType() {
+//        Object type = powerFile.get("render_type");
+//        if (type == null) return "original";
+//        return (String) type;
+//    }
+//
+//    /**
+//     * @return The value "interval" from the power file
+//     */
+//    public Long getInterval() {
+//        Object render = powerFile.get("interval");
+//        if (render == null) return 20L;
+//        return (long) render;
+//    }
+//
+//    public boolean getDropOnDeath() {
+//        Object render = powerFile.get("drop_on_death");
+//        if (render == null) return false;
+//        return (Boolean) render;
+//    }
+//
+//    public Double getColor(String thing) {
+//        Object color = powerFile.get(thing);
+//        if (color == null) return 0.0;
+//        return (Double) color;
+//    }
+//
+//    /**
+//     * @return The value "burn_duration" from the power file
+//     */
+//    public Long getBurnDuration() {
+//        Object render = powerFile.get("burn_duration");
+//        if (render == null) return 100L;
+//        return (long) render;
+//    }
+//
+//    public String getEffect() {
+//        Object type = powerFile.get("effect");
+//        if (type == null) return "blindness";
+//        return type.toString();
+//    }
+//
+//    /**
+//     * @return LONG view_distance value for power origins:phasing
+//     */
+//    public Long getViewDistance() {
+//        Object distance = powerFile.get("view_distance");
+//        if (distance == null) return 10L;
+//        return (Long) distance;
+//    }
+//
+//    /**
+//     * @return Should the climbing power be canceled in the rain or not
+//     */
+//    public boolean getRainCancel() {
+//        Object render = powerFile.get("rain_cancel");
+//        if (render == null) return false;
+//        return (boolean) render;
+//    }
+//
+//    public boolean isInverted() {
+//        Object render = powerFile.get("inverted");
+//        if (render == null) return false;
+//        return (boolean) render;
+//    }
+
+    public JSONObject get(String key){
+        JSONObject jsonObject = (JSONObject) this.powerFile.get(key);
+        if(jsonObject == null) return new JSONObject();
+        return jsonObject;
     }
 
-    public Boolean getOverlay() {
-        Object render = powerFile.get("overlay");
-        if (render == null) return false;
-        return (Boolean) render;
+    public boolean getBoolean(String key){
+        Object obj = powerFile.get(key);
+        if(obj == null) return false;
+        return Boolean.parseBoolean(obj.toString());
     }
 
-    /**
-     * @return The value "strength" from the power file
-     */
-    public Long getStrength() {
-        Object render = powerFile.get("strength");
-        if (render == null) return 1L;
-        return (long) render;
+    public short getShort(String key){
+        Object obj = powerFile.get(key);
+        if(obj == null) return 0;
+        return Short.parseShort(obj.toString());
     }
 
-    public String getModelRenderType() {
-        Object type = powerFile.get("render_type");
-        if (type == null) return "original";
-        return (String) type;
+    public long getLong(String key){
+        Object obj = powerFile.get(key);
+        if(obj == null) return 0;
+        return Long.parseLong(obj.toString());
     }
 
-    /**
-     * @return The value "interval" from the power file
-     */
-    public Long getInterval() {
-        Object render = powerFile.get("interval");
-        if (render == null) return 20L;
-        return (long) render;
+    public int getInt(String key){
+        Object obj = powerFile.get(key);
+        if(obj == null) return 0;
+        return Integer.parseInt(obj.toString());
     }
 
-    public boolean getDropOnDeath() {
-        Object render = powerFile.get("drop_on_death");
-        if (render == null) return false;
-        return (Boolean) render;
+    public float getFloat(String key){
+        Object obj = powerFile.get(key);
+        if(obj == null) return 0;
+        return Float.parseFloat(obj.toString());
     }
 
-    public Double getColor(String thing) {
-        Object color = powerFile.get(thing);
-        if (color == null) return 0.0;
-        return (Double) color;
+    public double getDouble(String key){
+        Object obj = powerFile.get(key);
+        if(obj == null) return 0;
+        return Double.parseDouble(obj.toString());
     }
 
-    /**
-     * @return The value "burn_duration" from the power file
-     */
-    public Long getBurnDuration() {
-        Object render = powerFile.get("burn_duration");
-        if (render == null) return 100L;
-        return (long) render;
+    public Object getObject(String key){
+        Object obj = powerFile.get(key);
+        if(obj == null) return null;
+        return obj;
     }
 
-    public String getEffect() {
-        Object type = powerFile.get("effect");
-        if (type == null) return "blindness";
-        return type.toString();
+    public String getString(String key){
+        Object obj = powerFile.get(key);
+        if(obj == null) return null;
+        return obj.toString();
     }
 
-    /**
-     * @return LONG view_distance value for power origins:phasing
-     */
-    public Long getViewDistance() {
-        Object distance = powerFile.get("view_distance");
-        if (distance == null) return 10L;
-        return (Long) distance;
+    public JSONObject getOrDefault(String key, Object def){
+        JSONObject jsonObject = (JSONObject) this.powerFile.get(key);
+        if(jsonObject == null) return (JSONObject) def;
+        return jsonObject;
     }
 
-    /**
-     * @return Should the climbing power be canceled in the rain or not
-     */
-    public boolean getRainCancel() {
-        Object render = powerFile.get("rain_cancel");
-        if (render == null) return false;
-        return (boolean) render;
+    public boolean getBooleanOrDefault(String key, boolean def){
+        Object obj = powerFile.get(key);
+        if(obj == null) return def;
+        return Boolean.parseBoolean(obj.toString());
     }
 
-    public boolean isInverted() {
-        Object render = powerFile.get("inverted");
-        if (render == null) return false;
-        return (boolean) render;
+    public short getShortOrDefault(String key, short def){
+        Object obj = powerFile.get(key);
+        if(obj == null) return def;
+        return Short.parseShort(obj.toString());
     }
 
-    public String get(String thing, String defaultValue) {
-        Object type = powerFile.get(thing);
-        if (type == null) {
-            return defaultValue;
-        }
-        return type.toString();
+    public long getLongOrDefault(String key, long def){
+        Object obj = powerFile.get(key);
+        if(obj == null) return def;
+        return Long.parseLong(obj.toString());
     }
 
-    public String get(String thing) {
-        Object type = powerFile.get(thing);
-        if (type == null) {
-            return null;
-        }
-        return type.toString();
+    public int getIntOrDefault(String key, int def){
+        Object obj = powerFile.get(key);
+        if(obj == null) return def;
+        return Integer.parseInt(obj.toString());
     }
 
-    public JSONObject getJsonObject(String string) {
-        Object obj = powerFile.get(string);
-        if (obj instanceof JSONObject modifier) {
-            return modifier;
-        }
-        return new JSONObject();
+    public float getFloatOrDefault(String key, float def){
+        Object obj = powerFile.get(key);
+        if(obj == null) return def;
+        return Float.parseFloat(obj.toString());
     }
 
-    public Object getObject(String thing) {
-        Object type = powerFile.get(thing);
-        return type;
+    public double getDoubleOrDefault(String key, double def){
+        Object obj = powerFile.get(key);
+        if(obj == null) return def;
+        return Double.parseDouble(obj.toString());
     }
 
-    public HashMap<String, Object> getJsonHashMap(String thing) {
-        Object obj = powerFile.get(thing);
-        if (obj == null) return new HashMap<>();
-
-        if (obj instanceof JSONObject modifier) {
-            HashMap<String, Object> result = new HashMap<>();
-            for (Object key : modifier.keySet()) {
-                String string_key = (String) key;
-                Object value = modifier.get(string_key);
-                result.put(string_key, value);
-            }
-            return result;
-        }
-
-        return null;
+    public Object getObjectOrDefault(String key, Object def){
+        Object obj = powerFile.get(key);
+        if(obj == null) return def;
+        return obj;
     }
 
-    public List<String> getPatternLine() {
-        List<String> patternLines = new ArrayList<>();
-
-        Object obj = powerFile.get("recipe");
-        if (obj instanceof JSONObject recipeObject) {
-            Object patternObj = recipeObject.get("pattern");
-
-            if (patternObj instanceof JSONArray patternArray) {
-                for (Object lineObj : patternArray) {
-                    if (lineObj instanceof String line) {
-                        patternLines.add(line);
-                    }
-                }
-            }
-        }
-
-        return patternLines;
+    public String getStringOrDefault(String key, String def){
+        Object obj = powerFile.get(key);
+        if(obj == null) return def;
+        return obj.toString();
     }
+
+//    public List<String> getPatternLine() {
+//        List<String> patternLines = new ArrayList<>();
+//
+//        Object obj = powerFile.get("recipe");
+//        if (obj instanceof JSONObject recipeObject) {
+//            Object patternObj = recipeObject.get("pattern");
+//
+//            if (patternObj instanceof JSONArray patternArray) {
+//                for (Object lineObj : patternArray) {
+//                    if (lineObj instanceof String line) {
+//                        patternLines.add(line);
+//                    }
+//                }
+//            }
+//        }
+//
+//        return patternLines;
+//    }
 
     /**
      * @return Modifiers in the power file or null if not found
@@ -327,42 +383,108 @@ public class PowerContainer implements Serializable {
         return result;
     }
 
-    public HashMap<String, Object> getSpread() {
-        Object obj = powerFile.get("spread");
-        if (obj == null) return new HashMap<>();
+//    public HashMap<String, Object> getSpread() {
+//        Object obj = powerFile.get("spread");
+//        if (obj == null) return new HashMap<>();
+//
+//        if (obj instanceof JSONObject modifier) {
+//            HashMap<String, Object> result = new HashMap<>();
+//            for (Object key : modifier.keySet()) {
+//                String string_key = (String) key;
+//                Object value = modifier.get(string_key);
+//                result.put(string_key, value);
+//            }
+//            return result;
+//        }
+//
+//        return null;
+//    }
 
-        if (obj instanceof JSONObject modifier) {
-            HashMap<String, Object> result = new HashMap<>();
-            for (Object key : modifier.keySet()) {
-                String string_key = (String) key;
-                Object value = modifier.get(string_key);
-                result.put(string_key, value);
-            }
-            return result;
-        }
+//    public HashMap<String, Object> getRecipe() {
+//        Object obj = powerFile.get("recipe");
+//        if (obj == null) return new HashMap<>();
+//
+//        if (obj instanceof JSONObject modifier) {
+//            HashMap<String, Object> result = new HashMap<>();
+//            for (Object key : modifier.keySet()) {
+//                String string_key = (String) key;
+//                Object value = modifier.get(string_key);
+//                result.put(string_key, value);
+//            }
+//            return result;
+//        }
+//
+//        return null;
+//    }
 
-        return null;
-    }
-
-    public HashMap<String, Object> getRecipe() {
-        Object obj = powerFile.get("recipe");
-        if (obj == null) return new HashMap<>();
-
-        if (obj instanceof JSONObject modifier) {
-            HashMap<String, Object> result = new HashMap<>();
-            for (Object key : modifier.keySet()) {
-                String string_key = (String) key;
-                Object value = modifier.get(string_key);
-                result.put(string_key, value);
-            }
-            return result;
-        }
-
-        return null;
-    }
-
-    public List<String> getJsonArray(String thing) {
+    public JSONArray getJsonArray(String thing) {
         Object obj = powerFile.get(thing);
+        if (obj == null) return new JSONArray();
+
+        if (obj instanceof JSONArray array) {
+            return array;
+        }
+
+        return new JSONArray();
+    }
+
+//    public HashMap<String, Object> getRecipeResult() {
+//        Object obj = powerFile.get("recipe");
+//        if (obj == null) return new HashMap<>();
+//
+//        if (obj instanceof JSONObject damageCondition) {
+//            Object entityConditionObj = damageCondition.get("result");
+//            if (entityConditionObj instanceof JSONObject entityCondition) {
+//                HashMap<String, Object> result = new HashMap<>();
+//                for (Object key : entityCondition.keySet()) {
+//                    String stringKey = (String) key;
+//                    Object value = entityCondition.get(stringKey);
+//                    result.put(stringKey, value);
+//                }
+//                return result;
+//            }
+//        }
+//
+//        return new HashMap<>();
+//    }
+//
+//    public List<String> getRecipeIngredients() {
+//        Object obj = powerFile.get("recipe");
+//        List<String> ingredientsList = new ArrayList<>();
+//
+//        if (obj instanceof JSONObject recipeObject) {
+//            Object ingredientsObj = recipeObject.get("ingredients");
+//
+//            if (ingredientsObj instanceof JSONArray ingredientsArray) {
+//                for (Object ingredient : ingredientsArray) {
+//                    if (ingredient instanceof JSONObject singleIngredient) {
+//                        if (singleIngredient.containsKey("item")) {
+//                            String item = singleIngredient.get("item").toString();
+//                            if (!item.isEmpty()) {
+//                                ingredientsList.add(item);
+//                            }
+//                        }
+//                    } else if (ingredient instanceof JSONArray nestedIngredientsArray) {
+//                        for (Object nestedIngredient : nestedIngredientsArray) {
+//                            if (nestedIngredient instanceof JSONObject nestedSingleIngredient) {
+//                                if (nestedSingleIngredient.containsKey("item")) {
+//                                    String nestedItem = nestedSingleIngredient.get("item").toString();
+//                                    if (!nestedItem.isEmpty()) {
+//                                        ingredientsList.add(nestedItem);
+//                                    }
+//                                }
+//                            }
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//
+//        return ingredientsList;
+//    }
+//
+    public List<String> getStringList(String key) {
+        Object obj = powerFile.get(key);
         if (obj == null) return new ArrayList<>();
 
         List<String> effectStrings = new ArrayList<>();
@@ -380,218 +502,186 @@ public class PowerContainer implements Serializable {
         return effectStrings;
     }
 
-    public HashMap<String, Object> getRecipeResult() {
-        Object obj = powerFile.get("recipe");
-        if (obj == null) return new HashMap<>();
-
-        if (obj instanceof JSONObject damageCondition) {
-            Object entityConditionObj = damageCondition.get("result");
-            if (entityConditionObj instanceof JSONObject entityCondition) {
-                HashMap<String, Object> result = new HashMap<>();
-                for (Object key : entityCondition.keySet()) {
-                    String stringKey = (String) key;
-                    Object value = entityCondition.get(stringKey);
-                    result.put(stringKey, value);
-                }
-                return result;
-            }
-        }
-
-        return new HashMap<>();
-    }
-
-    public List<String> getRecipeIngredients() {
-        Object obj = powerFile.get("recipe");
-        List<String> ingredientsList = new ArrayList<>();
-
-        if (obj instanceof JSONObject recipeObject) {
-            Object ingredientsObj = recipeObject.get("ingredients");
-
-            if (ingredientsObj instanceof JSONArray ingredientsArray) {
-                for (Object ingredient : ingredientsArray) {
-                    if (ingredient instanceof JSONObject singleIngredient) {
-                        if (singleIngredient.containsKey("item")) {
-                            String item = singleIngredient.get("item").toString();
-                            if (!item.isEmpty()) {
-                                ingredientsList.add(item);
-                            }
-                        }
-                    } else if (ingredient instanceof JSONArray nestedIngredientsArray) {
-                        for (Object nestedIngredient : nestedIngredientsArray) {
-                            if (nestedIngredient instanceof JSONObject nestedSingleIngredient) {
-                                if (nestedSingleIngredient.containsKey("item")) {
-                                    String nestedItem = nestedSingleIngredient.get("item").toString();
-                                    if (!nestedItem.isEmpty()) {
-                                        ingredientsList.add(nestedItem);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        return ingredientsList;
-    }
-
-    public List<String> getEffects() {
-        Object obj = powerFile.get("effects");
+    public List<Integer> getIntList(String key) {
+        Object obj = powerFile.get(key);
         if (obj == null) return new ArrayList<>();
 
-        List<String> effectStrings = new ArrayList<>();
+        List<Integer> effectStrings = new ArrayList<>();
 
         if (obj instanceof JSONArray array) {
             for (Object value : array) {
-                if (value instanceof String) {
-                    effectStrings.add((String) value);
+                if (value instanceof Integer) {
+                    effectStrings.add((Integer) value);
                 }
             }
-        } else if (obj instanceof String) {
-            effectStrings.add((String) obj);
+        } else if (obj instanceof Integer) {
+            effectStrings.add((Integer) obj);
         }
 
         return effectStrings;
     }
 
-    public List<HashMap<String, Object>> getEffectData() {
-        List<HashMap<String, Object>> result = new ArrayList<>();
+    public List<Long> getLongList(String key) {
+        Object obj = powerFile.get(key);
+        if (obj == null) return new ArrayList<>();
 
-        Object obj = powerFile.get("effect");
-        if (obj == null) {
-            obj = powerFile.get("effects");
-        }
+        List<Long> effectStrings = new ArrayList<>();
 
-        if (obj == null) return result;
-
-        if (obj instanceof JSONArray effects) {
-            for (Object effect : effects) {
-                if (effect instanceof JSONObject effectObj) {
-                    HashMap<String, Object> effectData = new HashMap<>();
-                    for (Object key : effectObj.keySet()) {
-                        String stringKey = (String) key;
-                        Object value = effectObj.get(stringKey);
-                        effectData.put(stringKey, value);
-                    }
-                    result.add(effectData);
+        if (obj instanceof JSONArray array) {
+            for (Object value : array) {
+                if (value instanceof Long) {
+                    effectStrings.add((Long) value);
                 }
             }
-        } else if (obj instanceof JSONObject effectObj) {
-            HashMap<String, Object> effectData = new HashMap<>();
-            for (Object key : effectObj.keySet()) {
-                String stringKey = (String) key;
-                Object value = effectObj.get(stringKey);
-                effectData.put(stringKey, value);
-            }
-            result.add(effectData);
+        } else if (obj instanceof Long) {
+            effectStrings.add((Long) obj);
         }
 
-        return result;
+        return effectStrings;
     }
 
-    /**
-     * @return Head value in the power file or null if not found
-     */
-    public HashMap<String, Object> getHead() {
-        Object obj = powerFile.get("head");
-        if (obj == null) return new HashMap<>();
+    public List<Double> getDoubleList(String key) {
+        Object obj = powerFile.get(key);
+        if (obj == null) return new ArrayList<>();
 
-        if (obj instanceof JSONObject modifier) {
-            HashMap<String, Object> result = new HashMap<>();
-            for (Object key : modifier.keySet()) {
-                String string_key = (String) key;
-                Object value = modifier.get(string_key);
-                result.put(string_key, value);
+        List<Double> effectStrings = new ArrayList<>();
+
+        if (obj instanceof JSONArray array) {
+            for (Object value : array) {
+                if (value instanceof Double) {
+                    effectStrings.add((Double) value);
+                }
             }
-            return result;
+        } else if (obj instanceof Double) {
+            effectStrings.add((Double) obj);
         }
 
-        return null;
+        return effectStrings;
     }
 
-    /**
-     * @return Chest value in the power file or null if not found
-     */
-    public HashMap<String, Object> getChest() {
-        Object obj = powerFile.get("chest");
-        if (obj == null) return new HashMap<>();
+    public List<Float> getFloatList(String key) {
+        Object obj = powerFile.get(key);
+        if (obj == null) return new ArrayList<>();
 
-        if (obj instanceof JSONObject modifier) {
-            HashMap<String, Object> result = new HashMap<>();
-            for (Object key : modifier.keySet()) {
-                String string_key = (String) key;
-                Object value = modifier.get(string_key);
-                result.put(string_key, value);
+        List<Float> effectStrings = new ArrayList<>();
+
+        if (obj instanceof JSONArray array) {
+            for (Object value : array) {
+                if (value instanceof String) {
+                    effectStrings.add((Float) value);
+                }
             }
-            return result;
+        } else if (obj instanceof Float) {
+            effectStrings.add((Float) obj);
         }
 
-        return null;
+        return effectStrings;
     }
 
-    /**
-     * @return Legs value in the power file or null if not found
-     */
-    public HashMap<String, Object> getLegs() {
-        Object obj = powerFile.get("legs");
-        if (obj == null) return new HashMap<>();
+//
+//    /**
+//     * @return Head value in the power file or null if not found
+//     */
+//    public HashMap<String, Object> getHead() {
+//        Object obj = powerFile.get("head");
+//        if (obj == null) return new HashMap<>();
+//
+//        if (obj instanceof JSONObject modifier) {
+//            HashMap<String, Object> result = new HashMap<>();
+//            for (Object key : modifier.keySet()) {
+//                String string_key = (String) key;
+//                Object value = modifier.get(string_key);
+//                result.put(string_key, value);
+//            }
+//            return result;
+//        }
+//
+//        return null;
+//    }
+//
+//    /**
+//     * @return Chest value in the power file or null if not found
+//     */
+//    public HashMap<String, Object> getChest() {
+//        Object obj = powerFile.get("chest");
+//        if (obj == null) return new HashMap<>();
+//
+//        if (obj instanceof JSONObject modifier) {
+//            HashMap<String, Object> result = new HashMap<>();
+//            for (Object key : modifier.keySet()) {
+//                String string_key = (String) key;
+//                Object value = modifier.get(string_key);
+//                result.put(string_key, value);
+//            }
+//            return result;
+//        }
+//
+//        return null;
+//    }
+//
+//    /**
+//     * @return Legs value in the power file or null if not found
+//     */
+//    public HashMap<String, Object> getLegs() {
+//        Object obj = powerFile.get("legs");
+//        if (obj == null) return new HashMap<>();
+//
+//        if (obj instanceof JSONObject modifier) {
+//            HashMap<String, Object> result = new HashMap<>();
+//            for (Object key : modifier.keySet()) {
+//                String string_key = (String) key;
+//                Object value = modifier.get(string_key);
+//                result.put(string_key, value);
+//            }
+//            return result;
+//        }
+//
+//        return null;
+//    }
+//
+//    /**
+//     * @return Feet value in the power file or null if not found
+//     */
+//    public HashMap<String, Object> getFeet() {
+//        Object obj = powerFile.get("feet");
+//        if (obj == null) return new HashMap<>();
+//
+//        if (obj instanceof JSONObject modifier) {
+//            HashMap<String, Object> result = new HashMap<>();
+//            for (Object key : modifier.keySet()) {
+//                String string_key = (String) key;
+//                Object value = modifier.get(string_key);
+//                result.put(string_key, value);
+//            }
+//            return result;
+//        }
+//
+//        return null;
+//    }
 
-        if (obj instanceof JSONObject modifier) {
-            HashMap<String, Object> result = new HashMap<>();
-            for (Object key : modifier.keySet()) {
-                String string_key = (String) key;
-                Object value = modifier.get(string_key);
-                result.put(string_key, value);
-            }
-            return result;
-        }
-
-        return null;
-    }
-
-    /**
-     * @return Feet value in the power file or null if not found
-     */
-    public HashMap<String, Object> getFeet() {
-        Object obj = powerFile.get("feet");
-        if (obj == null) return new HashMap<>();
-
-        if (obj instanceof JSONObject modifier) {
-            HashMap<String, Object> result = new HashMap<>();
-            for (Object key : modifier.keySet()) {
-                String string_key = (String) key;
-                Object value = modifier.get(string_key);
-                result.put(string_key, value);
-            }
-            return result;
-        }
-
-        return null;
-    }
-
-    public HashMap<String, Object> getKey() {
-        Object obj = powerFile.get("key");
-        if (obj == null) return new HashMap<>();
-
-        if (obj instanceof JSONObject modifier) {
-            HashMap<String, Object> result = new HashMap<>();
-            for (Object key : modifier.keySet()) {
-                String string_key = (String) key;
-                Object value = modifier.get(string_key);
-                result.put(string_key, value);
-            }
-            return result;
-        }
-
-        return null;
-    }
+//    public HashMap<String, Object> getKey() {
+//        Object obj = powerFile.get("key");
+//        if (obj == null) return new HashMap<>();
+//
+//        if (obj instanceof JSONObject modifier) {
+//            HashMap<String, Object> result = new HashMap<>();
+//            for (Object key : modifier.keySet()) {
+//                String string_key = (String) key;
+//                Object value = modifier.get(string_key);
+//                result.put(string_key, value);
+//            }
+//            return result;
+//        }
+//
+//        return null;
+//    }
 
     /**
      * Checks the powerfile for the "condition" tag
      *
      * @return Conditions in the power file or null if not found
      */
-    public List<JSONObject> getConditionFromString(String singular, String plural) {
+    public List<JSONObject> getJsonListSingularPlural(String singular, String plural) {
         Object obj = powerFile.get(singular);
         if (obj == null) {
             obj = powerFile.get(plural);
@@ -611,73 +701,25 @@ public class PowerContainer implements Serializable {
         return result;
     }
 
-    public List<HashMap<String, Object>> getSingularAndPlural(String singular, String plural) {
-        Object obj = powerFile.get(singular);
-        if (obj == null) {
-            obj = powerFile.get(plural);
-        }
-
-        List<HashMap<String, Object>> result = new ArrayList<>();
-
-        if (obj instanceof JSONArray jsonArray) {
-            for (Object item : jsonArray) {
-                if (item instanceof JSONObject jsonObject) {
-                    HashMap<String, Object> itemMap = new HashMap<>();
-                    for (Object innerKey : jsonObject.keySet()) {
-                        String stringKey = (String) innerKey;
-                        Object value = jsonObject.get(stringKey);
-
-                        if (value instanceof JSONObject && jsonObject.containsKey(stringKey)) {
-                            // Handle text components here
-                            String textValue = (String) jsonObject.get(stringKey);
-                            Object textComponent = textValue;
-                            itemMap.put(stringKey, textComponent);
-                        } else {
-                            itemMap.put(stringKey, value);
-                        }
-                    }
-                    result.add(itemMap);
-                }
-            }
-        } else if (obj instanceof JSONObject jsonObject) {
-            HashMap<String, Object> itemMap = new HashMap<>();
-            for (Object innerKey : jsonObject.keySet()) {
-                String stringKey = (String) innerKey;
-                Object value = jsonObject.get(stringKey);
-
-                if (value instanceof JSONObject && jsonObject.containsKey(stringKey)) {
-                    String textValue = (String) jsonObject.get(stringKey);
-                    Object textComponent = textValue;
-                    itemMap.put(stringKey, textComponent);
-                } else {
-                    itemMap.put(stringKey, value);
-                }
-            }
-            result.add(itemMap);
-        }
-        return result;
-    }
-
-    public HashMap<String, Object> getThunderModifier() {
-        Object obj = powerFile.get("modifier");
-        if (obj == null) return new HashMap<>();
-
-        if (obj instanceof JSONObject modifierThing) {
-            Object entityConditionObj = modifierThing.get("thunder_modifier");
-            if (entityConditionObj instanceof JSONObject thunderThing) {
-                HashMap<String, Object> result = new HashMap<>();
-                for (Object key : thunderThing.keySet()) {
-                    String stringKey = (String) key;
-                    Object value = thunderThing.get(stringKey);
-                    result.put(stringKey, value);
-                }
-                return result;
-            }
-        }
-
-        return new HashMap<>();
-    }
-
+//    public HashMap<String, Object> getThunderModifier() {
+//        Object obj = powerFile.get("modifier");
+//        if (obj == null) return new HashMap<>();
+//
+//        if (obj instanceof JSONObject modifierThing) {
+//            Object entityConditionObj = modifierThing.get("thunder_modifier");
+//            if (entityConditionObj instanceof JSONObject thunderThing) {
+//                HashMap<String, Object> result = new HashMap<>();
+//                for (Object key : thunderThing.keySet()) {
+//                    String stringKey = (String) key;
+//                    Object value = thunderThing.get(stringKey);
+//                    result.put(stringKey, value);
+//                }
+//                return result;
+//            }
+//        }
+//
+//        return new HashMap<>();
+//    }
 
     public JSONObject getBiEntityAction() {
         Object obj = powerFile.get("bientity_action");
@@ -726,14 +768,5 @@ public class PowerContainer implements Serializable {
         }
         return new JSONObject();
     }
-//            HashMap<String, Object> result = new HashMap<>();
-//            for (Object key : modifier.keySet()) {
-//                String string_key = (String) key;
-//                Object value = modifier.get(string_key);
-//                result.put(string_key, value);
-//            }
-//            return result;
-//        }
-//        return null;
 
 }

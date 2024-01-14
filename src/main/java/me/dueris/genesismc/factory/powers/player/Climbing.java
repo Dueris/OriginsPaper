@@ -11,6 +11,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.checkerframework.checker.units.qual.A;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -69,33 +70,19 @@ public class Climbing extends CraftPower {
                 Block block = p.getTargetBlock(null, 2);
                 for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()) {
                     for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-                        boolean cancel_bool = power.getRainCancel();
                         ConditionExecutor executor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                         if (executor.check("condition", "conditions", p, power, getPowerFile(), p, null, null, null, p.getItemInHand(), null)) {
 
                             setActive(p, power.getTag(), true);
-                            if (!cancel_bool) {
-                                if (!p.isSneaking()) return;
-                                p.addPotionEffect(new PotionEffect(PotionEffectType.LEVITATION, 6, 2, false, false, false));
-                                getActiveClimbingMap().add(p);
-                                new BukkitRunnable() {
-                                    @Override
-                                    public void run() {
-                                        getActiveClimbingMap().remove(p);
-                                    }
-                                }.runTaskLater(GenesisMC.getPlugin(), 1L);
-                            } else {
-                                if (block.getType() != AIR && p.isSneaking() && !p.isInRain()) {
-                                    p.addPotionEffect(new PotionEffect(PotionEffectType.LEVITATION, 6, 2, false, false, false));
-                                    getActiveClimbingMap().add(p);
-                                    new BukkitRunnable() {
-                                        @Override
-                                        public void run() {
-                                            getActiveClimbingMap().remove(p);
-                                        }
-                                    }.runTaskLater(GenesisMC.getPlugin(), 1L);
+                            if (!p.isSneaking() && block.getType() != AIR) return;
+                            p.addPotionEffect(new PotionEffect(PotionEffectType.LEVITATION, 6, 2, false, false, false));
+                            getActiveClimbingMap().add(p);
+                            new BukkitRunnable() {
+                                @Override
+                                public void run() {
+                                    getActiveClimbingMap().remove(p);
                                 }
-                            }
+                            }.runTaskLater(GenesisMC.getPlugin(), 1L);
                         } else {
 
                             setActive(p, power.getTag(), false);

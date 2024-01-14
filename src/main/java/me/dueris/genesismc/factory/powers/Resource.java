@@ -78,23 +78,23 @@ public class Resource extends CraftPower implements Listener {
 
                     @Override
                     public Integer getRight() {
-                        return countNumbersBetween(Integer.valueOf(power.get("start_value", power.get("min"))), Integer.valueOf(power.get("max")));
+                        return countNumbersBetween(power.getIntOrDefault("start_value", power.getInt("min")), power.getInt("max"));
                     }
                 };
                 registeredBars.put(tag, pair);
                 final boolean[] shouldRender = {false};
-                if (power.getJsonHashMap("hud_render") != null) {
+                if (power.get("hud_render") != null) {
                     new BukkitRunnable() {
                         @Override
                         public void run() {
-                            HashMap<String, Object> hud_render = power.getJsonHashMap("hud_render");
+                            HashMap<String, Object> hud_render = power.get("hud_render");
                             final boolean[] canRender = {true};
                             if ((boolean) hud_render.getOrDefault("should_render", false)) {
                                 shouldRender[0] = canRender[0];
                             }
                             if (hud_render.containsKey("condition")) {
                                 EntityCondition conditionExecutor = ConditionExecutor.entityCondition;
-                                Optional<Boolean> conditionMet = conditionExecutor.check(power.getJsonObject("hud_render"), p, p, null, p.getLocation().getBlock(), null, p.getInventory().getItemInMainHand(), null);
+                                Optional<Boolean> conditionMet = conditionExecutor.check(power.get("hud_render"), p, p, null, p.getLocation().getBlock(), null, p.getInventory().getItemInMainHand(), null);
                                 if (conditionMet.isPresent()) {
                                     canRender[0] = conditionMet.get();
                                 }

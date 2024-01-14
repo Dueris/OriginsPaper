@@ -40,24 +40,24 @@ public class ParticlePower extends CraftPower {
                         if (executor.check("condition", "conditions", player, power, getPowerFile(), player, null, null, null, player.getInventory().getItemInHand(), null)) {
                             if (!getPowerArray().contains(player)) return;
                             setActive(player, power.getTag(), true);
-                            Particle particle = Particle.valueOf(power.get("particle", null).split(":")[1].toUpperCase());
-                            int count = Integer.parseInt(power.get("count", "1"));
-                            float offset_y_no_vector = Float.parseFloat(String.valueOf(power.get("offset_y", "1.0")));
+                            Particle particle = Particle.valueOf(power.getStringOrDefault("particle", null).split(":")[1].toUpperCase());
+                            int count = power.getIntOrDefault("count", 1);
+                            float offset_y_no_vector = power.getFloatOrDefault("offset_y", 1.0f);
                             float offset_x = 0.25f;
                             float offset_y = 0.50f;
                             float offset_z = 0.25f;
-                            if (power.getSpread().get("y") != null) {
-                                offset_y = Float.parseFloat(String.valueOf(power.getSpread().get("y")));
+                            if (power.get("spread").get("y") != null) {
+                                offset_y = Float.parseFloat(String.valueOf(power.get("spread").get("y")));
                             }
 
-                            if (power.getSpread().get("x") != null) {
-                                offset_x = Float.parseFloat(String.valueOf(power.getSpread().get("x")));
+                            if (power.get("spread").get("x") != null) {
+                                offset_x = Float.parseFloat(String.valueOf(power.get("spread").get("x")));
                             }
 
-                            if (power.getSpread().get("z") != null) {
-                                offset_z = Float.parseFloat(String.valueOf(power.getSpread().get("z")));
+                            if (power.get("spread").get("z") != null) {
+                                offset_z = Float.parseFloat(String.valueOf(power.get("spread").get("z")));
                             }
-                            boolean visible_while_invis = Boolean.parseBoolean(power.get("visible_while_invisible", "false"));
+                            boolean visible_while_invis = power.getBooleanOrDefault("visible_while_invisible", false);
                             Particle final_particle = particle.builder().count(count).force(true).location(player.getLocation()).particle(particle).source(player).offset(offset_x, offset_y + offset_y_no_vector, offset_z).particle();
                             if (visible_while_invis) {
                                 player.getWorld().spawnParticle(particle, new Location(player.getWorld(), player.getLocation().getX(), player.getLocation().getY(), player.getLocation().getZ()), count, offset_x, offset_y, offset_z, 0);

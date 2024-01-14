@@ -42,13 +42,12 @@ public class ModifyHarvestPower extends CraftPower implements Listener {
                     ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                     for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                         if (conditionExecutor.check("block_condition", "block_conditions", p, power, "origins:modify_harvest", p, null, e.getBlock(), null, p.getItemInHand(), null)) {
-                            if (power.get("allow", null) != "true") {
-                                e.setDropItems(false);
-
-                                setActive(p, power.getTag(), true);
+                            e.setDropItems(power.getBooleanOrDefault("allow", false));
+                            setActive(p, power.getTag(), true);
+                            if(e.isDropItems()){ // set to this to respect permissions by other plugins to disable block drops
+                                e.getBlock().getDrops().forEach((itemStack -> p.getWorld().dropItemNaturally(e.getBlock().getLocation(), itemStack)));
                             }
                         } else {
-
                             setActive(p, power.getTag(), false);
                         }
                     }

@@ -38,8 +38,8 @@ public class SelfActionWhenHit extends CraftPower implements Listener {
                 if (executor.check("condition", "conditions", (Player) target, power, getPowerFile(), actor, target, null, null, ((Player) target).getItemOnCursor(), e)) {
                     setActive(player, power.getTag(), true);
                     Actions.EntityActionType(target, power.getEntityAction());
-                    if (power.get("cooldown", "1") != null) {
-                        CooldownManager.addCooldown((Player) target, Utils.getNameOrTag(power.getName(), power.getTag()), power.getType(), Integer.parseInt(power.get("cooldown", "1")), "key.attack");
+                    if (power.getObjectOrDefault("cooldown", 1) != null) {
+                        CooldownManager.addCooldown((Player) target, Utils.getNameOrTag(power.getName(), power.getTag()), power.getType(), power.getIntOrDefault("cooldown", power.getIntOrDefault("max", 1)), "key.attack");
                     }
                 } else {
                     setActive(player, power.getTag(), false);

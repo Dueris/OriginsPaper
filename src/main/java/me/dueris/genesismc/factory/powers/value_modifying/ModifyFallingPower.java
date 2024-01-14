@@ -51,45 +51,45 @@ public class ModifyFallingPower extends CraftPower implements Listener {
                 for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                     if (conditionExecutor.check("condition", "conditions", p, power, "origins:modify_falling", p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
                         if (power.getObject("velocity") instanceof Integer) {
-                            if (Integer.parseInt(power.get("velocity")) < 0) {
+                            if (power.getInt("velocity") < 0) {
                                 //greaterthan
-                                velocity.setY(Integer.parseInt(power.get("velocity")));
+                                velocity.setY(power.getInt("velocity"));
                                 p.setVelocity(velocity);
                             } else {
                                 //smallerthan
                                 p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_FALLING, 5, 1, false, false, false));
                             }
                         } else if (power.getObject("velocity") instanceof Float) {
-                            if (Float.parseFloat(power.get("velocity")) < 0) {
+                            if (power.getFloat("velocity") < 0) {
                                 //greaterthan
-                                velocity.setY(Float.parseFloat(power.get("velocity")));
+                                velocity.setY(power.getFloat("velocity"));
                                 p.setVelocity(velocity);
                             } else {
                                 //smallerthan
                                 p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_FALLING, 5, 1, false, false, false));
                             }
                         } else if (power.getObject("velocity") instanceof Double) {
-                            if (Double.parseDouble(power.get("velocity")) < 0) {
+                            if (power.getDouble("velocity") < 0) {
                                 //greaterthan
-                                velocity.setY(Double.parseDouble(power.get("velocity")));
+                                velocity.setY(power.getDouble("velocity"));
                                 p.setVelocity(velocity);
                             } else {
                                 //smallerthan
                                 p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_FALLING, 5, 1, false, false, false));
                             }
                         } else if (power.getObject("velocity") instanceof Long) {
-                            if (Long.parseLong(power.get("velocity")) < 0) {
+                            if (power.getLong("velocity") < 0) {
                                 //greaterthan
-                                velocity.setY(Long.parseLong(power.get("velocity")));
+                                velocity.setY(power.getLong("velocity"));
                                 p.setVelocity(velocity);
                             } else {
                                 //smallerthan
                                 p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_FALLING, 5, 1, false, false, false));
                             }
                         } else if (power.getObject("velocity") instanceof Short) {
-                            if (Short.parseShort(power.get("velocity")) < 0) {
+                            if (power.getShort("velocity") < 0) {
                                 //greaterthan
-                                velocity.setY(Short.parseShort(power.get("velocity")));
+                                velocity.setY(power.getShort("velocity"));
                                 p.setVelocity(velocity);
                             } else {
                                 //smallerthan
@@ -111,7 +111,7 @@ public class ModifyFallingPower extends CraftPower implements Listener {
                     ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                     for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                         if (conditionExecutor.check("condition", "conditions", p, power, "origins:modify_falling", p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
-                            if (Boolean.getBoolean(power.get("take_fall_damage", "true"))) {
+                            if (power.getBooleanOrDefault("take_fall_damage", true)) {
                                 if (e.getCause() == EntityDamageEvent.DamageCause.FALL) {
                                     e.setDamage(0);
                                     e.setCancelled(true);

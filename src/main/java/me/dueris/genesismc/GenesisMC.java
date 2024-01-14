@@ -283,7 +283,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
             e.callEvent();
         } catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException |
                  InvocationTargetException e) {
-            throw new RuntimeException("Unable to build builtin-powers registry");
+            e.printStackTrace();
         }
 
         OriginScheduler.OriginSchedulerTree scheduler = new OriginScheduler.OriginSchedulerTree();

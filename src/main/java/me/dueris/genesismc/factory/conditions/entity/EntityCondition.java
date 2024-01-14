@@ -430,7 +430,7 @@ public class EntityCondition implements Condition {
                 }
             }
             case "origins:on_fire" -> {
-                return getResult(inverted, Optional.of(entity.isVisualFire()));
+                return getResult(inverted, Optional.of(entity.getFireTicks() > 0));
             }
             case "origins:entity_type" -> {
                 return getResult(inverted, Optional.of(entity.getType().equals(EntityType.valueOf(condition.get("entity_type").toString().toUpperCase().split(":")[1]))));
@@ -649,11 +649,12 @@ public class EntityCondition implements Condition {
                 return getResult(inverted, Optional.of(RestrictArmor.compareValues(entity.getWorld().getTime(), comparison, compare_to)));
             }
             case "origins:using_effective_tool" -> {
-                if (p.getTargetBlockExact(AttributeHandler.Reach.getDefaultReach(p)) != null) {
-                    return getResult(inverted, Optional.of(p.getTargetBlockExact(AttributeHandler.Reach.getDefaultReach(p)).getBlockData().isPreferredTool(p.getInventory().getItemInMainHand())));
-                } else {
-                    return getResult(inverted, Optional.of(false));
+                Predicate<Entity> filter = (entityy) -> !entityy.equals(p);
+                RayTraceResult result = p.getWorld().rayTrace(p.getEyeLocation(), p.getEyeLocation().getDirection(), AttributeHandler.Reach.getFinalReach(p), FluidCollisionMode.NEVER, false, 0, filter);
+                if(result != null && result.getHitBlock() != null){
+                    return getResult(inverted, Optional.of(result.getHitBlock().getBlockData().isPreferredTool(p.getInventory().getItemInMainHand())));
                 }
+                return getResult(inverted, Optional.of(true));
             }
             case "origins:using_item" -> {
                 if (entity instanceof LivingEntity le) {

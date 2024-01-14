@@ -16,6 +16,7 @@ import org.bukkit.event.player.PlayerToggleSneakEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.json.simple.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -68,7 +69,7 @@ public class ExplodeTick extends CraftPower implements Listener {
                                         }
 
                                     }
-                                    for (HashMap<String, Object> modifier : power.getConditionFromString("modifier", "modifiers")) {
+                                    for (HashMap<String, Object> modifier : power.getJsonListSingularPlural("modifier", "modifiers")) {
                                         int powerE = Math.toIntExact((Long) modifier.get("power"));
                                         int resistance = Math.toIntExact((Long) modifier.get("resistance"));
                                         int charge = Math.toIntExact((Long) modifier.get("charge"));
@@ -105,12 +106,12 @@ public class ExplodeTick extends CraftPower implements Listener {
                                                 }
                                             }
 
-                                            if (power.getThunderModifier() != null) {
+                                            if (power.get("modifier").get("thunder_modifier") != null) {
                                                 if (p.getWorld().isThundering()) {
-                                                    int power_thunder = Math.toIntExact((Long) power.getThunderModifier().get("power"));
-                                                    int resistance_thunder = Math.toIntExact((Long) power.getThunderModifier().get("resistance"));
-                                                    boolean fire_thunder = (boolean) power.getThunderModifier().get("fire");
-                                                    boolean break_blocks_thunder = (boolean) power.getThunderModifier().get("break_blocks");
+                                                    int power_thunder = Math.toIntExact((Long) ((JSONObject)power.get("modifier").get("thunder_modifier")).get("power"));
+                                                    int resistance_thunder = Math.toIntExact((Long) ((JSONObject)power.get("modifier").get("thunder_modifier")).get("resistance"));
+                                                    boolean fire_thunder = (boolean) ((JSONObject)power.get("modifier").get("thunder_modifier")).get("fire");
+                                                    boolean break_blocks_thunder = (boolean) ((JSONObject)power.get("modifier").get("thunder_modifier")).get("break_blocks");
                                                     p.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 10, resistance_thunder, true, false, false));
                                                     p.getWorld().createExplosion(p.getLocation(), power_thunder, fire_thunder, break_blocks_thunder, p);
                                                     // p.teleportAsync(p.getLocation());

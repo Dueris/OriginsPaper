@@ -9,6 +9,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
+import org.json.simple.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,6 +17,7 @@ import java.util.Map;
 import java.util.function.BinaryOperator;
 
 import static me.dueris.genesismc.factory.powers.player.attributes.AttributeHandler.getOperationMappingsDouble;
+import static me.dueris.genesismc.factory.powers.player.attributes.AttributeHandler.getOperationMappingsInteger;
 import static me.dueris.genesismc.factory.powers.value_modifying.ValueModifyingSuperClass.modify_food;
 
 public class ModifyFoodPower extends CraftPower implements Listener {
@@ -154,24 +156,26 @@ public class ModifyFoodPower extends CraftPower implements Listener {
                 for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(player, getPowerFile(), layer)) {
                     if (conditionExecutor.check("item_condition", "item_condition", player, power, "origins:modify_food", player, null, player.getLocation().getBlock(), null, player.getInventory().getItemInHand(), null)) {
                         if (modify_food.contains(player)) {
-                            if (!power.getJsonHashMap("food_modifier").isEmpty()) {
-                                if (power.getJsonHashMap("food_modifier").containsKey("value")) {
-                                    int value = Integer.parseInt(power.getJsonHashMap("food_modifier").get("value").toString());
-                                    String operation = power.getJsonHashMap("food_modifier").get("operation").toString();
+                            for(JSONObject jsonObject : power.getJsonListSingularPlural("food_modifier", "food_modifiers")){
+                                if(jsonObject.containsKey("value")){
+                                    int val = Integer.parseInt(jsonObject.get("value").toString());
+                                    String operation = jsonObject.get("operation").toString();
                                     BinaryOperator mathOperator = getOperationMappingsDouble().get(operation);
                                     if (mathOperator != null) {
-                                        double finalValue = (double) mathOperator.apply(getFoodModifier(e.getItem().getType()), (double) value);
+                                        double finalValue = (double) mathOperator.apply(getFoodModifier(e.getItem().getType()), (double) val);
+                                        player.setFoodLevel(Integer.parseInt(String.valueOf(Math.round(player.getFoodLevel() + finalValue))));
                                         setActive(player, power.getTag(), true);
                                     }
                                 }
                             }
-                            if (!power.getJsonHashMap("saturation_modifier").isEmpty()) {
-                                if (power.getJsonHashMap("saturation_modifier").containsKey("value")) {
-                                    int value = Integer.parseInt(power.getJsonHashMap("saturation_modifier").get("value").toString());
-                                    String operation = power.getJsonHashMap("saturation_modifier").get("operation").toString();
+                            for(JSONObject jsonObject : power.getJsonListSingularPlural("saturation_modifier", "saturation_modifiers")){
+                                if(jsonObject.containsKey("value")){
+                                    int val = Integer.parseInt(jsonObject.get("value").toString());
+                                    String operation = jsonObject.get("operation").toString();
                                     BinaryOperator mathOperator = getOperationMappingsDouble().get(operation);
                                     if (mathOperator != null) {
-                                        double finalValue = (double) mathOperator.apply(getSaturationModifier(e.getItem().getType()), (double) value);
+                                        double finalValue = (double) mathOperator.apply(getSaturationModifier(e.getItem().getType()), (double) val);
+                                        player.setSaturation(Math.round(player.getFoodLevel() + finalValue));
                                         setActive(player, power.getTag(), true);
                                     }
                                 }

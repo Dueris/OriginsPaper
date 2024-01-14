@@ -65,9 +65,8 @@ public class TooltipPower extends CraftPower {
                 ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                 for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                     if (conditionExecutor.check("item_condition", "item_conditions", p, power, getPowerFile(), p, null, null, null, p.getItemInHand(), null)) {
-
                         setActive(p, power.getTag(), true);
-                        for (HashMap<String, Object> text : power.getSingularAndPlural("text", "texts")) {
+                        for (HashMap<String, Object> text : power.getJsonListSingularPlural("text", "texts")) {
                             applyTooltip(p, p.getItemInHand(), text.get("text").toString());
                         }
                     } else {

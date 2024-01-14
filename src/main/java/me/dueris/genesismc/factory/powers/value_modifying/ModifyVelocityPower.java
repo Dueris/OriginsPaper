@@ -38,7 +38,7 @@ public class ModifyVelocityPower extends CraftPower implements Listener {
                         identifiers.add("z");
                     }
                     Vector vel = e.getVelocity();
-                    for (HashMap<String, Object> modifier : power.getConditionFromString("modifier", "modifiers")) {
+                    for (HashMap<String, Object> modifier : power.getJsonListSingularPlural("modifier", "modifiers")) {
                         Float value = Float.valueOf(modifier.get("value").toString());
                         String operation = modifier.get("operation").toString();
                         BinaryOperator mathOperator = getOperationMappingsFloat().get(operation);

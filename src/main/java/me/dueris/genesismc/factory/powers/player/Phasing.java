@@ -130,9 +130,6 @@ public class Phasing extends CraftPower implements Listener {
                                 p.getEyeLocation().add(-0.55F, 0, 0.55F).getBlock().isSolid())
                         ) {
                             setInPhasingBlockForm(p);
-                            if (power.getOverlay()) {
-                                initializePhantomOverlay(p);
-                            }
 
                             p.setFlySpeed(0.04F);
                             p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "insideBlock"), PersistentDataType.BOOLEAN, true);

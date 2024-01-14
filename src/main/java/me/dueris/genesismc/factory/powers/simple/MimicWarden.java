@@ -100,7 +100,7 @@ public class MimicWarden extends CraftPower implements Listener, PowerProvider {
                             victim.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 100, 2, false, false, false));
                             victim.addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, 50, 2, false, false, false));
 
-                            CooldownManager.addCooldown(p, "Sonic Boom", getPowerFile(), 1200, "key.origins.primary_active");
+                            CooldownManager.addCooldown(p, "Sonic Boom", "origins:mimic_warden", 1200, "key.origins.primary_active");
 
                             Location startLocation = p.getEyeLocation();
 

@@ -81,7 +81,7 @@ public class ModifyAirSpeedPower extends CraftPower {
         if (modify_air_speed.contains(p)) {
             for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()) {
                 for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-                    for (HashMap<String, Object> modifier : power.getConditionFromString("modifier", "modifiers")) {
+                    for (HashMap<String, Object> modifier : power.getJsonListSingularPlural("modifier", "modifiers")) {
                         Float value = Float.valueOf(modifier.get("value").toString());
                         String operation = modifier.get("operation").toString();
                         BinaryOperator mathOperator = getOperationMappingsFloat().get(operation);

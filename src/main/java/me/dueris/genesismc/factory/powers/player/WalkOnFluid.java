@@ -40,7 +40,7 @@ public class WalkOnFluid extends CraftPower {
                         setActive(p, power.getTag(), true);
                         if (!p.getLocation().add(0, -1, 0).getBlock().isSolid()) {
                             if (p.getLocation().add(0, -1, 0).getBlock().getType() == Material.WATER || p.getLocation().add(0, -1, 0).getBlock().getType() == Material.LAVA) {
-                                if (p.getLocation().add(0, -1, 0).getBlock().getType().equals(Material.valueOf(power.get("fluid").toUpperCase().split(":")[1]))) {
+                                if (p.getLocation().add(0, -1, 0).getBlock().getType().equals(Material.valueOf(power.getString("fluid").toUpperCase().split(":")[1]))) {
                                     CraftPlayer craftPlayer = (CraftPlayer) p;
                                     if (p.getLocation().add(0, -1, 0).getBlock().getType() == Material.WATER) {
                                         loc.put(p, p.getLocation().add(0, -1, 0).getBlock().getLocation());

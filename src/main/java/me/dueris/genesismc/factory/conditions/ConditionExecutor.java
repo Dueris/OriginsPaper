@@ -21,7 +21,6 @@ import org.bukkit.inventory.ItemStack;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
@@ -158,9 +157,9 @@ public class ConditionExecutor {
 
     public boolean check(String singular, String plural, Player p, PowerContainer powerContainer, String powerfile, Entity actor, Entity target, Block block, Fluid fluid, ItemStack itemStack, EntityDamageEvent dmgevent) {
         if (powerContainer == null) return true;
-        if (powerContainer.getConditionFromString(singular, plural) == null) return true;
-        if (powerContainer.getConditionFromString(singular, plural).isEmpty()) return true;
-        for (JSONObject condition : powerContainer.getConditionFromString(singular, plural)) {
+        if (powerContainer.getJsonListSingularPlural(singular, plural) == null) return true;
+        if (powerContainer.getJsonListSingularPlural(singular, plural).isEmpty()) return true;
+        for (JSONObject condition : powerContainer.getJsonListSingularPlural(singular, plural)) {
             if (condition.get("type").equals("origins:and")) {
                 JSONArray conditionsArray = (JSONArray) condition.get("conditions");
 

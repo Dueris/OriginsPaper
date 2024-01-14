@@ -40,11 +40,11 @@ public class Burn extends CraftPower {
             for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()) {
                 for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                     if (power == null) continue;
-                    if (power.getInterval() == null) {
+                    if (power.getObject("interval") == null) {
                         Bukkit.getLogger().warning(LangConfig.getLocalizedString(p, "powers.errors.burn"));
                         return;
                     }
-                    interval = power.getInterval();
+                    interval = power.getLong("interval");
 
                     int ticksE = ticksEMap.getOrDefault(p, 0);
                     if (ticksE < interval) {
@@ -59,7 +59,7 @@ public class Burn extends CraftPower {
                         if (executor.check("condition", "conditions", p, power, getPowerFile(), p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
                             setActive(p, power.getTag(), true);
 
-                            Long burn_duration = power.getBurnDuration();
+                            Long burn_duration = power.getLongOrDefault("burn_duration", 100l);
                             p.setFireTicks(burn_duration.intValue() * 20);
                         } else {
                             setActive(p, power.getTag(), false);

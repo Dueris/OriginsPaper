@@ -122,15 +122,15 @@ public class EntityGroupManager extends CraftPower {
                                         if (!getPowerArray().contains(p)) return;
                                         setActive(p, power.getTag(), true);
                                         if (entity_group.contains(entity)) {
-                                            if (power.get("group", null).equalsIgnoreCase("undead")) {
+                                            if (power.getStringOrDefault("group", null).equalsIgnoreCase("undead")) {
                                                 undead.put(entity.getEntityId(), entity.getType().name());
-                                            } else if (power.get("group", null).equalsIgnoreCase("arthropod")) {
+                                            } else if (power.getStringOrDefault("group", null).equalsIgnoreCase("arthropod")) {
                                                 arthropod.put(entity.getEntityId(), entity.getType().name());
-                                            } else if (power.get("group", null).equalsIgnoreCase("illager")) {
+                                            } else if (power.getStringOrDefault("group", null).equalsIgnoreCase("illager")) {
                                                 illager.put(entity.getEntityId(), entity.getType().name());
-                                            } else if (power.get("group", null).equalsIgnoreCase("aquatic")) {
+                                            } else if (power.getStringOrDefault("group", null).equalsIgnoreCase("aquatic")) {
                                                 aquatic.put(entity.getEntityId(), entity.getType().name());
-                                            } else if (power.get("group", null).equalsIgnoreCase("default")) {
+                                            } else if (power.getStringOrDefault("group", null).equalsIgnoreCase("default")) {
                                                 default_group.put(entity.getEntityId(), entity.getType().name());
                                             }
                                         }

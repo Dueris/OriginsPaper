@@ -1,25 +1,18 @@
 {
-  "type": "origins:action_over_time",
+  "type": "origins:action_when_damage_taken",
   "condition": {
     "type": "origins:on_fire"
   },
   "entity_action": {
-    "type": "origins:and",
-    "actions": [
-      {
-        "type": "origins:extinguish",
-        "duration": 1
-      },
-      {
-        "type": "origins:explode",
-        "power": 3,
-        "damage_self": false,
-        "create_fire": false
-      }
-    ]
+    "type": "origins:explode",
+    "power": 3,
+    "damage_self": false,
+    "create_fire": false
+  },
+  "action": {
+    "type": "origins:extinguish"
   },
   "name": "Light the Fuse",
   "description": "Upon catching fire, you explode.",
-  "interval": 4,
   "hidden": true
 }

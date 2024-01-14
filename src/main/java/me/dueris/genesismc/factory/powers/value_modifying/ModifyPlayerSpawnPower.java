@@ -112,11 +112,11 @@ public class ModifyPlayerSpawnPower extends CraftPower implements Listener {
                 PowerContainer power = OriginPlayerUtils.getSinglePowerFileFromType(p, getPowerFile(), layer);
                 if (power == null) continue;
                 if (executor.check("condition", "conditions", p, power, getPowerFile(), p, null, p.getLocation().getBlock(), null, p.getInventory().getItemInMainHand(), null)) {
-                    String spawnStrat = power.get("spawn_strategy", "default");
+                    String spawnStrat = power.getStringOrDefault("spawn_strategy", "default");
                     float dimMult = 0.125f;
-                    String dimension = power.get("dimension");
+                    String dimension = power.getString("dimension");
                     if (power.get("dimension_distance_multiplier") != null) {
-                        dimMult = Float.valueOf(power.get("dimension_distance_multiplier"));
+                        dimMult = power.getFloat("dimension_distance_multiplier");
                     }
                     if (!dimension.startsWith("minecraft:") && !dimension.contains(":")) {
                         dimension = "minecraft:" + dimension;

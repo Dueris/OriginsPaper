@@ -60,7 +60,7 @@ public class FireProjectile extends CraftPower implements Listener {
         for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()) {
             if (fire_projectile.contains(p)) {
                 for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-                    if (isKeyBeingPressed(e.getPlayer(), power.getKey().getOrDefault("key", "key.origins.primary_active").toString(), true)) {
+                    if (isKeyBeingPressed(e.getPlayer(), power.get("key").getOrDefault("key", "key.origins.primary_active").toString(), true)) {
                         if (in_continuous.contains(p)) {
                             in_continuous.remove(p);
                         } else {
@@ -94,37 +94,36 @@ public class FireProjectile extends CraftPower implements Listener {
                         if (fire_projectile.contains(p)) {
                             ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                             if (conditionExecutor.check("condition", "conditions", p, power, "origins:fire_projectile", p, null, null, null, p.getItemInHand(), null)) {
-                                if (!CooldownManager.isPlayerInCooldown(p, power.getKey().getOrDefault("key", "key.origins.primary_active").toString())) {
-                                    if (isKeyBeingPressed(e.getPlayer(), power.getKey().getOrDefault("key", "key.origins.primary_active").toString(), true)) {
+                                if (!CooldownManager.isPlayerInCooldown(p, power.get("key").getOrDefault("key", "key.origins.primary_active").toString())) {
+                                    if (isKeyBeingPressed(e.getPlayer(), power.get("key").getOrDefault("key", "key.origins.primary_active").toString(), true)) {
                                         new BukkitRunnable() {
                                             @Override
                                             public void run() {
                                                 Sound sound;
-                                                int cooldown = Integer.parseInt(power.get("cooldown", "1"));
-                                                String tag = power.get("tag", null);
-                                                float divergence = Float.parseFloat(power.get("divergence", "1.0"));
-                                                float speed = Float.parseFloat(power.get("speed", "1"));
-                                                int amt = Integer.parseInt(power.get("count", "1"));
-                                                int start_delay = Integer.parseInt(power.get("start_delay", "0"));
-                                                int interval = Integer.parseInt(power.get("interval", "1"));
+                                                int cooldown = power.getIntOrDefault("cooldown", 2);
+                                                String tag = power.getStringOrDefault("tag", "{}");
+                                                float divergence = power.getFloatOrDefault("divergence", 1.0f);
+                                                float speed = power.getFloatOrDefault("speed", 1);
+                                                int amt = power.getIntOrDefault("count", 1);
+                                                int start_delay = power.getIntOrDefault("start_delay", 0);
+                                                int interval = power.getIntOrDefault("interval", 1);
 
                                                 // Introduce a slight random divergence
                                                 divergence += (float) ((Math.random() - 0.5) * 0.05); // Adjust the 0.05 value to control the randomness level
 
                                                 EntityType type;
-                                                if (power.get("entity_type", null).equalsIgnoreCase("origins:enderian_pearl")) {
+                                                if (power.getStringOrDefault("entity_type", null).equalsIgnoreCase("origins:enderian_pearl")) {
                                                     type = EntityType.ENDER_PEARL;
                                                     enderian_pearl.add(p);
                                                 } else {
-                                                    type = EntityType.valueOf(power.get("entity_type", null).split(":")[1].toUpperCase());
+                                                    type = EntityType.valueOf(power.getStringOrDefault("entity_type", null).split(":")[1].toUpperCase());
                                                     enderian_pearl.remove(p);
                                                 }
 
-                                                String key = (String) power.getKey().getOrDefault("key", "key.origins.primary_active");
+                                                String key = (String) power.get("key").getOrDefault("key", "key.origins.primary_active");
                                                 if (!CooldownManager.isPlayerInCooldown(p, key)) {
                                                     KeybindUtils.runKeyChangeTrigger(KeybindUtils.getTriggerFromOriginKey(p, key));
 
-                                                    float finalDivergence = divergence;
                                                     float finalDivergence1 = divergence;
                                                     final boolean[] thing = new boolean[1];
                                                     new BukkitRunnable() {
@@ -134,7 +133,7 @@ public class FireProjectile extends CraftPower implements Listener {
                                                         public void run() {
                                                             if (!CooldownManager.isPlayerInCooldown(p, key)) {
                                                                 if (shotsLeft >= 0) {
-                                                                    if (power.getKey().getOrDefault("continuous", "false").toString().equalsIgnoreCase("false")) {
+                                                                    if (power.get("key").getOrDefault("continuous", "false").toString().equalsIgnoreCase("false")) {
                                                                         KeybindUtils.runKeyChangeTriggerReturn(KeybindUtils.getTriggerFromOriginKey(p, key), p, key);
                                                                         CooldownManager.addCooldown(p, Utils.getNameOrTag(power.getName(), power.getTag()), power.getType(), cooldown * 2, key);
                                                                         addCooldownPatch(p);
@@ -292,14 +291,14 @@ public class FireProjectile extends CraftPower implements Listener {
                                                         this.cancel();
                                                     }
 
-                                                    if (power.getKey().getOrDefault("continuous", "false").toString().equalsIgnoreCase("false")) {
+                                                    if (power.get("key").getOrDefault("continuous", "false").toString().equalsIgnoreCase("false")) {
                                                         ItemMeta met = KeybindUtils.getKeybindItem(key, p.getInventory()).getItemMeta();
                                                         met.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "contin"), PersistentDataType.BOOLEAN, false);
                                                         setActive(p, power.getTag(), false);
                                                         KeybindUtils.getKeybindItem(key, p.getInventory()).setItemMeta(met);
                                                         this.cancel();
                                                     } else {
-                                                        if (isKeyBeingPressed(e.getPlayer(), power.getKey().getOrDefault("key", "key.origins.primary_active").toString(), true)) {
+                                                        if (isKeyBeingPressed(e.getPlayer(), power.get("key").getOrDefault("key", "key.origins.primary_active").toString(), true)) {
                                                             ItemMeta met = KeybindUtils.getKeybindItem(key, p.getInventory()).getItemMeta();
                                                             setActive(p, power.getTag(), false);
                                                             KeybindUtils.getKeybindItem(key, p.getInventory()).setItemMeta(met);

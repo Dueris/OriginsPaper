@@ -44,8 +44,8 @@ public class ModifyStatusEffectDurationPower extends CraftPower implements Liste
                 for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                     if (executor.check("condition", "conditions", p, power, getPowerFile(), p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
                         setActive(p, power.getTag(), true);
-                        if (power.get("status_effect", null) != null) {
-                            if (e.getNewEffect().getType().equals(PotionEffectType.getByName(power.get("status_effect", null)))) {
+                        if (power.getStringOrDefault("status_effect", null) != null) {
+                            if (e.getNewEffect().getType().equals(PotionEffectType.getByName(power.getStringOrDefault("status_effect", null)))) {
                                 PotionEffect effect = e.getNewEffect();
                                 for (HashMap<String, Object> modifier : power.getPossibleModifiers("modifier", "modifiers")) {
                                     Float value = Float.valueOf(modifier.get("value").toString());

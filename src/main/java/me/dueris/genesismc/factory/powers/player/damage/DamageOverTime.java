@@ -28,7 +28,7 @@ public class DamageOverTime extends CraftPower implements Listener {
     private final String damage_type;
     private final int ticksE;
     private Long interval;
-    private int damage;
+    private float damage;
     private DamageSource damage_source;
     private double protection_effectiveness;
 
@@ -52,8 +52,8 @@ public class DamageOverTime extends CraftPower implements Listener {
             setActive(p, tag, bool);
         }
     }
-    // Death msg look funny lol. "death.attack.hurt_by_water" LMFAO
 
+    // Death msg look funny lol. "death.attack.hurt_by_water" LMFAO
     @EventHandler
     public void erk(PlayerDeathEvent e) {
         if (e.getDeathMessage().equals("death.attack.hurt_by_water")) {
@@ -77,11 +77,11 @@ public class DamageOverTime extends CraftPower implements Listener {
             for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()) {
                 for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                     if (power == null) continue;
-                    if (power.getInterval() == null) {
+                    if (power.getObject("interval") == null) {
                         Bukkit.getLogger().warning(LangConfig.getLocalizedString(p, "powers.errors.burn"));
                         return;
                     }
-                    interval = power.getInterval();
+                    interval = power.getLong("interval");
 
                     int ticksE = ticksEMap.getOrDefault(p, 0);
                     if (ticksE < interval) {
@@ -91,16 +91,16 @@ public class DamageOverTime extends CraftPower implements Listener {
                         return;
                     } else {
                         if (p.getWorld().getDifficulty().equals(Difficulty.EASY)) {
-                            if (power.get("damage_easy", power.get("damage", "1")) == null) {
-                                damage = Integer.parseInt(power.get("damage", "1"));
+                            if (power.getObjectOrDefault("damage_easy", power.getObjectOrDefault("damage", 1.0f)) == null) {
+                                damage = power.getFloatOrDefault("damage", 1.0f);
                             } else {
-                                damage = Integer.parseInt(power.get("damage_easy", power.get("damage", "1")));
+                                damage = power.getFloatOrDefault("damage_easy", power.getFloatOrDefault("damage", 1f));
                             }
                         } else {
-                            damage = Integer.parseInt(power.get("damage", "1"));
+                            damage = power.getFloatOrDefault("damage", 1.0f);
                         }
 
-                        protection_effectiveness = Double.parseDouble(power.get("protection_effectiveness", "1"));
+                        protection_effectiveness = power.getDoubleOrDefault("protection_effectiveness", 1);
                         ConditionExecutor executor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                         if (executor.check("condition", "conditions", p, power, getPowerFile(), p, null, null, null, p.getItemInHand(), null)) {
                             setActive(p, power.getTag(), true);
@@ -109,13 +109,13 @@ public class DamageOverTime extends CraftPower implements Listener {
                                 if (p.getHealth() >= damage && p.getHealth() != 0 && p.getHealth() - damage != 0) {
                                     String namespace;
                                     String key;
-                                    if (power.get("damage_type") != null) {
-                                        if (power.get("damage_type").contains(":")) {
-                                            namespace = power.get("damage_type").split(":")[0];
-                                            key = power.get("damage_type").split(":")[1];
+                                    if (power.getString("damage_type") != null) {
+                                        if (power.getString("damage_type").contains(":")) {
+                                            namespace = power.getString("damage_type").split(":")[0];
+                                            key = power.getString("damage_type").split(":")[1];
                                         } else {
                                             namespace = "minecraft";
-                                            key = power.get("damage_type");
+                                            key = power.getString("damage_type");
                                         }
                                     } else {
                                         namespace = "minecraft";

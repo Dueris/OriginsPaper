@@ -41,11 +41,11 @@ public class Exhaust extends CraftPower {
             for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()) {
                 for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                     if (power == null) continue;
-                    if (power.getInterval() == null) {
+                    if (power.getObject("interval") == null) {
                         Bukkit.getLogger().warning(LangConfig.getLocalizedString(p, "powers.errors.exhaust"));
                         return;
                     }
-                    interval = power.getInterval();
+                    interval = power.getLong("interval");
                     if (ticksE < interval) {
                         ticksE++;
                         return;
@@ -54,7 +54,7 @@ public class Exhaust extends CraftPower {
                         if (conditionExecutor.check("condition", "conditions", p, power, "origins:exhaust", p, null, null, null, p.getItemInHand(), null)) {
 
                             setActive(p, power.getTag(), true);
-                            p.setExhaustion(p.getExhaustion() - Float.parseFloat(power.get("exhaustion", "1")));
+                            p.setExhaustion(p.getExhaustion() - power.getFloatOrDefault("exhaustion", 1));
                         } else {
 
                             setActive(p, power.getTag(), false);

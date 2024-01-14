@@ -62,10 +62,10 @@ public class PreventSleep extends CraftPower implements Listener {
                     boolean meetsCondition = conditionExecutor.check("block_condition", "block_conditions", e.getPlayer(), power, "origins:prevent_sleep", e.getPlayer(), null, e.getPlayer().getLocation().getBlock(), null, e.getPlayer().getItemInHand(), null);
 
                     if (meetsCondition) {
-                        if (Boolean.parseBoolean(power.get("set_spawn_point", "false"))) {
+                        if (power.getBooleanOrDefault("set_spawn_point", false)) {
                             player.setBedSpawnLocation(blockLocation);
                         }
-                        String message = power.get("message", LangConfig.getLocalizedString(player, "origins.cant_sleep"));
+                        String message = power.getStringOrDefault("message", LangConfig.getLocalizedString(player, "origins.cant_sleep"));
                         player.sendMessage(message);
                         e.setCancelled(true);
                     }

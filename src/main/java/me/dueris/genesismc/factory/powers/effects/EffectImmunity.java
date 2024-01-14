@@ -29,8 +29,8 @@ public class EffectImmunity extends CraftPower {
                 for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                     if (conditionExecutor.check("condition", "conditions", p, power, getPowerFile(), p, null, null, null, p.getItemInHand(), null)) {
                         setActive(p, power.getTag(), true);
-                        if (!power.getEffects().isEmpty()) {
-                            List<String> effectStrings = power.getEffects();
+                        if (!power.getStringList("effects").isEmpty()) {
+                            List<String> effectStrings = power.getStringList("effects");
                             for (String effectString : effectStrings) {
                                 PotionEffectType effectType = getPotionEffectType(effectString);
                                 if (effectType != null) {

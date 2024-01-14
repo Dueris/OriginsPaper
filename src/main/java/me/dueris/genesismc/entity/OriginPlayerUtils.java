@@ -438,7 +438,7 @@ public class OriginPlayerUtils {
                                 }
                             }
                         } catch (InstantiationException | IllegalAccessException | NotFoundException e) {
-                            throw new RuntimeException(e);
+                            e.printStackTrace();
                         }
                     }
                 }

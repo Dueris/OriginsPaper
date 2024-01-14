@@ -96,7 +96,7 @@ public class AttributeConditioned extends CraftPower implements Listener {
         for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()) {
             for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                 if (power == null) continue;
-                for (HashMap<String, Object> modifier : power.getConditionFromString("modifier", "modifiers")) {
+                for (HashMap<String, Object> modifier : power.getJsonListSingularPlural("modifier", "modifiers")) {
                     ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                     if (!conditionExecutor.check("condition", "conditions", p, power, "origins:attribute_conditioned", p, null, null, null, p.getItemInHand(), null))
                         return;
@@ -139,7 +139,7 @@ public class AttributeConditioned extends CraftPower implements Listener {
             for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                 if (power == null) continue;
 
-                for (HashMap<String, Object> modifier : power.getConditionFromString("modifier", "modifiers")) {
+                for (HashMap<String, Object> modifier : power.getJsonListSingularPlural("modifier", "modifiers")) {
                     Attribute attribute_modifier = Attribute.valueOf(modifier.get("attribute").toString().split(":")[1].replace(".", "_").toUpperCase());
                     if (modifier.get("value") instanceof Integer) {
                         int value = Integer.valueOf(modifier.get("value").toString());

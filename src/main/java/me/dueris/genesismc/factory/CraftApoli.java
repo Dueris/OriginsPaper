@@ -4,6 +4,7 @@ import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.entity.OriginPlayerUtils;
 import me.dueris.genesismc.files.GenesisDataFiles;
 import me.dueris.genesismc.utils.*;
+import me.dueris.genesismc.utils.exception.OriginParseException;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.storage.LevelResource;
 import org.apache.commons.io.FilenameUtils;
@@ -227,7 +228,7 @@ public class CraftApoli {
                     try {
                         unzip(datapack, GenesisMC.getTmpFolder().getAbsolutePath() + File.separator + datapack.getName().replace(".zip", ""));
                         unzippedFiles.add(Path.of(GenesisMC.getTmpFolder().getAbsolutePath() + File.separator + datapack.getName().replace(".zip", "")).toFile());
-                    } catch (Exception e) {
+                    } catch (IOException e) {
                         e.printStackTrace();
                     }
                 }
@@ -267,13 +268,9 @@ public class CraftApoli {
                                                 }
 
                                             }
-                                        } catch (FileNotFoundException fileNotFoundException) {
+                                        } catch (IOException | ParseException ee) {
                                             if (showErrors)
                                                 System.err.println("[GenesisMC] Error parsing \"%powerFolder%:%powerFileName%\"".replace("%powerFolder", namespace.getName()).replace("%powerFileName", powerFile.getName()));
-                                        } catch (IOException e) {
-                                            throw new RuntimeException(e);
-                                        } catch (ParseException e) {
-                                            throw new RuntimeException(e);
                                         }
                                     }
                                 }

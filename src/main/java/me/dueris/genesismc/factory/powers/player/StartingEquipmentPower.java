@@ -56,8 +56,8 @@ public class StartingEquipmentPower extends CraftPower implements Listener {
     }
 
     public void runGiveItems(Player p, PowerContainer power) {
-        for (HashMap<String, Object> stack : power.getSingularAndPlural("stack", "stacks")) {
-            p.getInventory().addItem(new ItemStack(Material.valueOf(stack.get("item").toString().toUpperCase().split(":")[1]), Integer.valueOf(power.get("amount", "1"))));
+        for (HashMap<String, Object> stack : power.getJsonListSingularPlural("stack", "stacks")) {
+            p.getInventory().addItem(new ItemStack(Material.valueOf(stack.get("item").toString().toUpperCase().split(":")[1]), power.getIntOrDefault("amount", 1)));
         }
     }
 
@@ -68,15 +68,11 @@ public class StartingEquipmentPower extends CraftPower implements Listener {
                 ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                 for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(e.getPlayer(), getPowerFile(), layer)) {
                     if (conditionExecutor.check("condition", "conditions", e.getPlayer(), power, getPowerFile(), e.getPlayer(), null, null, null, e.getPlayer().getItemInHand(), null)) {
-                        if (!getPowerArray().contains(e.getPlayer())) return;
                         setActive(e.getPlayer(), power.getTag(), true);
-                        if (power.get("recurrent", "false") != null) {
-                            if (power.get("recurrent") == "true") {
-                                runGiveItems(e.getPlayer(), power);
-                            }
+                        if (power.getObject("recurrent") != null && power.getBoolean("recurrent") == true) {
+                            runGiveItems(e.getPlayer(), power);
                         }
                     } else {
-                        if (!getPowerArray().contains(e.getPlayer())) return;
                         setActive(e.getPlayer(), power.getTag(), false);
                     }
                 }

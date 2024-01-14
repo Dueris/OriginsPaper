@@ -1,9 +1,11 @@
 package me.dueris.genesismc.factory.powers.actions;
 
 import me.dueris.genesismc.entity.OriginPlayerUtils;
+import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.actions.Actions;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
+import me.dueris.genesismc.utils.LayerContainer;
 import me.dueris.genesismc.utils.PowerContainer;
 import me.dueris.genesismc.utils.translation.LangConfig;
 import org.bukkit.Bukkit;
@@ -26,15 +28,11 @@ public class ActionOverTime extends CraftPower {
         ticksEMap.putIfAbsent(p, 0);
 
         if (getPowerArray().contains(p)) {
-            for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()) {
+            for (LayerContainer layer : CraftApoli.getLayers()) {
                 for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                     if (power == null) continue;
-                    if (power.getInterval() == null) {
-                        Bukkit.getLogger().warning(LangConfig.getLocalizedString(p, "powers.errors.action_over_time"));
-                        return;
-                    }
 
-                    interval = power.getInterval();
+                    interval = power.getLongOrDefault("interval", 20l);
                     int ticksE = ticksEMap.getOrDefault(p, 0);
                     if (ticksE <= interval) {
                         ticksE++;

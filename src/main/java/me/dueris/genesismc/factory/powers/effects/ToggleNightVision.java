@@ -38,7 +38,7 @@ public class ToggleNightVision extends CraftPower implements Listener {
         if (!getPowerArray().contains(p)) return;
         if (runCancel) return;
         String tag = power.getTag();
-        String key = (String) power.getKey().getOrDefault("key", "key.origins.primary_active");
+        String key = (String) power.get("key").getOrDefault("key", "key.origins.primary_active");
         KeybindUtils.runKeyChangeTrigger(KeybindUtils.getTriggerFromOriginKey(p, key));
         if (CooldownManager.isPlayerInCooldown(p, key)) return;
         if (!powers_active.containsKey(p)) {
@@ -143,13 +143,13 @@ public class ToggleNightVision extends CraftPower implements Listener {
                 ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                 for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                     if (conditionExecutor.check("condition", "conditions", p, power, getPowerFile(), p, null, null, null, p.getItemInHand(), null)) {
-                        if (!CooldownManager.isPlayerInCooldown(p, power.getKey().getOrDefault("key", "key.origins.primary_active").toString())) {
-                            if (isKeyBeingPressed(e.getPlayer(), power.getKey().getOrDefault("key", "key.origins.primary_active").toString(), true)) {
+                        if (!CooldownManager.isPlayerInCooldown(p, power.get("key").getOrDefault("key", "key.origins.primary_active").toString())) {
+                            if (isKeyBeingPressed(e.getPlayer(), power.get("key").getOrDefault("key", "key.origins.primary_active").toString(), true)) {
                                 execute(p, power);
                             }
                         }
                     } else {
-                        KeybindUtils.runKeyChangeTriggerReturn(KeybindUtils.getKeybindItem(power.getKey().getOrDefault("key", "key.origins.primary_active").toString(), p.getInventory()), p, power.getKey().getOrDefault("key", "key.origins.primary_active").toString());
+                        KeybindUtils.runKeyChangeTriggerReturn(KeybindUtils.getKeybindItem(power.get("key").getOrDefault("key", "key.origins.primary_active").toString(), p.getInventory()), p, power.get("key").getOrDefault("key", "key.origins.primary_active").toString());
                         setActive(p, power.getTag(), false);
                     }
                 }

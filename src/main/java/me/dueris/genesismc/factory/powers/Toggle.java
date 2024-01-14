@@ -46,8 +46,8 @@ public class Toggle extends CraftPower implements Listener {
                 for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                     if (GenesisMC.getConditionExecutor().check("condition", "conditions", p, power, getPowerFile(), p, null, p.getLocation().getBlock(), null, p.getActiveItem(), null)) {
                         if (GenesisMC.getConditionExecutor().check("entity_condition", "entity_conditions", p, power, getPowerFile(), p, null, p.getLocation().getBlock(), null, p.getActiveItem(), null)) {
-                            if (!CooldownManager.isPlayerInCooldown(p, power.getKey().getOrDefault("key", "key.origins.primary_active").toString())) {
-                                if (isKeyBeingPressed(e.getPlayer(), power.getKey().getOrDefault("key", "key.origins.primary_active").toString(), true)) {
+                            if (!CooldownManager.isPlayerInCooldown(p, power.get("key").getOrDefault("key", "key.origins.primary_active").toString())) {
+                                if (isKeyBeingPressed(e.getPlayer(), power.get("key").getOrDefault("key", "key.origins.primary_active").toString(), true)) {
                                     execute(p, power);
                                     break;
                                 }
@@ -63,7 +63,7 @@ public class Toggle extends CraftPower implements Listener {
         if (!getPowerArray().contains(p)) return;
         if (runCancel) return;
         String tag = power.getTag();
-        String key = (String) power.getKey().getOrDefault("key", "key.origins.primary_active");
+        String key = (String) power.get("key").getOrDefault("key", "key.origins.primary_active");
         KeybindUtils.runKeyChangeTrigger(KeybindUtils.getTriggerFromOriginKey(p, key));
         if (CooldownManager.isPlayerInCooldown(p, key)) return;
         if (!powers_active.containsKey(p)) {
@@ -71,7 +71,7 @@ public class Toggle extends CraftPower implements Listener {
         }
         if (powers_active.get(p).containsKey(power.getTag())) {
             setActive(p, power.getTag(), !powers_active.get(p).get(tag));
-            if (power.get("retain_state", "false") == "true") {
+            if (power.getBooleanOrDefault("retain_state", false) == true) {
                 if (active) {
                     //active
                     KeybindUtils.runKeyChangeTriggerReturn(KeybindUtils.getTriggerFromOriginKey(p, key), p, key);

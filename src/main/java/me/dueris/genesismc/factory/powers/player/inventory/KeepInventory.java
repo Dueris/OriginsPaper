@@ -39,8 +39,8 @@ public class KeepInventory extends CraftPower implements Listener {
                     if (conditionExecutor.check("item_condition", "item_conditions", player, power, "origins:keep_inventory", player, null, null, null, player.getInventory().getItemInHand(), null)) {
                         ArrayList<Long> slots = new ArrayList<>();
                         setActive(player, power.getTag(), true);
-                        if (power.getSlots() != null) {
-                            for (long slot : power.getSlots()) {
+                        if (power.getLongList("slots") != null) {
+                            for (long slot : power.getLongList("slots")) {
                                 slots.add(slot);
                             }
                         }

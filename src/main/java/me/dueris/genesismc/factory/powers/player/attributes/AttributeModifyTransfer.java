@@ -44,7 +44,7 @@ public class AttributeModifyTransfer extends CraftPower implements Listener {
                     if (executor.check("condition", "conditions", e.getPlayer(), power, getPowerFile(), e.getPlayer(), null, null, null, e.getPlayer().getItemInHand(), null)) {
                         setActive(e.getPlayer(), power.getTag(), true);
                         ValueModifyingSuperClass valueModifyingSuperClass = new ValueModifyingSuperClass();
-                        applyAttribute(e.getPlayer(), valueModifyingSuperClass.getDefaultValue(power.get("class")), Float.parseFloat(power.get("multiplier", "1.0")), power.get("attribute").toUpperCase().split(":")[1].replace("\\.", "_"));
+                        applyAttribute(e.getPlayer(), valueModifyingSuperClass.getDefaultValue(power.getString("class")), power.getFloatOrDefault("multiplier", 1.0f), power.getString("attribute").toUpperCase().split(":")[1].replace("\\.", "_"));
                     } else {
                         setActive(e.getPlayer(), power.getTag(), false);
                     }

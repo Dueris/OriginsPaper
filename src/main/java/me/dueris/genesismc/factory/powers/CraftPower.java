@@ -6,6 +6,8 @@ import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.powers.simple.*;
 import me.dueris.genesismc.utils.OriginContainer;
 import me.dueris.genesismc.utils.PowerContainer;
+import me.dueris.genesismc.utils.exception.DuplicateCraftPowerException;
+import me.dueris.genesismc.utils.exception.PowerNotFoundException;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Listener;
 import org.reflections.Reflections;
@@ -57,6 +59,11 @@ public abstract class CraftPower implements Power {
             for (Class<? extends CraftPower> c : CraftPower.findCraftPowerClasses()) {
                 if (CraftPower.class.isAssignableFrom(c)) {
                     CraftPower instance = c.newInstance();
+                    if(CraftPower.getKeyedRegistry().containsKey(instance.getPowerFile()) && instance.getPowerFile() != null){
+                        DuplicateCraftPowerException dcpe = new DuplicateCraftPowerException(CraftPower.getCraftPowerFromKey(instance.getPowerFile()), c);
+                        dcpe.printStackTrace();
+                        continue;
+                    }
                     CraftPower.getRegistered().add(c);
                     registeredFromKey.put(instance.getPowerFile(), c);
                     if (instance instanceof Listener || Listener.class.isAssignableFrom(c)) {

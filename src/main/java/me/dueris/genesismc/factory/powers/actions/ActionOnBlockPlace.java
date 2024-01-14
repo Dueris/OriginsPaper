@@ -41,7 +41,7 @@ public class ActionOnBlockPlace extends CraftPower implements Listener {
                                     Actions.BlockActionType(e.getBlockAgainst().getLocation(), power.getAction("place_on_action"));
                                     Actions.BlockActionType(e.getBlockPlaced().getLocation(), power.getAction("place_to_action"));
                                     if (power.get("result_stack") != null) {
-                                        JSONObject jsonObject = power.getJsonObject("result_stack");
+                                        JSONObject jsonObject = power.get("result_stack");
                                         int amt;
                                         if (jsonObject.get("amount").toString() != null) {
                                             amt = Integer.parseInt(jsonObject.get("amount").toString());

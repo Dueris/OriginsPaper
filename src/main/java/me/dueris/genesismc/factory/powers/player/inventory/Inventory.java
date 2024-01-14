@@ -93,9 +93,9 @@ public class Inventory extends CraftPower implements CommandExecutor, Listener {
                     if (CooldownManager.isPlayerInCooldown(e.getPlayer(), e.getKey())) return;
                     if (executor.check("condition", "conditions", e.getPlayer(), power, getPowerFile(), e.getPlayer(), null, null, null, e.getPlayer().getItemInHand(), null)) {
                         setActive(e.getPlayer(), power.getTag(), true);
-                        if (isKeyBeingPressed(e.getPlayer(), power.getKey().getOrDefault("key", "key.origins.primary_active").toString(), true)) {
+                        if (isKeyBeingPressed(e.getPlayer(), power.get("key").getOrDefault("key", "key.origins.primary_active").toString(), true)) {
                             ArrayList<ItemStack> vaultItems = InventoryUtils.getItems(e.getPlayer());
-                            org.bukkit.inventory.Inventory vault = Bukkit.createInventory(e.getPlayer(), InventoryType.valueOf(power.get("container_type", "chest").toUpperCase()), power.get("title", "inventory.container.title").replace("%player%", e.getPlayer().getName()));
+                            org.bukkit.inventory.Inventory vault = Bukkit.createInventory(e.getPlayer(), InventoryType.valueOf(power.getStringOrDefault("container_type", "chest").toUpperCase()), power.getStringOrDefault("title", "inventory.container.title").replace("%player%", e.getPlayer().getName()));
                             vaultItems.stream()
                                     .forEach(itemStack -> vault.addItem(itemStack));
                             e.getPlayer().openInventory(vault);
@@ -114,7 +114,7 @@ public class Inventory extends CraftPower implements CommandExecutor, Listener {
             if (shulker_inventory.contains(e.getPlayer())) {
                 Player p = e.getPlayer();
                 for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-                    if (power.getDropOnDeath()) {
+                    if (power.getBooleanOrDefault("drop_on_death", false)) {
                         ArrayList<ItemStack> vaultItems = InventoryUtils.getItems(p);
                         org.bukkit.inventory.Inventory vault = Bukkit.createInventory(p, InventoryType.CHEST, "origin.getPowerFileFromType(origins:inventory).get(title)");
 

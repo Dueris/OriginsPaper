@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.json.simple.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -38,7 +39,7 @@ public class ApplyEffect extends CraftPower implements Listener {
                     if (conditionExecutor.check("condition", "conditions", p, power, getPowerFile(), p, null, null, null, p.getItemInHand(), null)) {
 
                         setActive(p, power.getTag(), true);
-                        List<HashMap<String, Object>> effectDataList = power.getEffectData();
+                        List<JSONObject> effectDataList = power.getJsonListSingularPlural("effect", "effects");
                         for (HashMap<String, Object> effectData : effectDataList) {
                             p.addPotionEffect(new PotionEffect(PotionEffectType.getByName(effectData.get("effect").toString().split(":")[1].toUpperCase()), Integer.valueOf(effectData.get("duration").toString()), Integer.valueOf(effectData.get("amplifier").toString())));
                         }

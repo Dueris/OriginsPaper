@@ -50,7 +50,7 @@ public class ModifyBlockRenderPower extends CraftPower {
                 for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(player, getPowerFile(), layer)) {
                     Material targetMaterial = Material.AIR;
                     if (conditionMet) {
-                        targetMaterial = Material.getMaterial(power.get("block", null).toUpperCase());
+                        targetMaterial = Material.getMaterial(power.getStringOrDefault("block", null).toUpperCase());
                     }
 
                     for (Chunk chunk : chunkManagerWorld.getChunksInPlayerViewDistance(craftPlayer)) {

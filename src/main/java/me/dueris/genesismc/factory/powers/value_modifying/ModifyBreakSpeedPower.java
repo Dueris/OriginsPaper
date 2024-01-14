@@ -73,8 +73,8 @@ public class ModifyBreakSpeedPower extends CraftPower implements Listener {
                                         p.addPotionEffect(
                                                 new PotionEffect(
                                                         PotionEffectType.SLOW_DIGGING,
-                                                        50,
-                                                        Math.round(valueModifyingSuperClass.getPersistentAttributeContainer(p, MODIFYING_KEY)) + 1,
+                                                        20,
+                                                        (Math.round(valueModifyingSuperClass.getPersistentAttributeContainer(p, MODIFYING_KEY)) + 1) * 17,
                                                         false, false, false
                                                 )
                                         );
@@ -83,8 +83,8 @@ public class ModifyBreakSpeedPower extends CraftPower implements Listener {
                                         p.addPotionEffect(
                                                 new PotionEffect(
                                                         PotionEffectType.FAST_DIGGING,
-                                                        50,
-                                                        Math.round(valueModifyingSuperClass.getPersistentAttributeContainer(p, MODIFYING_KEY)) + 1,
+                                                        20,
+                                                        (Math.round(valueModifyingSuperClass.getPersistentAttributeContainer(p, MODIFYING_KEY)) + 1) * 17,
                                                         false, false, false
                                                 )
                                         );
@@ -111,7 +111,7 @@ public class ModifyBreakSpeedPower extends CraftPower implements Listener {
         if (modify_break_speed.contains(p)) {
             for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()) {
                 for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-                    for (HashMap<String, Object> modifier : power.getConditionFromString("modifier", "modifiers")) {
+                    for (HashMap<String, Object> modifier : power.getJsonListSingularPlural("modifier", "modifiers")) {
                         Float value = Float.valueOf(modifier.get("value").toString());
                         valueModifyingSuperClass.saveValueInPDC(p, MODIFYING_KEY, value); // Why does there need to be a binary operator if the operator does nothing?
                     }

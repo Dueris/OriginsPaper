@@ -51,45 +51,37 @@ public class Launch extends CraftPower implements Listener {
                 ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                 for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                     if (conditionExecutor.check("condition", "conditions", p, power, "origins:launch", p, null, null, null, p.getItemInHand(), null)) {
-                        if (!CooldownManager.isPlayerInCooldown(p, power.getKey().getOrDefault("key", "key.origins.primary_active").toString())) {
-                            if (isKeyBeingPressed(e.getPlayer(), power.getKey().getOrDefault("key", "key.origins.primary_active").toString(), true)) {
+                        if (!CooldownManager.isPlayerInCooldown(p, power.get("key").getOrDefault("key", "key.origins.primary_active").toString())) {
+                            if (isKeyBeingPressed(e.getPlayer(), power.get("key").getOrDefault("key", "key.origins.primary_active").toString(), true)) {
                                 new BukkitRunnable() {
                                     @Override
                                     public void run() {
-                                        String key = (String) power.getKey().getOrDefault("key", "key.origins.primary_active");
+                                        String key = (String) power.get("key").getOrDefault("key", "key.origins.primary_active");
                                         if (!CooldownManager.isPlayerInCooldown(p, key)) {
                                             KeybindUtils.runKeyChangeTrigger(KeybindUtils.getTriggerFromOriginKey(p, key));
                                             final boolean[] thing = new boolean[1];
                                             new BukkitRunnable() {
                                                 @Override
                                                 public void run() {
-                                                    int cooldown = Integer.parseInt(power.get("cooldown", "1"));
+                                                    int cooldown = power.getIntOrDefault("cooldown", 1);
                                                     if (!CooldownManager.isPlayerInCooldown(p, key)) {
-                                                        if (power.getKey().get("continuous").toString() == "false") {
-                                                            //continousus - false
-                                                            KeybindUtils.runKeyChangeTriggerReturn(KeybindUtils.getTriggerFromOriginKey(p, key), p, key);
-                                                            ItemMeta met = KeybindUtils.getKeybindItem(key, p.getInventory()).getItemMeta();
-                                                            met.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "contin"), PersistentDataType.BOOLEAN, false);
-                                                            KeybindUtils.getKeybindItem(key, p.getInventory()).setItemMeta(met);
-                                                            thing[0] = true;
-                                                            setActive(p, power.getTag(), false);
-                                                            this.cancel();
-                                                        } else {
-                                                            //yes continuouous
-                                                            ItemMeta met = KeybindUtils.getKeybindItem(key, p.getInventory()).getItemMeta();
-                                                            met.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "contin"), PersistentDataType.BOOLEAN, true);
-                                                            KeybindUtils.getKeybindItem(key, p.getInventory()).setItemMeta(met);
-                                                        }
+                                                        //continousus - false
+                                                        KeybindUtils.runKeyChangeTriggerReturn(KeybindUtils.getTriggerFromOriginKey(p, key), p, key);
+                                                        ItemMeta met = KeybindUtils.getKeybindItem(key, p.getInventory()).getItemMeta();
+                                                        met.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "contin"), PersistentDataType.BOOLEAN, false);
+                                                        KeybindUtils.getKeybindItem(key, p.getInventory()).setItemMeta(met);
+                                                        thing[0] = true;
+                                                        setActive(p, power.getTag(), false);
+                                                        this.cancel();
                                                     }
-                                                    //run code here for things that happen when toggled
-                                                    //power is active
-                                                    //dont change any other settings in this other than the powertype and the "retain_state"
-                                                    int speed = Integer.parseInt(power.get("speed", null));
+
+                                                    int speed = Integer.parseInt(power.getStringOrDefault("speed", null)); // used as string so that upon parsing the int it throws if not found
                                                     CooldownManager.addCooldown(p, Utils.getNameOrTag(power.getName(), power.getTag()), power.getType(), cooldown, key);
                                                     setActive(p, power.getTag(), true);
                                                     p.setVelocity(new Vector(p.getVelocity().getX(), speed, p.getVelocity().getZ()));
                                                     p.spawnParticle(Particle.CLOUD, p.getLocation(), 100);
                                                     this.cancel();
+
                                                 }
                                             }.runTaskTimer(GenesisMC.getPlugin(), 1L, 1L);
 
@@ -98,7 +90,7 @@ public class Launch extends CraftPower implements Listener {
                                                 this.cancel();
                                             }
 
-                                            if (power.getKey().get("continuous").toString().equalsIgnoreCase("false")) {
+                                            if (power.get("key").get("continuous").toString().equalsIgnoreCase("false")) {
                                                 ItemMeta met = KeybindUtils.getKeybindItem(key, p.getInventory()).getItemMeta();
                                                 met.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "contin"), PersistentDataType.BOOLEAN, false);
                                                 if (power == null) {
@@ -117,7 +109,7 @@ public class Launch extends CraftPower implements Listener {
                                                 }.runTaskLater(GenesisMC.getPlugin(), 1L);
                                                 this.cancel();
                                             } else {
-                                                if (isKeyBeingPressed(e.getPlayer(), power.getKey().getOrDefault("key", "key.origins.primary_active").toString(), true)) {
+                                                if (isKeyBeingPressed(e.getPlayer(), power.get("key").getOrDefault("key", "key.origins.primary_active").toString(), true)) {
                                                     ItemMeta met = KeybindUtils.getKeybindItem(key, p.getInventory()).getItemMeta();
                                                     met.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "contin"), PersistentDataType.BOOLEAN, false);
                                                     if (power == null) {

@@ -42,7 +42,7 @@ public class NightVision extends CraftPower {
                     ConditionExecutor executor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                     if (executor.check("condition", "conditions", p, power, getPowerFile(), p, null, null, null, p.getItemInHand(), null)) {
                         setActive(p, power.getTag(), true);
-                        p.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, 400, roundNumber(power.getStrength()), false, false, false));
+                        p.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, 400, roundNumber(power.getFloatOrDefault("strength", 1.0f)), false, false, false));
                     } else {
                         setActive(p, power.getTag(), false);
                     }
