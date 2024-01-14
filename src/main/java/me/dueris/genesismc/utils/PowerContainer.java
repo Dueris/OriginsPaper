@@ -131,96 +131,6 @@ public class PowerContainer implements Serializable {
         return (String) type;
     }
 
-//    /**
-//     * @return Whether the elytra should be displayed. Will return false if "render_elytra" is not present.
-//     */
-//    public Boolean getShouldRender() {
-//        Object render = powerFile.get("render_elytra");
-//        if (render == null) return true;
-//        return (Boolean) render;
-//    }
-//
-//    public Boolean getOverlay() {
-//        Object render = powerFile.get("overlay");
-//        if (render == null) return false;
-//        return (Boolean) render;
-//    }
-//
-//    /**
-//     * @return The value "strength" from the power file
-//     */
-//    public Long getStrength() {
-//        Object render = powerFile.get("strength");
-//        if (render == null) return 1L;
-//        return (long) render;
-//    }
-//
-//    public String getModelRenderType() {
-//        Object type = powerFile.get("render_type");
-//        if (type == null) return "original";
-//        return (String) type;
-//    }
-//
-//    /**
-//     * @return The value "interval" from the power file
-//     */
-//    public Long getInterval() {
-//        Object render = powerFile.get("interval");
-//        if (render == null) return 20L;
-//        return (long) render;
-//    }
-//
-//    public boolean getDropOnDeath() {
-//        Object render = powerFile.get("drop_on_death");
-//        if (render == null) return false;
-//        return (Boolean) render;
-//    }
-//
-//    public Double getColor(String thing) {
-//        Object color = powerFile.get(thing);
-//        if (color == null) return 0.0;
-//        return (Double) color;
-//    }
-//
-//    /**
-//     * @return The value "burn_duration" from the power file
-//     */
-//    public Long getBurnDuration() {
-//        Object render = powerFile.get("burn_duration");
-//        if (render == null) return 100L;
-//        return (long) render;
-//    }
-//
-//    public String getEffect() {
-//        Object type = powerFile.get("effect");
-//        if (type == null) return "blindness";
-//        return type.toString();
-//    }
-//
-//    /**
-//     * @return LONG view_distance value for power origins:phasing
-//     */
-//    public Long getViewDistance() {
-//        Object distance = powerFile.get("view_distance");
-//        if (distance == null) return 10L;
-//        return (Long) distance;
-//    }
-//
-//    /**
-//     * @return Should the climbing power be canceled in the rain or not
-//     */
-//    public boolean getRainCancel() {
-//        Object render = powerFile.get("rain_cancel");
-//        if (render == null) return false;
-//        return (boolean) render;
-//    }
-//
-//    public boolean isInverted() {
-//        Object render = powerFile.get("inverted");
-//        if (render == null) return false;
-//        return (boolean) render;
-//    }
-
     public JSONObject get(String key){
         JSONObject jsonObject = (JSONObject) this.powerFile.get(key);
         if(jsonObject == null) return new JSONObject();
@@ -329,25 +239,6 @@ public class PowerContainer implements Serializable {
         return obj.toString();
     }
 
-//    public List<String> getPatternLine() {
-//        List<String> patternLines = new ArrayList<>();
-//
-//        Object obj = powerFile.get("recipe");
-//        if (obj instanceof JSONObject recipeObject) {
-//            Object patternObj = recipeObject.get("pattern");
-//
-//            if (patternObj instanceof JSONArray patternArray) {
-//                for (Object lineObj : patternArray) {
-//                    if (lineObj instanceof String line) {
-//                        patternLines.add(line);
-//                    }
-//                }
-//            }
-//        }
-//
-//        return patternLines;
-//    }
-
     /**
      * @return Modifiers in the power file or null if not found
      */
@@ -383,40 +274,6 @@ public class PowerContainer implements Serializable {
         return result;
     }
 
-//    public HashMap<String, Object> getSpread() {
-//        Object obj = powerFile.get("spread");
-//        if (obj == null) return new HashMap<>();
-//
-//        if (obj instanceof JSONObject modifier) {
-//            HashMap<String, Object> result = new HashMap<>();
-//            for (Object key : modifier.keySet()) {
-//                String string_key = (String) key;
-//                Object value = modifier.get(string_key);
-//                result.put(string_key, value);
-//            }
-//            return result;
-//        }
-//
-//        return null;
-//    }
-
-//    public HashMap<String, Object> getRecipe() {
-//        Object obj = powerFile.get("recipe");
-//        if (obj == null) return new HashMap<>();
-//
-//        if (obj instanceof JSONObject modifier) {
-//            HashMap<String, Object> result = new HashMap<>();
-//            for (Object key : modifier.keySet()) {
-//                String string_key = (String) key;
-//                Object value = modifier.get(string_key);
-//                result.put(string_key, value);
-//            }
-//            return result;
-//        }
-//
-//        return null;
-//    }
-
     public JSONArray getJsonArray(String thing) {
         Object obj = powerFile.get(thing);
         if (obj == null) return new JSONArray();
@@ -428,61 +285,6 @@ public class PowerContainer implements Serializable {
         return new JSONArray();
     }
 
-//    public HashMap<String, Object> getRecipeResult() {
-//        Object obj = powerFile.get("recipe");
-//        if (obj == null) return new HashMap<>();
-//
-//        if (obj instanceof JSONObject damageCondition) {
-//            Object entityConditionObj = damageCondition.get("result");
-//            if (entityConditionObj instanceof JSONObject entityCondition) {
-//                HashMap<String, Object> result = new HashMap<>();
-//                for (Object key : entityCondition.keySet()) {
-//                    String stringKey = (String) key;
-//                    Object value = entityCondition.get(stringKey);
-//                    result.put(stringKey, value);
-//                }
-//                return result;
-//            }
-//        }
-//
-//        return new HashMap<>();
-//    }
-//
-//    public List<String> getRecipeIngredients() {
-//        Object obj = powerFile.get("recipe");
-//        List<String> ingredientsList = new ArrayList<>();
-//
-//        if (obj instanceof JSONObject recipeObject) {
-//            Object ingredientsObj = recipeObject.get("ingredients");
-//
-//            if (ingredientsObj instanceof JSONArray ingredientsArray) {
-//                for (Object ingredient : ingredientsArray) {
-//                    if (ingredient instanceof JSONObject singleIngredient) {
-//                        if (singleIngredient.containsKey("item")) {
-//                            String item = singleIngredient.get("item").toString();
-//                            if (!item.isEmpty()) {
-//                                ingredientsList.add(item);
-//                            }
-//                        }
-//                    } else if (ingredient instanceof JSONArray nestedIngredientsArray) {
-//                        for (Object nestedIngredient : nestedIngredientsArray) {
-//                            if (nestedIngredient instanceof JSONObject nestedSingleIngredient) {
-//                                if (nestedSingleIngredient.containsKey("item")) {
-//                                    String nestedItem = nestedSingleIngredient.get("item").toString();
-//                                    if (!nestedItem.isEmpty()) {
-//                                        ingredientsList.add(nestedItem);
-//                                    }
-//                                }
-//                            }
-//                        }
-//                    }
-//                }
-//            }
-//        }
-//
-//        return ingredientsList;
-//    }
-//
     public List<String> getStringList(String key) {
         Object obj = powerFile.get(key);
         if (obj == null) return new ArrayList<>();
@@ -578,104 +380,6 @@ public class PowerContainer implements Serializable {
         return effectStrings;
     }
 
-//
-//    /**
-//     * @return Head value in the power file or null if not found
-//     */
-//    public HashMap<String, Object> getHead() {
-//        Object obj = powerFile.get("head");
-//        if (obj == null) return new HashMap<>();
-//
-//        if (obj instanceof JSONObject modifier) {
-//            HashMap<String, Object> result = new HashMap<>();
-//            for (Object key : modifier.keySet()) {
-//                String string_key = (String) key;
-//                Object value = modifier.get(string_key);
-//                result.put(string_key, value);
-//            }
-//            return result;
-//        }
-//
-//        return null;
-//    }
-//
-//    /**
-//     * @return Chest value in the power file or null if not found
-//     */
-//    public HashMap<String, Object> getChest() {
-//        Object obj = powerFile.get("chest");
-//        if (obj == null) return new HashMap<>();
-//
-//        if (obj instanceof JSONObject modifier) {
-//            HashMap<String, Object> result = new HashMap<>();
-//            for (Object key : modifier.keySet()) {
-//                String string_key = (String) key;
-//                Object value = modifier.get(string_key);
-//                result.put(string_key, value);
-//            }
-//            return result;
-//        }
-//
-//        return null;
-//    }
-//
-//    /**
-//     * @return Legs value in the power file or null if not found
-//     */
-//    public HashMap<String, Object> getLegs() {
-//        Object obj = powerFile.get("legs");
-//        if (obj == null) return new HashMap<>();
-//
-//        if (obj instanceof JSONObject modifier) {
-//            HashMap<String, Object> result = new HashMap<>();
-//            for (Object key : modifier.keySet()) {
-//                String string_key = (String) key;
-//                Object value = modifier.get(string_key);
-//                result.put(string_key, value);
-//            }
-//            return result;
-//        }
-//
-//        return null;
-//    }
-//
-//    /**
-//     * @return Feet value in the power file or null if not found
-//     */
-//    public HashMap<String, Object> getFeet() {
-//        Object obj = powerFile.get("feet");
-//        if (obj == null) return new HashMap<>();
-//
-//        if (obj instanceof JSONObject modifier) {
-//            HashMap<String, Object> result = new HashMap<>();
-//            for (Object key : modifier.keySet()) {
-//                String string_key = (String) key;
-//                Object value = modifier.get(string_key);
-//                result.put(string_key, value);
-//            }
-//            return result;
-//        }
-//
-//        return null;
-//    }
-
-//    public HashMap<String, Object> getKey() {
-//        Object obj = powerFile.get("key");
-//        if (obj == null) return new HashMap<>();
-//
-//        if (obj instanceof JSONObject modifier) {
-//            HashMap<String, Object> result = new HashMap<>();
-//            for (Object key : modifier.keySet()) {
-//                String string_key = (String) key;
-//                Object value = modifier.get(string_key);
-//                result.put(string_key, value);
-//            }
-//            return result;
-//        }
-//
-//        return null;
-//    }
-
     /**
      * Checks the powerfile for the "condition" tag
      *
@@ -700,26 +404,6 @@ public class PowerContainer implements Serializable {
         }
         return result;
     }
-
-//    public HashMap<String, Object> getThunderModifier() {
-//        Object obj = powerFile.get("modifier");
-//        if (obj == null) return new HashMap<>();
-//
-//        if (obj instanceof JSONObject modifierThing) {
-//            Object entityConditionObj = modifierThing.get("thunder_modifier");
-//            if (entityConditionObj instanceof JSONObject thunderThing) {
-//                HashMap<String, Object> result = new HashMap<>();
-//                for (Object key : thunderThing.keySet()) {
-//                    String stringKey = (String) key;
-//                    Object value = thunderThing.get(stringKey);
-//                    result.put(stringKey, value);
-//                }
-//                return result;
-//            }
-//        }
-//
-//        return new HashMap<>();
-//    }
 
     public JSONObject getBiEntityAction() {
         Object obj = powerFile.get("bientity_action");
