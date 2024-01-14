@@ -1,13 +1,17 @@
 {
   "type": "origins:action_when_damage_taken",
-  "condition": {
-    "type": "origins:on_fire"
+  "damage_condition": {
+    "type": "origins:fire"
   },
   "entity_action": {
-    "type": "origins:explode",
-    "power": 3,
-    "damage_self": false,
-    "create_fire": false
+    "type": "origins:delay",
+    "action": {
+      "type": "origins:explode",
+      "power": 3,
+      "damage_self": false,
+      "create_fire": false
+    },
+    "ticks": 10
   },
   "action": {
     "type": "origins:extinguish"
