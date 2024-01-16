@@ -1,52 +1,13 @@
-<div class="markdown-body card" style="
-    background: linear-gradient(45deg, #281d26, transparent);
-"><div name="body">
-       
-<div name="textbody" style="
-">
-    <p></p><img src="https://www.linkpicture.com/q/Screenshot-2023-05-11-073604.png" type="image" style="">
-<p></p>
-</h2>
-<hr>
-   
-<h3>What is GenesisMC?</h3>
-<hr>
-    <p style="
-    text-align-last: center;
-">
-GenesisMC is a port of the Origins mod onto Paper servers. With our fundamental goal of accessibility, we strive to make a truly universal experience, for java and bedrock players. Utilizing plugins such as <a href="https://geysermc.org">GeyserMC</a> and <a href="https://github.com/GeyserMC/Floodgate">Floodgate</a> whilst developing with bedrock players in mind means that anyone from any device can play. Furthermore, we have committed to added multi language support to our plugin so that you can play, no matter what.
-    </p>
-    <p>
-        </p>
-    <p style="
-    text-align-last: center;
-">
-All of the GenesisMC team take user feedback as law. We endeavor to improve and innovate based on the collective experience of all our users. Because of this we would love getting feedback from anyone and everyone, whether positive or negative. If you do have something that you would want to suggest, please join our <a href="https://discord.gg/RKmQnU6SRt">discord</a> and give some feedback!  Please know that we are are small team so we might not be able to respond to you immediately.
-</p>
-<p name="customo" style="
-">
-<p style="
-    text-align: center;
-">
-Custom origins are what truly made the Origins mod shine; therefore, we are making custom origins the end goal for our plugin. With a basic form of custom origin support expected to release and be improved over the next few alpha versions. If you want to know more please visit our <a href="http://genesismc.duckdns.org">wiki page!</a> We have even gone as far as to add some of the most popular custom origins right into the plugin, so you don’t have to add them yourself!
-</p>
+<img src="https://cdn.modrinth.com/data/snPhmGDK/a81fa7a90dace812d92e0714aee59b4a6f9e9669.png" alt="Genesis Logo" align="right" width="220">
+<div align="center">
 
- 
-<hr><h3>What is GenesisMC Compatible With?</h3><p style="
-    text-align: center;
-">
-<hr>
-    GenesisMC is compatible with PaperMC, Folia, and GeyserMC and Floodgate. Unfortunately, the plugin uses the PaperAPI, meaning that the plugin can load on Spigot and CraftBukkit, however many of the features will break.
-</p>
-<hr>
-<h3>Translators Wanted!</h3>
-<hr>
-<p style="text-align; center;">
-If you can speak a language other than English we would greatly appreciate it if you could join our translation team! For more information please join our <a href="https://discord.gg/RKmQnU6SRt">discord</a> server and ask Dueris about helping to translate. Do know that Dueris is just one person so, you might have to wait for a response. 
-</p>
-<hr>
-<h3>Documentation</h3>
-<hr>
-<p style="text-align; center;">A new beta website is now up for the docs! It includes javadocs for the api, the origins included with the plugin, and more! The site will be improved on and worked on as the plugin evolves:
-http://genesismc.duckdns.org</p>
+## GenesisMC
+
+<h5>Bringing custom origins to PaperMC, Vanilla clients, and Geyser</h5>
+<br>
+<p>GenesisMC is a plugin designed to seamlessly integrate the popular Origins mod into the PaperMC environment. Over the course of a year in development, the plugin has evolved to become a feature-rich addon, offering an immersive and dynamic gameplay experience.</p>
+<br>
+<p align="left">Genesis incorporates the Origins mod into the server, allowing players to choose from a variety of origins with unique abilities, traits, and playstyles, and even incorporating our own custom origins!</p>
+<p align="left">The plugin goes beyond the impossible, and FAR beyond just including the existing origins, providing a powerful and efficient framework for server admins to add/create their own custom origins! Genesis supports all custom origins from the original mod, and even adds a few of its own powers and conditions!</p>
+<p align="left">Genesis tries to go beyond whats possible to make every player that encounters it has an unforgettable experience.</p>
 </div>

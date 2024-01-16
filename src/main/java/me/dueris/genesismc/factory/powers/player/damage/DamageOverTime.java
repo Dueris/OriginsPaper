@@ -59,14 +59,18 @@ public class DamageOverTime extends CraftPower implements Listener {
         if (e.getDeathMessage().equals("death.attack.hurt_by_water")) {
             if (e.getPlayer().getName().equals("Optima1")) { // for context, he helped test this a lot for hours so im givin him a lil easter egg
                 e.setDeathMessage("Optima1 got too thirsty");
+            }else{
+                e.setDeathMessage("{p} took a bath for too long."
+                        .replace("{p}", e.getPlayer().getName()));
             }
-            e.setDeathMessage("{p} took a bath for too long."
-                    .replace("{p}", e.getPlayer().getName()));
         } else if (e.getDeathMessage().equals("death.attack.no_water_for_gills")) {
             e.setDeathMessage("{p} didn't manage to keep wet"
                     .replace("{p}", e.getPlayer().getName()));
         } else if (e.getDeathMessage().equals("death.attack.genericDamageOverTime")) {
             e.setDeathMessage("{p} died to a damage over time effect"
+                    .replace("{p}", e.getPlayer().getName()));
+        } else if (e.getDeathMessage().equals("death.attack.wardenSonicBoom")) {
+            e.setDeathMessage("{p} was imploded by a sonic boom"
                     .replace("{p}", e.getPlayer().getName()));
         }
     }
