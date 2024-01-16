@@ -5,7 +5,9 @@ import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.entity.OriginPlayerUtils;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
+import me.dueris.genesismc.factory.powers.simple.origins.LikeWater;
 import me.dueris.genesismc.utils.PowerContainer;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -51,7 +53,11 @@ public class Gravity extends CraftPower implements Listener {
                     }
                 }
             } else {
-                p.setGravity(true);
+                if(LikeWater.likeWaterPlayers.contains(p)){
+                    p.setGravity(!(!p.isSwimming() && p.getEyeLocation().getBlock().getType().equals(Material.WATER) && p.getLocation().getBlock().getType().equals(Material.WATER) && p.isInWaterOrBubbleColumn()));
+                }else{
+                    p.setGravity(true);
+                }
             }
         }
     }

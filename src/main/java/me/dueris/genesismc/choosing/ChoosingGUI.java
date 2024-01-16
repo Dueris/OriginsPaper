@@ -29,7 +29,7 @@ public class ChoosingGUI extends BukkitRunnable {
                         if (!openInventoryTitle.startsWith("Choosing Menu") && !openInventoryTitle.startsWith("Custom Origins") && !openInventoryTitle.startsWith("Custom Origin") && !openInventoryTitle.startsWith("Origin")) {
                             if (OriginPlayerUtils.getOrigin(p, layer).getTag().equals(CraftApoli.nullOrigin().getTag())) {
                                 if (ori.getOriginFile().get("condition") != null || ori.getOriginFile().get("conditions") != null) {
-                                    if (ConditionExecutor.entityCondition.check((JSONObject) ori.getOriginFile().get("condition"), p, p, null, p.getLocation().getBlock(), null, p.getActiveItem(), null).isPresent()) {
+                                    if (ConditionExecutor.entityCondition.check((JSONObject) ori.getOriginFile().get("condition"), p, null, p.getLocation().getBlock(), null, p.getActiveItem(), null).isPresent()) {
                                         choosing.put(p, layer);
                                         Inventory mainmenu = Bukkit.createInventory(p, 54, "Choosing Menu - " + layer.getName());
                                         mainmenu.setContents(GenesisMainMenuContents(p));

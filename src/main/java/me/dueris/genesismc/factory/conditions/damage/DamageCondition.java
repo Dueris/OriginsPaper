@@ -33,7 +33,7 @@ public class DamageCondition implements Condition {
         return null;
     }
 
-    private static boolean isBedExplosionRestrictedDimension(Player player) {
+    private static boolean isBedExplosionRestrictedDimension(Entity player) {
         return !player.getWorld().isBedWorks();
     }
 
@@ -43,7 +43,7 @@ public class DamageCondition implements Condition {
     }
 
     @Override
-    public Optional<Boolean> check(JSONObject condition, Player p, Entity actor, Entity target, Block block, Fluid fluid, ItemStack itemStack, EntityDamageEvent entityDamageEvent) {
+    public Optional<Boolean> check(JSONObject condition, Entity actor, Entity target, Block block, Fluid fluid, ItemStack itemStack, EntityDamageEvent entityDamageEvent) {
         if (condition.isEmpty()) return Optional.empty();
         if (condition.get("type") == null) return Optional.empty();
         if (entityDamageEvent == null) return Optional.empty();
@@ -59,7 +59,7 @@ public class DamageCondition implements Condition {
             case "origins:attacker" -> {
                 if (entityDamageEvent instanceof EntityDamageByEntityEvent event) {
                     EntityCondition entityCondition = ConditionExecutor.entityCondition;
-                    return entityCondition.check(condition, p, actor, target, block, fluid, itemStack, entityDamageEvent);
+                    return entityCondition.check(condition, actor, target, block, fluid, itemStack, entityDamageEvent);
                 }
                 return getResult(inverted, Optional.of(false));
             }
@@ -147,7 +147,7 @@ public class DamageCondition implements Condition {
                     }
                     case "bedrespawnpoint" -> {
                         if (entityDamageEvent.getCause().equals(DamageCause.BLOCK_EXPLOSION)) {
-                            return getResult(inverted, Optional.of(isBedExplosionRestrictedDimension(p)));
+                            return getResult(inverted, Optional.of(isBedExplosionRestrictedDimension(actor)));
                         }
                         return getResult(inverted, Optional.of(false));
                     }
@@ -299,7 +299,7 @@ public class DamageCondition implements Condition {
                     }
                     case "hotfloor.player" -> {
                         if (entityDamageEvent.getCause().equals(DamageCause.FIRE)) {
-                            if (p.getLocation().getBlock().getRelative(BlockFace.DOWN).getType().equals(Material.MAGMA_BLOCK)) {
+                            if (actor.getLocation().getBlock().getRelative(BlockFace.DOWN).getType().equals(Material.MAGMA_BLOCK)) {
                                 return getResult(inverted, Optional.of(entityDamageEvent.getEntity().getLastDamageCause() instanceof EntityDamageByEntityEvent damageByEntityEvent
                                         && damageByEntityEvent.getDamager() instanceof Player));
                             }
@@ -485,7 +485,7 @@ public class DamageCondition implements Condition {
             case "origins:projectile" -> {
                 if (entityDamageEvent.getCause().equals(DamageCause.PROJECTILE)) {
                     if (condition.containsKey("projectile_condition")) {
-                        return getResult(inverted, ConditionExecutor.entityCondition.check((JSONObject) condition.get("projectile_condition"), p, ((EntityDamageByEntityEvent) entityDamageEvent).getDamager(), target, block, fluid, itemStack, entityDamageEvent));
+                        return getResult(inverted, ConditionExecutor.entityCondition.check((JSONObject) condition.get("projectile_condition"), ((EntityDamageByEntityEvent) entityDamageEvent).getDamager(), target, block, fluid, itemStack, entityDamageEvent));
                     } else {
                         return getResult(inverted, Optional.of(true));
                     }

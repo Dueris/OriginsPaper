@@ -34,7 +34,7 @@ public class BlockCondition implements Condition {
 
     @Override
     @SuppressWarnings("index out of bounds")
-    public Optional<Boolean> check(JSONObject condition, Player p, Entity actor, Entity target, Block block, Fluid fluid, ItemStack itemStack, EntityDamageEvent entityDamageEvent) {
+    public Optional<Boolean> check(JSONObject condition, Entity actor, Entity target, Block block, Fluid fluid, ItemStack itemStack, EntityDamageEvent entityDamageEvent) {
         if (condition.isEmpty() || condition == null) return Optional.empty();
         if (condition.get("type") == null) return Optional.empty();
         if (block == null) return Optional.empty();
@@ -132,7 +132,7 @@ public class BlockCondition implements Condition {
             }
             case "origins:fluid" -> {
                 FluidCondition fluidCondition = new FluidCondition();
-                Optional fl = fluidCondition.check(condition, p, actor, target, block, fluid, itemStack, entityDamageEvent);
+                Optional fl = fluidCondition.check(condition, actor, target, block, fluid, itemStack, entityDamageEvent);
                 if (fl.isPresent()) {
                     return getResult(inverted, Optional.of(fl.get().equals(true)));
                 } else {

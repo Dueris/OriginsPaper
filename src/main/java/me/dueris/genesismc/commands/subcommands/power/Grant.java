@@ -62,7 +62,7 @@ public class Grant extends SubCommand {
                         if (!OriginPlayerUtils.powerContainer.get(p).get(CraftApoli.getLayerFromTag(layerTag)).contains(power)) {
                             OriginPlayerUtils.powerContainer.get(p).get(CraftApoli.getLayerFromTag(layerTag)).add(power);
                             if (power == null) continue;
-                            for (Class<? extends CraftPower> c : CraftPower.getRegistered()) {
+                            for (Class<? extends CraftPower> c : CraftPower.getRegistry()) {
                                 CraftPower craftPower = null;
 
                                 try {

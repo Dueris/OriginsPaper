@@ -23,6 +23,8 @@ public class OriginSimpleContainer {
 
             NamespacedKey key = (NamespacedKey) field.get(clz.newInstance());
             simpleRegistry.add(clz);
+            CraftPower.getKeyedRegistry().put(key.asString(), clz);
+            CraftPower.getRegistry().add(clz);
             keyedRegistry.put(key.asString(), clz);
         } catch (SecurityException | NoSuchFieldException | IllegalArgumentException | IllegalAccessException |
                  InstantiationException e) {

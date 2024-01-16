@@ -83,7 +83,12 @@ public class WaterBreathe extends CraftPower implements Listener {
                         int lowestAir = -10;
                         int tickDownAir = 1;
                         boolean shouldDamage = true;
-                        if (((CraftPlayer) (p)).getHandle().hasEffect(MobEffects.WATER_BREATHING)) {
+                        if (((CraftPlayer) (p)).getHandle().hasEffect(MobEffects.WATER_BREATHING)
+                                || p.isInRain()
+                                || ((CraftPlayer)p).getHandle().hasEffect(MobEffects.CONDUIT_POWER)
+                                || p.getGameMode().equals(GameMode.SPECTATOR)
+                                || p.getGameMode().equals(GameMode.CREATIVE)
+                        ) {
                             addonAir = 0;
                             tickDownAir = 0;
                             shouldDamage = false;

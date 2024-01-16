@@ -1,6 +1,7 @@
 package me.dueris.genesismc.factory.conditions.biEntity;
 
 import me.dueris.genesismc.factory.conditions.Condition;
+import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.player.RestrictArmor;
 import me.dueris.genesismc.factory.powers.world.EntitySetPower;
 import org.bukkit.Bukkit;
@@ -29,13 +30,19 @@ public class BiEntityCondition implements Condition, Listener {
     }
 
     @Override
-    public Optional<Boolean> check(JSONObject condition, Player p, Entity actor, Entity target, Block block, Fluid fluid, ItemStack itemStack, EntityDamageEvent entityDamageEvent) {
+    public Optional<Boolean> check(JSONObject condition, Entity actor, Entity target, Block block, Fluid fluid, ItemStack itemStack, EntityDamageEvent entityDamageEvent) {
         if (condition.isEmpty()) return Optional.empty();
         if (condition.get("type") == null) return Optional.empty();
         if (actor == null || target == null) return Optional.empty();
         boolean inverted = (boolean) condition.getOrDefault("inverted", false);
         String type = condition.get("type").toString().toLowerCase();
         switch (type) {
+            case "origins:actor_condition" -> {
+                return ConditionExecutor.biEntityCondition.check((JSONObject) condition.get("condition"), actor, target, block, fluid, itemStack, entityDamageEvent);
+            }
+            case "origins:target_condition" -> {
+                return ConditionExecutor.biEntityCondition.check((JSONObject) condition.get("condition"), target, actor, block, fluid, itemStack, entityDamageEvent);
+            }
             case "origins:attack_target" -> {
                 Bukkit.getLogger().warning("origins:attack_target is depreciated for the plugin, for more details msg Dueris");
             }

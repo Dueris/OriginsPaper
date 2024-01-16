@@ -1,8 +1,9 @@
-package me.dueris.genesismc.factory.powers.simple;
+package me.dueris.genesismc.factory.powers.simple.origins;
 
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.events.PlayerHitGroundEvent;
 import me.dueris.genesismc.factory.powers.CraftPower;
+import me.dueris.genesismc.factory.powers.simple.PowerProvider;
 import org.bukkit.Bukkit;
 import org.bukkit.GameEvent;
 import org.bukkit.Location;

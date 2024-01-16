@@ -202,6 +202,17 @@ public class OriginPlayerUtils {
         } else return originTag.contains("origins:piglin");
     }
 
+    public static boolean hasPower(Player p, String powerKey){
+        if(powerContainer.containsKey(p)){
+            for(LayerContainer layerContainer : powerContainer.get(p).keySet()){
+                for(PowerContainer power : powerContainer.get(p).get(layerContainer)){
+                    if(power.getTag().equalsIgnoreCase(powerKey)) return true;
+                }
+            }
+        }
+        return false;
+    }
+
     public static void setOrigin(Player player, LayerContainer layer, OriginContainer origin) {
         NamespacedKey key = new NamespacedKey(GenesisMC.getPlugin(), "originLayer");
         HashMap<LayerContainer, OriginContainer> origins = CraftApoli.toOrigin(player.getPersistentDataContainer().get(key, PersistentDataType.STRING));

@@ -94,7 +94,7 @@ public class Resource extends CraftPower implements Listener {
                             }
                             if (hud_render.containsKey("condition")) {
                                 EntityCondition conditionExecutor = ConditionExecutor.entityCondition;
-                                Optional<Boolean> conditionMet = conditionExecutor.check(power.get("hud_render"), p, p, null, p.getLocation().getBlock(), null, p.getInventory().getItemInMainHand(), null);
+                                Optional<Boolean> conditionMet = conditionExecutor.check(power.get("hud_render"), p, null, p.getLocation().getBlock(), null, p.getInventory().getItemInMainHand(), null);
                                 if (conditionMet.isPresent()) {
                                     canRender[0] = conditionMet.get();
                                 }

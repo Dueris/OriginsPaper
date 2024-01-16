@@ -89,6 +89,12 @@ jar {
     from {
         configurations.shade.collect { it.isDirectory() ? it : zipTree(it) }
     }
+
+    manifest {
+        attributes(
+                'Main-Class': 'me.dueris.genesismc.utils.GenesisGuiPlugin'
+        )
+    }
 }
 
 tasks {

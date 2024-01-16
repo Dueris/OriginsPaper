@@ -40,7 +40,7 @@ import static me.dueris.genesismc.factory.powers.Power.powers_active;
 
 public class PlayerRender {
 
-    public static class ModelColor extends BukkitRunnable implements Listener {
+    public static class ModelColor extends CraftPower implements Listener {
         private SkinsRestorer skinsRestorerAPI = null;
 
         public static void modifyPlayerSkin(Player player, Double redTint, Double greenTint, Double blueTint, String savePath, Long alphaTint, SkinsRestorer skinsRestorerAPI, boolean applyOriginal, PowerContainer power) {
@@ -75,9 +75,6 @@ public class PlayerRender {
                             String url = skin.data.texture.url;
                             player.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "modified-skin-url"), PersistentDataType.STRING, url);
 
-                            ModelColor modelColor = new ModelColor();
-                            modelColor.runTaskTimer(GenesisMC.getPlugin(), 2, 1);
-
                         });
 
                         CompletableFuture<Skin> futureorg = mineskinClient.generateUpload(originalImage);
@@ -92,9 +89,6 @@ public class PlayerRender {
                             String url = skin.data.texture.url;
                             player.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "original-skin-url"), PersistentDataType.STRING, url);
                             String playername = player.getName();
-
-                            ModelColor modelColor = new ModelColor();
-                            modelColor.runTaskTimer(GenesisMC.getPlugin(), 2, 1);
 
                         });
                     } catch (IOException e) {
@@ -352,43 +346,22 @@ public class PlayerRender {
             }.runTaskTimer(GenesisMC.getPlugin(), 4L, 1L);
         }
 
-        public void runD() {
-            for (Player player : Bukkit.getOnlinePlayers()) {
-                Bukkit.getConsoleSender().sendMessage(player.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "modified-skin-url"), PersistentDataType.STRING));
-                Bukkit.getConsoleSender().sendMessage(player.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "original-skin-url"), PersistentDataType.STRING));
-                if (model_color.contains(player)) {
-                    for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()) {
-                        if (model_color.contains(player)) {
-                            if (player.getPlayerProfile().getTextures().getSkinModel() == PlayerTextures.SkinModel.CLASSIC) {
-                                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "skin set " + player.getName() + " " + player.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "modified-skin-url"), PersistentDataType.STRING) + " CLASSIC");
-                            } else {
-                                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "skin set " + player.getName() + " " + player.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "modified-skin-url"), PersistentDataType.STRING) + " SLIM");
-                            }
-                        }
-                    }
-                } else {
-                    for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()) {
-                        if (!model_color.contains(player)) {
-                            if (player.getPlayerProfile().getTextures().getSkinModel() == PlayerTextures.SkinModel.CLASSIC) {
-                                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "skin set " + player.getName() + " " + player.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "original-skin-url"), PersistentDataType.STRING) + " CLASSIC");
-                            } else {
-                                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "skin set " + player.getName() + " " + player.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "original-skin-url"), PersistentDataType.STRING) + " SLIM");
-                            }
-                        }
-                    }
-                }
-                this.cancel();
-            }
+        @Override
+        public void run(Player p) {
+
         }
 
+        @Override
         public String getPowerFile() {
             return "origins:model_color";
         }
 
+        @Override
         public ArrayList<Player> getPowerArray() {
             return model_color;
         }
 
+        @Override
         public void setActive(Player p, String tag, Boolean bool) {
             if (powers_active.containsKey(p)) {
                 if (powers_active.get(p).containsKey(tag)) {
@@ -400,11 +373,6 @@ public class PlayerRender {
                 powers_active.put(p, new HashMap());
                 setActive(p, tag, bool);
             }
-        }
-
-        @Override
-        public void run() {
-
         }
     }
 }

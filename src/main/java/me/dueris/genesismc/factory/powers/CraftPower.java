@@ -4,10 +4,10 @@ import javassist.NotFoundException;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.powers.simple.*;
+import me.dueris.genesismc.factory.powers.simple.origins.*;
 import me.dueris.genesismc.utils.OriginContainer;
 import me.dueris.genesismc.utils.PowerContainer;
 import me.dueris.genesismc.utils.exception.DuplicateCraftPowerException;
-import me.dueris.genesismc.utils.exception.PowerNotFoundException;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Listener;
 import org.reflections.Reflections;
@@ -16,17 +16,19 @@ import org.reflections.util.ClasspathHelper;
 import org.reflections.util.ConfigurationBuilder;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
 public abstract class CraftPower implements Power {
 
-    public static ArrayList<Class<? extends CraftPower>> registered = new ArrayList<>();
+    protected static ArrayList<Class<? extends CraftPower>> registered = new ArrayList<>();
     protected static HashMap<String, Class<? extends CraftPower>> registeredFromKey = new HashMap<>();
+
+    public static void freezeRegistry(){
+        registered = (ArrayList<Class<? extends CraftPower>>) Collections.unmodifiableList(registered);
+        registeredFromKey = (HashMap<String, Class<? extends CraftPower>>) Collections.unmodifiableMap(registeredFromKey);
+    }
 
     protected static List<Class<? extends CraftPower>> findCraftPowerClasses() throws IOException {
         CompletableFuture<List<Class<? extends CraftPower>>> future = CompletableFuture.supplyAsync(() -> {
@@ -64,7 +66,7 @@ public abstract class CraftPower implements Power {
                         dcpe.printStackTrace();
                         continue;
                     }
-                    CraftPower.getRegistered().add(c);
+                    CraftPower.getRegistry().add(c);
                     registeredFromKey.put(instance.getPowerFile(), c);
                     if (instance instanceof Listener || Listener.class.isAssignableFrom(c)) {
                         Bukkit.getServer().getPluginManager().registerEvents((Listener) instance, GenesisMC.getPlugin());
@@ -80,6 +82,8 @@ public abstract class CraftPower implements Power {
             OriginSimpleContainer.registerPower(MimicWarden.class);
             OriginSimpleContainer.registerPower(PiglinNoAttack.class);
             OriginSimpleContainer.registerPower(ScareCreepers.class);
+            OriginSimpleContainer.registerPower(NoCobWebSlowdown.class);
+            OriginSimpleContainer.registerPower(LikeWater.class);
         } catch (IOException | ReflectiveOperationException e) {
             e.printStackTrace();
         }
@@ -89,7 +93,7 @@ public abstract class CraftPower implements Power {
         return registeredFromKey;
     }
 
-    public static ArrayList<Class<? extends CraftPower>> getRegistered() {
+    public static ArrayList<Class<? extends CraftPower>> getRegistry() {
         return registered;
     }
 
@@ -106,7 +110,7 @@ public abstract class CraftPower implements Power {
     }
 
     public static boolean isRegisteredCraftPower(Class<?> c) {
-        return getRegistered().contains(c);
+        return getRegistry().contains(c);
     }
 
     public static boolean isCraftPower(Class<?> c) {

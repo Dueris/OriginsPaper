@@ -29,10 +29,11 @@ import me.dueris.genesismc.factory.conditions.entity.EntityCondition;
 import me.dueris.genesismc.factory.conditions.fluid.FluidCondition;
 import me.dueris.genesismc.factory.conditions.item.ItemCondition;
 import me.dueris.genesismc.factory.powers.CraftPower;
+import me.dueris.genesismc.factory.powers.MultiplePower;
 import me.dueris.genesismc.factory.powers.block.WaterBreathe;
 import me.dueris.genesismc.factory.powers.player.PlayerRender;
-import me.dueris.genesismc.factory.powers.simple.BounceSlimeBlock;
-import me.dueris.genesismc.factory.powers.simple.MimicWarden;
+import me.dueris.genesismc.factory.powers.simple.origins.BounceSlimeBlock;
+import me.dueris.genesismc.factory.powers.simple.origins.MimicWarden;
 import me.dueris.genesismc.factory.powers.world.EntityGroupManager;
 import me.dueris.genesismc.files.GenesisDataFiles;
 import me.dueris.genesismc.files.nbt.FixerUpper;
@@ -57,8 +58,7 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerChatEvent;
-import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.event.server.ServerLoadEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scoreboard.Team;
@@ -78,7 +78,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 
 import static me.dueris.genesismc.PlayerHandler.ReapplyEntityReachPowers;
-import static me.dueris.genesismc.factory.powers.simple.MimicWarden.getParticleTasks;
+import static me.dueris.genesismc.factory.powers.simple.origins.MimicWarden.getParticleTasks;
 import static me.dueris.genesismc.utils.BukkitColour.AQUA;
 import static me.dueris.genesismc.utils.BukkitColour.RED;
 
@@ -321,7 +321,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         Bukkit.getServer().getConsoleSender().sendMessage("");
         if (debugOrigins) {
             Bukkit.getServer().getConsoleSender().sendMessage("* (-debugOrigins={true}) || BEGINNING DEBUG {");
-            Bukkit.getServer().getConsoleSender().sendMessage("  - Loaded @1 powers".replace("@1", String.valueOf(CraftPower.getRegistered().toArray().length)));
+            Bukkit.getServer().getConsoleSender().sendMessage("  - Loaded @1 powers".replace("@1", String.valueOf(CraftPower.getRegistry().toArray().length)));
             Bukkit.getServer().getConsoleSender().sendMessage("  - Loaded @4 layers".replace("@4", String.valueOf(CraftApoli.getLayers().toArray().length)));
             Bukkit.getServer().getConsoleSender().sendMessage("  - Loaded @2 origins = [".replace("@2", String.valueOf(CraftApoli.getOrigins().toArray().length)));
             for (OriginContainer originContainer : CraftApoli.getOrigins()) {
@@ -392,19 +392,13 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         EntityGroupManager.INSTANCE.startTick();
     }
 
-    @EventHandler
-    public void lagBackPatch(PlayerFailMoveEvent e) {
-        e.setAllowed(true);
-        e.setLogWarning(false);
-    }
-
     @Override
     public void onDisable() {
         me.dueris.genesismc.OriginDataContainer.unloadAllData();
         CraftApoli.unloadData();
         OriginPlayerUtils.powerContainer.clear();
         OriginPlayerUtils.powersAppliedList.clear();
-        CraftPower.getRegistered().clear();
+        CraftPower.getRegistry().clear();
 
         for (int taskId : getParticleTasks().values()) {
             getServer().getScheduler().cancelTask(taskId);
@@ -422,5 +416,11 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         }
 
         getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] " + LangConfig.getLocalizedString(Bukkit.getConsoleSender(), "disable")).color(TextColor.fromHexString(RED)));
+    }
+
+    @EventHandler
+    public void lagBackPatch(PlayerFailMoveEvent e) {
+        e.setAllowed(true);
+        e.setLogWarning(false);
     }
 }

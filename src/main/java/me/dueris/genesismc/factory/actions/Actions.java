@@ -106,13 +106,13 @@ public class Actions {
             runbiEntity(actor, target, action);
         } else if (type.equals("origins:if_else")) {
             if(actor instanceof Player p){
-                Optional<Boolean> bool = ConditionExecutor.biEntityCondition.check((JSONObject) power.get("condition"), p, actor, target, actor.getLocation().getBlock(), null, null, null);
+                Optional<Boolean> bool = ConditionExecutor.biEntityCondition.check((JSONObject) power.get("condition"), actor, target, actor.getLocation().getBlock(), null, null, null);
                 if(bool.isPresent()){
                     if(bool.get()){BiEntityActionType(actor, target, (JSONObject) power.get("if_action"));}
                     else{BiEntityActionType(actor, target, (JSONObject) power.get("else_action"));}
                 }else{BiEntityActionType(actor, target, (JSONObject) power.get("else_action"));}
             }else if(target instanceof Player p){
-                Optional<Boolean> bool = ConditionExecutor.biEntityCondition.check((JSONObject) power.get("condition"), p, actor, target, actor.getLocation().getBlock(), null, null, null);
+                Optional<Boolean> bool = ConditionExecutor.biEntityCondition.check((JSONObject) power.get("condition"), actor, target, actor.getLocation().getBlock(), null, null, null);
                 if(bool.isPresent()){
                     if(bool.get()){BiEntityActionType(actor, target, (JSONObject) power.get("if_action"));}
                     else{BiEntityActionType(actor, target, (JSONObject) power.get("else_action"));}
@@ -175,7 +175,7 @@ public class Actions {
         } else if (type.equals("origins:nothing")) {
             // Literally does nothing
         } else if (type.equals("origins:if_else")) {
-            Optional<Boolean> bool = ConditionExecutor.itemCondition.check((JSONObject) power.get("condition"), null, null, null, null, null, item, null);
+            Optional<Boolean> bool = ConditionExecutor.itemCondition.check((JSONObject) power.get("condition"), null, null, null, null, item, null);
             if(bool.isPresent()){
                 if(bool.get()){ItemActionType(item, (JSONObject) power.get("if_action"));}
                 else{ItemActionType(item, (JSONObject) power.get("else_action"));}
@@ -239,7 +239,7 @@ public class Actions {
             //literally does nothin
         } else if (type.equals("origins:if_else")) {
             if(entity instanceof Player p){
-                Optional<Boolean> bool = ConditionExecutor.entityCondition.check((JSONObject) power.get("condition"), p, entity, null, entity.getLocation().getBlock(), null, null, null);
+                Optional<Boolean> bool = ConditionExecutor.entityCondition.check((JSONObject) power.get("condition"), entity, null, entity.getLocation().getBlock(), null, null, null);
                 if(bool.isPresent()){
                     if(bool.get()){EntityActionType(entity, (JSONObject) power.get("if_action"));}
                     else{EntityActionType(entity, (JSONObject) power.get("else_action"));}
@@ -302,7 +302,7 @@ public class Actions {
         } else if (type.equals("origins:nothing")) {
             // Literally does nothing
         } else if (type.equals("origins:if_else")) {
-            Optional<Boolean> bool = ConditionExecutor.blockCondition.check((JSONObject) power.get("condition"), null, null, null, location.getBlock(), null, null, null);
+            Optional<Boolean> bool = ConditionExecutor.blockCondition.check((JSONObject) power.get("condition"), null, null, location.getBlock(), null, null, null);
             if(bool.isPresent()){
                 if(bool.get()){BlockActionType(location, (JSONObject) power.get("if_action"));}
                 else{BlockActionType(location, (JSONObject) power.get("else_action"));}
@@ -911,7 +911,23 @@ public class Actions {
                 include_target = Boolean.parseBoolean(entityAction.get("include_target").toString());
 
             for (Entity nearbyEntity : entity.getNearbyEntities(radius, radius, radius)) {
-                BiEntityActionType(entity, nearbyEntity, bientity_action);
+                boolean run = true;
+                if(entityAction.containsKey("bientity_condition")) {
+                    Optional<Boolean> bool = ConditionExecutor.biEntityCondition.check((JSONObject) bientity_action.get("bientity_condition"), entity, nearbyEntity, entity.getLocation().getBlock(), null, null, null);
+                    if (bool.isPresent()) {
+                        if (bool.get()) {
+                            run = true;
+                        } else {
+                            run = false;
+                        }
+                    } else {
+                        run = false;
+                    }
+                }
+
+                if(run){
+                    BiEntityActionType(entity, nearbyEntity, bientity_action);
+                }
             }
             if (include_target) BiEntityActionType(entity, entity, bientity_action);
         }

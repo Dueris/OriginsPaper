@@ -1,73 +1,108 @@
 package me.dueris.genesismc.factory.powers.player;
 
 import com.destroystokyo.paper.event.player.PlayerStartSpectatingEntityEvent;
+import com.destroystokyo.paper.event.server.ServerTickEndEvent;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.entity.OriginPlayerUtils;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.PowerContainer;
+import me.dueris.genesismc.utils.console.OriginConsoleSender;
+import net.minecraft.Optionull;
+import net.minecraft.network.chat.RemoteChatSession;
 import net.minecraft.network.protocol.game.ClientboundGameEventPacket;
-import org.bukkit.Bukkit;
-import org.bukkit.GameMode;
-import org.bukkit.Location;
-import org.bukkit.NamespacedKey;
+import net.minecraft.network.protocol.game.ClientboundPlayerInfoUpdatePacket;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.level.GameType;
+import org.bukkit.*;
 import org.bukkit.block.BlockFace;
 import org.bukkit.craftbukkit.v1_20_R3.CraftWorldBorder;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.player.PlayerChatEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.geysermc.geyser.api.GeyserApi;
 
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.HashMap;
 
+/**
+ * Java Packet Manipulation(JPM) code was made in contribution with Origins-Reborn author, cometcake575
+ * aka i helped fix bugs and he made the packet code/discovery with the info packets XD
+ *
+ * cometcakes theory:
+ * The client side has 2 gamemodes, one for all players and one for specifically themselves.
+ * Values required in both the server and client, or required for both the client and other players, are stored
+ * within the other players one (the bit affected by the ClientboundPlayerInfoUpdatePacket to allow a survival player to go into blocks),
+ * and the one that is required only in the client for knowing stuff like which hotbar to render
+ */
 public class Phasing extends CraftPower implements Listener {
 
     public static ArrayList<Player> inPhantomFormBlocks = new ArrayList<>();
     public static HashMap<Player, Boolean> test = new HashMap<>();
 
-    public static void setInPhasingBlockForm(Player p) {
+    public void setInPhasingBlockForm(Player p) {
         test.put(p, true);
+        ServerPlayer player = ((CraftPlayer)p).getHandle();
         inPhantomFormBlocks.add(p);
-        if (Bukkit.getServer().getPluginManager().isPluginEnabled("Geyser-Spigot")) {
-            if (GeyserApi.api().isBedrockPlayer(p.getUniqueId())) {
-                if (p.getGameMode().equals(GameMode.CREATIVE)) {
-                    p.setGameMode(GameMode.SPECTATOR);
-                } else if (p.getGameMode() != GameMode.SPECTATOR) {
-                    p.setGameMode(GameMode.SPECTATOR);
-                }
-                p.setCollidable(false);
-                p.setAllowFlight(true);
-                p.setFlying(true);
-            } else {
-                if (p.getGameMode().equals(GameMode.CREATIVE)) {
-                    p.setGameMode(GameMode.SPECTATOR);
-                    ((CraftPlayer) p).getHandle().connection.send(new ClientboundGameEventPacket(ClientboundGameEventPacket.CHANGE_GAME_MODE, 1));
-                } else if (p.getGameMode() != GameMode.SPECTATOR) {
-                    p.setGameMode(GameMode.SPECTATOR);
-                    ((CraftPlayer) p).getHandle().connection.send(new ClientboundGameEventPacket(ClientboundGameEventPacket.CHANGE_GAME_MODE, 0));
-                }
-                p.setCollidable(false);
-                p.setAllowFlight(true);
-                p.setFlying(true);
-            }
-        } else {
-            if (p.getGameMode().equals(GameMode.CREATIVE)) {
-                p.setGameMode(GameMode.SPECTATOR);
-                ((CraftPlayer) p).getHandle().connection.send(new ClientboundGameEventPacket(ClientboundGameEventPacket.CHANGE_GAME_MODE, 1));
-            } else if (p.getGameMode() != GameMode.SPECTATOR) {
-                p.setGameMode(GameMode.SPECTATOR);
-                ((CraftPlayer) p).getHandle().connection.send(new ClientboundGameEventPacket(ClientboundGameEventPacket.CHANGE_GAME_MODE, 0));
-            }
-            p.setCollidable(false);
-            p.setAllowFlight(true);
-            p.setFlying(true);
+        sendJavaPacket(player);
+        p.setCollidable(false);
+        p.setAllowFlight(true);
+        p.setFlying(true);
+    }
+
+    @EventHandler
+    public void stEnd(ServerTickEndEvent event) {
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            ((CraftPlayer) player).getHandle().noPhysics = true;
         }
+    }
+
+    @EventHandler
+    public void warn(PlayerJoinEvent e){
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                if(isBedrock(e.getPlayer()) && getPowerArray().contains(e.getPlayer())){
+                    e.getPlayer().sendMessage(ChatColor.YELLOW + "Warning! You are using a power(Phasing) that is highly experimental/breakable on bedrock! If you get stuck in a \"spectator like\" mode, type \"./origins-fixMe\" in chat to be fixed.");
+                }
+            }
+        }.runTaskLater(GenesisMC.getPlugin(), 20);
+    }
+
+    @EventHandler
+    public void chatEvent(PlayerChatEvent e){
+        if(e.getMessage().toLowerCase().equalsIgnoreCase("./origins-fixme")){
+            Bukkit.dispatchCommand(new OriginConsoleSender(), "gamemode survival " + e.getPlayer().getName());
+            e.setCancelled(true);
+        }
+    }
+
+    protected static void sendJavaPacket(ServerPlayer player){
+        GameType gamemode = GameType.SPECTATOR;
+        ClientboundPlayerInfoUpdatePacket.Entry entry = new ClientboundPlayerInfoUpdatePacket.Entry(player.getUUID(), player.getGameProfile(), true, 1, gamemode, player.getTabListDisplayName(), Optionull.map(player.getChatSession(), RemoteChatSession::asData));
+        ClientboundPlayerInfoUpdatePacket packet = new ClientboundPlayerInfoUpdatePacket(EnumSet.of(ClientboundPlayerInfoUpdatePacket.Action.UPDATE_GAME_MODE), entry);
+        player.connection.send(packet);
+    }
+
+    protected static void resyncJavaPlayer(ServerPlayer player){
+        if(player.gameMode.getGameModeForPlayer().equals(GameType.SPECTATOR)){
+            player.gameMode.changeGameModeForPlayer(GameType.SURVIVAL);
+        }
+        GameType gamemode = player.gameMode.getGameModeForPlayer();
+        ClientboundPlayerInfoUpdatePacket.Entry entry = new ClientboundPlayerInfoUpdatePacket.Entry(player.getUUID(), player.getGameProfile(), true, 1, gamemode, player.getTabListDisplayName(), Optionull.map(player.getChatSession(), RemoteChatSession::asData));
+        ClientboundPlayerInfoUpdatePacket packet = new ClientboundPlayerInfoUpdatePacket(EnumSet.of(ClientboundPlayerInfoUpdatePacket.Action.UPDATE_GAME_MODE), entry);
+        player.connection.send(packet);
     }
 
     public static void initializePhantomOverlay(Player player) {
@@ -129,53 +164,80 @@ public class Phasing extends CraftPower implements Listener {
                                 p.getEyeLocation().add(0.55F, 0, -0.55F).getBlock().isSolid() ||
                                 p.getEyeLocation().add(-0.55F, 0, 0.55F).getBlock().isSolid())
                         ) {
-                            setInPhasingBlockForm(p);
+                            if(!isBedrock(p)){
+                                setInPhasingBlockForm(p);
+                            }else{
+                                if(p.getGameMode() != GameMode.SPECTATOR){
+                                    p.setGameMode(GameMode.SPECTATOR);
+                                }
+                            }
 
-                            p.setFlySpeed(0.04F);
+                            p.setFlySpeed(0.03F);
                             p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "insideBlock"), PersistentDataType.BOOLEAN, true);
 
-//                            if (power.getRenderType().equalsIgnoreCase("blindness")) {
-//                                Float viewD = power.getViewDistance().floatValue();
-//                                p.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, viewD.intValue() * 2, 255, false, false, false));
-//                            }
                         } else {
-                            if (p.getGameMode().equals(GameMode.SPECTATOR)) {
-                                if (p.getPreviousGameMode().equals(GameMode.CREATIVE)) {
-                                    p.setGameMode(p.getPreviousGameMode());
-                                    p.setFlying(false);
-                                } else {
-                                    p.setGameMode(p.getPreviousGameMode());
-                                    if (p.isOnGround()) ;
-                                    p.setFlying(false);
+                            if(!isBedrock(p)){
+                                resyncJavaPlayer(((CraftPlayer)p).getHandle());
+                            }else{
+                                if(p.getGameMode() == GameMode.SPECTATOR){
+                                    GameMode gameMode = p.getPreviousGameMode();
+                                    if(gameMode.equals(GameMode.SPECTATOR)){
+                                        gameMode = GameMode.SURVIVAL;
+                                    }
+                                    p.setGameMode(gameMode);
                                 }
-                                p.setFlySpeed(0.1F);
-                                p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "insideBlock"), PersistentDataType.BOOLEAN, false);
-
                             }
+                            p.setFlySpeed(0.1F);
+                            inPhantomFormBlocks.remove(p);
+                            p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "insideBlock"), PersistentDataType.BOOLEAN, false);
                         }
                     } else {
                         setActive(p, power.getTag(), false);
+                        inPhantomFormBlocks.remove(p);
                         if (test.get(p) == null) {
                             test.put(p, false);
                         } else if (test.get(p)) {
-                            if (p.getGameMode().equals(GameMode.SPECTATOR)) {
-                                if (p.getPreviousGameMode().equals(GameMode.CREATIVE)) {
-                                    p.setGameMode(p.getPreviousGameMode());
-                                    p.setFlying(false);
-                                } else {
-                                    p.setGameMode(p.getPreviousGameMode());
-                                    if (p.isOnGround()) ;
-                                    p.setFlying(false);
+                            if(!isBedrock(p)){
+                                resyncJavaPlayer(((CraftPlayer)p).getHandle());
+                            }else{
+                                GameMode gameMode = p.getPreviousGameMode();
+                                if(gameMode.equals(GameMode.SPECTATOR)){
+                                    gameMode = GameMode.SURVIVAL;
                                 }
-                                p.setFlySpeed(0.1F);
-                                p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "insideBlock"), PersistentDataType.BOOLEAN, false);
-
+                                p.setGameMode(gameMode);
                             }
+                            p.setFlySpeed(0.1F);
+                            p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "insideBlock"), PersistentDataType.BOOLEAN, false);
                             test.put(p, false);
                         }
                     }
                 }
             }
+        }
+    }
+
+    public boolean isBedrock(Player p){
+        if(Bukkit.getPluginManager().isPluginEnabled("floodgate")){
+            return GeyserApi.api().connectionByUuid(p.getUniqueId()) != null;
+        }else{
+            return false;
+        }
+    }
+
+    @EventHandler
+    public void dmgEventRemoveSuff(EntityDamageEvent e){
+        if(e.getEntity() instanceof Player player){
+            if(!inPhantomFormBlocks.contains(player)) return;
+            if(e.getCause().equals(EntityDamageEvent.DamageCause.SUFFOCATION)) {
+                e.setCancelled(true);
+            }
+        }
+    }
+
+    @EventHandler
+    public void fixMineSpeed(ServerTickEndEvent e){
+        for(Player p : inPhantomFormBlocks){
+            p.addPotionEffect(new PotionEffect(PotionEffectType.FAST_DIGGING, 5, 3, false, false, false));
         }
     }
 

@@ -2,6 +2,7 @@ package me.dueris.genesismc.factory.powers.genesismc;
 
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.entity.OriginPlayerUtils;
+import me.dueris.genesismc.factory.actions.Actions;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.PowerContainer;
@@ -51,13 +52,13 @@ public class ExplodeTick extends CraftPower implements Listener {
             Player p = e.getPlayer();
             if (explode_tick.contains(p) && !p.isFlying() && !p.isGliding()) {
                 for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
+                    ConditionExecutor executor = GenesisMC.getConditionExecutor();
                     cooldown.remove(p.getUniqueId());
                     new BukkitRunnable() {
                         final Material block = e.getPlayer().getLocation().getBlock().getType();
 
                         @Override
                         public void run() {
-                            ConditionExecutor executor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                             if (executor.check("condition", "conditions", p, power, getPowerFile(), p, null, null, null, p.getItemInHand(), null)) {
                                 setActive(p, power.getTag(), true);
                                 if (p.isSneaking()) {

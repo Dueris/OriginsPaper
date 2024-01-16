@@ -26,7 +26,7 @@ public class RegisterPowersEvent extends Event {
     public void registerNewPower(Class<? extends CraftPower> c) throws InstantiationException, IllegalAccessException {
         if (CraftPower.class.isAssignableFrom(c)) {
             CraftPower instance = c.newInstance();
-            CraftPower.getRegistered().add(c);
+            CraftPower.getRegistry().add(c);
             CraftPower.getKeyedRegistry().put(instance.getPowerFile(), c);
             Bukkit.getConsoleSender().sendMessage(ChatColor.GREEN + "New CraftPower registered for {%%}".replace("%%", instance.getPowerFile()));
             if (instance instanceof Listener || Listener.class.isAssignableFrom(c)) {
