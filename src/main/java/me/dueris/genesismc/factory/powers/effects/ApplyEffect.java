@@ -54,7 +54,7 @@ public class ApplyEffect extends CraftPower implements Listener {
 
     @Override
     public String getPowerFile() {
-        return "origins:apply_effect";
+        return "apoli:apply_effect";
     }
 
     @Override

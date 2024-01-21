@@ -30,10 +30,10 @@ public class FluidCondition implements Condition {
         String type = condition.get("type").toString().toLowerCase();
 
         switch (type) {
-            case "origins:empty" -> {
+            case "apoli:empty" -> {
                 return getResult(inverted, Optional.of(Fluid.EMPTY.equals(fluid)));
             }
-            case "origins:in_tag" -> {
+            case "apoli:in_tag" -> {
                 for (String flu : TagRegistry.getRegisteredTagFromFileKey(condition.get("tag").toString())) {
                     if (flu == null) continue;
                     if (fluid == null) continue;
@@ -41,7 +41,7 @@ public class FluidCondition implements Condition {
                 }
                 return getResult(inverted, Optional.of(false));
             }
-            case "origins:still" -> {
+            case "apoli:still" -> {
                 return getResult(inverted, Optional.of(Fluid.LAVA.equals(fluid) || Fluid.WATER.equals(fluid)));
             }
             default -> {

@@ -65,8 +65,8 @@ public class PreventEntityUse extends CraftPower implements Listener {
                         if (!entity.isDead()) {
                             ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                             for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-                                if (conditionExecutor.check("bientity_condition", "bientity_condition", p, power, "origins:prevent_entity_use", p, entity, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
-                                    if (conditionExecutor.check("item_condition", "item_condition", p, power, "origins:prevent_entity_use", p, entity, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
+                                if (conditionExecutor.check("bientity_condition", "bientity_condition", p, power, "apoli:prevent_entity_use", p, entity, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
+                                    if (conditionExecutor.check("item_condition", "item_condition", p, power, "apoli:prevent_entity_use", p, entity, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
                                         e.setCancelled(true);
                                         if (power == null) {
                                             getPowerArray().remove(p);
@@ -102,7 +102,7 @@ public class PreventEntityUse extends CraftPower implements Listener {
 
     @Override
     public String getPowerFile() {
-        return "origins:prevent_entity_use";
+        return "apoli:prevent_entity_use";
     }
 
     @Override

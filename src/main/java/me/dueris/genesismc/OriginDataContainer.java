@@ -22,9 +22,7 @@ public class OriginDataContainer {
         dataContainer.put(
                 player,
                 player.getPersistentDataContainer().get(
-                        new NamespacedKey(
-                                GenesisMC.getPlugin(),
-                                "originLayer"),
+                    GenesisMC.identifier("originLayer"),
                         PersistentDataType.STRING
                 )
         );

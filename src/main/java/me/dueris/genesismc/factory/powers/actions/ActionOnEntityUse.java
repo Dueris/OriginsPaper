@@ -64,7 +64,7 @@ public class ActionOnEntityUse extends CraftPower implements Listener {
 
     @Override
     public String getPowerFile() {
-        return "origins:action_on_entity_use";
+        return "apoli:action_on_entity_use";
     }
 
     @Override

@@ -82,7 +82,7 @@ public class StartingEquipmentPower extends CraftPower implements Listener {
 
     @Override
     public String getPowerFile() {
-        return "origins:starting_equipment";
+        return "apoli:starting_equipment";
     }
 
     @Override

@@ -54,7 +54,7 @@ public class ActionOnItemUse extends CraftPower implements Listener {
 
     @Override
     public String getPowerFile() {
-        return "origins:action_on_item_use";
+        return "apoli:action_on_item_use";
     }
 
     @Override

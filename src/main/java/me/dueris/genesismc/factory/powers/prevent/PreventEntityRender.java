@@ -58,8 +58,8 @@ public class PreventEntityRender extends CraftPower {
                     } else {
                         for (Entity entity : getEntitiesWithinRender(p)) {
                             ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
-                            if (conditionExecutor.check("entity_condition", "entity_condition", p, power, "origins:prevent_entity_render", entity, entity, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
-                                if (conditionExecutor.check("bientity_condition", "bientity_condition", p, power, "origins:prevent_entity_render", entity, entity, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
+                            if (conditionExecutor.check("entity_condition", "entity_condition", p, power, "apoli:prevent_entity_render", entity, entity, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
+                                if (conditionExecutor.check("bientity_condition", "bientity_condition", p, power, "apoli:prevent_entity_render", entity, entity, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
                                     if (p.canSee(entity)) {
                                         p.hideEntity(GenesisMC.getPlugin(), entity);
                                     }
@@ -115,7 +115,7 @@ public class PreventEntityRender extends CraftPower {
 
     @Override
     public String getPowerFile() {
-        return "origins:prevent_entity_render";
+        return "apoli:prevent_entity_render";
     }
 
     @Override

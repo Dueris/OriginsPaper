@@ -37,42 +37,42 @@ public class BiEntityCondition implements Condition, Listener {
         boolean inverted = (boolean) condition.getOrDefault("inverted", false);
         String type = condition.get("type").toString().toLowerCase();
         switch (type) {
-            case "origins:actor_condition" -> {
+            case "apoli:actor_condition" -> {
                 return ConditionExecutor.biEntityCondition.check((JSONObject) condition.get("condition"), actor, target, block, fluid, itemStack, entityDamageEvent);
             }
-            case "origins:target_condition" -> {
+            case "apoli:target_condition" -> {
                 return ConditionExecutor.biEntityCondition.check((JSONObject) condition.get("condition"), target, actor, block, fluid, itemStack, entityDamageEvent);
             }
-            case "origins:attack_target" -> {
-                Bukkit.getLogger().warning("origins:attack_target is depreciated for the plugin, for more details msg Dueris");
+            case "apoli:attack_target" -> {
+                Bukkit.getLogger().warning("apoli:attack_target is depreciated for the plugin, for more details msg Dueris");
             }
-            case "origins:distance" -> {
+            case "apoli:distance" -> {
                 @NotNull Vector actorVector = actor.getLocation().toVector();
                 @NotNull Vector targetVector = target.getLocation().toVector();
                 String comparison = condition.get("comparison").toString();
                 double compare_to = Double.parseDouble(condition.get("compare_to").toString());
                 return getResult(inverted, Optional.of(RestrictArmor.compareValues(actorVector.distance(targetVector), comparison, compare_to)));
             }
-            case "origins:in_set" -> {
+            case "apoli:in_set" -> {
                 return getResult(inverted, Optional.of(EntitySetPower.isInEntitySet(target, condition.get("set").toString())));
             }
-            case "origins:can_see" -> {
+            case "apoli:can_see" -> {
                 if (actor instanceof Player pl) {
                     return getResult(inverted, Optional.of(pl.canSee(target)));
                 }
                 return getResult(inverted, Optional.of(false));
             }
-            case "origins:owner" -> {
+            case "apoli:owner" -> {
                 if (target instanceof Tameable tameable) {
                     return getResult(inverted, Optional.of(tameable.getOwner().equals(actor)));
                 } else {
                     return getResult(inverted, Optional.of(false));
                 }
             }
-            case "origins:riding_recursive" -> {
+            case "apoli:riding_recursive" -> {
                 return getResult(inverted, Optional.of(actor.getPassengers().contains(target)));
             }
-            case "origins:riding_root" -> {
+            case "apoli:riding_root" -> {
                 for (int i = 0; i < actor.getPassengers().toArray().length; i++) {
                     if (actor.getPassengers().isEmpty()) return getResult(inverted, Optional.of(false));
                     if (actor.getPassengers().get(i) != null) {
@@ -83,7 +83,7 @@ public class BiEntityCondition implements Condition, Listener {
                 }
                 return getResult(inverted, Optional.of(false));
             }
-            case "origins:riding" -> {
+            case "apoli:riding" -> {
                 return getResult(inverted, Optional.of(target.getPassengers().contains(actor)));
             }
             default -> {

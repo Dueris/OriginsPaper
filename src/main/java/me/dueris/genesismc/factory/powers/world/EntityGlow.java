@@ -77,7 +77,7 @@ public class EntityGlow extends CraftPower {
 
     @Override
     public String getPowerFile() {
-        return "origins:entity_glow";
+        return "apoli:entity_glow";
     }
 
     @Override

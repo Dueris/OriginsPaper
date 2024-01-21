@@ -45,9 +45,9 @@ public class ModifyDamageTakenPower extends CraftPower implements Listener {
                 try {
                     ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                     for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-                        if (conditionExecutor.check("bientity_condition", "bientity_condition", p, power, "origins:modify_damage_dealt", p, e.getEntity(), p.getLocation().getBlock(), null, p.getItemInHand(), e)) {
-                            if (conditionExecutor.check("condition", "condition", p, power, "origins:modify_damage_dealt", p, e.getEntity(), p.getLocation().getBlock(), null, p.getItemInHand(), e)) {
-                                if (conditionExecutor.check("damage_condition", "damage_condition", p, power, "origins:modify_damage_dealt", p, e.getEntity(), p.getLocation().getBlock(), null, p.getItemInHand(), e)) {
+                        if (conditionExecutor.check("bientity_condition", "bientity_condition", p, power, "apoli:modify_damage_dealt", p, e.getEntity(), p.getLocation().getBlock(), null, p.getItemInHand(), e)) {
+                            if (conditionExecutor.check("condition", "condition", p, power, "apoli:modify_damage_dealt", p, e.getEntity(), p.getLocation().getBlock(), null, p.getItemInHand(), e)) {
+                                if (conditionExecutor.check("damage_condition", "damage_condition", p, power, "apoli:modify_damage_dealt", p, e.getEntity(), p.getLocation().getBlock(), null, p.getItemInHand(), e)) {
                                     for (HashMap<String, Object> modifier : power.getJsonListSingularPlural("modifier", "modifiers")) {
                                         Object value = modifier.get("value");
                                         String operation = modifier.get("operation").toString();
@@ -105,7 +105,7 @@ public class ModifyDamageTakenPower extends CraftPower implements Listener {
 
     @Override
     public String getPowerFile() {
-        return "origins:modify_damage_taken";
+        return "apoli:modify_damage_taken";
     }
 
     @Override

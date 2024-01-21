@@ -58,7 +58,7 @@ public class ModifyBlockRenderPower extends CraftPower {
                             if (block.getType() != Material.AIR) {
                                 try {
                                     ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
-                                    if (conditionExecutor.check("block_condition", "block_conditions", player, power, "origins:modify_block_render", player, null, block, null, player.getInventory().getItemInHand(), null)) {
+                                    if (conditionExecutor.check("block_condition", "block_conditions", player, power, "apoli:modify_block_render", player, null, block, null, player.getInventory().getItemInHand(), null)) {
                                         conditionMet = true;
                                         setActive(player, power.getTag(), true);
                                         BlockState blockState = block.getState();
@@ -70,7 +70,7 @@ public class ModifyBlockRenderPower extends CraftPower {
                                     }
                                 } catch (Exception e) {
                                     ErrorSystem errorSystem = new ErrorSystem();
-                                    errorSystem.throwError("unable to send block_render_change", "origins:modify_block_render", player, layer);
+                                    errorSystem.throwError("unable to send block_render_change", "apoli:modify_block_render", player, layer);
                                     e.printStackTrace();
                                 }
                             }
@@ -85,7 +85,7 @@ public class ModifyBlockRenderPower extends CraftPower {
 
     @Override
     public String getPowerFile() {
-        return "origins:modify_block_render";
+        return "apoli:modify_block_render";
     }
 
     @Override

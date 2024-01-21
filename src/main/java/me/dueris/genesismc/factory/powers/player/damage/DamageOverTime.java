@@ -171,7 +171,7 @@ public class DamageOverTime extends CraftPower implements Listener {
     public void run(Player p) {
 //        if (damage_over_time.contains(p)) {
 //            for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
-//                PowerContainer power = origin.getPowerFileFromType("origins:damage_over_time");
+//                PowerContainer power = origin.getPowerFileFromType("apoli:damage_over_time");
 //                if (power == null) continue;
 //                if (power.getInterval() == null) {
 //                    Bukkit.getLogger().warning(LangConfig.getLocalizedString(p, "powers.errors.damageOverTime"));
@@ -192,7 +192,7 @@ public class DamageOverTime extends CraftPower implements Listener {
 
     @Override
     public String getPowerFile() {
-        return "origins:damage_over_time";
+        return "apoli:damage_over_time";
     }
 
     @Override

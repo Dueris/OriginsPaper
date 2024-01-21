@@ -31,7 +31,7 @@ public class Freeze extends CraftPower {
             if (freeze.contains(p)) {
                 ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                 for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-                    if (conditionExecutor.check("condition", "conditions", p, power, "origins:freeze", p, null, null, null, p.getItemInHand(), null)) {
+                    if (conditionExecutor.check("condition", "conditions", p, power, "apoli:freeze", p, null, null, null, p.getItemInHand(), null)) {
                         setActive(p, power.getTag(), true);
                         p.setFreezeTicks(300);
                     } else {
@@ -44,7 +44,7 @@ public class Freeze extends CraftPower {
 
     @Override
     public String getPowerFile() {
-        return "origins:freeze";
+        return "apoli:freeze";
     }
 
     @Override

@@ -33,7 +33,7 @@ public class ActionOnWakeUp extends CraftPower implements Listener {
 
     @Override
     public String getPowerFile() {
-        return "origins:action_on_wake_up";
+        return "apoli:action_on_wake_up";
     }
 
     @Override

@@ -51,7 +51,7 @@ public class Exhaust extends CraftPower {
                         return;
                     } else {
                         ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
-                        if (conditionExecutor.check("condition", "conditions", p, power, "origins:exhaust", p, null, null, null, p.getItemInHand(), null)) {
+                        if (conditionExecutor.check("condition", "conditions", p, power, "apoli:exhaust", p, null, null, null, p.getItemInHand(), null)) {
 
                             setActive(p, power.getTag(), true);
                             p.setExhaustion(p.getExhaustion() - power.getFloatOrDefault("exhaustion", 1));
@@ -68,7 +68,7 @@ public class Exhaust extends CraftPower {
 
     @Override
     public String getPowerFile() {
-        return "origins:exhaust";
+        return "apoli:exhaust";
     }
 
     @Override

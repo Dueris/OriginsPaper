@@ -52,7 +52,7 @@ public class ActiveSelf extends CraftPower implements Listener {
 
     @Override
     public String getPowerFile() {
-        return "origins:active_self";
+        return "apoli:active_self";
     }
 
     @Override

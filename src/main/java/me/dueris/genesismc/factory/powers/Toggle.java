@@ -160,7 +160,7 @@ public class Toggle extends CraftPower implements Listener {
 
     @Override
     public String getPowerFile() {
-        return "origins:toggle";
+        return "apoli:toggle";
     }
 
     @Override

@@ -342,7 +342,7 @@ public class OriginPlayerUtils {
             CompletableFuture.runAsync(() -> {
                 for (PowerContainer power : powerContainer.get(player).get(layer)) {
                     if (power == null) continue;
-                    if (power.getType().equalsIgnoreCase("origins:simple")) {
+                    if (power.getType().equalsIgnoreCase("apoli:simple")) {
                         try {
                             Class<? extends CraftPower> c = OriginSimpleContainer.getFromRegistry(power.getTag());
                             if(c == null) continue;
@@ -417,7 +417,7 @@ public class OriginPlayerUtils {
             CompletableFuture.runAsync(() -> {
                 for (PowerContainer power : powerContainer.get(player).get(layer)) {
                     if (power == null) continue;
-                    if (power.getType().equalsIgnoreCase("origins:simple")) {
+                    if (power.getType().equalsIgnoreCase("apoli:simple")) {
                         try {
                             Class<? extends CraftPower> c = OriginSimpleContainer.getFromRegistry(power.getTag());
                             if(c == null) continue;

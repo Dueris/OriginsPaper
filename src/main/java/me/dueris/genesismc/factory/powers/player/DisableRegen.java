@@ -60,7 +60,7 @@ public class DisableRegen extends CraftPower implements Listener {
 
     @Override
     public String getPowerFile() {
-        return "origins:disable_regen";
+        return "apoli:disable_regen";
     }
 
     @Override

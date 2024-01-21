@@ -48,11 +48,11 @@ public class PreventItemUse extends CraftPower implements Listener {
                         return;
                     } else {
                         ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
-                        boolean shouldCancel = conditionExecutor.check("item_condition", "item_conditions", e.getPlayer(), power, "origins:prevent_item_use", e.getPlayer(), null, e.getPlayer().getLocation().getBlock(), null, e.getItem(), null);
+                        boolean shouldCancel = conditionExecutor.check("item_condition", "item_conditions", e.getPlayer(), power, "apoli:prevent_item_use", e.getPlayer(), null, e.getPlayer().getLocation().getBlock(), null, e.getItem(), null);
                         for (HashMap<String, Object> condition : power.getJsonListSingularPlural("item_condition", "item_conditions")) {
                             boolean inverted = (boolean) condition.getOrDefault("inverted", false);
                             if (condition.get("type") != null) {
-                                if (condition.get("type").toString().equalsIgnoreCase("origins:meat")) {
+                                if (condition.get("type").toString().equalsIgnoreCase("apoli:meat")) {
                                     if (inverted) {
                                         if (ItemCondition.getNonMeatMaterials().contains(e.getItem().getType())) {
                                             e.setCancelled(true);
@@ -85,7 +85,7 @@ public class PreventItemUse extends CraftPower implements Listener {
 
     @Override
     public String getPowerFile() {
-        return "origins:prevent_item_use";
+        return "apoli:prevent_item_use";
     }
 
     @Override

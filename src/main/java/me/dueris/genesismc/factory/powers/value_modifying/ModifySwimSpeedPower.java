@@ -43,7 +43,7 @@ public class ModifySwimSpeedPower extends CraftPower {
             try {
                 ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                 for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-                    if (conditionExecutor.check("condition", "conditions", p, power, "origins:modify_swim_speed", p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
+                    if (conditionExecutor.check("condition", "conditions", p, power, "apoli:modify_swim_speed", p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
                         if (!p.isSwimming()) return;
                         // Change to use dolphins grace for easier
                         // Vector swimVelocity = p.getLocation().getDirection().normalize().multiply(valueModifyingSuperClass.getPersistentAttributeContainer(p, MODIFYING_KEY));
@@ -66,14 +66,14 @@ public class ModifySwimSpeedPower extends CraftPower {
 
             } catch (Exception e) {
                 ErrorSystem errorSystem = new ErrorSystem();
-                errorSystem.throwError("unable to set modifier", "origins:modify_swim_speed", p, layer);
+                errorSystem.throwError("unable to set modifier", "apoli:modify_swim_speed", p, layer);
             }
         }
     }
 
     @Override
     public String getPowerFile() {
-        return "origins:modify_swim_speed";
+        return "apoli:modify_swim_speed";
     }
 
     @Override

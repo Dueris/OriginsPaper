@@ -42,7 +42,7 @@ public class BlockCondition implements Condition {
         boolean inverted = (boolean) condition.getOrDefault("inverted", false);
         String type = condition.get("type").toString().toLowerCase();
         switch (type) {
-            case "origins:material" -> {
+            case "apoli:material" -> {
                 try {
                     String matSplit = condition.get("material").toString().toUpperCase();
                     if (matSplit.contains(":")) {
@@ -55,7 +55,7 @@ public class BlockCondition implements Condition {
                     //yeah imma fail this silently for some weird out of bounds error
                 }
             }
-            case "origins:in_tag" -> {
+            case "apoli:in_tag" -> {
                 if (TagRegistry.getRegisteredTagFromFileKey(condition.get("tag").toString()) != null) {
                     if (!blockTagMappings.containsKey(condition.get("tag"))) {
                         blockTagMappings.put(condition.get("tag").toString(), new ArrayList<>());
@@ -70,7 +70,7 @@ public class BlockCondition implements Condition {
                     return getResult(inverted, Optional.of(false));
                 }
             }
-//            case "origins:adjacent" -> {
+//            case "apoli:adjacent" -> {
 //                String comparison = condition.get("comparison").toString();
 //                float compare_to = Float.parseFloat(condition.get("compare_to").toString());
 //                int matchingADJCount = 0;
@@ -96,7 +96,7 @@ public class BlockCondition implements Condition {
 //
 //                return Optional.of(RestrictArmor.compareValues(matchingADJCount, comparison, compare_to));
 //            }
-            case "origins:attachable" -> {
+            case "apoli:attachable" -> {
                 if (block != null && block.getType() != Material.AIR) {
                     Block[] adjBlcs = new Block[]{
                             block.getRelative(0, 1, 0), // Up
@@ -114,23 +114,23 @@ public class BlockCondition implements Condition {
                     return getResult(inverted, Optional.of(false));
                 }
             }
-            case "origins:blast_resistance" -> {
+            case "apoli:blast_resistance" -> {
                 String comparison = condition.get("comparison").toString();
                 float compare_to = Float.parseFloat(condition.get("compare_to").toString());
                 float bR = block.getType().getBlastResistance();
                 return getResult(inverted, Optional.of(RestrictArmor.compareValues(bR, comparison, compare_to)));
             }
-            case "origins:block_entity" -> {
+            case "apoli:block_entity" -> {
                 BlockState blockState = block.getState();
                 return getResult(inverted, Optional.of(blockState instanceof TileState));
             }
-            case "origins:block" -> {
+            case "apoli:block" -> {
                 return getResult(inverted, Optional.of(block.getType().equals(Material.valueOf(condition.get("block").toString().split(":")[1].toUpperCase()))));
             }
-            case "origins:exposed_to_sky" -> {
+            case "apoli:exposed_to_sky" -> {
                 return getResult(inverted, Optional.of(block.getLightFromSky() > 0));
             }
-            case "origins:fluid" -> {
+            case "apoli:fluid" -> {
                 FluidCondition fluidCondition = new FluidCondition();
                 Optional fl = fluidCondition.check(condition, actor, target, block, fluid, itemStack, entityDamageEvent);
                 if (fl.isPresent()) {
@@ -139,22 +139,22 @@ public class BlockCondition implements Condition {
                     return getResult(inverted, Optional.of(false));
                 }
             }
-            case "origins:hardness" -> {
+            case "apoli:hardness" -> {
                 String comparison = condition.get("comparison").toString();
                 float compare_to = Float.parseFloat(condition.get("compare_to").toString());
                 float bR = block.getType().getHardness();
                 return getResult(inverted, Optional.of(RestrictArmor.compareValues(bR, comparison, compare_to)));
             }
-            case "origins:height" -> {
+            case "apoli:height" -> {
                 String comparison = condition.get("comparison").toString();
                 float compare_to = Float.parseFloat(condition.get("compare_to").toString());
                 float bR = block.getLocation().getBlockY();
                 return getResult(inverted, Optional.of(RestrictArmor.compareValues(bR, comparison, compare_to)));
             }
-            case "origins:light_blocking" -> {
+            case "apoli:light_blocking" -> {
                 return getResult(inverted, Optional.of(block.getType().isOccluding()));
             }
-            case "origins:light_level" -> {
+            case "apoli:light_level" -> {
                 String lightType = condition.get("light_type").toString();
                 CraftBlock bl = (CraftBlock) block;
                 int level = 0;
@@ -175,13 +175,13 @@ public class BlockCondition implements Condition {
                 float bR = level;
                 return getResult(inverted, Optional.of(RestrictArmor.compareValues(bR, comparison, compare_to)));
             }
-            case "origins:movement_blocking" -> {
+            case "apoli:movement_blocking" -> {
                 return getResult(inverted, Optional.of(block.getType().isCollidable()));
             }
-            case "origins:replacable" -> {
+            case "apoli:replacable" -> {
                 return getResult(inverted, Optional.of(block.getType().isAir() || block.isReplaceable()));
             }
-            case "origins:water_loggable" -> {
+            case "apoli:water_loggable" -> {
                 return getResult(inverted, Optional.of(block.getBlockData().getAsString().contains("waterlogged")));
             }
             default -> {

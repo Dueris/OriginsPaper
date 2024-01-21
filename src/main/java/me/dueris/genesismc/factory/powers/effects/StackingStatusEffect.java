@@ -107,7 +107,7 @@ public class StackingStatusEffect extends CraftPower implements Listener {
 
     @Override
     public String getPowerFile() {
-        return "origins:stacking_status_effect";
+        return "apoli:stacking_status_effect";
     }
 
     @Override

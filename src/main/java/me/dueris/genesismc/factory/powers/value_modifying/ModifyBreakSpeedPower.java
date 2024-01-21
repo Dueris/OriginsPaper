@@ -99,7 +99,7 @@ public class ModifyBreakSpeedPower extends CraftPower implements Listener {
                     }
                 } catch (Exception ev) {
                     ErrorSystem errorSystem = new ErrorSystem();
-                    errorSystem.throwError("unable to set modifier", "origins:modify_break_speed", p, layer);
+                    errorSystem.throwError("unable to set modifier", "apoli:modify_break_speed", p, layer);
                     ev.printStackTrace();
                 }
             }
@@ -129,7 +129,7 @@ public class ModifyBreakSpeedPower extends CraftPower implements Listener {
 
     @Override
     public String getPowerFile() {
-        return "origins:modify_break_speed";
+        return "apoli:modify_break_speed";
     }
 
     @Override

@@ -61,7 +61,7 @@ public class ModifyEnchantmentLevel extends CraftPower {
 
     @Override
     public String getPowerFile() {
-        return "origins:modify_enchantment_level";
+        return "apoli:modify_enchantment_level";
     }
 
     @Override

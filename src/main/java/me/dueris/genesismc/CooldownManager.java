@@ -24,7 +24,7 @@ public class CooldownManager implements @NotNull Listener {
     public static HashMap<Player, BossBar> cooldownBars = new HashMap<>();
 
     public static void addCooldown(Player player, String title, String dont_use, int cooldownTicks, String cooldownKeybindType) {
-        if (!in_cooldown_patch.contains(player) && dont_use.equals("origins:fire_projectile"))
+        if (!in_cooldown_patch.contains(player) && dont_use.equals("apoli:fire_projectile"))
             return; // this fixes a weird bug with the fire projectile power
         if (isPlayerInCooldown(player, cooldownKeybindType)) {
             resetCooldown(player, cooldownKeybindType);

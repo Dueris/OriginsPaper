@@ -189,7 +189,7 @@ public class ModifyPlayerSpawnPower extends CraftPower implements Listener {
 
     @Override
     public String getPowerFile() {
-        return "origins:modify_player_spawn";
+        return "apoli:modify_player_spawn";
     }
 
     @Override

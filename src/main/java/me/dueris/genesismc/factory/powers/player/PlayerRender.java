@@ -353,7 +353,7 @@ public class PlayerRender {
 
         @Override
         public String getPowerFile() {
-            return "origins:model_color";
+            return "apoli:model_color";
         }
 
         @Override

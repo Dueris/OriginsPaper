@@ -68,7 +68,7 @@ public class ModifyHealingPower extends CraftPower implements Listener {
 
     @Override
     public String getPowerFile() {
-        return "origins:modify_healing";
+        return "apoli:modify_healing";
     }
 
     @Override

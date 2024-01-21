@@ -4,6 +4,7 @@ import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.utils.LayerContainer;
 import me.dueris.genesismc.utils.OriginContainer;
+import me.dueris.genesismc.utils.text.ChatFormatter;
 import me.dueris.genesismc.utils.translation.LangConfig;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -18,7 +19,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 
-import static me.dueris.genesismc.choosing.ChoosingCustomOrigins.cutStringIntoLists;
+import static me.dueris.genesismc.choosing.ChoosingCustomOrigins.cutStringIntoLines;
 import static me.dueris.genesismc.choosing.ChoosingMain.itemProperties;
 
 public class ChooseMenuContents {
@@ -90,9 +91,9 @@ public class ChooseMenuContents {
                     ItemStack originIcon = new ItemStack(Material.valueOf(item.toUpperCase()));
 
                     ItemMeta originIconmeta = originIcon.getItemMeta();
-                    originIconmeta.setDisplayName(origin.getName());
+                    originIconmeta.displayName(ChatFormatter.apply(origin.getName()));
                     originIconmeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-                    originIconmeta.setLore(cutStringIntoLists(origin.getDescription()));
+                    originIconmeta.lore(ChatFormatter.apply(cutStringIntoLines(origin.getDescription())));
                     NamespacedKey key = new NamespacedKey(GenesisMC.getPlugin(), "originTag");
                     originIconmeta.getPersistentDataContainer().set(key, PersistentDataType.STRING, origin.getTag());
                     originIcon.setItemMeta(originIconmeta);

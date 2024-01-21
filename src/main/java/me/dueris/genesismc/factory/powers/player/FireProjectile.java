@@ -94,7 +94,7 @@ public class FireProjectile extends CraftPower implements Listener {
                     if (power != null) {
                         if (fire_projectile.contains(p)) {
                             ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
-                            if (conditionExecutor.check("condition", "conditions", p, power, "origins:fire_projectile", p, null, null, null, p.getItemInHand(), null)) {
+                            if (conditionExecutor.check("condition", "conditions", p, power, "apoli:fire_projectile", p, null, null, null, p.getItemInHand(), null)) {
                                 if (!CooldownManager.isPlayerInCooldown(p, power.get("key").getOrDefault("key", "key.origins.primary_active").toString())) {
                                     if (isKeyBeingPressed(e.getPlayer(), power.get("key").getOrDefault("key", "key.origins.primary_active").toString(), true)) {
                                         new BukkitRunnable() {
@@ -340,7 +340,7 @@ public class FireProjectile extends CraftPower implements Listener {
 
     @Override
     public String getPowerFile() {
-        return "origins:fire_projectile";
+        return "apoli:fire_projectile";
     }
 
     @Override

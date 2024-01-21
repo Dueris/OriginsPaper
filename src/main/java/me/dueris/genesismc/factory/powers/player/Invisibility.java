@@ -45,7 +45,7 @@ public class Invisibility extends CraftPower {
 
     @Override
     public String getPowerFile() {
-        return "origins:invisibility";
+        return "apoli:invisibility";
     }
 
     @Override

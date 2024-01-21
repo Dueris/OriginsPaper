@@ -162,7 +162,7 @@ public class EntityGroupManager extends CraftPower {
 
     @Override
     public String getPowerFile() {
-        return "origins:entity_group";
+        return "apoli:entity_group";
     }
 
     @Override

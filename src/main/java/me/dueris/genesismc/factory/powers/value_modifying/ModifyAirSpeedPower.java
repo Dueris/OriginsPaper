@@ -41,7 +41,7 @@ public class ModifyAirSpeedPower extends CraftPower {
             try {
                 ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                 for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-                    if (conditionExecutor.check("condition", "conditions", p, power, "origins:modify_air_speed", p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
+                    if (conditionExecutor.check("condition", "conditions", p, power, "apoli:modify_air_speed", p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
                         if (power == null) {
                             getPowerArray().remove(p);
                             return;
@@ -61,14 +61,14 @@ public class ModifyAirSpeedPower extends CraftPower {
                 }
             } catch (Exception e) {
                 ErrorSystem errorSystem = new ErrorSystem();
-                errorSystem.throwError("unable to set modifier", "origins:modify_air_speed", p, layer);
+                errorSystem.throwError("unable to set modifier", "apoli:modify_air_speed", p, layer);
             }
         }
     }
 
     @Override
     public String getPowerFile() {
-        return "origins:modify_air_speed";
+        return "apoli:modify_air_speed";
     }
 
     @Override

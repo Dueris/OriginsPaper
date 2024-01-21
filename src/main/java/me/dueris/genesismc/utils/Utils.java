@@ -1,7 +1,10 @@
 package me.dueris.genesismc.utils;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
+import com.google.gson.JsonParser;
 import com.google.gson.internal.Streams;
 import com.google.gson.stream.JsonReader;
 import com.mojang.brigadier.StringReader;
@@ -16,10 +19,13 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageType;
+
+import org.bukkit.Bukkit;
 import org.bukkit.FluidCollisionMode;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.craftbukkit.v1_20_R3.CraftRegistry;
 import org.bukkit.craftbukkit.v1_20_R3.CraftServer;
 import org.bukkit.craftbukkit.v1_20_R3.CraftWorld;
@@ -28,12 +34,20 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.BlockIterator;
 import org.bukkit.util.RayTraceResult;
+import org.eclipse.aether.collection.DependencySelector;
+import org.eclipse.aether.util.graph.selector.StaticDependencySelector;
+import org.json.simple.JSONObject;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.*;
 import java.util.function.BinaryOperator;
 import java.util.function.Predicate;
@@ -58,17 +72,20 @@ public class Utils {
         return CraftRegistry.getMinecraftRegistry().registryOrThrow(registry);
     }
 
-    public static String[] readJSONFileAsString(File file) {
+    public static String[] readJSONFileAsString(JSONObject jsonObject) {
         List<String> lines = new ArrayList<>();
-        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
-            String line;
-            while ((line = br.readLine()) != null) {
-                lines.add(line);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        
+        String jsonString = prettyPrintUsingGson(jsonObject.toJSONString());
+        lines.addAll(Arrays.asList(jsonString.split("\n")));
+    
         return lines.toArray(new String[0]);
+    }
+
+    public static String prettyPrintUsingGson(String uglyJson) {
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        JsonElement jsonElement = JsonParser.parseString(uglyJson);
+        String prettyJsonString = gson.toJson(jsonElement);
+        return prettyJsonString;
     }
 
     public static String getNameOrTag(PowerContainer power) {
@@ -82,6 +99,65 @@ public class Utils {
                 && fromLoc.getBlockX() == toLoc.getBlockX()
                 && fromLoc.getBlockY() == toLoc.getBlockY()
                 && fromLoc.getBlockZ() == toLoc.getBlockZ());
+    }
+
+    public static void downloadFileFromURL(String fileUrl) throws IOException {
+        URL url = new URL(fileUrl);
+        try (BufferedInputStream in = new BufferedInputStream(url.openStream())) {
+            Path savePath = Path.of(System.getProperty("user.home"), "Downloads");
+            Files.createDirectories(savePath);
+
+            String fileName = url.getFile().substring(url.getFile().lastIndexOf('/') + 1);
+            Path filePath = savePath.resolve(fileName);
+            Files.copy(in, filePath, StandardCopyOption.REPLACE_EXISTING);
+        }
+    }
+
+    public static void downloadFileFromURL(String fileUrl, String saveDirectory) throws IOException {
+        URL url = new URL(fileUrl);
+        try (BufferedInputStream in = new BufferedInputStream(url.openStream())) {
+            Path savePath = Path.of(saveDirectory);
+            Files.createDirectories(savePath);
+
+            Path filePath = savePath.resolve(getFileNameFromUrl(fileUrl));
+            Files.copy(in, filePath, StandardCopyOption.REPLACE_EXISTING);
+        }
+    }
+
+    public static void downloadFileFromURL(String fileUrl, String saveDirectory, String fileName) throws IOException {
+        URL url = new URL(fileUrl);
+        try (BufferedInputStream in = new BufferedInputStream(url.openStream())) {
+            Path savePath = Path.of(saveDirectory);
+            Files.createDirectories(savePath);
+
+            Path filePath = savePath.resolve(fileName);
+            Files.copy(in, filePath, StandardCopyOption.REPLACE_EXISTING);
+        }
+    }
+
+    private static String getFileNameFromUrl(String fileUrl) {
+        String[] segments = fileUrl.split("/");
+        return segments[segments.length - 1];
+    }
+
+    public static void printValues(ConfigurationSection section, String indent) {
+        StringBuilder values = new StringBuilder();
+
+        for (String key : section.getKeys(false)) {
+            String path = section.getCurrentPath() + "|" + key;
+            Object value = section.get(key);
+
+            if (value instanceof ConfigurationSection subsection) {
+                // If the value is another section, recursively print its values
+                printValues(subsection, indent + "  ");
+            } else {
+                // Append the key and value to the StringBuilder
+                values.append(indent).append(path).append(": ").append(value).append("  ");
+            }
+        }
+
+        // Print the concatenated values
+        Bukkit.getLogger().info(values.toString());
     }
 
     public static Space getSpaceFromString(String space){

@@ -38,8 +38,8 @@ public class PreventBeingUsed extends CraftPower implements Listener {
             for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()) {
                 ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                 for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-                    if (conditionExecutor.check("bientity_condition", "bientity_conditions", p, power, "origins:prevent_being_used", p, null, null, null, p.getItemInHand(), null)) {
-                        if (conditionExecutor.check("item_condition", "item_conditions", p, power, "origins:prevent_being_used", p, null, null, null, p.getItemInHand(), null)) {
+                    if (conditionExecutor.check("bientity_condition", "bientity_conditions", p, power, "apoli:prevent_being_used", p, null, null, null, p.getItemInHand(), null)) {
+                        if (conditionExecutor.check("item_condition", "item_conditions", p, power, "apoli:prevent_being_used", p, null, null, null, p.getItemInHand(), null)) {
 
                             setActive(p, power.getTag(), true);
                             e.setCancelled(true);
@@ -63,7 +63,7 @@ public class PreventBeingUsed extends CraftPower implements Listener {
 
     @Override
     public String getPowerFile() {
-        return "origins:prevent_being_used";
+        return "apoli:prevent_being_used";
     }
 
     @Override

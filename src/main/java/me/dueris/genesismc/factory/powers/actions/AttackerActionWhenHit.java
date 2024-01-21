@@ -47,7 +47,7 @@ public class AttackerActionWhenHit extends CraftPower implements Listener {
 
     @Override
     public String getPowerFile() {
-        return "origins:attacker_action_when_hit";
+        return "apoli:attacker_action_when_hit";
     }
 
     @Override

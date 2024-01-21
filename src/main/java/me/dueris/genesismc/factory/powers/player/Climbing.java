@@ -95,7 +95,7 @@ public class Climbing extends CraftPower {
 
     @Override
     public String getPowerFile() {
-        return "origins:climbing";
+        return "apoli:climbing";
     }
 
     @Override

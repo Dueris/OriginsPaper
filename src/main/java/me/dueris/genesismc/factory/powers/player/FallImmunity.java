@@ -40,7 +40,7 @@ public class FallImmunity extends CraftPower implements Listener {
             for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()) {
                 ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                 for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-                    if (conditionExecutor.check("condition", "conditions", p, power, "origins:fall_immunity", p, null, null, null, p.getItemInHand(), e)) {
+                    if (conditionExecutor.check("condition", "conditions", p, power, "apoli:fall_immunity", p, null, null, null, p.getItemInHand(), e)) {
                         setActive(p, power.getTag(), true);
                         if (e.getCause() == EntityDamageEvent.DamageCause.FALL) {
                             e.setCancelled(true);
@@ -56,7 +56,7 @@ public class FallImmunity extends CraftPower implements Listener {
 
     @Override
     public String getPowerFile() {
-        return "origins:fall_immunity";
+        return "apoli:fall_immunity";
     }
 
     @Override

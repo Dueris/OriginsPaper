@@ -39,7 +39,7 @@ public class PreventBlockUse extends CraftPower implements Listener {
                 ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                 if (e.getClickedBlock() != null) e.setCancelled(true);
                 for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(e.getPlayer(), getPowerFile(), layer)) {
-                    setActive(e.getPlayer(), power.getTag(), conditionExecutor.check("block_condition", "block_conditions", e.getPlayer(), power, "origins:prevent_block_used", e.getPlayer(), null, e.getClickedBlock(), null, e.getPlayer().getItemInHand(), null));
+                    setActive(e.getPlayer(), power.getTag(), conditionExecutor.check("block_condition", "block_conditions", e.getPlayer(), power, "apoli:prevent_block_used", e.getPlayer(), null, e.getClickedBlock(), null, e.getPlayer().getItemInHand(), null));
                 }
             }
         }
@@ -51,7 +51,7 @@ public class PreventBlockUse extends CraftPower implements Listener {
             for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()) {
                 ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                 for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(e.getPlayer(), getPowerFile(), layer)) {
-                    if (conditionExecutor.check("block_condition", "block_conditions", e.getPlayer(), power, "origins:prevent_block_used", e.getPlayer(), null, e.getBlock(), null, e.getPlayer().getItemInHand(), null)) {
+                    if (conditionExecutor.check("block_condition", "block_conditions", e.getPlayer(), power, "apoli:prevent_block_used", e.getPlayer(), null, e.getBlock(), null, e.getPlayer().getItemInHand(), null)) {
                         e.setCancelled(true);
                     }
                 }
@@ -66,7 +66,7 @@ public class PreventBlockUse extends CraftPower implements Listener {
 
     @Override
     public String getPowerFile() {
-        return "origins:prevent_block_used";
+        return "apoli:prevent_block_used";
     }
 
     @Override

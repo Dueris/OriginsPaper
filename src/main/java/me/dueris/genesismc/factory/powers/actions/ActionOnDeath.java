@@ -51,7 +51,7 @@ public class ActionOnDeath extends CraftPower implements Listener {
 
     @Override
     public String getPowerFile() {
-        return "origins:action_on_death";
+        return "apoli:action_on_death";
     }
 
     @Override

@@ -136,7 +136,7 @@ public class WaterBreathe extends CraftPower implements Listener {
 
     @Override
     public String getPowerFile() {
-        return "origins:water_breathing";
+        return "apoli:water_breathing";
     }
 
     @Override

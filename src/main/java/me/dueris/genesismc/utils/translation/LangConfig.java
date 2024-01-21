@@ -2,7 +2,7 @@ package me.dueris.genesismc.utils.translation;
 
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.files.GenesisDataFiles;
-import me.dueris.genesismc.utils.BukkitColour;
+import me.dueris.genesismc.utils.text.BukkitColour;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.Bukkit;
@@ -13,7 +13,8 @@ import java.io.File;
 
 
 public class LangConfig {
-    public static String lang_test = getLocalizedString(Bukkit.getConsoleSender(), "lang.test");
+    public static String lang_test = null;
+    private static YamlConfiguration langConfig = null;
 
     public static File getLangFile() {
 
@@ -26,6 +27,11 @@ public class LangConfig {
 
         String filePath = GenesisMC.getPlugin().getDataFolder() + File.separator + "lang" + File.separator + fileName + ".yml";
         File langFile = new File(filePath);
+        if(langConfig == null) {
+            System.out.println("Loading LangConfiguration...");
+    		langConfig = YamlConfiguration.loadConfiguration(langFile);
+            lang_test = getLocalizedString(Bukkit.getConsoleSender(), "lang.test");
+    	}
 
         try {
             if (!langFile.exists()) {
@@ -49,17 +55,12 @@ public class LangConfig {
         File langFile = translation.getPlayerLangFromLocale(Translation.getPlayerLocale(P));
 
         if (langFile != null) {
-            YamlConfiguration langConfig = YamlConfiguration.loadConfiguration(langFile);
             String value = langConfig.getString(key);
             if (value != null) return value;
             return "There was a problem reading the lang file.";
+        }else{
+        	return "Lang Error!";
         }
-
-        File engLang = new File(GenesisMC.getPlugin().getDataFolder() + File.separator + "lang" + File.separator + "en_us.yml");
-        YamlConfiguration langConfig = YamlConfiguration.loadConfiguration(engLang);
-        String response = langConfig.getString(key);
-        if (response == null) return "Lang Error!";
-        return response;
     }
 
 }

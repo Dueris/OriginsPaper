@@ -154,7 +154,7 @@ public class ModifyFoodPower extends CraftPower implements Listener {
             if (modify_food.contains(player)) {
                 ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                 for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(player, getPowerFile(), layer)) {
-                    if (conditionExecutor.check("item_condition", "item_condition", player, power, "origins:modify_food", player, null, player.getLocation().getBlock(), null, player.getInventory().getItemInHand(), null)) {
+                    if (conditionExecutor.check("item_condition", "item_condition", player, power, "apoli:modify_food", player, null, player.getLocation().getBlock(), null, player.getInventory().getItemInHand(), null)) {
                         if (modify_food.contains(player)) {
                             for(JSONObject jsonObject : power.getJsonListSingularPlural("food_modifier", "food_modifiers")){
                                 if(jsonObject.containsKey("value")){
@@ -196,7 +196,7 @@ public class ModifyFoodPower extends CraftPower implements Listener {
 
     @Override
     public String getPowerFile() {
-        return "origins:modify_food";
+        return "apoli:modify_food";
     }
 
     @Override

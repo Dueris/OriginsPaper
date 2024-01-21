@@ -71,7 +71,7 @@ public class FlightHandler extends CraftPower {
 
     @Override
     public String getPowerFile() {
-        return "origins:creative_flight";
+        return "apoli:creative_flight";
     }
 
     @Override

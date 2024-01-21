@@ -49,7 +49,7 @@ public class ActionOnBeingUsed extends CraftPower implements Listener {
 
     @Override
     public String getPowerFile() {
-        return "origins:action_on_being_used";
+        return "apoli:action_on_being_used";
     }
 
     @Override

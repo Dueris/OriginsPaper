@@ -128,7 +128,7 @@ public class RestrictArmor extends CraftPower implements Listener {
         if (legsObj == null) legsb = false;
         if (feetObj == null) feetb = false;
 
-        if (headObj.get("type").toString().equalsIgnoreCase("origins:armor_value")) {
+        if (headObj.get("type").toString().equalsIgnoreCase("apoli:armor_value")) {
             String comparisonh = headObj.get("comparison").toString();
             String comparisontoh = headObj.get("compare_to").toString();
             if (!headb) return;
@@ -140,7 +140,7 @@ public class RestrictArmor extends CraftPower implements Listener {
                     OriginPlayerUtils.moveEquipmentInventory(p, EquipmentSlot.HEAD);
                 }
             }
-        } else if (headObj.get("type").toString().equalsIgnoreCase("origins:ingredient")) {
+        } else if (headObj.get("type").toString().equalsIgnoreCase("apoli:ingredient")) {
             if (!headb) return;
             if (p.getInventory().getHelmet() != null) {
                 Map<String, Object> ingredientMap = (Map<String, Object>) headObj.get("ingredient");
@@ -159,7 +159,7 @@ public class RestrictArmor extends CraftPower implements Listener {
             }
         }
 
-        if (chestObj.get("type").toString().equalsIgnoreCase("origins:armor_value")) {
+        if (chestObj.get("type").toString().equalsIgnoreCase("apoli:armor_value")) {
             String comparisonc = chestObj.get("comparison").toString();
             String comparisontoc = chestObj.get("compare_to").toString();
             if (!chestb) return;
@@ -171,7 +171,7 @@ public class RestrictArmor extends CraftPower implements Listener {
                     OriginPlayerUtils.moveEquipmentInventory(p, EquipmentSlot.CHEST);
                 }
             }
-        } else if (chestObj.get("type").toString().equalsIgnoreCase("origins:ingredient")) {
+        } else if (chestObj.get("type").toString().equalsIgnoreCase("apoli:ingredient")) {
             if (!chestb) return;
             if (p.getInventory().getChestplate() != null) {
                 Map<String, Object> ingredientMap = (Map<String, Object>) chestObj.get("ingredient");
@@ -190,7 +190,7 @@ public class RestrictArmor extends CraftPower implements Listener {
             }
         }
 
-        if (legsObj.get("type").toString().equalsIgnoreCase("origins:armor_value")) {
+        if (legsObj.get("type").toString().equalsIgnoreCase("apoli:armor_value")) {
             String comparisonl = legsObj.get("comparison").toString();
             String comparisontol = legsObj.get("compare_to").toString();
             if (!legsb) return;
@@ -202,7 +202,7 @@ public class RestrictArmor extends CraftPower implements Listener {
                     OriginPlayerUtils.moveEquipmentInventory(p, EquipmentSlot.LEGS);
                 }
             }
-        } else if (legsObj.get("type").toString().equalsIgnoreCase("origins:ingredient")) {
+        } else if (legsObj.get("type").toString().equalsIgnoreCase("apoli:ingredient")) {
             if (!legsb) return;
             if (p.getInventory().getLeggings() != null) {
                 Map<String, Object> ingredientMap = (Map<String, Object>) legsObj.get("ingredient");
@@ -221,7 +221,7 @@ public class RestrictArmor extends CraftPower implements Listener {
             }
         }
 
-        if (feetObj.get("type").toString().equalsIgnoreCase("origins:armor_value")) {
+        if (feetObj.get("type").toString().equalsIgnoreCase("apoli:armor_value")) {
             String comparisonf = feetObj.get("comparison").toString();
             String comparisontof = feetObj.get("compare_to").toString();
             if (!feetb) return;
@@ -233,7 +233,7 @@ public class RestrictArmor extends CraftPower implements Listener {
                     OriginPlayerUtils.moveEquipmentInventory(p, EquipmentSlot.FEET);
                 }
             }
-        } else if (feetObj.get("type").toString().equalsIgnoreCase("origins:ingredient")) {
+        } else if (feetObj.get("type").toString().equalsIgnoreCase("apoli:ingredient")) {
             if (!feetb) return;
             if (p.getInventory().getBoots() != null) {
                 Map<String, Object> ingredientMap = (Map<String, Object>) feetObj.get("ingredient");
@@ -260,7 +260,7 @@ public class RestrictArmor extends CraftPower implements Listener {
 
     @Override
     public String getPowerFile() {
-        return "origins:restrict_armor";
+        return "apoli:restrict_armor";
     }
 
     @Override

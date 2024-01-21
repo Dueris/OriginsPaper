@@ -1,4 +1,4 @@
-package me.dueris.genesismc.utils;
+package me.dueris.genesismc.utils.text;
 
 public class BukkitColour {
     public static String RED = "#fb5454";

@@ -206,7 +206,7 @@ public class AttributeHandler extends CraftPower implements Listener {
 
     @Override
     public String getPowerFile() {
-        return "origins:attribute";
+        return "apoli:attribute";
     }
 
     @Override
@@ -264,7 +264,7 @@ public class AttributeHandler extends CraftPower implements Listener {
             Player p = e.getPlayer();
             if (extra_reach_attack.contains(e.getPlayer())) {
                 for (LayerContainer layer : CraftApoli.getLayers()) {
-                    for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, "origins:attribute", layer)) {
+                    for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, "apoli:attribute", layer)) {
                         for (HashMap<String, Object> modifier : power.getPossibleModifiers("modifier", "modifiers")) {
                             if (!e.getAction().isLeftClick()) return;
                             String operation = String.valueOf(modifier.get("operation"));

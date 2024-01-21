@@ -72,7 +72,7 @@ public class WalkOnFluid extends CraftPower {
 
     @Override
     public String getPowerFile() {
-        return "origins:walk_on_fluid";
+        return "apoli:walk_on_fluid";
     }
 
     @Override

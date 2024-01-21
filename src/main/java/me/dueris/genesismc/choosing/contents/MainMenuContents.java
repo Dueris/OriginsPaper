@@ -18,7 +18,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 
-import static me.dueris.genesismc.choosing.ChoosingCustomOrigins.cutStringIntoLists;
+import static me.dueris.genesismc.choosing.ChoosingCustomOrigins.cutStringIntoLines;
 import static me.dueris.genesismc.choosing.ChoosingMain.*;
 import static me.dueris.genesismc.items.OrbOfOrigins.orb;
 import static org.bukkit.ChatColor.*;
@@ -88,58 +88,58 @@ public class MainMenuContents {
         String notFound = LangConfig.getLocalizedString(p, "menu.mainChoose.originNotFound");
 
         if (originDetails.containsKey("origins:human"))
-            human = itemProperties(human, WHITE + originDetails.get("origins:human"), null, null, originDescriptions.get("origins:human"));
+            human = itemPropertiesMultipleLore(human, WHITE + originDetails.get("origins:human"), null, null, cutStringIntoLines(originDescriptions.get("origins:human")));
         else human = itemProperties(human, RED + notFound, null, null, RED + notFound);
         if (originDetails.containsKey("origins:enderian"))
-            enderian = itemPropertiesMultipleLore(enderian, LIGHT_PURPLE + originDetails.get("origins:enderian"), null, null, cutStringIntoLists(originDescriptions.get("origins:enderian")));
+            enderian = itemPropertiesMultipleLore(enderian, LIGHT_PURPLE + originDetails.get("origins:enderian"), null, null, cutStringIntoLines(originDescriptions.get("origins:enderian")));
         else enderian = itemProperties(enderian, RED + notFound, null, null, RED + notFound);
         if (originDetails.containsKey("origins:shulk"))
-            shulk = itemPropertiesMultipleLore(shulk, DARK_PURPLE + originDetails.get("origins:shulk"), null, null, cutStringIntoLists(originDescriptions.get("origins:shulk")));
+            shulk = itemPropertiesMultipleLore(shulk, DARK_PURPLE + originDetails.get("origins:shulk"), null, null, cutStringIntoLines(originDescriptions.get("origins:shulk")));
         else shulk = itemProperties(shulk, RED + notFound, null, null, RED + notFound);
         if (originDetails.containsKey("origins:arachnid"))
-            arachnid = itemPropertiesMultipleLore(arachnid, RED + originDetails.get("origins:arachnid"), null, null, cutStringIntoLists(originDescriptions.get("origins:arachnid")));
+            arachnid = itemPropertiesMultipleLore(arachnid, RED + originDetails.get("origins:arachnid"), null, null, cutStringIntoLines(originDescriptions.get("origins:arachnid")));
         else arachnid = itemProperties(arachnid, RED + notFound, null, null, RED + notFound);
         if (originDetails.containsKey("origins:creep"))
-            creep = itemPropertiesMultipleLore(creep, GREEN + originDetails.get("origins:creep"), null, null, cutStringIntoLists(originDescriptions.get("origins:creep")));
+            creep = itemPropertiesMultipleLore(creep, GREEN + originDetails.get("origins:creep"), null, null, cutStringIntoLines(originDescriptions.get("origins:creep")));
         else creep = itemProperties(creep, RED + notFound, null, null, RED + notFound);
         if (originDetails.containsKey("origins:phantom"))
-            phantom = itemPropertiesMultipleLore(phantom, BLUE + originDetails.get("origins:phantom"), null, null, cutStringIntoLists(originDescriptions.get("origins:phantom")));
+            phantom = itemPropertiesMultipleLore(phantom, BLUE + originDetails.get("origins:phantom"), null, null, cutStringIntoLines(originDescriptions.get("origins:phantom")));
         else phantom = itemProperties(phantom, RED + notFound, null, null, RED + notFound);
         if (originDetails.containsKey("origins:slimeling"))
-            slimeling = itemProperties(slimeling, GREEN + originDetails.get("origins:slimeling"), null, null, originDescriptions.get("origins:slimeling"));
+            slimeling = itemPropertiesMultipleLore(slimeling, GREEN + originDetails.get("origins:slimeling"), null, null, cutStringIntoLines(originDescriptions.get("origins:slimeling")));
         else slimeling = itemProperties(slimeling, RED + notFound, null, null, RED + notFound);
         if (originDetails.containsKey("origins:feline"))
-            feline = itemProperties(feline, AQUA + originDetails.get("origins:feline"), null, null, (originDescriptions.get("origins:feline")));
+            feline = itemPropertiesMultipleLore(feline, AQUA + originDetails.get("origins:feline"), null, null, cutStringIntoLines(originDescriptions.get("origins:feline")));
         else feline = itemProperties(feline, RED + notFound, null, null, RED + notFound);
         if (originDetails.containsKey("origins:blazeborn"))
-            blazeborn = itemPropertiesMultipleLore(blazeborn, GOLD + originDetails.get("origins:blazeborn"), null, null, cutStringIntoLists(originDescriptions.get("origins:blazeborn")));
+            blazeborn = itemPropertiesMultipleLore(blazeborn, GOLD + originDetails.get("origins:blazeborn"), null, null, cutStringIntoLines(originDescriptions.get("origins:blazeborn")));
         else blazeborn = itemProperties(blazeborn, RED + notFound, null, null, RED + notFound);
         if (originDetails.containsKey("origins:starborne"))
-            starborne = itemProperties(starborne, LIGHT_PURPLE + originDetails.get("origins:starborne"), null, null, originDescriptions.get("origins:starborne"));
+            starborne = itemPropertiesMultipleLore(starborne, LIGHT_PURPLE + originDetails.get("origins:starborne"), null, null, cutStringIntoLines(originDescriptions.get("origins:starborne")));
         else starborne = itemProperties(starborne, RED + notFound, null, null, RED + notFound);
         if (originDetails.containsKey("origins:merling"))
-            merling = itemPropertiesMultipleLore(merling, BLUE + originDetails.get("origins:merling"), null, null, cutStringIntoLists(originDescriptions.get("origins:merling")));
+            merling = itemPropertiesMultipleLore(merling, BLUE + originDetails.get("origins:merling"), null, null, cutStringIntoLines(originDescriptions.get("origins:merling")));
         else merling = itemProperties(merling, RED + notFound, null, null, RED + notFound);
         if (originDetails.containsKey("origins:allay"))
-            allay = itemProperties(allay, AQUA + originDetails.get("origins:allay"), null, null, originDescriptions.get("origins:allay"));
+            allay = itemPropertiesMultipleLore(allay, AQUA + originDetails.get("origins:allay"), null, null, cutStringIntoLines(originDescriptions.get("origins:allay")));
         else allay = itemProperties(allay, RED + notFound, null, null, RED + notFound);
         if (originDetails.containsKey("origins:rabbit"))
-            rabbit = itemPropertiesMultipleLore(rabbit, GOLD + originDetails.get("origins:rabbit"), null, null, cutStringIntoLists(originDescriptions.get("origins:rabbit")));
+            rabbit = itemPropertiesMultipleLore(rabbit, GOLD + originDetails.get("origins:rabbit"), null, null, cutStringIntoLines(originDescriptions.get("origins:rabbit")));
         else rabbit = itemProperties(rabbit, RED + notFound, null, null, RED + notFound);
         if (originDetails.containsKey("origins:bee"))
-            bumblebee = itemProperties(bumblebee, YELLOW + originDetails.get("origins:bee"), null, null, originDescriptions.get("origins:bee"));
+            bumblebee = itemPropertiesMultipleLore(bumblebee, YELLOW + originDetails.get("origins:bee"), null, null, cutStringIntoLines(originDescriptions.get("origins:bee")));
         else bumblebee = itemProperties(bumblebee, RED + notFound, null, null, RED + notFound);
         if (originDetails.containsKey("origins:elytrian"))
-            elytrian = itemPropertiesMultipleLore(elytrian, GRAY + originDetails.get("origins:elytrian"), null, null, cutStringIntoLists(originDescriptions.get("origins:elytrian")));
+            elytrian = itemPropertiesMultipleLore(elytrian, GRAY + originDetails.get("origins:elytrian"), null, null, cutStringIntoLines(originDescriptions.get("origins:elytrian")));
         else elytrian = itemProperties(elytrian, RED + notFound, null, null, RED + notFound);
         if (originDetails.containsKey("origins:avian"))
-            avian = itemPropertiesMultipleLore(avian, DARK_AQUA + originDetails.get("origins:avian"), null, null, cutStringIntoLists(originDescriptions.get("origins:avian")));
+            avian = itemPropertiesMultipleLore(avian, DARK_AQUA + originDetails.get("origins:avian"), null, null, cutStringIntoLines(originDescriptions.get("origins:avian")));
         else avian = itemProperties(avian, RED + notFound, null, null, RED + notFound);
         if (originDetails.containsKey("origins:piglin"))
-            piglin = itemPropertiesMultipleLore(piglin, GOLD + originDetails.get("origins:piglin"), null, null, cutStringIntoLists(originDescriptions.get("origins:piglin")));
+            piglin = itemPropertiesMultipleLore(piglin, GOLD + originDetails.get("origins:piglin"), null, null, cutStringIntoLines(originDescriptions.get("origins:piglin")));
         else piglin = itemProperties(piglin, RED + notFound, null, null, RED + notFound);
         if (originDetails.containsKey("origins:sculkling"))
-            sculkling = itemProperties(sculkling, BLUE + originDetails.get("origins:sculkling"), null, null, originDescriptions.get("origins:sculkling"));
+            sculkling = itemPropertiesMultipleLore(sculkling, BLUE + originDetails.get("origins:sculkling"), null, null, cutStringIntoLines(originDescriptions.get("origins:sculkling")));
         else sculkling = itemProperties(sculkling, RED + notFound, null, null, RED + notFound);
 
         custom_originmenu = itemProperties(custom_originmenu, ChatColor.YELLOW + LangConfig.getLocalizedString(p, "menu.mainChoose.customMenu"), ItemFlag.HIDE_ENCHANTS, null, null);

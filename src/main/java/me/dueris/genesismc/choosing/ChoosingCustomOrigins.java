@@ -7,6 +7,7 @@ import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.powers.value_modifying.ModifyPlayerSpawnPower;
 import me.dueris.genesismc.utils.OriginContainer;
 import me.dueris.genesismc.utils.PowerContainer;
+import me.dueris.genesismc.utils.text.ChatFormatter;
 import me.dueris.genesismc.utils.translation.LangConfig;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
@@ -36,12 +37,12 @@ import static org.bukkit.ChatColor.RED;
 
 public class ChoosingCustomOrigins implements Listener {
 
-    public static List<String> cutStringIntoLists(String string) {
+    public static List<String> cutStringIntoLines(String string) {
         ArrayList<String> strings = new ArrayList<>();
         int startStringLength = string.length();
         while (string.length() > 40) {
             for (int i = 40; i > 1; i--) {
-                if (String.valueOf(string.charAt(i)).equals(" ")) {
+                if (String.valueOf(string.charAt(i)).matches("[\\s\\n]") || String.valueOf(string.charAt(i)).equals(" ")) {
                     strings.add(string.substring(0, i));
                     string = string.substring(i + 1);
                     break;
@@ -118,9 +119,9 @@ public class ChoosingCustomOrigins implements Listener {
 
             //adds a key to the item that will be used later to get the origin from it
             ItemMeta originIconmeta = originIcon.getItemMeta();
-            originIconmeta.setDisplayName(origin.getName());
+            originIconmeta.displayName(ChatFormatter.apply(origin.getName()));
             originIconmeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-            originIconmeta.setLore(cutStringIntoLists(origin.getDescription()));
+            originIconmeta.lore(ChatFormatter.apply(cutStringIntoLines(origin.getDescription())));
             originIconmeta.getPersistentDataContainer().set(key, PersistentDataType.STRING, originTag);
             NamespacedKey chooseKey = new NamespacedKey(GenesisMC.getPlugin(), "originChoose");
             originIconmeta.getPersistentDataContainer().set(chooseKey, PersistentDataType.INTEGER, 1);
@@ -160,7 +161,7 @@ public class ChoosingCustomOrigins implements Listener {
                     else if (impact == 3) contents.add(highImpact);
                     else contents.add(new ItemStack(Material.AIR));
                 } else if (i == 13) {
-                    if (origin.getTag().equals("origins:human")) {
+                    if(originIcon.getType().equals(Material.PLAYER_HEAD)){
                         SkullMeta skull_p = (SkullMeta) originIcon.getItemMeta();
                         skull_p.setOwningPlayer(p);
                         skull_p.setOwner(p.getName());
@@ -177,9 +178,9 @@ public class ChoosingCustomOrigins implements Listener {
                         ItemStack originPower = new ItemStack(Material.FILLED_MAP);
 
                         ItemMeta meta = originPower.getItemMeta();
-                        meta.setDisplayName(powerContainers.get(0).getName());
+                        meta.displayName(ChatFormatter.apply(powerContainers.get(0).getName()));
                         meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-                        meta.setLore(cutStringIntoLists(powerContainers.get(0).getDescription()));
+                        meta.lore(ChatFormatter.apply(cutStringIntoLines(powerContainers.get(0).getDescription())));
                         originPower.setItemMeta(meta);
 
                         contents.add(originPower);

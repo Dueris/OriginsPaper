@@ -37,7 +37,7 @@ public class PreventDeath extends CraftPower implements Listener {
             for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()) {
                 ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                 for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(e.getPlayer(), getPowerFile(), layer)) {
-                    if (conditionExecutor.check("damage_condition", "damage_conditions", e.getPlayer(), power, "origins:prevent_death", e.getPlayer(), null, null, null, e.getPlayer().getItemInHand(), e.getPlayer().getLastDamageCause())) {
+                    if (conditionExecutor.check("damage_condition", "damage_conditions", e.getPlayer(), power, "apoli:prevent_death", e.getPlayer(), null, null, null, e.getPlayer().getItemInHand(), e.getPlayer().getLastDamageCause())) {
                         e.setCancelled(true);
                         if (!getPowerArray().contains(e.getPlayer())) return;
                         setActive(e.getPlayer(), power.getTag(), true);
@@ -57,7 +57,7 @@ public class PreventDeath extends CraftPower implements Listener {
 
     @Override
     public String getPowerFile() {
-        return "origins:prevent_death";
+        return "apoli:prevent_death";
     }
 
     @Override

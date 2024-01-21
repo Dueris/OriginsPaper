@@ -59,7 +59,7 @@ public class PreventSleep extends CraftPower implements Listener {
                 Block clickedBlock = e.getClickedBlock();
                 Location blockLocation = clickedBlock.getLocation();
                 for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(player, getPowerFile(), layer)) {
-                    boolean meetsCondition = conditionExecutor.check("block_condition", "block_conditions", e.getPlayer(), power, "origins:prevent_sleep", e.getPlayer(), null, e.getPlayer().getLocation().getBlock(), null, e.getPlayer().getItemInHand(), null);
+                    boolean meetsCondition = conditionExecutor.check("block_condition", "block_conditions", e.getPlayer(), power, "apoli:prevent_sleep", e.getPlayer(), null, e.getPlayer().getLocation().getBlock(), null, e.getPlayer().getItemInHand(), null);
 
                     if (meetsCondition) {
                         if (power.getBooleanOrDefault("set_spawn_point", false)) {
@@ -76,7 +76,7 @@ public class PreventSleep extends CraftPower implements Listener {
 
     @Override
     public String getPowerFile() {
-        return "origins:prevent_sleep";
+        return "apoli:prevent_sleep";
     }
 
     @Override

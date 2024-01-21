@@ -50,7 +50,7 @@ public class ActionWhenHit extends CraftPower implements Listener {
 
     @Override
     public String getPowerFile() {
-        return "origins:action_when_hit";
+        return "apoli:action_when_hit";
     }
 
     @Override

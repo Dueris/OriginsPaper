@@ -43,7 +43,7 @@ public class PreventGameEvent extends CraftPower implements Listener {
 
     @Override
     public String getPowerFile() {
-        return "origins:prevent_game_event";
+        return "apoli:prevent_game_event";
     }
 
     @Override

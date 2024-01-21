@@ -86,7 +86,7 @@ public class ModifyStatusEffectAmplifierPower extends CraftPower implements List
 
     @Override
     public String getPowerFile() {
-        return "origins:modify_status_effect_amplifier";
+        return "apoli:modify_status_effect_amplifier";
     }
 
     @Override

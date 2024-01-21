@@ -12,9 +12,9 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
+import static me.dueris.genesismc.utils.text.BukkitColour.RED;
 
-import static me.dueris.genesismc.utils.BukkitColour.RED;
+import java.util.ArrayList;
 
 public class Has extends SubCommand {
     @Override
@@ -48,7 +48,7 @@ public class Has extends SubCommand {
         for (Player p : players) {
             for (OriginContainer origin : OriginPlayerUtils.getOrigin(p).values()) {
                 for (PowerContainer powerContainer : origin.getPowerContainers()) {
-                    if (powerContainer.getType().equals("origins:cooldown") || powerContainer.getType().equals("origins:resource")) {
+                    if (powerContainer.getType().equals("apoli:cooldown") || powerContainer.getType().equals("apoli:resource")) {
                         if (powerContainer.getTag().equals(args[2])) {
                             sender.sendMessage("Test passed.");
                             tru = true;

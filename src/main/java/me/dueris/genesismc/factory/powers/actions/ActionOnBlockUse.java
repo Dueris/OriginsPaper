@@ -58,7 +58,7 @@ public class ActionOnBlockUse extends CraftPower implements Listener {
 
     @Override
     public String getPowerFile() {
-        return "origins:action_on_block_use";
+        return "apoli:action_on_block_use";
     }
 
     @Override

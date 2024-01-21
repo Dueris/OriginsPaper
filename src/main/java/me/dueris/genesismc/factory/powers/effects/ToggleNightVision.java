@@ -173,7 +173,7 @@ public class ToggleNightVision extends CraftPower implements Listener {
 
     @Override
     public String getPowerFile() {
-        return "origins:toggle_night_vision";
+        return "apoli:toggle_night_vision";
     }
 
     @Override

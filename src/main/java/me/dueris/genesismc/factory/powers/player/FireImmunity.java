@@ -42,7 +42,7 @@ public class FireImmunity extends CraftPower implements Listener {
                 if (fire_immunity.contains(p)) {
                     ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                     for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-                        if (conditionExecutor.check("condition", "conditions", p, power, "origins:fire_immunity", p, null, null, null, p.getItemInHand(), e)) {
+                        if (conditionExecutor.check("condition", "conditions", p, power, "apoli:fire_immunity", p, null, null, null, p.getItemInHand(), e)) {
                             setActive(p, power.getTag(), true);
                             if (e.getCause().equals(EntityDamageEvent.DamageCause.FIRE) || e.getCause().equals(EntityDamageEvent.DamageCause.HOT_FLOOR) || e.getCause().equals(EntityDamageEvent.DamageCause.FIRE_TICK) || e.getCause().equals(EntityDamageEvent.DamageCause.LAVA)) {
                                 e.setCancelled(true);
@@ -59,7 +59,7 @@ public class FireImmunity extends CraftPower implements Listener {
 
     @Override
     public String getPowerFile() {
-        return "origins:fire_immunity";
+        return "apoli:fire_immunity";
     }
 
     @Override

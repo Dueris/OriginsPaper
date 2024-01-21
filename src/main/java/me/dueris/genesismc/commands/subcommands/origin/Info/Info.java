@@ -26,10 +26,10 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import static me.dueris.genesismc.choosing.ChoosingCustomOrigins.cutStringIntoLists;
+import static me.dueris.genesismc.choosing.ChoosingCustomOrigins.cutStringIntoLines;
 import static me.dueris.genesismc.choosing.ChoosingMain.itemProperties;
 import static me.dueris.genesismc.items.OrbOfOrigins.orb;
-import static me.dueris.genesismc.utils.BukkitColour.RED;
+import static me.dueris.genesismc.utils.text.BukkitColour.RED;
 
 public class Info extends SubCommand implements Listener {
 
@@ -100,7 +100,7 @@ public class Info extends SubCommand implements Listener {
         ItemMeta originIconmeta = originIcon.getItemMeta();
         originIconmeta.setDisplayName(origin.getName());
         originIconmeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-        originIconmeta.setLore(cutStringIntoLists(origin.getDescription()));
+        originIconmeta.setLore(cutStringIntoLines(origin.getDescription()));
         originIcon.setItemMeta(originIconmeta);
 
         NamespacedKey pageKey = new NamespacedKey(GenesisMC.getPlugin(), "page");
@@ -170,7 +170,7 @@ public class Info extends SubCommand implements Listener {
                     ItemMeta meta = originPower.getItemMeta();
                     meta.setDisplayName(powerContainers.get(0).getName());
                     meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-                    meta.setLore(cutStringIntoLists(powerContainers.get(0).getDescription()));
+                    meta.setLore(cutStringIntoLines(powerContainers.get(0).getDescription()));
                     originPower.setItemMeta(meta);
 
                     contents.add(originPower);

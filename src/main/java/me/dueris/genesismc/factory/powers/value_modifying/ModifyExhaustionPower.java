@@ -44,7 +44,7 @@ public class ModifyExhaustionPower extends CraftPower implements Listener {
             for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()) {
                 ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                 for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-                    if (conditionExecutor.check("condition", "conditions", p, power, "origins:modify_exhaustion", p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
+                    if (conditionExecutor.check("condition", "conditions", p, power, "apoli:modify_exhaustion", p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
                         for (HashMap<String, Object> modifier : power.getJsonListSingularPlural("modifier", "modifiers")) {
                             Float value = Float.valueOf(modifier.get("value").toString());
                             String operation = modifier.get("operation").toString();
@@ -69,7 +69,7 @@ public class ModifyExhaustionPower extends CraftPower implements Listener {
 
     @Override
     public String getPowerFile() {
-        return "origins:modify_exhaustion";
+        return "apoli:modify_exhaustion";
     }
 
     @Override

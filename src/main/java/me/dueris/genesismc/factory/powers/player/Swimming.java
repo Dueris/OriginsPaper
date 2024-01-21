@@ -47,7 +47,7 @@ public class Swimming extends CraftPower {
 
     @Override
     public String getPowerFile() {
-        return "origins:swimming";
+        return "apoli:swimming";
     }
 
     @Override

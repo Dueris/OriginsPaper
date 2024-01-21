@@ -4,7 +4,7 @@ import io.papermc.paper.plugin.bootstrap.BootstrapContext;
 import io.papermc.paper.plugin.bootstrap.PluginBootstrap;
 import joptsimple.OptionSet;
 import me.dueris.genesismc.enchantments.WaterProtectionEnchantment;
-import me.dueris.genesismc.utils.BukkitUtils;
+import me.dueris.genesismc.utils.Utils;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
@@ -77,7 +77,7 @@ public class Bootstrap implements PluginBootstrap {
             }
         }
         try {
-            CodeSource src = BukkitUtils.class.getProtectionDomain().getCodeSource();
+            CodeSource src = Utils.class.getProtectionDomain().getCodeSource();
             URL jar = src.getLocation();
             ZipInputStream zip = new ZipInputStream(jar.openStream());
             while (true) {

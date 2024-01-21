@@ -38,9 +38,9 @@ public class BiomeCondition implements Condition {
             boolean inverted = (boolean) condition.getOrDefault("inverted", false);
             String type = condition.get("type").toString().toLowerCase();
             switch (type) {
-                case "origins:biome" -> {
+                case "apoli:biome" -> {
                     Map<String, Object> keyMap = (Map<String, Object>) condition.get("condition");
-                    if (keyMap.containsKey("type") && keyMap.get("type").equals("origins:temperature")) {
+                    if (keyMap.containsKey("type") && keyMap.get("type").equals("apoli:temperature")) {
                         if (keyMap.containsKey("comparison") && keyMap.containsKey("compare_to")) {
                             return getResult(inverted, Optional.of(RestrictArmor.compareValues(block.getTemperature(), keyMap.get("comparison").toString(), Double.parseDouble(keyMap.get("compare_to").toString()))));
                         } else {
@@ -50,7 +50,7 @@ public class BiomeCondition implements Condition {
                         return getResult(inverted, Optional.of(false));
                     }
                 }
-                case "origins:in_tag" -> {
+                case "apoli:in_tag" -> {
                     // Use block in_tag optimization
                     if (TagRegistry.getRegisteredTagFromFileKey(condition.get("tag").toString()) != null) {
                         if (!biomeTagMappings.containsKey(condition.get("tag"))) {
@@ -70,7 +70,7 @@ public class BiomeCondition implements Condition {
                         return getResult(inverted, Optional.of(false));
                     }
                 }
-                case "origins:precipitation" -> {
+                case "apoli:precipitation" -> {
                     Biome biome = block.getBiome();
                     if (biome != null) {
                         net.minecraft.world.level.biome.Biome b = CraftBiome.bukkitToMinecraft(biome);
@@ -85,19 +85,19 @@ public class BiomeCondition implements Condition {
                         return getResult(inverted, Optional.of(condition.get("precipitation").toString().equals("rain")));
                     }
                 }
-                case "origins:category" -> {
+                case "apoli:category" -> {
                     Biome biome = block.getBiome();
                     for (String biom : BiomeMappings.getBiomeIDs(condition.get("category").toString())) {
                         return getResult(inverted, Optional.of(Biome.valueOf(biom.split(":")[1].toUpperCase()).equals(biome)));
                     }
                 }
-                case "origins:temperature" -> {
+                case "apoli:temperature" -> {
                     net.minecraft.world.level.biome.Biome b = CraftBiome.bukkitToMinecraft(block.getBiome());
                     String comparison = condition.get("comparison").toString();
                     float compare_to = Float.parseFloat(condition.get("compare_to").toString());
                     return getResult(inverted, Optional.of(RestrictArmor.compareValues(b.getBaseTemperature(), comparison, compare_to)));
                 }
-                case "origins:humidity" -> {
+                case "apoli:humidity" -> {
                     net.minecraft.world.level.biome.Biome b = CraftBiome.bukkitToMinecraft(block.getBiome());
                     String comparison = condition.get("comparison").toString();
                     float compare_to = Float.parseFloat(condition.get("compare_to").toString());

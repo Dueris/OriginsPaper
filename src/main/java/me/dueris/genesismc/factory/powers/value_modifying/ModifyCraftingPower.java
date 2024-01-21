@@ -54,8 +54,8 @@ public class ModifyCraftingPower extends CraftPower implements Listener {
                 try {
                     ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                     for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-                        if (conditionExecutor.check("condition", "condition", p, power, "origins:modify_crafting", p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
-                            if (conditionExecutor.check("item_condition", "item_condition", p, power, "origins:modify_crafting", p, null, p.getLocation().getBlock(), null, e.getInventory().getResult(), null)) {
+                        if (conditionExecutor.check("condition", "condition", p, power, "apoli:modify_crafting", p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
+                            if (conditionExecutor.check("item_condition", "item_condition", p, power, "apoli:modify_crafting", p, null, p.getLocation().getBlock(), null, e.getInventory().getResult(), null)) {
                                 if (power.get("recipe") != null) {
                                     if (e.getInventory().getResult().getType() == Material.valueOf(power.getStringOrDefault("recipe", null).split(":")[1].toUpperCase())) {
                                         if (power.get("result") != null) {
@@ -86,7 +86,7 @@ public class ModifyCraftingPower extends CraftPower implements Listener {
                     }
                 } catch (Exception ev) {
                     ErrorSystem errorSystem = new ErrorSystem();
-                    errorSystem.throwError("unable to get recipe or result", "origins:modify_crafting", p, layer);
+                    errorSystem.throwError("unable to get recipe or result", "apoli:modify_crafting", p, layer);
                     ev.printStackTrace();
                 }
             }
@@ -105,7 +105,7 @@ public class ModifyCraftingPower extends CraftPower implements Listener {
 
     @Override
     public String getPowerFile() {
-        return "origins:modify_crafting";
+        return "apoli:modify_crafting";
     }
 
     @Override

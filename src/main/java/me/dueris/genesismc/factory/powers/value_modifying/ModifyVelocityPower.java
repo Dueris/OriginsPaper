@@ -70,7 +70,7 @@ public class ModifyVelocityPower extends CraftPower implements Listener {
 
     @Override
     public String getPowerFile() {
-        return "origins:modify_velocity";
+        return "apoli:modify_velocity";
     }
 
     @Override

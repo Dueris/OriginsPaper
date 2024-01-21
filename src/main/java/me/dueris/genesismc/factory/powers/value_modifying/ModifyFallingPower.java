@@ -49,7 +49,7 @@ public class ModifyFallingPower extends CraftPower implements Listener {
             for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()) {
                 ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                 for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-                    if (conditionExecutor.check("condition", "conditions", p, power, "origins:modify_falling", p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
+                    if (conditionExecutor.check("condition", "conditions", p, power, "apoli:modify_falling", p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
                         if (power.getObject("velocity") instanceof Integer) {
                             if (power.getInt("velocity") < 0) {
                                 //greaterthan
@@ -110,7 +110,7 @@ public class ModifyFallingPower extends CraftPower implements Listener {
                 for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()) {
                     ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                     for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-                        if (conditionExecutor.check("condition", "conditions", p, power, "origins:modify_falling", p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
+                        if (conditionExecutor.check("condition", "conditions", p, power, "apoli:modify_falling", p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
                             if (power.getBooleanOrDefault("take_fall_damage", true)) {
                                 if (e.getCause() == EntityDamageEvent.DamageCause.FALL) {
                                     e.setDamage(0);
@@ -126,7 +126,7 @@ public class ModifyFallingPower extends CraftPower implements Listener {
 
     @Override
     public String getPowerFile() {
-        return "origins:modify_falling";
+        return "apoli:modify_falling";
     }
 
     @Override

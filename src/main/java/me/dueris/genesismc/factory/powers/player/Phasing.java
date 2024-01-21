@@ -88,6 +88,30 @@ public class Phasing extends CraftPower implements Listener {
         }
     }
 
+    @EventHandler
+    public void shiftGoDown(PlayerToggleSneakEvent e){
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                if(e.isSneaking()){
+                    if(getPowerArray().contains(e.getPlayer())){
+                        Player p = e.getPlayer();
+                        for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()) {
+                            ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
+                            for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
+                                if (conditionExecutor.check("condition", "conditions", p, power, getPowerFile(), p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
+                                    if (conditionExecutor.check("phase_down_condition", "phase_down_condition", p, power, getPowerFile(), p, null, p.getLocation().add(0, -1, 0).getBlock(), null, p.getItemInHand(), null)) {
+                                        p.teleportAsync(p.getLocation().add(0, -0.1, 0));
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }.runTaskLater(GenesisMC.getPlugin(), 1);
+    }
+
     protected static void sendJavaPacket(ServerPlayer player){
         GameType gamemode = GameType.SPECTATOR;
         ClientboundPlayerInfoUpdatePacket.Entry entry = new ClientboundPlayerInfoUpdatePacket.Entry(player.getUUID(), player.getGameProfile(), true, 1, gamemode, player.getTabListDisplayName(), Optionull.map(player.getChatSession(), RemoteChatSession::asData));
@@ -255,36 +279,9 @@ public class Phasing extends CraftPower implements Listener {
         }
     }
 
-    @EventHandler
-    public void shiftGoDown(PlayerToggleSneakEvent e) {
-        if (e.isSneaking()) {
-            Player p = e.getPlayer();
-            PersistentDataContainer data = p.getPersistentDataContainer();
-            if (OriginPlayerUtils.isInPhantomForm(p)) {
-                if (phasing.contains(p)) {
-                    if (!p.getLocation().getBlock().isCollidable()) {
-                        for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()) {
-                            for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-                                if (p.getLocation().getBlock().getRelative(BlockFace.DOWN).isCollidable()) {
-                                    Location currentLocation = p.getLocation();
-                                    Location targetLocation = currentLocation.getBlock().getRelative(BlockFace.DOWN).getLocation();
-                                    Location loc = new Location(targetLocation.getWorld(), targetLocation.getX(), targetLocation.getY(), targetLocation.getZ(), p.getEyeLocation().getYaw(), p.getEyeLocation().getPitch());
-                                    ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
-                                    if (conditionExecutor.check("phase_down_condition", "phase_down_conditions", p, power, getPowerFile(), p, null, loc.getBlock(), null, p.getItemInHand(), null)) {
-                                        p.teleportAsync(loc);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-
     @Override
     public String getPowerFile() {
-        return "origins:phasing";
+        return "apoli:phasing";
     }
 
     @Override

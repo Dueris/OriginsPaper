@@ -1,7 +1,7 @@
 package me.dueris.genesismc.entity;
 
 import me.dueris.genesismc.factory.powers.player.inventory.InventoryUtils;
-import me.dueris.genesismc.utils.BukkitColour;
+import me.dueris.genesismc.utils.text.BukkitColour;
 import me.dueris.genesismc.utils.translation.LangConfig;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;

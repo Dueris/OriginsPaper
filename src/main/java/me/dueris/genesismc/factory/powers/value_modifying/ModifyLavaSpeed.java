@@ -40,7 +40,7 @@ public class ModifyLavaSpeed extends CraftPower {
                 try {
                     ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                     for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-                        if (conditionExecutor.check("bientity_condition", "bientity_conditions", p, power, "origins:modify_lava_speed", p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
+                        if (conditionExecutor.check("bientity_condition", "bientity_conditions", p, power, "apoli:modify_lava_speed", p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
                             for (HashMap<String, Object> modifier : power.getPossibleModifiers("modifier", "modifiers")) {
                                 Float value = Float.valueOf(modifier.get("value").toString());
                                 String operation = modifier.get("operation").toString();
@@ -63,7 +63,7 @@ public class ModifyLavaSpeed extends CraftPower {
                     }
                 } catch (Exception ev) {
                     ErrorSystem errorSystem = new ErrorSystem();
-                    errorSystem.throwError("unable to get bi-entity", "origins:modify_lava_speed", p, layer);
+                    errorSystem.throwError("unable to get bi-entity", "apoli:modify_lava_speed", p, layer);
                     ev.printStackTrace();
                 }
             }
@@ -72,7 +72,7 @@ public class ModifyLavaSpeed extends CraftPower {
 
     @Override
     public String getPowerFile() {
-        return "origins:modify_lava_speed";
+        return "apoli:modify_lava_speed";
     }
 
     @Override

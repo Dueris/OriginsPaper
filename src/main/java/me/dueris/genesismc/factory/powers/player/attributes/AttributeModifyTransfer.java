@@ -59,7 +59,7 @@ public class AttributeModifyTransfer extends CraftPower implements Listener {
 
     @Override
     public String getPowerFile() {
-        return "origins:attribute_modify_transfer";
+        return "apoli:attribute_modify_transfer";
     }
 
     @Override

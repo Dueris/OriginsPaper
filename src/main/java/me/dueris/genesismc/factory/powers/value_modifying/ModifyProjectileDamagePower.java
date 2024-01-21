@@ -47,7 +47,7 @@ public class ModifyProjectileDamagePower extends CraftPower implements Listener 
                     try {
                         ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                         for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-                            if (conditionExecutor.check("target_condition", "target_conditions", p, power, "origins:modify_projectile_damage", p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null) && conditionExecutor.check("damage_condition", "damage_conditions", p, power, "origins:modify_projectile_damage", p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
+                            if (conditionExecutor.check("target_condition", "target_conditions", p, power, "apoli:modify_projectile_damage", p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null) && conditionExecutor.check("damage_condition", "damage_conditions", p, power, "apoli:modify_projectile_damage", p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
                                 for (HashMap<String, Object> modifier : power.getPossibleModifiers("modifier", "modifiers")) {
                                     Float value = Float.valueOf(modifier.get("value").toString());
                                     String operation = modifier.get("operation").toString();
@@ -65,7 +65,7 @@ public class ModifyProjectileDamagePower extends CraftPower implements Listener 
                         }
                     } catch (Exception ev) {
                         ErrorSystem errorSystem = new ErrorSystem();
-                        errorSystem.throwError("unable to get bi-entity", "origins:modify_projectile_damage", p, layer);
+                        errorSystem.throwError("unable to get bi-entity", "apoli:modify_projectile_damage", p, layer);
                         ev.printStackTrace();
                     }
                 }
@@ -75,7 +75,7 @@ public class ModifyProjectileDamagePower extends CraftPower implements Listener 
 
     @Override
     public String getPowerFile() {
-        return "origins:modify_projectile_damage";
+        return "apoli:modify_projectile_damage";
     }
 
     @Override

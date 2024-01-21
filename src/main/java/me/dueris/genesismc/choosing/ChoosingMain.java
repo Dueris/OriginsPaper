@@ -35,7 +35,7 @@ import java.util.*;
 
 import static me.dueris.genesismc.choosing.contents.MainMenuContents.GenesisMainMenuContents;
 import static me.dueris.genesismc.items.OrbOfOrigins.orb;
-import static me.dueris.genesismc.utils.BukkitColour.AQUA;
+import static me.dueris.genesismc.utils.text.BukkitColour.AQUA;
 import static org.bukkit.Bukkit.getServer;
 import static org.bukkit.ChatColor.GRAY;
 

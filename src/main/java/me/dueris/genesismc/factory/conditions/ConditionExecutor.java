@@ -39,7 +39,7 @@ public class ConditionExecutor {
     public static ItemCondition itemCondition = new ItemCondition();
 
     private static boolean checkSubCondition(JSONObject subCondition, Player p, PowerContainer power, String powerfile, Entity actor, Entity target, Block block, Fluid fluid, ItemStack itemStack, EntityDamageEvent dmgevent, String powerFile) {
-        if ("origins:and".equals(subCondition.get("type"))) {
+        if ("apoli:and".equals(subCondition.get("type"))) {
             JSONArray conditionsArray = (JSONArray) subCondition.get("conditions");
             boolean allTrue = true;
 
@@ -54,7 +54,7 @@ public class ConditionExecutor {
             }
 
             return allTrue;
-        } else if (subCondition.get("type").equals("origins:power_active")) {
+        } else if (subCondition.get("type").equals("apoli:power_active")) {
             if (!powers_active.containsKey(p)) return false;
             if (subCondition.get("power").toString().contains("*")) {
                 String[] powerK = subCondition.get("power").toString().split("\\*");
@@ -160,11 +160,11 @@ public class ConditionExecutor {
         if (powerContainer.getJsonListSingularPlural(singular, plural) == null) return true;
         if (powerContainer.getJsonListSingularPlural(singular, plural).isEmpty()) return true;
         for (JSONObject condition : powerContainer.getJsonListSingularPlural(singular, plural)) {
-            if (condition.get("type").equals("origins:and")) {
+            if (condition.get("type").equals("apoli:and")) {
                 JSONArray conditionsArray = (JSONArray) condition.get("conditions");
 
                 return checkConditions(conditionsArray, p, powerContainer, powerfile, actor, target, block, fluid, itemStack, dmgevent, powerfile);
-            } else if (condition.get("type").equals("origins:or")) {
+            } else if (condition.get("type").equals("apoli:or")) {
                 JSONArray conditionsArray = (JSONArray) condition.get("conditions");
 
                 for (Object subConditionObj : conditionsArray) {
@@ -175,9 +175,9 @@ public class ConditionExecutor {
                         }
                     }
                 }
-            } else if (condition.get("type").equals("origins:constant")) {
+            } else if (condition.get("type").equals("apoli:constant")) {
                 return (boolean) condition.get("value");
-            } else if (condition.get("type").toString().equalsIgnoreCase("origins:meat")) {
+            } else if (condition.get("type").toString().equalsIgnoreCase("apoli:meat")) {
                 boolean inverted = Boolean.valueOf(condition.getOrDefault("inverted", false).toString());
                 if (itemStack.getType().isEdible()) {
                     if (inverted) {

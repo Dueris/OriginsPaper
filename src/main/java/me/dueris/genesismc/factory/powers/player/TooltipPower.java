@@ -83,7 +83,7 @@ public class TooltipPower extends CraftPower {
 
     @Override
     public String getPowerFile() {
-        return "origins:tooltip";
+        return "apoli:tooltip";
     }
 
     @Override

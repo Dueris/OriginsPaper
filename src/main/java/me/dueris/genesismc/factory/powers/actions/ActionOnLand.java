@@ -47,7 +47,7 @@ public class ActionOnLand extends CraftPower implements Listener {
 
     @Override
     public String getPowerFile() {
-        return "origins:action_on_land";
+        return "apoli:action_on_land";
     }
 
     @Override

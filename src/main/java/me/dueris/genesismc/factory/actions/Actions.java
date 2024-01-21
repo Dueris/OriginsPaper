@@ -58,15 +58,15 @@ public class Actions {
     public static void BiEntityActionType(Entity actor, Entity target, JSONObject power) {
         String type = power.get("type").toString();
 
-        if (type.equals("origins:invert")) {
+        if (type.equals("apoli:invert")) {
             BiEntityActionType(target, actor, (JSONObject) power.get("action"));
-        } else if (type.equals("origins:and")) {
+        } else if (type.equals("apoli:and")) {
             JSONArray andActions = (JSONArray) power.get("actions");
             for (Object actionObj : andActions) {
                 JSONObject action = (JSONObject) actionObj;
                 runbiEntity(actor, target, action);
             }
-        } else if (type.equals("origins:chance")) {
+        } else if (type.equals("apoli:chance")) {
             double chance = Double.parseDouble(power.get("chance").toString());
             double randomValue = Math.random();
 
@@ -74,7 +74,7 @@ public class Actions {
                 JSONObject action = (JSONObject) power.get("action");
                 runbiEntity(actor, target, action);
             }
-        } else if (type.equals("origins:choice")) {
+        } else if (type.equals("apoli:choice")) {
             JSONArray actionsArray = (JSONArray) power.get("actions");
             List<JSONObject> actionsList = new ArrayList<>();
 
@@ -92,19 +92,19 @@ public class Actions {
                 JSONObject chosenAction = actionsList.get(randomIndex);
                 runbiEntity(actor, target, chosenAction);
             }
-        } else if (type.equals("origins:delay")) {
+        } else if (type.equals("apoli:delay")) {
             int ticks = Integer.parseInt(power.get("ticks").toString());
             JSONObject delayedAction = (JSONObject) power.get("action");
 
             Bukkit.getScheduler().runTaskLater(GenesisMC.getPlugin(), () -> {
                 runbiEntity(actor, target, delayedAction);
             }, ticks);
-        } else if (type.equals("origins:nothing")) {
+        } else if (type.equals("apoli:nothing")) {
             // Literally does nothing
-        } else if (type.equals("origins:side")) {
+        } else if (type.equals("apoli:side")) {
             JSONObject action = (JSONObject) power.get("action");
             runbiEntity(actor, target, action);
-        } else if (type.equals("origins:if_else")) {
+        } else if (type.equals("apoli:if_else")) {
             if(actor instanceof Player p){
                 Optional<Boolean> bool = ConditionExecutor.biEntityCondition.check((JSONObject) power.get("condition"), actor, target, actor.getLocation().getBlock(), null, null, null);
                 if(bool.isPresent()){
@@ -130,13 +130,13 @@ public class Actions {
         if (power.get("type") == null) return;
         String type = power.get("type").toString();
 
-        if (type.equals("origins:and")) {
+        if (type.equals("apoli:and")) {
             JSONArray andActions = (JSONArray) power.get("actions");
             for (Object actionObj : andActions) {
                 JSONObject action = (JSONObject) actionObj;
                 runItem(item, action);
             }
-        } else if (type.equals("origins:chance")) {
+        } else if (type.equals("apoli:chance")) {
             double chance = Double.parseDouble(power.get("chance").toString());
             double randomValue = Math.random();
 
@@ -147,7 +147,7 @@ public class Actions {
                 JSONObject failAction = (JSONObject) power.get("fail_action");
                 runItem(item, failAction);
             }
-        } else if (type.equals("origins:choice")) {
+        } else if (type.equals("apoli:choice")) {
             JSONArray actionsArray = (JSONArray) power.get("actions");
             List<JSONObject> actionsList = new ArrayList<>();
 
@@ -165,22 +165,22 @@ public class Actions {
                 JSONObject chosenAction = actionsList.get(randomIndex);
                 runItem(item, chosenAction);
             }
-        } else if (type.equals("origins:delay")) {
+        } else if (type.equals("apoli:delay")) {
             int ticks = Integer.parseInt(power.get("ticks").toString());
             JSONObject delayedAction = (JSONObject) power.get("action");
 
             Bukkit.getScheduler().runTaskLater(GenesisMC.getPlugin(), () -> {
                 runItem(item, delayedAction);
             }, ticks);
-        } else if (type.equals("origins:nothing")) {
+        } else if (type.equals("apoli:nothing")) {
             // Literally does nothing
-        } else if (type.equals("origins:if_else")) {
+        } else if (type.equals("apoli:if_else")) {
             Optional<Boolean> bool = ConditionExecutor.itemCondition.check((JSONObject) power.get("condition"), null, null, null, null, item, null);
             if(bool.isPresent()){
                 if(bool.get()){ItemActionType(item, (JSONObject) power.get("if_action"));}
                 else{ItemActionType(item, (JSONObject) power.get("else_action"));}
             }else{ItemActionType(item, (JSONObject) power.get("else_action"));}
-        } else if (type.equals("origins:side")) {
+        } else if (type.equals("apoli:side")) {
             JSONObject action = (JSONObject) power.get("action");
             runItem(item, action);
         } else {
@@ -193,13 +193,13 @@ public class Actions {
         if (power.get("type") == null) return;
         String type = power.get("type").toString();
 
-        if (type.equals("origins:and")) {
+        if (type.equals("apoli:and")) {
             JSONArray andActions = (JSONArray) power.get("actions");
             for (Object actionObj : andActions) {
                 JSONObject action = (JSONObject) actionObj;
                 EntityActionType(entity, action);
             }
-        } else if (type.equals("origins:chance")) {
+        } else if (type.equals("apoli:chance")) {
             double chance = Double.parseDouble(power.get("chance").toString());
             double randomValue = Math.random();
 
@@ -210,7 +210,7 @@ public class Actions {
                 JSONObject failAction = (JSONObject) power.get("fail_action");
                 EntityActionType(entity, failAction);
             }
-        } else if (type.equals("origins:choice")) {
+        } else if (type.equals("apoli:choice")) {
             JSONArray actionsArray = (JSONArray) power.get("actions");
             List<JSONObject> actionsList = new ArrayList<>();
 
@@ -228,16 +228,16 @@ public class Actions {
                 JSONObject chosenAction = actionsList.get(randomIndex);
                 EntityActionType(entity, chosenAction);
             }
-        } else if (type.equals("origins:delay")) {
+        } else if (type.equals("apoli:delay")) {
             int ticks = Integer.parseInt(power.get("ticks").toString());
             JSONObject delayedAction = (JSONObject) power.get("action");
 
             Bukkit.getScheduler().runTaskLater(GenesisMC.getPlugin(), () -> {
                 EntityActionType(entity, delayedAction);
             }, ticks);
-        } else if (type.equals("origins:nothing")) {
+        } else if (type.equals("apoli:nothing")) {
             //literally does nothin
-        } else if (type.equals("origins:if_else")) {
+        } else if (type.equals("apoli:if_else")) {
             if(entity instanceof Player p){
                 Optional<Boolean> bool = ConditionExecutor.entityCondition.check((JSONObject) power.get("condition"), entity, null, entity.getLocation().getBlock(), null, null, null);
                 if(bool.isPresent()){
@@ -245,7 +245,7 @@ public class Actions {
                     else{EntityActionType(entity, (JSONObject) power.get("else_action"));}
                 }else{EntityActionType(entity, (JSONObject) power.get("else_action"));}
             }else{EntityActionType(entity, (JSONObject) power.get("else_action"));}
-        } else if (type.equals("origins:side")) {
+        } else if (type.equals("apoli:side")) {
             JSONObject action = (JSONObject) power.get("action");
             EntityActionType(entity, action);
         } else {
@@ -257,13 +257,13 @@ public class Actions {
         if (power == null) return;
         String type = power.get("type").toString();
 
-        if (type.equals("origins:and")) {
+        if (type.equals("apoli:and")) {
             JSONArray andActions = (JSONArray) power.get("actions");
             for (Object actionObj : andActions) {
                 JSONObject action = (JSONObject) actionObj;
                 runBlock(location, action);
             }
-        } else if (type.equals("origins:chance")) {
+        } else if (type.equals("apoli:chance")) {
             double chance = Double.parseDouble(power.get("chance").toString());
             double randomValue = Math.random();
 
@@ -274,7 +274,7 @@ public class Actions {
                 JSONObject failAction = (JSONObject) power.get("fail_action");
                 runBlock(location, failAction);
             }
-        } else if (type.equals("origins:choice")) {
+        } else if (type.equals("apoli:choice")) {
             JSONArray actionsArray = (JSONArray) power.get("actions");
             List<JSONObject> actionsList = new ArrayList<>();
 
@@ -292,22 +292,22 @@ public class Actions {
                 JSONObject chosenAction = actionsList.get(randomIndex);
                 runBlock(location, chosenAction);
             }
-        } else if (type.equals("origins:delay")) {
+        } else if (type.equals("apoli:delay")) {
             int ticks = Integer.parseInt(power.get("ticks").toString());
             JSONObject delayedAction = (JSONObject) power.get("action");
 
             Bukkit.getScheduler().runTaskLater(GenesisMC.getPlugin(), () -> {
                 runBlock(location, delayedAction);
             }, ticks);
-        } else if (type.equals("origins:nothing")) {
+        } else if (type.equals("apoli:nothing")) {
             // Literally does nothing
-        } else if (type.equals("origins:if_else")) {
+        } else if (type.equals("apoli:if_else")) {
             Optional<Boolean> bool = ConditionExecutor.blockCondition.check((JSONObject) power.get("condition"), null, null, location.getBlock(), null, null, null);
             if(bool.isPresent()){
                 if(bool.get()){BlockActionType(location, (JSONObject) power.get("if_action"));}
                 else{BlockActionType(location, (JSONObject) power.get("else_action"));}
             }else{BlockActionType(location, (JSONObject) power.get("else_action"));}
-        } else if (type.equals("origins:side")) {
+        } else if (type.equals("apoli:side")) {
             JSONObject action = (JSONObject) power.get("action");
             runBlock(location, action);
         } else {
@@ -318,7 +318,7 @@ public class Actions {
     private static void runBlock(Location location, JSONObject power) {
         String type = power.get("type").toString();
 
-        if (type.equals("origins:add_block")) {
+        if (type.equals("apoli:add_block")) {
             if (power.containsKey("block")) {
                 Material block;
                 block = Material.getMaterial(power.get("block").toString().split(":")[1].toUpperCase());
@@ -330,7 +330,7 @@ public class Actions {
                 location.getWorld().getBlockAt(location).setType(block);
             }
         }
-        if (type.equals("origins:offset")) {
+        if (type.equals("apoli:offset")) {
             BlockActionType(location.add(Double.valueOf(power.getOrDefault("x", "0").toString()), Double.valueOf(power.getOrDefault("y", "0").toString()), Double.valueOf(power.getOrDefault("z", "0").toString())), (JSONObject) power.get("action"));
         }
         if (type.equals("genesis:grow_sculk")) {
@@ -354,11 +354,11 @@ public class Actions {
             }.runTaskLater(GenesisMC.getPlugin(), 1);
 
         }
-        if (type.equals("origins:bonemeal")) {
+        if (type.equals("apoli:bonemeal")) {
             Block block = location.getWorld().getBlockAt(location);
             block.applyBoneMeal(BlockFace.UP);
         }
-        if (type.equals("origins:explode")) {
+        if (type.equals("apoli:explode")) {
 
             float explosionPower = 1f;
             String destruction_type = "break";
@@ -378,7 +378,7 @@ public class Actions {
 
             location.createExplosion(explosionPower, create_fire);
         }
-        if (type.equals("origins:execute_command")) {
+        if (type.equals("apoli:execute_command")) {
             OriginConsoleSender originConsoleSender = new OriginConsoleSender();
             originConsoleSender.setOp(true);
             final boolean lastSendCMDFeedback = Boolean.parseBoolean(GameRule.SEND_COMMAND_FEEDBACK.toString());
@@ -395,7 +395,7 @@ public class Actions {
             Bukkit.dispatchCommand(originConsoleSender, "gamerule logAdminCommands {bool}".replace("{bool}", String.valueOf(lastlogAdminCMDs)));
             Bukkit.dispatchCommand(originConsoleSender, "gamerule logAdminCommands {bool}".replace("{bool}", String.valueOf(lastSendCMDFeedback)));
         }
-        if (type.equals("origins:set_block")) {
+        if (type.equals("apoli:set_block")) {
             location.getBlock().setType(Material.valueOf(power.get("block").toString().split(":")[1].toUpperCase()));
         }
     }
@@ -403,10 +403,10 @@ public class Actions {
     private static void runItem(ItemStack item, JSONObject power) {
         JSONObject itemAction = (JSONObject) power.get("item_action");
         String type = itemAction.get("type").toString();
-        if (type.equals("origins:damage")) {
+        if (type.equals("apoli:damage")) {
             item.setDurability((short) (item.getDurability() + Short.parseShort(itemAction.get("amount").toString())));
         }
-        if (type.equals("origins:consume")) {
+        if (type.equals("apoli:consume")) {
             for (Player player : Bukkit.getOnlinePlayers()) {
                 if (player.getInventory().contains(item)) {
                     if (item.getType().isEdible()) {
@@ -417,7 +417,7 @@ public class Actions {
                 }
             }
         }
-        if (type.equals("origins:remove_enchantment")) {
+        if (type.equals("apoli:remove_enchantment")) {
             Enchantment enchantment = Enchantment.getByKey(new NamespacedKey(power.get("enchantment").toString().split(":")[0], power.get("enchantment").toString().split(":")[1]));
             if (item.containsEnchantment(enchantment)) {
                 item.removeEnchantment(enchantment);
@@ -427,7 +427,7 @@ public class Actions {
 
     public static void runbiEntity(Entity actor, Entity target, JSONObject biEntityAction) {
         String type = biEntityAction.get("type").toString();
-        if (type.equals("origins:add_velocity")) {
+        if (type.equals("apoli:add_velocity")) {
             float x = 0.0f;
             float y = 0.0f;
             float z = 0.0f;
@@ -441,15 +441,15 @@ public class Actions {
             if (set) target.setVelocity(new Vector(x, y, z));
             else target.setVelocity(target.getVelocity().add(new Vector(x, y, z)));
         }
-        if (type.equals("origins:remove_from_set")) {
+        if (type.equals("apoli:remove_from_set")) {
             RemoveFromSetEvent ev = new RemoveFromSetEvent(target, biEntityAction.get("set").toString());
             ev.callEvent();
         }
-        if (type.equals("origins:add_to_set")) {
+        if (type.equals("apoli:add_to_set")) {
             AddToSetEvent ev = new AddToSetEvent(target, biEntityAction.get("set").toString());
             ev.callEvent();
         }
-        if (type.equals("origins:damage")) {
+        if (type.equals("apoli:damage")) {
             if (target.isDead() || !(target instanceof LivingEntity)) return;
             float amount = 0.0f;
 
@@ -474,23 +474,23 @@ public class Actions {
             net.minecraft.world.entity.LivingEntity serverEn = ((CraftLivingEntity) target).getHandle();
             serverEn.hurt(Utils.getDamageSource(dmgType), amount);
         }
-        if (type.equals("origins:mount")) {
+        if (type.equals("apoli:mount")) {
             target.addPassenger(actor);
         }
-        if (type.equals("origins:set_in_love")) {
+        if (type.equals("apoli:set_in_love")) {
             if (target instanceof Animals targetAnimal) {
                 targetAnimal.setLoveModeTicks(600);
             }
         }
-        if (type.equals("origins:tame")) {
+        if (type.equals("apoli:tame")) {
             if (target instanceof Tameable targetTameable && actor instanceof AnimalTamer actorTamer) {
                 targetTameable.setOwner(actorTamer);
             }
         }
-        if (type.equals("origins:actor_action")) {
+        if (type.equals("apoli:actor_action")) {
             EntityActionType(actor, (JSONObject) biEntityAction.get("action"));
         }
-        if (type.equals("origins:target_action")) {
+        if (type.equals("apoli:target_action")) {
             runEntity(target, (JSONObject) biEntityAction.get("action"));
         }
     }
@@ -501,7 +501,7 @@ public class Actions {
         String type = entityAction.get("type").toString();
         if (entity == null) return;
 
-        if (type.equals("origins:modify_inventory")) {
+        if (type.equals("apoli:modify_inventory")) {
             if (entity instanceof Player player) {
                 if (power.containsKey("slot")) {
                     try {
@@ -514,7 +514,7 @@ public class Actions {
                 }
             }
         }
-        if (type.equals("origins:change_resource")) {
+        if (type.equals("apoli:change_resource")) {
             if (resourceChangeTimeout.containsKey(entity)) return;
             String resource = power.get("resource").toString();
             if (Resource.getResource(resource) == null) return;
@@ -541,10 +541,10 @@ public class Actions {
                 }
             }.runTaskLater(GenesisMC.getPlugin(), 2);
         }
-        if (type.equals("origins:set_on_fire")) {
+        if (type.equals("apoli:set_on_fire")) {
             entity.setFireTicks(Integer.parseInt(power.get("duration").toString()));
         }
-        if (type.equals("origins:spawn_entity")) {
+        if (type.equals("apoli:spawn_entity")) {
             OriginConsoleSender originConsoleSender = new OriginConsoleSender();
             originConsoleSender.setOp(true);
             Bukkit.dispatchCommand(originConsoleSender, "summon $1 %1 %2 %3 $2"
@@ -555,7 +555,7 @@ public class Actions {
                             .replace("%3", String.valueOf(entity.getLocation().getZ()))
                     ));
         }
-        if (type.equals("origins:spawn_particles")) {
+        if (type.equals("apoli:spawn_particles")) {
             Particle particle = Particle.valueOf(power.getOrDefault("particle", null).toString().split(":")[1].toUpperCase());
             int count = Integer.parseInt(String.valueOf(power.getOrDefault("count", 1)));
             float offset_y_no_vector = Float.parseFloat(String.valueOf(power.getOrDefault("offset_y", 1.0)));
@@ -576,7 +576,7 @@ public class Actions {
             }
             entity.getWorld().spawnParticle(particle, new Location(entity.getWorld(), entity.getLocation().getX(), entity.getLocation().getY(), entity.getLocation().getZ()), count, offset_x, offset_y, offset_z, 0);
         }
-        if (type.equals("origins:random_teleport")) {
+        if (type.equals("apoli:random_teleport")) {
             int spreadDistance = Math.round(Float.valueOf(power.getOrDefault("max_width", "8.0").toString()));
             int attempts = Integer.valueOf(power.getOrDefault("attempts", "1").toString());
             for (int i = 0; i < attempts; i++) {
@@ -590,7 +590,7 @@ public class Actions {
                 Bukkit.dispatchCommand(new OriginConsoleSender(), cmd);
             }
         }
-        if (type.equals("origins:remove_power")) {
+        if (type.equals("apoli:remove_power")) {
             if (entity instanceof Player p) {
                 PowerContainer powerContainer = CraftApoli.getPowerContainerFromTag(power.get("power").toString());
                 if (powerContainer != null) {
@@ -598,10 +598,10 @@ public class Actions {
                 }
             }
         }
-        if (type.equals("origins:spawn_effect_cloud")) {
+        if (type.equals("apoli:spawn_effect_cloud")) {
             spawnEffectCloud(entity, Float.valueOf(power.getOrDefault("radius", 3.0).toString()), Integer.valueOf(power.getOrDefault("wait_time", 10).toString()), new PotionEffect(StackingStatusEffect.getPotionEffectType(power.get("effect").toString()), 1, 1));
         }
-        if (type.equals("origins:replace_inventory")) {
+        if (type.equals("apoli:replace_inventory")) {
             if (entity instanceof Player player) {
                 if (power.containsKey("slot")) {
                     try {
@@ -615,7 +615,7 @@ public class Actions {
                 }
             }
         }
-        if (type.equals("origins:heal")) {
+        if (type.equals("apoli:heal")) {
             if (entity instanceof LivingEntity li) {
                 double healthFinal = li.getHealth() + Double.parseDouble(power.get("amount").toString());
                 if (li.getHealth() >= 20) return;
@@ -626,7 +626,7 @@ public class Actions {
                 }
             }
         }
-        if (type.equals("origins:clear_effect")) {
+        if (type.equals("apoli:clear_effect")) {
             PotionEffectType potionEffectType = StackingStatusEffect.getPotionEffectType(power.get("effect").toString());
             if (entity instanceof Player player) {
                 if (player.hasPotionEffect(potionEffectType)) {
@@ -634,12 +634,12 @@ public class Actions {
                 }
             }
         }
-        if (type.equals("origins:exhaust")) {
+        if (type.equals("apoli:exhaust")) {
             if (entity instanceof Player player) {
                 player.setFoodLevel(player.getFoodLevel() - Math.round(Float.valueOf(power.get("amount").toString())));
             }
         }
-        if (type.equals("origins:explode")) {
+        if (type.equals("apoli:explode")) {
             float explosionPower = 1f;
             String destruction_type = "break";
             JSONObject indestructible = new JSONObject();
@@ -658,19 +658,19 @@ public class Actions {
 
             entity.getLocation().createExplosion(explosionPower, create_fire);
         }
-        if (type.equals("origins:crafting_table")) {
+        if (type.equals("apoli:crafting_table")) {
             if (entity instanceof Player player) {
                 Inventory inventory = Bukkit.createInventory(player, InventoryType.CRAFTING);
                 player.openInventory(inventory);
             }
         }
-        if (type.equals("origins:ender_chest")) {
+        if (type.equals("apoli:ender_chest")) {
             if (entity instanceof Player player) {
                 Inventory inventory = Bukkit.createInventory(player, InventoryType.ENDER_CHEST);
                 player.openInventory(inventory);
             }
         }
-        if (type.equals("origins:equipped_item_action")) {
+        if (type.equals("apoli:equipped_item_action")) {
             if (entity instanceof Player player) {
                 if (power.containsKey("equipment_slot")) {
                     try {
@@ -683,18 +683,18 @@ public class Actions {
                 }
             }
         }
-        if (type.equals("origins:dismount")) {
+        if (type.equals("apoli:dismount")) {
             for (Entity entity1 : entity.getVehicle().getPassengers()) {
                 if (entity1 == entity) entity1.getPassengers().remove(entity);
             }
         }
-        if (type.equals("origins:feed")) {
+        if (type.equals("apoli:feed")) {
             if (entity instanceof Player player) {
                 player.setFoodLevel(player.getFoodLevel() + Integer.parseInt(power.get("food").toString()));
                 player.setSaturation(player.getSaturation() + Float.parseFloat(power.get("saturation").toString()));
             }
         }
-        if (type.equals("origins:fire_projectile")) {
+        if (type.equals("apoli:fire_projectile")) {
             if (entity instanceof ProjectileSource) {
                 float finalDivergence1 = Float.parseFloat(power.getOrDefault("divergence", 1.0).toString());
                 float speed = Float.parseFloat(power.getOrDefault("speed", 1).toString());
@@ -723,11 +723,11 @@ public class Actions {
                 projectile.setGlowing(true);
             }
         }
-        if (type.equals("origins:passenger_action")) {
+        if (type.equals("apoli:passenger_action")) {
             runEntity(entity.getPassenger(), (JSONObject) power.get("action"));
             runbiEntity(entity, entity.getPassenger(), (JSONObject) power.get("action"));
         }
-        if (type.equals("origins:raycast")) {
+        if (type.equals("apoli:raycast")) {
             Predicate<Entity> filter = entity1 -> !entity1.equals(entity);
             if (power.get("before_action") != null) {
                 runEntity(entity, (JSONObject) power.get("before_action"));
@@ -757,19 +757,19 @@ public class Actions {
                 }
             }
         }
-        if (type.equals("origins:extinguish")) {
+        if (type.equals("apoli:extinguish")) {
             entity.setFireTicks(0);
         }
-        if (type.equals("origins:play_sound")) {
+        if (type.equals("apoli:play_sound")) {
             entity.getWorld().playSound(entity, Sound.valueOf(power.get("sound").toString().toUpperCase().split(":")[1].replace(".", "_")), 8, 1);
         }
-        if (type.equals("origins:gain_air")) {
+        if (type.equals("apoli:gain_air")) {
             long amt = (long) power.get("value");
             if (entity instanceof Player p) {
                 p.setRemainingAir(p.getRemainingAir() + Math.toIntExact(amt));
             }
         }
-        if (type.equals("origins:drop_inventory")) {
+        if (type.equals("apoli:drop_inventory")) {
             if (entity instanceof Player player) {
                 if (power.containsKey("slot")) {
                     try {
@@ -794,24 +794,24 @@ public class Actions {
                 }
             }
         }
-        if (type.equals("origins:grant_advancement")) {
+        if (type.equals("apoli:grant_advancement")) {
             OriginConsoleSender originConsoleSender = new OriginConsoleSender();
             originConsoleSender.setOp(true);
             Bukkit.dispatchCommand(originConsoleSender, "advancement grant $1 $2".replace("$1", entity.getName()).replace("$2", power.get("advacnement").toString()));
         }
-        if (type.equals("origins:revoke_advancement")) {
+        if (type.equals("apoli:revoke_advancement")) {
             OriginConsoleSender originConsoleSender = new OriginConsoleSender();
             originConsoleSender.setOp(true);
             Bukkit.dispatchCommand(originConsoleSender, "advancement revoke $1 $2".replace("$1", entity.getName()).replace("$2", power.get("advacnement").toString()));
         }
-        if (type.equals("origins:selector_action")) {
+        if (type.equals("apoli:selector_action")) {
             if (power.get("bientity_condition") != null) {
                 if (entity instanceof Player player) {
                     runbiEntity(entity, player.getTargetEntity(AttributeHandler.Reach.getDefaultReach(player), false), (JSONObject) power.get("bientity_condition"));
                 }
             }
         }
-        if (type.equals("origins:give")) {
+        if (type.equals("apoli:give")) {
             int amt = 1;
             if (power.containsKey("amount")) {
                 amt = Integer.parseInt(power.get("amount").toString());
@@ -833,7 +833,7 @@ public class Actions {
             }
 
         }
-        if (type.equals("origins:damage")) {
+        if (type.equals("apoli:damage")) {
             if (entity instanceof Player P) {
                 P.damage(Double.valueOf(power.get("amount").toString()));
                 P.setLastDamageCause(new EntityDamageEvent(P, EntityDamageEvent.DamageCause.CUSTOM, Double.valueOf(power.get("amount").toString())));
@@ -845,7 +845,7 @@ public class Actions {
                 p.setBedSpawnLocation(p.getTargetBlockExact(Math.toIntExact(Math.round(AttributeHandler.Reach.getFinalReach(p)))).getLocation());
             }
         }
-        if (type.equals("origins:add_velocity")) {
+        if (type.equals("apoli:add_velocity")) {
             float y = 0f;
             float x = 0f;
             float z = 0f;
@@ -863,7 +863,7 @@ public class Actions {
                 en.getBukkitEntity().setVelocity(new Vector(vec.x, vec.y, vec.z));
             }
         }
-        if (type.equals("origins:execute_command")) {
+        if (type.equals("apoli:execute_command")) {
             String cmd = null;
             if (power.get("command").toString().startsWith("power") || power.get("command").toString().startsWith("/power"))
                 return;
@@ -874,7 +874,7 @@ public class Actions {
             }
             final boolean returnToNormal = entity.getWorld().getGameRuleValue(GameRule.SEND_COMMAND_FEEDBACK);
             entity.getWorld().setGameRule(GameRule.SEND_COMMAND_FEEDBACK, false);
-            Bukkit.dispatchCommand(new OriginConsoleSender(), "execute at {name} run ".replace("{name}", entity.getName()) + cmd);
+            Bukkit.dispatchCommand(new OriginConsoleSender(), "execute as {entity} at {name} run ".replace("{name}", entity.getUniqueId().toString()).replace("{entity}", entity.getUniqueId().toString()) + cmd);
             new BukkitRunnable() {
                 @Override
                 public void run() {
@@ -882,7 +882,7 @@ public class Actions {
                 }
             }.runTaskLater(GenesisMC.getPlugin(), 1);
         }
-        if (type.equals("origins:add_xp")) {
+        if (type.equals("apoli:add_xp")) {
             int points = 0;
             int levels = 0;
 
@@ -894,12 +894,12 @@ public class Actions {
                 player.setLevel(player.getLevel() + levels);
             }
         }
-        if (type.equals("origins:apply_effect")) {
+        if (type.equals("apoli:apply_effect")) {
             if (entity instanceof LivingEntity player) {
                 statusEffectInstance(player, entityAction);
             }
         }
-        if (type.equals("origins:area_of_effect")) {
+        if (type.equals("apoli:area_of_effect")) {
             float radius = 15f;
             JSONObject bientity_action = new JSONObject();
             boolean include_target = false;
@@ -931,15 +931,15 @@ public class Actions {
             }
             if (include_target) BiEntityActionType(entity, entity, bientity_action);
         }
-        if (type.equals("origins:block_action_at")) {
+        if (type.equals("apoli:block_action_at")) {
             BlockActionType(entity.getLocation(), (JSONObject) entityAction.get("block_action"));
         }
-        if (type.equals("origins:toggle")) {
+        if (type.equals("apoli:toggle")) {
             if (entity instanceof Player) {
                 for (OriginContainer origin : OriginPlayerUtils.getOrigin((Player) entity).values()) {
                     if (origin.getPowers().contains(power.get("power"))) {
                         for (PowerContainer powerContainer : origin.getPowerContainers()) {
-                            if (powerContainer.getType().equals("origins:toggle")) {
+                            if (powerContainer.getType().equals("apoli:toggle")) {
                                 Toggle toggle = new Toggle();
                                 toggle.execute((Player) entity, powerContainer);
                             }
@@ -948,10 +948,10 @@ public class Actions {
                 }
             }
         }
-        if (type.equals("origins:set_fall_distance")) {
+        if (type.equals("apoli:set_fall_distance")) {
             entity.setFallDistance(Float.parseFloat(power.get("fall_distance").toString()));
         }
-        if (type.equals("origins:trigger_cooldown")) {
+        if (type.equals("apoli:trigger_cooldown")) {
             if (entity instanceof Player player) {
                 for (OriginContainer origin : OriginPlayerUtils.getOrigin((Player) entity).values()) {
                     if (origin.getPowers().contains(power.get("power"))) {
@@ -960,23 +960,23 @@ public class Actions {
                                 String key = "*";
                                 if (powerContainer.get("key").getOrDefault("key", "key.origins.primary_active") != null) {
                                     key = powerContainer.get("key").getOrDefault("key", "key.origins.primary_active").toString();
-                                    if (powerContainer.getType().equals("origins:action_on_hit")) {
+                                    if (powerContainer.getType().equals("apoli:action_on_hit")) {
                                         key = "key.attack";
-                                    } else if (powerContainer.getType().equals("origins:action_when_damage_taken")) {
+                                    } else if (powerContainer.getType().equals("apoli:action_when_damage_taken")) {
                                         key = "key.attack";
-                                    } else if (powerContainer.getType().equals("origins:action_when_hit")) {
+                                    } else if (powerContainer.getType().equals("apoli:action_when_hit")) {
                                         key = "key.attack";
-                                    } else if (powerContainer.getType().equals("origins:action_self")) {
+                                    } else if (powerContainer.getType().equals("apoli:action_self")) {
                                         key = "key.use";
-                                    } else if (powerContainer.getType().equals("origins:attacker_action_when_hit")) {
+                                    } else if (powerContainer.getType().equals("apoli:attacker_action_when_hit")) {
                                         key = "key.attack";
-                                    } else if (powerContainer.getType().equals("origins:self_action_on_hit")) {
+                                    } else if (powerContainer.getType().equals("apoli:self_action_on_hit")) {
                                         key = "key.attack";
-                                    } else if (powerContainer.getType().equals("origins:self_action_on_kill")) {
+                                    } else if (powerContainer.getType().equals("apoli:self_action_on_kill")) {
                                         key = "key.attack";
-                                    } else if (powerContainer.getType().equals("origins:self_action_when_hit")) {
+                                    } else if (powerContainer.getType().equals("apoli:self_action_when_hit")) {
                                         key = "key.attack";
-                                    } else if (powerContainer.getType().equals("origins:target_action_on_hit")) {
+                                    } else if (powerContainer.getType().equals("apoli:target_action_on_hit")) {
                                         key = "key.attack";
                                     }
                                 }

@@ -37,7 +37,7 @@ public class WaterVision extends CraftPower {
 
     @Override
     public String getPowerFile() {
-        return "origins:water_vision";
+        return "apoli:water_vision";
     }
 
     @Override

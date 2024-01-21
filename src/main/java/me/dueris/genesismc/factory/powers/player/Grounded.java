@@ -38,7 +38,7 @@ public class Grounded extends CraftPower {
                 Location current_block_platform_pos = location.add(0, -1, 0);
                 ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                 for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(player, getPowerFile(), layer)) {
-                    if (conditionExecutor.check("condition", "conditions", player, power, "origins:grounded", player, null, null, null, player.getInventory().getItemInHand(), null)) {
+                    if (conditionExecutor.check("condition", "conditions", player, power, "apoli:grounded", player, null, null, null, player.getInventory().getItemInHand(), null)) {
                         setActive(player, power.getTag(), true);
                         if (current_block_platform_pos.getBlock().getType().equals(Material.AIR)) {
                             platform_pos.add(current_block_platform_pos);
@@ -67,7 +67,7 @@ public class Grounded extends CraftPower {
 
     @Override
     public String getPowerFile() {
-        return "origins:grounded";
+        return "apoli:grounded";
     }
 
     @Override

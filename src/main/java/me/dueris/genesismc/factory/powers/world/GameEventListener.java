@@ -42,7 +42,7 @@ public class GameEventListener extends CraftPower implements Listener {
 
     @Override
     public String getPowerFile() {
-        return "origins:game_event_listener";
+        return "apoli:game_event_listener";
     }
 
     @Override

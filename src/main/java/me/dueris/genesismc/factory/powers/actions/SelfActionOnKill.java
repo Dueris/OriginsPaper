@@ -49,7 +49,7 @@ public class SelfActionOnKill extends CraftPower implements Listener {
 
     @Override
     public String getPowerFile() {
-        return "origins:self_action_on_kill";
+        return "apoli:self_action_on_kill";
     }
 
     @Override

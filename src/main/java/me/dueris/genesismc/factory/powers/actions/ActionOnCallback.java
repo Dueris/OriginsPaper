@@ -48,7 +48,7 @@ public class ActionOnCallback extends CraftPower implements Listener {
 
     @Override
     public String getPowerFile() {
-        return "origins:action_on_callback";
+        return "apoli:action_on_callback";
     }
 
     @Override

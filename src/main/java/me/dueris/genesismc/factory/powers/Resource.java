@@ -110,7 +110,7 @@ public class Resource extends CraftPower implements Listener {
 
     @Override
     public String getPowerFile() {
-        return "origins:resource";
+        return "apoli:resource";
     }
 
     @Override

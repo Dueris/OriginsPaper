@@ -78,7 +78,7 @@ public class ParticlePower extends CraftPower {
 
     @Override
     public String getPowerFile() {
-        return "origins:particle";
+        return "apoli:particle";
     }
 
     @Override

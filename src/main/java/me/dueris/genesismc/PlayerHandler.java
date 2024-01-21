@@ -11,10 +11,8 @@ import me.dueris.genesismc.utils.OriginContainer;
 import me.dueris.genesismc.utils.PowerContainer;
 import me.dueris.genesismc.utils.legacy.LegacyOriginContainer;
 import me.dueris.genesismc.utils.translation.LangConfig;
-import me.dueris.genesismc.utils.translation.Translation;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
-import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -34,13 +32,13 @@ import java.util.Map;
 
 import static me.dueris.genesismc.factory.powers.Power.extra_reach;
 import static me.dueris.genesismc.factory.powers.Power.extra_reach_attack;
-import static me.dueris.genesismc.utils.BukkitColour.RED;
+import static me.dueris.genesismc.utils.text.BukkitColour.RED;
 
 public class PlayerHandler implements Listener {
 
     public static void ReapplyEntityReachPowers(Player player) {
         for (OriginContainer origin : OriginPlayerUtils.getOrigin(player).values()) {
-            for (PowerContainer power : origin.getMultiPowerFileFromType("origins:attribute")) {
+            for (PowerContainer power : origin.getMultiPowerFileFromType("apoli:attribute")) {
                 if (power == null) continue;
                 for (HashMap<String, Object> modifier : power.getPossibleModifiers("modifier", "modifier")) {
                     if (modifier.get("attribute").toString().equalsIgnoreCase("reach-entity-attributes:reach")) {
@@ -96,7 +94,6 @@ public class PlayerHandler implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void playerJoin(PlayerJoinEvent e) {
         Player p = e.getPlayer();
-        Bukkit.getLogger().info("PlayerLocale saved as[" + Translation.getPlayerLocale(p) + "] for player[%player%]".replace("%player%", p.getName()));
         //set origins to null if none present
         if (
                 !p.getPersistentDataContainer().has(GenesisMC.identifier("originLayer"), PersistentDataType.STRING) ||

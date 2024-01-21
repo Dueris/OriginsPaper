@@ -32,7 +32,6 @@ public class TagRegistry {
     }
 
     public static void runParse() {
-        Boolean showErrors = Boolean.valueOf(GenesisDataFiles.getMainConfig().get("console-print-parse-errors").toString());
         File DatapackDir = new File(Bukkit.getServer().getPluginManager().getPlugin("GenesisMC").getDataFolder() + File.separator + ".." + File.separator + ".." + File.separator + Bukkit.getServer().getWorlds().get(0).getName() + File.separator + "datapacks");
         File[] datapacks = DatapackDir.listFiles();
         if (datapacks == null) return;

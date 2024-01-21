@@ -51,7 +51,7 @@ public class ActionWhenDamageTaken extends CraftPower implements Listener {
 
     @Override
     public String getPowerFile() {
-        return "origins:action_when_damage_taken";
+        return "apoli:action_when_damage_taken";
     }
 
     @Override

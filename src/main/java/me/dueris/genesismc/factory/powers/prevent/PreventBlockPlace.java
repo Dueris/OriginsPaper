@@ -58,7 +58,7 @@ public class PreventBlockPlace extends CraftPower implements Listener {
 
     @Override
     public String getPowerFile() {
-        return "origins:prevent_block_place";
+        return "apoli:prevent_block_place";
     }
 
     @Override

@@ -87,7 +87,7 @@ public class ModifyStatusEffectDurationPower extends CraftPower implements Liste
 
     @Override
     public String getPowerFile() {
-        return "origins:modify_status_effect_duration";
+        return "apoli:modify_status_effect_duration";
     }
 
     @Override

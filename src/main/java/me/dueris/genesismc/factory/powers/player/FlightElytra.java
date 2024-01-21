@@ -178,7 +178,7 @@ public class FlightElytra extends CraftPower implements Listener {
 
     @Override
     public String getPowerFile() {
-        return "origins:elytra_flight";
+        return "apoli:elytra_flight";
     }
 
     @Override

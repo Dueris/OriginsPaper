@@ -149,7 +149,7 @@ public class EntitySetPower extends CraftPower implements Listener {
 
     @Override
     public String getPowerFile() {
-        return "origins:entity_set";
+        return "apoli:entity_set";
     }
 
     @Override

@@ -2,7 +2,7 @@ package me.dueris.genesismc;
 
 import io.papermc.paper.event.player.PlayerFailMoveEvent;
 import me.dueris.genesismc.choosing.ChoosingCustomOrigins;
-import me.dueris.genesismc.choosing.ChoosingGUI;
+import me.dueris.genesismc.choosing.GuiTicker;
 import me.dueris.genesismc.choosing.ChoosingMain;
 import me.dueris.genesismc.commands.OriginCommand;
 import me.dueris.genesismc.commands.PowerCommand;
@@ -57,6 +57,7 @@ import org.bukkit.craftbukkit.v1_20_R3.CraftServer;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.server.ServerLoadEvent;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -79,8 +80,8 @@ import java.util.concurrent.ThreadFactory;
 
 import static me.dueris.genesismc.PlayerHandler.ReapplyEntityReachPowers;
 import static me.dueris.genesismc.factory.powers.simple.origins.MimicWarden.getParticleTasks;
-import static me.dueris.genesismc.utils.BukkitColour.AQUA;
-import static me.dueris.genesismc.utils.BukkitColour.RED;
+import static me.dueris.genesismc.utils.text.BukkitColour.AQUA;
+import static me.dueris.genesismc.utils.text.BukkitColour.RED;
 
 public final class GenesisMC extends JavaPlugin implements Listener {
     public static final boolean isFolia = classExists("io.papermc.paper.threadedregions.RegionizedServer");
@@ -88,7 +89,6 @@ public final class GenesisMC extends JavaPlugin implements Listener {
     public static EnumSet<Material> tool;
     public static Metrics metrics;
     public static boolean disableRender = true;
-    public static ArrayList<Enchantment> custom_enchants = new ArrayList<>();
     public static String MODID = "genesismc";
     public static ConditionExecutor conditionExecutor;
     public static String apoliVersion = "1.12.2";
@@ -375,7 +375,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         } else {
             getServer().getConsoleSender().sendMessage(Component.text(LangConfig.getLocalizedString(Bukkit.getConsoleSender(), "startup.skinRestorer.absent")).color(TextColor.fromHexString(AQUA)));
         }
-        ChoosingGUI forced = new ChoosingGUI();
+        GuiTicker forced = new GuiTicker();
         forced.runTaskTimer(GenesisMC.getPlugin(), 0, 1);
         GenesisItems items = new GenesisItems();
         items.runTaskTimer(GenesisMC.getPlugin(), 0, 1);
@@ -418,7 +418,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] " + LangConfig.getLocalizedString(Bukkit.getConsoleSender(), "disable")).color(TextColor.fromHexString(RED)));
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void lagBackPatch(PlayerFailMoveEvent e) {
         e.setAllowed(true);
         e.setLogWarning(false);

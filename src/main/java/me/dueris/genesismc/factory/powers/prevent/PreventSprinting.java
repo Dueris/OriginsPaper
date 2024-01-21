@@ -33,7 +33,7 @@ public class PreventSprinting extends CraftPower {
             for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()) {
                 for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                     ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
-                    if (conditionExecutor.check("condition", "conditions", p, power, "origins:prevent_sprinting", p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
+                    if (conditionExecutor.check("condition", "conditions", p, power, "apoli:prevent_sprinting", p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
                         if (power == null) {
                             getPowerArray().remove(p);
                             return;
@@ -56,7 +56,7 @@ public class PreventSprinting extends CraftPower {
 
     @Override
     public String getPowerFile() {
-        return "origins:prevent_sprinting";
+        return "apoli:prevent_sprinting";
     }
 
     @Override

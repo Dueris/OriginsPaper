@@ -15,7 +15,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.util.ArrayList;
 
 import static me.dueris.genesismc.factory.actions.Actions.resourceChangeTimeout;
-import static me.dueris.genesismc.utils.BukkitColour.RED;
+import static me.dueris.genesismc.utils.text.BukkitColour.RED;
 
 public class Change extends SubCommand {
     @Override

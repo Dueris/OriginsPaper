@@ -41,7 +41,7 @@ public class ModifyHarvestPower extends CraftPower implements Listener {
                 for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()) {
                     ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                     for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-                        if (conditionExecutor.check("block_condition", "block_conditions", p, power, "origins:modify_harvest", p, null, e.getBlock(), null, p.getItemInHand(), null)) {
+                        if (conditionExecutor.check("block_condition", "block_conditions", p, power, "apoli:modify_harvest", p, null, e.getBlock(), null, p.getItemInHand(), null)) {
                             e.setDropItems(power.getBooleanOrDefault("allow", false));
                             setActive(p, power.getTag(), true);
                             if(e.isDropItems()){ // set to this to respect permissions by other plugins to disable block drops
@@ -65,7 +65,7 @@ public class ModifyHarvestPower extends CraftPower implements Listener {
 
     @Override
     public String getPowerFile() {
-        return "origins:modify_harvest";
+        return "apoli:modify_harvest";
     }
 
     @Override

@@ -60,7 +60,7 @@ public class ActionOverTime extends CraftPower {
 
     @Override
     public String getPowerFile() {
-        return "origins:action_over_time";
+        return "apoli:action_over_time";
     }
 
     @Override

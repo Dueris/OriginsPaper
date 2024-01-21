@@ -7,8 +7,8 @@ import me.dueris.genesismc.events.KeybindTriggerEvent;
 import me.dueris.genesismc.events.OriginChangeEvent;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.utils.BukkitColour;
 import me.dueris.genesismc.utils.PowerContainer;
+import me.dueris.genesismc.utils.text.BukkitColour;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.Bukkit;
@@ -180,7 +180,7 @@ public class Inventory extends CraftPower implements CommandExecutor, Listener {
 
     @Override
     public String getPowerFile() {
-        return "origins:inventory";
+        return "apoli:inventory";
     }
 
     @Override

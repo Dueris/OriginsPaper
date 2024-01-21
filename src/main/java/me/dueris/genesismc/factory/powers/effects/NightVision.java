@@ -71,7 +71,7 @@ public class NightVision extends CraftPower {
 
     @Override
     public String getPowerFile() {
-        return "origins:night_vision";
+        return "apoli:night_vision";
     }
 
     @Override

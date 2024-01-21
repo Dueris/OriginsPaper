@@ -3,6 +3,7 @@ package me.dueris.genesismc.factory;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.entity.OriginPlayerUtils;
 import me.dueris.genesismc.files.GenesisDataFiles;
+import me.dueris.genesismc.factory.*;
 import me.dueris.genesismc.utils.*;
 import me.dueris.genesismc.utils.exception.OriginParseException;
 import net.minecraft.server.MinecraftServer;
@@ -98,11 +99,7 @@ public class CraftApoli {
         ArrayList<Object> values = new ArrayList<>();
         for (Object key : JSONFileParser.keySet()) {
             keys.add((String) key);
-            if (JSONFileParser.get(key).toString().startsWith("apoli:")) {
-                values.add(JSONFileParser.get(key).toString().replace("apoli:", "origins:"));
-            } else {
-                values.add(JSONFileParser.get(key));
-            }
+            values.add(JSONFileParser.get(key));
         }
         return new FileContainer(keys, values);
     }
@@ -255,20 +252,20 @@ public class CraftApoli {
                                                 String powerFolder = namespace.getName();
                                                 String powerFileName = powerFile.getName().replace(".json", "");
 
-                                                JSONObject powerParser = (JSONObject) new JSONParser().parse(new FileReader(datapack.getAbsolutePath() + File.separator + "data" + File.separator + powerFolder + File.separator + "powers" + File.separator + powerFileName + ".json"));
-                                                if (powerParser.containsKey("type") && "origins:multiple".equals(powerParser.get("type"))) {
-                                                    PowerContainer powerContainer = new PowerContainer(new NamespacedKey(powerFolder, powerFileName), fileToFileContainer(powerParser), Utils.readJSONFileAsString(new File(datapack.getAbsolutePath() + File.separator + "data" + File.separator + powerFolder + File.separator + "powers" + File.separator + powerFileName + ".json")), false, true);
+                                                JSONObject powerParser = Remapper.createRemapped(new File(datapack.getAbsolutePath() + File.separator + "data" + File.separator + powerFolder + File.separator + "powers" + File.separator + powerFileName + ".json"));
+                                                if (powerParser.containsKey("type") && "apoli:multiple".equals(powerParser.get("type"))) {
+                                                    PowerContainer powerContainer = new PowerContainer(new NamespacedKey(powerFolder, powerFileName), fileToFileContainer(powerParser), Utils.readJSONFileAsString(powerParser), false, true);
                                                     powerContainers.add(powerContainer);
                                                     keyedPowerContainers.put(powerFolder + ":" + powerFileName, powerContainer);
                                                     processNestedPowers(powerContainer, new ArrayList<>(), powerFolder, powerFileName);
                                                 } else {
-                                                    PowerContainer power = new PowerContainer(new NamespacedKey(powerFolder, powerFileName), fileToFileContainer(powerParser), Utils.readJSONFileAsString(new File(datapack.getAbsolutePath() + File.separator + "data" + File.separator + powerFolder + File.separator + "powers" + File.separator + powerFileName + ".json")), false);
+                                                    PowerContainer power = new PowerContainer(new NamespacedKey(powerFolder, powerFileName), fileToFileContainer(powerParser), Utils.readJSONFileAsString(powerParser), false);
                                                     powerContainers.add(power);
                                                     keyedPowerContainers.put(powerFolder + ":" + powerFileName, power);
                                                 }
 
                                             }
-                                        } catch (IOException | ParseException ee) {
+                                        } catch (Exception ee) {
                                             if (showErrors)
                                                 System.err.println("[GenesisMC] Error parsing \"%powerFolder%:%powerFileName%\"".replace("%powerFolder", namespace.getName()).replace("%powerFileName", powerFile.getName()));
                                         }
@@ -353,15 +350,16 @@ public class CraftApoli {
                                                 String powerFileName = powerLocation[1];
 
                                                 try {
-                                                    JSONObject powerParser = (JSONObject) new JSONParser().parse(new FileReader(datapack.getAbsolutePath() + File.separator + "data" + File.separator + powerFolder + File.separator + "powers" + File.separator + powerFileName + ".json"));
-                                                    if (powerParser.containsKey("type") && "origins:multiple".equals(powerParser.get("type"))) {
-                                                        PowerContainer powerContainer = new PowerContainer(new NamespacedKey(powerFolder, powerFileName), fileToFileContainer(powerParser), Utils.readJSONFileAsString(new File(datapack.getAbsolutePath() + File.separator + "data" + File.separator + powerFolder + File.separator + "powers" + File.separator + powerFileName + ".json")), false, true);
+                                                    
+                                                    JSONObject powerParser = Remapper.createRemapped(new File(datapack.getAbsolutePath() + File.separator + "data" + File.separator + powerFolder + File.separator + "powers" + File.separator + powerFileName + ".json"));
+                                                    if (powerParser.containsKey("type") && "apoli:multiple".equals(powerParser.get("type"))) {
+                                                        PowerContainer powerContainer = new PowerContainer(new NamespacedKey(powerFolder, powerFileName), fileToFileContainer(powerParser), Utils.readJSONFileAsString(powerParser), false, true);
                                                         powerContainers.add(powerContainer);
                                                         processNestedPowers(powerContainer, powerContainers, powerFolder, powerFileName);
                                                     } else {
-                                                        powerContainers.add(new PowerContainer(new NamespacedKey(powerFolder, powerFileName), fileToFileContainer(powerParser), Utils.readJSONFileAsString(new File(datapack.getAbsolutePath() + File.separator + "data" + File.separator + powerFolder + File.separator + "powers" + File.separator + powerFileName + ".json")), false));
+                                                        powerContainers.add(new PowerContainer(new NamespacedKey(powerFolder, powerFileName), fileToFileContainer(powerParser), Utils.readJSONFileAsString(powerParser), false));
                                                     }
-                                                } catch (FileNotFoundException fileNotFoundException) {
+                                                } catch (Exception fileNotFoundException) {
                                                     if (showErrors)
                                                         System.err.println("[GenesisMC] Error parsing \"%powerFolder%:%powerFileName%\" for \"%originFolder%:%originFileName%\"".replace("%powerFolder", powerFolder).replace("%powerFileName", powerFileName).replace("%originFolder%", originFolder.get(0)).replace("%originFileName%", originFileName.get(0)));
                                                 }
@@ -371,7 +369,7 @@ public class CraftApoli {
                                     OriginContainer origin = new OriginContainer(new NamespacedKey(originFolder.get(0), originFileName.get(0)), fileToFileContainer(originLayerParser), fileToHashMap(originParser), powerContainers);
                                     originContainers.add(origin);
 
-                                } catch (FileNotFoundException fileNotFoundException) {
+                                } catch (Exception fileNotFoundException) {
                                     if (showErrors)
                                         //Bukkit.getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] Error parsing \"" + datapack.getName() + File.separator + "data" + File.separator + originFolder.get(0) + File.separator + "origins" + File.separator + originFileName.get(0) + ".json" + "\"").color(TextColor.color(255, 0, 0)));
                                         System.err.println("[GenesisMC] Error parsing \"%datapack%%sep%data%sep%%originFolder%%sep%origins%sep%%originFileName%.json\"".replace("%datapack%", datapack.getName()).replace("%originFolder", originFolder.get(0)).replace("%sep%", File.separator).replace("%originFileName%", originFileName.get(0)));

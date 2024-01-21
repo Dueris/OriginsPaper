@@ -68,7 +68,7 @@ public class EffectImmunity extends CraftPower {
 
     @Override
     public String getPowerFile() {
-        return "origins:effect_immunity";
+        return "apoli:effect_immunity";
     }
 
     @Override

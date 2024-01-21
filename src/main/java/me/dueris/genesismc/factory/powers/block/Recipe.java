@@ -30,7 +30,7 @@ public class Recipe extends CraftPower implements Listener {
 
     @Override
     public String getPowerFile() {
-        return "origins:recipe";
+        return "apoli:recipe";
     }
 
     @Override

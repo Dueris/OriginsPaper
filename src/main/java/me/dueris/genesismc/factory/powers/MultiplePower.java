@@ -13,7 +13,7 @@ public class MultiplePower extends CraftPower { // Makes a placeholder so when g
 
     @Override
     public String getPowerFile() {
-        return "origins:multiple";
+        return "apoli:multiple";
     }
 
     @Override

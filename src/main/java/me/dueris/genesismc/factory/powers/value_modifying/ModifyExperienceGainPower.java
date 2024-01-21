@@ -47,7 +47,7 @@ public class ModifyExperienceGainPower extends CraftPower implements Listener {
                 try {
                     ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                     for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-                        if (conditionExecutor.check("condition", "conditions", p, power, "origins:modify_xp_gain", p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
+                        if (conditionExecutor.check("condition", "conditions", p, power, "apoli:modify_xp_gain", p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
                             for (HashMap<String, Object> modifier : power.getJsonListSingularPlural("modifier", "modifiers")) {
                                 Float value = Float.valueOf(modifier.get("value").toString());
                                 String operation = modifier.get("operation").toString();
@@ -70,7 +70,7 @@ public class ModifyExperienceGainPower extends CraftPower implements Listener {
                     }
                 } catch (Exception ev) {
                     ErrorSystem errorSystem = new ErrorSystem();
-                    errorSystem.throwError("idk what errrored lol", "origins:modify_xp_gain", p, layer);
+                    errorSystem.throwError("idk what errrored lol", "apoli:modify_xp_gain", p, layer);
                     ev.printStackTrace();
                 }
             }
@@ -79,7 +79,7 @@ public class ModifyExperienceGainPower extends CraftPower implements Listener {
 
     @Override
     public String getPowerFile() {
-        return "origins:modify_xp_gain";
+        return "apoli:modify_xp_gain";
     }
 
     @Override

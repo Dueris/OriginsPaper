@@ -17,7 +17,7 @@ import java.util.HashMap;
 import static me.dueris.genesismc.choosing.ChoosingMain.choosing;
 import static me.dueris.genesismc.choosing.contents.MainMenuContents.GenesisMainMenuContents;
 
-public class ChoosingGUI extends BukkitRunnable {
+public class GuiTicker extends BukkitRunnable {
     @Override
     public void run() {
         for (Player p : Bukkit.getOnlinePlayers()) {

@@ -153,7 +153,7 @@ public class ItemCondition implements Condition {
         String type = condition.get("type").toString().toLowerCase();
         if (itemStack == null) return Optional.empty();
         switch (type) {
-            case "origins:ingredient" -> {
+            case "apoli:ingredient" -> {
                 if (condition.containsKey("ingredient")) {
                     Map<String, Object> ingredientMap = (Map<String, Object>) condition.get("ingredient");
                     if (ingredientMap.containsKey("item")) {
@@ -188,7 +188,7 @@ public class ItemCondition implements Condition {
                 }
                 return getResult(inverted, Optional.of(false));
             }
-            case "origins:meat" -> {
+            case "apoli:meat" -> {
                 if (itemStack.getType().isEdible()) {
                     if (inverted) {
                         return getResult(inverted, Optional.of(getNonMeatMaterials().contains(itemStack)));
@@ -199,34 +199,34 @@ public class ItemCondition implements Condition {
                     return getResult(inverted, Optional.of(false));
                 }
             }
-            case "origins:fuel" -> {
+            case "apoli:fuel" -> {
                 return getResult(inverted, Optional.of(itemStack.getType().isFuel()));
             }
-            case "origins:amount" -> {
+            case "apoli:amount" -> {
                 String comparison = condition.get("comparison").toString();
                 double compareTo = Double.parseDouble(condition.get("compare_to").toString());
                 int amt = itemStack.getAmount();
                 return getResult(inverted, Optional.of(RestrictArmor.compareValues(amt, comparison, compareTo)));
             }
-            case "origins:armor_value" -> {
+            case "apoli:armor_value" -> {
                 String comparison = condition.get("comparison").toString();
                 double compareTo = Double.parseDouble(condition.get("compare_to").toString());
                 double amt = ArmorUtils.getArmorValue(itemStack);
                 return getResult(inverted, Optional.of(RestrictArmor.compareValues(amt, comparison, compareTo)));
             }
-            case "origins:durability" -> {
+            case "apoli:durability" -> {
                 String comparison = condition.get("comparison").toString();
                 double compareTo = Double.parseDouble(condition.get("compare_to").toString());
                 double amt = itemStack.getDurability();
                 return getResult(inverted, Optional.of(RestrictArmor.compareValues(amt, comparison, compareTo)));
             }
-            case "origins:empty" -> {
+            case "apoli:empty" -> {
                 return getResult(inverted, Optional.of(itemStack.getType().isAir()));
             }
-            case "origins:enchantable" -> {
+            case "apoli:enchantable" -> {
                 return getResult(inverted, Optional.of(ENCHANTABLE_MATERIALS.contains(itemStack.getType())));
             }
-            case "origins:enchantment" -> {
+            case "apoli:enchantment" -> {
                 String comparison = condition.get("comparison").toString();
                 double compareTo = Double.parseDouble(condition.get("compare_to").toString());
                 for (Enchantment enchantment : itemStack.getEnchantments().keySet()) {
@@ -237,25 +237,25 @@ public class ItemCondition implements Condition {
                 }
                 return getResult(inverted, Optional.of(false));
             }
-            case "origins:fireproof" -> {
+            case "apoli:fireproof" -> {
                 return getResult(inverted, Optional.of(itemStack.getType().toString().toLowerCase().contains("NETHERITE")));
             }
-            case "origins:is_damageable" -> {
+            case "apoli:is_damageable" -> {
                 return getResult(inverted, Optional.of(!itemStack.getType().isBlock()));
             }
-            case "origins:is_equippable" -> {
+            case "apoli:is_equippable" -> {
                 return getResult(inverted, Optional.of(EnchantTable.wearable.contains(itemStack.getType())));
             }
-            case "origins:relative_durability" -> {
+            case "apoli:relative_durability" -> {
                 String comparison = condition.get("comparison").toString();
                 double compareTo = Double.parseDouble(condition.get("compare_to").toString());
                 double amt = itemStack.getDurability() / itemStack.getType().getMaxDurability();
                 return getResult(inverted, Optional.of(RestrictArmor.compareValues(amt, comparison, compareTo)));
             }
-            case "origins:smeltable" -> {
+            case "apoli:smeltable" -> {
                 return getResult(inverted, Optional.of(itemStack.getType().isFuel()));
             }
-            case "origins:food" -> {
+            case "apoli:food" -> {
                 return getResult(inverted, Optional.of(itemStack.getType().isEdible()));
             }
             default -> {

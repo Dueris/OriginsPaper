@@ -50,7 +50,7 @@ public class SelfActionWhenHit extends CraftPower implements Listener {
 
     @Override
     public String getPowerFile() {
-        return "origins:self_action_when_hit";
+        return "apoli:self_action_when_hit";
     }
 
     @Override

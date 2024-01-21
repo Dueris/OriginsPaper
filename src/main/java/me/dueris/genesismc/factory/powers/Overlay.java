@@ -31,7 +31,7 @@ public class Overlay extends CraftPower {
             for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()) {
                 ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                 for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(player, getPowerFile(), layer)) {
-                    if (conditionExecutor.check("condition", "conditions", player, power, "origins:overlay", player, null, player.getLocation().getBlock(), null, player.getInventory().getItemInMainHand(), null)) {
+                    if (conditionExecutor.check("condition", "conditions", player, power, "apoli:overlay", player, null, player.getLocation().getBlock(), null, player.getInventory().getItemInMainHand(), null)) {
                         setActive(player, power.getTag(), true);
                         Phasing.initializePhantomOverlay(player);
                     } else {
@@ -47,7 +47,7 @@ public class Overlay extends CraftPower {
 
     @Override
     public String getPowerFile() {
-        return "origins:overlay";
+        return "apoli:overlay";
     }
 
     @Override

@@ -63,7 +63,7 @@ public class SelfGlow extends CraftPower {
 
     @Override
     public String getPowerFile() {
-        return "origins:self_glow";
+        return "apoli:self_glow";
     }
 
     @Override

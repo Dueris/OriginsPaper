@@ -50,20 +50,20 @@ public class DamageCondition implements Condition {
         boolean inverted = (boolean) condition.getOrDefault("inverted", false);
         String type = condition.get("type").toString().toLowerCase();
         switch (type) {
-            case "origins:amount" -> {
+            case "apoli:amount" -> {
                 String comparison = condition.get("comparison").toString();
                 Long compare_to = (Long) condition.get("compare_to");
 
                 return getResult(inverted, Optional.of(RestrictArmor.compareValues(entityDamageEvent.getDamage(), comparison, compare_to)));
             }
-            case "origins:attacker" -> {
+            case "apoli:attacker" -> {
                 if (entityDamageEvent instanceof EntityDamageByEntityEvent event) {
                     EntityCondition entityCondition = ConditionExecutor.entityCondition;
                     return entityCondition.check(condition, actor, target, block, fluid, itemStack, entityDamageEvent);
                 }
                 return getResult(inverted, Optional.of(false));
             }
-            case "origins:bypasses_armor" -> {
+            case "apoli:bypasses_armor" -> {
                 switch (entityDamageEvent.getCause()) {
                     case CUSTOM, FIRE, CRAMMING, KILL, MAGIC, POISON, VOID -> {
                         return getResult(inverted, Optional.of(true));
@@ -71,24 +71,24 @@ public class DamageCondition implements Condition {
                 }
                 return getResult(inverted, Optional.of(false));
             }
-            case "origins:fire_and_lava" -> {
+            case "apoli:fire_and_lava" -> {
                 return getResult(inverted, Optional.of(entityDamageEvent.getCause().equals(DamageCause.FIRE) || entityDamageEvent.getCause().equals(DamageCause.LAVA)));
             }
-            case "origins:explosive" -> {
+            case "apoli:explosive" -> {
                 return getResult(inverted, Optional.of(entityDamageEvent.getCause().equals(DamageCause.BLOCK_EXPLOSION) || entityDamageEvent.getCause().equals(DamageCause.ENTITY_EXPLOSION)));
             }
-            case "origins:fire" -> {
+            case "apoli:fire" -> {
                 return getResult(inverted, Optional.of(entityDamageEvent.getCause().equals(DamageCause.FIRE)));
             }
-            case "origins:from_falling" -> {
+            case "apoli:from_falling" -> {
                 return getResult(inverted, Optional.of(entityDamageEvent.getCause().equals(DamageCause.FALL)));
             }
-            case "origins:in_tag" -> {
+            case "apoli:in_tag" -> {
                 String tag = condition.get("tag").toString();
                 //TODO: need to parse tag folder
                 return getResult(inverted, Optional.of(false));
             }
-            case "origins:name" -> {
+            case "apoli:name" -> {
                 String name = condition.get("name").toString().toLowerCase();
 
                 switch (name) {
@@ -475,14 +475,14 @@ public class DamageCondition implements Condition {
                 }
                 return getResult(inverted, Optional.of(false));
             }
-            case "origins:type" -> {
+            case "apoli:type" -> {
                 String s = NamespacedKey.minecraft(entityDamageEvent.getCause().toString().toLowerCase()).asString();
                 return getResult(inverted, Optional.of(s.equals(condition.get("damage_type"))));
             }
-            case "origins:out_of_world" -> {
+            case "apoli:out_of_world" -> {
                 return getResult(inverted, Optional.of(entityDamageEvent.getCause().equals(DamageCause.VOID)));
             }
-            case "origins:projectile" -> {
+            case "apoli:projectile" -> {
                 if (entityDamageEvent.getCause().equals(DamageCause.PROJECTILE)) {
                     if (condition.containsKey("projectile_condition")) {
                         return getResult(inverted, ConditionExecutor.entityCondition.check((JSONObject) condition.get("projectile_condition"), ((EntityDamageByEntityEvent) entityDamageEvent).getDamager(), target, block, fluid, itemStack, entityDamageEvent));
@@ -492,7 +492,7 @@ public class DamageCondition implements Condition {
                 }
                 return getResult(inverted, Optional.of(false));
             }
-            case "origins:unblockable" -> {
+            case "apoli:unblockable" -> {
                 switch (entityDamageEvent.getCause()) {
                     case FALL, FALLING_BLOCK, MAGIC, LAVA, DROWNING, SUFFOCATION, VOID, FIRE, POISON, WITHER -> {
                         return getResult(inverted, Optional.of(true));

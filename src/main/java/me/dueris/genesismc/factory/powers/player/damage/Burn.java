@@ -79,7 +79,7 @@ public class Burn extends CraftPower {
 
     @Override
     public String getPowerFile() {
-        return "origins:burn";
+        return "apoli:burn";
     }
 
     @Override
