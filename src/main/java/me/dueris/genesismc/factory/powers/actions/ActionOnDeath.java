@@ -31,17 +31,19 @@ public class ActionOnDeath extends CraftPower implements Listener {
                     for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                         if (power == null) continue;
                         if (executor.check("damage_condition", "damage_conditions", p, power, getPowerFile(), p, null, p.getLocation().getBlock(), null, p.getInventory().getItemInMainHand(), null)) {
-                            setActive(p, power.getTag(), true);
-                            Actions.EntityActionType(p, power.getEntityAction());
-                            if (power.getActionOrNull("bientity_action") != null) {
-                                Actions.BiEntityActionType(null, p, power.getBiEntityAction());
-                            }
-                            new BukkitRunnable() {
-                                @Override
-                                public void run() {
-                                    setActive(p, power.getTag(), false);
+                            if (executor.check("condition", "conditions", p, power, getPowerFile(), p, null, p.getLocation().getBlock(), null, p.getInventory().getItemInMainHand(), null)) {
+                                setActive(p, power.getTag(), true);
+                                Actions.EntityActionType(p, power.getEntityAction());
+                                if (power.getActionOrNull("bientity_action") != null) {
+                                    Actions.BiEntityActionType(null, p, power.getBiEntityAction());
                                 }
-                            }.runTaskLater(GenesisMC.getPlugin(), 2L);
+                                new BukkitRunnable() {
+                                    @Override
+                                    public void run() {
+                                        setActive(p, power.getTag(), false);
+                                    }
+                                }.runTaskLater(GenesisMC.getPlugin(), 2L);
+                            }
                         }
                     }
                 }

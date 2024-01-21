@@ -10,6 +10,9 @@ import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.Biome;
 import org.bukkit.entity.EntityType;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 
 import java.io.File;
 import java.io.FileReader;
@@ -48,25 +51,23 @@ public class TagRegistry {
                                 for (File jsonTagFile : tagFolder.listFiles()) {
                                     if (jsonTagFile.getName().endsWith(".json")) {
                                         try (FileReader reader = new FileReader(jsonTagFile)) {
-                                            JsonParser jsonParser = new JsonParser();
+                                            JSONParser jsonParser = new JSONParser();
                                             String fileTag = mainDIR.getName() + ":" + jsonTagFile.getName().replace(".json", "");
-                                            JsonElement jsE = jsonParser.parse(reader);
-                                            if (jsE.isJsonObject()) {
-                                                JsonObject jsonObject = jsE.getAsJsonObject();
-                                                if (jsonObject.has("values")) {
-                                                    JsonElement valE = jsonObject.get("values");
-                                                    if (valE.isJsonArray()) {
-                                                        for (JsonElement value : valE.getAsJsonArray()) {
-                                                            String valueStr = value.getAsString();
-                                                            if (valueStr.startsWith("#minecraft:")) {
-                                                                processMinecraftTag(valueStr, av, fileTag);
+                                            JSONObject jsE = (JSONObject) jsonParser.parse(reader);
+                                            JSONObject jsonObject = jsE;
+                                            if (jsonObject.containsKey("values")) {
+                                                Object valE = jsonObject.get("values");
+                                                if (valE instanceof JSONArray valeEarray) {
+                                                    for (Object value : valeEarray) {
+                                                        String valueStr = value.toString();
+                                                        if (valueStr.startsWith("#minecraft:")) {
+                                                            processMinecraftTag(valueStr, av, fileTag);
+                                                        } else {
+                                                            if (registered.containsKey(fileTag)) {
+                                                                registered.get(fileTag).add(valueStr);
                                                             } else {
-                                                                if (registered.containsKey(fileTag)) {
-                                                                    registered.get(fileTag).add(valueStr);
-                                                                } else {
-                                                                    registered.put(fileTag, new ArrayList<>());
-                                                                    registered.get(fileTag).add(valueStr);
-                                                                }
+                                                                registered.put(fileTag, new ArrayList<>());
+                                                                registered.get(fileTag).add(valueStr);
                                                             }
                                                         }
                                                     }

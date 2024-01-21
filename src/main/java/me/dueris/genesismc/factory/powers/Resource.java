@@ -10,6 +10,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -21,7 +22,8 @@ import java.util.HashMap;
 import java.util.Optional;
 
 public class Resource extends CraftPower implements Listener {
-    public static HashMap<String, org.apache.commons.lang3.tuple.Pair<BossBar, Integer>> registeredBars = new HashMap();
+    public static HashMap<Player, HashMap<String, org.apache.commons.lang3.tuple.Pair<BossBar, Integer>>> registeredBars = new HashMap();
+    public static Resource INSTANCE = new Resource();
 
     public static int countNumbersBetween(int start, int end) {
         if (start > end) {
@@ -37,9 +39,9 @@ public class Resource extends CraftPower implements Listener {
         return count + 1;
     }
 
-    public static org.apache.commons.lang3.tuple.Pair<BossBar, Integer> getResource(String tag) {
-        if (registeredBars.containsKey(tag)) {
-            return registeredBars.get(tag);
+    public static org.apache.commons.lang3.tuple.Pair<BossBar, Integer> getResource(Entity entity, String tag) {
+        if (registeredBars.containsKey(entity) && registeredBars.get(entity).containsKey(tag)) {
+            return registeredBars.get(entity).get(tag);
         }
         return null;
     }
@@ -51,12 +53,22 @@ public class Resource extends CraftPower implements Listener {
 
     @EventHandler
     public void start(PlayerJoinEvent e) {
-        execute(e.getPlayer());
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                execute(e.getPlayer());
+            }
+        }.runTaskLater(GenesisMC.getPlugin(), 5);
     }
 
     @EventHandler
     public void start(OriginChangeEvent e) {
-        execute(e.getPlayer());
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                execute(e.getPlayer());
+            }
+        }.runTaskLater(GenesisMC.getPlugin(), 5);
     }
 
     private void execute(Player p) {
@@ -68,7 +80,8 @@ public class Resource extends CraftPower implements Listener {
                 org.apache.commons.lang3.tuple.Pair<BossBar, Integer> pair = new org.apache.commons.lang3.tuple.Pair<BossBar, Integer>() {
                     @Override
                     public Integer setValue(Integer value) {
-                        return null;
+                        getLeft().setProgress(value);
+                        return value;
                     }
 
                     @Override
@@ -81,8 +94,10 @@ public class Resource extends CraftPower implements Listener {
                         return countNumbersBetween(power.getIntOrDefault("start_value", power.getInt("min")), power.getInt("max"));
                     }
                 };
-                registeredBars.put(tag, pair);
-                final boolean[] shouldRender = {false};
+                HashMap<String, org.apache.commons.lang3.tuple.Pair<BossBar, Integer>> map = new HashMap<>();
+                map.put(tag, pair);
+                registeredBars.put(p, map);
+                final boolean[] shouldRender = {true};
                 if (power.get("hud_render") != null) {
                     new BukkitRunnable() {
                         @Override

@@ -43,11 +43,11 @@ public class Get extends SubCommand {
         ArrayList<Player> players = PlayerSelector.playerSelector(sender, args[1]);
         if (players.size() == 0) return;
         for (Player p : players) {
-            if (Resource.registeredBars.containsKey(args[2])) {
+            if (Resource.registeredBars.containsKey(p) && Resource.registeredBars.get(p).containsKey(args[2])) {
                 sender.sendMessage("$1 has %value% $2"
                         .replace("$2", args[2])
                         .replace("$1", p.getName())
-                        .replace("%value%", String.valueOf(Resource.registeredBars.get(args[2]).getLeft().getProgress())));
+                        .replace("%value%", String.valueOf(Resource.registeredBars.get(p).get(args[2]).getLeft().getProgress())));
             } else {
                 sender.sendMessage(ChatColor.RED + "Can't get value of $2 for $1; none is set"
                         .replace("$2", args[2])

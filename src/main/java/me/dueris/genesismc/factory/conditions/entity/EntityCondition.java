@@ -413,27 +413,25 @@ public class EntityCondition implements Condition {
                 return getResult(inverted, Optional.of(entity.isInRain()));
             }
             case "apoli:exposed_to_sun" -> {
-                return getResult(inverted, Optional.of((entity.getLocation().getBlockY() + 1 > entity.getWorld().getHighestBlockYAt(entity.getLocation())) && entity.getWorld().isDayTime()));
+                return getResult(inverted, Optional.of((entity.getLocation().getBlock().getLightFromSky() > 5) && entity.getWorld().isDayTime()));
             }
             case "apoli:exposed_to_sky" -> {
-                return getResult(inverted, Optional.of((entity.getLocation().getBlockY() + 1 > entity.getWorld().getHighestBlockYAt(entity.getLocation()))));
+                return getResult(inverted, Optional.of(entity.getLocation().getBlock().getLightFromSky() > 1));
             }
             case "apoli:sneaking" -> {
-                System.out.println(getResult(inverted, Optional.of(entity.isSneaking())));
                 return getResult(inverted, Optional.of(entity.isSneaking()));
             }
             case "apoli:resource" -> {
-                if (CooldownManager.cooldowns.containsKey(entity)) {
-                    if (CooldownManager.cooldowns.get(entity).contains(condition.get("resource").toString()) && CooldownManager.cooldowns.containsKey(entity)) {
-                        return getResult(inverted, Optional.of(!CooldownManager.isPlayerInCooldownFromTag((Player) entity, condition.get("resource").toString())));
+                if (CooldownManager.cooldowns.containsKey(entity) && CooldownManager.cooldowns.get(entity).contains(condition.get("resource").toString()) && CooldownManager.cooldowns.containsKey(entity)) {
+                    System.out.println(1);
+                    return getResult(inverted, Optional.of(!CooldownManager.isPlayerInCooldownFromTag((Player) entity, condition.get("resource").toString())));
+                } else {
+                    if (Resource.registeredBars.containsKey(entity) && Resource.registeredBars.get(entity).containsKey(condition.get("resource").toString())) {
+                        String comparison = condition.get("comparison").toString();
+                        double compare_to = Double.parseDouble(condition.get("compare_to").toString());
+                        return getResult(inverted, Optional.of(RestrictArmor.compareValues(Resource.getResource(entity, condition.get("resource").toString()).getLeft().getProgress(), comparison, compare_to)));
                     } else {
-                        if (Resource.registeredBars.containsKey(condition.get("resource").toString())) {
-                            String comparison = condition.get("comparison").toString();
-                            double compare_to = Double.parseDouble(condition.get("compare_to").toString());
-                            return getResult(inverted, Optional.of(RestrictArmor.compareValues(Resource.getResource(condition.get("resource").toString()).getLeft().getProgress(), comparison, compare_to)));
-                        } else {
-                            return getResult(inverted, Optional.of(false));
-                        }
+                        return getResult(inverted, Optional.of(false));
                     }
                 }
             }
@@ -591,7 +589,6 @@ public class EntityCondition implements Condition {
             case "apoli:on_block" -> {
                 BlockCondition blockCondition = ConditionExecutor.blockCondition;
                 if (condition.get("block_condition") == null) {
-                    System.out.println(getResult(inverted, Optional.of(entity.isOnGround())) + "sd;kjflkjsdf");
                     return getResult(inverted, Optional.of(entity.isOnGround()));
                 } else {
                     Optional<Boolean> boolB = blockCondition.check((JSONObject) condition.get("block_condition"), entity, target, entity.getLocation().add(0, -1, 0).getBlock(), fluid, itemStack, entityDamageEvent);

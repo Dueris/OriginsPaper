@@ -53,8 +53,8 @@ public class Change extends SubCommand {
             if (resourceChangeTimeout.containsKey(p)) return;
             String resource = args[2];
             int change = Integer.parseInt(args[3]);
-            double finalChange = 1.0 / Resource.getResource(resource).getRight();
-            BossBar bossBar = Resource.getResource(resource).getLeft();
+            double finalChange = 1.0 / Resource.getResource(p, resource).getRight();
+            BossBar bossBar = Resource.getResource(p, resource).getLeft();
             double toRemove = finalChange * change;
             double newP = bossBar.getProgress() + toRemove;
             if (newP > 1.0) {

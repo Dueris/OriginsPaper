@@ -517,12 +517,12 @@ public class Actions {
         if (type.equals("apoli:change_resource")) {
             if (resourceChangeTimeout.containsKey(entity)) return;
             String resource = power.get("resource").toString();
-            if (Resource.getResource(resource) == null) return;
-            if (Resource.getResource(resource).getRight() == null) return;
-            if (Resource.getResource(resource).getLeft() == null) return;
+            if (Resource.getResource(entity, resource) == null) return;
+            if (Resource.getResource(entity, resource).getRight() == null) return;
+            if (Resource.getResource(entity, resource).getLeft() == null) return;
             int change = Integer.parseInt(power.get("change").toString());
-            double finalChange = 1.0 / Resource.getResource(resource).getRight();
-            BossBar bossBar = Resource.getResource(resource).getLeft();
+            double finalChange = 1.0 / Resource.getResource(entity, resource).getRight();
+            BossBar bossBar = Resource.getResource(entity, resource).getLeft();
             double toRemove = finalChange * change;
             double newP = bossBar.getProgress() + toRemove;
             if (newP > 1.0) {
@@ -539,7 +539,7 @@ public class Actions {
                 public void run() {
                     resourceChangeTimeout.remove(entity);
                 }
-            }.runTaskLater(GenesisMC.getPlugin(), 2);
+            }.runTaskLater(GenesisMC.getPlugin(), 1);
         }
         if (type.equals("apoli:set_on_fire")) {
             entity.setFireTicks(Integer.parseInt(power.get("duration").toString()));
