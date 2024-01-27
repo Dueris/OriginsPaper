@@ -261,7 +261,9 @@ public class Phasing extends CraftPower implements Listener {
     @EventHandler
     public void fixMineSpeed(ServerTickEndEvent e){
         for(Player p : inPhantomFormBlocks){
-            p.addPotionEffect(new PotionEffect(PotionEffectType.FAST_DIGGING, 5, 3, false, false, false));
+            if(!p.getActivePotionEffects().contains(new PotionEffect(PotionEffectType.FAST_DIGGING, 5, 3, false, false, false))){
+                p.addPotionEffect(new PotionEffect(PotionEffectType.FAST_DIGGING, 5, 3, false, false, false));
+            }
         }
     }
 
