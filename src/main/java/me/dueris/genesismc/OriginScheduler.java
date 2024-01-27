@@ -88,19 +88,20 @@ public class OriginScheduler {
 //                }
                 for (Class<? extends CraftPower> c : OriginPlayerUtils.getPowersApplied(p)) {
                     try {
-                        if (c.newInstance() instanceof Burn) {
-                            ((Burn) c.newInstance()).run(p, ticksEMap);
-                        } else if (c.newInstance() instanceof ActionOverTime) {
-                            ((ActionOverTime) c.newInstance()).run(p, ticksEMap);
-                        } else if (c.newInstance() instanceof RestrictArmor) {
-                            ((RestrictArmor) c.newInstance()).run(p, ticksEMap);
-                        } else if (c.newInstance() instanceof DamageOverTime) {
-                            ((DamageOverTime) c.newInstance()).run(p, ticksEMap);
-                        } else if (c.newInstance() instanceof PreventEntityRender) {
-                            ((PreventEntityRender) c.newInstance()).run(p, ticksEMap);
+                        CraftPower inst = c.newInstance();
+                        if (inst instanceof Burn) {
+                            ((Burn) inst).run(p, ticksEMap);
+                        } else if (inst instanceof ActionOverTime) {
+                            ((ActionOverTime) inst).run(p, ticksEMap);
+                        } else if (inst instanceof RestrictArmor) {
+                            ((RestrictArmor) inst).run(p, ticksEMap);
+                        } else if (inst instanceof DamageOverTime) {
+                            ((DamageOverTime) inst).run(p, ticksEMap);
+                        } else if (inst instanceof PreventEntityRender) {
+                            ((PreventEntityRender) inst).run(p, ticksEMap);
                         } else {
                             activePowerRunners.add(c);
-                            c.newInstance().run(p);
+                            inst.run(p);
                         }
 
                     } catch (InstantiationException e) {
