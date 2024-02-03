@@ -69,7 +69,7 @@ public class StartingEquipmentPower extends CraftPower implements Listener {
                 for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(e.getPlayer(), getPowerFile(), layer)) {
                     if (conditionExecutor.check("condition", "conditions", e.getPlayer(), power, getPowerFile(), e.getPlayer(), null, null, null, e.getPlayer().getItemInHand(), null)) {
                         setActive(e.getPlayer(), power.getTag(), true);
-                        if (power.getObject("recurrent") != null && power.getBoolean("recurrent") == true) {
+                        if (power.getObject("recurrent") != null && power.getBoolean("recurrent")) {
                             runGiveItems(e.getPlayer(), power);
                         }
                     } else {

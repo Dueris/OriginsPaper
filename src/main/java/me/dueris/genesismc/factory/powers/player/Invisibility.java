@@ -1,13 +1,11 @@
 package me.dueris.genesismc.factory.powers.player;
 
-import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.entity.OriginPlayerUtils;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.LayerContainer;
 import me.dueris.genesismc.utils.PowerContainer;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffectType;
 
@@ -30,11 +28,7 @@ public class Invisibility extends CraftPower {
                 }
             }
 
-            if (shouldSetInvisible || p.getActivePotionEffects().contains(PotionEffectType.INVISIBILITY)) {
-                p.setInvisible(true);
-            } else {
-                p.setInvisible(false);
-            }
+            p.setInvisible(shouldSetInvisible || p.getActivePotionEffects().contains(PotionEffectType.INVISIBILITY));
         } else {
             if (p.getActivePotionEffects().contains(PotionEffectType.INVISIBILITY)) {
                 return;

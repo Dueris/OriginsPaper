@@ -30,18 +30,18 @@ public class ActionOnCallback extends CraftPower implements Listener {
         for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()) {
             for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(actor, getPowerFile(), layer)) {
                 if (power == null) continue;
-                    setActive(e.getPlayer(), power.getTag(), true);
-                    Actions.EntityActionType(e.getPlayer(), power.getEntityAction());
-                    Actions.EntityActionType(e.getPlayer(), power.getAction("entity_action_chosen"));
-                    Actions.ItemActionType(e.getPlayer().getActiveItem(), power.getItemAction());
-                    Actions.ItemActionType(e.getPlayer().getActiveItem(), power.getAction("held_item_action"));
-                    Actions.ItemActionType(e.getPlayer().getActiveItem(), power.getAction("result_item_action"));
-                    new BukkitRunnable() {
-                        @Override
-                        public void run() {
-                            setActive(e.getPlayer(), power.getTag(), false);
-                        }
-                    }.runTaskLater(GenesisMC.getPlugin(), 2L);
+                setActive(e.getPlayer(), power.getTag(), true);
+                Actions.EntityActionType(e.getPlayer(), power.getEntityAction());
+                Actions.EntityActionType(e.getPlayer(), power.getAction("entity_action_chosen"));
+                Actions.ItemActionType(e.getPlayer().getActiveItem(), power.getItemAction());
+                Actions.ItemActionType(e.getPlayer().getActiveItem(), power.getAction("held_item_action"));
+                Actions.ItemActionType(e.getPlayer().getActiveItem(), power.getAction("result_item_action"));
+                new BukkitRunnable() {
+                    @Override
+                    public void run() {
+                        setActive(e.getPlayer(), power.getTag(), false);
+                    }
+                }.runTaskLater(GenesisMC.getPlugin(), 2L);
             }
         }
     }

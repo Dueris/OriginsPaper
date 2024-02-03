@@ -63,8 +63,8 @@ public class FlightElytra extends CraftPower implements Listener {
     }
 
     @EventHandler
-    public void fixChangeConstantFlight(OriginChangeEvent e){
-        if(glidingPlayers.contains(e.getPlayer())){
+    public void fixChangeConstantFlight(OriginChangeEvent e) {
+        if (glidingPlayers.contains(e.getPlayer())) {
             glidingPlayers.remove(e.getPlayer());
             e.getPlayer().setGliding(false);
         }

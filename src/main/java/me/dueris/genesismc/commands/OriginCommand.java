@@ -10,11 +10,11 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 
-import static me.dueris.genesismc.utils.text.BukkitColour.RED;
-import static me.dueris.genesismc.utils.text.BukkitColour.YELLOW;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import static me.dueris.genesismc.utils.text.BukkitColour.RED;
+import static me.dueris.genesismc.utils.text.BukkitColour.YELLOW;
 
 public class OriginCommand extends Command {
 

@@ -40,7 +40,7 @@ public class Has extends SubCommand {
                 boolean passed = false;
                 if (players.size() == 0) return;
                 for (LayerContainer layer : CraftApoli.getLayers()) {
-                    for (PowerContainer power : OriginPlayerUtils.powerContainer.get(p).get(layer)) {
+                    for (PowerContainer power : OriginPlayerUtils.playerPowerMapping.get(p).get(layer)) {
                         if (passed) continue;
                         if (power.getTag().equals(args[2])) {
                             passed = true;

@@ -59,7 +59,7 @@ public class Burn extends CraftPower {
                         if (executor.check("condition", "conditions", p, power, getPowerFile(), p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
                             setActive(p, power.getTag(), true);
 
-                            Long burn_duration = power.getLongOrDefault("burn_duration", 100l);
+                            Long burn_duration = power.getLongOrDefault("burn_duration", 100L);
                             p.setFireTicks(burn_duration.intValue() * 20);
                         } else {
                             setActive(p, power.getTag(), false);

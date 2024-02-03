@@ -1,7 +1,5 @@
 package me.dueris.genesismc.factory.conditions;
 
-import me.dueris.genesismc.entity.OriginPlayerUtils;
-import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.conditions.biEntity.BiEntityCondition;
 import me.dueris.genesismc.factory.conditions.biome.BiomeCondition;
 import me.dueris.genesismc.factory.conditions.block.BlockCondition;
@@ -9,8 +7,6 @@ import me.dueris.genesismc.factory.conditions.damage.DamageCondition;
 import me.dueris.genesismc.factory.conditions.entity.EntityCondition;
 import me.dueris.genesismc.factory.conditions.fluid.FluidCondition;
 import me.dueris.genesismc.factory.conditions.item.ItemCondition;
-import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.utils.OriginContainer;
 import me.dueris.genesismc.utils.PowerContainer;
 import org.bukkit.Fluid;
 import org.bukkit.block.Block;
@@ -21,7 +17,6 @@ import org.bukkit.inventory.ItemStack;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
-import java.util.List;
 import java.util.Optional;
 
 import static me.dueris.genesismc.factory.conditions.CraftCondition.*;

@@ -2,7 +2,6 @@ package me.dueris.genesismc;
 
 import me.dueris.genesismc.files.GenesisDataFiles;
 import org.bukkit.Bukkit;
-import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -22,7 +21,7 @@ public class OriginDataContainer {
         dataContainer.put(
                 player,
                 player.getPersistentDataContainer().get(
-                    GenesisMC.identifier("originLayer"),
+                        GenesisMC.identifier("originLayer"),
                         PersistentDataType.STRING
                 )
         );
@@ -42,17 +41,5 @@ public class OriginDataContainer {
 
     public static HashMap<Player, String> getDataMap() {
         return dataContainer;
-    }
-
-    public static void runTickUpdate() {
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                OriginDataContainer.unloadAllData();
-                OriginDataContainer.loadData();
-            }
-        }.runTaskLater(
-                GenesisMC.getPlugin(),
-                GenesisDataFiles.getMainConfig().getLong("tickRate"));
     }
 }

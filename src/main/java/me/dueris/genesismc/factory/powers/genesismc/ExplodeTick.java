@@ -2,7 +2,6 @@ package me.dueris.genesismc.factory.powers.genesismc;
 
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.entity.OriginPlayerUtils;
-import me.dueris.genesismc.factory.actions.Actions;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.PowerContainer;
@@ -109,10 +108,10 @@ public class ExplodeTick extends CraftPower implements Listener {
 
                                             if (power.get("modifier").get("thunder_modifier") != null) {
                                                 if (p.getWorld().isThundering()) {
-                                                    int power_thunder = Math.toIntExact((Long) ((JSONObject)power.get("modifier").get("thunder_modifier")).get("power"));
-                                                    int resistance_thunder = Math.toIntExact((Long) ((JSONObject)power.get("modifier").get("thunder_modifier")).get("resistance"));
-                                                    boolean fire_thunder = (boolean) ((JSONObject)power.get("modifier").get("thunder_modifier")).get("fire");
-                                                    boolean break_blocks_thunder = (boolean) ((JSONObject)power.get("modifier").get("thunder_modifier")).get("break_blocks");
+                                                    int power_thunder = Math.toIntExact((Long) ((JSONObject) power.get("modifier").get("thunder_modifier")).get("power"));
+                                                    int resistance_thunder = Math.toIntExact((Long) ((JSONObject) power.get("modifier").get("thunder_modifier")).get("resistance"));
+                                                    boolean fire_thunder = (boolean) ((JSONObject) power.get("modifier").get("thunder_modifier")).get("fire");
+                                                    boolean break_blocks_thunder = (boolean) ((JSONObject) power.get("modifier").get("thunder_modifier")).get("break_blocks");
                                                     p.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 10, resistance_thunder, true, false, false));
                                                     p.getWorld().createExplosion(p.getLocation(), power_thunder, fire_thunder, break_blocks_thunder, p);
                                                     // p.teleportAsync(p.getLocation());

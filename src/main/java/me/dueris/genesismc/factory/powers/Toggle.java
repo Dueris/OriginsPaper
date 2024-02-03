@@ -71,7 +71,7 @@ public class Toggle extends CraftPower implements Listener {
         }
         if (powers_active.get(p).containsKey(power.getTag())) {
             setActive(p, power.getTag(), !powers_active.get(p).get(tag));
-            if (power.getBooleanOrDefault("retain_state", false) == true) {
+            if (power.getBooleanOrDefault("retain_state", false)) {
                 if (active) {
                     //active
                     KeybindUtils.runKeyChangeTriggerReturn(KeybindUtils.getTriggerFromOriginKey(p, key), p, key);

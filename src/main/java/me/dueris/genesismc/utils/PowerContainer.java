@@ -77,7 +77,7 @@ public class PowerContainer implements Serializable {
     }
 
     // Used for origins:multiple purposes to try and add an "inheritance" feature for cooldowns
-    public PowerContainer getPowerParent(){
+    public PowerContainer getPowerParent() {
         return powerParent;
     }
 
@@ -104,19 +104,19 @@ public class PowerContainer implements Serializable {
     }
 
     /**
-     * Changes the name of the power.
-     */
-    public void setName(String newName) {
-        this.powerFile.replace("name", newName);
-    }
-
-    /**
      * @return The name of the power. Will return "No Name" if there is no power name present.
      */
     public String getName() {
         Object name = this.powerFile.get("name");
         if (name == null) return "No Name";
         return (String) name;
+    }
+
+    /**
+     * Changes the name of the power.
+     */
+    public void setName(String newName) {
+        this.powerFile.replace("name", newName);
     }
 
     /**
@@ -154,111 +154,110 @@ public class PowerContainer implements Serializable {
         return (String) type;
     }
 
-    public JSONObject get(String key){
+    public JSONObject get(String key) {
         JSONObject jsonObject = (JSONObject) this.powerFile.get(key);
-        if(jsonObject == null) return new JSONObject();
+        if (jsonObject == null) return new JSONObject();
         return jsonObject;
     }
 
-    public boolean getBoolean(String key){
+    public boolean getBoolean(String key) {
         Object obj = powerFile.get(key);
-        if(obj == null) return false;
+        if (obj == null) return false;
         return Boolean.parseBoolean(obj.toString());
     }
 
-    public short getShort(String key){
+    public short getShort(String key) {
         Object obj = powerFile.get(key);
-        if(obj == null) return 0;
+        if (obj == null) return 0;
         return Short.parseShort(obj.toString());
     }
 
-    public long getLong(String key){
+    public long getLong(String key) {
         Object obj = powerFile.get(key);
-        if(obj == null) return 0;
+        if (obj == null) return 0;
         return Long.parseLong(obj.toString());
     }
 
-    public int getInt(String key){
+    public int getInt(String key) {
         Object obj = powerFile.get(key);
-        if(obj == null) return 0;
+        if (obj == null) return 0;
         return Integer.parseInt(obj.toString());
     }
 
-    public float getFloat(String key){
+    public float getFloat(String key) {
         Object obj = powerFile.get(key);
-        if(obj == null) return 0;
+        if (obj == null) return 0;
         return Float.parseFloat(obj.toString());
     }
 
-    public double getDouble(String key){
+    public double getDouble(String key) {
         Object obj = powerFile.get(key);
-        if(obj == null) return 0;
+        if (obj == null) return 0;
         return Double.parseDouble(obj.toString());
     }
 
-    public Object getObject(String key){
+    public Object getObject(String key) {
         Object obj = powerFile.get(key);
-        if(obj == null) return null;
         return obj;
     }
 
-    public String getString(String key){
+    public String getString(String key) {
         Object obj = powerFile.get(key);
-        if(obj == null) return null;
+        if (obj == null) return null;
         return obj.toString();
     }
 
-    public JSONObject getOrDefault(String key, Object def){
+    public JSONObject getOrDefault(String key, Object def) {
         JSONObject jsonObject = (JSONObject) this.powerFile.get(key);
-        if(jsonObject == null) return (JSONObject) def;
+        if (jsonObject == null) return (JSONObject) def;
         return jsonObject;
     }
 
-    public boolean getBooleanOrDefault(String key, boolean def){
+    public boolean getBooleanOrDefault(String key, boolean def) {
         Object obj = powerFile.get(key);
-        if(obj == null) return def;
+        if (obj == null) return def;
         return Boolean.parseBoolean(obj.toString());
     }
 
-    public short getShortOrDefault(String key, short def){
+    public short getShortOrDefault(String key, short def) {
         Object obj = powerFile.get(key);
-        if(obj == null) return def;
+        if (obj == null) return def;
         return Short.parseShort(obj.toString());
     }
 
-    public long getLongOrDefault(String key, long def){
+    public long getLongOrDefault(String key, long def) {
         Object obj = powerFile.get(key);
-        if(obj == null) return def;
+        if (obj == null) return def;
         return Long.parseLong(obj.toString());
     }
 
-    public int getIntOrDefault(String key, int def){
+    public int getIntOrDefault(String key, int def) {
         Object obj = powerFile.get(key);
-        if(obj == null) return def;
+        if (obj == null) return def;
         return Integer.parseInt(obj.toString());
     }
 
-    public float getFloatOrDefault(String key, float def){
+    public float getFloatOrDefault(String key, float def) {
         Object obj = powerFile.get(key);
-        if(obj == null) return def;
+        if (obj == null) return def;
         return Float.parseFloat(obj.toString());
     }
 
-    public double getDoubleOrDefault(String key, double def){
+    public double getDoubleOrDefault(String key, double def) {
         Object obj = powerFile.get(key);
-        if(obj == null) return def;
+        if (obj == null) return def;
         return Double.parseDouble(obj.toString());
     }
 
-    public Object getObjectOrDefault(String key, Object def){
+    public Object getObjectOrDefault(String key, Object def) {
         Object obj = powerFile.get(key);
-        if(obj == null) return def;
+        if (obj == null) return def;
         return obj;
     }
 
-    public String getStringOrDefault(String key, String def){
+    public String getStringOrDefault(String key, String def) {
         Object obj = powerFile.get(key);
-        if(obj == null) return def;
+        if (obj == null) return def;
         return obj.toString();
     }
 

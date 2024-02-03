@@ -13,11 +13,11 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import static me.dueris.genesismc.utils.text.BukkitColour.RED;
-
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
+
+import static me.dueris.genesismc.utils.text.BukkitColour.RED;
 
 public class Enchant extends SubCommand {
 

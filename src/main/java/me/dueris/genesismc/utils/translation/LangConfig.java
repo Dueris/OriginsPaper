@@ -27,11 +27,11 @@ public class LangConfig {
 
         String filePath = GenesisMC.getPlugin().getDataFolder() + File.separator + "lang" + File.separator + fileName + ".yml";
         File langFile = new File(filePath);
-        if(langConfig == null) {
+        if (langConfig == null) {
             System.out.println("Loading LangConfiguration...");
-    		langConfig = YamlConfiguration.loadConfiguration(langFile);
+            langConfig = YamlConfiguration.loadConfiguration(langFile);
             lang_test = getLocalizedString(Bukkit.getConsoleSender(), "lang.test");
-    	}
+        }
 
         try {
             if (!langFile.exists()) {
@@ -58,8 +58,8 @@ public class LangConfig {
             String value = langConfig.getString(key);
             if (value != null) return value;
             return "There was a problem reading the lang file.";
-        }else{
-        	return "Lang Error!";
+        } else {
+            return "Lang Error!";
         }
     }
 

@@ -16,7 +16,6 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.ItemStack;
 import org.json.simple.JSONObject;
 
-import java.util.HashMap;
 import java.util.Optional;
 
 import static me.dueris.genesismc.factory.conditions.ConditionExecutor.getResult;

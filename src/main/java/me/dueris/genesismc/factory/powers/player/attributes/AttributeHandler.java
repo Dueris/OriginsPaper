@@ -239,7 +239,7 @@ public class AttributeHandler extends CraftPower implements Listener {
         }
 
         public static int getDefaultReach(Entity entity) {
-            if(entity instanceof Player p) {
+            if (entity instanceof Player p) {
                 if (p.getGameMode().equals(GameMode.CREATIVE)) {
                     return 5;
                 }

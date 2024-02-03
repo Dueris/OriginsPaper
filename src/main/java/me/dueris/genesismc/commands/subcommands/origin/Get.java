@@ -11,9 +11,9 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import static me.dueris.genesismc.utils.text.BukkitColour.RED;
-
 import java.util.ArrayList;
+
+import static me.dueris.genesismc.utils.text.BukkitColour.RED;
 
 public class Get extends SubCommand {
     @Override

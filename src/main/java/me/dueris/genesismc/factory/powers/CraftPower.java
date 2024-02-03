@@ -3,7 +3,7 @@ package me.dueris.genesismc.factory.powers;
 import javassist.NotFoundException;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.CraftApoli;
-import me.dueris.genesismc.factory.powers.simple.*;
+import me.dueris.genesismc.factory.powers.simple.OriginSimpleContainer;
 import me.dueris.genesismc.factory.powers.simple.origins.*;
 import me.dueris.genesismc.utils.OriginContainer;
 import me.dueris.genesismc.utils.PowerContainer;
@@ -25,7 +25,7 @@ public abstract class CraftPower implements Power {
     protected static ArrayList<Class<? extends CraftPower>> registered = new ArrayList<>();
     protected static HashMap<String, Class<? extends CraftPower>> registeredFromKey = new HashMap<>();
 
-    public static void freezeRegistry(){
+    public static void freezeRegistry() {
         registered = (ArrayList<Class<? extends CraftPower>>) Collections.unmodifiableList(registered);
         registeredFromKey = (HashMap<String, Class<? extends CraftPower>>) Collections.unmodifiableMap(registeredFromKey);
     }
@@ -61,7 +61,7 @@ public abstract class CraftPower implements Power {
             for (Class<? extends CraftPower> c : CraftPower.findCraftPowerClasses()) {
                 if (CraftPower.class.isAssignableFrom(c)) {
                     CraftPower instance = c.newInstance();
-                    if(CraftPower.getKeyedRegistry().containsKey(instance.getPowerFile()) && instance.getPowerFile() != null){
+                    if (CraftPower.getKeyedRegistry().containsKey(instance.getPowerFile()) && instance.getPowerFile() != null) {
                         DuplicateCraftPowerException dcpe = new DuplicateCraftPowerException(CraftPower.getCraftPowerFromKey(instance.getPowerFile()), c);
                         dcpe.printStackTrace();
                         continue;

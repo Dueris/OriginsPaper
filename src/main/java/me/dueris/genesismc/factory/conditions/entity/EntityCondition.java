@@ -3,7 +3,6 @@ package me.dueris.genesismc.factory.conditions.entity;
 import com.mojang.brigadier.StringReader;
 import me.dueris.genesismc.CooldownManager;
 import me.dueris.genesismc.entity.OriginPlayerUtils;
-import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.TagRegistry;
 import me.dueris.genesismc.factory.actions.Actions;
 import me.dueris.genesismc.factory.conditions.Condition;
@@ -17,7 +16,6 @@ import me.dueris.genesismc.factory.powers.player.Climbing;
 import me.dueris.genesismc.factory.powers.player.FlightElytra;
 import me.dueris.genesismc.factory.powers.player.RestrictArmor;
 import me.dueris.genesismc.factory.powers.player.attributes.AttributeHandler;
-import me.dueris.genesismc.utils.OriginContainer;
 import me.dueris.genesismc.utils.PowerContainer;
 import me.dueris.genesismc.utils.Utils;
 import net.minecraft.core.BlockPos;
@@ -32,7 +30,6 @@ import org.bukkit.block.Block;
 import org.bukkit.craftbukkit.v1_20_R3.CraftWorld;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftPlayer;
-import org.bukkit.craftbukkit.v1_20_R3.inventory.CraftItemStack;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.*;
 import org.bukkit.event.entity.EntityDamageEvent;
@@ -174,7 +171,7 @@ public class EntityCondition implements Condition {
         String type = condition.get("type").toString();
         switch (type) {
             case "apoli:ability" -> {
-                if(entity instanceof Player p){
+                if (entity instanceof Player p) {
                     String ability = condition.get("ability").toString().toLowerCase();
 
                     switch (ability) {
@@ -422,19 +419,19 @@ public class EntityCondition implements Condition {
                 return getResult(inverted, Optional.of(entity.isInRain()));
             }
             case "apoli:exposed_to_sun" -> {
-                ServerLevel level = ((CraftWorld)entity.getWorld()).getHandle();
-                BlockPos blockPos = BlockPos.containing(entity.getX(), entity.getY() + ((CraftEntity)entity).getHandle().getEyeHeight(((CraftEntity)entity).getHandle().getPose()), entity.getZ());
+                ServerLevel level = ((CraftWorld) entity.getWorld()).getHandle();
+                BlockPos blockPos = BlockPos.containing(entity.getX(), entity.getY() + ((CraftEntity) entity).getHandle().getEyeHeight(((CraftEntity) entity).getHandle().getPose()), entity.getZ());
 
                 return getResult(inverted, Optional.of(level.canSeeSky(blockPos) && entity.getWorld().isDayTime()));
             }
             case "apoli:exposed_to_sky" -> {
-                ServerLevel level = ((CraftWorld)entity.getWorld()).getHandle();
-                BlockPos blockPos = BlockPos.containing(entity.getX(), entity.getY() + ((CraftEntity)entity).getHandle().getEyeHeight(((CraftEntity)entity).getHandle().getPose()), entity.getZ());
+                ServerLevel level = ((CraftWorld) entity.getWorld()).getHandle();
+                BlockPos blockPos = BlockPos.containing(entity.getX(), entity.getY() + ((CraftEntity) entity).getHandle().getEyeHeight(((CraftEntity) entity).getHandle().getPose()), entity.getZ());
 
                 return getResult(inverted, Optional.of(level.canSeeSky(blockPos)));
             }
             case "apoli:nbt" -> {
-                return getResult(inverted, Optional.of(NbtUtils.compareNbt(Utils.ParserUtils.parseJson(new StringReader(condition.get("nbt").toString()), CompoundTag.CODEC), ((CraftEntity)entity).getHandle().saveWithoutId(new CompoundTag()), true)));
+                return getResult(inverted, Optional.of(NbtUtils.compareNbt(Utils.ParserUtils.parseJson(new StringReader(condition.get("nbt").toString()), CompoundTag.CODEC), ((CraftEntity) entity).getHandle().saveWithoutId(new CompoundTag()), true)));
             }
             case "apoli:sneaking" -> {
                 return getResult(inverted, Optional.of(entity.isSneaking()));
@@ -688,14 +685,14 @@ public class EntityCondition implements Condition {
             }
             case "apoli:riding" -> {
                 for (Entity entity1 : entity.getWorld().getEntities()) {
-                    if(entity1.getPassengers().add(entity)){
+                    if (entity1.getPassengers().add(entity)) {
                         return getResult(inverted, Optional.of(true));
                     }
                 }
                 return getResult(inverted, Optional.of(false));
             }
             case "apoli:saturation_level" -> {
-                if(entity instanceof Player le){
+                if (entity instanceof Player le) {
                     String comparison = condition.get("comparison").toString();
                     double compare_to = Double.parseDouble(condition.get("compare_to").toString());
                     double fin = le.getSaturation();
@@ -735,10 +732,10 @@ public class EntityCondition implements Condition {
                 return getResult(inverted, Optional.of(RestrictArmor.compareValues(entity.getWorld().getTime(), comparison, compare_to)));
             }
             case "apoli:using_effective_tool" -> {
-                if(entity instanceof Player player) {
+                if (entity instanceof Player player) {
                     Predicate<Entity> filter = (entityy) -> !entityy.equals(player);
                     RayTraceResult result = entity.getWorld().rayTrace(player.getEyeLocation(), player.getEyeLocation().getDirection(), AttributeHandler.Reach.getFinalReach(player), FluidCollisionMode.NEVER, false, 0, filter);
-                    if(result != null && result.getHitBlock() != null){
+                    if (result != null && result.getHitBlock() != null) {
                         return getResult(inverted, Optional.of(result.getHitBlock().getBlockData().isPreferredTool(player.getInventory().getItemInMainHand())));
                     }
                 }
@@ -763,7 +760,7 @@ public class EntityCondition implements Condition {
                 return getResult(inverted, Optional.of(false));
             }
             case "apoli:xp_levels" -> {
-                if(entity instanceof Player p){
+                if (entity instanceof Player p) {
                     String comparison = condition.get("comparison").toString();
                     double compare_to = Double.parseDouble(condition.get("compare_to").toString());
                     return getResult(inverted, Optional.of(RestrictArmor.compareValues(p.getExpToLevel(), comparison, compare_to)));
@@ -771,7 +768,7 @@ public class EntityCondition implements Condition {
                 return getResult(inverted, Optional.of(false));
             }
             case "apoli:xp_points" -> {
-                if(entity instanceof Player p){
+                if (entity instanceof Player p) {
                     String comparison = condition.get("comparison").toString();
                     double compare_to = Double.parseDouble(condition.get("compare_to").toString());
                     return getResult(inverted, Optional.of(RestrictArmor.compareValues(p.getTotalExperience(), comparison, compare_to)));

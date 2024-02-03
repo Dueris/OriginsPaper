@@ -39,10 +39,10 @@ import static me.dueris.genesismc.utils.KeybindUtils.isKeyBeingPressed;
 
 public class FireProjectile extends CraftPower implements Listener {
 
+    private static final ArrayList<Player> doubleFirePatch = new ArrayList<>();
     public static ArrayList<Player> in_continuous = new ArrayList<>();
     public static ArrayList<Player> enderian_pearl = new ArrayList<>();
     public static ArrayList<Player> in_cooldown_patch = new ArrayList<>();
-    private static final ArrayList<Player> doubleFirePatch = new ArrayList<>();
 
     public static void addCooldownPatch(Player p) {
         in_cooldown_patch.add(p);

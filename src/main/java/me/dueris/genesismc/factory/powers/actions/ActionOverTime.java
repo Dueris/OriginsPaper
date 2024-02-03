@@ -7,8 +7,6 @@ import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.LayerContainer;
 import me.dueris.genesismc.utils.PowerContainer;
-import me.dueris.genesismc.utils.translation.LangConfig;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -32,7 +30,7 @@ public class ActionOverTime extends CraftPower {
                 for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                     if (power == null) continue;
 
-                    interval = power.getLongOrDefault("interval", 20l);
+                    interval = power.getLongOrDefault("interval", 20L);
                     int ticksE = ticksEMap.getOrDefault(p, 0);
                     if (ticksE <= interval) {
                         ticksE++;

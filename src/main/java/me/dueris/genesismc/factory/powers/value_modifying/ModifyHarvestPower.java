@@ -44,7 +44,7 @@ public class ModifyHarvestPower extends CraftPower implements Listener {
                         if (conditionExecutor.check("block_condition", "block_conditions", p, power, "apoli:modify_harvest", p, null, e.getBlock(), null, p.getItemInHand(), null)) {
                             e.setDropItems(false);
                             setActive(p, power.getTag(), true);
-                            if(power.getBooleanOrDefault("allow", true) && !e.isDropItems()){
+                            if (power.getBooleanOrDefault("allow", true) && !e.isDropItems()) {
                                 e.getBlock().getDrops().forEach((itemStack -> p.getWorld().dropItemNaturally(e.getBlock().getLocation(), itemStack)));
                             }
                         } else {

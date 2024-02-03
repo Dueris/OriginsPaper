@@ -50,15 +50,15 @@ public class Remove extends SubCommand {
             ArrayList<Player> players = PlayerSelector.playerSelector(sender, args[1]);
             for (Player p : players) {
                 if (players.size() == 0) return;
-                if (OriginPlayerUtils.powerContainer.get(p) == null) continue;
+                if (OriginPlayerUtils.playerPowerMapping.get(p) == null) continue;
                 PowerContainer poweR = CraftApoli.keyedPowerContainers.get(args[2]);
                 ArrayList<PowerContainer> powersToEdit = new ArrayList<>();
                 powersToEdit.add(poweR);
                 powersToEdit.addAll(CraftApoli.getNestedPowers(poweR));
                 for (PowerContainer power : powersToEdit) {
                     try {
-                        if (OriginPlayerUtils.powerContainer.get(p).get(CraftApoli.getLayerFromTag(layerTag)).contains(power)) {
-                            OriginPlayerUtils.powerContainer.get(p).get(CraftApoli.getLayerFromTag(layerTag)).remove(power);
+                        if (OriginPlayerUtils.playerPowerMapping.get(p).get(CraftApoli.getLayerFromTag(layerTag)).contains(power)) {
+                            OriginPlayerUtils.playerPowerMapping.get(p).get(CraftApoli.getLayerFromTag(layerTag)).remove(power);
                             ArrayList<String> powerRemovedTypes = new ArrayList<>();
                             ArrayList<Class<? extends CraftPower>> powerRemovedClasses = new ArrayList<>();
                             Class<? extends CraftPower> c = Inventory.class;

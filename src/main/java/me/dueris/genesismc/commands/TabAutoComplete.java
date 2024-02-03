@@ -11,9 +11,10 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class TabAutoComplete implements TabCompleter {
     @Override
@@ -21,57 +22,9 @@ public class TabAutoComplete implements TabCompleter {
 
         if (command.getName().equalsIgnoreCase("origin") && sender.hasPermission("genesismc.origins.cmd.main")) {
             if (args.length == 1) {
-                List<String> arguments = new ArrayList<>();
-                if (sender.hasPermission("genesismc.origins.cmd.info")) {
-                    if (args[0].equals("i") || args[0].isEmpty() || args[0].equals("in") || args[0].equals("inf") || args[0].equals("info"))
-                        arguments.add("info");
-                } else {
-                    arguments.remove("info");
-                }
-                if (sender.hasPermission("genesismc.origins.cmd.recipe")) {
-                    if (args[0].equals("r") || args[0].isEmpty() || args[0].equals("re") || args[0].equals("rec") || args[0].equals("reci") || args[0].equals("recip") || args[0].equals("recipe"))
-                        arguments.add("recipe");
-                } else {
-                    arguments.remove("recipe");
-                }
-                if (sender.hasPermission("genesismc.origins.cmd.get")) {
-                    if (args[0].equals("g") || args[0].isEmpty() || args[0].equals("ge") || args[0].equals("get"))
-                        arguments.add("get");
-                } else {
-                    arguments.remove("get");
-                }
-                if (sender.hasPermission("genesismc.origins.cmd.enchant")) {
-                    if (args[0].equals("e") || args[0].isEmpty() || args[0].equals("en") || args[0].equals("enc") || args[0].equals("ench") || args[0].equals("encha") || args[0].equals("enchan") || args[0].equals("enchant"))
-                        arguments.add("enchant");
-                } else {
-                    arguments.remove("enchant");
-                }
-                if (sender.hasPermission("genesis.origins.cmd.gui")) {
-                    if (args[0].equals("g") || args[0].isEmpty() || args[0].equals("gu") || args[0].equals("gui"))
-                        arguments.add("gui");
-                } else {
-                    arguments.remove("gui");
-                }
-                if (sender.hasPermission("genesis.origins.cmd.has")) {
-                    if (args[0].equals("h") || args[0].isEmpty() || args[0].equals("ha") || args[0].equals("has"))
-                        arguments.add("has");
-                } else {
-                    arguments.remove("has");
-                }
-                if (sender.hasPermission("genesis.origins.cmd.set")) {
-                    if (args[0].equals("s") || args[0].isEmpty() || args[0].equals("se") || args[0].equals("set"))
-                        arguments.add("set");
-                } else {
-                    arguments.remove("set");
-                }
-                if (sender.hasPermission("genesis.origins.cmd.orb")) {
-                    if (args[0].equals("g") || args[0].isEmpty() || args[0].equals("gi") || args[0].equals("giv") || args[0].equals("give"))
-                        arguments.add("give");
-                } else {
-                    arguments.remove("give");
-                }
-
-                return arguments;
+                return Stream.of("enchant", "get", "give", "gui", "has", "info", "recipe", "set")
+                        .filter(arg -> arg.startsWith(args[0].toLowerCase()))
+                        .collect(Collectors.toList());
             } else if (args.length == 2) {
                 if (args[0].equalsIgnoreCase("get") || args[0].equalsIgnoreCase("has") || args[0].equalsIgnoreCase("set") || args[0].equalsIgnoreCase("give") || args[0].equalsIgnoreCase("gui") || args[0].equalsIgnoreCase("enchant")) {
                     Player[] players = new Player[Bukkit.getServer().getOnlinePlayers().size()];
@@ -88,8 +41,11 @@ public class TabAutoComplete implements TabCompleter {
                         if (!args[1].equals(name.substring(0, args[1].length()))) playernames.remove(name);
                     }
 
-                    if (args[1].isBlank() || args[1].charAt(0) == '@')
-                        playernames.addAll(Arrays.asList("@a", "@e", "@p", "@r", "@s"));
+                    if (args[1].isBlank() || args[1].charAt(0) == '@') {
+                        return Stream.of("@a", "@s", "@e", "@p", "@r")
+                                .filter(arg -> arg.startsWith(args[1].toLowerCase()))
+                                .collect(Collectors.toList());
+                    }
                     return playernames;
 
                 }
@@ -137,8 +93,9 @@ public class TabAutoComplete implements TabCompleter {
             } else if (args.length == 4) {
                 if (args[0].equalsIgnoreCase("has") || args[0].equalsIgnoreCase("set")) {
                     ArrayList<String> origins = CraftApoli.getOriginTags();
-                    origins.removeIf(origin -> !origin.startsWith(args[3]));
-                    return origins;
+                    return origins.stream()
+                            .filter(arg -> (arg.startsWith(args[3].toLowerCase()) || arg.split(":")[1].startsWith(args[3].toLowerCase())))
+                            .collect(Collectors.toList());
                 }
                 return new ArrayList<>();
             } else {
@@ -147,30 +104,26 @@ public class TabAutoComplete implements TabCompleter {
 
         } else if (command.getName().equalsIgnoreCase("power") && sender.isOp()) { // /power<arg0> grant<arg1> Dueris<arg2> <powerFile><arg3>
             if (args.length == 1) {
-                List<String> arguments = new ArrayList<>();
-                arguments.add("grant");
-                arguments.add("has");
-                arguments.add("list");
-                arguments.add("remove");
-                arguments.add("dump");
-                return arguments;
+                return Stream.of("dump", "grant", "has", "list", "remove")
+                        .filter(arg -> arg.startsWith(args[0].toLowerCase()))
+                        .collect(Collectors.toList());
             } else if (args.length == 2) {
                 if (!args[0].equalsIgnoreCase("dump")) {
                     Collection<? extends Player> players = Bukkit.getOnlinePlayers();
                     List<String> playernames = new ArrayList<>();
                     for (Player player : players) playernames.add(player.getName());
-                    playernames.add("@a");
-                    playernames.add("@s");
-                    playernames.add("@e");
-                    playernames.add("@p");
-                    playernames.add("@r");
+                    playernames.addAll(Stream.of("@a", "@s", "@e", "@p", "@r")
+                            .filter(arg -> arg.startsWith(args[1].toLowerCase()))
+                            .collect(Collectors.toList()));
                     return playernames;
                 } else {
                     List<String> pows = new ArrayList<>();
                     for (String string : CraftApoli.keyedPowerContainers.keySet()) {
                         pows.add(string);
                     }
-                    return pows;
+                    return pows.stream()
+                            .filter(arg -> (arg.startsWith(args[1].toLowerCase()) || arg.split(":")[1].startsWith(args[1].toLowerCase())))
+                            .collect(Collectors.toList());
                 }
             } else if (args.length == 3) {
                 if (args[0].equalsIgnoreCase("grant")
@@ -182,7 +135,9 @@ public class TabAutoComplete implements TabCompleter {
                             pows.add(string);
                         }
                     }
-                    return pows;
+                    return pows.stream()
+                            .filter(arg -> (arg.startsWith(args[2].toLowerCase()) || arg.split(":")[1].startsWith(args[2].toLowerCase())))
+                            .collect(Collectors.toList());
                 }
             } else if (args.length == 4) {
                 if (args[0].equalsIgnoreCase("grant")
@@ -192,7 +147,9 @@ public class TabAutoComplete implements TabCompleter {
                     for (LayerContainer layer : CraftApoli.getLayers()) {
                         pows.add(layer.getTag());
                     }
-                    return pows;
+                    return pows.stream()
+                            .filter(arg -> (arg.startsWith(args[3].toLowerCase()) || arg.split(":")[1].startsWith(args[3].toLowerCase())))
+                            .collect(Collectors.toList());
                 } else {
                     List<String> ba = new ArrayList<>();
                     return ba;
@@ -203,22 +160,17 @@ public class TabAutoComplete implements TabCompleter {
             }
         } else if (command.getName().equals("resource")) {
             if (args.length == 1) {
-                List<String> ba = new ArrayList<>();
-                ba.add("change");
-                ba.add("get");
-                ba.add("set");
-                ba.add("has");
-                return ba;
+                Stream.of("change", "get", "has", "set")
+                        .filter(arg -> arg.startsWith(args[0].toLowerCase()))
+                        .collect(Collectors.toList());
             }
             if (args.length == 2) {
                 Collection<? extends Player> players = Bukkit.getOnlinePlayers();
                 List<String> playernames = new ArrayList<>();
                 for (Player player : players) playernames.add(player.getName());
-                playernames.add("@a");
-                playernames.add("@s");
-                playernames.add("@e");
-                playernames.add("@p");
-                playernames.add("@r");
+                playernames.addAll(Stream.of("@a", "@s", "@e", "@p", "@r")
+                        .filter(arg -> arg.startsWith(args[1].toLowerCase()))
+                        .collect(Collectors.toList()));
                 return playernames;
             }
             if (args.length == 3) {
@@ -228,7 +180,9 @@ public class TabAutoComplete implements TabCompleter {
                         pows.add(string);
                     }
                 }
-                return pows;
+                return pows.stream()
+                        .filter(arg -> (arg.startsWith(args[3].toLowerCase()) || arg.split(":")[1].startsWith(args[3].toLowerCase())))
+                        .collect(Collectors.toList());
             }
             if (args.length >= 4) {
                 List<String> ba = new ArrayList<>();

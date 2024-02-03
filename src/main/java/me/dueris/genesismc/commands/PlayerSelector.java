@@ -9,11 +9,11 @@ import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
-import static me.dueris.genesismc.utils.text.BukkitColour.RED;
-
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.UUID;
+
+import static me.dueris.genesismc.utils.text.BukkitColour.RED;
 
 public class PlayerSelector {
 

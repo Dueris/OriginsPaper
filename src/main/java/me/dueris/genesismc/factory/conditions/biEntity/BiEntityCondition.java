@@ -6,7 +6,6 @@ import me.dueris.genesismc.factory.powers.player.RestrictArmor;
 import me.dueris.genesismc.factory.powers.world.EntitySetPower;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.NeutralMob;
-import org.bukkit.Bukkit;
 import org.bukkit.Fluid;
 import org.bukkit.block.Block;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
@@ -21,7 +20,6 @@ import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 import org.json.simple.JSONObject;
 
-import java.util.HashMap;
 import java.util.Optional;
 
 import static me.dueris.genesismc.factory.conditions.ConditionExecutor.getResult;
@@ -56,8 +54,8 @@ public class BiEntityCondition implements Condition, Listener {
                 if (actor == null || target == null) {
                     return getResult(inverted, Optional.of(false));
                 }
-                net.minecraft.world.entity.Entity craftActor = ((CraftEntity)actor).getHandle();
-                net.minecraft.world.entity.Entity craftTarget = ((CraftEntity)target).getHandle();
+                net.minecraft.world.entity.Entity craftActor = ((CraftEntity) actor).getHandle();
+                net.minecraft.world.entity.Entity craftTarget = ((CraftEntity) target).getHandle();
 
                 return getResult(inverted, Optional.of((craftActor instanceof Mob mobActor && craftTarget.equals(mobActor.getTarget())) || (craftActor instanceof NeutralMob angerableActor && craftTarget.equals(angerableActor.getTarget()))));
             }
@@ -65,8 +63,8 @@ public class BiEntityCondition implements Condition, Listener {
                 if (actor == null || target == null) {
                     return getResult(inverted, Optional.of(false));
                 }
-                net.minecraft.world.entity.Entity craftActor = ((CraftEntity)actor).getHandle();
-                net.minecraft.world.entity.Entity craftTarget = ((CraftEntity)target).getHandle();
+                net.minecraft.world.entity.Entity craftActor = ((CraftEntity) actor).getHandle();
+                net.minecraft.world.entity.Entity craftTarget = ((CraftEntity) target).getHandle();
 
                 return getResult(inverted, Optional.of(craftTarget instanceof LivingEntity livingEntity && craftActor.equals(livingEntity.lastHurtByMob)));
             }

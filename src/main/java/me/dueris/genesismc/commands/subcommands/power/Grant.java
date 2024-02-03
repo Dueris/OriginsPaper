@@ -50,7 +50,7 @@ public class Grant extends SubCommand {
             for (Player p : players) {
                 if (players.size() == 0) return;
                 if (p == null) continue;
-                if (OriginPlayerUtils.powerContainer.get(p) == null) continue;
+                if (OriginPlayerUtils.playerPowerMapping.get(p) == null) continue;
                 PowerContainer poweR = CraftApoli.keyedPowerContainers.get(args[2]);
                 ArrayList<PowerContainer> powersToEdit = new ArrayList<>();
                 powersToEdit.add(poweR);
@@ -59,8 +59,8 @@ public class Grant extends SubCommand {
                     try {
                         ArrayList<String> powerAppliedTypes = new ArrayList<>();
                         ArrayList<Class<? extends CraftPower>> powerAppliedClasses = new ArrayList<>();
-                        if (!OriginPlayerUtils.powerContainer.get(p).get(CraftApoli.getLayerFromTag(layerTag)).contains(power)) {
-                            OriginPlayerUtils.powerContainer.get(p).get(CraftApoli.getLayerFromTag(layerTag)).add(power);
+                        if (!OriginPlayerUtils.playerPowerMapping.get(p).get(CraftApoli.getLayerFromTag(layerTag)).contains(power)) {
+                            OriginPlayerUtils.playerPowerMapping.get(p).get(CraftApoli.getLayerFromTag(layerTag)).add(power);
                             if (power == null) continue;
                             for (Class<? extends CraftPower> c : CraftPower.getRegistry()) {
                                 CraftPower craftPower = null;

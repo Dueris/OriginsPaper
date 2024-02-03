@@ -12,9 +12,9 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import static me.dueris.genesismc.utils.text.BukkitColour.RED;
-
 import java.util.ArrayList;
+
+import static me.dueris.genesismc.utils.text.BukkitColour.RED;
 
 public class Has extends SubCommand {
     @Override

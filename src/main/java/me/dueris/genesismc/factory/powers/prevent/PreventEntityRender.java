@@ -5,8 +5,6 @@ import me.dueris.genesismc.entity.OriginPlayerUtils;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.PowerContainer;
-import me.dueris.genesismc.utils.translation.LangConfig;
-import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -24,6 +22,7 @@ public class PreventEntityRender extends CraftPower {
 
     private final int ticksE;
     private Long interval;
+
     public PreventEntityRender() {
         this.interval = 12L;
         this.ticksE = 0;

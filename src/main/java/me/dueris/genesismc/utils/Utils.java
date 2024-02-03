@@ -1,16 +1,11 @@
 package me.dueris.genesismc.utils;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParseException;
-import com.google.gson.JsonParser;
+import com.google.gson.*;
 import com.google.gson.internal.Streams;
 import com.google.gson.stream.JsonReader;
 import com.mojang.brigadier.StringReader;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
-import me.dueris.genesismc.factory.powers.player.attributes.AttributeHandler;
 import me.dueris.genesismc.utils.apoli.Space;
 import net.minecraft.Util;
 import net.minecraft.core.Registry;
@@ -19,29 +14,14 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageType;
-
 import org.bukkit.Bukkit;
-import org.bukkit.FluidCollisionMode;
 import org.bukkit.Location;
-import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.craftbukkit.v1_20_R3.CraftRegistry;
 import org.bukkit.craftbukkit.v1_20_R3.CraftServer;
-import org.bukkit.craftbukkit.v1_20_R3.CraftWorld;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
-import org.bukkit.util.BlockIterator;
-import org.bukkit.util.RayTraceResult;
-import org.eclipse.aether.collection.DependencySelector;
-import org.eclipse.aether.util.graph.selector.StaticDependencySelector;
 import org.json.simple.JSONObject;
 
 import java.io.BufferedInputStream;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.net.URL;
@@ -50,7 +30,6 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.*;
 import java.util.function.BinaryOperator;
-import java.util.function.Predicate;
 
 public class Utils {
     public static Registry<DamageType> DAMAGE_REGISTRY = CraftRegistry.getMinecraftRegistry().registryOrThrow(Registries.DAMAGE_TYPE);
@@ -74,10 +53,10 @@ public class Utils {
 
     public static String[] readJSONFileAsString(JSONObject jsonObject) {
         List<String> lines = new ArrayList<>();
-        
+
         String jsonString = prettyPrintUsingGson(jsonObject.toJSONString());
         lines.addAll(Arrays.asList(jsonString.split("\n")));
-    
+
         return lines.toArray(new String[0]);
     }
 
@@ -91,7 +70,7 @@ public class Utils {
     public static String getNameOrTag(PowerContainer power) {
         String name = power.getName();
         String tag = power.getTag();
-         return name != "No Name" ? name : power.getPowerParent() != null ? getNameOrTag(power.getPowerParent()) : tag;
+        return name != "No Name" ? name : power.getPowerParent() != null ? getNameOrTag(power.getPowerParent()) : tag;
     }
 
     public static boolean hasChangedBlockCoordinates(final Location fromLoc, final Location toLoc) {
@@ -160,7 +139,7 @@ public class Utils {
         Bukkit.getLogger().info(values.toString());
     }
 
-    public static Space getSpaceFromString(String space){
+    public static Space getSpaceFromString(String space) {
         switch (space) {
             case "world" -> {
                 return Space.WORLD;

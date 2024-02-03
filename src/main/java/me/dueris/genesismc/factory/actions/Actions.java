@@ -16,17 +16,13 @@ import me.dueris.genesismc.utils.PowerContainer;
 import me.dueris.genesismc.utils.Utils;
 import me.dueris.genesismc.utils.apoli.Space;
 import me.dueris.genesismc.utils.console.OriginConsoleSender;
-import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.damagesource.DamageType;
-import org.apache.commons.lang3.tuple.Triple;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.boss.BossBar;
-import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftLivingEntity;
-import org.bukkit.craftbukkit.v1_20_R3.entity.CraftPlayer;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.*;
 import org.bukkit.event.entity.EntityDamageEvent;
@@ -38,7 +34,6 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.projectiles.ProjectileSource;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.util.BlockIterator;
 import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
 import org.joml.Vector3f;
@@ -105,19 +100,29 @@ public class Actions {
             JSONObject action = (JSONObject) power.get("action");
             runbiEntity(actor, target, action);
         } else if (type.equals("apoli:if_else")) {
-            if(actor instanceof Player p){
+            if (actor instanceof Player p) {
                 Optional<Boolean> bool = ConditionExecutor.biEntityCondition.check((JSONObject) power.get("condition"), actor, target, actor.getLocation().getBlock(), null, null, null);
-                if(bool.isPresent()){
-                    if(bool.get()){BiEntityActionType(actor, target, (JSONObject) power.get("if_action"));}
-                    else{BiEntityActionType(actor, target, (JSONObject) power.get("else_action"));}
-                }else{BiEntityActionType(actor, target, (JSONObject) power.get("else_action"));}
-            }else if(target instanceof Player p){
+                if (bool.isPresent()) {
+                    if (bool.get()) {
+                        BiEntityActionType(actor, target, (JSONObject) power.get("if_action"));
+                    } else {
+                        BiEntityActionType(actor, target, (JSONObject) power.get("else_action"));
+                    }
+                } else {
+                    BiEntityActionType(actor, target, (JSONObject) power.get("else_action"));
+                }
+            } else if (target instanceof Player p) {
                 Optional<Boolean> bool = ConditionExecutor.biEntityCondition.check((JSONObject) power.get("condition"), actor, target, actor.getLocation().getBlock(), null, null, null);
-                if(bool.isPresent()){
-                    if(bool.get()){BiEntityActionType(actor, target, (JSONObject) power.get("if_action"));}
-                    else{BiEntityActionType(actor, target, (JSONObject) power.get("else_action"));}
-                }else{BiEntityActionType(actor, target, (JSONObject) power.get("else_action"));}
-            }else{
+                if (bool.isPresent()) {
+                    if (bool.get()) {
+                        BiEntityActionType(actor, target, (JSONObject) power.get("if_action"));
+                    } else {
+                        BiEntityActionType(actor, target, (JSONObject) power.get("else_action"));
+                    }
+                } else {
+                    BiEntityActionType(actor, target, (JSONObject) power.get("else_action"));
+                }
+            } else {
                 BiEntityActionType(actor, target, (JSONObject) power.get("else_action"));
             }
         } else {
@@ -176,10 +181,15 @@ public class Actions {
             // Literally does nothing
         } else if (type.equals("apoli:if_else")) {
             Optional<Boolean> bool = ConditionExecutor.itemCondition.check((JSONObject) power.get("condition"), null, null, null, null, item, null);
-            if(bool.isPresent()){
-                if(bool.get()){ItemActionType(item, (JSONObject) power.get("if_action"));}
-                else{ItemActionType(item, (JSONObject) power.get("else_action"));}
-            }else{ItemActionType(item, (JSONObject) power.get("else_action"));}
+            if (bool.isPresent()) {
+                if (bool.get()) {
+                    ItemActionType(item, (JSONObject) power.get("if_action"));
+                } else {
+                    ItemActionType(item, (JSONObject) power.get("else_action"));
+                }
+            } else {
+                ItemActionType(item, (JSONObject) power.get("else_action"));
+            }
         } else if (type.equals("apoli:side")) {
             JSONObject action = (JSONObject) power.get("action");
             runItem(item, action);
@@ -238,13 +248,20 @@ public class Actions {
         } else if (type.equals("apoli:nothing")) {
             //literally does nothin
         } else if (type.equals("apoli:if_else")) {
-            if(entity instanceof Player p){
+            if (entity instanceof Player p) {
                 Optional<Boolean> bool = ConditionExecutor.entityCondition.check((JSONObject) power.get("condition"), entity, null, entity.getLocation().getBlock(), null, null, null);
-                if(bool.isPresent()){
-                    if(bool.get()){EntityActionType(entity, (JSONObject) power.get("if_action"));}
-                    else{EntityActionType(entity, (JSONObject) power.get("else_action"));}
-                }else{EntityActionType(entity, (JSONObject) power.get("else_action"));}
-            }else{EntityActionType(entity, (JSONObject) power.get("else_action"));}
+                if (bool.isPresent()) {
+                    if (bool.get()) {
+                        EntityActionType(entity, (JSONObject) power.get("if_action"));
+                    } else {
+                        EntityActionType(entity, (JSONObject) power.get("else_action"));
+                    }
+                } else {
+                    EntityActionType(entity, (JSONObject) power.get("else_action"));
+                }
+            } else {
+                EntityActionType(entity, (JSONObject) power.get("else_action"));
+            }
         } else if (type.equals("apoli:side")) {
             JSONObject action = (JSONObject) power.get("action");
             EntityActionType(entity, action);
@@ -303,10 +320,15 @@ public class Actions {
             // Literally does nothing
         } else if (type.equals("apoli:if_else")) {
             Optional<Boolean> bool = ConditionExecutor.blockCondition.check((JSONObject) power.get("condition"), null, null, location.getBlock(), null, null, null);
-            if(bool.isPresent()){
-                if(bool.get()){BlockActionType(location, (JSONObject) power.get("if_action"));}
-                else{BlockActionType(location, (JSONObject) power.get("else_action"));}
-            }else{BlockActionType(location, (JSONObject) power.get("else_action"));}
+            if (bool.isPresent()) {
+                if (bool.get()) {
+                    BlockActionType(location, (JSONObject) power.get("if_action"));
+                } else {
+                    BlockActionType(location, (JSONObject) power.get("else_action"));
+                }
+            } else {
+                BlockActionType(location, (JSONObject) power.get("else_action"));
+            }
         } else if (type.equals("apoli:side")) {
             JSONObject action = (JSONObject) power.get("action");
             runBlock(location, action);
@@ -855,11 +877,11 @@ public class Actions {
             if (entityAction.containsKey("z")) z = Float.parseFloat(entityAction.get("z").toString());
 
             Vector3f vec = new Vector3f(x, y, z);
-            net.minecraft.world.entity.Entity en = ((CraftLivingEntity)entity).getHandle();
+            net.minecraft.world.entity.Entity en = ((CraftLivingEntity) entity).getHandle();
             space.toGlobal(vec, en);
-            if(Boolean.parseBoolean(entityAction.getOrDefault("set", "false").toString())){
+            if (Boolean.parseBoolean(entityAction.getOrDefault("set", "false").toString())) {
                 en.getBukkitEntity().getVelocity().add(new Vector(vec.x, vec.y, vec.z));
-            }else{
+            } else {
                 en.getBukkitEntity().setVelocity(new Vector(vec.x, vec.y, vec.z));
             }
         }
@@ -912,20 +934,16 @@ public class Actions {
 
             for (Entity nearbyEntity : entity.getNearbyEntities(radius, radius, radius)) {
                 boolean run = true;
-                if(entityAction.containsKey("bientity_condition")) {
+                if (entityAction.containsKey("bientity_condition")) {
                     Optional<Boolean> bool = ConditionExecutor.biEntityCondition.check((JSONObject) bientity_action.get("bientity_condition"), entity, nearbyEntity, entity.getLocation().getBlock(), null, null, null);
                     if (bool.isPresent()) {
-                        if (bool.get()) {
-                            run = true;
-                        } else {
-                            run = false;
-                        }
+                        run = bool.get();
                     } else {
                         run = false;
                     }
                 }
 
-                if(run){
+                if (run) {
                     BiEntityActionType(entity, nearbyEntity, bientity_action);
                 }
             }

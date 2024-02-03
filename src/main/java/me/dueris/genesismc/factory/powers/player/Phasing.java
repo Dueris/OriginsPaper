@@ -10,12 +10,13 @@ import me.dueris.genesismc.utils.PowerContainer;
 import me.dueris.genesismc.utils.console.OriginConsoleSender;
 import net.minecraft.Optionull;
 import net.minecraft.network.chat.RemoteChatSession;
-import net.minecraft.network.protocol.game.ClientboundGameEventPacket;
 import net.minecraft.network.protocol.game.ClientboundPlayerInfoUpdatePacket;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.GameType;
-import org.bukkit.*;
-import org.bukkit.block.BlockFace;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
+import org.bukkit.NamespacedKey;
 import org.bukkit.craftbukkit.v1_20_R3.CraftWorldBorder;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
@@ -25,7 +26,6 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerChatEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
-import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -39,7 +39,7 @@ import java.util.HashMap;
 /**
  * Java Packet Manipulation(JPM) code was made in contribution with Origins-Reborn author, cometcake575
  * aka i helped fix bugs and he made the packet code/discovery with the info packets XD
- *
+ * <p>
  * cometcakes theory:
  * The client side has 2 gamemodes, one for all players and one for specifically themselves.
  * Values required in both the server and client, or required for both the client and other players, are stored
@@ -51,76 +51,15 @@ public class Phasing extends CraftPower implements Listener {
     public static ArrayList<Player> inPhantomFormBlocks = new ArrayList<>();
     public static HashMap<Player, Boolean> test = new HashMap<>();
 
-    public void setInPhasingBlockForm(Player p) {
-        test.put(p, true);
-        ServerPlayer player = ((CraftPlayer)p).getHandle();
-        inPhantomFormBlocks.add(p);
-        sendJavaPacket(player);
-        p.setCollidable(false);
-        p.setAllowFlight(true);
-        p.setFlying(true);
-    }
-
-    @EventHandler
-    public void stEnd(ServerTickEndEvent event) {
-        for (Player player : Bukkit.getOnlinePlayers()) {
-            ((CraftPlayer) player).getHandle().noPhysics = true;
-        }
-    }
-
-    @EventHandler
-    public void warn(PlayerJoinEvent e){
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                if(isBedrock(e.getPlayer()) && getPowerArray().contains(e.getPlayer())){
-                    e.getPlayer().sendMessage(ChatColor.YELLOW + "Warning! You are using a power(Phasing) that is highly experimental/breakable on bedrock! If you get stuck in a \"spectator like\" mode, type \"./origins-fixMe\" in chat to be fixed.");
-                }
-            }
-        }.runTaskLater(GenesisMC.getPlugin(), 20);
-    }
-
-    @EventHandler
-    public void chatEvent(PlayerChatEvent e){
-        if(e.getMessage().toLowerCase().equalsIgnoreCase("./origins-fixme")){
-            Bukkit.dispatchCommand(new OriginConsoleSender(), "gamemode survival " + e.getPlayer().getName());
-            e.setCancelled(true);
-        }
-    }
-
-    @EventHandler
-    public void shiftGoDown(PlayerToggleSneakEvent e){
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                if(e.isSneaking()){
-                    if(getPowerArray().contains(e.getPlayer())){
-                        Player p = e.getPlayer();
-                        for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()) {
-                            ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
-                            for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-                                if (conditionExecutor.check("condition", "conditions", p, power, getPowerFile(), p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
-                                    if (conditionExecutor.check("phase_down_condition", "phase_down_condition", p, power, getPowerFile(), p, null, p.getLocation().add(0, -1, 0).getBlock(), null, p.getItemInHand(), null)) {
-                                        p.teleportAsync(p.getLocation().add(0, -0.1, 0));
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }.runTaskLater(GenesisMC.getPlugin(), 1);
-    }
-
-    protected static void sendJavaPacket(ServerPlayer player){
+    protected static void sendJavaPacket(ServerPlayer player) {
         GameType gamemode = GameType.SPECTATOR;
         ClientboundPlayerInfoUpdatePacket.Entry entry = new ClientboundPlayerInfoUpdatePacket.Entry(player.getUUID(), player.getGameProfile(), true, 1, gamemode, player.getTabListDisplayName(), Optionull.map(player.getChatSession(), RemoteChatSession::asData));
         ClientboundPlayerInfoUpdatePacket packet = new ClientboundPlayerInfoUpdatePacket(EnumSet.of(ClientboundPlayerInfoUpdatePacket.Action.UPDATE_GAME_MODE), entry);
         player.connection.send(packet);
     }
 
-    protected static void resyncJavaPlayer(ServerPlayer player){
-        if(player.gameMode.getGameModeForPlayer().equals(GameType.SPECTATOR)){
+    protected static void resyncJavaPlayer(ServerPlayer player) {
+        if (player.gameMode.getGameModeForPlayer().equals(GameType.SPECTATOR)) {
             player.gameMode.changeGameModeForPlayer(GameType.SURVIVAL);
         }
         GameType gamemode = player.gameMode.getGameModeForPlayer();
@@ -156,6 +95,67 @@ public class Phasing extends CraftPower implements Listener {
         }
     }
 
+    public void setInPhasingBlockForm(Player p) {
+        test.put(p, true);
+        ServerPlayer player = ((CraftPlayer) p).getHandle();
+        inPhantomFormBlocks.add(p);
+        sendJavaPacket(player);
+        p.setCollidable(false);
+        p.setAllowFlight(true);
+        p.setFlying(true);
+    }
+
+    @EventHandler
+    public void stEnd(ServerTickEndEvent event) {
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            ((CraftPlayer) player).getHandle().noPhysics = true;
+        }
+    }
+
+    @EventHandler
+    public void warn(PlayerJoinEvent e) {
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                if (isBedrock(e.getPlayer()) && getPowerArray().contains(e.getPlayer())) {
+                    e.getPlayer().sendMessage(ChatColor.YELLOW + "Warning! You are using a power(Phasing) that is highly experimental/breakable on bedrock! If you get stuck in a \"spectator like\" mode, type \"./origins-fixMe\" in chat to be fixed.");
+                }
+            }
+        }.runTaskLater(GenesisMC.getPlugin(), 20);
+    }
+
+    @EventHandler
+    public void chatEvent(PlayerChatEvent e) {
+        if (e.getMessage().equalsIgnoreCase("./origins-fixme")) {
+            Bukkit.dispatchCommand(new OriginConsoleSender(), "gamemode survival " + e.getPlayer().getName());
+            e.setCancelled(true);
+        }
+    }
+
+    @EventHandler
+    public void shiftGoDown(PlayerToggleSneakEvent e) {
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                if (e.isSneaking()) {
+                    if (getPowerArray().contains(e.getPlayer())) {
+                        Player p = e.getPlayer();
+                        for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()) {
+                            ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
+                            for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
+                                if (conditionExecutor.check("condition", "conditions", p, power, getPowerFile(), p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
+                                    if (conditionExecutor.check("phase_down_condition", "phase_down_condition", p, power, getPowerFile(), p, null, p.getLocation().add(0, -1, 0).getBlock(), null, p.getItemInHand(), null)) {
+                                        p.teleportAsync(p.getLocation().add(0, -0.1, 0));
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }.runTaskLater(GenesisMC.getPlugin(), 1);
+    }
+
     @EventHandler
     public void je(PlayerJoinEvent e) {
         test.put(e.getPlayer(), false);
@@ -188,10 +188,10 @@ public class Phasing extends CraftPower implements Listener {
                                 p.getEyeLocation().add(0.55F, 0, -0.55F).getBlock().isSolid() ||
                                 p.getEyeLocation().add(-0.55F, 0, 0.55F).getBlock().isSolid())
                         ) {
-                            if(!isBedrock(p)){
+                            if (!isBedrock(p)) {
                                 setInPhasingBlockForm(p);
-                            }else{
-                                if(p.getGameMode() != GameMode.SPECTATOR){
+                            } else {
+                                if (p.getGameMode() != GameMode.SPECTATOR) {
                                     p.setGameMode(GameMode.SPECTATOR);
                                 }
                             }
@@ -200,12 +200,12 @@ public class Phasing extends CraftPower implements Listener {
                             p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "insideBlock"), PersistentDataType.BOOLEAN, true);
 
                         } else {
-                            if(!isBedrock(p)){
-                                resyncJavaPlayer(((CraftPlayer)p).getHandle());
-                            }else{
-                                if(p.getGameMode() == GameMode.SPECTATOR){
+                            if (!isBedrock(p)) {
+                                resyncJavaPlayer(((CraftPlayer) p).getHandle());
+                            } else {
+                                if (p.getGameMode() == GameMode.SPECTATOR) {
                                     GameMode gameMode = p.getPreviousGameMode();
-                                    if(gameMode.equals(GameMode.SPECTATOR)){
+                                    if (gameMode.equals(GameMode.SPECTATOR)) {
                                         gameMode = GameMode.SURVIVAL;
                                     }
                                     p.setGameMode(gameMode);
@@ -221,11 +221,11 @@ public class Phasing extends CraftPower implements Listener {
                         if (test.get(p) == null) {
                             test.put(p, false);
                         } else if (test.get(p)) {
-                            if(!isBedrock(p)){
-                                resyncJavaPlayer(((CraftPlayer)p).getHandle());
-                            }else{
+                            if (!isBedrock(p)) {
+                                resyncJavaPlayer(((CraftPlayer) p).getHandle());
+                            } else {
                                 GameMode gameMode = p.getPreviousGameMode();
-                                if(gameMode.equals(GameMode.SPECTATOR)){
+                                if (gameMode.equals(GameMode.SPECTATOR)) {
                                     gameMode = GameMode.SURVIVAL;
                                 }
                                 p.setGameMode(gameMode);
@@ -240,28 +240,28 @@ public class Phasing extends CraftPower implements Listener {
         }
     }
 
-    public boolean isBedrock(Player p){
-        if(Bukkit.getPluginManager().isPluginEnabled("floodgate")){
+    public boolean isBedrock(Player p) {
+        if (Bukkit.getPluginManager().isPluginEnabled("floodgate")) {
             return GeyserApi.api().connectionByUuid(p.getUniqueId()) != null;
-        }else{
+        } else {
             return false;
         }
     }
 
     @EventHandler
-    public void dmgEventRemoveSuff(EntityDamageEvent e){
-        if(e.getEntity() instanceof Player player){
-            if(!inPhantomFormBlocks.contains(player)) return;
-            if(e.getCause().equals(EntityDamageEvent.DamageCause.SUFFOCATION)) {
+    public void dmgEventRemoveSuff(EntityDamageEvent e) {
+        if (e.getEntity() instanceof Player player) {
+            if (!inPhantomFormBlocks.contains(player)) return;
+            if (e.getCause().equals(EntityDamageEvent.DamageCause.SUFFOCATION)) {
                 e.setCancelled(true);
             }
         }
     }
 
     @EventHandler
-    public void fixMineSpeed(ServerTickEndEvent e){
-        for(Player p : inPhantomFormBlocks){
-            if(!p.getActivePotionEffects().contains(new PotionEffect(PotionEffectType.FAST_DIGGING, 5, 3, false, false, false))){
+    public void fixMineSpeed(ServerTickEndEvent e) {
+        for (Player p : inPhantomFormBlocks) {
+            if (!p.getActivePotionEffects().contains(new PotionEffect(PotionEffectType.FAST_DIGGING, 5, 3, false, false, false))) {
                 p.addPotionEffect(new PotionEffect(PotionEffectType.FAST_DIGGING, 5, 3, false, false, false));
             }
         }

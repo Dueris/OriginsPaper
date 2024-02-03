@@ -88,7 +88,7 @@ public class RestrictArmor extends CraftPower implements Listener {
             for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()) {
                 for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                     if (power == null) continue;
-                    if (power.getObjectOrDefault("interval", 1l) == null) {
+                    if (power.getObjectOrDefault("interval", 1L) == null) {
                         Bukkit.getLogger().warning(LangConfig.getLocalizedString(p, "powers.errors.action_over_time"));
                         return;
                     }

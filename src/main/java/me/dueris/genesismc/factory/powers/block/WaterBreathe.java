@@ -23,8 +23,8 @@ import java.util.HashMap;
 import java.util.Random;
 
 public class WaterBreathe extends CraftPower implements Listener {
-    public static ArrayList<Player> outofAIR = new ArrayList<>();
     private static final ArrayList<Player> genesisExecuting = new ArrayList<>();
+    public static ArrayList<Player> outofAIR = new ArrayList<>();
 
     public static boolean isInBreathableWater(Player player) {
         Block block = player.getEyeLocation().getBlock();
@@ -85,7 +85,7 @@ public class WaterBreathe extends CraftPower implements Listener {
                         boolean shouldDamage = true;
                         if (((CraftPlayer) (p)).getHandle().hasEffect(MobEffects.WATER_BREATHING)
                                 || p.isInRain()
-                                || ((CraftPlayer)p).getHandle().hasEffect(MobEffects.CONDUIT_POWER)
+                                || ((CraftPlayer) p).getHandle().hasEffect(MobEffects.CONDUIT_POWER)
                                 || p.getGameMode().equals(GameMode.SPECTATOR)
                                 || p.getGameMode().equals(GameMode.CREATIVE)
                         ) {

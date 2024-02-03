@@ -21,7 +21,7 @@ import java.util.function.BinaryOperator;
 
 public class AttributeConditioned extends CraftPower implements Listener {
 
-    private static HashMap<Player, Boolean> applied = new HashMap<>();
+    private static final HashMap<Player, Boolean> applied = new HashMap<>();
 
     public static void executeAttributeModify(String operation, Attribute attribute_modifier, int base_value, Player p, int value) {
         Map<String, BinaryOperator<Integer>> operationMap = new HashMap<>();
@@ -68,7 +68,7 @@ public class AttributeConditioned extends CraftPower implements Listener {
         operationMap.put("divide_random_max", (a, b) -> a / random.nextInt(b));
 
         BinaryOperator operator = Utils.getOperationMappingsDouble().get(operation);
-        if(operator != null){
+        if (operator != null) {
             double result = Double.valueOf(String.valueOf(operator.apply(base_value, value)));
             p.getAttribute(Attribute.valueOf(attribute_modifier.toString())).setBaseValue(result);
         } else {
@@ -106,7 +106,7 @@ public class AttributeConditioned extends CraftPower implements Listener {
                     double baseVal = p.getAttribute(Attribute.valueOf(attribute_modifier.toString())).getBaseValue();
                     String operation = modifier.get("operation").toString();
                     BinaryOperator operator = Utils.getOperationMappingsDouble().get(operation);
-                    if(operator != null){
+                    if (operator != null) {
                         double result = Double.valueOf(String.valueOf(operator.apply(baseVal, val)));
                         p.getAttribute(Attribute.valueOf(attribute_modifier.toString())).setBaseValue(result);
                     } else {
@@ -183,7 +183,7 @@ public class AttributeConditioned extends CraftPower implements Listener {
         for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()) {
             for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                 if (conditioned_attribute.contains(p)) {
-                    if(!applied.containsKey(p)){
+                    if (!applied.containsKey(p)) {
                         applied.put(p, false);
                     }
                     ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();

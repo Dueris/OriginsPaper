@@ -1,27 +1,20 @@
 package me.dueris.genesismc.factory.conditions.block;
 
-import com.mojang.brigadier.StringReader;
 import me.dueris.genesismc.factory.TagRegistry;
 import me.dueris.genesismc.factory.conditions.Condition;
 import me.dueris.genesismc.factory.conditions.fluid.FluidCondition;
 import me.dueris.genesismc.factory.powers.player.RestrictArmor;
 import me.dueris.genesismc.utils.PowerContainer;
-import me.dueris.genesismc.utils.Utils;
 import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtUtils;
 import net.minecraft.world.level.block.LiquidBlockContainer;
-import org.bukkit.Bukkit;
 import org.bukkit.Fluid;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.TileState;
 import org.bukkit.craftbukkit.v1_20_R3.block.CraftBlock;
-import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_20_R3.util.CraftLocation;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.ItemStack;
 import org.json.simple.JSONObject;
@@ -82,16 +75,13 @@ public class BlockCondition implements Condition {
             case "apoli:adjacent" -> {
                 BlockCondition adjCon = new BlockCondition();
                 int adj = 0;
-                for(Direction direction : Direction.values()){
-                    Optional<Boolean> conOp = adjCon.check((JSONObject) condition.get("adjacent_condition"), actor, target, block.getWorld().getBlockAt(CraftLocation.toBukkit(((CraftBlock)block).getPosition().offset(direction.getNormal()))), fluid, itemStack, entityDamageEvent);
-                    boolean add = false;
-                    if(!conOp.isPresent()){
+                for (Direction direction : Direction.values()) {
+                    Optional<Boolean> conOp = adjCon.check((JSONObject) condition.get("adjacent_condition"), actor, target, block.getWorld().getBlockAt(CraftLocation.toBukkit(((CraftBlock) block).getPosition().offset(direction.getNormal()))), fluid, itemStack, entityDamageEvent);
+                    boolean add = !conOp.isPresent();
+                    if (conOp.isPresent() && conOp.get()) {
                         add = true;
                     }
-                    if(conOp.isPresent() && conOp.get()){
-                        add = true;
-                    }
-                    if(add){
+                    if (add) {
                         adj++;
                     }
                 }
@@ -182,7 +172,7 @@ public class BlockCondition implements Condition {
             case "apoli:slipperiness" -> {
                 String comparison = condition.get("comparison").toString();
                 float compare_to = Float.parseFloat(condition.get("compare_to").toString());
-                return getResult(inverted, Optional.of(RestrictArmor.compareValues(((CraftBlock)block).getBlockData().getMaterial().getSlipperiness(), comparison, compare_to)));
+                return getResult(inverted, Optional.of(RestrictArmor.compareValues(block.getBlockData().getMaterial().getSlipperiness(), comparison, compare_to)));
             }
             case "apoli:movement_blocking" -> {
                 return getResult(inverted, Optional.of(block.getType().isCollidable()));
@@ -191,7 +181,7 @@ public class BlockCondition implements Condition {
                 return getResult(inverted, Optional.of(block.getType().isAir() || block.isReplaceable()));
             }
             case "apoli:water_loggable" -> {
-                return getResult(inverted, Optional.of(((CraftBlock)block).getHandle().getBlockState(((CraftBlock)block).getPosition()).getBlock() instanceof LiquidBlockContainer));
+                return getResult(inverted, Optional.of(((CraftBlock) block).getHandle().getBlockState(((CraftBlock) block).getPosition()).getBlock() instanceof LiquidBlockContainer));
             }
             default -> {
                 return getResult(inverted, Optional.empty());

@@ -1,24 +1,11 @@
 package me.dueris.genesismc.factory.powers.block;
 
-import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.utils.OriginContainer;
-import me.dueris.genesismc.utils.PowerContainer;
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.ShapedRecipe;
-import org.bukkit.inventory.ShapelessRecipe;
-import org.bukkit.inventory.recipe.CraftingBookCategory;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 @Deprecated // TODO: finish this power
 public class Recipe extends CraftPower implements Listener {

@@ -12,8 +12,6 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.json.simple.JSONObject;
 
-import java.util.HashMap;
-
 import static me.dueris.genesismc.choosing.ChoosingMain.choosing;
 import static me.dueris.genesismc.choosing.contents.MainMenuContents.GenesisMainMenuContents;
 

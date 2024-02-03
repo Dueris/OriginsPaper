@@ -4,7 +4,7 @@ import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.factory.powers.simple.PowerProvider;
 import net.minecraft.world.entity.PathfinderMob;
-import net.minecraft.world.entity.ai.goal.*;
+import net.minecraft.world.entity.ai.goal.AvoidEntityGoal;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
@@ -24,6 +24,7 @@ import java.util.HashMap;
 public class ScareCreepers extends CraftPower implements Listener, PowerProvider {
     public static ArrayList<Player> scaryPlayers = new ArrayList<>();
     protected static NamespacedKey powerReference = GenesisMC.originIdentifier("scare_creepers");
+    private final NamespacedKey hitByPlayerKey = new NamespacedKey(GenesisMC.getPlugin(), "hit-by-player");
 
     @Override
     public void run(Player p) {
@@ -72,7 +73,7 @@ public class ScareCreepers extends CraftPower implements Listener, PowerProvider
 
     public void applyPatch(Creeper creeper) {
         Bukkit.getMobGoals().addGoal(creeper, 0, new AvoidEntityGoal<>(
-                (PathfinderMob)((CraftEntity)creeper).getHandle(), net.minecraft.world.entity.player.Player.class, 6, 1, 1.2,
+                (PathfinderMob) ((CraftEntity) creeper).getHandle(), net.minecraft.world.entity.player.Player.class, 6, 1, 1.2,
                 livingEntity -> {
                     if (livingEntity.getBukkitEntity() instanceof Player player) {
                         if (getPowerArray().contains(player)) {
@@ -87,8 +88,6 @@ public class ScareCreepers extends CraftPower implements Listener, PowerProvider
                 }
         ).asPaperVanillaGoal());
     }
-
-    private final NamespacedKey hitByPlayerKey = new NamespacedKey(GenesisMC.getPlugin(), "hit-by-player");
 
     @EventHandler
     public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {

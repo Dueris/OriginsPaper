@@ -53,9 +53,9 @@ public class Gravity extends CraftPower implements Listener {
                     }
                 }
             } else {
-                if(LikeWater.likeWaterPlayers.contains(p)){
+                if (LikeWater.likeWaterPlayers.contains(p)) {
                     p.setGravity(!(!p.isSwimming() && p.getEyeLocation().getBlock().getType().equals(Material.WATER) && p.getLocation().getBlock().getType().equals(Material.WATER) && p.isInWaterOrBubbleColumn()));
-                }else{
+                } else {
                     p.setGravity(true);
                 }
             }

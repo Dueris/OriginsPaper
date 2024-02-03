@@ -12,9 +12,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class LikeWater extends CraftPower implements Listener, PowerProvider {
+    private static final Gravity gravityHook = new Gravity();
     public static ArrayList<Player> likeWaterPlayers = new ArrayList<>();
     protected static NamespacedKey powerReference = GenesisMC.originIdentifier("like_water");
-    private static Gravity gravityHook = new Gravity();
 
     @Override
     public void run(Player p) {

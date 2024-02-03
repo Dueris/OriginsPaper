@@ -17,7 +17,6 @@ import java.util.Map;
 import java.util.function.BinaryOperator;
 
 import static me.dueris.genesismc.factory.powers.player.attributes.AttributeHandler.getOperationMappingsDouble;
-import static me.dueris.genesismc.factory.powers.player.attributes.AttributeHandler.getOperationMappingsInteger;
 import static me.dueris.genesismc.factory.powers.value_modifying.ValueModifyingSuperClass.modify_food;
 
 public class ModifyFoodPower extends CraftPower implements Listener {
@@ -156,8 +155,8 @@ public class ModifyFoodPower extends CraftPower implements Listener {
                 for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(player, getPowerFile(), layer)) {
                     if (conditionExecutor.check("item_condition", "item_condition", player, power, "apoli:modify_food", player, null, player.getLocation().getBlock(), null, player.getInventory().getItemInHand(), null)) {
                         if (modify_food.contains(player)) {
-                            for(JSONObject jsonObject : power.getJsonListSingularPlural("food_modifier", "food_modifiers")){
-                                if(jsonObject.containsKey("value")){
+                            for (JSONObject jsonObject : power.getJsonListSingularPlural("food_modifier", "food_modifiers")) {
+                                if (jsonObject.containsKey("value")) {
                                     int val = Integer.parseInt(jsonObject.get("value").toString());
                                     String operation = jsonObject.get("operation").toString();
                                     BinaryOperator mathOperator = getOperationMappingsDouble().get(operation);
@@ -168,8 +167,8 @@ public class ModifyFoodPower extends CraftPower implements Listener {
                                     }
                                 }
                             }
-                            for(JSONObject jsonObject : power.getJsonListSingularPlural("saturation_modifier", "saturation_modifiers")){
-                                if(jsonObject.containsKey("value")){
+                            for (JSONObject jsonObject : power.getJsonListSingularPlural("saturation_modifier", "saturation_modifiers")) {
+                                if (jsonObject.containsKey("value")) {
                                     int val = Integer.parseInt(jsonObject.get("value").toString());
                                     String operation = jsonObject.get("operation").toString();
                                     BinaryOperator mathOperator = getOperationMappingsDouble().get(operation);

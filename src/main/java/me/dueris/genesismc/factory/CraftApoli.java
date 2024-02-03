@@ -3,9 +3,7 @@ package me.dueris.genesismc.factory;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.entity.OriginPlayerUtils;
 import me.dueris.genesismc.files.GenesisDataFiles;
-import me.dueris.genesismc.factory.*;
 import me.dueris.genesismc.utils.*;
-import me.dueris.genesismc.utils.exception.OriginParseException;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.storage.LevelResource;
 import org.apache.commons.io.FilenameUtils;
@@ -14,7 +12,6 @@ import org.bukkit.entity.Player;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 
 import java.io.*;
 import java.nio.file.Path;
@@ -350,7 +347,7 @@ public class CraftApoli {
                                                 String powerFileName = powerLocation[1];
 
                                                 try {
-                                                    
+
                                                     JSONObject powerParser = Remapper.createRemapped(new File(datapack.getAbsolutePath() + File.separator + "data" + File.separator + powerFolder + File.separator + "powers" + File.separator + powerFileName + ".json"));
                                                     if (powerParser.containsKey("type") && "apoli:multiple".equals(powerParser.get("type"))) {
                                                         PowerContainer powerContainer = new PowerContainer(new NamespacedKey(powerFolder, powerFileName), fileToFileContainer(powerParser), Utils.readJSONFileAsString(powerParser), false, true);
@@ -430,7 +427,7 @@ public class CraftApoli {
         for (LayerContainer layer : origin.keySet()) {
             OriginContainer layerOrigins = origin.get(layer);
             ArrayList<String> powers = new ArrayList<>();
-            for (PowerContainer power : OriginPlayerUtils.powerContainer.get(p).get(layer)) {
+            for (PowerContainer power : OriginPlayerUtils.playerPowerMapping.get(p).get(layer)) {
                 powers.add(power.getTag());
             }
             int powerSize = 0;

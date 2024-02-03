@@ -161,7 +161,7 @@ public class ChoosingCustomOrigins implements Listener {
                     else if (impact == 3) contents.add(highImpact);
                     else contents.add(new ItemStack(Material.AIR));
                 } else if (i == 13) {
-                    if(originIcon.getType().equals(Material.PLAYER_HEAD)){
+                    if (originIcon.getType().equals(Material.PLAYER_HEAD)) {
                         SkullMeta skull_p = (SkullMeta) originIcon.getItemMeta();
                         skull_p.setOwningPlayer(p);
                         skull_p.setOwner(p.getName());

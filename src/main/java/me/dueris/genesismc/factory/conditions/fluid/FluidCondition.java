@@ -5,12 +5,10 @@ import me.dueris.genesismc.factory.conditions.Condition;
 import org.bukkit.Fluid;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.ItemStack;
 import org.json.simple.JSONObject;
 
-import java.util.HashMap;
 import java.util.Optional;
 
 import static me.dueris.genesismc.factory.conditions.ConditionExecutor.getResult;
