@@ -50,6 +50,58 @@ public class MimicWarden extends CraftPower implements Listener, PowerProvider {
                 if (e.getKey().equals("key.origins.primary_active")) {
                     Location eyeLoc = p.getEyeLocation();
 
+                    CooldownManager.addCooldown(p, "Sonic Boom", "origins:mimic_warden", 1200, "key.origins.primary_active");
+
+                    Location startLocation = p.getEyeLocation();
+
+                    p.getWorld().playSound(p, Sound.ENTITY_WARDEN_SONIC_BOOM, 8, 1);
+                    p.getWorld().spawnParticle(Particle.SONIC_BOOM, p.getEyeLocation(), 1);
+                    p.getWorld().spawnParticle(Particle.SWEEP_ATTACK, p.getEyeLocation(), 1);
+
+                    int taskId = new BukkitRunnable() {
+                        final Location origin = startLocation.clone();
+                        int particleCounter = 1;
+
+                        @Override
+                        public void run() {
+                            double time = particleCounter / 14.0;
+
+                            Location center = startLocation.clone().add(startLocation.getDirection().multiply(particleCounter * 3));
+
+                            Random random = new Random();
+                            double x = random.nextDouble(0.5);
+                            double y = random.nextDouble(0.5);
+                            double z = random.nextDouble(0.5);
+
+                            Location randomLocation = startLocation.add(new Vector(x, y, z).rotateAroundY(random.nextDouble(180)));
+                            Location randomLocation1 = startLocation.add(new Vector(x, y, z).rotateAroundY(random.nextDouble(180)));
+                            Location randomLocation2 = startLocation.add(new Vector(x, y, z).rotateAroundY(random.nextDouble(180)));
+                            Location randomLocation3 = startLocation.add(new Vector(x, y, z).rotateAroundY(random.nextDouble(180)));
+
+                            createSpiralParticleEffect(p, center, time, randomLocation);
+                            createSpiralParticleEffect(p, center, time, randomLocation1);
+                            createSpiralParticleEffect(p, center, time, randomLocation2);
+                            createSpiralParticleEffect(p, center, time, randomLocation3);
+
+                            if (center.distance(origin) >= 15.0) {
+                                this.cancel();
+                                particleTasks.remove(p.getUniqueId());
+                            }
+
+                            particleCounter++;
+                            if (particleCounter >= 100) {
+                                this.cancel();
+                                particleTasks.remove(p.getUniqueId());
+                            }
+                            if(randomLocation.getBlock().getType().isCollidable() || randomLocation1.getBlock().getType().isCollidable() || randomLocation2.getBlock().getType().isCollidable()) {
+                                particleTasks.remove(p.getUniqueId());
+                                cancel();
+                            }
+                        }
+                    }.runTaskTimer(GenesisMC.getPlugin(), 0L, 1L).getTaskId();
+
+                    particleTasks.put(p.getUniqueId(), taskId);
+
                     Predicate<Entity> filter = entity -> !entity.equals(p);
 
                     RayTraceResult traceResult = p.getWorld().rayTrace(eyeLoc, eyeLoc.getDirection(), 12, FluidCollisionMode.NEVER, false, 1, filter);
@@ -100,53 +152,6 @@ public class MimicWarden extends CraftPower implements Listener, PowerProvider {
                             victim.damage(15);
                             victim.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 100, 2, false, false, false));
                             victim.addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, 50, 2, false, false, false));
-
-                            CooldownManager.addCooldown(p, "Sonic Boom", "origins:mimic_warden", 1200, "key.origins.primary_active");
-
-                            Location startLocation = p.getEyeLocation();
-
-                            p.getWorld().playSound(p, Sound.ENTITY_WARDEN_SONIC_BOOM, 8, 1);
-                            p.getWorld().spawnParticle(Particle.SONIC_BOOM, p.getEyeLocation(), 1);
-                            p.getWorld().spawnParticle(Particle.SWEEP_ATTACK, p.getEyeLocation(), 1);
-
-                            int taskId = new BukkitRunnable() {
-                                final Location origin = startLocation.clone();
-                                int particleCounter = 1;
-
-                                @Override
-                                public void run() {
-                                    double time = particleCounter / 14.0;
-
-                                    Location center = startLocation.clone().add(startLocation.getDirection().multiply(particleCounter * 3));
-
-                                    Random random = new Random();
-                                    double x = random.nextDouble(0.5);
-                                    double y = random.nextDouble(0.5);
-                                    double z = random.nextDouble(0.5);
-
-                                    Location randomLocation = startLocation.add(new Vector(x, y, z).rotateAroundY(random.nextDouble(180)));
-                                    Location randomLocation1 = startLocation.add(new Vector(x, y, z).rotateAroundY(random.nextDouble(180)));
-                                    Location randomLocation2 = startLocation.add(new Vector(x, y, z).rotateAroundY(random.nextDouble(180)));
-
-                                    createSpiralParticleEffect(p, center, time, randomLocation);
-                                    createSpiralParticleEffect(p, center, time, randomLocation1);
-                                    createSpiralParticleEffect(p, center, time, randomLocation2);
-
-                                    if (center.distance(origin) >= 15.0) {
-                                        this.cancel();
-                                        particleTasks.remove(p.getUniqueId());
-                                    }
-
-                                    particleCounter++;
-                                    if (particleCounter >= 100) {
-                                        this.cancel();
-                                        particleTasks.remove(p.getUniqueId());
-                                    }
-                                }
-                            }.runTaskTimer(GenesisMC.getPlugin(), 0L, 1L).getTaskId();
-
-                            particleTasks.put(p.getUniqueId(), taskId);
-
                         }
                     }
                 }
