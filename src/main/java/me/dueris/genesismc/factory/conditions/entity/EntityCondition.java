@@ -1,5 +1,6 @@
 package me.dueris.genesismc.factory.conditions.entity;
 
+import com.mojang.brigadier.StringReader;
 import me.dueris.genesismc.CooldownManager;
 import me.dueris.genesismc.entity.OriginPlayerUtils;
 import me.dueris.genesismc.factory.CraftApoli;
@@ -18,12 +19,20 @@ import me.dueris.genesismc.factory.powers.player.RestrictArmor;
 import me.dueris.genesismc.factory.powers.player.attributes.AttributeHandler;
 import me.dueris.genesismc.utils.OriginContainer;
 import me.dueris.genesismc.utils.PowerContainer;
+import me.dueris.genesismc.utils.Utils;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtUtils;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.storage.LevelResource;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Block;
+import org.bukkit.craftbukkit.v1_20_R3.CraftWorld;
+import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_20_R3.inventory.CraftItemStack;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.*;
 import org.bukkit.event.entity.EntityDamageEvent;
@@ -413,10 +422,19 @@ public class EntityCondition implements Condition {
                 return getResult(inverted, Optional.of(entity.isInRain()));
             }
             case "apoli:exposed_to_sun" -> {
-                return getResult(inverted, Optional.of((entity.getLocation().getBlock().getLightFromSky() > 5) && entity.getWorld().isDayTime()));
+                ServerLevel level = ((CraftWorld)entity.getWorld()).getHandle();
+                BlockPos blockPos = BlockPos.containing(entity.getX(), entity.getY() + ((CraftEntity)entity).getHandle().getEyeHeight(((CraftEntity)entity).getHandle().getPose()), entity.getZ());
+
+                return getResult(inverted, Optional.of(level.canSeeSky(blockPos) && entity.getWorld().isDayTime()));
             }
             case "apoli:exposed_to_sky" -> {
-                return getResult(inverted, Optional.of(entity.getLocation().getBlock().getLightFromSky() > 1));
+                ServerLevel level = ((CraftWorld)entity.getWorld()).getHandle();
+                BlockPos blockPos = BlockPos.containing(entity.getX(), entity.getY() + ((CraftEntity)entity).getHandle().getEyeHeight(((CraftEntity)entity).getHandle().getPose()), entity.getZ());
+
+                return getResult(inverted, Optional.of(level.canSeeSky(blockPos)));
+            }
+            case "apoli:nbt" -> {
+                return getResult(inverted, Optional.of(NbtUtils.compareNbt(Utils.ParserUtils.parseJson(new StringReader(condition.get("nbt").toString()), CompoundTag.CODEC), ((CraftEntity)entity).getHandle().saveWithoutId(new CompoundTag()), true)));
             }
             case "apoli:sneaking" -> {
                 return getResult(inverted, Optional.of(entity.isSneaking()));

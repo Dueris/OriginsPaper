@@ -1,16 +1,25 @@
 package me.dueris.genesismc.factory.conditions.block;
 
+import com.mojang.brigadier.StringReader;
 import me.dueris.genesismc.factory.TagRegistry;
 import me.dueris.genesismc.factory.conditions.Condition;
 import me.dueris.genesismc.factory.conditions.fluid.FluidCondition;
 import me.dueris.genesismc.factory.powers.player.RestrictArmor;
 import me.dueris.genesismc.utils.PowerContainer;
+import me.dueris.genesismc.utils.Utils;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtUtils;
+import net.minecraft.world.level.block.LiquidBlockContainer;
+import org.bukkit.Bukkit;
 import org.bukkit.Fluid;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.TileState;
 import org.bukkit.craftbukkit.v1_20_R3.block.CraftBlock;
+import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
+import org.bukkit.craftbukkit.v1_20_R3.util.CraftLocation;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;
@@ -70,32 +79,27 @@ public class BlockCondition implements Condition {
                     return getResult(inverted, Optional.of(false));
                 }
             }
-//            case "apoli:adjacent" -> {
-//                String comparison = condition.get("comparison").toString();
-//                float compare_to = Float.parseFloat(condition.get("compare_to").toString());
-//                int matchingADJCount = 0;
-//
-//                for(int xOFF = -1; xOFF <= 1; xOFF++){
-//                    for(int yOFF = -1; yOFF <= 1; yOFF++){
-//                        for(int zOFF = -1; zOFF <= 1; zOFF++){
-//                            if(xOFF == 0 && yOFF == 0 && zOFF == 0){
-//                                continue;
-//                            }
-//                            if(condition.get("adjacent_condition") != null){
-//                                Block adBlock = block.getRelative(xOFF, yOFF, zOFF);
-//                                BlockCondition blockCondition = ConditionExecutor.blockCondition;
-//                                if(blockCondition.check((HashMap<String, Object>) condition.get("adjacent_condition"), p, power, powerfile, actor, target, adBlock, fluid, itemStack, entityDamageEvent).isPresent() && blockCondition.check(condition, p, power, powerfile, actor, target, adBlock, fluid, itemStack, entityDamageEvent).get()){
-//                                    matchingADJCount++;
-//                                }
-//                            }else{
-//                                matchingADJCount++;
-//                            }
-//                        }
-//                    }
-//                }
-//
-//                return Optional.of(RestrictArmor.compareValues(matchingADJCount, comparison, compare_to));
-//            }
+            case "apoli:adjacent" -> {
+                BlockCondition adjCon = new BlockCondition();
+                int adj = 0;
+                for(Direction direction : Direction.values()){
+                    Optional<Boolean> conOp = adjCon.check((JSONObject) condition.get("adjacent_condition"), actor, target, block.getWorld().getBlockAt(CraftLocation.toBukkit(((CraftBlock)block).getPosition().offset(direction.getNormal()))), fluid, itemStack, entityDamageEvent);
+                    boolean add = false;
+                    if(!conOp.isPresent()){
+                        add = true;
+                    }
+                    if(conOp.isPresent() && conOp.get()){
+                        add = true;
+                    }
+                    if(add){
+                        adj++;
+                    }
+                }
+                String comparison = condition.get("comparison").toString();
+                float compare_to = Float.parseFloat(condition.get("compare_to").toString());
+
+                return getResult(inverted, Optional.of(RestrictArmor.compareValues(adj, comparison, compare_to)));
+            }
             case "apoli:attachable" -> {
                 if (block != null && block.getType() != Material.AIR) {
                     Block[] adjBlcs = new Block[]{
@@ -175,6 +179,11 @@ public class BlockCondition implements Condition {
                 float bR = level;
                 return getResult(inverted, Optional.of(RestrictArmor.compareValues(bR, comparison, compare_to)));
             }
+            case "apoli:slipperiness" -> {
+                String comparison = condition.get("comparison").toString();
+                float compare_to = Float.parseFloat(condition.get("compare_to").toString());
+                return getResult(inverted, Optional.of(RestrictArmor.compareValues(((CraftBlock)block).getBlockData().getMaterial().getSlipperiness(), comparison, compare_to)));
+            }
             case "apoli:movement_blocking" -> {
                 return getResult(inverted, Optional.of(block.getType().isCollidable()));
             }
@@ -182,7 +191,7 @@ public class BlockCondition implements Condition {
                 return getResult(inverted, Optional.of(block.getType().isAir() || block.isReplaceable()));
             }
             case "apoli:water_loggable" -> {
-                return getResult(inverted, Optional.of(block.getBlockData().getAsString().contains("waterlogged")));
+                return getResult(inverted, Optional.of(((CraftBlock)block).getHandle().getBlockState(((CraftBlock)block).getPosition()).getBlock() instanceof LiquidBlockContainer));
             }
             default -> {
                 return getResult(inverted, Optional.empty());

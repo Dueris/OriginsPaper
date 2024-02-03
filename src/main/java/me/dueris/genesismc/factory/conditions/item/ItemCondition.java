@@ -1,14 +1,19 @@
 package me.dueris.genesismc.factory.conditions.item;
 
+import com.mojang.brigadier.StringReader;
 import me.dueris.genesismc.enchantments.EnchantTable;
 import me.dueris.genesismc.factory.TagRegistry;
 import me.dueris.genesismc.factory.conditions.Condition;
 import me.dueris.genesismc.factory.powers.player.RestrictArmor;
 import me.dueris.genesismc.items.OrbOfOrigins;
 import me.dueris.genesismc.utils.ArmorUtils;
+import me.dueris.genesismc.utils.Utils;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtUtils;
 import org.bukkit.Fluid;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.craftbukkit.v1_20_R3.inventory.CraftItemStack;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -187,6 +192,9 @@ public class ItemCondition implements Condition {
                     }
                 }
                 return getResult(inverted, Optional.of(false));
+            }
+            case "apoli:nbt" -> {
+                return getResult(inverted, Optional.of(NbtUtils.compareNbt(Utils.ParserUtils.parseJson(new StringReader(condition.get("nbt").toString()), CompoundTag.CODEC), ((CraftItemStack)itemStack).handle.getTag(), true)));
             }
             case "apoli:meat" -> {
                 if (itemStack.getType().isEdible()) {
