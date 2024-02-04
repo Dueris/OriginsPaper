@@ -4,6 +4,7 @@ import javassist.NotFoundException;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.OriginDataContainer;
 import me.dueris.genesismc.enums.OriginDataType;
+import me.dueris.genesismc.events.PowerUpdateEvent;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.factory.powers.player.Gravity;
@@ -308,6 +309,7 @@ public class OriginPlayerUtils {
 
     public static void assignPowers(@NotNull Player player, @NotNull LayerContainer layer) throws InstantiationException, IllegalAccessException, NotFoundException, IllegalArgumentException, NoSuchFieldException, SecurityException {
         try {
+            List<PowerContainer> powersToExecute = new ArrayList<>();
             CompletableFuture.runAsync(() -> {
                 for (PowerContainer power : playerPowerMapping.get(player).get(layer)) {
                     if (power == null) continue;
@@ -359,12 +361,17 @@ public class OriginPlayerUtils {
                             e.printStackTrace();
                         }
                     }
+                    powersToExecute.add(power);
                 }
             }).thenRun(() -> {
                 OriginDataContainer.loadData(player);
                 setupPowers(player);
                 hasPowers.add(player);
             }).get();
+
+            for(PowerContainer power : powersToExecute){
+                new PowerUpdateEvent(player, power, false).callEvent();
+            }
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
         }
@@ -383,6 +390,7 @@ public class OriginPlayerUtils {
 
     public static void unassignPowers(@NotNull Player player, @NotNull LayerContainer layer) throws NotFoundException {
         try {
+            List<PowerContainer> powersToExecute = new ArrayList<>();
             CompletableFuture.runAsync(() -> {
                 for (PowerContainer power : playerPowerMapping.get(player).get(layer)) {
                     if (power == null) continue;
@@ -421,6 +429,7 @@ public class OriginPlayerUtils {
                             e.printStackTrace();
                         }
                     }
+                    powersToExecute.add(power);
                 }
             }).thenRun(() -> {
                 for (Class<? extends CraftPower> classes : getPowersApplied(player)) {
@@ -429,6 +438,10 @@ public class OriginPlayerUtils {
                 OriginDataContainer.unloadData(player);
                 hasPowers.remove(player);
             }).get();
+
+            for(PowerContainer power : powersToExecute){
+                new PowerUpdateEvent(player, power, true).callEvent();
+            }
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
         }

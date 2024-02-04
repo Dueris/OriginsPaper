@@ -29,6 +29,7 @@ import me.dueris.genesismc.factory.conditions.entity.EntityCondition;
 import me.dueris.genesismc.factory.conditions.fluid.FluidCondition;
 import me.dueris.genesismc.factory.conditions.item.ItemCondition;
 import me.dueris.genesismc.factory.powers.CraftPower;
+import me.dueris.genesismc.factory.powers.block.RecipePower;
 import me.dueris.genesismc.factory.powers.block.WaterBreathe;
 import me.dueris.genesismc.factory.powers.simple.origins.BounceSlimeBlock;
 import me.dueris.genesismc.factory.powers.simple.origins.MimicWarden;
@@ -397,6 +398,8 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         CraftApoli.unloadData();
         OriginPlayerUtils.playerPowerMapping.clear();
         OriginPlayerUtils.powersAppliedList.clear();
+        RecipePower.recipeMapping.clear();
+        RecipePower.tags.clear();
         CraftPower.getRegistry().clear();
 
         for (int taskId : getParticleTasks().values()) {

@@ -3,6 +3,7 @@ package me.dueris.genesismc.commands.subcommands.power;
 import me.dueris.genesismc.commands.PlayerSelector;
 import me.dueris.genesismc.commands.subcommands.SubCommand;
 import me.dueris.genesismc.entity.OriginPlayerUtils;
+import me.dueris.genesismc.events.PowerUpdateEvent;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.files.GenesisDataFiles;
@@ -92,6 +93,7 @@ public class Grant extends SubCommand {
                                     .replace("%power%", power.getName())
                                     .replace("%name%", p.getName())
                             );
+                            new PowerUpdateEvent(p, power, false).callEvent();
                         } else {
 
                         }
