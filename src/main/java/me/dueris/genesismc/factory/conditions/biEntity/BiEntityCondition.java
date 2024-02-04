@@ -129,6 +129,9 @@ public class BiEntityCondition implements Condition, Listener {
                 }
                 return getResult(inverted, Optional.of(target.getPassengers().contains(actor)));
             }
+            case "apoli:equal" -> {
+                return getResult(inverted, Optional.of(actor == target));
+            }
             default -> {
                 return Optional.empty();
             }
