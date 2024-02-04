@@ -32,6 +32,7 @@ public class RecipePower extends CraftPower implements Listener {
 
     public static HashMap<Player, List<String>> recipeMapping = new HashMap<>();
     public static List<String> tags = new ArrayList<>();
+    private static boolean finishedLoad = false;
 
     @Override
     public void run(Player p) {
@@ -84,6 +85,7 @@ public class RecipePower extends CraftPower implements Listener {
 
         Bukkit.updateRecipes();
         Bukkit.getOnlinePlayers().forEach((pl) -> applyRecipePower(pl));
+        finishedLoad = true;
     }
 
     // From PowerContainer
@@ -127,7 +129,7 @@ public class RecipePower extends CraftPower implements Listener {
     }
 
     public void applyRecipePower(Player p){
-        if(recipeMapping.isEmpty() && tags.isEmpty()) return;
+        if(!finishedLoad) return;
         if(recipeMapping.containsKey(p)){
             recipeMapping.clear();
         }
