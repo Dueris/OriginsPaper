@@ -30,7 +30,6 @@ import me.dueris.genesismc.factory.conditions.fluid.FluidCondition;
 import me.dueris.genesismc.factory.conditions.item.ItemCondition;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.factory.powers.block.WaterBreathe;
-import me.dueris.genesismc.factory.powers.player.PlayerRender;
 import me.dueris.genesismc.factory.powers.simple.origins.BounceSlimeBlock;
 import me.dueris.genesismc.factory.powers.simple.origins.MimicWarden;
 import me.dueris.genesismc.factory.powers.world.EntityGroupManager;
@@ -365,16 +364,16 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         getServer().getPluginManager().registerEvents(new OriginScheduler.OriginSchedulerTree(), this);
         getServer().getPluginManager().registerEvents(new KeybindUtils(), this);
         getServer().getPluginManager().registerEvents(new StructureGeneration(), this);
-        if (getServer().getPluginManager().isPluginEnabled("SkinsRestorer")) {
-            try {
-                getServer().getPluginManager().registerEvents(new PlayerRender.ModelColor(), this);
-                getServer().getConsoleSender().sendMessage(Component.text(LangConfig.getLocalizedString(Bukkit.getConsoleSender(), "startup.skinRestorer.present")).color(TextColor.fromHexString(AQUA)));
-            } catch (Exception ignored) {
-                // ignored
-            }
-        } else {
-            getServer().getConsoleSender().sendMessage(Component.text(LangConfig.getLocalizedString(Bukkit.getConsoleSender(), "startup.skinRestorer.absent")).color(TextColor.fromHexString(AQUA)));
-        }
+//        if (getServer().getPluginManager().isPluginEnabled("SkinsRestorer")) {
+//            try {
+//                getServer().getPluginManager().registerEvents(new PlayerRender.ModelColor(), this);
+//                getServer().getConsoleSender().sendMessage(Component.text(LangConfig.getLocalizedString(Bukkit.getConsoleSender(), "startup.skinRestorer.present")).color(TextColor.fromHexString(AQUA)));
+//            } catch (Exception ignored) {
+//                // ignored
+//            }
+//        } else {
+//            getServer().getConsoleSender().sendMessage(Component.text(LangConfig.getLocalizedString(Bukkit.getConsoleSender(), "startup.skinRestorer.absent")).color(TextColor.fromHexString(AQUA)));
+//        }
         GuiTicker forced = new GuiTicker();
         forced.runTaskTimer(GenesisMC.getPlugin(), 0, 1);
         GenesisItems items = new GenesisItems();

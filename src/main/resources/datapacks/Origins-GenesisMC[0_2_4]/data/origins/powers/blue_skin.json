@@ -3,9 +3,7 @@
   "hidden": false,
   "name": "Glowing Spirit",
   "description": "You are slightly blue, and glow in dark places.",
-  "modifier": {
-    "red": 0.0,
-    "blue": 0.17,
-    "green": 0.04
-  }
+  "red": 0.35,
+  "blue": 0.7,
+  "green": 0.44
 }
