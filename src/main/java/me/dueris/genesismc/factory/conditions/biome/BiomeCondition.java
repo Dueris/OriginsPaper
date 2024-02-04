@@ -37,18 +37,6 @@ public class BiomeCondition implements Condition {
             boolean inverted = (boolean) condition.getOrDefault("inverted", false);
             String type = condition.get("type").toString().toLowerCase();
             switch (type) {
-                case "apoli:biome" -> {
-                    Map<String, Object> keyMap = (Map<String, Object>) condition.get("condition");
-                    if (keyMap.containsKey("type") && keyMap.get("type").equals("apoli:temperature")) {
-                        if (keyMap.containsKey("comparison") && keyMap.containsKey("compare_to")) {
-                            return getResult(inverted, Optional.of(RestrictArmor.compareValues(block.getTemperature(), keyMap.get("comparison").toString(), Double.parseDouble(keyMap.get("compare_to").toString()))));
-                        } else {
-                            return getResult(inverted, Optional.of(false));
-                        }
-                    } else {
-                        return getResult(inverted, Optional.of(false));
-                    }
-                }
                 case "apoli:in_tag" -> {
                     // Use block in_tag optimization
                     if (TagRegistry.getRegisteredTagFromFileKey(condition.get("tag").toString()) != null) {
