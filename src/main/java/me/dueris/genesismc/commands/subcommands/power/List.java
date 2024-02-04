@@ -36,28 +36,17 @@ public class List extends SubCommand {
             ArrayList<Player> players = PlayerSelector.playerSelector(sender, args[1]);
             for (Player p : players) {
                 for (LayerContainer layerContainer : CraftApoli.getLayers()) {
-                    ArrayList<PowerContainer> powers = (ArrayList<PowerContainer>) OriginPlayerUtils.playerPowerMapping.get(p).get(layerContainer).clone();
-                    for (PowerContainer power : powers) {
-                        if (power == null) return;
-                        if (CraftApoli.getNestedPowers(power) == null) return;
-                        powers.addAll(CraftApoli.getNestedPowers(power));
-                    }
-                    if (powers == null || powers.isEmpty()) {
+                    java.util.List<PowerContainer> powers = OriginPlayerUtils.playerPowerMapping.get(p).get(layerContainer);
+                    if(powers == null || powers.isEmpty()){
                         sender.sendMessage(ChatColor.RED + "Entity %name% does not have any powers".replace("%name%", p.getName()));
-                    } else {
-                        PowerContainer[] powerContainers = powers.toArray(new PowerContainer[0]);
-                        String msg = "Entity %name% has %size% powers: [%powers%]".replace("%name%", p.getName()).replace("%size%", String.valueOf(powerContainers.length));
-                        String powerString = "";
-                        for (int i = 0; i < powerContainers.length; i++) {
-                            String sep;
-                            if (i == powerContainers.length) {
-                                sep = "";
-                            } else {
-                                sep = ", ";
-                            }
-                            powerString = powerString + powerContainers[i].getTag() + sep;
-                        }
-                        sender.sendMessage(msg.replace("%powers%", powerString));
+                    }else{
+                        String msg = "Entity %name% has %size% powers: [%powers%]".replace("%name%", p.getName()).replace("%size%", String.valueOf(powers.size()));
+                        final String[] powerString = {""};
+                        powers.forEach((power) -> {
+                            powerString[0] = powerString[0] + power.getTag() + ", ";
+                        });
+                        String finMsg = msg.replace("%powers%", powerString[0]);
+                        sender.sendMessage(finMsg.replace(", ]", "]"));
                     }
                 }
             }
