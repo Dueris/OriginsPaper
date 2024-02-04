@@ -18,17 +18,21 @@ import me.dueris.genesismc.factory.powers.player.RestrictArmor;
 import me.dueris.genesismc.factory.powers.player.attributes.AttributeHandler;
 import me.dueris.genesismc.utils.PowerContainer;
 import me.dueris.genesismc.utils.Utils;
+import net.minecraft.commands.CommandSource;
+import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.storage.LevelResource;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Block;
 import org.bukkit.craftbukkit.v1_20_R3.CraftWorld;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
+import org.bukkit.craftbukkit.v1_20_R3.entity.CraftLivingEntity;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftPlayer;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.*;
@@ -146,17 +150,6 @@ public class EntityCondition implements Condition {
 
         return blockCount;
     }
-    /*
-    if (condition.get("type").equals("apoli:power_active")) {
-
-            } else if (condition.get("type").equals("apoli:power")) {
-
-            } else if (condition.get("type").equals("apoli:origin")) {
-
-            } else if (condition.get("type").equals("apoli:power_type")) {
-
-            }
-     */
 
     @Override
     public String condition_type() {
@@ -451,14 +444,7 @@ public class EntityCondition implements Condition {
                 }
             }
             case "apoli:fall_flying" -> {
-                if (entity instanceof Player player) {
-                    if (player.isGliding() || FlightElytra.getGlidingPlayers().contains(player)) {
-                        return getResult(inverted, Optional.of(player.getVelocity().getY() < 0 && !player.isOnGround()));
-                    } else {
-                        return getResult(inverted, Optional.of(false));
-                    }
-                }
-                return getResult(inverted, Optional.of(false));
+                return getResult(inverted, Optional.of(entity instanceof LivingEntity le && (((CraftLivingEntity)le).getHandle().isFallFlying() || FlightElytra.getGlidingPlayers().contains(le))));
             }
             case "apoli:submerged_in" -> {
                 if (condition.get("fluid").equals("minecraft:water")) {
@@ -613,14 +599,6 @@ public class EntityCondition implements Condition {
                 }
                 return getResult(inverted, Optional.of(false));
             }
-            case "apoli:passenger" -> {
-                for (Entity entity1 : entity.getWorld().getEntities()) {
-                    if (entity1.getPassengers().contains(entity)) {
-                        return getResult(inverted, Optional.of(true));
-                    }
-                }
-                return getResult(inverted, Optional.of(false));
-            }
             case "apoli:raycast" -> {
                 Predicate<Entity> filter = entity1 -> !entity1.equals(entity);
 
@@ -683,13 +661,47 @@ public class EntityCondition implements Condition {
                 }
                 return getResult(inverted, Optional.of(false));
             }
-            case "apoli:riding" -> {
-                for (Entity entity1 : entity.getWorld().getEntities()) {
-                    if (entity1.getPassengers().add(entity)) {
-                        return getResult(inverted, Optional.of(true));
+            case "apoli:riding", "apoli:riding_root" -> {
+                if(entity.getVehicle() != null){
+                    if(condition.containsKey("bientity_condition")){
+                        Optional<Boolean> bool = ConditionExecutor.biEntityCondition.check((JSONObject) condition.get("bientity_condition"), entity, entity.getVehicle(), null, null, null, null);
+                        return getResult(inverted, Optional.of(bool.isPresent() && bool.get()));
                     }
+                    return getResult(inverted, Optional.of(true));
                 }
                 return getResult(inverted, Optional.of(false));
+            }
+            case "apoli:riding_recursive" -> {
+                int count = 0;
+                if(entity.getVehicle() != null){
+                    Optional<Boolean> bool = ConditionExecutor.biEntityCondition.check((JSONObject) condition.get("bientity_condition"), entity, entity.getVehicle(), null, null, null, null);
+                    Entity vehicle = entity.getVehicle();
+                    while(vehicle != null){
+                        if(bool.isEmpty() || (bool.isPresent() && bool.get())){
+                            count++;
+                        }
+                        vehicle = vehicle.getVehicle();
+                    }
+                }
+                String comparison = condition.get("comparison").toString();
+                double compare_to = Double.parseDouble(condition.get("compare_to").toString());
+                return getResult(inverted, Optional.of(RestrictArmor.compareValues(count, comparison, compare_to)));
+            }
+            case "apoli:passenger_recursive", "apoli:passenger" -> {
+                int count = 0;
+                if(entity.getPassengers() != null && !entity.getPassengers().isEmpty()){
+                    if(condition.containsKey("bientity_condition")){
+                        count = (int) entity.getPassengers().stream().filter(ent -> {
+                            Optional<Boolean> bool = ConditionExecutor.biEntityCondition.check((JSONObject) condition.get("bientity_condition"), ent, entity, null, null, null, null);
+                            return bool.isPresent() && bool.get();
+                        }).count();
+                    }else{
+                        count = entity.getPassengers().size();
+                    }
+                }
+                String comparison = condition.getOrDefault("comparison", ">=").toString();
+                int compare_to = Integer.parseInt(condition.getOrDefault("compare_to", 1).toString());
+                return getResult(inverted, Optional.of(RestrictArmor.compareValues(count, comparison, compare_to)));
             }
             case "apoli:saturation_level" -> {
                 if (entity instanceof Player le) {
