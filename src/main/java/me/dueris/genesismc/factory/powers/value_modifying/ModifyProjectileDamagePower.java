@@ -45,15 +45,12 @@ public class ModifyProjectileDamagePower extends CraftPower implements Listener 
 
     @EventHandler
     public void runD(EntityDamageByEntityEvent e) {
-        System.out.println(e.getDamager().getType());
-        System.out.println(e.getEntity().getType());
         if (e.getDamager() instanceof Projectile p && p.getShooter() instanceof Player pl) {
             if (modify_projectile_damage.contains(pl)) {
                 for (LayerContainer layer : CraftApoli.getLayers()) {
                     try {
                         ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                         for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(pl, getPowerFile(), layer)) {
-                            System.out.println("sjdflkjjsdflkjsda;lkjlskadjglkdfgsf");
                             if (conditionExecutor.check("target_condition", "target_conditions", pl, power, getPowerFile(), e.getDamager(), e.getEntity(), p.getLocation().getBlock(), null, pl.getItemInHand(), null) && conditionExecutor.check("damage_condition", "damage_conditions", pl, power, getPowerFile(), e.getDamager(), e.getEntity(), p.getLocation().getBlock(), null, pl.getItemInHand(), e)) {
                                 for (HashMap<String, Object> modifier : power.getPossibleModifiers("modifier", "modifiers")) {
                                     Float value = Float.valueOf(modifier.get("value").toString());

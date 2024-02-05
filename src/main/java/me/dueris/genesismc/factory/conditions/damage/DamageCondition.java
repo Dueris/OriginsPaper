@@ -494,11 +494,8 @@ public class DamageCondition implements Condition {
                         if(identifier.contains(":")){
                             identifier = identifier.split(":")[1];
                         }
-                        System.out.println(EntityType.valueOf(identifier.toUpperCase()));
                         projectile = event.getDamager().getType().equals(EntityType.valueOf(identifier.toUpperCase()));
                     }
-                    System.out.println(projectileCondition);
-                    System.out.println(projectile);
                     return getResult(inverted, Optional.of(projectileCondition && projectile));
                 }
                 return getResult(inverted, Optional.of(false));
