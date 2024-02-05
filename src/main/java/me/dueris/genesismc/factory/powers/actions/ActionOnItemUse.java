@@ -29,6 +29,7 @@ public class ActionOnItemUse extends CraftPower implements Listener {
     public void entityRightClick(PlayerInteractEvent e) {
         Player player = e.getPlayer(); // aka "actor"
         if (!getPowerArray().contains(player)) return;
+        if (!e.getAction().isRightClick()) return;
 
         for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()) {
             for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(player, getPowerFile(), layer)) {

@@ -155,9 +155,10 @@ public class ItemCondition implements Condition {
         if (condition.isEmpty()) return Optional.empty();
         boolean inverted = (boolean) condition.getOrDefault("inverted", false);
         String type = condition.get("type").toString().toLowerCase();
-        if (itemStack == null) return Optional.empty();
+        if (itemStack == null) return getResult(inverted, Optional.of(false));
         switch (type) {
             case "apoli:ingredient" -> {
+                if (itemStack.getType() == null) return getResult(inverted, Optional.of(false));
                 if (condition.containsKey("ingredient")) {
                     Map<String, Object> ingredientMap = (Map<String, Object>) condition.get("ingredient");
                     if (ingredientMap.containsKey("item")) {

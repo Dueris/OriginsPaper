@@ -53,7 +53,7 @@ public class ModifyProjectileDamagePower extends CraftPower implements Listener 
                                     String operation = modifier.get("operation").toString();
                                     BinaryOperator mathOperator = getOperationMappingsFloat().get(operation);
                                     if (mathOperator != null) {
-                                        float result = (float) mathOperator.apply(e.getDamage(), value);
+                                        float result = Float.valueOf(String.valueOf(mathOperator.apply(e.getDamage(), value)));
                                         e.setDamage(result);
                                         setActive(p, power.getTag(), true);
                                     }
