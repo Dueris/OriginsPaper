@@ -38,6 +38,7 @@ public class Bootstrap implements PluginBootstrap {
         oldDV.add("Origins-Genesis");
         oldDV.add("Origins-GenesisMC");
         oldDV.add("Origins-GenesisMC[0_2_2]");
+        oldDV.add("Origins-GenesisMC[0_2_4]");
     }
 
     public static Enchantment registerEnchantment(String name, Enchantment enchantment) {
