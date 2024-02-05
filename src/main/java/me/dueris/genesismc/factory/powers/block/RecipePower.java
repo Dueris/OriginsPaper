@@ -41,7 +41,12 @@ public class RecipePower extends CraftPower implements Listener {
 
     @EventHandler
     public void load(ServerLoadEvent e){
-        for(PowerContainer powerContainer : CraftApoli.getPowers().stream().filter(powerContainer -> powerContainer.getType().equalsIgnoreCase(getPowerFile())).toList()){
+        parseRecipes();
+        Bukkit.getOnlinePlayers().forEach((pl) -> applyRecipePower(pl));
+    }
+
+    public static void parseRecipes(){
+        for(PowerContainer powerContainer : CraftApoli.getPowers().stream().filter(powerContainer -> powerContainer.getType().equalsIgnoreCase("apoli:recipe")).toList()){
             JSONObject recipe = powerContainer.get("recipe");
             if(recipe == null) throw new IllegalArgumentException("Unable to find recipe data for power: " + powerContainer.getTag());
             NamespacedKey key = new NamespacedKey(recipe.get("id").toString().split(":")[0], recipe.get("id").toString().split(":")[1]);
@@ -84,7 +89,6 @@ public class RecipePower extends CraftPower implements Listener {
         }
 
         Bukkit.updateRecipes();
-        Bukkit.getOnlinePlayers().forEach((pl) -> applyRecipePower(pl));
         finishedLoad = true;
     }
 
@@ -166,7 +170,9 @@ public class RecipePower extends CraftPower implements Listener {
 
     @EventHandler
     public void update(PowerUpdateEvent e){
-        applyRecipePower(e.getPlayer());
+        if(e.getPower().getType().equalsIgnoreCase(getPowerFile())){
+            applyRecipePower(e.getPlayer());
+        }
     }
 
     @EventHandler

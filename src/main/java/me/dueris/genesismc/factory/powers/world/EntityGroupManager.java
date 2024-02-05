@@ -26,6 +26,11 @@ public class EntityGroupManager extends CraftPower {
     public static final Map<Integer, String> default_group = new HashMap<>();
     private static final Map<String, String> entityCategories = new HashMap<>();
     public static EntityGroupManager INSTANCE = new EntityGroupManager();
+    public static boolean stop = false;
+
+    public static void stop(){
+        stop = true;
+    }
 
     static {
         // Undead
@@ -101,6 +106,7 @@ public class EntityGroupManager extends CraftPower {
         new BukkitRunnable() {
             @Override
             public void run() {
+                if(stop) cancel();
                 for (World world : Bukkit.getWorlds()) {
                     for (Entity entity : world.getEntities()) {
                         //Begin entity cases for removal

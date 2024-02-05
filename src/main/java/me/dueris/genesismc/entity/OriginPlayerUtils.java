@@ -333,6 +333,7 @@ public class OriginPlayerUtils {
                                 if (GenesisDataFiles.getMainConfig().getString("console-startup-debug").equalsIgnoreCase("true")) {
                                     Bukkit.getConsoleSender().sendMessage(ChatColor.GREEN + "Assigned builtinImpl power[" + power.getTag() + "] to player " + player.getName());
                                 }
+                                powersToExecute.add(power);
                             }
                         } catch (InstantiationException | IllegalAccessException
                                  | NoSuchFieldException | SecurityException e) {
@@ -356,12 +357,12 @@ public class OriginPlayerUtils {
                                 if (GenesisDataFiles.getMainConfig().getString("console-startup-debug").equalsIgnoreCase("true")) {
                                     Bukkit.getConsoleSender().sendMessage(ChatColor.GREEN + "Assigned power[" + power.getTag() + "] to player " + player.getName());
                                 }
+                                powersToExecute.add(power);
                             }
                         } catch (NotFoundException | InstantiationException | IllegalAccessException e) {
                             e.printStackTrace();
                         }
                     }
-                    powersToExecute.add(power);
                 }
             }).thenRun(() -> {
                 OriginDataContainer.loadData(player);
@@ -369,9 +370,9 @@ public class OriginPlayerUtils {
                 hasPowers.add(player);
             }).get();
 
-            for(PowerContainer power : powersToExecute){
+            powersToExecute.forEach((power) -> {
                 new PowerUpdateEvent(player, power, false).callEvent();
-            }
+            });
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
         }
@@ -407,6 +408,7 @@ public class OriginPlayerUtils {
                                 if (GenesisDataFiles.getMainConfig().getString("console-startup-debug").equalsIgnoreCase("true")) {
                                     Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "Removed builtinImpl power[" + power.getTag() + "] from player " + player.getName());
                                 }
+                                powersToExecute.add(power);
                             }
 
                         } catch (NoSuchFieldException | SecurityException
@@ -424,12 +426,12 @@ public class OriginPlayerUtils {
                                 if (GenesisDataFiles.getMainConfig().getString("console-startup-debug").equalsIgnoreCase("true")) {
                                     Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "Removed power[" + power.getTag() + "] from player " + player.getName());
                                 }
+                                powersToExecute.add(power);
                             }
                         } catch (InstantiationException | IllegalAccessException | NotFoundException e) {
                             e.printStackTrace();
                         }
                     }
-                    powersToExecute.add(power);
                 }
             }).thenRun(() -> {
                 for (Class<? extends CraftPower> classes : getPowersApplied(player)) {
@@ -439,9 +441,9 @@ public class OriginPlayerUtils {
                 hasPowers.remove(player);
             }).get();
 
-            for(PowerContainer power : powersToExecute){
+            powersToExecute.forEach((power) -> {
                 new PowerUpdateEvent(player, power, true).callEvent();
-            }
+            });
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
         }

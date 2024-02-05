@@ -1,6 +1,7 @@
 package me.dueris.genesismc;
 
 import io.papermc.paper.event.player.PlayerFailMoveEvent;
+import io.papermc.paper.event.server.ServerResourcesReloadedEvent;
 import me.dueris.genesismc.choosing.ChoosingCustomOrigins;
 import me.dueris.genesismc.choosing.ChoosingMain;
 import me.dueris.genesismc.choosing.GuiTicker;
@@ -60,6 +61,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.server.ServerLoadEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scoreboard.Team;
@@ -226,9 +228,9 @@ public final class GenesisMC extends JavaPlugin implements Listener {
             Bukkit.getLogger().severe("Unable to start GenesisMC due to it not being compatible with this server version");
             Bukkit.getServer().getPluginManager().disablePlugin(this);
         }
-        if (forceWatchdogStop) {
-            WatchdogThread.doStop();
-        }
+//        if (forceWatchdogStop) {
+//            WatchdogThread.doStop();
+//        }
         CraftApoli.setupDynamicThreadCount();
         ThreadFactory threadFactory = new NamedThreadFactory("OriginParsingPool");
         loaderThreadPool = Executors.newFixedThreadPool(CraftApoli.getDynamicThreadCount(), threadFactory);
@@ -401,6 +403,9 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         RecipePower.recipeMapping.clear();
         RecipePower.tags.clear();
         CraftPower.getRegistry().clear();
+        CraftPower.getKeyedRegistry().clear();
+        scheduler.cancel();
+        EntityGroupManager.stop();
 
         for (int taskId : getParticleTasks().values()) {
             getServer().getScheduler().cancelTask(taskId);
@@ -424,5 +429,95 @@ public final class GenesisMC extends JavaPlugin implements Listener {
     public void lagBackPatch(PlayerFailMoveEvent e) {
         e.setAllowed(true);
         e.setLogWarning(false);
+    }
+
+    @EventHandler
+    /**
+     * This action is purely for development reasons, which is why there is a broadcast saying that its not supported.
+     * Its NOT intended for normal gameplay, its just a fast way to reload parsing to test new data
+     */
+    public void reload(ServerResourcesReloadedEvent e){
+        if(!(e.getCause().equals(ServerResourcesReloadedEvent.Cause.COMMAND) || e.getCause().equals(ServerResourcesReloadedEvent.Cause.PLUGIN))) return;
+        Bukkit.broadcast(Component.text("GENESIS IS CONDUCTING A RESOURCE RELOAD, DO NOT REPORT BUGS OR CRASHES TO THE AUTHOR, THIS ACTION IS UNSUPPORTED").color(TextColor.color(230, 37, 23)));
+        me.dueris.genesismc.OriginDataContainer.unloadAllData();
+        onDisable();
+
+        GenesisDataFiles.loadLangConfig();
+        GenesisDataFiles.loadMainConfig();
+        GenesisDataFiles.loadOrbConfig();
+        CraftApoli.setupDynamicThreadCount();
+        ThreadFactory threadFactory = new NamedThreadFactory("OriginParsingPool");
+        loaderThreadPool = Executors.newFixedThreadPool(CraftApoli.getDynamicThreadCount(), threadFactory);
+        debugOrigins = getOrDefault(GenesisDataFiles.getMainConfig().getBoolean("console-startup-debug") /* add arg compat in future version */, false);
+        if (LangConfig.getLangFile() == null) {
+            Bukkit.getLogger().severe("Unable to start GenesisMC due to lang not being loaded properly");
+            Bukkit.getServer().getPluginManager().disablePlugin(this);
+        }
+
+        me.dueris.genesismc.OriginDataContainer.loadData();
+        // Pre-load condition types to prevent constant calling
+        CraftCondition.bientity = new BiEntityCondition();
+        CraftCondition.biome = new BiomeCondition();
+        CraftCondition.blockCon = new BlockCondition();
+        CraftCondition.damage = new DamageCondition();
+        CraftCondition.entity = new EntityCondition();
+        CraftCondition.fluidCon = new FluidCondition();
+        CraftCondition.item = new ItemCondition();
+        // Pre-load end
+        conditionExecutor = new ConditionExecutor();
+        try {
+            CraftApoli.loadOrigins();
+        } catch (InterruptedException | ExecutionException ee) {
+            ee.printStackTrace();
+        }
+
+        // Register builtin powers
+        Method registerMethod;
+        try {
+            registerMethod = CraftPower.class.getDeclaredMethod("registerBuiltinPowers");
+            registerMethod.setAccessible(true);
+            registerMethod.invoke(null);
+            RegisterPowersEvent ee = new RegisterPowersEvent();
+            ee.callEvent();
+        } catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException |
+                 InvocationTargetException ee) {
+            ee.printStackTrace();
+        }
+
+        RecipePower.parseRecipes();
+
+        OriginScheduler.OriginSchedulerTree scheduler = new OriginScheduler.OriginSchedulerTree();
+        GenesisMC.scheduler = scheduler;
+        scheduler.runTaskTimer(this, 0, 1);
+
+        OrbOfOrigins.init();
+        InfinPearl.init();
+        WaterProtItem.init();
+
+        EntityGroupManager.INSTANCE.startTick();
+
+        patchPowers();
+        TagRegistry.runParse();
+        try {
+            FixerUpper.runFixerUpper();
+        } catch (Exception ee) {
+            ee.printStackTrace();
+        }
+
+        if (debugOrigins) {
+            Bukkit.getServer().getConsoleSender().sendMessage("* (-debugOrigins={true}) || BEGINNING DEBUG {");
+            Bukkit.getServer().getConsoleSender().sendMessage("  - Loaded @1 powers".replace("@1", String.valueOf(CraftPower.getRegistry().toArray().length)));
+            Bukkit.getServer().getConsoleSender().sendMessage("  - Loaded @4 layers".replace("@4", String.valueOf(CraftApoli.getLayers().toArray().length)));
+            Bukkit.getServer().getConsoleSender().sendMessage("  - Loaded @2 origins = [".replace("@2", String.valueOf(CraftApoli.getOrigins().toArray().length)));
+            for (OriginContainer originContainer : CraftApoli.getOrigins()) {
+                Bukkit.getServer().getConsoleSender().sendMessage("     () -> {@3}".replace("@3", originContainer.getTag()));
+            }
+            Bukkit.getServer().getConsoleSender().sendMessage("  ]");
+            Bukkit.getServer().getConsoleSender().sendMessage("  - Power thread starting with {originScheduler}".replace("originScheduler", GenesisMC.scheduler.toString()));
+            Bukkit.getServer().getConsoleSender().sendMessage("  - Lang testing = {true}");
+            Bukkit.getServer().getConsoleSender().sendMessage("}");
+        }
+
+        loaderThreadPool.shutdown();
     }
 }
