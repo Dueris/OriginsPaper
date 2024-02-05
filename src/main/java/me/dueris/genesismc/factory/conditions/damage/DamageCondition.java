@@ -483,11 +483,23 @@ public class DamageCondition implements Condition {
             }
             case "apoli:projectile" -> {
                 if (entityDamageEvent.getCause().equals(DamageCause.PROJECTILE)) {
+                    boolean projectile = true;
+                    boolean projectileCondition = true;
                     if (condition.containsKey("projectile_condition")) {
-                        return getResult(inverted, ConditionExecutor.entityCondition.check((JSONObject) condition.get("projectile_condition"), ((EntityDamageByEntityEvent) entityDamageEvent).getDamager(), target, block, fluid, itemStack, entityDamageEvent));
-                    } else {
-                        return getResult(inverted, Optional.of(true));
+                        Optional<Boolean> bool = ConditionExecutor.entityCondition.check((JSONObject) condition.get("projectile_condition"), ((EntityDamageByEntityEvent) entityDamageEvent).getDamager(), target, block, fluid, itemStack, entityDamageEvent);
+                        projectileCondition = bool.isPresent() && bool.get();
                     }
+                    if (condition.containsKey("projectile") && entityDamageEvent instanceof EntityDamageByEntityEvent event){
+                        String identifier = condition.get("projectile").toString();
+                        if(identifier.contains(":")){
+                            identifier = identifier.split(":")[1];
+                        }
+                        System.out.println(EntityType.valueOf(identifier.toUpperCase()));
+                        projectile = event.getDamager().getType().equals(EntityType.valueOf(identifier.toUpperCase()));
+                    }
+                    System.out.println(projectileCondition);
+                    System.out.println(projectile);
+                    return getResult(inverted, Optional.of(projectileCondition && projectile));
                 }
                 return getResult(inverted, Optional.of(false));
             }
