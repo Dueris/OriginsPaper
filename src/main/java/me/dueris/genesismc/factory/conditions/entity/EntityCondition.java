@@ -599,6 +599,18 @@ public class EntityCondition implements Condition {
                 }
                 return getResult(inverted, Optional.of(false));
             }
+            case "apoli:biome" -> {
+                Map<String, Object> keyMap = (Map<String, Object>) condition.get("condition");
+                if (keyMap.containsKey("type") && keyMap.get("type").equals("apoli:temperature")) {
+                    if (keyMap.containsKey("comparison") && keyMap.containsKey("compare_to")) {
+                        return getResult(inverted, Optional.of(RestrictArmor.compareValues(block.getTemperature(), keyMap.get("comparison").toString(), Double.parseDouble(keyMap.get("compare_to").toString()))));
+                    } else {
+                        return getResult(inverted, Optional.of(false));
+                    }
+                } else {
+                    return getResult(inverted, Optional.of(false));
+                }
+            }
             case "apoli:raycast" -> {
                 Predicate<Entity> filter = entity1 -> !entity1.equals(entity);
 
