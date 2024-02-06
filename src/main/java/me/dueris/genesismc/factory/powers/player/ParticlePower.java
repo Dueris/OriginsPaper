@@ -84,14 +84,12 @@ public class ParticlePower extends CraftPower {
         if(root instanceof String particleSt){
             return Particle.valueOf(ensureCorrectNamespace(particleSt).split(":")[1].toUpperCase());
         } else if (root instanceof JSONObject particle) {
-            System.out.println(ensureCorrectNamespace(particle.get("type").toString()));
             return Particle.valueOf(ensureCorrectNamespace(particle.get("type").toString()).split(":")[1].toUpperCase());
         }
         return null;
     }
 
     private static String ensureCorrectNamespace(String string){
-        System.out.println(string.contains(":"));
         return string.contains(":") ? string : "minecraft:" + string;
     }
 
