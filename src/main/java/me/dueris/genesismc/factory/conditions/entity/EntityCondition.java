@@ -7,6 +7,8 @@ import me.dueris.genesismc.factory.TagRegistry;
 import me.dueris.genesismc.factory.actions.Actions;
 import me.dueris.genesismc.factory.conditions.Condition;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
+import me.dueris.genesismc.factory.conditions.biome.BiomeCondition;
+import me.dueris.genesismc.factory.conditions.biome.BiomeMappings;
 import me.dueris.genesismc.factory.conditions.block.BlockCondition;
 import me.dueris.genesismc.factory.conditions.item.ItemCondition;
 import me.dueris.genesismc.factory.powers.CraftPower;
@@ -29,6 +31,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.storage.LevelResource;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
+import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.craftbukkit.v1_20_R3.CraftWorld;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
@@ -600,15 +603,15 @@ public class EntityCondition implements Condition {
                 return getResult(inverted, Optional.of(false));
             }
             case "apoli:biome" -> {
-                Map<String, Object> keyMap = (Map<String, Object>) condition.get("condition");
-                if (keyMap.containsKey("type") && keyMap.get("type").equals("apoli:temperature")) {
-                    if (keyMap.containsKey("comparison") && keyMap.containsKey("compare_to")) {
-                        return getResult(inverted, Optional.of(RestrictArmor.compareValues(block.getTemperature(), keyMap.get("comparison").toString(), Double.parseDouble(keyMap.get("compare_to").toString()))));
-                    } else {
-                        return getResult(inverted, Optional.of(false));
+                if(condition.containsKey("condition")){
+                    Optional<Boolean> bool = ConditionExecutor.biomeCondition.check((JSONObject) condition.get("condition"), entity, target, entity.getLocation().getBlock(), fluid, itemStack, entityDamageEvent);
+                    return getResult(inverted, Optional.of(bool.isPresent() && bool.get()));
+                }else{ // Assumed to be trying to get biome type
+                    String key = condition.get("biome").toString();
+                    if(key.contains(":")){
+                        key = key.split(":")[1];
                     }
-                } else {
-                    return getResult(inverted, Optional.of(false));
+                    return getResult(inverted, Optional.of(entity.getLocation().getBlock().getBiome().equals(Biome.valueOf(key.toUpperCase()))));
                 }
             }
             case "apoli:raycast" -> {
