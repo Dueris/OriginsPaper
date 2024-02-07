@@ -26,9 +26,7 @@ public class ActionOnBeingUsed extends CraftPower implements Listener {
         if (!getPowerArray().contains(actor)) return;
 
         for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()) {
-            for (PowerContainer powerContainer : OriginPlayerUtils.getMultiPowerFileFromType(player, getPowerFile(), layer)) {
-                PowerContainer power = powerContainer;
-                if (power == null) continue;
+            for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(player, getPowerFile(), layer)) {
 
                 setActive(player, power.getTag(), true);
                 Actions.BiEntityActionType(actor, target, power.getBiEntityAction());

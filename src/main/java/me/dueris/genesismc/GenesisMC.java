@@ -17,7 +17,6 @@ import me.dueris.genesismc.enchantments.generation.StructureGeneration;
 import me.dueris.genesismc.enchantments.generation.VillagerTradeHook;
 import me.dueris.genesismc.entity.InventorySerializer;
 import me.dueris.genesismc.entity.OriginPlayerUtils;
-import me.dueris.genesismc.events.RegisterPowersEvent;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.TagRegistry;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
@@ -32,6 +31,7 @@ import me.dueris.genesismc.factory.conditions.item.ItemCondition;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.factory.powers.block.RecipePower;
 import me.dueris.genesismc.factory.powers.block.WaterBreathe;
+import me.dueris.genesismc.factory.powers.player.ModelColor;
 import me.dueris.genesismc.factory.powers.simple.origins.BounceSlimeBlock;
 import me.dueris.genesismc.factory.powers.simple.origins.MimicWarden;
 import me.dueris.genesismc.factory.powers.world.EntityGroupManager;
@@ -61,11 +61,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.server.ServerLoadEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scoreboard.Team;
-import org.spigotmc.WatchdogThread;
 
 import java.io.File;
 import java.io.IOException;
@@ -281,11 +279,17 @@ public final class GenesisMC extends JavaPlugin implements Listener {
             registerMethod = CraftPower.class.getDeclaredMethod("registerBuiltinPowers");
             registerMethod.setAccessible(true);
             registerMethod.invoke(null);
-            RegisterPowersEvent e = new RegisterPowersEvent();
-            e.callEvent();
         } catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException |
                  InvocationTargetException e) {
             e.printStackTrace();
+        }
+
+        if(Bukkit.getPluginManager().isPluginEnabled("SkinsRestorer")){
+            try {
+                CraftPower.registerNewPower(ModelColor.ModelTransformer.class);
+            } catch (InstantiationException | IllegalAccessException ex) {
+                throw new RuntimeException(ex);
+            }
         }
 
         OriginScheduler.OriginSchedulerTree scheduler = new OriginScheduler.OriginSchedulerTree();
@@ -477,11 +481,17 @@ public final class GenesisMC extends JavaPlugin implements Listener {
             registerMethod = CraftPower.class.getDeclaredMethod("registerBuiltinPowers");
             registerMethod.setAccessible(true);
             registerMethod.invoke(null);
-            RegisterPowersEvent ee = new RegisterPowersEvent();
-            ee.callEvent();
         } catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException |
                  InvocationTargetException ee) {
             ee.printStackTrace();
+        }
+
+        if(Bukkit.getPluginManager().isPluginEnabled("SkinsRestorer")){
+            try {
+                CraftPower.registerNewPower(ModelColor.ModelTransformer.class);
+            } catch (InstantiationException | IllegalAccessException ex) {
+                throw new RuntimeException(ex);
+            }
         }
 
         RecipePower.parseRecipes();

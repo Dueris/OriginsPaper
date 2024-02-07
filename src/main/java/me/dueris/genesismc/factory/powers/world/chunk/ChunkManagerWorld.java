@@ -9,6 +9,7 @@ import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
@@ -151,7 +152,17 @@ public class ChunkManagerWorld {
 
     public void killAllEntitiesInChunk(Chunk chunk) {
         for (Entity entity : getAllEntitiesInChunk(chunk)) {
-            entity.setFallDistance(1000000);
+            if(entity instanceof LivingEntity le) {
+                le.damage(Integer.MAX_VALUE);
+            }
+        }
+    }
+
+    public void removeAllEntitiesInChunk(Chunk chunk) {
+        for (Entity entity : getAllEntitiesInChunk(chunk)) {
+            if(entity instanceof LivingEntity le) {
+                le.remove();
+            }
         }
     }
 

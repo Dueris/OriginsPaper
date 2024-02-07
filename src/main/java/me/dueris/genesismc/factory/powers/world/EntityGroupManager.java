@@ -2,8 +2,10 @@ package me.dueris.genesismc.factory.powers.world;
 
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.entity.OriginPlayerUtils;
+import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
+import me.dueris.genesismc.utils.LayerContainer;
 import me.dueris.genesismc.utils.OriginContainer;
 import me.dueris.genesismc.utils.PowerContainer;
 import org.bukkit.Bukkit;
@@ -121,13 +123,14 @@ public class EntityGroupManager extends CraftPower {
                         }
                         if (entity instanceof Player p) {
                             //Player case, check for power
-                            for (OriginContainer origin : OriginPlayerUtils.getOrigin(((Player) entity).getPlayer()).values()) {
-                                ConditionExecutor executor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
-                                for (PowerContainer power : origin.getMultiPowerFileFromType(getPowerFile())) {
-                                    if (executor.check("condition", "conditions", (Player) entity, power, getPowerFile(), entity, null, entity.getLocation().getBlock(), null, ((Player) entity).getItemInHand(), null)) {
+                            ConditionExecutor executor = GenesisMC.getConditionExecutor();
+                            for (LayerContainer layer : CraftApoli.getLayers()) {
+                                for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
+                                    if (executor.check("condition", "conditions", p, power, getPowerFile(), entity, null, entity.getLocation().getBlock(), null, p.getItemInHand(), null)) {
                                         if (!getPowerArray().contains(p)) return;
                                         setActive(p, power.getTag(), true);
                                         if (entity_group.contains(entity)) {
+                                            if(power.getObjectOrDefault("group", null) == null) throw new IllegalArgumentException("Group in entity_group power was not defined.");
                                             if (power.getStringOrDefault("group", null).equalsIgnoreCase("undead")) {
                                                 undead.put(entity.getEntityId(), entity.getType().name());
                                             } else if (power.getStringOrDefault("group", null).equalsIgnoreCase("arthropod")) {
@@ -141,7 +144,6 @@ public class EntityGroupManager extends CraftPower {
                                             }
                                         }
                                     } else {
-                                        if (!getPowerArray().contains(entity)) return;
                                         setActive(p, power.getTag(), false);
                                     }
                                 }
