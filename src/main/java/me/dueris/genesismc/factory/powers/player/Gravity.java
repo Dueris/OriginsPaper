@@ -1,22 +1,28 @@
 package me.dueris.genesismc.factory.powers.player;
 
 import com.destroystokyo.paper.event.player.PlayerJumpEvent;
+import com.destroystokyo.paper.event.server.ServerTickEndEvent;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.entity.OriginPlayerUtils;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.factory.powers.simple.origins.LikeWater;
 import me.dueris.genesismc.utils.PowerContainer;
+import org.bukkit.GameMode;
 import org.bukkit.Material;
+import org.bukkit.craftbukkit.v1_20_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerToggleFlightEvent;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Random;
 
 public class Gravity extends CraftPower implements Listener {
 
@@ -60,6 +66,13 @@ public class Gravity extends CraftPower implements Listener {
                 }
             }
         }
+    }
+
+    @EventHandler
+    public void serverTickEnd(PlayerToggleFlightEvent e){
+        if(creative_flight.contains(e.getPlayer()) || e.getPlayer().getGameMode().equals(GameMode.CREATIVE) || e.getPlayer().getGameMode().equals(GameMode.SPECTATOR)
+        || elytra.contains(e.getPlayer())) return;
+        e.setCancelled(getPowerArray().contains(e.getPlayer()));
     }
 
     @Override

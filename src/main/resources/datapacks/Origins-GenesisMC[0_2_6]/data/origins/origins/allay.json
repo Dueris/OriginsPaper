@@ -7,9 +7,9 @@
     "origins:half_health",
     "origins:cookie_saturation",
     "origins:vegetarian",
-    "origins:creative_flight",
     "origins:allay_sparkle",
     "star:fire",
+    "origins:firework_launch",
     "origins:faster_mining_during_flight"
   ],
   "icon": {

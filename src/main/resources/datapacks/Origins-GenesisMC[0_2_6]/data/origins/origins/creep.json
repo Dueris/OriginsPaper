@@ -1,11 +1,13 @@
 {
   "powers": [
-    "origins:felinephobia",
     "origins:explode_tick",
     "origins:stronger_thunderstorm",
     "origins:blast_resistance",
     "origins:explode_on_fire",
-    "origins:explode_tick_toggle"
+    "origins:explode_tick_toggle",
+    "origins:poison_on_hit",
+    "origins:creep_sprint",
+    "origins:slower"
   ],
   "icon": {
     "item": "minecraft:gunpowder"

@@ -1,0 +1,18 @@
+{
+    "type": "origins:self_action_when_hit",
+    "entity_action": {
+        "type": "origins:chance",
+        "chance": 0.20,
+        "action": {
+            "type": "origins:apply_effect",
+            "effect": {
+                "effect": "minecraft:poison",
+                "amplifier": 0,
+                "duration": 60
+            }
+        }
+    },
+    "hidden": false,
+    "name": "Unstable Entity",
+    "description": "Upon being hit, you have a 20% chance of getting poisoned."
+}

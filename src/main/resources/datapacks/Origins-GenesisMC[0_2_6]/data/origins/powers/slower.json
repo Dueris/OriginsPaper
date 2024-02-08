@@ -1,0 +1,17 @@
+{
+    "type": "origins:attribute",
+    "tick_rate": 5,
+    "modifiers": [
+        {
+            "attribute": "minecraft:generic.movement_speed",
+            "operation": "addition",
+            "value": -0.012
+        }
+    ],
+    "condition": {
+        "type": "origins:in_thunderstorm"
+    },
+    "hidden": false,
+    "name": "Slower",
+    "description": "You are slower than the normal human"
+}

@@ -1,0 +1,32 @@
+{
+    "type": "origins:multiple",
+    "trigger": {
+        "type": "origins:active_self",
+        "key": {
+            "key": "key.origins.secondary_active"
+        },
+        "cooldown": 700,
+        "entity_action": {
+            "type": "origins:and",
+            "actions": [
+                {
+                    "type": "origins:change_resource",
+                    "resource": "origins:creep_sprint_resource",
+                    "change": 600
+                },
+                {
+                    "type": "origins:apply_effect",
+                    "effect": {
+                        "effect": "minecraft:speed",
+                        "duration": 300,
+                        "amplifier": 0
+                    }
+                }
+            ]
+        },
+        "hidden": true
+    },
+    "hidden": false,
+    "name": "Sprint",
+    "description": "Every 30 seconds you can sprint for 15 seconds unless your in a thunderstorm"
+  }

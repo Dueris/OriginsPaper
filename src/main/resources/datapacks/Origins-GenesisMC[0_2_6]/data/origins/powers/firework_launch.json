@@ -1,0 +1,18 @@
+{
+  "type": "origins:action_on_item_use",
+  "item_condition": {
+    "type": "origins:ingredient",
+    "ingredient": {
+      "item": "minecraft:firework_rocket"
+    }
+  },
+  "entity_action": {
+    "type": "origins:add_velocity",
+    "z": 1.5,
+    "space": "local"
+  },
+  "item_action": {
+    "type": "origins:consume",
+    "amount": 1
+  }
+}

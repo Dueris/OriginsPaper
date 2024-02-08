@@ -43,7 +43,6 @@ import org.json.simple.JSONObject;
 import java.util.*;
 import java.util.function.Predicate;
 
-import static me.dueris.genesismc.factory.powers.OriginMethods.statusEffectInstance;
 import static me.dueris.genesismc.utils.KeybindUtils.addItems;
 
 public class Actions {
@@ -63,7 +62,7 @@ public class Actions {
             }
         } else if (type.equals("apoli:chance")) {
             double chance = Double.parseDouble(power.get("chance").toString());
-            double randomValue = Math.random();
+            double randomValue = new Random().nextDouble(1);
 
             if (randomValue <= chance) {
                 JSONObject action = (JSONObject) power.get("action");
@@ -143,7 +142,7 @@ public class Actions {
             }
         } else if (type.equals("apoli:chance")) {
             double chance = Double.parseDouble(power.get("chance").toString());
-            double randomValue = Math.random();
+            double randomValue = new Random().nextDouble(1);
 
             if (randomValue <= chance) {
                 JSONObject action = (JSONObject) power.get("action");
@@ -211,7 +210,7 @@ public class Actions {
             }
         } else if (type.equals("apoli:chance")) {
             double chance = Double.parseDouble(power.get("chance").toString());
-            double randomValue = Math.random();
+            double randomValue = new Random().nextDouble(1);
 
             if (randomValue <= chance) {
                 JSONObject action = (JSONObject) power.get("action");
@@ -282,7 +281,7 @@ public class Actions {
             }
         } else if (type.equals("apoli:chance")) {
             double chance = Double.parseDouble(power.get("chance").toString());
-            double randomValue = Math.random();
+            double randomValue = new Random().nextDouble(1);
 
             if (randomValue <= chance) {
                 JSONObject action = (JSONObject) power.get("action");
@@ -423,21 +422,12 @@ public class Actions {
     }
 
     private static void runItem(ItemStack item, JSONObject power) {
-        JSONObject itemAction = (JSONObject) power.get("item_action");
-        String type = itemAction.get("type").toString();
+        String type = power.get("type").toString();
         if (type.equals("apoli:damage")) {
-            item.setDurability((short) (item.getDurability() + Short.parseShort(itemAction.get("amount").toString())));
+            item.setDurability((short) (item.getDurability() + Short.parseShort(power.get("amount").toString())));
         }
         if (type.equals("apoli:consume")) {
-            for (Player player : Bukkit.getOnlinePlayers()) {
-                if (player.getInventory().contains(item)) {
-                    if (item.getType().isEdible()) {
-                        item.setAmount(item.getAmount() - 1);
-                        player.setSaturation(player.getSaturation() + 2);
-                        player.setFoodLevel(player.getFoodLevel() + 3);
-                    }
-                }
-            }
+            item.setAmount(item.getAmount() - 1);
         }
         if (type.equals("apoli:remove_enchantment")) {
             Enchantment enchantment = Enchantment.getByKey(new NamespacedKey(power.get("enchantment").toString().split(":")[0], power.get("enchantment").toString().split(":")[1]));
@@ -917,8 +907,8 @@ public class Actions {
             }
         }
         if (type.equals("apoli:apply_effect")) {
-            if (entity instanceof LivingEntity player) {
-                statusEffectInstance(player, entityAction);
+            if (entity instanceof LivingEntity le) {
+                Utils.statusEffectInstance(le, entityAction);
             }
         }
         if (type.equals("apoli:area_of_effect")) {

@@ -28,18 +28,18 @@ public class SelfActionWhenHit extends CraftPower implements Listener {
         Entity actor = e.getEntity();
         Entity target = e.getDamager();
 
-        if (!(target instanceof Player player)) return;
-        if (!getPowerArray().contains(target)) return;
+        if (!(actor instanceof Player player)) return;
+        if (!getPowerArray().contains(player)) return;
 
         for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()) {
             ConditionExecutor executor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
             if (CooldownManager.isPlayerInCooldown(player, getPowerFile())) return;
             for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(player, getPowerFile(), layer)) {
-                if (executor.check("condition", "conditions", (Player) target, power, getPowerFile(), actor, target, null, null, ((Player) target).getItemOnCursor(), e)) {
+                if (executor.check("condition", "conditions", player, power, getPowerFile(), actor, target, null, null, player.getItemInHand(), e)) {
                     setActive(player, power.getTag(), true);
-                    Actions.EntityActionType(target, power.getEntityAction());
+                    Actions.EntityActionType(player, power.getEntityAction());
                     if (power.getObjectOrDefault("cooldown", 1) != null) {
-                        CooldownManager.addCooldown((Player) target, Utils.getNameOrTag(power), power.getType(), power.getIntOrDefault("cooldown", power.getIntOrDefault("max", 1)), getPowerFile());
+                        CooldownManager.addCooldown(player, Utils.getNameOrTag(power), power.getType(), power.getIntOrDefault("cooldown", power.getIntOrDefault("max", 1)), getPowerFile());
                     }
                 } else {
                     setActive(player, power.getTag(), false);
