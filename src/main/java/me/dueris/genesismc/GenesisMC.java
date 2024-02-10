@@ -91,7 +91,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
     public static boolean disableRender = true;
     public static String MODID = "genesismc";
     public static ConditionExecutor conditionExecutor;
-    public static String apoliVersion = "1.12.2";
+    public static String apoliVersion = "1.12.4";
     public static boolean placeholderapi = false;
     public static File playerDataFolder = MinecraftServer.getServer().playerDataStorage.getPlayerDir();
     public static boolean debugOrigins = false;
