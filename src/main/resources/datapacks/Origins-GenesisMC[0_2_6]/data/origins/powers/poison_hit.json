@@ -1,0 +1,18 @@
+{
+  "type": "origins:target_action_on_hit",
+  "entity_action": {
+    "type": "origins:chance",
+    "chance": 0.35,
+    "action": {
+      "type": "origins:apply_effect",
+      "effect": {
+        "effect": "minecraft:poison",
+        "amplifier": 0,
+        "duration": 60
+      }
+    }
+  },
+  "hidden": false,
+  "name": "Stinger",
+  "description": "Upon hitting an entity, they have a 35% chance of being poisoned"
+}

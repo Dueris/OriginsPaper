@@ -29,18 +29,6 @@ public class DefaultChoose {
         OriginChooseEvent chooseEvent = new OriginChooseEvent(p);
         getServer().getPluginManager().callEvent(chooseEvent);
 
-        if (p.getInventory().getItemInMainHand().isSimilar(OrbOfOrigins.orb) && !OriginPlayerUtils.hasOrigin(p, CraftApoli.nullOrigin().getTag())) {
-            int amt = p.getInventory().getItemInMainHand().getAmount();
-            if (p.getGameMode().equals(GameMode.CREATIVE)) return;
-            p.getInventory().getItemInMainHand().setAmount(amt - 1);
-        } else {
-            if (p.getInventory().getItemInOffHand().isSimilar(orb) && !OriginPlayerUtils.hasOrigin(p, CraftApoli.nullOrigin().getTag())) {
-                int amt = p.getInventory().getItemInOffHand().getAmount();
-                if (p.getGameMode().equals(GameMode.CREATIVE)) return;
-                p.getInventory().getItemInOffHand().setAmount(amt - 1);
-            }
-        }
-
         SendCharts.originPopularity(p);
 
     }

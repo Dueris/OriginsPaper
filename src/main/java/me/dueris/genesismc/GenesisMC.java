@@ -39,8 +39,6 @@ import me.dueris.genesismc.files.GenesisDataFiles;
 import me.dueris.genesismc.files.nbt.FixerUpper;
 import me.dueris.genesismc.hooks.papi.PlaceholderApiExtension;
 import me.dueris.genesismc.items.GenesisItems;
-import me.dueris.genesismc.items.InfinPearl;
-import me.dueris.genesismc.items.OrbOfOrigins;
 import me.dueris.genesismc.items.WaterProtItem;
 import me.dueris.genesismc.utils.KeybindUtils;
 import me.dueris.genesismc.utils.LogoutBugWorkaround;
@@ -296,8 +294,6 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         GenesisMC.scheduler = scheduler;
         scheduler.runTaskTimer(this, 0, 1);
 
-        OrbOfOrigins.init();
-        InfinPearl.init();
         WaterProtItem.init();
         start();
         patchPowers();
@@ -500,8 +496,6 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         GenesisMC.scheduler = scheduler;
         scheduler.runTaskTimer(this, 0, 1);
 
-        OrbOfOrigins.init();
-        InfinPearl.init();
         WaterProtItem.init();
 
         EntityGroupManager.INSTANCE.startTick();

@@ -1,6 +1,8 @@
 package me.dueris.genesismc.commands;
 
+import me.dueris.genesismc.commands.subcommands.origin.Recipe;
 import me.dueris.genesismc.factory.CraftApoli;
+import me.dueris.genesismc.factory.powers.block.RecipePower;
 import me.dueris.genesismc.utils.LayerContainer;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -70,7 +72,11 @@ public class TabAutoComplete implements TabCompleter {
                     return layerTags;
                 }
                 if (args[0].equalsIgnoreCase("give")) {
-                    return List.of("origins:orb_of_origin");
+                    List<String> strings = RecipePower.tags;
+                    strings.add("origins:orb_of_origins");
+                    return strings.stream()
+                            .filter(string -> string.startsWith(args[2]) || string.split(":")[1].startsWith(args[2]))
+                            .collect(Collectors.toList());
                 } else if (args[0].equalsIgnoreCase("enchant")) {
                     return List.of("origins:water_protection");
                 } else if (args[0].equals("gui")) {

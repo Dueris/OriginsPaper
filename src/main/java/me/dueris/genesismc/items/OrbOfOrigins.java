@@ -1,6 +1,7 @@
 package me.dueris.genesismc.items;
 
 import me.dueris.genesismc.GenesisMC;
+import me.dueris.genesismc.factory.powers.block.RecipePower;
 import me.dueris.genesismc.files.GenesisDataFiles;
 import me.dueris.genesismc.utils.translation.LangConfig;
 import org.bukkit.Bukkit;
@@ -23,7 +24,7 @@ public class OrbOfOrigins {
         createOrb();
     }
 
-    public static void createOrb() {
+    private static void createOrb() {
         ItemStack item = new ItemStack(Material.MAGMA_CREAM);
         ItemMeta meta = item.getItemMeta();
         meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
@@ -42,7 +43,7 @@ public class OrbOfOrigins {
         try {
             //Shaped Recipe for ORB_OF_ORIGINS
             if (GenesisDataFiles.getMainConfig().getString("orb-of-origins").equalsIgnoreCase("true")) {
-                ShapedRecipe sr = new ShapedRecipe(NamespacedKey.minecraft("orboforigins"), item);
+                ShapedRecipe sr = new ShapedRecipe(new NamespacedKey("origins", "orb_of_origins"), item);
                 sr.shape("123",
                         "456",
                         "789");
@@ -56,6 +57,8 @@ public class OrbOfOrigins {
                 sr.setIngredient('8', Material.valueOf(getOrbCon().get("crafting.bottom.middle").toString()));
                 sr.setIngredient('9', Material.valueOf(getOrbCon().get("crafting.bottom.right").toString()));
                 Bukkit.getServer().addRecipe(sr);
+
+                RecipePower.taggedRegistry.put(sr.key().asString(), sr);
             }
         } catch (Exception exception) {
             Bukkit.getServer().getLogger().warning(LangConfig.getLocalizedString(Bukkit.getConsoleSender(), "errors.orbLoad"));

@@ -5,6 +5,7 @@ import me.dueris.genesismc.events.OriginChangeEvent;
 import me.dueris.genesismc.events.PowerUpdateEvent;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.powers.CraftPower;
+import me.dueris.genesismc.items.OrbOfOrigins;
 import me.dueris.genesismc.utils.LayerContainer;
 import me.dueris.genesismc.utils.PowerContainer;
 import org.bukkit.Bukkit;
@@ -31,6 +32,7 @@ import java.util.List;
 public class RecipePower extends CraftPower implements Listener {
 
     public static HashMap<Player, List<String>> recipeMapping = new HashMap<>();
+    public static HashMap<String, Recipe> taggedRegistry = new HashMap<>();
     public static List<String> tags = new ArrayList<>();
     private static boolean finishedLoad = false;
 
@@ -41,6 +43,7 @@ public class RecipePower extends CraftPower implements Listener {
 
     @EventHandler
     public void load(ServerLoadEvent e){
+        OrbOfOrigins.init();
         parseRecipes();
         Bukkit.getOnlinePlayers().forEach((pl) -> applyRecipePower(pl));
     }
@@ -63,6 +66,7 @@ public class RecipePower extends CraftPower implements Listener {
                 }
                 Bukkit.addRecipe(rec);
                 tags.add(rec.key().asString());
+                taggedRegistry.put(rec.key().asString(), rec);
             } else if (type.equalsIgnoreCase("minecraft:crafting_shaped")) {
                 ShapedRecipe rec = new ShapedRecipe(key, computeResult((JSONObject)recipe.get("result")));
                 rec.shape((String[]) ((JSONArray)recipe.get("pattern")).toArray(new String[0]));
@@ -83,6 +87,7 @@ public class RecipePower extends CraftPower implements Listener {
 
                 Bukkit.addRecipe(rec);
                 tags.add(rec.key().asString());
+                taggedRegistry.put(rec.key().asString(), rec);
             } else {
                 throw new IllegalArgumentException("Unable to get recipe type from power: " + powerContainer.getTag());
             }

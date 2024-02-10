@@ -11,11 +11,13 @@ import me.dueris.genesismc.items.OrbOfOrigins;
 import me.dueris.genesismc.utils.LayerContainer;
 import me.dueris.genesismc.utils.OriginContainer;
 import me.dueris.genesismc.utils.SendCharts;
+import me.dueris.genesismc.utils.Utils;
 import me.dueris.genesismc.utils.translation.LangConfig;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
+import org.bukkit.craftbukkit.v1_20_R3.entity.CraftPlayer;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -78,64 +80,17 @@ public class ChoosingMain implements Listener {
         return item;
     }
 
-    public static void removeItemEnder(Player player) {
-        ItemStack infinpearl = new ItemStack(Material.ENDER_PEARL);
-        ItemMeta pearl_meta = infinpearl.getItemMeta();
-        pearl_meta.setDisplayName(ChatColor.LIGHT_PURPLE + "Teleport");
-        ArrayList<String> pearl_lore = new ArrayList();
-        pearl_meta.setUnbreakable(true);
-        pearl_meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
-        pearl_meta.setLore(pearl_lore);
-        infinpearl.setItemMeta(pearl_meta);
-        player.getInventory().remove(infinpearl);
-    }
-
-    public static void removeItemPhantom(Player player) {
-        ItemStack spectatorswitch = new ItemStack(Material.PHANTOM_MEMBRANE);
-        ItemMeta switch_meta = spectatorswitch.getItemMeta();
-        switch_meta.setDisplayName(GRAY + "Phantom Form");
-        ArrayList<String> pearl_lore = new ArrayList();
-        switch_meta.setUnbreakable(true);
-        switch_meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
-        switch_meta.addItemFlags(ItemFlag.HIDE_ITEM_SPECIFICS);
-        switch_meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-        switch_meta.setLore(pearl_lore);
-        spectatorswitch.setItemMeta(switch_meta);
-        player.getInventory().remove(spectatorswitch);
-    }
-
-    //open the menus
-
-    public static void removeItemElytrian(Player player) {
-        ItemStack launchitem = new ItemStack(Material.FEATHER);
-        ItemMeta launchmeta = launchitem.getItemMeta();
-        launchmeta.setDisplayName(GRAY + "Launch");
-        launchmeta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
-        launchitem.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-        launchitem.setItemMeta(launchmeta);
-        player.getInventory().remove(launchitem);
-    }
-
     @EventHandler
     public void onOrbClick(PlayerInteractEvent e) {
         Player p = e.getPlayer();
         if (GenesisDataFiles.getMainConfig().getString("orb-of-origins").equalsIgnoreCase("true")) {
-            if (e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.LEFT_CLICK_AIR || e.getAction() == Action.LEFT_CLICK_BLOCK || e.getAction() == Action.RIGHT_CLICK_BLOCK) {
-                ItemStack item = new ItemStack(Material.MAGMA_CREAM);
-                ItemMeta meta = item.getItemMeta();
-                meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
-                meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
-                meta.addItemFlags(ItemFlag.HIDE_DESTROYS);
-                meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-                meta.addItemFlags(ItemFlag.HIDE_PLACED_ON);
-                meta.setCustomModelData(00002);
-                meta.setDisplayName(LangConfig.getLocalizedString(Bukkit.getConsoleSender(), "misc.orbOfOrigins"));
-                meta.setUnbreakable(true);
-                meta.getCustomTagContainer().setCustomTag(new NamespacedKey(GenesisMC.getPlugin(), "origins"), ItemTagType.STRING, "orb_of_origin");
-                meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
-                item.setItemMeta(meta);
+            if (e.getAction().isRightClick()) {
+                ItemStack item = orb;
                 if (e.getItem() != null) {
                     if (e.getItem().isSimilar(item)) {
+                        if(!((CraftPlayer)p).getHandle().getAbilities().instabuild){
+                            Utils.consumeItem(e.getItem());
+                        }
                         for (LayerContainer layer : CraftApoli.getLayers()) {
                             OriginPlayerUtils.setOrigin(p, layer, CraftApoli.nullOrigin());
                         }
@@ -216,18 +171,6 @@ public class ChoosingMain implements Listener {
             getServer().getPluginManager().callEvent(chooseEvent);
             OriginChangeEvent Event = new OriginChangeEvent(p, origin);
             getServer().getPluginManager().callEvent(Event);
-
-            if (p.getInventory().getItemInMainHand().isSimilar(OrbOfOrigins.orb) && !OriginPlayerUtils.hasOrigin(p, CraftApoli.nullOrigin().getTag())) {
-                if (p.getGameMode() == GameMode.CREATIVE) return;
-                int amt = p.getInventory().getItemInMainHand().getAmount();
-                p.getInventory().getItemInMainHand().setAmount(amt - 1);
-            } else {
-                if (p.getInventory().getItemInOffHand().isSimilar(orb) && !OriginPlayerUtils.hasOrigin(p, CraftApoli.nullOrigin().getTag())) {
-                    if (p.getGameMode() == GameMode.CREATIVE) return;
-                    int amt = p.getInventory().getItemInOffHand().getAmount();
-                    p.getInventory().getItemInOffHand().setAmount(amt - 1);
-                }
-            }
 
             SendCharts.originPopularity(p);
         }

@@ -21,6 +21,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.craftbukkit.v1_20_R3.CraftRegistry;
 import org.bukkit.craftbukkit.v1_20_R3.CraftServer;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.json.simple.JSONArray;
@@ -202,6 +203,10 @@ public class Utils {
 
             player.addPotionEffect(new PotionEffect(PotionEffectType.getByKey(new NamespacedKey(potionEffect.split(":")[0], potionEffect.split(":")[1])), duration, amplifier, isAmbient, showParticles, showIcon));
         }
+    }
+
+    public static void consumeItem(ItemStack item){
+        item.setAmount(item.getAmount() - 1);
     }
 
     // Math

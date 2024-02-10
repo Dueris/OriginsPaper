@@ -2,13 +2,16 @@ package me.dueris.genesismc.commands.subcommands.origin;
 
 import me.dueris.genesismc.commands.PlayerSelector;
 import me.dueris.genesismc.commands.subcommands.SubCommand;
+import me.dueris.genesismc.factory.powers.block.RecipePower;
 import me.dueris.genesismc.utils.translation.LangConfig;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.Recipe;
 
 import java.util.ArrayList;
 
@@ -38,33 +41,26 @@ public class Give extends SubCommand {
             sender.sendMessage(Component.text(LangConfig.getLocalizedString(sender, "command.origin.give.noPlayer")).color(TextColor.fromHexString(RED)));
             return;
         }
-        if (args.length == 2) {
-            sender.sendMessage(Component.text(LangConfig.getLocalizedString(sender, "command.origin.give.noLayer")).color(TextColor.fromHexString(RED)));
+        if(args.length == 2){
+            sender.sendMessage(Component.text("You must give a valid recipe tag.").color(TextColor.fromHexString(RED)));
             return;
         }
-
-        ArrayList<Player> players = PlayerSelector.playerSelector(sender, args[1]);
-
-        if (players.size() == 0) return;
-
-        ItemStack item;
-        if (args[2].equals("genesis:orb_of_origin")) {
-            item = orb.clone();
-        } else return;
-
-        if (args.length == 4) {
-            try {
-                item.setAmount(Integer.parseInt(args[3].strip()));
-            } catch (Exception e) {
-                sender.sendMessage(Component.text(LangConfig.getLocalizedString(sender, "command.origin.give.wrongNumber")).color(TextColor.fromHexString(RED)));
-                return;
-            }
-        } else {
-            item.setAmount(1);
+        int amt = 1;
+        if(args.length > 3){
+            amt = Integer.parseInt(args[3]);
         }
-
-        for (Player player : players) {
-            if (args[2].equals("genesis:orb_of_origin")) player.getInventory().addItem(item);
+        String tag = args[2];
+        if(RecipePower.tags.contains(tag)){
+            Recipe recipe = RecipePower.taggedRegistry.get(tag);
+            ItemStack itemStack = recipe.getResult().clone();
+            itemStack.setAmount(amt);
+            if(sender instanceof InventoryHolder inventoryHolder){
+                inventoryHolder.getInventory().addItem(itemStack);
+            }else{
+                sender.sendMessage(Component.text("Target not instanceof InventoryHolder").color(TextColor.fromHexString(RED)));
+            }
+        }else{
+            sender.sendMessage(Component.text("Item not found in origins registry.").color(TextColor.fromHexString(RED)));
         }
     }
 }
