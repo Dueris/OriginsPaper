@@ -6,10 +6,17 @@ import me.dueris.genesismc.factory.actions.Actions;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.PowerContainer;
+import me.dueris.genesismc.utils.console.OriginConsoleSender;
+import org.bukkit.Bukkit;
+import org.bukkit.GameRule;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
@@ -22,10 +29,13 @@ public class ActionOnBlockUse extends CraftPower implements Listener {
 
     }
 
+    public static ArrayList<Player> tickFix = new ArrayList<>();
+
     @EventHandler
     public void execute(PlayerInteractEvent e) {
         if (e.getClickedBlock() == null) return;
-        if (e.getAction().isLeftClick()) return;
+        if (e.getAction().isLeftClick() || e.getAction().equals(Action.RIGHT_CLICK_AIR)) return;
+        if (tickFix.contains(e.getPlayer())) return;
         Player actor = e.getPlayer();
 
         if (!getPowerArray().contains(actor)) return;
@@ -37,18 +47,41 @@ public class ActionOnBlockUse extends CraftPower implements Listener {
                 if (conditionExecutor.check("condition", "conditions", actor, power, getPowerFile(), actor, null, e.getClickedBlock(), null, e.getItem(), null)) {
                     if (conditionExecutor.check("entity_condition", "entity_conditions", actor, power, getPowerFile(), actor, null, e.getClickedBlock(), null, e.getItem(), null)) {
                         if (conditionExecutor.check("block_condition", "block_conditions", actor, power, getPowerFile(), actor, null, e.getClickedBlock(), null, e.getItem(), null)) {
-                            setActive(e.getPlayer(), power.getTag(), true);
-                            Actions.BlockActionType(e.getClickedBlock().getLocation(), power.getBlockAction());
-                            Actions.EntityActionType(e.getPlayer(), power.getEntityAction());
-                            Actions.ItemActionType(e.getPlayer().getActiveItem(), power.getItemAction());
-                            Actions.ItemActionType(e.getPlayer().getActiveItem(), power.getAction("held_item_action"));
-                            Actions.ItemActionType(e.getPlayer().getActiveItem(), power.getAction("result_item_action"));
-                            new BukkitRunnable() {
-                                @Override
-                                public void run() {
-                                    setActive(e.getPlayer(), power.getTag(), false);
+                            if (conditionExecutor.check("item_condition", "item_conditions", actor, power, getPowerFile(), actor, null, e.getClickedBlock(), null, e.getItem(), null)){
+                                setActive(e.getPlayer(), power.getTag(), true);
+                                Actions.BlockActionType(e.getClickedBlock().getLocation(), power.getBlockAction());
+                                Actions.EntityActionType(e.getPlayer(), power.getEntityAction());
+                                Actions.ItemActionType(e.getItem(), power.getItemAction());
+                                Actions.ItemActionType(e.getItem(), power.getAction("held_item_action"));
+                                Actions.ItemActionType(e.getItem(), power.getAction("result_item_action"));
+                                if(power.getOrDefault("result_stack", null) != null){
+                                    e.getItem().setAmount(e.getItem().getAmount() - 1);
+                                    final boolean lastSendCMDFeedback = Boolean.parseBoolean(GameRule.SEND_COMMAND_FEEDBACK.toString());
+                                    final boolean lastlogAdminCMDs = Boolean.parseBoolean(GameRule.LOG_ADMIN_COMMANDS.toString());
+                                    e.getPlayer().getWorld().setGameRule(GameRule.SEND_COMMAND_FEEDBACK, false);
+                                    e.getPlayer().getWorld().setGameRule(GameRule.LOG_ADMIN_COMMANDS, false);
+                                    Bukkit.dispatchCommand(new OriginConsoleSender(), "give {p} {t}{n} 1".replace("{p}", e.getPlayer().getName())
+                                            .replace("{t}", power.get("result_stack").get("item").toString())
+                                            .replace("{n}", power.get("result_stack").getOrDefault("tag", "{}").toString())
+                                            .replace("{c}", power.get("result_stack").getOrDefault("amount", "1").toString())
+                                    );
+                                    new BukkitRunnable() {
+                                        @Override
+                                        public void run() {
+                                            e.getPlayer().getWorld().setGameRule(GameRule.SEND_COMMAND_FEEDBACK, lastSendCMDFeedback);
+                                            e.getPlayer().getWorld().setGameRule(GameRule.LOG_ADMIN_COMMANDS, lastlogAdminCMDs);
+                                        }
+                                    }.runTaskLater(GenesisMC.getPlugin(), 1);
                                 }
-                            }.runTaskLater(GenesisMC.getPlugin(), 2L);
+                                tickFix.add(e.getPlayer());
+                                new BukkitRunnable() {
+                                    @Override
+                                    public void run() {
+                                        setActive(e.getPlayer(), power.getTag(), false);
+                                        tickFix.remove(e.getPlayer());
+                                    }
+                                }.runTaskLater(GenesisMC.getPlugin(), 2L);
+                            }
                         }
                     }
                 }

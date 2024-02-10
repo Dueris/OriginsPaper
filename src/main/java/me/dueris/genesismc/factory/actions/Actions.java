@@ -410,9 +410,9 @@ public class Actions {
             OriginConsoleSender originConsoleSender = new OriginConsoleSender();
             originConsoleSender.setOp(true);
             final boolean lastSendCMDFeedback = Boolean.parseBoolean(GameRule.SEND_COMMAND_FEEDBACK.toString());
-            Bukkit.dispatchCommand(originConsoleSender, "gamerule sendCommandFeedback false");
             final boolean lastlogAdminCMDs = Boolean.parseBoolean(GameRule.LOG_ADMIN_COMMANDS.toString());
-            Bukkit.dispatchCommand(originConsoleSender, "gamerule logAdminCommands false");
+            location.getWorld().setGameRule(GameRule.SEND_COMMAND_FEEDBACK, false);
+            location.getWorld().setGameRule(GameRule.LOG_ADMIN_COMMANDS, false);
             String cmd = null;
             if (action.get("command").toString().startsWith("/")) {
                 cmd = action.get("command").toString().split("/")[1];
@@ -420,8 +420,13 @@ public class Actions {
                 cmd = action.get("command").toString();
             }
             Bukkit.dispatchCommand(originConsoleSender, cmd);
-            Bukkit.dispatchCommand(originConsoleSender, "gamerule logAdminCommands {bool}".replace("{bool}", String.valueOf(lastlogAdminCMDs)));
-            Bukkit.dispatchCommand(originConsoleSender, "gamerule logAdminCommands {bool}".replace("{bool}", String.valueOf(lastSendCMDFeedback)));
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    location.getWorld().setGameRule(GameRule.SEND_COMMAND_FEEDBACK, lastSendCMDFeedback);
+                    location.getWorld().setGameRule(GameRule.LOG_ADMIN_COMMANDS, lastlogAdminCMDs);
+                }
+            }.runTaskLater(GenesisMC.getPlugin(), 1);
         }
         if (type.equals("apoli:set_block")) {
             location.getBlock().setType(Material.valueOf(action.get("block").toString().split(":")[1].toUpperCase()));

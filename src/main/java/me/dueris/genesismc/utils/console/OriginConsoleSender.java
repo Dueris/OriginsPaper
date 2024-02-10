@@ -60,12 +60,12 @@ public class OriginConsoleSender extends OriginServerCommandSender implements Co
 
     @Override
     public void abandonConversation(Conversation conversation) {
-        this.conversationTracker.abandonConversation(conversation, new ConversationAbandonedEvent(conversation, new ManuallyAbandonedConversationCanceller()));
+//        this.conversationTracker.abandonConversation(conversation, new ConversationAbandonedEvent(conversation, new ManuallyAbandonedConversationCanceller()));
     }
 
     @Override
     public void abandonConversation(Conversation conversation, ConversationAbandonedEvent details) {
-        this.conversationTracker.abandonConversation(conversation, details);
+//        this.conversationTracker.abandonConversation(conversation, details);
     }
 
     @Override
