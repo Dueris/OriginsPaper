@@ -81,9 +81,9 @@ public class EntityCondition implements Condition {
                     Location location = new Location(world, x, y, z);
                     Block blockw = location.getBlock();
                     if (blockw.getType() != Material.AIR) {
-                        BlockCondition blockCondition = ConditionExecutor.blockCondition;
-                        if (blockCondition.check(condition, entity, target, blockw, fluid, itemStack, dmgevent).isPresent()) {
-                            if (blockCondition.check(condition, entity, target, blockw, fluid, itemStack, dmgevent).get()) {
+                        Optional<Boolean> blockCondition = ConditionExecutor.blockCondition.check(condition, entity, target, blockw, fluid, itemStack, dmgevent);
+                        if (blockCondition.isPresent()) {
+                            if (blockCondition.get()) {
                                 blockCount++;
                             }
                         } else {
@@ -110,9 +110,9 @@ public class EntityCondition implements Condition {
                         Block block2 = location.getBlock();
 
                         if (block2.getType() != Material.AIR) {
-                            BlockCondition blockCondition = ConditionExecutor.blockCondition;
-                            if (blockCondition.check(condition, entity, target, block2, fluid, itemStack, dmgevent).isPresent()) {
-                                if (blockCondition.check(condition, entity, target, block2, fluid, itemStack, dmgevent).get()) {
+                            Optional<Boolean> blockCondition = ConditionExecutor.blockCondition.check(condition, entity, target, block, fluid, itemStack, dmgevent);
+                            if (blockCondition.isPresent()) {
+                                if (blockCondition.get()) {
                                     blockCount++;
                                 }
                             } else {
@@ -137,9 +137,9 @@ public class EntityCondition implements Condition {
                     if ((x - centerX) * (x - centerX) + (y - centerY) * (y - centerY) + (z - centerZ) * (z - centerZ) <= squaredRadius) {
                         Location location = new Location(world, x, y, z);
                         if (location.getBlock().getType() != Material.AIR) {
-                            BlockCondition blockCondition = ConditionExecutor.blockCondition;
-                            if (blockCondition.check(condition, entity, target, location.getBlock(), fluid, itemStack, dmgevent).isPresent()) {
-                                if (blockCondition.check(condition, entity, target, location.getBlock(), fluid, itemStack, dmgevent).get()) {
+                            Optional<Boolean> blockCondition = ConditionExecutor.blockCondition.check(condition, entity, target, block, fluid, itemStack, dmgevent);
+                            if (blockCondition.isPresent()) {
+                                if (blockCondition.get()) {
                                     blockCount++;
                                 }
                             } else {
