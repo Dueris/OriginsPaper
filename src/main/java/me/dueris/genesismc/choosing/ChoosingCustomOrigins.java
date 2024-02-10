@@ -111,11 +111,11 @@ public class ChoosingCustomOrigins implements Listener {
             ItemStack originIcon = new ItemStack(Material.valueOf(item.toUpperCase()));
 
             //making the items to display in the menu
-            ItemStack close = itemProperties(new ItemStack(Material.BARRIER), RED + LangConfig.getLocalizedString(p, "menu.originSelect.close"), null, null, RED + "Cancel Choosing");
+            ItemStack close = itemProperties(new ItemStack(Material.BARRIER), RED + "Close", null, null, RED + "Cancel Choosing");
             ItemStack back = itemProperties(new ItemStack(Material.SPECTRAL_ARROW), ChatColor.AQUA + LangConfig.getLocalizedString(p, "menu.originSelect.return"), ItemFlag.HIDE_ENCHANTS, null, null);
-            ItemStack lowImpact = itemProperties(new ItemStack(Material.GREEN_STAINED_GLASS_PANE), ChatColor.WHITE + LangConfig.getLocalizedString(p, "menu.originSelect.impact.impact") + ChatColor.GREEN + LangConfig.getLocalizedString(p, "menu.originSelect.impact.low"), null, null, null);
-            ItemStack mediumImpact = itemProperties(new ItemStack(Material.YELLOW_STAINED_GLASS_PANE), ChatColor.WHITE + LangConfig.getLocalizedString(p, "menu.originSelect.impact.impact") + ChatColor.YELLOW + LangConfig.getLocalizedString(p, "menu.originSelect.impact.medium"), null, null, null);
-            ItemStack highImpact = itemProperties(new ItemStack(Material.RED_STAINED_GLASS_PANE), ChatColor.WHITE + LangConfig.getLocalizedString(p, "menu.originSelect.impact.impact") + ChatColor.RED + LangConfig.getLocalizedString(p, "menu.originSelect.impact.high"), null, null, null);
+            ItemStack lowImpact = itemProperties(new ItemStack(Material.GREEN_STAINED_GLASS_PANE), ChatColor.WHITE + "Impact" + ChatColor.GREEN + "Low", null, null, null);
+            ItemStack mediumImpact = itemProperties(new ItemStack(Material.YELLOW_STAINED_GLASS_PANE), ChatColor.WHITE + "Impact" + ChatColor.YELLOW + "Medium", null, null, null);
+            ItemStack highImpact = itemProperties(new ItemStack(Material.RED_STAINED_GLASS_PANE), ChatColor.WHITE + "Impact" + ChatColor.RED + "High", null, null, null);
 
             //adds a key to the item that will be used later to get the origin from it
             ItemMeta originIconmeta = originIcon.getItemMeta();
