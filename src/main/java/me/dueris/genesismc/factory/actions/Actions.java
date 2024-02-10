@@ -16,6 +16,7 @@ import me.dueris.genesismc.utils.PowerContainer;
 import me.dueris.genesismc.utils.Utils;
 import me.dueris.genesismc.utils.apoli.Space;
 import me.dueris.genesismc.utils.console.OriginConsoleSender;
+import me.dueris.genesismc.utils.text.ChatFormatter;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.damagesource.DamageType;
 import org.bukkit.*;
@@ -49,33 +50,33 @@ public class Actions {
 
     public static HashMap<Entity, Boolean> resourceChangeTimeout = new HashMap<>();
 
-    public static void BiEntityActionType(Entity actor, Entity target, JSONObject power) {
-        String type = power.get("type").toString();
+    public static void BiEntityActionType(Entity actor, Entity target, JSONObject action) {
+        String type = action.get("type").toString();
 
         if (type.equals("apoli:invert")) {
-            BiEntityActionType(target, actor, (JSONObject) power.get("action"));
+            BiEntityActionType(target, actor, (JSONObject) action.get("action"));
         } else if (type.equals("apoli:and")) {
-            JSONArray andActions = (JSONArray) power.get("actions");
+            JSONArray andActions = (JSONArray) action.get("actions");
             for (Object actionObj : andActions) {
-                JSONObject action = (JSONObject) actionObj;
-                runbiEntity(actor, target, action);
+                JSONObject actionn = (JSONObject) actionObj;
+                BiEntityActionType(actor, target, actionn);
             }
         } else if (type.equals("apoli:chance")) {
-            double chance = Double.parseDouble(power.get("chance").toString());
+            double chance = Double.parseDouble(action.get("chance").toString());
             double randomValue = new Random().nextDouble(1);
 
             if (randomValue <= chance) {
-                JSONObject action = (JSONObject) power.get("action");
-                runbiEntity(actor, target, action);
+                JSONObject actionn = (JSONObject) action.get("action");
+                BiEntityActionType(actor, target, actionn);
             }
         } else if (type.equals("apoli:choice")) {
-            JSONArray actionsArray = (JSONArray) power.get("actions");
+            JSONArray actionsArray = (JSONArray) action.get("actions");
             List<JSONObject> actionsList = new ArrayList<>();
 
             for (Object actionObj : actionsArray) {
-                JSONObject action = (JSONObject) actionObj;
-                JSONObject element = (JSONObject) action.get("element");
-                int weight = Integer.parseInt(action.get("weight").toString());
+                JSONObject actionn = (JSONObject) actionObj;
+                JSONObject element = (JSONObject) actionn.get("element");
+                int weight = Integer.parseInt(actionn.get("weight").toString());
                 for (int i = 0; i < weight; i++) {
                     actionsList.add(element);
                 }
@@ -84,54 +85,55 @@ public class Actions {
             if (!actionsList.isEmpty()) {
                 int randomIndex = (int) (Math.random() * actionsList.size());
                 JSONObject chosenAction = actionsList.get(randomIndex);
-                runbiEntity(actor, target, chosenAction);
+                BiEntityActionType(actor, target, chosenAction);
             }
         } else if (type.equals("apoli:delay")) {
-            int ticks = Integer.parseInt(power.get("ticks").toString());
-            JSONObject delayedAction = (JSONObject) power.get("action");
+            int ticks = Integer.parseInt(action.get("ticks").toString());
+            JSONObject delayedAction = (JSONObject) action.get("action");
 
             Bukkit.getScheduler().runTaskLater(GenesisMC.getPlugin(), () -> {
-                runbiEntity(actor, target, delayedAction);
+                BiEntityActionType(actor, target, delayedAction);
             }, ticks);
         } else if (type.equals("apoli:nothing")) {
             // Literally does nothing
         } else if (type.equals("apoli:side")) {
-            JSONObject action = (JSONObject) power.get("action");
-            runbiEntity(actor, target, action);
+            if(action.get("side").toString().toLowerCase().equals("server")){
+                JSONObject actionn = (JSONObject) action.get("action");
+                BiEntityActionType(actor, target, actionn);
+            }
         } else if (type.equals("apoli:if_else")) {
             if (actor instanceof Player p) {
-                Optional<Boolean> bool = ConditionExecutor.biEntityCondition.check((JSONObject) power.get("condition"), actor, target, actor.getLocation().getBlock(), null, null, null);
+                Optional<Boolean> bool = ConditionExecutor.biEntityCondition.check((JSONObject) action.get("condition"), actor, target, actor.getLocation().getBlock(), null, null, null);
                 if (bool.isPresent()) {
                     if (bool.get()) {
-                        BiEntityActionType(actor, target, (JSONObject) power.get("if_action"));
+                        BiEntityActionType(actor, target, (JSONObject) action.get("if_action"));
                     } else {
-                        BiEntityActionType(actor, target, (JSONObject) power.get("else_action"));
+                        BiEntityActionType(actor, target, (JSONObject) action.get("else_action"));
                     }
                 } else {
-                    BiEntityActionType(actor, target, (JSONObject) power.get("else_action"));
+                    BiEntityActionType(actor, target, (JSONObject) action.get("else_action"));
                 }
             } else if (target instanceof Player p) {
-                Optional<Boolean> bool = ConditionExecutor.biEntityCondition.check((JSONObject) power.get("condition"), actor, target, actor.getLocation().getBlock(), null, null, null);
+                Optional<Boolean> bool = ConditionExecutor.biEntityCondition.check((JSONObject) action.get("condition"), actor, target, actor.getLocation().getBlock(), null, null, null);
                 if (bool.isPresent()) {
                     if (bool.get()) {
-                        BiEntityActionType(actor, target, (JSONObject) power.get("if_action"));
+                        BiEntityActionType(actor, target, (JSONObject) action.get("if_action"));
                     } else {
-                        BiEntityActionType(actor, target, (JSONObject) power.get("else_action"));
+                        BiEntityActionType(actor, target, (JSONObject) action.get("else_action"));
                     }
                 } else {
-                    BiEntityActionType(actor, target, (JSONObject) power.get("else_action"));
+                    BiEntityActionType(actor, target, (JSONObject) action.get("else_action"));
                 }
             } else {
-                BiEntityActionType(actor, target, (JSONObject) power.get("else_action"));
+                BiEntityActionType(actor, target, (JSONObject) action.get("else_action"));
             }
         } else {
-            runbiEntity(actor, target, power);
+            runbiEntity(actor, target, action);
         }
     }
 
     public static void ItemActionType(ItemStack item, JSONObject power) {
-        if (power == null) return;
-        if (power.get("type") == null) return;
+        if (power == null || power.isEmpty()) return;
         String type = power.get("type").toString();
 
         if (type.equals("apoli:and")) {
@@ -190,43 +192,44 @@ public class Actions {
                 ItemActionType(item, (JSONObject) power.get("else_action"));
             }
         } else if (type.equals("apoli:side")) {
-            JSONObject action = (JSONObject) power.get("action");
-            runItem(item, action);
+            if(power.get("side").toString().toLowerCase().equals("server")){
+                JSONObject action = (JSONObject) power.get("action");
+                runItem(item, action);
+            }
         } else {
             runItem(item, power);
         }
     }
 
-    public static void EntityActionType(Entity entity, JSONObject power) {
-        if (power == null) return;
-        if (power.get("type") == null) return;
-        String type = power.get("type").toString();
+    public static void EntityActionType(Entity entity, JSONObject action) {
+        if (action == null || action.isEmpty()) return;
+        String type = action.get("type").toString();
 
         if (type.equals("apoli:and")) {
-            JSONArray andActions = (JSONArray) power.get("actions");
+            JSONArray andActions = (JSONArray) action.get("actions");
             for (Object actionObj : andActions) {
-                JSONObject action = (JSONObject) actionObj;
-                EntityActionType(entity, action);
+                JSONObject actionn = (JSONObject) actionObj;
+                EntityActionType(entity, actionn);
             }
         } else if (type.equals("apoli:chance")) {
-            double chance = Double.parseDouble(power.get("chance").toString());
+            double chance = Double.parseDouble(action.get("chance").toString());
             double randomValue = new Random().nextDouble(1);
 
             if (randomValue <= chance) {
-                JSONObject action = (JSONObject) power.get("action");
-                EntityActionType(entity, action);
-            } else if (power.containsKey("fail_action")) {
-                JSONObject failAction = (JSONObject) power.get("fail_action");
+                JSONObject actionn = (JSONObject) action.get("action");
+                EntityActionType(entity, actionn);
+            } else if (action.containsKey("fail_action")) {
+                JSONObject failAction = (JSONObject) action.get("fail_action");
                 EntityActionType(entity, failAction);
             }
         } else if (type.equals("apoli:choice")) {
-            JSONArray actionsArray = (JSONArray) power.get("actions");
+            JSONArray actionsArray = (JSONArray) action.get("actions");
             List<JSONObject> actionsList = new ArrayList<>();
 
             for (Object actionObj : actionsArray) {
-                JSONObject action = (JSONObject) actionObj;
-                JSONObject element = (JSONObject) action.get("element");
-                int weight = Integer.parseInt(action.get("weight").toString());
+                JSONObject actionn = (JSONObject) actionObj;
+                JSONObject element = (JSONObject) actionn.get("element");
+                int weight = Integer.parseInt(actionn.get("weight").toString());
                 for (int i = 0; i < weight; i++) {
                     actionsList.add(element);
                 }
@@ -238,8 +241,8 @@ public class Actions {
                 EntityActionType(entity, chosenAction);
             }
         } else if (type.equals("apoli:delay")) {
-            int ticks = Integer.parseInt(power.get("ticks").toString());
-            JSONObject delayedAction = (JSONObject) power.get("action");
+            int ticks = Integer.parseInt(action.get("ticks").toString());
+            JSONObject delayedAction = (JSONObject) action.get("action");
 
             Bukkit.getScheduler().runTaskLater(GenesisMC.getPlugin(), () -> {
                 EntityActionType(entity, delayedAction);
@@ -248,56 +251,57 @@ public class Actions {
             //literally does nothin
         } else if (type.equals("apoli:if_else")) {
             if (entity instanceof Player p) {
-                Optional<Boolean> bool = ConditionExecutor.entityCondition.check((JSONObject) power.get("condition"), entity, null, entity.getLocation().getBlock(), null, null, null);
+                Optional<Boolean> bool = ConditionExecutor.entityCondition.check((JSONObject) action.get("condition"), entity, null, entity.getLocation().getBlock(), null, null, null);
                 if (bool.isPresent()) {
                     if (bool.get()) {
-                        EntityActionType(entity, (JSONObject) power.get("if_action"));
+                        EntityActionType(entity, (JSONObject) action.get("if_action"));
                     } else {
-                        EntityActionType(entity, (JSONObject) power.get("else_action"));
+                        EntityActionType(entity, (JSONObject) action.get("else_action"));
                     }
                 } else {
-                    EntityActionType(entity, (JSONObject) power.get("else_action"));
+                    EntityActionType(entity, (JSONObject) action.get("else_action"));
                 }
             } else {
-                EntityActionType(entity, (JSONObject) power.get("else_action"));
+                EntityActionType(entity, (JSONObject) action.get("else_action"));
             }
         } else if (type.equals("apoli:side")) {
-            JSONObject action = (JSONObject) power.get("action");
-            EntityActionType(entity, action);
+            if(action.get("side").toString().toLowerCase().equals("server")){
+                EntityActionType(entity, (JSONObject) action.get("action"));
+            }
         } else {
-            runEntity(entity, power);
+            runEntity(entity, action);
         }
     }
 
-    public static void BlockActionType(Location location, JSONObject power) {
-        if (power == null) return;
-        String type = power.get("type").toString();
+    public static void BlockActionType(Location location, JSONObject action) {
+        if (action == null) return;
+        String type = action.get("type").toString();
 
         if (type.equals("apoli:and")) {
-            JSONArray andActions = (JSONArray) power.get("actions");
+            JSONArray andActions = (JSONArray) action.get("actions");
             for (Object actionObj : andActions) {
-                JSONObject action = (JSONObject) actionObj;
-                runBlock(location, action);
+                JSONObject actionn = (JSONObject) actionObj;
+                runBlock(location, actionn);
             }
         } else if (type.equals("apoli:chance")) {
-            double chance = Double.parseDouble(power.get("chance").toString());
+            double chance = Double.parseDouble(action.get("chance").toString());
             double randomValue = new Random().nextDouble(1);
 
             if (randomValue <= chance) {
-                JSONObject action = (JSONObject) power.get("action");
-                runBlock(location, action);
-            } else if (power.containsKey("fail_action")) {
-                JSONObject failAction = (JSONObject) power.get("fail_action");
+                JSONObject actionn = (JSONObject) action.get("action");
+                runBlock(location, actionn);
+            } else if (action.containsKey("fail_action")) {
+                JSONObject failAction = (JSONObject) action.get("fail_action");
                 runBlock(location, failAction);
             }
         } else if (type.equals("apoli:choice")) {
-            JSONArray actionsArray = (JSONArray) power.get("actions");
+            JSONArray actionsArray = (JSONArray) action.get("actions");
             List<JSONObject> actionsList = new ArrayList<>();
 
             for (Object actionObj : actionsArray) {
-                JSONObject action = (JSONObject) actionObj;
-                JSONObject element = (JSONObject) action.get("element");
-                int weight = Integer.parseInt(action.get("weight").toString());
+                JSONObject actionn = (JSONObject) actionObj;
+                JSONObject element = (JSONObject) actionn.get("element");
+                int weight = Integer.parseInt(actionn.get("weight").toString());
                 for (int i = 0; i < weight; i++) {
                     actionsList.add(element);
                 }
@@ -309,8 +313,8 @@ public class Actions {
                 runBlock(location, chosenAction);
             }
         } else if (type.equals("apoli:delay")) {
-            int ticks = Integer.parseInt(power.get("ticks").toString());
-            JSONObject delayedAction = (JSONObject) power.get("action");
+            int ticks = Integer.parseInt(action.get("ticks").toString());
+            JSONObject delayedAction = (JSONObject) action.get("action");
 
             Bukkit.getScheduler().runTaskLater(GenesisMC.getPlugin(), () -> {
                 runBlock(location, delayedAction);
@@ -318,31 +322,34 @@ public class Actions {
         } else if (type.equals("apoli:nothing")) {
             // Literally does nothing
         } else if (type.equals("apoli:if_else")) {
-            Optional<Boolean> bool = ConditionExecutor.blockCondition.check((JSONObject) power.get("condition"), null, null, location.getBlock(), null, null, null);
+            Optional<Boolean> bool = ConditionExecutor.blockCondition.check((JSONObject) action.get("condition"), null, null, location.getBlock(), null, null, null);
             if (bool.isPresent()) {
                 if (bool.get()) {
-                    BlockActionType(location, (JSONObject) power.get("if_action"));
+                    BlockActionType(location, (JSONObject) action.get("if_action"));
                 } else {
-                    BlockActionType(location, (JSONObject) power.get("else_action"));
+                    BlockActionType(location, (JSONObject) action.get("else_action"));
                 }
             } else {
-                BlockActionType(location, (JSONObject) power.get("else_action"));
+                BlockActionType(location, (JSONObject) action.get("else_action"));
             }
         } else if (type.equals("apoli:side")) {
-            JSONObject action = (JSONObject) power.get("action");
-            runBlock(location, action);
+            if(action.get("side").toString().toLowerCase().equals("server")){
+                JSONObject actionn = (JSONObject) action.get("action");
+                runBlock(location, actionn);
+            }
         } else {
-            runBlock(location, power);
+            runBlock(location, action);
         }
     }
 
-    private static void runBlock(Location location, JSONObject power) {
-        String type = power.get("type").toString();
+    private static void runBlock(Location location, JSONObject action) {
+        if(action == null || action.isEmpty()) return;
+        String type = action.get("type").toString();
 
         if (type.equals("apoli:add_block")) {
-            if (power.containsKey("block")) {
+            if (action.containsKey("block")) {
                 Material block;
-                block = Material.getMaterial(power.get("block").toString().split(":")[1].toUpperCase());
+                block = Material.getMaterial(action.get("block").toString().split(":")[1].toUpperCase());
                 if (block == null) return;
 
                 //i experimented with it, and it seemed that it just set it one block above?
@@ -352,7 +359,7 @@ public class Actions {
             }
         }
         if (type.equals("apoli:offset")) {
-            BlockActionType(location.add(Double.valueOf(power.getOrDefault("x", "0").toString()), Double.valueOf(power.getOrDefault("y", "0").toString()), Double.valueOf(power.getOrDefault("z", "0").toString())), (JSONObject) power.get("action"));
+            BlockActionType(location.add(Double.valueOf(action.getOrDefault("x", "0").toString()), Double.valueOf(action.getOrDefault("y", "0").toString()), Double.valueOf(action.getOrDefault("z", "0").toString())), (JSONObject) action.get("action"));
         }
         if (type.equals("genesis:grow_sculk")) {
             location.getBlock().setType(Material.SCULK_CATALYST);
@@ -387,15 +394,15 @@ public class Actions {
             JSONObject destructible = new JSONObject();
             boolean create_fire = false;
 
-            if (power.containsKey("power"))
-                explosionPower = Float.parseFloat(power.get("power").toString());
-            if (power.containsKey("destruction_type"))
-                destruction_type = power.get("destruction_type").toString();
-            if (power.containsKey("indestructible"))
-                indestructible = (JSONObject) power.get("indestructible");
-            if (power.containsKey("destructible")) destructible = (JSONObject) power.get("destructible");
-            if (power.containsKey("create_fire"))
-                create_fire = Boolean.parseBoolean(power.get("create_fire").toString());
+            if (action.containsKey("action"))
+                explosionPower = Float.parseFloat(action.get("action").toString());
+            if (action.containsKey("destruction_type"))
+                destruction_type = action.get("destruction_type").toString();
+            if (action.containsKey("indestructible"))
+                indestructible = (JSONObject) action.get("indestructible");
+            if (action.containsKey("destructible")) destructible = (JSONObject) action.get("destructible");
+            if (action.containsKey("create_fire"))
+                create_fire = Boolean.parseBoolean(action.get("create_fire").toString());
 
             location.createExplosion(explosionPower, create_fire);
         }
@@ -407,76 +414,78 @@ public class Actions {
             final boolean lastlogAdminCMDs = Boolean.parseBoolean(GameRule.LOG_ADMIN_COMMANDS.toString());
             Bukkit.dispatchCommand(originConsoleSender, "gamerule logAdminCommands false");
             String cmd = null;
-            if (power.get("command").toString().startsWith("/")) {
-                cmd = power.get("command").toString().split("/")[1];
+            if (action.get("command").toString().startsWith("/")) {
+                cmd = action.get("command").toString().split("/")[1];
             } else {
-                cmd = power.get("command").toString();
+                cmd = action.get("command").toString();
             }
             Bukkit.dispatchCommand(originConsoleSender, cmd);
             Bukkit.dispatchCommand(originConsoleSender, "gamerule logAdminCommands {bool}".replace("{bool}", String.valueOf(lastlogAdminCMDs)));
             Bukkit.dispatchCommand(originConsoleSender, "gamerule logAdminCommands {bool}".replace("{bool}", String.valueOf(lastSendCMDFeedback)));
         }
         if (type.equals("apoli:set_block")) {
-            location.getBlock().setType(Material.valueOf(power.get("block").toString().split(":")[1].toUpperCase()));
+            location.getBlock().setType(Material.valueOf(action.get("block").toString().split(":")[1].toUpperCase()));
         }
     }
 
-    private static void runItem(ItemStack item, JSONObject power) {
-        String type = power.get("type").toString();
+    private static void runItem(ItemStack item, JSONObject action) {
+        if(action == null || action.isEmpty()) return;
+        String type = action.get("type").toString();
         if (type.equals("apoli:damage")) {
-            item.setDurability((short) (item.getDurability() + Short.parseShort(power.get("amount").toString())));
+            item.setDurability((short) (item.getDurability() + Short.parseShort(action.get("amount").toString())));
         }
         if (type.equals("apoli:consume")) {
             item.setAmount(item.getAmount() - 1);
         }
         if (type.equals("apoli:remove_enchantment")) {
-            Enchantment enchantment = Enchantment.getByKey(new NamespacedKey(power.get("enchantment").toString().split(":")[0], power.get("enchantment").toString().split(":")[1]));
+            Enchantment enchantment = Enchantment.getByKey(new NamespacedKey(action.get("enchantment").toString().split(":")[0], action.get("enchantment").toString().split(":")[1]));
             if (item.containsEnchantment(enchantment)) {
                 item.removeEnchantment(enchantment);
             }
         }
     }
 
-    public static void runbiEntity(Entity actor, Entity target, JSONObject biEntityAction) {
-        String type = biEntityAction.get("type").toString();
+    public static void runbiEntity(Entity actor, Entity target, JSONObject action) {
+        if(action == null || action.isEmpty()) return;
+        String type = action.get("type").toString();
         if (type.equals("apoli:add_velocity")) {
             float x = 0.0f;
             float y = 0.0f;
             float z = 0.0f;
             boolean set = false;
 
-            if (biEntityAction.containsKey("x")) x = Float.parseFloat(biEntityAction.get("x").toString());
-            if (biEntityAction.containsKey("y")) y = Float.parseFloat(biEntityAction.get("y").toString());
-            if (biEntityAction.containsKey("z")) z = Float.parseFloat(biEntityAction.get("z").toString());
-            if (biEntityAction.containsKey("set")) set = Boolean.parseBoolean(biEntityAction.get("set").toString());
+            if (action.containsKey("x")) x = Float.parseFloat(action.get("x").toString());
+            if (action.containsKey("y")) y = Float.parseFloat(action.get("y").toString());
+            if (action.containsKey("z")) z = Float.parseFloat(action.get("z").toString());
+            if (action.containsKey("set")) set = Boolean.parseBoolean(action.get("set").toString());
 
             if (set) target.setVelocity(new Vector(x, y, z));
             else target.setVelocity(target.getVelocity().add(new Vector(x, y, z)));
         }
         if (type.equals("apoli:remove_from_set")) {
-            RemoveFromSetEvent ev = new RemoveFromSetEvent(target, biEntityAction.get("set").toString());
+            RemoveFromSetEvent ev = new RemoveFromSetEvent(target, action.get("set").toString());
             ev.callEvent();
         }
         if (type.equals("apoli:add_to_set")) {
-            AddToSetEvent ev = new AddToSetEvent(target, biEntityAction.get("set").toString());
+            AddToSetEvent ev = new AddToSetEvent(target, action.get("set").toString());
             ev.callEvent();
         }
         if (type.equals("apoli:damage")) {
             if (target.isDead() || !(target instanceof LivingEntity)) return;
             float amount = 0.0f;
 
-            if (biEntityAction.containsKey("amount"))
-                amount = Float.parseFloat(biEntityAction.get("amount").toString());
+            if (action.containsKey("amount"))
+                amount = Float.parseFloat(action.get("amount").toString());
 
             String namespace;
             String key;
-            if (biEntityAction.get("damage_type") != null) {
-                if (biEntityAction.get("damage_type").toString().contains(":")) {
-                    namespace = biEntityAction.get("damage_type").toString().split(":")[0];
-                    key = biEntityAction.get("damage_type").toString().split(":")[1];
+            if (action.get("damage_type") != null) {
+                if (action.get("damage_type").toString().contains(":")) {
+                    namespace = action.get("damage_type").toString().split(":")[0];
+                    key = action.get("damage_type").toString().split(":")[1];
                 } else {
                     namespace = "minecraft";
-                    key = biEntityAction.get("damage_type").toString();
+                    key = action.get("damage_type").toString();
                 }
             } else {
                 namespace = "minecraft";
@@ -500,26 +509,25 @@ public class Actions {
             }
         }
         if (type.equals("apoli:actor_action")) {
-            EntityActionType(actor, (JSONObject) biEntityAction.get("action"));
+            EntityActionType(actor, (JSONObject) action.get("action"));
         }
         if (type.equals("apoli:target_action")) {
-            runEntity(target, (JSONObject) biEntityAction.get("action"));
+            EntityActionType(target, (JSONObject) action.get("action"));
         }
     }
 
-    private static void runEntity(Entity entity, JSONObject power) {
-        JSONObject entityAction;
-        entityAction = power;
-        String type = entityAction.get("type").toString();
+    private static void runEntity(Entity entity, JSONObject action) {
+        if(action == null || action.isEmpty()) return;
+        String type = action.get("type").toString();
         if (entity == null) return;
 
         if (type.equals("apoli:modify_inventory")) {
             if (entity instanceof Player player) {
-                if (power.containsKey("slot")) {
+                if (action.containsKey("slot")) {
                     try {
-                        if (player.getInventory().getItem(getSlotFromString(power.get("slot").toString())) == null)
+                        if (player.getInventory().getItem(getSlotFromString(action.get("slot").toString())) == null)
                             return;
-                        ItemActionType(player.getInventory().getItem(getSlotFromString(power.get("slot").toString())), power);
+                        ItemActionType(player.getInventory().getItem(getSlotFromString(action.get("slot").toString())), action);
                     } catch (Exception e) {
                         //silently fail bc idk whats going on and yeah it wokrs lol
                     }
@@ -528,11 +536,11 @@ public class Actions {
         }
         if (type.equals("apoli:change_resource")) {
             if (resourceChangeTimeout.containsKey(entity)) return;
-            String resource = power.get("resource").toString();
+            String resource = action.get("resource").toString();
             if (Resource.getResource(entity, resource) == null) return;
             if (Resource.getResource(entity, resource).getRight() == null) return;
             if (Resource.getResource(entity, resource).getLeft() == null) return;
-            int change = Integer.parseInt(power.get("change").toString());
+            int change = Integer.parseInt(action.get("change").toString());
             double finalChange = 1.0 / Resource.getResource(entity, resource).getRight();
             BossBar bossBar = Resource.getResource(entity, resource).getLeft();
             double toRemove = finalChange * change;
@@ -554,27 +562,27 @@ public class Actions {
             }.runTaskLater(GenesisMC.getPlugin(), 1);
         }
         if (type.equals("apoli:set_on_fire")) {
-            entity.setFireTicks(Integer.parseInt(power.get("duration").toString()));
+            entity.setFireTicks(Integer.parseInt(action.get("duration").toString()));
         }
         if (type.equals("apoli:spawn_entity")) {
             OriginConsoleSender originConsoleSender = new OriginConsoleSender();
             originConsoleSender.setOp(true);
             Bukkit.dispatchCommand(originConsoleSender, "summon $1 %1 %2 %3 $2"
-                    .replace("$1", power.get("entity_type").toString())
-                    .replace("$2", power.getOrDefault("tag", "").toString()
+                    .replace("$1", action.get("entity_type").toString())
+                    .replace("$2", action.getOrDefault("tag", "").toString()
                             .replace("%1", String.valueOf(entity.getLocation().getX()))
                             .replace("%2", String.valueOf(entity.getLocation().getY()))
                             .replace("%3", String.valueOf(entity.getLocation().getZ()))
                     ));
         }
         if (type.equals("apoli:spawn_particles")) {
-            Particle particle = Particle.valueOf(power.getOrDefault("particle", null).toString().split(":")[1].toUpperCase());
-            int count = Integer.parseInt(String.valueOf(power.getOrDefault("count", 1)));
-            float offset_y_no_vector = Float.parseFloat(String.valueOf(power.getOrDefault("offset_y", 1.0)));
+            Particle particle = Particle.valueOf(action.getOrDefault("particle", null).toString().split(":")[1].toUpperCase());
+            int count = Integer.parseInt(String.valueOf(action.getOrDefault("count", 1)));
+            float offset_y_no_vector = Float.parseFloat(String.valueOf(action.getOrDefault("offset_y", 1.0)));
             float offset_x = 0.25f;
             float offset_y = 0.50f;
             float offset_z = 0.25f;
-            JSONObject spread = (JSONObject) power.get("spread");
+            JSONObject spread = (JSONObject) action.get("spread");
             if (spread.get("y") != null) {
                 offset_y = Float.parseFloat(String.valueOf(spread.get("y")));
             }
@@ -589,8 +597,8 @@ public class Actions {
             entity.getWorld().spawnParticle(particle, new Location(entity.getWorld(), entity.getLocation().getX(), entity.getLocation().getY(), entity.getLocation().getZ()), count, offset_x, offset_y, offset_z, 0);
         }
         if (type.equals("apoli:random_teleport")) {
-            int spreadDistance = Math.round(Float.valueOf(power.getOrDefault("max_width", "8.0").toString()));
-            int attempts = Integer.valueOf(power.getOrDefault("attempts", "1").toString());
+            int spreadDistance = Math.round(Float.valueOf(action.getOrDefault("max_width", "8.0").toString()));
+            int attempts = Integer.valueOf(action.getOrDefault("attempts", "1").toString());
             for (int i = 0; i < attempts; i++) {
                 String cmd = "spreadplayers {xloc} {zloc} 1 {spreadDist} false {name}"
                         .replace("{xloc}", String.valueOf(entity.getLocation().getX()))
@@ -604,23 +612,23 @@ public class Actions {
         }
         if (type.equals("apoli:remove_power")) {
             if (entity instanceof Player p) {
-                PowerContainer powerContainer = CraftApoli.getPowerContainerFromTag(power.get("power").toString());
+                PowerContainer powerContainer = CraftApoli.getPowerContainerFromTag(action.get("action").toString());
                 if (powerContainer != null) {
-                    Bukkit.dispatchCommand(new OriginConsoleSender(), "power remove {name} {identifier}".replace("{name}", p.getName()).replace("{identifier}", power.get("power").toString()));
+                    Bukkit.dispatchCommand(new OriginConsoleSender(), "action remove {name} {identifier}".replace("{name}", p.getName()).replace("{identifier}", action.get("action").toString()));
                 }
             }
         }
         if (type.equals("apoli:spawn_effect_cloud")) {
-            spawnEffectCloud(entity, Float.valueOf(power.getOrDefault("radius", 3.0).toString()), Integer.valueOf(power.getOrDefault("wait_time", 10).toString()), new PotionEffect(StackingStatusEffect.getPotionEffectType(power.get("effect").toString()), 1, 1));
+            spawnEffectCloud(entity, Float.valueOf(action.getOrDefault("radius", 3.0).toString()), Integer.valueOf(action.getOrDefault("wait_time", 10).toString()), new PotionEffect(StackingStatusEffect.getPotionEffectType(action.get("effect").toString()), 1, 1));
         }
         if (type.equals("apoli:replace_inventory")) {
             if (entity instanceof Player player) {
-                if (power.containsKey("slot")) {
+                if (action.containsKey("slot")) {
                     try {
-                        if (player.getInventory().getItem(getSlotFromString(power.get("slot").toString())) == null)
+                        if (player.getInventory().getItem(getSlotFromString(action.get("slot").toString())) == null)
                             return;
-                        JSONObject jsonObject = (JSONObject) power.get("stack");
-                        player.getInventory().getItem(getSlotFromString(power.get("slot").toString())).setType(Material.valueOf(jsonObject.get("item").toString().split(":")[1].toUpperCase()));
+                        JSONObject jsonObject = (JSONObject) action.get("stack");
+                        player.getInventory().getItem(getSlotFromString(action.get("slot").toString())).setType(Material.valueOf(jsonObject.get("item").toString().split(":")[1].toUpperCase()));
                     } catch (Exception e) {
                         //silently fail
                     }
@@ -629,7 +637,7 @@ public class Actions {
         }
         if (type.equals("apoli:heal")) {
             if (entity instanceof LivingEntity li) {
-                double healthFinal = li.getHealth() + Double.parseDouble(power.get("amount").toString());
+                double healthFinal = li.getHealth() + Double.parseDouble(action.get("amount").toString());
                 if (li.getHealth() >= 20) return;
                 if (healthFinal > 20) {
                     li.setHealth(20);
@@ -639,7 +647,7 @@ public class Actions {
             }
         }
         if (type.equals("apoli:clear_effect")) {
-            PotionEffectType potionEffectType = StackingStatusEffect.getPotionEffectType(power.get("effect").toString());
+            PotionEffectType potionEffectType = StackingStatusEffect.getPotionEffectType(action.get("effect").toString());
             if (entity instanceof Player player) {
                 if (player.hasPotionEffect(potionEffectType)) {
                     player.removePotionEffect(potionEffectType);
@@ -648,7 +656,7 @@ public class Actions {
         }
         if (type.equals("apoli:exhaust")) {
             if (entity instanceof Player player) {
-                player.setFoodLevel(player.getFoodLevel() - Math.round(Float.valueOf(power.get("amount").toString())));
+                player.setFoodLevel(player.getFoodLevel() - Math.round(Float.valueOf(action.get("amount").toString())));
             }
         }
         if (type.equals("apoli:explode")) {
@@ -658,15 +666,15 @@ public class Actions {
             JSONObject destructible = new JSONObject();
             boolean create_fire = false;
 
-            if (power.containsKey("power"))
-                explosionPower = Float.parseFloat(power.get("power").toString());
-            if (power.containsKey("destruction_type"))
-                destruction_type = power.get("destruction_type").toString();
-            if (power.containsKey("indestructible"))
-                indestructible = (JSONObject) power.get("indestructible");
-            if (power.containsKey("destructible")) destructible = (JSONObject) power.get("destructible");
-            if (power.containsKey("create_fire"))
-                create_fire = Boolean.parseBoolean(power.get("create_fire").toString());
+            if (action.containsKey("action"))
+                explosionPower = Float.parseFloat(action.get("action").toString());
+            if (action.containsKey("destruction_type"))
+                destruction_type = action.get("destruction_type").toString();
+            if (action.containsKey("indestructible"))
+                indestructible = (JSONObject) action.get("indestructible");
+            if (action.containsKey("destructible")) destructible = (JSONObject) action.get("destructible");
+            if (action.containsKey("create_fire"))
+                create_fire = Boolean.parseBoolean(action.get("create_fire").toString());
 
             entity.getLocation().createExplosion(explosionPower, create_fire);
         }
@@ -684,11 +692,11 @@ public class Actions {
         }
         if (type.equals("apoli:equipped_item_action")) {
             if (entity instanceof Player player) {
-                if (power.containsKey("equipment_slot")) {
+                if (action.containsKey("equipment_slot")) {
                     try {
-                        if (player.getInventory().getItem(getSlotFromString(power.get("equipment_slot").toString())) == null)
+                        if (player.getInventory().getItem(getSlotFromString(action.get("equipment_slot").toString())) == null)
                             return;
-                        ItemActionType(player.getInventory().getItem(getSlotFromString(power.get("equipment_slot").toString())), power);
+                        ItemActionType(player.getInventory().getItem(getSlotFromString(action.get("equipment_slot").toString())), action);
                     } catch (Exception e) {
                         //silently fail
                     }
@@ -696,25 +704,23 @@ public class Actions {
             }
         }
         if (type.equals("apoli:dismount")) {
-            for (Entity entity1 : entity.getVehicle().getPassengers()) {
-                if (entity1 == entity) entity1.getPassengers().remove(entity);
-            }
+            entity.getVehicle().removePassenger(entity);
         }
         if (type.equals("apoli:feed")) {
             if (entity instanceof Player player) {
-                player.setFoodLevel(player.getFoodLevel() + Integer.parseInt(power.get("food").toString()));
-                player.setSaturation(player.getSaturation() + Float.parseFloat(power.get("saturation").toString()));
+                player.setFoodLevel(player.getFoodLevel() + Integer.parseInt(action.get("food").toString()));
+                player.setSaturation(player.getSaturation() + Float.parseFloat(action.get("saturation").toString()));
             }
         }
         if (type.equals("apoli:fire_projectile")) {
             if (entity instanceof ProjectileSource) {
-                float finalDivergence1 = Float.parseFloat(power.getOrDefault("divergence", 1.0).toString());
-                float speed = Float.parseFloat(power.getOrDefault("speed", 1).toString());
+                float finalDivergence1 = Float.parseFloat(action.getOrDefault("divergence", 1.0).toString());
+                float speed = Float.parseFloat(action.getOrDefault("speed", 1).toString());
                 EntityType typeE;
-                if (power.getOrDefault("entity_type", null).toString().equalsIgnoreCase("origins:enderian_pearl")) {
+                if (action.getOrDefault("entity_type", null).toString().equalsIgnoreCase("origins:enderian_pearl")) {
                     typeE = EntityType.ENDER_PEARL;
                 } else {
-                    typeE = EntityType.valueOf(power.getOrDefault("entity_type", null).toString().split(":")[1].toUpperCase());
+                    typeE = EntityType.valueOf(action.getOrDefault("entity_type", null).toString().split(":")[1].toUpperCase());
                 }
                 Projectile projectile = (Projectile) entity.getWorld().spawnEntity(entity.getLocation(), typeE);
                 projectile.setShooter((ProjectileSource) entity);
@@ -736,36 +742,46 @@ public class Actions {
             }
         }
         if (type.equals("apoli:passenger_action")) {
-            runEntity(entity.getPassenger(), (JSONObject) power.get("action"));
-            runbiEntity(entity, entity.getPassenger(), (JSONObject) power.get("action"));
+            if(entity.getPassengers() == null || entity.getPassengers().isEmpty()) return;
+            EntityActionType(entity.getPassenger(), (JSONObject) action.get("action"));
+            BiEntityActionType(entity.getPassenger(), entity, (JSONObject) action.get("bientity_action"));
+        }
+        if (type.equals("apoli:riding_action")) {
+            if(entity.getVehicle() == null) return;
+            if(action.containsKey("action")) {
+                EntityActionType(entity.getVehicle(), (JSONObject) action.get("action"));
+            }
+            if(action.containsKey("bientity_action")) {
+                BiEntityActionType(entity.getVehicle(), entity, (JSONObject) action.get("bientity_action"));
+            }
         }
         if (type.equals("apoli:raycast")) {
             Predicate<Entity> filter = entity1 -> !entity1.equals(entity);
-            if (power.get("before_action") != null) {
-                runEntity(entity, (JSONObject) power.get("before_action"));
+            if (action.get("before_action") != null) {
+                EntityActionType(entity, (JSONObject) action.get("before_action"));
             }
-            RayTraceResult traceResult = entity.getWorld().rayTrace(entity.getLocation(), entity.getLocation().getDirection(), 12, FluidCollisionMode.valueOf(power.getOrDefault("fluid_handling", "NEVER").toString().toUpperCase()), false, 1, filter);
+            RayTraceResult traceResult = entity.getWorld().rayTrace(entity.getLocation(), entity.getLocation().getDirection(), 12, FluidCollisionMode.valueOf(action.getOrDefault("fluid_handling", "NEVER").toString().toUpperCase()), false, 1, filter);
             if (traceResult != null) {
                 if (traceResult.getHitEntity() != null) {
                     Entity entity2 = traceResult.getHitEntity();
                     if (entity2.isDead() || !(entity2 instanceof LivingEntity)) return;
                     if (entity2.isInvulnerable()) return;
                     if (entity2.getPassengers().contains(entity)) return;
-                    if (power.get("bientity_action") != null) {
-                        runbiEntity(entity, entity2, (JSONObject) power.get("bientity_action"));
+                    if (action.get("bientity_action") != null) {
+                        runbiEntity(entity, entity2, (JSONObject) action.get("bientity_action"));
                     }
                 }
                 if (traceResult.getHitBlock() != null) {
-                    if (power.get("block_action") != null) {
-                        runBlock(traceResult.getHitBlock().getLocation(), (JSONObject) power.get("block_action"));
+                    if (action.get("block_action") != null) {
+                        runBlock(traceResult.getHitBlock().getLocation(), (JSONObject) action.get("block_action"));
                     }
                 }
-                if (power.get("after_action") != null) {
-                    runEntity(entity, (JSONObject) power.get("after_action"));
+                if (action.get("after_action") != null) {
+                    runEntity(entity, (JSONObject) action.get("after_action"));
                 }
             } else {
-                if (power.get("miss_action") != null) {
-                    runEntity(entity, (JSONObject) power.get("miss_action"));
+                if (action.get("miss_action") != null) {
+                    runEntity(entity, (JSONObject) action.get("miss_action"));
                 }
             }
         }
@@ -773,21 +789,21 @@ public class Actions {
             entity.setFireTicks(0);
         }
         if (type.equals("apoli:play_sound")) {
-            entity.getWorld().playSound(entity, Sound.valueOf(power.get("sound").toString().toUpperCase().split(":")[1].replace(".", "_")), 8, 1);
+            entity.getWorld().playSound(entity, Sound.valueOf(action.get("sound").toString().toUpperCase().split(":")[1].replace(".", "_")), 8, 1);
         }
         if (type.equals("apoli:gain_air")) {
-            long amt = (long) power.get("value");
+            long amt = (long) action.get("value");
             if (entity instanceof Player p) {
                 p.setRemainingAir(p.getRemainingAir() + Math.toIntExact(amt));
             }
         }
         if (type.equals("apoli:drop_inventory")) {
             if (entity instanceof Player player) {
-                if (power.containsKey("slot")) {
+                if (action.containsKey("slot")) {
                     try {
-                        if (player.getInventory().getItem(getSlotFromString(power.get("slot").toString())) == null)
+                        if (player.getInventory().getItem(getSlotFromString(action.get("slot").toString())) == null)
                             return;
-                        ItemActionType(player.getInventory().getItem(getSlotFromString(power.get("slot").toString())), power);
+                        ItemActionType(player.getInventory().getItem(getSlotFromString(action.get("slot").toString())), action);
                     } catch (Exception e) {
                         //fail noononooo
                     }
@@ -809,35 +825,35 @@ public class Actions {
         if (type.equals("apoli:grant_advancement")) {
             OriginConsoleSender originConsoleSender = new OriginConsoleSender();
             originConsoleSender.setOp(true);
-            Bukkit.dispatchCommand(originConsoleSender, "advancement grant $1 $2".replace("$1", entity.getName()).replace("$2", power.get("advacnement").toString()));
+            Bukkit.dispatchCommand(originConsoleSender, "advancement grant $1 $2".replace("$1", entity.getName()).replace("$2", action.get("advacnement").toString()));
         }
         if (type.equals("apoli:revoke_advancement")) {
             OriginConsoleSender originConsoleSender = new OriginConsoleSender();
             originConsoleSender.setOp(true);
-            Bukkit.dispatchCommand(originConsoleSender, "advancement revoke $1 $2".replace("$1", entity.getName()).replace("$2", power.get("advacnement").toString()));
+            Bukkit.dispatchCommand(originConsoleSender, "advancement revoke $1 $2".replace("$1", entity.getName()).replace("$2", action.get("advacnement").toString()));
         }
         if (type.equals("apoli:selector_action")) {
-            if (power.get("bientity_condition") != null) {
+            if (action.get("bientity_condition") != null) {
                 if (entity instanceof Player player) {
-                    runbiEntity(entity, player.getTargetEntity(AttributeHandler.Reach.getDefaultReach(player), false), (JSONObject) power.get("bientity_condition"));
+                    runbiEntity(entity, player.getTargetEntity(AttributeHandler.Reach.getDefaultReach(player), false), (JSONObject) action.get("bientity_condition"));
                 }
             }
         }
         if (type.equals("apoli:give")) {
             int amt = 1;
-            if (power.containsKey("amount")) {
-                amt = Integer.parseInt(power.get("amount").toString());
+            if (action.containsKey("amount")) {
+                amt = Integer.parseInt(action.get("amount").toString());
             }
 
-            if (entityAction.containsKey("stack")) {
-                JSONObject stackObject = (JSONObject) entityAction.get("stack");
+            if (action.containsKey("stack")) {
+                JSONObject stackObject = (JSONObject) action.get("stack");
                 String item = stackObject.get("item").toString();
                 int amount = Integer.parseInt(String.valueOf(stackObject.getOrDefault("amount", 1)));
 
                 ItemStack itemStack = new ItemStack(Material.valueOf(item.toUpperCase().split(":")[1]), amount);
 
-                if (entityAction.containsKey("item_action")) {
-                    ItemActionType(itemStack, power);
+                if (action.containsKey("item_action")) {
+                    ItemActionType(itemStack, action);
                 }
                 if (entity instanceof Player player) {
                     player.getInventory().addItem(itemStack);
@@ -847,8 +863,8 @@ public class Actions {
         }
         if (type.equals("apoli:damage")) {
             if (entity instanceof Player P) {
-                P.damage(Double.valueOf(power.get("amount").toString()));
-                P.setLastDamageCause(new EntityDamageEvent(P, EntityDamageEvent.DamageCause.CUSTOM, Double.valueOf(power.get("amount").toString())));
+                P.damage(Double.valueOf(action.get("amount").toString()));
+                P.setLastDamageCause(new EntityDamageEvent(P, EntityDamageEvent.DamageCause.CUSTOM, Double.valueOf(action.get("amount").toString())));
             }
         }
         if (type.equals("genesis:set_spawn")) {
@@ -861,15 +877,15 @@ public class Actions {
             float y = 0f;
             float x = 0f;
             float z = 0f;
-            Space space = Utils.getSpaceFromString(entityAction.getOrDefault("space", "world").toString());
-            if (entityAction.containsKey("y")) y = Float.parseFloat(entityAction.get("y").toString());
-            if (entityAction.containsKey("x")) x = Float.parseFloat(entityAction.get("x").toString());
-            if (entityAction.containsKey("z")) z = Float.parseFloat(entityAction.get("z").toString());
+            Space space = Utils.getSpaceFromString(action.getOrDefault("space", "world").toString());
+            if (action.containsKey("y")) y = Float.parseFloat(action.get("y").toString());
+            if (action.containsKey("x")) x = Float.parseFloat(action.get("x").toString());
+            if (action.containsKey("z")) z = Float.parseFloat(action.get("z").toString());
 
             Vector3f vec = new Vector3f(x, y, z);
             net.minecraft.world.entity.Entity en = ((CraftLivingEntity) entity).getHandle();
             space.toGlobal(vec, en);
-            if (Boolean.parseBoolean(entityAction.getOrDefault("set", "false").toString())) {
+            if (Boolean.parseBoolean(action.getOrDefault("set", "false").toString())) {
                 en.getBukkitEntity().getVelocity().add(new Vector(vec.x, vec.y, vec.z));
             } else {
                 en.getBukkitEntity().setVelocity(new Vector(vec.x, vec.y, vec.z));
@@ -877,12 +893,12 @@ public class Actions {
         }
         if (type.equals("apoli:execute_command")) {
             String cmd = null;
-            if (power.get("command").toString().startsWith("power") || power.get("command").toString().startsWith("/power"))
+            if (action.get("command").toString().startsWith("action") || action.get("command").toString().startsWith("/action"))
                 return;
-            if (power.get("command").toString().startsWith("/")) {
-                cmd = power.get("command").toString().split("/")[1];
+            if (action.get("command").toString().startsWith("/")) {
+                cmd = action.get("command").toString().split("/")[1];
             } else {
-                cmd = power.get("command").toString();
+                cmd = action.get("command").toString();
             }
             final boolean returnToNormal = entity.getWorld().getGameRuleValue(GameRule.SEND_COMMAND_FEEDBACK);
             entity.getWorld().setGameRule(GameRule.SEND_COMMAND_FEEDBACK, false);
@@ -898,8 +914,8 @@ public class Actions {
             int points = 0;
             int levels = 0;
 
-            if (entityAction.containsKey("points")) points = Integer.parseInt(entityAction.get("points").toString());
-            if (entityAction.containsKey("levels")) levels = Integer.parseInt(entityAction.get("levels").toString());
+            if (action.containsKey("points")) points = Integer.parseInt(action.get("points").toString());
+            if (action.containsKey("levels")) levels = Integer.parseInt(action.get("levels").toString());
 
             if (entity instanceof Player player) {
                 player.giveExp(points);
@@ -908,7 +924,7 @@ public class Actions {
         }
         if (type.equals("apoli:apply_effect")) {
             if (entity instanceof LivingEntity le) {
-                Utils.statusEffectInstance(le, entityAction);
+                Utils.statusEffectInstance(le, action);
             }
         }
         if (type.equals("apoli:area_of_effect")) {
@@ -916,15 +932,15 @@ public class Actions {
             JSONObject bientity_action = new JSONObject();
             boolean include_target = false;
 
-            if (entityAction.containsKey("radius")) radius = Float.parseFloat(entityAction.get("radius").toString());
-            if (entityAction.containsKey("bientity_action"))
-                bientity_action = (JSONObject) entityAction.get("bientity_action");
-            if (entityAction.containsKey("include_target"))
-                include_target = Boolean.parseBoolean(entityAction.get("include_target").toString());
+            if (action.containsKey("radius")) radius = Float.parseFloat(action.get("radius").toString());
+            if (action.containsKey("bientity_action"))
+                bientity_action = (JSONObject) action.get("bientity_action");
+            if (action.containsKey("include_target"))
+                include_target = Boolean.parseBoolean(action.get("include_target").toString());
 
             for (Entity nearbyEntity : entity.getNearbyEntities(radius, radius, radius)) {
                 boolean run = true;
-                if (entityAction.containsKey("bientity_condition")) {
+                if (action.containsKey("bientity_condition")) {
                     Optional<Boolean> bool = ConditionExecutor.biEntityCondition.check((JSONObject) bientity_action.get("bientity_condition"), entity, nearbyEntity, entity.getLocation().getBlock(), null, null, null);
                     if (bool.isPresent()) {
                         run = bool.get();
@@ -940,12 +956,12 @@ public class Actions {
             if (include_target) BiEntityActionType(entity, entity, bientity_action);
         }
         if (type.equals("apoli:block_action_at")) {
-            BlockActionType(entity.getLocation(), (JSONObject) entityAction.get("block_action"));
+            BlockActionType(entity.getLocation(), (JSONObject) action.get("block_action"));
         }
         if (type.equals("apoli:toggle")) {
             if (entity instanceof Player) {
                 for (OriginContainer origin : OriginPlayerUtils.getOrigin((Player) entity).values()) {
-                    if (origin.getPowers().contains(power.get("power"))) {
+                    if (origin.getPowers().contains(action.get("action"))) {
                         for (PowerContainer powerContainer : origin.getPowerContainers()) {
                             if (powerContainer.getType().equals("apoli:toggle")) {
                                 Toggle toggle = new Toggle();
@@ -957,12 +973,12 @@ public class Actions {
             }
         }
         if (type.equals("apoli:set_fall_distance")) {
-            entity.setFallDistance(Float.parseFloat(power.get("fall_distance").toString()));
+            entity.setFallDistance(Float.parseFloat(action.get("fall_distance").toString()));
         }
         if (type.equals("apoli:trigger_cooldown")) {
             if (entity instanceof Player player) {
                 for (OriginContainer origin : OriginPlayerUtils.getOrigin((Player) entity).values()) {
-                    if (origin.getPowers().contains(power.get("power"))) {
+                    if (origin.getPowers().contains(action.get("action"))) {
                         for (PowerContainer powerContainer : origin.getPowerContainers()) {
                             if (powerContainer.get("cooldown") != null) {
                                 String key = "*";
