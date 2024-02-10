@@ -1,15 +1,18 @@
 package me.dueris.genesismc.factory.powers;
 
 import me.dueris.genesismc.entity.OriginPlayerUtils;
+import me.dueris.genesismc.events.PowerUpdateEvent;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.player.Phasing;
 import me.dueris.genesismc.utils.PowerContainer;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class Overlay extends CraftPower {
+public class Overlay extends CraftPower implements Listener {
 
     @Override
     public void setActive(Player p, String tag, Boolean bool) {
@@ -22,6 +25,13 @@ public class Overlay extends CraftPower {
         } else {
             powers_active.put(p, new HashMap());
             setActive(p, tag, bool);
+        }
+    }
+
+    @EventHandler
+    public void remove(PowerUpdateEvent e){
+        if(e.isRemoved() && e.getPower().getType().equals(getPowerFile())){
+            Phasing.deactivatePhantomOverlay(e.getPlayer());
         }
     }
 
