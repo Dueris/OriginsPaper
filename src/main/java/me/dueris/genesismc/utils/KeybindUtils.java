@@ -76,11 +76,12 @@ public class KeybindUtils implements Listener {
         return false;
     }
 
-    public static ItemStack createKeybindItem(String keybindType, String valueKEY) {
+    public static ItemStack createKeybindItem(String keybindType, String valueKEY, int id) {
         ItemStack itemStack = new ItemStack(Material.GRAY_DYE);
         ItemMeta itemMeta = itemStack.getItemMeta();
         itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
         itemMeta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
+        itemMeta.setCustomModelData(id);
         itemMeta.setDisplayName(ChatColor.GRAY + "Keybind : " + keybindType);
         itemMeta.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "origin_item_data"), PersistentDataType.STRING, valueKEY);
         itemMeta.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "contin"), PersistentDataType.BOOLEAN, false);
@@ -89,11 +90,11 @@ public class KeybindUtils implements Listener {
     }
 
     public static void addPrimaryItem(Player p) {
-        p.getInventory().addItem(createKeybindItem("Primary", "key.origins.primary_active"));
+        p.getInventory().addItem(createKeybindItem("Primary", "key.origins.primary_active", 0001));
     }
 
     public static void addSecondaryItem(Player p) {
-        p.getInventory().addItem(createKeybindItem("Secondary", "key.origins.secondary_active"));
+        p.getInventory().addItem(createKeybindItem("Secondary", "key.origins.secondary_active", 0002));
     }
 
     public static void addItems(Player p) {
