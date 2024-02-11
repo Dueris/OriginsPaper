@@ -13,6 +13,7 @@ import me.dueris.genesismc.utils.legacy.LegacyOriginContainer;
 import me.dueris.genesismc.utils.translation.LangConfig;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
+import org.bukkit.NamespacedKey;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -94,6 +95,15 @@ public class PlayerHandler implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void playerJoin(PlayerJoinEvent e) {
         Player p = e.getPlayer();
+        // 0.2.6 update
+        if(p.getPersistentDataContainer().has(GenesisMC.identifier("originLayer"), PersistentDataType.STRING) && !p.getPersistentDataContainer().has(GenesisMC.identifier("updatedTo026"), PersistentDataType.BOOLEAN)){
+            for(LayerContainer layerContainer : CraftApoli.getLayers()){
+                if(!OriginPlayerUtils.getOrigin(p, layerContainer).equals(CraftApoli.nullOrigin())){ // Valid origin
+                    OriginPlayerUtils.setOrigin(p, layerContainer, OriginPlayerUtils.getOrigin(p, layerContainer)); // Update origin
+                }
+            }
+            p.getPersistentDataContainer().set(GenesisMC.identifier("updatedTo026"), PersistentDataType.BOOLEAN, true);
+        }
         //set origins to null if none present
         if (
                 !p.getPersistentDataContainer().has(GenesisMC.identifier("originLayer"), PersistentDataType.STRING) ||
