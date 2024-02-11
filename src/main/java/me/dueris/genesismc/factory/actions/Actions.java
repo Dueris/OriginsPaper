@@ -869,7 +869,7 @@ public class Actions {
         if (type.equals("apoli:damage")) {
             if (entity instanceof Player P) {
                 P.damage(Double.valueOf(action.get("amount").toString()));
-                P.setLastDamageCause(new EntityDamageEvent(P, EntityDamageEvent.DamageCause.CUSTOM, Double.valueOf(action.get("amount").toString())));
+                P.setLastDamageCause(new EntityDamageEvent((Entity) P, EntityDamageEvent.DamageCause.CUSTOM, Double.valueOf(action.get("amount").toString())));
             }
         }
         if (type.equals("genesis:set_spawn")) {
