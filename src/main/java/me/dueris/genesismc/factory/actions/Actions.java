@@ -875,7 +875,7 @@ public class Actions {
         if (type.equals("apoli:damage")) {
             if (entity instanceof Player p) {
                 double amount = Double.valueOf(action.get("amount").toString());
-                EntityDamageEvent event = new EntityDamageEvent(p, EntityDamageEvent.DamageCause.CUSTOM, new HashMap<>(), new HashMap<>());
+                EntityDamageEvent event = new EntityDamageEvent(p, EntityDamageEvent.DamageCause.CUSTOM, new HashMap(), new HashMap());
                 event.setDamage(amount);
                 p.damage(amount);
                 p.setLastDamageCause(event);
