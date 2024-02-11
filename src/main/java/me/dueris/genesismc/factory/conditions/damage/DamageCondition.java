@@ -102,6 +102,9 @@ public class DamageCondition implements Condition {
                         }
                         return getResult(inverted, Optional.of(false));
                     }
+                    case "poison" -> {
+                        return getResult(inverted, Optional.of(entityDamageEvent.getCause().equals(DamageCause.POISON)));
+                    }
                     case "anvil.player" -> {
                         if (entityDamageEvent.getCause().equals(DamageCause.FALLING_BLOCK)) {
                             FallingBlock fallingBlock = getFallingBlockDamager(entityDamageEvent);

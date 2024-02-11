@@ -1,15 +1,25 @@
 {
-    "type": "origins:self_action_when_hit",
-    "entity_action": {
-        "type": "origins:chance",
-        "chance": 0.20,
-        "action": {
-            "type": "origins:apply_effect",
-            "effect": {
-                "effect": "minecraft:poison",
-                "amplifier": 0,
-                "duration": 60
+    "type": "origins:multiple",
+    "takePoison": {
+        "type": "origins:self_action_when_hit",
+        "entity_action": {
+            "type": "origins:chance",
+            "chance": 0.20,
+            "action": {
+                "type": "origins:apply_effect",
+                "effect": {
+                    "effect": "minecraft:poison",
+                    "amplifier": 2,
+                    "duration": 60
+                }
             }
+        }
+    },
+    "extra_poison": {
+        "type": "origins:modify_damage_taken",
+        "damage_condition": {
+            "type": "origins:name",
+            "name": "poison"
         }
     },
     "hidden": false,
