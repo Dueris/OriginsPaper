@@ -866,25 +866,9 @@ public class Actions {
             }
 
         }
-        /*if (type.equals("apoli:damage")) { // Depreciated
+        if (type.equals("apoli:damage")) {
             if (entity instanceof Player P) {
                 P.damage(Double.valueOf(action.get("amount").toString()));
-                P.setLastDamageCause(new EntityDamageEvent(P, EntityDamageEvent.DamageCause.CUSTOM, Double.valueOf(action.get("amount").toString())));
-            }
-        }*/ // Depreciated
-        if (type.equals("apoli:damage")) {
-            if (entity instanceof Player p) {
-                double amount = Double.valueOf(action.get("amount").toString());
-                EntityDamageEvent event = new EntityDamageEvent(p, EntityDamageEvent.DamageCause.CUSTOM, new HashMap(), new HashMap());
-                event.setDamage(amount);
-                p.damage(amount);
-                p.setLastDamageCause(event);
-            }
-        }
-        if (type.equals("genesis:set_spawn")) {
-            if (entity instanceof Player p) {
-                p.sendMessage("Bed location set.");
-                p.setBedSpawnLocation(p.getTargetBlockExact(Math.toIntExact(Math.round(AttributeHandler.Reach.getFinalReach(p)))).getLocation());
             }
         }
         if (type.equals("apoli:add_velocity")) {
