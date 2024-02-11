@@ -99,7 +99,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
     public static OriginScheduler.OriginSchedulerTree scheduler = null;
     public static String version = Bukkit.getVersion().split("\\(MC: ")[1].replace(")", "");
     public static boolean isCompatible = false;
-    public static String pluginVersion = "v0.2.6";
+    public static String pluginVersion = "v0.2.7";
     public static String world_container = MinecraftServer.getServer().options.asMap().toString().split(", \\[W, universe, world-container, world-dir]=\\[")[1].split("], ")[0];
     public static ExecutorService loaderThreadPool;
     public static ArrayList<String> versions = new ArrayList<>();
