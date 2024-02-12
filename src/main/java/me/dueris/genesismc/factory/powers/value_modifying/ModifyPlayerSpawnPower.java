@@ -9,6 +9,7 @@ import me.dueris.genesismc.events.PowerUpdateEvent;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.PowerContainer;
+import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
@@ -41,6 +42,7 @@ import org.bukkit.block.Block;
 import org.bukkit.craftbukkit.v1_20_R3.CraftWorld;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_20_R3.util.CraftNamespacedKey;
+import org.bukkit.craftbukkit.v1_20_R3.util.CraftVector;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -282,11 +284,8 @@ public class ModifyPlayerSpawnPower extends CraftPower implements Listener {
             if (modifiedSpawnPos.get() == null) return null;
 
             Vec3 msp = modifiedSpawnPos.get();
-            System.out.println("dslkfjlskdf");
             modifiedSpawnBlockPos.set(msp.x, msp.y, msp.z);
-            System.out.println("29085jsdlkjfl,s.df");
             targetDimension.getChunkSource().addRegionTicket(TicketType.START, new ChunkPos(modifiedSpawnBlockPos), 11, Unit.INSTANCE);
-            System.out.println("32rsdjfksj,vmx,mnv,mxn,cmvnxc");
 
             return new Pair<>(targetDimension, modifiedSpawnBlockPos);
 
