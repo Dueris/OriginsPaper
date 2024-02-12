@@ -39,6 +39,7 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.World;
 import org.bukkit.World.Environment;
 import org.bukkit.block.Block;
+import org.bukkit.craftbukkit.v1_20_R3.CraftRegistry;
 import org.bukkit.craftbukkit.v1_20_R3.CraftWorld;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_20_R3.util.CraftNamespacedKey;
@@ -60,6 +61,23 @@ import static org.bukkit.Material.AIR;
 import static org.bukkit.Material.OBSIDIAN;
 
 public class ModifyPlayerSpawnPower extends CraftPower implements Listener {
+
+    public Optional<BlockPos> getBiomePosition(ServerLevel level, BlockPos originalPos, PowerContainer power){
+        if(power.getStringOrDefault("biome", null) == null) return Optional.empty();
+
+        Optional<Biome> tB = CraftRegistry.getMinecraftRegistry().registry(Registries.BIOME).get().getOptional(CraftNamespacedKey.toMinecraft(NamespacedKey.fromString(power.getString("biome"))));
+        if(!tB.isPresent()){
+            LogManager.getLogger("ModifyPlayerSpawn").warn("ModifyPlayerSpawnPower could not find spawnpoint at biome loc because its not registered! Falling back to default spawnpoint...");
+            return Optional.empty();
+        }else{
+            Pair<BlockPos, Holder<Biome>> tBP = level.findClosestBiome3d(biomeHolder -> biomeHolder.value() == tB.get(), originalPos, 6400, 64, 64);
+            if(tBP != null){
+
+                return Optional.of(tBP.getFirst());
+            }
+        }
+        return Optional.empty();
+    }
 
     @Override
     public void setActive(Player p, String tag, Boolean bool) {
@@ -112,7 +130,7 @@ public class ModifyPlayerSpawnPower extends CraftPower implements Listener {
                 if (power == null) continue;
                 if (executor.check("condition", "conditions", p, power, getPowerFile(), p, null, p.getLocation().getBlock(), null, p.getInventory().getItemInMainHand(), null)) {
                     ApoliSpawnUtils utils = new ApoliSpawnUtils();
-                    Pair<ServerLevel, BlockPos> spawn = utils.getSpawn(false, ((CraftPlayer)p).getHandle(), getDimension(power), ApoliSpawnUtils.SpawnStrategy.CENTER, 12);
+                    Pair<ServerLevel, BlockPos> spawn = utils.getSpawn(false, ((CraftPlayer)p).getHandle(), getDimension(power), ApoliSpawnUtils.SpawnStrategy.CENTER, 12, power);
 
                     if(spawn == null) return;
                     ServerLevel spawnDimension = spawn.getFirst();
@@ -257,7 +275,7 @@ public class ModifyPlayerSpawnPower extends CraftPower implements Listener {
 
         }
 
-        public Pair<ServerLevel, BlockPos> getSpawn(boolean isSpawnObstructed, Entity entity, ResourceKey<Level> dimension, SpawnStrategy spawnStrategy, float dimensionDistanceMultiplier) {
+        public Pair<ServerLevel, BlockPos> getSpawn(boolean isSpawnObstructed, Entity entity, ResourceKey<Level> dimension, SpawnStrategy spawnStrategy, float dimensionDistanceMultiplier, PowerContainer power) {
             ServerPlayer serverPlayerEntity = (ServerPlayer) entity;
             MinecraftServer server = serverPlayerEntity.getServer();
             if (server == null) return null;
@@ -279,6 +297,7 @@ public class ModifyPlayerSpawnPower extends CraftPower implements Listener {
             BlockPos regularSpawnBlockPos = overworldDimension.getSharedSpawnPos();
             BlockPos.MutableBlockPos modifiedSpawnBlockPos = new BlockPos.MutableBlockPos();
             BlockPos.MutableBlockPos dimensionSpawnPos = spawnStrategy.apply(regularSpawnBlockPos, center, dimensionDistanceMultiplier).mutable();
+            new ModifyPlayerSpawnPower().getBiomePosition(targetDimension, dimensionSpawnPos, power).ifPresent(dimensionSpawnPos::set);
             getValidSpawn(targetDimension, dimensionSpawnPos, range, entity).ifPresent(modifiedSpawnPos::set);
 
             if (modifiedSpawnPos.get() == null) return null;
