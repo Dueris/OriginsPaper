@@ -41,11 +41,11 @@ dependencies {
     compileOnly("net.skinsrestorer:skinsrestorer-api:15.0.4")
     compileOnly "org.mineskin:java-client:1.2.4-SNAPSHOT"
     compileOnly("org.reflections:reflections:0.9.12")
-    compileOnly("com.github.Dueris:ModelColorAPI:1.0.4-SNAPSHOT")
+    compileOnly("com.github.Dueris:ModelColorAPI:1.0.5-SNAPSHOT")
     // shade
     shade("org.reflections:reflections:0.9.12")
     shade("org.mineskin:java-client:1.2.4-SNAPSHOT")
-    shade("com.github.Dueris:ModelColorAPI:1.0.4-SNAPSHOT")
+    shade("com.github.Dueris:ModelColorAPI:1.0.5-SNAPSHOT")
 }
 
 tasks.withType(JavaCompile).configureEach {
