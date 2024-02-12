@@ -24,18 +24,18 @@ public class LogoutBugWorkaround implements Listener {
         freezeLogin(e.getPlayer());
     }
 
-    @EventHandler
-    public void respawn(PlayerRespawnEvent e) {
-        final int[] i = {0};
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                if (i[0] > 15) cancel();
-                e.getPlayer().teleportAsync(e.getPlayer().getLocation());
-                i[0]++;
-            }
-        }.runTaskTimer(GenesisMC.getPlugin(), 0, 1);
-    }
+//    @EventHandler
+//    public void respawn(PlayerRespawnEvent e) {
+//        final int[] i = {0};
+//        new BukkitRunnable() {
+//            @Override
+//            public void run() {
+//                if (i[0] > 15) cancel();
+//                e.getPlayer().teleportAsync(e.getPlayer().getLocation());
+//                i[0]++;
+//            }
+//        }.runTaskTimer(GenesisMC.getPlugin(), 0, 1);
+//    }
 
     public void freezeLogin(Player p) {
         if (p.getPersistentDataContainer().has(new NamespacedKey(GenesisMC.getPlugin(), "logoutWorkaroundLocation"), PersistentDataType.STRING)) {
