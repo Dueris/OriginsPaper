@@ -20,6 +20,7 @@ import me.dueris.genesismc.factory.powers.player.RestrictArmor;
 import me.dueris.genesismc.factory.powers.player.attributes.AttributeHandler;
 import me.dueris.genesismc.utils.PowerContainer;
 import me.dueris.genesismc.utils.Utils;
+import me.dueris.genesismc.utils.apoli.RaycastApoli;
 import net.minecraft.commands.CommandSource;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.core.BlockPos;
@@ -615,57 +616,7 @@ public class EntityCondition implements Condition {
                 }
             }
             case "apoli:raycast" -> {
-                Predicate<Entity> filter = entity1 -> !entity1.equals(entity);
-
-                RayTraceResult traceResult = entity.getWorld().rayTrace(entity.getLocation(), entity.getLocation().getDirection(), 12, FluidCollisionMode.valueOf(condition.getOrDefault("fluid_handling", "none").toString()), false, 1, filter);
-                final boolean[] booleans = new boolean[0];
-                booleans[0] = true;
-                booleans[1] = true;
-                booleans[2] = true;
-                if (traceResult != null) {
-                    if (traceResult.getHitEntity() != null) {
-                        Entity entity2 = traceResult.getHitEntity();
-                        if (entity2.isDead() || !(entity2 instanceof LivingEntity))
-                            return getResult(inverted, Optional.of(false));
-                        if (entity2.isInvulnerable()) return getResult(inverted, Optional.of(false));
-                        if (entity2.getPassengers().contains(entity)) return getResult(inverted, Optional.of(false));
-                        if (entity2.equals(target)) {
-                            Optional boolB = this.check((JSONObject) condition.get("block_condition"), entity, target, block, fluid, itemStack, entityDamageEvent);
-                            if (boolB.isPresent()) {
-                                if (boolB.get().equals(true)) {
-                                    booleans[2] = true;
-                                } else {
-                                    booleans[2] = true;
-                                }
-                            } else {
-                                booleans[2] = true;
-                            }
-                        } else {
-                            booleans[2] = false;
-                        }
-                    }
-                    if (traceResult.getHitBlock() != null) {
-                        BlockCondition blockCondition = ConditionExecutor.blockCondition;
-                        if (condition.get("block_condition") != null) {
-                            Optional boolB = blockCondition.check((JSONObject) condition.get("block_condition"), entity, target, block, fluid, itemStack, entityDamageEvent);
-                            if (boolB.isPresent()) {
-                                booleans[1] = boolB.get().equals(true);
-                            } else {
-                                booleans[1] = true;
-                            }
-                        } else {
-                            booleans[1] = true;
-                        }
-                    }
-                }
-                boolean finalB = true;
-                for (int i = 0; i <= booleans.length; i++) {
-                    if (!booleans[i]) {
-                        finalB = false;
-                        break;
-                    }
-                }
-                return getResult(inverted, Optional.of(finalB));
+                return getResult(inverted, Optional.of(RaycastApoli.condition(condition, ((CraftEntity)entity).getHandle())));
             }
             case "apoli:relative_health" -> {
                 if (entity instanceof LivingEntity le) {

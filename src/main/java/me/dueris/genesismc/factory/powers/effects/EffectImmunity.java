@@ -29,9 +29,15 @@ public class EffectImmunity extends CraftPower {
                 for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                     if (conditionExecutor.check("condition", "conditions", p, power, getPowerFile(), p, null, null, null, p.getItemInHand(), null)) {
                         setActive(p, power.getTag(), true);
-                        if (!power.getStringList("effects").isEmpty()) {
-                            List<String> effectStrings = power.getStringList("effects");
-                            for (String effectString : effectStrings) {
+                        List<String> effects = new ArrayList<>();
+                        if(power.getStringOrDefault("effect", null) != null){
+                            effects.add(power.getString("effect"));
+                        }
+                        if(!power.getStringList("effects").isEmpty()){
+                            effects.addAll(power.getStringList("effects"));
+                        }
+                        if(!effects.isEmpty()){
+                            for (String effectString : effects) {
                                 PotionEffectType effectType = getPotionEffectType(effectString);
                                 if (effectType != null) {
                                     if (p.hasPotionEffect(effectType)) {
@@ -39,8 +45,6 @@ public class EffectImmunity extends CraftPower {
                                     }
                                 }
                             }
-                        } else {
-                            Bukkit.getLogger().warning(LangConfig.getLocalizedString(p, "powers.errors.effectImmunity"));
                         }
                     } else {
                         setActive(p, power.getTag(), false);

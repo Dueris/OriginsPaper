@@ -14,19 +14,19 @@ import me.dueris.genesismc.factory.powers.player.attributes.AttributeHandler;
 import me.dueris.genesismc.utils.OriginContainer;
 import me.dueris.genesismc.utils.PowerContainer;
 import me.dueris.genesismc.utils.Utils;
+import me.dueris.genesismc.utils.apoli.RaycastApoli;
 import me.dueris.genesismc.utils.apoli.Space;
 import me.dueris.genesismc.utils.console.OriginConsoleSender;
-import me.dueris.genesismc.utils.text.ChatFormatter;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.damagesource.DamageType;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.boss.BossBar;
+import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftLivingEntity;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.*;
-import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.Inventory;
@@ -35,14 +35,12 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.projectiles.ProjectileSource;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
 import org.joml.Vector3f;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import java.util.*;
-import java.util.function.Predicate;
 
 import static me.dueris.genesismc.utils.KeybindUtils.addItems;
 
@@ -761,34 +759,7 @@ public class Actions {
             }
         }
         if (type.equals("apoli:raycast")) {
-            Predicate<Entity> filter = entity1 -> !entity1.equals(entity);
-            if (action.get("before_action") != null) {
-                EntityActionType(entity, (JSONObject) action.get("before_action"));
-            }
-            RayTraceResult traceResult = entity.getWorld().rayTrace(entity.getLocation(), entity.getLocation().getDirection(), 12, FluidCollisionMode.valueOf(action.getOrDefault("fluid_handling", "NEVER").toString().toUpperCase()), false, 1, filter);
-            if (traceResult != null) {
-                if (traceResult.getHitEntity() != null) {
-                    Entity entity2 = traceResult.getHitEntity();
-                    if (entity2.isDead() || !(entity2 instanceof LivingEntity)) return;
-                    if (entity2.isInvulnerable()) return;
-                    if (entity2.getPassengers().contains(entity)) return;
-                    if (action.get("bientity_action") != null) {
-                        runbiEntity(entity, entity2, (JSONObject) action.get("bientity_action"));
-                    }
-                }
-                if (traceResult.getHitBlock() != null) {
-                    if (action.get("block_action") != null) {
-                        runBlock(traceResult.getHitBlock().getLocation(), (JSONObject) action.get("block_action"));
-                    }
-                }
-                if (action.get("after_action") != null) {
-                    runEntity(entity, (JSONObject) action.get("after_action"));
-                }
-            } else {
-                if (action.get("miss_action") != null) {
-                    runEntity(entity, (JSONObject) action.get("miss_action"));
-                }
-            }
+            RaycastApoli.action(action, ((CraftEntity)entity).getHandle());
         }
         if (type.equals("apoli:extinguish")) {
             entity.setFireTicks(0);

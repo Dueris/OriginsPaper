@@ -14,6 +14,8 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageType;
+import net.minecraft.world.level.ClipContext;
+import net.minecraft.world.phys.Vec3;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
@@ -173,6 +175,51 @@ public class Utils {
             }
             default -> {
                 return Space.WORLD;
+            }
+        }
+    }
+
+    public static Vec3 createDirection(JSONObject jsonObject){
+        if(jsonObject == null || jsonObject.isEmpty()) return null;
+        float x = 0;
+        float z = 0;
+        float y = 0;
+        if(jsonObject.containsKey("x")) x = (float) jsonObject.get("x");
+        if(jsonObject.containsKey("z")) z = (float) jsonObject.get("z");
+        if(jsonObject.containsKey("y")) y = (float) jsonObject.get("y");
+        return new Vec3(x, y, z);
+    }
+
+    public static ClipContext.Block getShapeType(String string){
+        switch (string) {
+            case "collider" -> {
+                return ClipContext.Block.COLLIDER;
+            }
+            case "outline" -> {
+                return ClipContext.Block.OUTLINE;
+            }
+            case "visual" -> {
+                return ClipContext.Block.VISUAL;
+            }
+            default -> {
+                return null;
+            }
+        }
+    }
+
+    public static ClipContext.Fluid getFluidHandling(String string){
+        switch (string) {
+            case "none" -> {
+                return ClipContext.Fluid.NONE;
+            }
+            case "any" -> {
+                return ClipContext.Fluid.ANY;
+            }
+            case "source_only" -> {
+                return ClipContext.Fluid.SOURCE_ONLY;
+            }
+            default -> {
+                return null;
             }
         }
     }
