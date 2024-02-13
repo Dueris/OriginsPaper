@@ -18,6 +18,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static me.dueris.genesismc.factory.conditions.CraftCondition.*;
 import static me.dueris.genesismc.factory.conditions.item.ItemCondition.getMeatMaterials;
@@ -60,60 +61,48 @@ public class ConditionExecutor {
                 }
             } else {
                 String powerF = subCondition.get("power").toString();
-                boolean invert = Boolean.parseBoolean(subCondition.getOrDefault("inverted", "false").toString());
+                boolean invert = (boolean) subCondition.getOrDefault("inverted", false);
                 return getResult(invert, Optional.of(powers_active.get(p).getOrDefault(powerF, false))).get();
             }
         } else {
-            Optional<Boolean> booleanOptional = Optional.empty();
+            AtomicBoolean booleanOptional = null;
 
-            if (!booleanOptional.isPresent() && dmgevent != null) {
+            if (booleanOptional == null && dmgevent != null) {
                 var check = damageCondition.check(subCondition, actor, target, block, fluid, itemStack, dmgevent);
-                if (check.isPresent()) {
-                    booleanOptional = check;
-                }
+                check.ifPresent(booleanOptional::set);
             }
 
-            if (!booleanOptional.isPresent() && actor != null) {
+            if (booleanOptional == null && actor != null) {
                 var check = entityCondition.check(subCondition, actor, target, block, fluid, itemStack, dmgevent);
-                if (check.isPresent()) {
-                    booleanOptional = check;
-                }
+                check.ifPresent(booleanOptional::set);
             }
 
-            if (!booleanOptional.isPresent() && actor != null && target != null) {
+            if (booleanOptional == null && actor != null && target != null) {
                 var check = biEntityCondition.check(subCondition, actor, target, block, fluid, itemStack, dmgevent);
-                if (check.isPresent()) {
-                    booleanOptional = check;
-                }
+                check.ifPresent(booleanOptional::set);
             }
 
-            if (!booleanOptional.isPresent() && block != null) {
+            if (booleanOptional == null && block != null) {
                 var check = blockCondition.check(subCondition, actor, target, block, fluid, itemStack, dmgevent);
-                if (check.isPresent()) {
-                    booleanOptional = check;
-                }
-
-                var check2 = biomeCondition.check(subCondition, actor, target, block, fluid, itemStack, dmgevent);
-                if (check2.isPresent()) {
-                    booleanOptional = check;
-                }
+                check.ifPresent(booleanOptional::set);
             }
 
-            if (!booleanOptional.isPresent() && fluid != null) {
+            if (booleanOptional == null && block != null) {
+                var check = biomeCondition.check(subCondition, actor, target, block, fluid, itemStack, dmgevent);
+                check.ifPresent(booleanOptional::set);
+            }
+
+            if (booleanOptional == null && fluid != null) {
                 var check = fluidCondition.check(subCondition, actor, target, block, fluid, itemStack, dmgevent);
-                if (check.isPresent()) {
-                    booleanOptional = check;
-                }
+                check.ifPresent(booleanOptional::set);
             }
 
-            if (!booleanOptional.isPresent() && itemStack != null) {
+            if (booleanOptional == null && itemStack != null) {
                 var check = itemCondition.check(subCondition, actor, target, block, fluid, itemStack, dmgevent);
-                if (check.isPresent()) {
-                    booleanOptional = check;
-                }
+                check.ifPresent(booleanOptional::set);
             }
 
-            if (!booleanOptional.isPresent()) {
+            if (booleanOptional == null) {
                 return true;
             } else {
                 return booleanOptional.get();
@@ -188,67 +177,51 @@ public class ConditionExecutor {
                     return false;
                 }
             } else {
-                String boolResult = "empty";
+                AtomicBoolean booleanOptional = null;
 
-                if (boolResult == "empty" && (singular.contains("entity_") || plural.contains("entity_") || plural.equals("conditions") || singular.equals("condition"))) {
+                if (booleanOptional == null && (singular.contains("entity_") || plural.contains("entity_") || plural.equals("conditions") || singular.equals("condition"))) {
                     Optional<Boolean> bool = entity.check(condition, actor, target, block, fluid, itemStack, dmgevent);
-                    if (bool.isPresent()) {
-                        boolResult = String.valueOf(bool.get());
-                    }
+                    bool.ifPresent(booleanOptional::set);
                 }
-                if (boolResult == "empty" && (singular.contains("bientity_") || plural.contains("bientity_") || plural.equals("conditions") || singular.equals("condition"))) {
+                if (booleanOptional == null && (singular.contains("bientity_") || plural.contains("bientity_") || plural.equals("conditions") || singular.equals("condition"))) {
                     Optional<Boolean> bool = bientity.check(condition, actor, target, block, fluid, itemStack, dmgevent);
-                    if (bool.isPresent()) {
-                        boolResult = String.valueOf(bool.get());
-                    }
+                    bool.ifPresent(booleanOptional::set);
                 }
-                if (boolResult == "empty" && (singular.contains("block_") || plural.contains("block_") || plural.equals("conditions") || singular.equals("condition"))) {
+                if (booleanOptional == null && (singular.contains("block_") || plural.contains("block_") || plural.equals("conditions") || singular.equals("condition"))) {
                     Optional<Boolean> bool = blockCon.check(condition, actor, target, block, fluid, itemStack, dmgevent);
-                    if (bool.isPresent()) {
-                        boolResult = String.valueOf(bool.get());
-                    }
+                    bool.ifPresent(booleanOptional::set);
                 }
-                if (boolResult == "empty" && (singular.contains("biome_") || plural.contains("biome_") || plural.equals("conditions") || singular.equals("condition"))) {
+                if (booleanOptional == null && (singular.contains("biome_") || plural.contains("biome_") || plural.equals("conditions") || singular.equals("condition"))) {
                     Optional<Boolean> bool = biome.check(condition, actor, target, block, fluid, itemStack, dmgevent);
-                    if (bool.isPresent()) {
-                        boolResult = String.valueOf(bool.get());
-                    }
+                    bool.ifPresent(booleanOptional::set);
                 }
-                if (boolResult == "empty" && (singular.contains("damage_") || plural.contains("damage_") || plural.equals("conditions") || singular.equals("condition"))) {
+                if (booleanOptional == null && (singular.contains("damage_") || plural.contains("damage_") || plural.equals("conditions") || singular.equals("condition"))) {
                     Optional<Boolean> bool = damage.check(condition, actor, target, block, fluid, itemStack, dmgevent);
-                    if (bool.isPresent()) {
-                        boolResult = String.valueOf(bool.get());
-                    }
+                    bool.ifPresent(booleanOptional::set);
                 }
-                if (boolResult == "empty" && (singular.contains("fluid_") || plural.contains("fluid_") || plural.equals("conditions") || singular.equals("condition"))) {
+                if (booleanOptional == null && (singular.contains("fluid_") || plural.contains("fluid_") || plural.equals("conditions") || singular.equals("condition"))) {
                     Optional<Boolean> bool = fluidCon.check(condition, actor, target, block, fluid, itemStack, dmgevent);
-                    if (bool.isPresent()) {
-                        boolResult = String.valueOf(bool.get());
-                    }
+                    bool.ifPresent(booleanOptional::set);
                 }
-                if (boolResult == "empty" && (singular.contains("item_") || plural.contains("item_") || plural.equals("conditions") || singular.equals("condition"))) {
+                if (booleanOptional == null && (singular.contains("item_") || plural.contains("item_") || plural.equals("conditions") || singular.equals("condition"))) {
                     Optional<Boolean> bool = item.check(condition, actor, target, block, fluid, itemStack, dmgevent);
-                    if (bool.isPresent()) {
-                        boolResult = String.valueOf(bool.get());
-                    }
+                    bool.ifPresent(booleanOptional::set);
                 }
                 // Custom conditions
-                if (boolResult == "empty") {
+                if (booleanOptional == null) {
                     try {
                         for (Class<? extends Condition> conditionClass : customConditions) {
                             Optional<Boolean> bool = conditionClass.newInstance().check(condition, actor, target, block, fluid, itemStack, dmgevent);
-                            if (bool.isPresent()) {
-                                boolResult = String.valueOf(bool.get());
-                            }
+                            bool.ifPresent(booleanOptional::set);
                         }
                     } catch (InstantiationException | IllegalAccessException e) {
                         throw new RuntimeException(e);
                     }
                 }
-                if (boolResult == "empty") {
-                    boolResult = "true";
+                if (booleanOptional == null) {
+                    booleanOptional.set(true);
                 }
-                return Boolean.parseBoolean(boolResult);
+                return booleanOptional.get();
             }
         }
         return false;
