@@ -1,49 +1,36 @@
 package me.dueris.genesismc.factory.powers.value_modifying;
 
-import com.google.gson.JsonSyntaxException;
 import com.mojang.datafixers.util.Pair;
-import io.papermc.paper.registry.RegistryKey;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.entity.OriginPlayerUtils;
 import me.dueris.genesismc.events.PowerUpdateEvent;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.utils.PowerContainer;
-import net.minecraft.Util;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Holder;
-import net.minecraft.core.Registry;
-import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.*;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.level.TicketType;
-import net.minecraft.tags.TagKey;
 import net.minecraft.util.Unit;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.vehicle.DismountHelper;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
-import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.levelgen.structure.StructureStart;
 import net.minecraft.world.phys.Vec3;
 import org.apache.commons.lang3.function.TriFunction;
 import org.apache.logging.log4j.LogManager;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
-import org.bukkit.World;
-import org.bukkit.World.Environment;
-import org.bukkit.block.Block;
 import org.bukkit.craftbukkit.v1_20_R3.CraftRegistry;
 import org.bukkit.craftbukkit.v1_20_R3.CraftWorld;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_20_R3.util.CraftNamespacedKey;
-import org.bukkit.craftbukkit.v1_20_R3.util.CraftVector;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -57,13 +44,11 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static me.dueris.genesismc.factory.powers.value_modifying.ValueModifyingSuperClass.modify_world_spawn;
-import static org.bukkit.Material.AIR;
-import static org.bukkit.Material.OBSIDIAN;
 
 public class ModifyPlayerSpawnPower extends CraftPower implements Listener {
 
     public Optional<BlockPos> getBiomePosition(ServerLevel level, BlockPos originalPos, PowerContainer power){
-        if(power.getStringOrDefault("biome", null) == null) return Optional.empty();
+        if(power.getStringOrDefault("biome", null) == null) return Optional.of(originalPos);
 
         Optional<Biome> tB = CraftRegistry.getMinecraftRegistry().registry(Registries.BIOME).get().getOptional(CraftNamespacedKey.toMinecraft(NamespacedKey.fromString(power.getString("biome"))));
         if(!tB.isPresent()){
@@ -77,6 +62,36 @@ public class ModifyPlayerSpawnPower extends CraftPower implements Listener {
             }
         }
         return Optional.empty();
+    }
+
+    public Optional<Vec3> getStructurePos(ServerLevel level, BlockPos blockPos, Entity entity, int range, PowerContainer power){
+        if(power.getStringOrDefault("structure", null) == null) return new ApoliSpawnUtils().getValidSpawn(level, blockPos, range, entity);
+        NamespacedKey key = NamespacedKey.fromString(power.getString("structure"));
+        Registry<Structure> structureRegistry = CraftRegistry.getMinecraftRegistry().registry(Registries.STRUCTURE).get();
+        ResourceKey<Structure> stRk = MinecraftServer.getServer().registryAccess().registry(Registries.STRUCTURE).get().getResourceKey(structureRegistry.get(CraftNamespacedKey.toMinecraft(key))).get();
+        HolderSet<Structure> structureHolderSet = null;
+
+        if(stRk != null){
+            var entry = structureRegistry.getHolder(stRk);
+            if(entry.isPresent()){
+                structureHolderSet = HolderSet.direct(entry.get());
+            }
+        }
+        BlockPos center = new BlockPos(0, 70, 0);
+
+        Pair<BlockPos, Holder<Structure>> struPos = level.getChunkSource().getGenerator().findNearestMapStructure(level, structureHolderSet, center, 100, false);
+
+        if(struPos == null){
+            LogManager.getLogger("ModifyPlayerSpawn").warn("ModifyPlayerSpawnPower could not find spawnpoint at structure loc because its not registered! Falling back to default spawnpoint...");
+            return Optional.empty();
+        }else{
+            BlockPos taStrPos = struPos.getFirst();
+            ChunkPos taStrChPos = new ChunkPos(taStrPos.getX() >> 4, taStrPos.getZ() >> 4);
+            StructureStart start = level.structureManager().getStartForStructure(SectionPos.of(taStrChPos, 0), struPos.getSecond().value(), level.getChunk(taStrPos));
+            if(start == null) return Optional.empty();
+
+            return new ApoliSpawnUtils().getValidSpawn(level, new BlockPos(start.getBoundingBox().getCenter()), range, entity);
+        }
     }
 
     @Override
@@ -197,7 +212,6 @@ public class ModifyPlayerSpawnPower extends CraftPower implements Listener {
         }
 
         private Optional<Vec3> getValidSpawn(ServerLevel targetDimension, BlockPos startPos, int range, Entity entity) {
-
             //  The 'direction' vector that determines the direction of the iteration
             int dx = 1;
             int dz = 0;
@@ -298,7 +312,7 @@ public class ModifyPlayerSpawnPower extends CraftPower implements Listener {
             BlockPos.MutableBlockPos modifiedSpawnBlockPos = new BlockPos.MutableBlockPos();
             BlockPos.MutableBlockPos dimensionSpawnPos = spawnStrategy.apply(regularSpawnBlockPos, center, dimensionDistanceMultiplier).mutable();
             new ModifyPlayerSpawnPower().getBiomePosition(targetDimension, dimensionSpawnPos, power).ifPresent(dimensionSpawnPos::set);
-            getValidSpawn(targetDimension, dimensionSpawnPos, range, entity).ifPresent(modifiedSpawnPos::set);
+            new ModifyPlayerSpawnPower().getStructurePos(targetDimension, dimensionSpawnPos, entity, range, power).ifPresent(modifiedSpawnPos::set);
 
             if (modifiedSpawnPos.get() == null) return null;
 
