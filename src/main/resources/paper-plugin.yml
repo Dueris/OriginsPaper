@@ -6,6 +6,9 @@ main: me.dueris.genesismc.GenesisMC
 api-version: '1.20'
 authors: [ Dueris, Tye ]
 folia-supported: true
+plugin:
+   join-classpath: true
+join-classpath: true
 description: Bringing the life and fun of the Origins mod to PaperMC
 website: https://ko-fi.com/dueris
 dependencies:
