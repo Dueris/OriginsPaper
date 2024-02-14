@@ -1,8 +1,7 @@
 package me.dueris.genesismc.factory.conditions.entity;
 
 import com.mojang.brigadier.StringReader;
-import me.dueris.genesismc.CooldownManager;
-import me.dueris.genesismc.entity.OriginPlayerUtils;
+import me.dueris.genesismc.util.CooldownUtils;
 import me.dueris.genesismc.factory.TagRegistry;
 import me.dueris.genesismc.factory.actions.Actions;
 import me.dueris.genesismc.factory.conditions.Condition;
@@ -12,15 +11,17 @@ import me.dueris.genesismc.factory.conditions.biome.BiomeMappings;
 import me.dueris.genesismc.factory.conditions.block.BlockCondition;
 import me.dueris.genesismc.factory.conditions.item.ItemCondition;
 import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.factory.powers.Resource;
-import me.dueris.genesismc.factory.powers.effects.StackingStatusEffect;
-import me.dueris.genesismc.factory.powers.player.Climbing;
-import me.dueris.genesismc.factory.powers.player.FlightElytra;
-import me.dueris.genesismc.factory.powers.player.RestrictArmor;
-import me.dueris.genesismc.factory.powers.player.attributes.AttributeHandler;
-import me.dueris.genesismc.utils.PowerContainer;
-import me.dueris.genesismc.utils.Utils;
-import me.dueris.genesismc.utils.apoli.RaycastApoli;
+import me.dueris.genesismc.factory.powers.Power;
+import me.dueris.genesismc.factory.powers.apoli.AttributeHandler;
+import me.dueris.genesismc.factory.powers.apoli.Climbing;
+import me.dueris.genesismc.factory.powers.apoli.FlightElytra;
+import me.dueris.genesismc.factory.powers.apoli.Resource;
+import me.dueris.genesismc.factory.powers.apoli.RestrictArmor;
+import me.dueris.genesismc.factory.powers.apoli.StackingStatusEffect;
+import me.dueris.genesismc.registry.PowerContainer;
+import me.dueris.genesismc.util.Utils;
+import me.dueris.genesismc.util.apoli.RaycastApoli;
+import me.dueris.genesismc.util.entity.OriginPlayerUtils;
 import net.minecraft.commands.CommandSource;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.core.BlockPos;
@@ -61,8 +62,6 @@ import java.util.*;
 import java.util.function.Predicate;
 
 import static me.dueris.genesismc.factory.conditions.ConditionExecutor.getResult;
-import static me.dueris.genesismc.factory.powers.Power.powers_active;
-import static me.dueris.genesismc.factory.powers.player.RestrictArmor.compareValues;
 
 public class EntityCondition implements Condition {
     public static HashMap<PowerContainer, ArrayList<String>> inTagValues = new HashMap<>();
@@ -213,18 +212,18 @@ public class EntityCondition implements Condition {
                 return getResult(inverted, Optional.of(entity instanceof Player p && OriginPlayerUtils.hasPower(p, condition.get("power").toString())));
             }
             case "apoli:power_active" -> {
-                if (!powers_active.containsKey(entity)) return getResult(inverted, Optional.of(false));
+                if (!Power.powers_active.containsKey(entity)) return getResult(inverted, Optional.of(false));
                 if (condition.get("power").toString().contains("*")) {
                     String[] powerK = condition.get("power").toString().split("\\*");
-                    for (String string : powers_active.get(entity).keySet()) {
+                    for (String string : Power.powers_active.get(entity).keySet()) {
                         if (string.startsWith(powerK[0]) && string.endsWith(powerK[1])) {
-                            return getResult(inverted, Optional.of(powers_active.get(entity).get(string)));
+                            return getResult(inverted, Optional.of(Power.powers_active.get(entity).get(string)));
                         }
                     }
                 } else {
                     String power = condition.get("power").toString();
                     boolean invert = Boolean.parseBoolean(condition.getOrDefault("inverted", "false").toString());
-                    return getResult(invert, Optional.of(powers_active.get(entity).getOrDefault(power, false)));
+                    return getResult(invert, Optional.of(Power.powers_active.get(entity).getOrDefault(power, false)));
                 }
                 return getResult(inverted, Optional.of(false));
             }
@@ -262,14 +261,14 @@ public class EntityCondition implements Condition {
             }
             case "apoli:air" -> {
                 if (entity instanceof Player p) {
-                    return getResult(inverted, Optional.of(compareValues(p.getRemainingAir(), condition.get("comparison").toString(), Integer.parseInt(condition.get("compare_to").toString()))));
+                    return getResult(inverted, Optional.of(RestrictArmor.compareValues(p.getRemainingAir(), condition.get("comparison").toString(), Integer.parseInt(condition.get("compare_to").toString()))));
                 }
                 return getResult(inverted, Optional.of(false));
             }
             case "apoli:attribute" -> {
                 if (entity instanceof Player player) {
                     String attributeString = condition.get("attribute").toString().split(":")[1].replace(".", "_").toUpperCase();
-                    return getResult(inverted, Optional.of(compareValues(player.getAttribute(Attribute.valueOf(attributeString)).getValue(), condition.get("comparison").toString(), Integer.parseInt(condition.get("compare_to").toString()))));
+                    return getResult(inverted, Optional.of(RestrictArmor.compareValues(player.getAttribute(Attribute.valueOf(attributeString)).getValue(), condition.get("comparison").toString(), Integer.parseInt(condition.get("compare_to").toString()))));
                 }
                 return getResult(inverted, Optional.of(false));
             }
@@ -320,7 +319,7 @@ public class EntityCondition implements Condition {
                 } else {
                     return getResult(inverted, Optional.of(false));
                 }
-                return getResult(inverted, Optional.of(compareValues(blockCount, comparison, compare_to)));
+                return getResult(inverted, Optional.of(RestrictArmor.compareValues(blockCount, comparison, compare_to)));
             }
             case "apoli:weather_check" -> {
                 boolean thunder = (boolean) condition.getOrDefault("thundering", false);
@@ -350,13 +349,13 @@ public class EntityCondition implements Condition {
                     ambientLight = 1;
                 }
                 brightness = ambientLight + (1 - ambientLight) * lightLevel / (60 - 3 * lightLevel);
-                return getResult(inverted, Optional.of(compareValues(brightness, comparison, compare_to)));
+                return getResult(inverted, Optional.of(RestrictArmor.compareValues(brightness, comparison, compare_to)));
             }
             case "apoli:light_level" -> {
                 String comparison = condition.get("comparison").toString();
                 double compare_to = Double.parseDouble(condition.get("compare_to").toString());
                 int lightLevel = entity.getLocation().getBlock().getLightLevel();
-                return getResult(inverted, Optional.of(compareValues(lightLevel, comparison, compare_to)));
+                return getResult(inverted, Optional.of(RestrictArmor.compareValues(lightLevel, comparison, compare_to)));
             }
             case "apoli:climbing" -> {
                 if (entity instanceof Player player) {
@@ -434,9 +433,9 @@ public class EntityCondition implements Condition {
                 return getResult(inverted, Optional.of(entity.isSneaking()));
             }
             case "apoli:resource" -> {
-                if (CooldownManager.cooldowns.containsKey(entity) && CooldownManager.cooldowns.get(entity).contains(condition.get("resource").toString()) && CooldownManager.cooldowns.containsKey(entity)) {
+                if (CooldownUtils.cooldowns.containsKey(entity) && CooldownUtils.cooldowns.get(entity).contains(condition.get("resource").toString()) && CooldownUtils.cooldowns.containsKey(entity)) {
                     System.out.println(1);
-                    return getResult(inverted, Optional.of(!CooldownManager.isPlayerInCooldownFromTag((Player) entity, condition.get("resource").toString())));
+                    return getResult(inverted, Optional.of(!CooldownUtils.isPlayerInCooldownFromTag((Player) entity, condition.get("resource").toString())));
                 } else {
                     if (Resource.registeredBars.containsKey(entity) && Resource.registeredBars.get(entity).containsKey(condition.get("resource").toString())) {
                         String comparison = condition.get("comparison").toString();

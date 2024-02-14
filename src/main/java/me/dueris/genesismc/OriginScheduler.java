@@ -1,13 +1,13 @@
 package me.dueris.genesismc;
 
-import me.dueris.genesismc.entity.OriginPlayerUtils;
+import me.dueris.genesismc.util.entity.OriginPlayerUtils;
 import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.factory.powers.actions.ActionOverTime;
-import me.dueris.genesismc.factory.powers.player.RestrictArmor;
-import me.dueris.genesismc.factory.powers.player.damage.Burn;
-import me.dueris.genesismc.factory.powers.player.damage.DamageOverTime;
-import me.dueris.genesismc.factory.powers.prevent.PreventEntityRender;
-import me.dueris.genesismc.factory.powers.world.FlightHandler;
+import me.dueris.genesismc.factory.powers.apoli.ActionOverTime;
+import me.dueris.genesismc.factory.powers.apoli.DamageOverTime;
+import me.dueris.genesismc.factory.powers.apoli.FlightHandler;
+import me.dueris.genesismc.factory.powers.apoli.PreventEntityRender;
+import me.dueris.genesismc.factory.powers.apoli.RestrictArmor;
+import me.dueris.genesismc.factory.powers.apoli.Burn;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;

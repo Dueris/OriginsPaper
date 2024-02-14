@@ -1,13 +1,13 @@
 package me.dueris.genesismc.factory.conditions.item;
 
 import com.mojang.brigadier.StringReader;
-import me.dueris.genesismc.enchantments.EnchantTable;
+import me.dueris.genesismc.content.enchantment.EnchantTableHandler;
 import me.dueris.genesismc.factory.TagRegistry;
 import me.dueris.genesismc.factory.conditions.Condition;
-import me.dueris.genesismc.factory.powers.player.RestrictArmor;
-import me.dueris.genesismc.items.OrbOfOrigins;
-import me.dueris.genesismc.utils.ArmorUtils;
-import me.dueris.genesismc.utils.Utils;
+import me.dueris.genesismc.factory.powers.apoli.RestrictArmor;
+import me.dueris.genesismc.content.OrbOfOrigins;
+import me.dueris.genesismc.util.ArmorUtils;
+import me.dueris.genesismc.util.Utils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import org.bukkit.Fluid;
@@ -252,7 +252,7 @@ public class ItemCondition implements Condition {
                 return getResult(inverted, Optional.of(!itemStack.getType().isBlock()));
             }
             case "apoli:is_equippable" -> {
-                return getResult(inverted, Optional.of(EnchantTable.wearable.contains(itemStack.getType())));
+                return getResult(inverted, Optional.of(EnchantTableHandler.wearable.contains(itemStack.getType())));
             }
             case "apoli:relative_durability" -> {
                 String comparison = condition.get("comparison").toString();

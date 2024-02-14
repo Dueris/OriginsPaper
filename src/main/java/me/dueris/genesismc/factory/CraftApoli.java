@@ -1,9 +1,10 @@
 package me.dueris.genesismc.factory;
 
 import me.dueris.genesismc.GenesisMC;
-import me.dueris.genesismc.entity.OriginPlayerUtils;
-import me.dueris.genesismc.files.GenesisDataFiles;
-import me.dueris.genesismc.utils.*;
+import me.dueris.genesismc.storage.GenesisDataFiles;
+import me.dueris.genesismc.util.*;
+import me.dueris.genesismc.util.entity.OriginPlayerUtils;
+import me.dueris.genesismc.registry.*;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.storage.LevelResource;
 import org.apache.commons.io.FilenameUtils;

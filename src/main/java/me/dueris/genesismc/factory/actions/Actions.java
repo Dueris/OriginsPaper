@@ -1,22 +1,22 @@
 package me.dueris.genesismc.factory.actions;
 
-import me.dueris.genesismc.CooldownManager;
+import me.dueris.genesismc.util.CooldownUtils;
 import me.dueris.genesismc.GenesisMC;
-import me.dueris.genesismc.entity.OriginPlayerUtils;
-import me.dueris.genesismc.events.AddToSetEvent;
-import me.dueris.genesismc.events.RemoveFromSetEvent;
+import me.dueris.genesismc.util.entity.OriginPlayerUtils;
+import me.dueris.genesismc.event.AddToSetEvent;
+import me.dueris.genesismc.event.RemoveFromSetEvent;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
-import me.dueris.genesismc.factory.powers.Resource;
-import me.dueris.genesismc.factory.powers.Toggle;
-import me.dueris.genesismc.factory.powers.effects.StackingStatusEffect;
-import me.dueris.genesismc.factory.powers.player.attributes.AttributeHandler;
-import me.dueris.genesismc.utils.OriginContainer;
-import me.dueris.genesismc.utils.PowerContainer;
-import me.dueris.genesismc.utils.Utils;
-import me.dueris.genesismc.utils.apoli.RaycastApoli;
-import me.dueris.genesismc.utils.apoli.Space;
-import me.dueris.genesismc.utils.console.OriginConsoleSender;
+import me.dueris.genesismc.factory.powers.apoli.AttributeHandler;
+import me.dueris.genesismc.factory.powers.apoli.Resource;
+import me.dueris.genesismc.factory.powers.apoli.StackingStatusEffect;
+import me.dueris.genesismc.factory.powers.apoli.Toggle;
+import me.dueris.genesismc.registry.OriginContainer;
+import me.dueris.genesismc.registry.PowerContainer;
+import me.dueris.genesismc.util.Utils;
+import me.dueris.genesismc.util.apoli.RaycastApoli;
+import me.dueris.genesismc.util.apoli.Space;
+import me.dueris.genesismc.util.console.OriginConsoleSender;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.damagesource.DamageType;
 import org.bukkit.*;
@@ -42,7 +42,7 @@ import org.json.simple.JSONObject;
 
 import java.util.*;
 
-import static me.dueris.genesismc.utils.KeybindUtils.addItems;
+import static me.dueris.genesismc.util.KeybindingUtils.addItems;
 
 public class Actions {
 
@@ -973,7 +973,7 @@ public class Actions {
                                         key = "key.attack";
                                     }
                                 }
-                                CooldownManager.addCooldown(player, Utils.getNameOrTag(powerContainer), powerContainer.getType(), powerContainer.getInt("cooldown"), key);
+                                CooldownUtils.addCooldown(player, Utils.getNameOrTag(powerContainer), powerContainer.getType(), powerContainer.getInt("cooldown"), key);
                             }
                         }
                     }

@@ -2,7 +2,7 @@ package me.dueris.genesismc.factory.conditions.biome;
 
 import me.dueris.genesismc.factory.TagRegistry;
 import me.dueris.genesismc.factory.conditions.Condition;
-import me.dueris.genesismc.factory.powers.player.RestrictArmor;
+import me.dueris.genesismc.factory.powers.apoli.RestrictArmor;
 import net.minecraft.core.BlockPos;
 import org.bukkit.Fluid;
 import org.bukkit.block.Biome;

@@ -1,6 +1,6 @@
 package me.dueris.genesismc;
 
-import me.dueris.genesismc.utils.translation.LangConfig;
+import me.dueris.genesismc.util.LangConfig;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 

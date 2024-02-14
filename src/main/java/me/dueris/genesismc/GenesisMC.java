@@ -2,21 +2,18 @@ package me.dueris.genesismc;
 
 import io.papermc.paper.event.player.PlayerFailMoveEvent;
 import io.papermc.paper.event.server.ServerResourcesReloadedEvent;
-import me.dueris.genesismc.choosing.ChoosingCustomOrigins;
-import me.dueris.genesismc.choosing.ChoosingMain;
-import me.dueris.genesismc.choosing.GuiTicker;
-import me.dueris.genesismc.commands.OriginCommand;
-import me.dueris.genesismc.commands.PowerCommand;
-import me.dueris.genesismc.commands.ResourceCommand;
-import me.dueris.genesismc.commands.subcommands.origin.Info.InInfoCheck;
-import me.dueris.genesismc.commands.subcommands.origin.Info.Info;
-import me.dueris.genesismc.commands.subcommands.origin.Recipe;
-import me.dueris.genesismc.enchantments.Anvil;
-import me.dueris.genesismc.enchantments.EnchantTable;
-import me.dueris.genesismc.enchantments.generation.StructureGeneration;
-import me.dueris.genesismc.enchantments.generation.VillagerTradeHook;
-import me.dueris.genesismc.entity.InventorySerializer;
-import me.dueris.genesismc.entity.OriginPlayerUtils;
+import me.dueris.genesismc.command.OriginCommand;
+import me.dueris.genesismc.command.PowerCommand;
+import me.dueris.genesismc.command.ResourceCommand;
+import me.dueris.genesismc.command.subcommands.origin.Recipe;
+import me.dueris.genesismc.command.subcommands.origin.Info.InInfoCheck;
+import me.dueris.genesismc.command.subcommands.origin.Info.Info;
+import me.dueris.genesismc.content.ContentTicker;
+import me.dueris.genesismc.content.WaterProtBook;
+import me.dueris.genesismc.content.enchantment.AnvilHandler;
+import me.dueris.genesismc.content.enchantment.EnchantTableHandler;
+import me.dueris.genesismc.content.enchantment.generation.StructureGeneration;
+import me.dueris.genesismc.content.enchantment.generation.VillagerTradeHook;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.TagRegistry;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
@@ -29,22 +26,28 @@ import me.dueris.genesismc.factory.conditions.entity.EntityCondition;
 import me.dueris.genesismc.factory.conditions.fluid.FluidCondition;
 import me.dueris.genesismc.factory.conditions.item.ItemCondition;
 import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.factory.powers.block.RecipePower;
-import me.dueris.genesismc.factory.powers.block.WaterBreathe;
-import me.dueris.genesismc.factory.powers.player.ModelColor;
-import me.dueris.genesismc.factory.powers.simple.origins.BounceSlimeBlock;
-import me.dueris.genesismc.factory.powers.simple.origins.MimicWarden;
-import me.dueris.genesismc.factory.powers.world.EntityGroupManager;
-import me.dueris.genesismc.files.GenesisDataFiles;
-import me.dueris.genesismc.files.nbt.FixerUpper;
-import me.dueris.genesismc.hooks.papi.PlaceholderApiExtension;
-import me.dueris.genesismc.items.GenesisItems;
-import me.dueris.genesismc.items.WaterProtItem;
-import me.dueris.genesismc.utils.KeybindUtils;
-import me.dueris.genesismc.utils.LogoutBugWorkaround;
-import me.dueris.genesismc.utils.Metrics;
-import me.dueris.genesismc.utils.OriginContainer;
-import me.dueris.genesismc.utils.translation.LangConfig;
+import me.dueris.genesismc.factory.powers.apoli.EntityGroupManager;
+import me.dueris.genesismc.factory.powers.apoli.ModelColor;
+import me.dueris.genesismc.factory.powers.apoli.RecipePower;
+import me.dueris.genesismc.factory.powers.apoli.WaterBreathe;
+import me.dueris.genesismc.factory.powers.apoli.provider.origins.BounceSlimeBlock;
+import me.dueris.genesismc.factory.powers.apoli.provider.origins.MimicWarden;
+import me.dueris.genesismc.integration.PlaceholderApiExtension;
+import me.dueris.genesismc.util.LogoutBugWorkaround;
+import me.dueris.genesismc.util.Metrics;
+import me.dueris.genesismc.util.PlayerManager;
+import me.dueris.genesismc.util.entity.InventorySerializer;
+import me.dueris.genesismc.util.entity.OriginPlayerUtils;
+import me.dueris.genesismc.registry.OriginContainer;
+import me.dueris.genesismc.screen.GuiTicker;
+import me.dueris.genesismc.screen.OriginChoosing;
+import me.dueris.genesismc.screen.ScreenNavigator;
+import me.dueris.genesismc.storage.GenesisDataFiles;
+import me.dueris.genesismc.storage.OriginDataContainer;
+import me.dueris.genesismc.storage.nbt.FixerUpper;
+import me.dueris.genesismc.util.CooldownUtils;
+import me.dueris.genesismc.util.KeybindingUtils;
+import me.dueris.genesismc.util.LangConfig;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import net.minecraft.server.MinecraftServer;
@@ -76,10 +79,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 
-import static me.dueris.genesismc.PlayerHandler.ReapplyEntityReachPowers;
-import static me.dueris.genesismc.factory.powers.simple.origins.MimicWarden.getParticleTasks;
-import static me.dueris.genesismc.utils.text.BukkitColour.AQUA;
-import static me.dueris.genesismc.utils.text.BukkitColour.RED;
+import static me.dueris.genesismc.util.BukkitColour.AQUA;
+import static me.dueris.genesismc.util.BukkitColour.RED;
 
 public final class GenesisMC extends JavaPlugin implements Listener {
     public static final boolean isFolia = classExists("io.papermc.paper.threadedregions.RegionizedServer");
@@ -143,12 +144,12 @@ public final class GenesisMC extends JavaPlugin implements Listener {
             new BukkitRunnable() {
                 @Override
                 public void run() {
-                    ReapplyEntityReachPowers(p);
+                    PlayerManager.ReapplyEntityReachPowers(p);
                 }
             }.runTaskLater(GenesisMC.getPlugin(), 5L);
             OriginDataContainer.loadData();
             OriginPlayerUtils.setupPowers(p);
-            PlayerHandler.originValidCheck(p);
+            PlayerManager.originValidCheck(p);
             OriginPlayerUtils.assignPowers(p);
             if (p.isOp())
                 p.sendMessage(Component.text(LangConfig.getLocalizedString(Bukkit.getConsoleSender(), "reloadMessage")).color(TextColor.fromHexString(AQUA)));
@@ -254,7 +255,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         MinecraftServer server = ((CraftServer) Bukkit.getServer()).getServer();
         server.paperConfigurations.reloadConfigs(server);
 
-        me.dueris.genesismc.OriginDataContainer.loadData();
+        OriginDataContainer.loadData();
         // Pre-load condition types to prevent constant calling
         CraftCondition.bientity = new BiEntityCondition();
         CraftCondition.biome = new BiomeCondition();
@@ -294,7 +295,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         GenesisMC.scheduler = scheduler;
         scheduler.runTaskTimer(this, 0, 1);
 
-        WaterProtItem.init();
+        WaterProtBook.init();
         start();
         patchPowers();
         TagRegistry.runParse();
@@ -348,24 +349,23 @@ public final class GenesisMC extends JavaPlugin implements Listener {
     private void start() {
         getServer().getPluginManager().registerEvents(new InventorySerializer(), this);
         getServer().getPluginManager().registerEvents(this, this);
-        getServer().getPluginManager().registerEvents(new CooldownManager(), this);
-        getServer().getPluginManager().registerEvents(new PlayerHandler(), this);
-        getServer().getPluginManager().registerEvents(new EnchantTable(), this);
-        getServer().getPluginManager().registerEvents(new Anvil(), this);
-        getServer().getPluginManager().registerEvents(new KeybindUtils(), this);
-        getServer().getPluginManager().registerEvents(new ChoosingMain(), this);
-        getServer().getPluginManager().registerEvents(new ChoosingCustomOrigins(), this);
+        getServer().getPluginManager().registerEvents(new CooldownUtils(), this);
+        getServer().getPluginManager().registerEvents(new PlayerManager(), this);
+        getServer().getPluginManager().registerEvents(new EnchantTableHandler(), this);
+        getServer().getPluginManager().registerEvents(new AnvilHandler(), this);
+        getServer().getPluginManager().registerEvents(new KeybindingUtils(), this);
+        getServer().getPluginManager().registerEvents(new OriginChoosing(), this);
+        getServer().getPluginManager().registerEvents(new ScreenNavigator(), this);
         getServer().getPluginManager().registerEvents(new Recipe(), this);
         getServer().getPluginManager().registerEvents(new Info(), this);
-        getServer().getPluginManager().registerEvents(new InventorySerializer(), this);
-        getServer().getPluginManager().registerEvents(new GenesisItems(), this);
+        getServer().getPluginManager().registerEvents(new ContentTicker(), this);
         getServer().getPluginManager().registerEvents(new MimicWarden(), this);
         getServer().getPluginManager().registerEvents(new BounceSlimeBlock(), this);
         getServer().getPluginManager().registerEvents(new BiEntityCondition(), this);
         getServer().getPluginManager().registerEvents(new LogoutBugWorkaround(), this);
         getServer().getPluginManager().registerEvents(new VillagerTradeHook(), this);
         getServer().getPluginManager().registerEvents(new OriginScheduler.OriginSchedulerTree(), this);
-        getServer().getPluginManager().registerEvents(new KeybindUtils(), this);
+        getServer().getPluginManager().registerEvents(new KeybindingUtils(), this);
         getServer().getPluginManager().registerEvents(new StructureGeneration(), this);
 //        if (getServer().getPluginManager().isPluginEnabled("SkinsRestorer")) {
 //            try {
@@ -379,7 +379,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 //        }
         GuiTicker forced = new GuiTicker();
         forced.runTaskTimer(GenesisMC.getPlugin(), 0, 1);
-        GenesisItems items = new GenesisItems();
+        ContentTicker items = new ContentTicker();
         items.runTaskTimer(GenesisMC.getPlugin(), 0, 1);
         InInfoCheck info = new InInfoCheck();
         info.runTaskTimer(GenesisMC.getPlugin(), 0, 1);
@@ -396,7 +396,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 
     @Override
     public void onDisable() {
-        me.dueris.genesismc.OriginDataContainer.unloadAllData();
+        OriginDataContainer.unloadAllData();
         CraftApoli.unloadData();
         OriginPlayerUtils.playerPowerMapping.clear();
         OriginPlayerUtils.powersAppliedList.clear();
@@ -407,7 +407,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         scheduler.cancel();
         EntityGroupManager.stop();
 
-        for (int taskId : getParticleTasks().values()) {
+        for (int taskId : MimicWarden.getParticleTasks().values()) {
             getServer().getScheduler().cancelTask(taskId);
         }
 
@@ -439,7 +439,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
     public void reload(ServerResourcesReloadedEvent e){
         if(!(e.getCause().equals(ServerResourcesReloadedEvent.Cause.COMMAND) || e.getCause().equals(ServerResourcesReloadedEvent.Cause.PLUGIN))) return;
         Bukkit.broadcast(Component.text("GENESIS IS CONDUCTING A RESOURCE RELOAD, DO NOT REPORT BUGS OR CRASHES TO THE AUTHOR, THIS ACTION IS UNSUPPORTED").color(TextColor.color(230, 37, 23)));
-        me.dueris.genesismc.OriginDataContainer.unloadAllData();
+        OriginDataContainer.unloadAllData();
         onDisable();
 
         GenesisDataFiles.loadLangConfig();
@@ -454,7 +454,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
             Bukkit.getServer().getPluginManager().disablePlugin(this);
         }
 
-        me.dueris.genesismc.OriginDataContainer.loadData();
+        OriginDataContainer.loadData();
         // Pre-load condition types to prevent constant calling
         CraftCondition.bientity = new BiEntityCondition();
         CraftCondition.biome = new BiomeCondition();
@@ -496,7 +496,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         GenesisMC.scheduler = scheduler;
         scheduler.runTaskTimer(this, 0, 1);
 
-        WaterProtItem.init();
+        WaterProtBook.init();
 
         EntityGroupManager.INSTANCE.startTick();
 

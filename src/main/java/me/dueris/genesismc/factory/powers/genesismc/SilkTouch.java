@@ -1,11 +1,13 @@
 package me.dueris.genesismc.factory.powers.genesismc;
 
 
-import me.dueris.genesismc.entity.OriginPlayerUtils;
+import me.dueris.genesismc.util.entity.OriginPlayerUtils;
+import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.utils.PowerContainer;
-import me.dueris.genesismc.utils.translation.LangConfig;
+import me.dueris.genesismc.registry.LayerContainer;
+import me.dueris.genesismc.registry.PowerContainer;
+import me.dueris.genesismc.util.LangConfig;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
@@ -49,7 +51,7 @@ public class SilkTouch extends CraftPower implements Listener {
             Player p = e.getPlayer();
             if (silk_touch.contains(e.getPlayer())) {
                 ConditionExecutor executor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
-                for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()) {
+                for (LayerContainer layer : CraftApoli.getLayers()) {
                     for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                         if (executor.check("condition", "conditions", p, power, getPowerFile(), p, null, e.getBlock(), null, p.getItemInHand(), null)) {
                             setActive(p, power.getTag(), true);

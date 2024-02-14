@@ -7,7 +7,7 @@ import me.dueris.genesismc.factory.conditions.damage.DamageCondition;
 import me.dueris.genesismc.factory.conditions.entity.EntityCondition;
 import me.dueris.genesismc.factory.conditions.fluid.FluidCondition;
 import me.dueris.genesismc.factory.conditions.item.ItemCondition;
-import me.dueris.genesismc.utils.PowerContainer;
+import me.dueris.genesismc.registry.PowerContainer;
 import org.bukkit.Fluid;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;

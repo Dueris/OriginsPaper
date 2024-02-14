@@ -43,7 +43,7 @@ tasks {
     jar {
         manifest {
             attributes(
-                "Main-Class" to "me.dueris.genesismc.utils.GenesisGuiPlugin"
+                "Main-Class" to "me.dueris.genesismc.util.GuiWarning"
             )
         }
     }

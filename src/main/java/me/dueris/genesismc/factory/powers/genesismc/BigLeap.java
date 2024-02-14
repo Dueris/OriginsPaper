@@ -1,10 +1,12 @@
 package me.dueris.genesismc.factory.powers.genesismc;
 
 import me.dueris.genesismc.GenesisMC;
-import me.dueris.genesismc.entity.OriginPlayerUtils;
+import me.dueris.genesismc.util.entity.OriginPlayerUtils;
+import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.utils.PowerContainer;
+import me.dueris.genesismc.registry.LayerContainer;
+import me.dueris.genesismc.registry.PowerContainer;
 import org.bukkit.ChatColor;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Sound;
@@ -46,7 +48,7 @@ public class BigLeap extends CraftPower implements Listener {
     public void onRabbitLeap(PlayerToggleSneakEvent e) {
         PersistentDataContainer data = e.getPlayer().getPersistentDataContainer();
         if (getPowerArray().contains(e.getPlayer())) {
-            for (me.dueris.genesismc.utils.LayerContainer layer : me.dueris.genesismc.factory.CraftApoli.getLayers()) {
+            for (LayerContainer layer : CraftApoli.getLayers()) {
                 for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(e.getPlayer(), getPowerFile(), layer)) {
                     if (power != null) {
                         Player p = e.getPlayer();
