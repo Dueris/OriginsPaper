@@ -8,6 +8,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -20,21 +21,18 @@ public class LogoutBugWorkaround implements Listener {
 
     @EventHandler
     public void login(PlayerJoinEvent e) {
+        if(!e.getPlayer().getLocation().getChunk().isLoaded()){
+            e.getPlayer().getLocation().getChunk().load(true);
+        }
         freezeLogin(e.getPlayer());
     }
 
-//    @EventHandler
-//    public void respawn(PlayerRespawnEvent e) {
-//        final int[] i = {0};
-//        new BukkitRunnable() {
-//            @Override
-//            public void run() {
-//                if (i[0] > 15) cancel();
-//                e.getPlayer().teleportAsync(e.getPlayer().getLocation());
-//                i[0]++;
-//            }
-//        }.runTaskTimer(GenesisMC.getPlugin(), 0, 1);
-//    }
+    @EventHandler
+    public void teleport(PlayerTeleportEvent e){
+        if(!e.getTo().getChunk().isLoaded()){
+            e.getTo().getChunk().load(true);
+        }
+    }
 
     public void freezeLogin(Player p) {
         if (p.getPersistentDataContainer().has(new NamespacedKey(GenesisMC.getPlugin(), "logoutWorkaroundLocation"), PersistentDataType.STRING)) {
@@ -48,6 +46,7 @@ public class LogoutBugWorkaround implements Listener {
                     Float.valueOf(splitData[3]),
                     Float.valueOf(splitData[4])
             );
+            System.out.println(location.getChunk().isLoaded());
             final int[] i = {0};
             new BukkitRunnable() {
                 @Override

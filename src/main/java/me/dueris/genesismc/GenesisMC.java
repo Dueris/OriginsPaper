@@ -407,7 +407,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
             }
         }
 
-        getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] " + LangConfig.getLocalizedString(Bukkit.getConsoleSender(), "disable")).color(TextColor.fromHexString(RED)));
+        getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] " + LangConfig.getLocalizedString(Bukkit.getConsoleSender(), "disable")).color(TextColor.fromHexString("#fb5454")));
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
