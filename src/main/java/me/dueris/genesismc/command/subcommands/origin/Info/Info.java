@@ -10,6 +10,7 @@ import me.dueris.genesismc.registry.PowerContainer;
 import me.dueris.genesismc.screen.ScreenConstants;
 import me.dueris.genesismc.storage.OriginDataContainer;
 import me.dueris.genesismc.util.ColorConstants;
+import me.dueris.genesismc.util.KeybindingUtils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.*;
@@ -167,6 +168,9 @@ public class Info extends SubCommand implements Listener {
 
                     ItemMeta meta = originPower.getItemMeta();
                     meta.setDisplayName(powerContainers.get(0).getName());
+                    if(KeybindingUtils.renderKeybind(powerContainers.get(0)).getFirst()){
+                        meta.displayName(Component.text().append(meta.displayName()).append(Component.text(" ")).append(Component.text(KeybindingUtils.translateOriginRawKey(KeybindingUtils.renderKeybind(powerContainers.get(0)).getSecond())).color(TextColor.color(32222))).build());
+                    }
                     meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
                     meta.setLore(ScreenConstants.cutStringIntoLines(powerContainers.get(0).getDescription()));
                     originPower.setItemMeta(meta);
