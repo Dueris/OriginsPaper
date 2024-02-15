@@ -53,7 +53,7 @@ public class MimicWarden extends CraftPower implements Listener, PowerProvider {
                 if (e.getKey().equals("key.origins.primary_active")) {
                     Location eyeLoc = p.getEyeLocation();
 
-                    CooldownUtils.addCooldown(p, "Sonic Boom", "origins:mimic_warden", 1, "key.origins.primary_active");
+                    CooldownUtils.addCooldown(p, "Sonic Boom", "origins:mimic_warden", 1200, "key.origins.primary_active");
 
                     Location startLocation = p.getEyeLocation();
 
@@ -95,6 +95,8 @@ public class MimicWarden extends CraftPower implements Listener, PowerProvider {
                             createSpiralParticleEffect(p, center, time, randomLocation2);
                             createSpiralParticleEffect(p, center, time, randomLocation3);
 
+                            center.getWorld().spawnParticle(Particle.SONIC_BOOM, center, 1, null);
+
                             if (center.distance(origin) >= 15.0) {
                                 this.cancel();
                                 particleTasks.remove(p.getUniqueId());
@@ -105,7 +107,7 @@ public class MimicWarden extends CraftPower implements Listener, PowerProvider {
                                 this.cancel();
                                 particleTasks.remove(p.getUniqueId());
                             }
-                            if(randomLocation.getBlock().getType().isCollidable() || randomLocation1.getBlock().getType().isCollidable() || randomLocation2.getBlock().getType().isCollidable()) {
+                            if(center.getBlock().getType().isCollidable() || center.getBlock().getType().isCollidable() || center.getBlock().getType().isCollidable()) {
                                 particleTasks.remove(p.getUniqueId());
                                 cancel();
                             }
