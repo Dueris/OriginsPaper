@@ -1,7 +1,7 @@
 package me.dueris.genesismc.factory.powers.genesismc;
 
 import me.dueris.genesismc.GenesisMC;
-import me.dueris.genesismc.util.entity.OriginPlayerUtils;
+import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
 
-public class BigLeap extends CraftPower implements Listener {
+public class LeapChargePower extends CraftPower implements Listener {
 
     private static final HashMap<UUID, Integer> cooldownBefore = new HashMap<>();
     private static final HashMap<UUID, Long> cooldownAfter = new HashMap<>();
@@ -49,7 +49,7 @@ public class BigLeap extends CraftPower implements Listener {
         PersistentDataContainer data = e.getPlayer().getPersistentDataContainer();
         if (getPowerArray().contains(e.getPlayer())) {
             for (LayerContainer layer : CraftApoli.getLayers()) {
-                for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(e.getPlayer(), getPowerFile(), layer)) {
+                for (PowerContainer power : OriginPlayerAccessor.getMultiPowerFileFromType(e.getPlayer(), getPowerFile(), layer)) {
                     if (power != null) {
                         Player p = e.getPlayer();
                         ConditionExecutor executor = me.dueris.genesismc.GenesisMC.getConditionExecutor();

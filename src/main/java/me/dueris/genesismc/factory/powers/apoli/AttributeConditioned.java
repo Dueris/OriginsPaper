@@ -1,6 +1,6 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
-import me.dueris.genesismc.util.entity.OriginPlayerUtils;
+import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
@@ -97,7 +97,7 @@ public class AttributeConditioned extends CraftPower implements Listener {
         operationMap.put("divide_random_max", (a, b) -> a / random.nextInt(b));
 
         for (LayerContainer layer : CraftApoli.getLayers()) {
-            for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
+            for (PowerContainer power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                 if (power == null) continue;
                 for (HashMap<String, Object> modifier : power.getJsonListSingularPlural("modifier", "modifiers")) {
                     ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
@@ -139,7 +139,7 @@ public class AttributeConditioned extends CraftPower implements Listener {
         operationMap.put("divide_random_max", (a, b) -> a * random.nextInt(b));
 
         for (LayerContainer layer : CraftApoli.getLayers()) {
-            for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
+            for (PowerContainer power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                 if (power == null) continue;
 
                 for (HashMap<String, Object> modifier : power.getJsonListSingularPlural("modifier", "modifiers")) {
@@ -183,7 +183,7 @@ public class AttributeConditioned extends CraftPower implements Listener {
     @Override
     public void run(Player p) {
         for (LayerContainer layer : CraftApoli.getLayers()) {
-            for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
+            for (PowerContainer power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                 if (conditioned_attribute.contains(p)) {
                     if (!applied.containsKey(p)) {
                         applied.put(p, false);

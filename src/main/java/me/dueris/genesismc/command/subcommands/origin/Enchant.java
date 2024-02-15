@@ -3,7 +3,7 @@ package me.dueris.genesismc.command.subcommands.origin;
 import me.dueris.genesismc.command.PlayerSelector;
 import me.dueris.genesismc.command.subcommands.SubCommand;
 import me.dueris.genesismc.content.enchantment.AnvilHandler;
-import me.dueris.genesismc.util.BukkitColour;
+import me.dueris.genesismc.util.ColorConstants;
 import me.dueris.genesismc.util.LangConfig;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
@@ -45,11 +45,11 @@ public class Enchant extends SubCommand {
     public void perform(CommandSender sender, String[] args) {
         if (sender.hasPermission("genesismc.origins.cmd.enchant")) {
             if (args.length == 1) {
-                sender.sendMessage(Component.text(LangConfig.getLocalizedString(sender, "command.origin.enchant.noPlayer")).color(TextColor.fromHexString(BukkitColour.RED)));
+                sender.sendMessage(Component.text(LangConfig.getLocalizedString(sender, "command.origin.enchant.noPlayer")).color(TextColor.fromHexString(ColorConstants.RED)));
                 return;
             }
             if (args.length == 2) {
-                sender.sendMessage(Component.text(LangConfig.getLocalizedString(sender, "command.origin.enchant.noEnchant")).color(TextColor.fromHexString(BukkitColour.RED)));
+                sender.sendMessage(Component.text(LangConfig.getLocalizedString(sender, "command.origin.enchant.noEnchant")).color(TextColor.fromHexString(ColorConstants.RED)));
                 return;
             }
             ArrayList<Player> players = PlayerSelector.playerSelector(sender, args[1]);
@@ -58,7 +58,7 @@ public class Enchant extends SubCommand {
 
             for (Player p : players) {
                 if (!wearable.contains(p.getInventory().getItemInMainHand().getType())) {
-                    sender.sendMessage(Component.text(LangConfig.getLocalizedString(p, "command.origin.enchant.badItem").replace("%player%", p.getName())).color(TextColor.fromHexString(BukkitColour.RED)));
+                    sender.sendMessage(Component.text(LangConfig.getLocalizedString(p, "command.origin.enchant.badItem").replace("%player%", p.getName())).color(TextColor.fromHexString(ColorConstants.RED)));
                     continue;
                 }
 
@@ -67,13 +67,13 @@ public class Enchant extends SubCommand {
                     try {
                         level = Integer.parseInt(args[3]);
                     } catch (NumberFormatException e) {
-                        sender.sendMessage(Component.text(LangConfig.getLocalizedString(p, "command.origin.enchant.wrongNumber")).color(TextColor.fromHexString(BukkitColour.RED)));
+                        sender.sendMessage(Component.text(LangConfig.getLocalizedString(p, "command.origin.enchant.wrongNumber")).color(TextColor.fromHexString(ColorConstants.RED)));
                     }
                 }
 
                 if (args[2].equals("origins:water_protection")) {
                     if (level > 4 || level < 1) {
-                        sender.sendMessage(Component.text(LangConfig.getLocalizedString(sender, "command.origin.enchant.waterProtLevelLimit")).color(TextColor.fromHexString(BukkitColour.RED)));
+                        sender.sendMessage(Component.text(LangConfig.getLocalizedString(sender, "command.origin.enchant.waterProtLevelLimit")).color(TextColor.fromHexString(ColorConstants.RED)));
                         return;
                     }
 

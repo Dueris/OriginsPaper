@@ -6,7 +6,7 @@ import me.dueris.genesismc.factory.actions.Actions;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.registry.LayerContainer;
 import me.dueris.genesismc.registry.PowerContainer;
-import me.dueris.genesismc.util.entity.OriginPlayerUtils;
+import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -31,7 +31,7 @@ public class ActionOnHit extends CraftPower implements Listener {
             Entity target = e.getEntity();
             for (LayerContainer layer : CraftApoli.getLayers()) {
                 if (getPowerArray().contains(p)) {
-                    for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
+                    for (PowerContainer power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                         if (power == null) continue;
                         if (GenesisMC.getConditionExecutor().check("condition", "conditions", p, power, getPowerFile(), actor, target, actor.getLocation().getBlock(), null, p.getActiveItem(), e)) {
                             if (GenesisMC.getConditionExecutor().check("damage_condition", "damage_conditions", p, power, getPowerFile(), actor, target, actor.getLocation().getBlock(), null, p.getActiveItem(), e)) {

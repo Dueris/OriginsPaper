@@ -6,7 +6,7 @@ import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.registry.LayerContainer;
 import me.dueris.genesismc.registry.PowerContainer;
-import me.dueris.genesismc.util.entity.OriginPlayerUtils;
+import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -27,7 +27,7 @@ public class ActionOverTime extends CraftPower {
 
         if (getPowerArray().contains(p)) {
             for (LayerContainer layer : CraftApoli.getLayers()) {
-                for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
+                for (PowerContainer power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                     if (power == null) continue;
 
                     interval = power.getLongOrDefault("interval", 20L);

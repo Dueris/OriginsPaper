@@ -2,7 +2,7 @@ package me.dueris.genesismc.factory.powers.apoli;
 
 import me.dueris.genesismc.util.CooldownUtils;
 import me.dueris.genesismc.GenesisMC;
-import me.dueris.genesismc.util.entity.OriginPlayerUtils;
+import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import me.dueris.genesismc.event.KeybindTriggerEvent;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
@@ -143,7 +143,7 @@ public class ToggleNightVision extends CraftPower implements Listener {
         if (getPowerArray().contains(e.getPlayer())) {
             for (LayerContainer layer : CraftApoli.getLayers()) {
                 ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
-                for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
+                for (PowerContainer power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                     if (conditionExecutor.check("condition", "conditions", p, power, getPowerFile(), p, null, null, null, p.getItemInHand(), null)) {
                         if (!CooldownUtils.isPlayerInCooldown(p, power.get("key").getOrDefault("key", "key.origins.primary_active").toString())) {
                             if (isKeyBeingPressed(e.getPlayer(), power.get("key").getOrDefault("key", "key.origins.primary_active").toString(), true)) {

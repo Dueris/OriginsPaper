@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.Random;
 import java.util.UUID;
 
-import static me.dueris.genesismc.util.BukkitColour.RED;
+import static me.dueris.genesismc.util.ColorConstants.RED;
 
 public class PlayerSelector {
 

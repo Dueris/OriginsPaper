@@ -6,7 +6,7 @@ import me.dueris.genesismc.factory.actions.Actions;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.registry.LayerContainer;
 import me.dueris.genesismc.registry.PowerContainer;
-import me.dueris.genesismc.util.entity.OriginPlayerUtils;
+import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -34,7 +34,7 @@ public class ActionOnItemUse extends CraftPower implements Listener {
         if (!e.getAction().isRightClick()) return;
 
         for (LayerContainer layer : CraftApoli.getLayers()) {
-            for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(player, getPowerFile(), layer)) {
+            for (PowerContainer power : OriginPlayerAccessor.getMultiPowerFileFromType(player, getPowerFile(), layer)) {
                 if (power == null) continue;
                 if (GenesisMC.getConditionExecutor().check("condition", "conditions", player, power, getPowerFile(), player, null, player.getLocation().getBlock(), null, e.getItem(), null)) {
                     if (GenesisMC.getConditionExecutor().check("item_condition", "item_conditions", player, power, getPowerFile(), player, null, player.getLocation().getBlock(), null, e.getItem(), null)) {

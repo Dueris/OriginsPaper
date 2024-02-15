@@ -11,9 +11,13 @@ import me.dueris.genesismc.util.exception.DuplicateCraftPowerException;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Listener;
 import org.reflections.Reflections;
+import org.reflections.scanners.Scanner;
 import org.reflections.scanners.SubTypesScanner;
 import org.reflections.util.ClasspathHelper;
 import org.reflections.util.ConfigurationBuilder;
+
+import io.github.classgraph.ClassGraph;
+import io.github.classgraph.ScanResult;
 
 import java.io.IOException;
 import java.util.*;
@@ -25,21 +29,23 @@ public abstract class CraftPower implements Power {
     protected static ArrayList<Class<? extends CraftPower>> registered = new ArrayList<>();
     protected static HashMap<String, Class<? extends CraftPower>> registeredFromKey = new HashMap<>();
 
-    protected static List<Class<? extends CraftPower>> findCraftPowerClasses() throws IOException {
-        CompletableFuture<List<Class<? extends CraftPower>>> future = CompletableFuture.supplyAsync(() -> {
-            List<Class<? extends CraftPower>> classes = new ArrayList<>();
-            ConfigurationBuilder config = new ConfigurationBuilder();
-            config.setScanners(new SubTypesScanner(false));
-            config.addUrls(ClasspathHelper.forPackage("me.dueris.genesismc.factory.powers"));
-
-            Reflections reflections = new Reflections(config);
-
-            Set<Class<? extends CraftPower>> subTypes = reflections.getSubTypesOf(CraftPower.class);
-            for (Class<? extends CraftPower> subType : subTypes) {
-                if (!subType.isInterface() && !subType.isEnum() && !(subType.isAssignableFrom(DontRegister.class) || DontRegister.class.isAssignableFrom(subType))) {
-                    classes.add(subType);
+    protected static List<Class<CraftPower>> findCraftPowerClasses() throws IOException {
+        CompletableFuture<List<Class<CraftPower>>> future = CompletableFuture.supplyAsync(() -> {
+            List<Class<CraftPower>> classes = new ArrayList<>();
+            try(ScanResult result = new ClassGraph().whitelistPackages("me.dueris.genesismc.factory.powers").enableClassInfo().scan()){
+                for(Class<CraftPower> power : result.getSubclasses(CraftPower.class).loadClasses(CraftPower.class)){
+                    if (!power.isInterface() && !power.isEnum() && !(power.isAssignableFrom(DontRegister.class) || DontRegister.class.isAssignableFrom(power))){
+                        classes.add(power);
+                    }
                 }
             }
+
+            // Set<Class<? extends CraftPower>> subTypes = reflections.getSubTypesOf(CraftPower.class);
+            // for (Class<? extends CraftPower> subType : subTypes) {
+            //     if (!subType.isInterface() && !subType.isEnum() && !(subType.isAssignableFrom(DontRegister.class) || DontRegister.class.isAssignableFrom(subType))) {
+            //         classes.add(subType);
+            //     }
+            // }
             return classes;
         });
 
@@ -53,7 +59,7 @@ public abstract class CraftPower implements Power {
 
     private static void registerBuiltinPowers() {
         try {
-            for (Class<? extends CraftPower> c : CraftPower.findCraftPowerClasses()) {
+            for (Class<CraftPower> c : CraftPower.findCraftPowerClasses()) {
                 if (CraftPower.class.isAssignableFrom(c)) {
                     CraftPower instance = c.newInstance();
                     if (CraftPower.getKeyedRegistry().containsKey(instance.getPowerFile()) && instance.getPowerFile() != null) {

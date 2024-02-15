@@ -7,7 +7,7 @@ import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.registry.LayerContainer;
 import me.dueris.genesismc.registry.PowerContainer;
-import me.dueris.genesismc.util.entity.OriginPlayerUtils;
+import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
@@ -80,7 +80,7 @@ public class FlightElytra extends CraftPower implements Listener {
             p.setFlying(false);
             ConditionExecutor executor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
             for (LayerContainer layer : CraftApoli.getLayers()) {
-                for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
+                for (PowerContainer power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                     if (executor.check("condition", "conditions", p, power, getPowerFile(), p, null, null, null, p.getItemInHand(), null)) {
                         setActive(p, power.getTag(), true);
                         if (!p.isGliding() && !p.getLocation().add(0, 1, 0).getBlock().isCollidable()) {

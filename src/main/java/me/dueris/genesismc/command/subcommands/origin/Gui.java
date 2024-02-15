@@ -7,7 +7,7 @@ import me.dueris.genesismc.command.subcommands.SubCommand;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.registry.LayerContainer;
 import me.dueris.genesismc.util.LangConfig;
-import me.dueris.genesismc.util.entity.OriginPlayerUtils;
+import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import me.dueris.genesismc.util.enums.OriginDataType;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
@@ -53,12 +53,12 @@ public class Gui extends SubCommand {
                 for (LayerContainer layerContainer : CraftApoli.getLayers()) {
                     if (layerContainer.getTag().equals(layR)) {
                         try {
-                            OriginPlayerUtils.unassignPowers(p, layerContainer);
+                            OriginPlayerAccessor.unassignPowers(p, layerContainer);
                         } catch (NotFoundException e) {
                             e.printStackTrace();
                         }
-                        OriginPlayerUtils.setOrigin(p, layerContainer, CraftApoli.nullOrigin());
-                        OriginPlayerUtils.resetOriginData(p, OriginDataType.IN_PHASING_FORM);
+                        OriginPlayerAccessor.setOrigin(p, layerContainer, CraftApoli.nullOrigin());
+                        OriginPlayerAccessor.resetOriginData(p, OriginDataType.IN_PHASING_FORM);
                         String skinData = p.getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "original-skin-url"), PersistentDataType.STRING);
                         if (p.getPlayerProfile().getTextures().getSkinModel() == PlayerTextures.SkinModel.CLASSIC) {
                             try {
@@ -84,8 +84,8 @@ public class Gui extends SubCommand {
             }
         } else if (args.length == 1 && sender instanceof Player p) {
             for (LayerContainer layer : CraftApoli.getLayers()) {
-                OriginPlayerUtils.unassignPowers(p);
-                OriginPlayerUtils.setOrigin(p, layer, CraftApoli.nullOrigin());
+                OriginPlayerAccessor.unassignPowers(p);
+                OriginPlayerAccessor.setOrigin(p, layer, CraftApoli.nullOrigin());
                 for (Player pls : Bukkit.getOnlinePlayers()) {
                     pls.hidePlayer(GenesisMC.getPlugin(), p);
                 }

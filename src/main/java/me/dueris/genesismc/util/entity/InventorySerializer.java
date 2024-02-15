@@ -1,7 +1,7 @@
 package me.dueris.genesismc.util.entity;
 
 import me.dueris.genesismc.factory.powers.apoli.InventoryUtils;
-import me.dueris.genesismc.util.BukkitColour;
+import me.dueris.genesismc.util.ColorConstants;
 import me.dueris.genesismc.util.LangConfig;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
@@ -33,7 +33,7 @@ public class InventorySerializer implements Listener {
 
             Player target = (Player) e.getPlayer();
             if (target == null) {
-                p.sendMessage(Component.text(LangConfig.getLocalizedString(p, "errors.inventorySaveFail").replace("%player%", e.getView().getTitle().split(":")[1].substring(1))).color(TextColor.fromHexString(BukkitColour.RED)));
+                p.sendMessage(Component.text(LangConfig.getLocalizedString(p, "errors.inventorySaveFail").replace("%player%", e.getView().getTitle().split(":")[1].substring(1))).color(TextColor.fromHexString(ColorConstants.RED)));
                 return;
             }
             InventoryUtils.storeItems(prunedItems, target);

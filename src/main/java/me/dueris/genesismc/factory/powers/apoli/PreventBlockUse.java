@@ -5,7 +5,7 @@ import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.registry.LayerContainer;
 import me.dueris.genesismc.registry.PowerContainer;
-import me.dueris.genesismc.util.entity.OriginPlayerUtils;
+import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -40,7 +40,7 @@ public class PreventBlockUse extends CraftPower implements Listener {
             for (LayerContainer layer : CraftApoli.getLayers()) {
                 ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                 if (e.getClickedBlock() != null) e.setCancelled(true);
-                for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(e.getPlayer(), getPowerFile(), layer)) {
+                for (PowerContainer power : OriginPlayerAccessor.getMultiPowerFileFromType(e.getPlayer(), getPowerFile(), layer)) {
                     setActive(e.getPlayer(), power.getTag(), conditionExecutor.check("block_condition", "block_conditions", e.getPlayer(), power, "apoli:prevent_block_used", e.getPlayer(), null, e.getClickedBlock(), null, e.getPlayer().getItemInHand(), null));
                 }
             }
@@ -52,7 +52,7 @@ public class PreventBlockUse extends CraftPower implements Listener {
         if (prevent_block_use.contains(e.getPlayer())) {
             for (LayerContainer layer : CraftApoli.getLayers()) {
                 ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
-                for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(e.getPlayer(), getPowerFile(), layer)) {
+                for (PowerContainer power : OriginPlayerAccessor.getMultiPowerFileFromType(e.getPlayer(), getPowerFile(), layer)) {
                     if (conditionExecutor.check("block_condition", "block_conditions", e.getPlayer(), power, "apoli:prevent_block_used", e.getPlayer(), null, e.getBlock(), null, e.getPlayer().getItemInHand(), null)) {
                         e.setCancelled(true);
                     }

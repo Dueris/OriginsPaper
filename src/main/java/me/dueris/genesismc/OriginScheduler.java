@@ -1,6 +1,6 @@
 package me.dueris.genesismc;
 
-import me.dueris.genesismc.util.entity.OriginPlayerUtils;
+import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.factory.powers.apoli.ActionOverTime;
 import me.dueris.genesismc.factory.powers.apoli.DamageOverTime;
@@ -68,12 +68,12 @@ public class OriginScheduler {
 
         @Override
         public void run() {
-            for (Player p : OriginPlayerUtils.hasPowers) {
+            for (Player p : OriginPlayerAccessor.hasPowers) {
 //                if (!OriginPlayer.getPowersApplied(p).contains(Gravity.class)) {
 //                    Gravity gravity = new Gravity();
 //                    gravity.run(p);
 //                }
-                if (!OriginPlayerUtils.getPowersApplied(p).contains(FlightHandler.class)) {
+                if (!OriginPlayerAccessor.getPowersApplied(p).contains(FlightHandler.class)) {
                     flightHandler.run(p);
                 }
 //                if (!OriginPlayer.getPowersApplied(p).contains(Overlay.class)) {
@@ -87,7 +87,7 @@ public class OriginScheduler {
 //                if (OriginPlayer.getPowersApplied(p).isEmpty()) {
 //                    //empty
 //                }
-                for (Class<? extends CraftPower> c : OriginPlayerUtils.getPowersApplied(p)) {
+                for (Class<? extends CraftPower> c : OriginPlayerAccessor.getPowersApplied(p)) {
                     try {
                         CraftPower inst = c.newInstance();
                         if (inst instanceof Burn) {

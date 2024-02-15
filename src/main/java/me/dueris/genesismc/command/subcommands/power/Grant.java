@@ -6,8 +6,8 @@ import me.dueris.genesismc.event.PowerUpdateEvent;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.registry.PowerContainer;
-import me.dueris.genesismc.storage.GenesisDataFiles;
-import me.dueris.genesismc.util.entity.OriginPlayerUtils;
+import me.dueris.genesismc.storage.GenesisConfigs;
+import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -15,7 +15,7 @@ import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 
-import static me.dueris.genesismc.util.entity.OriginPlayerUtils.powersAppliedList;
+import static me.dueris.genesismc.util.entity.OriginPlayerAccessor.powersAppliedList;
 
 public class Grant extends SubCommand {
     @Override
@@ -51,7 +51,7 @@ public class Grant extends SubCommand {
             for (Player p : players) {
                 if (players.size() == 0) return;
                 if (p == null) continue;
-                if (OriginPlayerUtils.playerPowerMapping.get(p) == null) continue;
+                if (OriginPlayerAccessor.playerPowerMapping.get(p) == null) continue;
                 PowerContainer poweR = CraftApoli.keyedPowerContainers.get(args[2]);
                 ArrayList<PowerContainer> powersToEdit = new ArrayList<>();
                 powersToEdit.add(poweR);
@@ -60,8 +60,8 @@ public class Grant extends SubCommand {
                     try {
                         ArrayList<String> powerAppliedTypes = new ArrayList<>();
                         ArrayList<Class<? extends CraftPower>> powerAppliedClasses = new ArrayList<>();
-                        if (!OriginPlayerUtils.playerPowerMapping.get(p).get(CraftApoli.getLayerFromTag(layerTag)).contains(power)) {
-                            OriginPlayerUtils.playerPowerMapping.get(p).get(CraftApoli.getLayerFromTag(layerTag)).add(power);
+                        if (!OriginPlayerAccessor.playerPowerMapping.get(p).get(CraftApoli.getLayerFromTag(layerTag)).contains(power)) {
+                            OriginPlayerAccessor.playerPowerMapping.get(p).get(CraftApoli.getLayerFromTag(layerTag)).add(power);
                             if (power == null) continue;
                             for (Class<? extends CraftPower> c : CraftPower.getRegistry()) {
                                 CraftPower craftPower = null;
@@ -84,7 +84,7 @@ public class Grant extends SubCommand {
                                     } else {
                                         powersAppliedList.get(p).add(c);
                                     }
-                                    if (GenesisDataFiles.getMainConfig().getString("console-startup-debug").equalsIgnoreCase("true")) {
+                                    if (GenesisConfigs.getMainConfig().getString("console-startup-debug").equalsIgnoreCase("true")) {
                                         Bukkit.getConsoleSender().sendMessage(net.md_5.bungee.api.ChatColor.GREEN + "Assigned power[" + power.getTag() + "] to player " + p.getName());
                                     }
                                 }

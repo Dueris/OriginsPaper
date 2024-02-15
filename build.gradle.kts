@@ -14,14 +14,17 @@ java {
 }
 
 dependencies {
+    // Paperweight
     paperweight.paperDevBundle("1.20.4-R0.1-SNAPSHOT")
+    // Optional Hook
     compileOnly("me.clip:placeholderapi:2.11.4")
     compileOnly("org.geysermc.geyser:api:2.2.0-SNAPSHOT")
     compileOnly("net.skinsrestorer:skinsrestorer-api:15.0.4")
-    // shade
-    implementation("org.reflections:reflections:0.9.12")
-    implementation("org.mineskin:java-client:1.2.4-SNAPSHOT")
-    implementation("com.github.Dueris:ModelColorAPI:1.0.5-SNAPSHOT")
+    // Required API
+    compileOnly("io.github.classgraph:classgraph:4.8.165")
+    compileOnly("org.reflections:reflections:0.9.12")
+    compileOnly("org.mineskin:java-client:1.2.4-SNAPSHOT")
+    compileOnly("com.github.Dueris:ModelColorAPI:1.0.5-SNAPSHOT")
 }
 
 repositories {
@@ -33,7 +36,6 @@ repositories {
     maven("https://repo.inventivetalent.org/repository/public/")
     maven("https://repo.codemc.org/repository/maven-releases/")
     maven("https://jitpack.io")
-    maven("https://repo.spongepowered.org/repository/maven-public/")
 }
 
 tasks {

@@ -6,7 +6,7 @@ import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.registry.LayerContainer;
 import me.dueris.genesismc.registry.PowerContainer;
 import me.dueris.genesismc.util.LangConfig;
-import me.dueris.genesismc.util.entity.OriginPlayerUtils;
+import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -41,7 +41,7 @@ public class Exhaust extends CraftPower {
     public void run(Player p) {
         if (more_exhaustion.contains(p)) {
             for (LayerContainer layer : CraftApoli.getLayers()) {
-                for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
+                for (PowerContainer power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                     if (power == null) continue;
                     if (power.getObject("interval") == null) {
                         Bukkit.getLogger().warning(LangConfig.getLocalizedString(p, "powers.errors.exhaust"));

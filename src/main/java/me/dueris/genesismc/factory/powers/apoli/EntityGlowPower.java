@@ -5,7 +5,7 @@ import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.registry.LayerContainer;
 import me.dueris.genesismc.registry.PowerContainer;
-import me.dueris.genesismc.util.entity.OriginPlayerUtils;
+import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftPlayer;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -15,7 +15,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 
-public class EntityGlow extends CraftPower {
+public class EntityGlowPower extends CraftPower {
 
     @Override
     public void setActive(Player p, String tag, Boolean bool) {
@@ -49,7 +49,7 @@ public class EntityGlow extends CraftPower {
                 Collection<Entity> entitiesWithinRadius = getEntitiesInRadius(p, 10);
                 for (Entity entity : entitiesWithinRadius) {
                     ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
-                    for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
+                    for (PowerContainer power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                         if (conditionExecutor.check("condition", "conditions", p, power, getPowerFile(), p, entity, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
                             if (conditionExecutor.check("bientity_condition", "bientity_conditions", p, power, getPowerFile(), p, entity, p.getLocation().getBlock(), null, p.getActiveItem(), null)) {
                                 CraftPlayer craftPlayer = (CraftPlayer) p;

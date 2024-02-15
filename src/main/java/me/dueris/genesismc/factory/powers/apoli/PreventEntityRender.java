@@ -1,7 +1,7 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
 import me.dueris.genesismc.GenesisMC;
-import me.dueris.genesismc.util.entity.OriginPlayerUtils;
+import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
@@ -50,7 +50,7 @@ public class PreventEntityRender extends CraftPower {
 
         if (getPowerArray().contains(p)) {
             for (LayerContainer layer : CraftApoli.getLayers()) {
-                for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
+                for (PowerContainer power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                     interval = 20L;
                     int ticksE = ticksEMap.getOrDefault(p, 0);
                     if (ticksE <= interval) {

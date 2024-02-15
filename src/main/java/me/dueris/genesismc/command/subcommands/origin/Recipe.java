@@ -18,9 +18,9 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-import static me.dueris.genesismc.storage.GenesisDataFiles.getMainConfig;
-import static me.dueris.genesismc.storage.GenesisDataFiles.getOrbCon;
-import static me.dueris.genesismc.util.BukkitColour.RED;
+import static me.dueris.genesismc.storage.GenesisConfigs.getMainConfig;
+import static me.dueris.genesismc.storage.GenesisConfigs.getOrbCon;
+import static me.dueris.genesismc.util.ColorConstants.RED;
 
 public class Recipe extends SubCommand implements Listener {
     @Override

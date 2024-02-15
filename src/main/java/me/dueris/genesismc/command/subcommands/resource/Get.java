@@ -12,7 +12,7 @@ import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 
-import static me.dueris.genesismc.util.BukkitColour.RED;
+import static me.dueris.genesismc.util.ColorConstants.RED;
 
 public class Get extends SubCommand {
     @Override

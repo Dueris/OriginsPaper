@@ -8,11 +8,11 @@ import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.powers.apoli.ModifyPlayerSpawnPower;
 import me.dueris.genesismc.registry.LayerContainer;
 import me.dueris.genesismc.registry.OriginContainer;
-import me.dueris.genesismc.storage.GenesisDataFiles;
+import me.dueris.genesismc.storage.GenesisConfigs;
 import me.dueris.genesismc.util.LangConfig;
 import me.dueris.genesismc.util.SendCharts;
 import me.dueris.genesismc.util.Utils;
-import me.dueris.genesismc.util.entity.OriginPlayerUtils;
+import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.Material;
@@ -37,7 +37,7 @@ import java.util.Random;
 
 import static me.dueris.genesismc.content.OrbOfOrigins.orb;
 import static me.dueris.genesismc.factory.powers.Power.phasing;
-import static me.dueris.genesismc.util.BukkitColour.AQUA;
+import static me.dueris.genesismc.util.ColorConstants.AQUA;
 import static org.bukkit.Bukkit.getServer;
 
 public class OriginChoosing implements Listener {
@@ -47,7 +47,7 @@ public class OriginChoosing implements Listener {
     @EventHandler
     public void onOrbClick(PlayerInteractEvent e) {
         Player p = e.getPlayer();
-        if (GenesisDataFiles.getMainConfig().getString("orb-of-origins").equalsIgnoreCase("true")) {
+        if (GenesisConfigs.getMainConfig().getString("orb-of-origins").equalsIgnoreCase("true")) {
             if (e.getAction().isRightClick()) {
                 ItemStack item = orb;
                 if (e.getItem() != null) {
@@ -56,7 +56,7 @@ public class OriginChoosing implements Listener {
                             Utils.consumeItem(e.getItem());
                         }
                         for (LayerContainer layer : CraftApoli.getLayers()) {
-                            OriginPlayerUtils.setOrigin(p, layer, CraftApoli.nullOrigin());
+                            OriginPlayerAccessor.setOrigin(p, layer, CraftApoli.nullOrigin());
                         }
                         OrbInteractEvent event = new OrbInteractEvent(p);
                         getServer().getPluginManager().callEvent(event);
@@ -83,7 +83,7 @@ public class OriginChoosing implements Listener {
             Random random = new Random();
             OriginContainer origin = origins.get(random.nextInt(origins.size()));
             for (LayerContainer layer : layers) {
-                OriginPlayerUtils.setOrigin(p, layer, origin);
+                OriginPlayerAccessor.setOrigin(p, layer, origin);
                 p.sendMessage(Component.text(LangConfig.getLocalizedString(p, "misc.randomOrigins").replace("%layer%", layer.getTag()).replace("%originName%", origin.getName())).color(TextColor.fromHexString(AQUA)));
             }
 
@@ -119,7 +119,7 @@ public class OriginChoosing implements Listener {
                 Player p = (Player) e.getWhoClicked();
 
                 ScreenConstants.setAttributesToDefault(p);
-                OriginPlayerUtils.setOrigin(p, choosing.get(p), origin);
+                OriginPlayerAccessor.setOrigin(p, choosing.get(p), origin);
                 choosing.remove(p);
                 new BukkitRunnable() {
                     @Override

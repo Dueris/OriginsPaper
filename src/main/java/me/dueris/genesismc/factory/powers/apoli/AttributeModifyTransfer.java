@@ -1,6 +1,6 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
-import me.dueris.genesismc.util.entity.OriginPlayerUtils;
+import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import me.dueris.genesismc.event.OriginChangeEvent;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
@@ -42,7 +42,7 @@ public class AttributeModifyTransfer extends CraftPower implements Listener {
         if (getPowerArray().contains(e.getPlayer())) {
             for (LayerContainer layer : CraftApoli.getLayers()) {
                 ConditionExecutor executor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
-                for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(e.getPlayer(), getPowerFile(), layer)) {
+                for (PowerContainer power : OriginPlayerAccessor.getMultiPowerFileFromType(e.getPlayer(), getPowerFile(), layer)) {
                     if (executor.check("condition", "conditions", e.getPlayer(), power, getPowerFile(), e.getPlayer(), null, null, null, e.getPlayer().getItemInHand(), null)) {
                         setActive(e.getPlayer(), power.getTag(), true);
                         ValueModifyingSuperClass valueModifyingSuperClass = new ValueModifyingSuperClass();

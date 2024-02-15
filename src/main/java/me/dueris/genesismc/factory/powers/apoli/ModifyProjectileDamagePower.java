@@ -1,10 +1,9 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
-import me.dueris.genesismc.util.entity.OriginPlayerUtils;
+import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.util.ErrorSystem;
 import me.dueris.genesismc.registry.LayerContainer;
 import me.dueris.genesismc.registry.PowerContainer;
 import org.bukkit.entity.Player;
@@ -12,7 +11,6 @@ import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -50,7 +48,7 @@ public class ModifyProjectileDamagePower extends CraftPower implements Listener 
                 for (LayerContainer layer : CraftApoli.getLayers()) {
                     try {
                         ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
-                        for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(pl, getPowerFile(), layer)) {
+                        for (PowerContainer power : OriginPlayerAccessor.getMultiPowerFileFromType(pl, getPowerFile(), layer)) {
                             if (conditionExecutor.check("target_condition", "target_conditions", pl, power, getPowerFile(), e.getDamager(), e.getEntity(), p.getLocation().getBlock(), null, pl.getItemInHand(), null) && conditionExecutor.check("damage_condition", "damage_conditions", pl, power, getPowerFile(), e.getDamager(), e.getEntity(), p.getLocation().getBlock(), null, pl.getItemInHand(), e)) {
                                 for (HashMap<String, Object> modifier : power.getPossibleModifiers("modifier", "modifiers")) {
                                     Float value = Float.valueOf(modifier.get("value").toString());
@@ -68,8 +66,6 @@ public class ModifyProjectileDamagePower extends CraftPower implements Listener 
                             }
                         }
                     } catch (Exception ev) {
-                        ErrorSystem errorSystem = new ErrorSystem();
-                        errorSystem.throwError("unable to get bi-entity", getPowerFile(), pl, layer);
                         ev.printStackTrace();
                     }
                 }

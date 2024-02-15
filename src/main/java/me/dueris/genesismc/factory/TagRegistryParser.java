@@ -15,7 +15,7 @@ import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class TagRegistry {
+public class TagRegistryParser {
 
     public static ArrayList<String> available_types = new ArrayList<>();
     public static HashMap<String, ArrayList<String>> registered = new HashMap();

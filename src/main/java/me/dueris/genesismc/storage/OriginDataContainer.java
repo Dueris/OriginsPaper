@@ -1,11 +1,9 @@
 package me.dueris.genesismc.storage;
 
 import me.dueris.genesismc.GenesisMC;
-import me.dueris.genesismc.storage.GenesisDataFiles;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.persistence.PersistentDataType;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.HashMap;
 

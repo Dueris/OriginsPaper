@@ -1,9 +1,10 @@
 package me.dueris.genesismc.factory;
 
 import me.dueris.genesismc.GenesisMC;
-import me.dueris.genesismc.storage.GenesisDataFiles;
+import me.dueris.genesismc.factory.powers.CraftPower;
+import me.dueris.genesismc.storage.GenesisConfigs;
 import me.dueris.genesismc.util.*;
-import me.dueris.genesismc.util.entity.OriginPlayerUtils;
+import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import me.dueris.genesismc.registry.*;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.storage.LevelResource;
@@ -15,6 +16,8 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
 import java.io.*;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
@@ -125,7 +128,7 @@ public class CraftApoli {
             if (subPowerValue instanceof JSONObject subPowerJson) {
                 FileContainer subPowerFile = fileToFileContainer(subPowerJson);
 
-                PowerContainer newPower = new PowerContainer(new NamespacedKey(powerFolder, powerFileName + "_" + key), subPowerFile, subPowerJson.toJSONString().split("\n"), true, false, powerContainer);
+                PowerContainer newPower = new PowerContainer(new NamespacedKey(powerFolder, powerFileName + "_" + key.toLowerCase()), subPowerFile, subPowerJson.toJSONString().split("\n"), true, false, powerContainer);
                 powerContainers.add(newPower);
                 keyedPowerContainers.put(powerFolder + ":" + powerFileName + "_" + key, newPower);
                 newPowerContainers.add(newPower);
@@ -149,7 +152,7 @@ public class CraftApoli {
     }
 
     public static File datapackDir() {
-        return new File(MinecraftServer.getServer().getWorldPath(LevelResource.DATAPACK_DIR).toAbsolutePath().toString());
+        return new File(GenesisMC.server.getWorldPath(LevelResource.DATAPACK_DIR).toAbsolutePath().toString());
     }
 
     public static File[] datapacksInDir() {
@@ -171,7 +174,7 @@ public class CraftApoli {
 
     public static void setupDynamicThreadCount() {
         int avalibleJVMThreads = Runtime.getRuntime().availableProcessors() * 2;
-        dynamic_thread_count = avalibleJVMThreads < 4 ? avalibleJVMThreads : avalibleJVMThreads >= GenesisDataFiles.getMainConfig().getInt("max-loader-threads") ? GenesisDataFiles.getMainConfig().getInt("max-loader-threads") : avalibleJVMThreads;
+        dynamic_thread_count = avalibleJVMThreads < 4 ? avalibleJVMThreads : avalibleJVMThreads >= GenesisConfigs.getMainConfig().getInt("max-loader-threads") ? GenesisConfigs.getMainConfig().getInt("max-loader-threads") : avalibleJVMThreads;
     }
 
     public static void unzip(File source, String out) throws IOException {
@@ -212,8 +215,9 @@ public class CraftApoli {
      * @throws InterruptedException
      **/
     public static void loadOrigins() throws InterruptedException, ExecutionException {
-        Boolean showErrors = Boolean.valueOf(GenesisDataFiles.getMainConfig().get("console-print-parse-errors").toString());
-        File DatapackDir = new File(MinecraftServer.getServer().getWorldPath(LevelResource.DATAPACK_DIR).toAbsolutePath().toString());
+        if(!getLayers().isEmpty() || !getOrigins().isEmpty() || !getPowers().isEmpty()) return; // Already parsed.
+        Boolean showErrors = Boolean.valueOf(GenesisConfigs.getMainConfig().get("console-print-parse-errors").toString());
+        File DatapackDir = new File(GenesisMC.server.getWorldPath(LevelResource.DATAPACK_DIR).toAbsolutePath().toString());
         File[] datapacks = DatapackDir.listFiles();
         if (datapacks == null) return;
 
@@ -247,10 +251,10 @@ public class CraftApoli {
                                     for (File powerFile : powerDir.listFiles()) {
                                         try {
                                             if (!powerFile.isDirectory()) {
-                                                String powerFolder = namespace.getName();
-                                                String powerFileName = powerFile.getName().replace(".json", "");
+                                                String powerFolder = namespace.getName().toLowerCase();
+                                                String powerFileName = powerFile.getName().replace(".json", "").toLowerCase();
 
-                                                JSONObject powerParser = Remapper.createRemapped(new File(datapack.getAbsolutePath() + File.separator + "data" + File.separator + powerFolder + File.separator + "powers" + File.separator + powerFileName + ".json"));
+                                                JSONObject powerParser = PowerRemapper.createRemapped(new File(datapack.getAbsolutePath() + File.separator + "data" + File.separator + powerFolder + File.separator + "powers" + File.separator + powerFileName + ".json"));
                                                 if (powerParser.containsKey("type") && "apoli:multiple".equals(powerParser.get("type"))) {
                                                     PowerContainer powerContainer = new PowerContainer(new NamespacedKey(powerFolder, powerFileName), fileToFileContainer(powerParser), Utils.readJSONFileAsString(powerParser), false, true);
                                                     powerContainers.add(powerContainer);
@@ -264,8 +268,9 @@ public class CraftApoli {
 
                                             }
                                         } catch (Exception ee) {
+                                            ee.printStackTrace();
                                             if (showErrors)
-                                                System.err.println("[GenesisMC] Error parsing \"%powerFolder%:%powerFileName%\"".replace("%powerFolder", namespace.getName()).replace("%powerFileName", powerFile.getName()));
+                                                System.err.println("[GenesisMC] Error parsing \"%powerFolder%:%powerFileName%\"".replace("%powerFolder%", namespace.getName()).replace("%powerFileName%", powerFile.getName()));
                                         }
                                     }
                                 }
@@ -349,7 +354,7 @@ public class CraftApoli {
 
                                                 try {
 
-                                                    JSONObject powerParser = Remapper.createRemapped(new File(datapack.getAbsolutePath() + File.separator + "data" + File.separator + powerFolder + File.separator + "powers" + File.separator + powerFileName + ".json"));
+                                                    JSONObject powerParser = PowerRemapper.createRemapped(new File(datapack.getAbsolutePath() + File.separator + "data" + File.separator + powerFolder + File.separator + "powers" + File.separator + powerFileName + ".json"));
                                                     if (powerParser.containsKey("type") && "apoli:multiple".equals(powerParser.get("type"))) {
                                                         PowerContainer powerContainer = new PowerContainer(new NamespacedKey(powerFolder, powerFileName), fileToFileContainer(powerParser), Utils.readJSONFileAsString(powerParser), false, true);
                                                         powerContainers.add(powerContainer);
@@ -388,8 +393,21 @@ public class CraftApoli {
         }).thenRun(() -> {
             //if an origin is a core one checks if there are translations for the powers
             translateOrigins();
-            TagRegistry.runParse();
+            TagRegistryParser.runParse();
+        }).thenRun(() -> {
+            // Register builtin powers
+            Method registerMethod;
+            try {
+                registerMethod = CraftPower.class.getDeclaredMethod("registerBuiltinPowers");
+                registerMethod.setAccessible(true);
+                registerMethod.invoke(null);
+            } catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException |
+                     InvocationTargetException e) {
+                e.printStackTrace();
+            }
         });
+
+        future.get();
     }
 
 
@@ -428,7 +446,7 @@ public class CraftApoli {
         for (LayerContainer layer : origin.keySet()) {
             OriginContainer layerOrigins = origin.get(layer);
             ArrayList<String> powers = new ArrayList<>();
-            for (PowerContainer power : OriginPlayerUtils.playerPowerMapping.get(p).get(layer)) {
+            for (PowerContainer power : OriginPlayerAccessor.playerPowerMapping.get(p).get(layer)) {
                 powers.add(power.getTag());
             }
             int powerSize = 0;

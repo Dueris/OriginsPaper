@@ -3,7 +3,7 @@ package me.dueris.genesismc.factory.powers.apoli;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.event.OriginChangeEvent;
 import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.util.entity.OriginPlayerUtils;
+import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import org.bukkit.GameMode;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
@@ -27,7 +27,7 @@ public class FlightHandler extends CraftPower {
             if (p.getGameMode().equals(GameMode.CREATIVE)) {
                 p.setAllowFlight(true);
             } else {
-                if (creative_flight.contains(p) || OriginPlayerUtils.isInPhantomForm(p)) {
+                if (creative_flight.contains(p) || OriginPlayerAccessor.isInPhantomForm(p)) {
                     p.setAllowFlight(true);
                     if (p.isFlying()) {
                         p.setFlying(true);
@@ -41,7 +41,7 @@ public class FlightHandler extends CraftPower {
             }
         }
         if (p.getChunk().isLoaded()) {
-            if (p.getEyeLocation().getBlock().isCollidable()) {
+            if (Phasing.inPhantomFormBlocks.contains(p)) { // Intended only for phantom form
                 p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "insideBlock"), PersistentDataType.BOOLEAN, true);
             } else {
                 p.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "insideBlock"), PersistentDataType.BOOLEAN, false);

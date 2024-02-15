@@ -2,13 +2,11 @@ package me.dueris.genesismc.factory.powers.apoli;
 
 import io.papermc.paper.event.player.PlayerArmSwingEvent;
 import me.dueris.genesismc.GenesisMC;
-import me.dueris.genesismc.util.entity.OriginPlayerUtils;
+import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.factory.powers.apoli.AttributeHandler;
 import me.dueris.genesismc.factory.powers.apoli.superclass.ValueModifyingSuperClass;
-import me.dueris.genesismc.util.ErrorSystem;
 import me.dueris.genesismc.registry.LayerContainer;
 import me.dueris.genesismc.registry.PowerContainer;
 import org.bukkit.GameMode;
@@ -63,7 +61,7 @@ public class ModifyBreakSpeedPower extends CraftPower implements Listener {
                 ValueModifyingSuperClass valueModifyingSuperClass = new ValueModifyingSuperClass();
                 try {
                     ConditionExecutor conditionExecutor = GenesisMC.getConditionExecutor();
-                    for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
+                    for (PowerContainer power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                         if (conditionExecutor.check("condition", "condition", p, power, getPowerFile(), p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
                             if (conditionExecutor.check("block_condition", "block_condition", p, power, getPowerFile(), p, null, p.getTargetBlockExact(Math.toIntExact(Math.round(AttributeHandler.Reach.getFinalReach(p)))), null, p.getItemInHand(), null)) {
                                 setActive(p, power.getTag(), true);
@@ -99,8 +97,6 @@ public class ModifyBreakSpeedPower extends CraftPower implements Listener {
                         }
                     }
                 } catch (Exception ev) {
-                    ErrorSystem errorSystem = new ErrorSystem();
-                    errorSystem.throwError("unable to set modifier", "apoli:modify_break_speed", p, layer);
                     ev.printStackTrace();
                 }
             }
@@ -111,7 +107,7 @@ public class ModifyBreakSpeedPower extends CraftPower implements Listener {
         ValueModifyingSuperClass valueModifyingSuperClass = new ValueModifyingSuperClass();
         if (modify_break_speed.contains(p)) {
             for (LayerContainer layer : CraftApoli.getLayers()) {
-                for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
+                for (PowerContainer power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                     for (HashMap<String, Object> modifier : power.getJsonListSingularPlural("modifier", "modifiers")) {
                         Float value = Float.valueOf(modifier.get("value").toString());
                         valueModifyingSuperClass.saveValueInPDC(p, MODIFYING_KEY, value); // Why does there need to be a binary operator if the operator does nothing?

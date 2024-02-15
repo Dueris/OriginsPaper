@@ -5,7 +5,7 @@ import me.dueris.genesismc.command.subcommands.SubCommand;
 import me.dueris.genesismc.event.OriginChangeEvent;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.util.LangConfig;
-import me.dueris.genesismc.util.entity.OriginPlayerUtils;
+import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import me.dueris.genesismc.util.enums.OriginDataType;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
@@ -15,7 +15,7 @@ import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 
-import static me.dueris.genesismc.util.BukkitColour.RED;
+import static me.dueris.genesismc.util.ColorConstants.RED;
 import static org.bukkit.Bukkit.getServer;
 
 public class Set extends SubCommand {
@@ -65,8 +65,8 @@ public class Set extends SubCommand {
             }
 
             for (Player p : players) {
-                OriginPlayerUtils.setOrigin(p, CraftApoli.getLayerFromTag(args[2]), CraftApoli.getOrigin(originTag));
-                OriginPlayerUtils.resetOriginData(p, OriginDataType.IN_PHASING_FORM);
+                OriginPlayerAccessor.setOrigin(p, CraftApoli.getLayerFromTag(args[2]), CraftApoli.getOrigin(originTag));
+                OriginPlayerAccessor.resetOriginData(p, OriginDataType.IN_PHASING_FORM);
                 OriginChangeEvent originChangeEvent = new OriginChangeEvent(p, CraftApoli.getOrigin(originTag));
                 getServer().getPluginManager().callEvent(originChangeEvent);
             }

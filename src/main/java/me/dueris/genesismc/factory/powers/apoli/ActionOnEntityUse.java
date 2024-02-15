@@ -6,7 +6,7 @@ import me.dueris.genesismc.factory.actions.Actions;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.registry.LayerContainer;
 import me.dueris.genesismc.registry.PowerContainer;
-import me.dueris.genesismc.util.entity.OriginPlayerUtils;
+import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -35,7 +35,7 @@ public class ActionOnEntityUse extends CraftPower implements Listener {
         if (cooldownTick.contains(actor)) return;
 
         for (LayerContainer layer : CraftApoli.getLayers()) {
-            for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(actor, getPowerFile(), layer)) {
+            for (PowerContainer power : OriginPlayerAccessor.getMultiPowerFileFromType(actor, getPowerFile(), layer)) {
                 if (GenesisMC.getConditionExecutor().check("condition", "conditions", actor, power, getPowerFile(), actor, target, actor.getLocation().getBlock(), null, actor.getActiveItem(), null)) {
                     if (GenesisMC.getConditionExecutor().check("item_condition", "item_conditions", actor, power, getPowerFile(), actor, target, actor.getLocation().getBlock(), null, actor.getActiveItem(), null)) {
                         if (GenesisMC.getConditionExecutor().check("bientity_condition", "bientity_conditions", actor, power, getPowerFile(), actor, target, actor.getLocation().getBlock(), null, actor.getActiveItem(), null)) {

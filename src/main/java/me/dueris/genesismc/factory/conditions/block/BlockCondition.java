@@ -1,10 +1,11 @@
 package me.dueris.genesismc.factory.conditions.block;
 
-import me.dueris.genesismc.factory.TagRegistry;
+import me.dueris.genesismc.factory.TagRegistryParser;
 import me.dueris.genesismc.factory.conditions.Condition;
 import me.dueris.genesismc.factory.conditions.fluid.FluidCondition;
 import me.dueris.genesismc.factory.powers.apoli.RestrictArmor;
 import me.dueris.genesismc.registry.PowerContainer;
+import me.dueris.genesismc.util.Utils;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.LiquidBlockContainer;
 import org.bukkit.Fluid;
@@ -58,10 +59,10 @@ public class BlockCondition implements Condition {
                 }
             }
             case "apoli:in_tag" -> {
-                if (TagRegistry.getRegisteredTagFromFileKey(condition.get("tag").toString()) != null) {
+                if (TagRegistryParser.getRegisteredTagFromFileKey(condition.get("tag").toString()) != null) {
                     if (!blockTagMappings.containsKey(condition.get("tag"))) {
                         blockTagMappings.put(condition.get("tag").toString(), new ArrayList<>());
-                        for (String mat : TagRegistry.getRegisteredTagFromFileKey(condition.get("tag").toString())) {
+                        for (String mat : TagRegistryParser.getRegisteredTagFromFileKey(condition.get("tag").toString())) {
                             blockTagMappings.get(condition.get("tag")).add(Material.valueOf(mat.split(":")[1].toUpperCase()));
                         }
                     } else {
@@ -88,7 +89,7 @@ public class BlockCondition implements Condition {
                 String comparison = condition.get("comparison").toString();
                 float compare_to = Float.parseFloat(condition.get("compare_to").toString());
 
-                return getResult(inverted, Optional.of(RestrictArmor.compareValues(adj, comparison, compare_to)));
+                return getResult(inverted, Optional.of(Utils.compareValues(adj, comparison, compare_to)));
             }
             case "apoli:attachable" -> {
                 if (block != null && block.getType() != Material.AIR) {
@@ -112,7 +113,7 @@ public class BlockCondition implements Condition {
                 String comparison = condition.get("comparison").toString();
                 float compare_to = Float.parseFloat(condition.get("compare_to").toString());
                 float bR = block.getType().getBlastResistance();
-                return getResult(inverted, Optional.of(RestrictArmor.compareValues(bR, comparison, compare_to)));
+                return getResult(inverted, Optional.of(Utils.compareValues(bR, comparison, compare_to)));
             }
             case "apoli:block_entity" -> {
                 BlockState blockState = block.getState();
@@ -137,13 +138,13 @@ public class BlockCondition implements Condition {
                 String comparison = condition.get("comparison").toString();
                 float compare_to = Float.parseFloat(condition.get("compare_to").toString());
                 float bR = block.getType().getHardness();
-                return getResult(inverted, Optional.of(RestrictArmor.compareValues(bR, comparison, compare_to)));
+                return getResult(inverted, Optional.of(Utils.compareValues(bR, comparison, compare_to)));
             }
             case "apoli:height" -> {
                 String comparison = condition.get("comparison").toString();
                 float compare_to = Float.parseFloat(condition.get("compare_to").toString());
                 float bR = block.getLocation().getBlockY();
-                return getResult(inverted, Optional.of(RestrictArmor.compareValues(bR, comparison, compare_to)));
+                return getResult(inverted, Optional.of(Utils.compareValues(bR, comparison, compare_to)));
             }
             case "apoli:light_blocking" -> {
                 return getResult(inverted, Optional.of(block.getType().isOccluding()));
@@ -167,12 +168,12 @@ public class BlockCondition implements Condition {
                 String comparison = condition.get("comparison").toString();
                 float compare_to = Float.parseFloat(condition.get("compare_to").toString());
                 float bR = level;
-                return getResult(inverted, Optional.of(RestrictArmor.compareValues(bR, comparison, compare_to)));
+                return getResult(inverted, Optional.of(Utils.compareValues(bR, comparison, compare_to)));
             }
             case "apoli:slipperiness" -> {
                 String comparison = condition.get("comparison").toString();
                 float compare_to = Float.parseFloat(condition.get("compare_to").toString());
-                return getResult(inverted, Optional.of(RestrictArmor.compareValues(block.getBlockData().getMaterial().getSlipperiness(), comparison, compare_to)));
+                return getResult(inverted, Optional.of(Utils.compareValues(block.getBlockData().getMaterial().getSlipperiness(), comparison, compare_to)));
             }
             case "apoli:movement_blocking" -> {
                 return getResult(inverted, Optional.of(block.getType().isCollidable()));

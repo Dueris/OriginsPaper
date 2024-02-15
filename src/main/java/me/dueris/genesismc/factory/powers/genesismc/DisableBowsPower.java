@@ -8,7 +8,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 
 import static me.dueris.genesismc.factory.powers.Power.bow_nope;
 
-public class BowInability implements Listener {
+public class DisableBowsPower implements Listener {
 
     @EventHandler
     public void onUseBow(PlayerInteractEvent e) {

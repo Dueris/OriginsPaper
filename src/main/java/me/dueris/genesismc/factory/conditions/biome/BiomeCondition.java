@@ -1,8 +1,9 @@
 package me.dueris.genesismc.factory.conditions.biome;
 
-import me.dueris.genesismc.factory.TagRegistry;
+import me.dueris.genesismc.factory.TagRegistryParser;
 import me.dueris.genesismc.factory.conditions.Condition;
 import me.dueris.genesismc.factory.powers.apoli.RestrictArmor;
+import me.dueris.genesismc.util.Utils;
 import net.minecraft.core.BlockPos;
 import org.bukkit.Fluid;
 import org.bukkit.block.Biome;
@@ -39,10 +40,10 @@ public class BiomeCondition implements Condition {
             switch (type) {
                 case "apoli:in_tag" -> {
                     // Use block in_tag optimization
-                    if (TagRegistry.getRegisteredTagFromFileKey(condition.get("tag").toString()) != null) {
+                    if (TagRegistryParser.getRegisteredTagFromFileKey(condition.get("tag").toString()) != null) {
                         if (!biomeTagMappings.containsKey(condition.get("tag"))) {
                             biomeTagMappings.put(condition.get("tag").toString(), new ArrayList<>());
-                            for (String mat : TagRegistry.getRegisteredTagFromFileKey(condition.get("tag").toString())) {
+                            for (String mat : TagRegistryParser.getRegisteredTagFromFileKey(condition.get("tag").toString())) {
                                 try {
                                     biomeTagMappings.get(condition.get("tag")).add(Biome.valueOf(mat.split(":")[1].toUpperCase()));
                                 } catch (IllegalArgumentException e) {
@@ -82,13 +83,13 @@ public class BiomeCondition implements Condition {
                     net.minecraft.world.level.biome.Biome b = CraftBiome.bukkitToMinecraft(block.getBiome());
                     String comparison = condition.get("comparison").toString();
                     float compare_to = Float.parseFloat(condition.get("compare_to").toString());
-                    return getResult(inverted, Optional.of(RestrictArmor.compareValues(b.getBaseTemperature(), comparison, compare_to)));
+                    return getResult(inverted, Optional.of(Utils.compareValues(b.getBaseTemperature(), comparison, compare_to)));
                 }
                 case "apoli:humidity" -> {
                     net.minecraft.world.level.biome.Biome b = CraftBiome.bukkitToMinecraft(block.getBiome());
                     String comparison = condition.get("comparison").toString();
                     float compare_to = Float.parseFloat(condition.get("compare_to").toString());
-                    return getResult(inverted, Optional.of(RestrictArmor.compareValues(b.climateSettings.downfall(), comparison, compare_to)));
+                    return getResult(inverted, Optional.of(Utils.compareValues(b.climateSettings.downfall(), comparison, compare_to)));
                 }
                 default -> {
                     return getResult(inverted, Optional.empty());

@@ -8,7 +8,7 @@ import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.factory.powers.apoli.provider.origins.LikeWater;
 import me.dueris.genesismc.registry.LayerContainer;
 import me.dueris.genesismc.registry.PowerContainer;
-import me.dueris.genesismc.util.entity.OriginPlayerUtils;
+import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -22,7 +22,7 @@ import org.bukkit.util.Vector;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class Gravity extends CraftPower implements Listener {
+public class GravityPower extends CraftPower implements Listener {
 
     @Override
     public void setActive(Player p, String tag, Boolean bool) {
@@ -43,7 +43,7 @@ public class Gravity extends CraftPower implements Listener {
         for (LayerContainer layer : CraftApoli.getLayers()) {
             if (no_gravity.contains(p)) {
                 ConditionExecutor executor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
-                for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
+                for (PowerContainer power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                     if (executor.check("condition", "conditions", p, power, getPowerFile(), p, null, null, null, p.getItemInHand(), null)) {
                         setActive(p, power.getTag(), true);
                         if (no_gravity.contains(p)) {

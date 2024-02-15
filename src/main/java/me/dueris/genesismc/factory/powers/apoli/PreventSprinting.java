@@ -5,7 +5,7 @@ import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.registry.LayerContainer;
 import me.dueris.genesismc.registry.PowerContainer;
-import me.dueris.genesismc.util.entity.OriginPlayerUtils;
+import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -33,7 +33,7 @@ public class PreventSprinting extends CraftPower {
     public void run(Player p) {
         if (prevent_sprinting.contains(p)) {
             for (LayerContainer layer : CraftApoli.getLayers()) {
-                for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
+                for (PowerContainer power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                     ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                     if (conditionExecutor.check("condition", "conditions", p, power, "apoli:prevent_sprinting", p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
                         if (power == null) {

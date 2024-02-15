@@ -2,7 +2,7 @@ package me.dueris.genesismc.command.subcommands.origin;
 
 import me.dueris.genesismc.command.subcommands.SubCommand;
 import me.dueris.genesismc.factory.powers.apoli.RecipePower;
-import me.dueris.genesismc.util.BukkitColour;
+import me.dueris.genesismc.util.ColorConstants;
 import me.dueris.genesismc.util.LangConfig;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
@@ -32,11 +32,11 @@ public class Give extends SubCommand {
     public void perform(CommandSender sender, String[] args) {
         if (!sender.hasPermission("genesismc.origins.cmd.give")) return;
         if (args.length == 1) {
-            sender.sendMessage(Component.text(LangConfig.getLocalizedString(sender, "command.origin.give.noPlayer")).color(TextColor.fromHexString(BukkitColour.RED)));
+            sender.sendMessage(Component.text(LangConfig.getLocalizedString(sender, "command.origin.give.noPlayer")).color(TextColor.fromHexString(ColorConstants.RED)));
             return;
         }
         if(args.length == 2){
-            sender.sendMessage(Component.text("You must give a valid recipe tag.").color(TextColor.fromHexString(BukkitColour.RED)));
+            sender.sendMessage(Component.text("You must give a valid recipe tag.").color(TextColor.fromHexString(ColorConstants.RED)));
             return;
         }
         int amt = 1;
@@ -51,10 +51,10 @@ public class Give extends SubCommand {
             if(sender instanceof InventoryHolder inventoryHolder){
                 inventoryHolder.getInventory().addItem(itemStack);
             }else{
-                sender.sendMessage(Component.text("Target not instanceof InventoryHolder").color(TextColor.fromHexString(BukkitColour.RED)));
+                sender.sendMessage(Component.text("Target not instanceof InventoryHolder").color(TextColor.fromHexString(ColorConstants.RED)));
             }
         }else{
-            sender.sendMessage(Component.text("Item not found in origins registry.").color(TextColor.fromHexString(BukkitColour.RED)));
+            sender.sendMessage(Component.text("Item not found in origins registry.").color(TextColor.fromHexString(ColorConstants.RED)));
         }
     }
 }

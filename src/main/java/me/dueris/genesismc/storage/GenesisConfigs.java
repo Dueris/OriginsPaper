@@ -13,7 +13,7 @@ import java.util.Set;
 
 import static org.bukkit.Bukkit.getLogger;
 
-public class GenesisDataFiles {
+public class GenesisConfigs {
 
     public static FileConfiguration mainConfig;
     public static File mainConfigFile;

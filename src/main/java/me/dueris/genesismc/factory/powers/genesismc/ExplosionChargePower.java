@@ -1,7 +1,7 @@
 package me.dueris.genesismc.factory.powers.genesismc;
 
 import me.dueris.genesismc.GenesisMC;
-import me.dueris.genesismc.util.entity.OriginPlayerUtils;
+import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
@@ -25,11 +25,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
-public class ExplodeTick extends CraftPower implements Listener {
+public class ExplosionChargePower extends CraftPower implements Listener {
 
     private final HashMap<UUID, Long> cooldown;
 
-    public ExplodeTick() {
+    public ExplosionChargePower() {
         this.cooldown = new HashMap<>();
     }
 
@@ -52,7 +52,7 @@ public class ExplodeTick extends CraftPower implements Listener {
         for (LayerContainer layer : CraftApoli.getLayers()) {
             Player p = e.getPlayer();
             if (explode_tick.contains(p) && !p.isFlying() && !p.isGliding()) {
-                for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
+                for (PowerContainer power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                     ConditionExecutor executor = GenesisMC.getConditionExecutor();
                     cooldown.remove(p.getUniqueId());
                     new BukkitRunnable() {

@@ -5,7 +5,7 @@ import me.dueris.genesismc.command.subcommands.SubCommand;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.registry.LayerContainer;
 import me.dueris.genesismc.util.LangConfig;
-import me.dueris.genesismc.util.entity.OriginPlayerUtils;
+import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.Bukkit;
@@ -14,7 +14,7 @@ import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 
-import static me.dueris.genesismc.util.BukkitColour.RED;
+import static me.dueris.genesismc.util.ColorConstants.RED;
 
 public class Has extends SubCommand {
     @Override
@@ -62,7 +62,7 @@ public class Has extends SubCommand {
         for (Player p : players) {
             for (LayerContainer layer : CraftApoli.getLayers()) {
                 if (!layer.getTag().equals(args[2])) continue;
-                if (OriginPlayerUtils.hasOrigin(p, args[3]))
+                if (OriginPlayerAccessor.hasOrigin(p, args[3]))
                     sender.sendMessage(Component.text(LangConfig.getLocalizedString(p, "command.origin.has.pass").replace("%player%", p.getName())));
                 else
                     sender.sendMessage(Component.text(LangConfig.getLocalizedString(p, "command.origin.has.fail").replace("%player%", p.getName())));

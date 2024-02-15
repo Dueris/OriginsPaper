@@ -6,7 +6,7 @@ import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.registry.LayerContainer;
 import me.dueris.genesismc.registry.OriginContainer;
 import me.dueris.genesismc.screen.contents.ScreenContent;
-import me.dueris.genesismc.util.entity.OriginPlayerUtils;
+import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
@@ -22,11 +22,11 @@ public class GuiTicker extends BukkitRunnable {
         for (Player p : Bukkit.getOnlinePlayers()) {
             for (LayerContainer layer : CraftApoli.getLayers()) {
                 try {
-                    if (OriginPlayerUtils.hasOrigin(p, CraftApoli.nullOrigin().getTag())) {
+                    if (OriginPlayerAccessor.hasOrigin(p, CraftApoli.nullOrigin().getTag())) {
                         String openInventoryTitle = p.getOpenInventory().getTitle();
-                        OriginContainer ori = OriginPlayerUtils.getOrigin(p, layer);
+                        OriginContainer ori = OriginPlayerAccessor.getOrigin(p, layer);
                         if (!openInventoryTitle.startsWith("Choosing Menu") && !openInventoryTitle.startsWith("Custom Origins") && !openInventoryTitle.startsWith("Custom Origin") && !openInventoryTitle.startsWith("Origin")) {
-                            if (OriginPlayerUtils.getOrigin(p, layer).getTag().equals(CraftApoli.nullOrigin().getTag())) {
+                            if (OriginPlayerAccessor.getOrigin(p, layer).getTag().equals(CraftApoli.nullOrigin().getTag())) {
                                 if (ori.getOriginFile().get("condition") != null || ori.getOriginFile().get("conditions") != null) {
                                     if (ConditionExecutor.entityCondition.check((JSONObject) ori.getOriginFile().get("condition"), p, null, p.getLocation().getBlock(), null, p.getActiveItem(), null).isPresent()) {
                                         choosing.put(p, layer);

@@ -7,7 +7,7 @@ import me.dueris.genesismc.registry.LayerContainer;
 import me.dueris.genesismc.registry.PowerContainer;
 import me.dueris.genesismc.util.LangConfig;
 import me.dueris.genesismc.util.Utils;
-import me.dueris.genesismc.util.entity.OriginPlayerUtils;
+import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;
@@ -81,7 +81,7 @@ public class DamageOverTime extends CraftPower implements Listener {
         ticksEMap.putIfAbsent(p, 0);
         if (getPowerArray().contains(p)) {
             for (LayerContainer layer : CraftApoli.getLayers()) {
-                for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
+                for (PowerContainer power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                     if (power == null) continue;
                     if (power.getObject("interval") == null) {
                         Bukkit.getLogger().warning(LangConfig.getLocalizedString(p, "powers.errors.burn"));

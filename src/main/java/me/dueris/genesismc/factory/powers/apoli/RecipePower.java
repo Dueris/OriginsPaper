@@ -7,7 +7,7 @@ import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.registry.LayerContainer;
 import me.dueris.genesismc.registry.PowerContainer;
-import me.dueris.genesismc.util.entity.OriginPlayerUtils;
+import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -143,7 +143,7 @@ public class RecipePower extends CraftPower implements Listener {
         }
         if(getPowerArray().contains(p)){
             for(LayerContainer layer : CraftApoli.getLayers()){
-                for(PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)){
+                for(PowerContainer power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)){
                     JSONObject recipe = power.get("recipe");
                     String id = recipe.get("id").toString();
                     if(tags.contains(id)){

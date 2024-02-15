@@ -7,7 +7,7 @@ import me.dueris.genesismc.factory.actions.Actions;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.registry.LayerContainer;
 import me.dueris.genesismc.registry.PowerContainer;
-import me.dueris.genesismc.util.entity.OriginPlayerUtils;
+import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -30,7 +30,7 @@ public class ActionOnCallback extends CraftPower implements Listener {
         if (!getPowerArray().contains(actor)) return;
 
         for (LayerContainer layer : CraftApoli.getLayers()) {
-            for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(actor, getPowerFile(), layer)) {
+            for (PowerContainer power : OriginPlayerAccessor.getMultiPowerFileFromType(actor, getPowerFile(), layer)) {
                 if (power == null) continue;
                 setActive(e.getPlayer(), power.getTag(), true);
                 Actions.EntityActionType(e.getPlayer(), power.getEntityAction());

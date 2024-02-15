@@ -5,7 +5,7 @@ import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.registry.LayerContainer;
 import me.dueris.genesismc.registry.PowerContainer;
-import me.dueris.genesismc.util.entity.OriginPlayerUtils;
+import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -14,7 +14,7 @@ import org.bukkit.event.entity.EntityRegainHealthEvent;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class DisableRegen extends CraftPower implements Listener {
+public class DisableRegeneration extends CraftPower implements Listener {
 
     @Override
     public void setActive(Player p, String tag, Boolean bool) {
@@ -37,7 +37,7 @@ public class DisableRegen extends CraftPower implements Listener {
             if (disable_regen.contains(p)) {
                 for (LayerContainer layer : CraftApoli.getLayers()) {
                     ConditionExecutor executor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
-                    for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
+                    for (PowerContainer power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                         if (executor.check("condition", "conditions", p, power, getPowerFile(), p, null, null, null, p.getItemInHand(), null)) {
 
                             setActive(p, power.getTag(), true);

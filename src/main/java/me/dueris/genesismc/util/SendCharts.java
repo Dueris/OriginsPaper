@@ -1,7 +1,7 @@
 package me.dueris.genesismc.util;
 
 import me.dueris.genesismc.registry.OriginContainer;
-import me.dueris.genesismc.util.entity.OriginPlayerUtils;
+import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
@@ -12,7 +12,7 @@ import static me.dueris.genesismc.GenesisMC.metrics;
 public class SendCharts {
 
     public static void originPopularity(Player p) {
-        for (OriginContainer origin : OriginPlayerUtils.getOrigin(p).values()) {
+        for (OriginContainer origin : OriginPlayerAccessor.getOrigin(p).values()) {
             metrics.addCustomChart(new Metrics.DrilldownPie("originPopularity", () -> {
                 Map<String, Map<String, Integer>> map = new HashMap<>();
                 Map<String, Integer> entry = new HashMap<>();

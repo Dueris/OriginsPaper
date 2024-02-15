@@ -4,6 +4,8 @@ import me.dueris.genesismc.factory.conditions.Condition;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.conditions.entity.EntityCondition;
 import me.dueris.genesismc.factory.powers.apoli.RestrictArmor;
+import me.dueris.genesismc.util.Utils;
+
 import org.bukkit.Fluid;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -53,7 +55,7 @@ public class DamageCondition implements Condition {
                 String comparison = condition.get("comparison").toString();
                 Long compare_to = (Long) condition.get("compare_to");
 
-                return getResult(inverted, Optional.of(RestrictArmor.compareValues(entityDamageEvent.getDamage(), comparison, compare_to)));
+                return getResult(inverted, Optional.of(Utils.compareValues(entityDamageEvent.getDamage(), comparison, compare_to)));
             }
             case "apoli:attacker" -> {
                 if (entityDamageEvent instanceof EntityDamageByEntityEvent event) {

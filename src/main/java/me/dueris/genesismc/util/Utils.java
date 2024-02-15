@@ -6,6 +6,7 @@ import com.google.gson.stream.JsonReader;
 import com.mojang.brigadier.StringReader;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
+import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.registry.PowerContainer;
 import me.dueris.genesismc.util.apoli.Space;
 import net.minecraft.Util;
@@ -42,7 +43,7 @@ import java.util.function.BinaryOperator;
 
 public class Utils {
     public static Registry<DamageType> DAMAGE_REGISTRY = CraftRegistry.getMinecraftRegistry().registryOrThrow(Registries.DAMAGE_TYPE);
-    public MinecraftServer server = MinecraftServer.getServer();
+    public MinecraftServer server = GenesisMC.server;
     public CraftServer bukkitServer = server.server;
 
     public static DamageSource getDamageSource(DamageType type) {
@@ -255,6 +256,27 @@ public class Utils {
 
     public static void consumeItem(ItemStack item){
         item.setAmount(item.getAmount() - 1);
+    }
+
+    public static boolean compareValues(double value1, String comparison, double value2) {
+        switch (comparison) {
+            case ">":
+                return value1 > value2;
+            case ">=":
+                return value1 >= value2;
+            case "<":
+                return value1 < value2;
+            case "<=":
+                return value1 <= value2;
+            case "==":
+                return value1 == value2;
+            case "=":
+                return value1 == value2;
+            case "!=":
+                return value1 != value2;
+            default:
+                return false;
+        }
     }
 
     // Math

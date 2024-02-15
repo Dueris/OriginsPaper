@@ -1,6 +1,6 @@
 package me.dueris.genesismc.factory.conditions.fluid;
 
-import me.dueris.genesismc.factory.TagRegistry;
+import me.dueris.genesismc.factory.TagRegistryParser;
 import me.dueris.genesismc.factory.conditions.Condition;
 import org.bukkit.Fluid;
 import org.bukkit.block.Block;
@@ -32,7 +32,7 @@ public class FluidCondition implements Condition {
                 return getResult(inverted, Optional.of(Fluid.EMPTY.equals(fluid)));
             }
             case "apoli:in_tag" -> {
-                for (String flu : TagRegistry.getRegisteredTagFromFileKey(condition.get("tag").toString())) {
+                for (String flu : TagRegistryParser.getRegisteredTagFromFileKey(condition.get("tag").toString())) {
                     if (flu == null) continue;
                     if (fluid == null) continue;
                     return getResult(inverted, Optional.of(flu.equalsIgnoreCase(fluid.toString())));

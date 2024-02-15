@@ -1,6 +1,6 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
-import me.dueris.genesismc.util.entity.OriginPlayerUtils;
+import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
@@ -39,7 +39,7 @@ public class PreventElytraFlight extends CraftPower implements Listener {
             if (prevent_elytra_flight.contains(p)) {
                 for (LayerContainer layer : CraftApoli.getLayers()) {
                     ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
-                    for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
+                    for (PowerContainer power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                         if (conditionExecutor.check("condition", "conditions", p, power, "apoli:prevent_elytra_flight", p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
                             e.setCancelled(true);
                             setActive(p, power.getTag(), true);

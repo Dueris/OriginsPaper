@@ -10,7 +10,7 @@ import me.dueris.genesismc.registry.PowerContainer;
 import me.dueris.genesismc.screen.ScreenConstants;
 import me.dueris.genesismc.util.LangConfig;
 import me.dueris.genesismc.util.Utils;
-import me.dueris.genesismc.util.entity.OriginPlayerUtils;
+import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Block;
@@ -84,7 +84,7 @@ public class AttributeHandler extends CraftPower implements Listener {
             public void run() {
                 if (attribute.contains(p)) {
                     for (LayerContainer layer : CraftApoli.getLayers()) {
-                        for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
+                        for (PowerContainer power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                             if (power == null) continue;
 
                             for (HashMap<String, Object> modifier : power.getPossibleModifiers("modifier", "modifiers")) {
@@ -146,7 +146,7 @@ public class AttributeHandler extends CraftPower implements Listener {
             public void run() {
                 if (attribute.contains(p)) {
                     for (LayerContainer layer : CraftApoli.getLayers()) {
-                        for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
+                        for (PowerContainer power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                             if (power == null) continue;
 
                             for (HashMap<String, Object> modifier : power.getPossibleModifiers("modifier", "modifiers")) {
@@ -264,7 +264,7 @@ public class AttributeHandler extends CraftPower implements Listener {
             Player p = e.getPlayer();
             if (extra_reach_attack.contains(e.getPlayer())) {
                 for (LayerContainer layer : CraftApoli.getLayers()) {
-                    for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, "apoli:attribute", layer)) {
+                    for (PowerContainer power : OriginPlayerAccessor.getMultiPowerFileFromType(p, "apoli:attribute", layer)) {
                         for (HashMap<String, Object> modifier : power.getPossibleModifiers("modifier", "modifiers")) {
                             if (!e.getAction().isLeftClick()) return;
                             String operation = String.valueOf(modifier.get("operation"));

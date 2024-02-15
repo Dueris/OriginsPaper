@@ -5,8 +5,7 @@ import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.registry.LayerContainer;
 import me.dueris.genesismc.registry.PowerContainer;
-import me.dueris.genesismc.util.ErrorSystem;
-import me.dueris.genesismc.util.entity.OriginPlayerUtils;
+import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -40,7 +39,7 @@ public class ModifyLavaSpeed extends CraftPower {
             for (LayerContainer layer : CraftApoli.getLayers()) {
                 try {
                     ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
-                    for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
+                    for (PowerContainer power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                         if (conditionExecutor.check("bientity_condition", "bientity_conditions", p, power, "apoli:modify_lava_speed", p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
                             for (HashMap<String, Object> modifier : power.getPossibleModifiers("modifier", "modifiers")) {
                                 Float value = Float.valueOf(modifier.get("value").toString());
@@ -63,8 +62,6 @@ public class ModifyLavaSpeed extends CraftPower {
                         }
                     }
                 } catch (Exception ev) {
-                    ErrorSystem errorSystem = new ErrorSystem();
-                    errorSystem.throwError("unable to get bi-entity", "apoli:modify_lava_speed", p, layer);
                     ev.printStackTrace();
                 }
             }

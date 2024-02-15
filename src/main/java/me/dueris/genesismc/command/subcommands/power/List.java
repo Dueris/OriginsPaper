@@ -5,7 +5,7 @@ import me.dueris.genesismc.command.subcommands.SubCommand;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.registry.LayerContainer;
 import me.dueris.genesismc.registry.PowerContainer;
-import me.dueris.genesismc.util.entity.OriginPlayerUtils;
+import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -36,7 +36,7 @@ public class List extends SubCommand {
             ArrayList<Player> players = PlayerSelector.playerSelector(sender, args[1]);
             for (Player p : players) {
                 for (LayerContainer layerContainer : CraftApoli.getLayers()) {
-                    java.util.List<PowerContainer> powers = OriginPlayerUtils.playerPowerMapping.get(p).get(layerContainer);
+                    java.util.List<PowerContainer> powers = OriginPlayerAccessor.playerPowerMapping.get(p).get(layerContainer);
                     if(powers == null || powers.isEmpty()){
                         sender.sendMessage(ChatColor.RED + "Entity %name% does not have any powers".replace("%name%", p.getName()));
                     }else{

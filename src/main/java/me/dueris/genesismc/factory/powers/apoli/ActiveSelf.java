@@ -9,7 +9,7 @@ import me.dueris.genesismc.registry.LayerContainer;
 import me.dueris.genesismc.registry.PowerContainer;
 import me.dueris.genesismc.util.CooldownUtils;
 import me.dueris.genesismc.util.Utils;
-import me.dueris.genesismc.util.entity.OriginPlayerUtils;
+import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -31,7 +31,7 @@ public class ActiveSelf extends CraftPower implements Listener {
         for (LayerContainer layer : CraftApoli.getLayers()) {
             if (getPowerArray().contains(e.getPlayer())) {
                 ConditionExecutor executor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
-                for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(e.getPlayer(), getPowerFile(), layer)) {
+                for (PowerContainer power : OriginPlayerAccessor.getMultiPowerFileFromType(e.getPlayer(), getPowerFile(), layer)) {
                     if (CooldownUtils.isPlayerInCooldown(e.getPlayer(), e.getKey())) return;
                     if (executor.check("condition", "conditions", e.getPlayer(), power, getPowerFile(), e.getPlayer(), null, null, null, null, null)) {
                         if (!getPowerArray().contains(e.getPlayer())) return;

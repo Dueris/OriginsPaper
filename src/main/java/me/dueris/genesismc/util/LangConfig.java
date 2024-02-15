@@ -1,7 +1,7 @@
 package me.dueris.genesismc.util;
 
 import me.dueris.genesismc.GenesisMC;
-import me.dueris.genesismc.storage.GenesisDataFiles;
+import me.dueris.genesismc.storage.GenesisConfigs;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.Bukkit;
@@ -17,7 +17,7 @@ public class LangConfig {
 
     public static File getLangFile() {
 
-        String fileName = GenesisDataFiles.getMainConfig().getString("lang");
+        String fileName = GenesisConfigs.getMainConfig().getString("lang");
 
         if (fileName.equals("english")) fileName = "en_us";
         if (fileName.equals("german")) fileName = "de_DE";
@@ -34,7 +34,7 @@ public class LangConfig {
 
         try {
             if (!langFile.exists()) {
-                Bukkit.getServer().getConsoleSender().sendMessage(Component.text("Error finding lang file, please restart the server, or use a valid lang file").color(TextColor.fromHexString(BukkitColour.RED)));
+                Bukkit.getServer().getConsoleSender().sendMessage(Component.text("Error finding lang file, please restart the server, or use a valid lang file").color(TextColor.fromHexString(ColorConstants.RED)));
                 return null;
             }
         } catch (SecurityException e) {
@@ -46,7 +46,7 @@ public class LangConfig {
     }
 
     public static File getFile(String string) {
-        return GenesisDataFiles.getFile(string);
+        return GenesisConfigs.getFile(string);
     }
 
     public static String getLocalizedString(CommandSender P, String key) {

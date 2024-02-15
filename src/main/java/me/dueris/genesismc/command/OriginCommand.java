@@ -13,8 +13,8 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-import static me.dueris.genesismc.util.BukkitColour.RED;
-import static me.dueris.genesismc.util.BukkitColour.YELLOW;
+import static me.dueris.genesismc.util.ColorConstants.RED;
+import static me.dueris.genesismc.util.ColorConstants.YELLOW;
 
 public class OriginCommand extends Command {
 

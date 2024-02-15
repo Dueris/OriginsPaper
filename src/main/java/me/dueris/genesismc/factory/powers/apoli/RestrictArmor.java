@@ -7,7 +7,8 @@ import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.registry.LayerContainer;
 import me.dueris.genesismc.registry.PowerContainer;
 import me.dueris.genesismc.util.LangConfig;
-import me.dueris.genesismc.util.entity.OriginPlayerUtils;
+import me.dueris.genesismc.util.Utils;
+import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -33,33 +34,12 @@ public class RestrictArmor extends CraftPower implements Listener {
         this.ticksE = 0;
     }
 
-    public static boolean compareValues(double value1, String comparison, double value2) {
-        switch (comparison) {
-            case ">":
-                return value1 > value2;
-            case ">=":
-                return value1 >= value2;
-            case "<":
-                return value1 < value2;
-            case "<=":
-                return value1 <= value2;
-            case "==":
-                return value1 == value2;
-            case "=":
-                return value1 == value2;
-            case "!=":
-                return value1 != value2;
-            default:
-                return false;
-        }
-    }
-
     @EventHandler
     public void tick(PlayerArmorChangeEvent e) {
         Player p = e.getPlayer();
         if (getPowerArray().contains(p)) {
             for (LayerContainer layer : CraftApoli.getLayers()) {
-                for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
+                for (PowerContainer power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                     if (power == null) continue;
                     ConditionExecutor executor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                     if (executor.check("condition", "conditions", p, power, getPowerFile(), p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
@@ -88,7 +68,7 @@ public class RestrictArmor extends CraftPower implements Listener {
         ticksEMap.putIfAbsent(p, 0);
         if (getPowerArray().contains(p)) {
             for (LayerContainer layer : CraftApoli.getLayers()) {
-                for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
+                for (PowerContainer power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                     if (power == null) continue;
                     if (power.getObjectOrDefault("interval", 1L) == null) {
                         Bukkit.getLogger().warning(LangConfig.getLocalizedString(p, "powers.errors.action_over_time"));
@@ -138,8 +118,8 @@ public class RestrictArmor extends CraftPower implements Listener {
             if (item != null) {
                 double armorValue = getArmorValue(item);
                 double compareValue = Double.parseDouble(comparisontoh);
-                if (compareValues(armorValue, comparisonh, compareValue)) {
-                    OriginPlayerUtils.moveEquipmentInventory(p, EquipmentSlot.HEAD);
+                if (Utils.compareValues(armorValue, comparisonh, compareValue)) {
+                    OriginPlayerAccessor.moveEquipmentInventory(p, EquipmentSlot.HEAD);
                 }
             }
         } else if (headObj.get("type").toString().equalsIgnoreCase("apoli:ingredient")) {
@@ -155,7 +135,7 @@ public class RestrictArmor extends CraftPower implements Listener {
                         item = itemValue;
                     }
                     if (p.getInventory().getHelmet().getType().equals(Material.valueOf(item.toUpperCase()))) {
-                        OriginPlayerUtils.moveEquipmentInventory(p, EquipmentSlot.HEAD);
+                        OriginPlayerAccessor.moveEquipmentInventory(p, EquipmentSlot.HEAD);
                     }
                 }
             }
@@ -169,8 +149,8 @@ public class RestrictArmor extends CraftPower implements Listener {
             if (item != null) {
                 double armorValue = getArmorValue(item);
                 double compareValue = Double.parseDouble(comparisontoc);
-                if (compareValues(armorValue, comparisonc, compareValue)) {
-                    OriginPlayerUtils.moveEquipmentInventory(p, EquipmentSlot.CHEST);
+                if (Utils.compareValues(armorValue, comparisonc, compareValue)) {
+                    OriginPlayerAccessor.moveEquipmentInventory(p, EquipmentSlot.CHEST);
                 }
             }
         } else if (chestObj.get("type").toString().equalsIgnoreCase("apoli:ingredient")) {
@@ -186,7 +166,7 @@ public class RestrictArmor extends CraftPower implements Listener {
                         item = itemValue;
                     }
                     if (p.getInventory().getChestplate().getType().equals(Material.valueOf(item.toUpperCase()))) {
-                        OriginPlayerUtils.moveEquipmentInventory(p, EquipmentSlot.CHEST);
+                        OriginPlayerAccessor.moveEquipmentInventory(p, EquipmentSlot.CHEST);
                     }
                 }
             }
@@ -200,8 +180,8 @@ public class RestrictArmor extends CraftPower implements Listener {
             if (item != null) {
                 double armorValue = getArmorValue(item);
                 double compareValue = Double.parseDouble(comparisontol);
-                if (compareValues(armorValue, comparisonl, compareValue)) {
-                    OriginPlayerUtils.moveEquipmentInventory(p, EquipmentSlot.LEGS);
+                if (Utils.compareValues(armorValue, comparisonl, compareValue)) {
+                    OriginPlayerAccessor.moveEquipmentInventory(p, EquipmentSlot.LEGS);
                 }
             }
         } else if (legsObj.get("type").toString().equalsIgnoreCase("apoli:ingredient")) {
@@ -217,7 +197,7 @@ public class RestrictArmor extends CraftPower implements Listener {
                         item = itemValue;
                     }
                     if (p.getInventory().getLeggings().getType().equals(Material.valueOf(item.toUpperCase()))) {
-                        OriginPlayerUtils.moveEquipmentInventory(p, EquipmentSlot.LEGS);
+                        OriginPlayerAccessor.moveEquipmentInventory(p, EquipmentSlot.LEGS);
                     }
                 }
             }
@@ -231,8 +211,8 @@ public class RestrictArmor extends CraftPower implements Listener {
             if (item != null) {
                 double armorValue = getArmorValue(item);
                 double compareValue = Double.parseDouble(comparisontof);
-                if (compareValues(armorValue, comparisonf, compareValue)) {
-                    OriginPlayerUtils.moveEquipmentInventory(p, EquipmentSlot.FEET);
+                if (Utils.compareValues(armorValue, comparisonf, compareValue)) {
+                    OriginPlayerAccessor.moveEquipmentInventory(p, EquipmentSlot.FEET);
                 }
             }
         } else if (feetObj.get("type").toString().equalsIgnoreCase("apoli:ingredient")) {
@@ -248,7 +228,7 @@ public class RestrictArmor extends CraftPower implements Listener {
                         item = itemValue;
                     }
                     if (p.getInventory().getBoots().getType().equals(Material.valueOf(item.toUpperCase()))) {
-                        OriginPlayerUtils.moveEquipmentInventory(p, EquipmentSlot.FEET);
+                        OriginPlayerAccessor.moveEquipmentInventory(p, EquipmentSlot.FEET);
                     }
                 }
             }

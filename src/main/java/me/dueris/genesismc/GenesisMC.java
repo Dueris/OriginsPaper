@@ -15,7 +15,7 @@ import me.dueris.genesismc.content.enchantment.EnchantTableHandler;
 import me.dueris.genesismc.content.enchantment.generation.StructureGeneration;
 import me.dueris.genesismc.content.enchantment.generation.VillagerTradeHook;
 import me.dueris.genesismc.factory.CraftApoli;
-import me.dueris.genesismc.factory.TagRegistry;
+import me.dueris.genesismc.factory.TagRegistryParser;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.conditions.CraftCondition;
 import me.dueris.genesismc.factory.conditions.biEntity.BiEntityCondition;
@@ -32,19 +32,19 @@ import me.dueris.genesismc.factory.powers.apoli.RecipePower;
 import me.dueris.genesismc.factory.powers.apoli.WaterBreathe;
 import me.dueris.genesismc.factory.powers.apoli.provider.origins.BounceSlimeBlock;
 import me.dueris.genesismc.factory.powers.apoli.provider.origins.MimicWarden;
-import me.dueris.genesismc.integration.PlaceholderApiExtension;
+import me.dueris.genesismc.integration.PlaceHolderAPI;
 import me.dueris.genesismc.util.LogoutBugWorkaround;
 import me.dueris.genesismc.util.Metrics;
 import me.dueris.genesismc.util.PlayerManager;
 import me.dueris.genesismc.util.entity.InventorySerializer;
-import me.dueris.genesismc.util.entity.OriginPlayerUtils;
+import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import me.dueris.genesismc.registry.OriginContainer;
 import me.dueris.genesismc.screen.GuiTicker;
 import me.dueris.genesismc.screen.OriginChoosing;
 import me.dueris.genesismc.screen.ScreenNavigator;
-import me.dueris.genesismc.storage.GenesisDataFiles;
+import me.dueris.genesismc.storage.GenesisConfigs;
 import me.dueris.genesismc.storage.OriginDataContainer;
-import me.dueris.genesismc.storage.nbt.FixerUpper;
+import me.dueris.genesismc.storage.nbt.NBTFixerUpper;
 import me.dueris.genesismc.util.CooldownUtils;
 import me.dueris.genesismc.util.KeybindingUtils;
 import me.dueris.genesismc.util.LangConfig;
@@ -79,8 +79,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 
-import static me.dueris.genesismc.util.BukkitColour.AQUA;
-import static me.dueris.genesismc.util.BukkitColour.RED;
+import static me.dueris.genesismc.util.ColorConstants.AQUA;
+import static me.dueris.genesismc.util.ColorConstants.RED;
 
 public final class GenesisMC extends JavaPlugin implements Listener {
     public static final boolean isFolia = classExists("io.papermc.paper.threadedregions.RegionizedServer");
@@ -92,7 +92,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
     public static ConditionExecutor conditionExecutor;
     public static String apoliVersion = "1.12.4";
     public static boolean placeholderapi = false;
-    public static File playerDataFolder = MinecraftServer.getServer().playerDataStorage.getPlayerDir();
+    public static File playerDataFolder;
     public static boolean debugOrigins = false;
     public static boolean forceUseCurrentVersion = false;
     public static boolean forceWatchdogStop = true;
@@ -101,10 +101,11 @@ public final class GenesisMC extends JavaPlugin implements Listener {
     public static String version = Bukkit.getVersion().split("\\(MC: ")[1].replace(")", "");
     public static boolean isCompatible = false;
     public static String pluginVersion = "v0.2.7";
-    public static String world_container = MinecraftServer.getServer().options.asMap().toString().split(", \\[W, universe, world-container, world-dir]=\\[")[1].split("], ")[0];
+    public static String world_container;
     public static ExecutorService loaderThreadPool;
     public static ArrayList<String> versions = new ArrayList<>();
     private static GenesisMC plugin;
+    public static MinecraftServer server;
 
     static {
         tool = EnumSet.of(Material.DIAMOND_AXE, Material.DIAMOND_HOE, Material.DIAMOND_PICKAXE, Material.DIAMOND_SHOVEL, Material.DIAMOND_SWORD, Material.GOLDEN_AXE, Material.GOLDEN_HOE, Material.GOLDEN_PICKAXE, Material.GOLDEN_SHOVEL, Material.GOLDEN_SWORD, Material.NETHERITE_AXE, Material.NETHERITE_HOE, Material.NETHERITE_PICKAXE, Material.NETHERITE_SHOVEL, Material.NETHERITE_SWORD, Material.IRON_AXE, Material.IRON_HOE, Material.IRON_PICKAXE, Material.IRON_SHOVEL, Material.IRON_SWORD, Material.WOODEN_AXE, Material.WOODEN_HOE, Material.WOODEN_PICKAXE, Material.WOODEN_SHOVEL, Material.WOODEN_SWORD, Material.SHEARS);
@@ -148,9 +149,9 @@ public final class GenesisMC extends JavaPlugin implements Listener {
                 }
             }.runTaskLater(GenesisMC.getPlugin(), 5L);
             OriginDataContainer.loadData();
-            OriginPlayerUtils.setupPowers(p);
+            OriginPlayerAccessor.setupPowers(p);
             PlayerManager.originValidCheck(p);
-            OriginPlayerUtils.assignPowers(p);
+            OriginPlayerAccessor.assignPowers(p);
             if (p.isOp())
                 p.sendMessage(Component.text(LangConfig.getLocalizedString(Bukkit.getConsoleSender(), "reloadMessage")).color(TextColor.fromHexString(AQUA)));
         }
@@ -201,10 +202,15 @@ public final class GenesisMC extends JavaPlugin implements Listener {
     public void onEnable() {
         plugin = this;
         metrics = new Metrics(this, 18536);
-        GenesisDataFiles.loadLangConfig();
-        GenesisDataFiles.loadMainConfig();
-        GenesisDataFiles.loadOrbConfig();
-        forceWatchdogStop = GenesisDataFiles.getMainConfig().getBoolean("disable-watchdog");
+        GenesisMC.server = ((CraftServer) Bukkit.getServer()).getServer();
+        world_container = server.options.asMap().toString().split(", \\[W, universe, world-container, world-dir]=\\[")[1].split("], ")[0];
+        playerDataFolder = server.playerDataStorage.getPlayerDir();
+        GenesisConfigs.loadLangConfig();
+        GenesisConfigs.loadMainConfig();
+        GenesisConfigs.loadOrbConfig();
+        GenesisMC.disableRender = GenesisConfigs.getMainConfig().getBoolean("disable-render-power");
+        GenesisMC.fixPaperExploits = GenesisConfigs.getMainConfig().getBoolean("modify-configs-to-fix-bugs");
+        forceWatchdogStop = GenesisConfigs.getMainConfig().getBoolean("disable-watchdog");
         isCompatible = (!isFolia && (isExpandedScheduler));
         if (!isCompatible) {
             if (forceUseCurrentVersion) return;
@@ -231,29 +237,19 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         CraftApoli.setupDynamicThreadCount();
         ThreadFactory threadFactory = new NamedThreadFactory("OriginParsingPool");
         loaderThreadPool = Executors.newFixedThreadPool(CraftApoli.getDynamicThreadCount(), threadFactory);
-        debugOrigins = getOrDefault(GenesisDataFiles.getMainConfig().getBoolean("console-startup-debug") /* add arg compat in future version */, false);
+        debugOrigins = getOrDefault(GenesisConfigs.getMainConfig().getBoolean("console-startup-debug") /* add arg compat in future version */, false);
         if (LangConfig.getLangFile() == null) {
             Bukkit.getLogger().severe("Unable to start GenesisMC due to lang not being loaded properly");
             Bukkit.getServer().getPluginManager().disablePlugin(this);
         }
         placeholderapi = Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null;
         if (placeholderapi) {
-            new PlaceholderApiExtension(this).register();
+            new PlaceHolderAPI(this).register();
         }
 
         if (!getTmpFolder().exists()) {
             getTmpFolder().mkdirs();
         }
-
-        GenesisMC.disableRender = GenesisDataFiles.getMainConfig().getBoolean("disable-render-power");
-        GenesisMC.fixPaperExploits = GenesisDataFiles.getMainConfig().getBoolean("modify-configs-to-fix-bugs");
-        if (fixPaperExploits) {
-            File globalDefault = Paths.get("config" + File.separator + "paper-world-defaults.yml").toFile();
-            YamlConfiguration yamlConfig = YamlConfiguration.loadConfiguration(globalDefault);
-            yamlConfig.set("fixes.disable-unloaded-chunk-enderpearl-exploit", false);
-        }
-        MinecraftServer server = ((CraftServer) Bukkit.getServer()).getServer();
-        server.paperConfigurations.reloadConfigs(server);
 
         OriginDataContainer.loadData();
         // Pre-load condition types to prevent constant calling
@@ -272,17 +268,6 @@ public final class GenesisMC extends JavaPlugin implements Listener {
             e.printStackTrace();
         }
 
-        // Register builtin powers
-        Method registerMethod;
-        try {
-            registerMethod = CraftPower.class.getDeclaredMethod("registerBuiltinPowers");
-            registerMethod.setAccessible(true);
-            registerMethod.invoke(null);
-        } catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException |
-                 InvocationTargetException e) {
-            e.printStackTrace();
-        }
-
         if(Bukkit.getPluginManager().isPluginEnabled("SkinsRestorer")){
             try {
                 CraftPower.registerNewPower(ModelColor.ModelTransformer.class);
@@ -298,9 +283,9 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         WaterProtBook.init();
         start();
         patchPowers();
-        TagRegistry.runParse();
+        TagRegistryParser.runParse();
         try {
-            FixerUpper.runFixerUpper();
+            NBTFixerUpper.runFixerUpper();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -398,8 +383,8 @@ public final class GenesisMC extends JavaPlugin implements Listener {
     public void onDisable() {
         OriginDataContainer.unloadAllData();
         CraftApoli.unloadData();
-        OriginPlayerUtils.playerPowerMapping.clear();
-        OriginPlayerUtils.powersAppliedList.clear();
+        OriginPlayerAccessor.playerPowerMapping.clear();
+        OriginPlayerAccessor.powersAppliedList.clear();
         RecipePower.recipeMapping.clear();
         RecipePower.tags.clear();
         CraftPower.getRegistry().clear();
@@ -442,13 +427,13 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         OriginDataContainer.unloadAllData();
         onDisable();
 
-        GenesisDataFiles.loadLangConfig();
-        GenesisDataFiles.loadMainConfig();
-        GenesisDataFiles.loadOrbConfig();
+        GenesisConfigs.loadLangConfig();
+        GenesisConfigs.loadMainConfig();
+        GenesisConfigs.loadOrbConfig();
         CraftApoli.setupDynamicThreadCount();
         ThreadFactory threadFactory = new NamedThreadFactory("OriginParsingPool");
         loaderThreadPool = Executors.newFixedThreadPool(CraftApoli.getDynamicThreadCount(), threadFactory);
-        debugOrigins = getOrDefault(GenesisDataFiles.getMainConfig().getBoolean("console-startup-debug") /* add arg compat in future version */, false);
+        debugOrigins = getOrDefault(GenesisConfigs.getMainConfig().getBoolean("console-startup-debug") /* add arg compat in future version */, false);
         if (LangConfig.getLangFile() == null) {
             Bukkit.getLogger().severe("Unable to start GenesisMC due to lang not being loaded properly");
             Bukkit.getServer().getPluginManager().disablePlugin(this);
@@ -501,9 +486,9 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         EntityGroupManager.INSTANCE.startTick();
 
         patchPowers();
-        TagRegistry.runParse();
+        TagRegistryParser.runParse();
         try {
-            FixerUpper.runFixerUpper();
+            NBTFixerUpper.runFixerUpper();
         } catch (Exception ee) {
             ee.printStackTrace();
         }

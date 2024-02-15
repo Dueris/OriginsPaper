@@ -1,7 +1,7 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
 import me.dueris.genesismc.GenesisMC;
-import me.dueris.genesismc.util.entity.OriginPlayerUtils;
+import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.actions.Actions;
 import me.dueris.genesismc.factory.powers.CraftPower;
@@ -32,7 +32,7 @@ public class AttackerActionWhenHit extends CraftPower implements Listener {
         if (!getPowerArray().contains(actor)) return;
 
         for (LayerContainer layer : CraftApoli.getLayers()) {
-            for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(player, getPowerFile(), layer)) {
+            for (PowerContainer power : OriginPlayerAccessor.getMultiPowerFileFromType(player, getPowerFile(), layer)) {
                 if (power == null) continue;
 
                 setActive(player, power.getTag(), true);

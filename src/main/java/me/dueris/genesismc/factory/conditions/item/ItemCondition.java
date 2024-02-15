@@ -2,7 +2,7 @@ package me.dueris.genesismc.factory.conditions.item;
 
 import com.mojang.brigadier.StringReader;
 import me.dueris.genesismc.content.enchantment.EnchantTableHandler;
-import me.dueris.genesismc.factory.TagRegistry;
+import me.dueris.genesismc.factory.TagRegistryParser;
 import me.dueris.genesismc.factory.conditions.Condition;
 import me.dueris.genesismc.factory.powers.apoli.RestrictArmor;
 import me.dueris.genesismc.content.OrbOfOrigins;
@@ -175,10 +175,10 @@ public class ItemCondition implements Condition {
                         return getResult(inverted, Optional.of(itemStack.getType().equals(Material.valueOf(item.toUpperCase()))));
                     } else if (ingredientMap.containsKey("tag")) {
                         try {
-                            if (TagRegistry.getRegisteredTagFromFileKey(ingredientMap.get("tag").toString()) != null) {
+                            if (TagRegistryParser.getRegisteredTagFromFileKey(ingredientMap.get("tag").toString()) != null) {
                                 if (!entityTagMappings.containsKey(ingredientMap.get("tag"))) {
                                     entityTagMappings.put(ingredientMap.get("tag").toString(), new ArrayList<>());
-                                    for (String mat : TagRegistry.getRegisteredTagFromFileKey(ingredientMap.get("tag").toString())) {
+                                    for (String mat : TagRegistryParser.getRegisteredTagFromFileKey(ingredientMap.get("tag").toString())) {
                                         entityTagMappings.get(ingredientMap.get("tag")).add(Material.valueOf(mat.split(":")[1].toUpperCase()));
                                     }
                                 } else {
@@ -214,19 +214,19 @@ public class ItemCondition implements Condition {
                 String comparison = condition.get("comparison").toString();
                 double compareTo = Double.parseDouble(condition.get("compare_to").toString());
                 int amt = itemStack.getAmount();
-                return getResult(inverted, Optional.of(RestrictArmor.compareValues(amt, comparison, compareTo)));
+                return getResult(inverted, Optional.of(Utils.compareValues(amt, comparison, compareTo)));
             }
             case "apoli:armor_value" -> {
                 String comparison = condition.get("comparison").toString();
                 double compareTo = Double.parseDouble(condition.get("compare_to").toString());
                 double amt = ArmorUtils.getArmorValue(itemStack);
-                return getResult(inverted, Optional.of(RestrictArmor.compareValues(amt, comparison, compareTo)));
+                return getResult(inverted, Optional.of(Utils.compareValues(amt, comparison, compareTo)));
             }
             case "apoli:durability" -> {
                 String comparison = condition.get("comparison").toString();
                 double compareTo = Double.parseDouble(condition.get("compare_to").toString());
                 double amt = itemStack.getDurability();
-                return getResult(inverted, Optional.of(RestrictArmor.compareValues(amt, comparison, compareTo)));
+                return getResult(inverted, Optional.of(Utils.compareValues(amt, comparison, compareTo)));
             }
             case "apoli:empty" -> {
                 return getResult(inverted, Optional.of(itemStack.getType().isAir()));
@@ -240,7 +240,7 @@ public class ItemCondition implements Condition {
                 for (Enchantment enchantment : itemStack.getEnchantments().keySet()) {
                     if (enchantment.getName().equalsIgnoreCase(String.valueOf(condition.getOrDefault("enchantment", enchantment.getName())))) {
                         int amt = itemStack.getEnchantments().get(enchantment);
-                        return getResult(inverted, Optional.of(RestrictArmor.compareValues(amt, comparison, compareTo)));
+                        return getResult(inverted, Optional.of(Utils.compareValues(amt, comparison, compareTo)));
                     }
                 }
                 return getResult(inverted, Optional.of(false));
@@ -258,7 +258,7 @@ public class ItemCondition implements Condition {
                 String comparison = condition.get("comparison").toString();
                 double compareTo = Double.parseDouble(condition.get("compare_to").toString());
                 double amt = itemStack.getDurability() / itemStack.getType().getMaxDurability();
-                return getResult(inverted, Optional.of(RestrictArmor.compareValues(amt, comparison, compareTo)));
+                return getResult(inverted, Optional.of(Utils.compareValues(amt, comparison, compareTo)));
             }
             case "apoli:smeltable" -> {
                 return getResult(inverted, Optional.of(itemStack.getType().isFuel()));

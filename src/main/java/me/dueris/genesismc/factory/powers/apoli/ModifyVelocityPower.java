@@ -1,7 +1,7 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
 import me.dueris.genesismc.GenesisMC;
-import me.dueris.genesismc.util.entity.OriginPlayerUtils;
+import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.factory.powers.apoli.superclass.ValueModifyingSuperClass;
@@ -33,7 +33,7 @@ public class ModifyVelocityPower extends CraftPower implements Listener {
         if (getPowerArray().contains(e.getPlayer())) {
             Player p = e.getPlayer();
             for (LayerContainer layer : CraftApoli.getLayers()) {
-                for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
+                for (PowerContainer power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                     List<String> identifiers = power.getJsonArray("axes");
                     if (identifiers.isEmpty()) {
                         identifiers.add("x");

@@ -3,6 +3,7 @@ package me.dueris.genesismc.factory.conditions.biEntity;
 import me.dueris.genesismc.factory.conditions.Condition;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.apoli.RestrictArmor;
+import me.dueris.genesismc.util.Utils;
 import me.dueris.genesismc.factory.powers.apoli.EntitySetPower;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.NeutralMob;
@@ -76,7 +77,7 @@ public class BiEntityCondition implements Condition, Listener {
                 @NotNull Vector targetVector = target.getLocation().toVector();
                 String comparison = condition.get("comparison").toString();
                 double compare_to = Double.parseDouble(condition.get("compare_to").toString());
-                return getResult(inverted, Optional.of(RestrictArmor.compareValues(actorVector.distance(targetVector), comparison, compare_to)));
+                return getResult(inverted, Optional.of(Utils.compareValues(actorVector.distance(targetVector), comparison, compare_to)));
             }
             case "apoli:in_set" -> {
                 if (actor == null || target == null) {

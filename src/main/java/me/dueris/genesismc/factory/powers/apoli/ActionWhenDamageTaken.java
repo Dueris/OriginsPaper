@@ -1,7 +1,7 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
 import me.dueris.genesismc.GenesisMC;
-import me.dueris.genesismc.util.entity.OriginPlayerUtils;
+import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.actions.Actions;
 import me.dueris.genesismc.factory.powers.CraftPower;
@@ -29,7 +29,7 @@ public class ActionWhenDamageTaken extends CraftPower implements Listener {
         Entity actor = e.getEntity();
         if (!(actor instanceof Player player)) return;
         for (LayerContainer layer : CraftApoli.getLayers()) {
-            for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(player, getPowerFile(), layer)) {
+            for (PowerContainer power : OriginPlayerAccessor.getMultiPowerFileFromType(player, getPowerFile(), layer)) {
                 if (power == null) continue;
                 if (GenesisMC.getConditionExecutor().check("damage_condition", "damage_conditions", player, power, getPowerFile(), player, null, player.getLocation().getBlock(), null, null, e)) {
                     if (GenesisMC.getConditionExecutor().check("condition", "conditions", player, power, getPowerFile(), player, null, player.getLocation().getBlock(), null, null, e)) {

@@ -6,7 +6,8 @@ import org.bukkit.entity.Player;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class MultiplePower extends CraftPower { // Makes a placeholder so when getting this powerType from registry it doesnt throw
+// Makes a placeholder so when getting this powerType from registry it doesnt throw
+public class MultiplePower extends CraftPower {
     @Override
     public void run(Player p) {
 

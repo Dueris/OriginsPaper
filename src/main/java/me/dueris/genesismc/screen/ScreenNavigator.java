@@ -6,7 +6,7 @@ import me.dueris.genesismc.registry.OriginContainer;
 import me.dueris.genesismc.registry.PowerContainer;
 import me.dueris.genesismc.util.ChatFormatter;
 import me.dueris.genesismc.util.LangConfig;
-import me.dueris.genesismc.util.entity.OriginPlayerUtils;
+import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import net.kyori.adventure.text.Component;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
@@ -73,7 +73,7 @@ public class ScreenNavigator implements Listener {
                 if (e.getCurrentItem().getType().equals(Material.BARRIER)) {
                     Player p = (Player) e.getWhoClicked();
                     p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 10, 2);
-                    if (OriginPlayerUtils.hasOrigin(p, "genesis:origin-null"))
+                    if (OriginPlayerAccessor.hasOrigin(p, "genesis:origin-null"))
                         p.kick(Component.text(LangConfig.getLocalizedString(p, "misc.requiredChoose")));
                     e.getWhoClicked().closeInventory();
                 } else {

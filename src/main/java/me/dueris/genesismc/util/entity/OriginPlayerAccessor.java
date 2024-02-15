@@ -5,12 +5,12 @@ import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.event.PowerUpdateEvent;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.factory.powers.apoli.Gravity;
+import me.dueris.genesismc.factory.powers.apoli.GravityPower;
 import me.dueris.genesismc.factory.powers.apoli.provider.OriginSimpleContainer;
 import me.dueris.genesismc.registry.LayerContainer;
 import me.dueris.genesismc.registry.OriginContainer;
 import me.dueris.genesismc.registry.PowerContainer;
-import me.dueris.genesismc.storage.GenesisDataFiles;
+import me.dueris.genesismc.storage.GenesisConfigs;
 import me.dueris.genesismc.storage.OriginDataContainer;
 import me.dueris.genesismc.util.SendCharts;
 import me.dueris.genesismc.util.enums.OriginDataType;
@@ -32,7 +32,7 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
-public class OriginPlayerUtils {
+public class OriginPlayerAccessor {
 
     // Power maps of every power based on each layer applied to the player
     public static HashMap<Player, HashMap<LayerContainer, ArrayList<PowerContainer>>> playerPowerMapping = new HashMap<>();
@@ -140,7 +140,7 @@ public class OriginPlayerUtils {
     }
 
     public static boolean hasCoreOrigin(Player player, LayerContainer layer) {
-        String originTag = OriginPlayerUtils.getOrigin(player, layer).getTag();
+        String originTag = OriginPlayerAccessor.getOrigin(player, layer).getTag();
         if (originTag.contains("origins:human")) {
             return true;
         } else if (originTag.contains("origins:enderian")) {
@@ -218,7 +218,7 @@ public class OriginPlayerUtils {
                 try {
                     assignPowers(player, layer);
                     // Extra precaution due to gravity messing up on origin switch
-                    Gravity g = new Gravity();
+                    GravityPower g = new GravityPower();
                     g.run(player);
                 } catch (InstantiationException e) {
                     throw new RuntimeException(e);
@@ -329,7 +329,7 @@ public class OriginPlayerUtils {
                                 } else {
                                     powersAppliedList.get(player).add(c);
                                 }
-                                if (GenesisDataFiles.getMainConfig().getString("console-startup-debug").equalsIgnoreCase("true")) {
+                                if (GenesisConfigs.getMainConfig().getString("console-startup-debug").equalsIgnoreCase("true")) {
                                     Bukkit.getConsoleSender().sendMessage(ChatColor.GREEN + "Assigned builtinImpl power[" + power.getTag() + "] to player " + player.getName());
                                 }
                                 powersToExecute.add(power);
@@ -353,7 +353,7 @@ public class OriginPlayerUtils {
                                 } else {
                                     powersAppliedList.get(player).add(c);
                                 }
-                                if (GenesisDataFiles.getMainConfig().getString("console-startup-debug").equalsIgnoreCase("true")) {
+                                if (GenesisConfigs.getMainConfig().getString("console-startup-debug").equalsIgnoreCase("true")) {
                                     Bukkit.getConsoleSender().sendMessage(ChatColor.GREEN + "Assigned power[" + power.getTag() + "] to player " + player.getName());
                                 }
                                 powersToExecute.add(power);
@@ -404,7 +404,7 @@ public class OriginPlayerUtils {
                             field.setAccessible(true);
                             if (power.getTag().equalsIgnoreCase(((NamespacedKey) field.get(craftPower)).asString())) {
                                 craftPower.getPowerArray().remove(player);
-                                if (GenesisDataFiles.getMainConfig().getString("console-startup-debug").equalsIgnoreCase("true")) {
+                                if (GenesisConfigs.getMainConfig().getString("console-startup-debug").equalsIgnoreCase("true")) {
                                     Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "Removed builtinImpl power[" + power.getTag() + "] from player " + player.getName());
                                 }
                                 powersToExecute.add(power);
@@ -422,7 +422,7 @@ public class OriginPlayerUtils {
                             CraftPower craftPower = c.newInstance();
                             if (craftPower != null) {
                                 craftPower.getPowerArray().remove(player);
-                                if (GenesisDataFiles.getMainConfig().getString("console-startup-debug").equalsIgnoreCase("true")) {
+                                if (GenesisConfigs.getMainConfig().getString("console-startup-debug").equalsIgnoreCase("true")) {
                                     Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "Removed power[" + power.getTag() + "] from player " + player.getName());
                                 }
                                 powersToExecute.add(power);

@@ -13,7 +13,7 @@ import me.dueris.genesismc.util.CooldownUtils;
 import me.dueris.genesismc.util.KeybindingUtils;
 import me.dueris.genesismc.util.Utils;
 import me.dueris.genesismc.util.console.OriginConsoleSender;
-import me.dueris.genesismc.util.entity.OriginPlayerUtils;
+import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.Entity.RemovalReason;
@@ -61,7 +61,7 @@ public class FireProjectile extends CraftPower implements Listener {
         Player p = e.getPlayer();
         for (LayerContainer layer : CraftApoli.getLayers()) {
             if (fire_projectile.contains(p)) {
-                for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
+                for (PowerContainer power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                     if (isKeyBeingPressed(e.getPlayer(), power.get("key").getOrDefault("key", "key.origins.primary_active").toString(), true)) {
                         if (in_continuous.contains(p)) {
                             in_continuous.remove(p);
@@ -92,7 +92,7 @@ public class FireProjectile extends CraftPower implements Listener {
         if (doubleFirePatch.contains(p)) return;
         if (!peopladf.contains(p)) {
             for (LayerContainer layer : CraftApoli.getLayers()) {
-                for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
+                for (PowerContainer power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                     if (power != null) {
                         if (fire_projectile.contains(p)) {
                             ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();

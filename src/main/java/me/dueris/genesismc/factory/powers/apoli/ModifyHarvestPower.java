@@ -1,6 +1,6 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
-import me.dueris.genesismc.util.entity.OriginPlayerUtils;
+import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
@@ -42,7 +42,7 @@ public class ModifyHarvestPower extends CraftPower implements Listener {
             try {
                 for (LayerContainer layer : CraftApoli.getLayers()) {
                     ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
-                    for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
+                    for (PowerContainer power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                         if (conditionExecutor.check("block_condition", "block_conditions", p, power, "apoli:modify_harvest", p, null, e.getBlock(), null, p.getItemInHand(), null)) {
                             e.setDropItems(false);
                             setActive(p, power.getTag(), true);

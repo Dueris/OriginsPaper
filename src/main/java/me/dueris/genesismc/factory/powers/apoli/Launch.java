@@ -10,7 +10,7 @@ import me.dueris.genesismc.registry.PowerContainer;
 import me.dueris.genesismc.util.CooldownUtils;
 import me.dueris.genesismc.util.KeybindingUtils;
 import me.dueris.genesismc.util.Utils;
-import me.dueris.genesismc.util.entity.OriginPlayerUtils;
+import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Particle;
@@ -51,7 +51,7 @@ public class Launch extends CraftPower implements Listener {
         if (launch_into_air.contains(e.getPlayer())) {
             for (LayerContainer layer : CraftApoli.getLayers()) {
                 ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
-                for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
+                for (PowerContainer power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                     if (conditionExecutor.check("condition", "conditions", p, power, "apoli:launch", p, null, null, null, p.getItemInHand(), null)) {
                         if (!CooldownUtils.isPlayerInCooldown(p, power.get("key").getOrDefault("key", "key.origins.primary_active").toString())) {
                             if (isKeyBeingPressed(e.getPlayer(), power.get("key").getOrDefault("key", "key.origins.primary_active").toString(), true)) {

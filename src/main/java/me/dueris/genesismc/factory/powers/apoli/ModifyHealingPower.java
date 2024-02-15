@@ -1,6 +1,6 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
-import me.dueris.genesismc.util.entity.OriginPlayerUtils;
+import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
@@ -40,7 +40,7 @@ public class ModifyHealingPower extends CraftPower implements Listener {
         if (e.getEntity() instanceof Player p) {
             if (!modify_healing.contains(p)) return;
             for (LayerContainer layer : CraftApoli.getLayers()) {
-                for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
+                for (PowerContainer power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                     for (HashMap<String, Object> modifier : power.getPossibleModifiers("modifier", "modifiers")) {
                         Float value = Float.valueOf(modifier.get("value").toString());
                         String operation = modifier.get("operation").toString();

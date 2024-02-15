@@ -2,7 +2,7 @@ package me.dueris.genesismc.content;
 
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.powers.apoli.RecipePower;
-import me.dueris.genesismc.storage.GenesisDataFiles;
+import me.dueris.genesismc.storage.GenesisConfigs;
 import me.dueris.genesismc.util.LangConfig;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -14,7 +14,7 @@ import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.tags.ItemTagType;
 
-import static me.dueris.genesismc.storage.GenesisDataFiles.getOrbCon;
+import static me.dueris.genesismc.storage.GenesisConfigs.getOrbCon;
 
 public class OrbOfOrigins {
 
@@ -42,7 +42,7 @@ public class OrbOfOrigins {
 
         try {
             //Shaped Recipe for ORB_OF_ORIGINS
-            if (GenesisDataFiles.getMainConfig().getString("orb-of-origins").equalsIgnoreCase("true")) {
+            if (GenesisConfigs.getMainConfig().getString("orb-of-origins").equalsIgnoreCase("true")) {
                 ShapedRecipe sr = new ShapedRecipe(new NamespacedKey("origins", "orb_of_origins"), item);
                 sr.shape("123",
                         "456",

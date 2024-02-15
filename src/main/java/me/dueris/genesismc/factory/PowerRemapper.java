@@ -8,7 +8,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.util.HashMap;
 
-public class Remapper {
+public class PowerRemapper {
     public static JSONObject createRemapped(File file) {
         try {
             JSONObject powerParser = (JSONObject) new JSONParser().parse(new FileReader(file));

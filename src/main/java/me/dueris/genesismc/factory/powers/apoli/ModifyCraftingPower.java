@@ -1,31 +1,22 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
-import me.dueris.genesismc.util.entity.OriginPlayerUtils;
+import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.actions.Actions;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
-import me.dueris.genesismc.factory.conditions.item.ItemCondition;
 import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.factory.powers.apoli.RecipePower;
-import me.dueris.genesismc.util.ErrorSystem;
 import me.dueris.genesismc.registry.LayerContainer;
 import me.dueris.genesismc.registry.PowerContainer;
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.PrepareItemCraftEvent;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.Recipe;
-import org.bukkit.inventory.ShapedRecipe;
-import org.bukkit.inventory.ShapelessRecipe;
+
+import static me.dueris.genesismc.factory.powers.apoli.superclass.ValueModifyingSuperClass.modify_crafting;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Optional;
-
-import static me.dueris.genesismc.factory.powers.apoli.superclass.ValueModifyingSuperClass.modify_crafting;
 
 public class ModifyCraftingPower extends CraftPower implements Listener {
 
@@ -56,7 +47,7 @@ public class ModifyCraftingPower extends CraftPower implements Listener {
             if (e.getInventory().getResult() == null) return;
             for (LayerContainer layer : CraftApoli.getLayers()) {
                 ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
-                for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
+                for (PowerContainer power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                     if (conditionExecutor.check("condition", "condition", p, power, "apoli:modify_crafting", p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
 //                        if (conditionExecutor.check("item_condition", "item_condition", p, power, "apoli:modify_crafting", p, null, p.getLocation().getBlock(), null, e.getInventory().getResult(), null)) {
                             String currKey = RecipePower.computeTag(e.getRecipe());

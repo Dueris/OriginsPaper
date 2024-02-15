@@ -1,11 +1,10 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
-import me.dueris.genesismc.util.entity.OriginPlayerUtils;
+import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.factory.powers.apoli.superclass.ValueModifyingSuperClass;
-import me.dueris.genesismc.util.ErrorSystem;
 import me.dueris.genesismc.registry.LayerContainer;
 import me.dueris.genesismc.registry.PowerContainer;
 import org.bukkit.entity.Player;
@@ -49,7 +48,7 @@ public class ModifyExperienceGainPower extends CraftPower implements Listener {
                 ValueModifyingSuperClass valueModifyingSuperClass = new ValueModifyingSuperClass();
                 try {
                     ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
-                    for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
+                    for (PowerContainer power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                         if (conditionExecutor.check("condition", "conditions", p, power, "apoli:modify_xp_gain", p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
                             for (HashMap<String, Object> modifier : power.getJsonListSingularPlural("modifier", "modifiers")) {
                                 Float value = Float.valueOf(modifier.get("value").toString());
@@ -72,8 +71,6 @@ public class ModifyExperienceGainPower extends CraftPower implements Listener {
                         }
                     }
                 } catch (Exception ev) {
-                    ErrorSystem errorSystem = new ErrorSystem();
-                    errorSystem.throwError("idk what errrored lol", "apoli:modify_xp_gain", p, layer);
                     ev.printStackTrace();
                 }
             }

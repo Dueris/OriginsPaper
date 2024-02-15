@@ -8,9 +8,9 @@ import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.registry.LayerContainer;
 import me.dueris.genesismc.registry.PowerContainer;
-import me.dueris.genesismc.util.BukkitColour;
+import me.dueris.genesismc.util.ColorConstants;
 import me.dueris.genesismc.util.CooldownUtils;
-import me.dueris.genesismc.util.entity.OriginPlayerUtils;
+import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.Bukkit;
@@ -52,7 +52,7 @@ public class Inventory extends CraftPower implements CommandExecutor, Listener {
     public void MoveBackChange(OriginChangeEvent e) {
         Player p = e.getPlayer();
         for (LayerContainer layer : CraftApoli.getLayers()) {
-            for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
+            for (PowerContainer power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                 new BukkitRunnable() {
                     @Override
                     public void run() {
@@ -91,7 +91,7 @@ public class Inventory extends CraftPower implements CommandExecutor, Listener {
         for (LayerContainer layer : CraftApoli.getLayers()) {
             if (getPowerArray().contains(e.getPlayer())) {
                 ConditionExecutor executor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
-                for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(e.getPlayer(), getPowerFile(), layer)) {
+                for (PowerContainer power : OriginPlayerAccessor.getMultiPowerFileFromType(e.getPlayer(), getPowerFile(), layer)) {
                     if (CooldownUtils.isPlayerInCooldown(e.getPlayer(), e.getKey())) return;
                     if (executor.check("condition", "conditions", e.getPlayer(), power, getPowerFile(), e.getPlayer(), null, null, null, e.getPlayer().getItemInHand(), null)) {
                         setActive(e.getPlayer(), power.getTag(), true);
@@ -115,7 +115,7 @@ public class Inventory extends CraftPower implements CommandExecutor, Listener {
         for (LayerContainer layer : CraftApoli.getLayers()) {
             if (shulker_inventory.contains(e.getPlayer())) {
                 Player p = e.getPlayer();
-                for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
+                for (PowerContainer power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                     if (power.getBooleanOrDefault("drop_on_death", false)) {
                         ArrayList<ItemStack> vaultItems = InventoryUtils.getItems(p);
                         org.bukkit.inventory.Inventory vault = Bukkit.createInventory(p, InventoryType.CHEST, "origin.getPowerFileFromType(origins:inventory).get(title)");
@@ -167,7 +167,7 @@ public class Inventory extends CraftPower implements CommandExecutor, Listener {
                 vaultItems.stream().forEach(itemStack -> vault.addItem(itemStack));
                 p.openInventory(vault);
             } else {
-                p.sendMessage(Component.text("powers.inventoryOpenPower").color(TextColor.fromHexString(BukkitColour.RED)));
+                p.sendMessage(Component.text("powers.inventoryOpenPower").color(TextColor.fromHexString(ColorConstants.RED)));
             }
         }
 

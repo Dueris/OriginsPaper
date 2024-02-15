@@ -65,47 +65,47 @@ public class ConditionExecutor {
                 return getResult(invert, Optional.of(powers_active.get(p).getOrDefault(powerF, false))).get();
             }
         } else {
-            AtomicBoolean booleanOptional = null;
+            AtomicBoolean[] booleanOptional = {null};
 
-            if (booleanOptional == null && dmgevent != null) {
+            if (booleanOptional[0] == null && dmgevent != null) {
                 var check = damageCondition.check(subCondition, actor, target, block, fluid, itemStack, dmgevent);
-                booleanOptional = new AtomicBoolean(check.get());
+                check.ifPresent(val -> booleanOptional[0] = new AtomicBoolean(val));
             }
 
-            if (booleanOptional == null && actor != null) {
+            if (booleanOptional[0] == null && actor != null) {
                 var check = entityCondition.check(subCondition, actor, target, block, fluid, itemStack, dmgevent);
-                booleanOptional = new AtomicBoolean(check.get());
+                check.ifPresent(val -> booleanOptional[0] = new AtomicBoolean(val));
             }
 
-            if (booleanOptional == null && actor != null && target != null) {
+            if (booleanOptional[0] == null && actor != null && target != null) {
                 var check = biEntityCondition.check(subCondition, actor, target, block, fluid, itemStack, dmgevent);
-                booleanOptional = new AtomicBoolean(check.get());
+                check.ifPresent(val -> booleanOptional[0] = new AtomicBoolean(val));
             }
 
-            if (booleanOptional == null && block != null) {
+            if (booleanOptional[0] == null && block != null) {
                 var check = blockCondition.check(subCondition, actor, target, block, fluid, itemStack, dmgevent);
-                booleanOptional = new AtomicBoolean(check.get());
+                check.ifPresent(val -> booleanOptional[0] = new AtomicBoolean(val));
             }
 
-            if (booleanOptional == null && block != null) {
+            if (booleanOptional[0] == null && block != null) {
                 var check = biomeCondition.check(subCondition, actor, target, block, fluid, itemStack, dmgevent);
-                booleanOptional = new AtomicBoolean(check.get());
+                check.ifPresent(val -> booleanOptional[0] = new AtomicBoolean(val));
             }
 
-            if (booleanOptional == null && fluid != null) {
+            if (booleanOptional[0] == null && fluid != null) {
                 var check = fluidCondition.check(subCondition, actor, target, block, fluid, itemStack, dmgevent);
-                booleanOptional = new AtomicBoolean(check.get());
+                check.ifPresent(val -> booleanOptional[0] = new AtomicBoolean(val));
             }
 
-            if (booleanOptional == null && itemStack != null) {
+            if (booleanOptional[0] == null && itemStack != null) {
                 var check = itemCondition.check(subCondition, actor, target, block, fluid, itemStack, dmgevent);
-                booleanOptional = new AtomicBoolean(check.get());
+                check.ifPresent(val -> booleanOptional[0] = new AtomicBoolean(val));
             }
 
-            if (booleanOptional == null) {
+            if (booleanOptional[0] == null) {
                 return true;
             } else {
-                return booleanOptional.get();
+                return booleanOptional[0].get();
             }
         }
         return false;
@@ -177,51 +177,51 @@ public class ConditionExecutor {
                     return false;
                 }
             } else {
-                AtomicBoolean booleanOptional = null;
+                AtomicBoolean[] booleanOptional = {null};
 
-                if (booleanOptional == null && (singular.contains("entity_") || plural.contains("entity_") || plural.equals("conditions") || singular.equals("condition"))) {
+                if (booleanOptional[0] == null && (singular.contains("entity_") || plural.contains("entity_") || plural.equals("conditions") || singular.equals("condition"))) {
                     Optional<Boolean> bool = entity.check(condition, actor, target, block, fluid, itemStack, dmgevent);
-                    booleanOptional = new AtomicBoolean(bool.get());
+                    bool.ifPresent(val -> booleanOptional[0] = new AtomicBoolean(val));
                 }
-                if (booleanOptional == null && (singular.contains("bientity_") || plural.contains("bientity_") || plural.equals("conditions") || singular.equals("condition"))) {
+                if (booleanOptional[0] == null && (singular.contains("bientity_") || plural.contains("bientity_") || plural.equals("conditions") || singular.equals("condition"))) {
                     Optional<Boolean> bool = bientity.check(condition, actor, target, block, fluid, itemStack, dmgevent);
-                    booleanOptional = new AtomicBoolean(bool.get());
+                    bool.ifPresent(val -> booleanOptional[0] = new AtomicBoolean(val));
                 }
-                if (booleanOptional == null && (singular.contains("block_") || plural.contains("block_") || plural.equals("conditions") || singular.equals("condition"))) {
+                if (booleanOptional[0] == null && (singular.contains("block_") || plural.contains("block_") || plural.equals("conditions") || singular.equals("condition"))) {
                     Optional<Boolean> bool = blockCon.check(condition, actor, target, block, fluid, itemStack, dmgevent);
-                    booleanOptional = new AtomicBoolean(bool.get());
+                    bool.ifPresent(val -> booleanOptional[0] = new AtomicBoolean(val));
                 }
-                if (booleanOptional == null && (singular.contains("biome_") || plural.contains("biome_") || plural.equals("conditions") || singular.equals("condition"))) {
+                if (booleanOptional[0] == null && (singular.contains("biome_") || plural.contains("biome_") || plural.equals("conditions") || singular.equals("condition"))) {
                     Optional<Boolean> bool = biome.check(condition, actor, target, block, fluid, itemStack, dmgevent);
-                    booleanOptional = new AtomicBoolean(bool.get());
+                    bool.ifPresent(val -> booleanOptional[0] = new AtomicBoolean(val));
                 }
-                if (booleanOptional == null && (singular.contains("damage_") || plural.contains("damage_") || plural.equals("conditions") || singular.equals("condition"))) {
+                if (booleanOptional[0] == null && (singular.contains("damage_") || plural.contains("damage_") || plural.equals("conditions") || singular.equals("condition"))) {
                     Optional<Boolean> bool = damage.check(condition, actor, target, block, fluid, itemStack, dmgevent);
-                    booleanOptional = new AtomicBoolean(bool.get());
+                    bool.ifPresent(val -> booleanOptional[0] = new AtomicBoolean(val));
                 }
-                if (booleanOptional == null && (singular.contains("fluid_") || plural.contains("fluid_") || plural.equals("conditions") || singular.equals("condition"))) {
+                if (booleanOptional[0] == null && (singular.contains("fluid_") || plural.contains("fluid_") || plural.equals("conditions") || singular.equals("condition"))) {
                     Optional<Boolean> bool = fluidCon.check(condition, actor, target, block, fluid, itemStack, dmgevent);
-                    booleanOptional = new AtomicBoolean(bool.get());
+                    bool.ifPresent(val -> booleanOptional[0] = new AtomicBoolean(val));
                 }
-                if (booleanOptional == null && (singular.contains("item_") || plural.contains("item_") || plural.equals("conditions") || singular.equals("condition"))) {
+                if (booleanOptional[0] == null && (singular.contains("item_") || plural.contains("item_") || plural.equals("conditions") || singular.equals("condition"))) {
                     Optional<Boolean> bool = item.check(condition, actor, target, block, fluid, itemStack, dmgevent);
-                    booleanOptional = new AtomicBoolean(bool.get());
+                    bool.ifPresent(val -> booleanOptional[0] = new AtomicBoolean(val));
                 }
                 // Custom conditions
-                if (booleanOptional == null) {
+                if (booleanOptional[0] == null) {
                     try {
                         for (Class<? extends Condition> conditionClass : customConditions) {
                             Optional<Boolean> bool = conditionClass.newInstance().check(condition, actor, target, block, fluid, itemStack, dmgevent);
-                            booleanOptional = new AtomicBoolean(bool.get());
+                            bool.ifPresent(val -> booleanOptional[0] = new AtomicBoolean(val));
                         }
                     } catch (InstantiationException | IllegalAccessException e) {
                         throw new RuntimeException(e);
                     }
                 }
-                if (booleanOptional == null) {
-                    booleanOptional.set(true);
+                if (booleanOptional[0] == null) {
+                    booleanOptional[0].set(true);
                 }
-                return booleanOptional.get();
+                return booleanOptional[0].get();
             }
         }
         return false;

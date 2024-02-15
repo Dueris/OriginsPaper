@@ -17,7 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-public class FixerUpper {
+public class NBTFixerUpper {
     public static void fixupFile(File f) throws IOException {
         if (f.exists()) {
             CompoundTag playerData = NbtIo.readCompressed(f.toPath(), NbtAccounter.unlimitedHeap());
@@ -38,12 +38,12 @@ public class FixerUpper {
 
     public static void runFixerUpper() throws IOException {
         Stopwatch stopwatch = Stopwatch.createStarted();
-        File[] filesToFix = MinecraftServer.getServer().playerDataStorage.getPlayerDir().listFiles();
+        File[] filesToFix = GenesisMC.server.playerDataStorage.getPlayerDir().listFiles();
         List<CompletableFuture<Void>> futures = new ArrayList<>();
 
         System.out.println("Found (x) files in (dir)"
                 .replace("(x)", String.valueOf(filesToFix.length))
-                .replace("(dir)", MinecraftServer.getServer().playerDataStorage.getPlayerDir().toPath().toString()));
+                .replace("(dir)", GenesisMC.server.playerDataStorage.getPlayerDir().toPath().toString()));
 
         for (File f : filesToFix) {
             CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {

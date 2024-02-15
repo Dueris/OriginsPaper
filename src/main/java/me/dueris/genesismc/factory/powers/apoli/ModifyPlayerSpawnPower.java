@@ -2,7 +2,7 @@ package me.dueris.genesismc.factory.powers.apoli;
 
 import com.mojang.datafixers.util.Pair;
 import me.dueris.genesismc.GenesisMC;
-import me.dueris.genesismc.util.entity.OriginPlayerUtils;
+import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import me.dueris.genesismc.event.PowerUpdateEvent;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
@@ -70,7 +70,7 @@ public class ModifyPlayerSpawnPower extends CraftPower implements Listener {
         if(power.getStringOrDefault("structure", null) == null) return new ApoliSpawnUtils().getValidSpawn(level, blockPos, range, entity);
         NamespacedKey key = NamespacedKey.fromString(power.getString("structure"));
         Registry<Structure> structureRegistry = CraftRegistry.getMinecraftRegistry().registry(Registries.STRUCTURE).get();
-        ResourceKey<Structure> stRk = MinecraftServer.getServer().registryAccess().registry(Registries.STRUCTURE).get().getResourceKey(structureRegistry.get(CraftNamespacedKey.toMinecraft(key))).get();
+        ResourceKey<Structure> stRk = GenesisMC.server.registryAccess().registry(Registries.STRUCTURE).get().getResourceKey(structureRegistry.get(CraftNamespacedKey.toMinecraft(key))).get();
         HolderSet<Structure> structureHolderSet = null;
 
         if(stRk != null){
@@ -143,7 +143,7 @@ public class ModifyPlayerSpawnPower extends CraftPower implements Listener {
         if (modify_world_spawn.contains(p)) {
             for (LayerContainer layer : CraftApoli.getLayers()) {
                 ConditionExecutor executor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
-                PowerContainer power = OriginPlayerUtils.getSinglePowerFileFromType(p, getPowerFile(), layer);
+                PowerContainer power = OriginPlayerAccessor.getSinglePowerFileFromType(p, getPowerFile(), layer);
                 if (power == null) continue;
                 if (executor.check("condition", "conditions", p, power, getPowerFile(), p, null, p.getLocation().getBlock(), null, p.getInventory().getItemInMainHand(), null)) {
                     ApoliSpawnUtils utils = new ApoliSpawnUtils();

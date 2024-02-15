@@ -1,6 +1,6 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
-import me.dueris.genesismc.util.entity.OriginPlayerUtils;
+import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
@@ -34,7 +34,7 @@ public class PreventEntityCollision extends CraftPower {
         for (LayerContainer layer : CraftApoli.getLayers()) {
             if (prevent_entity_collision.contains(p)) {
                 ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
-                for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
+                for (PowerContainer power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                     if (conditionExecutor.check("bientity_condition", "bientity_condition", p, power, "apoli:prevent_entity_collision", p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
                         p.setCollidable(false);
                         if (power == null) {

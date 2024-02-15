@@ -6,7 +6,7 @@ import me.dueris.genesismc.factory.actions.Actions;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.registry.LayerContainer;
 import me.dueris.genesismc.registry.PowerContainer;
-import me.dueris.genesismc.util.entity.OriginPlayerUtils;
+import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -28,7 +28,7 @@ public class PreventBlockPlace extends CraftPower implements Listener {
     public void blockBreak(BlockPlaceEvent e) {
         if (prevent_block_place.contains(e.getPlayer())) {
             for (LayerContainer layer : CraftApoli.getLayers()) {
-                for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(e.getPlayer(), getPowerFile(), layer)) {
+                for (PowerContainer power : OriginPlayerAccessor.getMultiPowerFileFromType(e.getPlayer(), getPowerFile(), layer)) {
                     if (GenesisMC.getConditionExecutor().check("condition", "conditions", e.getPlayer(), power, getPowerFile(), e.getPlayer(), null, e.getBlockPlaced(), null, e.getItemInHand(), null)) {
                         if (GenesisMC.getConditionExecutor().check("item_condition", "item_conditions", e.getPlayer(), power, getPowerFile(), e.getPlayer(), null, e.getBlockPlaced(), null, e.getItemInHand(), null)) {
                             if (GenesisMC.getConditionExecutor().check("place_on_condition", "place_on_conditions", e.getPlayer(), power, getPowerFile(), e.getPlayer(), null, e.getBlockAgainst(), null, e.getItemInHand(), null)) {

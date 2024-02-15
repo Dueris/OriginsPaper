@@ -8,7 +8,7 @@ import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.registry.LayerContainer;
 import me.dueris.genesismc.registry.PowerContainer;
 import me.dueris.genesismc.util.console.OriginConsoleSender;
-import me.dueris.genesismc.util.entity.OriginPlayerUtils;
+import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import org.bukkit.Bukkit;
 import org.bukkit.GameRule;
 import org.bukkit.entity.Player;
@@ -40,7 +40,7 @@ public class ActionOnBlockUse extends CraftPower implements Listener {
         if (!getPowerArray().contains(actor)) return;
 
         for (LayerContainer layer : CraftApoli.getLayers()) {
-            for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(actor, getPowerFile(), layer)) {
+            for (PowerContainer power : OriginPlayerAccessor.getMultiPowerFileFromType(actor, getPowerFile(), layer)) {
                 if (power == null) continue;
                 ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                 if (conditionExecutor.check("condition", "conditions", actor, power, getPowerFile(), actor, null, e.getClickedBlock(), null, e.getItem(), null)) {

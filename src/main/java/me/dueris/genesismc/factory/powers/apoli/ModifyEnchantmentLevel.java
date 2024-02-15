@@ -1,6 +1,6 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
-import me.dueris.genesismc.util.entity.OriginPlayerUtils;
+import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
@@ -27,7 +27,7 @@ public class ModifyEnchantmentLevel extends CraftPower {
             for (LayerContainer layer : CraftApoli.getLayers()) {
                 ValueModifyingSuperClass valueModifyingSuperClass = new ValueModifyingSuperClass();
                 ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
-                for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
+                for (PowerContainer power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                     ArrayList<ItemStack> items = new ArrayList<>();
                     items.addAll(Arrays.stream(p.getInventory().getArmorContents()).toList());
                     items.add(p.getInventory().getItemInMainHand());

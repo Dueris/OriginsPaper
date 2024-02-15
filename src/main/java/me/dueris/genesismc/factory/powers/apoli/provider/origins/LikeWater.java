@@ -2,7 +2,7 @@ package me.dueris.genesismc.factory.powers.apoli.provider.origins;
 
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.factory.powers.apoli.Gravity;
+import me.dueris.genesismc.factory.powers.apoli.GravityPower;
 import me.dueris.genesismc.factory.powers.apoli.provider.PowerProvider;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class LikeWater extends CraftPower implements Listener, PowerProvider {
-    private static final Gravity gravityHook = new Gravity();
+    private static final GravityPower gravityHook = new GravityPower();
     public static ArrayList<Player> likeWaterPlayers = new ArrayList<>();
     protected static NamespacedKey powerReference = GenesisMC.originIdentifier("like_water");
 

@@ -1,11 +1,10 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
-import me.dueris.genesismc.util.entity.OriginPlayerUtils;
+import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import me.dueris.genesismc.util.world.chunk.ChunkManagerWorld;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.util.ErrorSystem;
 import me.dueris.genesismc.registry.LayerContainer;
 import me.dueris.genesismc.registry.PowerContainer;
 import org.bukkit.Chunk;
@@ -49,7 +48,7 @@ public class ModifyBlockRenderPower extends CraftPower {
             boolean conditionMet = false;
 
             for (LayerContainer layer : CraftApoli.getLayers()) {
-                for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(player, getPowerFile(), layer)) {
+                for (PowerContainer power : OriginPlayerAccessor.getMultiPowerFileFromType(player, getPowerFile(), layer)) {
                     Material targetMaterial = Material.AIR;
                     if (conditionMet) {
                         targetMaterial = Material.getMaterial(power.getStringOrDefault("block", null).toUpperCase());
@@ -71,8 +70,6 @@ public class ModifyBlockRenderPower extends CraftPower {
                                         setActive(player, power.getTag(), false);
                                     }
                                 } catch (Exception e) {
-                                    ErrorSystem errorSystem = new ErrorSystem();
-                                    errorSystem.throwError("unable to send block_render_change", "apoli:modify_block_render", player, layer);
                                     e.printStackTrace();
                                 }
                             }

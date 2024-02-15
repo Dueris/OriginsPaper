@@ -9,7 +9,7 @@ import me.dueris.genesismc.registry.OriginContainer;
 import me.dueris.genesismc.registry.PowerContainer;
 import me.dueris.genesismc.screen.ScreenConstants;
 import me.dueris.genesismc.storage.OriginDataContainer;
-import me.dueris.genesismc.util.BukkitColour;
+import me.dueris.genesismc.util.ColorConstants;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.*;
@@ -65,7 +65,7 @@ public class Info extends SubCommand implements Listener {
                 p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 10, 2);
             }
         } else
-            sender.sendMessage(Component.text("You must be a player to use this command!").color(TextColor.fromHexString(BukkitColour.RED)));
+            sender.sendMessage(Component.text("You must be a player to use this command!").color(TextColor.fromHexString(ColorConstants.RED)));
     }
 
     public ItemStack[] infoMenu(Player p, Integer page) {

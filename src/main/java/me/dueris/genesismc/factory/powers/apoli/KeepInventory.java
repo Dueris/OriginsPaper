@@ -5,7 +5,7 @@ import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.registry.LayerContainer;
 import me.dueris.genesismc.registry.PowerContainer;
-import me.dueris.genesismc.util.entity.OriginPlayerUtils;
+import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -37,7 +37,7 @@ public class KeepInventory extends CraftPower implements Listener {
         for (LayerContainer layer : CraftApoli.getLayers()) {
             if (keep_inventory.contains(player)) {
                 ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
-                for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(player, getPowerFile(), layer)) {
+                for (PowerContainer power : OriginPlayerAccessor.getMultiPowerFileFromType(player, getPowerFile(), layer)) {
                     if (conditionExecutor.check("item_condition", "item_conditions", player, power, "apoli:keep_inventory", player, null, null, null, player.getInventory().getItemInHand(), null)) {
                         ArrayList<Long> slots = new ArrayList<>();
                         setActive(player, power.getTag(), true);

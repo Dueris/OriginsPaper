@@ -2,7 +2,7 @@ package me.dueris.genesismc.factory.actions;
 
 import me.dueris.genesismc.util.CooldownUtils;
 import me.dueris.genesismc.GenesisMC;
-import me.dueris.genesismc.util.entity.OriginPlayerUtils;
+import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import me.dueris.genesismc.event.AddToSetEvent;
 import me.dueris.genesismc.event.RemoveFromSetEvent;
 import me.dueris.genesismc.factory.CraftApoli;
@@ -929,7 +929,7 @@ public class Actions {
         }
         if (type.equals("apoli:toggle")) {
             if (entity instanceof Player) {
-                for (OriginContainer origin : OriginPlayerUtils.getOrigin((Player) entity).values()) {
+                for (OriginContainer origin : OriginPlayerAccessor.getOrigin((Player) entity).values()) {
                     if (origin.getPowers().contains(action.get("action"))) {
                         for (PowerContainer powerContainer : origin.getPowerContainers()) {
                             if (powerContainer.getType().equals("apoli:toggle")) {
@@ -946,7 +946,7 @@ public class Actions {
         }
         if (type.equals("apoli:trigger_cooldown")) {
             if (entity instanceof Player player) {
-                for (OriginContainer origin : OriginPlayerUtils.getOrigin((Player) entity).values()) {
+                for (OriginContainer origin : OriginPlayerAccessor.getOrigin((Player) entity).values()) {
                     if (origin.getPowers().contains(action.get("action"))) {
                         for (PowerContainer powerContainer : origin.getPowerContainers()) {
                             if (powerContainer.get("cooldown") != null) {

@@ -9,7 +9,7 @@ import me.dueris.genesismc.factory.actions.Actions;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.registry.LayerContainer;
 import me.dueris.genesismc.registry.PowerContainer;
-import me.dueris.genesismc.util.entity.OriginPlayerUtils;
+import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -86,7 +86,7 @@ public class EntitySetPower extends CraftPower implements Listener {
                 }
             }
             for (LayerContainer layer : CraftApoli.getLayers()) {
-                for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(e.getPlayer(), getPowerFile(), layer)) {
+                for (PowerContainer power : OriginPlayerAccessor.getMultiPowerFileFromType(e.getPlayer(), getPowerFile(), layer)) {
                     addToEntitySet(e.getPlayer(), power.getTag());
                 }
             }
@@ -100,7 +100,7 @@ public class EntitySetPower extends CraftPower implements Listener {
             if (entity instanceof Player p) {
                 if (entity_set.contains(p)) {
                     for (LayerContainer layer : CraftApoli.getLayers()) {
-                        for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
+                        for (PowerContainer power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                             if (power.get("action_on_add") == null) return;
                             if (power.getTag() == e.getTag()) {
                                 Actions.BiEntityActionType(p, e.getEntity(), power.getAction("action_on_add"));
@@ -119,7 +119,7 @@ public class EntitySetPower extends CraftPower implements Listener {
             if (entity instanceof Player p) {
                 if (entity_set.contains(p)) {
                     for (LayerContainer layer : CraftApoli.getLayers()) {
-                        for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
+                        for (PowerContainer power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                             if (power.get("action_on_add") == null) return;
                             if (power.getTag() == e.getTag()) {
                                 Actions.BiEntityActionType(p, e.getEntity(), power.getAction("action_on_remove"));
@@ -140,7 +140,7 @@ public class EntitySetPower extends CraftPower implements Listener {
                 }
             }
             for (LayerContainer layer : CraftApoli.getLayers()) {
-                for (PowerContainer power : OriginPlayerUtils.getMultiPowerFileFromType(e.getPlayer(), getPowerFile(), layer)) {
+                for (PowerContainer power : OriginPlayerAccessor.getMultiPowerFileFromType(e.getPlayer(), getPowerFile(), layer)) {
                     addToEntitySet(e.getPlayer(), power.getTag());
                 }
             }
