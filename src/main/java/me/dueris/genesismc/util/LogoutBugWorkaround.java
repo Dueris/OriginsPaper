@@ -46,7 +46,6 @@ public class LogoutBugWorkaround implements Listener {
                     Float.valueOf(splitData[3]),
                     Float.valueOf(splitData[4])
             );
-            System.out.println(location.getChunk().isLoaded());
             final int[] i = {0};
             new BukkitRunnable() {
                 @Override
