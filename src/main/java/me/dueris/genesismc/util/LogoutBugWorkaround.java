@@ -8,6 +8,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -55,6 +56,13 @@ public class LogoutBugWorkaround implements Listener {
                     i[0]++;
                 }
             }.runTaskTimer(GenesisMC.getPlugin(), 0, 1);
+        }
+    }
+
+    @EventHandler
+    public void endPlatformFix(PlayerTeleportEvent e){ // Fixes spawning inside the platform, making the player fall into the void if the platform is floating
+        if(e.getCause().equals(PlayerTeleportEvent.TeleportCause.END_PORTAL)){
+            e.setTo(new Location(e.getTo().getWorld(), e.getTo().getX(), 51, e.getTo().getZ(), e.getTo().getYaw(), e.getTo().getPitch()));
         }
     }
 
