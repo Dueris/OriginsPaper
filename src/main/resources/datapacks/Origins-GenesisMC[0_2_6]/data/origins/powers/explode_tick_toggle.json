@@ -5,5 +5,7 @@
   "key": {
     "key": "key.origins.primary_active"
   },
-  "hidden": true
+  "hidden": false,
+  "name": "BOOOM",
+  "description": "You can explode at will by holding shift, toggleable with keybind"
 }

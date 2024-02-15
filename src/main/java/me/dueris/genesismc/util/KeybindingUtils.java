@@ -1,9 +1,12 @@
 package me.dueris.genesismc.util;
 
 import com.destroystokyo.paper.event.player.PlayerJumpEvent;
+import com.mojang.datafixers.util.Pair;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.event.KeybindTriggerEvent;
 import me.dueris.genesismc.event.OriginChangeEvent;
+import me.dueris.genesismc.factory.CraftApoli;
+import me.dueris.genesismc.registry.PowerContainer;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -25,6 +28,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.json.simple.JSONObject;
 
 import java.util.*;
 
@@ -47,6 +51,49 @@ public class KeybindingUtils implements Listener {
             }
         }
         return null;
+    }
+
+    public static Pair<Boolean, String> renderKeybind(PowerContainer power){
+        boolean should = false;
+        String key = "[null]";
+        if(power.isOriginMultipleParent()){
+            for(PowerContainer powerContainer : CraftApoli.getNestedPowers(power)){
+                for(String object : powerContainer.getPowerFile().getKeys()){
+                    if(object.equalsIgnoreCase("key")){
+                        if(powerContainer.getObject(object) instanceof String st){
+                            should = true;
+                            key = "[%%]".replace("%%", st);
+                        } else if (powerContainer.getObject(object) instanceof JSONObject obj) {
+                            should = obj.containsKey("key");
+                            if(should){
+                                key = "[%%]".replace("%%", obj.get("key").toString());
+                            }
+                        }
+                    }
+                }
+            }
+        }else{
+            for(String object : power.getPowerFile().getKeys()){
+                if(object.equalsIgnoreCase("key")){
+                    if(power.getObject(object) instanceof String st){
+                        should = true;
+                        key = "[%%]".replace("%%", st);
+                    } else if (power.getObject(object) instanceof JSONObject obj) {
+                        should = obj.containsKey("key");
+                        if(should){
+                            key = "[%%]".replace("%%", obj.get("key").toString());
+                        }
+                    }
+                }
+            }
+        }
+        return new Pair<>(should, key);
+    }
+
+    public static String translateOriginRawKey(String string){
+        if(string.contains("key.origins.primary_active")) return string.replace("key.origins.primary_active", "Primary");
+        if(string.contains("key.origins.secondary_active")) return string.replace("key.origins.secondary_active", "Secondary");
+        return string;
     }
 
     public static boolean hasOriginDataTriggerPrimary(Inventory inventory) {

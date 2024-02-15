@@ -5,9 +5,11 @@ import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.registry.OriginContainer;
 import me.dueris.genesismc.registry.PowerContainer;
 import me.dueris.genesismc.util.ChatFormatter;
+import me.dueris.genesismc.util.KeybindingUtils;
 import me.dueris.genesismc.util.LangConfig;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -192,6 +194,9 @@ public class ScreenNavigator implements Listener {
 
                         ItemMeta meta = originPower.getItemMeta();
                         meta.displayName(ChatFormatter.apply(powerContainers.get(0).getName()));
+                        if(KeybindingUtils.renderKeybind(powerContainers.get(0)).getFirst()){
+                            meta.displayName(Component.text().append(meta.displayName()).append(Component.text(" ")).append(Component.text(KeybindingUtils.translateOriginRawKey(KeybindingUtils.renderKeybind(powerContainers.get(0)).getSecond())).color(TextColor.color(32222))).build());
+                        }
                         meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
                         meta.lore(ChatFormatter.apply(cutStringIntoLines(powerContainers.get(0).getDescription())));
                         originPower.setItemMeta(meta);

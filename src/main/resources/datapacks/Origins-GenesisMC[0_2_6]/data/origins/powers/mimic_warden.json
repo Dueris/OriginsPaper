@@ -2,5 +2,6 @@
   "type": "origins:simple",
   "name": "Carrier of Echos",
   "description": "You can emmit a sonic boom every 60 seconds, only if you have enough energy to sprint",
-  "hidden": false
+  "hidden": false,
+  "key": "key.origins.primary_active", "##" : "This is a placeholder to display the keybind on the screen renderer. It doesnt actually work"
 }

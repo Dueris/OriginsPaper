@@ -1,8 +1,6 @@
 {
   "type": "genesis:explode_tick",
-  "hidden": false,
-  "name": "BOOOM",
-  "description": "You can explode at will by holding shift, toggleable with keybind [Primary]",
+  "hidden": true,
   "modifier": {
     "power": 3,
     "resistance": 2,
