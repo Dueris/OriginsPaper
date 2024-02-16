@@ -4,15 +4,16 @@ import com.mojang.brigadier.StringReader;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
+import me.dueris.genesismc.factory.powers.TicksElapsedPower;
 import me.dueris.genesismc.registry.LayerContainer;
 import me.dueris.genesismc.registry.PowerContainer;
+import me.dueris.genesismc.util.LangConfig;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import net.minecraft.core.particles.*;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.phys.Vec3;
+import org.bukkit.*;
 import org.bukkit.Color;
-import org.bukkit.Location;
-import org.bukkit.Particle;
 import org.bukkit.craftbukkit.v1_20_R3.CraftParticle;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
@@ -23,7 +24,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
 
-public class ParticlePower extends CraftPower {
+public class ParticlePower extends CraftPower implements TicksElapsedPower {
 
     @Override
     public void setActive(Player p, String tag, Boolean bool) {
@@ -41,13 +42,64 @@ public class ParticlePower extends CraftPower {
 
     @Override
     public void run(Player player) {
-        if (particle.contains(player)) {
+
+    }
+
+    public static boolean containsParams(PowerContainer power){
+        return power.getObject("particle") instanceof String ? false : power.getObject("particle") instanceof JSONObject ? power.get("particle").containsKey("params") : false;
+    }
+
+    private static int calculateValue(float value){
+        if(Math.round(value * 255) > 255){
+            return 254;
+        }else{
+            return Math.round(value * 255);
+        }
+    }
+
+    public static Particle computeParticleArgs(Object root){
+        if(root instanceof String particleSt){
+            return Particle.valueOf(ensureCorrectNamespace(particleSt).split(":")[1].toUpperCase());
+        } else if (root instanceof JSONObject particle) {
+            return Particle.valueOf(ensureCorrectNamespace(particle.get("type").toString()).split(":")[1].toUpperCase());
+        }
+        return null;
+    }
+
+    private static String ensureCorrectNamespace(String string){
+        if(string.endsWith("dust")){
+            string = string.replace("dust", "redstone");
+        }
+        return string.contains(":") ? string : "minecraft:" + string;
+    }
+
+    @Override
+    public String getPowerFile() {
+        return "apoli:particle";
+    }
+
+    @Override
+    public ArrayList<Player> getPowerArray() {
+        return particle;
+    }
+
+    @Override
+    public void run(Player player, HashMap<Player, Integer> ticksEMap) {
+        ticksEMap.putIfAbsent(player, 0);
+        if (getPowerArray().contains(player)) {
             for (LayerContainer layer : CraftApoli.getLayers()) {
                 for (PowerContainer power : OriginPlayerAccessor.getMultiPowerFileFromType(player, getPowerFile(), layer)) {
-                    if (power == null) {
-                        getPowerArray().remove(player);
+                    if (power == null) continue;
+
+                    int ticksE = ticksEMap.getOrDefault(player, 0);
+                    if (ticksE < 5) {
+                        ticksE++;
+                        System.out.println(ticksE);
+
+                        ticksEMap.put(player, ticksE);
                         return;
                     } else {
+                        System.out.println("dfkjs");
                         ConditionExecutor executor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                         if (executor.check("condition", "conditions", player, power, getPowerFile(), player, null, null, null, player.getInventory().getItemInHand(), null)) {
                             if (!getPowerArray().contains(player)) return;
@@ -88,54 +140,16 @@ public class ParticlePower extends CraftPower {
                                 player.getWorld().spawnParticle(
                                         particle.builder().source(player).force(false).location(player.getLocation()).count(1).particle(),
                                         new Location(player.getWorld(), player.getEyeLocation().getX(), player.getEyeLocation().getY() - 0.7, player.getEyeLocation().getZ()),
-                                        1, offset_x, offset_y, offset_z, 0, data);
-//                                run(power, ((CraftPlayer)player).getHandle(), particle);
+                                        1, offset_x, offset_y, offset_z, 0, data
+                                );
                             }
                         } else {
-                            if (!getPowerArray().contains(player)) return;
                             setActive(player, power.getTag(), false);
                         }
+                        ticksEMap.put(player, 0);
                     }
                 }
             }
         }
-    }
-
-    public static boolean containsParams(PowerContainer power){
-        return power.getObject("particle") instanceof String ? false : power.getObject("particle") instanceof JSONObject ? power.get("particle").containsKey("params") : false;
-    }
-
-    private static int calculateValue(float value){
-        if(Math.round(value * 255) > 255){
-            return 254;
-        }else{
-            return Math.round(value * 255);
-        }
-    }
-
-    public static Particle computeParticleArgs(Object root){
-        if(root instanceof String particleSt){
-            return Particle.valueOf(ensureCorrectNamespace(particleSt).split(":")[1].toUpperCase());
-        } else if (root instanceof JSONObject particle) {
-            return Particle.valueOf(ensureCorrectNamespace(particle.get("type").toString()).split(":")[1].toUpperCase());
-        }
-        return null;
-    }
-
-    private static String ensureCorrectNamespace(String string){
-        if(string.endsWith("dust")){
-            string = string.replace("dust", "redstone");
-        }
-        return string.contains(":") ? string : "minecraft:" + string;
-    }
-
-    @Override
-    public String getPowerFile() {
-        return "apoli:particle";
-    }
-
-    @Override
-    public ArrayList<Player> getPowerArray() {
-        return particle;
     }
 }
