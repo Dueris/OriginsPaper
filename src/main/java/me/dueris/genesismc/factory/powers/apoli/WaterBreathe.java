@@ -1,5 +1,6 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
+import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
@@ -144,6 +145,13 @@ public class WaterBreathe extends CraftPower implements Listener {
     @Override
     public ArrayList<Player> getPowerArray() {
         return water_breathing;
+    }
+
+    public static void start(){
+        WaterBreathe waterBreathe = new WaterBreathe();
+        Bukkit.getScheduler().runTaskTimer(GenesisMC.getPlugin(), () -> {
+            waterBreathe.run();
+        }, 0, 1);
     }
 
     public void run() {

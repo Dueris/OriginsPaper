@@ -34,18 +34,12 @@ public abstract class CraftPower implements Power {
             List<Class<CraftPower>> classes = new ArrayList<>();
             try(ScanResult result = new ClassGraph().whitelistPackages("me.dueris.genesismc.factory.powers").enableClassInfo().scan()){
                 for(Class<CraftPower> power : result.getSubclasses(CraftPower.class).loadClasses(CraftPower.class)){
+                    tryPreloadClass(power);
                     if (!power.isInterface() && !power.isEnum() && !(power.isAssignableFrom(DontRegister.class) || DontRegister.class.isAssignableFrom(power))){
                         classes.add(power);
                     }
                 }
             }
-
-            // Set<Class<? extends CraftPower>> subTypes = reflections.getSubTypesOf(CraftPower.class);
-            // for (Class<? extends CraftPower> subType : subTypes) {
-            //     if (!subType.isInterface() && !subType.isEnum() && !(subType.isAssignableFrom(DontRegister.class) || DontRegister.class.isAssignableFrom(subType))) {
-            //         classes.add(subType);
-            //     }
-            // }
             return classes;
         });
 
@@ -55,6 +49,14 @@ public abstract class CraftPower implements Power {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public static void tryPreloadClass(Class<?> clz){
+        try {
+            Class.forName(clz.getName());
+        } catch (Exception e){
+            // Silence
+        }
     }
 
     private static void registerBuiltinPowers() {
