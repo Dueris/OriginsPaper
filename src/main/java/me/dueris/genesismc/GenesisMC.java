@@ -459,17 +459,6 @@ public final class GenesisMC extends JavaPlugin implements Listener {
             ee.printStackTrace();
         }
 
-        // Register builtin powers
-        Method registerMethod;
-        try {
-            registerMethod = CraftPower.class.getDeclaredMethod("registerBuiltinPowers");
-            registerMethod.setAccessible(true);
-            registerMethod.invoke(null);
-        } catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException |
-                 InvocationTargetException ee) {
-            ee.printStackTrace();
-        }
-
         if(Bukkit.getPluginManager().isPluginEnabled("SkinsRestorer")){
             try {
                 CraftPower.registerNewPower(ModelColor.ModelTransformer.class);
