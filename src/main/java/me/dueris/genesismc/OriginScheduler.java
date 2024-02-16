@@ -1,5 +1,6 @@
 package me.dueris.genesismc;
 
+import me.dueris.genesismc.factory.powers.TicksElapsedPower;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.factory.powers.apoli.ActionOverTime;
@@ -90,16 +91,8 @@ public class OriginScheduler {
                 for (Class<? extends CraftPower> c : OriginPlayerAccessor.getPowersApplied(p)) {
                     try {
                         CraftPower inst = c.newInstance();
-                        if (inst instanceof Burn) {
-                            ((Burn) inst).run(p, ticksEMap);
-                        } else if (inst instanceof ActionOverTime) {
-                            ((ActionOverTime) inst).run(p, ticksEMap);
-                        } else if (inst instanceof RestrictArmor) {
-                            ((RestrictArmor) inst).run(p, ticksEMap);
-                        } else if (inst instanceof DamageOverTime) {
-                            ((DamageOverTime) inst).run(p, ticksEMap);
-                        } else if (inst instanceof PreventEntityRender) {
-                            ((PreventEntityRender) inst).run(p, ticksEMap);
+                        if (inst instanceof TicksElapsedPower) {
+                            ((TicksElapsedPower) inst).run(p, ticksEMap);
                         } else {
                             activePowerRunners.add(c);
                             inst.run(p);

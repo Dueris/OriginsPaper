@@ -4,6 +4,7 @@ import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.actions.Actions;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
+import me.dueris.genesismc.factory.powers.TicksElapsedPower;
 import me.dueris.genesismc.registry.LayerContainer;
 import me.dueris.genesismc.registry.PowerContainer;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
@@ -12,7 +13,7 @@ import org.bukkit.entity.Player;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class ActionOverTime extends CraftPower {
+public class ActionOverTime extends CraftPower implements TicksElapsedPower {
 
     private final int ticksE;
     private Long interval;
@@ -22,6 +23,7 @@ public class ActionOverTime extends CraftPower {
         this.ticksE = 0;
     }
 
+    @Override
     public void run(Player p, HashMap<Player, Integer> ticksEMap) {
         ticksEMap.putIfAbsent(p, 0);
 

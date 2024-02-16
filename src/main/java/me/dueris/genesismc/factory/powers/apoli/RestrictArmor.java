@@ -4,6 +4,7 @@ import com.destroystokyo.paper.event.player.PlayerArmorChangeEvent;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
+import me.dueris.genesismc.factory.powers.TicksElapsedPower;
 import me.dueris.genesismc.registry.LayerContainer;
 import me.dueris.genesismc.registry.PowerContainer;
 import me.dueris.genesismc.util.LangConfig;
@@ -24,7 +25,7 @@ import java.util.Map;
 
 import static me.dueris.genesismc.util.ArmorUtils.getArmorValue;
 
-public class RestrictArmor extends CraftPower implements Listener {
+public class RestrictArmor extends CraftPower implements Listener, TicksElapsedPower {
 
     private final int ticksE;
     private Long interval;
@@ -64,6 +65,7 @@ public class RestrictArmor extends CraftPower implements Listener {
         }
     }
 
+    @Override
     public void run(Player p, HashMap<Player, Integer> ticksEMap) {
         ticksEMap.putIfAbsent(p, 0);
         if (getPowerArray().contains(p)) {

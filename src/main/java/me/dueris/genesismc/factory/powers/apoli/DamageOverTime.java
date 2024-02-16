@@ -3,6 +3,7 @@ package me.dueris.genesismc.factory.powers.apoli;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
+import me.dueris.genesismc.factory.powers.TicksElapsedPower;
 import me.dueris.genesismc.registry.LayerContainer;
 import me.dueris.genesismc.registry.PowerContainer;
 import me.dueris.genesismc.util.LangConfig;
@@ -25,7 +26,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
 
-public class DamageOverTime extends CraftPower implements Listener {
+public class DamageOverTime extends CraftPower implements Listener, TicksElapsedPower {
 
     private final String damage_type;
     private final int ticksE;
@@ -77,6 +78,7 @@ public class DamageOverTime extends CraftPower implements Listener {
         }
     }
 
+    @Override
     public void run(Player p, HashMap<Player, Integer> ticksEMap) {
         ticksEMap.putIfAbsent(p, 0);
         if (getPowerArray().contains(p)) {

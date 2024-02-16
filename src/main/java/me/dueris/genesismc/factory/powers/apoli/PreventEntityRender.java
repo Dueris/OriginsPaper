@@ -1,6 +1,7 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
 import me.dueris.genesismc.GenesisMC;
+import me.dueris.genesismc.factory.powers.TicksElapsedPower;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
@@ -20,7 +21,7 @@ import java.util.List;
 
 import static me.dueris.genesismc.factory.powers.apoli.superclass.PreventSuperClass.prevent_entity_render;
 
-public class PreventEntityRender extends CraftPower {
+public class PreventEntityRender extends CraftPower implements TicksElapsedPower {
 
     private final int ticksE;
     private Long interval;
