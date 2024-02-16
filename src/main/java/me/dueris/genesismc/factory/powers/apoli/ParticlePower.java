@@ -1,18 +1,27 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
+import com.mojang.brigadier.StringReader;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.registry.LayerContainer;
 import me.dueris.genesismc.registry.PowerContainer;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
+import net.minecraft.core.particles.*;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.phys.Vec3;
+import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Particle;
+import org.bukkit.craftbukkit.v1_20_R3.CraftParticle;
+import org.bukkit.craftbukkit.v1_20_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.json.simple.JSONObject;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Random;
 
 public class ParticlePower extends CraftPower {
 
@@ -42,12 +51,12 @@ public class ParticlePower extends CraftPower {
                         ConditionExecutor executor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                         if (executor.check("condition", "conditions", player, power, getPowerFile(), player, null, null, null, player.getInventory().getItemInHand(), null)) {
                             if (!getPowerArray().contains(player)) return;
-                            setActive(player, power.getTag(), true);
                             Particle particle = computeParticleArgs(power.getObject("particle"));
                             if(particle == null) throw new IllegalStateException("Unable to create CraftBukkit particle instance");
-                            if(particle.equals(Particle.DUST_COLOR_TRANSITION)) throw new IllegalStateException("DustColorTransitions are currently not supported in this version");
-                            int count = power.getIntOrDefault("count", 1);
-                            float offset_y_no_vector = power.getFloatOrDefault("offset_y", 1.0f);
+                            boolean visible_while_invis = power.getBooleanOrDefault("visible_while_invisible", false);
+                            boolean pass = visible_while_invis ? true : !player.isInvisible();
+                            setActive(player, power.getTag(), pass);
+
                             float offset_x = 0.25f;
                             float offset_y = 0.50f;
                             float offset_z = 0.25f;
@@ -62,14 +71,25 @@ public class ParticlePower extends CraftPower {
                                 offset_z = Float.parseFloat(String.valueOf(power.get("spread").get("z")));
                             }
 
-                            boolean visible_while_invis = power.getBooleanOrDefault("visible_while_invisible", false);
-                            Particle final_particle = particle.builder().count(count).force(true).location(player.getLocation()).particle(particle).source(player).offset(offset_x, offset_y + offset_y_no_vector, offset_z).particle();
-                            if (visible_while_invis) {
-                                player.getWorld().spawnParticle(final_particle, new Location(player.getWorld(), player.getLocation().getX(), player.getLocation().getY(), player.getLocation().getZ()), count, offset_x, offset_y, offset_z, 0);
-                            } else {
-                                if (!player.isInvisible()) {
-                                    player.getWorld().spawnParticle(final_particle, new Location(player.getWorld(), player.getLocation().getX(), player.getLocation().getY(), player.getLocation().getZ()), count, offset_x, offset_y, offset_z, 0);
+                            Particle.DustOptions data = null;
+                            if(containsParams(power)){
+                                String provided = power.get("particle").getOrDefault("params", "").toString();
+                                if(provided.contains(" ")){
+                                    String[] splitArgs = provided.split(" ");
+                                    float arg1 = Float.valueOf(splitArgs[0]);
+                                    float arg2 = Float.valueOf(splitArgs[1]);
+                                    float arg3 = Float.valueOf(splitArgs[2]);
+                                    float size = Float.valueOf(splitArgs[3]);
+                                    data = new Particle.DustOptions(Color.fromRGB(calculateValue(arg1), calculateValue(arg2), calculateValue(arg3)), size);
                                 }
+                            }
+
+                            if(pass){
+                                player.getWorld().spawnParticle(
+                                        particle.builder().source(player).force(false).location(player.getLocation()).count(1).particle(),
+                                        new Location(player.getWorld(), player.getEyeLocation().getX(), player.getEyeLocation().getY() - 0.7, player.getEyeLocation().getZ()),
+                                        1, offset_x, offset_y, offset_z, 0, data);
+//                                run(power, ((CraftPlayer)player).getHandle(), particle);
                             }
                         } else {
                             if (!getPowerArray().contains(player)) return;
@@ -78,6 +98,18 @@ public class ParticlePower extends CraftPower {
                     }
                 }
             }
+        }
+    }
+
+    public static boolean containsParams(PowerContainer power){
+        return power.getObject("particle") instanceof String ? false : power.getObject("particle") instanceof JSONObject ? power.get("particle").containsKey("params") : false;
+    }
+
+    private static int calculateValue(float value){
+        if(Math.round(value * 255) > 255){
+            return 254;
+        }else{
+            return Math.round(value * 255);
         }
     }
 
@@ -91,6 +123,9 @@ public class ParticlePower extends CraftPower {
     }
 
     private static String ensureCorrectNamespace(String string){
+        if(string.endsWith("dust")){
+            string = string.replace("dust", "redstone");
+        }
         return string.contains(":") ? string : "minecraft:" + string;
     }
 
