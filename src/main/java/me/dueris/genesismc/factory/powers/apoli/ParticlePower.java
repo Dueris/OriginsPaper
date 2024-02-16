@@ -92,7 +92,7 @@ public class ParticlePower extends CraftPower implements TicksElapsedPower {
                     if (power == null) continue;
 
                     int ticksE = ticksEMap.getOrDefault(player, 0);
-                    if (ticksE < 5) {
+                    if (ticksE < power.getInt("frequency")) {
                         ticksE++;
                         ticksEMap.put(player, ticksE);
                         return;
@@ -137,7 +137,7 @@ public class ParticlePower extends CraftPower implements TicksElapsedPower {
                                 player.getWorld().spawnParticle(
                                         particle.builder().source(player).force(false).location(player.getLocation()).count(1).particle(),
                                         new Location(player.getWorld(), player.getEyeLocation().getX(), player.getEyeLocation().getY() - 0.7, player.getEyeLocation().getZ()),
-                                        1, offset_x, offset_y, offset_z, 0, data
+                                        power.getIntOrDefault("count", 1), offset_x, offset_y, offset_z, 0, data
                                 );
                             }
                         } else {
