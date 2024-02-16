@@ -94,12 +94,9 @@ public class ParticlePower extends CraftPower implements TicksElapsedPower {
                     int ticksE = ticksEMap.getOrDefault(player, 0);
                     if (ticksE < 5) {
                         ticksE++;
-                        System.out.println(ticksE);
-
                         ticksEMap.put(player, ticksE);
                         return;
                     } else {
-                        System.out.println("dfkjs");
                         ConditionExecutor executor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                         if (executor.check("condition", "conditions", player, power, getPowerFile(), player, null, null, null, player.getInventory().getItemInHand(), null)) {
                             if (!getPowerArray().contains(player)) return;
