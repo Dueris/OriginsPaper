@@ -70,24 +70,10 @@ public class OriginScheduler {
         @Override
         public void run() {
             for (Player p : OriginPlayerAccessor.hasPowers) {
-//                if (!OriginPlayer.getPowersApplied(p).contains(Gravity.class)) {
-//                    Gravity gravity = new Gravity();
-//                    gravity.run(p);
-//                }
                 if (!OriginPlayerAccessor.getPowersApplied(p).contains(FlightHandler.class)) {
+                    // Ensures the flight handler can still tick on players because of issues when it doesnt tick
                     flightHandler.run(p);
                 }
-//                if (!OriginPlayer.getPowersApplied(p).contains(Overlay.class)) {
-//                    Overlay overlay = new Overlay();
-//                    overlay.run(p);
-//                }
-//                if (!OriginPlayer.getPowersApplied(p).contains(Invisibility.class)) {
-//                    Invisibility invisibility = new Invisibility();
-//                    invisibility.run(p);
-//                }
-//                if (OriginPlayer.getPowersApplied(p).isEmpty()) {
-//                    //empty
-//                }
                 for (Class<? extends CraftPower> c : OriginPlayerAccessor.getPowersApplied(p)) {
                     try {
                         CraftPower inst = c.newInstance();
