@@ -65,6 +65,10 @@ import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scoreboard.Team;
+import ru.beykerykt.minecraft.lightapi.bukkit.BukkitPlugin;
+import ru.beykerykt.minecraft.lightapi.bukkit.internal.BukkitPlatformImpl;
+import ru.beykerykt.minecraft.lightapi.common.LightAPI;
+import ru.beykerykt.minecraft.lightapi.common.internal.IPlatformImpl;
 
 import java.io.File;
 import java.io.IOException;
@@ -202,6 +206,11 @@ public final class GenesisMC extends JavaPlugin implements Listener {
     public void onEnable() {
         plugin = this;
         metrics = new Metrics(this, 18536);
+        // Load builtin-depends
+        BukkitPlugin pl = new BukkitPlugin();
+        pl.onLoad();
+        LightAPI.prepare(pl.getPlatformImpl());
+        // End
         GenesisMC.server = ((CraftServer) Bukkit.getServer()).getServer();
         world_container = server.options.asMap().toString().split(", \\[W, universe, world-container, world-dir]=\\[")[1].split("], ")[0];
         playerDataFolder = server.playerDataStorage.getPlayerDir();

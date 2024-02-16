@@ -85,6 +85,7 @@ public abstract class CraftPower implements Power {
             OriginSimpleContainer.registerPower(ScareCreepers.class);
             OriginSimpleContainer.registerPower(NoCobWebSlowdown.class);
             OriginSimpleContainer.registerPower(LikeWater.class);
+            OriginSimpleContainer.registerPower(Bioluminescent.class);
         } catch (IOException | ReflectiveOperationException e) {
             e.printStackTrace();
         }
