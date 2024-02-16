@@ -16,14 +16,17 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageType;
+import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.phys.Vec3;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.craftbukkit.v1_20_R3.CraftRegistry;
 import org.bukkit.craftbukkit.v1_20_R3.CraftServer;
+import org.bukkit.craftbukkit.v1_20_R3.inventory.CraftItemStack;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
@@ -224,6 +227,11 @@ public class Utils {
                 return null;
             }
         }
+    }
+
+    public static int getArmorValue(ItemStack armorItem) {
+        net.minecraft.world.item.Item stack = CraftItemStack.asNMSCopy(armorItem).getItem();
+        return stack instanceof ArmorItem item ? item.getDefense() : 0;
     }
 
     public static void statusEffectInstance(LivingEntity player, JSONObject power) {

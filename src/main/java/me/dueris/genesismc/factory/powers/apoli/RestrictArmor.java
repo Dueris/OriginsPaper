@@ -8,22 +8,17 @@ import me.dueris.genesismc.factory.powers.TicksElapsedPower;
 import me.dueris.genesismc.registry.LayerContainer;
 import me.dueris.genesismc.registry.PowerContainer;
 import me.dueris.genesismc.util.LangConfig;
-import me.dueris.genesismc.util.Utils;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.EquipmentSlot;
-import org.bukkit.inventory.ItemStack;
 import org.json.simple.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
-
-import static me.dueris.genesismc.util.ArmorUtils.getArmorValue;
+import java.util.Optional;
 
 public class RestrictArmor extends CraftPower implements Listener, TicksElapsedPower {
 
@@ -102,138 +97,75 @@ public class RestrictArmor extends CraftPower implements Listener, TicksElapsedP
         boolean chestb = true;
         boolean legsb = true;
         boolean feetb = true;
+        boolean passFeet;
+        boolean passLegs;
+        boolean passChest;
+        boolean passHead;
         JSONObject headObj = power.get("head");
-        JSONObject chestObj = power.get("head");
-        JSONObject legsObj = power.get("head");
-        JSONObject feetObj = power.get("head");
+        JSONObject chestObj = power.get("chest");
+        JSONObject legsObj = power.get("legs");
+        JSONObject feetObj = power.get("feet");
 
         if (headObj == null) headb = false;
         if (chestObj == null) chestb = false;
         if (legsObj == null) legsb = false;
         if (feetObj == null) feetb = false;
 
-        if (headObj.get("type").toString().equalsIgnoreCase("apoli:armor_value")) {
-            String comparisonh = headObj.get("comparison").toString();
-            String comparisontoh = headObj.get("compare_to").toString();
-            if (!headb) return;
-            ItemStack item = p.getInventory().getHelmet();
-            if (item != null) {
-                double armorValue = getArmorValue(item);
-                double compareValue = Double.parseDouble(comparisontoh);
-                if (Utils.compareValues(armorValue, comparisonh, compareValue)) {
-                    OriginPlayerAccessor.moveEquipmentInventory(p, EquipmentSlot.HEAD);
-                }
+        if(headb){
+            Optional<Boolean> condition = ConditionExecutor.itemCondition.check(headObj, p, null, p.getLocation().getBlock(), null, p.getInventory().getItem(EquipmentSlot.HEAD), null);
+            if(condition.isPresent()){
+                passHead = condition.get();
+            }else{
+                passHead = true;
             }
-        } else if (headObj.get("type").toString().equalsIgnoreCase("apoli:ingredient")) {
-            if (!headb) return;
-            if (p.getInventory().getHelmet() != null) {
-                Map<String, Object> ingredientMap = (Map<String, Object>) headObj.get("ingredient");
-                if (ingredientMap.containsKey("item")) {
-                    String itemValue = ingredientMap.get("item").toString();
-                    String item = null;
-                    if (itemValue.contains(":")) {
-                        item = itemValue.split(":")[1];
-                    } else {
-                        item = itemValue;
-                    }
-                    if (p.getInventory().getHelmet().getType().equals(Material.valueOf(item.toUpperCase()))) {
-                        OriginPlayerAccessor.moveEquipmentInventory(p, EquipmentSlot.HEAD);
-                    }
-                }
-            }
+        }else{
+            passHead = true;
         }
 
-        if (chestObj.get("type").toString().equalsIgnoreCase("apoli:armor_value")) {
-            String comparisonc = chestObj.get("comparison").toString();
-            String comparisontoc = chestObj.get("compare_to").toString();
-            if (!chestb) return;
-            ItemStack item = p.getInventory().getChestplate();
-            if (item != null) {
-                double armorValue = getArmorValue(item);
-                double compareValue = Double.parseDouble(comparisontoc);
-                if (Utils.compareValues(armorValue, comparisonc, compareValue)) {
-                    OriginPlayerAccessor.moveEquipmentInventory(p, EquipmentSlot.CHEST);
-                }
+        if(chestb){
+            Optional<Boolean> condition = ConditionExecutor.itemCondition.check(chestObj, p, null, p.getLocation().getBlock(), null, p.getInventory().getItem(EquipmentSlot.CHEST), null);
+            if(condition.isPresent()){
+                passChest = condition.get();
+            }else{
+                passChest = true;
             }
-        } else if (chestObj.get("type").toString().equalsIgnoreCase("apoli:ingredient")) {
-            if (!chestb) return;
-            if (p.getInventory().getChestplate() != null) {
-                Map<String, Object> ingredientMap = (Map<String, Object>) chestObj.get("ingredient");
-                if (ingredientMap.containsKey("item")) {
-                    String itemValue = ingredientMap.get("item").toString();
-                    String item = null;
-                    if (itemValue.contains(":")) {
-                        item = itemValue.split(":")[1];
-                    } else {
-                        item = itemValue;
-                    }
-                    if (p.getInventory().getChestplate().getType().equals(Material.valueOf(item.toUpperCase()))) {
-                        OriginPlayerAccessor.moveEquipmentInventory(p, EquipmentSlot.CHEST);
-                    }
-                }
-            }
+        }else{
+            passChest = true;
         }
 
-        if (legsObj.get("type").toString().equalsIgnoreCase("apoli:armor_value")) {
-            String comparisonl = legsObj.get("comparison").toString();
-            String comparisontol = legsObj.get("compare_to").toString();
-            if (!legsb) return;
-            ItemStack item = p.getInventory().getLeggings();
-            if (item != null) {
-                double armorValue = getArmorValue(item);
-                double compareValue = Double.parseDouble(comparisontol);
-                if (Utils.compareValues(armorValue, comparisonl, compareValue)) {
-                    OriginPlayerAccessor.moveEquipmentInventory(p, EquipmentSlot.LEGS);
-                }
+        if(legsb){
+            Optional<Boolean> condition = ConditionExecutor.itemCondition.check(legsObj, p, null, p.getLocation().getBlock(), null, p.getInventory().getItem(EquipmentSlot.LEGS), null);
+            if(condition.isPresent()){
+                passLegs = condition.get();
+            }else{
+                passLegs = true;
             }
-        } else if (legsObj.get("type").toString().equalsIgnoreCase("apoli:ingredient")) {
-            if (!legsb) return;
-            if (p.getInventory().getLeggings() != null) {
-                Map<String, Object> ingredientMap = (Map<String, Object>) legsObj.get("ingredient");
-                if (ingredientMap.containsKey("item")) {
-                    String itemValue = ingredientMap.get("item").toString();
-                    String item = null;
-                    if (itemValue.contains(":")) {
-                        item = itemValue.split(":")[1];
-                    } else {
-                        item = itemValue;
-                    }
-                    if (p.getInventory().getLeggings().getType().equals(Material.valueOf(item.toUpperCase()))) {
-                        OriginPlayerAccessor.moveEquipmentInventory(p, EquipmentSlot.LEGS);
-                    }
-                }
-            }
+        }else{
+            passLegs = true;
         }
 
-        if (feetObj.get("type").toString().equalsIgnoreCase("apoli:armor_value")) {
-            String comparisonf = feetObj.get("comparison").toString();
-            String comparisontof = feetObj.get("compare_to").toString();
-            if (!feetb) return;
-            ItemStack item = p.getInventory().getBoots();
-            if (item != null) {
-                double armorValue = getArmorValue(item);
-                double compareValue = Double.parseDouble(comparisontof);
-                if (Utils.compareValues(armorValue, comparisonf, compareValue)) {
-                    OriginPlayerAccessor.moveEquipmentInventory(p, EquipmentSlot.FEET);
-                }
+        if(feetb){
+            Optional<Boolean> condition = ConditionExecutor.itemCondition.check(feetObj, p, null, p.getLocation().getBlock(), null, p.getInventory().getItem(EquipmentSlot.FEET), null);
+            if(condition.isPresent()){
+                passFeet = condition.get();
+            }else{
+                passFeet = true;
             }
-        } else if (feetObj.get("type").toString().equalsIgnoreCase("apoli:ingredient")) {
-            if (!feetb) return;
-            if (p.getInventory().getBoots() != null) {
-                Map<String, Object> ingredientMap = (Map<String, Object>) feetObj.get("ingredient");
-                if (ingredientMap.containsKey("item")) {
-                    String itemValue = ingredientMap.get("item").toString();
-                    String item = null;
-                    if (itemValue.contains(":")) {
-                        item = itemValue.split(":")[1];
-                    } else {
-                        item = itemValue;
-                    }
-                    if (p.getInventory().getBoots().getType().equals(Material.valueOf(item.toUpperCase()))) {
-                        OriginPlayerAccessor.moveEquipmentInventory(p, EquipmentSlot.FEET);
-                    }
-                }
-            }
+        }else{
+            passFeet = true;
+        }
+
+        if(passFeet){
+            OriginPlayerAccessor.moveEquipmentInventory(p, EquipmentSlot.FEET);
+        }
+        if(passChest){
+            OriginPlayerAccessor.moveEquipmentInventory(p, EquipmentSlot.CHEST);
+        }
+        if(passHead){
+            OriginPlayerAccessor.moveEquipmentInventory(p, EquipmentSlot.HEAD);
+        }
+        if(passLegs){
+            OriginPlayerAccessor.moveEquipmentInventory(p, EquipmentSlot.LEGS);
         }
     }
 

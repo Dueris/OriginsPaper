@@ -4,9 +4,7 @@ import com.mojang.brigadier.StringReader;
 import me.dueris.genesismc.content.enchantment.EnchantTableHandler;
 import me.dueris.genesismc.factory.TagRegistryParser;
 import me.dueris.genesismc.factory.conditions.Condition;
-import me.dueris.genesismc.factory.powers.apoli.RestrictArmor;
 import me.dueris.genesismc.content.OrbOfOrigins;
-import me.dueris.genesismc.util.ArmorUtils;
 import me.dueris.genesismc.util.Utils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
@@ -219,7 +217,7 @@ public class ItemCondition implements Condition {
             case "apoli:armor_value" -> {
                 String comparison = condition.get("comparison").toString();
                 double compareTo = Double.parseDouble(condition.get("compare_to").toString());
-                double amt = ArmorUtils.getArmorValue(itemStack);
+                double amt = Utils.getArmorValue(itemStack);
                 return getResult(inverted, Optional.of(Utils.compareValues(amt, comparison, compareTo)));
             }
             case "apoli:durability" -> {
