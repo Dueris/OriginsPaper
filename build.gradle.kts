@@ -22,7 +22,6 @@ dependencies {
     compileOnly("net.skinsrestorer:skinsrestorer-api:15.0.4")
     // Required API
     compileOnly("io.github.classgraph:classgraph:4.8.165")
-    implementation("com.github.LinsMinecraftStudio.LighterAPI:lightapi-bukkit-common:5.4.0-SNAPSHOT")
     compileOnly("org.reflections:reflections:0.9.12")
     compileOnly("org.mineskin:java-client:1.2.4-SNAPSHOT")
     compileOnly("com.github.Dueris:ModelColorAPI:1.0.5-SNAPSHOT")
