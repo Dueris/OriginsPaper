@@ -253,7 +253,9 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         if(Bukkit.getCommandMap().getCommand("origin") == null){
             OriginCommand.register(((CraftServer)Bukkit.getServer()).getServer().vanillaCommandDispatcher.getDispatcher());
         }
-        Bukkit.getCommandMap().register("resource", new ResourceCommand());
+        if(Bukkit.getCommandMap().getCommand("resource") == null){
+            ResourceCommand.register(((CraftServer)Bukkit.getServer()).getServer().vanillaCommandDispatcher.getDispatcher());
+        }
         if(Bukkit.getCommandMap().getCommand("power") == null){
             PowerCommand.register(((CraftServer)Bukkit.getServer()).getServer().vanillaCommandDispatcher.getDispatcher());
         }
