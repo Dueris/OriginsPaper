@@ -6,7 +6,6 @@ import org.json.simple.parser.JSONParser;
 
 import java.io.File;
 import java.io.FileReader;
-import java.util.HashMap;
 
 public class PowerRemapper {
     public static JSONObject createRemapped(File file) {

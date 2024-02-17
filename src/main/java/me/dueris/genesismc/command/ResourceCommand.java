@@ -20,7 +20,8 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import static com.mojang.brigadier.Command.SINGLE_SUCCESS;
 import static me.dueris.genesismc.factory.actions.Actions.resourceChangeTimeout;
-import static net.minecraft.commands.Commands.*;
+import static net.minecraft.commands.Commands.argument;
+import static net.minecraft.commands.Commands.literal;
 
 public class ResourceCommand {
 

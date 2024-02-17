@@ -2,9 +2,8 @@ package me.dueris.genesismc.factory.conditions.biEntity;
 
 import me.dueris.genesismc.factory.conditions.Condition;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
-import me.dueris.genesismc.factory.powers.apoli.RestrictArmor;
-import me.dueris.genesismc.util.Utils;
 import me.dueris.genesismc.factory.powers.apoli.EntitySetPower;
+import me.dueris.genesismc.util.Utils;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.NeutralMob;
 import org.bukkit.Fluid;

@@ -1,8 +1,6 @@
 package me.dueris.genesismc.factory.actions;
 
-import me.dueris.genesismc.util.CooldownUtils;
 import me.dueris.genesismc.GenesisMC;
-import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import me.dueris.genesismc.event.AddToSetEvent;
 import me.dueris.genesismc.event.RemoveFromSetEvent;
 import me.dueris.genesismc.factory.CraftApoli;
@@ -13,10 +11,12 @@ import me.dueris.genesismc.factory.powers.apoli.StackingStatusEffect;
 import me.dueris.genesismc.factory.powers.apoli.Toggle;
 import me.dueris.genesismc.registry.OriginContainer;
 import me.dueris.genesismc.registry.PowerContainer;
+import me.dueris.genesismc.util.CooldownUtils;
 import me.dueris.genesismc.util.Utils;
 import me.dueris.genesismc.util.apoli.RaycastApoli;
 import me.dueris.genesismc.util.apoli.Space;
 import me.dueris.genesismc.util.console.OriginConsoleSender;
+import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.damagesource.DamageType;
 import org.bukkit.*;

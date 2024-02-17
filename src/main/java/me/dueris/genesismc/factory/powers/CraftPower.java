@@ -1,5 +1,7 @@
 package me.dueris.genesismc.factory.powers;
 
+import io.github.classgraph.ClassGraph;
+import io.github.classgraph.ScanResult;
 import javassist.NotFoundException;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.CraftApoli;
@@ -10,17 +12,11 @@ import me.dueris.genesismc.registry.PowerContainer;
 import me.dueris.genesismc.util.exception.DuplicateCraftPowerException;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Listener;
-import org.reflections.Reflections;
-import org.reflections.scanners.Scanner;
-import org.reflections.scanners.SubTypesScanner;
-import org.reflections.util.ClasspathHelper;
-import org.reflections.util.ConfigurationBuilder;
-
-import io.github.classgraph.ClassGraph;
-import io.github.classgraph.ScanResult;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 

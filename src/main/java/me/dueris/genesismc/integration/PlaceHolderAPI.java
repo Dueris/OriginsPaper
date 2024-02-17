@@ -2,11 +2,10 @@ package me.dueris.genesismc.integration;
 
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import me.dueris.genesismc.GenesisMC;
-import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.registry.OriginContainer;
 import me.dueris.genesismc.storage.OriginDataContainer;
-
+import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;

@@ -2,7 +2,6 @@ package me.dueris.genesismc;
 
 import io.papermc.paper.plugin.bootstrap.BootstrapContext;
 import io.papermc.paper.plugin.bootstrap.PluginBootstrap;
-import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 import joptsimple.OptionSet;
 import me.dueris.genesismc.content.enchantment.WaterProtectionEnchantment;
 import me.dueris.genesismc.util.Utils;

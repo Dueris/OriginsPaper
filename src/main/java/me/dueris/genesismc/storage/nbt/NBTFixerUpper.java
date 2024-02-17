@@ -8,7 +8,6 @@ import me.dueris.genesismc.registry.OriginContainer;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtAccounter;
 import net.minecraft.nbt.NbtIo;
-import net.minecraft.server.MinecraftServer;
 
 import java.io.File;
 import java.io.IOException;

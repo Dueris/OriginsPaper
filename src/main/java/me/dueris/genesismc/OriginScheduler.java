@@ -1,15 +1,9 @@
 package me.dueris.genesismc;
 
-import me.dueris.genesismc.factory.powers.TicksElapsedPower;
-import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.factory.powers.apoli.ActionOverTime;
-import me.dueris.genesismc.factory.powers.apoli.DamageOverTime;
+import me.dueris.genesismc.factory.powers.TicksElapsedPower;
 import me.dueris.genesismc.factory.powers.apoli.FlightHandler;
-import me.dueris.genesismc.factory.powers.apoli.PreventEntityRender;
-import me.dueris.genesismc.factory.powers.apoli.RestrictArmor;
-import me.dueris.genesismc.factory.powers.apoli.Burn;
-
+import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;

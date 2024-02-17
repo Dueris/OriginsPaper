@@ -3,9 +3,7 @@ package me.dueris.genesismc.factory.conditions.damage;
 import me.dueris.genesismc.factory.conditions.Condition;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.conditions.entity.EntityCondition;
-import me.dueris.genesismc.factory.powers.apoli.RestrictArmor;
 import me.dueris.genesismc.util.Utils;
-
 import org.bukkit.Fluid;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;

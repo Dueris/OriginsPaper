@@ -3,7 +3,6 @@ package me.dueris.genesismc.factory.conditions.block;
 import me.dueris.genesismc.factory.TagRegistryParser;
 import me.dueris.genesismc.factory.conditions.Condition;
 import me.dueris.genesismc.factory.conditions.fluid.FluidCondition;
-import me.dueris.genesismc.factory.powers.apoli.RestrictArmor;
 import me.dueris.genesismc.registry.PowerContainer;
 import me.dueris.genesismc.util.Utils;
 import net.minecraft.core.Direction;

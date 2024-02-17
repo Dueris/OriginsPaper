@@ -1,10 +1,10 @@
 package me.dueris.genesismc.factory.conditions.item;
 
 import com.mojang.brigadier.StringReader;
+import me.dueris.genesismc.content.OrbOfOrigins;
 import me.dueris.genesismc.content.enchantment.EnchantTableHandler;
 import me.dueris.genesismc.factory.TagRegistryParser;
 import me.dueris.genesismc.factory.conditions.Condition;
-import me.dueris.genesismc.content.OrbOfOrigins;
 import me.dueris.genesismc.util.Utils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;

@@ -2,7 +2,6 @@ package me.dueris.genesismc.factory.conditions.biome;
 
 import me.dueris.genesismc.factory.TagRegistryParser;
 import me.dueris.genesismc.factory.conditions.Condition;
-import me.dueris.genesismc.factory.powers.apoli.RestrictArmor;
 import me.dueris.genesismc.util.Utils;
 import net.minecraft.core.BlockPos;
 import org.bukkit.Fluid;
@@ -16,7 +15,6 @@ import org.json.simple.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 
 import static me.dueris.genesismc.factory.conditions.ConditionExecutor.getResult;
