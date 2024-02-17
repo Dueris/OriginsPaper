@@ -83,7 +83,7 @@ public class OriginCommand extends BukkitRunnable implements Listener {
                                                 .then(argument("origin", ResourceLocationArgument.id())
                                                         .suggests((context, builder) -> {
                                                             CraftApoli.getOrigins().forEach((origin) -> {
-                                                                if(context.getInput().split(" ").length == 3 || (origin.getTag().startsWith(context.getInput().split(" ")[context.getInput().split(" ").length - 1])
+                                                                if(context.getInput().split(" ").length == 4 || (origin.getTag().startsWith(context.getInput().split(" ")[context.getInput().split(" ").length - 1])
                                                                         || origin.getTag().split(":")[1].startsWith(context.getInput().split(" ")[context.getInput().split(" ").length - 1]))){
                                                                     builder.suggest(origin.getTag());
                                                                 }
