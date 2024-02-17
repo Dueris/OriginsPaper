@@ -15,7 +15,7 @@ import org.bukkit.entity.Player;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class Burn extends CraftPower implements TicksElapsedPower {
+public class Burn extends CraftPower {
 
     private Long interval;
 
@@ -38,8 +38,7 @@ public class Burn extends CraftPower implements TicksElapsedPower {
     }
 
     @Override
-    public void run(Player p, HashMap<Player, Integer> ticksEMap) {
-        ticksEMap.putIfAbsent(p, 0);
+    public void run(Player p) {
         if (getPowerArray().contains(p)) {
             for (LayerContainer layer : CraftApoli.getLayers()) {
                 for (PowerContainer power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
@@ -48,13 +47,9 @@ public class Burn extends CraftPower implements TicksElapsedPower {
                         Bukkit.getLogger().warning(LangConfig.getLocalizedString(p, "powers.errors.burn"));
                         return;
                     }
+
                     interval = power.getLong("interval");
-
-                    int ticksE = ticksEMap.getOrDefault(p, 0);
-                    if (ticksE < interval) {
-                        ticksE++;
-
-                        ticksEMap.put(p, ticksE);
+                    if (Bukkit.getServer().getCurrentTick() % interval != 0) {
                         return;
                     } else {
                         if (p.isInWaterOrRainOrBubbleColumn()) return;
@@ -69,16 +64,10 @@ public class Burn extends CraftPower implements TicksElapsedPower {
                             setActive(p, power.getTag(), false);
                         }
 
-                        ticksEMap.put(p, 0);
                     }
                 }
             }
         }
-    }
-
-    @Override
-    public void run(Player p) {
-
     }
 
     @Override

@@ -3,6 +3,7 @@ package me.dueris.genesismc;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.factory.powers.TicksElapsedPower;
 import me.dueris.genesismc.factory.powers.apoli.FlightHandler;
+import me.dueris.genesismc.registry.PowerContainer;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
@@ -54,7 +55,7 @@ public class OriginScheduler {
     public static class OriginSchedulerTree extends BukkitRunnable implements Listener {
 
         public static FlightHandler flightHandler = new FlightHandler();
-        private final HashMap<Player, Integer> ticksEMap = new HashMap<>();
+        private final HashMap<Player, HashMap<PowerContainer, Integer>> ticksEMap = new HashMap<>();
 
         @Override
         public String toString() {

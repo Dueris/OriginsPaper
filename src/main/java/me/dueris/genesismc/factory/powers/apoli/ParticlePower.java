@@ -7,6 +7,7 @@ import me.dueris.genesismc.factory.powers.TicksElapsedPower;
 import me.dueris.genesismc.registry.LayerContainer;
 import me.dueris.genesismc.registry.PowerContainer;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
+import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Particle;
@@ -16,7 +17,7 @@ import org.json.simple.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class ParticlePower extends CraftPower implements TicksElapsedPower {
+public class ParticlePower extends CraftPower {
 
     @Override
     public void setActive(Player p, String tag, Boolean bool) {
@@ -30,11 +31,6 @@ public class ParticlePower extends CraftPower implements TicksElapsedPower {
             powers_active.put(p, new HashMap());
             setActive(p, tag, bool);
         }
-    }
-
-    @Override
-    public void run(Player player) {
-
     }
 
     public static boolean containsParams(PowerContainer power){
@@ -76,17 +72,14 @@ public class ParticlePower extends CraftPower implements TicksElapsedPower {
     }
 
     @Override
-    public void run(Player player, HashMap<Player, Integer> ticksEMap) {
-        ticksEMap.putIfAbsent(player, 0);
+    public void run(Player player) {
         if (getPowerArray().contains(player)) {
             for (LayerContainer layer : CraftApoli.getLayers()) {
                 for (PowerContainer power : OriginPlayerAccessor.getMultiPowerFileFromType(player, getPowerFile(), layer)) {
                     if (power == null) continue;
+                    int interval = power.getInt("frequency");
 
-                    int ticksE = ticksEMap.getOrDefault(player, 0);
-                    if (ticksE < power.getInt("frequency")) {
-                        ticksE++;
-                        ticksEMap.put(player, ticksE);
+                    if (Bukkit.getServer().getCurrentTick() % interval != 0) {
                         return;
                     } else {
                         ConditionExecutor executor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
@@ -135,7 +128,6 @@ public class ParticlePower extends CraftPower implements TicksElapsedPower {
                         } else {
                             setActive(player, power.getTag(), false);
                         }
-                        ticksEMap.put(player, 0);
                     }
                 }
             }

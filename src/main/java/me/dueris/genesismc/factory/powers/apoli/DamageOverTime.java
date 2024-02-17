@@ -1,5 +1,6 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
+import me.dueris.genesismc.OriginScheduler;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
@@ -26,7 +27,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
 
-public class DamageOverTime extends CraftPower implements Listener, TicksElapsedPower {
+public class DamageOverTime extends CraftPower implements Listener {
 
     private final String damage_type;
     private final int ticksE;
@@ -79,8 +80,7 @@ public class DamageOverTime extends CraftPower implements Listener, TicksElapsed
     }
 
     @Override
-    public void run(Player p, HashMap<Player, Integer> ticksEMap) {
-        ticksEMap.putIfAbsent(p, 0);
+    public void run(Player p) {
         if (getPowerArray().contains(p)) {
             for (LayerContainer layer : CraftApoli.getLayers()) {
                 for (PowerContainer power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
@@ -90,12 +90,7 @@ public class DamageOverTime extends CraftPower implements Listener, TicksElapsed
                         return;
                     }
                     interval = power.getLong("interval");
-
-                    int ticksE = ticksEMap.getOrDefault(p, 0);
-                    if (ticksE < interval) {
-                        ticksE++;
-
-                        ticksEMap.put(p, ticksE);
+                    if (Bukkit.getServer().getCurrentTick() % interval != 0) {
                         return;
                     } else {
                         if (p.getWorld().getDifficulty().equals(Difficulty.EASY)) {
@@ -163,35 +158,10 @@ public class DamageOverTime extends CraftPower implements Listener, TicksElapsed
                         } else {
                             setActive(p, power.getTag(), false);
                         }
-
-                        ticksEMap.put(p, 0);
                     }
                 }
             }
         }
-    }
-
-    @Override
-    public void run(Player p) {
-//        if (damage_over_time.contains(p)) {
-//            for (OriginContainer origin : OriginPlayer.getOrigin(p).values()) {
-//                PowerContainer power = origin.getPowerFileFromType("apoli:damage_over_time");
-//                if (power == null) continue;
-//                if (power.getInterval() == null) {
-//                    Bukkit.getLogger().warning(LangConfig.getLocalizedString(p, "powers.errors.damageOverTime"));
-//                    return;
-//                }
-//                interval = power.getInterval();
-//                if (ticksE < interval) {
-//                    ticksE++;
-//                    return;
-//                } else {
-//
-//                    ticksE = 0;
-//                }
-//            }
-//        }
-        //removed old code to use new OriginScheduler
     }
 
     @Override

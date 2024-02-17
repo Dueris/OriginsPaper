@@ -8,6 +8,7 @@ import me.dueris.genesismc.factory.powers.TicksElapsedPower;
 import me.dueris.genesismc.registry.LayerContainer;
 import me.dueris.genesismc.registry.PowerContainer;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
+import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -21,7 +22,7 @@ import java.util.List;
 
 import static me.dueris.genesismc.factory.powers.apoli.superclass.PreventSuperClass.prevent_entity_render;
 
-public class PreventEntityRender extends CraftPower implements TicksElapsedPower {
+public class PreventEntityRender extends CraftPower {
 
     private final int ticksE;
     private Long interval;
@@ -45,18 +46,15 @@ public class PreventEntityRender extends CraftPower implements TicksElapsedPower
         }
     }
 
-    public void run(Player p, HashMap<Player, Integer> ticksEMap) {
+    @Override
+    public void run(Player p) {
         if (GenesisMC.disableRender) return;
-        ticksEMap.putIfAbsent(p, 0);
-
         if (getPowerArray().contains(p)) {
             for (LayerContainer layer : CraftApoli.getLayers()) {
                 for (PowerContainer power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                     interval = 20L;
-                    int ticksE = ticksEMap.getOrDefault(p, 0);
-                    if (ticksE <= interval) {
-                        ticksE++;
-                        ticksEMap.put(p, ticksE);
+                    if (Bukkit.getServer().getCurrentTick() % interval != 0) {
+                        return;
                     } else {
                         for (Entity entity : getEntitiesWithinRender(p)) {
                             ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
@@ -108,11 +106,6 @@ public class PreventEntityRender extends CraftPower implements TicksElapsedPower
         }
 
         return entities;
-    }
-
-    @Override
-    public void run(Player p) {
-
     }
 
     @Override

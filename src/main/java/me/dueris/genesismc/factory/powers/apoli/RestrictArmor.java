@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Optional;
 
-public class RestrictArmor extends CraftPower implements Listener, TicksElapsedPower {
+public class RestrictArmor extends CraftPower implements Listener {
 
     private final int ticksE;
     private Long interval;
@@ -61,8 +61,7 @@ public class RestrictArmor extends CraftPower implements Listener, TicksElapsedP
     }
 
     @Override
-    public void run(Player p, HashMap<Player, Integer> ticksEMap) {
-        ticksEMap.putIfAbsent(p, 0);
+    public void run(Player p) {
         if (getPowerArray().contains(p)) {
             for (LayerContainer layer : CraftApoli.getLayers()) {
                 for (PowerContainer power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
@@ -73,10 +72,8 @@ public class RestrictArmor extends CraftPower implements Listener, TicksElapsedP
                     }
 
                     interval = power.getLong("interval");
-                    int ticksE = ticksEMap.getOrDefault(p, 0);
-                    if (ticksE <= interval) {
-                        ticksE++;
-                        ticksEMap.put(p, ticksE);
+                    if (Bukkit.getServer().getCurrentTick() % interval != 0) {
+                        return;
                     } else {
                         ConditionExecutor executor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                         if (executor.check("condition", "conditions", p, power, getPowerFile(), p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
@@ -84,7 +81,6 @@ public class RestrictArmor extends CraftPower implements Listener, TicksElapsedP
                         } else {
                             setActive(p, power.getTag(), false);
                         }
-                        ticksEMap.put(p, 0);
                     }
                 }
             }
@@ -167,11 +163,6 @@ public class RestrictArmor extends CraftPower implements Listener, TicksElapsedP
         if(passLegs){
             OriginPlayerAccessor.moveEquipmentInventory(p, EquipmentSlot.LEGS);
         }
-    }
-
-    @Override
-    public void run(Player p) {
-
     }
 
     @Override
