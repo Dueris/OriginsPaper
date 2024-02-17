@@ -1,56 +1,204 @@
 package me.dueris.genesismc.command;
 
-import me.dueris.genesismc.command.subcommands.SubCommand;
-import me.dueris.genesismc.command.subcommands.power.Dump;
-import me.dueris.genesismc.command.subcommands.power.Grant;
-import me.dueris.genesismc.command.subcommands.power.Has;
-import me.dueris.genesismc.command.subcommands.power.Remove;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
-import org.jetbrains.annotations.NotNull;
+import com.mojang.brigadier.CommandDispatcher;
+import me.dueris.genesismc.factory.CraftApoli;
+import me.dueris.genesismc.registry.LayerContainer;
+import me.dueris.genesismc.registry.PowerContainer;
+import me.dueris.genesismc.util.PowerUtils;
+import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.arguments.EntityArgument;
+import net.minecraft.commands.arguments.ResourceLocationArgument;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
+import org.bukkit.craftbukkit.v1_20_R3.util.CraftNamespacedKey;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
-public class PowerCommand extends Command {
-    private static final ArrayList<SubCommand> subCommands = new ArrayList<>();
+import static com.mojang.brigadier.Command.SINGLE_SUCCESS;
+import static net.minecraft.commands.Commands.*;
 
-    static {
-        subCommands.add(new Remove());
-        subCommands.add(new Has());
-        subCommands.add(new me.dueris.genesismc.command.subcommands.power.List());
-        subCommands.add(new Dump());
-        subCommands.add(new Grant());
-    }
+public class PowerCommand {
 
-    public PowerCommand() {
-        super("power");
-    }
+    public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
+        dispatcher.register(
+                literal("power").requires(source -> source.hasPermission(2))
+                        .then(literal("dump")
+                                .then(argument("power", ResourceLocationArgument.id())
+                                        .suggests((context, builder) -> {
+                                            CraftApoli.getPowers().forEach((power) -> {
+                                                if(context.getInput().split(" ").length == 3 || (power.getTag().startsWith(context.getInput().split(" ")[context.getInput().split(" ").length - 1])
+                                                        || power.getTag().split(":")[1].startsWith(context.getInput().split(" ")[context.getInput().split(" ").length - 1]))){
+                                                    builder.suggest(power.getTag());
+                                                }
+                                            });
+                                            return builder.buildFuture();
+                                        }).executes(context -> {
+                                            PowerContainer power = CraftApoli.keyedPowerContainers.get(CraftNamespacedKey.fromMinecraft(ResourceLocationArgument.getId(context, "power")).asString());
+                                            for(String string : power.getJsonData()){
+                                                context.getSource().sendSystemMessage(Component.literal(string));
+                                            }
+                                            return SINGLE_SUCCESS;
+                                        })
+                                )
+                        ).then(literal("grant")
+                                .then(argument("targets", EntityArgument.players())
+                                        .then(argument("power", ResourceLocationArgument.id())
+                                                .suggests((context, builder) -> {
+                                                    CraftApoli.getPowers().forEach((power) -> {
+                                                        if(context.getInput().split(" ").length == 3 || (power.getTag().startsWith(context.getInput().split(" ")[context.getInput().split(" ").length - 1])
+                                                        || power.getTag().split(":")[1].startsWith(context.getInput().split(" ")[context.getInput().split(" ").length - 1]))){
+                                                            builder.suggest(power.getTag());
+                                                        }
+                                                    });
+                                                    return builder.buildFuture();
+                                                }).executes(context -> {
+                                                    EntityArgument.getPlayers(context, "targets").forEach(player -> {
+                                                        if (OriginPlayerAccessor.playerPowerMapping.get(player.getBukkitEntity()) != null) {
+                                                            PowerContainer poweR = CraftApoli.keyedPowerContainers.get(CraftNamespacedKey.fromMinecraft(ResourceLocationArgument.getId(context, "power")).asString());
+                                                            ArrayList<PowerContainer> powersToEdit = new ArrayList<>();
+                                                            powersToEdit.add(poweR);
+                                                            powersToEdit.addAll(CraftApoli.getNestedPowers(poweR));
+                                                            for (PowerContainer power : powersToEdit) {
+                                                                try {
+                                                                    PowerUtils.grant(context.getSource().getBukkitSender(), power, player.getBukkitEntity(), CraftApoli.getLayerFromTag("origins:origin"));
+                                                                } catch (InstantiationException ex) {
+                                                                    throw new RuntimeException(ex);
+                                                                } catch (IllegalAccessException ex) {
+                                                                    throw new RuntimeException(ex);
+                                                                }
+                                                            }
+                                                        }
+                                                    });
+                                                    return SINGLE_SUCCESS;
+                                                }).then(argument("layer", ResourceLocationArgument.id())
+                                                        .executes(context -> {
+                                                            EntityArgument.getPlayers(context, "targets").forEach(player -> {
+                                                                if (OriginPlayerAccessor.playerPowerMapping.get(player.getBukkitEntity()) != null) {
+                                                                    PowerContainer poweR = CraftApoli.keyedPowerContainers.get(CraftNamespacedKey.fromMinecraft(ResourceLocationArgument.getId(context, "power")).asString());
+                                                                    ArrayList<PowerContainer> powersToEdit = new ArrayList<>();
+                                                                    powersToEdit.add(poweR);
+                                                                    powersToEdit.addAll(CraftApoli.getNestedPowers(poweR));
+                                                                    for (PowerContainer power : powersToEdit) {
+                                                                        try {
+                                                                            PowerUtils.grant(context.getSource().getBukkitSender(), power, player.getBukkitEntity(), CraftApoli.getLayerFromTag(CraftNamespacedKey.fromMinecraft(ResourceLocationArgument.getId(context, "layer")).asString()));
+                                                                        } catch (InstantiationException ex) {
+                                                                            throw new RuntimeException(ex);
+                                                                        } catch (IllegalAccessException ex) {
+                                                                            throw new RuntimeException(ex);
+                                                                        }
+                                                                    }
+                                                                }
+                                                            });
+                                                            return SINGLE_SUCCESS;
+                                                        })
+                                                )
+                                        )
+                                )
+                        ).then(literal("has")
+                                .then(argument("targets", EntityArgument.players())
+                                        .then(argument("power", ResourceLocationArgument.id())
+                                                .suggests((context, builder) -> {
+                                                    CraftApoli.getPowers().forEach((power) -> {
+                                                        if(context.getInput().split(" ").length == 3 || (power.getTag().startsWith(context.getInput().split(" ")[context.getInput().split(" ").length - 1])
+                                                                || power.getTag().split(":")[1].startsWith(context.getInput().split(" ")[context.getInput().split(" ").length - 1]))){
+                                                            builder.suggest(power.getTag());
+                                                        }
+                                                    });
+                                                    return builder.buildFuture();
+                                                }).executes(context -> {
+                                                    AtomicBoolean passed = new AtomicBoolean(false);
+                                                    EntityArgument.getPlayers(context, "targets").forEach(player -> {
+                                                        for (LayerContainer layer : CraftApoli.getLayers()) {
+                                                            for (PowerContainer power : OriginPlayerAccessor.playerPowerMapping.get(player.getBukkitEntity()).get(layer)) {
+                                                                if (passed.get()) continue;
+                                                                if (power.getTag().equals(CraftNamespacedKey.fromMinecraft(ResourceLocationArgument.getId(context, "power")).asString())) {
+                                                                    passed.set(true);
+                                                                }
+                                                            }
+                                                        }
+                                                        if (passed.get()) {
+                                                            context.getSource().sendSystemMessage(Component.literal("Test passed"));
+                                                        } else {
+                                                            context.getSource().sendFailure(Component.literal("Test failed"));
+                                                        }
+                                                    });
 
-    public ArrayList<SubCommand> getSubCommands() {
-        return subCommands;
-    }
+                                                    return SINGLE_SUCCESS;
+                                                })
+                                        )
+                                )
+                        ).then(literal("list")
+                                .then(argument("targets", EntityArgument.players())
+                                        .executes(context -> {
+                                            for(ServerPlayer player : EntityArgument.getPlayers(context, "targets")){
+                                                for (LayerContainer layerContainer : CraftApoli.getLayers()) {
+                                                    java.util.List<PowerContainer> powers = OriginPlayerAccessor.playerPowerMapping.get(player.getBukkitEntity()).get(layerContainer);
+                                                    if(powers == null || powers.isEmpty()){
+                                                        context.getSource().sendFailure(Component.literal("Entity %name% does not have any powers".replace("%name%", player.getBukkitEntity().getName())));
+                                                    }else{
+                                                        String msg = "Entity %name% has %size% powers: [%powers%]".replace("%name%", player.getBukkitEntity().getName()).replace("%size%", String.valueOf(powers.size()));
+                                                        final String[] powerString = {""};
+                                                        powers.forEach((power) -> {
+                                                            powerString[0] = powerString[0] + power.getTag() + ", ";
+                                                        });
+                                                        String finMsg = msg.replace("%powers%", powerString[0]);
+                                                        context.getSource().sendSystemMessage(Component.literal(finMsg.replace(", ]", "]")));
+                                                    }
+                                                }
+                                            }
+                                            return SINGLE_SUCCESS;
+                                        })
+                                )
+                        ).then(literal("remove")
+                                .then(argument("targets", EntityArgument.players())
+                                        .then(argument("power", ResourceLocationArgument.id())
+                                                .suggests((context, builder) -> {
+                                                    CraftApoli.getPowers().forEach((power) -> {
+                                                        if(context.getInput().split(" ").length == 3 || (power.getTag().startsWith(context.getInput().split(" ")[context.getInput().split(" ").length - 1])
+                                                                || power.getTag().split(":")[1].startsWith(context.getInput().split(" ")[context.getInput().split(" ").length - 1]))){
+                                                            builder.suggest(power.getTag());
+                                                        }
+                                                    });
+                                                    return builder.buildFuture();
+                                                }).executes(context -> {
+                                                    EntityArgument.getPlayers(context, "targets").forEach(p -> {
+                                                        String arg = CraftNamespacedKey.fromMinecraft(ResourceLocationArgument.getId(context, "power")).asString();
+                                                        String layer = "origins:origin";
 
-    @Override
-    public @NotNull List<String> tabComplete(@NotNull CommandSender sender, @NotNull String alias, @NotNull String[] args) throws IllegalArgumentException {
-        AutoComplete tabAutoComplete = new AutoComplete();
-        return tabAutoComplete.onTabComplete(sender, this, alias, args);
-    }
+                                                        try {
+                                                            PowerUtils.remove(context.getSource().getBukkitSender(), CraftApoli.getPowerContainerFromTag(arg), p.getBukkitEntity(), CraftApoli.getLayerFromTag(layer));
+                                                        } catch (InstantiationException e) {
+                                                            throw new RuntimeException(e);
+                                                        } catch (IllegalAccessException e) {
+                                                            throw new RuntimeException(e);
+                                                        }
+                                                    });
 
-    @Override
-    public boolean execute(@NotNull CommandSender sender, @NotNull String commandLabel, @NotNull String[] args) {
-        if (!sender.isOp()) return false;
-        if (args.length > 0) {
-            for (int i = 0; i < getSubCommands().size(); i++) {
-                if (args[0].equalsIgnoreCase(getSubCommands().get(i).getName())) {
-                    getSubCommands().get(i).perform(sender, args);
-                    //OriginCommandEvent event = new OriginCommandEvent(sender);
-                    //getServer().getPluginManager().callEvent(event);
-                }
+                                                    return SINGLE_SUCCESS;
+                                                }).then(argument("layer", ResourceLocationArgument.id())
+                                                        .executes(context -> {
+                                                            EntityArgument.getPlayers(context, "targets").forEach(p -> {
+                                                                String arg = CraftNamespacedKey.fromMinecraft(ResourceLocationArgument.getId(context, "power")).asString();
+                                                                String layer = CraftNamespacedKey.fromMinecraft(ResourceLocationArgument.getId(context, "layer")).asString();
 
-            }
+                                                                try {
+                                                                    PowerUtils.remove(context.getSource().getBukkitSender(), CraftApoli.getPowerContainerFromTag(arg), p.getBukkitEntity(), CraftApoli.getLayerFromTag(layer));
+                                                                } catch (InstantiationException e) {
+                                                                    throw new RuntimeException(e);
+                                                                } catch (IllegalAccessException e) {
+                                                                    throw new RuntimeException(e);
+                                                                }
+                                                            });
 
-        }
-        return true;
+                                                            return SINGLE_SUCCESS;
+                                                        })
+                                                )
+                                        )
+                                )
+                        )
+
+        );
     }
 }

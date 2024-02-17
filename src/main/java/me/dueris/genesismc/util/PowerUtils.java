@@ -60,34 +60,50 @@ public class PowerUtils {
         }
     }
 
-    public static void remove(CommandSender executor, PowerContainer power, Player p, LayerContainer layer) throws InstantiationException, IllegalAccessException {
-        if (OriginPlayerAccessor.playerPowerMapping.get(p).get(layer).contains(power)) {
-            OriginPlayerAccessor.playerPowerMapping.get(p).get(layer).remove(power);
-            ArrayList<String> powerRemovedTypes = new ArrayList<>();
-            ArrayList<Class<? extends CraftPower>> powerRemovedClasses = new ArrayList<>();
-            Class<? extends CraftPower> c = Inventory.class;
-            CraftPower craftPower = null;
-            try {
-                craftPower = c.newInstance();
-            } catch (InstantiationException | IllegalAccessException ee) {
-                throw new RuntimeException(ee);
-            }
-            if (power.getType().equals(craftPower.getPowerFile())) {
-                craftPower.getPowerArray().remove(p);
-                powerRemovedTypes.add(c.newInstance().getPowerFile());
-                powerRemovedClasses.add(c);
-                powersAppliedList.get(p).remove(c);
-                if (GenesisConfigs.getMainConfig().getString("console-startup-debug").equalsIgnoreCase("true")) {
-                    Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "Removed power[" + power.getTag() + "] to player " + p.getName());
+    public static void remove(CommandSender executor, PowerContainer poweR, Player p, LayerContainer layer) throws InstantiationException, IllegalAccessException {
+        if(OriginPlayerAccessor.playerPowerMapping.get(p) != null){
+            ArrayList<PowerContainer> powersToEdit = new ArrayList<>();
+            powersToEdit.add(poweR);
+            powersToEdit.addAll(CraftApoli.getNestedPowers(poweR));
+            for (PowerContainer power : powersToEdit) {
+                try {
+                    if (OriginPlayerAccessor.playerPowerMapping.get(p).get(layer).contains(power)) {
+                        OriginPlayerAccessor.playerPowerMapping.get(p).get(layer).remove(power);
+                        ArrayList<String> powerRemovedTypes = new ArrayList<>();
+                        ArrayList<Class<? extends CraftPower>> powerRemovedClasses = new ArrayList<>();
+                        for (Class<? extends CraftPower> c : CraftPower.getRegistry()) {
+                            CraftPower craftPower = null;
+                            try {
+                                craftPower = c.newInstance();
+                            } catch (InstantiationException | IllegalAccessException ee) {
+                                throw new RuntimeException(ee);
+                            }
+                            if (power.getType().equals(craftPower.getPowerFile())) {
+                                craftPower.getPowerArray().remove(p);
+                                try {
+                                    powerRemovedTypes.add(c.newInstance().getPowerFile());
+                                } catch (InstantiationException | IllegalAccessException ee) {
+                                    throw new RuntimeException(ee);
+                                }
+                                powerRemovedClasses.add(c);
+                                powersAppliedList.get(p).remove(c);
+                                if (GenesisConfigs.getMainConfig().getString("console-startup-debug").equalsIgnoreCase("true")) {
+                                    Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "Removed power[" + power.getTag() + "] to player " + p.getName());
+                                }
+                                executor.sendMessage("Entity %name% had the power %power% removed"
+                                        .replace("%power%", power.getName())
+                                        .replace("%name%", p.getName())
+                                );
+                            }
+                        }
+                        new PowerUpdateEvent(p, power, true).callEvent();
+                    } else {
+
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
-            executor.sendMessage("Entity %name% had the power %power% removed"
-                    .replace("%power%", power.getName())
-                    .replace("%name%", p.getName())
-            );
-            new PowerUpdateEvent(p, power, true).callEvent();
-        } else {
-
         }
     }
 }
