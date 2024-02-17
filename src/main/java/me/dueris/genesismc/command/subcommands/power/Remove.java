@@ -8,6 +8,7 @@ import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.factory.powers.apoli.Inventory;
 import me.dueris.genesismc.registry.PowerContainer;
 import me.dueris.genesismc.storage.GenesisConfigs;
+import me.dueris.genesismc.util.PowerUtils;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -58,38 +59,7 @@ public class Remove extends SubCommand {
                 powersToEdit.addAll(CraftApoli.getNestedPowers(poweR));
                 for (PowerContainer power : powersToEdit) {
                     try {
-                        if (OriginPlayerAccessor.playerPowerMapping.get(p).get(CraftApoli.getLayerFromTag(layerTag)).contains(power)) {
-                            OriginPlayerAccessor.playerPowerMapping.get(p).get(CraftApoli.getLayerFromTag(layerTag)).remove(power);
-                            ArrayList<String> powerRemovedTypes = new ArrayList<>();
-                            ArrayList<Class<? extends CraftPower>> powerRemovedClasses = new ArrayList<>();
-                            Class<? extends CraftPower> c = Inventory.class;
-                            CraftPower craftPower = null;
-                            try {
-                                craftPower = c.newInstance();
-                            } catch (InstantiationException | IllegalAccessException ee) {
-                                throw new RuntimeException(ee);
-                            }
-                            if (power.getType().equals(craftPower.getPowerFile())) {
-                                craftPower.getPowerArray().remove(p);
-                                try {
-                                    powerRemovedTypes.add(c.newInstance().getPowerFile());
-                                } catch (InstantiationException | IllegalAccessException ee) {
-                                    throw new RuntimeException(ee);
-                                }
-                                powerRemovedClasses.add(c);
-                                powersAppliedList.get(p).remove(c);
-                                if (GenesisConfigs.getMainConfig().getString("console-startup-debug").equalsIgnoreCase("true")) {
-                                    Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "Removed power[" + power.getTag() + "] to player " + p.getName());
-                                }
-                            }
-                            sender.sendMessage("Entity %name% had the power %power% removed"
-                                    .replace("%power%", power.getName())
-                                    .replace("%name%", p.getName())
-                            );
-                            new PowerUpdateEvent(p, power, true).callEvent();
-                        } else {
-
-                        }
+                        PowerUtils.remove(sender, power, p, CraftApoli.getLayerFromTag(layerTag));
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
