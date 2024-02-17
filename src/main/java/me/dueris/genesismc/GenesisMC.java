@@ -5,7 +5,6 @@ import io.papermc.paper.event.server.ServerResourcesReloadedEvent;
 import me.dueris.genesismc.command.OriginCommand;
 import me.dueris.genesismc.command.PowerCommand;
 import me.dueris.genesismc.command.ResourceCommand;
-import me.dueris.genesismc.command.subcommands.InInfoCheck;
 import me.dueris.genesismc.content.ContentTicker;
 import me.dueris.genesismc.content.WaterProtBook;
 import me.dueris.genesismc.content.enchantment.AnvilHandler;
@@ -318,7 +317,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         getServer().getPluginManager().registerEvents(new KeybindingUtils(), this);
         getServer().getPluginManager().registerEvents(new StructureGeneration(), this);
 
-        BukkitRunnable[] independentTickers = {new GuiTicker(), new ContentTicker(), new InInfoCheck()};
+        BukkitRunnable[] independentTickers = {new GuiTicker(), new ContentTicker(), new OriginCommand()};
         WaterBreathe.start();
         for(BukkitRunnable runnable : independentTickers){
             runnable.runTaskTimer(GenesisMC.getPlugin(), 0, 1);

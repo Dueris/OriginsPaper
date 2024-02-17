@@ -42,6 +42,7 @@ import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -53,7 +54,7 @@ import static net.minecraft.commands.Commands.argument;
 import static net.minecraft.commands.Commands.literal;
 import static org.bukkit.Bukkit.getServer;
 
-public class OriginCommand implements Listener {
+public class OriginCommand extends BukkitRunnable implements Listener {
 
     public static final HashMap<Player, Integer> playerPage = new HashMap<>();
     public static EnumSet<Material> wearable;
@@ -468,6 +469,16 @@ public class OriginCommand implements Listener {
                 Player p = (Player) e.getWhoClicked();
                 p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 10, 9);
                 e.getWhoClicked().getInventory().close();
+            }
+        }
+    }
+
+    @Override
+    public void run() {
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            if (!player.getOpenInventory().getTitle().startsWith("Info")) {
+                playerPage.remove(player);
+                playerOrigins.remove(player);
             }
         }
     }
