@@ -23,10 +23,7 @@ import me.dueris.genesismc.factory.conditions.entity.EntityCondition;
 import me.dueris.genesismc.factory.conditions.fluid.FluidCondition;
 import me.dueris.genesismc.factory.conditions.item.ItemCondition;
 import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.factory.powers.apoli.EntityGroupManager;
-import me.dueris.genesismc.factory.powers.apoli.ModelColor;
-import me.dueris.genesismc.factory.powers.apoli.RecipePower;
-import me.dueris.genesismc.factory.powers.apoli.WaterBreathe;
+import me.dueris.genesismc.factory.powers.apoli.*;
 import me.dueris.genesismc.factory.powers.apoli.provider.origins.BounceSlimeBlock;
 import me.dueris.genesismc.factory.powers.apoli.provider.origins.MimicWarden;
 import me.dueris.genesismc.integration.PlaceHolderAPI;
@@ -285,6 +282,11 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         Bukkit.getLogger().info("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
         // Shutdown executor, we dont need it anymore
         loaderThreadPool.shutdown();
+        OriginCommand.commandProvidedTaggedRecipies.addAll(RecipePower.taggedRegistry.keySet());
+        OriginCommand.commandProvidedPowers.addAll(CraftApoli.getPowers());
+        OriginCommand.commandProvidedOrigins.addAll(CraftApoli.getOrigins());
+        OriginCommand.commandProvidedLayers.addAll(CraftApoli.getLayers());
+        ResourceCommand.registeredBars.putAll(Resource.registeredBars);
         try {
             Bootstrap.deleteDirectory(GenesisMC.getTmpFolder().toPath(), true);
         } catch (IOException e) {
@@ -329,6 +331,10 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         CraftApoli.unloadData();
         OriginPlayerAccessor.playerPowerMapping.clear();
         OriginPlayerAccessor.powersAppliedList.clear();
+        OriginCommand.commandProvidedLayers.clear();
+        OriginCommand.commandProvidedOrigins.clear();
+        OriginCommand.commandProvidedPowers.clear();
+        OriginCommand.commandProvidedTaggedRecipies.clear();
         RecipePower.recipeMapping.clear();
         RecipePower.tags.clear();
         CraftPower.getRegistry().clear();

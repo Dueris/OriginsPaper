@@ -60,6 +60,10 @@ public class OriginCommand extends BukkitRunnable implements Listener {
     public static EnumSet<Material> wearable;
     @SuppressWarnings("FieldMayBeFinal")
     public static HashMap<Player, ArrayList<OriginContainer>> playerOrigins = new HashMap<>();
+    public static List<OriginContainer> commandProvidedOrigins = new ArrayList<>();
+    public static List<LayerContainer> commandProvidedLayers = new ArrayList<>();
+    public static List<PowerContainer> commandProvidedPowers = new ArrayList<>();
+    public static List<String> commandProvidedTaggedRecipies = new ArrayList<>();
 
     static {
         wearable = EnumSet.of(Material.ENCHANTED_BOOK, Material.BOOK, Material.PUMPKIN, Material.CARVED_PUMPKIN, Material.ELYTRA, Material.TURTLE_HELMET, Material.LEATHER_CHESTPLATE, Material.LEATHER_BOOTS, Material.LEATHER_LEGGINGS, Material.LEATHER_HELMET, Material.CHAINMAIL_BOOTS, Material.CHAINMAIL_CHESTPLATE, Material.CHAINMAIL_HELMET, Material.CHAINMAIL_LEGGINGS, Material.IRON_HELMET, Material.IRON_CHESTPLATE, Material.IRON_LEGGINGS, Material.IRON_BOOTS, Material.GOLDEN_HELMET, Material.GOLDEN_CHESTPLATE, Material.GOLDEN_LEGGINGS, Material.GOLDEN_BOOTS, Material.DIAMOND_HELMET, Material.DIAMOND_CHESTPLATE, Material.DIAMOND_LEGGINGS, Material.DIAMOND_BOOTS, Material.NETHERITE_HELMET, Material.NETHERITE_CHESTPLATE, Material.NETHERITE_LEGGINGS, Material.NETHERITE_BOOTS);
@@ -72,7 +76,7 @@ public class OriginCommand extends BukkitRunnable implements Listener {
                                 .then(argument("targets", EntityArgument.players())
                                         .then(argument("layer", ResourceLocationArgument.id())
                                                 .suggests((context, builder) -> {
-                                                    CraftApoli.getLayers().forEach((layer) -> {
+                                                    commandProvidedLayers.forEach((layer) -> {
                                                         if(context.getInput().split(" ").length == 3 || (layer.getTag().startsWith(context.getInput().split(" ")[context.getInput().split(" ").length - 1])
                                                                 || layer.getTag().split(":")[1].startsWith(context.getInput().split(" ")[context.getInput().split(" ").length - 1]))){
                                                             builder.suggest(layer.getTag());
@@ -82,7 +86,7 @@ public class OriginCommand extends BukkitRunnable implements Listener {
                                                 })
                                                 .then(argument("origin", ResourceLocationArgument.id())
                                                         .suggests((context, builder) -> {
-                                                            CraftApoli.getOrigins().forEach((origin) -> {
+                                                            commandProvidedOrigins.forEach((origin) -> {
                                                                 if(context.getInput().split(" ").length == 4 || (origin.getTag().startsWith(context.getInput().split(" ")[context.getInput().split(" ").length - 1])
                                                                         || origin.getTag().split(":")[1].startsWith(context.getInput().split(" ")[context.getInput().split(" ").length - 1]))){
                                                                     builder.suggest(origin.getTag());
@@ -136,7 +140,7 @@ public class OriginCommand extends BukkitRunnable implements Listener {
                                 .then(argument("targets", EntityArgument.players())
                                         .then(argument("layer", ResourceLocationArgument.id())
                                                 .suggests((context, builder) -> {
-                                                    CraftApoli.getLayers().forEach((layer) -> {
+                                                    commandProvidedLayers.forEach((layer) -> {
                                                         if(context.getInput().split(" ").length == 3 || (layer.getTag().startsWith(context.getInput().split(" ")[context.getInput().split(" ").length - 1])
                                                                 || layer.getTag().split(":")[1].startsWith(context.getInput().split(" ")[context.getInput().split(" ").length - 1]))){
                                                             builder.suggest(layer.getTag());
@@ -171,7 +175,7 @@ public class OriginCommand extends BukkitRunnable implements Listener {
                                         })
                                         .then(argument("layer", ResourceLocationArgument.id())
                                                 .suggests((context, builder) -> {
-                                                    CraftApoli.getLayers().forEach((layer) -> {
+                                                    commandProvidedLayers.forEach((layer) -> {
                                                         if(context.getInput().split(" ").length == 3 || (layer.getTag().startsWith(context.getInput().split(" ")[context.getInput().split(" ").length - 1])
                                                                 || layer.getTag().split(":")[1].startsWith(context.getInput().split(" ")[context.getInput().split(" ").length - 1]))){
                                                             builder.suggest(layer.getTag());
@@ -213,7 +217,7 @@ public class OriginCommand extends BukkitRunnable implements Listener {
                                 .then(argument("targets", EntityArgument.players())
                                         .then(argument("namespace", ResourceLocationArgument.id())
                                                 .suggests((context, builder) -> {
-                                                    RecipePower.taggedRegistry.keySet().forEach((key) -> {
+                                                    commandProvidedTaggedRecipies.forEach((key) -> {
                                                         builder.suggest(key);
                                                     });
                                                     return builder.buildFuture();

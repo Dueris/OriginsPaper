@@ -13,10 +13,13 @@ import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.commands.arguments.ResourceLocationArgument;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
+import org.apache.commons.lang3.tuple.Pair;
 import org.bukkit.boss.BossBar;
 import org.bukkit.craftbukkit.v1_20_R3.util.CraftNamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
+
+import java.util.HashMap;
 
 import static com.mojang.brigadier.Command.SINGLE_SUCCESS;
 import static me.dueris.genesismc.factory.actions.Actions.resourceChangeTimeout;
@@ -25,6 +28,8 @@ import static net.minecraft.commands.Commands.literal;
 
 public class ResourceCommand {
 
+    public static HashMap<Player, HashMap<String, Pair<BossBar, Integer>>> registeredBars = new HashMap();
+
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(
                 literal("resource").requires(source -> source.hasPermission(2))
@@ -32,7 +37,7 @@ public class ResourceCommand {
                                 .then(argument("targets", EntityArgument.players())
                                         .then(argument("power", ResourceLocationArgument.id())
                                                 .suggests((context, builder) -> {
-                                                    CraftApoli.getPowers().forEach((power) -> {
+                                                    OriginCommand.commandProvidedPowers.forEach((power) -> {
                                                         if(context.getInput().split(" ").length == 3 || (power.getTag().startsWith(context.getInput().split(" ")[context.getInput().split(" ").length - 1])
                                                                 || power.getTag().split(":")[1].startsWith(context.getInput().split(" ")[context.getInput().split(" ").length - 1]))){
                                                             builder.suggest(power.getTag());
@@ -43,7 +48,7 @@ public class ResourceCommand {
                                                     boolean tru = false;
                                                     for(ServerPlayer player : EntityArgument.getPlayers(context, "targets")){
                                                         Player p = player.getBukkitEntity();
-                                                        for (LayerContainer layerContainer : CraftApoli.getLayers()) {
+                                                        for (LayerContainer layerContainer : OriginCommand.commandProvidedLayers) {
                                                             for (PowerContainer powerContainer : OriginPlayerAccessor.playerPowerMapping.get(p).get(layerContainer)) {
                                                                 if (powerContainer.getType().equals("apoli:cooldown") || powerContainer.getType().equals("apoli:resource")) {
                                                                     if (powerContainer.getTag().equals(CraftNamespacedKey.fromMinecraft(ResourceLocationArgument.getId(context, "power")).asString())) {
@@ -65,7 +70,7 @@ public class ResourceCommand {
                                 .then(argument("targets", EntityArgument.players())
                                         .then(argument("power", ResourceLocationArgument.id())
                                                 .suggests((context, builder) -> {
-                                                    CraftApoli.getPowers().forEach((power) -> {
+                                                    OriginCommand.commandProvidedPowers.forEach((power) -> {
                                                         if(context.getInput().split(" ").length == 3 || (power.getTag().startsWith(context.getInput().split(" ")[context.getInput().split(" ").length - 1])
                                                                 || power.getTag().split(":")[1].startsWith(context.getInput().split(" ")[context.getInput().split(" ").length - 1]))){
                                                             builder.suggest(power.getTag());
@@ -74,11 +79,11 @@ public class ResourceCommand {
                                                     return builder.buildFuture();
                                                 }).executes(context -> {
                                                     EntityArgument.getPlayers(context, "targets").forEach(player -> {
-                                                        if (Resource.registeredBars.containsKey(player.getBukkitEntity()) && Resource.registeredBars.get(player.getBukkitEntity()).containsKey(CraftNamespacedKey.fromMinecraft(ResourceLocationArgument.getId(context, "power")).asString())) {
+                                                        if (registeredBars.containsKey(player.getBukkitEntity()) && registeredBars.get(player.getBukkitEntity()).containsKey(CraftNamespacedKey.fromMinecraft(ResourceLocationArgument.getId(context, "power")).asString())) {
                                                             context.getSource().sendSystemMessage(Component.literal("$1 has %value% $2"
                                                                     .replace("$2", CraftNamespacedKey.fromMinecraft(ResourceLocationArgument.getId(context, "power")).asString())
                                                                     .replace("$1", player.getBukkitEntity().getName())
-                                                                    .replace("%value%", String.valueOf(Resource.registeredBars.get(player.getBukkitEntity()).get(CraftNamespacedKey.fromMinecraft(ResourceLocationArgument.getId(context, "power")).asString()).getLeft().getProgress()))));
+                                                                    .replace("%value%", String.valueOf(registeredBars.get(player.getBukkitEntity()).get(CraftNamespacedKey.fromMinecraft(ResourceLocationArgument.getId(context, "power")).asString()).getLeft().getProgress()))));
                                                         } else {
                                                             context.getSource().sendFailure(Component.literal("Can't get value of $2 for $1; none is set"
                                                                     .replace("$2", CraftNamespacedKey.fromMinecraft(ResourceLocationArgument.getId(context, "power")).asString())
@@ -93,7 +98,7 @@ public class ResourceCommand {
                                 .then(argument("targets", EntityArgument.players())
                                         .then(argument("power", ResourceLocationArgument.id())
                                                 .suggests((context, builder) -> {
-                                                    CraftApoli.getPowers().forEach((power) -> {
+                                                    OriginCommand.commandProvidedPowers.forEach((power) -> {
                                                         if(context.getInput().split(" ").length == 3 || (power.getTag().startsWith(context.getInput().split(" ")[context.getInput().split(" ").length - 1])
                                                                 || power.getTag().split(":")[1].startsWith(context.getInput().split(" ")[context.getInput().split(" ").length - 1]))){
                                                             builder.suggest(power.getTag());

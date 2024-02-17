@@ -28,7 +28,7 @@ public class PowerCommand {
                         .then(literal("dump")
                                 .then(argument("power", ResourceLocationArgument.id())
                                         .suggests((context, builder) -> {
-                                            CraftApoli.getPowers().forEach((power) -> {
+                                            OriginCommand.commandProvidedPowers.forEach((power) -> {
                                                 if(context.getInput().split(" ").length == 3 || (power.getTag().startsWith(context.getInput().split(" ")[context.getInput().split(" ").length - 1])
                                                         || power.getTag().split(":")[1].startsWith(context.getInput().split(" ")[context.getInput().split(" ").length - 1]))){
                                                     builder.suggest(power.getTag());
@@ -47,7 +47,7 @@ public class PowerCommand {
                                 .then(argument("targets", EntityArgument.players())
                                         .then(argument("power", ResourceLocationArgument.id())
                                                 .suggests((context, builder) -> {
-                                                    CraftApoli.getPowers().forEach((power) -> {
+                                                    OriginCommand.commandProvidedPowers.forEach((power) -> {
                                                         if(context.getInput().split(" ").length == 3 || (power.getTag().startsWith(context.getInput().split(" ")[context.getInput().split(" ").length - 1])
                                                         || power.getTag().split(":")[1].startsWith(context.getInput().split(" ")[context.getInput().split(" ").length - 1]))){
                                                             builder.suggest(power.getTag());
@@ -101,7 +101,7 @@ public class PowerCommand {
                                 .then(argument("targets", EntityArgument.players())
                                         .then(argument("power", ResourceLocationArgument.id())
                                                 .suggests((context, builder) -> {
-                                                    CraftApoli.getPowers().forEach((power) -> {
+                                                    OriginCommand.commandProvidedPowers.forEach((power) -> {
                                                         if(context.getInput().split(" ").length == 3 || (power.getTag().startsWith(context.getInput().split(" ")[context.getInput().split(" ").length - 1])
                                                                 || power.getTag().split(":")[1].startsWith(context.getInput().split(" ")[context.getInput().split(" ").length - 1]))){
                                                             builder.suggest(power.getTag());
@@ -111,7 +111,7 @@ public class PowerCommand {
                                                 }).executes(context -> {
                                                     AtomicBoolean passed = new AtomicBoolean(false);
                                                     EntityArgument.getPlayers(context, "targets").forEach(player -> {
-                                                        for (LayerContainer layer : CraftApoli.getLayers()) {
+                                                        for (LayerContainer layer : OriginCommand.commandProvidedLayers) {
                                                             for (PowerContainer power : OriginPlayerAccessor.playerPowerMapping.get(player.getBukkitEntity()).get(layer)) {
                                                                 if (passed.get()) continue;
                                                                 if (power.getTag().equals(CraftNamespacedKey.fromMinecraft(ResourceLocationArgument.getId(context, "power")).asString())) {
@@ -134,7 +134,7 @@ public class PowerCommand {
                                 .then(argument("targets", EntityArgument.players())
                                         .executes(context -> {
                                             for(ServerPlayer player : EntityArgument.getPlayers(context, "targets")){
-                                                for (LayerContainer layerContainer : CraftApoli.getLayers()) {
+                                                for (LayerContainer layerContainer : OriginCommand.commandProvidedLayers) {
                                                     java.util.List<PowerContainer> powers = OriginPlayerAccessor.playerPowerMapping.get(player.getBukkitEntity()).get(layerContainer);
                                                     if(powers == null || powers.isEmpty()){
                                                         context.getSource().sendFailure(Component.literal("Entity %name% does not have any powers".replace("%name%", player.getBukkitEntity().getName())));
@@ -156,7 +156,7 @@ public class PowerCommand {
                                 .then(argument("targets", EntityArgument.players())
                                         .then(argument("power", ResourceLocationArgument.id())
                                                 .suggests((context, builder) -> {
-                                                    CraftApoli.getPowers().forEach((power) -> {
+                                                    OriginCommand.commandProvidedPowers.forEach((power) -> {
                                                         if(context.getInput().split(" ").length == 3 || (power.getTag().startsWith(context.getInput().split(" ")[context.getInput().split(" ").length - 1])
                                                                 || power.getTag().split(":")[1].startsWith(context.getInput().split(" ")[context.getInput().split(" ").length - 1]))){
                                                             builder.suggest(power.getTag());
