@@ -146,7 +146,7 @@ public class RecipePower extends CraftPower implements Listener {
                 for(PowerContainer power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)){
                     JSONObject recipe = power.get("recipe");
                     String id = recipe.get("id").toString();
-                    if(tags.contains(id)){
+                    if(taggedRegistry.keySet().contains(id)){
                         if(recipeMapping.containsKey(p)){
                             recipeMapping.get(p).add(id);
                         }else{
@@ -191,6 +191,7 @@ public class RecipePower extends CraftPower implements Listener {
             }
         }
         if(cancel && !key.startsWith("minecraft:")){ // Assumed to be a minecraft key if it has that namespace, so allow that to pass.
+            if(key.equalsIgnoreCase("origins:orb_of_origins")) return;
             e.getInventory().setResult(null);
         }
     }
