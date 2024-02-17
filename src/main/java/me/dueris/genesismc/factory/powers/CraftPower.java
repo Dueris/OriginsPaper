@@ -30,8 +30,8 @@ public abstract class CraftPower implements Power {
             List<Class<CraftPower>> classes = new ArrayList<>();
             try(ScanResult result = new ClassGraph().whitelistPackages("me.dueris.genesismc.factory.powers").enableClassInfo().scan()){
                 for(Class<CraftPower> power : result.getSubclasses(CraftPower.class).loadClasses(CraftPower.class)){
-                    tryPreloadClass(power);
                     if (!power.isInterface() && !power.isEnum() && !(power.isAssignableFrom(DontRegister.class) || DontRegister.class.isAssignableFrom(power))){
+                        tryPreloadClass(power);
                         classes.add(power);
                     }
                 }
