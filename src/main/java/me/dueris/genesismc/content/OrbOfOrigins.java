@@ -38,7 +38,6 @@ public class OrbOfOrigins {
         meta.getCustomTagContainer().setCustomTag(new NamespacedKey(GenesisMC.getPlugin(), "origins"), ItemTagType.STRING, "orb_of_origin");
         meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
         item.setItemMeta(meta);
-        orb = item;
 
         try {
             //Shaped Recipe for ORB_OF_ORIGINS
@@ -57,6 +56,7 @@ public class OrbOfOrigins {
                 sr.setIngredient('8', Material.valueOf(getOrbCon().get("crafting.bottom.middle").toString()));
                 sr.setIngredient('9', Material.valueOf(getOrbCon().get("crafting.bottom.right").toString()));
                 Bukkit.getServer().addRecipe(sr);
+                orb = sr.getResult().clone();
 
                 RecipePower.taggedRegistry.put(sr.key().asString(), sr);
             }

@@ -1,11 +1,11 @@
-package me.dueris.genesismc.command.subcommands.origin.Info;
+package me.dueris.genesismc.command.subcommands;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import static me.dueris.genesismc.command.subcommands.origin.Info.Info.playerOrigins;
-import static me.dueris.genesismc.command.subcommands.origin.Info.Info.playerPage;
+import static me.dueris.genesismc.command.OriginCommand.playerOrigins;
+import static me.dueris.genesismc.command.OriginCommand.playerPage;
 
 public class InInfoCheck extends BukkitRunnable {
 

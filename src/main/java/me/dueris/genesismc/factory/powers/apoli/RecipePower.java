@@ -42,8 +42,8 @@ public class RecipePower extends CraftPower implements Listener {
 
     @EventHandler
     public void load(ServerLoadEvent e){
-        OrbOfOrigins.init();
         parseRecipes();
+        OrbOfOrigins.init();
         Bukkit.getOnlinePlayers().forEach((pl) -> applyRecipePower(pl));
     }
 

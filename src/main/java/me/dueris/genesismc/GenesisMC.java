@@ -5,9 +5,7 @@ import io.papermc.paper.event.server.ServerResourcesReloadedEvent;
 import me.dueris.genesismc.command.OriginCommand;
 import me.dueris.genesismc.command.PowerCommand;
 import me.dueris.genesismc.command.ResourceCommand;
-import me.dueris.genesismc.command.subcommands.origin.Recipe;
-import me.dueris.genesismc.command.subcommands.origin.Info.InInfoCheck;
-import me.dueris.genesismc.command.subcommands.origin.Info.Info;
+import me.dueris.genesismc.command.subcommands.InInfoCheck;
 import me.dueris.genesismc.content.ContentTicker;
 import me.dueris.genesismc.content.WaterProtBook;
 import me.dueris.genesismc.content.enchantment.AnvilHandler;
@@ -253,7 +251,9 @@ public final class GenesisMC extends JavaPlugin implements Listener {
             e.printStackTrace();
         }
 
-        Bukkit.getCommandMap().register("origin", new OriginCommand());
+        if(Bukkit.getCommandMap().getCommand("origin") == null){
+            OriginCommand.register(((CraftServer)Bukkit.getServer()).getServer().vanillaCommandDispatcher.getDispatcher());
+        }
         Bukkit.getCommandMap().register("resource", new ResourceCommand());
         Bukkit.getCommandMap().register("power", new PowerCommand());
         Bukkit.getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC]   ____                          _       __  __   ____").color(TextColor.fromHexString("#b9362f")));
@@ -305,8 +305,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         getServer().getPluginManager().registerEvents(new KeybindingUtils(), this);
         getServer().getPluginManager().registerEvents(new OriginChoosing(), this);
         getServer().getPluginManager().registerEvents(new ScreenNavigator(), this);
-        getServer().getPluginManager().registerEvents(new Recipe(), this);
-        getServer().getPluginManager().registerEvents(new Info(), this);
+        getServer().getPluginManager().registerEvents(new OriginCommand(), this);
         getServer().getPluginManager().registerEvents(new ContentTicker(), this);
         getServer().getPluginManager().registerEvents(new MimicWarden(), this);
         getServer().getPluginManager().registerEvents(new BounceSlimeBlock(), this);

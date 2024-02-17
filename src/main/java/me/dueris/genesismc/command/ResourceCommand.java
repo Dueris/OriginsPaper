@@ -1,7 +1,6 @@
 package me.dueris.genesismc.command;
 
 import me.dueris.genesismc.command.subcommands.SubCommand;
-import me.dueris.genesismc.command.subcommands.origin.Get;
 import me.dueris.genesismc.command.subcommands.resource.Change;
 import me.dueris.genesismc.command.subcommands.resource.Has;
 import org.bukkit.command.Command;
@@ -17,7 +16,6 @@ public class ResourceCommand extends Command {
     public ResourceCommand() {
         super("resource");
         subCommands.add(new Change());
-        subCommands.add(new Get());
         subCommands.add(new Has());
     }
 
