@@ -72,14 +72,20 @@ public class OriginCommand implements Listener {
                                         .then(argument("layer", ResourceLocationArgument.id())
                                                 .suggests((context, builder) -> {
                                                     CraftApoli.getLayers().forEach((layer) -> {
-                                                        builder.suggest(layer.getTag());
+                                                        if(context.getInput().split(" ").length == 3 || (layer.getTag().startsWith(context.getInput().split(" ")[context.getInput().split(" ").length - 1])
+                                                                || layer.getTag().split(":")[1].startsWith(context.getInput().split(" ")[context.getInput().split(" ").length - 1]))){
+                                                            builder.suggest(layer.getTag());
+                                                        }
                                                     });
                                                     return builder.buildFuture();
                                                 })
                                                 .then(argument("origin", ResourceLocationArgument.id())
                                                         .suggests((context, builder) -> {
                                                             CraftApoli.getOrigins().forEach((origin) -> {
-                                                                builder.suggest(origin.getTag());
+                                                                if(context.getInput().split(" ").length == 3 || (origin.getTag().startsWith(context.getInput().split(" ")[context.getInput().split(" ").length - 1])
+                                                                        || origin.getTag().split(":")[1].startsWith(context.getInput().split(" ")[context.getInput().split(" ").length - 1]))){
+                                                                    builder.suggest(origin.getTag());
+                                                                }
                                                             });
                                                             return builder.buildFuture();
                                                         }).executes(context -> {
@@ -130,7 +136,10 @@ public class OriginCommand implements Listener {
                                         .then(argument("layer", ResourceLocationArgument.id())
                                                 .suggests((context, builder) -> {
                                                     CraftApoli.getLayers().forEach((layer) -> {
-                                                        builder.suggest(layer.getTag());
+                                                        if(context.getInput().split(" ").length == 3 || (layer.getTag().startsWith(context.getInput().split(" ")[context.getInput().split(" ").length - 1])
+                                                                || layer.getTag().split(":")[1].startsWith(context.getInput().split(" ")[context.getInput().split(" ").length - 1]))){
+                                                            builder.suggest(layer.getTag());
+                                                        }
                                                     });
                                                     return builder.buildFuture();
                                                 }).executes(context -> {
@@ -162,7 +171,10 @@ public class OriginCommand implements Listener {
                                         .then(argument("layer", ResourceLocationArgument.id())
                                                 .suggests((context, builder) -> {
                                                     CraftApoli.getLayers().forEach((layer) -> {
-                                                        builder.suggest(layer.getTag());
+                                                        if(context.getInput().split(" ").length == 3 || (layer.getTag().startsWith(context.getInput().split(" ")[context.getInput().split(" ").length - 1])
+                                                                || layer.getTag().split(":")[1].startsWith(context.getInput().split(" ")[context.getInput().split(" ").length - 1]))){
+                                                            builder.suggest(layer.getTag());
+                                                        }
                                                     });
                                                     return builder.buildFuture();
                                                 }).executes(context -> {
