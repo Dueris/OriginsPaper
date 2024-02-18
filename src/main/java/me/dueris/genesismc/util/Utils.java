@@ -64,11 +64,8 @@ public class Utils {
     }
 
     public static String[] readJSONFileAsString(JSONObject jsonObject) {
-        List<String> lines = new ArrayList<>();
-
         String jsonString = prettyPrintUsingGson(jsonObject.toJSONString());
-        lines.addAll(Arrays.asList(jsonString.split("\n")));
-
+        List<String> lines = new ArrayList<>(Arrays.asList(jsonString.split("\n")));
         return lines.toArray(new String[0]);
     }
 

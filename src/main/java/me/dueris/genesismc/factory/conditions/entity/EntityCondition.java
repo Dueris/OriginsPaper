@@ -533,7 +533,7 @@ public class EntityCondition implements Condition {
             }
             case "apoli:gamemode" -> {
                 if (entity instanceof Player player) {
-                    return getResult(inverted, Optional.of(player.equals(GameMode.valueOf(condition.get("gamemode").toString().toUpperCase()))));
+                    return getResult(inverted, Optional.of(player.getGameMode().equals(GameMode.valueOf(condition.get("gamemode").toString().toUpperCase()))));
                 }
                 return getResult(inverted, Optional.of(false));
             }

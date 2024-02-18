@@ -150,7 +150,7 @@ public class AttributeConditioned extends CraftPower implements Listener {
                         String operation = String.valueOf(modifier.get("operation"));
                         executeAttributeModify(operation, attribute_modifier, base_value, p, -value);
                     } else if (modifier.get("value") instanceof Double) {
-                        Double value = Double.valueOf(modifier.get("value").toString());
+                        double value = Double.valueOf(modifier.get("value").toString());
                         double base_value = p.getAttribute(Attribute.valueOf(attribute_modifier.toString())).getBaseValue();
                         String operation = String.valueOf(modifier.get("operation"));
                         executeAttributeModify(operation, attribute_modifier, base_value, p, -value);

@@ -57,15 +57,17 @@ public class PlaceHolderAPI extends PlaceholderExpansion {
     public @Nullable String onPlaceholderRequest(Player player, @NotNull String params) {
         if (params.equalsIgnoreCase("player_origin")) {
             String done = "";
+            StringBuilder builder = new StringBuilder(done);
             for (OriginContainer origin : OriginPlayerAccessor.getOrigin(player).values()) {
-                done = done + origin.getTag() + "//";
+                builder.append(origin.getTag() + "//");
             }
             return done;
         }
         if (params.equalsIgnoreCase("player_layer")) {
             String done = "";
+            StringBuilder builder = new StringBuilder(done);
             for (OriginContainer origin : OriginPlayerAccessor.getOrigin(player).values()) {
-                done = done + origin.getLayerTag() + "//";
+                builder.append(origin.getTag() + "//");
             }
             return done;
         }

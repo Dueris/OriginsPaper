@@ -42,9 +42,7 @@ public class KeepInventory extends CraftPower implements Listener {
                         ArrayList<Long> slots = new ArrayList<>();
                         setActive(player, power.getTag(), true);
                         if (power.getLongList("slots") != null) {
-                            for (long slot : power.getLongList("slots")) {
-                                slots.add(slot);
-                            }
+                            slots.addAll(power.getLongList("slots"));
                         }
 
                         if (!slots.isEmpty()) {

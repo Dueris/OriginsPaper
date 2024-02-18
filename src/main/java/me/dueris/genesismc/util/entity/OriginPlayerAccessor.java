@@ -297,9 +297,7 @@ public class OriginPlayerAccessor {
         List<Class<? extends CraftPower>> array = new ArrayList<>();
         for (Player plc : powersAppliedList.keySet()) {
             if (plc.equals(p)) {
-                for (Class<? extends CraftPower> c : powersAppliedList.get(plc)) {
-                    array.add(c);
-                }
+                array.addAll(powersAppliedList.get(plc));
 
             }
         }

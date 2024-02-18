@@ -218,7 +218,7 @@ public class CraftApoli {
      **/
     public static void loadOrigins() throws InterruptedException, ExecutionException {
         if(!getLayers().isEmpty() || !getOrigins().isEmpty() || !getPowers().isEmpty()) return; // Already parsed.
-        Boolean showErrors = Boolean.valueOf(GenesisConfigs.getMainConfig().get("console-print-parse-errors").toString());
+        boolean showErrors = Boolean.valueOf(GenesisConfigs.getMainConfig().get("console-print-parse-errors").toString());
         File DatapackDir = new File(GenesisMC.server.getWorldPath(LevelResource.DATAPACK_DIR).toAbsolutePath().toString());
         File[] datapacks = DatapackDir.listFiles();
         if (datapacks == null) return;
