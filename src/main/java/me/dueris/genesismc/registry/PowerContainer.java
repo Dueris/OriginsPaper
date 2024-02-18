@@ -168,31 +168,31 @@ public class PowerContainer implements Serializable {
 
     public short getShort(String key) {
         Object obj = powerFile.get(key);
-        if (obj == null) return 0;
+        if (obj == null) return 1;
         return Short.parseShort(obj.toString());
     }
 
     public long getLong(String key) {
         Object obj = powerFile.get(key);
-        if (obj == null) return 0;
+        if (obj == null) return 1;
         return Long.parseLong(obj.toString());
     }
 
     public int getInt(String key) {
         Object obj = powerFile.get(key);
-        if (obj == null) return 0;
+        if (obj == null) return 1;
         return Integer.parseInt(obj.toString());
     }
 
     public float getFloat(String key) {
         Object obj = powerFile.get(key);
-        if (obj == null) return 0;
+        if (obj == null) return 1;
         return Float.parseFloat(obj.toString());
     }
 
     public double getDouble(String key) {
         Object obj = powerFile.get(key);
-        if (obj == null) return 0;
+        if (obj == null) return 1;
         return Double.parseDouble(obj.toString());
     }
 
