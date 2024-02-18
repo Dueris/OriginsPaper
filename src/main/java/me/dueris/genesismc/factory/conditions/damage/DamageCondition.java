@@ -1,14 +1,21 @@
 package me.dueris.genesismc.factory.conditions.damage;
 
+import me.dueris.genesismc.factory.TagRegistryParser;
 import me.dueris.genesismc.factory.conditions.Condition;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.conditions.entity.EntityCondition;
 import me.dueris.genesismc.util.Utils;
+import net.minecraft.world.damagesource.DamageSources;
 import org.bukkit.Fluid;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.Registry;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.craftbukkit.v1_20_R3.CraftWorld;
+import org.bukkit.craftbukkit.v1_20_R3.damage.CraftDamageSource;
+import org.bukkit.craftbukkit.v1_20_R3.damage.CraftDamageType;
+import org.bukkit.damage.DamageType;
 import org.bukkit.entity.*;
 import org.bukkit.event.entity.EntityDamageByBlockEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -16,12 +23,15 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.ItemStack;
 import org.json.simple.JSONObject;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Optional;
 
 import static me.dueris.genesismc.factory.conditions.ConditionExecutor.getResult;
 import static org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 
 public class DamageCondition implements Condition {
+    public static HashMap<String, ArrayList<DamageType>> damageTagMappings = new HashMap<>();
 
     private static FallingBlock getFallingBlockDamager(EntityDamageEvent event) {
         if (event instanceof EntityDamageByEntityEvent damageByEntityEvent) {
@@ -84,7 +94,21 @@ public class DamageCondition implements Condition {
             }
             case "apoli:in_tag" -> {
                 String tag = condition.get("tag").toString();
-                //TODO: need to parse tag folder
+                try {
+                    if (TagRegistryParser.getRegisteredTagFromFileKey(condition.get("tag").toString()) != null) {
+                        if (!damageTagMappings.containsKey(condition.get("tag"))) {
+                            damageTagMappings.put(condition.get("tag").toString(), new ArrayList<>());
+                            for (String mat : TagRegistryParser.getRegisteredTagFromFileKey(condition.get("tag").toString())) {
+                                damageTagMappings.get(condition.get("tag")).add(Registry.DAMAGE_TYPE.get(NamespacedKey.minecraft(mat.split(":")[1].toLowerCase())));
+                            }
+                        } else {
+                            // mappings exist, now we can start stuff
+                            return getResult(inverted, Optional.of(damageTagMappings.get(condition.get("tag")).contains(entityDamageEvent.getDamageSource().getDamageType().key().asString())));
+                        }
+                    }
+                } catch (IllegalArgumentException e) {
+                    // yeah imma just ignore this one ty
+                }
                 return getResult(inverted, Optional.of(false));
             }
             case "apoli:name" -> {
