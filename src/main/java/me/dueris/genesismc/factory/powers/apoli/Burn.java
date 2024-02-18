@@ -49,6 +49,7 @@ public class Burn extends CraftPower {
                     }
 
                     interval = power.getLong("interval");
+                    if(interval == 0) interval = 1L;
                     if (Bukkit.getServer().getCurrentTick() % interval != 0) {
                         return;
                     } else {

@@ -48,6 +48,7 @@ public class Exhaust extends CraftPower {
                         return;
                     }
                     interval = power.getLong("interval");
+                    if(interval == 0) interval = 1L;
                     if (ticksE < interval) {
                         ticksE++;
                         return;
