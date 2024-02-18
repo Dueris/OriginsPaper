@@ -272,7 +272,7 @@ public class Actions {
     }
 
     public static void BlockActionType(Location location, JSONObject action) {
-        if (action == null || action.isEmpty()) return;
+        if (action == null || action.isEmpty() || !action.containsKey("type")) return;
         String type = action.get("type").toString();
 
         if (type.equals("apoli:and")) {
