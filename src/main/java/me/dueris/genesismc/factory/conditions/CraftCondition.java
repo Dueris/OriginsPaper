@@ -1,25 +1,18 @@
 package me.dueris.genesismc.factory.conditions;
 
 
-import me.dueris.genesismc.factory.conditions.biEntity.BiEntityCondition;
-import me.dueris.genesismc.factory.conditions.biome.BiomeCondition;
-import me.dueris.genesismc.factory.conditions.block.BlockCondition;
-import me.dueris.genesismc.factory.conditions.damage.DamageCondition;
-import me.dueris.genesismc.factory.conditions.entity.EntityCondition;
-import me.dueris.genesismc.factory.conditions.fluid.FluidCondition;
-import me.dueris.genesismc.factory.conditions.item.ItemCondition;
 import org.bukkit.Bukkit;
 
 import java.util.ArrayList;
 
 public class CraftCondition {
-    public static BiEntityCondition bientity;
-    public static BiomeCondition biome;
-    public static BlockCondition blockCon;
-    public static DamageCondition damage;
-    public static EntityCondition entity;
-    public static FluidCondition fluidCon;
-    public static ItemCondition item;
+    public static BiEntityConditions bientity;
+    public static BiomeConditions biome;
+    public static BlockConditions blockCon;
+    public static DamageConditions damage;
+    public static EntityConditions entity;
+    public static FluidConditions fluidCon;
+    public static ItemConditions item;
     // Depreciated lol
     // public static List<Class<? extends Condition>> findCraftConditionClasses() throws IOException {
     //     List<Class<? extends Condition>> classes = new ArrayList<>();

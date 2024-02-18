@@ -2,7 +2,7 @@ package me.dueris.genesismc.factory.powers.apoli;
 
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
-import me.dueris.genesismc.factory.conditions.item.ItemCondition;
+import me.dueris.genesismc.factory.conditions.ItemConditions;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.registry.LayerContainer;
 import me.dueris.genesismc.registry.PowerContainer;
@@ -56,13 +56,13 @@ public class PreventItemUse extends CraftPower implements Listener {
                             if (condition.get("type") != null) {
                                 if (condition.get("type").toString().equalsIgnoreCase("apoli:meat")) {
                                     if (inverted) {
-                                        if (ItemCondition.getNonMeatMaterials().contains(e.getItem().getType())) {
+                                        if (ItemConditions.getNonMeatMaterials().contains(e.getItem().getType())) {
                                             e.setCancelled(true);
                                         } else {
                                             return;
                                         }
                                     } else {
-                                        if (ItemCondition.getMeatMaterials().contains(e.getItem().getType())) {
+                                        if (ItemConditions.getMeatMaterials().contains(e.getItem().getType())) {
                                             e.setCancelled(true);
                                         } else {
                                             return;

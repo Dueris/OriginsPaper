@@ -1,7 +1,5 @@
-package me.dueris.genesismc.factory.conditions.biEntity;
+package me.dueris.genesismc.factory.conditions;
 
-import me.dueris.genesismc.factory.conditions.Condition;
-import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.apoli.EntitySetPower;
 import me.dueris.genesismc.util.Utils;
 import net.minecraft.world.entity.LivingEntity;
@@ -24,7 +22,7 @@ import java.util.Optional;
 
 import static me.dueris.genesismc.factory.conditions.ConditionExecutor.getResult;
 
-public class BiEntityCondition implements Condition, Listener {
+public class BiEntityConditions implements Condition, Listener {
 
     @Override
     public String condition_type() {

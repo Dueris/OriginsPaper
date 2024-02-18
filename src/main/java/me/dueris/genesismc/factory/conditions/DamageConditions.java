@@ -1,20 +1,13 @@
-package me.dueris.genesismc.factory.conditions.damage;
+package me.dueris.genesismc.factory.conditions;
 
 import me.dueris.genesismc.factory.TagRegistryParser;
-import me.dueris.genesismc.factory.conditions.Condition;
-import me.dueris.genesismc.factory.conditions.ConditionExecutor;
-import me.dueris.genesismc.factory.conditions.entity.EntityCondition;
 import me.dueris.genesismc.util.Utils;
-import net.minecraft.world.damagesource.DamageSources;
 import org.bukkit.Fluid;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Registry;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.craftbukkit.v1_20_R3.CraftWorld;
-import org.bukkit.craftbukkit.v1_20_R3.damage.CraftDamageSource;
-import org.bukkit.craftbukkit.v1_20_R3.damage.CraftDamageType;
 import org.bukkit.damage.DamageType;
 import org.bukkit.entity.*;
 import org.bukkit.event.entity.EntityDamageByBlockEvent;
@@ -30,7 +23,7 @@ import java.util.Optional;
 import static me.dueris.genesismc.factory.conditions.ConditionExecutor.getResult;
 import static org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 
-public class DamageCondition implements Condition {
+public class DamageConditions implements Condition {
     public static HashMap<String, ArrayList<DamageType>> damageTagMappings = new HashMap<>();
 
     private static FallingBlock getFallingBlockDamager(EntityDamageEvent event) {
@@ -67,7 +60,7 @@ public class DamageCondition implements Condition {
             }
             case "apoli:attacker" -> {
                 if (entityDamageEvent instanceof EntityDamageByEntityEvent event) {
-                    EntityCondition entityCondition = ConditionExecutor.entityCondition;
+                    EntityConditions entityCondition = ConditionExecutor.entityCondition;
                     return entityCondition.check(condition, actor, target, block, fluid, itemStack, entityDamageEvent);
                 }
                 return getResult(inverted, Optional.of(false));

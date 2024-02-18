@@ -1,10 +1,9 @@
-package me.dueris.genesismc.factory.conditions.item;
+package me.dueris.genesismc.factory.conditions;
 
 import com.mojang.brigadier.StringReader;
 import me.dueris.genesismc.content.OrbOfOrigins;
 import me.dueris.genesismc.content.enchantment.EnchantTableHandler;
 import me.dueris.genesismc.factory.TagRegistryParser;
-import me.dueris.genesismc.factory.conditions.Condition;
 import me.dueris.genesismc.util.Utils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
@@ -22,7 +21,7 @@ import java.util.*;
 
 import static me.dueris.genesismc.factory.conditions.ConditionExecutor.getResult;
 
-public class ItemCondition implements Condition {
+public class ItemConditions implements Condition {
     public static final List<Material> ENCHANTABLE_MATERIALS = new ArrayList<>();
     public static HashMap<String, ArrayList<Material>> entityTagMappings = new HashMap<>();
 

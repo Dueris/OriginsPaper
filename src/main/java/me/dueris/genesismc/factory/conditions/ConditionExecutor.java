@@ -1,12 +1,5 @@
 package me.dueris.genesismc.factory.conditions;
 
-import me.dueris.genesismc.factory.conditions.biEntity.BiEntityCondition;
-import me.dueris.genesismc.factory.conditions.biome.BiomeCondition;
-import me.dueris.genesismc.factory.conditions.block.BlockCondition;
-import me.dueris.genesismc.factory.conditions.damage.DamageCondition;
-import me.dueris.genesismc.factory.conditions.entity.EntityCondition;
-import me.dueris.genesismc.factory.conditions.fluid.FluidCondition;
-import me.dueris.genesismc.factory.conditions.item.ItemCondition;
 import me.dueris.genesismc.registry.PowerContainer;
 import org.bukkit.Fluid;
 import org.bukkit.block.Block;
@@ -21,18 +14,18 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static me.dueris.genesismc.factory.conditions.CraftCondition.*;
-import static me.dueris.genesismc.factory.conditions.item.ItemCondition.getMeatMaterials;
-import static me.dueris.genesismc.factory.conditions.item.ItemCondition.getNonMeatMaterials;
+import static me.dueris.genesismc.factory.conditions.ItemConditions.getMeatMaterials;
+import static me.dueris.genesismc.factory.conditions.ItemConditions.getNonMeatMaterials;
 import static me.dueris.genesismc.factory.powers.Power.powers_active;
 
 public class ConditionExecutor {
-    public static BiEntityCondition biEntityCondition = new BiEntityCondition();
-    public static BiomeCondition biomeCondition = new BiomeCondition();
-    public static BlockCondition blockCondition = new BlockCondition();
-    public static DamageCondition damageCondition = new DamageCondition();
-    public static EntityCondition entityCondition = new EntityCondition();
-    public static FluidCondition fluidCondition = new FluidCondition();
-    public static ItemCondition itemCondition = new ItemCondition();
+    public static BiEntityConditions biEntityCondition = new BiEntityConditions();
+    public static BiomeConditions biomeCondition = new BiomeConditions();
+    public static BlockConditions blockCondition = new BlockConditions();
+    public static DamageConditions damageCondition = new DamageConditions();
+    public static EntityConditions entityCondition = new EntityConditions();
+    public static FluidConditions fluidCondition = new FluidConditions();
+    public static ItemConditions itemCondition = new ItemConditions();
 
     private static boolean checkSubCondition(JSONObject subCondition, Player p, PowerContainer power, String powerfile, Entity actor, Entity target, Block block, Fluid fluid, ItemStack itemStack, EntityDamageEvent dmgevent, String powerFile) {
         if ("apoli:and".equals(subCondition.get("type"))) {

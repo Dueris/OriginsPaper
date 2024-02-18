@@ -1,4 +1,4 @@
-package me.dueris.genesismc.factory.conditions.biome;
+package me.dueris.genesismc.factory.conditions;
 
 import java.util.ArrayList;
 import java.util.Arrays;

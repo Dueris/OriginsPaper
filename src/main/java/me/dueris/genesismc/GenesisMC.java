@@ -15,13 +15,13 @@ import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.TagRegistryParser;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.conditions.CraftCondition;
-import me.dueris.genesismc.factory.conditions.biEntity.BiEntityCondition;
-import me.dueris.genesismc.factory.conditions.biome.BiomeCondition;
-import me.dueris.genesismc.factory.conditions.block.BlockCondition;
-import me.dueris.genesismc.factory.conditions.damage.DamageCondition;
-import me.dueris.genesismc.factory.conditions.entity.EntityCondition;
-import me.dueris.genesismc.factory.conditions.fluid.FluidCondition;
-import me.dueris.genesismc.factory.conditions.item.ItemCondition;
+import me.dueris.genesismc.factory.conditions.BiEntityConditions;
+import me.dueris.genesismc.factory.conditions.BiomeConditions;
+import me.dueris.genesismc.factory.conditions.BlockConditions;
+import me.dueris.genesismc.factory.conditions.DamageConditions;
+import me.dueris.genesismc.factory.conditions.EntityConditions;
+import me.dueris.genesismc.factory.conditions.FluidConditions;
+import me.dueris.genesismc.factory.conditions.ItemConditions;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.factory.powers.apoli.*;
 import me.dueris.genesismc.factory.powers.apoli.provider.origins.BounceSlimeBlock;
@@ -207,13 +207,13 @@ public final class GenesisMC extends JavaPlugin implements Listener {
 
         OriginDataContainer.loadData();
         // Pre-load condition types to prevent constant calling
-        CraftCondition.bientity = new BiEntityCondition();
-        CraftCondition.biome = new BiomeCondition();
-        CraftCondition.blockCon = new BlockCondition();
-        CraftCondition.damage = new DamageCondition();
-        CraftCondition.entity = new EntityCondition();
-        CraftCondition.fluidCon = new FluidCondition();
-        CraftCondition.item = new ItemCondition();
+        CraftCondition.bientity = new BiEntityConditions();
+        CraftCondition.biome = new BiomeConditions();
+        CraftCondition.blockCon = new BlockConditions();
+        CraftCondition.damage = new DamageConditions();
+        CraftCondition.entity = new EntityConditions();
+        CraftCondition.fluidCon = new FluidConditions();
+        CraftCondition.item = new ItemConditions();
         // Pre-load end
         conditionExecutor = new ConditionExecutor();
     }
@@ -309,7 +309,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         getServer().getPluginManager().registerEvents(new ContentTicker(), this);
         getServer().getPluginManager().registerEvents(new MimicWarden(), this);
         getServer().getPluginManager().registerEvents(new BounceSlimeBlock(), this);
-        getServer().getPluginManager().registerEvents(new BiEntityCondition(), this);
+        getServer().getPluginManager().registerEvents(new BiEntityConditions(), this);
         getServer().getPluginManager().registerEvents(new LogoutBugWorkaround(), this);
         getServer().getPluginManager().registerEvents(new VillagerTradeHook(), this);
         getServer().getPluginManager().registerEvents(new OriginScheduler.OriginSchedulerTree(), this);

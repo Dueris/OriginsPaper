@@ -1,8 +1,6 @@
-package me.dueris.genesismc.factory.conditions.block;
+package me.dueris.genesismc.factory.conditions;
 
 import me.dueris.genesismc.factory.TagRegistryParser;
-import me.dueris.genesismc.factory.conditions.Condition;
-import me.dueris.genesismc.factory.conditions.fluid.FluidCondition;
 import me.dueris.genesismc.registry.PowerContainer;
 import me.dueris.genesismc.util.Utils;
 import net.minecraft.core.Direction;
@@ -25,7 +23,7 @@ import java.util.Optional;
 
 import static me.dueris.genesismc.factory.conditions.ConditionExecutor.getResult;
 
-public class BlockCondition implements Condition {
+public class BlockConditions implements Condition {
     public static HashMap<PowerContainer, ArrayList<String>> inTagValues = new HashMap<>();
     public static HashMap<String, ArrayList<Material>> blockTagMappings = new HashMap<>();
 
@@ -73,7 +71,7 @@ public class BlockCondition implements Condition {
                 }
             }
             case "apoli:adjacent" -> {
-                BlockCondition adjCon = new BlockCondition();
+                BlockConditions adjCon = new BlockConditions();
                 int adj = 0;
                 for (Direction direction : Direction.values()) {
                     Optional<Boolean> conOp = adjCon.check((JSONObject) condition.get("adjacent_condition"), actor, target, block.getWorld().getBlockAt(CraftLocation.toBukkit(((CraftBlock) block).getPosition().offset(direction.getNormal()))), fluid, itemStack, entityDamageEvent);
@@ -125,7 +123,7 @@ public class BlockCondition implements Condition {
                 return getResult(inverted, Optional.of(block.getLightFromSky() > 0));
             }
             case "apoli:fluid" -> {
-                FluidCondition fluidCondition = new FluidCondition();
+                FluidConditions fluidCondition = new FluidConditions();
                 Optional fl = fluidCondition.check(condition, actor, target, block, fluid, itemStack, entityDamageEvent);
                 if (fl.isPresent()) {
                     return getResult(inverted, Optional.of(fl.get().equals(true)));

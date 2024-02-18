@@ -4,7 +4,7 @@ import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.event.OriginChangeEvent;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
-import me.dueris.genesismc.factory.conditions.entity.EntityCondition;
+import me.dueris.genesismc.factory.conditions.EntityConditions;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.registry.LayerContainer;
 import me.dueris.genesismc.registry.PowerContainer;
@@ -111,7 +111,7 @@ public class Resource extends CraftPower implements Listener {
                                 shouldRender[0] = canRender[0];
                             }
                             if (hud_render.containsKey("condition")) {
-                                EntityCondition conditionExecutor = ConditionExecutor.entityCondition;
+                                EntityConditions conditionExecutor = ConditionExecutor.entityCondition;
                                 Optional<Boolean> conditionMet = conditionExecutor.check(power.get("hud_render"), p, null, p.getLocation().getBlock(), null, p.getInventory().getItemInMainHand(), null);
                                 if (conditionMet.isPresent()) {
                                     canRender[0] = conditionMet.get();

@@ -1,13 +1,9 @@
-package me.dueris.genesismc.factory.conditions.entity;
+package me.dueris.genesismc.factory.conditions;
 
 import com.mojang.brigadier.StringReader;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.TagRegistryParser;
 import me.dueris.genesismc.factory.actions.Actions;
-import me.dueris.genesismc.factory.conditions.Condition;
-import me.dueris.genesismc.factory.conditions.ConditionExecutor;
-import me.dueris.genesismc.factory.conditions.block.BlockCondition;
-import me.dueris.genesismc.factory.conditions.item.ItemCondition;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.factory.powers.Power;
 import me.dueris.genesismc.factory.powers.apoli.*;
@@ -53,7 +49,7 @@ import java.util.function.Predicate;
 
 import static me.dueris.genesismc.factory.conditions.ConditionExecutor.getResult;
 
-public class EntityCondition implements Condition {
+public class EntityConditions implements Condition {
     public static HashMap<PowerContainer, ArrayList<String>> inTagValues = new HashMap<>();
     public static HashMap<String, ArrayList<EntityType>> entityTagMappings = new HashMap<>();
     private final Location[] prevLoca = new Location[100000];
@@ -490,7 +486,7 @@ public class EntityCondition implements Condition {
                         if (eSlot != null) {
                             if (LeInvH.getEquipment().getItem(eSlot) != null) {
                                 if (condition.get("item_condition") != null) {
-                                    ItemCondition itemCondition = ConditionExecutor.itemCondition;
+                                    ItemConditions itemCondition = ConditionExecutor.itemCondition;
                                     Optional boolIC = itemCondition.check((JSONObject) condition.get("item_condition"), entity, target, block, fluid, LeInvH.getEquipment().getItem(eSlot), entityDamageEvent);
                                     if (boolIC.isPresent()) {
                                         return getResult(inverted, Optional.of((Boolean) boolIC.get()));
@@ -547,7 +543,7 @@ public class EntityCondition implements Condition {
                 return getResult(inverted, Optional.of(false));
             }
             case "apoli:in_block" -> {
-                BlockCondition blockCondition = ConditionExecutor.blockCondition;
+                BlockConditions blockCondition = ConditionExecutor.blockCondition;
                 Optional boolB = blockCondition.check((JSONObject) condition.get("block_condition"), entity, target, block, fluid, itemStack, entityDamageEvent);
                 if (boolB.isPresent()) {
                     return getResult(inverted, Optional.of((Boolean) boolB.get()));
@@ -581,7 +577,7 @@ public class EntityCondition implements Condition {
                 return getResult(inverted, Optional.of(isEntityMoving(entity)));
             }
             case "apoli:on_block" -> {
-                BlockCondition blockCondition = ConditionExecutor.blockCondition;
+                BlockConditions blockCondition = ConditionExecutor.blockCondition;
                 if (condition.get("block_condition") == null) {
                     return getResult(inverted, Optional.of(entity.isOnGround()));
                 } else {
@@ -712,7 +708,7 @@ public class EntityCondition implements Condition {
                 if (entity instanceof LivingEntity le) {
                     if (le.getActiveItem() != null) {
                         if (condition.get("item_condition") != null) {
-                            ItemCondition itemCondition = ConditionExecutor.itemCondition;
+                            ItemConditions itemCondition = ConditionExecutor.itemCondition;
                             Optional boolI = itemCondition.check((JSONObject) condition.get("item_condition"), le, target, block, fluid, itemStack, entityDamageEvent);
                             if (boolI.isPresent()) {
                                 if (boolI.get().equals(true)) {

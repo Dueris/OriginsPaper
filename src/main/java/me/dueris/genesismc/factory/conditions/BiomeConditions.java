@@ -1,7 +1,6 @@
-package me.dueris.genesismc.factory.conditions.biome;
+package me.dueris.genesismc.factory.conditions;
 
 import me.dueris.genesismc.factory.TagRegistryParser;
-import me.dueris.genesismc.factory.conditions.Condition;
 import me.dueris.genesismc.util.Utils;
 import net.minecraft.core.BlockPos;
 import org.bukkit.Fluid;
@@ -19,7 +18,7 @@ import java.util.Optional;
 
 import static me.dueris.genesismc.factory.conditions.ConditionExecutor.getResult;
 
-public class BiomeCondition implements Condition {
+public class BiomeConditions implements Condition {
 
     public static HashMap<String, ArrayList<Biome>> biomeTagMappings = new HashMap<>();
 

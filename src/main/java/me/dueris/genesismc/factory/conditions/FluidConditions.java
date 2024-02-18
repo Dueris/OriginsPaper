@@ -1,7 +1,6 @@
-package me.dueris.genesismc.factory.conditions.fluid;
+package me.dueris.genesismc.factory.conditions;
 
 import me.dueris.genesismc.factory.TagRegistryParser;
-import me.dueris.genesismc.factory.conditions.Condition;
 import org.bukkit.Fluid;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
@@ -13,7 +12,7 @@ import java.util.Optional;
 
 import static me.dueris.genesismc.factory.conditions.ConditionExecutor.getResult;
 
-public class FluidCondition implements Condition {
+public class FluidConditions implements Condition {
     @Override
     public String condition_type() {
         return "FLUID_CONDITION";
