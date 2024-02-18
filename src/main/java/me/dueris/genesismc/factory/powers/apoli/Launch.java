@@ -8,7 +8,7 @@ import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.registry.LayerContainer;
 import me.dueris.genesismc.registry.PowerContainer;
 import me.dueris.genesismc.util.CooldownUtils;
-import me.dueris.genesismc.util.KeybindingUtils;
+import me.dueris.genesismc.util.LegacyKeybindingUtils;
 import me.dueris.genesismc.util.Utils;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import org.bukkit.Material;
@@ -25,7 +25,7 @@ import org.bukkit.util.Vector;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import static me.dueris.genesismc.util.KeybindingUtils.isKeyBeingPressed;
+import static me.dueris.genesismc.util.LegacyKeybindingUtils.isKeyBeingPressed;
 
 public class Launch extends CraftPower implements Listener {
 
@@ -60,7 +60,7 @@ public class Launch extends CraftPower implements Listener {
                                     public void run() {
                                         String key = (String) power.get("key").getOrDefault("key", "key.origins.primary_active");
                                         if (!CooldownUtils.isPlayerInCooldown(p, key)) {
-                                            KeybindingUtils.runKeyChangeTrigger(KeybindingUtils.getTriggerFromOriginKey(p, key));
+                                            LegacyKeybindingUtils.runKeyChangeTrigger(LegacyKeybindingUtils.getTriggerFromOriginKey(p, key));
                                             final boolean[] thing = new boolean[1];
                                             new BukkitRunnable() {
                                                 @Override
@@ -68,10 +68,10 @@ public class Launch extends CraftPower implements Listener {
                                                     int cooldown = power.getIntOrDefault("cooldown", 1);
                                                     if (!CooldownUtils.isPlayerInCooldown(p, key)) {
                                                         //continousus - false
-                                                        KeybindingUtils.runKeyChangeTriggerReturn(KeybindingUtils.getTriggerFromOriginKey(p, key), p, key);
-                                                        ItemMeta met = KeybindingUtils.getKeybindItem(key, p.getInventory()).getItemMeta();
+                                                        LegacyKeybindingUtils.runKeyChangeTriggerReturn(LegacyKeybindingUtils.getTriggerFromOriginKey(p, key), p, key);
+                                                        ItemMeta met = LegacyKeybindingUtils.getKeybindItem(key, p.getInventory()).getItemMeta();
                                                         met.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "contin"), PersistentDataType.BOOLEAN, false);
-                                                        KeybindingUtils.getKeybindItem(key, p.getInventory()).setItemMeta(met);
+                                                        LegacyKeybindingUtils.getKeybindItem(key, p.getInventory()).setItemMeta(met);
                                                         thing[0] = true;
                                                         setActive(p, power.getTag(), false);
                                                         this.cancel();
@@ -93,7 +93,7 @@ public class Launch extends CraftPower implements Listener {
                                             }
 
                                             if (power.get("key").get("continuous").toString().equalsIgnoreCase("false")) {
-                                                ItemMeta met = KeybindingUtils.getKeybindItem(key, p.getInventory()).getItemMeta();
+                                                ItemMeta met = LegacyKeybindingUtils.getKeybindItem(key, p.getInventory()).getItemMeta();
                                                 met.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "contin"), PersistentDataType.BOOLEAN, false);
                                                 if (power == null) {
                                                     getPowerArray().remove(p);
@@ -101,7 +101,7 @@ public class Launch extends CraftPower implements Listener {
                                                 }
                                                 if (!getPowerArray().contains(p)) return;
                                                 setActive(p, power.getTag(), false);
-                                                KeybindingUtils.getKeybindItem(key, p.getInventory()).setItemMeta(met);
+                                                LegacyKeybindingUtils.getKeybindItem(key, p.getInventory()).setItemMeta(met);
                                                 in_continuous.add(p);
                                                 new BukkitRunnable() {
                                                     @Override
@@ -112,7 +112,7 @@ public class Launch extends CraftPower implements Listener {
                                                 this.cancel();
                                             } else {
                                                 if (isKeyBeingPressed(e.getPlayer(), power.get("key").getOrDefault("key", "key.origins.primary_active").toString(), true)) {
-                                                    ItemMeta met = KeybindingUtils.getKeybindItem(key, p.getInventory()).getItemMeta();
+                                                    ItemMeta met = LegacyKeybindingUtils.getKeybindItem(key, p.getInventory()).getItemMeta();
                                                     met.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "contin"), PersistentDataType.BOOLEAN, false);
                                                     if (power == null) {
                                                         getPowerArray().remove(p);
@@ -120,23 +120,23 @@ public class Launch extends CraftPower implements Listener {
                                                     }
                                                     if (!getPowerArray().contains(p)) return;
                                                     setActive(p, power.getTag(), false);
-                                                    KeybindingUtils.getKeybindItem(key, p.getInventory()).setItemMeta(met);
+                                                    LegacyKeybindingUtils.getKeybindItem(key, p.getInventory()).setItemMeta(met);
                                                     if (in_continuous.contains(p)) {
-                                                        KeybindingUtils.runKeyChangeTriggerReturn(KeybindingUtils.getKeybindItem(key, p.getInventory()), p, key);
-                                                        KeybindingUtils.getKeybindItem(key, p.getInventory()).setType(Material.GRAY_DYE);
+                                                        LegacyKeybindingUtils.runKeyChangeTriggerReturn(LegacyKeybindingUtils.getKeybindItem(key, p.getInventory()), p, key);
+                                                        LegacyKeybindingUtils.getKeybindItem(key, p.getInventory()).setType(Material.GRAY_DYE);
                                                         met.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "contin"), PersistentDataType.BOOLEAN, false);
 
                                                         setActive(p, power.getTag(), false);
-                                                        KeybindingUtils.getKeybindItem(key, p.getInventory()).setItemMeta(met);
+                                                        LegacyKeybindingUtils.getKeybindItem(key, p.getInventory()).setItemMeta(met);
                                                         in_continuous.remove(p);
                                                         this.cancel();
                                                     } else {
-                                                        KeybindingUtils.runKeyChangeTrigger(KeybindingUtils.getKeybindItem(key, p.getInventory()));
-                                                        KeybindingUtils.getKeybindItem(key, p.getInventory()).setType(Material.LIME_DYE);
+                                                        LegacyKeybindingUtils.runKeyChangeTrigger(LegacyKeybindingUtils.getKeybindItem(key, p.getInventory()));
+                                                        LegacyKeybindingUtils.getKeybindItem(key, p.getInventory()).setType(Material.LIME_DYE);
                                                         met.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "contin"), PersistentDataType.BOOLEAN, true);
 
                                                         setActive(p, power.getTag(), true);
-                                                        KeybindingUtils.getKeybindItem(key, p.getInventory()).setItemMeta(met);
+                                                        LegacyKeybindingUtils.getKeybindItem(key, p.getInventory()).setItemMeta(met);
                                                         in_continuous.add(p);
                                                     }
                                                     this.cancel();

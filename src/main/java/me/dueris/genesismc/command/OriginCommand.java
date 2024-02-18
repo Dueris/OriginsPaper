@@ -15,7 +15,7 @@ import me.dueris.genesismc.registry.OriginContainer;
 import me.dueris.genesismc.registry.PowerContainer;
 import me.dueris.genesismc.screen.ScreenConstants;
 import me.dueris.genesismc.storage.OriginDataContainer;
-import me.dueris.genesismc.util.KeybindingUtils;
+import me.dueris.genesismc.util.LegacyKeybindingUtils;
 import me.dueris.genesismc.util.LangConfig;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import me.dueris.genesismc.util.enums.OriginDataType;
@@ -352,8 +352,8 @@ public class OriginCommand extends BukkitRunnable implements Listener {
 
                     ItemMeta meta = originPower.getItemMeta();
                     meta.setDisplayName(powerContainers.get(0).getName());
-                    if (KeybindingUtils.renderKeybind(powerContainers.get(0)).getFirst()) {
-                        meta.displayName(net.kyori.adventure.text.Component.text().append(meta.displayName()).append(net.kyori.adventure.text.Component.text(" ")).append(net.kyori.adventure.text.Component.text(KeybindingUtils.translateOriginRawKey(KeybindingUtils.renderKeybind(powerContainers.get(0)).getSecond())).color(TextColor.color(32222))).build());
+                    if (LegacyKeybindingUtils.renderKeybind(powerContainers.get(0)).getFirst()) {
+                        meta.displayName(net.kyori.adventure.text.Component.text().append(meta.displayName()).append(net.kyori.adventure.text.Component.text(" ")).append(net.kyori.adventure.text.Component.text(LegacyKeybindingUtils.translateOriginRawKey(LegacyKeybindingUtils.renderKeybind(powerContainers.get(0)).getSecond())).color(TextColor.color(32222))).build());
                     }
                     meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
                     meta.setLore(ScreenConstants.cutStringIntoLines(powerContainers.get(0).getDescription()));

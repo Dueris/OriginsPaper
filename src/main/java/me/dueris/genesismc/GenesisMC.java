@@ -302,7 +302,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         getServer().getPluginManager().registerEvents(new PlayerManager(), this);
         getServer().getPluginManager().registerEvents(new EnchantTableHandler(), this);
         getServer().getPluginManager().registerEvents(new AnvilHandler(), this);
-        getServer().getPluginManager().registerEvents(new KeybindingUtils(), this);
+        getServer().getPluginManager().registerEvents(new LegacyKeybindingUtils(), this);
         getServer().getPluginManager().registerEvents(new OriginChoosing(), this);
         getServer().getPluginManager().registerEvents(new ScreenNavigator(), this);
         getServer().getPluginManager().registerEvents(new OriginCommand(), this);
@@ -313,7 +313,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         getServer().getPluginManager().registerEvents(new LogoutBugWorkaround(), this);
         getServer().getPluginManager().registerEvents(new VillagerTradeHook(), this);
         getServer().getPluginManager().registerEvents(new OriginScheduler.OriginSchedulerTree(), this);
-        getServer().getPluginManager().registerEvents(new KeybindingUtils(), this);
+        getServer().getPluginManager().registerEvents(new LegacyKeybindingUtils(), this);
         getServer().getPluginManager().registerEvents(new StructureGeneration(), this);
 
         BukkitRunnable[] independentTickers = {new GuiTicker(), new ContentTicker(), new OriginCommand()};

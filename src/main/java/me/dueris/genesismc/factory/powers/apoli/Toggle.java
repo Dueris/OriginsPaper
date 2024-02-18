@@ -7,7 +7,7 @@ import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.registry.LayerContainer;
 import me.dueris.genesismc.registry.PowerContainer;
 import me.dueris.genesismc.util.CooldownUtils;
-import me.dueris.genesismc.util.KeybindingUtils;
+import me.dueris.genesismc.util.LegacyKeybindingUtils;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
@@ -20,7 +20,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import static me.dueris.genesismc.util.KeybindingUtils.isKeyBeingPressed;
+import static me.dueris.genesismc.util.LegacyKeybindingUtils.isKeyBeingPressed;
 
 public class Toggle extends CraftPower implements Listener {
     public static ArrayList<Player> in_continuous = new ArrayList<>();
@@ -67,7 +67,7 @@ public class Toggle extends CraftPower implements Listener {
         if (runCancel) return;
         String tag = power.getTag();
         String key = (String) power.get("key").getOrDefault("key", "key.origins.primary_active");
-        KeybindingUtils.runKeyChangeTrigger(KeybindingUtils.getTriggerFromOriginKey(p, key));
+        LegacyKeybindingUtils.runKeyChangeTrigger(LegacyKeybindingUtils.getTriggerFromOriginKey(p, key));
         if (CooldownUtils.isPlayerInCooldown(p, key)) return;
         if (!powers_active.containsKey(p)) {
             powers_active.put(p, new HashMap());
@@ -77,10 +77,10 @@ public class Toggle extends CraftPower implements Listener {
             if (power.getBooleanOrDefault("retain_state", false)) {
                 if (active) {
                     //active
-                    KeybindingUtils.runKeyChangeTriggerReturn(KeybindingUtils.getTriggerFromOriginKey(p, key), p, key);
-                    ItemMeta met = KeybindingUtils.getKeybindItem(key, p.getInventory()).getItemMeta();
+                    LegacyKeybindingUtils.runKeyChangeTriggerReturn(LegacyKeybindingUtils.getTriggerFromOriginKey(p, key), p, key);
+                    ItemMeta met = LegacyKeybindingUtils.getKeybindItem(key, p.getInventory()).getItemMeta();
                     met.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "contin"), PersistentDataType.BOOLEAN, false);
-                    KeybindingUtils.getKeybindItem(key, p.getInventory()).setItemMeta(met);
+                    LegacyKeybindingUtils.getKeybindItem(key, p.getInventory()).setItemMeta(met);
                     setActive(p, tag, false);
                     in_continuous.remove(p);
                     active = false;
@@ -100,10 +100,10 @@ public class Toggle extends CraftPower implements Listener {
                     }.runTaskTimer(GenesisMC.getPlugin(), 0, 1);
                 } else {
                     //nonactive
-                    KeybindingUtils.runKeyChangeTrigger(KeybindingUtils.getKeybindItem(key, p.getInventory()));
-                    ItemMeta met = KeybindingUtils.getKeybindItem(key, p.getInventory()).getItemMeta();
+                    LegacyKeybindingUtils.runKeyChangeTrigger(LegacyKeybindingUtils.getKeybindItem(key, p.getInventory()));
+                    ItemMeta met = LegacyKeybindingUtils.getKeybindItem(key, p.getInventory()).getItemMeta();
                     met.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "contin"), PersistentDataType.BOOLEAN, true);
-                    KeybindingUtils.getKeybindItem(key, p.getInventory()).setItemMeta(met);
+                    LegacyKeybindingUtils.getKeybindItem(key, p.getInventory()).setItemMeta(met);
                     setActive(p, tag, true);
                     in_continuous.add(p);
                     active = true;
@@ -125,30 +125,30 @@ public class Toggle extends CraftPower implements Listener {
 //                ToggleTriggerEvent toggleTriggerEvent = new ToggleTriggerEvent(p, key, origin, !active);
 //                Bukkit.getServer().getPluginManager().callEvent(toggleTriggerEvent);
             } else {
-                KeybindingUtils.runKeyChangeTrigger(KeybindingUtils.getKeybindItem(key, p.getInventory()));
+                LegacyKeybindingUtils.runKeyChangeTrigger(LegacyKeybindingUtils.getKeybindItem(key, p.getInventory()));
                 setActive(p, tag, true);
                 in_continuous.add(p);
                 new BukkitRunnable() {
                     @Override
                     public void run() {
-                        KeybindingUtils.runKeyChangeTriggerReturn(KeybindingUtils.getTriggerFromOriginKey(p, key), p, key);
+                        LegacyKeybindingUtils.runKeyChangeTriggerReturn(LegacyKeybindingUtils.getTriggerFromOriginKey(p, key), p, key);
                         setActive(p, tag, false);
-                        ItemMeta met = KeybindingUtils.getKeybindItem(key, p.getInventory()).getItemMeta();
+                        ItemMeta met = LegacyKeybindingUtils.getKeybindItem(key, p.getInventory()).getItemMeta();
                         met.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "contin"), PersistentDataType.BOOLEAN, false);
-                        KeybindingUtils.getKeybindItem(key, p.getInventory()).setItemMeta(met);
+                        LegacyKeybindingUtils.getKeybindItem(key, p.getInventory()).setItemMeta(met);
                         in_continuous.remove(p);
                     }
                 }.runTaskLater(GenesisMC.getPlugin(), 2);
             }
         } else {
             //set true
-            KeybindingUtils.runKeyChangeTrigger(KeybindingUtils.getKeybindItem(key, p.getInventory()));
+            LegacyKeybindingUtils.runKeyChangeTrigger(LegacyKeybindingUtils.getKeybindItem(key, p.getInventory()));
             setActive(p, tag, true);
             in_continuous.add(p);
             new BukkitRunnable() {
                 @Override
                 public void run() {
-                    KeybindingUtils.runKeyChangeTriggerReturn(KeybindingUtils.getTriggerFromOriginKey(p, key), p, key);
+                    LegacyKeybindingUtils.runKeyChangeTriggerReturn(LegacyKeybindingUtils.getTriggerFromOriginKey(p, key), p, key);
                     setActive(p, tag, false);
                     in_continuous.remove(p);
                 }

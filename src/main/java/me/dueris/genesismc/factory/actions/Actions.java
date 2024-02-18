@@ -42,7 +42,7 @@ import org.json.simple.JSONObject;
 
 import java.util.*;
 
-import static me.dueris.genesismc.util.KeybindingUtils.addItems;
+import static me.dueris.genesismc.util.LegacyKeybindingUtils.addItems;
 
 public class Actions {
 

@@ -32,7 +32,8 @@ import org.json.simple.JSONObject;
 
 import java.util.*;
 
-public class KeybindingUtils implements Listener {
+@Deprecated(forRemoval = true)
+public class LegacyKeybindingUtils implements Listener {
 
     private static final Set<String> heldKeys = new HashSet<>();
     private static final Set<Player> spawnHandsTick = new HashSet<>();

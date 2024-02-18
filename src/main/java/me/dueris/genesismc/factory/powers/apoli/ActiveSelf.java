@@ -17,7 +17,7 @@ import org.bukkit.event.Listener;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import static me.dueris.genesismc.util.KeybindingUtils.isKeyBeingPressed;
+import static me.dueris.genesismc.util.LegacyKeybindingUtils.isKeyBeingPressed;
 
 public class ActiveSelf extends CraftPower implements Listener {
 

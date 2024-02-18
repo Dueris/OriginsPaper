@@ -30,7 +30,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 
-import static me.dueris.genesismc.util.KeybindingUtils.isKeyBeingPressed;
+import static me.dueris.genesismc.util.LegacyKeybindingUtils.isKeyBeingPressed;
 
 public class Inventory extends CraftPower implements CommandExecutor, Listener {
 

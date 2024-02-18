@@ -10,7 +10,7 @@ import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.registry.LayerContainer;
 import me.dueris.genesismc.registry.PowerContainer;
 import me.dueris.genesismc.util.CooldownUtils;
-import me.dueris.genesismc.util.KeybindingUtils;
+import me.dueris.genesismc.util.LegacyKeybindingUtils;
 import me.dueris.genesismc.util.Utils;
 import me.dueris.genesismc.util.console.OriginConsoleSender;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
@@ -37,7 +37,7 @@ import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static me.dueris.genesismc.util.KeybindingUtils.isKeyBeingPressed;
+import static me.dueris.genesismc.util.LegacyKeybindingUtils.isKeyBeingPressed;
 
 public class FireProjectile extends CraftPower implements Listener {
 
@@ -125,7 +125,7 @@ public class FireProjectile extends CraftPower implements Listener {
 
                                                 String key = (String) power.get("key").getOrDefault("key", "key.origins.primary_active");
                                                 if (!CooldownUtils.isPlayerInCooldown(p, key)) {
-                                                    KeybindingUtils.runKeyChangeTrigger(KeybindingUtils.getTriggerFromOriginKey(p, key));
+                                                    LegacyKeybindingUtils.runKeyChangeTrigger(LegacyKeybindingUtils.getTriggerFromOriginKey(p, key));
 
                                                     float finalDivergence1 = divergence;
                                                     final boolean[] thing = new boolean[1];
@@ -137,14 +137,14 @@ public class FireProjectile extends CraftPower implements Listener {
                                                             if (!CooldownUtils.isPlayerInCooldown(p, key)) {
                                                                 if (shotsLeft >= 0) {
                                                                     if (power.get("key").getOrDefault("continuous", "false").toString().equalsIgnoreCase("false")) {
-                                                                        KeybindingUtils.runKeyChangeTriggerReturn(KeybindingUtils.getTriggerFromOriginKey(p, key), p, key);
+                                                                        LegacyKeybindingUtils.runKeyChangeTriggerReturn(LegacyKeybindingUtils.getTriggerFromOriginKey(p, key), p, key);
                                                                         CooldownUtils.addCooldown(p, Utils.getNameOrTag(power), power.getType(), cooldown * 2, key);
                                                                         addCooldownPatch(p);
                                                                         peopladf.remove(p);
-                                                                        if (KeybindingUtils.getKeybindItem(key, p.getInventory()) != null) {
-                                                                            ItemMeta met = KeybindingUtils.getKeybindItem(key, p.getInventory()).getItemMeta();
+                                                                        if (LegacyKeybindingUtils.getKeybindItem(key, p.getInventory()) != null) {
+                                                                            ItemMeta met = LegacyKeybindingUtils.getKeybindItem(key, p.getInventory()).getItemMeta();
                                                                             met.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "contin"), PersistentDataType.BOOLEAN, false);
-                                                                            KeybindingUtils.getKeybindItem(key, p.getInventory()).setItemMeta(met);
+                                                                            LegacyKeybindingUtils.getKeybindItem(key, p.getInventory()).setItemMeta(met);
                                                                         }
                                                                         shotsLeft = 0;
                                                                         thing[0] = true;
@@ -152,22 +152,22 @@ public class FireProjectile extends CraftPower implements Listener {
                                                                         this.cancel();
                                                                     } else {
                                                                         if (!in_continuous.contains(p)) {
-                                                                            KeybindingUtils.runKeyChangeTriggerReturn(KeybindingUtils.getTriggerFromOriginKey(p, key), p, key);
+                                                                            LegacyKeybindingUtils.runKeyChangeTriggerReturn(LegacyKeybindingUtils.getTriggerFromOriginKey(p, key), p, key);
                                                                             CooldownUtils.addCooldown(p, Utils.getNameOrTag(power), power.getType(), cooldown * 2, key);
                                                                             addCooldownPatch(p);
                                                                             peopladf.remove(p);
-                                                                            ItemMeta met = KeybindingUtils.getKeybindItem(key, p.getInventory()).getItemMeta();
+                                                                            ItemMeta met = LegacyKeybindingUtils.getKeybindItem(key, p.getInventory()).getItemMeta();
                                                                             met.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "contin"), PersistentDataType.BOOLEAN, false);
-                                                                            KeybindingUtils.getKeybindItem(key, p.getInventory()).setItemMeta(met);
+                                                                            LegacyKeybindingUtils.getKeybindItem(key, p.getInventory()).setItemMeta(met);
                                                                             shotsLeft = 0;
                                                                             thing[0] = true;
                                                                             setActive(p, power.getTag(), false);
                                                                             this.cancel();
                                                                         } else {
-                                                                            ItemMeta met = KeybindingUtils.getKeybindItem(key, p.getInventory()).getItemMeta();
+                                                                            ItemMeta met = LegacyKeybindingUtils.getKeybindItem(key, p.getInventory()).getItemMeta();
                                                                             met.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "contin"), PersistentDataType.BOOLEAN, true);
                                                                             setActive(p, power.getTag(), true);
-                                                                            KeybindingUtils.getKeybindItem(key, p.getInventory()).setItemMeta(met);
+                                                                            LegacyKeybindingUtils.getKeybindItem(key, p.getInventory()).setItemMeta(met);
                                                                             shotsLeft = -amt;
                                                                         }
                                                                     }
@@ -295,16 +295,16 @@ public class FireProjectile extends CraftPower implements Listener {
                                                     }
 
                                                     if (power.get("key").getOrDefault("continuous", "false").toString().equalsIgnoreCase("false")) {
-                                                        ItemMeta met = KeybindingUtils.getKeybindItem(key, p.getInventory()).getItemMeta();
+                                                        ItemMeta met = LegacyKeybindingUtils.getKeybindItem(key, p.getInventory()).getItemMeta();
                                                         met.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "contin"), PersistentDataType.BOOLEAN, false);
                                                         setActive(p, power.getTag(), false);
-                                                        KeybindingUtils.getKeybindItem(key, p.getInventory()).setItemMeta(met);
+                                                        LegacyKeybindingUtils.getKeybindItem(key, p.getInventory()).setItemMeta(met);
                                                         this.cancel();
                                                     } else {
                                                         if (isKeyBeingPressed(e.getPlayer(), power.get("key").getOrDefault("key", "key.origins.primary_active").toString(), true)) {
-                                                            ItemMeta met = KeybindingUtils.getKeybindItem(key, p.getInventory()).getItemMeta();
+                                                            ItemMeta met = LegacyKeybindingUtils.getKeybindItem(key, p.getInventory()).getItemMeta();
                                                             setActive(p, power.getTag(), false);
-                                                            KeybindingUtils.getKeybindItem(key, p.getInventory()).setItemMeta(met);
+                                                            LegacyKeybindingUtils.getKeybindItem(key, p.getInventory()).setItemMeta(met);
                                                             this.cancel();
                                                         }
                                                     }
