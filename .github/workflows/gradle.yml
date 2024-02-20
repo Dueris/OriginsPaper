@@ -23,6 +23,7 @@ jobs:
       run: |
         chmod +x ./gradlew
         ./gradlew build
+        ./gradlew publishGenesismcPublicationToSonatypeRepository
       env:
         GIT_TOKEN: ${{ secrets.GIT_TOKEN }}
     - name: Set Commit Hash

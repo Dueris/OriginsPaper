@@ -1,5 +1,6 @@
 plugins {
     `java-library`
+    `maven-publish`
     id("io.papermc.paperweight.userdev") version "1.5.11"
     id("xyz.jpenilla.run-paper") version "2.2.3"
     id("com.github.johnrengelman.shadow") version "7.1.2"
@@ -68,6 +69,32 @@ tasks {
         inputs.properties(props)
         filesMatching("paper-plugin.yml") {
             expand(props)
+        }
+    }
+}
+
+tasks.register<Jar>("makePublisher"){
+    dependsOn(tasks.shadowJar)
+    archiveFileName.set("genesis-v0.2.8-SNAPSHOT.jar")
+    from(sourceSets.main.get().output)
+}
+
+publishing {
+    publications.create<MavenPublication>("genesismc") {
+        artifact(tasks.getByName("makePublisher")) {
+            groupId = "io.github.dueris"
+            artifactId = "genesis"
+            version = "v0.2.8-SNAPSHOT"
+        }
+    }
+    repositories {
+        maven {
+            name = "sonatype"
+            url = uri("https://s01.oss.sonatype.org/content/repositories/snapshots/")
+            credentials {
+                username=System.getenv("OSSRH_USERNAME")
+                password=System.getenv("OSSRH_PASSWORD")
+            }
         }
     }
 }
