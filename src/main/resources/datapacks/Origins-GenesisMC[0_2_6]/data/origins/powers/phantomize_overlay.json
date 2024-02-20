@@ -23,7 +23,7 @@
         {
           "type": "origins:food_level",
           "comparison": ">",
-          "compare_to": 10
+          "compare_to": 6
         }
       ]
     }

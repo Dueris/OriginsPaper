@@ -420,7 +420,6 @@ public class EntityConditions implements Condition {
             }
             case "apoli:resource" -> {
                 if (CooldownUtils.cooldowns.containsKey(entity) && CooldownUtils.cooldowns.get(entity).contains(condition.get("resource").toString()) && CooldownUtils.cooldowns.containsKey(entity)) {
-                    System.out.println(1);
                     return getResult(inverted, Optional.of(!CooldownUtils.isPlayerInCooldownFromTag((Player) entity, condition.get("resource").toString())));
                 } else {
                     if (Resource.registeredBars.containsKey(entity) && Resource.registeredBars.get(entity).containsKey(condition.get("resource").toString())) {

@@ -19,6 +19,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Toggle extends CraftPower implements Listener {
     public static HashMap<Player, ArrayList<String>> in_continuous = new HashMap<>();
@@ -83,12 +84,12 @@ public class Toggle extends CraftPower implements Listener {
         String key = (String) power.get("key").getOrDefault("key", "key.origins.primary_active");
         KeybindingUtils.toggleKey(p, key);
 
-        boolean cont = !Boolean.valueOf(power.get("key").getOrDefault("continuous", "false").toString());
         new BukkitRunnable() {
-
             @Override
             public void run() {
-                if((true /* Toggle power always execute continuously */ || !KeybindingUtils.activeKeys.get(p).contains(key)) && !in_continuous.get(p).contains(key)){
+                AtomicBoolean cond = new AtomicBoolean(true);
+                ConditionExecutor.entityCondition.check(power.get("condition"), p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null).ifPresent(bool -> cond.set(bool));
+                if(!cond.get() || ((true /* Toggle power always execute continuously */ || !KeybindingUtils.activeKeys.get(p).contains(key)) && !in_continuous.get(p).contains(key))){
                     CooldownUtils.addCooldown(p, Utils.getNameOrTag(power), power.getType(), cooldown, key);
                     KeybindingUtils.toggleKey(p, key);
                     setActive(p, power.getTag(), false);
