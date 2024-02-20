@@ -5,11 +5,11 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.event.player.PlayerEvent;
 import org.jetbrains.annotations.NotNull;
 
-public class OriginChooseEvent extends PlayerEvent {
-
+public class OriginChoosePromptEvent extends PlayerEvent {
     private static final HandlerList handlers = new HandlerList();
+    private boolean canceled = false;
 
-    public OriginChooseEvent(@NotNull Player who) {
+    public OriginChoosePromptEvent(@NotNull Player who) {
         super(who);
     }
 
@@ -20,5 +20,13 @@ public class OriginChooseEvent extends PlayerEvent {
     @Override
     public HandlerList getHandlers() {
         return handlers;
+    }
+
+    public void setCanceled(boolean canceled){
+        this.canceled = canceled;
+    }
+
+    public boolean isCanceled(){
+        return this.canceled;
     }
 }
