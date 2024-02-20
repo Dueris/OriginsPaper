@@ -212,7 +212,7 @@ public class ConditionExecutor {
                     }
                 }
                 if (booleanOptional[0] == null) {
-                    booleanOptional[0].set(true);
+                    booleanOptional[0] = new AtomicBoolean(true);
                 }
                 return booleanOptional[0].get();
             }
