@@ -26,6 +26,8 @@ jobs:
         ./gradlew publishGenesismcPublicationToSonatypeRepository
       env:
         GIT_TOKEN: ${{ secrets.GIT_TOKEN }}
+        OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+        OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
     - name: Set Commit Hash
       id: set_commit_hash
       run: echo "COMMIT_HASH=$(git log --format='%H' -n 1)" >> $GITHUB_ENV
