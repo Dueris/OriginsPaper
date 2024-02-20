@@ -8,14 +8,12 @@ import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.registry.LayerContainer;
 import me.dueris.genesismc.registry.PowerContainer;
 import me.dueris.genesismc.util.CooldownUtils;
-import me.dueris.genesismc.util.LegacyKeybindingUtils;
+import me.dueris.genesismc.util.KeybindingUtils;
+import me.dueris.genesismc.util.Utils;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
-import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -23,136 +21,85 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import static me.dueris.genesismc.util.LegacyKeybindingUtils.isKeyBeingPressed;
+import static me.dueris.genesismc.factory.powers.apoli.FireProjectile.in_continuous;
 
 public class ToggleNightVision extends CraftPower implements Listener {
 
-    public static ArrayList<Player> in_continuous = new ArrayList<>();
-    public boolean active = true;
-    public boolean runCancel = false;
+    public static HashMap<Player, ArrayList<String>> in_continuous = new HashMap<>();
 
     @Override
     public void run(Player p) {
 
     }
 
-    public void execute(Player p, PowerContainer power) {
-        if (!getPowerArray().contains(p)) return;
-        if (runCancel) return;
-        String tag = power.getTag();
+    public void execute(Player p, PowerContainer power){
+        in_continuous.putIfAbsent(p, new ArrayList<>());
+        int cooldown = power.getIntOrDefault("cooldown", 1);
         String key = (String) power.get("key").getOrDefault("key", "key.origins.primary_active");
-        LegacyKeybindingUtils.runKeyChangeTrigger(LegacyKeybindingUtils.getTriggerFromOriginKey(p, key));
-        if (CooldownUtils.isPlayerInCooldown(p, key)) return;
-        if (!powers_active.containsKey(p)) {
-            powers_active.put(p, new HashMap());
-        }
-        if (powers_active.get(p).containsKey(power.getTag())) {
-            setActive(p, power.getTag(), !powers_active.get(p).get(tag));
-            if (true) {
-                if (active) {
-                    //active
-                    LegacyKeybindingUtils.runKeyChangeTriggerReturn(LegacyKeybindingUtils.getTriggerFromOriginKey(p, key), p, key);
-                    ItemMeta met = LegacyKeybindingUtils.getKeybindItem(key, p.getInventory()).getItemMeta();
-                    met.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "contin"), PersistentDataType.BOOLEAN, false);
-                    LegacyKeybindingUtils.getKeybindItem(key, p.getInventory()).setItemMeta(met);
-                    setActive(p, tag, false);
-                    in_continuous.remove(p);
-                    active = false;
-                    runCancel = true;
-                    new BukkitRunnable() {
-                        @Override
-                        public void run() {
-                            runCancel = false;
-                            this.cancel();
-                        }
-                    }.runTaskTimer(GenesisMC.getPlugin(), 0, 5);
-                    new BukkitRunnable() {
-                        @Override
-                        public void run() {
-                            //run code for while its disabled
-                            p.removePotionEffect(PotionEffectType.NIGHT_VISION);
-                        }
-                    }.runTaskTimer(GenesisMC.getPlugin(), 0, 1);
-                } else {
-                    //nonactive
-                    LegacyKeybindingUtils.runKeyChangeTrigger(LegacyKeybindingUtils.getKeybindItem(key, p.getInventory()));
-                    ItemMeta met = LegacyKeybindingUtils.getKeybindItem(key, p.getInventory()).getItemMeta();
-                    met.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "contin"), PersistentDataType.BOOLEAN, true);
-                    LegacyKeybindingUtils.getKeybindItem(key, p.getInventory()).setItemMeta(met);
-                    setActive(p, tag, true);
-                    in_continuous.add(p);
-                    active = true;
-                    runCancel = true;
-                    new BukkitRunnable() {
-                        @Override
-                        public void run() {
-                            runCancel = false;
-                            this.cancel();
-                        }
-                    }.runTaskLater(GenesisMC.getPlugin(), 5);
-                    new BukkitRunnable() {
-                        @Override
-                        public void run() {
-                            //run code for while its enabled
-                            ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
-                            if (conditionExecutor.check("condition", "conditions", p, power, getPowerFile(), p, null, null, null, p.getItemInHand(), null)) {
-                                p.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, Integer.MAX_VALUE, 400, false, false, false));
-                            } else {
-                                p.removePotionEffect(PotionEffectType.NIGHT_VISION);
-                            }
-                        }
-                    }.runTaskTimer(GenesisMC.getPlugin(), 0, 1);
+        KeybindingUtils.toggleKey(p, key);
+
+        boolean cont = !Boolean.valueOf(power.get("key").getOrDefault("continuous", "false").toString());
+        new BukkitRunnable() {
+
+            @Override
+            public void run() {
+                if((true /* TNV power always execute continuously */ || !KeybindingUtils.activeKeys.get(p).contains(key)) && !in_continuous.get(p).contains(key)){
+                    CooldownUtils.addCooldown(p, Utils.getNameOrTag(power), power.getType(), cooldown, key);
+                    KeybindingUtils.toggleKey(p, key);
+                    setActive(p, power.getTag(), false);
+                    p.removePotionEffect(PotionEffectType.NIGHT_VISION);
+                    this.cancel();
+                    return;
                 }
-//                ToggleTriggerEvent toggleTriggerEvent = new ToggleTriggerEvent(p, key, origin, !active);
-//                Bukkit.getServer().getPluginManager().callEvent(toggleTriggerEvent);
-            } else {
-                LegacyKeybindingUtils.runKeyChangeTrigger(LegacyKeybindingUtils.getKeybindItem(key, p.getInventory()));
-                setActive(p, tag, true);
-                in_continuous.add(p);
-                new BukkitRunnable() {
-                    @Override
-                    public void run() {
-                        LegacyKeybindingUtils.runKeyChangeTriggerReturn(LegacyKeybindingUtils.getTriggerFromOriginKey(p, key), p, key);
-                        setActive(p, tag, false);
-                        ItemMeta met = LegacyKeybindingUtils.getKeybindItem(key, p.getInventory()).getItemMeta();
-                        met.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "contin"), PersistentDataType.BOOLEAN, false);
-                        LegacyKeybindingUtils.getKeybindItem(key, p.getInventory()).setItemMeta(met);
-                        in_continuous.remove(p);
+
+                PotionEffect effect = new PotionEffect(PotionEffectType.NIGHT_VISION, 500, 0, false, false, false);
+                if(p.hasPotionEffect(PotionEffectType.NIGHT_VISION)){
+                    // Check duration
+                    if(p.getPotionEffect(PotionEffectType.NIGHT_VISION).getDuration() < 350){
+                        p.addPotionEffect(effect);
                     }
-                }.runTaskLater(GenesisMC.getPlugin(), 2);
-            }
-        } else {
-            //set true
-            LegacyKeybindingUtils.runKeyChangeTrigger(LegacyKeybindingUtils.getKeybindItem(key, p.getInventory()));
-            setActive(p, tag, true);
-            in_continuous.add(p);
-            new BukkitRunnable() {
-                @Override
-                public void run() {
-                    LegacyKeybindingUtils.runKeyChangeTriggerReturn(LegacyKeybindingUtils.getTriggerFromOriginKey(p, key), p, key);
-                    setActive(p, tag, false);
-                    in_continuous.remove(p);
+                }else{
+                    p.addPotionEffect(effect);
                 }
-            }.runTaskLater(GenesisMC.getPlugin(), 2);
-        }
+                setActive(p, power.getTag(), true);
+            }
+        }.runTaskTimer(GenesisMC.getPlugin(), 0, 1);
     }
 
     @EventHandler
     public void keybindToggle(KeybindTriggerEvent e) {
         Player p = e.getPlayer();
-        if (getPowerArray().contains(e.getPlayer())) {
-            for (LayerContainer layer : CraftApoli.getLayers()) {
-                ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
-                for (PowerContainer power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
+        for (LayerContainer layer : CraftApoli.getLayers()) {
+            for (PowerContainer power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
+                if (getPowerArray().contains(p)) {
+                    ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                     if (conditionExecutor.check("condition", "conditions", p, power, getPowerFile(), p, null, null, null, p.getItemInHand(), null)) {
-                        if (!CooldownUtils.isPlayerInCooldown(p, power.get("key").getOrDefault("key", "key.origins.primary_active").toString())) {
-                            if (isKeyBeingPressed(e.getPlayer(), power.get("key").getOrDefault("key", "key.origins.primary_active").toString(), true)) {
+                        if (!CooldownUtils.isPlayerInCooldownFromTag(p, Utils.getNameOrTag(power))) {
+                            if (KeybindingUtils.isKeyActive(power.get("key").getOrDefault("key", "key.origins.primary_active").toString(), p)) {
                                 execute(p, power);
                             }
                         }
-                    } else {
-                        LegacyKeybindingUtils.runKeyChangeTriggerReturn(LegacyKeybindingUtils.getKeybindItem(power.get("key").getOrDefault("key", "key.origins.primary_active").toString(), p.getInventory()), p, power.get("key").getOrDefault("key", "key.origins.primary_active").toString());
-                        setActive(p, power.getTag(), false);
+                    }
+                }
+            }
+        }
+    }
+
+    @EventHandler
+    public void inContinuousFix(KeybindTriggerEvent e) {
+        Player p = e.getPlayer();
+        for (LayerContainer layer : CraftApoli.getLayers()) {
+            if (getPowerArray().contains(p)) {
+                for (PowerContainer power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
+                    if (KeybindingUtils.isKeyActive(power.get("key").getOrDefault("key", "key.origins.primary_active").toString(), p)) {
+                        in_continuous.putIfAbsent(p, new ArrayList<>());
+                        if(true /* TNV power always execute continuously */){
+                            if (in_continuous.get(p).contains(power.get("key").getOrDefault("key", "key.origins.primary_active").toString())) {
+                                in_continuous.get(p).remove(power.get("key").getOrDefault("key", "key.origins.primary_active").toString());
+                            } else {
+                                in_continuous.get(p).add(power.get("key").getOrDefault("key", "key.origins.primary_active").toString());
+                            }
+                        }
                     }
                 }
             }

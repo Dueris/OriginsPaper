@@ -49,8 +49,7 @@ public class CooldownUtils implements @NotNull Listener {
     }
 
     public static boolean isPlayerInCooldown(Player player, String cooldownKeybindType) {
-        return cooldowns.containsKey(player) && cooldowns.get(player).contains(cooldownKeybindType)
-                && cooldownBars.containsKey(player);
+        return cooldowns.containsKey(player) && cooldowns.get(player).contains(cooldownKeybindType);
     }
 
     public static void resetCooldown(Player player, String cooldownKeybindType) {
@@ -63,8 +62,9 @@ public class CooldownUtils implements @NotNull Listener {
     }
 
     public static boolean isPlayerInCooldownFromTag(Player player, String tag) {
-        for (@NotNull Iterator<KeyedBossBar> it = Bukkit.getBossBars(); it.hasNext(); ) {
-            KeyedBossBar active = it.next();
+        Iterator<BossBar> bossBars = cooldownBars.values().iterator();
+        while (bossBars.hasNext()){
+            BossBar active = bossBars.next();
             if (active.getTitle().equalsIgnoreCase(tag)) {
                 if (active.getPlayers().contains(player)) return true;
             }

@@ -1,5 +1,7 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
+import com.mojang.brigadier.StringReader;
+import io.papermc.paper.util.MCUtil;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.event.KeybindTriggerEvent;
 import me.dueris.genesismc.factory.CraftApoli;
@@ -8,28 +10,21 @@ import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.registry.LayerContainer;
 import me.dueris.genesismc.registry.PowerContainer;
 import me.dueris.genesismc.util.CooldownUtils;
-import me.dueris.genesismc.util.LegacyKeybindingUtils;
+import me.dueris.genesismc.util.KeybindingUtils;
 import me.dueris.genesismc.util.Utils;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
-import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
-import org.bukkit.Particle;
+import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import static me.dueris.genesismc.util.LegacyKeybindingUtils.isKeyBeingPressed;
+import static me.dueris.genesismc.factory.powers.apoli.FireProjectile.in_continuous;
 
 public class Launch extends CraftPower implements Listener {
-
-    public static ArrayList<Player> in_continuous = new ArrayList<>();
 
     @Override
     public void setActive(Player p, String tag, Boolean bool) {
@@ -46,105 +41,63 @@ public class Launch extends CraftPower implements Listener {
     }
 
     @EventHandler
+    public void inContinuousFix(KeybindTriggerEvent e) {
+        Player p = e.getPlayer();
+        for (LayerContainer layer : CraftApoli.getLayers()) {
+            if (getPowerArray().contains(p)) {
+                for (PowerContainer power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
+                    if (KeybindingUtils.isKeyActive(power.get("key").getOrDefault("key", "key.origins.primary_active").toString(), p)) {
+                        in_continuous.putIfAbsent(p, new ArrayList<>());
+                        if(false /* Launch power doesnt execute continuously */){
+                            if (in_continuous.get(p).contains(power.get("key").getOrDefault("key", "key.origins.primary_active").toString())) {
+                                in_continuous.get(p).remove(power.get("key").getOrDefault("key", "key.origins.primary_active").toString());
+                            } else {
+                                in_continuous.get(p).add(power.get("key").getOrDefault("key", "key.origins.primary_active").toString());
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    @EventHandler
     public void keybindToggle(KeybindTriggerEvent e) {
         Player p = e.getPlayer();
-        if (launch_into_air.contains(e.getPlayer())) {
-            for (LayerContainer layer : CraftApoli.getLayers()) {
-                ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
-                for (PowerContainer power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-                    if (conditionExecutor.check("condition", "conditions", p, power, "apoli:launch", p, null, null, null, p.getItemInHand(), null)) {
-                        if (!CooldownUtils.isPlayerInCooldown(p, power.get("key").getOrDefault("key", "key.origins.primary_active").toString())) {
-                            if (isKeyBeingPressed(e.getPlayer(), power.get("key").getOrDefault("key", "key.origins.primary_active").toString(), true)) {
+        for(LayerContainer layer : CraftApoli.getLayers()){
+            for(PowerContainer power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)){
+                if (getPowerArray().contains(p)) {
+                    ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
+                    if (conditionExecutor.check("condition", "conditions", p, power, getPowerFile(), p, null, null, null, p.getItemInHand(), null)) {
+                        if (!CooldownUtils.isPlayerInCooldownFromTag(p, Utils.getNameOrTag(power))) {
+                            if (KeybindingUtils.isKeyActive(power.get("key").getOrDefault("key", "key.origins.primary_active").toString(), p)) {
+                                String key = power.get("key").getOrDefault("key", "key.origins.primary_active").toString();
+                                KeybindingUtils.toggleKey(p, key);
+                                final int[] times = {-1};
+                                boolean cont = !Boolean.valueOf(power.get("key").getOrDefault("continuous", "false").toString());
                                 new BukkitRunnable() {
                                     @Override
                                     public void run() {
-                                        String key = (String) power.get("key").getOrDefault("key", "key.origins.primary_active");
-                                        if (!CooldownUtils.isPlayerInCooldown(p, key)) {
-                                            LegacyKeybindingUtils.runKeyChangeTrigger(LegacyKeybindingUtils.getTriggerFromOriginKey(p, key));
-                                            final boolean[] thing = new boolean[1];
-                                            new BukkitRunnable() {
-                                                @Override
-                                                public void run() {
-                                                    int cooldown = power.getIntOrDefault("cooldown", 1);
-                                                    if (!CooldownUtils.isPlayerInCooldown(p, key)) {
-                                                        //continousus - false
-                                                        LegacyKeybindingUtils.runKeyChangeTriggerReturn(LegacyKeybindingUtils.getTriggerFromOriginKey(p, key), p, key);
-                                                        ItemMeta met = LegacyKeybindingUtils.getKeybindItem(key, p.getInventory()).getItemMeta();
-                                                        met.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "contin"), PersistentDataType.BOOLEAN, false);
-                                                        LegacyKeybindingUtils.getKeybindItem(key, p.getInventory()).setItemMeta(met);
-                                                        thing[0] = true;
-                                                        setActive(p, power.getTag(), false);
-                                                        this.cancel();
-                                                    }
-
-                                                    int speed = Integer.parseInt(power.getStringOrDefault("speed", null)); // used as string so that upon parsing the int it throws if not found
-                                                    CooldownUtils.addCooldown(p, Utils.getNameOrTag(power), power.getType(), cooldown, key);
-                                                    setActive(p, power.getTag(), true);
-                                                    p.setVelocity(new Vector(p.getVelocity().getX(), speed, p.getVelocity().getZ()));
-                                                    p.spawnParticle(Particle.CLOUD, p.getLocation(), 100);
-                                                    this.cancel();
-
-                                                }
-                                            }.runTaskTimer(GenesisMC.getPlugin(), 1L, 1L);
-
-                                            if (thing[0]) {
-                                                thing[0] = false;
-                                                this.cancel();
-                                            }
-
-                                            if (power.get("key").get("continuous").toString().equalsIgnoreCase("false")) {
-                                                ItemMeta met = LegacyKeybindingUtils.getKeybindItem(key, p.getInventory()).getItemMeta();
-                                                met.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "contin"), PersistentDataType.BOOLEAN, false);
-                                                if (power == null) {
-                                                    getPowerArray().remove(p);
-                                                    return;
-                                                }
-                                                if (!getPowerArray().contains(p)) return;
+                                        int cooldown = power.getIntOrDefault("cooldown", 1);
+                                        if (times[0] >= 0) {
+                                            if((!false /* Launch power doesnt execute continuously */ || !KeybindingUtils.activeKeys.get(p).contains(key)) && !in_continuous.get(p).contains(key)){
+                                                CooldownUtils.addCooldown(p, Utils.getNameOrTag(power), power.getType(), cooldown, key);
+                                                KeybindingUtils.toggleKey(p, key);
                                                 setActive(p, power.getTag(), false);
-                                                LegacyKeybindingUtils.getKeybindItem(key, p.getInventory()).setItemMeta(met);
-                                                in_continuous.add(p);
-                                                new BukkitRunnable() {
-                                                    @Override
-                                                    public void run() {
-                                                        in_continuous.remove(p);
-                                                    }
-                                                }.runTaskLater(GenesisMC.getPlugin(), 1L);
                                                 this.cancel();
-                                            } else {
-                                                if (isKeyBeingPressed(e.getPlayer(), power.get("key").getOrDefault("key", "key.origins.primary_active").toString(), true)) {
-                                                    ItemMeta met = LegacyKeybindingUtils.getKeybindItem(key, p.getInventory()).getItemMeta();
-                                                    met.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "contin"), PersistentDataType.BOOLEAN, false);
-                                                    if (power == null) {
-                                                        getPowerArray().remove(p);
-                                                        return;
-                                                    }
-                                                    if (!getPowerArray().contains(p)) return;
-                                                    setActive(p, power.getTag(), false);
-                                                    LegacyKeybindingUtils.getKeybindItem(key, p.getInventory()).setItemMeta(met);
-                                                    if (in_continuous.contains(p)) {
-                                                        LegacyKeybindingUtils.runKeyChangeTriggerReturn(LegacyKeybindingUtils.getKeybindItem(key, p.getInventory()), p, key);
-                                                        LegacyKeybindingUtils.getKeybindItem(key, p.getInventory()).setType(Material.GRAY_DYE);
-                                                        met.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "contin"), PersistentDataType.BOOLEAN, false);
-
-                                                        setActive(p, power.getTag(), false);
-                                                        LegacyKeybindingUtils.getKeybindItem(key, p.getInventory()).setItemMeta(met);
-                                                        in_continuous.remove(p);
-                                                        this.cancel();
-                                                    } else {
-                                                        LegacyKeybindingUtils.runKeyChangeTrigger(LegacyKeybindingUtils.getKeybindItem(key, p.getInventory()));
-                                                        LegacyKeybindingUtils.getKeybindItem(key, p.getInventory()).setType(Material.LIME_DYE);
-                                                        met.getPersistentDataContainer().set(new NamespacedKey(GenesisMC.getPlugin(), "contin"), PersistentDataType.BOOLEAN, true);
-
-                                                        setActive(p, power.getTag(), true);
-                                                        LegacyKeybindingUtils.getKeybindItem(key, p.getInventory()).setItemMeta(met);
-                                                        in_continuous.add(p);
-                                                    }
-                                                    this.cancel();
-                                                }
+                                                return;
                                             }
                                         }
+                                        int speed = Integer.parseInt(power.getStringOrDefault("speed", null)); // used as string so that upon parsing the int it throws if not found
+                                        CooldownUtils.addCooldown(p, Utils.getNameOrTag(power), power.getType(), cooldown, key);
+                                        setActive(p, power.getTag(), true);
+                                        p.setVelocity(p.getVelocity().setY(0));
+                                        p.setVelocity(p.getVelocity().setY(speed));
+                                        p.spawnParticle(Particle.CLOUD, p.getLocation(), 100);
+                                        setActive(p, power.getTag(), true);
+                                        times[0]++;
                                     }
-                                }.runTaskTimer(GenesisMC.getPlugin(), 0, 1);
+                                }.runTaskTimer(GenesisMC.getPlugin(), 1L, 1L);
                             }
                         }
                     }

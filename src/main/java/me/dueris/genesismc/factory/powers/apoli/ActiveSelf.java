@@ -8,6 +8,7 @@ import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.registry.LayerContainer;
 import me.dueris.genesismc.registry.PowerContainer;
 import me.dueris.genesismc.util.CooldownUtils;
+import me.dueris.genesismc.util.KeybindingUtils;
 import me.dueris.genesismc.util.Utils;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import org.bukkit.entity.Player;
@@ -16,8 +17,6 @@ import org.bukkit.event.Listener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-
-import static me.dueris.genesismc.util.LegacyKeybindingUtils.isKeyBeingPressed;
 
 public class ActiveSelf extends CraftPower implements Listener {
 
@@ -36,7 +35,7 @@ public class ActiveSelf extends CraftPower implements Listener {
                     if (executor.check("condition", "conditions", e.getPlayer(), power, getPowerFile(), e.getPlayer(), null, null, null, null, null)) {
                         if (!getPowerArray().contains(e.getPlayer())) return;
                         setActive(e.getPlayer(), power.getTag(), true);
-                        if (isKeyBeingPressed(e.getPlayer(), power.get("key").getOrDefault("key", "key.origins.primary_active").toString(), true)) {
+                        if (KeybindingUtils.isKeyActive(power.get("key").getOrDefault("key", "key.origins.primary_active").toString(), e.getPlayer())) {
                             Actions.EntityActionType(e.getPlayer(), power.getEntityAction());
                             if (power.getObjectOrDefault("cooldown", 1) != null) {
                                 CooldownUtils.addCooldown(e.getPlayer(), Utils.getNameOrTag(power), power.getType(), power.getIntOrDefault("cooldown", power.getIntOrDefault("max", 1)), e.getKey());

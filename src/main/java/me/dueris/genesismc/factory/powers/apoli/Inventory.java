@@ -10,6 +10,7 @@ import me.dueris.genesismc.registry.LayerContainer;
 import me.dueris.genesismc.registry.PowerContainer;
 import me.dueris.genesismc.util.ColorConstants;
 import me.dueris.genesismc.util.CooldownUtils;
+import me.dueris.genesismc.util.KeybindingUtils;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
@@ -29,8 +30,6 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-
-import static me.dueris.genesismc.util.LegacyKeybindingUtils.isKeyBeingPressed;
 
 public class Inventory extends CraftPower implements CommandExecutor, Listener {
 
@@ -95,7 +94,7 @@ public class Inventory extends CraftPower implements CommandExecutor, Listener {
                     if (CooldownUtils.isPlayerInCooldown(e.getPlayer(), e.getKey())) return;
                     if (executor.check("condition", "conditions", e.getPlayer(), power, getPowerFile(), e.getPlayer(), null, null, null, e.getPlayer().getItemInHand(), null)) {
                         setActive(e.getPlayer(), power.getTag(), true);
-                        if (isKeyBeingPressed(e.getPlayer(), power.get("key").getOrDefault("key", "key.origins.primary_active").toString(), true)) {
+                        if (KeybindingUtils.isKeyActive(power.get("key").getOrDefault("key", "key.origins.primary_active").toString(), e.getPlayer())) {
                             ArrayList<ItemStack> vaultItems = InventoryUtils.getItems(e.getPlayer());
                             org.bukkit.inventory.Inventory vault = Bukkit.createInventory(e.getPlayer(), InventoryType.valueOf(power.getStringOrDefault("container_type", "chest").toUpperCase()), power.getStringOrDefault("title", "inventory.container.title").replace("%player%", e.getPlayer().getName()));
                             vaultItems.stream()
