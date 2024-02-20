@@ -105,8 +105,12 @@ public class KeybindingUtils implements Listener {
     }
 
     private void resetKeybinds(Player p){
-        activeKeys.get(p).clear();
-        Power.powers_active.get(p).clear();
+        if(activeKeys.containsKey(p)){
+            activeKeys.get(p).clear();
+        }
+        if(Power.powers_active.containsKey(p)){
+            Power.powers_active.get(p).clear();
+        }
         for (ItemStack item : p.getInventory()) {
             if (item == null) continue;
             if (item.equals(getPrimaryTrigger(p))) {
