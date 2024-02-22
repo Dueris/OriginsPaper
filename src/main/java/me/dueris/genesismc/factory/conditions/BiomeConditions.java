@@ -82,10 +82,10 @@ public class BiomeConditions implements Condition {
                     float compare_to = Float.parseFloat(condition.get("compare_to").toString());
                     return getResult(inverted, Optional.of(Utils.compareValues(b.getBaseTemperature(), comparison, compare_to)));
                 }
-                case "apoli:humidity" -> {
+                case "apoli:high_humidity" -> {
                     net.minecraft.world.level.biome.Biome b = CraftBiome.bukkitToMinecraft(block.getBiome());
-                    String comparison = condition.get("comparison").toString();
-                    float compare_to = Float.parseFloat(condition.get("compare_to").toString());
+                    String comparison = ">=";
+                    float compare_to = 0.85f;
                     return getResult(inverted, Optional.of(Utils.compareValues(b.climateSettings.downfall(), comparison, compare_to)));
                 }
                 default -> {

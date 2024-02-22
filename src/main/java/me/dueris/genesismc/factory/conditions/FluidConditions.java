@@ -1,8 +1,11 @@
 package me.dueris.genesismc.factory.conditions;
 
 import me.dueris.genesismc.factory.TagRegistryParser;
+import net.minecraft.world.item.Items;
 import org.bukkit.Fluid;
+import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
+import org.bukkit.craftbukkit.v1_20_R3.CraftFluid;
 import org.bukkit.entity.Entity;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.ItemStack;
@@ -25,10 +28,10 @@ public class FluidConditions implements Condition {
         if (fluid == null) return Optional.empty();
         boolean inverted = (boolean) condition.getOrDefault("inverted", false);
         String type = condition.get("type").toString().toLowerCase();
-
+        net.minecraft.world.level.material.Fluid flNMS = CraftFluid.bukkitToMinecraft(fluid);
         switch (type) {
             case "apoli:empty" -> {
-                return getResult(inverted, Optional.of(Fluid.EMPTY.equals(fluid)));
+                return getResult(inverted, Optional.of(flNMS.defaultFluidState().isEmpty()));
             }
             case "apoli:in_tag" -> {
                 for (String flu : TagRegistryParser.getRegisteredTagFromFileKey(condition.get("tag").toString())) {
@@ -39,7 +42,10 @@ public class FluidConditions implements Condition {
                 return getResult(inverted, Optional.of(false));
             }
             case "apoli:still" -> {
-                return getResult(inverted, Optional.of(Fluid.LAVA.equals(fluid) || Fluid.WATER.equals(fluid)));
+                return getResult(inverted, Optional.of(flNMS.defaultFluidState().isSource()));
+            }
+            case "apoli:fluid" -> {
+                return getResult(inverted, Optional.of(fluid.getKey().equals(NamespacedKey.fromString(condition.get("fluid").toString()))));
             }
             default -> {
                 return getResult(inverted, Optional.empty());

@@ -13,18 +13,31 @@ import me.dueris.genesismc.util.Utils;
 import me.dueris.genesismc.util.apoli.RaycastApoli;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.storage.LevelResource;
+import net.minecraft.world.level.storage.loot.LootDataType;
+
+import net.minecraft.world.level.storage.loot.providers.number.ScoreboardValue;
+import net.minecraft.world.scores.Objective;
+import net.minecraft.world.scores.Scoreboard;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
+import org.bukkit.craftbukkit.v1_20_R3.CraftServer;
 import org.bukkit.craftbukkit.v1_20_R3.CraftWorld;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftLivingEntity;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_20_R3.tag.CraftTag;
+import org.bukkit.craftbukkit.v1_20_R3.util.CraftNamespacedKey;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.*;
 import org.bukkit.event.entity.EntityDamageEvent;
@@ -307,6 +320,33 @@ public class EntityConditions implements Condition {
                 }
                 return getResult(inverted, Optional.of(Utils.compareValues(blockCount, comparison, compare_to)));
             }
+            case "apoli:set_size" -> {
+                String tag = condition.get("set").toString();
+                ArrayList<Entity> entities = EntitySetPower.entity_sets.get(tag);
+                if(entities.contains(entity)){
+                    String comparison = condition.get("comparison").toString();
+                    int compare_to = Integer.parseInt(condition.get("compare_to").toString());
+                    return getResult(inverted, Optional.of(Utils.compareValues(entities.size(), comparison, compare_to)));
+                }
+                return getResult(inverted, Optional.of(false));
+            }
+            case "apoli:scoreboard" -> {
+                String name = condition.get("name").toString();
+                if(name == null){
+                    if(entity instanceof Player player) name = player.getName();
+                    else name = entity.getUniqueId().toString();
+                }
+
+                Scoreboard scoreboard = ((CraftEntity)entity).getHandle().level().getScoreboard();
+                Objective value = scoreboard.getObjective(condition.get("objective").toString());
+
+                if(value != null && scoreboard.getPlayerScoreInfo(((CraftEntity)entity).getHandle(), value) != null){
+                    int score = scoreboard.getPlayerScoreInfo(((CraftEntity)entity).getHandle(), value).value();
+                    String comparison = condition.get("comparison").toString();
+                    int compare_to = Integer.parseInt(condition.get("compare_to").toString());
+                    return getResult(inverted, Optional.of(Utils.compareValues(score, comparison, compare_to)));
+                }
+            }
             case "apoli:weather_check" -> {
                 boolean thunder = (boolean) condition.getOrDefault("thundering", false);
                 boolean rain = (boolean) condition.getOrDefault("raining", false);
@@ -357,12 +397,7 @@ public class EntityConditions implements Condition {
                 return getResult(inverted, Optional.of(false));
             }
             case "apoli:collided_horizontally" -> {
-                if (entity instanceof LivingEntity le) {
-                    BoundingBox playerBoundingBox = le.getBoundingBox();
-                    BoundingBox blockBoundingBox = block.getBoundingBox();
-                    return getResult(inverted, Optional.of(blockBoundingBox.overlaps(playerBoundingBox)));
-                }
-                return getResult(inverted, Optional.of(false));
+                return getResult(inverted, Optional.of(((CraftEntity)entity).getHandle().horizontalCollision));
             }
             case "apoli:creative_flying" -> {
                 if (entity instanceof Player player) {

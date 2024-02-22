@@ -7,6 +7,7 @@ import com.mojang.brigadier.StringReader;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 import me.dueris.genesismc.GenesisMC;
+import me.dueris.genesismc.factory.conditions.BiEntityConditions;
 import me.dueris.genesismc.registry.PowerContainer;
 import me.dueris.genesismc.util.apoli.Space;
 import net.minecraft.Util;
@@ -149,7 +150,7 @@ public class Utils {
     }
 
     public static Space getSpaceFromString(String space) {
-        switch (space) {
+        switch (space.toLowerCase()) {
             case "world" -> {
                 return Space.WORLD;
             }
@@ -180,6 +181,20 @@ public class Utils {
         }
     }
 
+    public static BiEntityConditions.RotationType getRotationType(String string){
+        switch (string.toLowerCase()) {
+            case "head" -> {
+                return BiEntityConditions.RotationType.HEAD;
+            }
+            case "body" -> {
+                return BiEntityConditions.RotationType.BODY;
+            }
+            default -> {
+                return BiEntityConditions.RotationType.BODY;
+            }
+        }
+    }
+
     public static Vec3 createDirection(JSONObject jsonObject){
         if(jsonObject == null || jsonObject.isEmpty()) return null;
         float x = 0;
@@ -192,7 +207,7 @@ public class Utils {
     }
 
     public static ClipContext.Block getShapeType(String string){
-        switch (string) {
+        switch (string.toLowerCase()) {
             case "collider" -> {
                 return ClipContext.Block.COLLIDER;
             }
@@ -209,7 +224,7 @@ public class Utils {
     }
 
     public static ClipContext.Fluid getFluidHandling(String string){
-        switch (string) {
+        switch (string.toLowerCase()) {
             case "none" -> {
                 return ClipContext.Fluid.NONE;
             }
