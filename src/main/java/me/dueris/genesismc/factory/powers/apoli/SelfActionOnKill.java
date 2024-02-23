@@ -4,8 +4,8 @@ import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.actions.Actions;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.registry.LayerContainer;
-import me.dueris.genesismc.registry.PowerContainer;
+import me.dueris.genesismc.registry.registries.Layer;
+import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.util.CooldownUtils;
 import me.dueris.genesismc.util.Utils;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
@@ -32,10 +32,10 @@ public class SelfActionOnKill extends CraftPower implements Listener {
         if (!(target instanceof Player player)) return;
         if (!getPowerArray().contains(target)) return;
 
-        for (LayerContainer layer : CraftApoli.getLayers()) {
+        for (Layer layer : CraftApoli.getLayersFromRegistry()) {
             ConditionExecutor executor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
             if (CooldownUtils.isPlayerInCooldown(player, getPowerFile())) return;
-            for (PowerContainer power : OriginPlayerAccessor.getMultiPowerFileFromType(player, getPowerFile(), layer)) {
+            for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(player, getPowerFile(), layer)) {
                 if (executor.check("condition", "conditions", (Player) target, power, getPowerFile(), target, null, null, null, player.getInventory().getItemInHand(), null)) {
                     setActive(player, power.getTag(), true);
                     Actions.EntityActionType(target, power.getEntityAction());

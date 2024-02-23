@@ -4,7 +4,7 @@ import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.event.PowerUpdateEvent;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.factory.powers.DontRegister;
-import me.dueris.genesismc.registry.PowerContainer;
+import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.util.console.OriginConsoleSender;
 import me.dueris.modelcolor.ModelColorAPI;
 import me.dueris.modelcolor.colortransformers.OriginsTransformer;
@@ -48,7 +48,7 @@ public class ModelColor { // Left empty due to it needing to be registered on ce
 
         }
 
-        public void applyModelTransformer(ModelColorAPI api, SkinsRestorer skinsRestorer, Player p, PowerContainer power){
+        public void applyModelTransformer(ModelColorAPI api, SkinsRestorer skinsRestorer, Player p, Power power){
             PlayerStorage storage = skinsRestorer.getPlayerStorage();
             try {
                 Optional<SkinProperty> property = storage.getSkinForPlayer(p.getUniqueId(), p.getName());

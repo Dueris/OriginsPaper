@@ -6,8 +6,8 @@ import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.registry.LayerContainer;
-import me.dueris.genesismc.registry.PowerContainer;
+import me.dueris.genesismc.registry.registries.Layer;
+import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.util.console.OriginConsoleSender;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import net.minecraft.Optionull;
@@ -142,9 +142,9 @@ public class Phasing extends CraftPower implements Listener {
                 if (e.isSneaking()) {
                     if (getPowerArray().contains(e.getPlayer())) {
                         Player p = e.getPlayer();
-                        for (LayerContainer layer : CraftApoli.getLayers()) {
+                        for (Layer layer : CraftApoli.getLayersFromRegistry()) {
                             ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
-                            for (PowerContainer power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
+                            for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                                 if (conditionExecutor.check("condition", "conditions", p, power, getPowerFile(), p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
                                     if (conditionExecutor.check("phase_down_condition", "phase_down_condition", p, power, getPowerFile(), p, null, p.getLocation().add(0, -1, 0).getBlock(), null, p.getItemInHand(), null)) {
                                         p.teleportAsync(p.getLocation().add(0, -0.1, 0));
@@ -166,9 +166,9 @@ public class Phasing extends CraftPower implements Listener {
     @Override
     public void run(Player p) {
         if (getPowerArray().contains(p)) {
-            for (LayerContainer layer : CraftApoli.getLayers()) {
+            for (Layer layer : CraftApoli.getLayersFromRegistry()) {
                 ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
-                for (PowerContainer power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
+                for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                     if (conditionExecutor.check("condition", "conditions", p, power, getPowerFile(), p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
                         setActive(p, power.getTag(), true);
                         if ((p.getLocation().add(0.55F, 0, 0.55F).getBlock().isSolid() ||

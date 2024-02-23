@@ -3,12 +3,12 @@ package me.dueris.genesismc.util;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.event.OriginChangeEvent;
 import me.dueris.genesismc.factory.CraftApoli;
-import me.dueris.genesismc.factory.powers.Power;
+import me.dueris.genesismc.factory.powers.ApoliPower;
 import me.dueris.genesismc.factory.powers.apoli.AttributeHandler;
 import me.dueris.genesismc.factory.powers.apoli.GravityPower;
-import me.dueris.genesismc.registry.LayerContainer;
-import me.dueris.genesismc.registry.OriginContainer;
-import me.dueris.genesismc.registry.PowerContainer;
+import me.dueris.genesismc.registry.registries.Layer;
+import me.dueris.genesismc.registry.registries.Origin;
+import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.storage.OriginDataContainer;
 import me.dueris.genesismc.storage.nbt.NBTFixerUpper;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
@@ -35,15 +35,15 @@ import java.util.Map;
 public class PlayerManager implements Listener {
 
     public static void ReapplyEntityReachPowers(Player player) {
-        for (OriginContainer origin : OriginPlayerAccessor.getOrigin(player).values()) {
-            for (PowerContainer power : origin.getMultiPowerFileFromType("apoli:attribute")) {
+        for (Origin origin : OriginPlayerAccessor.getOrigin(player).values()) {
+            for (Power power : origin.getMultiPowerFileFromType("apoli:attribute")) {
                 if (power == null) continue;
                 for (HashMap<String, Object> modifier : power.getPossibleModifiers("modifier", "modifier")) {
                     if (modifier.get("attribute").toString().equalsIgnoreCase("reach-entity-attributes:reach")) {
-                        Power.extra_reach.add(player);
+                        ApoliPower.extra_reach.add(player);
                         return;
                     } else if (modifier.get("attribute").toString().equalsIgnoreCase("reach-entity-attributes:attack_range")) {
-                        Power.extra_reach_attack.add(player);
+                        ApoliPower.extra_reach_attack.add(player);
                         return;
                     } else {
                         AttributeHandler.Reach.setFinalReach(player, AttributeHandler.Reach.getDefaultReach(player));
@@ -54,9 +54,9 @@ public class PlayerManager implements Listener {
     }
 
     public static void originValidCheck(Player p) {
-        HashMap<LayerContainer, OriginContainer> origins = OriginPlayerAccessor.getOrigin(p);
-        ArrayList<LayerContainer> deletedLayers = new ArrayList<>();
-        for (LayerContainer layer : origins.keySet()) {
+        HashMap<Layer, Origin> origins = OriginPlayerAccessor.getOrigin(p);
+        ArrayList<Layer> deletedLayers = new ArrayList<>();
+        for (Layer layer : origins.keySet()) {
             //check if the player layer exists
             if (!CraftApoli.layerExists(layer)) {
                 deletedLayers.add(layer);
@@ -77,8 +77,8 @@ public class PlayerManager implements Listener {
 
         //check if the player has all the existing layers
         layerLoop:
-        for (LayerContainer layer : CraftApoli.getLayers()) {
-            for (LayerContainer playerLayer : origins.keySet()) {
+        for (Layer layer : CraftApoli.getLayersFromRegistry()) {
+            for (Layer playerLayer : origins.keySet()) {
                 if (layer.getTag().equals(playerLayer.getTag())) continue layerLoop;
             }
             origins.put(layer, CraftApoli.nullOrigin());
@@ -86,7 +86,7 @@ public class PlayerManager implements Listener {
         p.getPersistentDataContainer().set(GenesisMC.identifier("originLayer"), PersistentDataType.STRING, CraftApoli.toSaveFormat(origins, p));
 
         //removes deleted layer from the players data
-        for (LayerContainer layer : deletedLayers) OriginPlayerAccessor.removeOrigin(p, layer);
+        for (Layer layer : deletedLayers) OriginPlayerAccessor.removeOrigin(p, layer);
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
@@ -94,7 +94,7 @@ public class PlayerManager implements Listener {
         Player p = e.getPlayer();
         // 0.2.6 update
         if(p.getPersistentDataContainer().has(GenesisMC.identifier("originLayer"), PersistentDataType.STRING) && !p.getPersistentDataContainer().has(GenesisMC.identifier("updatedTo026"), PersistentDataType.BOOLEAN)){
-            for(LayerContainer layerContainer : CraftApoli.getLayers()){
+            for(Layer layerContainer : CraftApoli.getLayersFromRegistry()){
                 if(!OriginPlayerAccessor.getOrigin(p, layerContainer).equals(CraftApoli.nullOrigin())){ // Valid origin
                     OriginPlayerAccessor.setOrigin(p, layerContainer, OriginPlayerAccessor.getOrigin(p, layerContainer)); // Update origin
                 }
@@ -107,8 +107,8 @@ public class PlayerManager implements Listener {
                         p.getPersistentDataContainer().get(GenesisMC.identifier("originLayer"), PersistentDataType.STRING) == null ||
                         p.getPersistentDataContainer().get(GenesisMC.identifier("originLayer"), PersistentDataType.STRING) == ""
         ) {
-            HashMap<LayerContainer, OriginContainer> origins = new HashMap<>();
-            for (LayerContainer layer : CraftApoli.getLayers()) origins.put(layer, CraftApoli.nullOrigin());
+            HashMap<Layer, Origin> origins = new HashMap<>();
+            for (Layer layer : CraftApoli.getLayersFromRegistry()) origins.put(layer, CraftApoli.nullOrigin());
             p.getPersistentDataContainer().set(GenesisMC.identifier("originLayer"), PersistentDataType.STRING, CraftApoli.toOriginSetSaveFormat(origins));
         }
 
@@ -120,7 +120,7 @@ public class PlayerManager implements Listener {
         String originTag = p.getPersistentDataContainer().get(GenesisMC.identifier("originTag"), PersistentDataType.STRING);
 
         if (!(originTag == null || originTag.equals("null"))) {
-            for (OriginContainer origin : CraftApoli.getOrigins()) {
+            for (Origin origin : CraftApoli.getOriginsFromRegistry()) {
                 if (("origin-" + (origin.getTag().substring(8))).equals(originTag.substring(8)))
                     p.getPersistentDataContainer().set(GenesisMC.identifier("originLayer"), PersistentDataType.STRING, CraftApoli.toOriginSetSaveFormat(new HashMap<>(Map.of(CraftApoli.getLayerFromTag("origins:origin"), origin))));
             }
@@ -143,7 +143,7 @@ public class PlayerManager implements Listener {
                 p.getPersistentDataContainer().remove(GenesisMC.identifier("origins"));
                 p.getPersistentDataContainer().remove(GenesisMC.identifier("origin"));
             } catch (Exception er) {
-                for (LayerContainer layer : CraftApoli.getLayers()) {
+                for (Layer layer : CraftApoli.getLayersFromRegistry()) {
                     OriginPlayerAccessor.setOrigin(p, layer, CraftApoli.nullOrigin());
                 }
             }

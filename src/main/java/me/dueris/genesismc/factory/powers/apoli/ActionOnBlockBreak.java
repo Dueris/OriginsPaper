@@ -4,8 +4,8 @@ import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.actions.Actions;
 import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.registry.LayerContainer;
-import me.dueris.genesismc.registry.PowerContainer;
+import me.dueris.genesismc.registry.registries.Layer;
+import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -29,8 +29,8 @@ public class ActionOnBlockBreak extends CraftPower implements Listener {
 
         if (!getPowerArray().contains(actor)) return;
 
-        for (LayerContainer layer : CraftApoli.getLayers()) {
-            for (PowerContainer powerContainer : OriginPlayerAccessor.getMultiPowerFileFromType(actor, getPowerFile(), layer)) {
+        for (Layer layer : CraftApoli.getLayersFromRegistry()) {
+            for (Power powerContainer : OriginPlayerAccessor.getMultiPowerFileFromType(actor, getPowerFile(), layer)) {
                 if (powerContainer == null) continue;
 
                 setActive(actor, powerContainer.getTag(), true);

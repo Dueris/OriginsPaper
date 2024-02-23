@@ -3,8 +3,8 @@ package me.dueris.genesismc.factory.powers.apoli;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.registry.LayerContainer;
-import me.dueris.genesismc.registry.PowerContainer;
+import me.dueris.genesismc.registry.registries.Layer;
+import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import org.bukkit.entity.Player;
 
@@ -31,10 +31,10 @@ public class PreventEntityCollision extends CraftPower {
 
     @Override
     public void run(Player p) {
-        for (LayerContainer layer : CraftApoli.getLayers()) {
+        for (Layer layer : CraftApoli.getLayersFromRegistry()) {
             if (prevent_entity_collision.contains(p)) {
                 ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
-                for (PowerContainer power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
+                for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                     if (conditionExecutor.check("bientity_condition", "bientity_condition", p, power, "apoli:prevent_entity_collision", p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
                         p.setCollidable(false);
                         if (power == null) {

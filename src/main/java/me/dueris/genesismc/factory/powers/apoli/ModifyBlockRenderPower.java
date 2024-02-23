@@ -3,8 +3,8 @@ package me.dueris.genesismc.factory.powers.apoli;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.registry.LayerContainer;
-import me.dueris.genesismc.registry.PowerContainer;
+import me.dueris.genesismc.registry.registries.Layer;
+import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import me.dueris.genesismc.util.world.chunk.ChunkManagerWorld;
 import org.bukkit.Chunk;
@@ -47,8 +47,8 @@ public class ModifyBlockRenderPower extends CraftPower {
             List<BlockState> blockChanges = new ArrayList<>();
             boolean conditionMet = false;
 
-            for (LayerContainer layer : CraftApoli.getLayers()) {
-                for (PowerContainer power : OriginPlayerAccessor.getMultiPowerFileFromType(player, getPowerFile(), layer)) {
+            for (Layer layer : CraftApoli.getLayersFromRegistry()) {
+                for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(player, getPowerFile(), layer)) {
                     Material targetMaterial = Material.AIR;
                     if (conditionMet) {
                         targetMaterial = Material.getMaterial(power.getStringOrDefault("block", null).toUpperCase());

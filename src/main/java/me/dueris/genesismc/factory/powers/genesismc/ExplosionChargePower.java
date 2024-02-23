@@ -4,8 +4,8 @@ import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.registry.LayerContainer;
-import me.dueris.genesismc.registry.PowerContainer;
+import me.dueris.genesismc.registry.registries.Layer;
+import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -49,10 +49,10 @@ public class ExplosionChargePower extends CraftPower implements Listener {
 
     @EventHandler
     public void onShiftCreep(PlayerToggleSneakEvent e) {
-        for (LayerContainer layer : CraftApoli.getLayers()) {
+        for (Layer layer : CraftApoli.getLayersFromRegistry()) {
             Player p = e.getPlayer();
             if (explode_tick.contains(p) && !p.isFlying() && !p.isGliding()) {
-                for (PowerContainer power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
+                for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                     ConditionExecutor executor = GenesisMC.getConditionExecutor();
                     cooldown.remove(p.getUniqueId());
                     new BukkitRunnable() {

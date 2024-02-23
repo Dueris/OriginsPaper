@@ -1,10 +1,13 @@
 package me.dueris.genesismc.util;
 
+import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.event.PowerUpdateEvent;
 import me.dueris.genesismc.factory.CraftApoli;
-import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.registry.LayerContainer;
-import me.dueris.genesismc.registry.PowerContainer;
+import me.dueris.genesismc.factory.powers.ApoliPower;
+import me.dueris.genesismc.registry.Registrar;
+import me.dueris.genesismc.registry.Registries;
+import me.dueris.genesismc.registry.registries.Layer;
+import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.storage.GenesisConfigs;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import org.bukkit.Bukkit;
@@ -18,28 +21,15 @@ import static me.dueris.genesismc.util.entity.OriginPlayerAccessor.powersApplied
 
 public class PowerUtils {
 
-    public static void grant(CommandSender executor, PowerContainer power, Player p, LayerContainer layer) throws InstantiationException, IllegalAccessException {
-        ArrayList<String> powerAppliedTypes = new ArrayList<>();
-        ArrayList<Class<? extends CraftPower>> powerAppliedClasses = new ArrayList<>();
+    public static void grant(CommandSender executor, Power power, Player p, Layer layer) throws InstantiationException, IllegalAccessException {
         if (!OriginPlayerAccessor.playerPowerMapping.get(p).get(layer).contains(power)) {
             OriginPlayerAccessor.playerPowerMapping.get(p).get(layer).add(power);
-            for (Class<? extends CraftPower> c : CraftPower.getRegistry()) {
-                CraftPower craftPower = null;
-
-                try {
-                    craftPower = c.newInstance();
-                } catch (InstantiationException e) {
-                    throw new RuntimeException(e);
-                } catch (IllegalAccessException e) {
-                    throw new RuntimeException(e);
-                }
-                if (power.getType().equals(craftPower.getPowerFile())) {
-                    craftPower.getPowerArray().add(p);
+            for (ApoliPower c : ((Registrar<ApoliPower>)GenesisMC.getPlugin().registry.retrieve(Registries.CRAFT_POWER)).values()) {
+                if (power.getType().equals(c.getPowerFile())) {
+                    c.getPowerArray().add(p);
                     if (!powersAppliedList.containsKey(p)) {
                         ArrayList lst = new ArrayList<>();
                         lst.add(c);
-                        powerAppliedTypes.add(c.newInstance().getPowerFile());
-                        powerAppliedClasses.add(c);
                         powersAppliedList.put(p, lst);
                     } else {
                         powersAppliedList.get(p).add(c);
@@ -59,32 +49,18 @@ public class PowerUtils {
         }
     }
 
-    public static void remove(CommandSender executor, PowerContainer poweR, Player p, LayerContainer layer) throws InstantiationException, IllegalAccessException {
+    public static void remove(CommandSender executor, Power poweR, Player p, Layer layer) throws InstantiationException, IllegalAccessException {
         if(OriginPlayerAccessor.playerPowerMapping.get(p) != null){
-            ArrayList<PowerContainer> powersToEdit = new ArrayList<>();
+            ArrayList<Power> powersToEdit = new ArrayList<>();
             powersToEdit.add(poweR);
             powersToEdit.addAll(CraftApoli.getNestedPowers(poweR));
-            for (PowerContainer power : powersToEdit) {
+            for (Power power : powersToEdit) {
                 try {
                     if (OriginPlayerAccessor.playerPowerMapping.get(p).get(layer).contains(power)) {
                         OriginPlayerAccessor.playerPowerMapping.get(p).get(layer).remove(power);
-                        ArrayList<String> powerRemovedTypes = new ArrayList<>();
-                        ArrayList<Class<? extends CraftPower>> powerRemovedClasses = new ArrayList<>();
-                        for (Class<? extends CraftPower> c : CraftPower.getRegistry()) {
-                            CraftPower craftPower = null;
-                            try {
-                                craftPower = c.newInstance();
-                            } catch (InstantiationException | IllegalAccessException ee) {
-                                throw new RuntimeException(ee);
-                            }
-                            if (power.getType().equals(craftPower.getPowerFile())) {
-                                craftPower.getPowerArray().remove(p);
-                                try {
-                                    powerRemovedTypes.add(c.newInstance().getPowerFile());
-                                } catch (InstantiationException | IllegalAccessException ee) {
-                                    throw new RuntimeException(ee);
-                                }
-                                powerRemovedClasses.add(c);
+                        for (ApoliPower c : ((Registrar<ApoliPower>)GenesisMC.getPlugin().registry.retrieve(Registries.CRAFT_POWER)).values()) {
+                            if (power.getType().equals(c.getPowerFile())) {
+                                c.getPowerArray().remove(p);
                                 powersAppliedList.get(p).remove(c);
                                 if (GenesisConfigs.getMainConfig().getString("console-startup-debug").equalsIgnoreCase("true")) {
                                     Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "Removed power[" + power.getTag() + "] to player " + p.getName());

@@ -8,7 +8,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.conditions.BiEntityConditions;
-import me.dueris.genesismc.registry.PowerContainer;
+import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.util.apoli.Space;
 import net.minecraft.Util;
 import net.minecraft.core.Registry;
@@ -77,7 +77,7 @@ public class Utils {
         return prettyJsonString;
     }
 
-    public static String getNameOrTag(PowerContainer power) {
+    public static String getNameOrTag(Power power) {
         String name = power.getName();
         String tag = power.getTag();
         return name != "No Name" ? name : power.getPowerParent() != null ? getNameOrTag(power.getPowerParent()) : tag;

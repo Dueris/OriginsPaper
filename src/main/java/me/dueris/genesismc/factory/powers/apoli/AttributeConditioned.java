@@ -3,8 +3,8 @@ package me.dueris.genesismc.factory.powers.apoli;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.registry.LayerContainer;
-import me.dueris.genesismc.registry.PowerContainer;
+import me.dueris.genesismc.registry.registries.Layer;
+import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.util.LangConfig;
 import me.dueris.genesismc.util.Utils;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
@@ -96,8 +96,8 @@ public class AttributeConditioned extends CraftPower implements Listener {
         operationMap.put("multiply_random_max", (a, b) -> a * random.nextInt(b));
         operationMap.put("divide_random_max", (a, b) -> a / random.nextInt(b));
 
-        for (LayerContainer layer : CraftApoli.getLayers()) {
-            for (PowerContainer power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
+        for (Layer layer : CraftApoli.getLayersFromRegistry()) {
+            for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                 if (power == null) continue;
                 for (HashMap<String, Object> modifier : power.getJsonListSingularPlural("modifier", "modifiers")) {
                     ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
@@ -138,8 +138,8 @@ public class AttributeConditioned extends CraftPower implements Listener {
         operationMap.put("multiply_random_max", (a, b) -> a / random.nextInt(b));
         operationMap.put("divide_random_max", (a, b) -> a * random.nextInt(b));
 
-        for (LayerContainer layer : CraftApoli.getLayers()) {
-            for (PowerContainer power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
+        for (Layer layer : CraftApoli.getLayersFromRegistry()) {
+            for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                 if (power == null) continue;
 
                 for (HashMap<String, Object> modifier : power.getJsonListSingularPlural("modifier", "modifiers")) {
@@ -182,8 +182,8 @@ public class AttributeConditioned extends CraftPower implements Listener {
 
     @Override
     public void run(Player p) {
-        for (LayerContainer layer : CraftApoli.getLayers()) {
-            for (PowerContainer power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
+        for (Layer layer : CraftApoli.getLayersFromRegistry()) {
+            for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                 if (conditioned_attribute.contains(p)) {
                     if (!applied.containsKey(p)) {
                         applied.put(p, false);

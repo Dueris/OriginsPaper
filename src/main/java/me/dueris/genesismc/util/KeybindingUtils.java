@@ -2,13 +2,12 @@ package me.dueris.genesismc.util;
 
 import com.destroystokyo.paper.event.player.PlayerJumpEvent;
 import com.mojang.datafixers.util.Pair;
-import io.papermc.paper.event.player.PlayerArmSwingEvent;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.event.KeybindTriggerEvent;
 import me.dueris.genesismc.event.OriginChangeEvent;
 import me.dueris.genesismc.factory.CraftApoli;
-import me.dueris.genesismc.factory.powers.Power;
-import me.dueris.genesismc.registry.PowerContainer;
+import me.dueris.genesismc.factory.powers.ApoliPower;
+import me.dueris.genesismc.registry.registries.Power;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -32,18 +31,17 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.json.simple.JSONObject;
 
-import java.nio.Buffer;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 public class KeybindingUtils implements Listener {
     public static KeybindingUtils INSTANCE = new KeybindingUtils();
 
-    public static Pair<Boolean, String> renderKeybind(PowerContainer power){
+    public static Pair<Boolean, String> renderKeybind(Power power){
         boolean should = false;
         String key = "[null]";
         if(power.isOriginMultipleParent()){
-            for(PowerContainer powerContainer : CraftApoli.getNestedPowers(power)){
+            for(Power powerContainer : CraftApoli.getNestedPowers(power)){
                 for(String object : powerContainer.getPowerFile().getKeys()){
                     if(object.equalsIgnoreCase("key")){
                         if(powerContainer.getObject(object) instanceof String st){
@@ -108,8 +106,8 @@ public class KeybindingUtils implements Listener {
         if(activeKeys.containsKey(p)){
             activeKeys.get(p).clear();
         }
-        if(Power.powers_active.containsKey(p)){
-            Power.powers_active.get(p).clear();
+        if(ApoliPower.powers_active.containsKey(p)){
+            ApoliPower.powers_active.get(p).clear();
         }
         for (ItemStack item : p.getInventory()) {
             if (item == null) continue;

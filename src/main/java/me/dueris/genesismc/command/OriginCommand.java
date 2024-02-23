@@ -10,9 +10,9 @@ import me.dueris.genesismc.content.enchantment.AnvilHandler;
 import me.dueris.genesismc.event.OriginChangeEvent;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.powers.apoli.RecipePower;
-import me.dueris.genesismc.registry.LayerContainer;
-import me.dueris.genesismc.registry.OriginContainer;
-import me.dueris.genesismc.registry.PowerContainer;
+import me.dueris.genesismc.registry.registries.Layer;
+import me.dueris.genesismc.registry.registries.Origin;
+import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.screen.ScreenConstants;
 import me.dueris.genesismc.storage.OriginDataContainer;
 import me.dueris.genesismc.util.KeybindingUtils;
@@ -59,10 +59,10 @@ public class OriginCommand extends BukkitRunnable implements Listener {
     public static final HashMap<Player, Integer> playerPage = new HashMap<>();
     public static EnumSet<Material> wearable;
     @SuppressWarnings("FieldMayBeFinal")
-    public static HashMap<Player, ArrayList<OriginContainer>> playerOrigins = new HashMap<>();
-    public static List<OriginContainer> commandProvidedOrigins = new ArrayList<>();
-    public static List<LayerContainer> commandProvidedLayers = new ArrayList<>();
-    public static List<PowerContainer> commandProvidedPowers = new ArrayList<>();
+    public static HashMap<Player, ArrayList<Origin>> playerOrigins = new HashMap<>();
+    public static List<Origin> commandProvidedOrigins = new ArrayList<>();
+    public static List<Layer> commandProvidedLayers = new ArrayList<>();
+    public static List<Power> commandProvidedPowers = new ArrayList<>();
     public static List<String> commandProvidedTaggedRecipies = new ArrayList<>();
 
     static {
@@ -95,8 +95,8 @@ public class OriginCommand extends BukkitRunnable implements Listener {
                                                             return builder.buildFuture();
                                                         }).executes(context -> {
                                                             Collection<ServerPlayer> targets = EntityArgument.getPlayers(context, "targets");
-                                                            LayerContainer layer = CraftApoli.getLayerFromTag(CraftNamespacedKey.fromMinecraft(ResourceLocationArgument.getId(context, "layer")).asString());
-                                                            OriginContainer origin = CraftApoli.getOrigin(CraftNamespacedKey.fromMinecraft(ResourceLocationArgument.getId(context, "origin")).asString());
+                                                            Layer layer = CraftApoli.getLayerFromTag(CraftNamespacedKey.fromMinecraft(ResourceLocationArgument.getId(context, "layer")).asString());
+                                                            Origin origin = CraftApoli.getOrigin(CraftNamespacedKey.fromMinecraft(ResourceLocationArgument.getId(context, "origin")).asString());
                                                             targets.forEach(player -> {
                                                                 OriginPlayerAccessor.setOrigin(player.getBukkitEntity(), layer, origin);
                                                                 OriginPlayerAccessor.resetOriginData(player.getBukkitEntity(), OriginDataType.IN_PHASING_FORM);
@@ -149,7 +149,7 @@ public class OriginCommand extends BukkitRunnable implements Listener {
                                                     return builder.buildFuture();
                                                 }).executes(context -> {
                                                     Collection<ServerPlayer> targets = EntityArgument.getPlayers(context, "targets");
-                                                    LayerContainer layer = CraftApoli.getLayerFromTag(CraftNamespacedKey.fromMinecraft(ResourceLocationArgument.getId(context, "layer")).asString());
+                                                    Layer layer = CraftApoli.getLayerFromTag(CraftNamespacedKey.fromMinecraft(ResourceLocationArgument.getId(context, "layer")).asString());
                                                     targets.forEach(player -> context.getSource().getBukkitEntity().sendMessage(net.kyori.adventure.text.Component.text(LangConfig.getLocalizedString(player.getBukkitEntity(), "command.origin.get.output").replace("%player%", player.getBukkitEntity().getName()).replace("%layer%", layer.getTag()).replace("%origin%", OriginPlayerAccessor.getOrigin(player.getBukkitEntity(), layer).getTag()))));
                                                     return SINGLE_SUCCESS;
                                                 })
@@ -166,7 +166,7 @@ public class OriginCommand extends BukkitRunnable implements Listener {
                                         .executes(context -> {
                                             Collection<ServerPlayer> targets = EntityArgument.getPlayers(context, "targets");
                                             targets.forEach(player -> {
-                                                for (LayerContainer layer : CraftApoli.getLayers()) {
+                                                for (Layer layer : CraftApoli.getLayersFromRegistry()) {
                                                     OriginPlayerAccessor.unassignPowers(player.getBukkitEntity());
                                                     OriginPlayerAccessor.setOrigin(player.getBukkitEntity(), layer, CraftApoli.nullOrigin());
                                                 }
@@ -184,7 +184,7 @@ public class OriginCommand extends BukkitRunnable implements Listener {
                                                     return builder.buildFuture();
                                                 }).executes(context -> {
                                                     Collection<ServerPlayer> targets = EntityArgument.getPlayers(context, "targets");
-                                                    LayerContainer layer = CraftApoli.getLayerFromTag(CraftNamespacedKey.fromMinecraft(ResourceLocationArgument.getId(context, "layer")).asString());
+                                                    Layer layer = CraftApoli.getLayerFromTag(CraftNamespacedKey.fromMinecraft(ResourceLocationArgument.getId(context, "layer")).asString());
                                                     targets.forEach(player -> {
                                                         OriginPlayerAccessor.unassignPowers(player.getBukkitEntity());
                                                         OriginPlayerAccessor.setOrigin(player.getBukkitEntity(), layer, CraftApoli.nullOrigin());
@@ -197,7 +197,7 @@ public class OriginCommand extends BukkitRunnable implements Listener {
                                 .executes(context -> {
                                     if (context.getSource().isPlayer()) {
                                         ServerPlayer p = context.getSource().getPlayer();
-                                        HashMap<LayerContainer, OriginContainer> origins = CraftApoli.toOrigin(OriginDataContainer.getLayer(p.getBukkitEntity()));
+                                        HashMap<Layer, Origin> origins = CraftApoli.toOrigin(OriginDataContainer.getLayer(p.getBukkitEntity()));
                                         assert origins != null;
                                         playerOrigins.put(p.getBukkitEntity(), new ArrayList<>(origins.values()));
                                         if (!playerPage.containsKey(p.getBukkitEntity()))
@@ -254,10 +254,10 @@ public class OriginCommand extends BukkitRunnable implements Listener {
     }
 
     public static ItemStack[] infoMenu(Player p, Integer page) {
-        OriginContainer origin = playerOrigins.get(p).get(page);
+        Origin origin = playerOrigins.get(p).get(page);
 
-        ArrayList<PowerContainer> powerContainers = new ArrayList<>();
-        for (PowerContainer powerContainer : origin.getPowerContainers()) {
+        ArrayList<Power> powerContainers = new ArrayList<>();
+        for (Power powerContainer : origin.getPowerContainers()) {
             if (powerContainer.isHidden()) continue;
             powerContainers.add(powerContainer);
         }

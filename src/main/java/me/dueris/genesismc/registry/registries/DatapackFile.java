@@ -1,4 +1,4 @@
-package me.dueris.genesismc.registry;
+package me.dueris.genesismc.registry.registries;
 
 import org.json.simple.JSONArray;
 
@@ -6,7 +6,7 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-public class FileContainer implements Serializable {
+public class DatapackFile implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 3L;
@@ -14,7 +14,7 @@ public class FileContainer implements Serializable {
     ArrayList<String> keys;
     ArrayList<Object> values;
 
-    public FileContainer(ArrayList<String> keys, ArrayList<Object> values) {
+    public DatapackFile(ArrayList<String> keys, ArrayList<Object> values) {
         this.keys = keys;
         this.values = values;
     }

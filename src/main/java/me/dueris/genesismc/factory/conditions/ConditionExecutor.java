@@ -1,6 +1,6 @@
 package me.dueris.genesismc.factory.conditions;
 
-import me.dueris.genesismc.registry.PowerContainer;
+import me.dueris.genesismc.registry.registries.Power;
 import org.bukkit.Fluid;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
@@ -16,7 +16,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import static me.dueris.genesismc.factory.conditions.CraftCondition.*;
 import static me.dueris.genesismc.factory.conditions.ItemConditions.getMeatMaterials;
 import static me.dueris.genesismc.factory.conditions.ItemConditions.getNonMeatMaterials;
-import static me.dueris.genesismc.factory.powers.Power.powers_active;
+import static me.dueris.genesismc.factory.powers.ApoliPower.powers_active;
 
 public class ConditionExecutor {
     public static BiEntityConditions biEntityCondition = new BiEntityConditions();
@@ -27,7 +27,7 @@ public class ConditionExecutor {
     public static FluidConditions fluidCondition = new FluidConditions();
     public static ItemConditions itemCondition = new ItemConditions();
 
-    private static boolean checkSubCondition(JSONObject subCondition, Player p, PowerContainer power, String powerfile, Entity actor, Entity target, Block block, Fluid fluid, ItemStack itemStack, EntityDamageEvent dmgevent, String powerFile) {
+    private static boolean checkSubCondition(JSONObject subCondition, Player p, Power power, String powerfile, Entity actor, Entity target, Block block, Fluid fluid, ItemStack itemStack, EntityDamageEvent dmgevent, String powerFile) {
         if ("apoli:and".equals(subCondition.get("type"))) {
             JSONArray conditionsArray = (JSONArray) subCondition.get("conditions");
             boolean allTrue = true;
@@ -104,7 +104,7 @@ public class ConditionExecutor {
         return false;
     }
 
-    public static boolean checkConditions(JSONArray conditionsArray, Player p, PowerContainer power, String powerfile, Entity actor, Entity target, Block block, Fluid fluid, ItemStack itemStack, EntityDamageEvent dmgevent, String powerFile) {
+    public static boolean checkConditions(JSONArray conditionsArray, Player p, Power power, String powerfile, Entity actor, Entity target, Block block, Fluid fluid, ItemStack itemStack, EntityDamageEvent dmgevent, String powerFile) {
         boolean allTrue = true;
 
         for (Object subConditionObj : conditionsArray) {
@@ -132,7 +132,7 @@ public class ConditionExecutor {
         }
     }
 
-    public boolean check(String singular, String plural, Player p, PowerContainer powerContainer, String powerfile, Entity actor, Entity target, Block block, Fluid fluid, ItemStack itemStack, EntityDamageEvent dmgevent) {
+    public boolean check(String singular, String plural, Player p, Power powerContainer, String powerfile, Entity actor, Entity target, Block block, Fluid fluid, ItemStack itemStack, EntityDamageEvent dmgevent) {
         if (powerContainer == null) return true;
         if (powerContainer.getJsonListSingularPlural(singular, plural) == null) return true;
         if (powerContainer.getJsonListSingularPlural(singular, plural).isEmpty()) return true;

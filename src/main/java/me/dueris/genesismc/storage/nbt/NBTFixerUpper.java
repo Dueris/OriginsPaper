@@ -3,8 +3,8 @@ package me.dueris.genesismc.storage.nbt;
 import com.google.common.base.Stopwatch;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.CraftApoli;
-import me.dueris.genesismc.registry.LayerContainer;
-import me.dueris.genesismc.registry.OriginContainer;
+import me.dueris.genesismc.registry.registries.Layer;
+import me.dueris.genesismc.registry.registries.Origin;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtAccounter;
 import net.minecraft.nbt.NbtIo;
@@ -25,8 +25,8 @@ public class NBTFixerUpper {
                 if (bukkitVals.contains("genesismc:originlayer")) {
                     // Fixes issue with origin data being null, causing extreme issues in the plugin
                     if (bukkitVals.getString("genesismc:originlayer") == null || bukkitVals.getString("genesismc:originlayer") == "") {
-                        HashMap<LayerContainer, OriginContainer> origins = new HashMap<>();
-                        for (LayerContainer layer : CraftApoli.getLayers()) origins.put(layer, CraftApoli.nullOrigin());
+                        HashMap<Layer, Origin> origins = new HashMap<>();
+                        for (Layer layer : CraftApoli.getLayersFromRegistry()) origins.put(layer, CraftApoli.nullOrigin());
                         bukkitVals.putString("genesismc:originlayer", CraftApoli.toOriginSetSaveFormat(origins));
                     }
                 }

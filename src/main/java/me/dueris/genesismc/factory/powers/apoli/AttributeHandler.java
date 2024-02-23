@@ -5,8 +5,8 @@ import me.dueris.genesismc.event.AttributeExecuteEvent;
 import me.dueris.genesismc.event.OriginChangeEvent;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.registry.LayerContainer;
-import me.dueris.genesismc.registry.PowerContainer;
+import me.dueris.genesismc.registry.registries.Layer;
+import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.screen.ScreenConstants;
 import me.dueris.genesismc.util.LangConfig;
 import me.dueris.genesismc.util.Utils;
@@ -83,8 +83,8 @@ public class AttributeHandler extends CraftPower implements Listener {
             @Override
             public void run() {
                 if (attribute.contains(p)) {
-                    for (LayerContainer layer : CraftApoli.getLayers()) {
-                        for (PowerContainer power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
+                    for (Layer layer : CraftApoli.getLayersFromRegistry()) {
+                        for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                             if (power == null) continue;
 
                             for (HashMap<String, Object> modifier : power.getPossibleModifiers("modifier", "modifiers")) {
@@ -145,8 +145,8 @@ public class AttributeHandler extends CraftPower implements Listener {
             @Override
             public void run() {
                 if (attribute.contains(p)) {
-                    for (LayerContainer layer : CraftApoli.getLayers()) {
-                        for (PowerContainer power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
+                    for (Layer layer : CraftApoli.getLayersFromRegistry()) {
+                        for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                             if (power == null) continue;
 
                             for (HashMap<String, Object> modifier : power.getPossibleModifiers("modifier", "modifiers")) {
@@ -263,8 +263,8 @@ public class AttributeHandler extends CraftPower implements Listener {
         public void OnClickREACH(PlayerInteractEvent e) {
             Player p = e.getPlayer();
             if (extra_reach_attack.contains(e.getPlayer())) {
-                for (LayerContainer layer : CraftApoli.getLayers()) {
-                    for (PowerContainer power : OriginPlayerAccessor.getMultiPowerFileFromType(p, "apoli:attribute", layer)) {
+                for (Layer layer : CraftApoli.getLayersFromRegistry()) {
+                    for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, "apoli:attribute", layer)) {
                         for (HashMap<String, Object> modifier : power.getPossibleModifiers("modifier", "modifiers")) {
                             if (!e.getAction().isLeftClick()) return;
                             String operation = String.valueOf(modifier.get("operation"));

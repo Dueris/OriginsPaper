@@ -3,14 +3,15 @@ package me.dueris.genesismc.factory.actions;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.event.AddToSetEvent;
 import me.dueris.genesismc.event.RemoveFromSetEvent;
-import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.apoli.AttributeHandler;
 import me.dueris.genesismc.factory.powers.apoli.Resource;
 import me.dueris.genesismc.factory.powers.apoli.StackingStatusEffect;
 import me.dueris.genesismc.factory.powers.apoli.Toggle;
-import me.dueris.genesismc.registry.OriginContainer;
-import me.dueris.genesismc.registry.PowerContainer;
+import me.dueris.genesismc.registry.Registrar;
+import me.dueris.genesismc.registry.Registries;
+import me.dueris.genesismc.registry.registries.Origin;
+import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.util.CooldownUtils;
 import me.dueris.genesismc.util.Utils;
 import me.dueris.genesismc.util.apoli.RaycastApoli;
@@ -615,9 +616,9 @@ public class Actions {
         }
         if (type.equals("apoli:remove_power")) {
             if (entity instanceof Player p) {
-                PowerContainer powerContainer = CraftApoli.getPowerContainerFromTag(action.get("action").toString());
+                Power powerContainer = ((Registrar<Power>)GenesisMC.getPlugin().registry.retrieve(Registries.POWER)).get(NamespacedKey.fromString(action.get("power").toString()));
                 if (powerContainer != null) {
-                    Bukkit.dispatchCommand(new OriginConsoleSender(), "action remove {name} {identifier}".replace("{name}", p.getName()).replace("{identifier}", action.get("action").toString()));
+                    Bukkit.dispatchCommand(new OriginConsoleSender(), "power remove {name} {identifier}".replace("{name}", p.getName()).replace("{identifier}", action.get("action").toString()));
                 }
             }
         }
@@ -929,9 +930,9 @@ public class Actions {
         }
         if (type.equals("apoli:toggle")) {
             if (entity instanceof Player) {
-                for (OriginContainer origin : OriginPlayerAccessor.getOrigin((Player) entity).values()) {
+                for (Origin origin : OriginPlayerAccessor.getOrigin((Player) entity).values()) {
                     if (origin.getPowers().contains(action.get("action"))) {
-                        for (PowerContainer powerContainer : origin.getPowerContainers()) {
+                        for (Power powerContainer : origin.getPowerContainers()) {
                             if (powerContainer.getType().equals("apoli:toggle")) {
                                 Toggle toggle = new Toggle();
                                 toggle.execute((Player) entity, powerContainer);
@@ -946,9 +947,9 @@ public class Actions {
         }
         if (type.equals("apoli:trigger_cooldown")) {
             if (entity instanceof Player player) {
-                for (OriginContainer origin : OriginPlayerAccessor.getOrigin((Player) entity).values()) {
+                for (Origin origin : OriginPlayerAccessor.getOrigin((Player) entity).values()) {
                     if (origin.getPowers().contains(action.get("action"))) {
-                        for (PowerContainer powerContainer : origin.getPowerContainers()) {
+                        for (Power powerContainer : origin.getPowerContainers()) {
                             if (powerContainer.get("cooldown") != null) {
                                 String key = "*";
                                 if (powerContainer.get("key").getOrDefault("key", "key.origins.primary_active") != null) {

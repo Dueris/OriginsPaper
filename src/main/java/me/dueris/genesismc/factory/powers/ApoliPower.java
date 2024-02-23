@@ -1,11 +1,32 @@
 package me.dueris.genesismc.factory.powers;
 
+import me.dueris.genesismc.factory.powers.apoli.provider.PowerProvider;
+import me.dueris.genesismc.registry.Registerable;
+import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public interface Power {
+public interface ApoliPower extends Registerable {
+
+    default NamespacedKey getKey(){
+        try {
+            if(this instanceof PowerProvider && this.getClass().getDeclaredField("powerReference") != null){
+                Field field = this.getClass().getDeclaredField("powerReference");
+                field.setAccessible(true);
+
+                return NamespacedKey.fromString(field.get(this).toString());
+            }else{
+                return NamespacedKey.fromString(getPowerFile());
+            }
+        } catch (NoSuchFieldException e) {
+            throw new RuntimeException("An unhandled exception occurred when retrieving a key from a power");
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     HashMap<Player, HashMap<String, Boolean>> powers_active = new HashMap<>();
     ArrayList<Player> game_event_listener = new ArrayList<>();

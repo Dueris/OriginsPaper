@@ -3,8 +3,8 @@ package me.dueris.genesismc.factory.powers.apoli;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.registry.LayerContainer;
-import me.dueris.genesismc.registry.PowerContainer;
+import me.dueris.genesismc.registry.registries.Layer;
+import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import org.bukkit.FluidCollisionMode;
 import org.bukkit.Location;
@@ -48,7 +48,7 @@ public class PreventEntityUse extends CraftPower implements Listener {
     public void OnClickREACH(PlayerInteractEvent e) {
         Player p = e.getPlayer();
         if (prevent_entity_use.contains(e.getPlayer())) {
-            for (LayerContainer layer : CraftApoli.getLayers()) {
+            for (Layer layer : CraftApoli.getLayersFromRegistry()) {
 
                 Location eyeloc = p.getEyeLocation();
                 Predicate<Entity> filter = (entity) -> !entity.equals(p);
@@ -65,7 +65,7 @@ public class PreventEntityUse extends CraftPower implements Listener {
                         if (entity.getPassengers().contains(p)) return;
                         if (!entity.isDead()) {
                             ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
-                            for (PowerContainer power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
+                            for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                                 if (conditionExecutor.check("bientity_condition", "bientity_condition", p, power, "apoli:prevent_entity_use", p, entity, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
                                     if (conditionExecutor.check("item_condition", "item_condition", p, power, "apoli:prevent_entity_use", p, entity, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
                                         e.setCancelled(true);

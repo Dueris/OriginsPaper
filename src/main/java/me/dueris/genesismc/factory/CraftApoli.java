@@ -2,10 +2,13 @@ package me.dueris.genesismc.factory;
 
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.registry.FileContainer;
-import me.dueris.genesismc.registry.LayerContainer;
-import me.dueris.genesismc.registry.OriginContainer;
-import me.dueris.genesismc.registry.PowerContainer;
+import me.dueris.genesismc.registry.IRegistry;
+import me.dueris.genesismc.registry.Registrar;
+import me.dueris.genesismc.registry.Registries;
+import me.dueris.genesismc.registry.registries.DatapackFile;
+import me.dueris.genesismc.registry.registries.Layer;
+import me.dueris.genesismc.registry.registries.Origin;
+import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.storage.GenesisConfigs;
 import me.dueris.genesismc.util.Utils;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
@@ -23,8 +26,8 @@ import java.lang.reflect.Method;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
@@ -36,53 +39,39 @@ public class CraftApoli {
      */
     private static final int BUFFER_SIZE = 4096;
     @SuppressWarnings("FieldMayBeFinal")
-    public static ConcurrentHashMap<String, PowerContainer> keyedPowerContainers = new ConcurrentHashMap();
     /**
      * ArrayList of unzipped files that are scheduled for removal at the end of the parsing process
      */
     public static ArrayList<File> unzippedFiles = new ArrayList<>();
-    @SuppressWarnings("FieldMayBeFinal")
-    private static ArrayList<LayerContainer> originLayers = new ArrayList<>();
-    @SuppressWarnings("FieldMayBeFinal")
-    private static ArrayList<OriginContainer> originContainers = new ArrayList<>();
-    @SuppressWarnings("FieldMayBeFinal")
-    private static ArrayList<PowerContainer> powerContainers = new ArrayList<>();
     private static int dynamic_thread_count = 0;
 
-    /**
-     * @return A copy of each layerTag that is loaded.
-     **/
-    public static ArrayList<LayerContainer> getLayers() {
-        return originLayers;
+    public static List<Layer> getLayersFromRegistry(){
+        return GenesisMC.getPlugin().registry.retrieve(Registries.LAYER).values().stream().toList();
     }
 
-    /**
-     * @return A copy of the CustomOrigin object array for all the origins that are loaded.
-     **/
-    public static ArrayList<OriginContainer> getOrigins() {
-        return originContainers;
+    public static List<Origin> getOriginsFromRegistry(){
+        return ((Registrar<Origin>)GenesisMC.getPlugin().registry.retrieve(Registries.ORIGIN)).values().stream().toList();
     }
 
-    public static OriginContainer getOrigins(String tag) {
-        for (OriginContainer origin : getOrigins()) {
-            if (origin.getTag().equals(tag)) return origin;
-        }
-        return null;
+    public static List<Power> getPowersFromRegistry(){
+        return ((Registrar<Power>)GenesisMC.getPlugin().registry.retrieve(Registries.POWER)).values().stream().toList();
     }
 
-    public static ArrayList<PowerContainer> getPowers() {
-        return powerContainers;
+    public static Origin getOrigin(String originTag) {
+        for (Origin o : ((Registrar<Origin>)GenesisMC.getPlugin().registry.retrieve(Registries.ORIGIN)).values()) if (o.getTag().equals(originTag)) return o;
+        return nullOrigin();
     }
 
-    public static PowerContainer getPowerContainerFromTag(String tag) {
-        return keyedPowerContainers.get(tag);
+    public static Layer getLayerFromTag(String layerTag) {
+        for (Layer l : ((Registrar<Layer>)GenesisMC.getPlugin().registry.retrieve(Registries.LAYER)).values()) if (l.getTag().equals(layerTag)) return l;
+        return ((Registrar<Layer>)GenesisMC.getPlugin().registry.retrieve(Registries.LAYER)).get(new NamespacedKey("origins", "origin"));
     }
 
     /**
      * @return A copy of The null origin.
      **/
-    public static OriginContainer nullOrigin() {
-        return new OriginContainer(new NamespacedKey("genesis", "origin-null"), new FileContainer(new ArrayList<>(List.of("hidden", "origins")), new ArrayList<>(List.of(true, "genesis:origin-null"))), new HashMap<String, Object>(Map.of("impact", "0", "icon", "minecraft:player_head", "powers", "genesis:null", "order", "0", "unchooseable", true)), new ArrayList<>(List.of(new PowerContainer(new NamespacedKey("genesis", "null"), new FileContainer(new ArrayList<>(), new ArrayList<>()), null, false))));
+    public static Origin nullOrigin() {
+        return new Origin(new NamespacedKey("genesis", "origin-null"), new DatapackFile(new ArrayList<>(List.of("hidden", "origins")), new ArrayList<>(List.of(true, "genesis:origin-null"))), new HashMap<String, Object>(Map.of("impact", "0", "icon", "minecraft:player_head", "powers", "genesis:null", "order", "0", "unchooseable", true)), new ArrayList<>(List.of(new Power(new NamespacedKey("genesis", "null"), new DatapackFile(new ArrayList<>(), new ArrayList<>()), null, false))));
     }
 
     /**
@@ -97,22 +86,22 @@ public class CraftApoli {
     /**
      * Parses a JSON file into a PowerFIleContainer.
      **/
-    public static FileContainer fileToFileContainer(JSONObject JSONFileParser) {
+    public static DatapackFile fileToFileContainer(JSONObject JSONFileParser) {
         ArrayList<String> keys = new ArrayList<>();
         ArrayList<Object> values = new ArrayList<>();
         for (Object key : JSONFileParser.keySet()) {
             keys.add((String) key);
             values.add(JSONFileParser.get(key));
         }
-        return new FileContainer(keys, values);
+        return new DatapackFile(keys, values);
     }
 
     /**
      * Changes the origin names to those specified in the lang file.
      **/
     private static void translateOrigins() {
-        for (OriginContainer origin : getCoreOrigins()) {
-            for (PowerContainer power : origin.getPowerContainers()) {
+        for (Origin origin : ((Registrar<Origin>)GenesisMC.getPlugin().registry.retrieve(Registries.ORIGIN)).values().stream().filter(origin -> isCoreOrigin(origin)).toList()) {
+            for (Power power : origin.getPowerContainers()) {
                 String powerName = power.getName();
                 if (powerName != null) power.setName(powerName);
                 String powerDescription = power.getDescription();
@@ -121,33 +110,30 @@ public class CraftApoli {
         }
     }
 
-    public static void processNestedPowers(PowerContainer powerContainer, ArrayList<PowerContainer> powerContainers, String powerFolder, String powerFileName) {
-        ArrayList<PowerContainer> newPowerContainers = new ArrayList<>();
-
+    public static void processNestedPowers(Power powerContainer, ArrayList<Power> powerContainers, String powerFolder, String powerFileName) {
         for (String key : powerContainer.getPowerFile().getKeys()) {
             Object subPowerValue = powerContainer.getPowerFile().get(key);
 
             if (subPowerValue instanceof JSONObject subPowerJson) {
-                FileContainer subPowerFile = fileToFileContainer(subPowerJson);
+                DatapackFile subPowerFile = fileToFileContainer(subPowerJson);
 
-                PowerContainer newPower = new PowerContainer(new NamespacedKey(powerFolder, powerFileName + "_" + key.toLowerCase()), subPowerFile, subPowerJson.toJSONString().split("\n"), true, false, powerContainer);
-                powerContainers.add(newPower);
-                keyedPowerContainers.put(powerFolder + ":" + powerFileName + "_" + key, newPower);
-                newPowerContainers.add(newPower);
+                Power newPower = new Power(new NamespacedKey(powerFolder, powerFileName + "_" + key.toLowerCase()), subPowerFile, subPowerJson.toJSONString().split("\n"), true, false, powerContainer);
+                ((Registrar<Power>)GenesisMC.getPlugin().registry.retrieve(Registries.POWER)).register(newPower);
             }
         }
-        powerContainers.addAll(newPowerContainers);
     }
 
-    public static ArrayList<PowerContainer> getNestedPowers(PowerContainer power) {
-        ArrayList<PowerContainer> nested = new ArrayList<>();
+    public static ArrayList<Power> getNestedPowers(Power power) {
+        ArrayList<Power> nested = new ArrayList<>();
         if (power == null) return nested;
-        String powerFolder = power.getTag().split(":")[0];
-        String powerFileName = power.getTag().split(":")[1];
+        String powerFolder = power.getTag().split(":")[0].toLowerCase();
+        String powerFileName = power.getTag().split(":")[1].toLowerCase();
 
         for (String key : power.getPowerFile().getKeys()) {
-            if (keyedPowerContainers.get(new NamespacedKey(powerFolder, powerFileName).asString() + "_" + key) != null) {
-                nested.add(keyedPowerContainers.get(powerFolder + ":" + powerFileName + "_" + key));
+            if(power.getObject(key) instanceof JSONObject){
+                if (((Registrar<Power>)GenesisMC.getPlugin().registry.retrieve(Registries.POWER)).get(new NamespacedKey(powerFolder, powerFileName + "_" + key.toLowerCase())) != null) {
+                    nested.add(((Registrar<Power>)GenesisMC.getPlugin().registry.retrieve(Registries.POWER)).get(NamespacedKey.fromString(powerFolder + ":" + powerFileName + "_" + key.toLowerCase())));
+                }
             }
         }
         return nested;
@@ -210,14 +196,21 @@ public class CraftApoli {
         }
     }
 
+    public static boolean layerExists(Layer layer) {
+        for (Layer loadedLayers : CraftApoli.getLayersFromRegistry()) {
+            if (loadedLayers.getTag().equals(layer.getTag())) return true;
+        }
+        return false;
+    }
+
     /**
      * Loads the custom origins from the datapack dir into memory.
      *
      * @throws ExecutionException
      * @throws InterruptedException
      **/
-    public static void loadOrigins() throws InterruptedException, ExecutionException {
-        if(!getLayers().isEmpty() || !getOrigins().isEmpty() || !getPowers().isEmpty()) return; // Already parsed.
+    public static void loadOrigins(IRegistry registry) throws InterruptedException, ExecutionException {
+        if(((Registrar<Layer>)GenesisMC.getPlugin().registry.retrieve(Registries.LAYER)).hasEntries() || ((Registrar<Origin>)GenesisMC.getPlugin().registry.retrieve(Registries.ORIGIN)).hasEntries() || ((Registrar<Power>)GenesisMC.getPlugin().registry.retrieve(Registries.POWER)).hasEntries()) return; // Already parsed.
         boolean showErrors = Boolean.valueOf(GenesisConfigs.getMainConfig().get("console-print-parse-errors").toString());
         File DatapackDir = new File(GenesisMC.server.getWorldPath(LevelResource.DATAPACK_DIR).toAbsolutePath().toString());
         File[] datapacks = DatapackDir.listFiles();
@@ -258,14 +251,12 @@ public class CraftApoli {
 
                                                 JSONObject powerParser = PowerRemapper.createRemapped(new File(datapack.getAbsolutePath() + File.separator + "data" + File.separator + powerFolder + File.separator + "powers" + File.separator + powerFileName + ".json"));
                                                 if (powerParser.containsKey("type") && "apoli:multiple".equals(powerParser.get("type"))) {
-                                                    PowerContainer powerContainer = new PowerContainer(new NamespacedKey(powerFolder, powerFileName), fileToFileContainer(powerParser), Utils.readJSONFileAsString(powerParser), false, true);
-                                                    powerContainers.add(powerContainer);
-                                                    keyedPowerContainers.put(powerFolder + ":" + powerFileName, powerContainer);
+                                                    Power powerContainer = new Power(new NamespacedKey(powerFolder, powerFileName), fileToFileContainer(powerParser), Utils.readJSONFileAsString(powerParser), false, true);
+                                                    ((Registrar<Power>)GenesisMC.getPlugin().registry.retrieve(Registries.POWER)).register(powerContainer);
                                                     processNestedPowers(powerContainer, new ArrayList<>(), powerFolder, powerFileName);
                                                 } else {
-                                                    PowerContainer power = new PowerContainer(new NamespacedKey(powerFolder, powerFileName), fileToFileContainer(powerParser), Utils.readJSONFileAsString(powerParser), false);
-                                                    powerContainers.add(power);
-                                                    keyedPowerContainers.put(powerFolder + ":" + powerFileName, power);
+                                                    Power power = new Power(new NamespacedKey(powerFolder, powerFileName), fileToFileContainer(powerParser), Utils.readJSONFileAsString(powerParser), false);
+                                                    ((Registrar<Power>)GenesisMC.getPlugin().registry.retrieve(Registries.POWER)).register(power);
                                                 }
 
                                             }
@@ -284,19 +275,27 @@ public class CraftApoli {
                                 if (!FilenameUtils.getExtension(originLayer.getName()).equals("json")) continue;
                                 String layerName = FilenameUtils.getBaseName(originLayer.getName());
                                 try {
-                                    LayerContainer layer = new LayerContainer(new NamespacedKey(layerNamespace, layerName), fileToFileContainer((JSONObject) new JSONParser().parse(new FileReader(originLayer))));
+                                    Layer layer = new Layer(new NamespacedKey(layerNamespace, layerName), fileToFileContainer((JSONObject) new JSONParser().parse(new FileReader(originLayer))));
 
                                     if (layer.getReplace() && layerExists(layer)) {
                                         //removes an origin layer if a layer with the same namespace has the replace key set to true
-                                        CraftApoli.originLayers.removeIf(existingLayer -> layer.getTag().equals(existingLayer.getTag()));
-                                        CraftApoli.originLayers.add(layer);
+                                        AtomicBoolean r = new AtomicBoolean(false);
+                                        ((Registrar<Layer>)GenesisMC.getPlugin().registry.retrieve(Registries.LAYER)).forEach((k, l) -> {
+                                            if(!r.get() && l.getTag().equals(layer.getTag())){
+                                                r.set(true);
+                                            }
+                                        });
+                                        if(r.get()){
+                                            ((Registrar<Layer>)GenesisMC.getPlugin().registry.retrieve(Registries.LAYER)).removeFromRegistry(NamespacedKey.fromString(layer.getTag()));
+                                        }
+                                        ((Registrar<Layer>)GenesisMC.getPlugin().registry.retrieve(Registries.LAYER)).register(layer);
                                     } else if (layerExists(layer)) {
                                         //adds an origin to a layer if it already exists and the replace key is null or false
-                                        LayerContainer existingLayer = CraftApoli.originLayers.get(CraftApoli.originLayers.indexOf(getLayerFromTag(layer.getTag())));
+                                        Layer existingLayer = ((Registrar<Layer>)GenesisMC.getPlugin().registry.retrieve(Registries.LAYER)).get(NamespacedKey.fromString(layer.getTag()));
                                         existingLayer.addOrigin(layer.getOrigins());
-                                        CraftApoli.originLayers.set(CraftApoli.originLayers.indexOf(getLayerFromTag(layer.getTag())), existingLayer);
+                                        ((Registrar<Layer>)GenesisMC.getPlugin().registry.retrieve(Registries.LAYER)).replaceEntry(NamespacedKey.fromString(layer.getTag()), existingLayer);
                                     } else {
-                                        CraftApoli.originLayers.add(layer);
+                                        ((Registrar<Layer>)GenesisMC.getPlugin().registry.retrieve(Registries.LAYER)).register(layer);
                                     }
 
                                     origin_layer = new File(datapack.getName() + File.separator + "data" + File.separator + namespace.getName() + File.separator + "origin_layers" + File.separator + layerName + ".json");
@@ -333,16 +332,16 @@ public class CraftApoli {
                                     JSONObject originParser = (JSONObject) new JSONParser().parse(new FileReader(datapack.getAbsolutePath() + File.separator + "data" + File.separator + originFolder.get(0) + File.separator + "origins" + File.separator + originFileName.get(0) + ".json"));
                                     ArrayList<String> powersList = (ArrayList<String>) originParser.get("powers");
 
-                                    ArrayList<PowerContainer> powerContainers = new ArrayList<>();
+                                    ArrayList<Power> powerContainers = new ArrayList<>();
 
                                     if (powersList != null) {
                                         for (String string : powersList) {
                                             boolean finished = false;
-                                            if (keyedPowerContainers.containsKey(string)) {
-                                                powerContainers.add(keyedPowerContainers.get(string));
+                                            if (((Registrar<Power>)GenesisMC.getPlugin().registry.retrieve(Registries.POWER)).rawRegistry.containsKey(NamespacedKey.fromString(string))) {
+                                                powerContainers.add(((Registrar<Power>)GenesisMC.getPlugin().registry.retrieve(Registries.POWER)).get(NamespacedKey.fromString(string)));
                                                 finished = true;
                                             }
-                                            for (PowerContainer power : getNestedPowers(keyedPowerContainers.get(string))) {
+                                            for (Power power : getNestedPowers(((Registrar<Power>)GenesisMC.getPlugin().registry.retrieve(Registries.POWER)).get(NamespacedKey.fromString(string)))) {
                                                 if (power != null) {
                                                     powerContainers.add(power);
                                                     finished = true;
@@ -358,11 +357,11 @@ public class CraftApoli {
 
                                                     JSONObject powerParser = PowerRemapper.createRemapped(new File(datapack.getAbsolutePath() + File.separator + "data" + File.separator + powerFolder + File.separator + "powers" + File.separator + powerFileName + ".json"));
                                                     if (powerParser.containsKey("type") && "apoli:multiple".equals(powerParser.get("type"))) {
-                                                        PowerContainer powerContainer = new PowerContainer(new NamespacedKey(powerFolder, powerFileName), fileToFileContainer(powerParser), Utils.readJSONFileAsString(powerParser), false, true);
+                                                        Power powerContainer = new Power(new NamespacedKey(powerFolder, powerFileName), fileToFileContainer(powerParser), Utils.readJSONFileAsString(powerParser), false, true);
                                                         powerContainers.add(powerContainer);
                                                         processNestedPowers(powerContainer, powerContainers, powerFolder, powerFileName);
                                                     } else {
-                                                        powerContainers.add(new PowerContainer(new NamespacedKey(powerFolder, powerFileName), fileToFileContainer(powerParser), Utils.readJSONFileAsString(powerParser), false));
+                                                        powerContainers.add(new Power(new NamespacedKey(powerFolder, powerFileName), fileToFileContainer(powerParser), Utils.readJSONFileAsString(powerParser), false));
                                                     }
                                                 } catch (Exception fileNotFoundException) {
                                                     if (showErrors)
@@ -371,10 +370,11 @@ public class CraftApoli {
                                             }
                                         }
                                     }
-                                    OriginContainer origin = new OriginContainer(new NamespacedKey(originFolder.get(0), originFileName.get(0)), fileToFileContainer(originLayerParser), fileToHashMap(originParser), powerContainers);
-                                    originContainers.add(origin);
+                                    Origin origin = new Origin(new NamespacedKey(originFolder.get(0), originFileName.get(0)), fileToFileContainer(originLayerParser), fileToHashMap(originParser), powerContainers);
+                                    ((Registrar<Origin>)GenesisMC.getPlugin().registry.retrieve(Registries.ORIGIN)).register(origin);
 
                                 } catch (Exception fileNotFoundException) {
+                                    fileNotFoundException.printStackTrace();
                                     if (showErrors)
                                         //Bukkit.getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] Error parsing \"" + datapack.getName() + File.separator + "data" + File.separator + originFolder.get(0) + File.separator + "origins" + File.separator + originFileName.get(0) + ".json" + "\"").color(TextColor.color(255, 0, 0)));
                                         System.err.println("[GenesisMC] Error parsing \"%datapack%%sep%data%sep%%originFolder%%sep%origins%sep%%originFileName%.json\"".replace("%datapack%", datapack.getName()).replace("%originFolder", originFolder.get(0)).replace("%sep%", File.separator).replace("%originFileName%", originFileName.get(0)));
@@ -412,43 +412,19 @@ public class CraftApoli {
         future.get();
     }
 
-
-    /**
-     * @return The origin that has the specified tag.
-     **/
-    public static OriginContainer getOrigin(String originTag) {
-        for (OriginContainer origin : getOrigins()) if (origin.getTag().equals(originTag)) return origin;
-        return nullOrigin();
-    }
-
     public static void unloadData() {
-        originContainers.clear();
-        originLayers.clear();
-        getOrigins().clear();
-        getCoreOrigins().clear();
-        getOriginTags().clear();
-        getLayers().clear();
-        getPowers().clear();
-    }
-
-    /**
-     * @return An ArrayList of all loaded originTags.
-     **/
-    public static ArrayList<String> getOriginTags() {
-        ArrayList<String> tags = new ArrayList<>();
-        for (OriginContainer origin : getOrigins()) tags.add(origin.getTag());
-        return tags;
+        GenesisMC.getPlugin().registry.clearRegistries();
     }
 
     /**
      * @return The HashMap serialized into a byte array.
      **/
-    public static String toSaveFormat(HashMap<LayerContainer, OriginContainer> origin, Player p) {
+    public static String toSaveFormat(HashMap<Layer, Origin> origin, Player p) {
         StringBuilder data = new StringBuilder();
-        for (LayerContainer layer : origin.keySet()) {
-            OriginContainer layerOrigins = origin.get(layer);
+        for (Layer layer : origin.keySet()) {
+            Origin layerOrigins = origin.get(layer);
             ArrayList<String> powers = new ArrayList<>();
-            for (PowerContainer power : OriginPlayerAccessor.playerPowerMapping.get(p).get(layer)) {
+            for (Power power : OriginPlayerAccessor.playerPowerMapping.get(p).get(layer)) {
                 powers.add(power.getTag());
             }
             int powerSize = 0;
@@ -464,10 +440,10 @@ public class CraftApoli {
     /**
      * @return The HashMap serialized into a byte array.
      **/
-    public static String toOriginSetSaveFormat(HashMap<LayerContainer, OriginContainer> origin) {
+    public static String toOriginSetSaveFormat(HashMap<Layer, Origin> origin) {
         StringBuilder data = new StringBuilder();
-        for (LayerContainer layer : origin.keySet()) {
-            OriginContainer layerOrigins = origin.get(layer);
+        for (Layer layer : origin.keySet()) {
+            Origin layerOrigins = origin.get(layer);
             ArrayList<String> powers = layerOrigins.getPowers();
             int powerSize = 0;
             if (powers != null) powerSize = powers.size();
@@ -482,13 +458,13 @@ public class CraftApoli {
     /**
      * @return The byte array deserialized into the origin specified by the layer.
      **/
-    public static OriginContainer toOrigin(String originData, LayerContainer originLayer) {
+    public static Origin toOrigin(String originData, Layer originLayer) {
         if (originData != null) {
             try {
                 String[] layers = originData.split("\n");
                 for (String layer : layers) {
                     String[] layerData = layer.split("\\|");
-                    if (CraftApoli.getLayerFromTag(layerData[0]).equals(originLayer)) {
+                    if (((Registrar<Layer>)GenesisMC.getPlugin().registry.retrieve(Registries.LAYER)).get(NamespacedKey.fromString(layerData[0])).equals(originLayer)) {
                         return CraftApoli.getOrigin(layerData[1]);
                     }
                 }
@@ -503,26 +479,26 @@ public class CraftApoli {
     /**
      * @return The byte array deserialized into a HashMap of the originLayer and the OriginContainer.
      **/
-    public static HashMap<LayerContainer, OriginContainer> toOrigin(String originData) {
-        HashMap<LayerContainer, OriginContainer> containedOrigins = new HashMap<>();
+    public static HashMap<Layer, Origin> toOrigin(String originData) {
+        HashMap<Layer, Origin> containedOrigins = new HashMap<>();
         if (originData == null) {
-            for (LayerContainer layer : CraftApoli.getLayers()) {
+            ((Registrar<Layer>)GenesisMC.getPlugin().registry.retrieve(Registries.LAYER)).forEach((key, layer) -> {
                 containedOrigins.put(layer, CraftApoli.nullOrigin());
-            }
+            });
         } else {
             try {
                 String[] layers = originData.split("\n");
                 for (String layer : layers) {
                     String[] layerData = layer.split("\\|");
-                    LayerContainer layerContainer = CraftApoli.getLayerFromTag(layerData[0]);
-                    OriginContainer originContainer = CraftApoli.getOrigin(layerData[1]);
+                    Layer layerContainer = ((Registrar<Layer>)GenesisMC.getPlugin().registry.retrieve(Registries.LAYER)).get(NamespacedKey.fromString(layerData[0]));
+                    Origin originContainer = CraftApoli.getOrigin(layerData[1]);
                     containedOrigins.put(layerContainer, originContainer);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
-                for (LayerContainer layer : CraftApoli.getLayers()) {
+                ((Registrar<Layer>)GenesisMC.getPlugin().registry.retrieve(Registries.LAYER)).forEach((key, layer) -> {
                     containedOrigins.put(layer, CraftApoli.nullOrigin());
-                }
+                });
                 return containedOrigins;
             }
         }
@@ -532,7 +508,7 @@ public class CraftApoli {
     /**
      * @return True if an origin is part of the core origins.
      **/
-    public static Boolean isCoreOrigin(OriginContainer origin) {
+    public static Boolean isCoreOrigin(Origin origin) {
         return origin.getTag().equals("origins:arachnid")
                 || origin.getTag().equals("origins:avian")
                 || origin.getTag().equals("origins:blazeborn")
@@ -551,37 +527,6 @@ public class CraftApoli {
                 || origin.getTag().equals("origins:sculkling")
                 || origin.getTag().equals("origins:slimeling")
                 || origin.getTag().equals("origins:starborne");
-    }
-
-    /**
-     * @return An ArrayList of loaded core origins.
-     **/
-    public static ArrayList<OriginContainer> getCoreOrigins() {
-        ArrayList<OriginContainer> coreOrigins = new ArrayList<>();
-        for (OriginContainer origin : getOrigins()) {
-            if (isCoreOrigin(origin)) coreOrigins.add(origin);
-        }
-        return coreOrigins;
-    }
-
-    /**
-     * @return The loaded layer with the specified tag. If there is no layer with that tag the first layer will be returned.
-     **/
-    public static LayerContainer getLayerFromTag(String layerTag) {
-        for (LayerContainer layer : CraftApoli.getLayers()) {
-            if (layer.getTag().equals(layerTag)) return layer;
-        }
-        return CraftApoli.getLayers().get(0);
-    }
-
-    /**
-     * @return True if the layer given is currently loaded.
-     **/
-    public static boolean layerExists(LayerContainer layer) {
-        for (LayerContainer loadedLayers : CraftApoli.getLayers()) {
-            if (loadedLayers.getTag().equals(layer.getTag())) return true;
-        }
-        return false;
     }
 
 }

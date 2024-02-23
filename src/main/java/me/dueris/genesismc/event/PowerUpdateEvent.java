@@ -1,6 +1,6 @@
 package me.dueris.genesismc.event;
 
-import me.dueris.genesismc.registry.PowerContainer;
+import me.dueris.genesismc.registry.registries.Power;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.player.PlayerEvent;
@@ -8,10 +8,10 @@ import org.jetbrains.annotations.NotNull;
 
 public class PowerUpdateEvent extends PlayerEvent {
     private static final HandlerList handlers = new HandlerList();
-    private static PowerContainer power;
+    private static Power power;
     private static boolean removed;
 
-    public PowerUpdateEvent(@NotNull Player who, PowerContainer power, boolean removed) {
+    public PowerUpdateEvent(@NotNull Player who, Power power, boolean removed) {
         super(who);
         this.power = power;
         this.removed = removed;
@@ -26,7 +26,7 @@ public class PowerUpdateEvent extends PlayerEvent {
         return handlers;
     }
 
-    public PowerContainer getPower() {
+    public Power getPower() {
         return power;
     }
 

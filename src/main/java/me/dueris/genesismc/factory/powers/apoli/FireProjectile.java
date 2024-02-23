@@ -7,8 +7,8 @@ import me.dueris.genesismc.event.KeybindTriggerEvent;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.registry.LayerContainer;
-import me.dueris.genesismc.registry.PowerContainer;
+import me.dueris.genesismc.registry.registries.Layer;
+import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.util.CooldownUtils;
 import me.dueris.genesismc.util.KeybindingUtils;
 import me.dueris.genesismc.util.Utils;
@@ -20,7 +20,8 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.Entity.RemovalReason;
 import net.minecraft.world.phys.Vec3;
-import org.bukkit.*;
+import org.bukkit.GameRule;
+import org.bukkit.Location;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_20_R3.util.CraftLocation;
@@ -58,9 +59,9 @@ public class FireProjectile extends CraftPower implements Listener {
     @EventHandler
     public void inContinuousFix(KeybindTriggerEvent e) {
         Player p = e.getPlayer();
-        for (LayerContainer layer : CraftApoli.getLayers()) {
+        for (Layer layer : CraftApoli.getLayersFromRegistry()) {
             if (fire_projectile.contains(p)) {
-                for (PowerContainer power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
+                for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                     if (KeybindingUtils.isKeyActive(power.get("key").getOrDefault("key", "key.origins.primary_active").toString(), p)) {
                         in_continuous.putIfAbsent(p, new ArrayList<>());
                         if(Boolean.valueOf(power.get("key").getOrDefault("continuous", "false").toString())){
@@ -92,8 +93,8 @@ public class FireProjectile extends CraftPower implements Listener {
         Player p = e.getPlayer();
         ArrayList<Player> peopladf = new ArrayList<>();
         if (doubleFirePatch.contains(p)) return;
-        for(LayerContainer layer : CraftApoli.getLayers()){
-            for(PowerContainer power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)){
+        for(Layer layer : CraftApoli.getLayersFromRegistry()){
+            for(Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)){
                 if (fire_projectile.contains(p)) {
                     ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                     if (conditionExecutor.check("condition", "conditions", p, power, "apoli:fire_projectile", p, null, null, null, p.getItemInHand(), null)) {

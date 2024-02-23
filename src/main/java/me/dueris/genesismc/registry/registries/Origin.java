@@ -1,5 +1,6 @@
-package me.dueris.genesismc.registry;
+package me.dueris.genesismc.registry.registries;
 
+import me.dueris.genesismc.registry.Registerable;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.json.simple.JSONObject;
@@ -9,15 +10,15 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class OriginContainer implements Serializable {
+public class Origin implements Serializable, Registerable {
 
     @Serial
     private static final long serialVersionUID = 1L;
 
     NamespacedKey tag;
-    FileContainer layerFile;
+    DatapackFile layerFile;
     HashMap<String, Object> originFile;
-    ArrayList<PowerContainer> powerContainer;
+    ArrayList<Power> powerContainer;
 
     /**
      * An object that stores an origin and all the details about it.
@@ -27,7 +28,7 @@ public class OriginContainer implements Serializable {
      * @param originFile     The origin file, parsed into a HashMap.
      * @param powerContainer An array of powers that the origin has.
      */
-    public OriginContainer(NamespacedKey tag, FileContainer layerFile, HashMap<String, Object> originFile, ArrayList<PowerContainer> powerContainer) {
+    public Origin(NamespacedKey tag, DatapackFile layerFile, HashMap<String, Object> originFile, ArrayList<Power> powerContainer) {
         this.tag = tag;
         this.layerFile = layerFile;
         this.originFile = originFile;
@@ -42,6 +43,11 @@ public class OriginContainer implements Serializable {
         return "Tag: " + this.tag + ", OriginLayerFile: " + this.layerFile + ", OriginFile: " + this.originFile + ", PowerContainer: " + this.powerContainer.toString();
     }
 
+    @Override
+    public NamespacedKey getKey(){
+        return this.tag;
+    }
+
     /**
      * @return The origin tag.
      */
@@ -52,7 +58,7 @@ public class OriginContainer implements Serializable {
     /**
      * @return The origin layer file parsed into a HashMap.
      */
-    public FileContainer getLayerFile() {
+    public DatapackFile getLayerFile() {
         return this.layerFile;
     }
 
@@ -66,7 +72,7 @@ public class OriginContainer implements Serializable {
     /**
      * @return An array containing all the origin powers.
      */
-    public ArrayList<PowerContainer> getPowerContainers() {
+    public ArrayList<Power> getPowerContainers() {
         return new ArrayList<>(this.powerContainer);
     }
 
@@ -153,17 +159,17 @@ public class OriginContainer implements Serializable {
     /**
      * @return The PowerContainer with the given type if present in the origin.
      */
-    public ArrayList<PowerContainer> getMultiPowerFileFromType(String powerType) {
-        ArrayList<PowerContainer> powers = new ArrayList<>();
-        for (PowerContainer power : getPowerContainers()) {
+    public ArrayList<Power> getMultiPowerFileFromType(String powerType) {
+        ArrayList<Power> powers = new ArrayList<>();
+        for (Power power : getPowerContainers()) {
             if (power == null) continue;
             if (power.getType().equals(powerType)) powers.add(power);
         }
         return powers;
     }
 
-    public PowerContainer getSinglePowerFileFromType(String powerType) {
-        for (PowerContainer power : getPowerContainers()) {
+    public Power getSinglePowerFileFromType(String powerType) {
+        for (Power power : getPowerContainers()) {
             if (power.getType().equals(powerType)) return power;
         }
         return null;

@@ -6,7 +6,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
 
-import static me.dueris.genesismc.factory.powers.Power.bow_nope;
+import static me.dueris.genesismc.factory.powers.ApoliPower.bow_nope;
 
 public class DisableBowsPower implements Listener {
 

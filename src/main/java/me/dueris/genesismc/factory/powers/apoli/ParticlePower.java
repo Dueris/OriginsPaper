@@ -3,9 +3,8 @@ package me.dueris.genesismc.factory.powers.apoli;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.factory.powers.TicksElapsedPower;
-import me.dueris.genesismc.registry.LayerContainer;
-import me.dueris.genesismc.registry.PowerContainer;
+import me.dueris.genesismc.registry.registries.Layer;
+import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
@@ -33,7 +32,7 @@ public class ParticlePower extends CraftPower {
         }
     }
 
-    public static boolean containsParams(PowerContainer power){
+    public static boolean containsParams(Power power){
         return power.getObject("particle") instanceof String ? false : power.getObject("particle") instanceof JSONObject ? power.get("particle").containsKey("params") : false;
     }
 
@@ -74,8 +73,8 @@ public class ParticlePower extends CraftPower {
     @Override
     public void run(Player player) {
         if (getPowerArray().contains(player)) {
-            for (LayerContainer layer : CraftApoli.getLayers()) {
-                for (PowerContainer power : OriginPlayerAccessor.getMultiPowerFileFromType(player, getPowerFile(), layer)) {
+            for (Layer layer : CraftApoli.getLayersFromRegistry()) {
+                for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(player, getPowerFile(), layer)) {
                     if (power == null) continue;
                     int interval = power.getInt("frequency");
 

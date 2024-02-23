@@ -1,5 +1,6 @@
-package me.dueris.genesismc.registry;
+package me.dueris.genesismc.registry.registries;
 
+import me.dueris.genesismc.registry.Registerable;
 import org.bukkit.NamespacedKey;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -10,22 +11,22 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class PowerContainer implements Serializable {
+public class Power implements Serializable, Registerable {
     @Serial
     private static final long serialVersionUID = 2L;
     NamespacedKey powerTag;
-    FileContainer powerFile;
+    DatapackFile powerFile;
     boolean originMultiple;
     boolean originMultipleParent;
     String[] jsonData;
-    PowerContainer powerParent;
+    Power powerParent;
 
     /**
      * @param powerTag       The power tag.
      * @param powerFile      The data within a power file.
      * @param originMultiple Tells the plugin if its an instance of an origins:multiple sub-power
      */
-    public PowerContainer(NamespacedKey powerTag, FileContainer powerFile, String[] jsonData, boolean originMultiple) {
+    public Power(NamespacedKey powerTag, DatapackFile powerFile, String[] jsonData, boolean originMultiple) {
         this.powerTag = powerTag;
         this.powerFile = powerFile;
         this.originMultiple = originMultiple;
@@ -40,7 +41,7 @@ public class PowerContainer implements Serializable {
      * @param originMultiple       Tells the plugin if its an instance of an origins:multiple sub-power
      * @param originMultipleParent Tells the plugin if its an origins:multiple parent power
      */
-    public PowerContainer(NamespacedKey powerTag, FileContainer powerFile, String[] jsonData, boolean originMultiple, boolean originMultipleParent) {
+    public Power(NamespacedKey powerTag, DatapackFile powerFile, String[] jsonData, boolean originMultiple, boolean originMultipleParent) {
         this.powerTag = powerTag;
         this.powerFile = powerFile;
         this.originMultiple = false;
@@ -55,7 +56,7 @@ public class PowerContainer implements Serializable {
      * @param originMultipleParent Tells the plugin if its an origins:multiple parent power
      * @param powerParent          Tells the plugin what to use as an "Inheritance" for values like the name
      */
-    public PowerContainer(NamespacedKey powerTag, FileContainer powerFile, String[] jsonData, boolean originMultiple, boolean originMultipleParent, PowerContainer powerParent) {
+    public Power(NamespacedKey powerTag, DatapackFile powerFile, String[] jsonData, boolean originMultiple, boolean originMultipleParent, Power powerParent) {
         this.powerTag = powerTag;
         this.powerFile = powerFile;
         this.originMultiple = false;
@@ -64,7 +65,12 @@ public class PowerContainer implements Serializable {
         this.powerParent = powerParent;
     }
 
-    public FileContainer getPowerFile() {
+    @Override
+    public NamespacedKey getKey(){
+        return this.powerTag;
+    }
+
+    public DatapackFile getPowerFile() {
         return powerFile;
     }
 
@@ -77,7 +83,7 @@ public class PowerContainer implements Serializable {
     }
 
     // Used for origins:multiple purposes to try and add an "inheritance" feature for cooldowns
-    public PowerContainer getPowerParent() {
+    public Power getPowerParent() {
         return powerParent;
     }
 

@@ -4,8 +4,8 @@ import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.registry.LayerContainer;
-import me.dueris.genesismc.registry.PowerContainer;
+import me.dueris.genesismc.registry.registries.Layer;
+import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
@@ -123,8 +123,8 @@ public class EntityGroupManager extends CraftPower {
                         if (entity instanceof Player p) {
                             //Player case, check for power
                             ConditionExecutor executor = GenesisMC.getConditionExecutor();
-                            for (LayerContainer layer : CraftApoli.getLayers()) {
-                                for (PowerContainer power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
+                            for (Layer layer : CraftApoli.getLayersFromRegistry()) {
+                                for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                                     if (executor.check("condition", "conditions", p, power, getPowerFile(), entity, null, entity.getLocation().getBlock(), null, p.getItemInHand(), null)) {
                                         if (!getPowerArray().contains(p)) return;
                                         setActive(p, power.getTag(), true);

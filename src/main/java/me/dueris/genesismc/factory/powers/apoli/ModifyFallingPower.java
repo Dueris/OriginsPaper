@@ -3,8 +3,8 @@ package me.dueris.genesismc.factory.powers.apoli;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.registry.LayerContainer;
-import me.dueris.genesismc.registry.PowerContainer;
+import me.dueris.genesismc.registry.registries.Layer;
+import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -48,9 +48,9 @@ public class ModifyFallingPower extends CraftPower implements Listener {
         if (modify_falling.contains(p)) {
             if (e.getTo().getY() == e.getFrom().getY()) return;
             @NotNull Vector velocity = p.getVelocity();
-            for (LayerContainer layer : CraftApoli.getLayers()) {
+            for (Layer layer : CraftApoli.getLayersFromRegistry()) {
                 ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
-                for (PowerContainer power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
+                for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                     if (conditionExecutor.check("condition", "conditions", p, power, "apoli:modify_falling", p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
                         if (power.getObject("velocity") instanceof Integer) {
                             if (power.getInt("velocity") < 0) {
@@ -109,9 +109,9 @@ public class ModifyFallingPower extends CraftPower implements Listener {
     public void runR(EntityDamageEvent e) {
         if (e.getEntity() instanceof Player p) {
             if (modify_falling.contains(p)) {
-                for (LayerContainer layer : CraftApoli.getLayers()) {
+                for (Layer layer : CraftApoli.getLayersFromRegistry()) {
                     ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
-                    for (PowerContainer power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
+                    for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                         if (conditionExecutor.check("condition", "conditions", p, power, "apoli:modify_falling", p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
                             if (power.getBooleanOrDefault("take_fall_damage", true)) {
                                 if (e.getCause() == EntityDamageEvent.DamageCause.FALL) {

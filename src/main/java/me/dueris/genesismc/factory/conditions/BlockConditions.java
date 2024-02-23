@@ -1,7 +1,7 @@
 package me.dueris.genesismc.factory.conditions;
 
 import me.dueris.genesismc.factory.TagRegistryParser;
-import me.dueris.genesismc.registry.PowerContainer;
+import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.util.Utils;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.LiquidBlockContainer;
@@ -24,7 +24,7 @@ import java.util.Optional;
 import static me.dueris.genesismc.factory.conditions.ConditionExecutor.getResult;
 
 public class BlockConditions implements Condition {
-    public static HashMap<PowerContainer, ArrayList<String>> inTagValues = new HashMap<>();
+    public static HashMap<Power, ArrayList<String>> inTagValues = new HashMap<>();
     public static HashMap<String, ArrayList<Material>> blockTagMappings = new HashMap<>();
 
     @Override

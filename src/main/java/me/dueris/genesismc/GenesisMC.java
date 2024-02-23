@@ -13,21 +13,20 @@ import me.dueris.genesismc.content.enchantment.generation.StructureGeneration;
 import me.dueris.genesismc.content.enchantment.generation.VillagerTradeHook;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.TagRegistryParser;
-import me.dueris.genesismc.factory.conditions.ConditionExecutor;
-import me.dueris.genesismc.factory.conditions.CraftCondition;
-import me.dueris.genesismc.factory.conditions.BiEntityConditions;
-import me.dueris.genesismc.factory.conditions.BiomeConditions;
-import me.dueris.genesismc.factory.conditions.BlockConditions;
-import me.dueris.genesismc.factory.conditions.DamageConditions;
-import me.dueris.genesismc.factory.conditions.EntityConditions;
-import me.dueris.genesismc.factory.conditions.FluidConditions;
-import me.dueris.genesismc.factory.conditions.ItemConditions;
+import me.dueris.genesismc.factory.conditions.*;
+import me.dueris.genesismc.factory.powers.ApoliPower;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.factory.powers.apoli.*;
 import me.dueris.genesismc.factory.powers.apoli.provider.origins.BounceSlimeBlock;
 import me.dueris.genesismc.factory.powers.apoli.provider.origins.MimicWarden;
 import me.dueris.genesismc.integration.PlaceHolderAPI;
-import me.dueris.genesismc.registry.OriginContainer;
+import me.dueris.genesismc.registry.IRegistry;
+import me.dueris.genesismc.registry.Registrar;
+import me.dueris.genesismc.registry.Registries;
+import me.dueris.genesismc.registry.impl.OriginRegistry;
+import me.dueris.genesismc.registry.registries.Layer;
+import me.dueris.genesismc.registry.registries.Origin;
+import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.screen.GuiTicker;
 import me.dueris.genesismc.screen.OriginChoosing;
 import me.dueris.genesismc.screen.ScreenNavigator;
@@ -39,7 +38,6 @@ import me.dueris.genesismc.util.entity.InventorySerializer;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
-import net.minecraft.commands.Commands;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.thread.NamedThreadFactory;
 import org.bukkit.Bukkit;
@@ -89,6 +87,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
     public static ArrayList<String> versions = new ArrayList<>();
     private static GenesisMC plugin;
     public static MinecraftServer server;
+    public IRegistry registry;
 
     static {
         tool = EnumSet.of(Material.DIAMOND_AXE, Material.DIAMOND_HOE, Material.DIAMOND_PICKAXE, Material.DIAMOND_SHOVEL, Material.DIAMOND_SWORD, Material.GOLDEN_AXE, Material.GOLDEN_HOE, Material.GOLDEN_PICKAXE, Material.GOLDEN_SHOVEL, Material.GOLDEN_SWORD, Material.NETHERITE_AXE, Material.NETHERITE_HOE, Material.NETHERITE_PICKAXE, Material.NETHERITE_SHOVEL, Material.NETHERITE_SWORD, Material.IRON_AXE, Material.IRON_HOE, Material.IRON_PICKAXE, Material.IRON_SHOVEL, Material.IRON_SWORD, Material.WOODEN_AXE, Material.WOODEN_HOE, Material.WOODEN_PICKAXE, Material.WOODEN_SHOVEL, Material.WOODEN_SWORD, Material.SHEARS);
@@ -217,12 +216,19 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         CraftCondition.item = new ItemConditions();
         // Pre-load end
         conditionExecutor = new ConditionExecutor();
+
+        this.registry = OriginRegistry.INSTANCE;
+        // Create new registry instances
+        this.registry.create(Registries.POWER,  new Registrar<Power>());
+        this.registry.create(Registries.ORIGIN, new Registrar<Origin>());
+        this.registry.create(Registries.LAYER, new Registrar<Layer>());
+        this.registry.create(Registries.CRAFT_POWER, new Registrar<ApoliPower>());
     }
 
     @Override
     public void onEnable() {
         try {
-            CraftApoli.loadOrigins();
+            CraftApoli.loadOrigins(this.registry);
             if(Bukkit.getPluginManager().isPluginEnabled("SkinsRestorer")){
                 CraftPower.registerNewPower(ModelColor.ModelTransformer.class);
             }
@@ -269,12 +275,12 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         Bukkit.getServer().getConsoleSender().sendMessage("");
         if (debugOrigins) {
             Bukkit.getServer().getConsoleSender().sendMessage("* (-debugOrigins={true}) || BEGINNING DEBUG {");
-            Bukkit.getServer().getConsoleSender().sendMessage("  - Loaded @1 powers".replace("@1", String.valueOf(CraftPower.getRegistry().toArray().length)));
-            Bukkit.getServer().getConsoleSender().sendMessage("  - Loaded @4 layers".replace("@4", String.valueOf(CraftApoli.getLayers().toArray().length)));
-            Bukkit.getServer().getConsoleSender().sendMessage("  - Loaded @2 origins = [".replace("@2", String.valueOf(CraftApoli.getOrigins().toArray().length)));
-            for (OriginContainer originContainer : CraftApoli.getOrigins()) {
-                Bukkit.getServer().getConsoleSender().sendMessage("     () -> {@3}".replace("@3", originContainer.getTag()));
-            }
+            Bukkit.getServer().getConsoleSender().sendMessage("  - Loaded @1 powers".replace("@1", String.valueOf(this.registry.retrieve(Registries.CRAFT_POWER).registrySize())));
+            Bukkit.getServer().getConsoleSender().sendMessage("  - Loaded @4 layers".replace("@4", String.valueOf(this.registry.retrieve(Registries.LAYER).registrySize())));
+            Bukkit.getServer().getConsoleSender().sendMessage("  - Loaded @2 origins = [".replace("@2", String.valueOf(this.registry.retrieve(Registries.ORIGIN).registrySize())));
+            ((Registrar<Origin>)this.registry.retrieve(Registries.ORIGIN)).forEach((k, o) -> {
+                Bukkit.getServer().getConsoleSender().sendMessage("     () -> {@3}".replace("@3", o.getTag()));
+            });
             Bukkit.getServer().getConsoleSender().sendMessage("  ]");
             Bukkit.getServer().getConsoleSender().sendMessage("  - Power thread starting with {originScheduler}".replace("originScheduler", GenesisMC.scheduler.toString()));
             Bukkit.getServer().getConsoleSender().sendMessage("  - Lang testing = {true}");
@@ -284,9 +290,9 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         // Shutdown executor, we dont need it anymore
         loaderThreadPool.shutdown();
         OriginCommand.commandProvidedTaggedRecipies.addAll(RecipePower.taggedRegistry.keySet());
-        OriginCommand.commandProvidedPowers.addAll(CraftApoli.getPowers());
-        OriginCommand.commandProvidedOrigins.addAll(CraftApoli.getOrigins());
-        OriginCommand.commandProvidedLayers.addAll(CraftApoli.getLayers());
+        OriginCommand.commandProvidedPowers.addAll(((Registrar<Power>)GenesisMC.getPlugin().registry.retrieve(Registries.POWER)).values().stream().toList());
+        OriginCommand.commandProvidedOrigins.addAll(((Registrar<Origin>)GenesisMC.getPlugin().registry.retrieve(Registries.ORIGIN)).values().stream().toList());
+        OriginCommand.commandProvidedLayers.addAll(((Registrar<Layer>)GenesisMC.getPlugin().registry.retrieve(Registries.LAYER)).values().stream().toList());
         ResourceCommand.registeredBars.putAll(Resource.registeredBars);
         try {
             Bootstrap.deleteDirectory(GenesisMC.getTmpFolder().toPath(), true);
@@ -337,8 +343,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         OriginCommand.commandProvidedTaggedRecipies.clear();
         RecipePower.recipeMapping.clear();
         RecipePower.tags.clear();
-        CraftPower.getRegistry().clear();
-        CraftPower.getKeyedRegistry().clear();
+        this.registry.clearRegistries();
         scheduler.cancel();
         EntityGroupManager.stop();
 

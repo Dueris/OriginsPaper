@@ -1,9 +1,9 @@
 package me.dueris.genesismc;
 
-import me.dueris.genesismc.factory.powers.CraftPower;
+import me.dueris.genesismc.factory.powers.ApoliPower;
 import me.dueris.genesismc.factory.powers.TicksElapsedPower;
 import me.dueris.genesismc.factory.powers.apoli.FlightHandler;
-import me.dueris.genesismc.registry.PowerContainer;
+import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
@@ -16,7 +16,7 @@ import java.util.HashMap;
 
 public class OriginScheduler {
 
-    public static ArrayList<Class<? extends CraftPower>> activePowerRunners = new ArrayList<>();
+    public static ArrayList<ApoliPower> activePowerRunners = new ArrayList<>();
     final Plugin plugin;
     ArrayList<BukkitRunnable> runnables = new ArrayList<>();
 
@@ -55,7 +55,7 @@ public class OriginScheduler {
     public static class OriginSchedulerTree extends BukkitRunnable implements Listener {
 
         public static FlightHandler flightHandler = new FlightHandler();
-        private final HashMap<Player, HashMap<PowerContainer, Integer>> ticksEMap = new HashMap<>();
+        private final HashMap<Player, HashMap<Power, Integer>> ticksEMap = new HashMap<>();
 
         @Override
         public String toString() {
@@ -69,20 +69,12 @@ public class OriginScheduler {
                     // Ensures the flight handler can still tick on players because of issues when it doesnt tick
                     flightHandler.run(p);
                 }
-                for (Class<? extends CraftPower> c : OriginPlayerAccessor.getPowersApplied(p)) {
-                    try {
-                        CraftPower inst = c.newInstance();
-                        if (inst instanceof TicksElapsedPower) {
-                            ((TicksElapsedPower) inst).run(p, ticksEMap);
-                        } else {
-                            activePowerRunners.add(c);
-                            inst.run(p);
-                        }
-
-                    } catch (InstantiationException e) {
-                        throw new RuntimeException(e);
-                    } catch (IllegalAccessException e) {
-                        throw new RuntimeException(e);
+                for (ApoliPower c : OriginPlayerAccessor.getPowersApplied(p)) {
+                    if (c instanceof TicksElapsedPower) {
+                        ((TicksElapsedPower) c).run(p, ticksEMap);
+                    } else {
+                        activePowerRunners.add(c);
+                        c.run(p);
                     }
                 }
             }

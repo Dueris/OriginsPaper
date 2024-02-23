@@ -3,10 +3,11 @@ package me.dueris.genesismc.command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import me.dueris.genesismc.GenesisMC;
-import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.powers.apoli.Resource;
-import me.dueris.genesismc.registry.LayerContainer;
-import me.dueris.genesismc.registry.PowerContainer;
+import me.dueris.genesismc.registry.Registrar;
+import me.dueris.genesismc.registry.Registries;
+import me.dueris.genesismc.registry.registries.Layer;
+import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.arguments.EntityArgument;
@@ -48,8 +49,8 @@ public class ResourceCommand {
                                                     boolean tru = false;
                                                     for(ServerPlayer player : EntityArgument.getPlayers(context, "targets")){
                                                         Player p = player.getBukkitEntity();
-                                                        for (LayerContainer layerContainer : OriginCommand.commandProvidedLayers) {
-                                                            for (PowerContainer powerContainer : OriginPlayerAccessor.playerPowerMapping.get(p).get(layerContainer)) {
+                                                        for (Layer layerContainer : OriginCommand.commandProvidedLayers) {
+                                                            for (Power powerContainer : OriginPlayerAccessor.playerPowerMapping.get(p).get(layerContainer)) {
                                                                 if (powerContainer.getType().equals("apoli:cooldown") || powerContainer.getType().equals("apoli:resource")) {
                                                                     if (powerContainer.getTag().equals(CraftNamespacedKey.fromMinecraft(ResourceLocationArgument.getId(context, "power")).asString())) {
                                                                         context.getSource().sendSystemMessage(Component.literal("Test passed."));
@@ -108,7 +109,7 @@ public class ResourceCommand {
                                                 }).then(argument("value", IntegerArgumentType.integer())
                                                         .executes(context -> {
                                                             int value = IntegerArgumentType.getInteger(context, "value");
-                                                            PowerContainer power = CraftApoli.getPowerContainerFromTag(CraftNamespacedKey.fromMinecraft(ResourceLocationArgument.getId(context, "power")).asString());
+                                                            Power power = ((Registrar<Power>)GenesisMC.getPlugin().registry.retrieve(Registries.POWER)).get(CraftNamespacedKey.fromMinecraft(ResourceLocationArgument.getId(context, "power")));
                                                             EntityArgument.getPlayers(context, "targets").forEach(player -> {
                                                                 if (resourceChangeTimeout.containsKey(player.getBukkitEntity())) return;
                                                                 String resource = power.getTag();

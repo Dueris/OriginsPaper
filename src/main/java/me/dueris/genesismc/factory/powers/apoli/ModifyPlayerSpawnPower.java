@@ -6,8 +6,8 @@ import me.dueris.genesismc.event.PowerUpdateEvent;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.registry.LayerContainer;
-import me.dueris.genesismc.registry.PowerContainer;
+import me.dueris.genesismc.registry.registries.Layer;
+import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import net.minecraft.core.*;
 import net.minecraft.core.registries.Registries;
@@ -49,7 +49,7 @@ import static me.dueris.genesismc.factory.powers.apoli.superclass.ValueModifying
 
 public class ModifyPlayerSpawnPower extends CraftPower implements Listener {
 
-    public Optional<BlockPos> getBiomePosition(ServerLevel level, BlockPos originalPos, PowerContainer power){
+    public Optional<BlockPos> getBiomePosition(ServerLevel level, BlockPos originalPos, Power power){
         if(power.getStringOrDefault("biome", null) == null) return Optional.of(originalPos);
 
         Optional<Biome> tB = CraftRegistry.getMinecraftRegistry().registry(Registries.BIOME).get().getOptional(CraftNamespacedKey.toMinecraft(NamespacedKey.fromString(power.getString("biome"))));
@@ -66,7 +66,7 @@ public class ModifyPlayerSpawnPower extends CraftPower implements Listener {
         return Optional.empty();
     }
 
-    public Optional<Vec3> getStructurePos(ServerLevel level, BlockPos blockPos, Entity entity, int range, PowerContainer power){
+    public Optional<Vec3> getStructurePos(ServerLevel level, BlockPos blockPos, Entity entity, int range, Power power){
         if(power.getStringOrDefault("structure", null) == null) return new ApoliSpawnUtils().getValidSpawn(level, blockPos, range, entity);
         NamespacedKey key = NamespacedKey.fromString(power.getString("structure"));
         Registry<Structure> structureRegistry = CraftRegistry.getMinecraftRegistry().registry(Registries.STRUCTURE).get();
@@ -141,9 +141,9 @@ public class ModifyPlayerSpawnPower extends CraftPower implements Listener {
 
     public void runHandle(Player p) {
         if (modify_world_spawn.contains(p)) {
-            for (LayerContainer layer : CraftApoli.getLayers()) {
+            for (Layer layer : CraftApoli.getLayersFromRegistry()) {
                 ConditionExecutor executor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
-                PowerContainer power = OriginPlayerAccessor.getSinglePowerFileFromType(p, getPowerFile(), layer);
+                Power power = OriginPlayerAccessor.getSinglePowerFileFromType(p, getPowerFile(), layer);
                 if (power == null) continue;
                 if (executor.check("condition", "conditions", p, power, getPowerFile(), p, null, p.getLocation().getBlock(), null, p.getInventory().getItemInMainHand(), null)) {
                     ApoliSpawnUtils utils = new ApoliSpawnUtils();
@@ -167,7 +167,7 @@ public class ModifyPlayerSpawnPower extends CraftPower implements Listener {
         }
     }
 
-    private ResourceKey<Level> getDimension(PowerContainer power){
+    private ResourceKey<Level> getDimension(Power power){
         NamespacedKey key = NamespacedKey.fromString(power.getString("dimension"));
         return ((CraftWorld)Bukkit.getWorld(key)).getHandle().dimension();
     }
@@ -291,7 +291,7 @@ public class ModifyPlayerSpawnPower extends CraftPower implements Listener {
 
         }
 
-        public Pair<ServerLevel, BlockPos> getSpawn(boolean isSpawnObstructed, Entity entity, ResourceKey<Level> dimension, SpawnStrategy spawnStrategy, float dimensionDistanceMultiplier, PowerContainer power) {
+        public Pair<ServerLevel, BlockPos> getSpawn(boolean isSpawnObstructed, Entity entity, ResourceKey<Level> dimension, SpawnStrategy spawnStrategy, float dimensionDistanceMultiplier, Power power) {
             ServerPlayer serverPlayerEntity = (ServerPlayer) entity;
             MinecraftServer server = serverPlayerEntity.getServer();
             if (server == null) return null;

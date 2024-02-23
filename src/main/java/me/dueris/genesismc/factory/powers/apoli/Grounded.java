@@ -3,8 +3,8 @@ package me.dueris.genesismc.factory.powers.apoli;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.registry.LayerContainer;
-import me.dueris.genesismc.registry.PowerContainer;
+import me.dueris.genesismc.registry.registries.Layer;
+import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -35,11 +35,11 @@ public class Grounded extends CraftPower {
     public void run(Player player) {
         ArrayList<Location> platform_pos = new ArrayList<>();
         if (grounded.contains(player)) {
-            for (LayerContainer layer : CraftApoli.getLayers()) {
+            for (Layer layer : CraftApoli.getLayersFromRegistry()) {
                 Location location = player.getLocation();
                 Location current_block_platform_pos = location.add(0, -1, 0);
                 ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
-                for (PowerContainer power : OriginPlayerAccessor.getMultiPowerFileFromType(player, getPowerFile(), layer)) {
+                for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(player, getPowerFile(), layer)) {
                     if (conditionExecutor.check("condition", "conditions", player, power, "apoli:grounded", player, null, null, null, player.getInventory().getItemInHand(), null)) {
                         setActive(player, power.getTag(), true);
                         if (current_block_platform_pos.getBlock().getType().equals(Material.AIR)) {

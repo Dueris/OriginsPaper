@@ -1,5 +1,6 @@
-package me.dueris.genesismc.registry;
+package me.dueris.genesismc.registry.registries;
 
+import me.dueris.genesismc.registry.Registerable;
 import org.bukkit.NamespacedKey;
 import org.json.simple.JSONArray;
 
@@ -7,14 +8,14 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-public class LayerContainer implements Serializable {
+public class Layer implements Serializable, Registerable {
     @Serial
     private static final long serialVersionUID = 4L;
 
     NamespacedKey tag;
-    FileContainer layerFile;
+    DatapackFile layerFile;
 
-    public LayerContainer(NamespacedKey tag, FileContainer layerFile) {
+    public Layer(NamespacedKey tag, DatapackFile layerFile) {
         this.tag = tag;
         this.layerFile = layerFile;
     }
@@ -27,6 +28,11 @@ public class LayerContainer implements Serializable {
         return "Tag = " + tag + " LayerFile = " + layerFile.toString();
     }
 
+    @Override
+    public NamespacedKey getKey(){
+        return this.tag;
+    }
+
     /**
      * @return The tag associated with this layer
      */
@@ -37,7 +43,7 @@ public class LayerContainer implements Serializable {
     /**
      * @return The file associated with this layer
      */
-    public FileContainer getLayerFile() {
+    public DatapackFile getLayerFile() {
         return layerFile;
     }
 

@@ -1,12 +1,15 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
+import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.content.OrbOfOrigins;
 import me.dueris.genesismc.event.OriginChangeEvent;
 import me.dueris.genesismc.event.PowerUpdateEvent;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.registry.LayerContainer;
-import me.dueris.genesismc.registry.PowerContainer;
+import me.dueris.genesismc.registry.Registrar;
+import me.dueris.genesismc.registry.Registries;
+import me.dueris.genesismc.registry.registries.Layer;
+import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -48,7 +51,7 @@ public class RecipePower extends CraftPower implements Listener {
     }
 
     public static void parseRecipes(){
-        for(PowerContainer powerContainer : CraftApoli.getPowers().stream().filter(powerContainer -> powerContainer.getType().equalsIgnoreCase("apoli:recipe")).toList()){
+        for(Power powerContainer : ((Registrar<Power>)GenesisMC.getPlugin().registry.retrieve(Registries.POWER)).values().stream().filter(powerContainer -> powerContainer.getType().equalsIgnoreCase("apoli:recipe")).toList()){
             JSONObject recipe = powerContainer.get("recipe");
             if(recipe == null) throw new IllegalArgumentException("Unable to find recipe data for power: " + powerContainer.getTag());
             NamespacedKey key = new NamespacedKey(recipe.get("id").toString().split(":")[0], recipe.get("id").toString().split(":")[1]);
@@ -142,8 +145,8 @@ public class RecipePower extends CraftPower implements Listener {
             recipeMapping.clear();
         }
         if(getPowerArray().contains(p)){
-            for(LayerContainer layer : CraftApoli.getLayers()){
-                for(PowerContainer power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)){
+            for(Layer layer : CraftApoli.getLayersFromRegistry()){
+                for(Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)){
                     JSONObject recipe = power.get("recipe");
                     String id = recipe.get("id").toString();
                     if(taggedRegistry.keySet().contains(id)){

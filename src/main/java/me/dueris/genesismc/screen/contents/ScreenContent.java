@@ -2,8 +2,8 @@ package me.dueris.genesismc.screen.contents;
 
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.CraftApoli;
-import me.dueris.genesismc.registry.LayerContainer;
-import me.dueris.genesismc.registry.OriginContainer;
+import me.dueris.genesismc.registry.registries.Layer;
+import me.dueris.genesismc.registry.registries.Origin;
 import me.dueris.genesismc.util.ChatFormatter;
 import me.dueris.genesismc.util.LangConfig;
 import net.md_5.bungee.api.ChatColor;
@@ -30,7 +30,7 @@ import static org.bukkit.ChatColor.*;
 public class ScreenContent {
 
     private static ItemStack applyProperties(ItemStack icon) {
-        for (OriginContainer origin : CraftApoli.getCoreOrigins()) {
+        for (Origin origin : CraftApoli.getOriginsFromRegistry().stream().filter(origin -> CraftApoli.isCoreOrigin(origin)).toList()) {
             if (origin.getMaterialIcon() != icon.getType()) continue;
             ItemMeta meta = icon.getItemMeta();
             NamespacedKey key = new NamespacedKey(GenesisMC.getPlugin(), "originTag");
@@ -44,7 +44,7 @@ public class ScreenContent {
 
         //puts all loaded the core origins into the hashmap
         HashMap<String, String> originDetails = new HashMap<>();
-        for (OriginContainer origin : CraftApoli.getCoreOrigins()) {
+        for (Origin origin : CraftApoli.getOriginsFromRegistry().stream().filter(origin -> CraftApoli.isCoreOrigin(origin)).toList()) {
             if (!choosing.get(p).getOrigins().contains(origin.getTag())) continue;
             originDetails.put(origin.getTag(), origin.getName());
         }
@@ -52,7 +52,7 @@ public class ScreenContent {
         //if (originDetails.isEmpty()) return ChooseMenuContents.ChooseMenuContent(0, choosing.get(p));
 
         HashMap<String, String> originDescriptions = new HashMap<>();
-        for (OriginContainer origin : CraftApoli.getCoreOrigins()) {
+        for (Origin origin : CraftApoli.getOriginsFromRegistry().stream().filter(origin -> CraftApoli.isCoreOrigin(origin)).toList()) {
             originDescriptions.put(origin.getTag(), origin.getDescription());
         }
 
@@ -166,21 +166,21 @@ public class ScreenContent {
 
     }
 
-    public static @Nullable ItemStack @NotNull [] ChooseMenuContent(int pageNumber, LayerContainer choosingLayer) {
+    public static @Nullable ItemStack @NotNull [] ChooseMenuContent(int pageNumber, Layer choosingLayer) {
         ItemStack sides = itemProperties(new ItemStack(Material.BLACK_STAINED_GLASS_PANE), "", ItemFlag.HIDE_ENCHANTS, null, null);
         ItemStack menu = itemProperties(new ItemStack(Material.SPECTRAL_ARROW), ChatColor.AQUA + me.dueris.genesismc.util.LangConfig.getLocalizedString(Bukkit.getConsoleSender(), "menu.customChoose.return"), ItemFlag.HIDE_ENCHANTS, null, null);
         ItemStack back = itemProperties(new ItemStack(Material.ARROW), LangConfig.getLocalizedString(Bukkit.getConsoleSender(), "menu.customChoose.back"), ItemFlag.HIDE_ENCHANTS, null, null);
         ItemStack next = itemProperties(new ItemStack(Material.ARROW), LangConfig.getLocalizedString(Bukkit.getConsoleSender(), "menu.customChoose.next"), ItemFlag.HIDE_ENCHANTS, null, null);
 
         ArrayList<ItemStack> contents = new ArrayList<>();
-        ArrayList<OriginContainer> originContainers = new ArrayList<>(CraftApoli.getOrigins());
+        ArrayList<Origin> originContainers = new ArrayList<>(CraftApoli.getOriginsFromRegistry());
 
         //removes the core origins
         originContainers.removeIf(CraftApoli::isCoreOrigin);
 
         //removes origins not in the layer
         for (int i = 0; i < originContainers.size(); i++) {
-            OriginContainer origin = originContainers.get(i);
+            Origin origin = originContainers.get(i);
             if (!choosingLayer.getOrigins().contains(origin.getTag())) originContainers.remove(origin);
         }
 
@@ -218,7 +218,7 @@ public class ScreenContent {
                 contents.add(new ItemStack(Material.AIR));
             } else {
                 if (originContainers.size() > 0) {
-                    OriginContainer origin = originContainers.get(0);
+                    Origin origin = originContainers.get(0);
                     while (origin.getUnchooseable()) {
                         originContainers.remove(0);
                         origin = originContainers.get(0);

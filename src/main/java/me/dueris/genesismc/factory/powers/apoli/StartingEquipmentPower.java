@@ -4,8 +4,8 @@ import me.dueris.genesismc.event.OriginChangeEvent;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.registry.LayerContainer;
-import me.dueris.genesismc.registry.PowerContainer;
+import me.dueris.genesismc.registry.registries.Layer;
+import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -41,8 +41,8 @@ public class StartingEquipmentPower extends CraftPower implements Listener {
     @EventHandler
     public void runGive(OriginChangeEvent e) {
         if (starting_equip.contains(e.getPlayer())) {
-            for (LayerContainer layer : CraftApoli.getLayers()) {
-                for (PowerContainer power : OriginPlayerAccessor.getMultiPowerFileFromType(e.getPlayer(), getPowerFile(), layer)) {
+            for (Layer layer : CraftApoli.getLayersFromRegistry()) {
+                for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(e.getPlayer(), getPowerFile(), layer)) {
                     ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                     if (conditionExecutor.check("condition", "conditions", e.getPlayer(), power, getPowerFile(), e.getPlayer(), null, null, null, e.getPlayer().getItemInHand(), null)) {
                         if (!getPowerArray().contains(e.getPlayer())) return;
@@ -57,7 +57,7 @@ public class StartingEquipmentPower extends CraftPower implements Listener {
         }
     }
 
-    public void runGiveItems(Player p, PowerContainer power) {
+    public void runGiveItems(Player p, Power power) {
         for (HashMap<String, Object> stack : power.getJsonListSingularPlural("stack", "stacks")) {
             p.getInventory().addItem(new ItemStack(Material.valueOf(stack.get("item").toString().toUpperCase().split(":")[1]), power.getIntOrDefault("amount", 1)));
         }
@@ -66,9 +66,9 @@ public class StartingEquipmentPower extends CraftPower implements Listener {
     @EventHandler
     public void runRespawn(PlayerRespawnEvent e) {
         if (starting_equip.contains(e.getPlayer())) {
-            for (LayerContainer layer : CraftApoli.getLayers()) {
+            for (Layer layer : CraftApoli.getLayersFromRegistry()) {
                 ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
-                for (PowerContainer power : OriginPlayerAccessor.getMultiPowerFileFromType(e.getPlayer(), getPowerFile(), layer)) {
+                for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(e.getPlayer(), getPowerFile(), layer)) {
                     if (conditionExecutor.check("condition", "conditions", e.getPlayer(), power, getPowerFile(), e.getPlayer(), null, null, null, e.getPlayer().getItemInHand(), null)) {
                         setActive(e.getPlayer(), power.getTag(), true);
                         if (power.getObject("recurrent") != null && power.getBoolean("recurrent")) {

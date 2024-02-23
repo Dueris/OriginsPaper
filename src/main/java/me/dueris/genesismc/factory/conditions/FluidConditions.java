@@ -1,7 +1,6 @@
 package me.dueris.genesismc.factory.conditions;
 
 import me.dueris.genesismc.factory.TagRegistryParser;
-import net.minecraft.world.item.Items;
 import org.bukkit.Fluid;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;

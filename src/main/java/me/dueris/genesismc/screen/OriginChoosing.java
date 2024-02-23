@@ -6,8 +6,8 @@ import me.dueris.genesismc.event.OriginChangeEvent;
 import me.dueris.genesismc.event.OriginChooseEvent;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.powers.apoli.ModifyPlayerSpawnPower;
-import me.dueris.genesismc.registry.LayerContainer;
-import me.dueris.genesismc.registry.OriginContainer;
+import me.dueris.genesismc.registry.registries.Layer;
+import me.dueris.genesismc.registry.registries.Origin;
 import me.dueris.genesismc.storage.GenesisConfigs;
 import me.dueris.genesismc.util.LangConfig;
 import me.dueris.genesismc.util.SendCharts;
@@ -30,19 +30,19 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Objects;
 import java.util.Random;
 
 import static me.dueris.genesismc.content.OrbOfOrigins.orb;
-import static me.dueris.genesismc.factory.powers.Power.phasing;
+import static me.dueris.genesismc.factory.powers.ApoliPower.phasing;
 import static me.dueris.genesismc.util.ColorConstants.AQUA;
 import static org.bukkit.Bukkit.getServer;
 
 public class OriginChoosing implements Listener {
 
-    public static HashMap<Player, LayerContainer> choosing = new HashMap<>();
+    public static HashMap<Player, Layer> choosing = new HashMap<>();
 
     @EventHandler
     public void onOrbClick(PlayerInteractEvent e) {
@@ -55,7 +55,7 @@ public class OriginChoosing implements Listener {
                         if(!((CraftPlayer)p).getHandle().getAbilities().instabuild){
                             Utils.consumeItem(e.getItem());
                         }
-                        for (LayerContainer layer : CraftApoli.getLayers()) {
+                        for (Layer layer : CraftApoli.getLayersFromRegistry()) {
                             OriginPlayerAccessor.setOrigin(p, layer, CraftApoli.nullOrigin());
                         }
                         OrbInteractEvent event = new OrbInteractEvent(p);
@@ -78,11 +78,11 @@ public class OriginChoosing implements Listener {
                 return;
 
             Player p = (Player) e.getWhoClicked();
-            ArrayList<OriginContainer> origins = CraftApoli.getOrigins();
-            ArrayList<LayerContainer> layers = CraftApoli.getLayers();
+            List<Origin> origins = CraftApoli.getOriginsFromRegistry();
+            List<Layer> layers = CraftApoli.getLayersFromRegistry();
             Random random = new Random();
-            OriginContainer origin = origins.get(random.nextInt(origins.size()));
-            for (LayerContainer layer : layers) {
+            Origin origin = origins.get(random.nextInt(origins.size()));
+            for (Layer layer : layers) {
                 OriginPlayerAccessor.setOrigin(p, layer, origin);
                 p.sendMessage(Component.text(LangConfig.getLocalizedString(p, "misc.randomOrigins").replace("%layer%", layer.getTag()).replace("%originName%", origin.getName())).color(TextColor.fromHexString(AQUA)));
             }
@@ -115,7 +115,7 @@ public class OriginChoosing implements Listener {
 
             if (e.getCurrentItem().getItemMeta().getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "originChoose"), PersistentDataType.INTEGER) != null) {
                 String originTag = e.getCurrentItem().getItemMeta().getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "originTag"), PersistentDataType.STRING);
-                OriginContainer origin = CraftApoli.getOrigin(originTag);
+                Origin origin = CraftApoli.getOrigin(originTag);
                 Player p = (Player) e.getWhoClicked();
 
                 ScreenConstants.setAttributesToDefault(p);

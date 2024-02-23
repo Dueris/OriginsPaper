@@ -5,8 +5,8 @@ import me.dueris.genesismc.event.KeybindTriggerEvent;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.registry.LayerContainer;
-import me.dueris.genesismc.registry.PowerContainer;
+import me.dueris.genesismc.registry.registries.Layer;
+import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.util.CooldownUtils;
 import me.dueris.genesismc.util.KeybindingUtils;
 import me.dueris.genesismc.util.Utils;
@@ -21,8 +21,6 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import static me.dueris.genesismc.factory.powers.apoli.FireProjectile.in_continuous;
-
 public class ToggleNightVision extends CraftPower implements Listener {
 
     public static HashMap<Player, ArrayList<String>> in_continuous = new HashMap<>();
@@ -32,7 +30,7 @@ public class ToggleNightVision extends CraftPower implements Listener {
 
     }
 
-    public void execute(Player p, PowerContainer power){
+    public void execute(Player p, Power power){
         in_continuous.putIfAbsent(p, new ArrayList<>());
         int cooldown = power.getIntOrDefault("cooldown", 1);
         String key = (String) power.get("key").getOrDefault("key", "key.origins.primary_active");
@@ -69,8 +67,8 @@ public class ToggleNightVision extends CraftPower implements Listener {
     @EventHandler
     public void keybindToggle(KeybindTriggerEvent e) {
         Player p = e.getPlayer();
-        for (LayerContainer layer : CraftApoli.getLayers()) {
-            for (PowerContainer power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
+        for (Layer layer : CraftApoli.getLayersFromRegistry()) {
+            for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                 if (getPowerArray().contains(p)) {
                     ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                     if (conditionExecutor.check("condition", "conditions", p, power, getPowerFile(), p, null, null, null, p.getItemInHand(), null)) {
@@ -88,9 +86,9 @@ public class ToggleNightVision extends CraftPower implements Listener {
     @EventHandler
     public void inContinuousFix(KeybindTriggerEvent e) {
         Player p = e.getPlayer();
-        for (LayerContainer layer : CraftApoli.getLayers()) {
+        for (Layer layer : CraftApoli.getLayersFromRegistry()) {
             if (getPowerArray().contains(p)) {
-                for (PowerContainer power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
+                for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                     if (KeybindingUtils.isKeyActive(power.get("key").getOrDefault("key", "key.origins.primary_active").toString(), p)) {
                         in_continuous.putIfAbsent(p, new ArrayList<>());
                         if(true /* TNV power always execute continuously */){

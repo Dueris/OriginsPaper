@@ -4,40 +4,30 @@ import com.mojang.brigadier.StringReader;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.TagRegistryParser;
 import me.dueris.genesismc.factory.actions.Actions;
-import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.factory.powers.Power;
+import me.dueris.genesismc.factory.powers.ApoliPower;
 import me.dueris.genesismc.factory.powers.apoli.*;
-import me.dueris.genesismc.registry.PowerContainer;
+import me.dueris.genesismc.registry.Registrar;
+import me.dueris.genesismc.registry.Registries;
+import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.util.CooldownUtils;
 import me.dueris.genesismc.util.Utils;
 import me.dueris.genesismc.util.apoli.RaycastApoli;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Registry;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.storage.LevelResource;
-import net.minecraft.world.level.storage.loot.LootDataType;
-
-import net.minecraft.world.level.storage.loot.providers.number.ScoreboardValue;
 import net.minecraft.world.scores.Objective;
 import net.minecraft.world.scores.Scoreboard;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
-import org.bukkit.craftbukkit.v1_20_R3.CraftServer;
 import org.bukkit.craftbukkit.v1_20_R3.CraftWorld;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftLivingEntity;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftPlayer;
-import org.bukkit.craftbukkit.v1_20_R3.tag.CraftTag;
-import org.bukkit.craftbukkit.v1_20_R3.util.CraftNamespacedKey;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.*;
 import org.bukkit.event.entity.EntityDamageEvent;
@@ -46,7 +36,6 @@ import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-import org.bukkit.util.BoundingBox;
 import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
@@ -57,13 +46,16 @@ import org.json.simple.parser.ParseException;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Predicate;
 
 import static me.dueris.genesismc.factory.conditions.ConditionExecutor.getResult;
 
 public class EntityConditions implements Condition {
-    public static HashMap<PowerContainer, ArrayList<String>> inTagValues = new HashMap<>();
+    public static HashMap<Power, ArrayList<String>> inTagValues = new HashMap<>();
     public static HashMap<String, ArrayList<EntityType>> entityTagMappings = new HashMap<>();
     private final Location[] prevLoca = new Location[100000];
 
@@ -190,17 +182,11 @@ public class EntityConditions implements Condition {
                 return getResult(inverted, Optional.of(false));
             }
             case "apoli:power_type" -> {
-                List<Class<? extends CraftPower>> craftPowerClasses = CraftPower.getRegistry();
-                for (Class<? extends CraftPower> c : craftPowerClasses) {
-                    String pt = condition.get("power_type").toString();
-                    try {
-                        if (c.newInstance().getPowerFile().equals(pt)) {
-                            return getResult(inverted, Optional.of(c.newInstance().getPowerArray().contains(entity)));
-                        } else {
-                            return getResult(inverted, Optional.of(false));
-                        }
-                    } catch (InstantiationException | IllegalAccessException e) {
-                        throw new RuntimeException(e);
+                for (ApoliPower c : ((Registrar<ApoliPower>) GenesisMC.getPlugin().registry.retrieve(Registries.CRAFT_POWER)).values()) {
+                    if (c.getPowerFile().equals(condition.get("power_type").toString())) {
+                        return getResult(inverted, Optional.of(c.getPowerArray().contains(entity)));
+                    } else {
+                        return getResult(inverted, Optional.of(false));
                     }
                 }
             }
@@ -211,18 +197,18 @@ public class EntityConditions implements Condition {
                 return getResult(inverted, Optional.of(entity instanceof Player p && OriginPlayerAccessor.hasPower(p, condition.get("power").toString())));
             }
             case "apoli:power_active" -> {
-                if (!Power.powers_active.containsKey(entity)) return getResult(inverted, Optional.of(false));
+                if (!ApoliPower.powers_active.containsKey(entity)) return getResult(inverted, Optional.of(false));
                 if (condition.get("power").toString().contains("*")) {
                     String[] powerK = condition.get("power").toString().split("\\*");
-                    for (String string : Power.powers_active.get(entity).keySet()) {
+                    for (String string : ApoliPower.powers_active.get(entity).keySet()) {
                         if (string.startsWith(powerK[0]) && string.endsWith(powerK[1])) {
-                            return getResult(inverted, Optional.of(Power.powers_active.get(entity).get(string)));
+                            return getResult(inverted, Optional.of(ApoliPower.powers_active.get(entity).get(string)));
                         }
                     }
                 } else {
                     String power = condition.get("power").toString();
                     boolean invert = Boolean.parseBoolean(condition.getOrDefault("inverted", "false").toString());
-                    return getResult(invert, Optional.of(Power.powers_active.get(entity).getOrDefault(power, false)));
+                    return getResult(invert, Optional.of(ApoliPower.powers_active.get(entity).getOrDefault(power, false)));
                 }
                 return getResult(inverted, Optional.of(false));
             }

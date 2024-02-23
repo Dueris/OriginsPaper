@@ -4,8 +4,8 @@ import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.actions.Actions;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.registry.LayerContainer;
-import me.dueris.genesismc.registry.PowerContainer;
+import me.dueris.genesismc.registry.registries.Layer;
+import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
@@ -45,10 +45,10 @@ public class ModifyProjectileDamagePower extends CraftPower implements Listener 
     public void runD(EntityDamageByEntityEvent e) {
         if (e.getDamager() instanceof Projectile p && p.getShooter() instanceof Player pl) {
             if (modify_projectile_damage.contains(pl)) {
-                for (LayerContainer layer : CraftApoli.getLayers()) {
+                for (Layer layer : CraftApoli.getLayersFromRegistry()) {
                     try {
                         ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
-                        for (PowerContainer power : OriginPlayerAccessor.getMultiPowerFileFromType(pl, getPowerFile(), layer)) {
+                        for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(pl, getPowerFile(), layer)) {
                             if (conditionExecutor.check("target_condition", "target_conditions", pl, power, getPowerFile(), e.getDamager(), e.getEntity(), p.getLocation().getBlock(), null, pl.getItemInHand(), null) && conditionExecutor.check("damage_condition", "damage_conditions", pl, power, getPowerFile(), e.getDamager(), e.getEntity(), p.getLocation().getBlock(), null, pl.getItemInHand(), e)) {
                                 for (HashMap<String, Object> modifier : power.getPossibleModifiers("modifier", "modifiers")) {
                                     Float value = Float.valueOf(modifier.get("value").toString());

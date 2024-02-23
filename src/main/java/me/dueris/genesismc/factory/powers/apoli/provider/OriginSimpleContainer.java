@@ -1,17 +1,13 @@
 package me.dueris.genesismc.factory.powers.apoli.provider;
 
-import javassist.NotFoundException;
+import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.powers.CraftPower;
-import org.bukkit.NamespacedKey;
+import me.dueris.genesismc.registry.Registries;
 import org.mineskin.com.google.common.base.Preconditions;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.HashMap;
 
 public class OriginSimpleContainer {
-    protected static ArrayList<Class<? extends CraftPower>> simpleRegistry = new ArrayList<>();
-    protected static HashMap<String, Class<? extends CraftPower>> keyedRegistry = new HashMap();
 
     public static boolean registerPower(Class<? extends CraftPower> clz) {
         try {
@@ -21,28 +17,12 @@ public class OriginSimpleContainer {
             Field field = clz.getDeclaredField("powerReference");
             field.setAccessible(true);
 
-            NamespacedKey key = (NamespacedKey) field.get(clz.newInstance());
-            simpleRegistry.add(clz);
-            CraftPower.getKeyedRegistry().put(key.asString(), clz);
-            CraftPower.getRegistry().add(clz);
-            keyedRegistry.put(key.asString(), clz);
+            GenesisMC.getPlugin().registry.retrieve(Registries.CRAFT_POWER).register(clz.newInstance());
         } catch (SecurityException | NoSuchFieldException | IllegalArgumentException | IllegalAccessException |
                  InstantiationException e) {
             e.printStackTrace();
             return false;
         }
         return true;
-    }
-
-    public static Class<? extends CraftPower> getFromRegistry(String powerTag) {
-        return keyedRegistry.getOrDefault(powerTag, null);
-    }
-
-    public static Class<? extends CraftPower> getFromRegistryOrThrow(String powerTag) throws NotFoundException {
-        if (keyedRegistry.containsKey(powerTag)) {
-            return keyedRegistry.get(powerTag);
-        } else {
-            throw new NotFoundException("CraftPower not found");
-        }
     }
 }

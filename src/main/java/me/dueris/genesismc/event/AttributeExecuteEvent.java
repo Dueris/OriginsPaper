@@ -1,6 +1,6 @@
 package me.dueris.genesismc.event;
 
-import me.dueris.genesismc.registry.PowerContainer;
+import me.dueris.genesismc.registry.registries.Power;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
@@ -11,9 +11,9 @@ public class AttributeExecuteEvent extends PlayerEvent {
     private static final HandlerList handlers = new HandlerList();
     Attribute attribute;
     String powerdata;
-    PowerContainer power;
+    Power power;
 
-    public AttributeExecuteEvent(@NotNull Player who, Attribute attribute, String powerdata, PowerContainer power) {
+    public AttributeExecuteEvent(@NotNull Player who, Attribute attribute, String powerdata, Power power) {
         super(who);
         this.attribute = attribute;
         this.powerdata = powerdata;
@@ -37,7 +37,7 @@ public class AttributeExecuteEvent extends PlayerEvent {
         return powerdata;
     }
 
-    public PowerContainer getPower() {
+    public Power getPower() {
         return power;
     }
 

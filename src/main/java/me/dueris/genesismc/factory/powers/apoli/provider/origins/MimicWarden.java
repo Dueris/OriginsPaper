@@ -5,7 +5,7 @@ import me.dueris.genesismc.event.KeybindTriggerEvent;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.factory.powers.apoli.provider.PowerProvider;
-import me.dueris.genesismc.registry.LayerContainer;
+import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.util.CooldownUtils;
 import me.dueris.genesismc.util.Utils;
 import net.minecraft.resources.ResourceLocation;
@@ -48,7 +48,7 @@ public class MimicWarden extends CraftPower implements Listener, PowerProvider {
         Player p = e.getPlayer();
         if (mimicWardenPlayers.contains(p)) {
             if (p.getFoodLevel() < 6) return;
-            for (LayerContainer layer : CraftApoli.getLayers()) {
+            for (Layer layer : CraftApoli.getLayersFromRegistry()) {
                 if (CooldownUtils.isPlayerInCooldown(p, "key.origins.primary_active")) return;
                 if (e.getKey().equals("key.origins.primary_active")) {
                     Location eyeLoc = p.getEyeLocation();

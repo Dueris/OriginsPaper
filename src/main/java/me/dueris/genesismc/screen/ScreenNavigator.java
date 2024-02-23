@@ -2,8 +2,8 @@ package me.dueris.genesismc.screen;
 
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.CraftApoli;
-import me.dueris.genesismc.registry.OriginContainer;
-import me.dueris.genesismc.registry.PowerContainer;
+import me.dueris.genesismc.registry.registries.Origin;
+import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.util.ChatFormatter;
 import me.dueris.genesismc.util.KeybindingUtils;
 import me.dueris.genesismc.util.LangConfig;
@@ -99,8 +99,8 @@ public class ScreenNavigator implements Listener {
             if (originTag == null) return;
 
             //gets the origin container from the tag
-            OriginContainer origin = null;
-            for (OriginContainer origins : CraftApoli.getOrigins()) {
+            Origin origin = null;
+            for (Origin origins : CraftApoli.getOriginsFromRegistry()) {
                 if (origins.getTag().equals(originTag)) {
                     origin = origins;
                     break;
@@ -109,8 +109,8 @@ public class ScreenNavigator implements Listener {
 
             p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 10, 2);
 
-            ArrayList<PowerContainer> powerContainers = new ArrayList<>();
-            for (PowerContainer powerContainer : origin.getPowerContainers()) {
+            ArrayList<Power> powerContainers = new ArrayList<>();
+            for (Power powerContainer : origin.getPowerContainers()) {
                 if (powerContainer.isHidden()) continue;
                 powerContainers.add(powerContainer);
             }
@@ -233,7 +233,7 @@ public class ScreenNavigator implements Listener {
                     p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 10, 2);
                     NamespacedKey key = new NamespacedKey(GenesisMC.getPlugin(), "originTag");
 
-                    for (OriginContainer origin : CraftApoli.getCoreOrigins()) {
+                    for (Origin origin : CraftApoli.getOriginsFromRegistry().stream().filter(origin -> CraftApoli.isCoreOrigin(origin)).toList()) {
                         if (Objects.equals(e.getClickedInventory().getContents()[13].getItemMeta().getPersistentDataContainer().get(key, PersistentDataType.STRING), origin.getTag())) {
                             @NotNull Inventory mainmenu = Bukkit.createInventory(e.getWhoClicked(), 54, "Choosing Menu - " + choosing.get(p).getName());
                             mainmenu.setContents(GenesisMainMenuContents((Player) e.getWhoClicked()));
