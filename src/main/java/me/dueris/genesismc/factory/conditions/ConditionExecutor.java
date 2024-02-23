@@ -86,8 +86,8 @@ public class ConditionExecutor {
             }
 
             if (booleanOptional[0] == null && fluid != null) {
-                var check = fluidCondition.check(subCondition, actor, target, block, fluid, itemStack, dmgevent);
-                check.ifPresent(val -> booleanOptional[0] = new AtomicBoolean(val));
+//                var check = fluidCondition.check(subCondition, actor, target, block, fluid, itemStack, dmgevent);
+//                check.ifPresent(val -> booleanOptional[0] = new AtomicBoolean(val));
             }
 
             if (booleanOptional[0] == null && itemStack != null) {
@@ -193,8 +193,8 @@ public class ConditionExecutor {
                     bool.ifPresent(val -> booleanOptional[0] = new AtomicBoolean(val));
                 }
                 if (booleanOptional[0] == null && (singular.contains("fluid_") || plural.contains("fluid_") || plural.equals("conditions") || singular.equals("condition"))) {
-                    Optional<Boolean> bool = fluidCon.check(condition, actor, target, block, fluid, itemStack, dmgevent);
-                    bool.ifPresent(val -> booleanOptional[0] = new AtomicBoolean(val));
+//                    Optional<Boolean> bool = fluidCon.check(condition, actor, target, block, fluid, itemStack, dmgevent);
+//                    bool.ifPresent(val -> booleanOptional[0] = new AtomicBoolean(val));
                 }
                 if (booleanOptional[0] == null && (singular.contains("item_") || plural.contains("item_") || plural.equals("conditions") || singular.equals("condition"))) {
                     Optional<Boolean> bool = item.check(condition, actor, target, block, fluid, itemStack, dmgevent);

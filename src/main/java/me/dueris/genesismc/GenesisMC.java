@@ -223,6 +223,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         this.registry.create(Registries.ORIGIN, new Registrar<Origin>());
         this.registry.create(Registries.LAYER, new Registrar<Layer>());
         this.registry.create(Registries.CRAFT_POWER, new Registrar<ApoliPower>());
+        this.registry.create(Registries.FLUID_CONDITION, new Registrar<FluidConditions.ConditionFactory>());
     }
 
     @Override

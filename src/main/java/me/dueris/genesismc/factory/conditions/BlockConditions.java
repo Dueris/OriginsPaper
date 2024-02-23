@@ -123,13 +123,13 @@ public class BlockConditions implements Condition {
                 return getResult(inverted, Optional.of(block.getLightFromSky() > 0));
             }
             case "apoli:fluid" -> {
-                FluidConditions fluidCondition = new FluidConditions();
-                Optional fl = fluidCondition.check(condition, actor, target, block, fluid, itemStack, entityDamageEvent);
-                if (fl.isPresent()) {
-                    return getResult(inverted, Optional.of(fl.get().equals(true)));
-                } else {
-                    return getResult(inverted, Optional.of(false));
-                }
+//                FluidConditions fluidCondition = new FluidConditions();
+//                Optional fl = fluidCondition.check(condition, actor, target, block, fluid, itemStack, entityDamageEvent);
+//                if (fl.isPresent()) {
+//                    return getResult(inverted, Optional.of(fl.get().equals(true)));
+//                } else {
+//                    return getResult(inverted, Optional.of(false));
+//                }
             }
             case "apoli:hardness" -> {
                 String comparison = condition.get("comparison").toString();
