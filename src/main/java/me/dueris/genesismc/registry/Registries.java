@@ -8,4 +8,5 @@ public class Registries {
     public static final NamespacedKey LAYER = GenesisMC.apoliIdentifier("layer");
     public static final NamespacedKey POWER = GenesisMC.apoliIdentifier("power");
     public static final NamespacedKey CRAFT_POWER = GenesisMC.apoliIdentifier("craft_power");
+    public static final NamespacedKey CONDITION = GenesisMC.apoliIdentifier("condition");
 }
