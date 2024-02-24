@@ -635,7 +635,7 @@ public class EntityConditions {
             double compare_to = Double.parseDouble(condition.get("compare_to").toString());
             return Utils.compareValues(count, comparison, compare_to);
         }));
-        register(new ConditionFactory(GenesisMC.apoliIdentifier("passenger_recursive", (condition, entity) -> {
+        register(new ConditionFactory(GenesisMC.apoliIdentifier("passenger_recursive"), (condition, entity) -> {
             int count = 0;
             if(entity.getPassengers() != null && !entity.getPassengers().isEmpty()){
                 if(condition.containsKey("bientity_condition")){
