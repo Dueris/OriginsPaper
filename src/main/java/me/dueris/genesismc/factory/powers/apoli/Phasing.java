@@ -20,6 +20,8 @@ import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.NamespacedKey;
 import org.bukkit.craftbukkit.v1_20_R3.CraftWorldBorder;
+import org.bukkit.craftbukkit.v1_20_R3.block.CraftBlock;
+import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -145,8 +147,8 @@ public class Phasing extends CraftPower implements Listener {
                         for (Layer layer : CraftApoli.getLayersFromRegistry()) {
                             ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                             for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-                                if (conditionExecutor.check("condition", "conditions", p, power, getPowerFile(), p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
-                                    if (conditionExecutor.check("phase_down_condition", "phase_down_condition", p, power, getPowerFile(), p, null, p.getLocation().add(0, -1, 0).getBlock(), null, p.getItemInHand(), null)) {
+                                if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p)) {
+                                    if (ConditionExecutor.testBlock(power.get("phase_down_condition"), (CraftBlock) p.getLocation().add(0, -1, 0).getBlock())) {
                                         p.teleportAsync(p.getLocation().add(0, -0.1, 0));
                                     }
                                 }
@@ -169,7 +171,7 @@ public class Phasing extends CraftPower implements Listener {
             for (Layer layer : CraftApoli.getLayersFromRegistry()) {
                 ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                 for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-                    if (conditionExecutor.check("condition", "conditions", p, power, getPowerFile(), p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
+                    if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p)) {
                         setActive(p, power.getTag(), true);
                         if ((p.getLocation().add(0.55F, 0, 0.55F).getBlock().isSolid() ||
                                 p.getLocation().add(0.55F, 0, 0).getBlock().isSolid() ||

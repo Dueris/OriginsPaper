@@ -36,7 +36,7 @@ public class ActionOnBlockPlace extends CraftPower implements Listener {
         if (action_on_block_place.contains(e.getPlayer())) {
             for (Layer layer : CraftApoli.getLayersFromRegistry()) {
                 for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(e.getPlayer(), getPowerFile(), layer)) {
-                    if(!(ConditionExecutor.testEntity((JSONObject) power.get("condition"), (CraftEntity) e.getPlayer()) && ConditionExecutor.testItem((JSONObject) power.get("item_condition"), (CraftItemStack) e.getItemInHand()) && ConditionExecutor.testBlock((JSONObject) power.get("place_to_condition"), (CraftBlock) e.getBlockPlaced()) && ConditionExecutor.testBlock((JSONObject) power.get("place_on_condition"), (CraftBlock) e.getBlockAgainst())))
+                    if(!(ConditionExecutor.testEntity((JSONObject) power.get("condition"), (CraftEntity) e.getPlayer()) && ConditionExecutor.testItem((JSONObject) power.get("item_condition"), (CraftItemStack) e.getItemInHand()) && ConditionExecutor.testBlock((JSONObject) power.get("place_to_condition"), (CraftBlock) e.getBlockPlaced()) && ConditionExecutor.testBlock((JSONObject) power.get("place_on_condition"), (CraftBlock) e.getBlockAgainst()))) return;
                     e.setCancelled(true);
                     setActive(e.getPlayer(), power.getTag(), true);
                     Actions.EntityActionType(e.getPlayer(), power.getEntityAction());

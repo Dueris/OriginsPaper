@@ -7,6 +7,7 @@ import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import org.bukkit.GameMode;
+import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -41,9 +42,8 @@ public class ModifyHarvestPower extends CraftPower implements Listener {
             if (p.getGameMode().equals(GameMode.CREATIVE)) return;
             try {
                 for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-                    ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                     for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-                        if (conditionExecutor.check("block_condition", "block_conditions", p, power, "apoli:modify_harvest", p, null, e.getBlock(), null, p.getItemInHand(), null)) {
+                        if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p)) {
                             e.setDropItems(false);
                             setActive(p, power.getTag(), true);
                             if (power.getBooleanOrDefault("allow", true) && !e.isDropItems()) {

@@ -11,6 +11,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
@@ -57,8 +58,8 @@ public class PreventEntityRender extends CraftPower {
                     } else {
                         for (Entity entity : getEntitiesWithinRender(p)) {
                             ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
-                            if (conditionExecutor.check("entity_condition", "entity_condition", p, power, "apoli:prevent_entity_render", entity, entity, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
-                                if (conditionExecutor.check("bientity_condition", "bientity_condition", p, power, "apoli:prevent_entity_render", entity, entity, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
+                            if (ConditionExecutor.testEntity(power.get("entity_condition"), (CraftEntity) p)) {
+                                if (ConditionExecutor.testBiEntity(power.get("bientity_condition"), (CraftEntity) p, (CraftEntity) entity)) {
                                     if (p.canSee(entity)) {
                                         p.hideEntity(GenesisMC.getPlugin(), entity);
                                     }

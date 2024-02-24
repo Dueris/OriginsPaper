@@ -10,6 +10,7 @@ import me.dueris.genesismc.screen.contents.ScreenContent;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
+import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -31,8 +32,8 @@ public class GuiTicker extends BukkitRunnable {
                             Bukkit.getPluginManager().callEvent(event);
                             if(!event.isCanceled()){
                                 if (OriginPlayerAccessor.getOrigin(p, layer).getTag().equals(CraftApoli.nullOrigin().getTag())) {
-                                    if (ori.getOriginFile().get("condition") != null || ori.getOriginFile().get("conditions") != null) {
-                                        if (ConditionExecutor.entityCondition.check((JSONObject) ori.getOriginFile().get("condition"), p, null, p.getLocation().getBlock(), null, p.getActiveItem(), null).isPresent()) {
+                                    if (ori.getOriginFile().get("condition") != null) {
+                                        if (ConditionExecutor.testEntity((JSONObject) ori.getOriginFile().get("condition"), (CraftEntity) p)) {
                                             choosing.put(p, layer);
                                             Inventory mainmenu = Bukkit.createInventory(p, 54, "Choosing Menu - " + layer.getName());
                                             mainmenu.setContents(ScreenContent.GenesisMainMenuContents(p));

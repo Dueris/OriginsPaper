@@ -8,6 +8,8 @@ import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import org.bukkit.NamespacedKey;
+import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
+import org.bukkit.craftbukkit.v1_20_R3.inventory.CraftItemStack;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -26,37 +28,34 @@ public class ModifyEnchantmentLevel extends CraftPower {
     public void run(Player p) {
         if (getPowerArray().contains(p)) {
             for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-                ValueModifyingSuperClass valueModifyingSuperClass = new ValueModifyingSuperClass();
-                ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                 for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                     HashSet<ItemStack> items = new HashSet<>(Arrays.stream(p.getInventory().getArmorContents()).toList());
                     items.add(p.getInventory().getItemInMainHand());
-                    for (ItemStack item : items)
-                        if (conditionExecutor.check("condition", "conditions", p, power, getPowerFile(), p, null, p.getLocation().getBlock(), null, item, null)) {
-                            if (conditionExecutor.check("item_condition", "item_conditions", p, power, getPowerFile(), p, null, p.getLocation().getBlock(), null, item, null)) {
-                                for (HashMap<String, Object> modifier : power.getPossibleModifiers("modifier", "modifiers")) {
-                                    Enchantment enchant = Enchantment.getByKey(NamespacedKey.fromString(power.getString("enchantment")));
-                                    if (item.containsEnchantment(enchant)) {
-                                        item.removeEnchantment(enchant);
-                                    }
-                                    int result = 1;
-                                    Integer value = Integer.valueOf(modifier.get("value").toString());
-                                    String operation = modifier.get("operation").toString();
-                                    BinaryOperator mathOperator = getOperationMappingsInteger().get(operation);
-                                    if (mathOperator != null) {
-                                        result = Integer.valueOf(String.valueOf(mathOperator.apply(0, value)));
-                                    }
-                                    if (result < 0) {
-                                        result = 1;
-                                    }
-                                    try {
-                                        item.addEnchantment(enchant, result);
-                                    } catch (Exception e) {
-                                        // ignore. -- cannot apply enchant to itemstack
-                                    }
-                                }
+                    for (ItemStack item : items) {
+                        if (!ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p)) return;
+                        if (!ConditionExecutor.testItem(power.get("item_condition"), (CraftItemStack) item)) return;
+                        for (HashMap<String, Object> modifier : power.getPossibleModifiers("modifier", "modifiers")) {
+                            Enchantment enchant = Enchantment.getByKey(NamespacedKey.fromString(power.getString("enchantment")));
+                            if (item.containsEnchantment(enchant)) {
+                                item.removeEnchantment(enchant);
+                            }
+                            int result = 1;
+                            Integer value = Integer.valueOf(modifier.get("value").toString());
+                            String operation = modifier.get("operation").toString();
+                            BinaryOperator mathOperator = getOperationMappingsInteger().get(operation);
+                            if (mathOperator != null) {
+                                result = Integer.valueOf(String.valueOf(mathOperator.apply(0, value)));
+                            }
+                            if (result < 0) {
+                                result = 1;
+                            }
+                            try {
+                                item.addEnchantment(enchant, result);
+                            } catch (Exception e) {
+                                // ignore. -- cannot apply enchant to itemstack
                             }
                         }
+                    }
                 }
             }
         }

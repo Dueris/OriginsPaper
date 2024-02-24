@@ -31,6 +31,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.craftbukkit.v1_20_R3.CraftRegistry;
 import org.bukkit.craftbukkit.v1_20_R3.CraftWorld;
+import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_20_R3.util.CraftNamespacedKey;
 import org.bukkit.entity.Player;
@@ -145,7 +146,7 @@ public class ModifyPlayerSpawnPower extends CraftPower implements Listener {
                 ConditionExecutor executor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                 Power power = OriginPlayerAccessor.getSinglePowerFileFromType(p, getPowerFile(), layer);
                 if (power == null) continue;
-                if (executor.check("condition", "conditions", p, power, getPowerFile(), p, null, p.getLocation().getBlock(), null, p.getInventory().getItemInMainHand(), null)) {
+                if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p)) {
                     ApoliSpawnUtils utils = new ApoliSpawnUtils();
                     Pair<ServerLevel, BlockPos> spawn = utils.getSpawn(false, ((CraftPlayer)p).getHandle(), getDimension(power), ApoliSpawnUtils.SpawnStrategy.CENTER, 12, power);
 

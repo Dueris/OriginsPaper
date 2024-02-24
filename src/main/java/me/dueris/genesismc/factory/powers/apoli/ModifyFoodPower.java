@@ -7,6 +7,8 @@ import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import org.bukkit.Material;
+import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
+import org.bukkit.craftbukkit.v1_20_R3.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -155,7 +157,7 @@ public class ModifyFoodPower extends CraftPower implements Listener {
             if (modify_food.contains(player)) {
                 ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                 for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(player, getPowerFile(), layer)) {
-                    if (conditionExecutor.check("item_condition", "item_condition", player, power, "apoli:modify_food", player, null, player.getLocation().getBlock(), null, player.getInventory().getItemInHand(), null)) {
+                    if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) player) && ConditionExecutor.testItem(power.get("item_condition"), (CraftItemStack) e.getItem())) {
                         if (modify_food.contains(player)) {
                             for (JSONObject jsonObject : power.getJsonListSingularPlural("food_modifier", "food_modifiers")) {
                                 if (jsonObject.containsKey("value")) {

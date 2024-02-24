@@ -6,6 +6,7 @@ import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
+import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -41,8 +42,7 @@ public class NightVision extends CraftPower {
         if (night_vision.contains(p)) {
             for (Layer layer : CraftApoli.getLayersFromRegistry()) {
                 for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-                    ConditionExecutor executor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
-                    if (executor.check("condition", "conditions", p, power, getPowerFile(), p, null, null, null, p.getItemInHand(), null)) {
+                    if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p)) {
                         setActive(p, power.getTag(), true);
                         p.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, 400, roundNumber(power.getFloatOrDefault("strength", 1.0f)), false, false, false));
                     } else {

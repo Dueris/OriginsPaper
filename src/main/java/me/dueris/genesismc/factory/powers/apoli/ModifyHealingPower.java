@@ -6,6 +6,7 @@ import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
+import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -47,13 +48,10 @@ public class ModifyHealingPower extends CraftPower implements Listener {
                         BinaryOperator mathOperator = getOperationMappingsFloat().get(operation);
                         if (mathOperator != null) {
                             float result = (float) mathOperator.apply(e.getAmount(), value);
-                            ConditionExecutor executor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
-                            if (executor.check("condition", "conditions", p, power, getPowerFile(), p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
-
+                            if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p)) {
                                 setActive(p, power.getTag(), true);
                                 e.setAmount(result);
                             } else {
-
                                 setActive(p, power.getTag(), false);
                             }
                         }

@@ -50,8 +50,7 @@ public class ModifyDamageDealtPower extends CraftPower implements Listener {
                     for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                         if (!ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p)) return;
                         if (!ConditionExecutor.testBiEntity(power.get("bientity_condition"), (CraftEntity) p, (CraftEntity) e.getEntity())) return;
-                        if (!ConditionExecutor.testDamage(power.get("item_condition"), e)) return;
-                        if (!ConditionExecutor.testItem(power.get("condition"), (CraftItemStack) p.getInventory().getItemInMainHand())) return;
+                        if (!ConditionExecutor.testDamage(power.get("damage_condition"), e)) return;
                         for (HashMap<String, Object> modifier : power.getJsonListSingularPlural("modifier", "modifiers")) {
                             Object value = modifier.get("value");
                             String operation = modifier.get("operation").toString();

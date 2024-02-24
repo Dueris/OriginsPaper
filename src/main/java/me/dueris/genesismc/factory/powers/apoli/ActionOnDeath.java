@@ -33,7 +33,7 @@ public class ActionOnDeath extends CraftPower implements Listener {
                 for (Layer layer : CraftApoli.getLayersFromRegistry()) {
                     for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                         if (power == null) continue;
-                        if (!ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p)) return;
+                        if (!ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p) && !ConditionExecutor.testDamage(power.get("damage_condition"), e.getEntity().getLastDamageCause())) return;
                         setActive(p, power.getTag(), true);
                         Actions.EntityActionType(p, power.getEntityAction());
                         Actions.BiEntityActionType(((CraftPlayer)p).getHandle().getLastHurtByMob().getBukkitEntity(), p/* player is target? */, power.getBiEntityAction());

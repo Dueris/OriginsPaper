@@ -10,6 +10,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Particle;
+import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
 import org.bukkit.entity.Player;
 import org.json.simple.JSONObject;
 
@@ -81,8 +82,7 @@ public class ParticlePower extends CraftPower {
                     if (Bukkit.getServer().getCurrentTick() % interval != 0) {
                         return;
                     } else {
-                        ConditionExecutor executor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
-                        if (executor.check("condition", "conditions", player, power, getPowerFile(), player, null, null, null, player.getInventory().getItemInHand(), null)) {
+                        if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) player)) {
                             if (!getPowerArray().contains(player)) return;
                             Particle particle = computeParticleArgs(power.getObject("particle"));
                             if(particle == null) throw new IllegalStateException("Unable to create CraftBukkit particle instance");

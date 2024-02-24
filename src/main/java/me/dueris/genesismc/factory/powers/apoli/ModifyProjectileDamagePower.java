@@ -7,6 +7,7 @@ import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
+import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
@@ -49,7 +50,7 @@ public class ModifyProjectileDamagePower extends CraftPower implements Listener 
                     try {
                         ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                         for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(pl, getPowerFile(), layer)) {
-                            if (conditionExecutor.check("target_condition", "target_conditions", pl, power, getPowerFile(), e.getDamager(), e.getEntity(), p.getLocation().getBlock(), null, pl.getItemInHand(), null) && conditionExecutor.check("damage_condition", "damage_conditions", pl, power, getPowerFile(), e.getDamager(), e.getEntity(), p.getLocation().getBlock(), null, pl.getItemInHand(), e)) {
+                            if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p) && ConditionExecutor.testEntity(power.get("target_condition"), (CraftEntity) e.getEntity()) && ConditionExecutor.testDamage(power.get("damage_condition"), e)) {
                                 for (HashMap<String, Object> modifier : power.getPossibleModifiers("modifier", "modifiers")) {
                                     Float value = Float.valueOf(modifier.get("value").toString());
                                     String operation = modifier.get("operation").toString();
