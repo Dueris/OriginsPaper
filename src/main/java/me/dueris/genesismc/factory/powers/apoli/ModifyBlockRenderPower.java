@@ -11,6 +11,8 @@ import org.bukkit.Chunk;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
+import org.bukkit.craftbukkit.v1_20_R3.block.CraftBlock;
+import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
@@ -58,8 +60,7 @@ public class ModifyBlockRenderPower extends CraftPower {
                         for (Block block : chunkManagerWorld.getAllBlocksInChunk(chunk)) {
                             if (block.getType() != Material.AIR) {
                                 try {
-                                    ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
-                                    if (conditionExecutor.check("block_condition", "block_conditions", player, power, "apoli:modify_block_render", player, null, block, null, player.getInventory().getItemInHand(), null)) {
+                                    if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) player) && ConditionExecutor.testBlock(power.get("block_condition"), (CraftBlock) block)) {
                                         conditionMet = true;
                                         setActive(player, power.getTag(), true);
                                         BlockState blockState = block.getState();

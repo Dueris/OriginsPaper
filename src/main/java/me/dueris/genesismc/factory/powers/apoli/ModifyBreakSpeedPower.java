@@ -10,6 +10,8 @@ import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import org.bukkit.GameMode;
+import org.bukkit.craftbukkit.v1_20_R3.block.CraftBlock;
+import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -62,35 +64,31 @@ public class ModifyBreakSpeedPower extends CraftPower implements Listener {
                 try {
                     ConditionExecutor conditionExecutor = GenesisMC.getConditionExecutor();
                     for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-                        if (conditionExecutor.check("condition", "condition", p, power, getPowerFile(), p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
-                            if (conditionExecutor.check("block_condition", "block_condition", p, power, getPowerFile(), p, null, p.getTargetBlockExact(Math.toIntExact(Math.round(AttributeHandler.Reach.getFinalReach(p)))), null, p.getItemInHand(), null)) {
-                                setActive(p, power.getTag(), true);
-                                // if(power.getPossibleModifiers("modifier", "modifiers"))
-                                for (HashMap<String, Object> modifier : power.getPossibleModifiers("modifier", "modifiers")) {
-                                    if (Float.valueOf(modifier.get("value").toString()) <= 0) {
-                                        // Slower mine
-                                        p.addPotionEffect(
-                                                new PotionEffect(
-                                                        PotionEffectType.SLOW_DIGGING,
-                                                        20,
-                                                        (Math.round(valueModifyingSuperClass.getPersistentAttributeContainer(p, MODIFYING_KEY)) + 1) * 17,
-                                                        false, false, false
-                                                )
-                                        );
-                                    } else {
-                                        // Speed up
-                                        p.addPotionEffect(
-                                                new PotionEffect(
-                                                        PotionEffectType.FAST_DIGGING,
-                                                        20,
-                                                        (Math.round(valueModifyingSuperClass.getPersistentAttributeContainer(p, MODIFYING_KEY)) + 1) * 17,
-                                                        false, false, false
-                                                )
-                                        );
-                                    }
+                        if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p) && ConditionExecutor.testBlock(power.get("block_condition"), (CraftBlock) p.getTargetBlockExact(Math.toIntExact(Math.round(AttributeHandler.Reach.getFinalReach(p)))))) {
+                            setActive(p, power.getTag(), true);
+                            // if(power.getPossibleModifiers("modifier", "modifiers"))
+                            for (HashMap<String, Object> modifier : power.getPossibleModifiers("modifier", "modifiers")) {
+                                if (Float.valueOf(modifier.get("value").toString()) <= 0) {
+                                    // Slower mine
+                                    p.addPotionEffect(
+                                            new PotionEffect(
+                                                    PotionEffectType.SLOW_DIGGING,
+                                                    20,
+                                                    (Math.round(valueModifyingSuperClass.getPersistentAttributeContainer(p, MODIFYING_KEY)) + 1) * 17,
+                                                    false, false, false
+                                            )
+                                    );
+                                } else {
+                                    // Speed up
+                                    p.addPotionEffect(
+                                            new PotionEffect(
+                                                    PotionEffectType.FAST_DIGGING,
+                                                    20,
+                                                    (Math.round(valueModifyingSuperClass.getPersistentAttributeContainer(p, MODIFYING_KEY)) + 1) * 17,
+                                                    false, false, false
+                                            )
+                                    );
                                 }
-                            } else {
-                                setActive(p, power.getTag(), false);
                             }
                         } else {
                             setActive(p, power.getTag(), false);
