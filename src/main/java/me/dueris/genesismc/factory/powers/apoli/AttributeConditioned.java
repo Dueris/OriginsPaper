@@ -10,6 +10,7 @@ import me.dueris.genesismc.util.Utils;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import org.bukkit.Bukkit;
 import org.bukkit.attribute.Attribute;
+import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -100,9 +101,7 @@ public class AttributeConditioned extends CraftPower implements Listener {
             for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                 if (power == null) continue;
                 for (HashMap<String, Object> modifier : power.getJsonListSingularPlural("modifier", "modifiers")) {
-                    ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
-                    if (!conditionExecutor.check("condition", "conditions", p, power, "apoli:attribute_conditioned", p, null, null, null, p.getItemInHand(), null))
-                        return;
+                    if (!ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p)) return;
                     Attribute attribute_modifier = Attribute.valueOf(modifier.get("attribute").toString().split(":")[1].replace(".", "_").toUpperCase());
                     double val = Float.valueOf(modifier.get("value").toString());
                     double baseVal = p.getAttribute(Attribute.valueOf(attribute_modifier.toString())).getBaseValue();

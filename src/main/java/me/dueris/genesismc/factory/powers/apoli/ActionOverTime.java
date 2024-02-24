@@ -8,6 +8,7 @@ import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import org.bukkit.Bukkit;
+import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -35,7 +36,7 @@ public class ActionOverTime extends CraftPower {
                         return;
                     } else {
                         ConditionExecutor executor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
-                        if (executor.check("condition", "conditions", p, power, getPowerFile(), p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
+                        if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p)) {
                             setActive(p, power.getTag(), true);
                             Actions.EntityActionType(p, power.getEntityAction());
                         } else {
