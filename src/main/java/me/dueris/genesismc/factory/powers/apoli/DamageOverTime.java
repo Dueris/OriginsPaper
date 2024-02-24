@@ -15,6 +15,7 @@ import net.minecraft.world.damagesource.DamageType;
 import org.bukkit.Bukkit;
 import org.bukkit.Difficulty;
 import org.bukkit.GameMode;
+import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -104,7 +105,7 @@ public class DamageOverTime extends CraftPower implements Listener {
 
                         protection_effectiveness = power.getDoubleOrDefault("protection_effectiveness", 1);
                         ConditionExecutor executor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
-                        if (executor.check("condition", "conditions", p, power, getPowerFile(), p, null, null, null, p.getItemInHand(), null)) {
+                        if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p)) {
                             setActive(p, power.getTag(), true);
 
                             if (p.getGameMode().equals(GameMode.SURVIVAL) || p.getGameMode().equals(GameMode.ADVENTURE)) {

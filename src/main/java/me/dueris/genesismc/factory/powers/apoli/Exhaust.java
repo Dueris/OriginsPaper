@@ -8,6 +8,7 @@ import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.util.LangConfig;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import org.bukkit.Bukkit;
+import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -53,13 +54,10 @@ public class Exhaust extends CraftPower {
                         ticksE++;
                         return;
                     } else {
-                        ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
-                        if (conditionExecutor.check("condition", "conditions", p, power, "apoli:exhaust", p, null, null, null, p.getItemInHand(), null)) {
-
+                        if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p)) {
                             setActive(p, power.getTag(), true);
                             p.setExhaustion(p.getExhaustion() - power.getFloatOrDefault("exhaustion", 1));
                         } else {
-
                             setActive(p, power.getTag(), false);
                         }
                         ticksE = 0;

@@ -188,7 +188,7 @@ public class AttributeConditioned extends CraftPower implements Listener {
                         applied.put(p, false);
                     }
                     ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
-                    if (conditionExecutor.check("condition", "conditions", p, power, getPowerFile(), p, null, p.getLocation().getBlock(), null, p.getInventory().getItemInMainHand(), null)) {
+                    if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p)) {
                         if (!applied.get(p)) {
                             executeConditionAttribute(p);
                             applied.put(p, true);

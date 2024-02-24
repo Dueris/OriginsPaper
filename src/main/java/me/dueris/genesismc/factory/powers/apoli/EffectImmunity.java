@@ -6,6 +6,7 @@ import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
+import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffectType;
 
@@ -27,7 +28,7 @@ public class EffectImmunity extends CraftPower {
             for (Layer layer : CraftApoli.getLayersFromRegistry()) {
                 ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                 for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-                    if (conditionExecutor.check("condition", "conditions", p, power, getPowerFile(), p, null, null, null, p.getItemInHand(), null)) {
+                    if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p)) {
                         setActive(p, power.getTag(), true);
                         List<String> effects = new ArrayList<>();
                         if(power.getStringOrDefault("effect", null) != null){
