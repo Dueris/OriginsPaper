@@ -83,10 +83,10 @@ public class DamageConditions {
             return event.getCause().equals(DamageCause.FIRE);
         }));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("attacker"), (condition, event) -> {
-            if(event.getEntity() instanceof LivingEntity li && ((CraftLivingEntity)li).getHandle().getLastAttacker() instanceof net.minecraft.world.entity.LivingEntity lii){
+            if(event.getEntity() instanceof LivingEntity li && ((CraftLivingEntity)li).getHandle().getLastAttacker() != null){
                 boolean rtn = true;
                 if(condition.containsKey("entity_condition")){
-                    rtn = ConditionExecutor.testEntity(condition, lii.getBukkitEntity());
+                    rtn = ConditionExecutor.testEntity(condition, ((CraftLivingEntity)li).getHandle().getLastAttacker().getBukkitEntity());
                 }
                 return rtn;
             }
