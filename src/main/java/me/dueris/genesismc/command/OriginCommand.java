@@ -100,7 +100,7 @@ public class OriginCommand extends BukkitRunnable implements Listener {
                                                             targets.forEach(player -> {
                                                                 OriginPlayerAccessor.setOrigin(player.getBukkitEntity(), layer, origin);
                                                                 OriginPlayerAccessor.resetOriginData(player.getBukkitEntity(), OriginDataType.IN_PHASING_FORM);
-                                                                OriginChangeEvent originChangeEvent = new OriginChangeEvent(player.getBukkitEntity(), origin);
+                                                                OriginChangeEvent originChangeEvent = new OriginChangeEvent(player.getBukkitEntity(), origin, false);
                                                                 getServer().getPluginManager().callEvent(originChangeEvent);
                                                             });
                                                             return SINGLE_SUCCESS;

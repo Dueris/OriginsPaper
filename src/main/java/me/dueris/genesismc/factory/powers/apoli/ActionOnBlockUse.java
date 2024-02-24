@@ -11,12 +11,18 @@ import me.dueris.genesismc.util.console.OriginConsoleSender;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import org.bukkit.Bukkit;
 import org.bukkit.GameRule;
+import org.bukkit.Material;
+import org.bukkit.craftbukkit.v1_20_R3.block.CraftBlock;
+import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
+import org.bukkit.craftbukkit.v1_20_R3.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.json.simple.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -42,47 +48,35 @@ public class ActionOnBlockUse extends CraftPower implements Listener {
         for (Layer layer : CraftApoli.getLayersFromRegistry()) {
             for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(actor, getPowerFile(), layer)) {
                 if (power == null) continue;
-                ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
-                if (conditionExecutor.check("condition", "conditions", actor, power, getPowerFile(), actor, null, e.getClickedBlock(), null, e.getItem(), null)) {
-                    if (conditionExecutor.check("entity_condition", "entity_conditions", actor, power, getPowerFile(), actor, null, e.getClickedBlock(), null, e.getItem(), null)) {
-                        if (conditionExecutor.check("block_condition", "block_conditions", actor, power, getPowerFile(), actor, null, e.getClickedBlock(), null, e.getItem(), null)) {
-                            if (conditionExecutor.check("item_condition", "item_conditions", actor, power, getPowerFile(), actor, null, e.getClickedBlock(), null, e.getItem(), null)){
-                                setActive(e.getPlayer(), power.getTag(), true);
-                                Actions.BlockActionType(e.getClickedBlock().getLocation(), power.getBlockAction());
-                                Actions.EntityActionType(e.getPlayer(), power.getEntityAction());
-                                Actions.ItemActionType(e.getItem(), power.getItemAction());
-                                Actions.ItemActionType(e.getItem(), power.getAction("held_item_action"));
-                                Actions.ItemActionType(e.getItem(), power.getAction("result_item_action"));
-                                if(power.getOrDefault("result_stack", null) != null){
-                                    e.getItem().setAmount(e.getItem().getAmount() - 1);
-                                    final boolean lastSendCMDFeedback = Boolean.parseBoolean(GameRule.SEND_COMMAND_FEEDBACK.toString());
-                                    final boolean lastlogAdminCMDs = Boolean.parseBoolean(GameRule.LOG_ADMIN_COMMANDS.toString());
-                                    e.getPlayer().getWorld().setGameRule(GameRule.SEND_COMMAND_FEEDBACK, false);
-                                    e.getPlayer().getWorld().setGameRule(GameRule.LOG_ADMIN_COMMANDS, false);
-                                    Bukkit.dispatchCommand(new OriginConsoleSender(), "give {p} {t}{n} 1".replace("{p}", e.getPlayer().getName())
-                                            .replace("{t}", power.get("result_stack").get("item").toString())
-                                            .replace("{n}", power.get("result_stack").getOrDefault("tag", "{}").toString())
-                                            .replace("{c}", power.get("result_stack").getOrDefault("amount", "1").toString())
-                                    );
-                                    new BukkitRunnable() {
-                                        @Override
-                                        public void run() {
-                                            e.getPlayer().getWorld().setGameRule(GameRule.SEND_COMMAND_FEEDBACK, lastSendCMDFeedback);
-                                            e.getPlayer().getWorld().setGameRule(GameRule.LOG_ADMIN_COMMANDS, lastlogAdminCMDs);
-                                        }
-                                    }.runTaskLater(GenesisMC.getPlugin(), 1);
-                                }
-                                tickFix.add(e.getPlayer());
-                                new BukkitRunnable() {
-                                    @Override
-                                    public void run() {
-                                        setActive(e.getPlayer(), power.getTag(), false);
-                                        tickFix.remove(e.getPlayer());
-                                    }
-                                }.runTaskLater(GenesisMC.getPlugin(), 2L);
+                    if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) e.getPlayer()) &&
+                        ConditionExecutor.testBlock((JSONObject) power.get("block_condition"), (CraftBlock) e.getClickedBlock()) &&
+                        ConditionExecutor.testItem((JSONObject) power.get("item_condition"), (CraftItemStack) e.getItem()))
+                    {
+                    setActive(e.getPlayer(), power.getTag(), true);
+                    Actions.BlockActionType(e.getClickedBlock().getLocation(), power.getBlockAction());
+                    Actions.EntityActionType(e.getPlayer(), power.getEntityAction());
+                    Actions.ItemActionType(e.getItem(), power.getItemAction());
+                    Actions.ItemActionType(e.getItem(), power.getAction("held_item_action"));
+                        if (power.get("result_stack") != null) {
+                            JSONObject jsonObject = power.get("result_stack");
+                            int amt;
+                            if (jsonObject.get("amount").toString() != null) {
+                                amt = Integer.parseInt(jsonObject.get("amount").toString());
+                            } else {
+                                amt = 1;
                             }
+                            ItemStack itemStack = new ItemStack(Material.valueOf(jsonObject.get("item").toString().toUpperCase().split(":")[jsonObject.get("item").toString().split(":").length]), amt);
+                            e.getPlayer().getInventory().addItem(itemStack);
+                            Actions.ItemActionType(itemStack, power.getAction("result_item_action"));
                         }
-                    }
+                    tickFix.add(e.getPlayer());
+                    new BukkitRunnable() {
+                        @Override
+                        public void run() {
+                            setActive(e.getPlayer(), power.getTag(), false);
+                            tickFix.remove(e.getPlayer());
+                        }
+                    }.runTaskLater(GenesisMC.getPlugin(), 2L);
                 }
             }
         }

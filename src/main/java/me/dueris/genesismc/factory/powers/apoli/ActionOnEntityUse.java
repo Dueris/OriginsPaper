@@ -3,10 +3,13 @@ package me.dueris.genesismc.factory.powers.apoli;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.actions.Actions;
+import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
+import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
+import org.bukkit.craftbukkit.v1_20_R3.inventory.CraftItemStack;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -36,30 +39,26 @@ public class ActionOnEntityUse extends CraftPower implements Listener {
 
         for (Layer layer : CraftApoli.getLayersFromRegistry()) {
             for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(actor, getPowerFile(), layer)) {
-                if (GenesisMC.getConditionExecutor().check("condition", "conditions", actor, power, getPowerFile(), actor, target, actor.getLocation().getBlock(), null, actor.getActiveItem(), null)) {
-                    if (GenesisMC.getConditionExecutor().check("item_condition", "item_conditions", actor, power, getPowerFile(), actor, target, actor.getLocation().getBlock(), null, actor.getActiveItem(), null)) {
-                        if (GenesisMC.getConditionExecutor().check("bientity_condition", "bientity_conditions", actor, power, getPowerFile(), actor, target, actor.getLocation().getBlock(), null, actor.getActiveItem(), null)) {
-                            if (power == null) continue;
-                            cooldownTick.add(actor);
-                            setActive(e.getPlayer(), power.getTag(), true);
-                            Actions.BiEntityActionType(actor, target, power.getBiEntityAction());
-                            Actions.ItemActionType(actor.getActiveItem(), power.getAction("held_item_action"));
-                            Actions.ItemActionType(actor.getActiveItem(), power.getAction("result_item_action"));
-                            new BukkitRunnable() {
-                                @Override
-                                public void run() {
-                                    setActive(e.getPlayer(), power.getTag(), false);
-                                }
-                            }.runTaskLater(GenesisMC.getPlugin(), 2L);
-                            new BukkitRunnable() {
-                                @Override
-                                public void run() {
-                                    cooldownTick.remove(actor);
-                                }
-                            }.runTaskLater(GenesisMC.getPlugin(), 1);
-                        }
+                if (!ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) actor)) return;
+                if (!ConditionExecutor.testItem(power.get("item_condition"), (CraftItemStack) actor.getInventory().getItem(e.getHand()))) return;
+                if (!ConditionExecutor.testBiEntity(power.get("bientity_condition"), (CraftEntity) actor, (CraftEntity) target)) return;
+                cooldownTick.add(actor);
+                setActive(e.getPlayer(), power.getTag(), true);
+                Actions.BiEntityActionType(actor, target, power.getBiEntityAction());
+                Actions.ItemActionType(actor.getActiveItem(), power.getAction("held_item_action"));
+                Actions.ItemActionType(actor.getActiveItem(), power.getAction("result_item_action"));
+                new BukkitRunnable() {
+                    @Override
+                    public void run() {
+                        setActive(e.getPlayer(), power.getTag(), false);
                     }
-                }
+                }.runTaskLater(GenesisMC.getPlugin(), 2L);
+                new BukkitRunnable() {
+                    @Override
+                    public void run() {
+                        cooldownTick.remove(actor);
+                    }
+                }.runTaskLater(GenesisMC.getPlugin(), 1);
             }
         }
     }

@@ -101,28 +101,9 @@ public class Actions {
                 BiEntityActionType(actor, target, actionn);
             }
         } else if (type.equals("apoli:if_else")) {
-            if (actor instanceof Player p) {
-                Optional<Boolean> bool = ConditionExecutor.biEntityCondition.check((JSONObject) action.get("condition"), actor, target, actor.getLocation().getBlock(), null, null, null);
-                if (bool.isPresent()) {
-                    if (bool.get()) {
-                        BiEntityActionType(actor, target, (JSONObject) action.get("if_action"));
-                    } else {
-                        BiEntityActionType(actor, target, (JSONObject) action.get("else_action"));
-                    }
-                } else {
-                    BiEntityActionType(actor, target, (JSONObject) action.get("else_action"));
-                }
-            } else if (target instanceof Player p) {
-                Optional<Boolean> bool = ConditionExecutor.biEntityCondition.check((JSONObject) action.get("condition"), actor, target, actor.getLocation().getBlock(), null, null, null);
-                if (bool.isPresent()) {
-                    if (bool.get()) {
-                        BiEntityActionType(actor, target, (JSONObject) action.get("if_action"));
-                    } else {
-                        BiEntityActionType(actor, target, (JSONObject) action.get("else_action"));
-                    }
-                } else {
-                    BiEntityActionType(actor, target, (JSONObject) action.get("else_action"));
-                }
+            boolean bool = ConditionExecutor.testBiEntity((JSONObject) action.get("condition"), (CraftEntity) actor, (CraftEntity) target);
+            if (bool) {
+                BiEntityActionType(actor, target, (JSONObject) action.get("if_action"));
             } else {
                 BiEntityActionType(actor, target, (JSONObject) action.get("else_action"));
             }
