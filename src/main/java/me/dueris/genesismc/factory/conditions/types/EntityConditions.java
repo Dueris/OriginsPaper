@@ -577,8 +577,7 @@ public class EntityConditions {
         }));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("biome"), (condition, entity) -> {
             if(condition.containsKey("condition")){
-                Optional<Boolean> bool = ConditionExecutor.biomeCondition.check((JSONObject) condition.get("condition"), entity, target, entity.getLocation().getBlock(), fluid, itemStack, entityDamageEvent);
-                return bool.isPresent() && bool.get();
+                return ConditionExecutor.testBiome((JSONObject) condition.get("condition"), entity.getLocation().getBlock().getBiome());
             }else{ // Assumed to be trying to get biome type
                 String key = condition.get("biome").toString();
                 if(key.contains(":")){
@@ -602,8 +601,7 @@ public class EntityConditions {
         register(new ConditionFactory(GenesisMC.apoliIdentifier("riding"), (condition, entity) -> {
             if(entity.getVehicle() != null){
                 if(condition.containsKey("bientity_condition")){
-                    Optional<Boolean> bool = ConditionExecutor.biEntityCondition.check((JSONObject) condition.get("bientity_condition"), entity, entity.getVehicle(), null, null, null, null);
-                    return bool.isPresent() && bool.get();
+                    return ConditionExecutor.testBiEntity((JSONObject) condition.get("bientity_condition"), (CraftEntity) entity, (CraftEntity) entity.getVehicle());
                 }
                 return true;
             }
@@ -612,8 +610,7 @@ public class EntityConditions {
         register(new ConditionFactory(GenesisMC.apoliIdentifier("apoli:riding_root"), (condition, entity) -> {
             if(entity.getVehicle() != null){
                 if(condition.containsKey("bientity_condition")){
-                    Optional<Boolean> bool = ConditionExecutor.biEntityCondition.check((JSONObject) condition.get("bientity_condition"), entity, entity.getVehicle(), null, null, null, null);
-                    return bool.isPresent() && bool.get();
+                   return ConditionExecutor.testBiEntity((JSONObject) condition.get("bientity_condition"), (CraftEntity) entity, (CraftEntity) entity.getVehicle());
                 }
                 return true;
             }
@@ -622,10 +619,10 @@ public class EntityConditions {
         register(new ConditionFactory(GenesisMC.apoliIdentifier("riding_recursive"), (condition, entity) -> {
             int count = 0;
             if(entity.getVehicle() != null){
-                Optional<Boolean> bool = ConditionExecutor.biEntityCondition.check((JSONObject) condition.get("bientity_condition"), entity, entity.getVehicle(), null, null, null, null);
                 Entity vehicle = entity.getVehicle();
+                boolean pass = ConditionExecutor.testBiEntity((JSONObject) condition.get("bientity_condition"), (CraftEntity) entity, (CraftEntity) vehicle);
                 while(vehicle != null){
-                    if(bool.isEmpty() || (bool.isPresent() && bool.get())){
+                    if(pass){
                         count++;
                     }
                     vehicle = vehicle.getVehicle();
@@ -640,8 +637,7 @@ public class EntityConditions {
             if(entity.getPassengers() != null && !entity.getPassengers().isEmpty()){
                 if(condition.containsKey("bientity_condition")){
                     count = (int) entity.getPassengers().stream().filter(ent -> {
-                        Optional<Boolean> bool = ConditionExecutor.biEntityCondition.check((JSONObject) condition.get("bientity_condition"), ent, entity, null, null, null, null);
-                        return bool.isPresent() && bool.get();
+                        return ConditionExecutor.testBiEntity((JSONObject) condition.get("bientity_condition"), (CraftEntity) ent, (CraftEntity) entity);
                     }).count();
                 }else{
                     count = entity.getPassengers().size();
@@ -656,8 +652,7 @@ public class EntityConditions {
             if(entity.getPassengers() != null && !entity.getPassengers().isEmpty()){
                 if(condition.containsKey("bientity_condition")){
                     count = (int) entity.getPassengers().stream().filter(ent -> {
-                        Optional<Boolean> bool = ConditionExecutor.biEntityCondition.check((JSONObject) condition.get("bientity_condition"), ent, entity, null, null, null, null);
-                        return bool.isPresent() && bool.get();
+                        return ConditionExecutor.testBiEntity((JSONObject) condition.get("bientity_condition"), (CraftEntity) ent, (CraftEntity) entity);
                     }).count();
                 }else{
                     count = entity.getPassengers().size();
@@ -721,13 +716,7 @@ public class EntityConditions {
             if (entity instanceof LivingEntity le) {
                 if (le.getActiveItem() != null) {
                     if (condition.get("item_condition") != null) {
-                        ItemConditions itemCondition = ConditionExecutor.itemCondition;
-                        Optional boolI = itemCondition.check((JSONObject) condition.get("item_condition"), le, target, block, fluid, itemStack, entityDamageEvent);
-                        if (boolI.isPresent()) {
-                            if (boolI.get().equals(true)) {
-                                return true;
-                            }
-                        }
+                        return ConditionExecutor.testItem((JSONObject) condition.get("item_condition"), (CraftItemStack) le.getActiveItem());
                     } else {
                         return true;
                     }
