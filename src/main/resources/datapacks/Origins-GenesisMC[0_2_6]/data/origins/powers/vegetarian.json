@@ -1,7 +1,22 @@
 {
   "type": "origins:prevent_item_use",
   "item_condition": {
-    "type": "origins:meat"
+    "type": "origins:and",
+    "conditions": [
+      {
+        "type": "origins:meat"
+      },
+      {
+        "type": "origins:food"
+      },
+      {
+        "type": "origins:ingredient",
+        "ingredient": {
+          "tag": "origins:ignore_diet"
+        },
+        "inverted": true
+      }
+    ]
   },
   "name": "Vegetarian",
   "description": "You can't digest any meat",

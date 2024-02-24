@@ -7,7 +7,7 @@ import com.mojang.brigadier.StringReader;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 import me.dueris.genesismc.GenesisMC;
-import me.dueris.genesismc.factory.conditions.BiEntityConditions;
+import me.dueris.genesismc.factory.conditions.types.BiEntityConditions;
 import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.util.apoli.Space;
 import net.minecraft.Util;

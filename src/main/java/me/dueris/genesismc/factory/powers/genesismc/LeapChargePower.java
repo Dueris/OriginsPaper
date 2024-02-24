@@ -10,6 +10,7 @@ import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import org.bukkit.ChatColor;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Sound;
+import org.bukkit.craftbukkit.v1_20_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -53,7 +54,7 @@ public class LeapChargePower extends CraftPower implements Listener {
                     if (power != null) {
                         Player p = e.getPlayer();
                         ConditionExecutor executor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
-                        if (executor.check("condition", "conditions", p, power, getPowerFile(), p, null, null, null, p.getItemInHand(), null)) {
+                        if (executor.testEntity(power.get("condition"), (CraftPlayer)e.getPlayer())) {
                             setActive(p, power.getTag(), true);
                             for (HashMap<String, Object> modifier : power.getPossibleModifiers("modifier", "modifiers")) {
                                 int cooldownTicks = Integer.valueOf(modifier.get("cooldown").toString());
