@@ -610,7 +610,7 @@ public class EntityConditions {
             }
             return false;
         }));
-        register(new ConditionFactory(GenesisMC.apoliIdentifier("apoli:riding_root"), (condition, entity) -> {
+        register(new ConditionFactory(GenesisMC.apoliIdentifier("riding_root"), (condition, entity) -> {
             if(entity.getVehicle() != null){
                 if(condition.containsKey("bientity_condition")){
                    return ConditionExecutor.testBiEntity((JSONObject) condition.get("bientity_condition"), (CraftEntity) entity, (CraftEntity) entity.getVehicle());
@@ -650,7 +650,7 @@ public class EntityConditions {
             int compare_to = Integer.parseInt(condition.getOrDefault("compare_to", 1).toString());
             return Utils.compareValues(count, comparison, compare_to);
         }));
-        register(new ConditionFactory(GenesisMC.apoliIdentifier("apoli:passenger"), (condition, entity) -> {
+        register(new ConditionFactory(GenesisMC.apoliIdentifier("passenger"), (condition, entity) -> {
             int count = 0;
             if(entity.getPassengers() != null && !entity.getPassengers().isEmpty()){
                 if(condition.containsKey("bientity_condition")){
