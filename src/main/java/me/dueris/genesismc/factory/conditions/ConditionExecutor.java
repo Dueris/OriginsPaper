@@ -403,9 +403,6 @@ public class ConditionExecutor {
             EntityConditions.ConditionFactory con = factory.get(NamespacedKey.fromString(condition.get("type").toString()));
             boolean invert = (boolean) condition.getOrDefault("inverted", false);
             if(con != null){
-                if(condition.get("type").equals("origins:exposed_to_sky") || condition.get("type").equals("origins:daytime")){
-                    System.out.println(String.valueOf(getPossibleInvert(invert, con.test(condition, entity))) + condition.get("type"));
-                }
                 return getPossibleInvert(invert, con.test(condition, entity));
             }else{
                 return getPossibleInvert(invert, true); // Condition null or not found.
