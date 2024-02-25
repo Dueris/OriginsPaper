@@ -40,6 +40,7 @@ import me.dueris.genesismc.storage.GenesisConfigs;
 import me.dueris.genesismc.storage.OriginDataContainer;
 import me.dueris.genesismc.storage.nbt.NBTFixerUpper;
 import me.dueris.genesismc.util.*;
+import me.dueris.genesismc.util.apoli.RaycastUtils;
 import me.dueris.genesismc.util.entity.InventorySerializer;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import net.kyori.adventure.text.Component;
@@ -51,6 +52,8 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.craftbukkit.v1_20_R3.CraftServer;
+import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
+import org.bukkit.craftbukkit.v1_20_R3.util.CraftLocation;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -363,7 +366,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         for (Player p : Bukkit.getOnlinePlayers()) {
             Team team = p.getScoreboard().getTeam("origin-players");
             if (team != null) team.removeEntity(p);
-            Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), "skin clear " + p.getName());
+            RaycastUtils.executeCommandAtHit(((CraftEntity)p).getHandle(), CraftLocation.toVec3D(p.getLocation()), "skin clear @s");
         }
 
         getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] " + LangConfig.getLocalizedString(Bukkit.getConsoleSender(), "disable")).color(TextColor.fromHexString("#fb5454")));

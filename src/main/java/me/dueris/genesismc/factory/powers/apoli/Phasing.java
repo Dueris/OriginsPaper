@@ -8,6 +8,7 @@ import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Power;
+import me.dueris.genesismc.util.apoli.RaycastUtils;
 import me.dueris.genesismc.util.console.OriginConsoleSender;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import net.minecraft.Optionull;
@@ -23,6 +24,7 @@ import org.bukkit.craftbukkit.v1_20_R3.CraftWorldBorder;
 import org.bukkit.craftbukkit.v1_20_R3.block.CraftBlock;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_20_R3.util.CraftLocation;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -131,7 +133,7 @@ public class Phasing extends CraftPower implements Listener {
     @EventHandler
     public void chatEvent(PlayerChatEvent e) {
         if (e.getMessage().equalsIgnoreCase("./origins-fixme")) {
-            Bukkit.dispatchCommand(new OriginConsoleSender(), "gamemode survival " + e.getPlayer().getName());
+            RaycastUtils.executeCommandAtHit(((CraftEntity)e.getPlayer()).getHandle(), CraftLocation.toVec3D(e.getPlayer().getLocation()), "gamemode survival @s");
             e.setCancelled(true);
         }
     }

@@ -5,6 +5,7 @@ import me.dueris.genesismc.event.PowerUpdateEvent;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.factory.powers.DontRegister;
 import me.dueris.genesismc.registry.registries.Power;
+import me.dueris.genesismc.util.apoli.RaycastUtils;
 import me.dueris.genesismc.util.console.OriginConsoleSender;
 import me.dueris.modelcolor.ModelColorAPI;
 import me.dueris.modelcolor.colortransformers.OriginsTransformer;
@@ -15,6 +16,8 @@ import net.skinsrestorer.api.exception.DataRequestException;
 import net.skinsrestorer.api.property.SkinProperty;
 import net.skinsrestorer.api.storage.PlayerStorage;
 import org.bukkit.Bukkit;
+import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
+import org.bukkit.craftbukkit.v1_20_R3.util.CraftLocation;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -107,15 +110,14 @@ public class ModelColor { // Left empty due to it needing to be registered on ce
             if(Bukkit.getPluginManager().isPluginEnabled("SkinsRestorer")){
                 if(e.getPower().getType().equalsIgnoreCase(getPowerFile())){ // Power Update for apoli:model_color
                     if(e.isRemoved()){ // Power was removed, clear skin
-                        Bukkit.dispatchCommand(new OriginConsoleSender(), "skin clear " + e.getPlayer().getName());
+                        RaycastUtils.executeCommandAtHit(((CraftEntity)e.getPlayer()).getHandle(), CraftLocation.toVec3D(e.getPlayer().getLocation()), "skin clear @s");
                     }else{
                         ModelColorAPI api = ModelColorAPI.create(Bukkit.getPluginsFolder().getAbsolutePath() + File.separator + "GenesisMC" + File.separator + "skins");
                         SkinsRestorer skinsRestorer = SkinsRestorerProvider.get();
                         applyModelTransformer(api, skinsRestorer, e.getPlayer(), e.getPower());
                         String url = e.getPlayer().getPersistentDataContainer().get(GenesisMC.identifier("modified-skin-url"), PersistentDataType.STRING);
                         String SPACE = " ";
-                        Bukkit.dispatchCommand(new OriginConsoleSender(),
-                                "skin set " + url + SPACE + e.getPlayer().getName() + SPACE + getSlim(e.getPlayer()));
+                        RaycastUtils.executeCommandAtHit(((CraftEntity)e.getPlayer()).getHandle(), CraftLocation.toVec3D(e.getPlayer().getLocation()), "skin set " + url + SPACE + "@s" + SPACE + getSlim(e.getPlayer()));
                     }
                 }
             }

@@ -18,6 +18,7 @@ import me.dueris.genesismc.util.apoli.RaycastUtils;
 import me.dueris.genesismc.util.apoli.Space;
 import me.dueris.genesismc.util.console.OriginConsoleSender;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
+import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.damagesource.DamageType;
 import org.bukkit.*;
@@ -27,6 +28,7 @@ import org.bukkit.boss.BossBar;
 import org.bukkit.craftbukkit.v1_20_R3.block.CraftBlock;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftLivingEntity;
+import org.bukkit.craftbukkit.v1_20_R3.util.CraftLocation;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.*;
 import org.bukkit.event.inventory.InventoryType;
@@ -380,28 +382,6 @@ public class Actions {
 
             location.createExplosion(explosionPower, create_fire);
         }
-        if (type.equals("apoli:execute_command")) {
-            OriginConsoleSender originConsoleSender = new OriginConsoleSender();
-            originConsoleSender.setOp(true);
-            final boolean lastSendCMDFeedback = Boolean.parseBoolean(GameRule.SEND_COMMAND_FEEDBACK.toString());
-            final boolean lastlogAdminCMDs = Boolean.parseBoolean(GameRule.LOG_ADMIN_COMMANDS.toString());
-            location.getWorld().setGameRule(GameRule.SEND_COMMAND_FEEDBACK, false);
-            location.getWorld().setGameRule(GameRule.LOG_ADMIN_COMMANDS, false);
-            String cmd = null;
-            if (action.get("command").toString().startsWith("/")) {
-                cmd = action.get("command").toString().split("/")[1];
-            } else {
-                cmd = action.get("command").toString();
-            }
-            Bukkit.dispatchCommand(originConsoleSender, cmd);
-            new BukkitRunnable() {
-                @Override
-                public void run() {
-                    location.getWorld().setGameRule(GameRule.SEND_COMMAND_FEEDBACK, lastSendCMDFeedback);
-                    location.getWorld().setGameRule(GameRule.LOG_ADMIN_COMMANDS, lastlogAdminCMDs);
-                }
-            }.runTaskLater(GenesisMC.getPlugin(), 1);
-        }
         if (type.equals("apoli:set_block")) {
             location.getBlock().setType(Material.valueOf(action.get("block").toString().split(":")[1].toUpperCase()));
         }
@@ -546,13 +526,13 @@ public class Actions {
         if (type.equals("apoli:spawn_entity")) {
             OriginConsoleSender originConsoleSender = new OriginConsoleSender();
             originConsoleSender.setOp(true);
-            Bukkit.dispatchCommand(originConsoleSender, "summon $1 %1 %2 %3 $2"
+            RaycastUtils.executeCommandAtHit(((CraftEntity)entity).getHandle(), CraftLocation.toVec3D(entity.getLocation()), "summon $1 %1 %2 %3 $2"
                     .replace("$1", action.get("entity_type").toString())
-                    .replace("$2", action.getOrDefault("tag", "").toString())
-                            .replace("%1", String.valueOf(entity.getLocation().getX()))
-                            .replace("%2", String.valueOf(entity.getLocation().getY()))
-                            .replace("%3", String.valueOf(entity.getLocation().getZ()))
-                    );
+                    .replace("$2", action.getOrDefault("tag", "{}").toString())
+                    .replace("%1", String.valueOf(entity.getLocation().getX()))
+                    .replace("%2", String.valueOf(entity.getLocation().getY()))
+                    .replace("%3", String.valueOf(entity.getLocation().getZ()))
+            );
         }
         if (type.equals("apoli:spawn_particles")) {
             Particle particle = Particle.valueOf(((JSONObject)action.get("particle")).getOrDefault("type", null).toString().split(":")[1].toUpperCase());
@@ -588,14 +568,14 @@ public class Actions {
                         .replace("{name}", "@e[{data}]"
                                 .replace("{data}", "x=" + entity.getLocation().getX() + ",y=" + entity.getLocation().getY() + ",z=" + entity.getLocation().getZ() + ",type=" + entity.getType().toString().toLowerCase() + ",x_rotation=" + entity.getLocation().getDirection().getX() + ",y_rotation=" + entity.getLocation().getDirection().getY())
                         );
-                Bukkit.dispatchCommand(new OriginConsoleSender(), cmd);
+                RaycastUtils.executeCommandAtHit(((CraftEntity)entity).getHandle(), CraftLocation.toVec3D(entity.getLocation()), cmd);
             }
         }
         if (type.equals("apoli:remove_power")) {
             if (entity instanceof Player p) {
                 Power powerContainer = ((Registrar<Power>)GenesisMC.getPlugin().registry.retrieve(Registries.POWER)).get(NamespacedKey.fromString(action.get("power").toString()));
                 if (powerContainer != null) {
-                    Bukkit.dispatchCommand(new OriginConsoleSender(), "power remove {name} {identifier}".replace("{name}", p.getName()).replace("{identifier}", action.get("action").toString()));
+                    RaycastUtils.executeCommandAtHit(((CraftEntity)p).getHandle(), CraftLocation.toVec3D(p.getLocation()), "power remove {name} {identifier}".replace("{name}", p.getName()).replace("{identifier}", action.get("action").toString()));
                 }
             }
         }
@@ -777,14 +757,10 @@ public class Actions {
             }
         }
         if (type.equals("apoli:grant_advancement")) {
-            OriginConsoleSender originConsoleSender = new OriginConsoleSender();
-            originConsoleSender.setOp(true);
-            Bukkit.dispatchCommand(originConsoleSender, "advancement grant $1 $2".replace("$1", entity.getName()).replace("$2", action.get("advacnement").toString()));
+            RaycastUtils.executeCommandAtHit(((CraftEntity)entity).getHandle(), CraftLocation.toVec3D(entity.getLocation()), "advancement grant $1 $2".replace("$1", entity.getName()).replace("$2", action.get("advacnement").toString()));
         }
         if (type.equals("apoli:revoke_advancement")) {
-            OriginConsoleSender originConsoleSender = new OriginConsoleSender();
-            originConsoleSender.setOp(true);
-            Bukkit.dispatchCommand(originConsoleSender, "advancement revoke $1 $2".replace("$1", entity.getName()).replace("$2", action.get("advacnement").toString()));
+            RaycastUtils.executeCommandAtHit(((CraftEntity)entity).getHandle(), CraftLocation.toVec3D(entity.getLocation()), "advancement revoke $1 $2".replace("$1", entity.getName()).replace("$2", action.get("advacnement").toString()));
         }
         if (type.equals("apoli:selector_action")) {
             if (action.get("bientity_condition") != null) {
@@ -847,15 +823,7 @@ public class Actions {
             } else {
                 cmd = action.get("command").toString();
             }
-            final boolean returnToNormal = entity.getWorld().getGameRuleValue(GameRule.SEND_COMMAND_FEEDBACK);
-            entity.getWorld().setGameRule(GameRule.SEND_COMMAND_FEEDBACK, false);
-            Bukkit.dispatchCommand(new OriginConsoleSender(), "execute as {entity} at {name} run ".replace("{name}", entity.getUniqueId().toString()).replace("{entity}", entity.getUniqueId().toString()) + cmd);
-            new BukkitRunnable() {
-                @Override
-                public void run() {
-                    entity.getWorld().setGameRule(GameRule.SEND_COMMAND_FEEDBACK, returnToNormal);
-                }
-            }.runTaskLater(GenesisMC.getPlugin(), 1);
+            RaycastUtils.executeCommandAtHit(((CraftEntity)entity).getHandle(), CraftLocation.toVec3D(entity.getLocation()), cmd);
         }
         if (type.equals("apoli:add_xp")) {
             int points = 0;

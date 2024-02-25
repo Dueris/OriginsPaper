@@ -141,7 +141,7 @@ public class RaycastUtils {
         }
     }
 
-    private static void executeCommandAtHit(Entity entity, Vec3 hitPosition, String command) {
+    public static void executeCommandAtHit(Entity entity, Vec3 hitPosition, String command) { // GenesisMC - private -> public
         if(command == null) return;
         MinecraftServer server = entity.getServer();
         if(server != null) {
