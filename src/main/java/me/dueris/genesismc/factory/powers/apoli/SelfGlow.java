@@ -9,6 +9,7 @@ import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import net.minecraft.network.protocol.game.ClientboundUpdateMobEffectPacket;
 import net.minecraft.world.effect.MobEffectInstance;
 import org.bukkit.Bukkit;
+import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_20_R3.potion.CraftPotionEffectType;
 import org.bukkit.entity.Entity;
@@ -42,15 +43,11 @@ public class SelfGlow extends CraftPower {
                 ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                 for (Entity entity : Bukkit.getServer().getWorld(p.getWorld().getKey()).getEntities()) {
                     if (entity instanceof Player player) {
-                        if (conditionExecutor.check("entity_condition", "entity_conditions", p, power, getPowerFile(), p, entity, null, null, p.getItemInHand(), null)) {
-                            if (conditionExecutor.check("bientity_condition", "bientity_conditions", p, power, getPowerFile(), p, entity, null, null, p.getItemInHand(), null)) {
-                                setActive(p, power.getTag(), true);
-                                CraftPlayer craftPlayers = (CraftPlayer) player;
-                                craftPlayers.getHandle().connection.send(new ClientboundUpdateMobEffectPacket(p.getEntityId(),
-                                        new MobEffectInstance(CraftPotionEffectType.bukkitToMinecraft(PotionEffectType.GLOWING), 5, 1, false, false, false)));
-                            } else {
-                                setActive(p, power.getTag(), false);
-                            }
+                        if (ConditionExecutor.testEntity(power.get("entity_condition"), (CraftEntity) p) && ConditionExecutor.testEntity(power.get("entity_condition"), (CraftEntity) p) && ConditionExecutor.testBiEntity(power.get("bientity_condition"), (CraftEntity) p, (CraftEntity) entity)) {
+                            setActive(p, power.getTag(), true);
+                            CraftPlayer craftPlayers = (CraftPlayer) player;
+                            craftPlayers.getHandle().connection.send(new ClientboundUpdateMobEffectPacket(p.getEntityId(),
+                                    new MobEffectInstance(CraftPotionEffectType.bukkitToMinecraft(PotionEffectType.GLOWING), 5, 1, false, false, false)));
                         } else {
                             setActive(p, power.getTag(), false);
                         }

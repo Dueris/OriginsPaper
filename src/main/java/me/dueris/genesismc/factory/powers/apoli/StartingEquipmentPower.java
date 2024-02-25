@@ -8,6 +8,7 @@ import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import org.bukkit.Material;
+import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -43,13 +44,10 @@ public class StartingEquipmentPower extends CraftPower implements Listener {
         if (starting_equip.contains(e.getPlayer())) {
             for (Layer layer : CraftApoli.getLayersFromRegistry()) {
                 for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(e.getPlayer(), getPowerFile(), layer)) {
-                    ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
-                    if (conditionExecutor.check("condition", "conditions", e.getPlayer(), power, getPowerFile(), e.getPlayer(), null, null, null, e.getPlayer().getItemInHand(), null)) {
-                        if (!getPowerArray().contains(e.getPlayer())) return;
+                    if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) e.getPlayer())) {
                         setActive(e.getPlayer(), power.getTag(), true);
                         runGiveItems(e.getPlayer(), power);
                     } else {
-                        if (!getPowerArray().contains(e.getPlayer())) return;
                         setActive(e.getPlayer(), power.getTag(), false);
                     }
                 }
@@ -67,9 +65,8 @@ public class StartingEquipmentPower extends CraftPower implements Listener {
     public void runRespawn(PlayerRespawnEvent e) {
         if (starting_equip.contains(e.getPlayer())) {
             for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-                ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                 for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(e.getPlayer(), getPowerFile(), layer)) {
-                    if (conditionExecutor.check("condition", "conditions", e.getPlayer(), power, getPowerFile(), e.getPlayer(), null, null, null, e.getPlayer().getItemInHand(), null)) {
+                    if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) e.getPlayer())) {
                         setActive(e.getPlayer(), power.getTag(), true);
                         if (power.getObject("recurrent") != null && power.getBoolean("recurrent")) {
                             runGiveItems(e.getPlayer(), power);

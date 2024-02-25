@@ -6,6 +6,7 @@ import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
+import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -32,14 +33,11 @@ public class Swimming extends CraftPower {
         for (Layer layer : CraftApoli.getLayersFromRegistry()) {
             if (swimming.contains(p)) {
                 for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-                    ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
-                    if (!conditionExecutor.check("condition", "conditions", p, power, getPowerFile(), p, null, null, null, p.getItemInHand(), null)) {
-
+                    if (!ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p)) {
                         setActive(p, power.getTag(), false);
                         return;
                     } else {
                         p.setSwimming(true);
-
                         setActive(p, power.getTag(), true);
                     }
                 }

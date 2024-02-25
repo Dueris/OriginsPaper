@@ -10,6 +10,7 @@ import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.craftbukkit.v1_20_R3.block.CraftBlock;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -61,7 +62,7 @@ public class PreventSleep extends CraftPower implements Listener {
                 Block clickedBlock = e.getClickedBlock();
                 Location blockLocation = clickedBlock.getLocation();
                 for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(player, getPowerFile(), layer)) {
-                    boolean meetsCondition = conditionExecutor.check("block_condition", "block_conditions", e.getPlayer(), power, "apoli:prevent_sleep", e.getPlayer(), null, e.getPlayer().getLocation().getBlock(), null, e.getPlayer().getItemInHand(), null);
+                    boolean meetsCondition = ConditionExecutor.testBlock(power.get("block_condition"), (CraftBlock) player.getLocation().getBlock());
 
                     if (meetsCondition) {
                         if (power.getBooleanOrDefault("set_spawn_point", false)) {

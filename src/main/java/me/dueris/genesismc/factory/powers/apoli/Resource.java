@@ -13,6 +13,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
+import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -111,11 +112,7 @@ public class Resource extends CraftPower implements Listener {
                                 shouldRender[0] = canRender[0];
                             }
                             if (hud_render.containsKey("condition")) {
-                                EntityConditions conditionExecutor = ConditionExecutor.entityCondition;
-                                Optional<Boolean> conditionMet = conditionExecutor.check(power.get("hud_render"), p, null, p.getLocation().getBlock(), null, p.getInventory().getItemInMainHand(), null);
-                                if (conditionMet.isPresent()) {
-                                    canRender[0] = conditionMet.get();
-                                }
+                                canRender[0] = ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p);
                             }
                         }
                     }.runTaskTimer(GenesisMC.getPlugin(), 0, 1);
