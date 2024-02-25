@@ -14,7 +14,7 @@ import me.dueris.genesismc.registry.registries.Origin;
 import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.util.CooldownUtils;
 import me.dueris.genesismc.util.Utils;
-import me.dueris.genesismc.util.apoli.RaycastApoli;
+import me.dueris.genesismc.util.apoli.RaycastUtils;
 import me.dueris.genesismc.util.apoli.Space;
 import me.dueris.genesismc.util.console.OriginConsoleSender;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
@@ -27,7 +27,6 @@ import org.bukkit.boss.BossBar;
 import org.bukkit.craftbukkit.v1_20_R3.block.CraftBlock;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftLivingEntity;
-import org.bukkit.craftbukkit.v1_20_R3.inventory.CraftItemStack;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.*;
 import org.bukkit.event.inventory.InventoryType;
@@ -52,6 +51,7 @@ public class Actions {
     public static HashMap<Entity, Boolean> resourceChangeTimeout = new HashMap<>();
 
     public static void BiEntityActionType(Entity actor, Entity target, JSONObject action) {
+        if(!action.containsKey("type")) return;
         String type = action.get("type").toString();
 
         if (type.equals("apoli:invert")) {
@@ -548,30 +548,32 @@ public class Actions {
             originConsoleSender.setOp(true);
             Bukkit.dispatchCommand(originConsoleSender, "summon $1 %1 %2 %3 $2"
                     .replace("$1", action.get("entity_type").toString())
-                    .replace("$2", action.getOrDefault("tag", "").toString()
+                    .replace("$2", action.getOrDefault("tag", "").toString())
                             .replace("%1", String.valueOf(entity.getLocation().getX()))
                             .replace("%2", String.valueOf(entity.getLocation().getY()))
                             .replace("%3", String.valueOf(entity.getLocation().getZ()))
-                    ));
+                    );
         }
         if (type.equals("apoli:spawn_particles")) {
-            Particle particle = Particle.valueOf(action.getOrDefault("particle", null).toString().split(":")[1].toUpperCase());
+            Particle particle = Particle.valueOf(((JSONObject)action.get("particle")).getOrDefault("type", null).toString().split(":")[1].toUpperCase());
             int count = Integer.parseInt(String.valueOf(action.getOrDefault("count", 1)));
             float offset_y_no_vector = Float.parseFloat(String.valueOf(action.getOrDefault("offset_y", 1.0)));
             float offset_x = 0.25f;
             float offset_y = 0.50f;
             float offset_z = 0.25f;
-            JSONObject spread = (JSONObject) action.get("spread");
-            if (spread.get("y") != null) {
-                offset_y = Float.parseFloat(String.valueOf(spread.get("y")));
-            }
+            if(action.get("spread") != null){
+                JSONObject spread = (JSONObject) action.get("spread");
+                if (spread.get("y") != null) {
+                    offset_y = Float.parseFloat(String.valueOf(spread.get("y")));
+                }
 
-            if (spread.get("x") != null) {
-                offset_x = Float.parseFloat(String.valueOf(spread.get("x")));
-            }
+                if (spread.get("x") != null) {
+                    offset_x = Float.parseFloat(String.valueOf(spread.get("x")));
+                }
 
-            if (spread.get("z") != null) {
-                offset_z = Float.parseFloat(String.valueOf(spread.get("z")));
+                if (spread.get("z") != null) {
+                    offset_z = Float.parseFloat(String.valueOf(spread.get("z")));
+                }
             }
             entity.getWorld().spawnParticle(particle, new Location(entity.getWorld(), entity.getLocation().getX(), entity.getLocation().getY(), entity.getLocation().getZ()), count, offset_x, offset_y, offset_z, 0);
         }
@@ -735,7 +737,7 @@ public class Actions {
             }
         }
         if (type.equals("apoli:raycast")) {
-            RaycastApoli.action(action, ((CraftEntity)entity).getHandle());
+            RaycastUtils.action(action, ((CraftEntity)entity).getHandle());
         }
         if (type.equals("apoli:extinguish")) {
             entity.setFireTicks(0);

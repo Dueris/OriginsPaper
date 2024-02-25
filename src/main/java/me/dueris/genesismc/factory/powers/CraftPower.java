@@ -59,7 +59,6 @@ public abstract class CraftPower implements ApoliPower {
                 }
             }
             OriginSimpleContainer.registerPower(BounceSlimeBlock.class);
-            OriginSimpleContainer.registerPower(MimicWarden.class);
             OriginSimpleContainer.registerPower(PiglinNoAttack.class);
             OriginSimpleContainer.registerPower(ScareCreepers.class);
             OriginSimpleContainer.registerPower(NoCobWebSlowdown.class);

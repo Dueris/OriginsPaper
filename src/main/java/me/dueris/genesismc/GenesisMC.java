@@ -25,7 +25,6 @@ import me.dueris.genesismc.factory.powers.ApoliPower;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.factory.powers.apoli.*;
 import me.dueris.genesismc.factory.powers.apoli.provider.origins.BounceSlimeBlock;
-import me.dueris.genesismc.factory.powers.apoli.provider.origins.MimicWarden;
 import me.dueris.genesismc.integration.PlaceHolderAPI;
 import me.dueris.genesismc.registry.IRegistry;
 import me.dueris.genesismc.registry.Registrar;
@@ -328,7 +327,6 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         getServer().getPluginManager().registerEvents(new ScreenNavigator(), this);
         getServer().getPluginManager().registerEvents(new OriginCommand(), this);
         getServer().getPluginManager().registerEvents(new ContentTicker(), this);
-        getServer().getPluginManager().registerEvents(new MimicWarden(), this);
         getServer().getPluginManager().registerEvents(new BounceSlimeBlock(), this);
         getServer().getPluginManager().registerEvents(new BiEntityConditions(), this);
         getServer().getPluginManager().registerEvents(new LogoutBugWorkaround(), this);
@@ -361,10 +359,6 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         this.registry.clearRegistries();
         scheduler.cancel();
         EntityGroupManager.stop();
-
-        for (int taskId : MimicWarden.getParticleTasks().values()) {
-            getServer().getScheduler().cancelTask(taskId);
-        }
 
         for (Player p : Bukkit.getOnlinePlayers()) {
             Team team = p.getScoreboard().getTeam("origin-players");

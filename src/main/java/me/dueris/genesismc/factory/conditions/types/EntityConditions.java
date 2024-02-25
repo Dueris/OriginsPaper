@@ -4,30 +4,26 @@ import com.mojang.brigadier.StringReader;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.TagRegistryParser;
 import me.dueris.genesismc.factory.actions.Actions;
-import me.dueris.genesismc.factory.conditions.Condition;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.ApoliPower;
 import me.dueris.genesismc.factory.powers.apoli.*;
 import me.dueris.genesismc.registry.Registerable;
 import me.dueris.genesismc.registry.Registrar;
 import me.dueris.genesismc.registry.Registries;
-import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.util.CooldownUtils;
 import me.dueris.genesismc.util.Utils;
-import me.dueris.genesismc.util.apoli.RaycastApoli;
+import me.dueris.genesismc.util.apoli.RaycastUtils;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.server.level.ServerPlayerGameMode;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.LevelResource;
 import net.minecraft.world.scores.Objective;
 import net.minecraft.world.scores.Scoreboard;
 import org.bukkit.*;
-import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.craftbukkit.v1_20_R3.CraftWorld;
@@ -35,16 +31,13 @@ import org.bukkit.craftbukkit.v1_20_R3.block.CraftBlock;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftLivingEntity;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftPlayer;
-import org.bukkit.craftbukkit.v1_20_R3.inventory.CraftItemStack;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.*;
-import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 import org.json.simple.JSONObject;
@@ -57,9 +50,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.function.BiPredicate;
-import java.util.function.Predicate;
 
 public class EntityConditions {
     public static HashMap<String, ArrayList<EntityType>> entityTagMappings = new HashMap<>();
@@ -590,7 +581,7 @@ public class EntityConditions {
             }
         }));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("raycast"), (condition, entity) -> {
-            return RaycastApoli.condition(condition, ((CraftEntity)entity).getHandle());
+            return RaycastUtils.condition(condition, ((CraftEntity)entity).getHandle());
         }));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("relative_health"), (condition, entity) -> {
             if (entity instanceof LivingEntity le) {

@@ -14,16 +14,19 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.phys.*;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.craftbukkit.v1_20_R3.util.CraftLocation;
+import org.bukkit.util.RayTraceResult;
 import org.joml.Vector3f;
 import org.json.simple.JSONObject;
 
 import java.util.Optional;
 
-public class RaycastApoli {
+public class RaycastUtils {
 
     public static void action(JSONObject data, Entity entity) {
-
         Vec3 origin = new Vec3(entity.getX(), entity.getEyeY(), entity.getZ());
         Vec3 direction = entity.getViewVector(1);
         if (data.containsKey("direction")) {
@@ -35,15 +38,19 @@ public class RaycastApoli {
         }
         Vec3 target = origin.add(direction.scale(getBlockReach(data, entity)));
 
+        Location location = CraftLocation.toBukkit(target);
+        location.setWorld(entity.getBukkitEntity().getWorld());
+
         Actions.EntityActionType(entity.getBukkitEntity(), (JSONObject) data.getOrDefault("before_action", null));
 
         HitResult hitResult = null;
-        if((boolean)data.get("entity")) {
+        // Apoli start
+        if(data.get("entity") != null && (boolean)data.get("entity")) {
             double distance = getEntityReach(data, entity);
             target = origin.add(direction.scale(distance));
             hitResult = performEntityRaycast(entity, origin, target, Optional.empty());
         }
-        if((boolean)data.get("block")) {
+        if(data.get("block") != null && (boolean)data.get("block")) {
             double distance = getBlockReach(data, entity);
             target = origin.add(direction.scale(distance));
             BlockHitResult blockHit = performBlockRaycast(entity, origin, target, Utils.getShapeType(data.get("shape_type").toString()), Utils.getFluidHandling(data.get("fluid_handling").toString()));
@@ -57,50 +64,38 @@ public class RaycastApoli {
                 }
             }
         }
-        if(hitResult != null && hitResult.getType() != HitResult.Type.MISS) {
-            if(data.containsKey("command_at_hit")) {
-                Vec3 offsetDirection = direction;
-                double offset = 0;
-                Vec3 hitPos = hitResult.getLocation();
-                if(data.containsKey("command_hit_offset")) {
-                    offset = (double)data.get("command_hit_offset");
-                } else {
-                    if(hitResult instanceof BlockHitResult bhr) {
-                        if(bhr.getDirection() == Direction.DOWN) {
-                            offset = entity.getBbHeight();
-                        } else if(bhr.getDirection() == Direction.UP) {
-                            offset = 0;
-                        } else {
-                            offset = entity.getBbWidth() / 2;
-                            offsetDirection = new Vec3(
-                                    bhr.getDirection().getStepX(),
-                                    bhr.getDirection().getStepY(),
-                                    bhr.getDirection().getStepZ()
-                            ).scale(-1);
-                        }
-                    }
-                    offset += 0.05;
+        // Apoli end
+        float step = Math.round((Double) data.getOrDefault("command_step", 1d));
+        if(data.containsKey("command_along_ray")){
+            executeStepCommands(entity, origin, target, data.getOrDefault("command_along_ray", null).toString(), step);
+        }
+        MinecraftServer server = entity.getServer();
+        if(server != null) {
+            Vec3 dir = target.subtract(origin).normalize();
+            double length = origin.distanceTo(target);
+            for(double current = 0; current < length; current += step) {
+                Location curLoc = CraftLocation.toBukkit(origin.add(dir.scale(current)));
+                curLoc.setWorld(entity.getBukkitEntity().getWorld());
+                boolean hit = false;
+                if(!curLoc.getNearbyEntities(0.3, 0.3, 0.3).isEmpty()){ // entity hit
+                    hit = true;
+                    Actions.BiEntityActionType(entity.getBukkitEntity(), (org.bukkit.entity.Entity) curLoc.getNearbyEntities(0.3, 0.3, 0.3).toArray()[0], (JSONObject) data.getOrDefault("bientity_action", new JSONObject()));
                 }
-                Vec3 at = hitPos.subtract(offsetDirection.scale(offset));
-                executeCommandAtHit(entity, at, data.get("command_at_hit").toString());
+                if(curLoc.getBlock().isCollidable()){
+                    hit = true;
+                    Actions.BlockActionType(curLoc, (JSONObject) data.getOrDefault("hit_action", new JSONObject()));
+                }
+
+                if(curLoc.getBlock().isCollidable()) {
+                    if(hit){
+                        Actions.EntityActionType(entity.getBukkitEntity(), (JSONObject) data.getOrDefault("hit_action", new JSONObject()));
+                    }
+                    if(data.containsKey("command_at_hit")){
+                        executeCommandAtHit(entity, CraftLocation.toVec3D(curLoc), data.getOrDefault("command_at_hit", null).toString());
+                    }
+                    break;
+                }
             }
-            if(data.containsKey("command_along_ray")) {
-                executeStepCommands(entity, origin, hitResult.getLocation(), data.get("command_along_ray").toString(), (double)data.get("command_step"));
-            }
-            if(data.containsKey("block_action") && hitResult instanceof BlockHitResult bhr) {
-                Actions.BlockActionType(CraftLocation.toBukkit(bhr.getLocation()), (JSONObject) data.get("block_action"));
-            }
-            if(data.containsKey("bientity_action") && hitResult instanceof EntityHitResult ehr) {
-                Actions.BiEntityActionType(entity.getBukkitEntity(), ehr.getEntity().getBukkitEntity(), (JSONObject) data.get("bientity_action"));
-            }
-            if(data.containsKey("hit_action")){
-                Actions.EntityActionType(entity.getBukkitEntity(), (JSONObject) data.get("hit_action"));
-            }
-        } else {
-            if(data.containsKey("command_along_ray") && !(boolean)data.get("command_along_ray_only_on_hit")) {
-                executeStepCommands(entity, origin, target, data.get("command_along_ray").toString(), (double)data.get("command_step"));
-            }
-            Actions.EntityActionType(entity.getBukkitEntity(), (JSONObject) data.get("miss_action"));
         }
     }
 
@@ -124,6 +119,7 @@ public class RaycastApoli {
     }
 
     private static void executeStepCommands(Entity entity, Vec3 origin, Vec3 target, String command, double step) {
+        if(command == null) return;
         MinecraftServer server = entity.getServer();
         if(server != null) {
             Vec3 direction = target.subtract(origin).normalize();
@@ -146,6 +142,7 @@ public class RaycastApoli {
     }
 
     private static void executeCommandAtHit(Entity entity, Vec3 hitPosition, String command) {
+        if(command == null) return;
         MinecraftServer server = entity.getServer();
         if(server != null) {
             boolean validOutput = !(entity instanceof ServerPlayer) || ((ServerPlayer)entity).connection != null;
@@ -178,7 +175,6 @@ public class RaycastApoli {
     }
 
     public static boolean condition(JSONObject data, Entity entity) {
-
         Vec3 origin = new Vec3(entity.getX(), entity.getEyeY(), entity.getZ());
         Vec3 direction = entity.getViewVector(1);
         if (data.containsKey("direction")) {
@@ -188,15 +184,19 @@ public class RaycastApoli {
             space.toGlobal(vector3f, entity);
             direction = new Vec3(vector3f);
         }
-        Vec3 target;
+        Vec3 target = origin.add(direction.scale(getBlockReach(data, entity)));
+
+        Location location = CraftLocation.toBukkit(target);
+        location.setWorld(entity.getBukkitEntity().getWorld());
 
         HitResult hitResult = null;
-        if((boolean)data.get("entity")) {
+        // Apoli start
+        if(data.get("entity") != null && (boolean)data.get("entity")) {
             double distance = getEntityReach(data, entity);
             target = origin.add(direction.scale(distance));
             hitResult = performEntityRaycast(entity, origin, target, Optional.empty());
         }
-        if((boolean)data.get("block")) {
+        if(data.get("block") != null && (boolean)data.get("block")) {
             double distance = getBlockReach(data, entity);
             target = origin.add(direction.scale(distance));
             BlockHitResult blockHit = performBlockRaycast(entity, origin, target, Utils.getShapeType(data.get("shape_type").toString()), Utils.getFluidHandling(data.get("fluid_handling").toString()));
@@ -210,8 +210,22 @@ public class RaycastApoli {
                 }
             }
         }
-        if(hitResult != null && hitResult.getType() != HitResult.Type.MISS) {
-            return true;
+        // Apoli end
+        float step = Math.round((Double) data.getOrDefault("command_step", 1d));
+        MinecraftServer server = entity.getServer();
+        if(server != null) {
+            Vec3 dir = target.subtract(origin).normalize();
+            double length = origin.distanceTo(target);
+            boolean hasHit = false;
+            for(double current = 0; current < length; current += step) {
+                Location curLoc = CraftLocation.toBukkit(origin.add(dir.scale(current)));
+                curLoc.setWorld(entity.getBukkitEntity().getWorld());
+                if(curLoc.getBlock().isCollidable() || !curLoc.getNearbyEntities(0.3, 0.3, 0.3).isEmpty()) {
+                    hasHit = true;
+                    break;
+                }
+            }
+            if(hasHit) return true;
         }
         return false;
     }

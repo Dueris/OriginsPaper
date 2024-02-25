@@ -29,7 +29,7 @@ public class CooldownUtils implements @NotNull Listener {
     public static void addCooldown(Player player, Pair<String, String> title, String dont_use, int cooldownTicks, String cooldownKeybindType) {
         // first = name to display
         // second = tag
-        if(isPlayerInCooldownFromTag(player, title)) return;
+        if(isPlayerInCooldownFromTag(player, title) || cooldownTicks <= 1) return;
         BossBar bar = createCooldownBar(player, BarColor.WHITE, getCooldownPegAMT(cooldownTicks), title.first());
         cooldownMap.putIfAbsent(player, new ArrayList<>());
         cooldownMap.get(player).add(title.first());

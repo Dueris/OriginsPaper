@@ -69,7 +69,7 @@ public class ConditionExecutor {
     }
 
     public static boolean testBiEntity(JSONObject condition, CraftEntity actor, CraftEntity target){
-        if(condition.isEmpty()) return true; // Empty condition, do nothing
+        if(condition == null || condition.isEmpty()) return true; // Empty condition, do nothing
         Pair entityPair = new Pair<CraftEntity,CraftEntity>() {
 
             @Override
@@ -147,7 +147,7 @@ public class ConditionExecutor {
     }
 
     public static boolean testBiome(JSONObject condition, org.bukkit.block.Biome biome){
-        if(condition.isEmpty()) return true; // Empty condition, do nothing
+        if(condition == null || condition.isEmpty()) return true; // Empty condition, do nothing
         if(isMetaCondition(condition)){
             String type = condition.get("type").toString();
             switch(type) {
@@ -214,7 +214,7 @@ public class ConditionExecutor {
 
     @SuppressWarnings("index out of bounds")
     public static boolean testBlock(JSONObject condition, CraftBlock block){
-        if(condition.isEmpty()) return true; // Empty condition, do nothing
+        if(condition == null || condition.isEmpty()) return true; // Empty condition, do nothing
         if(isMetaCondition(condition)){
             String type = condition.get("type").toString();
             switch(type) {
@@ -280,7 +280,7 @@ public class ConditionExecutor {
     }
 
     public static boolean testDamage(JSONObject condition, EntityDamageEvent event){
-        if(condition.isEmpty()) return true; // Empty condition, do nothing
+        if(condition == null || condition.isEmpty()) return true; // Empty condition, do nothing
         if(isMetaCondition(condition)){
             String type = condition.get("type").toString();
             switch(type) {
@@ -346,7 +346,7 @@ public class ConditionExecutor {
     }
 
     public static boolean testEntity(JSONObject condition, CraftEntity entity){
-        if(condition.isEmpty()) return true; // Empty condition, do nothing
+        if(condition == null || condition.isEmpty()) return true; // Empty condition, do nothing
         if(isMetaCondition(condition)){
             String type = condition.get("type").toString();
             switch(type) {
@@ -412,7 +412,7 @@ public class ConditionExecutor {
     }
 
     public static boolean testItem(JSONObject condition, ItemStack itemStack){
-        if(condition.isEmpty()) return true; // Empty condition, do nothing
+        if(condition == null || condition.isEmpty()) return true; // Empty condition, do nothing
         if(isMetaCondition(condition)){
             String type = condition.get("type").toString();
             switch(type) {
@@ -477,7 +477,7 @@ public class ConditionExecutor {
     }
 
     public static boolean testFluid(JSONObject condition, net.minecraft.world.level.material.Fluid fluid){
-        if(condition.isEmpty()) return true; // Empty condition, do nothing
+        if(condition == null || condition.isEmpty()) return true; // Empty condition, do nothing
         if(isMetaCondition(condition)){
             String type = condition.get("type").toString();
             switch(type) {

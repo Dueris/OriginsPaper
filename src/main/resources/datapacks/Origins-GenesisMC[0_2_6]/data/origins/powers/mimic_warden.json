@@ -1,7 +1,50 @@
 {
-  "type": "origins:simple",
   "name": "Carrier of Echos",
   "description": "You can emmit a sonic boom every 60 seconds, only if you have enough energy to sprint",
   "hidden": false,
-  "key": "key.origins.primary_active", "##" : "This is a placeholder to display the keybind on the screen renderer. It doesnt actually work"
+  "type": "origins:active_self",
+  "cooldown": 600,
+  "hud_render": {
+    "should_render": false
+  },
+  "key": {
+    "key": "key.use",
+    "continuous": false
+  },
+  "entity_action": {
+    "type": "origins:raycast",
+    "distance": 12,
+    "command_at_hit": "execute as @e[distance=..2] run damage @s 6",
+    "command_step": 2.5,
+    "command_along_ray": "function genesis:boom_command_step",
+    "entity": true,
+    "block": true,
+    "before_action": {
+      "type": "origins:and",
+      "actions": [
+        {
+          "type": "origins:execute_command",
+          "command": "playsound minecraft:entity.warden.sonic_boom master @s ~ ~ ~ 1 1"
+        },
+        {
+          "type": "origins:area_of_effect",
+          "radius": 8,
+          "shape": "sphere",
+          "bientity_action": {
+            "type": "origins:target_action",
+            "action": {
+              "type": "origins:apply_effect",
+              "effect": {
+                "effect": "minecraft:darkness",
+                "duration": 60,
+                "amplifier": 2,
+                "is_ambient": false,
+                "show_particles": false
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
 }
