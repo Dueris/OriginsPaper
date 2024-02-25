@@ -35,10 +35,8 @@ public class SelfActionOnHit extends CraftPower implements Listener {
         if (!getPowerArray().contains(target)) return;
 
         for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-            ConditionExecutor executor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
-            if (CooldownUtils.isPlayerInCooldown((Player) target, getPowerFile())) return;
-
             for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(player, getPowerFile(), layer)) {
+                if (CooldownUtils.isPlayerInCooldownFromTag((Player) target, Utils.getNameOrTag(power))) return;
                 if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) player)) {
                     setActive(player, power.getTag(), true);
                     Actions.EntityActionType(target, power.getEntityAction());

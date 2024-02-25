@@ -94,9 +94,9 @@ public class ConditionExecutor {
                             BiEntityConditions.ConditionFactory con = factory.get(NamespacedKey.fromString(obj.get("type").toString()));
                             boolean invert = (boolean) obj.getOrDefault("inverted", false);
                             if(con != null){
-                                cons.add(getPossibleInvert(invert, testBiEntity(obj, (CraftEntity) entityPair.first(), (CraftEntity) entityPair.second())));
+                                cons.add(testBiEntity(obj, (CraftEntity) entityPair.first(), (CraftEntity) entityPair.second()));
                             }else{
-                                cons.add(getPossibleInvert(invert, true)); // Condition null or not found.
+                                cons.add(true); // Condition null or not found.
                             }
                         }
                     });
@@ -114,9 +114,9 @@ public class ConditionExecutor {
                             BiEntityConditions.ConditionFactory con = factory.get(NamespacedKey.fromString(obj.get("type").toString()));
                             boolean invert = (boolean) obj.getOrDefault("inverted", false);
                             if(con != null){
-                                cons.add(getPossibleInvert(invert, testBiEntity(obj, (CraftEntity) entityPair.first(), (CraftEntity) entityPair.second())));
+                                cons.add(testBiEntity(obj, (CraftEntity) entityPair.first(), (CraftEntity) entityPair.second()));
                             }else{
-                                cons.add(getPossibleInvert(invert, true)); // Condition null or not found.
+                                cons.add(true); // Condition null or not found.
                             }
                         }
                     });
@@ -160,9 +160,9 @@ public class ConditionExecutor {
                             BiomeConditions.ConditionFactory con = factory.get(NamespacedKey.fromString(obj.get("type").toString()));
                             boolean invert = (boolean) obj.getOrDefault("inverted", false);
                             if(con != null){
-                                cons.add(getPossibleInvert(invert, testBiome(obj, biome)));
+                                cons.add(testBiome(obj, biome));
                             }else{
-                                cons.add(getPossibleInvert(invert, true)); // Condition null or not found.
+                                cons.add(true); // Condition null or not found.
                             }
                         }
                     });
@@ -180,9 +180,9 @@ public class ConditionExecutor {
                             BiomeConditions.ConditionFactory con = factory.get(NamespacedKey.fromString(obj.get("type").toString()));
                             boolean invert = (boolean) obj.getOrDefault("inverted", false);
                             if(con != null){
-                                cons.add(getPossibleInvert(invert, testBiome(obj, biome)));
+                                cons.add(testBiome(obj, biome));
                             }else{
-                                cons.add(getPossibleInvert(invert, true)); // Condition null or not found.
+                                cons.add(true); // Condition null or not found.
                             }
                         }
                     });
@@ -227,9 +227,9 @@ public class ConditionExecutor {
                             BlockConditions.ConditionFactory con = factory.get(NamespacedKey.fromString(obj.get("type").toString()));
                             boolean invert = (boolean) obj.getOrDefault("inverted", false);
                             if(con != null){
-                                cons.add(getPossibleInvert(invert, testBlock(obj, block)));
+                                cons.add(testBlock(obj, block));
                             }else{
-                                cons.add(getPossibleInvert(invert, true)); // Condition null or not found.
+                                cons.add(true); // Condition null or not found.
                             }
                         }
                     });
@@ -247,9 +247,9 @@ public class ConditionExecutor {
                             BlockConditions.ConditionFactory con = factory.get(NamespacedKey.fromString(obj.get("type").toString()));
                             boolean invert = (boolean) obj.getOrDefault("inverted", false);
                             if(con != null){
-                                cons.add(getPossibleInvert(invert, testBlock(obj, block)));
+                                cons.add(testBlock(obj, block));
                             }else{
-                                cons.add(getPossibleInvert(invert, true)); // Condition null or not found.
+                                cons.add(true); // Condition null or not found.
                             }
                         }
                     });
@@ -293,9 +293,9 @@ public class ConditionExecutor {
                             DamageConditions.ConditionFactory con = factory.get(NamespacedKey.fromString(obj.get("type").toString()));
                             boolean invert = (boolean) obj.getOrDefault("inverted", false);
                             if(con != null){
-                                cons.add(getPossibleInvert(invert, testDamage(obj, event)));
+                                cons.add(testDamage(obj, event));
                             }else{
-                                cons.add(getPossibleInvert(invert, true)); // Condition null or not found.
+                                cons.add(true); // Condition null or not found.
                             }
                         }
                     });
@@ -313,9 +313,9 @@ public class ConditionExecutor {
                             DamageConditions.ConditionFactory con = factory.get(NamespacedKey.fromString(obj.get("type").toString()));
                             boolean invert = (boolean) obj.getOrDefault("inverted", false);
                             if(con != null){
-                                cons.add(getPossibleInvert(invert, testDamage(obj, event)));
+                                cons.add(testDamage(obj, event));
                             }else{
-                                cons.add(getPossibleInvert(invert, true)); // Condition null or not found.
+                                cons.add(true); // Condition null or not found.
                             }
                         }
                     });
@@ -359,9 +359,9 @@ public class ConditionExecutor {
                             EntityConditions.ConditionFactory con = factory.get(NamespacedKey.fromString(obj.get("type").toString()));
                             boolean invert = (boolean) obj.getOrDefault("inverted", false);
                             if(con != null){
-                                cons.add(getPossibleInvert(invert, testEntity(obj, entity)));
+                                cons.add(testEntity(obj, entity));
                             }else{
-                                cons.add(getPossibleInvert(invert, true)); // Condition null or not found.
+                                cons.add(true); // Condition null or not found.
                             }
                         }
                     });
@@ -379,9 +379,9 @@ public class ConditionExecutor {
                             EntityConditions.ConditionFactory con = factory.get(NamespacedKey.fromString(obj.get("type").toString()));
                             boolean invert = (boolean) obj.getOrDefault("inverted", false);
                             if(con != null){
-                                cons.add(getPossibleInvert(invert, testEntity(obj, entity)));
+                                cons.add(testEntity(obj, entity));
                             }else{
-                                cons.add(getPossibleInvert(invert, true)); // Condition null or not found.
+                                cons.add(true); // Condition null or not found.
                             }
                         }
                     });
@@ -403,6 +403,9 @@ public class ConditionExecutor {
             EntityConditions.ConditionFactory con = factory.get(NamespacedKey.fromString(condition.get("type").toString()));
             boolean invert = (boolean) condition.getOrDefault("inverted", false);
             if(con != null){
+                if(condition.get("type").equals("origins:exposed_to_sky") || condition.get("type").equals("origins:daytime")){
+                    System.out.println(String.valueOf(getPossibleInvert(invert, con.test(condition, entity))) + condition.get("type"));
+                }
                 return getPossibleInvert(invert, con.test(condition, entity));
             }else{
                 return getPossibleInvert(invert, true); // Condition null or not found.
@@ -423,11 +426,10 @@ public class ConditionExecutor {
                         if(object instanceof JSONObject obj){
                             Registrar<ItemConditions.ConditionFactory> factory = GenesisMC.getPlugin().registry.retrieve(Registries.ITEM_CONDITION);
                             ItemConditions.ConditionFactory con = factory.get(NamespacedKey.fromString(obj.get("type").toString()));
-                            boolean invert = (boolean) obj.getOrDefault("inverted", false);
                             if(con != null){
-                                cons.add(getPossibleInvert(invert, testItem(obj, itemStack)));
+                                cons.add(testItem(obj, itemStack));
                             }else{
-                                cons.add(getPossibleInvert(invert, true)); // Condition null or not found.
+                                cons.add(true); // Condition null or not found.
                             }
                         }
                     });
@@ -445,9 +447,9 @@ public class ConditionExecutor {
                             ItemConditions.ConditionFactory con = factory.get(NamespacedKey.fromString(obj.get("type").toString()));
                             boolean invert = (boolean) obj.getOrDefault("inverted", false);
                             if(con != null){
-                                cons.add(getPossibleInvert(invert, testItem(obj, itemStack)));
+                                cons.add(testItem(obj, itemStack));
                             }else{
-                                cons.add(getPossibleInvert(invert, true)); // Condition null or not found.
+                                cons.add(true); // Condition null or not found.
                             }
                         }
                     });
@@ -491,9 +493,9 @@ public class ConditionExecutor {
                             FluidConditions.ConditionFactory con = factory.get(NamespacedKey.fromString(obj.get("type").toString()));
                             boolean invert = (boolean) obj.getOrDefault("inverted", false);
                             if(con != null){
-                                cons.add(getPossibleInvert(invert, testFluid(obj, fluid)));
+                                cons.add(testFluid(obj, fluid));
                             }else{
-                                cons.add(getPossibleInvert(invert, true)); // Condition null or not found.
+                                cons.add(true); // Condition null or not found.
                             }
                         }
                     });
@@ -511,9 +513,9 @@ public class ConditionExecutor {
                             FluidConditions.ConditionFactory con = factory.get(NamespacedKey.fromString(obj.get("type").toString()));
                             boolean invert = (boolean) obj.getOrDefault("inverted", false);
                             if(con != null){
-                                cons.add(getPossibleInvert(invert, testFluid(obj, fluid)));
+                                cons.add(testFluid(obj, fluid));
                             }else{
-                                cons.add(getPossibleInvert(invert, true)); // Condition null or not found.
+                                cons.add(true); // Condition null or not found.
                             }
                         }
                     });

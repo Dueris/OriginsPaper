@@ -517,11 +517,11 @@ public class Actions {
             if (resourceChangeTimeout.containsKey(entity)) return;
             String resource = action.get("resource").toString();
             if (Resource.getResource(entity, resource) == null) return;
-            if (Resource.getResource(entity, resource).getRight() == null) return;
-            if (Resource.getResource(entity, resource).getLeft() == null) return;
+            if (Resource.getResource(entity, resource).right() == null) return;
+            if (Resource.getResource(entity, resource).left() == null) return;
             int change = Integer.parseInt(action.get("change").toString());
-            double finalChange = 1.0 / Resource.getResource(entity, resource).getRight();
-            BossBar bossBar = Resource.getResource(entity, resource).getLeft();
+            double finalChange = 1.0 / Resource.getResource(entity, resource).right();
+            BossBar bossBar = Resource.getResource(entity, resource).left();
             double toRemove = finalChange * change;
             double newP = bossBar.getProgress() + toRemove;
             if (newP > 1.0) {

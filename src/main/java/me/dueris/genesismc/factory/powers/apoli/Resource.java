@@ -1,5 +1,6 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
+import it.unimi.dsi.fastutil.Pair;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.event.OriginChangeEvent;
 import me.dueris.genesismc.factory.CraftApoli;
@@ -26,10 +27,10 @@ import java.util.HashMap;
 import java.util.Optional;
 
 public class Resource extends CraftPower implements Listener {
-    public static HashMap<Player, HashMap<String, org.apache.commons.lang3.tuple.Pair<BossBar, Integer>>> registeredBars = new HashMap();
+    public static HashMap<Player, HashMap<String, Pair<BossBar, Double>>> registeredBars = new HashMap();
     public static Resource INSTANCE = new Resource();
 
-    public static int countNumbersBetween(int start, int end) {
+    public static double countNumbersBetween(int start, int end) {
         if (start > end) {
             throw new IllegalArgumentException("Start integer should be less than or equal to end integer.");
         }
@@ -43,7 +44,7 @@ public class Resource extends CraftPower implements Listener {
         return count + 1;
     }
 
-    public static org.apache.commons.lang3.tuple.Pair<BossBar, Integer> getResource(Entity entity, String tag) {
+    public static Pair<BossBar, Double> getResource(Entity entity, String tag) {
         if (registeredBars.containsKey(entity) && registeredBars.get(entity).containsKey(tag)) {
             return registeredBars.get(entity).get(tag);
         }
@@ -81,24 +82,18 @@ public class Resource extends CraftPower implements Listener {
                 final String tag = power.getTag();
                 BossBar bar = Bukkit.createBossBar(power.getTag(), BarColor.WHITE, BarStyle.SOLID);
                 bar.setProgress(1.0);
-                org.apache.commons.lang3.tuple.Pair<BossBar, Integer> pair = new org.apache.commons.lang3.tuple.Pair<BossBar, Integer>() {
+                Pair<BossBar, Double> pair = new Pair<BossBar, Double>() {
                     @Override
-                    public Integer setValue(Integer value) {
-                        getLeft().setProgress(value);
-                        return value;
-                    }
-
-                    @Override
-                    public BossBar getLeft() {
+                    public BossBar left() {
                         return bar;
                     }
 
                     @Override
-                    public Integer getRight() {
+                    public Double right() {
                         return countNumbersBetween(power.getIntOrDefault("start_value", power.getInt("min")), power.getInt("max"));
                     }
                 };
-                HashMap<String, org.apache.commons.lang3.tuple.Pair<BossBar, Integer>> map = new HashMap<>();
+                HashMap<String, Pair<BossBar, Double>> map = new HashMap<>();
                 map.put(tag, pair);
                 registeredBars.put(p, map);
                 final boolean[] shouldRender = {true};

@@ -33,7 +33,7 @@ public class PowerCommand {
                                 .then(argument("power", ResourceLocationArgument.id())
                                         .suggests((context, builder) -> {
                                             OriginCommand.commandProvidedPowers.forEach((power) -> {
-                                                if(context.getInput().split(" ").length == 3 || (power.getTag().startsWith(context.getInput().split(" ")[context.getInput().split(" ").length - 1])
+                                                if(context.getInput().split(" ").length == 2 || (power.getTag().startsWith(context.getInput().split(" ")[context.getInput().split(" ").length - 1])
                                                         || power.getTag().split(":")[1].startsWith(context.getInput().split(" ")[context.getInput().split(" ").length - 1]))){
                                                     builder.suggest(power.getTag());
                                                 }

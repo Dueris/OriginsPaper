@@ -421,13 +421,13 @@ public class EntityConditions {
             return entity.isSneaking();
         }));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("resource"), (condition, entity) -> {
-            if (CooldownUtils.cooldowns.containsKey(entity) && CooldownUtils.cooldowns.get(entity).contains(condition.get("resource").toString()) && CooldownUtils.cooldowns.containsKey(entity)) {
+            if (CooldownUtils.cooldownMap.containsKey(entity) && CooldownUtils.cooldownMap.get(entity).contains(condition.get("resource").toString())) {
                 return !CooldownUtils.isPlayerInCooldownFromTag((Player) entity, condition.get("resource").toString());
             } else {
                 if (Resource.registeredBars.containsKey(entity) && Resource.registeredBars.get(entity).containsKey(condition.get("resource").toString())) {
                     String comparison = condition.get("comparison").toString();
                     double compare_to = Double.parseDouble(condition.get("compare_to").toString());
-                    return Utils.compareValues(Resource.getResource(entity, condition.get("resource").toString()).getLeft().getProgress(), comparison, compare_to);
+                    return Utils.compareValues(Resource.getResource(entity, condition.get("resource").toString()).left().getProgress(), comparison, compare_to);
                 } else {
                     return false;
                 }

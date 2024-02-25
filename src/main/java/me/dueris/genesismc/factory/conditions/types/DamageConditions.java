@@ -58,7 +58,17 @@ public class DamageConditions {
             return false;
         }));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("name"), (condition, event) -> {
-            return event.getDamageSource().getDamageType().getKey() == NamespacedKey.minecraft(condition.get("name").toString());
+            String input = condition.get("name").toString();
+            StringBuilder output = new StringBuilder();
+
+            for (char c : input.toCharArray()) {
+                if (Character.isUpperCase(c)) {
+                    output.append('_').append(Character.toLowerCase(c));
+                } else {
+                    output.append(c);
+                }
+            }
+            return event.getDamageSource().getDamageType().getKey() == NamespacedKey.minecraft(output.toString());
         }));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("in_tag"), (condition, event) -> {
             String tag = condition.get("tag").toString();

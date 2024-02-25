@@ -247,6 +247,7 @@ public class CraftApoli {
                                     for (File powerFile : powerDir.listFiles()) {
                                         try {
                                             if (!powerFile.isDirectory()) {
+                                                JsonValidator.validateJsonFile(powerFile.getAbsolutePath());
                                                 String powerFolder = namespace.getName().toLowerCase();
                                                 String powerFileName = powerFile.getName().replace(".json", "").toLowerCase();
 
