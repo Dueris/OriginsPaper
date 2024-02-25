@@ -19,6 +19,6 @@
 <h2 align="left"><strong font-size="202px">Donate</strong></h2>
 <p align="left">If you like the plugin and want to support me, consider donating! I put thousands of hours into these projects and it would mean the world to me if you donated.</p>
 
-#### [Donation link](https://ko-fi.com/dueris)
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/V7V4O31UU)
 
 </div>
