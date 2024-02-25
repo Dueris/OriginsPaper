@@ -50,7 +50,7 @@ public class PreventItemUse extends CraftPower implements Listener {
                         getPowerArray().remove(e.getPlayer());
                         return;
                     } else {
-                        boolean shouldCancel = ConditionExecutor.testItem(power.get("item_condition"), (CraftItemStack) e.getItem());
+                        boolean shouldCancel = ConditionExecutor.testItem(power.get("item_condition"), e.getItem());
                         if(shouldCancel) e.setCancelled(true);
                     }
                 }

@@ -164,10 +164,10 @@ public class ItemConditions {
             return EnchantTableHandler.wearable.contains(itemStack.getType());
         }));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("is_damageable"), (condition, itemStack) -> {
-            return itemStack.handle.isDamageableItem();
+            return CraftItemStack.asCraftCopy(itemStack).handle.isDamageableItem();
         }));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("fireproof"), (condition, itemStack) -> {
-            return itemStack.handle.getItem().isFireResistant();
+            return CraftItemStack.asCraftCopy(itemStack).handle.getItem().isFireResistant();
         }));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("enchantment"), (condition, itemStack) -> {
             String comparison = condition.get("comparison").toString();
@@ -214,7 +214,7 @@ public class ItemConditions {
             return false;
         }));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("nbt"), (condition, itemStack) -> {
-            return NbtUtils.compareNbt(Utils.ParserUtils.parseJson(new StringReader(condition.get("nbt").toString()), CompoundTag.CODEC), ((CraftItemStack) itemStack).handle.getTag(), true);
+            return NbtUtils.compareNbt(Utils.ParserUtils.parseJson(new StringReader(condition.get("nbt").toString()), CompoundTag.CODEC), CraftItemStack.asCraftCopy(itemStack).handle.getTag(), true);
         }));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("ingredient"), (condition, itemStack) -> {
             if (itemStack.getType() != null) {
@@ -261,14 +261,14 @@ public class ItemConditions {
 
     public class ConditionFactory implements Registerable {
         NamespacedKey key;
-        BiPredicate<JSONObject, CraftItemStack> test;
+        BiPredicate<JSONObject, ItemStack> test;
 
-        public ConditionFactory(NamespacedKey key, BiPredicate<JSONObject, CraftItemStack> test){
+        public ConditionFactory(NamespacedKey key, BiPredicate<JSONObject, ItemStack> test){
             this.key = key;
             this.test = test;
         }
 
-        public boolean test(JSONObject condition, CraftItemStack tester){
+        public boolean test(JSONObject condition, ItemStack tester){
             return test.test(condition, tester);
         }
 

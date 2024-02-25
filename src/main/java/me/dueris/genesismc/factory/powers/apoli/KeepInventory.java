@@ -50,7 +50,7 @@ public class KeepInventory extends CraftPower implements Listener {
                         if (!slots.isEmpty()) {
                             for (int i = 0; i < player.getInventory().getSize(); i++) {
                                 if (slots.contains((long) i)) {
-                                    if(ConditionExecutor.testItem(power.get("item_condition"), (CraftItemStack) player.getInventory().getItem(i))){
+                                    if(ConditionExecutor.testItem(power.get("item_condition"), player.getInventory().getItem(i))){
                                         e.getItemsToKeep().add(player.getInventory().getItem(i));
                                     }
                                 }

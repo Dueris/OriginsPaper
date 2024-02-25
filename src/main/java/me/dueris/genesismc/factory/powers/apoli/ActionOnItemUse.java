@@ -40,7 +40,7 @@ public class ActionOnItemUse extends CraftPower implements Listener {
             for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(player, getPowerFile(), layer)) {
                 if (power == null) continue;
                 if (!ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) player)) return;
-                if (!ConditionExecutor.testItem(power.get("condition"), (CraftItemStack) e.getItem())) return;
+                if (!ConditionExecutor.testItem(power.get("condition"), e.getItem())) return;
                 setActive(e.getPlayer(), power.getTag(), true);
                 Actions.ItemActionType(e.getItem(), power.getAction("item_action"));
                 Actions.EntityActionType(player, power.getAction("entity_action"));

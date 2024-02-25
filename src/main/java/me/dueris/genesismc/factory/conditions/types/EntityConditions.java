@@ -487,7 +487,7 @@ public class EntityConditions {
                     if (eSlot != null) {
                         if (LeInvH.getEquipment().getItem(eSlot) != null) {
                             if (condition.get("item_condition") != null) {
-                                return ConditionExecutor.testItem((JSONObject) condition.get("item_condition"), (CraftItemStack) LeInvH.getEquipment().getItem(eSlot));
+                                return ConditionExecutor.testItem((JSONObject) condition.get("item_condition"), LeInvH.getEquipment().getItem(eSlot));
                             } else {
                                 return true;
                             }
@@ -719,7 +719,7 @@ public class EntityConditions {
             if (entity instanceof LivingEntity le) {
                 if (le.getActiveItem() != null) {
                     if (condition.get("item_condition") != null) {
-                        return ConditionExecutor.testItem((JSONObject) condition.get("item_condition"), (CraftItemStack) le.getActiveItem());
+                        return ConditionExecutor.testItem((JSONObject) condition.get("item_condition"), le.getActiveItem());
                     } else {
                         return true;
                     }

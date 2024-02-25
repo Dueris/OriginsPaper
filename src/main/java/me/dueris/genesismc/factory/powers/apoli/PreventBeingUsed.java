@@ -41,7 +41,7 @@ public class PreventBeingUsed extends CraftPower implements Listener {
             Player p = e.getPlayer();
             for (Layer layer : CraftApoli.getLayersFromRegistry()) {
                 for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-                    if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p) && ConditionExecutor.testItem(power.get("item_condition"), (CraftItemStack) e.getItem())) {
+                    if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p) && ConditionExecutor.testItem(power.get("item_condition"), e.getItem())) {
                         setActive(p, power.getTag(), true);
                         e.setCancelled(true);
                     } else {

@@ -15,6 +15,7 @@ import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_20_R3.inventory.CraftItemStack;
 import org.bukkit.damage.DamageSource;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.inventory.ItemStack;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -410,7 +411,7 @@ public class ConditionExecutor {
         return false;
     }
 
-    public static boolean testItem(JSONObject condition, CraftItemStack itemStack){
+    public static boolean testItem(JSONObject condition, ItemStack itemStack){
         if(condition.isEmpty()) return true; // Empty condition, do nothing
         if(isMetaCondition(condition)){
             String type = condition.get("type").toString();

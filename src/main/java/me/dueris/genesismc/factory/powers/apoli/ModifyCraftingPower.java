@@ -57,7 +57,7 @@ public class ModifyCraftingPower extends CraftPower implements Listener {
                             String provKey = power.getStringOrDefault("recipe", currKey);
                             boolean set = false;
                             if(currKey == provKey){ // Matched on crafting
-                                set = ConditionExecutor.testItem(power.get("item_condition"), (CraftItemStack) e.getInventory().getResult());
+                                set = ConditionExecutor.testItem(power.get("item_condition"), e.getInventory().getResult());
                             }
                             if(set){
                                 if(power.getOrDefault("result", null) != null) {

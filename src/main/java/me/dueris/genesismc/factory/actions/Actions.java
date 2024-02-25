@@ -163,7 +163,7 @@ public class Actions {
         } else if (type.equals("apoli:nothing")) {
             // Literally does nothing
         } else if (type.equals("apoli:if_else")) {
-            Optional<Boolean> bool = Optional.of(ConditionExecutor.testItem((JSONObject) power.get("item_condition"), (CraftItemStack) item));
+            Optional<Boolean> bool = Optional.of(ConditionExecutor.testItem((JSONObject) power.get("item_condition"), item));
             if (bool.isPresent()) {
                 if (bool.get()) {
                     ItemActionType(item, (JSONObject) power.get("if_action"));

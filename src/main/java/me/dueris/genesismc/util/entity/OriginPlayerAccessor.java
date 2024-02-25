@@ -309,7 +309,11 @@ public class OriginPlayerAccessor {
             CompletableFuture.runAsync(() -> {
                 for (Power power : playerPowerMapping.get(player).get(layer)) {
                     if (power == null) continue;
-                    ApoliPower c = (ApoliPower) GenesisMC.getPlugin().registry.retrieve(Registries.CRAFT_POWER).get(NamespacedKey.fromString(power.getType()));
+                    String name = power.getType();
+                    if(name.equalsIgnoreCase("apoli:simple")){
+                        name = power.getTag();
+                    }
+                    ApoliPower c = (ApoliPower) GenesisMC.getPlugin().registry.retrieve(Registries.CRAFT_POWER).get(NamespacedKey.fromString(name));
                     if (c != null) {
                         c.getPowerArray().add(player);
                         if (!powersAppliedList.containsKey(player)) {
@@ -356,7 +360,11 @@ public class OriginPlayerAccessor {
             CompletableFuture.runAsync(() -> {
                 for (Power power : playerPowerMapping.get(player).get(layer)) {
                     if (power == null) continue;
-                    ApoliPower c = (ApoliPower) GenesisMC.getPlugin().registry.retrieve(Registries.CRAFT_POWER).get(NamespacedKey.fromString(power.getType()));
+                    String name = power.getType();
+                    if(name.equalsIgnoreCase("apoli:simple")){
+                        name = power.getTag();
+                    }
+                    ApoliPower c = (ApoliPower) GenesisMC.getPlugin().registry.retrieve(Registries.CRAFT_POWER).get(NamespacedKey.fromString(name));
                     if (c != null) {
                         c.getPowerArray().remove(player);
                         if (GenesisConfigs.getMainConfig().getString("console-startup-debug").equalsIgnoreCase("true")) {

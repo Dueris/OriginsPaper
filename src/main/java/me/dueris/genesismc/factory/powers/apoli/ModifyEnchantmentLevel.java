@@ -33,7 +33,7 @@ public class ModifyEnchantmentLevel extends CraftPower {
                     items.add(p.getInventory().getItemInMainHand());
                     for (ItemStack item : items) {
                         if (!ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p)) return;
-                        if (!ConditionExecutor.testItem(power.get("item_condition"), (CraftItemStack) item)) return;
+                        if (!ConditionExecutor.testItem(power.get("item_condition"), item)) return;
                         for (HashMap<String, Object> modifier : power.getPossibleModifiers("modifier", "modifiers")) {
                             Enchantment enchant = Enchantment.getByKey(NamespacedKey.fromString(power.getString("enchantment")));
                             if (item.containsEnchantment(enchant)) {

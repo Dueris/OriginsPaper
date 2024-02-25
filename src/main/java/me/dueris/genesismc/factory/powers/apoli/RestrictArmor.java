@@ -109,25 +109,25 @@ public class RestrictArmor extends CraftPower implements Listener {
         if (feetObj == null) feetb = false;
 
         if(headb){
-            passHead = ConditionExecutor.testItem(headObj, (CraftItemStack) p.getInventory().getItem(EquipmentSlot.HEAD));
+            passHead = ConditionExecutor.testItem(headObj, p.getInventory().getItem(EquipmentSlot.HEAD));
         }else{
             passHead = true;
         }
 
         if(chestb){
-            passChest = ConditionExecutor.testItem(chestObj, (CraftItemStack) p.getInventory().getItem(EquipmentSlot.CHEST));
+            passChest = ConditionExecutor.testItem(chestObj, p.getInventory().getItem(EquipmentSlot.CHEST));
         }else{
             passChest = true;
         }
 
         if(legsb){
-            passLegs = ConditionExecutor.testItem(legsObj, (CraftItemStack) p.getInventory().getItem(EquipmentSlot.LEGS));
+            passLegs = ConditionExecutor.testItem(legsObj, p.getInventory().getItem(EquipmentSlot.LEGS));
         }else{
             passLegs = true;
         }
 
         if(feetb){
-            passFeet = ConditionExecutor.testItem(feetObj, (CraftItemStack) p.getInventory().getItem(EquipmentSlot.FEET));
+            passFeet = ConditionExecutor.testItem(feetObj, p.getInventory().getItem(EquipmentSlot.FEET));
         }else{
             passFeet = true;
         }
