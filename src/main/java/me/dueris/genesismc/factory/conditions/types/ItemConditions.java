@@ -1,14 +1,20 @@
-package me.dueris.genesismc.factory.conditions;
+package me.dueris.genesismc.factory.conditions.types;
 
 import com.mojang.brigadier.StringReader;
+
+import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.content.OrbOfOrigins;
 import me.dueris.genesismc.content.enchantment.EnchantTableHandler;
 import me.dueris.genesismc.factory.TagRegistryParser;
+import me.dueris.genesismc.factory.conditions.Condition;
+import me.dueris.genesismc.registry.Registerable;
+import me.dueris.genesismc.registry.Registries;
 import me.dueris.genesismc.util.Utils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import org.bukkit.Fluid;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
 import org.bukkit.craftbukkit.v1_20_R3.inventory.CraftItemStack;
 import org.bukkit.enchantments.Enchantment;
@@ -18,10 +24,9 @@ import org.bukkit.inventory.ItemStack;
 import org.json.simple.JSONObject;
 
 import java.util.*;
+import java.util.function.BiPredicate;
 
-import static me.dueris.genesismc.factory.conditions.ConditionExecutor.getResult;
-
-public class ItemConditions implements Condition {
+public class ItemConditions {
     public static final List<Material> ENCHANTABLE_MATERIALS = new ArrayList<>();
     public static HashMap<String, ArrayList<Material>> entityTagMappings = new HashMap<>();
 
@@ -142,20 +147,77 @@ public class ItemConditions implements Condition {
         return meatMaterials;
     }
 
-    @Override
-    public String condition_type() {
-        return "ITEM_CONDITION";
-    }
-
-    @Override
-    public Optional<Boolean> check(JSONObject condition, Entity actor, Entity target, Block block, Fluid fluid, ItemStack itemStack, EntityDamageEvent entityDamageEvent) {
-        if (condition.isEmpty()) return Optional.empty();
-        boolean inverted = (boolean) condition.getOrDefault("inverted", false);
-        String type = condition.get("type").toString().toLowerCase();
-        if (itemStack == null) return getResult(inverted, Optional.of(false));
-        switch (type) {
-            case "apoli:ingredient" -> {
-                if (itemStack.getType() == null) return getResult(inverted, Optional.of(false));
+    public void prep(){
+        register(new ConditionFactory(GenesisMC.apoliIdentifier("food"), (condition, itemStack) -> {
+            return itemStack.getType().isEdible();
+        }));
+        register(new ConditionFactory(GenesisMC.apoliIdentifier("smeltable"), (condition, itemStack) -> {
+            return itemStack.getType().isFuel();
+        }));
+        register(new ConditionFactory(GenesisMC.apoliIdentifier("relative_durability"), (condition, itemStack) -> {
+            String comparison = condition.get("comparison").toString();
+            double compareTo = Double.parseDouble(condition.get("compare_to").toString());
+            double amt = itemStack.getDurability() / itemStack.getType().getMaxDurability();
+            return Utils.compareValues(amt, comparison, compareTo);
+        }));
+        register(new ConditionFactory(GenesisMC.apoliIdentifier("is_equippable"), (condition, itemStack) -> {
+            return EnchantTableHandler.wearable.contains(itemStack.getType());
+        }));
+        register(new ConditionFactory(GenesisMC.apoliIdentifier("is_damageable"), (condition, itemStack) -> {
+            return CraftItemStack.asCraftCopy(itemStack).handle.isDamageableItem();
+        }));
+        register(new ConditionFactory(GenesisMC.apoliIdentifier("fireproof"), (condition, itemStack) -> {
+            return CraftItemStack.asCraftCopy(itemStack).handle.getItem().isFireResistant();
+        }));
+        register(new ConditionFactory(GenesisMC.apoliIdentifier("enchantment"), (condition, itemStack) -> {
+            String comparison = condition.get("comparison").toString();
+            double compareTo = Double.parseDouble(condition.get("compare_to").toString());
+            for (Enchantment enchantment : itemStack.getEnchantments().keySet()) {
+                if (enchantment.getName().equalsIgnoreCase(String.valueOf(condition.getOrDefault("enchantment", enchantment.getName())))) {
+                    int amt = itemStack.getEnchantments().get(enchantment);
+                    return Utils.compareValues(amt, comparison, compareTo);
+                }
+            }
+            return false;
+        }));
+        register(new ConditionFactory(GenesisMC.apoliIdentifier("enchantable"), (condition, itemStack) -> {
+            return ENCHANTABLE_MATERIALS.contains(itemStack.getType());
+        }));
+        register(new ConditionFactory(GenesisMC.apoliIdentifier("empty"), (condition, itemStack) -> {
+            return itemStack.getType().isAir();
+        }));
+        register(new ConditionFactory(GenesisMC.apoliIdentifier("durability"), (condition, itemStack) -> {
+            String comparison = condition.get("comparison").toString();
+            double compareTo = Double.parseDouble(condition.get("compare_to").toString());
+            double amt = itemStack.getDurability();
+            return Utils.compareValues(amt, comparison, compareTo);
+        }));
+        register(new ConditionFactory(GenesisMC.apoliIdentifier("armor_value"), (condition, itemStack) -> {
+            String comparison = condition.get("comparison").toString();
+            double compareTo = Double.parseDouble(condition.get("compare_to").toString());
+            double amt = Utils.getArmorValue(itemStack);
+            return Utils.compareValues(amt, comparison, compareTo);
+        }));
+        register(new ConditionFactory(GenesisMC.apoliIdentifier("amount"), (condition, itemStack) -> {
+            String comparison = condition.get("comparison").toString();
+            double compareTo = Double.parseDouble(condition.get("compare_to").toString());
+            int amt = itemStack.getAmount();
+            return Utils.compareValues(amt, comparison, compareTo);
+        }));
+        register(new ConditionFactory(GenesisMC.apoliIdentifier("fuel"), (condition, itemStack) -> {
+            return itemStack.getType().isFuel();
+        }));
+        register(new ConditionFactory(GenesisMC.apoliIdentifier("meat"), (condition, itemStack) -> {
+            if (itemStack.getType().isEdible()) {
+                return getMeatMaterials().contains(itemStack);
+            }
+            return false;
+        }));
+        register(new ConditionFactory(GenesisMC.apoliIdentifier("nbt"), (condition, itemStack) -> {
+            return NbtUtils.compareNbt(Utils.ParserUtils.parseJson(new StringReader(condition.get("nbt").toString()), CompoundTag.CODEC), CraftItemStack.asCraftCopy(itemStack).handle.getTag(), true);
+        }));
+        register(new ConditionFactory(GenesisMC.apoliIdentifier("ingredient"), (condition, itemStack) -> {
+            if (itemStack.getType() != null) {
                 if (condition.containsKey("ingredient")) {
                     Map<String, Object> ingredientMap = (Map<String, Object>) condition.get("ingredient");
                     if (ingredientMap.containsKey("item")) {
@@ -167,9 +229,9 @@ public class ItemConditions implements Condition {
                             item = itemValue;
                         }
                         if (item.contains("orb_of_origin")) {
-                            return getResult(inverted, Optional.of(itemStack.isSimilar(OrbOfOrigins.orb)));
+                            return itemStack.isSimilar(OrbOfOrigins.orb);
                         }
-                        return getResult(inverted, Optional.of(itemStack.getType().equals(Material.valueOf(item.toUpperCase()))));
+                        return itemStack.getType().equals(Material.valueOf(item.toUpperCase()));
                     } else if (ingredientMap.containsKey("tag")) {
                         try {
                             if (TagRegistryParser.getRegisteredTagFromFileKey(ingredientMap.get("tag").toString()) != null) {
@@ -180,7 +242,7 @@ public class ItemConditions implements Condition {
                                     }
                                 } else {
                                     // mappings exist, now we can start stuff
-                                    return getResult(inverted, Optional.of(entityTagMappings.get(ingredientMap.get("tag")).contains(itemStack.getType())));
+                                    return entityTagMappings.get(ingredientMap.get("tag")).contains(itemStack.getType());
                                 }
                             }
                         } catch (IllegalArgumentException e) {
@@ -188,84 +250,31 @@ public class ItemConditions implements Condition {
                         }
                     }
                 }
-                return getResult(inverted, Optional.of(false));
             }
-            case "apoli:nbt" -> {
-                return getResult(inverted, Optional.of(NbtUtils.compareNbt(Utils.ParserUtils.parseJson(new StringReader(condition.get("nbt").toString()), CompoundTag.CODEC), ((CraftItemStack) itemStack).handle.getTag(), true)));
-            }
-            case "apoli:meat" -> {
-                if (itemStack.getType().isEdible()) {
-                    if (inverted) {
-                        return getResult(inverted, Optional.of(getNonMeatMaterials().contains(itemStack)));
-                    } else {
-                        return getResult(inverted, Optional.of(getMeatMaterials().contains(itemStack)));
-                    }
-                } else {
-                    return getResult(inverted, Optional.of(false));
-                }
-            }
-            case "apoli:fuel" -> {
-                return getResult(inverted, Optional.of(itemStack.getType().isFuel()));
-            }
-            case "apoli:amount" -> {
-                String comparison = condition.get("comparison").toString();
-                double compareTo = Double.parseDouble(condition.get("compare_to").toString());
-                int amt = itemStack.getAmount();
-                return getResult(inverted, Optional.of(Utils.compareValues(amt, comparison, compareTo)));
-            }
-            case "apoli:armor_value" -> {
-                String comparison = condition.get("comparison").toString();
-                double compareTo = Double.parseDouble(condition.get("compare_to").toString());
-                double amt = Utils.getArmorValue(itemStack);
-                return getResult(inverted, Optional.of(Utils.compareValues(amt, comparison, compareTo)));
-            }
-            case "apoli:durability" -> {
-                String comparison = condition.get("comparison").toString();
-                double compareTo = Double.parseDouble(condition.get("compare_to").toString());
-                double amt = itemStack.getDurability();
-                return getResult(inverted, Optional.of(Utils.compareValues(amt, comparison, compareTo)));
-            }
-            case "apoli:empty" -> {
-                return getResult(inverted, Optional.of(itemStack.getType().isAir()));
-            }
-            case "apoli:enchantable" -> {
-                return getResult(inverted, Optional.of(ENCHANTABLE_MATERIALS.contains(itemStack.getType())));
-            }
-            case "apoli:enchantment" -> {
-                String comparison = condition.get("comparison").toString();
-                double compareTo = Double.parseDouble(condition.get("compare_to").toString());
-                for (Enchantment enchantment : itemStack.getEnchantments().keySet()) {
-                    if (enchantment.getName().equalsIgnoreCase(String.valueOf(condition.getOrDefault("enchantment", enchantment.getName())))) {
-                        int amt = itemStack.getEnchantments().get(enchantment);
-                        return getResult(inverted, Optional.of(Utils.compareValues(amt, comparison, compareTo)));
-                    }
-                }
-                return getResult(inverted, Optional.of(false));
-            }
-            case "apoli:fireproof" -> {
-                return getResult(inverted, Optional.of(itemStack.getType().toString().toLowerCase().contains("NETHERITE")));
-            }
-            case "apoli:is_damageable" -> {
-                return getResult(inverted, Optional.of(!itemStack.getType().isBlock()));
-            }
-            case "apoli:is_equippable" -> {
-                return getResult(inverted, Optional.of(EnchantTableHandler.wearable.contains(itemStack.getType())));
-            }
-            case "apoli:relative_durability" -> {
-                String comparison = condition.get("comparison").toString();
-                double compareTo = Double.parseDouble(condition.get("compare_to").toString());
-                double amt = itemStack.getDurability() / itemStack.getType().getMaxDurability();
-                return getResult(inverted, Optional.of(Utils.compareValues(amt, comparison, compareTo)));
-            }
-            case "apoli:smeltable" -> {
-                return getResult(inverted, Optional.of(itemStack.getType().isFuel()));
-            }
-            case "apoli:food" -> {
-                return getResult(inverted, Optional.of(itemStack.getType().isEdible()));
-            }
-            default -> {
-                return getResult(inverted, Optional.empty());
-            }
+            return false;
+        }));
+    }
+
+    private void register(ConditionFactory factory){
+        GenesisMC.getPlugin().registry.retrieve(Registries.ITEM_CONDITION).register(factory);
+    }
+
+    public class ConditionFactory implements Registerable {
+        NamespacedKey key;
+        BiPredicate<JSONObject, ItemStack> test;
+
+        public ConditionFactory(NamespacedKey key, BiPredicate<JSONObject, ItemStack> test){
+            this.key = key;
+            this.test = test;
+        }
+
+        public boolean test(JSONObject condition, ItemStack tester){
+            return test.test(condition, tester);
+        }
+
+        @Override
+        public NamespacedKey getKey() {
+            return key;
         }
     }
 

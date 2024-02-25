@@ -6,8 +6,9 @@ import com.google.gson.stream.JsonReader;
 import com.mojang.brigadier.StringReader;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
+import it.unimi.dsi.fastutil.Pair;
 import me.dueris.genesismc.GenesisMC;
-import me.dueris.genesismc.factory.conditions.BiEntityConditions;
+import me.dueris.genesismc.factory.conditions.types.BiEntityConditions;
 import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.util.apoli.Space;
 import net.minecraft.Util;
@@ -77,10 +78,20 @@ public class Utils {
         return prettyJsonString;
     }
 
-    public static String getNameOrTag(Power power) {
+    public static Pair<String, String> getNameOrTag(Power power) {
         String name = power.getName();
         String tag = power.getTag();
-        return name != "No Name" ? name : power.getPowerParent() != null ? getNameOrTag(power.getPowerParent()) : tag;
+        return new Pair<String, String>() {
+            @Override
+            public String left() {
+                return name != "No Name" ? name : power.getPowerParent() != null ? getNameOrTag(power.getPowerParent()).first() : tag;
+            }
+
+            @Override
+            public String right() {
+                return power.getTag();
+            }
+        };
     }
 
     public static boolean hasChangedBlockCoordinates(final Location fromLoc, final Location toLoc) {

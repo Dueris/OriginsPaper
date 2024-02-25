@@ -2,6 +2,7 @@ package me.dueris.genesismc.command;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
+import it.unimi.dsi.fastutil.Pair;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.powers.apoli.Resource;
 import me.dueris.genesismc.registry.Registrar;
@@ -14,7 +15,6 @@ import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.commands.arguments.ResourceLocationArgument;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
-import org.apache.commons.lang3.tuple.Pair;
 import org.bukkit.boss.BossBar;
 import org.bukkit.craftbukkit.v1_20_R3.util.CraftNamespacedKey;
 import org.bukkit.entity.Player;
@@ -29,7 +29,7 @@ import static net.minecraft.commands.Commands.literal;
 
 public class ResourceCommand {
 
-    public static HashMap<Player, HashMap<String, Pair<BossBar, Integer>>> registeredBars = new HashMap();
+    public static HashMap<Player, HashMap<String, Pair<BossBar, Double>>> registeredBars = new HashMap();
 
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(
@@ -84,7 +84,7 @@ public class ResourceCommand {
                                                             context.getSource().sendSystemMessage(Component.literal("$1 has %value% $2"
                                                                     .replace("$2", CraftNamespacedKey.fromMinecraft(ResourceLocationArgument.getId(context, "power")).asString())
                                                                     .replace("$1", player.getBukkitEntity().getName())
-                                                                    .replace("%value%", String.valueOf(registeredBars.get(player.getBukkitEntity()).get(CraftNamespacedKey.fromMinecraft(ResourceLocationArgument.getId(context, "power")).asString()).getLeft().getProgress()))));
+                                                                    .replace("%value%", String.valueOf(registeredBars.get(player.getBukkitEntity()).get(CraftNamespacedKey.fromMinecraft(ResourceLocationArgument.getId(context, "power")).asString()).left().getProgress()))));
                                                         } else {
                                                             context.getSource().sendFailure(Component.literal("Can't get value of $2 for $1; none is set"
                                                                     .replace("$2", CraftNamespacedKey.fromMinecraft(ResourceLocationArgument.getId(context, "power")).asString())
@@ -114,8 +114,8 @@ public class ResourceCommand {
                                                                 if (resourceChangeTimeout.containsKey(player.getBukkitEntity())) return;
                                                                 String resource = power.getTag();
                                                                 int change = value;
-                                                                double finalChange = 1.0 / Resource.getResource(player.getBukkitEntity(), resource).getRight();
-                                                                BossBar bossBar = Resource.getResource(player.getBukkitEntity(), resource).getLeft();
+                                                                double finalChange = 1.0 / Resource.getResource(player.getBukkitEntity(), resource).right();
+                                                                BossBar bossBar = Resource.getResource(player.getBukkitEntity(), resource).left();
                                                                 double toRemove = finalChange * change;
                                                                 double newP = bossBar.getProgress() + toRemove;
                                                                 if (newP > 1.0) {

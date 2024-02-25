@@ -25,7 +25,7 @@ dependencies {
     compileOnly("io.github.classgraph:classgraph:4.8.165")
     compileOnly("org.reflections:reflections:0.9.12")
     compileOnly("org.mineskin:java-client:1.2.4-SNAPSHOT")
-    compileOnly("com.github.Dueris:ModelColorAPI:1.0.5-SNAPSHOT")
+    implementation("com.github.Dueris:ModelColorAPI:1.0.5-SNAPSHOT")
 }
 
 repositories {

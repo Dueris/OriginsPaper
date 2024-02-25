@@ -6,6 +6,8 @@ import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
+import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
+import org.bukkit.craftbukkit.v1_20_R3.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -38,7 +40,7 @@ public class KeepInventory extends CraftPower implements Listener {
             if (keep_inventory.contains(player)) {
                 ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                 for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(player, getPowerFile(), layer)) {
-                    if (conditionExecutor.check("item_condition", "item_conditions", player, power, "apoli:keep_inventory", player, null, null, null, player.getInventory().getItemInHand(), null)) {
+                    if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) player)) {
                         ArrayList<Long> slots = new ArrayList<>();
                         setActive(player, power.getTag(), true);
                         if (power.getLongList("slots") != null) {
@@ -48,7 +50,9 @@ public class KeepInventory extends CraftPower implements Listener {
                         if (!slots.isEmpty()) {
                             for (int i = 0; i < player.getInventory().getSize(); i++) {
                                 if (slots.contains((long) i)) {
-                                    e.getItemsToKeep().add(player.getInventory().getItem(i));
+                                    if(ConditionExecutor.testItem(power.get("item_condition"), player.getInventory().getItem(i))){
+                                        e.getItemsToKeep().add(player.getInventory().getItem(i));
+                                    }
                                 }
                             }
                         }

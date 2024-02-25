@@ -8,6 +8,8 @@ import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import org.bukkit.FluidCollisionMode;
 import org.bukkit.Location;
+import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
+import org.bukkit.craftbukkit.v1_20_R3.inventory.CraftItemStack;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -66,29 +68,10 @@ public class PreventEntityUse extends CraftPower implements Listener {
                         if (!entity.isDead()) {
                             ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                             for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-                                if (conditionExecutor.check("bientity_condition", "bientity_condition", p, power, "apoli:prevent_entity_use", p, entity, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
-                                    if (conditionExecutor.check("item_condition", "item_condition", p, power, "apoli:prevent_entity_use", p, entity, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
-                                        e.setCancelled(true);
-                                        if (power == null) {
-                                            getPowerArray().remove(p);
-                                            return;
-                                        }
-                                        if (!getPowerArray().contains(p)) return;
-                                        setActive(p, power.getTag(), true);
-                                    } else {
-                                        if (power == null) {
-                                            getPowerArray().remove(p);
-                                            return;
-                                        }
-                                        if (!getPowerArray().contains(p)) return;
-                                        setActive(p, power.getTag(), false);
-                                    }
+                                if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p) && ConditionExecutor.testBiEntity(power.get("bientity_condition"), (CraftEntity) p, (CraftEntity) entity) && ConditionExecutor.testItem(power.get("item_condition"), e.getItem())) {
+                                    e.setCancelled(true);
+                                    setActive(p, power.getTag(), true);
                                 } else {
-                                    if (power == null) {
-                                        getPowerArray().remove(p);
-                                        return;
-                                    }
-                                    if (!getPowerArray().contains(p)) return;
                                     setActive(p, power.getTag(), false);
                                 }
                             }

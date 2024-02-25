@@ -96,8 +96,7 @@ public class FireProjectile extends CraftPower implements Listener {
         for(Layer layer : CraftApoli.getLayersFromRegistry()){
             for(Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)){
                 if (fire_projectile.contains(p)) {
-                    ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
-                    if (conditionExecutor.check("condition", "conditions", p, power, "apoli:fire_projectile", p, null, null, null, p.getItemInHand(), null)) {
+                    if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p)) {
                         if (!CooldownUtils.isPlayerInCooldownFromTag(p, Utils.getNameOrTag(power))) {
                             if (KeybindingUtils.isKeyActive(power.get("key").getOrDefault("key", "key.origins.primary_active").toString(), p)) {
                                 int cooldown = power.getIntOrDefault("cooldown", 1);

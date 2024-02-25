@@ -2,11 +2,12 @@ package me.dueris.genesismc.factory.powers.apoli;
 
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
-import me.dueris.genesismc.factory.conditions.ItemConditions;
+import me.dueris.genesismc.factory.conditions.types.ItemConditions;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
+import org.bukkit.craftbukkit.v1_20_R3.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -49,36 +50,8 @@ public class PreventItemUse extends CraftPower implements Listener {
                         getPowerArray().remove(e.getPlayer());
                         return;
                     } else {
-                        ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
-                        boolean shouldCancel = conditionExecutor.check("item_condition", "item_conditions", e.getPlayer(), power, "apoli:prevent_item_use", e.getPlayer(), null, e.getPlayer().getLocation().getBlock(), null, e.getItem(), null);
-                        for (HashMap<String, Object> condition : power.getJsonListSingularPlural("item_condition", "item_conditions")) {
-                            boolean inverted = (boolean) condition.getOrDefault("inverted", false);
-                            if (condition.get("type") != null) {
-                                if (condition.get("type").toString().equalsIgnoreCase("apoli:meat")) {
-                                    if (inverted) {
-                                        if (ItemConditions.getNonMeatMaterials().contains(e.getItem().getType())) {
-                                            e.setCancelled(true);
-                                        } else {
-                                            return;
-                                        }
-                                    } else {
-                                        if (ItemConditions.getMeatMaterials().contains(e.getItem().getType())) {
-                                            e.setCancelled(true);
-                                        } else {
-                                            return;
-                                        }
-                                    }
-                                } else {
-                                    if (shouldCancel) {
-                                        e.setCancelled(true);
-                                        setActive(e.getPlayer(), power.getTag(), true);
-                                    } else {
-                                        e.setCancelled(false);
-                                        setActive(e.getPlayer(), power.getTag(), false);
-                                    }
-                                }
-                            }
-                        }
+                        boolean shouldCancel = ConditionExecutor.testItem(power.get("item_condition"), e.getItem());
+                        if(shouldCancel) e.setCancelled(true);
                     }
                 }
             }

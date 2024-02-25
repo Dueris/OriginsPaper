@@ -6,6 +6,7 @@ import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
+import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftPlayer;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -50,21 +51,14 @@ public class EntityGlowPower extends CraftPower {
                 for (Entity entity : entitiesWithinRadius) {
                     ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                     for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-                        if (conditionExecutor.check("condition", "conditions", p, power, getPowerFile(), p, entity, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
-                            if (conditionExecutor.check("bientity_condition", "bientity_conditions", p, power, getPowerFile(), p, entity, p.getLocation().getBlock(), null, p.getActiveItem(), null)) {
-                                CraftPlayer craftPlayer = (CraftPlayer) p;
+                        if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p) && ConditionExecutor.testBiEntity(power.get("bientity_condition"), (CraftEntity) p, (CraftEntity) entity)) {
+                            CraftPlayer craftPlayer = (CraftPlayer) p;
 //                                MobEffect effect = MobEffects.GLOWING;
 //                                craftPlayer.getHandle().connection.send(new ClientboundUpdateMobEffectPacket(entity.getEntityId(), new MobEffectInstance(effect, 60, 2, false, false, false)));
-                                if (!entity.isGlowing()) {
-                                    entity.setGlowing(true);
-                                }
-                                setActive(p, power.getTag(), true);
-                            } else {
-                                if (entity.isGlowing()) {
-                                    entity.setGlowing(false);
-                                }
-                                setActive(p, power.getTag(), false);
+                            if (!entity.isGlowing()) {
+                                entity.setGlowing(true);
                             }
+                            setActive(p, power.getTag(), true);
                         } else {
                             if (entity.isGlowing()) {
                                 entity.setGlowing(false);

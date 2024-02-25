@@ -100,7 +100,7 @@ public class OriginChoosing implements Listener {
 
             OriginChooseEvent chooseEvent = new OriginChooseEvent(p);
             getServer().getPluginManager().callEvent(chooseEvent);
-            OriginChangeEvent Event = new OriginChangeEvent(p, origin);
+            OriginChangeEvent Event = new OriginChangeEvent(p, origin, true);
             getServer().getPluginManager().callEvent(Event);
 
             SendCharts.originPopularity(p);
@@ -135,7 +135,7 @@ public class OriginChoosing implements Listener {
                 }.runTaskLater(GenesisMC.getPlugin(), 1);
                 ModifyPlayerSpawnPower power = new ModifyPlayerSpawnPower();
                 power.runHandle(p);
-                OriginChangeEvent event = new OriginChangeEvent(p, origin);
+                OriginChangeEvent event = new OriginChangeEvent(p, origin, false);
                 event.callEvent();
             }
         }

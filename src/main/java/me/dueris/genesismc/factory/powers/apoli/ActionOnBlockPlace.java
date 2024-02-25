@@ -3,16 +3,22 @@ package me.dueris.genesismc.factory.powers.apoli;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.actions.Actions;
+import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.util.console.OriginConsoleSender;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.craftbukkit.v1_20_R3.block.CraftBlock;
+import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
+import org.bukkit.craftbukkit.v1_20_R3.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.inventory.ItemStack;
 import org.json.simple.JSONObject;
 
 import java.util.ArrayList;
@@ -30,39 +36,24 @@ public class ActionOnBlockPlace extends CraftPower implements Listener {
         if (action_on_block_place.contains(e.getPlayer())) {
             for (Layer layer : CraftApoli.getLayersFromRegistry()) {
                 for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(e.getPlayer(), getPowerFile(), layer)) {
-                    if (GenesisMC.getConditionExecutor().check("condition", "conditions", e.getPlayer(), power, getPowerFile(), e.getPlayer(), null, e.getBlockPlaced(), null, e.getItemInHand(), null)) {
-                        if (GenesisMC.getConditionExecutor().check("item_condition", "item_conditions", e.getPlayer(), power, getPowerFile(), e.getPlayer(), null, e.getBlockPlaced(), null, e.getItemInHand(), null)) {
-                            if (GenesisMC.getConditionExecutor().check("place_on_condition", "place_on_conditions", e.getPlayer(), power, getPowerFile(), e.getPlayer(), null, e.getBlockAgainst(), null, e.getItemInHand(), null)) {
-                                if (GenesisMC.getConditionExecutor().check("place_to_condition", "place_to_conditions", e.getPlayer(), power, getPowerFile(), e.getPlayer(), null, e.getBlockPlaced(), null, e.getItemInHand(), null)) {
-                                    e.setCancelled(true);
-                                    setActive(e.getPlayer(), power.getTag(), true);
-                                    Actions.EntityActionType(e.getPlayer(), power.getEntityAction());
-                                    Actions.ItemActionType(e.getItemInHand(), power.getAction("held_item_action"));
-                                    Actions.BlockActionType(e.getBlockAgainst().getLocation(), power.getAction("place_on_action"));
-                                    Actions.BlockActionType(e.getBlockPlaced().getLocation(), power.getAction("place_to_action"));
-                                    if (power.get("result_stack") != null) {
-                                        JSONObject jsonObject = power.get("result_stack");
-                                        int amt;
-                                        if (jsonObject.get("amount").toString() != null) {
-                                            amt = Integer.parseInt(jsonObject.get("amount").toString());
-                                        } else {
-                                            amt = 1;
-                                        }
-                                        Bukkit.dispatchCommand(new OriginConsoleSender(), "give {player} {item} {amount}"
-                                                .replace("{player}", e.getPlayer().getName()).replace("{item}", jsonObject.get("item").toString()).replace("{amount}", String.valueOf(amt))
-                                        );
-                                    }
-                                } else {
-                                    setActive(e.getPlayer(), power.getTag(), false);
-                                }
-                            } else {
-                                setActive(e.getPlayer(), power.getTag(), false);
-                            }
+                    if(!(ConditionExecutor.testEntity((JSONObject) power.get("condition"), (CraftEntity) e.getPlayer()) && ConditionExecutor.testItem((JSONObject) power.get("item_condition"), e.getItemInHand()) && ConditionExecutor.testBlock((JSONObject) power.get("place_to_condition"), (CraftBlock) e.getBlockPlaced()) && ConditionExecutor.testBlock((JSONObject) power.get("place_on_condition"), (CraftBlock) e.getBlockAgainst()))) return;
+                    e.setCancelled(true);
+                    setActive(e.getPlayer(), power.getTag(), true);
+                    Actions.EntityActionType(e.getPlayer(), power.getEntityAction());
+                    Actions.ItemActionType(e.getItemInHand(), power.getAction("held_item_action"));
+                    Actions.BlockActionType(e.getBlockAgainst().getLocation(), power.getAction("place_on_action"));
+                    Actions.BlockActionType(e.getBlockPlaced().getLocation(), power.getAction("place_to_action"));
+                    if (power.get("result_stack") != null) {
+                        JSONObject jsonObject = power.get("result_stack");
+                        int amt;
+                        if (jsonObject.get("amount").toString() != null) {
+                            amt = Integer.parseInt(jsonObject.get("amount").toString());
                         } else {
-                            setActive(e.getPlayer(), power.getTag(), false);
+                            amt = 1;
                         }
-                    } else {
-                        setActive(e.getPlayer(), power.getTag(), false);
+                        ItemStack itemStack = new ItemStack(Material.valueOf(jsonObject.get("item").toString().toUpperCase().split(":")[jsonObject.get("item").toString().split(":").length]), amt);
+                        e.getPlayer().getInventory().addItem(itemStack);
+                        Actions.ItemActionType(itemStack, power.getAction("result_item_action"));
                     }
                 }
             }

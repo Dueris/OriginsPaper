@@ -1,6 +1,7 @@
 package me.dueris.genesismc.factory;
 
 import me.dueris.genesismc.GenesisMC;
+import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.registry.IRegistry;
 import me.dueris.genesismc.registry.Registrar;
@@ -246,6 +247,7 @@ public class CraftApoli {
                                     for (File powerFile : powerDir.listFiles()) {
                                         try {
                                             if (!powerFile.isDirectory()) {
+                                                JsonValidator.validateJsonFile(powerFile.getAbsolutePath());
                                                 String powerFolder = namespace.getName().toLowerCase();
                                                 String powerFileName = powerFile.getName().replace(".json", "").toLowerCase();
 
@@ -407,6 +409,8 @@ public class CraftApoli {
                      InvocationTargetException e) {
                 e.printStackTrace();
             }
+        }).thenRun(() -> {
+            ConditionExecutor.registerAll();
         });
 
         future.get();

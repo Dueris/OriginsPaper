@@ -9,6 +9,7 @@ import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.craftbukkit.v1_20_R3.entity.CraftPlayer;
 import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -60,7 +61,7 @@ public class ExplosionChargePower extends CraftPower implements Listener {
 
                         @Override
                         public void run() {
-                            if (executor.check("condition", "conditions", p, power, getPowerFile(), p, null, null, null, p.getItemInHand(), null)) {
+                            if (executor.testEntity(power.get("condition"), (CraftPlayer)p)) {
                                 setActive(p, power.getTag(), true);
                                 if (p.isSneaking()) {
                                     if (!cooldown.containsKey(p.getUniqueId()) || ((System.currentTimeMillis() - cooldown.get(p.getUniqueId())) > 3300)) {
@@ -82,30 +83,13 @@ public class ExplosionChargePower extends CraftPower implements Listener {
                                         if (!cooldown.containsKey(p.getUniqueId()) || (System.currentTimeMillis() - cooldown.get(p.getUniqueId()) >= 2900)) {
                                             List<Entity> nearby = p.getNearbyEntities(2, 2, 2);
                                             for (Entity tmp : nearby) {
-                                                if (executor.check("entity_condition", "entity_conditions", p, power, getPowerFile(), p, null, null, null, p.getItemInHand(), null)) {
-                                                    if (executor.check("bientit_condition", "bientity_conditions", p, power, getPowerFile(), p, null, null, null, p.getItemInHand(), null)) {
-                                                        if (tmp instanceof Damageable && tmp != p)
+                                                if (tmp instanceof Damageable && tmp != p)
                                                             ((Damageable) tmp).damage(15);
-                                                    }
-                                                }
-                                            }
-                                            List<Entity> nearby2 = p.getNearbyEntities(3, 3, 3);
-                                            for (Entity tmp : nearby2) {
-                                                if (executor.check("entity_condition", "entity_conditions", p, power, getPowerFile(), p, null, null, null, p.getItemInHand(), null)) {
-                                                    if (executor.check("bientit_condition", "bientity_conditions", p, power, getPowerFile(), p, null, null, null, p.getItemInHand(), null)) {
-                                                        if (tmp instanceof Damageable && tmp != p)
-                                                            ((Damageable) tmp).damage(10);
-                                                    }
-                                                }
                                             }
                                             List<Entity> nearby3 = p.getNearbyEntities(5, 5, 5);
                                             for (Entity tmp : nearby3) {
-                                                if (executor.check("entity_condition", "entity_conditions", p, power, getPowerFile(), p, null, null, null, p.getItemInHand(), null)) {
-                                                    if (executor.check("bientit_condition", "bientity_conditions", p, power, getPowerFile(), p, null, null, null, p.getItemInHand(), null)) {
-                                                        if (tmp instanceof Damageable && tmp != p)
+                                                if (tmp instanceof Damageable && tmp != p)
                                                             ((Damageable) tmp).damage(10);
-                                                    }
-                                                }
                                             }
 
                                             if (power.get("modifier").get("thunder_modifier") != null) {

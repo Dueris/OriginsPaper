@@ -9,6 +9,7 @@ import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -72,8 +73,7 @@ public class Climbing extends CraftPower {
                 for (Layer layer : CraftApoli.getLayersFromRegistry()) {
                     for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                         ConditionExecutor executor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
-                        if (executor.check("condition", "conditions", p, power, getPowerFile(), p, null, null, null, p.getItemInHand(), null)) {
-
+                        if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p)) {
                             setActive(p, power.getTag(), true);
                             if (!p.isSneaking() && block.getType() != AIR) return;
                             p.addPotionEffect(new PotionEffect(PotionEffectType.LEVITATION, 6, 2, false, false, false));
@@ -85,7 +85,6 @@ public class Climbing extends CraftPower {
                                 }
                             }.runTaskLater(GenesisMC.getPlugin(), 1L);
                         } else {
-
                             setActive(p, power.getTag(), false);
                         }
                     }

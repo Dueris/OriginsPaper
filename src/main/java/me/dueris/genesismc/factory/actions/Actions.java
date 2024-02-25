@@ -24,8 +24,10 @@ import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.boss.BossBar;
+import org.bukkit.craftbukkit.v1_20_R3.block.CraftBlock;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftLivingEntity;
+import org.bukkit.craftbukkit.v1_20_R3.inventory.CraftItemStack;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.*;
 import org.bukkit.event.inventory.InventoryType;
@@ -101,28 +103,9 @@ public class Actions {
                 BiEntityActionType(actor, target, actionn);
             }
         } else if (type.equals("apoli:if_else")) {
-            if (actor instanceof Player p) {
-                Optional<Boolean> bool = ConditionExecutor.biEntityCondition.check((JSONObject) action.get("condition"), actor, target, actor.getLocation().getBlock(), null, null, null);
-                if (bool.isPresent()) {
-                    if (bool.get()) {
-                        BiEntityActionType(actor, target, (JSONObject) action.get("if_action"));
-                    } else {
-                        BiEntityActionType(actor, target, (JSONObject) action.get("else_action"));
-                    }
-                } else {
-                    BiEntityActionType(actor, target, (JSONObject) action.get("else_action"));
-                }
-            } else if (target instanceof Player p) {
-                Optional<Boolean> bool = ConditionExecutor.biEntityCondition.check((JSONObject) action.get("condition"), actor, target, actor.getLocation().getBlock(), null, null, null);
-                if (bool.isPresent()) {
-                    if (bool.get()) {
-                        BiEntityActionType(actor, target, (JSONObject) action.get("if_action"));
-                    } else {
-                        BiEntityActionType(actor, target, (JSONObject) action.get("else_action"));
-                    }
-                } else {
-                    BiEntityActionType(actor, target, (JSONObject) action.get("else_action"));
-                }
+            boolean bool = ConditionExecutor.testBiEntity((JSONObject) action.get("condition"), (CraftEntity) actor, (CraftEntity) target);
+            if (bool) {
+                BiEntityActionType(actor, target, (JSONObject) action.get("if_action"));
             } else {
                 BiEntityActionType(actor, target, (JSONObject) action.get("else_action"));
             }
@@ -180,7 +163,7 @@ public class Actions {
         } else if (type.equals("apoli:nothing")) {
             // Literally does nothing
         } else if (type.equals("apoli:if_else")) {
-            Optional<Boolean> bool = ConditionExecutor.itemCondition.check((JSONObject) power.get("condition"), null, null, null, null, item, null);
+            Optional<Boolean> bool = Optional.of(ConditionExecutor.testItem((JSONObject) power.get("item_condition"), item));
             if (bool.isPresent()) {
                 if (bool.get()) {
                     ItemActionType(item, (JSONObject) power.get("if_action"));
@@ -249,17 +232,9 @@ public class Actions {
         } else if (type.equals("apoli:nothing")) {
             //literally does nothin
         } else if (type.equals("apoli:if_else")) {
-            if (entity instanceof Player p) {
-                Optional<Boolean> bool = ConditionExecutor.entityCondition.check((JSONObject) action.get("condition"), entity, null, entity.getLocation().getBlock(), null, null, null);
-                if (bool.isPresent()) {
-                    if (bool.get()) {
-                        EntityActionType(entity, (JSONObject) action.get("if_action"));
-                    } else {
-                        EntityActionType(entity, (JSONObject) action.get("else_action"));
-                    }
-                } else {
-                    EntityActionType(entity, (JSONObject) action.get("else_action"));
-                }
+            boolean bool = ConditionExecutor.testEntity((JSONObject) action.get("condition"), (CraftEntity) entity);
+            if (bool) {
+                EntityActionType(entity, (JSONObject) action.get("if_action"));
             } else {
                 EntityActionType(entity, (JSONObject) action.get("else_action"));
             }
@@ -321,7 +296,7 @@ public class Actions {
         } else if (type.equals("apoli:nothing")) {
             // Literally does nothing
         } else if (type.equals("apoli:if_else")) {
-            Optional<Boolean> bool = ConditionExecutor.blockCondition.check((JSONObject) action.get("condition"), null, null, location.getBlock(), null, null, null);
+            Optional<Boolean> bool = Optional.of(ConditionExecutor.testBlock((JSONObject) action.get("block_condition"), (CraftBlock) location.getBlock()));
             if (bool.isPresent()) {
                 if (bool.get()) {
                     BlockActionType(location, (JSONObject) action.get("if_action"));
@@ -542,11 +517,11 @@ public class Actions {
             if (resourceChangeTimeout.containsKey(entity)) return;
             String resource = action.get("resource").toString();
             if (Resource.getResource(entity, resource) == null) return;
-            if (Resource.getResource(entity, resource).getRight() == null) return;
-            if (Resource.getResource(entity, resource).getLeft() == null) return;
+            if (Resource.getResource(entity, resource).right() == null) return;
+            if (Resource.getResource(entity, resource).left() == null) return;
             int change = Integer.parseInt(action.get("change").toString());
-            double finalChange = 1.0 / Resource.getResource(entity, resource).getRight();
-            BossBar bossBar = Resource.getResource(entity, resource).getLeft();
+            double finalChange = 1.0 / Resource.getResource(entity, resource).right();
+            BossBar bossBar = Resource.getResource(entity, resource).left();
             double toRemove = finalChange * change;
             double newP = bossBar.getProgress() + toRemove;
             if (newP > 1.0) {
@@ -909,16 +884,7 @@ public class Actions {
                 include_target = Boolean.parseBoolean(action.get("include_target").toString());
 
             for (Entity nearbyEntity : entity.getNearbyEntities(radius, radius, radius)) {
-                boolean run = true;
-                if (action.containsKey("bientity_condition")) {
-                    Optional<Boolean> bool = ConditionExecutor.biEntityCondition.check((JSONObject) bientity_action.get("bientity_condition"), entity, nearbyEntity, entity.getLocation().getBlock(), null, null, null);
-                    if (bool.isPresent()) {
-                        run = bool.get();
-                    } else {
-                        run = false;
-                    }
-                }
-
+                boolean run = ConditionExecutor.testBiEntity((JSONObject) action.get("bientity_condition"), (CraftEntity) entity, (CraftEntity) nearbyEntity);
                 if (run) {
                     BiEntityActionType(entity, nearbyEntity, bientity_action);
                 }

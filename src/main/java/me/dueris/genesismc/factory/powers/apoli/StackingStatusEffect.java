@@ -10,6 +10,7 @@ import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
+import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -61,14 +62,9 @@ public class StackingStatusEffect extends CraftPower implements Listener {
         if (getPowerArray().contains(p)) {
             for (Layer layer : CraftApoli.getLayersFromRegistry()) {
                 for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-                    ConditionExecutor executor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
-                    if (executor.check("entity_condition", "entity_conditions", p, power, getPowerFile(), p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
-                        if (executor.check("condition", "conditions", p, power, getPowerFile(), p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
-                            setActive(p, power.getTag(), true);
-                            applyStackingEffect(p, power);
-                        } else {
-                            setActive(p, power.getTag(), false);
-                        }
+                    if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p) && ConditionExecutor.testEntity(power.get("entity_condition"), (CraftEntity) p)) {
+                        setActive(p, power.getTag(), true);
+                        applyStackingEffect(p, power);
                     } else {
                         setActive(p, power.getTag(), false);
                     }

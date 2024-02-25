@@ -11,6 +11,7 @@ import me.dueris.genesismc.util.CooldownUtils;
 import me.dueris.genesismc.util.KeybindingUtils;
 import me.dueris.genesismc.util.Utils;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
+import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -18,6 +19,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Toggle extends CraftPower implements Listener {
@@ -64,8 +66,7 @@ public class Toggle extends CraftPower implements Listener {
         for(Layer layer : CraftApoli.getLayersFromRegistry()){
             for(Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)){
                 if (getPowerArray().contains(p)) {
-                    ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
-                    if (conditionExecutor.check("condition", "conditions", p, power, getPowerFile(), p, null, null, null, p.getItemInHand(), null)) {
+                    if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p)) {
                         if (!CooldownUtils.isPlayerInCooldownFromTag(p, Utils.getNameOrTag(power))) {
                             if (KeybindingUtils.isKeyActive(power.get("key").getOrDefault("key", "key.origins.primary_active").toString(), p)) {
                                 execute(p, power);
@@ -87,7 +88,7 @@ public class Toggle extends CraftPower implements Listener {
             @Override
             public void run() {
                 AtomicBoolean cond = new AtomicBoolean(true);
-                ConditionExecutor.entityCondition.check(power.get("condition"), p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null).ifPresent(bool -> cond.set(bool));
+                Optional.of(ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p)).ifPresent(bool -> cond.set(bool));
                 if(!cond.get() || ((true /* Toggle power always execute continuously */ || !KeybindingUtils.activeKeys.get(p).contains(key)) && !in_continuous.get(p).contains(key))){
                     CooldownUtils.addCooldown(p, Utils.getNameOrTag(power), power.getType(), cooldown, key);
                     KeybindingUtils.toggleKey(p, key);

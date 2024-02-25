@@ -21,7 +21,6 @@ public class DependencyLoader implements PluginLoader{
         resolver.addDependency(new Dependency(new DefaultArtifact("io.github.classgraph:classgraph:4.8.165"), null));
         resolver.addDependency(new Dependency(new DefaultArtifact("org.reflections:reflections:0.9.12"), null));
         resolver.addDependency(new Dependency(new DefaultArtifact("org.mineskin:java-client:1.2.4-SNAPSHOT"), null));
-        resolver.addDependency(new Dependency(new DefaultArtifact("com.github.Dueris:ModelColorAPI:1.0.5-SNAPSHOT"), null));
         classpathBuilder.addLibrary(resolver);
     }
     

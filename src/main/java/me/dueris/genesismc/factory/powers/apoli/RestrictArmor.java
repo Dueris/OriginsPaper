@@ -9,6 +9,8 @@ import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.util.LangConfig;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import org.bukkit.Bukkit;
+import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
+import org.bukkit.craftbukkit.v1_20_R3.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -36,8 +38,7 @@ public class RestrictArmor extends CraftPower implements Listener {
             for (Layer layer : CraftApoli.getLayersFromRegistry()) {
                 for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                     if (power == null) continue;
-                    ConditionExecutor executor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
-                    if (executor.check("condition", "conditions", p, power, getPowerFile(), p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
+                    if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p)) {
                         runPower(p, power);
                     }
                 }
@@ -76,7 +77,7 @@ public class RestrictArmor extends CraftPower implements Listener {
                         return;
                     } else {
                         ConditionExecutor executor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
-                        if (executor.check("condition", "conditions", p, power, getPowerFile(), p, null, p.getLocation().getBlock(), null, p.getItemInHand(), null)) {
+                        if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p)) {
                             runPower(p, power);
                         } else {
                             setActive(p, power.getTag(), false);
@@ -108,45 +109,25 @@ public class RestrictArmor extends CraftPower implements Listener {
         if (feetObj == null) feetb = false;
 
         if(headb){
-            Optional<Boolean> condition = ConditionExecutor.itemCondition.check(headObj, p, null, p.getLocation().getBlock(), null, p.getInventory().getItem(EquipmentSlot.HEAD), null);
-            if(condition.isPresent()){
-                passHead = condition.get();
-            }else{
-                passHead = true;
-            }
+            passHead = ConditionExecutor.testItem(headObj, p.getInventory().getItem(EquipmentSlot.HEAD));
         }else{
             passHead = true;
         }
 
         if(chestb){
-            Optional<Boolean> condition = ConditionExecutor.itemCondition.check(chestObj, p, null, p.getLocation().getBlock(), null, p.getInventory().getItem(EquipmentSlot.CHEST), null);
-            if(condition.isPresent()){
-                passChest = condition.get();
-            }else{
-                passChest = true;
-            }
+            passChest = ConditionExecutor.testItem(chestObj, p.getInventory().getItem(EquipmentSlot.CHEST));
         }else{
             passChest = true;
         }
 
         if(legsb){
-            Optional<Boolean> condition = ConditionExecutor.itemCondition.check(legsObj, p, null, p.getLocation().getBlock(), null, p.getInventory().getItem(EquipmentSlot.LEGS), null);
-            if(condition.isPresent()){
-                passLegs = condition.get();
-            }else{
-                passLegs = true;
-            }
+            passLegs = ConditionExecutor.testItem(legsObj, p.getInventory().getItem(EquipmentSlot.LEGS));
         }else{
             passLegs = true;
         }
 
         if(feetb){
-            Optional<Boolean> condition = ConditionExecutor.itemCondition.check(feetObj, p, null, p.getLocation().getBlock(), null, p.getInventory().getItem(EquipmentSlot.FEET), null);
-            if(condition.isPresent()){
-                passFeet = condition.get();
-            }else{
-                passFeet = true;
-            }
+            passFeet = ConditionExecutor.testItem(feetObj, p.getInventory().getItem(EquipmentSlot.FEET));
         }else{
             passFeet = true;
         }

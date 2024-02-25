@@ -9,10 +9,12 @@ import org.jetbrains.annotations.NotNull;
 public class OriginChangeEvent extends PlayerEvent {
     private static final HandlerList handlers = new HandlerList();
     private final Origin origin;
+    private boolean fromOrb;
 
-    public OriginChangeEvent(@NotNull Player who, Origin origin) {
+    public OriginChangeEvent(@NotNull Player who, Origin origin, boolean fromOrb) {
         super(who);
         this.origin = origin;
+        this.fromOrb = fromOrb;
     }
 
     public static HandlerList getHandlerList() {
@@ -26,5 +28,9 @@ public class OriginChangeEvent extends PlayerEvent {
 
     public Origin getOrigin() {
         return origin;
+    }
+
+    public boolean isFromOrb() {
+        return fromOrb;
     }
 }

@@ -14,6 +14,13 @@ import me.dueris.genesismc.content.enchantment.generation.VillagerTradeHook;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.TagRegistryParser;
 import me.dueris.genesismc.factory.conditions.*;
+import me.dueris.genesismc.factory.conditions.types.BiEntityConditions;
+import me.dueris.genesismc.factory.conditions.types.BiomeConditions;
+import me.dueris.genesismc.factory.conditions.types.BlockConditions;
+import me.dueris.genesismc.factory.conditions.types.DamageConditions;
+import me.dueris.genesismc.factory.conditions.types.EntityConditions;
+import me.dueris.genesismc.factory.conditions.types.FluidConditions;
+import me.dueris.genesismc.factory.conditions.types.ItemConditions;
 import me.dueris.genesismc.factory.powers.ApoliPower;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.factory.powers.apoli.*;
@@ -223,6 +230,14 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         this.registry.create(Registries.ORIGIN, new Registrar<Origin>());
         this.registry.create(Registries.LAYER, new Registrar<Layer>());
         this.registry.create(Registries.CRAFT_POWER, new Registrar<ApoliPower>());
+        this.registry.create(Registries.FLUID_CONDITION, new Registrar<FluidConditions.ConditionFactory>());
+        this.registry.create(Registries.ENTITY_CONDITION, new Registrar<EntityConditions.ConditionFactory>());
+        this.registry.create(Registries.BIOME_CONDITION, new Registrar<BiomeConditions.ConditionFactory>());
+        this.registry.create(Registries.BIENTITY_CONDITION, new Registrar<BiEntityConditions.ConditionFactory>());
+        this.registry.create(Registries.BLOCK_CONDITION, new Registrar<BlockConditions.ConditionFactory>());
+        this.registry.create(Registries.ITEM_CONDITION, new Registrar<ItemConditions.ConditionFactory>());
+        this.registry.create(Registries.DAMAGE_CONDITION, new Registrar<DamageConditions.ConditionFactory>());
+        
     }
 
     @Override

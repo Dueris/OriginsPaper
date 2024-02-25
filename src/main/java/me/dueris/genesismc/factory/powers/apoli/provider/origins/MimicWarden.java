@@ -1,5 +1,6 @@
 package me.dueris.genesismc.factory.powers.apoli.provider.origins;
 
+import it.unimi.dsi.fastutil.Pair;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.event.KeybindTriggerEvent;
 import me.dueris.genesismc.factory.CraftApoli;
@@ -49,11 +50,21 @@ public class MimicWarden extends CraftPower implements Listener, PowerProvider {
         if (mimicWardenPlayers.contains(p)) {
             if (p.getFoodLevel() < 6) return;
             for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-                if (CooldownUtils.isPlayerInCooldown(p, "key.origins.primary_active")) return;
+                if (CooldownUtils.isPlayerInCooldownFromTag(p, "Sonic Boom")) return;
                 if (e.getKey().equals("key.origins.primary_active")) {
                     Location eyeLoc = p.getEyeLocation();
 
-                    CooldownUtils.addCooldown(p, "Sonic Boom", "origins:mimic_warden", 1200, "key.origins.primary_active");
+                    CooldownUtils.addCooldown(p, new Pair<String, String>() {
+                        @Override
+                        public String left() {
+                            return "Sonic Boom";
+                        }
+
+                        @Override
+                        public String right() {
+                            return "origins:mimic_warden";
+                        }
+                    }, "origins:mimic_warden", 1200, "key.origins.primary_active");
 
                     Location startLocation = p.getEyeLocation();
 

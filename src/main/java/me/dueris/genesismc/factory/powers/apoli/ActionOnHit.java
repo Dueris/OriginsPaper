@@ -3,10 +3,12 @@ package me.dueris.genesismc.factory.powers.apoli;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.actions.Actions;
+import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
+import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -32,22 +34,18 @@ public class ActionOnHit extends CraftPower implements Listener {
             for (Layer layer : CraftApoli.getLayersFromRegistry()) {
                 if (getPowerArray().contains(p)) {
                     for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-                        if (power == null) continue;
-                        if (GenesisMC.getConditionExecutor().check("condition", "conditions", p, power, getPowerFile(), actor, target, actor.getLocation().getBlock(), null, p.getActiveItem(), e)) {
-                            if (GenesisMC.getConditionExecutor().check("damage_condition", "damage_conditions", p, power, getPowerFile(), actor, target, actor.getLocation().getBlock(), null, p.getActiveItem(), e)) {
-                                if (GenesisMC.getConditionExecutor().check("bientity_condition", "bientity_conditions", p, power, getPowerFile(), actor, target, actor.getLocation().getBlock(), null, p.getActiveItem(), e)) {
-                                    setActive(p, power.getTag(), true);
-                                    Actions.EntityActionType(actor, power.getEntityAction());
-                                    Actions.BiEntityActionType(actor, target, power.getBiEntityAction());
-                                    new BukkitRunnable() {
-                                        @Override
-                                        public void run() {
-                                            setActive(p, power.getTag(), false);
-                                        }
-                                    }.runTaskLater(GenesisMC.getPlugin(), 2L);
-                                }
+                        if (!ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) actor)) return;
+                        if (!ConditionExecutor.testDamage(power.get("damage_condition"), e)) return;
+                        if (!ConditionExecutor.testBiEntity(power.get("bientity_condition"), (CraftEntity) actor, (CraftEntity) target)) return;
+                        setActive(p, power.getTag(), true);
+                        Actions.EntityActionType(actor, power.getEntityAction());
+                        Actions.BiEntityActionType(actor, target, power.getBiEntityAction());
+                        new BukkitRunnable() {
+                            @Override
+                            public void run() {
+                                setActive(p, power.getTag(), false);
                             }
-                        }
+                        }.runTaskLater(GenesisMC.getPlugin(), 2L);
                     }
                 }
             }

@@ -6,6 +6,7 @@ import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
+import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -38,15 +39,13 @@ public class DisableRegeneration extends CraftPower implements Listener {
                 for (Layer layer : CraftApoli.getLayersFromRegistry()) {
                     ConditionExecutor executor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                     for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-                        if (executor.check("condition", "conditions", p, power, getPowerFile(), p, null, null, null, p.getItemInHand(), null)) {
-
+                        if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p)) {
                             setActive(p, power.getTag(), true);
                             if (e.getRegainReason().equals(EntityRegainHealthEvent.RegainReason.SATIATED)) {
                                 e.setAmount(0);
                                 e.setCancelled(true);
                             }
                         } else {
-
                             setActive(p, power.getTag(), false);
                         }
                     }

@@ -3,14 +3,19 @@ package me.dueris.genesismc.factory.powers.apoli;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.actions.Actions;
+import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
+import org.bukkit.craftbukkit.v1_20_R3.block.CraftBlock;
+import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
+import org.bukkit.craftbukkit.v1_20_R3.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.json.simple.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,28 +34,13 @@ public class PreventBlockPlace extends CraftPower implements Listener {
         if (prevent_block_place.contains(e.getPlayer())) {
             for (Layer layer : CraftApoli.getLayersFromRegistry()) {
                 for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(e.getPlayer(), getPowerFile(), layer)) {
-                    if (GenesisMC.getConditionExecutor().check("condition", "conditions", e.getPlayer(), power, getPowerFile(), e.getPlayer(), null, e.getBlockPlaced(), null, e.getItemInHand(), null)) {
-                        if (GenesisMC.getConditionExecutor().check("item_condition", "item_conditions", e.getPlayer(), power, getPowerFile(), e.getPlayer(), null, e.getBlockPlaced(), null, e.getItemInHand(), null)) {
-                            if (GenesisMC.getConditionExecutor().check("place_on_condition", "place_on_conditions", e.getPlayer(), power, getPowerFile(), e.getPlayer(), null, e.getBlockAgainst(), null, e.getItemInHand(), null)) {
-                                if (GenesisMC.getConditionExecutor().check("place_to_condition", "place_to_conditions", e.getPlayer(), power, getPowerFile(), e.getPlayer(), null, e.getBlockPlaced(), null, e.getItemInHand(), null)) {
-                                    e.setCancelled(true);
-                                    setActive(e.getPlayer(), power.getTag(), true);
-                                    Actions.EntityActionType(e.getPlayer(), power.getEntityAction());
-                                    Actions.ItemActionType(e.getItemInHand(), power.getAction("held_item_action"));
-                                    Actions.BlockActionType(e.getBlockAgainst().getLocation(), power.getAction("place_on_action"));
-                                    Actions.BlockActionType(e.getBlockPlaced().getLocation(), power.getAction("place_to_action"));
-                                } else {
-                                    setActive(e.getPlayer(), power.getTag(), false);
-                                }
-                            } else {
-                                setActive(e.getPlayer(), power.getTag(), false);
-                            }
-                        } else {
-                            setActive(e.getPlayer(), power.getTag(), false);
-                        }
-                    } else {
-                        setActive(e.getPlayer(), power.getTag(), false);
-                    }
+                    if(!(ConditionExecutor.testEntity((JSONObject) power.get("condition"), (CraftEntity) e.getPlayer()) && ConditionExecutor.testItem((JSONObject) power.get("item_condition"), e.getItemInHand()) && ConditionExecutor.testBlock((JSONObject) power.get("place_to_condition"), (CraftBlock) e.getBlockPlaced()) && ConditionExecutor.testBlock((JSONObject) power.get("place_on_condition"), (CraftBlock) e.getBlockAgainst()))) return;
+                    e.setCancelled(true);
+                    setActive(e.getPlayer(), power.getTag(), true);
+                    Actions.EntityActionType(e.getPlayer(), power.getEntityAction());
+                    Actions.ItemActionType(e.getItemInHand(), power.getAction("held_item_action"));
+                    Actions.BlockActionType(e.getBlockAgainst().getLocation(), power.getAction("place_on_action"));
+                    Actions.BlockActionType(e.getBlockPlaced().getLocation(), power.getAction("place_to_action"));
                 }
             }
         }

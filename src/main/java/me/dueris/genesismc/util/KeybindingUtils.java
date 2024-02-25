@@ -222,10 +222,10 @@ public class KeybindingUtils implements Listener {
         Bukkit.getPluginManager().callEvent(new KeybindTriggerEvent(player, key));
     }
 
-    @EventHandler
-    public void test(KeybindTriggerEvent e){
-        System.out.println(e.getKey());
-    }
+    // @EventHandler
+    // public void test(KeybindTriggerEvent e){
+    //     System.out.println(e.getKey());
+    // }
 
     public static HashMap<Player, ArrayList<String>> activeKeys = new HashMap<>();
     private static void triggerActiveKey(Player player, String key){

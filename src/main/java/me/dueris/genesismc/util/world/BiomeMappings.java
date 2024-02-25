@@ -1,4 +1,4 @@
-package me.dueris.genesismc.factory.conditions;
+package me.dueris.genesismc.util.world;
 
 import java.util.ArrayList;
 import java.util.Arrays;

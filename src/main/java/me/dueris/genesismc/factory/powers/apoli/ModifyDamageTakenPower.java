@@ -7,6 +7,8 @@ import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
+import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
+import org.bukkit.craftbukkit.v1_20_R3.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -47,23 +49,14 @@ public class ModifyDamageTakenPower extends CraftPower implements Listener {
                 try {
                     ConditionExecutor conditionExecutor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                     for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-                        if (conditionExecutor.check("bientity_condition", "bientity_condition", p, power, "apoli:modify_damage_dealt", p, e.getEntity(), p.getLocation().getBlock(), null, p.getItemInHand(), e)) {
-                            if (conditionExecutor.check("condition", "condition", p, power, "apoli:modify_damage_dealt", p, e.getEntity(), p.getLocation().getBlock(), null, p.getItemInHand(), e)) {
-                                if (conditionExecutor.check("damage_condition", "damage_condition", p, power, "apoli:modify_damage_dealt", p, e.getEntity(), p.getLocation().getBlock(), null, p.getItemInHand(), e)) {
-                                    for (HashMap<String, Object> modifier : power.getJsonListSingularPlural("modifier", "modifiers")) {
-                                        Object value = modifier.get("value");
-                                        String operation = modifier.get("operation").toString();
-                                        runSetDMG(e, operation, value);
-                                        setActive(p, power.getTag(), true);
-                                    }
-                                } else {
-                                    setActive(p, power.getTag(), false);
-                                }
-                            } else {
-                                setActive(p, power.getTag(), false);
-                            }
-                        } else {
-                            setActive(p, power.getTag(), false);
+                        if (!ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p)) return;
+                        if (!ConditionExecutor.testBiEntity(power.get("bientity_condition"), (CraftEntity) p, (CraftEntity) e.getEntity())) return;
+                        if (!ConditionExecutor.testDamage(power.get("damage_condition"), e)) return;
+                        for (HashMap<String, Object> modifier : power.getJsonListSingularPlural("modifier", "modifiers")) {
+                            Object value = modifier.get("value");
+                            String operation = modifier.get("operation").toString();
+                            runSetDMG(e, operation, value);
+                            setActive(p, power.getTag(), true);
                         }
                     }
                 } catch (Exception ev) {

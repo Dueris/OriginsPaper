@@ -9,6 +9,7 @@ import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.util.CooldownUtils;
 import me.dueris.genesismc.util.Utils;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
+import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -34,11 +35,9 @@ public class SelfActionOnHit extends CraftPower implements Listener {
         if (!getPowerArray().contains(target)) return;
 
         for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-            ConditionExecutor executor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
-            if (CooldownUtils.isPlayerInCooldown((Player) target, getPowerFile())) return;
-
             for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(player, getPowerFile(), layer)) {
-                if (executor.check("condition", "conditions", (Player) target, power, getPowerFile(), actor, target, null, null, player.getInventory().getItemInHand(), e)) {
+                if (CooldownUtils.isPlayerInCooldownFromTag((Player) target, Utils.getNameOrTag(power))) return;
+                if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) player)) {
                     setActive(player, power.getTag(), true);
                     Actions.EntityActionType(target, power.getEntityAction());
                     if (power.getObjectOrDefault("cooldown", 1) != null) {
