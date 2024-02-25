@@ -28,6 +28,7 @@ public class ActionWhenHit extends CraftPower implements Listener {
 
     @EventHandler
     public void h(EntityDamageByEntityEvent e) {
+        if(e.getDamage() == 0 || e.isCancelled()) return;
         Entity actor = e.getEntity();
         Entity target = e.getDamager();
 

@@ -28,6 +28,7 @@ public class ActionWhenDamageTaken extends CraftPower implements Listener {
 
     @EventHandler
     public void d(EntityDamageEvent e) {
+        if(e.getDamage() == 0 || e.isCancelled()) return;
         Entity actor = e.getEntity();
         if (!(actor instanceof Player player)) return;
         for (Layer layer : CraftApoli.getLayersFromRegistry()) {
