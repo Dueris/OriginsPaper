@@ -41,7 +41,7 @@ public class SelfActionOnHit extends CraftPower implements Listener {
                     setActive(player, power.getTag(), true);
                     Actions.EntityActionType(target, power.getEntityAction());
                     if (power.getObjectOrDefault("cooldown", 1) != null) {
-                        CooldownUtils.addCooldown((Player) target, Utils.getNameOrTag(power), power.getType(), power.getIntOrDefault("cooldown", power.getIntOrDefault("max", 1)), getPowerFile());
+                        CooldownUtils.addCooldown((Player) target, Utils.getNameOrTag(power), power.getType(), power.getIntOrDefault("cooldown", power.getIntOrDefault("max", 1)), power.get("hud_render"));
                     }
                 } else {
                     setActive(player, power.getTag(), false);

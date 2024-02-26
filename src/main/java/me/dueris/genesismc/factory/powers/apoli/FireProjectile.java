@@ -131,7 +131,7 @@ public class FireProjectile extends CraftPower implements Listener {
                                     public void run() {
                                         if (shotsLeft >= 0) {
                                             if((!cont || !KeybindingUtils.activeKeys.get(p).contains(key)) && !in_continuous.get(p).contains(key)){
-                                                CooldownUtils.addCooldown(p, Utils.getNameOrTag(power), power.getType(), cooldown, key);
+                                                CooldownUtils.addCooldown(p, Utils.getNameOrTag(power), power.getType(), cooldown, power.get("hud_render"));
                                                 KeybindingUtils.toggleKey(p, key);
                                                 setActive(p, power.getTag(), false);
                                                 this.cancel();

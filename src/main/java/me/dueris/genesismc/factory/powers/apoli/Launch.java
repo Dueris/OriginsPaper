@@ -79,7 +79,7 @@ public class Launch extends CraftPower implements Listener {
                                         int cooldown = power.getIntOrDefault("cooldown", 1);
                                         if (times[0] >= 0) {
                                             if((!false /* Launch power doesnt execute continuously */ || !KeybindingUtils.activeKeys.get(p).contains(key)) && !in_continuous.get(p).contains(key)){
-                                                CooldownUtils.addCooldown(p, Utils.getNameOrTag(power), power.getType(), cooldown, key);
+                                                CooldownUtils.addCooldown(p, Utils.getNameOrTag(power), power.getType(), cooldown, power.get("hud_render"));
                                                 KeybindingUtils.toggleKey(p, key);
                                                 setActive(p, power.getTag(), false);
                                                 this.cancel();
@@ -87,7 +87,7 @@ public class Launch extends CraftPower implements Listener {
                                             }
                                         }
                                         int speed = Integer.parseInt(power.getStringOrDefault("speed", null)); // used as string so that upon parsing the int it throws if not found
-                                        CooldownUtils.addCooldown(p, Utils.getNameOrTag(power), power.getType(), cooldown, key);
+                                        CooldownUtils.addCooldown(p, Utils.getNameOrTag(power), power.getType(), cooldown, power.get("hud_render"));
                                         setActive(p, power.getTag(), true);
                                         p.setVelocity(p.getVelocity().setY(0));
                                         p.setVelocity(p.getVelocity().setY(speed));

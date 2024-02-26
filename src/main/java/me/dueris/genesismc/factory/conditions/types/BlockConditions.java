@@ -53,9 +53,8 @@ public class BlockConditions {
                     // mappings exist, now we can start stuff
                     return blockTagMappings.get(condition.get("tag")).contains(block.getType());
                 }
-            } else {
-                return blockTagMappings.get(condition.get("tag")).contains(block.getType());
             }
+            return false;
         }));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("adjacent"), (condition, block) -> {
             int adj = 0;

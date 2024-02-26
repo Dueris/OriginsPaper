@@ -4,7 +4,11 @@ import it.unimi.dsi.fastutil.Pair;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.event.OriginChangeEvent;
 import me.dueris.genesismc.factory.powers.apoli.Resource;
+import me.dueris.genesismc.registry.Registries;
+import me.dueris.genesismc.util.render.TextureLocation;
+import net.minecraft.world.BossEvent;
 import org.bukkit.Bukkit;
+import org.bukkit.NamespacedKey;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarFlag;
 import org.bukkit.boss.BarStyle;
@@ -14,23 +18,27 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
+import org.json.simple.JSONObject;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
 import static me.dueris.genesismc.factory.powers.ApoliPower.stacking_status_effect;
 import static me.dueris.genesismc.factory.powers.apoli.FireProjectile.in_cooldown_patch;
+import static me.dueris.genesismc.util.render.TextureLocation.indexOfColor;
+import static me.dueris.genesismc.util.render.TextureLocation.textureMap;
 
 public class CooldownUtils implements @NotNull Listener {
 
     public static HashMap<Player, ArrayList<String>> cooldownMap = new HashMap<>();
 
-    public static void addCooldown(Player player, Pair<String, String> title, String dont_use, int cooldownTicks, String cooldownKeybindType) {
+    public static void addCooldown(Player player, Pair<String, String> title, String dont_use, int cooldownTicks, JSONObject hudRender) {
         // first = name to display
         // second = tag
         if(isPlayerInCooldownFromTag(player, title) || cooldownTicks <= 1) return;
-        BossBar bar = createCooldownBar(player, BarColor.WHITE, getCooldownPegAMT(cooldownTicks), title.first());
+        BossBar bar = createCooldownBar(player, getBarColor(hudRender), getCooldownPegAMT(cooldownTicks), title.first());
         cooldownMap.putIfAbsent(player, new ArrayList<>());
         cooldownMap.get(player).add(title.first());
         Resource.registeredBars.putIfAbsent(player, new HashMap<>());
@@ -46,6 +54,14 @@ public class CooldownUtils implements @NotNull Listener {
             }
         });
         startTickingCooldown(bar, player, cooldownTicks, title);
+    }
+
+    public static BarColor getBarColor(JSONObject hudRender){
+        if(hudRender.isEmpty() || !hudRender.containsKey("sprite_location")) return BarColor.WHITE;
+        TextureLocation location = (TextureLocation) GenesisMC.getPlugin().registry.retrieve(Registries.TEXTURE_LOCATION).get(NamespacedKey.fromString(hudRender.get("sprite_location").toString()));
+        long index = ((long) hudRender.getOrDefault("bar_index", 1)) + 1;
+        BarColor color = textureMap.get(location.getKey().asString() + "/-/" + index);
+        return color != null ? color : BarColor.WHITE;
     }
 
     public static BarStyle getCooldownPegAMT(int ticks) {
@@ -67,6 +83,32 @@ public class CooldownUtils implements @NotNull Listener {
         bossBar.setProgress(1.0);
         bossBar.addPlayer(player);
         return bossBar;
+    }
+
+    public static BarColor convertToBarColor(Color color) {
+        int rgb = color.getRGB();
+        int red = (rgb >> 16) & 0xFF;
+        int green = (rgb >> 8) & 0xFF;
+        int blue = rgb & 0xFF;
+
+        if (red > green && red > blue) {
+            if(red - green < 30) return BarColor.YELLOW;
+            return BarColor.RED;
+        } else if (green > red && green > blue) {
+            return BarColor.GREEN;
+        } else if (blue > red && blue > green) {
+            return BarColor.BLUE;
+        } else if (red == green && red == blue && blue == green) {
+            return BarColor.WHITE;
+        } else if (red == green) {
+            return BarColor.YELLOW;
+        } else if (red == blue) {
+            return BarColor.PURPLE;
+        } else if (green == blue) {
+            return BarColor.GREEN;
+        } else {
+            return BarColor.WHITE;
+        }
     }
 
     public static void startTickingCooldown(BossBar bar, Player player, int cooldownTicks, Pair<String, String> pair) {
@@ -113,6 +155,7 @@ public class CooldownUtils implements @NotNull Listener {
 
     @EventHandler
     public void runs(OriginChangeEvent e) {
+        cooldownMap.putIfAbsent(e.getPlayer(), new ArrayList<>());
         cooldownMap.get(e.getPlayer()).clear();
     }
 

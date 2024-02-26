@@ -43,6 +43,7 @@ import me.dueris.genesismc.util.*;
 import me.dueris.genesismc.util.apoli.RaycastUtils;
 import me.dueris.genesismc.util.entity.InventorySerializer;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
+import me.dueris.genesismc.util.render.TextureLocation;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import net.minecraft.server.MinecraftServer;
@@ -239,6 +240,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         this.registry.create(Registries.BLOCK_CONDITION, new Registrar<BlockConditions.ConditionFactory>());
         this.registry.create(Registries.ITEM_CONDITION, new Registrar<ItemConditions.ConditionFactory>());
         this.registry.create(Registries.DAMAGE_CONDITION, new Registrar<DamageConditions.ConditionFactory>());
+        this.registry.create(Registries.TEXTURE_LOCATION, new Registrar<TextureLocation>());
         
     }
 
@@ -249,7 +251,9 @@ public final class GenesisMC extends JavaPlugin implements Listener {
             if(Bukkit.getPluginManager().isPluginEnabled("SkinsRestorer")){
                 CraftPower.registerNewPower(ModelColor.ModelTransformer.class);
             }
-        } catch (InterruptedException | ExecutionException | InstantiationException | IllegalAccessException e) {
+            TextureLocation.parseAll();
+        } catch (InterruptedException | ExecutionException | InstantiationException | IllegalAccessException |
+                 IOException e) {
             e.printStackTrace();
         }
 

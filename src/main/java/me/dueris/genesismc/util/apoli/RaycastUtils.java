@@ -2,9 +2,9 @@ package me.dueris.genesismc.util.apoli;
 
 import me.dueris.genesismc.factory.actions.Actions;
 import me.dueris.genesismc.util.Utils;
+import me.dueris.genesismc.util.console.OriginConsoleSender;
 import net.minecraft.commands.CommandSource;
 import net.minecraft.commands.CommandSourceStack;
-import net.minecraft.core.Direction;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -16,9 +16,7 @@ import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.phys.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.craftbukkit.v1_20_R3.util.CraftLocation;
-import org.bukkit.util.RayTraceResult;
 import org.joml.Vector3f;
 import org.json.simple.JSONObject;
 
@@ -43,28 +41,6 @@ public class RaycastUtils {
 
         Actions.EntityActionType(entity.getBukkitEntity(), (JSONObject) data.getOrDefault("before_action", null));
 
-        HitResult hitResult = null;
-        // Apoli start
-        if(data.get("entity") != null && (boolean)data.get("entity")) {
-            double distance = getEntityReach(data, entity);
-            target = origin.add(direction.scale(distance));
-            hitResult = performEntityRaycast(entity, origin, target, Optional.empty());
-        }
-        if(data.get("block") != null && (boolean)data.get("block")) {
-            double distance = getBlockReach(data, entity);
-            target = origin.add(direction.scale(distance));
-            BlockHitResult blockHit = performBlockRaycast(entity, origin, target, Utils.getShapeType(data.get("shape_type").toString()), Utils.getFluidHandling(data.get("fluid_handling").toString()));
-            if(blockHit.getType() != HitResult.Type.MISS) {
-                if(hitResult == null || hitResult.getType() == HitResult.Type.MISS) {
-                    hitResult = blockHit;
-                } else {
-                    if(hitResult.distanceTo(entity) > blockHit.distanceTo(entity)) {
-                        hitResult = blockHit;
-                    }
-                }
-            }
-        }
-        // Apoli end
         float step = Math.round((Double) data.getOrDefault("command_step", 1d));
         if(data.containsKey("command_along_ray")){
             executeStepCommands(entity, origin, target, data.getOrDefault("command_along_ray", null).toString(), step);
@@ -156,7 +132,16 @@ public class RaycastUtils {
                     entity.getDisplayName(),
                     entity.getServer(),
                     entity);
-            server.getCommands().performPrefixedCommand(source, command);
+            try {
+                server.getCommands().performPrefixedCommand(source, command);
+            } catch (Exception e){
+                try {
+                    OriginConsoleSender serverCommandSender = new OriginConsoleSender();
+                    Bukkit.dispatchCommand(serverCommandSender, command);
+                } catch (Exception ee){
+                    ee.printStackTrace();
+                }
+            }
         }
     }
 

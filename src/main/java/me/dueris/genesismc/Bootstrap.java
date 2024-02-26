@@ -15,11 +15,10 @@ import org.apache.commons.io.FilenameUtils;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
+import java.io.*;
 import java.net.URL;
 import java.nio.file.Files;
+import java.nio.file.OpenOption;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.CodeSource;
@@ -67,7 +66,7 @@ public class Bootstrap implements PluginBootstrap {
             if (Files.exists(datapackPath)) {
                 String path = Path.of(datapackPath + File.separator + string).toAbsolutePath().toString();
                 try {
-                    deleteDirectory(Path.of(path), false);
+                    deleteDirectory(Path.of(path), true);
                 } catch (IOException e) {
 
                 }
@@ -82,10 +81,10 @@ public class Bootstrap implements PluginBootstrap {
             URL jar = src.getLocation();
             ZipInputStream zip = new ZipInputStream(jar.openStream());
             while (true) {
-                ZipEntry e = zip.getNextEntry();
-                if (e == null)
+                ZipEntry entry = zip.getNextEntry();
+                if (entry == null)
                     break;
-                String name = e.getName();
+                String name = entry.getName();
 
                 if (!name.startsWith("datapacks/")) continue;
                 if (FilenameUtils.getExtension(name).equals("zip")) continue;
@@ -97,12 +96,31 @@ public class Bootstrap implements PluginBootstrap {
                     Files.createDirectory(Path.of(file.getAbsolutePath()));
                     continue;
                 }
-                Files.writeString(Path.of(file.getAbsolutePath()), new String(zip.readAllBytes()));
+
+                // Ensure parent directory exists
+                File parentDir = file.getParentFile();
+                if (!parentDir.exists()) {
+                    parentDir.mkdirs();
+                }
+
+                // Copy PNG files
+                if (FilenameUtils.getExtension(name).equalsIgnoreCase("png")) {
+                    try (BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(file))) {
+                        byte[] buffer = new byte[1024];
+                        int len;
+                        while ((len = zip.read(buffer)) > 0) {
+                            bos.write(buffer, 0, len);
+                        }
+                    }
+                } else { // Copy non-PNG files as text
+                    Files.writeString(Path.of(file.getAbsolutePath()), new String(zip.readAllBytes()));
+                }
             }
             zip.close();
         } catch (Exception e) {
-            // ignore
+            e.printStackTrace(); // Print stack trace for debugging
         }
+
     }
 
     public static String levelNameProp() {
