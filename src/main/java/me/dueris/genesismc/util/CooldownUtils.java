@@ -65,7 +65,7 @@ public class CooldownUtils implements @NotNull Listener {
     }
 
     public static BarStyle getCooldownPegAMT(int ticks) {
-        return BarStyle.SOLID;
+        return BarStyle.SEGMENTED_6;
     }
 
     public static boolean isPlayerInCooldownFromTag(Player player, Pair<String, String> tag) {
