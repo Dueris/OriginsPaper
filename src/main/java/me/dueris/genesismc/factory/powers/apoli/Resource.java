@@ -9,6 +9,8 @@ import me.dueris.genesismc.factory.conditions.types.EntityConditions;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Power;
+import me.dueris.genesismc.util.CooldownUtils;
+import me.dueris.genesismc.util.Utils;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import org.bukkit.Bukkit;
 import org.bukkit.boss.BarColor;
@@ -21,10 +23,13 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.json.simple.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Optional;
+
+import static me.dueris.genesismc.util.CooldownUtils.*;
 
 public class Resource extends CraftPower implements Listener {
     public static HashMap<Player, HashMap<String, Pair<BossBar, Double>>> registeredBars = new HashMap();
@@ -80,7 +85,8 @@ public class Resource extends CraftPower implements Listener {
         for (Layer layer : CraftApoli.getLayersFromRegistry()) {
             for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                 final String tag = power.getTag();
-                BossBar bar = Bukkit.createBossBar(power.getTag(), BarColor.WHITE, BarStyle.SOLID);
+                JSONObject hudRender = power.get("hud_render");
+                BossBar bar = createCooldownBar(p, getBarColor(hudRender), BarStyle.SEGMENTED_6, Utils.getNameOrTag(power).first());
                 bar.setProgress(1.0);
                 Pair<BossBar, Double> pair = new Pair<BossBar, Double>() {
                     @Override
