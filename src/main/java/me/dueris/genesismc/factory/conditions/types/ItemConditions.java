@@ -208,10 +208,7 @@ public class ItemConditions {
             return itemStack.getType().isFuel();
         }));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("meat"), (condition, itemStack) -> {
-            if (itemStack.getType().isEdible()) {
-                return getMeatMaterials().contains(itemStack);
-            }
-            return false;
+            return getMeatMaterials().contains(itemStack.getType());
         }));
         register(new ConditionFactory(GenesisMC.apoliIdentifier("nbt"), (condition, itemStack) -> {
             return NbtUtils.compareNbt(Utils.ParserUtils.parseJson(new StringReader(condition.get("nbt").toString()), CompoundTag.CODEC), CraftItemStack.asCraftCopy(itemStack).handle.getTag(), true);
