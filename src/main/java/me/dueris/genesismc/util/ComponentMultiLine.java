@@ -5,7 +5,7 @@ import net.kyori.adventure.text.Component;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ChatFormatter {
+public class ComponentMultiLine {
 
     public static Component apply(String string) {
         Component component = stringToComponent(string);
@@ -19,7 +19,7 @@ public class ChatFormatter {
     public static List<Component> apply(List<String> string) {
         List<Component> compList = new ArrayList();
         string.forEach((st) -> {
-            compList.add(ChatFormatter.apply(st));
+            compList.add(ComponentMultiLine.apply(st));
         });
 
         return compList;

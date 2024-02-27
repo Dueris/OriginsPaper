@@ -2,7 +2,7 @@
 
 # 1: Make a JSON system for ensuring that powers are able to at least function correctly during parsing
 # 2: Make errors not stop parsing during load
-3: Fix meta-condition types
+# 3: Fix meta-condition types
 4: apoli:prevent_item_pickup power
 5: apoli:action_on_item_pickup power
 6: apoli:item_on_item power
@@ -15,6 +15,6 @@
 13: Add origins predicates && advancement triggers to NMS during bootstrap
 a: [
   ADVT: origins:chose_origin = https://origins.readthedocs.io/en/latest/misc/advancement_triggers/chose_origin/,
-  PRED: origins:origin = https://origins.readthedocs.io/en/latest/misc/predicates/origin/,
-  PRED: origins:power = https://origins.readthedocs.io/en/latest/misc/predicates/power/
+  # PRED: origins:origin = https://origins.readthedocs.io/en/latest/misc/predicates/origin/,
+  # PRED: origins:power = https://origins.readthedocs.io/en/latest/misc/predicates/power/
 ]

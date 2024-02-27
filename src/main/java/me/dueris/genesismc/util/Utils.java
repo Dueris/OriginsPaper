@@ -36,6 +36,8 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.net.URL;
@@ -65,11 +67,13 @@ public class Utils {
         return CraftRegistry.getMinecraftRegistry().registryOrThrow(registry);
     }
 
-    public static String[] readJSONFileAsString(JSONObject jsonObject) {
-        String jsonString = prettyPrintUsingGson(jsonObject.toJSONString());
-        List<String> lines = new ArrayList<>(Arrays.asList(jsonString.split("\n")));
-        return lines.toArray(new String[0]);
-    }
+    public static String readJSONFileAsString(File jsonObj) throws IOException {
+        FileReader reader = new FileReader(jsonObj);
+        JsonParser parser = new JsonParser();
+        JsonElement jsonElement = parser.parse(reader);
+        reader.close();
+        return jsonElement.toString();
+     }
 
     public static String prettyPrintUsingGson(String uglyJson) {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();

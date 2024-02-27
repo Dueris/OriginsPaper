@@ -4,7 +4,7 @@ import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.registry.registries.Origin;
 import me.dueris.genesismc.registry.registries.Power;
-import me.dueris.genesismc.util.ChatFormatter;
+import me.dueris.genesismc.util.ComponentMultiLine;
 import me.dueris.genesismc.util.KeybindingUtils;
 import me.dueris.genesismc.util.LangConfig;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
@@ -134,9 +134,9 @@ public class ScreenNavigator implements Listener {
 
             //adds a key to the item that will be used later to get the origin from it
             ItemMeta originIconmeta = originIcon.getItemMeta();
-            originIconmeta.displayName(ChatFormatter.apply(origin.getName()));
+            originIconmeta.displayName(ComponentMultiLine.apply(origin.getName()));
             originIconmeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-            originIconmeta.lore(ChatFormatter.apply(cutStringIntoLines(origin.getDescription())));
+            originIconmeta.lore(ComponentMultiLine.apply(cutStringIntoLines(origin.getDescription())));
             originIconmeta.getPersistentDataContainer().set(key, PersistentDataType.STRING, originTag);
             NamespacedKey chooseKey = new NamespacedKey(GenesisMC.getPlugin(), "originChoose");
             originIconmeta.getPersistentDataContainer().set(chooseKey, PersistentDataType.INTEGER, 1);
@@ -193,12 +193,12 @@ public class ScreenNavigator implements Listener {
                         ItemStack originPower = new ItemStack(Material.FILLED_MAP);
 
                         ItemMeta meta = originPower.getItemMeta();
-                        meta.displayName(ChatFormatter.apply(powerContainers.get(0).getName()));
+                        meta.displayName(ComponentMultiLine.apply(powerContainers.get(0).getName()));
                         if(KeybindingUtils.renderKeybind(powerContainers.get(0)).getFirst()){
                             meta.displayName(Component.text().append(meta.displayName()).append(Component.text(" ")).append(Component.text(KeybindingUtils.translateOriginRawKey(KeybindingUtils.renderKeybind(powerContainers.get(0)).getSecond())).color(TextColor.color(32222))).build());
                         }
                         meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-                        meta.lore(ChatFormatter.apply(cutStringIntoLines(powerContainers.get(0).getDescription())));
+                        meta.lore(ComponentMultiLine.apply(cutStringIntoLines(powerContainers.get(0).getDescription())));
                         originPower.setItemMeta(meta);
 
                         contents.add(originPower);

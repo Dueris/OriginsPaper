@@ -2,8 +2,9 @@ package me.dueris.genesismc;
 
 import io.papermc.paper.plugin.bootstrap.BootstrapContext;
 import io.papermc.paper.plugin.bootstrap.PluginBootstrap;
-import joptsimple.OptionSet;
 import me.dueris.genesismc.content.enchantment.WaterProtectionEnchantment;
+import me.dueris.genesismc.registry.nms.OriginLootCondition;
+import me.dueris.genesismc.registry.nms.PowerLootCondition;
 import me.dueris.genesismc.util.Utils;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -18,7 +19,6 @@ import org.jetbrains.annotations.NotNull;
 import java.io.*;
 import java.net.URL;
 import java.nio.file.Files;
-import java.nio.file.OpenOption;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.CodeSource;
@@ -152,10 +152,11 @@ public class Bootstrap implements PluginBootstrap {
         WaterProtectionEnchantment waterProtection = new WaterProtectionEnchantment(Enchantment.Rarity.RARE, EnchantmentCategory.ARMOR, slots);
         registerEnchantment("water_protection", waterProtection);
         Bootstrap.waterProtection = waterProtection;
+        Registry.register(BuiltInRegistries.LOOT_CONDITION_TYPE, new ResourceLocation("apoli", "power"), PowerLootCondition.TYPE);
+        Registry.register(BuiltInRegistries.LOOT_CONDITION_TYPE, new ResourceLocation("origins", "origin"), OriginLootCondition.TYPE);
     }
 
     public String parseDatapackPath(BootstrapContext context) {
-        OptionSet optionset;
         try {
             org.bukkit.configuration.file.YamlConfiguration bukkitConfiguration = YamlConfiguration.loadConfiguration(Paths.get("bukkit.yml").toFile());
             File container;

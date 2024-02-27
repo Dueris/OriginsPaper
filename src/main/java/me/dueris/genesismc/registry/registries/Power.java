@@ -18,7 +18,7 @@ public class Power implements Serializable, Registerable {
     DatapackFile powerFile;
     boolean originMultiple;
     boolean originMultipleParent;
-    String[] jsonData;
+    String jsonData;
     Power powerParent;
 
     /**
@@ -26,7 +26,7 @@ public class Power implements Serializable, Registerable {
      * @param powerFile      The data within a power file.
      * @param originMultiple Tells the plugin if its an instance of an origins:multiple sub-power
      */
-    public Power(NamespacedKey powerTag, DatapackFile powerFile, String[] jsonData, boolean originMultiple) {
+    public Power(NamespacedKey powerTag, DatapackFile powerFile, String jsonData, boolean originMultiple) {
         this.powerTag = powerTag;
         this.powerFile = powerFile;
         this.originMultiple = originMultiple;
@@ -41,7 +41,7 @@ public class Power implements Serializable, Registerable {
      * @param originMultiple       Tells the plugin if its an instance of an origins:multiple sub-power
      * @param originMultipleParent Tells the plugin if its an origins:multiple parent power
      */
-    public Power(NamespacedKey powerTag, DatapackFile powerFile, String[] jsonData, boolean originMultiple, boolean originMultipleParent) {
+    public Power(NamespacedKey powerTag, DatapackFile powerFile, String jsonData, boolean originMultiple, boolean originMultipleParent) {
         this.powerTag = powerTag;
         this.powerFile = powerFile;
         this.originMultiple = false;
@@ -56,7 +56,7 @@ public class Power implements Serializable, Registerable {
      * @param originMultipleParent Tells the plugin if its an origins:multiple parent power
      * @param powerParent          Tells the plugin what to use as an "Inheritance" for values like the name
      */
-    public Power(NamespacedKey powerTag, DatapackFile powerFile, String[] jsonData, boolean originMultiple, boolean originMultipleParent, Power powerParent) {
+    public Power(NamespacedKey powerTag, DatapackFile powerFile, String jsonData, boolean originMultiple, boolean originMultipleParent, Power powerParent) {
         this.powerTag = powerTag;
         this.powerFile = powerFile;
         this.originMultiple = false;
@@ -78,7 +78,7 @@ public class Power implements Serializable, Registerable {
         return this.originMultiple;
     }
 
-    public String[] getJsonData() {
+    public String getJsonData() {
         return this.jsonData;
     }
 

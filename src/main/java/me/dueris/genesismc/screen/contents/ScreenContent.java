@@ -4,7 +4,7 @@ import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Origin;
-import me.dueris.genesismc.util.ChatFormatter;
+import me.dueris.genesismc.util.ComponentMultiLine;
 import me.dueris.genesismc.util.LangConfig;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
@@ -233,9 +233,9 @@ public class ScreenContent {
                     ItemStack originIcon = new ItemStack(Material.valueOf(item.toUpperCase()));
 
                     ItemMeta originIconmeta = originIcon.getItemMeta();
-                    originIconmeta.displayName(ChatFormatter.apply(origin.getName()));
+                    originIconmeta.displayName(ComponentMultiLine.apply(origin.getName()));
                     originIconmeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-                    originIconmeta.lore(ChatFormatter.apply(cutStringIntoLines(origin.getDescription())));
+                    originIconmeta.lore(ComponentMultiLine.apply(cutStringIntoLines(origin.getDescription())));
                     NamespacedKey key = new NamespacedKey(GenesisMC.getPlugin(), "originTag");
                     originIconmeta.getPersistentDataContainer().set(key, PersistentDataType.STRING, origin.getTag());
                     originIcon.setItemMeta(originIconmeta);

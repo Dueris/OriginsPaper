@@ -118,7 +118,7 @@ public class CraftApoli {
             if (subPowerValue instanceof JSONObject subPowerJson) {
                 DatapackFile subPowerFile = fileToFileContainer(subPowerJson);
 
-                Power newPower = new Power(new NamespacedKey(powerFolder, powerFileName + "_" + key.toLowerCase()), subPowerFile, subPowerJson.toJSONString().split("\n"), true, false, powerContainer);
+                Power newPower = new Power(new NamespacedKey(powerFolder, powerFileName + "_" + key.toLowerCase()), subPowerFile, subPowerJson.toJSONString(), true, false, powerContainer);
                 ((Registrar<Power>)GenesisMC.getPlugin().registry.retrieve(Registries.POWER)).register(newPower);
             }
         }
@@ -253,11 +253,11 @@ public class CraftApoli {
 
                                                 JSONObject powerParser = PowerRemapper.createRemapped(new File(datapack.getAbsolutePath() + File.separator + "data" + File.separator + powerFolder + File.separator + "powers" + File.separator + powerFileName + ".json"));
                                                 if (powerParser.containsKey("type") && "apoli:multiple".equals(powerParser.get("type"))) {
-                                                    Power powerContainer = new Power(new NamespacedKey(powerFolder, powerFileName), fileToFileContainer(powerParser), Utils.readJSONFileAsString(powerParser), false, true);
+                                                    Power powerContainer = new Power(new NamespacedKey(powerFolder, powerFileName), fileToFileContainer(powerParser), Utils.readJSONFileAsString(powerFile), false, true);
                                                     ((Registrar<Power>)GenesisMC.getPlugin().registry.retrieve(Registries.POWER)).register(powerContainer);
                                                     processNestedPowers(powerContainer, new ArrayList<>(), powerFolder, powerFileName);
                                                 } else {
-                                                    Power power = new Power(new NamespacedKey(powerFolder, powerFileName), fileToFileContainer(powerParser), Utils.readJSONFileAsString(powerParser), false);
+                                                    Power power = new Power(new NamespacedKey(powerFolder, powerFileName), fileToFileContainer(powerParser), Utils.readJSONFileAsString(powerFile), false);
                                                     ((Registrar<Power>)GenesisMC.getPlugin().registry.retrieve(Registries.POWER)).register(power);
                                                 }
 
@@ -359,11 +359,11 @@ public class CraftApoli {
 
                                                     JSONObject powerParser = PowerRemapper.createRemapped(new File(datapack.getAbsolutePath() + File.separator + "data" + File.separator + powerFolder + File.separator + "powers" + File.separator + powerFileName + ".json"));
                                                     if (powerParser.containsKey("type") && "apoli:multiple".equals(powerParser.get("type"))) {
-                                                        Power powerContainer = new Power(new NamespacedKey(powerFolder, powerFileName), fileToFileContainer(powerParser), Utils.readJSONFileAsString(powerParser), false, true);
+                                                        Power powerContainer = new Power(new NamespacedKey(powerFolder, powerFileName), fileToFileContainer(powerParser),Utils.readJSONFileAsString(new File(datapack.getAbsolutePath() + File.separator + "data" + File.separator + powerFolder + File.separator + "powers" + File.separator + powerFileName + ".json")), false, true);
                                                         powerContainers.add(powerContainer);
                                                         processNestedPowers(powerContainer, powerContainers, powerFolder, powerFileName);
                                                     } else {
-                                                        powerContainers.add(new Power(new NamespacedKey(powerFolder, powerFileName), fileToFileContainer(powerParser), Utils.readJSONFileAsString(powerParser), false));
+                                                        powerContainers.add(new Power(new NamespacedKey(powerFolder, powerFileName), fileToFileContainer(powerParser), Utils.readJSONFileAsString(new File(datapack.getAbsolutePath() + File.separator + "data" + File.separator + powerFolder + File.separator + "powers" + File.separator + powerFileName + ".json")), false));
                                                     }
                                                 } catch (Exception fileNotFoundException) {
                                                     if (showErrors)

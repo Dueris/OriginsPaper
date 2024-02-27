@@ -1,6 +1,9 @@
 package me.dueris.genesismc.command;
 
+import com.google.gson.JsonParser;
 import com.mojang.brigadier.CommandDispatcher;
+
+import joptsimple.internal.Strings;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.registry.Registrar;
@@ -8,6 +11,7 @@ import me.dueris.genesismc.registry.Registries;
 import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.util.PowerUtils;
+import me.dueris.genesismc.util.apoli.JsonTextFormatter;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.arguments.EntityArgument;
@@ -40,10 +44,17 @@ public class PowerCommand {
                                             });
                                             return builder.buildFuture();
                                         }).executes(context -> {
-                                            Power power = ((Registrar<Power>)GenesisMC.getPlugin().registry.retrieve(Registries.POWER)).get(CraftNamespacedKey.fromMinecraft(ResourceLocationArgument.getId(context, "power")));
-                                            for(String string : power.getJsonData()){
-                                                context.getSource().sendSystemMessage(Component.literal(string));
+                                            Power power = (Power)GenesisMC.getPlugin().registry.retrieve(Registries.POWER).get(CraftNamespacedKey.fromMinecraft(ResourceLocationArgument.getId(context, "power")));
+                                            if (power == null) {
+                                            ((CommandSourceStack)context.getSource()).sendFailure(Component.literal("Power not found."));
+                                            return 1;
                                             }
+
+                                            String indent = Strings.repeat(' ', 4);
+                                            context.getSource().sendSuccess(() -> {
+                                                String append = context.getSource().isPlayer() ? "" : "\n";
+                                                return Component.literal(append).append((new JsonTextFormatter(indent)).apply(JsonParser.parseString(power.getJsonData())));
+                                            }, false);
                                             return SINGLE_SUCCESS;
                                         })
                                 )
