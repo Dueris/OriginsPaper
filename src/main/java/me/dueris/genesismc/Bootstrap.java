@@ -38,6 +38,7 @@ public class Bootstrap implements PluginBootstrap {
         oldDV.add("Origins-GenesisMC");
         oldDV.add("Origins-GenesisMC[0_2_2]");
         oldDV.add("Origins-GenesisMC[0_2_4]");
+        oldDV.add("Origins-GenesisMC[0_2_6]");
     }
 
     public static Enchantment registerEnchantment(String name, Enchantment enchantment) {
@@ -86,11 +87,12 @@ public class Bootstrap implements PluginBootstrap {
                     break;
                 String name = entry.getName();
 
-                if (!name.startsWith("datapacks/")) continue;
+                if (!name.startsWith("datapack/")) continue;
+                if (name.startsWith("datapack/builtin")) continue;
                 if (FilenameUtils.getExtension(name).equals("zip")) continue;
-                if (name.equals("datapacks/")) continue;
+                if (name.equals("datapack/")) continue;
 
-                name = name.substring(10);
+                name = name.substring(9);
                 File file = new File(datapackPath.toAbsolutePath().toString().replace(".\\", "") + File.separator + name);
                 if (!file.getName().contains(".")) {
                     Files.createDirectory(Path.of(file.getAbsolutePath()));
@@ -118,7 +120,7 @@ public class Bootstrap implements PluginBootstrap {
             }
             zip.close();
         } catch (Exception e) {
-            e.printStackTrace(); // Print stack trace for debugging
+            // e.printStackTrace(); // Print stack trace for debugging // I changed my mind
         }
 
     }

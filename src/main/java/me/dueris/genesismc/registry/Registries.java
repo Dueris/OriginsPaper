@@ -16,4 +16,5 @@ public class Registries {
     public static final NamespacedKey BLOCK_CONDITION = GenesisMC.apoliIdentifier("block_condition");
     public static final NamespacedKey BIOME_CONDITION = GenesisMC.apoliIdentifier("biome_condition");
     public static final NamespacedKey TEXTURE_LOCATION = GenesisMC.apoliIdentifier("texture_location");
+    public static final NamespacedKey PACK_SOURCE = GenesisMC.apoliIdentifier("pack_source");
 }

@@ -2,35 +2,22 @@ package me.dueris.genesismc.factory.conditions.types;
 
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.TagRegistryParser;
-import me.dueris.genesismc.factory.conditions.Condition;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.registry.Registerable;
 import me.dueris.genesismc.registry.Registries;
 import me.dueris.genesismc.util.Utils;
-import org.bukkit.Fluid;
-import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Registry;
-import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
-import org.bukkit.craftbukkit.v1_20_R3.damage.CraftDamageSource;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftLivingEntity;
-import org.bukkit.damage.DamageSource;
 import org.bukkit.damage.DamageType;
 import org.bukkit.entity.*;
-import org.bukkit.event.entity.EntityDamageByBlockEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
-import org.bukkit.inventory.ItemStack;
 import org.json.simple.JSONObject;
-
-import com.google.common.base.Preconditions;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Optional;
 import java.util.function.BiPredicate;
 
 import static org.bukkit.event.entity.EntityDamageEvent.DamageCause;
@@ -39,6 +26,22 @@ public class DamageConditions {
     public static HashMap<String, ArrayList<DamageType>> damageTagMappings = new HashMap<>();
 
     public void prep(){
+        // Meta conditions, shouldnt execute
+        // Meta conditions are added in each file to ensure they dont error and skip them when running
+        // a meta condition inside another meta condition
+        register(new ConditionFactory(GenesisMC.apoliIdentifier("and"), (condition, obj) -> {
+            throw new IllegalStateException("Executor should not be here right now! Report to Dueris!");
+        }));
+        register(new ConditionFactory(GenesisMC.apoliIdentifier("or"), (condition, obj) -> {
+            throw new IllegalStateException("Executor should not be here right now! Report to Dueris!");
+        }));
+        register(new ConditionFactory(GenesisMC.apoliIdentifier("chance"), (condition, obj) -> {
+            throw new IllegalStateException("Executor should not be here right now! Report to Dueris!");
+        }));
+        register(new ConditionFactory(GenesisMC.apoliIdentifier("constant"), (condition, obj) -> {
+            throw new IllegalStateException("Executor should not be here right now! Report to Dueris!");
+        }));
+        // Meta conditions end
         register(new ConditionFactory(GenesisMC.apoliIdentifier("projectile"), (condition, event) -> {
             if (event.getCause().equals(DamageCause.PROJECTILE)) {
                 boolean projectile = true;

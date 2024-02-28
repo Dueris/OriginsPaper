@@ -11,17 +11,12 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.NeutralMob;
 import net.minecraft.world.phys.Vec3;
-import org.bukkit.Fluid;
 import org.bukkit.NamespacedKey;
-import org.bukkit.block.Block;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Mob;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Tameable;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.inventory.ItemStack;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -29,7 +24,6 @@ import it.unimi.dsi.fastutil.Pair;
 
 import java.util.ArrayList;
 import java.util.EnumSet;
-import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
@@ -37,6 +31,22 @@ import java.util.function.Function;
 public class BiEntityConditions implements Listener {
 
     public void prep(){
+        // Meta conditions, shouldnt execute
+        // Meta conditions are added in each file to ensure they dont error and skip them when running
+        // a meta condition inside another meta condition
+        register(new ConditionFactory(GenesisMC.apoliIdentifier("and"), (condition, obj) -> {
+            throw new IllegalStateException("Executor should not be here right now! Report to Dueris!");
+        }));
+        register(new ConditionFactory(GenesisMC.apoliIdentifier("or"), (condition, obj) -> {
+            throw new IllegalStateException("Executor should not be here right now! Report to Dueris!");
+        }));
+        register(new ConditionFactory(GenesisMC.apoliIdentifier("chance"), (condition, obj) -> {
+            throw new IllegalStateException("Executor should not be here right now! Report to Dueris!");
+        }));
+        register(new ConditionFactory(GenesisMC.apoliIdentifier("constant"), (condition, obj) -> {
+            throw new IllegalStateException("Executor should not be here right now! Report to Dueris!");
+        }));
+        // Meta conditions end
         register(new ConditionFactory(GenesisMC.apoliIdentifier("both"), (condition, pair) -> {
             AtomicBoolean a = new AtomicBoolean(true);
             AtomicBoolean t = new AtomicBoolean(true);

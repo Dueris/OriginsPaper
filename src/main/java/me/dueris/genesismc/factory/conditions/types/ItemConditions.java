@@ -6,20 +6,15 @@ import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.content.OrbOfOrigins;
 import me.dueris.genesismc.content.enchantment.EnchantTableHandler;
 import me.dueris.genesismc.factory.TagRegistryParser;
-import me.dueris.genesismc.factory.conditions.Condition;
 import me.dueris.genesismc.registry.Registerable;
 import me.dueris.genesismc.registry.Registries;
 import me.dueris.genesismc.util.Utils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
-import org.bukkit.Fluid;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
-import org.bukkit.block.Block;
 import org.bukkit.craftbukkit.v1_20_R3.inventory.CraftItemStack;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.Entity;
-import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.ItemStack;
 import org.json.simple.JSONObject;
 
@@ -148,6 +143,22 @@ public class ItemConditions {
     }
 
     public void prep(){
+        // Meta conditions, shouldnt execute
+        // Meta conditions are added in each file to ensure they dont error and skip them when running
+        // a meta condition inside another meta condition
+        register(new ConditionFactory(GenesisMC.apoliIdentifier("and"), (condition, obj) -> {
+            throw new IllegalStateException("Executor should not be here right now! Report to Dueris!");
+        }));
+        register(new ConditionFactory(GenesisMC.apoliIdentifier("or"), (condition, obj) -> {
+            throw new IllegalStateException("Executor should not be here right now! Report to Dueris!");
+        }));
+        register(new ConditionFactory(GenesisMC.apoliIdentifier("chance"), (condition, obj) -> {
+            throw new IllegalStateException("Executor should not be here right now! Report to Dueris!");
+        }));
+        register(new ConditionFactory(GenesisMC.apoliIdentifier("constant"), (condition, obj) -> {
+            throw new IllegalStateException("Executor should not be here right now! Report to Dueris!");
+        }));
+        // Meta conditions end
         register(new ConditionFactory(GenesisMC.apoliIdentifier("food"), (condition, itemStack) -> {
             return itemStack.getType().isEdible();
         }));

@@ -21,6 +21,22 @@ public class BiomeConditions {
     public static HashMap<String, ArrayList<Biome>> biomeTagMappings = new HashMap<>();
 
     public void prep(){
+        // Meta conditions, shouldnt execute
+        // Meta conditions are added in each file to ensure they dont error and skip them when running
+        // a meta condition inside another meta condition
+        register(new ConditionFactory(GenesisMC.apoliIdentifier("and"), (condition, obj) -> {
+            throw new IllegalStateException("Executor should not be here right now! Report to Dueris!");
+        }));
+        register(new ConditionFactory(GenesisMC.apoliIdentifier("or"), (condition, obj) -> {
+            throw new IllegalStateException("Executor should not be here right now! Report to Dueris!");
+        }));
+        register(new ConditionFactory(GenesisMC.apoliIdentifier("chance"), (condition, obj) -> {
+            throw new IllegalStateException("Executor should not be here right now! Report to Dueris!");
+        }));
+        register(new ConditionFactory(GenesisMC.apoliIdentifier("constant"), (condition, obj) -> {
+            throw new IllegalStateException("Executor should not be here right now! Report to Dueris!");
+        }));
+        // Meta conditions end
         register(new ConditionFactory(GenesisMC.apoliIdentifier("in_tag"), (condition, biome) -> {
             if (TagRegistryParser.getRegisteredTagFromFileKey(condition.get("tag").toString()) != null) {
                 if (!biomeTagMappings.containsKey(condition.get("tag"))) {

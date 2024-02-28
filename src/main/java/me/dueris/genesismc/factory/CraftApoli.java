@@ -7,6 +7,7 @@ import me.dueris.genesismc.registry.IRegistry;
 import me.dueris.genesismc.registry.Registrar;
 import me.dueris.genesismc.registry.Registries;
 import me.dueris.genesismc.registry.registries.DatapackFile;
+import me.dueris.genesismc.registry.registries.DatapackRepository;
 import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Origin;
 import me.dueris.genesismc.registry.registries.Power;
@@ -25,6 +26,7 @@ import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -213,9 +215,13 @@ public class CraftApoli {
     public static void loadOrigins(IRegistry registry) throws InterruptedException, ExecutionException {
         if(((Registrar<Layer>)GenesisMC.getPlugin().registry.retrieve(Registries.LAYER)).hasEntries() || ((Registrar<Origin>)GenesisMC.getPlugin().registry.retrieve(Registries.ORIGIN)).hasEntries() || ((Registrar<Power>)GenesisMC.getPlugin().registry.retrieve(Registries.POWER)).hasEntries()) return; // Already parsed.
         boolean showErrors = Boolean.valueOf(GenesisConfigs.getMainConfig().get("console-print-parse-errors").toString());
-        File DatapackDir = new File(GenesisMC.server.getWorldPath(LevelResource.DATAPACK_DIR).toAbsolutePath().toString());
-        File[] datapacks = DatapackDir.listFiles();
-        if (datapacks == null) return;
+        List<File> datapacks = new ArrayList();
+        ((Registrar<DatapackRepository>)registry.retrieve(Registries.PACK_SOURCE)).forEach((k, l) -> {
+            for(File file : l.getPath().toFile().listFiles()){
+                datapacks.add(file);
+            }
+        });
+        if (datapacks == null || datapacks.isEmpty()) return;
 
         CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
             for (File datapack : datapacks) {
@@ -230,7 +236,7 @@ public class CraftApoli {
             }
 
             List<File> datapacksToParse = new ArrayList();
-            Collections.addAll(datapacksToParse, DatapackDir.listFiles());
+            datapacksToParse.addAll(datapacks);
             datapacksToParse.addAll(unzippedFiles);
             for (File datapack : datapacksToParse) {
                 try {

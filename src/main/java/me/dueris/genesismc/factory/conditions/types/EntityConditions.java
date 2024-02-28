@@ -17,6 +17,7 @@ import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.block.state.BlockState;
@@ -140,6 +141,22 @@ public class EntityConditions {
     }
 
     public void prep(){
+        // Meta conditions, shouldnt execute
+        // Meta conditions are added in each file to ensure they dont error and skip them when running
+        // a meta condition inside another meta condition
+        register(new ConditionFactory(GenesisMC.apoliIdentifier("and"), (condition, obj) -> {
+            throw new IllegalStateException("Executor should not be here right now! Report to Dueris!");
+        }));
+        register(new ConditionFactory(GenesisMC.apoliIdentifier("or"), (condition, obj) -> {
+            throw new IllegalStateException("Executor should not be here right now! Report to Dueris!");
+        }));
+        register(new ConditionFactory(GenesisMC.apoliIdentifier("chance"), (condition, obj) -> {
+            throw new IllegalStateException("Executor should not be here right now! Report to Dueris!");
+        }));
+        register(new ConditionFactory(GenesisMC.apoliIdentifier("constant"), (condition, obj) -> {
+            throw new IllegalStateException("Executor should not be here right now! Report to Dueris!");
+        }));
+        // Meta conditions end
         register(new ConditionFactory(GenesisMC.apoliIdentifier("ability"), (condition, entity) -> {
             if (entity instanceof Player p) {
                 String ability = condition.get("ability").toString().toLowerCase();
