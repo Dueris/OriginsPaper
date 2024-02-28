@@ -93,9 +93,9 @@ public class ConditionExecutor {
                             Registrar<BiEntityConditions.ConditionFactory> factory = GenesisMC.getPlugin().registry.retrieve(Registries.BIENTITY_CONDITION);
                             BiEntityConditions.ConditionFactory con = factory.get(NamespacedKey.fromString(obj.get("type").toString()));
                             if(con != null){
-                                cons.add(testBiEntity(obj, (CraftEntity) entityPair.first(), (CraftEntity) entityPair.second()));
+                                cons.add(getPossibleInvert((boolean)condition.getOrDefault("inverted", false), testBiEntity(obj, (CraftEntity) entityPair.first(), (CraftEntity) entityPair.second())));
                             }else{
-                                cons.add(true); // Condition null or not found.
+                                cons.add(getPossibleInvert((boolean)condition.getOrDefault("inverted", false), true)); // Condition null or not found.
                             }
                         }
                     });
@@ -112,9 +112,9 @@ public class ConditionExecutor {
                             Registrar<BiEntityConditions.ConditionFactory> factory = GenesisMC.getPlugin().registry.retrieve(Registries.BIENTITY_CONDITION);
                             BiEntityConditions.ConditionFactory con = factory.get(NamespacedKey.fromString(obj.get("type").toString()));
                             if(con != null){
-                                cons.add(testBiEntity(obj, (CraftEntity) entityPair.first(), (CraftEntity) entityPair.second()));
+                                cons.add(getPossibleInvert((boolean)condition.getOrDefault("inverted", false), testBiEntity(obj, (CraftEntity) entityPair.first(), (CraftEntity) entityPair.second())));
                             }else{
-                                cons.add(true); // Condition null or not found.
+                                cons.add(getPossibleInvert((boolean)condition.getOrDefault("inverted", false), true)); // Condition null or not found.
                             }
                         }
                     });
@@ -157,9 +157,9 @@ public class ConditionExecutor {
                             Registrar<BiomeConditions.ConditionFactory> factory = GenesisMC.getPlugin().registry.retrieve(Registries.BIOME_CONDITION);
                             BiomeConditions.ConditionFactory con = factory.get(NamespacedKey.fromString(obj.get("type").toString()));
                             if(con != null){
-                                cons.add(testBiome(obj, biome));
+                                cons.add(getPossibleInvert((boolean)condition.getOrDefault("inverted", false), testBiome(obj, biome)));
                             }else{
-                                cons.add(true); // Condition null or not found.
+                                cons.add(getPossibleInvert((boolean)condition.getOrDefault("inverted", false), true)); // Condition null or not found.
                             }
                         }
                     });
@@ -176,9 +176,9 @@ public class ConditionExecutor {
                             Registrar<BiomeConditions.ConditionFactory> factory = GenesisMC.getPlugin().registry.retrieve(Registries.BIOME_CONDITION);
                             BiomeConditions.ConditionFactory con = factory.get(NamespacedKey.fromString(obj.get("type").toString()));
                             if(con != null){
-                                cons.add(testBiome(obj, biome));
+                                cons.add(getPossibleInvert((boolean)condition.getOrDefault("inverted", false), testBiome(obj, biome)));
                             }else{
-                                cons.add(true); // Condition null or not found.
+                                cons.add(getPossibleInvert((boolean)condition.getOrDefault("inverted", false), true)); // Condition null or not found.
                             }
                         }
                     });
@@ -222,9 +222,9 @@ public class ConditionExecutor {
                             Registrar<BlockConditions.ConditionFactory> factory = GenesisMC.getPlugin().registry.retrieve(Registries.BLOCK_CONDITION);
                             BlockConditions.ConditionFactory con = factory.get(NamespacedKey.fromString(obj.get("type").toString()));
                             if(con != null){
-                                cons.add(testBlock(obj, block));
+                                cons.add(getPossibleInvert((boolean)condition.getOrDefault("inverted", false), testBlock(obj, block)));
                             }else{
-                                cons.add(true); // Condition null or not found.
+                                cons.add(getPossibleInvert((boolean)condition.getOrDefault("inverted", false), true)); // Condition null or not found.
                             }
                         }
                     });
@@ -241,9 +241,9 @@ public class ConditionExecutor {
                             Registrar<BlockConditions.ConditionFactory> factory = GenesisMC.getPlugin().registry.retrieve(Registries.BLOCK_CONDITION);
                             BlockConditions.ConditionFactory con = factory.get(NamespacedKey.fromString(obj.get("type").toString()));
                             if(con != null){
-                                cons.add(testBlock(obj, block));
+                                cons.add(getPossibleInvert((boolean)condition.getOrDefault("inverted", false), testBlock(obj, block)));
                             }else{
-                                cons.add(true); // Condition null or not found.
+                                cons.add(getPossibleInvert((boolean)condition.getOrDefault("inverted", false), true)); // Condition null or not found.
                             }
                         }
                     });
@@ -286,9 +286,9 @@ public class ConditionExecutor {
                             Registrar<DamageConditions.ConditionFactory> factory = GenesisMC.getPlugin().registry.retrieve(Registries.DAMAGE_CONDITION);
                             DamageConditions.ConditionFactory con = factory.get(NamespacedKey.fromString(obj.get("type").toString()));
                             if(con != null){
-                                cons.add(testDamage(obj, event));
+                                cons.add(getPossibleInvert((boolean)condition.getOrDefault("inverted", false), testDamage(obj, event)));
                             }else{
-                                cons.add(true); // Condition null or not found.
+                                cons.add(getPossibleInvert((boolean)condition.getOrDefault("inverted", false), true)); // Condition null or not found.
                             }
                         }
                     });
@@ -305,9 +305,9 @@ public class ConditionExecutor {
                             Registrar<DamageConditions.ConditionFactory> factory = GenesisMC.getPlugin().registry.retrieve(Registries.DAMAGE_CONDITION);
                             DamageConditions.ConditionFactory con = factory.get(NamespacedKey.fromString(obj.get("type").toString()));
                             if(con != null){
-                                cons.add(testDamage(obj, event));
+                                cons.add(getPossibleInvert((boolean)condition.getOrDefault("inverted", false), testDamage(obj, event)));
                             }else{
-                                cons.add(true); // Condition null or not found.
+                                cons.add(getPossibleInvert((boolean)condition.getOrDefault("inverted", false), true)); // Condition null or not found.
                             }
                         }
                     });
@@ -350,9 +350,9 @@ public class ConditionExecutor {
                             Registrar<EntityConditions.ConditionFactory> factory = GenesisMC.getPlugin().registry.retrieve(Registries.ENTITY_CONDITION);
                             EntityConditions.ConditionFactory con = factory.get(NamespacedKey.fromString(obj.get("type").toString()));
                             if(con != null){
-                                cons.add(testEntity(obj, entity));
+                                cons.add(getPossibleInvert((boolean)condition.getOrDefault("inverted", false), testEntity(obj, entity)));
                             }else{
-                                cons.add(true); // Condition null or not found.
+                                cons.add(getPossibleInvert((boolean)condition.getOrDefault("inverted", false), true)); // Condition null or not found.
                             }
                         }
                     });
@@ -369,9 +369,9 @@ public class ConditionExecutor {
                             Registrar<EntityConditions.ConditionFactory> factory = GenesisMC.getPlugin().registry.retrieve(Registries.ENTITY_CONDITION);
                             EntityConditions.ConditionFactory con = factory.get(NamespacedKey.fromString(obj.get("type").toString()));
                             if(con != null){
-                                cons.add(testEntity(obj, entity));
+                                cons.add(getPossibleInvert((boolean)condition.getOrDefault("inverted", false), testEntity(obj, entity)));
                             }else{
-                                cons.add(true); // Condition null or not found.
+                                cons.add(getPossibleInvert((boolean)condition.getOrDefault("inverted", false), true)); // Condition null or not found.
                             }
                         }
                     });
@@ -414,9 +414,9 @@ public class ConditionExecutor {
                             Registrar<ItemConditions.ConditionFactory> factory = GenesisMC.getPlugin().registry.retrieve(Registries.ITEM_CONDITION);
                             ItemConditions.ConditionFactory con = factory.get(NamespacedKey.fromString(obj.get("type").toString()));
                             if(con != null){
-                                cons.add(testItem(obj, itemStack));
+                                cons.add(getPossibleInvert((boolean)condition.getOrDefault("inverted", false), testItem(obj, itemStack)));
                             }else{
-                                cons.add(true); // Condition null or not found.
+                                cons.add(getPossibleInvert((boolean)condition.getOrDefault("inverted", false), true)); // Condition null or not found.
                             }
                         }
                     });
@@ -433,9 +433,9 @@ public class ConditionExecutor {
                             Registrar<ItemConditions.ConditionFactory> factory = GenesisMC.getPlugin().registry.retrieve(Registries.ITEM_CONDITION);
                             ItemConditions.ConditionFactory con = factory.get(NamespacedKey.fromString(obj.get("type").toString()));
                             if(con != null){
-                                cons.add(testItem(obj, itemStack));
+                                cons.add(getPossibleInvert((boolean)condition.getOrDefault("inverted", false), testItem(obj, itemStack)));
                             }else{
-                                cons.add(true); // Condition null or not found.
+                                cons.add(getPossibleInvert((boolean)condition.getOrDefault("inverted", false), true)); // Condition null or not found.
                             }
                         }
                     });
@@ -457,10 +457,8 @@ public class ConditionExecutor {
             ItemConditions.ConditionFactory con = factory.get(NamespacedKey.fromString(condition.get("type").toString()));
             boolean invert = (boolean) condition.getOrDefault("inverted", false);
             if(con != null){
-                System.out.println("ilfkgjsdlfgjdf");
                 return getPossibleInvert(invert, con.test(condition, itemStack));
             }else{
-                System.out.println("1sd");
                 return getPossibleInvert(invert, true); // Condition null or not found.
             }
         }
@@ -499,9 +497,9 @@ public class ConditionExecutor {
                             Registrar<FluidConditions.ConditionFactory> factory = GenesisMC.getPlugin().registry.retrieve(Registries.FLUID_CONDITION);
                             FluidConditions.ConditionFactory con = factory.get(NamespacedKey.fromString(obj.get("type").toString()));
                             if(con != null){
-                                cons.add(testFluid(obj, fluid));
+                                cons.add(getPossibleInvert((boolean)condition.getOrDefault("inverted", false), testFluid(obj, fluid)));
                             }else{
-                                cons.add(true); // Condition null or not found.
+                                cons.add(getPossibleInvert((boolean)condition.getOrDefault("inverted", false), true)); // Condition null or not found.
                             }
                         }
                     });
