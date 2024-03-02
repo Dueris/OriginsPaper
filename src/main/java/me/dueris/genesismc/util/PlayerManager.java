@@ -92,15 +92,6 @@ public class PlayerManager implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void playerJoin(PlayerJoinEvent e) {
         Player p = e.getPlayer();
-        // 0.2.6 update
-        if(p.getPersistentDataContainer().has(GenesisMC.identifier("originLayer"), PersistentDataType.STRING) && !p.getPersistentDataContainer().has(GenesisMC.identifier("updatedTo026"), PersistentDataType.BOOLEAN)){
-            for(Layer layerContainer : CraftApoli.getLayersFromRegistry()){
-                if(!OriginPlayerAccessor.getOrigin(p, layerContainer).equals(CraftApoli.nullOrigin())){ // Valid origin
-                    OriginPlayerAccessor.setOrigin(p, layerContainer, OriginPlayerAccessor.getOrigin(p, layerContainer)); // Update origin
-                }
-            }
-            p.getPersistentDataContainer().set(GenesisMC.identifier("updatedTo026"), PersistentDataType.BOOLEAN, true);
-        }
         //set origins to null if none present
         if (
                 !p.getPersistentDataContainer().has(GenesisMC.identifier("originLayer"), PersistentDataType.STRING) ||

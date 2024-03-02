@@ -122,7 +122,7 @@ public class RecipePower extends CraftPower implements Listener {
     // End
 
     public static ItemStack computeResult(JSONObject object){
-        long amt = (long) object.getOrDefault("count", 1);
+        long amt = (long) object.getOrDefault("count", 1l);
         String item = object.get("item").toString();
         if(item.contains(":")){
             item = item.split(":")[1];
