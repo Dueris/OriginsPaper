@@ -122,12 +122,12 @@ public class RecipePower extends CraftPower implements Listener {
     // End
 
     public static ItemStack computeResult(JSONObject object){
-        int amt = (int) object.getOrDefault("count", 1);
+        long amt = (long) object.getOrDefault("count", 1);
         String item = object.get("item").toString();
         if(item.contains(":")){
             item = item.split(":")[1];
         }
-        return new ItemStack(Material.valueOf(item.toUpperCase()), amt);
+        return new ItemStack(Material.valueOf(item.toUpperCase()), Math.toIntExact(amt));
     }
 
     public static String computeTag(Recipe recipe){
