@@ -7,8 +7,7 @@ version = "mc1.20-v0.2.8"
 description = "Bringing the Origins Mod to PaperMC"
 
 dependencies {
-    implementation(project(":apoli"))
-    compileOnly(project(":calio")) // CompileOnly because shaded in :apoli
+    implementation(project(mapOf("path" to ":apoli", "path" to ":calio")))
     compileOnly("me.clip:placeholderapi:2.11.4")
     compileOnly("io.github.classgraph:classgraph:4.8.165") // - in DependencyLoader - shaded in calio
     compileOnly("org.reflections:reflections:0.9.12") // - in DependencyLoader - shaded in calio
