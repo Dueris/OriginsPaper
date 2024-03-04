@@ -1,15 +1,8 @@
 package me.dueris.genesismc.factory.conditions;
 
 
+import me.dueris.genesismc.factory.conditions.types.*;
 import org.bukkit.Bukkit;
-
-import me.dueris.genesismc.factory.conditions.types.BiEntityConditions;
-import me.dueris.genesismc.factory.conditions.types.BiomeConditions;
-import me.dueris.genesismc.factory.conditions.types.BlockConditions;
-import me.dueris.genesismc.factory.conditions.types.DamageConditions;
-import me.dueris.genesismc.factory.conditions.types.EntityConditions;
-import me.dueris.genesismc.factory.conditions.types.FluidConditions;
-import me.dueris.genesismc.factory.conditions.types.ItemConditions;
 
 import java.util.ArrayList;
 

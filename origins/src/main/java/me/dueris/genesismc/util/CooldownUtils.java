@@ -6,11 +6,9 @@ import me.dueris.genesismc.event.OriginChangeEvent;
 import me.dueris.genesismc.factory.powers.apoli.Resource;
 import me.dueris.genesismc.registry.Registries;
 import me.dueris.genesismc.util.render.TextureLocation;
-import net.minecraft.world.BossEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.boss.BarColor;
-import org.bukkit.boss.BarFlag;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Player;
@@ -23,11 +21,7 @@ import org.json.simple.JSONObject;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 
-import static me.dueris.genesismc.factory.powers.ApoliPower.stacking_status_effect;
-import static me.dueris.genesismc.factory.powers.apoli.FireProjectile.in_cooldown_patch;
-import static me.dueris.genesismc.util.render.TextureLocation.indexOfColor;
 import static me.dueris.genesismc.util.render.TextureLocation.textureMap;
 
 public class CooldownUtils implements @NotNull Listener {

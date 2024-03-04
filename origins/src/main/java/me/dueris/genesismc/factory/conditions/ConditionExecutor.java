@@ -1,10 +1,10 @@
 package me.dueris.genesismc.factory.conditions;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-
+import it.unimi.dsi.fastutil.Pair;
 import me.dueris.calio.registry.Registrar;
+import me.dueris.genesismc.GenesisMC;
+import me.dueris.genesismc.factory.conditions.types.*;
+import me.dueris.genesismc.registry.Registries;
 import org.bukkit.NamespacedKey;
 import org.bukkit.craftbukkit.v1_20_R3.block.CraftBiome;
 import org.bukkit.craftbukkit.v1_20_R3.block.CraftBlock;
@@ -14,16 +14,9 @@ import org.bukkit.inventory.ItemStack;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
-import it.unimi.dsi.fastutil.Pair;
-import me.dueris.genesismc.GenesisMC;
-import me.dueris.genesismc.factory.conditions.types.BiEntityConditions;
-import me.dueris.genesismc.factory.conditions.types.BiomeConditions;
-import me.dueris.genesismc.factory.conditions.types.BlockConditions;
-import me.dueris.genesismc.factory.conditions.types.DamageConditions;
-import me.dueris.genesismc.factory.conditions.types.EntityConditions;
-import me.dueris.genesismc.factory.conditions.types.FluidConditions;
-import me.dueris.genesismc.factory.conditions.types.ItemConditions;
-import me.dueris.genesismc.registry.Registries;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 public class ConditionExecutor {
     public static BiEntityConditions biEntityCondition = new BiEntityConditions();

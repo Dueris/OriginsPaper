@@ -1,19 +1,15 @@
 package me.dueris.genesismc.util.apoli;
 
 import com.google.common.base.Strings;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonNull;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
-import com.google.gson.JsonPrimitive;
+import com.google.gson.*;
 import com.google.gson.internal.LazilyParsedNumber;
-import java.util.Iterator;
-import java.util.Map.Entry;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+
+import java.util.Iterator;
+import java.util.Map.Entry;
 
 /**
  * Original code by Apace100 in the repository of apace100/apoli

@@ -2,7 +2,6 @@ package me.dueris.genesismc.command;
 
 import com.google.gson.JsonParser;
 import com.mojang.brigadier.CommandDispatcher;
-
 import joptsimple.internal.Strings;
 import me.dueris.calio.registry.Registrar;
 import me.dueris.genesismc.GenesisMC;

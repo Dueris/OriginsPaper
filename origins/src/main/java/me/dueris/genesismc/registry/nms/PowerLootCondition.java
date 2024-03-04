@@ -2,7 +2,6 @@ package me.dueris.genesismc.registry.nms;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import java.util.Optional;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.registry.Registries;
 import me.dueris.genesismc.registry.registries.Power;
@@ -17,6 +16,8 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_20_R3.util.CraftNamespacedKey;
 import org.bukkit.entity.Player;
+
+import java.util.Optional;
 
 public class PowerLootCondition implements LootItemCondition {
    public static final Codec<PowerLootCondition> CODEC = RecordCodecBuilder.create((instance) -> {

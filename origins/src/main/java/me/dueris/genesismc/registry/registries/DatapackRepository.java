@@ -1,9 +1,9 @@
 package me.dueris.genesismc.registry.registries;
 
-import java.nio.file.Path;
-
 import me.dueris.calio.registry.Registerable;
 import org.bukkit.NamespacedKey;
+
+import java.nio.file.Path;
 
 public class DatapackRepository implements Registerable {
     private NamespacedKey key;

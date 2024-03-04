@@ -6,7 +6,6 @@ import me.dueris.genesismc.factory.TagRegistryParser;
 import me.dueris.genesismc.registry.Registries;
 import me.dueris.genesismc.util.Utils;
 import me.dueris.genesismc.util.world.BiomeMappings;
-
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.Biome;
 import org.bukkit.craftbukkit.v1_20_R3.block.CraftBiome;

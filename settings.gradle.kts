@@ -1,7 +1,7 @@
 import java.util.*
 
 rootProject.name = "genesis"
-for (name in listOf("origins", "calio", "apoli")) {
+for (name in listOf("origins", "calio")) {
     val projName = name.lowercase(Locale.ENGLISH)
     include(projName)
     findProject(":$projName")!!.projectDir = file(name)

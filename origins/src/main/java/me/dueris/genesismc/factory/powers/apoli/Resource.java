@@ -5,15 +5,11 @@ import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.event.OriginChangeEvent;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
-import me.dueris.genesismc.factory.conditions.types.EntityConditions;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Power;
-import me.dueris.genesismc.util.CooldownUtils;
 import me.dueris.genesismc.util.Utils;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
-import org.bukkit.Bukkit;
-import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
@@ -27,9 +23,9 @@ import org.json.simple.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Optional;
 
-import static me.dueris.genesismc.util.CooldownUtils.*;
+import static me.dueris.genesismc.util.CooldownUtils.createCooldownBar;
+import static me.dueris.genesismc.util.CooldownUtils.getBarColor;
 
 public class Resource extends CraftPower implements Listener {
     public static HashMap<Player, HashMap<String, Pair<BossBar, Double>>> registeredBars = new HashMap();

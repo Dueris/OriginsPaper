@@ -7,15 +7,19 @@ version = "mc1.20-v0.2.8"
 description = "Bringing the Origins Mod to PaperMC"
 
 dependencies {
-    implementation(project(mapOf("path" to ":apoli", "path" to ":calio")))
-    compileOnly("me.clip:placeholderapi:2.11.4")
+    // Project
+    implementation(project(mapOf("path" to ":calio")))
+    // Required Dependencies
+    implementation("com.github.Dueris:ModelColorAPI:1.0.5-SNAPSHOT")
+    compileOnly("org.mineskin:java-client:1.2.4-SNAPSHOT") // - in DependencyLoader
     compileOnly("io.github.classgraph:classgraph:4.8.165") // - in DependencyLoader - shaded in calio
     compileOnly("org.reflections:reflections:0.9.12") // - in DependencyLoader - shaded in calio
-    compileOnly("org.mineskin:java-client:1.2.4-SNAPSHOT") // - in DependencyLoader - shaded in apoli
-    compileOnly("com.github.Dueris:ModelColorAPI:1.0.5-SNAPSHOT") // shaded in apoli
-    compileOnly("me.clip:placeholderapi:2.11.4")
+    compileOnly("org.mineskin:java-client:1.2.4-SNAPSHOT") // - in DependencyLoader
+    // Optional Hook
     compileOnly("org.geysermc.geyser:api:2.2.0-SNAPSHOT")
     compileOnly("net.skinsrestorer:skinsrestorer-api:15.0.4")
+    compileOnly("me.clip:placeholderapi:2.11.4")
+
 }
 
 tasks {

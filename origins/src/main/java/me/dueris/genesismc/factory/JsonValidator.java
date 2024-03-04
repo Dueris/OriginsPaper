@@ -1,15 +1,14 @@
 package me.dueris.genesismc.factory;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
+import com.google.gson.JsonParser;
+import me.dueris.genesismc.GenesisMC;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.logging.Logger;
-
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
-import com.google.gson.JsonParser;
-
-import me.dueris.genesismc.GenesisMC;
 
 public class JsonValidator {
     /**

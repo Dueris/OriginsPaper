@@ -6,7 +6,6 @@ import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.factory.powers.DontRegister;
 import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.util.apoli.RaycastUtils;
-import me.dueris.genesismc.util.console.OriginConsoleSender;
 import me.dueris.modelcolor.ModelColorAPI;
 import me.dueris.modelcolor.colortransformers.OriginsTransformer;
 import net.skinsrestorer.api.PropertyUtils;

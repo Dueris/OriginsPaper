@@ -1,5 +1,6 @@
 package me.dueris.genesismc.factory.conditions.types;
 
+import it.unimi.dsi.fastutil.Pair;
 import me.dueris.calio.registry.Registerable;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
@@ -19,8 +20,6 @@ import org.bukkit.entity.Tameable;
 import org.bukkit.event.Listener;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-
-import it.unimi.dsi.fastutil.Pair;
 
 import java.util.ArrayList;
 import java.util.EnumSet;
