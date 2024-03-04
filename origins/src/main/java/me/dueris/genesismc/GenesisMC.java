@@ -2,6 +2,8 @@ package me.dueris.genesismc;
 
 import io.papermc.paper.event.player.PlayerFailMoveEvent;
 import io.papermc.paper.event.server.ServerResourcesReloadedEvent;
+import it.unimi.dsi.fastutil.Pair;
+import me.dueris.calio.builder.NamespaceRemapper;
 import me.dueris.calio.registry.IRegistry;
 import me.dueris.calio.registry.Registrar;
 import me.dueris.genesismc.command.OriginCommand;
@@ -202,6 +204,17 @@ public final class GenesisMC extends JavaPlugin implements Listener {
             Bukkit.getServer().getPluginManager().disablePlugin(this);
         }
         CraftApoli.setupDynamicThreadCount();
+        NamespaceRemapper.mappings.add(new Pair<String, String>() {
+            @Override
+            public String left() {
+                return "origins";
+            }
+
+            @Override
+            public String right() {
+                return "apoli";
+            }
+        });
         ThreadFactory threadFactory = new NamedThreadFactory("OriginParsingPool");
         loaderThreadPool = Executors.newFixedThreadPool(CraftApoli.getDynamicThreadCount(), threadFactory);
         debugOrigins = getBooleanOrDefault(GenesisConfigs.getMainConfig().getBoolean("console-startup-debug") /* add arg compat in future version */, false);

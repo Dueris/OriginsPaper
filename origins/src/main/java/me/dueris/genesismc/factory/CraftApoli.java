@@ -1,5 +1,6 @@
 package me.dueris.genesismc.factory;
 
+import me.dueris.calio.builder.NamespaceRemapper;
 import me.dueris.calio.registry.IRegistry;
 import me.dueris.calio.registry.Registrar;
 import me.dueris.genesismc.GenesisMC;
@@ -255,7 +256,7 @@ public class CraftApoli {
                                                 String powerFolder = namespace.getName().toLowerCase();
                                                 String powerFileName = powerFile.getName().replace(".json", "").toLowerCase();
 
-                                                JSONObject powerParser = PowerRemapper.createRemapped(new File(datapack.getAbsolutePath() + File.separator + "data" + File.separator + powerFolder + File.separator + "powers" + File.separator + powerFileName + ".json"));
+                                                JSONObject powerParser = NamespaceRemapper.createRemapped(new File(datapack.getAbsolutePath() + File.separator + "data" + File.separator + powerFolder + File.separator + "powers" + File.separator + powerFileName + ".json"));
                                                 if (powerParser.containsKey("type") && "apoli:multiple".equals(powerParser.get("type"))) {
                                                     Power powerContainer = new Power(new NamespacedKey(powerFolder, powerFileName), fileToFileContainer(powerParser), Utils.readJSONFileAsString(powerFile), false, true);
                                                     ((Registrar<Power>)GenesisMC.getPlugin().registry.retrieve(Registries.POWER)).register(powerContainer);
@@ -361,7 +362,7 @@ public class CraftApoli {
 
                                                 try {
 
-                                                    JSONObject powerParser = PowerRemapper.createRemapped(new File(datapack.getAbsolutePath() + File.separator + "data" + File.separator + powerFolder + File.separator + "powers" + File.separator + powerFileName + ".json"));
+                                                    JSONObject powerParser = NamespaceRemapper.createRemapped(new File(datapack.getAbsolutePath() + File.separator + "data" + File.separator + powerFolder + File.separator + "powers" + File.separator + powerFileName + ".json"));
                                                     if (powerParser.containsKey("type") && "apoli:multiple".equals(powerParser.get("type"))) {
                                                         Power powerContainer = new Power(new NamespacedKey(powerFolder, powerFileName), fileToFileContainer(powerParser),Utils.readJSONFileAsString(new File(datapack.getAbsolutePath() + File.separator + "data" + File.separator + powerFolder + File.separator + "powers" + File.separator + powerFileName + ".json")), false, true);
                                                         powerContainers.add(powerContainer);
