@@ -3,6 +3,7 @@ package me.dueris.genesismc;
 import io.papermc.paper.event.player.PlayerFailMoveEvent;
 import io.papermc.paper.event.server.ServerResourcesReloadedEvent;
 import it.unimi.dsi.fastutil.Pair;
+import me.dueris.calio.CraftCalio;
 import me.dueris.calio.builder.NamespaceRemapper;
 import me.dueris.calio.registry.IRegistry;
 import me.dueris.calio.registry.Registrar;
@@ -27,10 +28,7 @@ import me.dueris.genesismc.factory.powers.apoli.provider.origins.BounceSlimeBloc
 import me.dueris.genesismc.integration.PlaceHolderAPI;
 import me.dueris.genesismc.registry.Registries;
 import me.dueris.genesismc.registry.impl.OriginRegistry;
-import me.dueris.genesismc.registry.registries.DatapackRepository;
-import me.dueris.genesismc.registry.registries.Layer;
-import me.dueris.genesismc.registry.registries.Origin;
-import me.dueris.genesismc.registry.registries.Power;
+import me.dueris.genesismc.registry.registries.*;
 import me.dueris.genesismc.screen.GuiTicker;
 import me.dueris.genesismc.screen.OriginChoosing;
 import me.dueris.genesismc.screen.ScreenNavigator;
@@ -71,6 +69,7 @@ import java.nio.file.Path;
 import java.security.CodeSource;
 import java.util.ArrayList;
 import java.util.EnumSet;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -176,6 +175,11 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         // Prepare the plugin
         plugin = this;
         metrics = new Metrics(this, 18536);
+
+        // Calio rewrite
+        CraftCalio.INSTANCE.getBuilder().registerType(List.of("condition", "entity_condition"), new FluidCondition());
+        CraftCalio.INSTANCE.start(true);
+        // End
         GenesisMC.server = ((CraftServer) Bukkit.getServer()).getServer();
         world_container = server.options.asMap().toString().split(", \\[W, universe, world-container, world-dir]=\\[")[1].split("], ")[0];
         playerDataFolder = server.playerDataStorage.getPlayerDir();
