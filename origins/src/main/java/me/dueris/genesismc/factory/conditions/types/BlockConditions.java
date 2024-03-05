@@ -190,6 +190,10 @@ public class BlockConditions {
             this.test = test;
         }
 
+        public BiPredicate<JSONObject, CraftBlock> getRawPredicate(){
+            return this.test;
+        }
+
         public boolean test(JSONObject condition, CraftBlock tester){
             return test.test(condition, tester);
         }

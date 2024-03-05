@@ -2,6 +2,8 @@ package me.dueris.genesismc.registry.registries;
 
 import org.json.simple.JSONArray;
 
+import me.dueris.calio.builder.inst.FactoryProvider;
+
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -14,10 +16,21 @@ public class DatapackFile implements Serializable {
 
     List<String> keys;
     List<Object> values;
+    FactoryProvider provider;
 
     public DatapackFile(List<String> keys, List<Object> values) {
         this.keys = keys;
         this.values = values;
+    }
+
+    public DatapackFile(List<String> keys, List<Object> values, FactoryProvider provider){
+        this.keys = keys;
+        this.values = values;
+        this.provider = provider;
+    }
+
+    public FactoryProvider getFactoryProvider(){
+        return this.provider;
     }
 
     @Override
@@ -31,7 +44,7 @@ public class DatapackFile implements Serializable {
         return this.values.get(index);
     }
 
-    public void addOrigin(ArrayList<String> originTags) {
+    public void addInstance(ArrayList<String> originTags) {
         int index = this.keys.indexOf("origins");
         JSONArray origins = (JSONArray) this.values.get(index);
         origins.addAll(originTags);

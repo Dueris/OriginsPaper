@@ -27,20 +27,6 @@ public class ModifyBreakSpeedPower extends CraftPower implements Listener {
 
     String MODIFYING_KEY = "modify_break_speed";
 
-    @Override
-    public void setActive(Player p, String tag, Boolean bool) {
-        if (powers_active.containsKey(p)) {
-            if (powers_active.get(p).containsKey(tag)) {
-                powers_active.get(p).replace(tag, bool);
-            } else {
-                powers_active.get(p).put(tag, bool);
-            }
-        } else {
-            powers_active.put(p, new HashMap());
-            setActive(p, tag, bool);
-        }
-    }
-
     public int calculateHasteAmplifier(float value) {
         float maxValue = 10000.0f;
         float minValue = 0.1f;

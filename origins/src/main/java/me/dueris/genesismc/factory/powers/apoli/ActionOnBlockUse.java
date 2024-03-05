@@ -1,5 +1,7 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
+import me.dueris.calio.builder.inst.FactoryObjectInstance;
+import me.dueris.calio.util.InstanceGetter;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.actions.Actions;
@@ -9,6 +11,7 @@ import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import org.bukkit.Material;
+import org.bukkit.block.BlockFace;
 import org.bukkit.craftbukkit.v1_20_R3.block.CraftBlock;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
 import org.bukkit.entity.Player;
@@ -18,10 +21,12 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class ActionOnBlockUse extends CraftPower implements Listener {
 
@@ -48,23 +53,20 @@ public class ActionOnBlockUse extends CraftPower implements Listener {
                         ConditionExecutor.testBlock((JSONObject) power.get("block_condition"), (CraftBlock) e.getClickedBlock()) &&
                         ConditionExecutor.testItem((JSONObject) power.get("item_condition"), e.getItem()))
                     {
+                    boolean pass = power.getPowerFile().getFactoryProvider().getJsonArray("directions").isEmpty();
+                    for(BlockFace face : InstanceGetter.getBlockFaceFromDirection(power.getPowerFile().getFactoryProvider().getJsonArray("directions"))){
+                        if(e.getBlockFace().equals(face)){
+                            pass = true;
+                        }
+                    }
+                    if(!pass) return;
                     setActive(e.getPlayer(), power.getTag(), true);
                     Actions.BlockActionType(e.getClickedBlock().getLocation(), power.getBlockAction());
                     Actions.EntityActionType(e.getPlayer(), power.getEntityAction());
                     Actions.ItemActionType(e.getItem(), power.getItemAction());
                     Actions.ItemActionType(e.getItem(), power.getAction("held_item_action"));
-                        if (power.get("result_stack") != null) {
-                            JSONObject jsonObject = power.get("result_stack");
-                            int amt;
-                            if (jsonObject.get("amount").toString() != null) {
-                                amt = Integer.parseInt(jsonObject.get("amount").toString());
-                            } else {
-                                amt = 1;
-                            }
-                            ItemStack itemStack = new ItemStack(Material.valueOf(jsonObject.get("item").toString().toUpperCase().split(":")[jsonObject.get("item").toString().split(":").length]), amt);
-                            e.getPlayer().getInventory().addItem(itemStack);
-                            Actions.ItemActionType(itemStack, power.getAction("result_item_action"));
-                        }
+                    e.getPlayer().getInventory().addItem(power.getPowerFile().getFactoryProvider().getItemStack("result_stack"));
+                    Actions.ItemActionType(power.getPowerFile().getFactoryProvider().getItemStack("result_stack"), power.getAction("result_item_action"));
                     tickFix.add(e.getPlayer());
                     new BukkitRunnable() {
                         @Override
@@ -89,16 +91,16 @@ public class ActionOnBlockUse extends CraftPower implements Listener {
     }
 
     @Override
-    public void setActive(Player p, String tag, Boolean bool) {
-        if (powers_active.containsKey(p)) {
-            if (powers_active.get(p).containsKey(tag)) {
-                powers_active.get(p).replace(tag, bool);
-            } else {
-                powers_active.get(p).put(tag, bool);
-            }
-        } else {
-            powers_active.put(p, new HashMap());
-            setActive(p, tag, bool);
-        }
+    public List<FactoryObjectInstance> getValidObjectFactory() {
+        return super.getDefaultObjectFactory(List.of(
+            new FactoryObjectInstance("entity_action", JSONObject.class, new JSONObject()),
+            new FactoryObjectInstance("block_action", JSONObject.class, new JSONObject()),
+            new FactoryObjectInstance("block_condition", JSONObject.class, new JSONObject()),
+            new FactoryObjectInstance("item_condition", JSONObject.class, new JSONObject()),
+            new FactoryObjectInstance("directions", JSONArray.class, new JSONArray()),
+            new FactoryObjectInstance("result_stack", ItemStack.class, new ItemStack(Material.AIR)),
+            new FactoryObjectInstance("result_item_action", JSONObject.class, new JSONObject()),
+            new FactoryObjectInstance("held_item_action", JSONObject.class, new JSONObject())
+        ));
     }
 }

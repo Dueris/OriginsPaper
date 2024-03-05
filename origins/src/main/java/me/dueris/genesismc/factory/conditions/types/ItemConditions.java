@@ -278,6 +278,10 @@ public class ItemConditions {
             this.test = test;
         }
 
+        public BiPredicate<JSONObject, ItemStack> getRawPredicate(){
+            return this.test;
+        }
+
         public boolean test(JSONObject condition, ItemStack tester){
             return test.test(condition, tester);
         }

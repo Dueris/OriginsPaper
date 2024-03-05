@@ -1,5 +1,6 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
+import me.dueris.calio.builder.inst.FactoryObjectInstance;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.actions.Actions;
@@ -21,6 +22,7 @@ import org.json.simple.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class ActionOnBeingUsed extends CraftPower implements Listener {
 
@@ -37,18 +39,8 @@ public class ActionOnBeingUsed extends CraftPower implements Listener {
 
                 setActive(player, power.getTag(), true);
                 Actions.ItemActionType(actor.getInventory().getItem(e.getHand()), power.getAction("held_item_action"));
-                if (power.get("result_stack") != null) {
-                    JSONObject jsonObject = power.get("result_stack");
-                    int amt;
-                    if (jsonObject.get("amount").toString() != null) {
-                        amt = Integer.parseInt(jsonObject.get("amount").toString());
-                    } else {
-                        amt = 1;
-                    }
-                    ItemStack itemStack = new ItemStack(Material.valueOf(jsonObject.get("item").toString().toUpperCase().split(":")[jsonObject.get("item").toString().split(":").length]), amt);
-                    actor.getInventory().addItem(itemStack);
-                    Actions.ItemActionType(itemStack, power.getAction("result_item_action"));
-                }
+                actor.getInventory().addItem(power.getPowerFile().getFactoryProvider().getItemStack("result_stack"));
+                Actions.ItemActionType(power.getPowerFile().getFactoryProvider().getItemStack("result_stack"), power.getAction("result_item_action"));
                 Actions.BiEntityActionType(actor, target, power.getBiEntityAction());
                 new BukkitRunnable() {
                     @Override
@@ -76,16 +68,14 @@ public class ActionOnBeingUsed extends CraftPower implements Listener {
     }
 
     @Override
-    public void setActive(Player p, String tag, Boolean bool) {
-        if (powers_active.containsKey(p)) {
-            if (powers_active.get(p).containsKey(tag)) {
-                powers_active.get(p).replace(tag, bool);
-            } else {
-                powers_active.get(p).put(tag, bool);
-            }
-        } else {
-            powers_active.put(p, new HashMap());
-            setActive(p, tag, bool);
-        }
+    public List<FactoryObjectInstance> getValidObjectFactory() {
+        return super.getDefaultObjectFactory(List.of(
+            new FactoryObjectInstance("bientity_action", JSONObject.class, new JSONObject()),
+            new FactoryObjectInstance("held_item_action", JSONObject.class, new JSONObject()),
+            new FactoryObjectInstance("result_item_action", JSONObject.class, new JSONObject()),
+            new FactoryObjectInstance("bientity_condition", JSONObject.class, new JSONObject()),
+            new FactoryObjectInstance("item_condition", JSONObject.class, new JSONObject()),
+            new FactoryObjectInstance("result_stack", ItemStack.class, new ItemStack(Material.AIR))
+        ));
     }
 }

@@ -1,5 +1,6 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
+import me.dueris.calio.builder.inst.FactoryObjectInstance;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
@@ -17,26 +18,13 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import static org.bukkit.Material.AIR;
 
 public class Climbing extends CraftPower {
 
     public ArrayList<Player> active_climbing = new ArrayList<>();
-
-    @Override
-    public void setActive(Player p, String tag, Boolean bool) {
-        if (powers_active.containsKey(p)) {
-            if (powers_active.get(p).containsKey(tag)) {
-                powers_active.get(p).replace(tag, bool);
-            } else {
-                powers_active.get(p).put(tag, bool);
-            }
-        } else {
-            powers_active.put(p, new HashMap());
-            setActive(p, tag, bool);
-        }
-    }
 
     public boolean isActiveClimbing(Player player) {
         return active_climbing.contains(player);
@@ -72,7 +60,6 @@ public class Climbing extends CraftPower {
                 Block block = p.getTargetBlock(null, 2);
                 for (Layer layer : CraftApoli.getLayersFromRegistry()) {
                     for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-                        ConditionExecutor executor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
                         if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p)) {
                             setActive(p, power.getTag(), true);
                             if (!p.isSneaking() && block.getType() != AIR) return;
@@ -101,5 +88,10 @@ public class Climbing extends CraftPower {
     @Override
     public ArrayList<Player> getPowerArray() {
         return climbing;
+    }
+
+    @Override
+    public List<FactoryObjectInstance> getValidObjectFactory() {
+        return super.getDefaultObjectFactory(List.of());
     }
 }

@@ -211,7 +211,7 @@ public class Origin implements Serializable, FactoryInstance {
                     }
                 }
             }
-            registrar.register(new Origin(namespacedTag, new DatapackFile(obj.keySet().stream().toList(), obj.values().stream().toList()), containers));
+            registrar.register(new Origin(namespacedTag, new DatapackFile(obj.keySet().stream().toList(), obj.values().stream().toList(), obj), containers));
         } catch (Exception e) {
             e.printStackTrace();
         }

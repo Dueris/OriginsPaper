@@ -1,5 +1,6 @@
 package me.dueris.genesismc.factory.powers.apoli.provider.origins;
 
+import me.dueris.calio.builder.inst.FactoryObjectInstance;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.factory.powers.apoli.provider.PowerProvider;
@@ -20,6 +21,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class ScareCreepers extends CraftPower implements Listener, PowerProvider {
     public static ArrayList<Player> scaryPlayers = new ArrayList<>();
@@ -39,20 +41,6 @@ public class ScareCreepers extends CraftPower implements Listener, PowerProvider
     @Override
     public ArrayList<Player> getPowerArray() {
         return scaryPlayers;
-    }
-
-    @Override
-    public void setActive(Player p, String tag, Boolean bool) {
-        if (powers_active.containsKey(p)) {
-            if (powers_active.get(p).containsKey(tag)) {
-                powers_active.get(p).replace(tag, bool);
-            } else {
-                powers_active.get(p).put(tag, bool);
-            }
-        } else {
-            powers_active.put(p, new HashMap());
-            setActive(p, tag, bool);
-        }
     }
 
     @EventHandler
@@ -124,5 +112,10 @@ public class ScareCreepers extends CraftPower implements Listener, PowerProvider
                 }.runTask(GenesisMC.getPlugin());
             }
         }
+    }
+
+    @Override
+    public List<FactoryObjectInstance> getValidObjectFactory() {
+        return super.getDefaultObjectFactory(List.of());
     }
 }

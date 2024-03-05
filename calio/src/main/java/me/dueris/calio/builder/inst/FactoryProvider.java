@@ -12,8 +12,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonPrimitive;
-import com.google.gson.internal.LazilyParsedNumber;
-import com.google.gson.stream.JsonReader;
 
 public class FactoryProvider extends JSONObject {
     JSONObject raw;
@@ -28,7 +26,9 @@ public class FactoryProvider extends JSONObject {
 
     public ItemStack getItemStack(String accessor){
         Object inst = this.get(accessor);
-        if(inst instanceof JSONObject obj){
+        if(inst instanceof ItemStack){
+            return (ItemStack)inst;
+        } else if(inst instanceof JSONObject obj){
             String materialVal = "head";
             int amt = 1;
             if(obj.containsKey("item")){
@@ -45,17 +45,26 @@ public class FactoryProvider extends JSONObject {
 
     public NamespacedKey getNamespacedKey(String accessor){
         Object inst = this.get(accessor);
+        if(inst instanceof NamespacedKey) return (NamespacedKey) inst;
         return NamespacedKey.fromString(inst.toString().toLowerCase());
     }
 
     public FactoryProvider getFactoryProvider(String accessor){
         Object inst = this.get(accessor);
+        if(inst == null) return new FactoryProvider(new JSONObject());
         return new FactoryProvider((JSONObject) inst);
     }
 
     public JSONObject getJsonObject(String accessor){
         Object inst = this.get(accessor);
+        if(inst == null) return new JSONObject();
         return (JSONObject) inst;
+    }
+
+    public JSONArray getJsonArray(String accessor){
+        Object inst = this.get(accessor);
+        if(inst == null) return new JSONArray();
+        return (JSONArray) inst;
     }
 
     public JsonElement getGsonElement(){

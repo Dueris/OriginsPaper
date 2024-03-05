@@ -1,15 +1,18 @@
 package me.dueris.genesismc.factory.powers.apoli.provider.origins;
 
+import me.dueris.calio.builder.inst.FactoryObjectInstance;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.powers.CraftPower;
-import me.dueris.genesismc.factory.powers.apoli.GravityPower;
 import me.dueris.genesismc.factory.powers.apoli.provider.PowerProvider;
+import me.dueris.genesismc.factory.powers.genesismc.GravityPower;
+
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class LikeWater extends CraftPower implements Listener, PowerProvider {
     private static final GravityPower gravityHook = new GravityPower();
@@ -32,16 +35,7 @@ public class LikeWater extends CraftPower implements Listener, PowerProvider {
     }
 
     @Override
-    public void setActive(Player p, String tag, Boolean bool) {
-        if (powers_active.containsKey(p)) {
-            if (powers_active.get(p).containsKey(tag)) {
-                powers_active.get(p).replace(tag, bool);
-            } else {
-                powers_active.get(p).put(tag, bool);
-            }
-        } else {
-            powers_active.put(p, new HashMap());
-            setActive(p, tag, bool);
-        }
+    public List<FactoryObjectInstance> getValidObjectFactory() {
+        return super.getDefaultObjectFactory(List.of());
     }
 }

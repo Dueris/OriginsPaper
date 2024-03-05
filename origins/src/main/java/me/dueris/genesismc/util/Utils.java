@@ -7,19 +7,30 @@ import com.mojang.brigadier.StringReader;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 import it.unimi.dsi.fastutil.Pair;
+import me.dueris.calio.util.InstanceGetter;
 import me.dueris.calio.util.Space;
+import me.dueris.calio.util.block.vector.RotationUtils;
 import me.dueris.genesismc.GenesisMC;
-import me.dueris.genesismc.factory.conditions.types.BiEntityConditions;
 import me.dueris.genesismc.registry.registries.Power;
 import net.minecraft.Util;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.stats.Stats;
+import net.minecraft.tags.EntityTypeTags;
+import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageType;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.level.ClipContext;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -27,8 +38,11 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.craftbukkit.v1_20_R3.CraftRegistry;
 import org.bukkit.craftbukkit.v1_20_R3.CraftServer;
+import org.bukkit.craftbukkit.v1_20_R3.CraftSound;
+import org.bukkit.craftbukkit.v1_20_R3.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_20_R3.inventory.CraftItemStack;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -48,6 +62,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 import java.util.function.BinaryOperator;
+import java.util.function.Predicate;
 
 public class Utils {
     public static Registry<DamageType> DAMAGE_REGISTRY = CraftRegistry.getMinecraftRegistry().registryOrThrow(Registries.DAMAGE_TYPE);
@@ -166,94 +181,23 @@ public class Utils {
     }
 
     public static Space getSpaceFromString(String space) {
-        switch (space.toLowerCase()) {
-            case "world" -> {
-                return Space.WORLD;
-            }
-            case "local" -> {
-                return Space.LOCAL;
-            }
-            case "local_horizontal" -> {
-                return Space.LOCAL_HORIZONTAL;
-            }
-            case "local_horizontal_normalized" -> {
-                return Space.LOCAL_HORIZONTAL_NORMALIZED;
-            }
-            case "velocity" -> {
-                return Space.VELOCITY;
-            }
-            case "velocity_normalized" -> {
-                return Space.VELOCITY_NORMALIZED;
-            }
-            case "velocity_horizontal" -> {
-                return Space.VELOCITY_HORIZONTAL;
-            }
-            case "velocity_horizontal_normalized" -> {
-                return Space.VELOCITY_HORIZONTAL_NORMALIZED;
-            }
-            default -> {
-                return Space.WORLD;
-            }
-        }
+        return InstanceGetter.getSpaceFromString(space);
     }
 
-    public static BiEntityConditions.RotationType getRotationType(String string){
-        switch (string.toLowerCase()) {
-            case "head" -> {
-                return BiEntityConditions.RotationType.HEAD;
-            }
-            case "body" -> {
-                return BiEntityConditions.RotationType.BODY;
-            }
-            default -> {
-                return BiEntityConditions.RotationType.BODY;
-            }
-        }
+    public static RotationUtils.RotationType getRotationType(String string){
+        return InstanceGetter.getRotationType(string);
     }
 
     public static Vec3 createDirection(JSONObject jsonObject){
-        if(jsonObject == null || jsonObject.isEmpty()) return null;
-        float x = 0;
-        float z = 0;
-        float y = 0;
-        if(jsonObject.containsKey("x")) x = (float) jsonObject.get("x");
-        if(jsonObject.containsKey("z")) z = (float) jsonObject.get("z");
-        if(jsonObject.containsKey("y")) y = (float) jsonObject.get("y");
-        return new Vec3(x, y, z);
+        return InstanceGetter.createDirection(jsonObject);
     }
 
     public static ClipContext.Block getShapeType(String string){
-        switch (string.toLowerCase()) {
-            case "collider" -> {
-                return ClipContext.Block.COLLIDER;
-            }
-            case "outline" -> {
-                return ClipContext.Block.OUTLINE;
-            }
-            case "visual" -> {
-                return ClipContext.Block.VISUAL;
-            }
-            default -> {
-                return null;
-            }
-        }
+        return InstanceGetter.getShapeType(string);
     }
 
     public static ClipContext.Fluid getFluidHandling(String string){
-        switch (string.toLowerCase()) {
-            case "none" -> {
-                return ClipContext.Fluid.NONE;
-            }
-            case "any" -> {
-                return ClipContext.Fluid.ANY;
-            }
-            case "source_only" -> {
-                return ClipContext.Fluid.SOURCE_ONLY;
-            }
-            default -> {
-                return null;
-            }
-        }
+        return InstanceGetter.getFluidHandling(string);
     }
 
     public static int getArmorValue(ItemStack armorItem) {
@@ -312,6 +256,26 @@ public class Utils {
             default:
                 return false;
         }
+    }
+
+    public static <T> Predicate<T> combineOr(Predicate<T> a, Predicate<T> b) {
+        if(a == null) {
+            return b;
+        }
+        if(b == null) {
+            return a;
+        }
+        return a.or(b);
+    }
+
+    public static <T> Predicate<T> combineAnd(Predicate<T> a, Predicate<T> b) {
+        if(a == null) {
+            return b;
+        }
+        if(b == null) {
+            return a;
+        }
+        return a.and(b);
     }
 
     // Math
@@ -455,6 +419,44 @@ public class Utils {
             }
 
             return (T) var4;
+        }
+    }
+
+    public class DamageUtils {
+        public static void applyFallDamage(Player p){
+            float fallDistance = p.getFallDistance();
+            ServerPlayer pl = ((CraftPlayer) p).getHandle();
+            if (pl.getAbilities().invulnerable) return;
+            if (fallDistance >= 2.0F) {
+                pl.awardStat(Stats.FALL_ONE_CM, (int) Math.round((double) fallDistance * 100.0D));
+            }
+
+            int i = 0;
+            if (!pl.getType().is(EntityTypeTags.FALL_DAMAGE_IMMUNE)) {
+                MobEffectInstance mobeffect = pl.getEffect(MobEffects.JUMP);
+                float dm = mobeffect == null ? 0.0F : (mobeffect.getAmplifier() + 1);
+
+                i = Mth.ceil((fallDistance - 3.0F - dm) * 1);
+            }
+
+            if (i > 0) {
+                pl.hurt(pl.level().damageSources().fall(), (float) i);
+                SoundEvent sound = i > 4 ? pl.getFallSounds().big() : pl.getFallSounds().small();
+
+                p.playSound(p.getLocation(), CraftSound.minecraftToBukkit(sound), 1f, 1f);
+                if (!pl.isSilent()) {
+                    int a = Mth.floor(pl.getX());
+                    int b = Mth.floor(pl.getY() - 0.20000000298023274d);
+                    int c = Mth.floor(pl.getZ());
+                    BlockState blockdata = pl.level().getBlockState(new BlockPos(a, b, c));
+        
+                    if (!blockdata.isAir()) {
+                        SoundType soundeffecttype = blockdata.getSoundType();
+        
+                        pl.playSound(soundeffecttype.getFallSound(), soundeffecttype.getVolume() * 0.5F, soundeffecttype.getPitch() * 0.75F);
+                    }
+                }
+            }
         }
     }
 }

@@ -4,10 +4,12 @@ import me.dueris.calio.CraftCalio;
 import me.dueris.calio.builder.inst.FactoryInstance;
 import me.dueris.calio.builder.inst.FactoryObjectInstance;
 import me.dueris.calio.builder.inst.FactoryProvider;
+import me.dueris.calio.parse.validation.JsonFactoryValidator;
 import me.dueris.calio.registry.Registrar;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.powers.ApoliPower;
+import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.registry.Registries;
 import me.dueris.genesismc.util.Utils;
 
@@ -534,11 +536,16 @@ public class Power implements Serializable, FactoryInstance {
     public void createInstance(FactoryProvider root, File rawFile, Registrar registry, NamespacedKey namespacedTag){
         Registrar<Power> registrar = (Registrar<Power>)registry;
         List<NamespacedKey> validTypes = ((Registrar<ApoliPower>)GenesisMC.getPlugin().registry.retrieve(Registries.CRAFT_POWER)).rawRegistry.keySet().stream().toList();
+        boolean reg = false;
         if(!validTypes.contains(root.getNamespacedKey("type")) && !allowedSkips.contains(root.getNamespacedKey("type"))){
             CraftCalio.INSTANCE.getLogger().severe("Unknown type({t}) was provided when registering new Power: ".replace("{t}", root.get("type").toString()) + namespacedTag.asString());
+        }else{
+            ApoliPower craftPower = ((Registrar<ApoliPower>)GenesisMC.getPlugin().registry.retrieve(Registries.CRAFT_POWER)).get(root.getNamespacedKey("type"));
+            reg = JsonFactoryValidator.validateFactory(root, craftPower.getValidObjectFactory(), namespacedTag) != null;
         }
+        if(!reg) return;
         try {
-            Power newPower = new Power(namespacedTag, new DatapackFile(root.keySet().stream().toList(), root.values().stream().toList()), Utils.readJSONFileAsString(rawFile), false, root.get("type").toString().equalsIgnoreCase("apoli:multiple"));
+            Power newPower = new Power(namespacedTag, new DatapackFile(root.keySet().stream().toList(), root.values().stream().toList(), root), Utils.readJSONFileAsString(rawFile), false, root.get("type").toString().equalsIgnoreCase("apoli:multiple"));
             registrar.register(newPower);
             if(root.get("type").toString().equalsIgnoreCase("apoli:multiple")){
                 CraftApoli.processNestedPowers(

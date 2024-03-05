@@ -24,7 +24,7 @@ public class GuiWarning {
     }
 
     private static String getMessage() {
-        String msg = "You have attempted to load Genesis as a jar! You CANNOT do this!\nGenesisMC is a plugin and should be placed in the plugins directory of your server. Then start your server jar, and enjoy GenesisMC!";
+        String msg = "You have tried to launch GenesisMC(a Minecraft Plugin) directly, but it is not an executable program or installer.\nYou must install Paper or a fork of it and place the plugin inside the plugins directory to enable it.\nEnjoy the plugin! - Dueris";
         return msg;
     }
 }

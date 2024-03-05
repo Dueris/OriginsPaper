@@ -1,5 +1,6 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
+import me.dueris.calio.builder.inst.FactoryObjectInstance;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.event.OriginChangeEvent;
 import me.dueris.genesismc.factory.CraftApoli;
@@ -7,6 +8,7 @@ import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.registry.registries.Layer;
 import me.dueris.genesismc.registry.registries.Power;
+import me.dueris.genesismc.util.Utils;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
@@ -35,6 +37,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.UUID;
 
 public class FlightElytra extends CraftPower implements Listener {
@@ -42,20 +45,6 @@ public class FlightElytra extends CraftPower implements Listener {
 
     public static ArrayList<UUID> getGlidingPlayers() {
         return glidingPlayers;
-    }
-
-    @Override
-    public void setActive(Player p, String tag, Boolean bool) {
-        if (powers_active.containsKey(p)) {
-            if (powers_active.get(p).containsKey(tag)) {
-                powers_active.get(p).replace(tag, bool);
-            } else {
-                powers_active.get(p).put(tag, bool);
-            }
-        } else {
-            powers_active.put(p, new HashMap());
-            setActive(p, tag, bool);
-        }
     }
 
     @Override
@@ -79,7 +68,6 @@ public class FlightElytra extends CraftPower implements Listener {
         if (elytra.contains(e.getPlayer())) {
             e.setCancelled(true);
             p.setFlying(false);
-            ConditionExecutor executor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
             for (Layer layer : CraftApoli.getLayersFromRegistry()) {
                 for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
                     if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p)) {
@@ -127,54 +115,10 @@ public class FlightElytra extends CraftPower implements Listener {
             if (e.getEntity() instanceof Player p) {
                 if (p.getGameMode().equals(GameMode.CREATIVE)) return;
                 if (elytra.contains(p)) {
-                    float fallDistance = p.getFallDistance();
-                    ServerPlayer pl = ((CraftPlayer) p).getHandle();
-                    if (pl.getAbilities().invulnerable) return;
-                    if (fallDistance >= 2.0F) {
-                        pl.awardStat(Stats.FALL_ONE_CM, (int) Math.round((double) fallDistance * 100.0D));
-                    }
-
-                    int i = this.calculateFallDamage(p, fallDistance, 1);
-
-                    if (i > 0) {
-                        pl.hurt(pl.level().damageSources().fall(), (float) i);
-
-                        p.playSound(p.getLocation(), CraftSound.minecraftToBukkit(this.getFallDamageSound(pl, i)), 1f, 1f);
-                        this.playBlockFallSound(pl);
-                    }
+                    Utils.DamageUtils.applyFallDamage(p);
                 }
             }
         }
-    }
-
-    private SoundEvent getFallDamageSound(ServerPlayer pl, int distance) {
-        return distance > 4 ? pl.getFallSounds().big() : pl.getFallSounds().small();
-    }
-
-    private void playBlockFallSound(ServerPlayer pl) {
-        if (!pl.isSilent()) {
-            int a = Mth.floor(pl.getX());
-            int b = Mth.floor(pl.getY() - 0.20000000298023274d);
-            int c = Mth.floor(pl.getZ());
-            BlockState blockdata = pl.level().getBlockState(new BlockPos(a, b, c));
-
-            if (!blockdata.isAir()) {
-                SoundType soundeffecttype = blockdata.getSoundType();
-
-                pl.playSound(soundeffecttype.getFallSound(), soundeffecttype.getVolume() * 0.5F, soundeffecttype.getPitch() * 0.75F);
-            }
-        }
-    }
-
-    private int calculateFallDamage(Player p, float fallDistance, float damageMultiplier) {
-        ServerPlayer pl = ((CraftPlayer) p).getHandle();
-        if (!pl.getType().is(EntityTypeTags.FALL_DAMAGE_IMMUNE)) {
-            MobEffectInstance mobeffect = pl.getEffect(MobEffects.JUMP);
-            float dm = mobeffect == null ? 0.0F : (mobeffect.getAmplifier() + 1);
-
-            return Mth.ceil((fallDistance - 3.0F - dm) * damageMultiplier);
-        }
-        return 0;
     }
 
     @Override
@@ -185,5 +129,10 @@ public class FlightElytra extends CraftPower implements Listener {
     @Override
     public ArrayList<Player> getPowerArray() {
         return elytra;
+    }
+
+    @Override
+    public List<FactoryObjectInstance> getValidObjectFactory() {
+        return super.getDefaultObjectFactory(List.of());
     }
 }

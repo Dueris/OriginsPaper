@@ -1,4 +1,4 @@
-package me.dueris.calio.parse.verification;
+package me.dueris.calio.parse.validation;
 
 import java.util.List;
 

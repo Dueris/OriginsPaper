@@ -1,5 +1,6 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
+import me.dueris.calio.builder.inst.FactoryObjectInstance;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
@@ -11,9 +12,12 @@ import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class TooltipPower extends CraftPower {
 
@@ -48,20 +52,6 @@ public class TooltipPower extends CraftPower {
     }
 
     @Override
-    public void setActive(Player p, String tag, Boolean bool) {
-        if (powers_active.containsKey(p)) {
-            if (powers_active.get(p).containsKey(tag)) {
-                powers_active.get(p).replace(tag, bool);
-            } else {
-                powers_active.get(p).put(tag, bool);
-            }
-        } else {
-            powers_active.put(p, new HashMap());
-            setActive(p, tag, bool);
-        }
-    }
-
-    @Override
     public void run(Player p) {
         if (getPowerArray().contains(p)) {
             for (Layer layer : CraftApoli.getLayersFromRegistry()) {
@@ -92,5 +82,15 @@ public class TooltipPower extends CraftPower {
     @Override
     public ArrayList<Player> getPowerArray() {
         return tooltip;
+    }
+
+    @Override
+    public List<FactoryObjectInstance> getValidObjectFactory() {
+        return super.getDefaultObjectFactory(List.of(
+            new FactoryObjectInstance("text", String.class, "Tooltip"),
+            new FactoryObjectInstance("texts", JSONArray.class, new JSONArray()),
+            new FactoryObjectInstance("order", Integer.class, 0),
+            new FactoryObjectInstance("item_conditionn", JSONObject.class, new JSONObject())
+        ));
     }
 }

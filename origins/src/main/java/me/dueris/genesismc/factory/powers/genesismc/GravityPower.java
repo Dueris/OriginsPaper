@@ -1,6 +1,8 @@
-package me.dueris.genesismc.factory.powers.apoli;
+package me.dueris.genesismc.factory.powers.genesismc;
 
 import com.destroystokyo.paper.event.player.PlayerJumpEvent;
+
+import me.dueris.calio.builder.inst.FactoryObjectInstance;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
@@ -22,22 +24,9 @@ import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class GravityPower extends CraftPower implements Listener {
-
-    @Override
-    public void setActive(Player p, String tag, Boolean bool) {
-        if (powers_active.containsKey(p)) {
-            if (powers_active.get(p).containsKey(tag)) {
-                powers_active.get(p).replace(tag, bool);
-            } else {
-                powers_active.get(p).put(tag, bool);
-            }
-        } else {
-            powers_active.put(p, new HashMap());
-            setActive(p, tag, bool);
-        }
-    }
 
     @Override
     public void run(Player p) {
@@ -111,5 +100,10 @@ public class GravityPower extends CraftPower implements Listener {
         if (no_gravity.contains(e.getPlayer())) {
             e.getPlayer().setVelocity(new Vector(e.getPlayer().getVelocity().getX(), e.getPlayer().getVelocity().getY() + 1, e.getPlayer().getVelocity().getZ()));
         }
+    }
+
+    @Override
+    public List<FactoryObjectInstance> getValidObjectFactory() {
+        return super.getDefaultObjectFactory(List.of());
     }
 }

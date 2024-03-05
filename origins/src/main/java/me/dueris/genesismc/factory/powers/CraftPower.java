@@ -2,12 +2,14 @@ package me.dueris.genesismc.factory.powers;
 
 import io.github.classgraph.ClassGraph;
 import io.github.classgraph.ScanResult;
+import me.dueris.calio.builder.inst.FactoryObjectInstance;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.powers.apoli.provider.OriginSimpleContainer;
 import me.dueris.genesismc.factory.powers.apoli.provider.origins.*;
 import me.dueris.genesismc.registry.Registries;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Listener;
+import org.json.simple.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -77,5 +79,10 @@ public abstract class CraftPower implements ApoliPower {
                 Bukkit.getServer().getPluginManager().registerEvents((Listener) instance, GenesisMC.getPlugin());
             }
         }
+    }
+
+    public List<FactoryObjectInstance> getDefaultObjectFactory(List<FactoryObjectInstance> list){
+        list.add(new FactoryObjectInstance("condition", JSONObject.class, new JSONObject()));
+        return list;
     }
 }

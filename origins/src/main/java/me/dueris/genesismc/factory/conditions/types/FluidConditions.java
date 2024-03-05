@@ -61,6 +61,10 @@ public class FluidConditions {
             this.test = test;
         }
 
+        public BiPredicate<JSONObject, Fluid> getRawPredicate(){
+            return this.test;
+        }
+
         public boolean test(JSONObject condition, net.minecraft.world.level.material.Fluid tester){
             return test.test(condition, tester);
         }

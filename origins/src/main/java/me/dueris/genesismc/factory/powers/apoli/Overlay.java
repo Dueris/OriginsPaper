@@ -1,5 +1,6 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
+import me.dueris.calio.builder.inst.FactoryObjectInstance;
 import me.dueris.genesismc.event.PowerUpdateEvent;
 import me.dueris.genesismc.factory.CraftApoli;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
@@ -14,22 +15,9 @@ import org.bukkit.event.Listener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class Overlay extends CraftPower implements Listener {
-
-    @Override
-    public void setActive(Player p, String tag, Boolean bool) {
-        if (powers_active.containsKey(p)) {
-            if (powers_active.get(p).containsKey(tag)) {
-                powers_active.get(p).replace(tag, bool);
-            } else {
-                powers_active.get(p).put(tag, bool);
-            }
-        } else {
-            powers_active.put(p, new HashMap());
-            setActive(p, tag, bool);
-        }
-    }
 
     @EventHandler
     public void remove(PowerUpdateEvent e){
@@ -65,5 +53,10 @@ public class Overlay extends CraftPower implements Listener {
     @Override
     public ArrayList<Player> getPowerArray() {
         return overlay;
+    }
+
+    @Override
+    public List<FactoryObjectInstance> getValidObjectFactory() {
+        return super.getDefaultObjectFactory(List.of()); // Overlay cannot be configged in just serverside
     }
 }
