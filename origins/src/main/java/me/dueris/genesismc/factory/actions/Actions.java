@@ -1,6 +1,7 @@
 package me.dueris.genesismc.factory.actions;
 
 import me.dueris.calio.registry.Registrar;
+import me.dueris.calio.util.Space;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.event.AddToSetEvent;
 import me.dueris.genesismc.event.RemoveFromSetEvent;
@@ -15,7 +16,6 @@ import me.dueris.genesismc.registry.registries.Power;
 import me.dueris.genesismc.util.CooldownUtils;
 import me.dueris.genesismc.util.Utils;
 import me.dueris.genesismc.util.apoli.RaycastUtils;
-import me.dueris.genesismc.util.apoli.Space;
 import me.dueris.genesismc.util.console.OriginConsoleSender;
 import me.dueris.genesismc.util.entity.OriginPlayerAccessor;
 import net.minecraft.resources.ResourceLocation;

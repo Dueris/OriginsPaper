@@ -7,6 +7,7 @@ import me.dueris.calio.CraftCalio;
 import me.dueris.calio.builder.NamespaceRemapper;
 import me.dueris.calio.registry.IRegistry;
 import me.dueris.calio.registry.Registrar;
+import me.dueris.calio.registry.impl.CalioRegistry;
 import me.dueris.genesismc.command.OriginCommand;
 import me.dueris.genesismc.command.PowerCommand;
 import me.dueris.genesismc.command.ResourceCommand;
@@ -27,7 +28,6 @@ import me.dueris.genesismc.factory.powers.apoli.*;
 import me.dueris.genesismc.factory.powers.apoli.provider.origins.BounceSlimeBlock;
 import me.dueris.genesismc.integration.PlaceHolderAPI;
 import me.dueris.genesismc.registry.Registries;
-import me.dueris.genesismc.registry.impl.OriginRegistry;
 import me.dueris.genesismc.registry.registries.*;
 import me.dueris.genesismc.screen.GuiTicker;
 import me.dueris.genesismc.screen.OriginChoosing;
@@ -63,6 +63,8 @@ import org.bukkit.scoreboard.Team;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -175,11 +177,6 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         // Prepare the plugin
         plugin = this;
         metrics = new Metrics(this, 18536);
-
-        // Calio rewrite
-        CraftCalio.INSTANCE.getBuilder().registerType(List.of("condition", "entity_condition"), new FluidCondition());
-        CraftCalio.INSTANCE.start(true);
-        // End
         GenesisMC.server = ((CraftServer) Bukkit.getServer()).getServer();
         world_container = server.options.asMap().toString().split(", \\[W, universe, world-container, world-dir]=\\[")[1].split("], ")[0];
         playerDataFolder = server.playerDataStorage.getPlayerDir();
@@ -247,7 +244,7 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         // Pre-load end
         conditionExecutor = new ConditionExecutor();
 
-        this.registry = OriginRegistry.INSTANCE;
+        this.registry = CalioRegistry.INSTANCE;
         // Create new registry instances
         this.registry.create(Registries.POWER,  new Registrar<Power>());
         this.registry.create(Registries.ORIGIN, new Registrar<Origin>());
@@ -302,14 +299,49 @@ public final class GenesisMC extends JavaPlugin implements Listener {
     @Override
     public void onEnable() {
         try {
-            CraftApoli.loadOrigins(this.registry);
+            // CraftApoli.loadOrigins(this.registry);
+            // Register builtin instances
+            Method registerMethod;
+            try {
+                registerMethod = CraftPower.class.getDeclaredMethod("registerBuiltinPowers");
+                registerMethod.setAccessible(true);
+                registerMethod.invoke(null);
+            } catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException |
+                     InvocationTargetException e) {
+                e.printStackTrace();
+            }
+            
+            ConditionExecutor.registerAll();
             if(Bukkit.getPluginManager().isPluginEnabled("SkinsRestorer")){
                 CraftPower.registerNewPower(ModelColor.ModelTransformer.class);
             }
             TextureLocation.parseAll();
-        } catch (InterruptedException | ExecutionException | InstantiationException | IllegalAccessException |
-                 IOException e) {
-            e.printStackTrace();
+            // Start calio parser for data driven instances
+            final CraftCalio calio = CraftCalio.INSTANCE;
+            ((Registrar<DatapackRepository>)this.registry.retrieve(Registries.PACK_SOURCE)).values().forEach(repo -> {
+                calio.addDatapackPath(repo.getPath());
+            });
+
+            calio.getBuilder().addAccessorRoot(
+                "powers",
+                Registries.POWER,
+                new Power(true), 0
+            );
+            calio.getBuilder().addAccessorRoot(
+                "origins",
+                Registries.ORIGIN,
+                new Origin(true), 1
+            );
+            calio.getBuilder().addAccessorRoot(
+                "origin_layers",
+                Registries.LAYER,
+                new Layer(true), 2
+            );
+            calio.start(debugOrigins, this.loaderThreadPool);
+            // End calio parsing
+        } catch (InstantiationException | IllegalAccessException |
+                 IOException ee) {
+            ee.printStackTrace();
         }
 
         GenesisMC.scheduler = new OriginScheduler.OriginSchedulerTree();
@@ -325,15 +357,6 @@ public final class GenesisMC extends JavaPlugin implements Listener {
             e.printStackTrace();
         }
 
-        if(Bukkit.getCommandMap().getCommand("origin") == null){
-            OriginCommand.register(((CraftServer)Bukkit.getServer()).getServer().vanillaCommandDispatcher.getDispatcher());
-        }
-        if(Bukkit.getCommandMap().getCommand("resource") == null){
-            ResourceCommand.register(((CraftServer)Bukkit.getServer()).getServer().vanillaCommandDispatcher.getDispatcher());
-        }
-        if(Bukkit.getCommandMap().getCommand("power") == null){
-            PowerCommand.register(((CraftServer)Bukkit.getServer()).getServer().vanillaCommandDispatcher.getDispatcher());
-        }
         Bukkit.getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC]   ____                          _       __  __   ____").color(TextColor.fromHexString("#b9362f")));
         Bukkit.getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC]  / ___|  ___  _ __    ___  ___ (_) ___ |  \\/  | / ___|").color(TextColor.fromHexString("#bebe42")));
         Bukkit.getServer().getConsoleSender().sendMessage(Component.text("[GenesisMC] | |  _  / _ \\| '_ \\  / _ \\/ __|| |/ __|| |\\/| || |").color(TextColor.fromHexString("#4fec4f")));
@@ -366,10 +389,14 @@ public final class GenesisMC extends JavaPlugin implements Listener {
         // Shutdown executor, we dont need it anymore
         loaderThreadPool.shutdown();
         OriginCommand.commandProvidedTaggedRecipies.addAll(RecipePower.taggedRegistry.keySet());
-        OriginCommand.commandProvidedPowers.addAll(((Registrar<Power>)GenesisMC.getPlugin().registry.retrieve(Registries.POWER)).values().stream().toList());
-        OriginCommand.commandProvidedOrigins.addAll(((Registrar<Origin>)GenesisMC.getPlugin().registry.retrieve(Registries.ORIGIN)).values().stream().toList());
-        OriginCommand.commandProvidedLayers.addAll(((Registrar<Layer>)GenesisMC.getPlugin().registry.retrieve(Registries.LAYER)).values().stream().toList());
+        OriginCommand.commandProvidedPowers.addAll(((Registrar<Power>)this.registry.retrieve(Registries.POWER)).values().stream().toList());
+        OriginCommand.commandProvidedOrigins.addAll(((Registrar<Origin>)this.registry.retrieve(Registries.ORIGIN)).values().stream().toList());
+        OriginCommand.commandProvidedLayers.addAll(((Registrar<Layer>)this.registry.retrieve(Registries.LAYER)).values().stream().toList());
         ResourceCommand.registeredBars.putAll(Resource.registeredBars);
+        
+        OriginCommand.register(((CraftServer)Bukkit.getServer()).getServer().vanillaCommandDispatcher.getDispatcher());
+        ResourceCommand.register(((CraftServer)Bukkit.getServer()).getServer().vanillaCommandDispatcher.getDispatcher());
+        PowerCommand.register(((CraftServer)Bukkit.getServer()).getServer().vanillaCommandDispatcher.getDispatcher());
         try {
             Bootstrap.deleteDirectory(GenesisMC.getTmpFolder().toPath(), true);
         } catch (IOException e) {

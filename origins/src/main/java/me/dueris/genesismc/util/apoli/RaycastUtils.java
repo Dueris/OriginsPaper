@@ -1,5 +1,6 @@
 package me.dueris.genesismc.util.apoli;
 
+import me.dueris.calio.util.Space;
 import me.dueris.genesismc.factory.actions.Actions;
 import me.dueris.genesismc.util.Utils;
 import me.dueris.genesismc.util.console.OriginConsoleSender;

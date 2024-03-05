@@ -1,24 +1,41 @@
 package me.dueris.genesismc.registry.registries;
 
+import me.dueris.calio.builder.inst.FactoryInstance;
+import me.dueris.calio.builder.inst.FactoryObjectInstance;
+import me.dueris.calio.builder.inst.FactoryProvider;
 import me.dueris.calio.registry.Registerable;
+import me.dueris.calio.registry.Registrar;
+import me.dueris.genesismc.GenesisMC;
+import me.dueris.genesismc.factory.CraftApoli;
+import me.dueris.genesismc.registry.Registries;
+
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.inventory.ItemStack;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
+import java.io.File;
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
-public class Origin implements Serializable, Registerable {
+public class Origin implements Serializable, FactoryInstance {
 
     @Serial
     private static final long serialVersionUID = 1L;
 
     NamespacedKey tag;
-    DatapackFile layerFile;
-    HashMap<String, Object> originFile;
+     DatapackFile originFile;
     ArrayList<Power> powerContainer;
+
+    public Origin(boolean toRegistry){
+        if(!toRegistry){
+            throw new RuntimeException("Invalid constructor used.");
+        }
+    }
 
     /**
      * An object that stores an origin and all the details about it.
@@ -28,9 +45,8 @@ public class Origin implements Serializable, Registerable {
      * @param originFile     The origin file, parsed into a HashMap.
      * @param powerContainer An array of powers that the origin has.
      */
-    public Origin(NamespacedKey tag, DatapackFile layerFile, HashMap<String, Object> originFile, ArrayList<Power> powerContainer) {
+    public Origin(NamespacedKey tag, DatapackFile originFile, ArrayList<Power> powerContainer) {
         this.tag = tag;
-        this.layerFile = layerFile;
         this.originFile = originFile;
         this.powerContainer = powerContainer;
     }
@@ -40,7 +56,7 @@ public class Origin implements Serializable, Registerable {
      */
     @Override
     public String toString() {
-        return "Tag: " + this.tag + ", OriginLayerFile: " + this.layerFile + ", OriginFile: " + this.originFile + ", PowerContainer: " + this.powerContainer.toString();
+        return "Tag: " + this.tag + ", OriginFile: " + this.originFile + ", PowerContainer: " + this.powerContainer.toString();
     }
 
     @Override
@@ -56,17 +72,10 @@ public class Origin implements Serializable, Registerable {
     }
 
     /**
-     * @return The origin layer file parsed into a HashMap.
-     */
-    public DatapackFile getLayerFile() {
-        return this.layerFile;
-    }
-
-    /**
      * @return The origin file parsed into a HashMap.
      */
-    public HashMap<String, Object> getOriginFile() {
-        return new HashMap<String, Object>(this.originFile);
+    public DatapackFile getOriginFile() {
+        return this.originFile;
     }
 
     /**
@@ -175,18 +184,36 @@ public class Origin implements Serializable, Registerable {
         return null;
     }
 
-    /**
-     * @return The name of the layer the origin is in
-     */
-    public String getLayerName() {
-        String name = (String) this.layerFile.get("name");
-        if (name == null) return "No layer name found";
-        return name;
+    @Override
+    public List<FactoryObjectInstance> getValidObjectFactory() {
+        return List.of(
+            new FactoryObjectInstance("name", String.class, "No Name"),
+            new FactoryObjectInstance("icon", ItemStack.class, new ItemStack(Material.PLAYER_HEAD, 1)),
+            new FactoryObjectInstance("impact", Integer.class, 0),
+            new FactoryObjectInstance("unchooseable", Boolean.class, false),
+            new FactoryObjectInstance("powers", JSONArray.class, new JSONArray())
+        );
     }
 
-    public String getLayerTag() {
-        String name = (String) this.layerFile.get("name");
-        if (name == null) return "No layer name found";
-        return name;
+    @Override
+    public void createInstance(FactoryProvider obj, File rawFile, Registrar<? extends Registerable> registry, NamespacedKey namespacedTag) {
+        Registrar<Origin> registrar = (Registrar<Origin>)registry;
+        try {
+            ArrayList<Power> containers = new ArrayList<>();
+            for(Object object : ((JSONArray)obj.getOrDefault("powers", new JSONArray()))){
+                String string = object.toString();
+                if (((Registrar<Power>)GenesisMC.getPlugin().registry.retrieve(Registries.POWER)).rawRegistry.containsKey(NamespacedKey.fromString(string))) {
+                    containers.add(((Registrar<Power>)GenesisMC.getPlugin().registry.retrieve(Registries.POWER)).get(NamespacedKey.fromString(string)));
+                }
+                for (Power power : CraftApoli.getNestedPowers(((Registrar<Power>)GenesisMC.getPlugin().registry.retrieve(Registries.POWER)).get(NamespacedKey.fromString(string)))) {
+                    if (power != null) {
+                        containers.add(power);
+                    }
+                }
+            }
+            registrar.register(new Origin(namespacedTag, new DatapackFile(obj.keySet().stream().toList(), obj.values().stream().toList()), containers));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

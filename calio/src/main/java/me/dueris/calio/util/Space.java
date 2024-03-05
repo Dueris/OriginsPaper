@@ -1,4 +1,4 @@
-package me.dueris.genesismc.util.apoli;
+package me.dueris.calio.util;
 
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;

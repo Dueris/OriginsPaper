@@ -203,7 +203,7 @@ public class OriginCommand extends BukkitRunnable implements Listener {
                                         if (!playerPage.containsKey(p.getBukkitEntity()))
                                             playerPage.put(p.getBukkitEntity(), 0);
 
-                                        @NotNull Inventory help = Bukkit.createInventory(p.getBukkitEntity(), 54, "Info - " + playerOrigins.get(p.getBukkitEntity()).get(playerPage.get(p.getBukkitEntity())).getLayerTag());
+                                        @NotNull Inventory help = Bukkit.createInventory(p.getBukkitEntity(), 54, "Info - " + playerOrigins.get(p.getBukkitEntity()).get(playerPage.get(p.getBukkitEntity())).getName());
                                         help.setContents(infoMenu(p.getBukkitEntity(), playerPage.get(p.getBukkitEntity())));
                                         p.getBukkitEntity().openInventory(help);
                                         p.getBukkitEntity().playSound(p.getBukkitEntity().getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 10, 2);
@@ -451,7 +451,7 @@ public class OriginCommand extends BukkitRunnable implements Listener {
             if (item.getItemMeta().getDisplayName().equals("Next") && playerPage.get(player) < playerOrigins.get(player).size() - 1)
                 playerPage.put(player, playerPage.get(player) + 1);
 
-            @NotNull Inventory info = Bukkit.createInventory(player, 54, "Info - " + playerOrigins.get(player).get(playerPage.get(player)).getLayerName());
+            @NotNull Inventory info = Bukkit.createInventory(player, 54, "Info - " + playerOrigins.get(player).get(playerPage.get(player)).getName());
             info.setContents(infoMenu(player, item.getItemMeta().getPersistentDataContainer().get(new NamespacedKey(GenesisMC.getPlugin(), "page"), PersistentDataType.INTEGER)));
             player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 10, 2);
             player.closeInventory();

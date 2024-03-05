@@ -19,6 +19,8 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
+import com.google.gson.JsonParser;
+
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -73,16 +75,7 @@ public class CraftApoli {
      * @return A copy of The null origin.
      **/
     public static Origin nullOrigin() {
-        return new Origin(new NamespacedKey("genesis", "origin-null"), new DatapackFile(new ArrayList<>(List.of("hidden", "origins")), new ArrayList<>(List.of(true, "genesis:origin-null"))), new HashMap<String, Object>(Map.of("impact", "0", "icon", "minecraft:player_head", "powers", "genesis:null", "order", "0", "unchooseable", true)), new ArrayList<>(List.of(new Power(new NamespacedKey("genesis", "null"), new DatapackFile(new ArrayList<>(), new ArrayList<>()), null, false))));
-    }
-
-    /**
-     * Parses a JSON file into a HashMap.
-     **/
-    private static HashMap<String, Object> fileToHashMap(JSONObject JSONFileParser) {
-        HashMap<String, Object> data = new HashMap<>();
-        for (Object key : JSONFileParser.keySet()) data.put((String) key, JSONFileParser.get(key));
-        return data;
+        return new Origin(new NamespacedKey("genesis", "origin-null"), new DatapackFile(new ArrayList<>(List.of("hidden", "unchoosable", "name", "description")), new ArrayList<>(List.of(true, true, "Null", "Still Null"))), new ArrayList<>(List.of(new Power(new NamespacedKey("genesis", "null"), new DatapackFile(new ArrayList<>(), new ArrayList<>()), null, false))));
     }
 
     /**
@@ -98,20 +91,6 @@ public class CraftApoli {
         return new DatapackFile(keys, values);
     }
 
-    /**
-     * Changes the origin names to those specified in the lang file.
-     **/
-    private static void translateOrigins() {
-        for (Origin origin : ((Registrar<Origin>)GenesisMC.getPlugin().registry.retrieve(Registries.ORIGIN)).values().stream().filter(origin -> isCoreOrigin(origin)).toList()) {
-            for (Power power : origin.getPowerContainers()) {
-                String powerName = power.getName();
-                if (powerName != null) power.setName(powerName);
-                String powerDescription = power.getDescription();
-                if (powerDescription != null) power.setDescription(powerDescription);
-            }
-        }
-    }
-
     public static void processNestedPowers(Power powerContainer, ArrayList<Power> powerContainers, String powerFolder, String powerFileName) {
         for (String key : powerContainer.getPowerFile().getKeys()) {
             Object subPowerValue = powerContainer.getPowerFile().get(key);
@@ -119,7 +98,7 @@ public class CraftApoli {
             if (subPowerValue instanceof JSONObject subPowerJson) {
                 DatapackFile subPowerFile = fileToFileContainer(subPowerJson);
 
-                Power newPower = new Power(new NamespacedKey(powerFolder, powerFileName + "_" + key.toLowerCase()), subPowerFile, subPowerJson.toJSONString(), true, false, powerContainer);
+                Power newPower = new Power(new NamespacedKey(powerFolder, powerFileName + "_" + key.toLowerCase()), subPowerFile, JsonParser.parseString(subPowerJson.toJSONString()), true, false, powerContainer);
                 ((Registrar<Power>)GenesisMC.getPlugin().registry.retrieve(Registries.POWER)).register(newPower);
             }
         }
@@ -147,11 +126,6 @@ public class CraftApoli {
 
     public static File[] datapacksInDir() {
         return datapackDir().listFiles();
-    }
-
-    private static BufferedReader readZipEntry(ZipFile zip, InputStream inputStream) throws IOException {
-        InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
-        return new BufferedReader(inputStreamReader);
     }
 
     public static String getWorldContainerName() {
@@ -211,7 +185,7 @@ public class CraftApoli {
      * @throws ExecutionException
      * @throws InterruptedException
      **/
-    public static void loadOrigins(IRegistry registry) throws InterruptedException, ExecutionException {
+    /*public static void loadOrigins(IRegistry registry) throws InterruptedException, ExecutionException {
         if(((Registrar<Layer>)GenesisMC.getPlugin().registry.retrieve(Registries.LAYER)).hasEntries() || ((Registrar<Origin>)GenesisMC.getPlugin().registry.retrieve(Registries.ORIGIN)).hasEntries() || ((Registrar<Power>)GenesisMC.getPlugin().registry.retrieve(Registries.POWER)).hasEntries()) return; // Already parsed.
         boolean showErrors = Boolean.valueOf(GenesisConfigs.getMainConfig().get("console-print-parse-errors").toString());
         List<File> datapacks = new ArrayList();
@@ -404,22 +378,13 @@ public class CraftApoli {
             translateOrigins();
             TagRegistryParser.runParse();
         }).thenRun(() -> {
-            // Register builtin powers
-            Method registerMethod;
-            try {
-                registerMethod = CraftPower.class.getDeclaredMethod("registerBuiltinPowers");
-                registerMethod.setAccessible(true);
-                registerMethod.invoke(null);
-            } catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException |
-                     InvocationTargetException e) {
-                e.printStackTrace();
-            }
+            
         }).thenRun(() -> {
-            ConditionExecutor.registerAll();
+            
         });
 
         future.get();
-    }
+    }*/
 
     public static void unloadData() {
         GenesisMC.getPlugin().registry.clearRegistries();

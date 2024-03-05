@@ -1,32 +1,52 @@
 package me.dueris.genesismc.registry.registries;
 
-import me.dueris.calio.registry.Registerable;
+import me.dueris.calio.CraftCalio;
+import me.dueris.calio.builder.inst.FactoryInstance;
+import me.dueris.calio.builder.inst.FactoryObjectInstance;
+import me.dueris.calio.builder.inst.FactoryProvider;
+import me.dueris.calio.registry.Registrar;
+import me.dueris.genesismc.GenesisMC;
+import me.dueris.genesismc.factory.CraftApoli;
+import me.dueris.genesismc.factory.powers.ApoliPower;
+import me.dueris.genesismc.registry.Registries;
+import me.dueris.genesismc.util.Utils;
+
 import org.bukkit.NamespacedKey;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
+import com.google.gson.JsonElement;
+
+import java.io.File;
+import java.io.IOException;
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class Power implements Serializable, Registerable {
+public class Power implements Serializable, FactoryInstance {
     @Serial
     private static final long serialVersionUID = 2L;
     NamespacedKey powerTag;
     DatapackFile powerFile;
     boolean originMultiple;
     boolean originMultipleParent;
-    String jsonData;
+    JsonElement jsonData;
     Power powerParent;
+
+    public Power(boolean toRegistry){
+        if(!toRegistry){
+            throw new RuntimeException("Invalid constructor used.");
+        }
+    }
 
     /**
      * @param powerTag       The power tag.
      * @param powerFile      The data within a power file.
      * @param originMultiple Tells the plugin if its an instance of an origins:multiple sub-power
      */
-    public Power(NamespacedKey powerTag, DatapackFile powerFile, String jsonData, boolean originMultiple) {
+    public Power(NamespacedKey powerTag, DatapackFile powerFile, JsonElement jsonData, boolean originMultiple) {
         this.powerTag = powerTag;
         this.powerFile = powerFile;
         this.originMultiple = originMultiple;
@@ -41,11 +61,12 @@ public class Power implements Serializable, Registerable {
      * @param originMultiple       Tells the plugin if its an instance of an origins:multiple sub-power
      * @param originMultipleParent Tells the plugin if its an origins:multiple parent power
      */
-    public Power(NamespacedKey powerTag, DatapackFile powerFile, String jsonData, boolean originMultiple, boolean originMultipleParent) {
+    public Power(NamespacedKey powerTag, DatapackFile powerFile, JsonElement jsonData, boolean originMultiple, boolean originMultipleParent) {
         this.powerTag = powerTag;
         this.powerFile = powerFile;
         this.originMultiple = false;
         this.originMultipleParent = originMultipleParent;
+        this.jsonData = jsonData;
         this.powerParent = null;
     }
 
@@ -56,7 +77,7 @@ public class Power implements Serializable, Registerable {
      * @param originMultipleParent Tells the plugin if its an origins:multiple parent power
      * @param powerParent          Tells the plugin what to use as an "Inheritance" for values like the name
      */
-    public Power(NamespacedKey powerTag, DatapackFile powerFile, String jsonData, boolean originMultiple, boolean originMultipleParent, Power powerParent) {
+    public Power(NamespacedKey powerTag, DatapackFile powerFile, JsonElement jsonData, boolean originMultiple, boolean originMultipleParent, Power powerParent) {
         this.powerTag = powerTag;
         this.powerFile = powerFile;
         this.originMultiple = false;
@@ -79,7 +100,7 @@ public class Power implements Serializable, Registerable {
     }
 
     public String getJsonData() {
-        return this.jsonData;
+        return this.jsonData.toString();
     }
 
     // Used for origins:multiple purposes to try and add an "inheritance" feature for cooldowns
@@ -479,6 +500,56 @@ public class Power implements Serializable, Registerable {
             return modifier;
         }
         return new JSONObject();
+    }
+
+    @Override
+    public List<FactoryObjectInstance> getValidObjectFactory() {
+        return List.of(
+            new FactoryObjectInstance("type", NamespacedKey.class, null),
+            new FactoryObjectInstance("name", String.class, "No Name"),
+            new FactoryObjectInstance("description", String.class, "No Description"),
+            new FactoryObjectInstance("hidden", Boolean.class, false),
+            new FactoryObjectInstance("condition", JSONObject.class, new JSONObject())
+        );
+    }
+
+    public static List<NamespacedKey> allowedSkips = new ArrayList<>();
+    static{
+        allowedSkips.add(new NamespacedKey("apoli", "simple"));
+        allowedSkips.add(new NamespacedKey("apoli", "model_color"));
+        allowedSkips.add(new NamespacedKey("apoli", "cooldown"));
+        allowedSkips.add(new NamespacedKey("apoli", "lava_vision")); // Not possible
+        allowedSkips.add(new NamespacedKey("apoli", "item_on_item")); // Not finished
+        allowedSkips.add(new NamespacedKey("apoli", "shader")); // Not possible
+        allowedSkips.add(new NamespacedKey("apoli", "modify_grindstone")); // Not finished
+        allowedSkips.add(new NamespacedKey("apoli", "replace_loot_table")); // Not finished
+        allowedSkips.add(new NamespacedKey("apoli", "modify_slipperiness")); // Not finished
+        allowedSkips.add(new NamespacedKey("apoli", "edible_item")); // Not finished
+        allowedSkips.add(new NamespacedKey("apoli", "modify_attribute")); // Not planned, use origins:attribute
+        allowedSkips.add(new NamespacedKey("apoli", "prevent_feature_render")); // Not possible
+        allowedSkips.add(new NamespacedKey("apoli", "modify_insomnia_ticks")); // Not possible
+    }
+
+    @Override
+    public void createInstance(FactoryProvider root, File rawFile, Registrar registry, NamespacedKey namespacedTag){
+        Registrar<Power> registrar = (Registrar<Power>)registry;
+        List<NamespacedKey> validTypes = ((Registrar<ApoliPower>)GenesisMC.getPlugin().registry.retrieve(Registries.CRAFT_POWER)).rawRegistry.keySet().stream().toList();
+        if(!validTypes.contains(root.getNamespacedKey("type")) && !allowedSkips.contains(root.getNamespacedKey("type"))){
+            CraftCalio.INSTANCE.getLogger().severe("Unknown type({t}) was provided when registering new Power: ".replace("{t}", root.get("type").toString()) + namespacedTag.asString());
+        }
+        try {
+            Power newPower = new Power(namespacedTag, new DatapackFile(root.keySet().stream().toList(), root.values().stream().toList()), Utils.readJSONFileAsString(rawFile), false, root.get("type").toString().equalsIgnoreCase("apoli:multiple"));
+            registrar.register(newPower);
+            if(root.get("type").toString().equalsIgnoreCase("apoli:multiple")){
+                CraftApoli.processNestedPowers(
+                    newPower,
+                    new ArrayList(),
+                    namespacedTag.getNamespace(),
+                    namespacedTag.getKey());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 }

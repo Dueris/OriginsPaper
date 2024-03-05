@@ -7,10 +7,10 @@ import com.mojang.brigadier.StringReader;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 import it.unimi.dsi.fastutil.Pair;
+import me.dueris.calio.util.Space;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.conditions.types.BiEntityConditions;
 import me.dueris.genesismc.registry.registries.Power;
-import me.dueris.genesismc.util.apoli.Space;
 import net.minecraft.Util;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
@@ -69,12 +69,11 @@ public class Utils {
         return CraftRegistry.getMinecraftRegistry().registryOrThrow(registry);
     }
 
-    public static String readJSONFileAsString(File jsonObj) throws IOException {
+    public static JsonElement readJSONFileAsString(File jsonObj) throws IOException {
         FileReader reader = new FileReader(jsonObj);
-        JsonParser parser = new JsonParser();
-        JsonElement jsonElement = parser.parse(reader);
+        JsonElement jsonElement = JsonParser.parseReader(reader);
         reader.close();
-        return jsonElement.toString();
+        return jsonElement;
      }
 
     public static String prettyPrintUsingGson(String uglyJson) {

@@ -1,5 +1,6 @@
 package me.dueris.genesismc.command;
 
+import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.mojang.brigadier.CommandDispatcher;
 import joptsimple.internal.Strings;
@@ -43,17 +44,21 @@ public class PowerCommand {
                                             });
                                             return builder.buildFuture();
                                         }).executes(context -> {
-                                            Power power = (Power)GenesisMC.getPlugin().registry.retrieve(Registries.POWER).get(CraftNamespacedKey.fromMinecraft(ResourceLocationArgument.getId(context, "power")));
-                                            if (power == null) {
-                                            ((CommandSourceStack)context.getSource()).sendFailure(Component.literal("Power not found."));
-                                            return 1;
+                                            try {
+                                                Power power = ((Registrar<Power>)GenesisMC.getPlugin().registry.retrieve(Registries.POWER)).get(NamespacedKey.fromString(ResourceLocationArgument.getId(context, "power").getNamespace() + ":" + ResourceLocationArgument.getId(context, "power").getPath()));
+                                                if (power == null) {
+                                                ((CommandSourceStack)context.getSource()).sendFailure(Component.literal("Power not found."));
+                                                return 1;
+                                                }
+    
+                                                String indent = Strings.repeat(' ', 4);
+                                                context.getSource().sendSuccess(() -> {
+                                                    String append = context.getSource().isPlayer() ? "" : "\n";
+                                                    return Component.literal(append).append((new JsonTextFormatter(indent)).apply(JsonParser.parseString(power.getJsonData())));
+                                                }, false);
+                                            }catch(Exception e){
+                                                e.printStackTrace();
                                             }
-
-                                            String indent = Strings.repeat(' ', 4);
-                                            context.getSource().sendSuccess(() -> {
-                                                String append = context.getSource().isPlayer() ? "" : "\n";
-                                                return Component.literal(append).append((new JsonTextFormatter(indent)).apply(JsonParser.parseString(power.getJsonData())));
-                                            }, false);
                                             return SINGLE_SUCCESS;
                                         })
                                 )

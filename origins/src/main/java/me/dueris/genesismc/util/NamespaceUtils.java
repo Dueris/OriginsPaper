@@ -4,7 +4,7 @@ import org.bukkit.NamespacedKey;
 
 public class NamespaceUtils {
     public static NamespacedKey getDynamicNamespace(String currentNamespace, String dynamicNamespace){
-        if(dynamicNamespace.contains("*")){
+        if(dynamicNamespace.contains("*") && currentNamespace.contains(":")){
             String[] split = dynamicNamespace.split(":");
             String namespace = split[0];
             String path = split[1];
@@ -14,6 +14,7 @@ public class NamespaceUtils {
             if(namespace.contains("*")){
                 namespace.replace("*", NamespacedKey.fromString(currentNamespace).asString().split(":")[0]);
             }
+            return getNamespaceStringAsBukkit(namespace + ":" + path);
         }
         return NamespacedKey.fromString(dynamicNamespace);
     }

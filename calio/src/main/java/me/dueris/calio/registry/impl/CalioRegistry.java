@@ -1,4 +1,4 @@
-package me.dueris.genesismc.registry.impl;
+package me.dueris.calio.registry.impl;
 
 import com.google.common.base.Preconditions;
 import me.dueris.calio.registry.IRegistry;
@@ -8,8 +8,8 @@ import org.bukkit.NamespacedKey;
 
 import java.util.HashMap;
 
-public class OriginRegistry implements IRegistry{
-    public static OriginRegistry INSTANCE = new OriginRegistry();
+public class CalioRegistry implements IRegistry{
+    public static CalioRegistry INSTANCE = new CalioRegistry();
     private HashMap<NamespacedKey, Registrar> registry = new HashMap<>();
 
     @Override

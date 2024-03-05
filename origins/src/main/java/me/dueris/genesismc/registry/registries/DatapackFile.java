@@ -5,16 +5,17 @@ import org.json.simple.JSONArray;
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 
 public class DatapackFile implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 3L;
 
-    ArrayList<String> keys;
-    ArrayList<Object> values;
+    List<String> keys;
+    List<Object> values;
 
-    public DatapackFile(ArrayList<String> keys, ArrayList<Object> values) {
+    public DatapackFile(List<String> keys, List<Object> values) {
         this.keys = keys;
         this.values = values;
     }
@@ -52,11 +53,11 @@ public class DatapackFile implements Serializable {
         if (index != -1) this.values.set(index, newValue);
     }
 
-    public ArrayList<String> getKeys() {
+    public List<String> getKeys() {
         return keys;
     }
 
-    public ArrayList<Object> getValues() {
+    public List<Object> getValues() {
         return values;
     }
 }

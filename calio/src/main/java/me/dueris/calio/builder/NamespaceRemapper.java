@@ -32,7 +32,7 @@ public class NamespaceRemapper {
             if (valueInst instanceof String) {
                 for(Pair<String, String> pair : mappings){
                     if(key.toString().equalsIgnoreCase("type") && valueInst.toString().startsWith(pair.left())){
-                        obj.put(key, valueInst.toString().split(":")[0].replace(pair.left(), pair.right()));
+                        obj.put(key, pair.right() + ":" + valueInst.toString().split(":")[1]);
                     }
                 }
             } else if (valueInst instanceof JSONObject) {

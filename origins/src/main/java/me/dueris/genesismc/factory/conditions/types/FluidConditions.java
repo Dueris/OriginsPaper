@@ -1,7 +1,8 @@
 package me.dueris.genesismc.factory.conditions.types;
 
 import me.dueris.calio.builder.inst.FactoryInstance;
-import me.dueris.calio.util.FactoryObjectInstance;
+import me.dueris.calio.builder.inst.FactoryObjectInstance;
+import me.dueris.calio.registry.Registerable;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.factory.TagRegistryParser;
 import me.dueris.genesismc.registry.Registries;
@@ -45,25 +46,17 @@ public class FluidConditions {
         register(new ConditionFactory(GenesisMC.apoliIdentifier("still"), (condition, fluid) -> {
             return fluid.defaultFluidState().isSource();
         }));
-        register(new ConditionFactory(GenesisMC.apoliIdentifier("fluid"), (condition, fluid) -> {
-            return CraftFluid.minecraftToBukkit(fluid).getKey().equals(NamespacedKey.fromString(condition.get("fluid").toString()));
-        }, List.of(new FactoryObjectInstance("fluid", NamespacedKey.class, null))));
     }
 
     private void register(ConditionFactory factory){
         GenesisMC.getPlugin().registry.retrieve(Registries.FLUID_CONDITION).register(factory);
     }
 
-    public class ConditionFactory implements FactoryInstance {
+    public class ConditionFactory implements Registerable {
         NamespacedKey key;
         BiPredicate<JSONObject, Fluid> test;
 
         public ConditionFactory(NamespacedKey key, BiPredicate<JSONObject, Fluid> test){
-            this.key = key;
-            this.test = test;
-        }
-
-        public ConditionFactory(NamespacedKey key, BiPredicate<JSONObject, Fluid> test, List<FactoryObjectInstance> objects){
             this.key = key;
             this.test = test;
         }
@@ -75,11 +68,6 @@ public class FluidConditions {
         @Override
         public NamespacedKey getKey() {
             return key;
-        }
-
-        @Override
-        public List<FactoryObjectInstance> getValidInstances() {
-            return null;
         }
     }
 }
