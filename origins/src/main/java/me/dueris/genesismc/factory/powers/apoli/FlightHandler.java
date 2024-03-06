@@ -1,5 +1,6 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
+import me.dueris.calio.builder.inst.FactoryObjectInstance;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.event.OriginChangeEvent;
 import me.dueris.genesismc.factory.powers.CraftPower;
@@ -14,6 +15,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class FlightHandler extends CraftPower {
 
@@ -75,5 +77,10 @@ public class FlightHandler extends CraftPower {
     @Override
     public ArrayList<Player> getPowerArray() {
         return creative_flight;
+    }
+
+    @Override
+    public List<FactoryObjectInstance> getValidObjectFactory() {
+        return super.getDefaultObjectFactory(List.of());
     }
 }

@@ -1,5 +1,6 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
+import me.dueris.calio.builder.inst.FactoryObjectInstance;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.event.OriginChangeEvent;
 import me.dueris.genesismc.factory.CraftApoli;
@@ -18,10 +19,12 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class StackingStatusEffect extends CraftPower implements Listener {
     public static PotionEffectType getPotionEffectType(String effectString) {
@@ -97,5 +100,17 @@ public class StackingStatusEffect extends CraftPower implements Listener {
     @Override
     public ArrayList<Player> getPowerArray() {
         return stacking_status_effect;
+    }
+
+    @Override
+    public List<FactoryObjectInstance> getValidObjectFactory() {
+        return super.getDefaultObjectFactory(List.of(
+            new FactoryObjectInstance("min_stacks", Integer.class, null),
+            new FactoryObjectInstance("max_stacks", Integer.class, null),
+            new FactoryObjectInstance("duration_per_stack", Integer.class, null),
+            new FactoryObjectInstance("tick_rate", Integer.class, 10),
+            new FactoryObjectInstance("effect", JSONObject.class, new JSONObject()),
+            new FactoryObjectInstance("effects", JSONArray.class, new JSONArray())
+        ));
     }
 }

@@ -2,9 +2,11 @@ package me.dueris.genesismc.factory.powers.apoli;
 
 import com.mojang.brigadier.StringReader;
 import io.papermc.paper.util.MCUtil;
+import me.dueris.calio.builder.inst.FactoryObjectInstance;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.event.KeybindTriggerEvent;
 import me.dueris.genesismc.factory.CraftApoli;
+import me.dueris.genesismc.factory.actions.Actions;
 import me.dueris.genesismc.factory.conditions.ConditionExecutor;
 import me.dueris.genesismc.factory.powers.CraftPower;
 import me.dueris.genesismc.registry.registries.Layer;
@@ -22,6 +24,7 @@ import net.minecraft.world.entity.Entity.RemovalReason;
 import net.minecraft.world.phys.Vec3;
 import org.bukkit.GameRule;
 import org.bukkit.Location;
+import org.bukkit.NamespacedKey;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_20_R3.util.CraftLocation;
@@ -33,9 +36,11 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
+import org.json.simple.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -253,6 +258,9 @@ public class FireProjectile extends CraftPower implements Listener {
                                                         ((CraftEntity) gottenEntity).getHandle().remove(RemovalReason.DISCARDED);
                                                         setActive(p, power.getTag(), true);
 
+                                                        Actions.EntityActionType(finalEntity, power.get("projectile_action"));
+                                                        Actions.EntityActionType(p, power.get("shooter_action"));
+
                                                         peopladf.add(p);
                                                     }
                                                 }.runTaskLater(GenesisMC.getPlugin(), 1);
@@ -283,5 +291,24 @@ public class FireProjectile extends CraftPower implements Listener {
     @Override
     public ArrayList<Player> getPowerArray() {
         return fire_projectile;
+    }
+
+    @Override
+    public List<FactoryObjectInstance> getValidObjectFactory() {
+        return super.getDefaultObjectFactory(List.of(
+            new FactoryObjectInstance("entity_type", NamespacedKey.class, null),
+            new FactoryObjectInstance("cooldown", Integer.class, 1),
+            new FactoryObjectInstance("hud_render", JSONObject.class, new JSONObject()),
+            new FactoryObjectInstance("count", Integer.class, 1),
+            new FactoryObjectInstance("interval", Integer.class, 0),
+            new FactoryObjectInstance("start_delay", Integer.class, 0),
+            new FactoryObjectInstance("speed", Float.class, 1.5),
+            new FactoryObjectInstance("divergence", Float.class, 1.0f),
+            new FactoryObjectInstance("sound", String.class, "entity.egg.throw"),
+            new FactoryObjectInstance("tag", String.class, "{}"),
+            new FactoryObjectInstance("key", JSONObject.class, new JSONObject()),
+            new FactoryObjectInstance("projectile_action", JSONObject.class, new JSONObject()),
+            new FactoryObjectInstance("shooter_action", JSONObject.class, new JSONObject())
+        ));
     }
 }

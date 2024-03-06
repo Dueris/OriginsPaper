@@ -1,5 +1,6 @@
 package me.dueris.genesismc.factory.powers.apoli;
 
+import me.dueris.calio.builder.inst.FactoryObjectInstance;
 import me.dueris.genesismc.GenesisMC;
 import me.dueris.genesismc.event.KeybindTriggerEvent;
 import me.dueris.genesismc.factory.CraftApoli;
@@ -18,9 +19,11 @@ import org.bukkit.event.Listener;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.json.simple.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class ToggleNightVision extends CraftPower implements Listener {
 
@@ -112,5 +115,13 @@ public class ToggleNightVision extends CraftPower implements Listener {
     @Override
     public ArrayList<Player> getPowerArray() {
         return toggle_night_vision;
+    }
+
+    @Override
+    public List<FactoryObjectInstance> getValidObjectFactory() {
+        return super.getDefaultObjectFactory(List.of(
+            new FactoryObjectInstance("strength", Float.class, 1.0f),
+            new FactoryObjectInstance("key", JSONObject.class, new JSONObject())
+        ));
     }
 }
