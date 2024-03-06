@@ -17,47 +17,46 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class ActiveSelf extends CraftPower implements Listener {
 
-    @Override
-    public void run(Player p) {
+	@Override
+	public void run(Player p) {
 
-    }
+	}
 
-    @EventHandler
-    public void k(KeybindTriggerEvent e) {
-        for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-            if (getPowerArray().contains(e.getPlayer())) {
-                ConditionExecutor executor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
-                for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(e.getPlayer(), getPowerFile(), layer)) {
-                    if (CooldownUtils.isPlayerInCooldownFromTag(e.getPlayer(), Utils.getNameOrTag(power))) continue;
-                    if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) e.getPlayer())) {
-                        setActive(e.getPlayer(), power.getTag(), true);
-                        if (KeybindingUtils.isKeyActive(power.get("key").getOrDefault("key", "key.origins.primary_active").toString(), e.getPlayer())) {
-                            Actions.EntityActionType(e.getPlayer(), power.getEntityAction());
-                            if (power.getObjectOrDefault("cooldown", 1) != null) {
-                                CooldownUtils.addCooldown(e.getPlayer(), Utils.getNameOrTag(power), power.getType(), power.getIntOrDefault("cooldown", power.getIntOrDefault("max", 1)), power.get("hud_render"));
-                            }
-                        }
-                    } else {
-                        setActive(e.getPlayer(), power.getTag(), false);
-                    }
+	@EventHandler
+	public void k(KeybindTriggerEvent e) {
+		for (Layer layer : CraftApoli.getLayersFromRegistry()) {
+			if (getPowerArray().contains(e.getPlayer())) {
+				ConditionExecutor executor = me.dueris.genesismc.GenesisMC.getConditionExecutor();
+				for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(e.getPlayer(), getPowerFile(), layer)) {
+					if (CooldownUtils.isPlayerInCooldownFromTag(e.getPlayer(), Utils.getNameOrTag(power))) continue;
+					if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) e.getPlayer())) {
+						setActive(e.getPlayer(), power.getTag(), true);
+						if (KeybindingUtils.isKeyActive(power.get("key").getOrDefault("key", "key.origins.primary_active").toString(), e.getPlayer())) {
+							Actions.EntityActionType(e.getPlayer(), power.getEntityAction());
+							if (power.getObjectOrDefault("cooldown", 1) != null) {
+								CooldownUtils.addCooldown(e.getPlayer(), Utils.getNameOrTag(power), power.getType(), power.getIntOrDefault("cooldown", power.getIntOrDefault("max", 1)), power.get("hud_render"));
+							}
+						}
+					} else {
+						setActive(e.getPlayer(), power.getTag(), false);
+					}
 
-                }
+				}
 
-            }
-        }
-    }
+			}
+		}
+	}
 
-    @Override
-    public String getPowerFile() {
-        return "apoli:active_self";
-    }
+	@Override
+	public String getPowerFile() {
+		return "apoli:active_self";
+	}
 
-    @Override
-    public ArrayList<Player> getPowerArray() {
-        return active_self;
-    }
+	@Override
+	public ArrayList<Player> getPowerArray() {
+		return active_self;
+	}
 }

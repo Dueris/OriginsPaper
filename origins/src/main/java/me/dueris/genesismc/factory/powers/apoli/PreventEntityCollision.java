@@ -10,38 +10,37 @@ import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import static me.dueris.genesismc.factory.powers.apoli.superclass.PreventSuperClass.prevent_entity_collision;
 
 public class PreventEntityCollision extends CraftPower {
 
-    @Override
-    public void run(Player p) {
-        for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-            if (prevent_entity_collision.contains(p)) {
-                for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-                    if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p)) {
-                        p.setCollidable(false);
-                        setActive(p, power.getTag(), false);
-                    } else {
-                        setActive(p, power.getTag(), false);
-                        p.setCollidable(true);
-                    }
-                }
-            } else {
-                p.setCollidable(true);
-            }
-        }
-    }
+	@Override
+	public void run(Player p) {
+		for (Layer layer : CraftApoli.getLayersFromRegistry()) {
+			if (prevent_entity_collision.contains(p)) {
+				for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
+					if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p)) {
+						p.setCollidable(false);
+						setActive(p, power.getTag(), false);
+					} else {
+						setActive(p, power.getTag(), false);
+						p.setCollidable(true);
+					}
+				}
+			} else {
+				p.setCollidable(true);
+			}
+		}
+	}
 
-    @Override
-    public String getPowerFile() {
-        return "apoli:prevent_entity_collision";
-    }
+	@Override
+	public String getPowerFile() {
+		return "apoli:prevent_entity_collision";
+	}
 
-    @Override
-    public ArrayList<Player> getPowerArray() {
-        return prevent_entity_collision;
-    }
+	@Override
+	public ArrayList<Player> getPowerArray() {
+		return prevent_entity_collision;
+	}
 }

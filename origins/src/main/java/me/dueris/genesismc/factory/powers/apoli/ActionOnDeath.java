@@ -17,47 +17,47 @@ import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class ActionOnDeath extends CraftPower implements Listener {
 
-    @Override
-    public void run(Player p) {
+	@Override
+	public void run(Player p) {
 
-    }
+	}
 
-    @EventHandler
-    public void d(EntityDeathEvent e) {
-        if (e.getEntity() instanceof Player p) {
-            if (getPowerArray().contains(p)) {
-                for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-                    for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-                        if (power == null) continue;
-                        if (!ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p) && !ConditionExecutor.testDamage(power.get("damage_condition"), e.getEntity().getLastDamageCause())) return;
-                        setActive(p, power.getTag(), true);
-                        Actions.EntityActionType(p, power.getEntityAction());
-                        if(((CraftPlayer)p).getHandle().getLastHurtByMob() != null){
-                            Actions.BiEntityActionType(((CraftPlayer)p).getHandle().getLastHurtByMob().getBukkitEntity(), p/* player is target? */, power.getBiEntityAction());
-                        }
-                        new BukkitRunnable() {
-                            @Override
-                            public void run() {
-                                setActive(p, power.getTag(), false);
-                            }
-                        }.runTaskLater(GenesisMC.getPlugin(), 2L);
-                    }
-                }
-            }
-        }
-    }
+	@EventHandler
+	public void d(EntityDeathEvent e) {
+		if (e.getEntity() instanceof Player p) {
+			if (getPowerArray().contains(p)) {
+				for (Layer layer : CraftApoli.getLayersFromRegistry()) {
+					for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
+						if (power == null) continue;
+						if (!ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p) && !ConditionExecutor.testDamage(power.get("damage_condition"), e.getEntity().getLastDamageCause()))
+							return;
+						setActive(p, power.getTag(), true);
+						Actions.EntityActionType(p, power.getEntityAction());
+						if (((CraftPlayer) p).getHandle().getLastHurtByMob() != null) {
+							Actions.BiEntityActionType(((CraftPlayer) p).getHandle().getLastHurtByMob().getBukkitEntity(), p/* player is target? */, power.getBiEntityAction());
+						}
+						new BukkitRunnable() {
+							@Override
+							public void run() {
+								setActive(p, power.getTag(), false);
+							}
+						}.runTaskLater(GenesisMC.getPlugin(), 2L);
+					}
+				}
+			}
+		}
+	}
 
-    @Override
-    public String getPowerFile() {
-        return "apoli:action_on_death";
-    }
+	@Override
+	public String getPowerFile() {
+		return "apoli:action_on_death";
+	}
 
-    @Override
-    public ArrayList<Player> getPowerArray() {
-        return action_on_death;
-    }
+	@Override
+	public ArrayList<Player> getPowerArray() {
+		return action_on_death;
+	}
 }

@@ -20,42 +20,42 @@ import org.bukkit.entity.Player;
 import java.util.Optional;
 
 public class PowerLootCondition implements LootItemCondition {
-   public static final Codec<PowerLootCondition> CODEC = RecordCodecBuilder.create((instance) -> {
-      return instance.group(ResourceLocation.CODEC.fieldOf("power").forGetter(PowerLootCondition::getPowerId), ResourceLocation.CODEC.optionalFieldOf("source").forGetter(PowerLootCondition::getPowerSourceId)).apply(instance, PowerLootCondition::new);
-   });
-   public static final LootItemConditionType TYPE;
-   private ResourceLocation powerId;
-   private ResourceLocation powerSourceId;
+	public static final Codec<PowerLootCondition> CODEC = RecordCodecBuilder.create((instance) -> {
+		return instance.group(ResourceLocation.CODEC.fieldOf("power").forGetter(PowerLootCondition::getPowerId), ResourceLocation.CODEC.optionalFieldOf("source").forGetter(PowerLootCondition::getPowerSourceId)).apply(instance, PowerLootCondition::new);
+	});
+	public static final LootItemConditionType TYPE;
 
-   private PowerLootCondition(ResourceLocation powerId, Optional<ResourceLocation> powerSourceId) {
-   }
+	static {
+		TYPE = new LootItemConditionType(CODEC);
+	}
 
-   public boolean test(LootContext context) {
-      Entity entity = (Entity)context.getParam(LootContextParams.THIS_ENTITY);
-      CraftEntity var4 = entity.getBukkitEntity();
-      if (var4 instanceof Player) {
-         Player player = (Player)var4;
-         NamespacedKey key = CraftNamespacedKey.fromMinecraft(this.powerId);
-         Power power = (Power)GenesisMC.getPlugin().registry.retrieve(Registries.POWER).get(key);
-         return OriginPlayerAccessor.hasPower(player, power.getTag());
-      } else {
-         return false;
-      }
-   }
+	private ResourceLocation powerId;
+	private ResourceLocation powerSourceId;
 
-   public LootItemConditionType getType() {
-      return TYPE;
-   }
+	private PowerLootCondition(ResourceLocation powerId, Optional<ResourceLocation> powerSourceId) {
+	}
 
-   public ResourceLocation getPowerId() {
-      return this.powerId;
-   }
+	public boolean test(LootContext context) {
+		Entity entity = context.getParam(LootContextParams.THIS_ENTITY);
+		CraftEntity var4 = entity.getBukkitEntity();
+		if (var4 instanceof Player player) {
+			NamespacedKey key = CraftNamespacedKey.fromMinecraft(this.powerId);
+			Power power = (Power) GenesisMC.getPlugin().registry.retrieve(Registries.POWER).get(key);
+			return OriginPlayerAccessor.hasPower(player, power.getTag());
+		} else {
+			return false;
+		}
+	}
 
-   public Optional<ResourceLocation> getPowerSourceId() {
-      return Optional.of(this.powerSourceId);
-   }
+	public LootItemConditionType getType() {
+		return TYPE;
+	}
 
-   static {
-      TYPE = new LootItemConditionType(CODEC);
-   }
+	public ResourceLocation getPowerId() {
+		return this.powerId;
+	}
+
+	public Optional<ResourceLocation> getPowerSourceId() {
+		return Optional.of(this.powerSourceId);
+	}
 }

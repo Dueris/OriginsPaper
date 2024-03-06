@@ -25,58 +25,59 @@ import java.util.List;
 
 public class ActionOnBlockPlace extends CraftPower implements Listener {
 
-    @Override
-    public void run(Player p) {
+	@Override
+	public void run(Player p) {
 
-    }
+	}
 
-    @EventHandler
-    public void blockBreak(BlockPlaceEvent e) {
-        if (action_on_block_place.contains(e.getPlayer())) {
-            for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-                for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(e.getPlayer(), getPowerFile(), layer)) {
-                    if(!(ConditionExecutor.testEntity((JSONObject) power.get("condition"), (CraftEntity) e.getPlayer()) && ConditionExecutor.testItem((JSONObject) power.get("item_condition"), e.getItemInHand()) && ConditionExecutor.testBlock((JSONObject) power.get("place_to_condition"), (CraftBlock) e.getBlockPlaced()) && ConditionExecutor.testBlock((JSONObject) power.get("place_on_condition"), (CraftBlock) e.getBlockAgainst()))) return;
-                    boolean pass = power.getPowerFile().getFactoryProvider().getJsonArray("directions").isEmpty();
-                    for(BlockFace face : InstanceGetter.getBlockFaceFromDirection(power.getPowerFile().getFactoryProvider().getJsonArray("directions"))){
-                        if(e.getBlock().getFace(e.getBlockAgainst()).equals(face)){
-                            pass = true;
-                        }
-                    }
-                    if(!pass) return;
-                    setActive(e.getPlayer(), power.getTag(), true);
-                    Actions.EntityActionType(e.getPlayer(), power.getEntityAction());
-                    Actions.ItemActionType(e.getItemInHand(), power.getAction("held_item_action"));
-                    Actions.BlockActionType(e.getBlockAgainst().getLocation(), power.getAction("place_on_action"));
-                    Actions.BlockActionType(e.getBlockPlaced().getLocation(), power.getAction("place_to_action"));
-                    e.getPlayer().getInventory().addItem(power.getPowerFile().getFactoryProvider().getItemStack("result_stack"));
-                    Actions.ItemActionType(power.getPowerFile().getFactoryProvider().getItemStack("result_stack"), power.getAction("result_item_action"));
-                }
-            }
-        }
-    }
+	@EventHandler
+	public void blockBreak(BlockPlaceEvent e) {
+		if (action_on_block_place.contains(e.getPlayer())) {
+			for (Layer layer : CraftApoli.getLayersFromRegistry()) {
+				for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(e.getPlayer(), getPowerFile(), layer)) {
+					if (!(ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) e.getPlayer()) && ConditionExecutor.testItem(power.get("item_condition"), e.getItemInHand()) && ConditionExecutor.testBlock(power.get("place_to_condition"), (CraftBlock) e.getBlockPlaced()) && ConditionExecutor.testBlock(power.get("place_on_condition"), (CraftBlock) e.getBlockAgainst())))
+						return;
+					boolean pass = power.getPowerFile().getFactoryProvider().getJsonArray("directions").isEmpty();
+					for (BlockFace face : InstanceGetter.getBlockFaceFromDirection(power.getPowerFile().getFactoryProvider().getJsonArray("directions"))) {
+						if (e.getBlock().getFace(e.getBlockAgainst()).equals(face)) {
+							pass = true;
+						}
+					}
+					if (!pass) return;
+					setActive(e.getPlayer(), power.getTag(), true);
+					Actions.EntityActionType(e.getPlayer(), power.getEntityAction());
+					Actions.ItemActionType(e.getItemInHand(), power.getAction("held_item_action"));
+					Actions.BlockActionType(e.getBlockAgainst().getLocation(), power.getAction("place_on_action"));
+					Actions.BlockActionType(e.getBlockPlaced().getLocation(), power.getAction("place_to_action"));
+					e.getPlayer().getInventory().addItem(power.getPowerFile().getFactoryProvider().getItemStack("result_stack"));
+					Actions.ItemActionType(power.getPowerFile().getFactoryProvider().getItemStack("result_stack"), power.getAction("result_item_action"));
+				}
+			}
+		}
+	}
 
-    @Override
-    public String getPowerFile() {
-        return "apoli:action_on_block_place";
-    }
+	@Override
+	public String getPowerFile() {
+		return "apoli:action_on_block_place";
+	}
 
-    @Override
-    public ArrayList<Player> getPowerArray() {
-        return action_on_block_place;
-    }
+	@Override
+	public ArrayList<Player> getPowerArray() {
+		return action_on_block_place;
+	}
 
-    @Override
-    public List<FactoryObjectInstance> getValidObjectFactory() {
-        return super.getDefaultObjectFactory(List.of(
-            new FactoryObjectInstance("entity_action", JSONObject.class, new JSONObject()),
-            new FactoryObjectInstance("held_item_action", JSONObject.class, new JSONObject()),
-            new FactoryObjectInstance("place_to_action", JSONObject.class, new JSONObject()),
-            new FactoryObjectInstance("place_on_action", JSONObject.class, new JSONObject()),
-            new FactoryObjectInstance("item_condition", JSONObject.class, new JSONObject()),
-            new FactoryObjectInstance("place_to_condition", JSONObject.class, new JSONObject()),
-            new FactoryObjectInstance("place_on_condition", JSONObject.class, new JSONObject()),
-            new FactoryObjectInstance("result_stack", ItemStack.class, new ItemStack(Material.AIR)),
-            new FactoryObjectInstance("result_item_action", JSONObject.class, new JSONObject())
-        ));
-    }
+	@Override
+	public List<FactoryObjectInstance> getValidObjectFactory() {
+		return super.getDefaultObjectFactory(List.of(
+			new FactoryObjectInstance("entity_action", JSONObject.class, new JSONObject()),
+			new FactoryObjectInstance("held_item_action", JSONObject.class, new JSONObject()),
+			new FactoryObjectInstance("place_to_action", JSONObject.class, new JSONObject()),
+			new FactoryObjectInstance("place_on_action", JSONObject.class, new JSONObject()),
+			new FactoryObjectInstance("item_condition", JSONObject.class, new JSONObject()),
+			new FactoryObjectInstance("place_to_condition", JSONObject.class, new JSONObject()),
+			new FactoryObjectInstance("place_on_condition", JSONObject.class, new JSONObject()),
+			new FactoryObjectInstance("result_stack", ItemStack.class, new ItemStack(Material.AIR)),
+			new FactoryObjectInstance("result_item_action", JSONObject.class, new JSONObject())
+		));
+	}
 }

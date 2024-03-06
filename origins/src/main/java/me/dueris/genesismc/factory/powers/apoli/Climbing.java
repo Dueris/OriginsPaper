@@ -17,81 +17,80 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import static org.bukkit.Material.AIR;
 
 public class Climbing extends CraftPower {
 
-    public ArrayList<Player> active_climbing = new ArrayList<>();
+	public ArrayList<Player> active_climbing = new ArrayList<>();
 
-    public boolean isActiveClimbing(Player player) {
-        return active_climbing.contains(player);
-    }
+	public boolean isActiveClimbing(Player player) {
+		return active_climbing.contains(player);
+	}
 
-    public ArrayList<Player> getActiveClimbingMap() {
-        return active_climbing;
-    }
+	public ArrayList<Player> getActiveClimbingMap() {
+		return active_climbing;
+	}
 
-    @Override
-    public void run(Player p) {
-        if (climbing.contains(p)) {
-            if ((p.getLocation().getBlock().getRelative(BlockFace.EAST).getType().isSolid() ||
-                    p.getLocation().getBlock().getRelative(BlockFace.WEST).getType().isSolid() ||
-                    p.getLocation().getBlock().getRelative(BlockFace.NORTH).getType().isSolid() ||
-                    p.getLocation().getBlock().getRelative(BlockFace.SOUTH).getType().isSolid() ||
-                    p.getEyeLocation().add(0, 1, 0).getBlock().getType().isSolid() ||
-                    p.getEyeLocation().getBlock().getRelative(BlockFace.EAST).getType().isSolid() ||
-                    p.getEyeLocation().getBlock().getRelative(BlockFace.WEST).getType().isSolid() ||
-                    p.getEyeLocation().getBlock().getRelative(BlockFace.NORTH).getType().isSolid() ||
-                    p.getEyeLocation().getBlock().getRelative(BlockFace.SOUTH).getType().isSolid()) && (
+	@Override
+	public void run(Player p) {
+		if (climbing.contains(p)) {
+			if ((p.getLocation().getBlock().getRelative(BlockFace.EAST).getType().isSolid() ||
+				p.getLocation().getBlock().getRelative(BlockFace.WEST).getType().isSolid() ||
+				p.getLocation().getBlock().getRelative(BlockFace.NORTH).getType().isSolid() ||
+				p.getLocation().getBlock().getRelative(BlockFace.SOUTH).getType().isSolid() ||
+				p.getEyeLocation().add(0, 1, 0).getBlock().getType().isSolid() ||
+				p.getEyeLocation().getBlock().getRelative(BlockFace.EAST).getType().isSolid() ||
+				p.getEyeLocation().getBlock().getRelative(BlockFace.WEST).getType().isSolid() ||
+				p.getEyeLocation().getBlock().getRelative(BlockFace.NORTH).getType().isSolid() ||
+				p.getEyeLocation().getBlock().getRelative(BlockFace.SOUTH).getType().isSolid()) && (
 
-                    p.getLocation().getBlock().getRelative(BlockFace.EAST).getType().isCollidable() ||
-                            p.getLocation().getBlock().getRelative(BlockFace.WEST).getType().isCollidable() ||
-                            p.getLocation().getBlock().getRelative(BlockFace.NORTH).getType().isCollidable() ||
-                            p.getLocation().getBlock().getRelative(BlockFace.SOUTH).getType().isCollidable() ||
-                            p.getEyeLocation().add(0, 1, 0).getBlock().getType().isCollidable() ||
-                            p.getEyeLocation().getBlock().getRelative(BlockFace.EAST).getType().isCollidable() ||
-                            p.getEyeLocation().getBlock().getRelative(BlockFace.WEST).getType().isCollidable() ||
-                            p.getEyeLocation().getBlock().getRelative(BlockFace.NORTH).getType().isCollidable() ||
-                            p.getEyeLocation().getBlock().getRelative(BlockFace.SOUTH).getType().isCollidable()
-            )) {
-                Block block = p.getTargetBlock(null, 2);
-                for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-                    for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-                        if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p)) {
-                            setActive(p, power.getTag(), true);
-                            if (!p.isSneaking() && block.getType() != AIR) return;
-                            p.addPotionEffect(new PotionEffect(PotionEffectType.LEVITATION, 6, 2, false, false, false));
-                            getActiveClimbingMap().add(p);
-                            new BukkitRunnable() {
-                                @Override
-                                public void run() {
-                                    getActiveClimbingMap().remove(p);
-                                }
-                            }.runTaskLater(GenesisMC.getPlugin(), 1L);
-                        } else {
-                            setActive(p, power.getTag(), false);
-                        }
-                    }
-                }
-            }
-        }
-    }
+				p.getLocation().getBlock().getRelative(BlockFace.EAST).getType().isCollidable() ||
+					p.getLocation().getBlock().getRelative(BlockFace.WEST).getType().isCollidable() ||
+					p.getLocation().getBlock().getRelative(BlockFace.NORTH).getType().isCollidable() ||
+					p.getLocation().getBlock().getRelative(BlockFace.SOUTH).getType().isCollidable() ||
+					p.getEyeLocation().add(0, 1, 0).getBlock().getType().isCollidable() ||
+					p.getEyeLocation().getBlock().getRelative(BlockFace.EAST).getType().isCollidable() ||
+					p.getEyeLocation().getBlock().getRelative(BlockFace.WEST).getType().isCollidable() ||
+					p.getEyeLocation().getBlock().getRelative(BlockFace.NORTH).getType().isCollidable() ||
+					p.getEyeLocation().getBlock().getRelative(BlockFace.SOUTH).getType().isCollidable()
+			)) {
+				Block block = p.getTargetBlock(null, 2);
+				for (Layer layer : CraftApoli.getLayersFromRegistry()) {
+					for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
+						if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p)) {
+							setActive(p, power.getTag(), true);
+							if (!p.isSneaking() && block.getType() != AIR) return;
+							p.addPotionEffect(new PotionEffect(PotionEffectType.LEVITATION, 6, 2, false, false, false));
+							getActiveClimbingMap().add(p);
+							new BukkitRunnable() {
+								@Override
+								public void run() {
+									getActiveClimbingMap().remove(p);
+								}
+							}.runTaskLater(GenesisMC.getPlugin(), 1L);
+						} else {
+							setActive(p, power.getTag(), false);
+						}
+					}
+				}
+			}
+		}
+	}
 
-    @Override
-    public String getPowerFile() {
-        return "apoli:climbing";
-    }
+	@Override
+	public String getPowerFile() {
+		return "apoli:climbing";
+	}
 
-    @Override
-    public ArrayList<Player> getPowerArray() {
-        return climbing;
-    }
+	@Override
+	public ArrayList<Player> getPowerArray() {
+		return climbing;
+	}
 
-    @Override
-    public List<FactoryObjectInstance> getValidObjectFactory() {
-        return super.getDefaultObjectFactory(List.of());
-    }
+	@Override
+	public List<FactoryObjectInstance> getValidObjectFactory() {
+		return super.getDefaultObjectFactory(List.of());
+	}
 }

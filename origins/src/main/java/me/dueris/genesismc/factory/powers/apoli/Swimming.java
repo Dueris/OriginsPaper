@@ -11,40 +11,39 @@ import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 public class Swimming extends CraftPower {
 
-    @Override
-    public void run(Player p) {
-        for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-            if (swimming.contains(p)) {
-                for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
-                    if (!ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p)) {
-                        setActive(p, power.getTag(), false);
-                        return;
-                    } else {
-                        p.setSwimming(true);
-                        setActive(p, power.getTag(), true);
-                    }
-                }
-            }
-        }
-    }
+	@Override
+	public void run(Player p) {
+		for (Layer layer : CraftApoli.getLayersFromRegistry()) {
+			if (swimming.contains(p)) {
+				for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(p, getPowerFile(), layer)) {
+					if (!ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) p)) {
+						setActive(p, power.getTag(), false);
+						return;
+					} else {
+						p.setSwimming(true);
+						setActive(p, power.getTag(), true);
+					}
+				}
+			}
+		}
+	}
 
-    @Override
-    public String getPowerFile() {
-        return "apoli:swimming";
-    }
+	@Override
+	public String getPowerFile() {
+		return "apoli:swimming";
+	}
 
-    @Override
-    public ArrayList<Player> getPowerArray() {
-        return swimming;
-    }
+	@Override
+	public ArrayList<Player> getPowerArray() {
+		return swimming;
+	}
 
-    @Override
-    public List<FactoryObjectInstance> getValidObjectFactory() {
-        return super.getDefaultObjectFactory(List.of());
-    }
+	@Override
+	public List<FactoryObjectInstance> getValidObjectFactory() {
+		return super.getDefaultObjectFactory(List.of());
+	}
 }

@@ -17,65 +17,64 @@ import org.bukkit.craftbukkit.v1_20_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import static me.dueris.genesismc.factory.powers.apoli.superclass.ValueModifyingSuperClass.modify_block_render;
 
 public class ModifyBlockRenderPower extends CraftPower {
 
-    String MODIFYING_KEY = "modify_block_render";
+	String MODIFYING_KEY = "modify_block_render";
 
-    @Override
-    public void run(Player player) {
-        ChunkManagerWorld chunkManagerWorld = new ChunkManagerWorld(player.getWorld());
-        CraftPlayer craftPlayer = (CraftPlayer) player;
+	@Override
+	public void run(Player player) {
+		ChunkManagerWorld chunkManagerWorld = new ChunkManagerWorld(player.getWorld());
+		CraftPlayer craftPlayer = (CraftPlayer) player;
 
-        if (modify_block_render.contains(player)) {
-            List<BlockState> blockChanges = new ArrayList<>();
-            boolean conditionMet = false;
+		if (modify_block_render.contains(player)) {
+			List<BlockState> blockChanges = new ArrayList<>();
+			boolean conditionMet = false;
 
-            for (Layer layer : CraftApoli.getLayersFromRegistry()) {
-                for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(player, getPowerFile(), layer)) {
-                    Material targetMaterial = Material.AIR;
-                    if (conditionMet) {
-                        targetMaterial = Material.getMaterial(power.getStringOrDefault("block", null).toUpperCase());
-                    }
+			for (Layer layer : CraftApoli.getLayersFromRegistry()) {
+				for (Power power : OriginPlayerAccessor.getMultiPowerFileFromType(player, getPowerFile(), layer)) {
+					Material targetMaterial = Material.AIR;
+					if (conditionMet) {
+						targetMaterial = Material.getMaterial(power.getStringOrDefault("block", null).toUpperCase());
+					}
 
-                    for (Chunk chunk : chunkManagerWorld.getChunksInPlayerViewDistance(craftPlayer)) {
-                        for (Block block : chunkManagerWorld.getAllBlocksInChunk(chunk)) {
-                            if (block.getType() != Material.AIR) {
-                                try {
-                                    if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) player) && ConditionExecutor.testBlock(power.get("block_condition"), (CraftBlock) block)) {
-                                        conditionMet = true;
-                                        setActive(player, power.getTag(), true);
-                                        BlockState blockState = block.getState();
-                                        blockState.setType(targetMaterial);
-                                        blockChanges.add(blockState);
-                                        break;
-                                    } else {
-                                        setActive(player, power.getTag(), false);
-                                    }
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                }
-                            }
-                        }
-                    }
+					for (Chunk chunk : chunkManagerWorld.getChunksInPlayerViewDistance(craftPlayer)) {
+						for (Block block : chunkManagerWorld.getAllBlocksInChunk(chunk)) {
+							if (block.getType() != Material.AIR) {
+								try {
+									if (ConditionExecutor.testEntity(power.get("condition"), (CraftEntity) player) && ConditionExecutor.testBlock(power.get("block_condition"), (CraftBlock) block)) {
+										conditionMet = true;
+										setActive(player, power.getTag(), true);
+										BlockState blockState = block.getState();
+										blockState.setType(targetMaterial);
+										blockChanges.add(blockState);
+										break;
+									} else {
+										setActive(player, power.getTag(), false);
+									}
+								} catch (Exception e) {
+									e.printStackTrace();
+								}
+							}
+						}
+					}
 
-                    craftPlayer.sendBlockChanges(blockChanges);
-                }
-            }
-        }
-    }
+					craftPlayer.sendBlockChanges(blockChanges);
+				}
+			}
+		}
+	}
 
-    @Override
-    public String getPowerFile() {
-        return "apoli:modify_block_render";
-    }
+	@Override
+	public String getPowerFile() {
+		return "apoli:modify_block_render";
+	}
 
-    @Override
-    public ArrayList<Player> getPowerArray() {
-        return modify_block_render;
-    }
+	@Override
+	public ArrayList<Player> getPowerArray() {
+		return modify_block_render;
+	}
 }
